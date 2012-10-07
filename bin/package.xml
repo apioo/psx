@@ -1,0 +1,950 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.0" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
+  <name>PSX</name>
+  <channel>pear.phpsx.org</channel>
+  <summary>The PSX Framework</summary>
+  <description>Because it is the logical conclusion</description>
+  <lead>
+    <name>Christoph Kappestein</name>
+    <user>k42b3</user>
+    <email>k42b3@phpsx.org</email>
+    <active>yes</active>
+  </lead>
+  <date>2012-10-07</date>
+  <version>
+    <release>0.4.7</release>
+    <api>0.4.7</api>
+  </version>
+  <stability>
+    <release>stable</release>
+    <api>stable</api>
+  </stability>
+  <license uri="http://www.gnu.org/licenses/">GPLv3 License</license>
+  <notes>* Add cache to PSX_Base getRequest method so calling the method multiple times
+will always return the same object
+* Improved PSX_Loader class. The name of the index method must be now __index
+wich is called if no other method is specified in the request. This was done
+because of constructor conflict if the class also the name index and to
+document the magical behavior
+* Added method getValidator(), getMethod(), getUrl(), getHeaders(), getHeader(),
+getParameter() and getBody() to PSX_ModuleAbstract
+* Using PSX_PATH_CACHE path in file cache handler
+* Fix markdown class encode emphasis
+* Add method setSavePath to PSX_Session class</notes>
+  <contents>
+    <dir name="/">
+      <dir name="PSX">
+        <dir name="ActivityStream">
+          <dir name="Type">
+            <file name="Address.php" role="php"/>
+            <file name="Article.php" role="php"/>
+            <file name="Audio.php" role="php"/>
+            <file name="Badge.php" role="php"/>
+            <file name="Bookmark.php" role="php"/>
+            <file name="Collection.php" role="php"/>
+            <file name="Comment.php" role="php"/>
+            <file name="Event.php" role="php"/>
+            <file name="File.php" role="php"/>
+            <file name="Group.php" role="php"/>
+            <file name="Image.php" role="php"/>
+            <file name="Note.php" role="php"/>
+            <file name="Person.php" role="php"/>
+            <file name="Place.php" role="php"/>
+            <file name="Product.php" role="php"/>
+            <file name="Question.php" role="php"/>
+            <file name="Review.php" role="php"/>
+            <file name="Service.php" role="php"/>
+            <file name="Video.php" role="php"/>
+          </dir>
+          <file name="TypeAbstract.php" role="php"/>
+        </dir>
+        <dir name="Atom">
+          <file name="Entry.php" role="php"/>
+          <file name="Exception.php" role="php"/>
+        </dir>
+        <file name="Atom.php" role="php"/>
+        <dir name="Base">
+          <file name="Default.php" role="php"/>
+          <file name="Exception.php" role="php"/>
+        </dir>
+        <file name="Base.php" role="php"/>
+        <file name="Bootstrap.php" role="php"/>
+        <dir name="Cache">
+          <file name="Exception.php" role="php"/>
+          <dir name="Handler">
+            <file name="Apc.php" role="php"/>
+            <file name="File.php" role="php"/>
+            <file name="Memcache.php" role="php"/>
+            <file name="Null.php" role="php"/>
+            <dir name="Sql">
+              <file name="TableAbstract.php" role="php"/>
+            </dir>
+            <file name="Sql.php" role="php"/>
+          </dir>
+          <file name="HandlerInterface.php" role="php"/>
+          <file name="Item.php" role="php"/>
+        </dir>
+        <file name="Cache.php" role="php"/>
+        <dir name="Calendar">
+          <file name="Exception.php" role="php"/>
+        </dir>
+        <file name="Calendar.php" role="php"/>
+        <dir name="Config">
+          <file name="Exception.php" role="php"/>
+        </dir>
+        <file name="Config.php" role="php"/>
+        <dir name="Data">
+          <file name="Array.php" role="php"/>
+          <file name="Exception.php" role="php"/>
+          <file name="HandlerAbstract.php" role="php"/>
+          <file name="HandlerInterface.php" role="php"/>
+          <file name="Message.php" role="php"/>
+          <dir name="Reader">
+            <file name="Dom.php" role="php"/>
+            <file name="Form.php" role="php"/>
+            <file name="Gpc.php" role="php"/>
+            <file name="Json.php" role="php"/>
+            <file name="Multipart.php" role="php"/>
+            <file name="Raw.php" role="php"/>
+            <file name="Xml.php" role="php"/>
+          </dir>
+          <file name="ReaderFactory.php" role="php"/>
+          <file name="ReaderInterface.php" role="php"/>
+          <file name="ReaderResult.php" role="php"/>
+          <dir name="Record">
+            <file name="TableAbstract.php" role="php"/>
+          </dir>
+          <file name="Record.php" role="php"/>
+          <file name="RecordAbstract.php" role="php"/>
+          <file name="RecordInterface.php" role="php"/>
+          <file name="ResultSet.php" role="php"/>
+          <dir name="Writer">
+            <dir name="Atom">
+              <file name="Entry.php" role="php"/>
+            </dir>
+            <file name="Atom.php" role="php"/>
+            <file name="Form.php" role="php"/>
+            <file name="Json.php" role="php"/>
+            <dir name="Rss">
+              <file name="Item.php" role="php"/>
+            </dir>
+            <file name="Rss.php" role="php"/>
+            <file name="Xml.php" role="php"/>
+          </dir>
+          <file name="WriterFactory.php" role="php"/>
+          <file name="WriterInterface.php" role="php"/>
+          <file name="WriterResult.php" role="php"/>
+        </dir>
+        <dir name="Dependency">
+          <file name="Default.php" role="php"/>
+          <file name="View.php" role="php"/>
+        </dir>
+        <file name="DependencyAbstract.php" role="php"/>
+        <file name="Exception.php" role="php"/>
+        <dir name="File">
+          <file name="Exception.php" role="php"/>
+          <file name="Object.php" role="php"/>
+        </dir>
+        <file name="File.php" role="php"/>
+        <dir name="Filter">
+          <file name="Alnum.php" role="php"/>
+          <file name="Alpha.php" role="php"/>
+          <file name="DateInterval.php" role="php"/>
+          <file name="DateTime.php" role="php"/>
+          <file name="Digit.php" role="php"/>
+          <file name="Email.php" role="php"/>
+          <file name="Html.php" role="php"/>
+          <file name="InArray.php" role="php"/>
+          <file name="Ip.php" role="php"/>
+          <file name="KeyExists.php" role="php"/>
+          <file name="Length.php" role="php"/>
+          <file name="Md5.php" role="php"/>
+          <file name="Regexp.php" role="php"/>
+          <file name="Sha1.php" role="php"/>
+          <file name="Table.php" role="php"/>
+          <file name="Url.php" role="php"/>
+          <file name="Urldecode.php" role="php"/>
+          <file name="Xdigit.php" role="php"/>
+        </dir>
+        <file name="FilterAbstract.php" role="php"/>
+        <dir name="Html">
+          <file name="Exception.php" role="php"/>
+          <dir name="Filter">
+            <dir name="Collection">
+              <file name="Html5Basic.php" role="php"/>
+            </dir>
+            <file name="CollectionAbstract.php" role="php"/>
+            <file name="Element.php" role="php"/>
+            <file name="ElementListenerInterface.php" role="php"/>
+            <file name="Exception.php" role="php"/>
+            <file name="TextListenerInterface.php" role="php"/>
+          </dir>
+          <file name="Filter.php" role="php"/>
+          <dir name="Lexer">
+            <file name="Dom.php" role="php"/>
+            <file name="Exception.php" role="php"/>
+            <dir name="Token">
+              <file name="Element.php" role="php"/>
+              <file name="Text.php" role="php"/>
+            </dir>
+            <file name="TokenAbstract.php" role="php"/>
+          </dir>
+          <file name="Lexer.php" role="php"/>
+          <dir name="Paging">
+            <file name="Exception.php" role="php"/>
+          </dir>
+          <file name="Paging.php" role="php"/>
+          <dir name="Parse">
+            <file name="Element.php" role="php"/>
+            <file name="Exception.php" role="php"/>
+          </dir>
+          <file name="Parse.php" role="php"/>
+        </dir>
+        <dir name="Http">
+          <file name="Cookie.php" role="php"/>
+          <dir name="CookieStore">
+            <file name="Memory.php" role="php"/>
+          </dir>
+          <file name="CookieStoreInterface.php" role="php"/>
+          <file name="DeleteRequest.php" role="php"/>
+          <file name="Exception.php" role="php"/>
+          <file name="GetRequest.php" role="php"/>
+          <dir name="Handler">
+            <file name="Curl.php" role="php"/>
+            <file name="Socks.php" role="php"/>
+          </dir>
+          <file name="HandlerInterface.php" role="php"/>
+          <file name="HeadRequest.php" role="php"/>
+          <file name="Message.php" role="php"/>
+          <file name="PostRequest.php" role="php"/>
+          <file name="PutRequest.php" role="php"/>
+          <file name="Request.php" role="php"/>
+          <file name="Response.php" role="php"/>
+        </dir>
+        <file name="Http.php" role="php"/>
+        <dir name="Input">
+          <file name="ContainerInterface.php" role="php"/>
+          <file name="Cookie.php" role="php"/>
+          <file name="Files.php" role="php"/>
+          <file name="Get.php" role="php"/>
+          <file name="Post.php" role="php"/>
+          <file name="Put.php" role="php"/>
+          <file name="Request.php" role="php"/>
+          <file name="Session.php" role="php"/>
+        </dir>
+        <file name="Input.php" role="php"/>
+        <dir name="Json">
+          <file name="Exception.php" role="php"/>
+        </dir>
+        <file name="Json.php" role="php"/>
+        <dir name="Loader">
+          <file name="Exception.php" role="php"/>
+        </dir>
+        <file name="Loader.php" role="php"/>
+        <dir name="Log">
+          <file name="Exception.php" role="php"/>
+          <dir name="Handler">
+            <file name="Default.php" role="php"/>
+            <file name="Email.php" role="php"/>
+            <file name="File.php" role="php"/>
+            <file name="Print.php" role="php"/>
+            <file name="Sql.php" role="php"/>
+            <file name="Sys.php" role="php"/>
+          </dir>
+          <file name="HandlerInterface.php" role="php"/>
+        </dir>
+        <file name="Log.php" role="php"/>
+        <dir name="Module">
+          <file name="ApiAbstract.php" role="php"/>
+          <file name="PrivateInterface.php" role="php"/>
+          <file name="ViewAbstract.php" role="php"/>
+        </dir>
+        <file name="ModuleAbstract.php" role="php"/>
+        <dir name="Oauth">
+          <file name="Exception.php" role="php"/>
+          <dir name="Provider">
+            <file name="AccessAbstract.php" role="php"/>
+            <dir name="Data">
+              <file name="Consumer.php" role="php"/>
+              <file name="Request.php" role="php"/>
+              <file name="Response.php" role="php"/>
+            </dir>
+            <file name="Exception.php" role="php"/>
+            <file name="RequestAbstract.php" role="php"/>
+          </dir>
+          <file name="ProviderAbstract.php" role="php"/>
+          <dir name="Signature">
+            <file name="HMACSHA1.php" role="php"/>
+            <file name="PLAINTEXT.php" role="php"/>
+            <file name="RSASHA1.php" role="php"/>
+          </dir>
+          <file name="SignatureAbstract.php" role="php"/>
+        </dir>
+        <file name="Oauth.php" role="php"/>
+        <dir name="Oauth2">
+          <file name="AccessToken.php" role="php"/>
+          <dir name="Authorization">
+            <file name="AuthorizationCode.php" role="php"/>
+            <file name="ClientCredentials.php" role="php"/>
+            <dir name="Exception">
+              <file name="AccessDeniedException.php" role="php"/>
+              <file name="InvalidClientException.php" role="php"/>
+              <file name="InvalidGrantException.php" role="php"/>
+              <file name="InvalidRequestException.php" role="php"/>
+              <file name="InvalidScopeException.php" role="php"/>
+              <file name="ServerErrorException.php" role="php"/>
+              <file name="TemporarilyUnavailableException.php" role="php"/>
+              <file name="UnauthorizedClientException.php" role="php"/>
+              <file name="UnsupportedResponseTypeException.php" role="php"/>
+            </dir>
+            <file name="Exception.php" role="php"/>
+            <file name="PasswordCredentials.php" role="php"/>
+          </dir>
+          <file name="AuthorizationAbstract.php" role="php"/>
+          <file name="Exception.php" role="php"/>
+          <dir name="Token">
+            <file name="Bearer.php" role="php"/>
+          </dir>
+          <file name="TokenAbstract.php" role="php"/>
+        </dir>
+        <file name="Oauth2.php" role="php"/>
+        <dir name="Observer">
+          <file name="ListenerInterface.php" role="php"/>
+        </dir>
+        <file name="Observer.php" role="php"/>
+        <dir name="Oembed">
+          <file name="Exception.php" role="php"/>
+          <file name="ProviderAbstract.php" role="php"/>
+          <dir name="Type">
+            <file name="Link.php" role="php"/>
+            <file name="Photo.php" role="php"/>
+            <file name="Rich.php" role="php"/>
+            <file name="Video.php" role="php"/>
+          </dir>
+          <file name="TypeAbstract.php" role="php"/>
+        </dir>
+        <file name="Oembed.php" role="php"/>
+        <dir name="OpenId">
+          <file name="Exception.php" role="php"/>
+          <dir name="Extension">
+            <file name="Ax.php" role="php"/>
+            <file name="Oauth.php" role="php"/>
+            <file name="Pape.php" role="php"/>
+            <file name="Sreg.php" role="php"/>
+            <file name="Ui.php" role="php"/>
+          </dir>
+          <file name="ExtensionInterface.php" role="php"/>
+          <file name="Identity.php" role="php"/>
+          <dir name="Op">
+            <file name="Aol.php" role="php"/>
+            <file name="Blogger.php" role="php"/>
+            <file name="ClaimId.php" role="php"/>
+            <file name="Flickr.php" role="php"/>
+            <file name="Google.php" role="php"/>
+            <file name="MyOpenid.php" role="php"/>
+            <file name="Verisign.php" role="php"/>
+            <file name="Yahoo.php" role="php"/>
+          </dir>
+          <dir name="Provider">
+            <dir name="Data">
+              <file name="Association.php" role="php"/>
+              <file name="AssociationRequest.php" role="php"/>
+              <file name="Redirect.php" role="php"/>
+              <file name="ResRequest.php" role="php"/>
+              <file name="SetupRequest.php" role="php"/>
+            </dir>
+            <file name="Exception.php" role="php"/>
+          </dir>
+          <file name="ProviderAbstract.php" role="php"/>
+          <dir name="Store">
+            <file name="File.php" role="php"/>
+            <file name="Sql.php" role="php"/>
+          </dir>
+          <file name="StoreInterface.php" role="php"/>
+        </dir>
+        <file name="OpenId.php" role="php"/>
+        <dir name="OpenSocial">
+          <dir name="Type">
+            <file name="Account.php" role="php"/>
+            <file name="ActionLink.php" role="php"/>
+            <file name="Address.php" role="php"/>
+            <file name="Album.php" role="php"/>
+            <file name="Group.php" role="php"/>
+            <file name="MediaItem.php" role="php"/>
+            <file name="Message.php" role="php"/>
+            <file name="Name.php" role="php"/>
+            <file name="Organization.php" role="php"/>
+            <file name="Person.php" role="php"/>
+            <file name="Plural.php" role="php"/>
+          </dir>
+          <file name="TypeAbstract.php" role="php"/>
+        </dir>
+        <dir name="OpenSsl">
+          <file name="Exception.php" role="php"/>
+          <file name="PKey.php" role="php"/>
+        </dir>
+        <file name="OpenSsl.php" role="php"/>
+        <dir name="Opengraph">
+          <file name="Exception.php" role="php"/>
+        </dir>
+        <file name="Opengraph.php" role="php"/>
+        <dir name="Opensearch">
+          <file name="Exception.php" role="php"/>
+          <file name="ProviderAbstract.php" role="php"/>
+        </dir>
+        <dir name="Payment">
+          <file name="Exception.php" role="php"/>
+          <dir name="Paypal">
+            <file name="Exception.php" role="php"/>
+            <file name="ExpressCheckout.php" role="php"/>
+            <dir name="Ipn">
+              <file name="Message.php" role="php"/>
+            </dir>
+            <file name="IpnAbstract.php" role="php"/>
+            <dir name="Store">
+              <file name="Session.php" role="php"/>
+            </dir>
+            <file name="StoreInterface.php" role="php"/>
+          </dir>
+        </dir>
+        <dir name="PubSubHubBub">
+          <file name="CallbackAbstract.php" role="php"/>
+          <file name="Exception.php" role="php"/>
+        </dir>
+        <file name="PubSubHubBub.php" role="php"/>
+        <dir name="Registry">
+          <file name="Exception.php" role="php"/>
+        </dir>
+        <file name="Registry.php" role="php"/>
+        <dir name="Rss">
+          <file name="Exception.php" role="php"/>
+          <file name="Item.php" role="php"/>
+        </dir>
+        <file name="Rss.php" role="php"/>
+        <dir name="Session">
+          <file name="Exception.php" role="php"/>
+          <dir name="Handler">
+            <file name="Sql.php" role="php"/>
+          </dir>
+          <file name="HandlerInterface.php" role="php"/>
+        </dir>
+        <file name="Session.php" role="php"/>
+        <dir name="Sql">
+          <dir name="Condition">
+            <file name="Exception.php" role="php"/>
+          </dir>
+          <file name="Condition.php" role="php"/>
+          <dir name="Driver">
+            <dir name="Mysqli">
+              <file name="Stmt.php" role="php"/>
+            </dir>
+            <file name="Mysqli.php" role="php"/>
+            <dir name="Pdo">
+              <file name="Stmt.php" role="php"/>
+            </dir>
+            <file name="Pdo.php" role="php"/>
+          </dir>
+          <file name="DriverInterface.php" role="php"/>
+          <file name="Exception.php" role="php"/>
+          <file name="Join.php" role="php"/>
+          <file name="StmtInterface.php" role="php"/>
+          <dir name="Table">
+            <file name="Exception.php" role="php"/>
+            <file name="Select.php" role="php"/>
+            <file name="SelectInterface.php" role="php"/>
+          </dir>
+          <file name="TableAbstract.php" role="php"/>
+          <file name="TableInterface.php" role="php"/>
+          <file name="Util.php" role="php"/>
+        </dir>
+        <file name="Sql.php" role="php"/>
+        <dir name="Template">
+          <file name="Exception.php" role="php"/>
+        </dir>
+        <file name="Template.php" role="php"/>
+        <dir name="Time">
+          <file name="Exception.php" role="php"/>
+        </dir>
+        <file name="Time.php" role="php"/>
+        <dir name="Upload">
+          <file name="Exception.php" role="php"/>
+          <file name="File.php" role="php"/>
+        </dir>
+        <dir name="Uri">
+          <file name="Exception.php" role="php"/>
+        </dir>
+        <file name="Uri.php" role="php"/>
+        <dir name="Url">
+          <file name="Exception.php" role="php"/>
+        </dir>
+        <file name="Url.php" role="php"/>
+        <dir name="Urn">
+          <file name="Exception.php" role="php"/>
+        </dir>
+        <file name="Urn.php" role="php"/>
+        <dir name="Util">
+          <dir name="Bencoding">
+            <file name="Exception.php" role="php"/>
+          </dir>
+          <file name="Bencoding.php" role="php"/>
+          <dir name="Conversion">
+            <file name="Exception.php" role="php"/>
+          </dir>
+          <file name="Conversion.php" role="php"/>
+          <dir name="Markdown">
+            <file name="Exception.php" role="php"/>
+          </dir>
+          <file name="Markdown.php" role="php"/>
+          <dir name="Numerative">
+            <file name="Exception.php" role="php"/>
+          </dir>
+          <file name="Numerative.php" role="php"/>
+          <dir name="Roman">
+            <file name="Exception.php" role="php"/>
+          </dir>
+          <file name="Roman.php" role="php"/>
+          <file name="Unquote.php" role="php"/>
+          <file name="Unregister.php" role="php"/>
+          <file name="Uuid.php" role="php"/>
+        </dir>
+        <dir name="Validate">
+          <file name="Exception.php" role="php"/>
+        </dir>
+        <file name="Validate.php" role="php"/>
+        <dir name="Webfinger">
+          <file name="Exception.php" role="php"/>
+          <file name="Xrd.php" role="php"/>
+        </dir>
+        <file name="Webfinger.php" role="php"/>
+        <dir name="Xml">
+          <file name="Exception.php" role="php"/>
+        </dir>
+        <file name="Xml.php" role="php"/>
+        <dir name="Xrd">
+          <file name="Exception.php" role="php"/>
+          <file name="Expires.php" role="php"/>
+          <file name="Localid.php" role="php"/>
+          <file name="Serverstatus.php" role="php"/>
+          <file name="Service.php" role="php"/>
+          <file name="Status.php" role="php"/>
+          <file name="Type.php" role="php"/>
+        </dir>
+        <file name="Xrd.php" role="php"/>
+        <dir name="Yadis">
+          <file name="Exception.php" role="php"/>
+        </dir>
+        <file name="Yadis.php" role="php"/>
+      </dir>
+      <dir name="tests">
+        <file name="AllTests.php" role="test"/>
+        <file name="Bootstrap.php" role="test"/>
+        <dir name="PSX">
+          <file name="AllTests.php" role="test"/>
+          <dir name="Atom">
+            <file name="EntryTest.php" role="test"/>
+          </dir>
+          <file name="AtomTest.php" role="test"/>
+          <file name="BaseTest.php" role="test"/>
+          <file name="BootstrapTest.php" role="test"/>
+          <dir name="Cache">
+            <dir name="Handler">
+              <file name="ApcTest.php" role="test"/>
+              <file name="FileTest.php" role="test"/>
+              <file name="MemcacheTest.php" role="test"/>
+              <file name="SqlTest.php" role="test"/>
+            </dir>
+          </dir>
+          <file name="CacheTest.php" role="test"/>
+          <file name="ConfigTest.php" role="test"/>
+          <dir name="Data">
+            <file name="ArrayTest.php" role="test"/>
+            <file name="MessageTest.php" role="test"/>
+            <dir name="Reader">
+              <file name="DomTest.php" role="test"/>
+              <file name="FormTest.php" role="test"/>
+              <file name="GpcTest.php" role="test"/>
+              <file name="JsonTest.php" role="test"/>
+              <file name="RawTest.php" role="test"/>
+              <file name="XmlTest.php" role="test"/>
+            </dir>
+            <file name="ReaderResultTest.php" role="test"/>
+            <file name="ResultSetTest.php" role="test"/>
+            <dir name="Writer">
+              <dir name="Atom">
+                <file name="EntryTest.php" role="test"/>
+              </dir>
+              <file name="AtomTest.php" role="test"/>
+              <file name="FormTest.php" role="test"/>
+              <file name="JsonTest.php" role="test"/>
+              <dir name="Rss">
+                <file name="ItemTest.php" role="test"/>
+              </dir>
+              <file name="RssTest.php" role="test"/>
+              <file name="XmlTest.php" role="test"/>
+            </dir>
+            <file name="WriterResultTest.php" role="test"/>
+            <file name="WriterTestCase.php" role="test"/>
+            <file name="WriterTestRecord.php" role="test"/>
+          </dir>
+          <file name="FileTest.php" role="test"/>
+          <dir name="Filter">
+            <file name="AlnumTest.php" role="test"/>
+            <file name="AlphaTest.php" role="test"/>
+            <file name="DateIntervalTest.php" role="test"/>
+            <file name="DateTimeTest.php" role="test"/>
+            <file name="DigitTest.php" role="test"/>
+            <file name="EmailTest.php" role="test"/>
+            <file name="HtmlTest.php" role="test"/>
+            <file name="InArrayTest.php" role="test"/>
+            <file name="IpTest.php" role="test"/>
+            <file name="KeyExistsTest.php" role="test"/>
+            <file name="LengthTest.php" role="test"/>
+            <file name="Md5Test.php" role="test"/>
+            <file name="RegexpTest.php" role="test"/>
+            <file name="Sha1Test.php" role="test"/>
+            <file name="TableTest.php" role="test"/>
+            <file name="UrlTest.php" role="test"/>
+            <file name="UrldecodeTest.php" role="test"/>
+            <file name="XdigitTest.php" role="test"/>
+          </dir>
+          <dir name="Html">
+            <file name="FilterTest.php" role="test"/>
+            <file name="LexerTest.php" role="test"/>
+            <file name="PagingTest.php" role="test"/>
+            <file name="ParseTest.php" role="test"/>
+          </dir>
+          <dir name="Http">
+            <file name="DeleteRequestTest.php" role="test"/>
+            <file name="GetRequestTest.php" role="test"/>
+            <dir name="Handler">
+              <file name="CurlTest.php" role="test"/>
+              <file name="SocksTest.php" role="test"/>
+            </dir>
+            <file name="HeadRequestTest.php" role="test"/>
+            <file name="MessageTest.php" role="test"/>
+            <file name="PostRequestTest.php" role="test"/>
+            <file name="PutRequestTest.php" role="test"/>
+            <file name="RedirectTest.php" role="test"/>
+            <file name="RequestTest.php" role="test"/>
+            <file name="ResponseTest.php" role="test"/>
+          </dir>
+          <file name="HttpTest.php" role="test"/>
+          <dir name="Input">
+            <file name="CookieTest.php" role="test"/>
+            <file name="FilesTest.php" role="test"/>
+            <file name="GetTest.php" role="test"/>
+            <file name="PostTest.php" role="test"/>
+            <file name="PutTest.php" role="test"/>
+            <file name="RequestTest.php" role="test"/>
+            <file name="SessionTest.php" role="test"/>
+          </dir>
+          <file name="InputTest.php" role="test"/>
+          <file name="JsonTest.php" role="test"/>
+          <file name="LoaderTest.php" role="test"/>
+          <dir name="Log">
+            <dir name="Handler">
+              <file name="FileTest.php" role="test"/>
+              <file name="PrintTest.php" role="test"/>
+              <file name="SqlTest.php" role="test"/>
+              <file name="SysTest.php" role="test"/>
+            </dir>
+          </dir>
+          <file name="LogTest.php" role="test"/>
+          <dir name="Oauth">
+            <dir name="Provider">
+              <dir name="Data">
+                <file name="ConsumerTest.php" role="test"/>
+                <file name="RequestTest.php" role="test"/>
+                <file name="ResponseTest.php" role="test"/>
+              </dir>
+            </dir>
+            <dir name="Signature">
+              <file name="HMACSHA1Test.php" role="test"/>
+              <file name="PLAINTEXTTest.php" role="test"/>
+              <file name="RSASHA1Test.php" role="test"/>
+            </dir>
+          </dir>
+          <file name="OauthTest.php" role="test"/>
+          <file name="OembedTest.php" role="test"/>
+          <dir name="OpenId">
+            <file name="ProviderAbstractTest.php" role="test"/>
+          </dir>
+          <file name="OpenIdTest.php" role="test"/>
+          <file name="OpengraphTest.php" role="test"/>
+          <dir name="Payment">
+            <dir name="Paypal">
+              <file name="ExpressCheckoutTest.php" role="test"/>
+            </dir>
+          </dir>
+          <file name="PubSubHubBubTest.php" role="test"/>
+          <file name="RegistryTest.php" role="test"/>
+          <dir name="Rss">
+            <file name="ItemTest.php" role="test"/>
+          </dir>
+          <file name="RssTest.php" role="test"/>
+          <dir name="Session">
+            <dir name="Handler">
+              <file name="SqlTest.php" role="test"/>
+            </dir>
+          </dir>
+          <file name="SessionTest.php" role="test"/>
+          <dir name="Sql">
+            <file name="ConditionTest.php" role="test"/>
+            <dir name="Driver">
+              <dir name="Mysqli">
+                <file name="StmtTest.php" role="test"/>
+              </dir>
+              <file name="MysqliTest.php" role="test"/>
+              <dir name="Pdo">
+                <file name="StmtTest.php" role="test"/>
+              </dir>
+              <file name="PdoTest.php" role="test"/>
+            </dir>
+            <dir name="Table">
+              <file name="SelectTest.php" role="test"/>
+            </dir>
+            <file name="TableTest.php" role="test"/>
+            <file name="UtilTest.php" role="test"/>
+          </dir>
+          <file name="SqlTest.php" role="test"/>
+          <file name="TemplateTest.php" role="test"/>
+          <file name="TimeTest.php" role="test"/>
+          <dir name="Upload">
+            <file name="FileTest.php" role="test"/>
+          </dir>
+          <file name="UriTest.php" role="test"/>
+          <file name="UrlTest.php" role="test"/>
+          <file name="UrnTest.php" role="test"/>
+          <dir name="Util">
+            <file name="BencodingTest.php" role="test"/>
+            <file name="ConversionTest.php" role="test"/>
+            <file name="MarkdownTest.php" role="test"/>
+            <file name="NumerativeTest.php" role="test"/>
+            <file name="RomanTest.php" role="test"/>
+            <file name="UnquoteTest.php" role="test"/>
+            <file name="UnregisterTest.php" role="test"/>
+            <file name="UuidTest.php" role="test"/>
+          </dir>
+          <file name="ValidateTest.php" role="test"/>
+          <file name="WebfingerTest.php" role="test"/>
+          <file name="XmlTest.php" role="test"/>
+          <dir name="Yadis">
+            <dir name="Xrd">
+              <file name="ExpiresTest.php" role="test"/>
+              <file name="LocalidTest.php" role="test"/>
+              <file name="ServerstatusTest.php" role="test"/>
+              <file name="ServiceTest.php" role="test"/>
+              <file name="StatusTest.php" role="test"/>
+              <file name="TypeTest.php" role="test"/>
+            </dir>
+            <file name="XrdTest.php" role="test"/>
+          </dir>
+          <file name="YadisTest.php" role="test"/>
+        </dir>
+        <file name="readme.txt" role="test"/>
+        <file name="run.bat" role="test"/>
+        <file name="run.sh" role="test"/>
+      </dir>
+    </dir>
+  </contents>
+  <dependencies>
+    <required>
+      <php>
+        <min>5.3</min>
+      </php>
+      <pearinstaller>
+        <min>1.4.0b1</min>
+      </pearinstaller>
+    </required>
+    <optional>
+      <extension>
+        <name>pdo</name>
+      </extension>
+      <extension>
+        <name>simplexml</name>
+      </extension>
+      <extension>
+        <name>dom</name>
+      </extension>
+      <extension>
+        <name>curl</name>
+      </extension>
+    </optional>
+  </dependencies>
+  <phprelease/>
+  <changelog>
+    <release>
+      <version>
+        <release>0.4</release>
+        <api>0.4</api>
+      </version>
+      <stability>
+        <release>beta</release>
+        <api>beta</api>
+      </stability>
+      <date>2011-06-26</date>
+      <license uri="http://www.gnu.org/licenses/">GPLv3 License</license>
+      <notes>* Using now standard "camelcase" coding style for interoperability
+* Update data writer library for handling Atom and Rss feeds correctly
+* Add http library option to automatically follow redirects
+* Remove unused classes
+* Fixing many bugs</notes>
+    </release>
+    <release>
+      <version>
+        <release>0.4.1</release>
+        <api>0.4.1</api>
+      </version>
+      <stability>
+        <release>beta</release>
+        <api>beta</api>
+      </stability>
+      <date>2011-07-02</date>
+      <license uri="http://www.gnu.org/licenses/">GPLv3 License</license>
+      <notes>* Rewrote manual
+* Fix follow location in http curl handler
+* Improve tests</notes>
+    </release>
+    <release>
+      <version>
+        <release>0.4.2</release>
+        <api>0.4.2</api>
+      </version>
+      <stability>
+        <release>beta</release>
+        <api>beta</api>
+      </stability>
+      <date>2011-10-10</date>
+      <license uri="http://www.gnu.org/licenses/">GPLv3 License</license>
+      <notes>* Updated atom and rss item parsing
+* Updated HTTP socks handler proper handling of chunked transfer encoding
+* Removed NestedSet library because they where not stable enough
+* Add OpenID provider implementation
+* Fix HTTP classes headers are stored now interal as key =&gt; value
+* Fix OpenId so that the claimed id is added on redirect if the local id doesent
+exist and add getIdentifiert method
+* Update HTTP request class and fix curl handler follow location. Remove
+"Expect: 100-Continue" header and update ca-bundle.pem
+* Added unit tests
+* Fixed several bugs</notes>
+    </release>
+    <release>
+      <version>
+        <release>0.4.3</release>
+        <api>0.4.3</api>
+      </version>
+      <stability>
+        <release>beta</release>
+        <api>beta</api>
+      </stability>
+      <date>2011-10-30</date>
+      <license uri="http://www.gnu.org/licenses/">GPLv3 License</license>
+      <notes>* Fixed openid provider association implementation
+* Added openssl wrapper class
+* Added webfinger util library
+* Added util markdown parser class
+* Improve error and exception handling
+* Added sql selection class
+* Removed data servlet interface in favor of the sql table class
+* Added sql table abstract class
+* Add http upload libary
+* Added optional require parameter to input method
+* Added and improved several tests</notes>
+    </release>
+    <release>
+      <version>
+        <release>0.4.4</release>
+        <api>0.4.4</api>
+      </version>
+      <stability>
+        <release>beta</release>
+        <api>beta</api>
+      </stability>
+      <date>2012-02-25</date>
+      <license uri="http://www.gnu.org/licenses/">GPLv3 License</license>
+      <notes>* Updated webfinger library and tests
+* Removed idna (punnycode) filter
+* Added uri and urn libraries
+* Added opensocial and activitystreams records
+* Improved tests
+* Added oembed library
+* Fix openid consumer and relying party library
+* Update documentation</notes>
+    </release>
+    <release>
+      <version>
+        <release>0.4.5</release>
+        <api>0.4.5</api>
+      </version>
+      <stability>
+        <release>beta</release>
+        <api>beta</api>
+      </stability>
+      <date>2012-04-29</date>
+      <license uri="http://www.gnu.org/licenses/">GPLv3 License</license>
+      <notes>* Renamed constant in_psx to PSX because of namespace issue
+* Added data multipart/form-data reader
+* Added PSX_Base class containing informations about the framework and current
+http request
+* Moved several methods from PSX_Config into PSX_Base class
+* Added data reader and writer factory
+* Added Oauth2 client library
+* Added payment paypal library
+* Improved log library
+* Removed ca-bundle.pem from library and add method to set ca path for curl
+handler
+* Renamed static method "isFile" to "exists" in file class because the class
+extends now SplFileObject wich already defines an isFile method
+* Fixed openid stateless mode and correct exception name</notes>
+    </release>
+    <release>
+      <version>
+        <release>0.4.6</release>
+        <api>0.4.6</api>
+      </version>
+      <stability>
+        <release>beta</release>
+        <api>beta</api>
+      </stability>
+      <date>2012-06-16</date>
+      <license uri="http://www.gnu.org/licenses/">GPLv3 License</license>
+      <notes>* Added Atom and RSS static request method
+* Improved docblock comments
+* Removed unused DOM package
+* Changed constructor of PSX_Sql class
+* Added cookie store to http package
+* Improved cache classes and tests
+* Moved class PSX_Get, PSX_Post, PSX_Cookie, PSX_Request, PSX_Files in input
+* package and improved tests
+* Updated paging class and tests
+* Added calendar class
+* Added improved psx html package add html5 lexer and filter library and updated
+* html parser
+* Added getParameters to dependency abstract
+* Added view dependency and renamed module DefaultAbstract to ViewAbstract</notes>
+    </release>
+    <release>
+      <version>
+        <release>0.4.7</release>
+        <api>0.4.7</api>
+      </version>
+      <stability>
+        <release>beta</release>
+        <api>beta</api>
+      </stability>
+      <date>2012-10-07</date>
+      <license uri="http://www.gnu.org/licenses/">GPLv3 License</license>
+      <notes>* Add cache to PSX_Base getRequest method so calling the method multiple times
+will always return the same object
+* Improved PSX_Loader class. The name of the index method must be now __index
+wich is called if no other method is specified in the request. This was done
+because of constructor conflict if the class also the name index and to
+document the magical behavior
+* Added method getValidator(), getMethod(), getUrl(), getHeaders(), getHeader(),
+getParameter() and getBody() to PSX_ModuleAbstract
+* Using PSX_PATH_CACHE path in file cache handler
+* Fix markdown class encode emphasis
+* Add method setSavePath to PSX_Session class</notes>
+    </release>
+  </changelog>
+</package>

@@ -1,0 +1,23 @@
+{
+  "name": "psx/psx",
+  "description": "PSX Framework",
+  "keywords": [],
+  "homepage": "http://phpsx.org",
+  "type": "library",
+  "license": "GPLv3",
+  "authors": [
+    {
+      "name": "Christoph Kappestein",
+      "email": "k42b3.x@gmail.com",
+      "homepage": "http://k42b3.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.3"
+  },
+  "autoload": {
+    "psr-0": {
+      "PSX": "library/"
+    }
+  }
+}

@@ -1,0 +1,189 @@
+/*
+ *  $Id: psx.css 630 2012-08-25 11:27:53Z k42b3.x@googlemail.com $
+ *
+ * psx
+ * A object oriented and modular based PHP framework for developing
+ * dynamic web applications. For the current version and informations
+ * visit <http://phpsx.org>
+ *
+ * Copyright (c) 2010-2012 Christoph Kappestein <k42b3.x@gmail.com>
+ *
+ * This file is part of psx. psx is free software: you can
+ * redistribute it and/or modify it under the terms of the
+ * GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or any later version.
+ *
+ * psx is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with psx. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+body
+{
+	font-family:"Helvetica Neue", Arial, Helvetica, sans-serif;
+	font-size:1em;
+	color:#444;
+}
+
+h1
+{
+	padding:6px;
+	margin:6px;
+	font-weight:normal;
+	font-size:2em;
+	text-indent:54px;
+	background-image:url(img/psx_logo_small-x.png);
+	background-repeat:no-repeat;
+}
+
+h2
+{
+	margin:2px;
+	padding:8px;
+	background-color:#444444;
+	color:#EEEEEE;
+	font-size:0.8em;
+}
+
+h3
+{
+	padding:4px;
+	margin:4px;
+}
+
+p
+{
+	padding:4px;
+	margin:4px;
+	line-height:1.4em;
+	word-spacing:0.1em;
+}
+
+pre
+{
+	padding:4px;
+	margin:4px;
+	line-height:1.4em;
+	word-spacing:0.1em;
+}
+
+dl
+{
+	padding:4px;
+	margin:4px;
+}
+
+dt
+{
+	line-height:1.6em;
+}
+
+hr
+{
+	border:4px solid #AAAAAA;
+}
+
+table
+{
+	padding:0px;
+	margin:4px;
+	border-collapse:collapse;
+	background-color:#EEEEEE;
+}
+
+td, th
+{
+	padding:6px;
+}
+
+.book
+{
+	margin-top:16px;
+}
+
+.titlepage
+{
+}
+
+.toc
+{
+	padding:4px;
+	margin:4px;
+}
+
+.list-of-figures
+{
+	padding:4px;
+	margin:4px;
+}
+
+.section
+{
+	padding:6px;
+	margin:6px;
+}
+
+.programlisting
+{
+	padding:4px;
+	margin:4px;
+	border:1px dotted #999999;
+	background-color:#EEEEEE;
+	font-family:"Courier New", Courier, monospace;
+	font-size:0.8em;
+}
+
+.property
+{
+	font-weight:bold;
+	border-bottom:1px dotted #999;
+}
+
+.database
+{
+}
+
+.code
+{
+	display:block;
+	white-space:pre;
+	padding:4px;
+	margin:4px 0px;
+	border:1px dotted #999999;
+	background-color:#EEEEEE;
+}
+
+.classsynopsis
+{
+	padding:8px;
+	margin:8px;
+	border:1px dotted #999999;
+	color:#999;
+}
+
+.ooclass, .oointerface, .ooexception
+{
+	color:#222;
+	font-weight:bold;
+}
+
+.methodsynopsis
+{
+	border-bottom:1px solid #999;
+	display:block;
+	margin:0px;
+	padding:8px 0px;
+	color:#222;
+}
+
+.methodname
+{
+	font-weight:bold;
+}
+
+
+

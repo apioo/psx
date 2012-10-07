@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN" "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+<book lang="en">
+  <bookinfo>
+    <title>Yadis</title>
+    <releaseinfo>$Revision: 654 $</releaseinfo>
+    <pubdate>$Date: 2012-04-08 14:01:34 +0200 (So, 08. Apr 2012) $</pubdate>
+  </bookinfo>
+  <chapter xml:id="yadis.introduction">
+    <title>Introduction</title>
+    <para>@todo</para>
+  </chapter>
+  <chapter xml:id="yadis.examples">
+    <title>Examples</title>
+    <para>@todo</para>
+  </chapter>
+  <appendix xml:id="yadis.synopsis">
+    <title>Reference (2)</title>
+    <sect1>
+      <title>PSX_Yadis</title>
+      <para>PSX_Yadis</para>
+      <classsynopsis>
+        <ooclass>
+          <classname>PSX_Yadis</classname>
+        </ooclass>
+        <methodsynopsis>
+          <modifier>public</modifier>
+          <methodname>__construct</methodname>
+          <methodparam>
+            <type>mixed</type>
+            <parameter>http</parameter>
+          </methodparam>
+          <methodparam choice="opt">
+            <type>mixed</type>
+            <parameter>recursion</parameter>
+          </methodparam>
+        </methodsynopsis>
+        <methodsynopsis>
+          <modifier>public</modifier>
+          <methodname>setMaxRecursion</methodname>
+          <methodparam>
+            <type>mixed</type>
+            <parameter>recursion</parameter>
+          </methodparam>
+        </methodsynopsis>
+        <methodsynopsis>
+          <modifier>public</modifier>
+          <methodname>discover</methodname>
+          <methodparam>
+            <type>mixed</type>
+            <parameter>url</parameter>
+          </methodparam>
+          <methodparam choice="opt">
+            <type>mixed</type>
+            <parameter>raw</parameter>
+          </methodparam>
+          <methodparam choice="opt">
+            <type>mixed</type>
+            <parameter>deep</parameter>
+          </methodparam>
+        </methodsynopsis>
+        <methodsynopsis>
+          <modifier>public</modifier>
+          <methodname>parse</methodname>
+          <methodparam>
+            <type>mixed</type>
+            <parameter>xrds</parameter>
+          </methodparam>
+        </methodsynopsis>
+        <methodsynopsis>
+          <modifier>public</modifier>
+          <methodname>request</methodname>
+          <methodparam>
+            <type>mixed</type>
+            <parameter>url</parameter>
+          </methodparam>
+        </methodsynopsis>
+      </classsynopsis>
+    </sect1>
+    <sect1>
+      <title>PSX_Yadis_Exception</title>
+      <para>PSX_Yadis_Exception</para>
+      <classsynopsis>
+        <ooclass>
+          <classname>PSX_Yadis_Exception</classname>
+        </ooclass>
+        <ooclass>
+          <classname>PSX_Exception</classname>
+        </ooclass>
+        <methodsynopsis>
+          <modifier>public</modifier>
+          <methodname>__construct</methodname>
+          <methodparam choice="opt">
+            <type>mixed</type>
+            <parameter>message</parameter>
+          </methodparam>
+          <methodparam choice="opt">
+            <type>mixed</type>
+            <parameter>code</parameter>
+          </methodparam>
+          <methodparam choice="opt">
+            <type>mixed</type>
+            <parameter>previous</parameter>
+          </methodparam>
+        </methodsynopsis>
+        <methodsynopsis>
+          <modifier>final</modifier>
+          <modifier>public</modifier>
+          <methodname>getMessage</methodname>
+          <void/>
+        </methodsynopsis>
+        <methodsynopsis>
+          <modifier>final</modifier>
+          <modifier>public</modifier>
+          <methodname>getCode</methodname>
+          <void/>
+        </methodsynopsis>
+        <methodsynopsis>
+          <modifier>final</modifier>
+          <modifier>public</modifier>
+          <methodname>getFile</methodname>
+          <void/>
+        </methodsynopsis>
+        <methodsynopsis>
+          <modifier>final</modifier>
+          <modifier>public</modifier>
+          <methodname>getLine</methodname>
+          <void/>
+        </methodsynopsis>
+        <methodsynopsis>
+          <modifier>final</modifier>
+          <modifier>public</modifier>
+          <methodname>getTrace</methodname>
+          <void/>
+        </methodsynopsis>
+        <methodsynopsis>
+          <modifier>final</modifier>
+          <modifier>public</modifier>
+          <methodname>getPrevious</methodname>
+          <void/>
+        </methodsynopsis>
+        <methodsynopsis>
+          <modifier>final</modifier>
+          <modifier>public</modifier>
+          <methodname>getTraceAsString</methodname>
+          <void/>
+        </methodsynopsis>
+        <methodsynopsis>
+          <modifier>public</modifier>
+          <methodname>__toString</methodname>
+          <void/>
+        </methodsynopsis>
+      </classsynopsis>
+    </sect1>
+  </appendix>
+</book>

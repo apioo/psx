@@ -1,0 +1,352 @@
+<?php
+/*
+ *  $Id: Markdown.php 649 2012-10-06 22:15:23Z k42b3.x@googlemail.com $
+ *
+ * psx
+ * A object oriented and modular based PHP framework for developing
+ * dynamic web applications. For the current version and informations
+ * visit <http://phpsx.org>
+ *
+ * Copyright (c) 2010-2012 Christoph Kappestein <k42b3.x@gmail.com>
+ *
+ * This file is part of psx. psx is free software: you can
+ * redistribute it and/or modify it under the terms of the
+ * GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or any later version.
+ *
+ * psx is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with psx. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/**
+ * This parser implements a subset of the markdown syntax. It is optimized for
+ * speed and uses almost no regular expressions for parsing.
+ * <code>
+ * $html = PSX_Util_Markdown::decode($text);
+ * </code>
+ *
+ * @author     Christoph Kappestein <k42b3.x@gmail.com>
+ * @license    http://www.gnu.org/licenses/gpl.html GPLv3
+ * @link       http://phpsx.org
+ * @category   PSX
+ * @package    PSX_Util
+ * @version    $Revision: 649 $
+ */
+class PSX_Util_Markdown extends ArrayIterator
+{
+	const NONE           = 0x0;
+	const PARAGRAPH      = 0x1;
+	const UNORDERED_LIST = 0x3;
+	const ORDERED_LIST   = 0x4;
+	const CODE           = 0x5;
+
+	public static $blockElements = array('br', 'hr', 'p', 'ol', 'ul', 'div', 'pre', 'blockquote', 'dl', 'table');
+
+	private $inQuote = false;
+	private $quote   = 0;
+	private $tag     = 0;
+
+	public function __construct(array $lines)
+	{
+		parent::__construct($lines);
+	}
+
+	public function parse()
+	{
+		$html = '';
+
+		foreach($this as $k => $v)
+		{
+			$html.= $this->parseLine($v);
+		}
+
+		return $html;
+	}
+
+	private function parseLine($v, $inQuote = false)
+	{
+		// blank line
+		if(strlen(trim($v)) === 0 && ($this->tag != self::CODE || $v == ''))
+		{
+			return $this->endTag($inQuote);
+		}
+
+		switch(true)
+		{
+			case $v[0] == '>':
+
+				$html = '';
+
+				if($inQuote === false && $this->quote === 0)
+				{
+					$html.= $this->endTag($inQuote);
+					$html.= '<blockquote>' . "\n";
+				}
+
+				$this->quote++;
+
+				$v = $v[1] == ' ' ? substr($v, 2) : substr($v, 1);
+
+				$html.= $this->parseLine($v, true);
+
+				return $html;
+				break;
+
+			case $v[0] == '#':
+
+				return $this->heading($v, $inQuote);
+				break;
+
+			case substr($v, 0, 4) == '    ':
+
+				return $this->code(substr($v, 4), $inQuote);
+				break;
+
+			case substr($v, 0, 2) == '--':
+
+				return $this->line(substr($v, 2), $inQuote);
+				break;
+
+			case $v[0] == '*':
+			case $v[0] == '+':
+			case $v[0] == '-':
+
+				return $this->unorderedList(substr($v, 1), $inQuote);
+				break;
+
+			case (ctype_digit($v[0]) && $v[1] == '.') || (ctype_digit(substr($v, 2)) && $v[2] == '.'):
+
+				// remove number and dot
+				$p = strpos($v, '.');
+				$v = $p !== false ? substr($v, $p + 1) : substr($v, 1);
+
+				return $this->orderedList($v, $inQuote);
+				break;
+
+			case substr($v, 0, 2) == '  ':
+
+				switch($this->tag)
+				{
+					case self::PARAGRAPH:
+						return $this->paragraph($v, $inQuote);
+						break;
+
+					case self::UNORDERED_LIST:
+						return $this->unorderedList($v, $inQuote);
+						break;
+
+					case self::ORDERED_LIST:
+						return $this->orderedList($v, $inQuote);
+						break;
+
+					case self::CODE:
+						return $this->code($v, $inQuote);
+						break;
+				}
+
+				break;
+
+			default:
+
+				return $this->paragraph($v, $inQuote);
+				break;
+		}
+	}
+
+	private function endTag($inQuote = false)
+	{
+		$html = '';
+
+		switch($this->tag)
+		{
+			case self::PARAGRAPH:
+				$html.= '</p>' . "\n";
+				break;
+
+			case self::UNORDERED_LIST:
+				$html.= '</ul>' . "\n";
+				break;
+
+			case self::ORDERED_LIST:
+				$html.= '</ol>' . "\n";
+				break;
+
+			case self::CODE:
+				$html.= '</pre>' . "\n";
+				break;
+		}
+
+		if($inQuote === false && $this->quote > 0)
+		{
+			$html.= '</blockquote>' . "\n";
+			$this->quote = 0;
+		}
+
+		$this->tag = self::NONE;
+
+		return $html;
+	}
+
+	private function heading($v, $inQuote = false)
+	{
+		$html = '';
+		$html.= $this->endTag($inQuote);
+
+		for($j = 6; $j > 0; $j--)
+		{
+			if(substr($v, 0, $j) == str_repeat('#', $j))
+			{
+				$html.= '<h' . $j . '>' . $this->text(substr($v, $j)) . '</h' . $j . '>' . "\n";
+				break;
+			}
+		}
+
+		return $html;
+	}
+
+	private function paragraph($v, $inQuote = false)
+	{
+		$html = '';
+
+		if($this->tag != self::PARAGRAPH || ($inQuote === false && $this->quote > 0))
+		{
+			$html.= $this->endTag($inQuote);
+			$html.= '<p>';
+
+			$this->tag = self::PARAGRAPH;
+		}
+
+		if(substr($v, -2) == '  ')
+		{
+			$v.= '<br />';
+		}
+
+		$html.= $this->text($v) . ' ';
+
+		return $html;
+	}
+
+	private function unorderedList($v, $inQuote = false)
+	{
+		$html = '';
+
+		if($this->tag != self::UNORDERED_LIST || ($inQuote === false && $this->quote > 0))
+		{
+			$html.= $this->endTag($inQuote);
+			$html.= '<ul>' . "\n";
+
+			$this->tag = self::UNORDERED_LIST;
+		}
+
+		$html.= "\t" . '<li>' . $this->text($v) . '</li>' . "\n";
+
+		return $html;
+	}
+
+	private function orderedList($v, $inQuote = false)
+	{
+		$html = '';
+
+		if($this->tag != self::ORDERED_LIST || ($inQuote === false && $this->quote > 0))
+		{
+			$html.= $this->endTag($inQuote);
+			$html.= '<ol>' . "\n";
+
+			$this->tag = self::ORDERED_LIST;
+		}
+
+		$html.= "\t" . '<li>' . $this->text($v) . '</li>' . "\n";
+
+		return $html;
+	}
+
+	private function code($v, $inQuote = false)
+	{
+		$html = '';
+
+		if($this->tag != self::CODE || ($inQuote === false && $this->quote > 0))
+		{
+			$html.= $this->endTag($inQuote);
+			$html.= '<pre class="prettyprint">';
+
+			$this->tag = self::CODE;
+		}
+
+		$html.= htmlspecialchars($v, ENT_NOQUOTES) . "\n";
+
+		return $html;
+	}
+
+	private function line($v, $inQuote = false)
+	{
+		$html = '';
+		$html.= $this->endTag($inQuote);
+		$html.= '<hr />' . "\n";
+
+		return $html;
+	}
+
+	private function text($v)
+	{
+		return self::encodeEmphasis(trim($v));
+	}
+
+	public static function decode($content)
+	{
+		if(self::shouldDecoded($content))
+		{
+			$content  = self::normalize($content);
+			$lines    = explode("\n", $content);
+
+			$markdown = new PSX_Util_Markdown($lines);
+
+			return $markdown->parse();
+		}
+		else
+		{
+			return $content;
+		}
+	}
+
+	/**
+	 * If the content contains any block level element we do not parse the text
+	 * to avoid double encoding.
+	 *
+	 * @return boolean
+	 */
+	public static function shouldDecoded($content)
+	{
+		foreach(self::$blockElements as $el)
+		{
+			if(strpos($content, '<' . $el) !== false)
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	public static function encodeEmphasis($v)
+	{
+		$html = preg_replace('/((\_\_|\*\*)(\w+)(\_\_|\*\*))/', '<b>$3</b>', $v);
+		$html = preg_replace('/((\_|\*)(\w+)(\_|\*))/', '<i>$3</i>', $html);
+
+		return $html;
+	}
+
+	public static function normalize($content)
+	{
+		$content = preg_replace('{^\xEF\xBB\xBF|\x1A}', '', $content);
+		$content = str_replace(array("\r\n", "\n", "\r"), "\n", $content);
+		$content = str_replace("\t", '    ', $content);
+		$content = $content . "\n";
+
+		return $content;
+	}
+}

@@ -1,0 +1,69 @@
+<?php
+/*
+ *  $Id: SignatureAbstract.php 480 2012-05-01 18:13:54Z k42b3.x@googlemail.com $
+ *
+ * psx
+ * A object oriented and modular based PHP framework for developing
+ * dynamic web applications. For the current version and informations
+ * visit <http://phpsx.org>
+ *
+ * Copyright (c) 2010-2012 Christoph Kappestein <k42b3.x@gmail.com>
+ *
+ * This file is part of psx. psx is free software: you can
+ * redistribute it and/or modify it under the terms of the
+ * GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or any later version.
+ *
+ * psx is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with psx. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/**
+ * PSX_Oauth_SignatureAbstract
+ *
+ * @author     Christoph Kappestein <k42b3.x@gmail.com>
+ * @license    http://www.gnu.org/licenses/gpl.html GPLv3
+ * @link       http://phpsx.org
+ * @category   PSX
+ * @package    PSX_Oauth
+ * @version    $Revision: 480 $
+ */
+abstract class PSX_Oauth_SignatureAbstract
+{
+	/**
+	 * Creates a signature from the base string with the consumer secret
+	 * as key. If the token secret is avialable it is append to the key.
+	 * Returns the base64 encoded signature
+	 *
+	 * @see http://oauth.net/core/1.0a#rfc.section.9
+	 * @param string $base_string
+	 * @param string $consumer_secret
+	 * @param string $token_secret
+	 * @return string
+	 */
+	abstract public function build($baseString, $consumerSecret, $tokenSecret = '');
+
+	/**
+	 * Compares whether the $signature is valid by creating a new signature
+	 * and comparing them with $signature
+	 *
+	 * @param string $base_string
+	 * @param string $consumer_secret
+	 * @param string $token_secret
+	 * @param string $signature
+	 * @return boolean
+	 */
+	public function verify($baseString, $consumerSecret, $tokenSecret = '', $signature)
+	{
+		$lft = PSX_Oauth::urlDecode($signature);
+		$rgt = PSX_Oauth::urlDecode($this->build($baseString, $consumerSecret, $tokenSecret));
+
+		return strcasecmp($lft, $rgt) == 0;
+	}
+}
+

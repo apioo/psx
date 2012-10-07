@@ -1,0 +1,773 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>PSX Manual</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.0"><meta name="description" content="This is the offical manual of the PSX framework."></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="en" class="book" title="PSX Manual"><div class="titlepage"><div><div><h1 class="title"><a name="d0e1"></a>PSX Manual</h1></div><div><p class="releaseinfo">$Revision: 630 $</p></div><div><p class="pubdate">$Date: 2012-04-08 14:01:34 +0200 (So, 08. Apr 2012) $</p></div><div><div class="abstract" title="Abstract"><p class="title"><b>Abstract</b></p><p>This is the offical manual of the PSX framework.</p></div></div></div><hr></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="chapter"><a href="#introduction">1. Introduction</a></span></dt><dd><dl><dt><span class="sect1"><a href="#introduction-technical-interoperability">1.1. Technical interoperability</a></span></dt><dt><span class="sect1"><a href="#introduction-dependency-managment">1.2. Dependency managment</a></span></dt><dt><span class="sect1"><a href="#introduction-restful-api">1.3. API flow</a></span></dt><dt><span class="sect1"><a href="#introduction-lightweight-mvc">1.4. Lightweight MVC</a></span></dt></dl></dd><dt><span class="chapter"><a href="#installation">2. Installation</a></span></dt><dd><dl><dt><span class="sect1"><a href="#installation-manual">2.1. Manual</a></span></dt><dt><span class="sect1"><a href="#installation-pear">2.2. PEAR</a></span></dt><dt><span class="sect1"><a href="#installation-composer">2.3. Composer</a></span></dt></dl></dd><dt><span class="chapter"><a href="#configuration">3. Configuration</a></span></dt><dd><dl><dt><span class="sect1"><a href="#d0e93">3.1. Edit</a></span></dt><dt><span class="sect1"><a href="#configuration-rights">3.2. Rights</a></span></dt></dl></dd><dt><span class="chapter"><a href="#developing-restful-api">4. Developing a RESTful API</a></span></dt><dd><dl><dt><span class="sect1"><a href="#d0e217">4.1. Setting up the table</a></span></dt><dt><span class="sect1"><a href="#d0e232">4.2. Creating the table class</a></span></dt><dt><span class="sect1"><a href="#d0e239">4.3. Creating the record</a></span></dt><dt><span class="sect1"><a href="#d0e258">4.4. Dependencies</a></span></dt><dt><span class="sect1"><a href="#d0e268">4.5. The API endpoint</a></span></dt><dd><dl><dt><span class="sect2"><a href="#d0e292">4.5.1. Receiving</a></span></dt><dt><span class="sect2"><a href="#d0e385">4.5.2. Inserting</a></span></dt></dl></dd><dt><span class="sect1"><a href="#d0e419">4.6. Conclusion</a></span></dt></dl></dd><dt><span class="chapter"><a href="#oauth-based-api-authorization">5. Oauth based API authorization</a></span></dt><dd><dl><dt><span class="sect1"><a href="#d0e447">5.1. Setting up the table</a></span></dt><dt><span class="sect1"><a href="#d0e459">5.2. Oauth endpoints</a></span></dt><dd><dl><dt><span class="sect2"><a href="#temporary-credential-request">5.2.1. Temporary Credential Request</a></span></dt><dt><span class="sect2"><a href="#resource-owner-authorization">5.2.2. Resource Owner Authorization</a></span></dt><dt><span class="sect2"><a href="#token-request">5.2.3. Token Request</a></span></dt></dl></dd><dt><span class="sect1"><a href="#d0e523">5.3. Protect the API endpoint</a></span></dt><dd><dl><dt><span class="sect2"><a href="#d0e567">5.3.1. Inserting</a></span></dt></dl></dd><dt><span class="sect1"><a href="#d0e582">5.4. Conclusion</a></span></dt></dl></dd><dt><span class="chapter"><a href="#template">6. Template</a></span></dt><dt><span class="chapter"><a href="#help">7. Help</a></span></dt><dt><span class="chapter"><a href="#appendix">8. Appendix</a></span></dt><dd><dl><dt><span class="sect1"><a href="#d0e672">8.1. Code generation</a></span></dt></dl></dd></dl></div><div class="list-of-figures"><p><b>List of Figures</b></p><dl><dt>1.1. <a href="#d0e30">Dependency managment</a></dt><dt>1.2. <a href="#d0e43">API flow</a></dt></dl></div><div class="list-of-examples"><p><b>List of Examples</b></p><dl><dt>4.1. <a href="#d0e225"><span class="database">news</span> table</a></dt><dt>4.2. <a href="#d0e253">library/Test/News.php</a></dt><dt>4.3. <a href="#d0e263">library/Test/Dependency/Default.php</a></dt><dt>4.4. <a href="#d0e287">module/news.php</a></dt><dt>4.5. <a href="#d0e315">module/news.php (implement <code class="methodname">onGet</code> method)</a></dt><dt>4.6. <a href="#d0e334">module/news.php (implement <code class="methodname">setWriterConfig</code> method)</a></dt><dt>4.7. <a href="#d0e362">library/Example/News.php (implement <code class="methodname">export</code> method)</a></dt><dt>4.8. <a href="#d0e375">Sample GET request</a></dt><dt>4.9. <a href="#d0e380">Sample GET response</a></dt><dt>4.10. <a href="#d0e396">module/news.php (implement <code class="methodname">onPost</code> method)</a></dt><dt>4.11. <a href="#d0e409">Sample POST request</a></dt><dt>4.12. <a href="#d0e414">Sample POST response</a></dt><dt>5.1. <a href="#d0e452"><span class="database">request</span> table</a></dt><dt>5.2. <a href="#d0e496">module/request.php</a></dt><dt>5.3. <a href="#d0e509">module/auth.php</a></dt><dt>5.4. <a href="#d0e518">module/access.php</a></dt><dt>5.5. <a href="#d0e537">module/news.php (implement <code class="methodname">getConsumer</code> and <code class="methodname">onAuthenticated</code> method)</a></dt><dt>5.6. <a href="#d0e559">module/news.php (implement <code class="methodname">onPost</code> method)</a></dt><dt>5.7. <a href="#d0e572">Sample POST request</a></dt><dt>5.8. <a href="#d0e577">Sample POST response</a></dt><dt>8.1. <a href="#d0e683">Table.php</a></dt><dt>8.2. <a href="#d0e688">Record.php</a></dt></dl></div><div class="chapter" title="Chapter&nbsp;1.&nbsp;Introduction"><div class="titlepage"><div><div><h2 class="title"><a name="introduction"></a>Chapter&nbsp;1.&nbsp;Introduction</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="sect1"><a href="#introduction-technical-interoperability">1.1. Technical interoperability</a></span></dt><dt><span class="sect1"><a href="#introduction-dependency-managment">1.2. Dependency managment</a></span></dt><dt><span class="sect1"><a href="#introduction-restful-api">1.3. API flow</a></span></dt><dt><span class="sect1"><a href="#introduction-lightweight-mvc">1.4. Lightweight MVC</a></span></dt></dl></div><p>PSX is a framework for developing dynamic websites in PHP. The goal of PSX is to help you developing
+		RESTful APIs serving web standard formats like JSON, XML, Atom and RSS. It has a focus on social technologies
+		and provides classes to use and implement OAuth, OpenID, Opengraph, Opensocial, Opensearch, PubSubHubbub, Atom,
+		and RSS. At the <a class="ulink" href="http://example.phpsx.org/" target="_top">example</a> page you can see sample implementations using
+		various PSX classes. The following sections explain briefly the features of PSX.</p><div class="sect1" title="1.1.&nbsp;Technical interoperability"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="introduction-technical-interoperability"></a>1.1.&nbsp;Technical interoperability</h2></div></div></div><p>PSX offers a comprehensive PHP library wich is loosly coupled and designed after standard naming
+			conventions (PSR-0) so it can be used with other projects like i.e. PEAR, Symfony or Zend. All classes are
+			independently usable because of dependency injection.</p></div><div class="sect1" title="1.2.&nbsp;Dependency managment"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="introduction-dependency-managment"></a>1.2.&nbsp;Dependency managment</h2></div></div></div><p>PSX offers an extensible architecture to handle dependencies for each controller.</p><div class="figure"><a name="d0e30"></a><p class="title"><b>Figure&nbsp;1.1.&nbsp;Dependency managment</b></p><div class="figure-contents"><div class="mediaobject"><img src="img/psx_dependency_managment.png" alt="Dependency managment"></div></div></div><br class="figure-break"></div><div class="sect1" title="1.3.&nbsp;API flow"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="introduction-restful-api"></a>1.3.&nbsp;API flow</h2></div></div></div><p>PSX supports you in building RESTful APIs using web standard formats like JSON, XML, Atom and RSS with
+			standard request parameters like defined in the
+			<a class="ulink" href="http://opensocial-resources.googlecode.com/svn/spec/2.0.1/Core-API-Server.xml#rfc.section.6" target="_top">OpenSocial Core API Spec.</a></p><div class="figure"><a name="d0e43"></a><p class="title"><b>Figure&nbsp;1.2.&nbsp;API flow</b></p><div class="figure-contents"><div class="mediaobject"><img src="img/psx_api_flow.png" alt="API flow"></div></div></div><br class="figure-break"></div><div class="sect1" title="1.4.&nbsp;Lightweight MVC"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="introduction-lightweight-mvc"></a>1.4.&nbsp;Lightweight MVC</h2></div></div></div><p>PSX includes a simple MVC architecture with an fast routing mechanism and PHP as template engine.
+			The class loader defined by the php standard group is used.</p></div></div><div class="chapter" title="Chapter&nbsp;2.&nbsp;Installation"><div class="titlepage"><div><div><h2 class="title"><a name="installation"></a>Chapter&nbsp;2.&nbsp;Installation</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="sect1"><a href="#installation-manual">2.1. Manual</a></span></dt><dt><span class="sect1"><a href="#installation-pear">2.2. PEAR</a></span></dt><dt><span class="sect1"><a href="#installation-composer">2.3. Composer</a></span></dt></dl></div><p>There are a few ways to install PSX. If you want use PSX fully including the routing mechanism you have to download the
+		framework manually because the requests must go to the index.php. If you only want use specific classes of PSX you can also install it
+		via PEAR or Composer.</p><div class="sect1" title="2.1.&nbsp;Manual"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="installation-manual"></a>2.1.&nbsp;Manual</h2></div></div></div><p>You can download the current version of psx from the offical website <a class="ulink" href="http://phpsx.org" target="_top">phpsx.org</a>.
+			Put the folder on your web or local server. Goto http://host/path/to/psx/public and if you see a website with the title
+			"Template sample" psx is running successfully.</p></div><div class="sect1" title="2.2.&nbsp;PEAR"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="installation-pear"></a>2.2.&nbsp;PEAR</h2></div></div></div><p>You can install the PSX library through pear. Therefor you have to discover the pear channel
+			<a class="ulink" href="http://pear.phpsx.org" target="_top">pear.phpsx.org</a></p><pre class="programlisting">
+pear channel-discover pear.phpsx.org</pre><p>and install the PSX package</p><pre class="programlisting">
+pear install psx/PSX</pre></div><div class="sect1" title="2.3.&nbsp;Composer"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="installation-composer"></a>2.3.&nbsp;Composer</h2></div></div></div><p>If you use classes of PSX in your application you can add PSX as dependency in your composer.json file. The
+			package name is psx/psx. More informations at <a class="ulink" href="http://packagist.org/packages/psx/psx" target="_top">packagist.org</a>.</p></div></div><div class="chapter" title="Chapter&nbsp;3.&nbsp;Configuration"><div class="titlepage"><div><div><h2 class="title"><a name="configuration"></a>Chapter&nbsp;3.&nbsp;Configuration</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="sect1"><a href="#d0e93">3.1. Edit</a></span></dt><dt><span class="sect1"><a href="#configuration-rights">3.2. Rights</a></span></dt></dl></div><p>To configure PSX you must make two steps first edit the configuration.php and second set the
+		rights for the cache folder if you want use the caching mechanism.</p><div class="sect1" title="3.1.&nbsp;Edit"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d0e93"></a>3.1.&nbsp;Edit</h2></div></div></div><p>The config is an php array with key value pairs. You must change the key "psx_url" so that it
+		points to the psx public root. All other entries are optional. The following table describes each entry.</p><div class="informaltable"><table border="1"><colgroup><col><col></colgroup><thead><tr><th>Key</th><th>Description</th></tr></thead><tbody><tr><td>psx_url</td><td>The absolute url to the psx public folder (i.e. http://127.0.0.1/psx/public).</td></tr><tr><td>psx_dispatch</td><td>Where we get the input path normally index.php/. If you use .htaccess to redirect all requestst to the index.php you can also set this empty.</td></tr><tr><td>psx_timezone</td><td>The default timezone</td></tr><tr><td>psx_gzip</td><td>Whether to gzip the output of psx. The content gets only compressed if the browser support gzip.</td></tr><tr><td>psx_debug</td><td>Whether psx runs in debug mode or not. If not the error reporting is set to 0.</td></tr><tr><td>psx_module_default</td><td>The module wich is loaded by default</td></tr><tr><td>psx_module_input</td><td>From wich source we get our input string</td></tr><tr><td>psx_module_input_length</td><td>The max length of an input. If the request is longer the user gets an "414 Request-URI Too Long" response</td></tr><tr><td>psx_sql_host</td><td>Your sql host. Only necessary if you need a sql connection</td></tr><tr><td>psx_sql_user</td><td>Your sql user. Only necessary if you need a sql connection</td></tr><tr><td>psx_sql_pw</td><td>Your sql pw. Only necessary if you need a sql connection</td></tr><tr><td>psx_sql_db</td><td>Your sql db. Only necessary if you need a sql connection</td></tr><tr><td>psx_cache_enabled</td><td>The general option whether caching is enabled or not</td></tr><tr><td>psx_cache_expire</td><td>How long the cached result will remain in seconds</td></tr><tr><td>psx_template_dir</td><td>This is the name of an folder in the template dir</td></tr><tr><td>psx_template_default</td><td>By default you have to set in each module a template. Here you can set a default template wich is loaded
+				if no template is specified. This must be a path to a template file in the template dir.</td></tr><tr><td>psx_path_cache</td><td>The path to the cache folder. You can set this i.e. to /tmp.</td></tr><tr><td>psx_path_library</td><td>The path to the library folder. If this is null the classes are loaded from the include_path i.e.
+				you can set this to null if you have installed the library via PEAR.</td></tr><tr><td>psx_path_module</td><td>The path to the module folder</td></tr><tr><td>psx_path_template</td><td>The path to the template folder</td></tr></tbody></table></div></div><div class="sect1" title="3.2.&nbsp;Rights"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="configuration-rights"></a>3.2.&nbsp;Rights</h2></div></div></div><p>If you want use the cache class you need in the folder "psx_path_cache" read and write permissions. This is the
+		place where all cache files are stored.</p></div></div><div class="chapter" title="Chapter&nbsp;4.&nbsp;Developing a RESTful API"><div class="titlepage"><div><div><h2 class="title"><a name="developing-restful-api"></a>Chapter&nbsp;4.&nbsp;Developing a RESTful API</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="sect1"><a href="#d0e217">4.1. Setting up the table</a></span></dt><dt><span class="sect1"><a href="#d0e232">4.2. Creating the table class</a></span></dt><dt><span class="sect1"><a href="#d0e239">4.3. Creating the record</a></span></dt><dt><span class="sect1"><a href="#d0e258">4.4. Dependencies</a></span></dt><dt><span class="sect1"><a href="#d0e268">4.5. The API endpoint</a></span></dt><dd><dl><dt><span class="sect2"><a href="#d0e292">4.5.1. Receiving</a></span></dt><dt><span class="sect2"><a href="#d0e385">4.5.2. Inserting</a></span></dt></dl></dd><dt><span class="sect1"><a href="#d0e419">4.6. Conclusion</a></span></dt></dl></div><p>This is the main chapter of the manual wich explains step by step howto develop a RESTful API
+		based on PSX. In this example we create a simple news API where you can create and receive news records.</p><div class="sect1" title="4.1.&nbsp;Setting up the table"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d0e217"></a>4.1.&nbsp;Setting up the table</h2></div></div></div><p>For our example we need a simple table called <span class="property">news</span> where all records are stored.</p><div class="example"><a name="d0e225"></a><p class="title"><b>Example&nbsp;4.1.&nbsp;<span class="database">news</span> table</b></p><div class="example-contents"><pre class="programlisting">
+<b class="hl-keyword">CREATE</b> <b class="hl-keyword">TABLE</b> <b class="hl-keyword">IF</b> <b class="hl-keyword">NOT</b> <b class="hl-keyword">EXISTS</b> <b class="hl-string"><i style="color:red">`news`</i></b> (
+  <b class="hl-string"><i style="color:red">`id`</i></b> <b class="hl-keyword">int</b>(10) <b class="hl-keyword">NOT</b> <b class="hl-keyword">NULL</b> AUTO_INCREMENT,
+  <b class="hl-string"><i style="color:red">`userId`</i></b> <b class="hl-keyword">int</b>(10) <b class="hl-keyword">NOT</b> <b class="hl-keyword">NULL</b>,
+  <b class="hl-string"><i style="color:red">`title`</i></b> <b class="hl-keyword">varchar</b>(64) <b class="hl-keyword">NOT</b> <b class="hl-keyword">NULL</b>,
+  <b class="hl-string"><i style="color:red">`text`</i></b> text <b class="hl-keyword">NOT</b> <b class="hl-keyword">NULL</b>,
+  <b class="hl-string"><i style="color:red">`date`</i></b> datetime <b class="hl-keyword">NOT</b> <b class="hl-keyword">NULL</b>,
+  <b class="hl-keyword">PRIMARY</b> <b class="hl-keyword">KEY</b> (<b class="hl-string"><i style="color:red">`id`</i></b>)
+) ENGINE=MyISAM <b class="hl-keyword">DEFAULT</b> CHARSET=utf8;
+				</pre></div></div><br class="example-break"></div><div class="sect1" title="4.2.&nbsp;Creating the table class"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d0e232"></a>4.2.&nbsp;Creating the table class</h2></div></div></div><p>The table class represents the table and contains all informations about the record
+			i.e. wich columns are available.</p><pre class="programlisting">
+<span class="hl-directive" style="color: maroon">&lt;?php</span>
+
+<b class="hl-keyword">class</b> Test_News_Table <b class="hl-keyword">extends</b> PSX_Sql_TableAbstract
+{
+	<b class="hl-keyword">public</b> <b class="hl-keyword">function</b> getConnections()
+	{
+		<b class="hl-keyword">return</b> <b class="hl-keyword">array</b>();
+	}
+
+	<b class="hl-keyword">public</b> <b class="hl-keyword">function</b> getName()
+	{
+		<b class="hl-keyword">return</b> <b class="hl-string"><i style="color:red">'news'</i></b>;
+	}
+
+	<b class="hl-keyword">public</b> <b class="hl-keyword">function</b> getColumns()
+	{
+		<b class="hl-keyword">return</b> <b class="hl-keyword">array</b>(
+
+			<b class="hl-string"><i style="color:red">'id'</i></b> =&gt; self::TYPE_INT | <span class="hl-number">10</span> | self::PRIMARY_KEY | self::AUTO_INCREMENT,
+			<b class="hl-string"><i style="color:red">'userId'</i></b> =&gt; self::TYPE_INT | <span class="hl-number">10</span>,
+			<b class="hl-string"><i style="color:red">'title'</i></b> =&gt; self::TYPE_VARCHAR | <span class="hl-number">64</span>,
+			<b class="hl-string"><i style="color:red">'text'</i></b> =&gt; self::TYPE_TEXT,
+			<b class="hl-string"><i style="color:red">'date'</i></b> =&gt; self::TYPE_DATETIME,
+
+		);
+	}
+}
+			</pre></div><div class="sect1" title="4.3.&nbsp;Creating the record"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d0e239"></a>4.3.&nbsp;Creating the record</h2></div></div></div><p>Now we have to create the model for the News. The class must be created in the file library/Example/News.php.
+			The record must implement the <code class="interfacename">PSX_Data_RecordInterface</code> in this case we use the class
+			<code class="classname">PSX_Data_Record_TableAbstract</code> wich already implements the
+			<code class="interfacename">PSX_Data_RecordInterface</code> and has some useful methods already implemented.</p><div class="example"><a name="d0e253"></a><p class="title"><b>Example&nbsp;4.2.&nbsp;library/Test/News.php</b></p><div class="example-contents"><pre class="programlisting">
+<span class="hl-directive" style="color: maroon">&lt;?php</span>
+
+<b class="hl-keyword">class</b> Test_News <b class="hl-keyword">extends</b> PSX_Data_Record_TableAbstract
+{
+	<b class="hl-keyword">public</b> $id;
+	<b class="hl-keyword">public</b> $userId;
+	<b class="hl-keyword">public</b> $title;
+	<b class="hl-keyword">public</b> $text;
+	<b class="hl-keyword">public</b> $date;
+
+	<b class="hl-keyword">private</b> $_date;
+
+	<b class="hl-keyword">public</b> <b class="hl-keyword">function</b> setId($id)
+	{
+		$this-&gt;id = $id;
+	}
+
+	<b class="hl-keyword">public</b> <b class="hl-keyword">function</b> setUserId($userId)
+	{
+		$this-&gt;userId = $userId;
+	}
+
+	<b class="hl-keyword">public</b> <b class="hl-keyword">function</b> setTitle($title)
+	{
+		$this-&gt;title = $title;
+	}
+
+	<b class="hl-keyword">public</b> <b class="hl-keyword">function</b> setText($text)
+	{
+		$this-&gt;text = $text;
+	}
+
+	<b class="hl-keyword">public</b> <b class="hl-keyword">function</b> setDate($date)
+	{
+		$this-&gt;date = $date;
+	}
+
+	<b class="hl-keyword">public</b> <b class="hl-keyword">function</b> getDate()
+	{
+		<b class="hl-keyword">if</b>($this-&gt;_date === null)
+		{
+			$this-&gt;_date = <b class="hl-keyword">new</b> DateTime($this-&gt;date);
+		}
+
+		<b class="hl-keyword">return</b> $this-&gt;_date;
+	}
+}
+				</pre></div></div><br class="example-break"></div><div class="sect1" title="4.4.&nbsp;Dependencies"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d0e258"></a>4.4.&nbsp;Dependencies</h2></div></div></div><p>Because the API needs to store informations in an mysql database we need a instance of
+			the database class.</p><div class="example"><a name="d0e263"></a><p class="title"><b>Example&nbsp;4.3.&nbsp;library/Test/Dependency/Default.php</b></p><div class="example-contents"><pre class="programlisting">
+<b class="hl-keyword">class</b> Test_Dependency_Default <b class="hl-keyword">extends</b> PSX_DependencyAbstract
+{
+	<b class="hl-keyword">protected</b> <b class="hl-keyword">function</b> setup()
+	{
+		parent::setup();
+
+		<i class="hl-comment" style="color: silver">// sql</i>
+		<b class="hl-keyword">if</b>(!$this-&gt;registry-&gt;offsetExists(<b class="hl-string"><i style="color:red">'sql'</i></b>))
+		{
+			$sql = <b class="hl-keyword">new</b> PSX_Sql(<b class="hl-keyword">new</b> PSX_Sql_Driver_Pdo(), $this-&gt;config[<b class="hl-string"><i style="color:red">'psx_sql_host'</i></b>], $this-&gt;config[<b class="hl-string"><i style="color:red">'psx_sql_user'</i></b>], $this-&gt;config[<b class="hl-string"><i style="color:red">'psx_sql_pw'</i></b>], $this-&gt;config[<b class="hl-string"><i style="color:red">'psx_sql_db'</i></b>]);
+
+			$this-&gt;registry-&gt;offsetSet(<b class="hl-string"><i style="color:red">'sql'</i></b>, $sql);
+		}
+	}
+}
+				</pre></div></div><br class="example-break"></div><div class="sect1" title="4.5.&nbsp;The API endpoint"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d0e268"></a>4.5.&nbsp;The API endpoint</h2></div></div></div><p>We create a file called news.php in the module folder. This file can be
+			accessed via http://127.0.0.1/psx/public/index.php/news. We define the <code class="methodname">onLoad</code> method
+			wich is called when the module was loaded. The method <code class="methodname">getDependencies</code> returns the
+			dependency class wich brings the database instance in our module.</p><p>This is now our REST API endpoint where we can make <span class="property">GET</span> and <span class="property">POST</span>
+			requests. You can versioning your API by creating a folder structure i.e. put the news.php in the folder "v1"
+			and the endpoint url would be http://127.0.0.1/psx/public/index.php/v1/news</p><div class="example"><a name="d0e287"></a><p class="title"><b>Example&nbsp;4.4.&nbsp;module/news.php</b></p><div class="example-contents"><pre class="programlisting">
+<span class="hl-directive" style="color: maroon">&lt;?php</span>
+
+<b class="hl-keyword">class</b> news <b class="hl-keyword">extends</b> PSX_Module_ApiAbstract
+{
+	<b class="hl-keyword">public</b> <b class="hl-keyword">function</b> getDependencies()
+	{
+		<b class="hl-keyword">return</b> <b class="hl-keyword">new</b> Test_Dependency_Default();
+	}
+
+	<b class="hl-keyword">public</b> <b class="hl-keyword">function</b> onLoad()
+	{
+		$this-&gt;table = <b class="hl-keyword">new</b> Test_News_Table($this-&gt;sql);
+	}
+}
+				</pre></div></div><br class="example-break"><div class="sect2" title="4.5.1.&nbsp;Receiving"><div class="titlepage"><div><div><h3 class="title"><a name="d0e292"></a>4.5.1.&nbsp;Receiving</h3></div></div></div><p>If someone makes an <span class="property">GET</span> request to the endpoint we want return
+				the latest news. This method creates in general an <code class="classname">PSX_Data_ResultSet</code> object
+				containing multiple <code class="classname">Example_News</code> objects. If we call the <code class="methodname">setResponse</code>
+				method with the <code class="classname">PSX_Data_ResultSet</code> object the object is transformed
+				into the preferred format (wich was set either by the <span class="property">GET</span> parameter "format"
+				or by the "Accept" header field).</p><div class="example"><a name="d0e315"></a><p class="title"><b>Example&nbsp;4.5.&nbsp;module/news.php (implement <code class="methodname">onGet</code> method)</b></p><div class="example-contents"><pre class="programlisting">
+<b class="hl-keyword">public</b> <b class="hl-keyword">function</b> onGet()
+{
+	$select    = $this-&gt;table-&gt;select(<b class="hl-keyword">array</b>(<b class="hl-string"><i style="color:red">'id'</i></b>, <b class="hl-string"><i style="color:red">'title'</i></b>, <b class="hl-string"><i style="color:red">'date'</i></b>));
+	$fragments = $this-&gt;getUriFragments();
+	$params    = $this-&gt;getRequestParams();
+
+	<b class="hl-keyword">if</b>(<b class="hl-keyword">isset</b>($fragments[<span class="hl-number">0</span>]) &amp;&amp; $fragments[<span class="hl-number">0</span>] == <b class="hl-string"><i style="color:red">'@supportedFields'</i></b>)
+	{
+		$array = <b class="hl-keyword">new</b> PSX_Data_Array($select-&gt;getSupportedFields());
+
+		$this-&gt;setResponse($array);
+	}
+	<b class="hl-keyword">else</b>
+	{
+		<b class="hl-keyword">if</b>(!<b class="hl-keyword">empty</b>($params[<b class="hl-string"><i style="color:red">'fields'</i></b>]))
+		{
+			$select-&gt;setColumns($params[<b class="hl-string"><i style="color:red">'fields'</i></b>]);
+		}
+
+		$resultSet = $select-&gt;getResultSet($params[<b class="hl-string"><i style="color:red">'startIndex'</i></b>], $params[<b class="hl-string"><i style="color:red">'count'</i></b>], $params[<b class="hl-string"><i style="color:red">'sortBy'</i></b>], $params[<b class="hl-string"><i style="color:red">'sortOrder'</i></b>], $params[<b class="hl-string"><i style="color:red">'filterBy'</i></b>], $params[<b class="hl-string"><i style="color:red">'filterOp'</i></b>], $params[<b class="hl-string"><i style="color:red">'filterValue'</i></b>], $params[<b class="hl-string"><i style="color:red">'updatedSince'</i></b>], PSX_Sql::FETCH_OBJECT);
+
+		$this-&gt;setResponse($resultSet);
+	}
+}
+					</pre></div></div><br class="example-break"><p>Because we want create <span class="property">Atom</span> and <span class="property">Rss</span> feeds we have to
+				set the writer config by overriding the method <code class="methodname">setWriterConfig</code>.</p><div class="example"><a name="d0e334"></a><p class="title"><b>Example&nbsp;4.6.&nbsp;module/news.php (implement <code class="methodname">setWriterConfig</code> method)</b></p><div class="example-contents"><pre class="programlisting">
+<b class="hl-keyword">protected</b> <b class="hl-keyword">function</b> setWriterConfig(PSX_Data_WriterResult $writer)
+{
+	<b class="hl-keyword">switch</b>($writer-&gt;getType())
+	{
+		<b class="hl-keyword">case</b> PSX_Data_WriterInterface::RSS:
+
+			$updated = $this-&gt;sql-&gt;getField(<b class="hl-string"><i style="color:red">'SELECT `date` FROM news ORDER BY `date` DESC'</i></b>);
+
+			$title       = <b class="hl-string"><i style="color:red">'News'</i></b>;
+			$link        = $this-&gt;config[<b class="hl-string"><i style="color:red">'psx_url'</i></b>];
+			$description = <b class="hl-string"><i style="color:red">'Example RESTful News API based on PSX '</i></b>;
+
+			$writer = $writer-&gt;getWriter();
+			$writer-&gt;setConfig($title, $link, $description);
+			$writer-&gt;setGenerator(<b class="hl-string"><i style="color:red">'psx '</i></b> . PSX_Base::getVersion());
+
+			<b class="hl-keyword">break</b>;
+
+		<b class="hl-keyword">case</b> PSX_Data_WriterInterface::ATOM:
+
+			$updated = $this-&gt;sql-&gt;getField(<b class="hl-string"><i style="color:red">'SELECT `date` FROM news ORDER BY `date` DESC'</i></b>);
+
+			$title   = <b class="hl-string"><i style="color:red">'News'</i></b>;
+			$id      = $this-&gt;base-&gt;getUrn(<b class="hl-string"><i style="color:red">'psx'</i></b>, <b class="hl-string"><i style="color:red">'example'</i></b>, <b class="hl-string"><i style="color:red">'news'</i></b>);
+			$updated = <b class="hl-keyword">new</b> DateTime($updated);
+
+			$writer = $writer-&gt;getWriter();
+			$writer-&gt;setConfig($title, $id, $updated);
+			$writer-&gt;setGenerator(<b class="hl-string"><i style="color:red">'psx '</i></b> . PSX_Base::getVersion());
+
+			<b class="hl-keyword">break</b>;
+	}
+}
+					</pre></div></div><br class="example-break"><p>Because we want that the record can be exported in different formats like <span class="property">JSON</span>,
+				<span class="property">XML</span>, <span class="property">Atom</span> and <span class="property">Rss</span> we have to specific the method
+				<code class="methodname">export</code> in the <code class="classname">Example_News</code> record. By default JSON and XML is
+				supported.</p><div class="example"><a name="d0e362"></a><p class="title"><b>Example&nbsp;4.7.&nbsp;library/Example/News.php (implement <code class="methodname">export</code> method)</b></p><div class="example-contents"><pre class="programlisting">
+<b class="hl-keyword">public</b> <b class="hl-keyword">function</b> export(PSX_Data_WriterResult $result)
+{
+	<b class="hl-keyword">switch</b>($result-&gt;getType())
+	{
+		<b class="hl-keyword">case</b> PSX_Data_WriterInterface::RSS:
+
+			$item = $result-&gt;getWriter()-&gt;createItem();
+
+			$item-&gt;setTitle($this-&gt;title);
+			$item-&gt;setLink(<b class="hl-string"><i style="color:red">'#'</i></b>);
+			$item-&gt;setDescription($this-&gt;text);
+
+			<b class="hl-keyword">return</b> $item;
+			<b class="hl-keyword">break</b>;
+
+		<b class="hl-keyword">case</b> PSX_Data_WriterInterface::ATOM:
+
+			$entry = $result-&gt;getWriter()-&gt;createEntry();
+
+			$entry-&gt;setTitle($this-&gt;title);
+			$entry-&gt;setId($this-&gt;id);
+			$entry-&gt;setUpdated($this-&gt;getDate());
+			$entry-&gt;setContent($this-&gt;text, <b class="hl-string"><i style="color:red">'text'</i></b>);
+
+			<b class="hl-keyword">return</b> $entry;
+			<b class="hl-keyword">break</b>;
+
+		<b class="hl-keyword">default</b>:
+
+			<b class="hl-keyword">return</b> parent::export($result);
+			<b class="hl-keyword">break</b>;
+	}
+}
+					</pre></div></div><br class="example-break"><p>Here an example <span class="property">GET</span> request with the response</p><div class="example"><a name="d0e375"></a><p class="title"><b>Example&nbsp;4.8.&nbsp;Sample GET request</b></p><div class="example-contents"><pre class="programlisting">
+GET /projects/psx/public/index.php/news HTTP/1.1
+Host: 127.0.0.1
+User-Agent: Lynx 2.8.7
+Accept: application/xml
+					</pre></div></div><br class="example-break"><div class="example"><a name="d0e380"></a><p class="title"><b>Example&nbsp;4.9.&nbsp;Sample GET response</b></p><div class="example-contents"><pre class="programlisting">
+HTTP/1.1 200 OK
+Date: Sun, 04 Dec 2011 02:14:46 GMT
+Content-Length: 966
+Expires: Thu, 09 Oct 1986 01:00:00 GMT
+Last-Modified: Thu, 09 Oct 1986 01:00:00 GMT
+Keep-Alive: timeout=5, max=100
+Content-Type: application/xml
+Connection: Keep-Alive
+X-Powered-By: psx
+Server: Apache/2.2.17 (Win32) mod_ssl/2.2.17 OpenSSL/0.9.8o PHP/5.3.4 mod_perl/2.0.4 Perl/v5.10.1
+Pragma: no-cache
+Cache-Control: no-store, no-cache, must-revalidate
+
+<span class="hl-directive" style="color: maroon">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<b class="hl-tag" style="color: #000096">&lt;resultset&gt;</b>
+ <b class="hl-tag" style="color: #000096">&lt;totalResults&gt;</b>9<b class="hl-tag" style="color: #000096">&lt;/totalResults&gt;</b>
+ <b class="hl-tag" style="color: #000096">&lt;startIndex&gt;</b>0<b class="hl-tag" style="color: #000096">&lt;/startIndex&gt;</b>
+ <b class="hl-tag" style="color: #000096">&lt;itemsPerPage&gt;</b>32<b class="hl-tag" style="color: #000096">&lt;/itemsPerPage&gt;</b>
+ <b class="hl-tag" style="color: #000096">&lt;entry&gt;</b>
+  <b class="hl-tag" style="color: #000096">&lt;id&gt;</b>1<b class="hl-tag" style="color: #000096">&lt;/id&gt;</b>
+  <b class="hl-tag" style="color: #000096">&lt;title&gt;</b>foo<b class="hl-tag" style="color: #000096">&lt;/title&gt;</b>
+  <b class="hl-tag" style="color: #000096">&lt;date&gt;</b>2011-12-04 02:11:46<b class="hl-tag" style="color: #000096">&lt;/date&gt;</b>
+ <b class="hl-tag" style="color: #000096">&lt;/entry&gt;</b>
+ <b class="hl-tag" style="color: #000096">&lt;entry&gt;</b>
+  <b class="hl-tag" style="color: #000096">&lt;id&gt;</b>2<b class="hl-tag" style="color: #000096">&lt;/id&gt;</b>
+  <b class="hl-tag" style="color: #000096">&lt;title&gt;</b>fdsfs<b class="hl-tag" style="color: #000096">&lt;/title&gt;</b>
+  <b class="hl-tag" style="color: #000096">&lt;date&gt;</b>0000-00-00 00:00:00<b class="hl-tag" style="color: #000096">&lt;/date&gt;</b>
+ <b class="hl-tag" style="color: #000096">&lt;/entry&gt;</b>
+ ...
+<b class="hl-tag" style="color: #000096">&lt;/resultset&gt;</b>
+					</pre></div></div><br class="example-break"></div><div class="sect2" title="4.5.2.&nbsp;Inserting"><div class="titlepage"><div><div><h3 class="title"><a name="d0e385"></a>4.5.2.&nbsp;Inserting</h3></div></div></div><p>If someone makes a <span class="property">POST</span> request we want insert the news in
+				the table. We create a new <code class="classname">Example_News</code> object and import the
+				request data into the record.</p><div class="example"><a name="d0e396"></a><p class="title"><b>Example&nbsp;4.10.&nbsp;module/news.php (implement <code class="methodname">onPost</code> method)</b></p><div class="example-contents"><pre class="programlisting">
+<b class="hl-keyword">public</b> <b class="hl-keyword">function</b> onPost()
+{
+	<b class="hl-keyword">try</b>
+	{
+		$handler = <b class="hl-keyword">new</b> Test_News_Handler($this-&gt;table);
+
+		$news = <b class="hl-keyword">new</b> Test_News($this-&gt;table);
+		$news-&gt;import($this-&gt;getRequest());
+
+		$handler-&gt;create($news);
+
+
+		$message = <b class="hl-keyword">new</b> PSX_Data_Message(<b class="hl-string"><i style="color:red">'You have successful create a news'</i></b>, <b class="hl-keyword">true</b>);
+
+		$this-&gt;setResponse($message);
+	}
+	<b class="hl-keyword">catch</b>(<b class="hl-keyword">Exception</b> $e)
+	{
+		$message = <b class="hl-keyword">new</b> PSX_Data_Message($e-&gt;getMessage(), <b class="hl-keyword">false</b>);
+
+		$this-&gt;setResponse($message);
+	}
+}
+					</pre></div></div><br class="example-break"><p>Here an example <span class="property">POST</span> request to the API endpoint</p><div class="example"><a name="d0e409"></a><p class="title"><b>Example&nbsp;4.11.&nbsp;Sample POST request</b></p><div class="example-contents"><pre class="programlisting">
+POST /projects/psx/public/index.php/news HTTP/1.1
+Host: 127.0.0.1
+User-Agent: Lynx 2.8.7
+Accept: application/xml
+Content-Type: application/xml
+
+<b class="hl-tag" style="color: #000096">&lt;news&gt;</b>
+	<b class="hl-tag" style="color: #000096">&lt;userId&gt;</b>1<b class="hl-tag" style="color: #000096">&lt;/userId&gt;</b>
+	<b class="hl-tag" style="color: #000096">&lt;title&gt;</b>foo<b class="hl-tag" style="color: #000096">&lt;/title&gt;</b>
+	<b class="hl-tag" style="color: #000096">&lt;text&gt;</b>bar<b class="hl-tag" style="color: #000096">&lt;/text&gt;</b>
+<b class="hl-tag" style="color: #000096">&lt;/news&gt;</b>
+					</pre></div></div><br class="example-break"><div class="example"><a name="d0e414"></a><p class="title"><b>Example&nbsp;4.12.&nbsp;Sample POST response</b></p><div class="example-contents"><pre class="programlisting">
+HTTP/1.1 201 Created
+Date: Sun, 04 Dec 2011 02:17:40 GMT
+Content-Length: 133
+Expires: Thu, 09 Oct 1986 01:00:00 GMT
+Last-Modified: Thu, 09 Oct 1986 01:00:00 GMT
+Keep-Alive: timeout=5, max=100
+Content-Type: application/xml
+Connection: Keep-Alive
+X-Powered-By: psx
+Server: Apache/2.2.17 (Win32) mod_ssl/2.2.17 OpenSSL/0.9.8o PHP/5.3.4 mod_perl/2.0.4 Perl/v5.10.1
+Pragma: no-cache
+Cache-Control: no-store, no-cache, must-revalidate
+
+<span class="hl-directive" style="color: maroon">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<b class="hl-tag" style="color: #000096">&lt;message&gt;</b>
+ <b class="hl-tag" style="color: #000096">&lt;text&gt;</b>You have successful create a news<b class="hl-tag" style="color: #000096">&lt;/text&gt;</b>
+ <b class="hl-tag" style="color: #000096">&lt;success&gt;</b>true<b class="hl-tag" style="color: #000096">&lt;/success&gt;</b>
+<b class="hl-tag" style="color: #000096">&lt;/message&gt;</b>
+					</pre></div></div><br class="example-break"></div></div><div class="sect1" title="4.6.&nbsp;Conclusion"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d0e419"></a>4.6.&nbsp;Conclusion</h2></div></div></div><p>This example has shown you howto build an API with PSX wich serves content
+			in <span class="property">Atom</span>, <span class="property">RSS</span>, <span class="property">Json</span> and
+			<span class="property">XML</span> on an <span class="property">GET</span> request. Also it is possible to
+			insert new records with a <span class="property">POST</span> request.</p></div></div><div class="chapter" title="Chapter&nbsp;5.&nbsp;Oauth based API authorization"><div class="titlepage"><div><div><h2 class="title"><a name="oauth-based-api-authorization"></a>Chapter&nbsp;5.&nbsp;Oauth based API authorization</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="sect1"><a href="#d0e447">5.1. Setting up the table</a></span></dt><dt><span class="sect1"><a href="#d0e459">5.2. Oauth endpoints</a></span></dt><dd><dl><dt><span class="sect2"><a href="#temporary-credential-request">5.2.1. Temporary Credential Request</a></span></dt><dt><span class="sect2"><a href="#resource-owner-authorization">5.2.2. Resource Owner Authorization</a></span></dt><dt><span class="sect2"><a href="#token-request">5.2.3. Token Request</a></span></dt></dl></dd><dt><span class="sect1"><a href="#d0e523">5.3. Protect the API endpoint</a></span></dt><dd><dl><dt><span class="sect2"><a href="#d0e567">5.3.1. Inserting</a></span></dt></dl></dd><dt><span class="sect1"><a href="#d0e582">5.4. Conclusion</a></span></dt></dl></div><p>It is often the case that you want that only registered users can POST new entries to the API
+		endpoint. In this case the user has to authorize before submitting a new record. The current standard
+		for API authorization is Oauth. PSX comes with a set of classes wich helps implementing OAuth authorization
+		for your endpoint. PSX supports the Oauth 1.0 specification (http://tools.ietf.org/html/rfc5849).
+		In this chapter we will demonstrate how to protect the news API wich we have developed in the chapter before
+		with Oauth so that only user with a valid consumer key and consumer secret can insert news records.</p><div class="sect1" title="5.1.&nbsp;Setting up the table"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d0e447"></a>5.1.&nbsp;Setting up the table</h2></div></div></div><p>In order to store the Oauth requests we use the following table</p><div class="example"><a name="d0e452"></a><p class="title"><b>Example&nbsp;5.1.&nbsp;<span class="database">request</span> table</b></p><div class="example-contents"><pre class="programlisting">
+<b class="hl-keyword">CREATE</b> <b class="hl-keyword">TABLE</b> <b class="hl-keyword">IF</b> <b class="hl-keyword">NOT</b> <b class="hl-keyword">EXISTS</b> <b class="hl-string"><i style="color:red">`request`</i></b> (
+  <b class="hl-string"><i style="color:red">`id`</i></b> <b class="hl-keyword">int</b>(10) <b class="hl-keyword">NOT</b> <b class="hl-keyword">NULL</b> AUTO_INCREMENT,
+  <b class="hl-string"><i style="color:red">`ip`</i></b> <b class="hl-keyword">varchar</b>(128) <b class="hl-keyword">NOT</b> <b class="hl-keyword">NULL</b>,
+  <b class="hl-string"><i style="color:red">`token`</i></b> <b class="hl-keyword">varchar</b>(40) <b class="hl-keyword">NOT</b> <b class="hl-keyword">NULL</b>,
+  <b class="hl-string"><i style="color:red">`tokenSecret`</i></b> <b class="hl-keyword">varchar</b>(40) <b class="hl-keyword">NOT</b> <b class="hl-keyword">NULL</b>,
+  <b class="hl-string"><i style="color:red">`nonce`</i></b> <b class="hl-keyword">varchar</b>(32) <b class="hl-keyword">NOT</b> <b class="hl-keyword">NULL</b>,
+  <b class="hl-string"><i style="color:red">`verifier`</i></b> <b class="hl-keyword">varchar</b>(16) <b class="hl-keyword">DEFAULT</b> <b class="hl-keyword">NULL</b>,
+  <b class="hl-string"><i style="color:red">`authorized`</i></b> <b class="hl-keyword">int</b>(1) <b class="hl-keyword">NOT</b> <b class="hl-keyword">NULL</b> <b class="hl-keyword">DEFAULT</b> <b class="hl-string"><i style="color:red">'0'</i></b>,
+  <b class="hl-string"><i style="color:red">`callback`</i></b> <b class="hl-keyword">varchar</b>(256) <b class="hl-keyword">DEFAULT</b> <b class="hl-keyword">NULL</b>,
+  <b class="hl-string"><i style="color:red">`exchangeDate`</i></b> datetime <b class="hl-keyword">DEFAULT</b> <b class="hl-keyword">NULL</b>,
+  <b class="hl-string"><i style="color:red">`authorizationDate`</i></b> datetime <b class="hl-keyword">DEFAULT</b> <b class="hl-keyword">NULL</b>,
+  <b class="hl-string"><i style="color:red">`insertDate`</i></b> datetime <b class="hl-keyword">NOT</b> <b class="hl-keyword">NULL</b>,
+  <b class="hl-keyword">PRIMARY</b> <b class="hl-keyword">KEY</b> (<b class="hl-string"><i style="color:red">`id`</i></b>),
+  <b class="hl-keyword">UNIQUE</b> <b class="hl-keyword">KEY</b> <b class="hl-string"><i style="color:red">`token`</i></b> (<b class="hl-string"><i style="color:red">`token`</i></b>),
+  <b class="hl-keyword">UNIQUE</b> <b class="hl-keyword">KEY</b> <b class="hl-string"><i style="color:red">`tokenSecret`</i></b> (<b class="hl-string"><i style="color:red">`tokenSecret`</i></b>),
+  <b class="hl-keyword">UNIQUE</b> <b class="hl-keyword">KEY</b> <b class="hl-string"><i style="color:red">`nonce`</i></b> (<b class="hl-string"><i style="color:red">`nonce`</i></b>),
+  <b class="hl-keyword">UNIQUE</b> <b class="hl-keyword">KEY</b> <b class="hl-string"><i style="color:red">`verifier`</i></b> (<b class="hl-string"><i style="color:red">`verifier`</i></b>)
+) ENGINE=MyISAM  <b class="hl-keyword">DEFAULT</b> CHARSET=utf8 ;
+				</pre></div></div><br class="example-break"></div><div class="sect1" title="5.2.&nbsp;Oauth endpoints"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d0e459"></a>5.2.&nbsp;Oauth endpoints</h2></div></div></div><p>In order to enable Oauth authentication we have to implement the following endpoints like
+			defined in the specification.</p><div class="informaltable"><table border="1"><colgroup><col><col></colgroup><thead><tr><th>Endpoint</th><th>Location</th></tr></thead><tbody><tr><td><a class="link" href="#temporary-credential-request" title="5.2.1.&nbsp;Temporary Credential Request">Temporary Credential Request</a></td><td>http://127.0.0.1/psx/public/index.php/request</td></tr><tr><td><a class="link" href="#resource-owner-authorization" title="5.2.2.&nbsp;Resource Owner Authorization">Resource Owner Authorization</a></td><td>http://127.0.0.1/psx/public/index.php/auth</td></tr><tr><td><a class="link" href="#token-request" title="5.2.3.&nbsp;Token Request">Token Request</a></td><td>http://127.0.0.1/psx/public/index.php/access</td></tr></tbody></table></div><div class="sect2" title="5.2.1.&nbsp;Temporary Credential Request"><div class="titlepage"><div><div><h3 class="title"><a name="temporary-credential-request"></a>5.2.1.&nbsp;Temporary Credential Request</h3></div></div></div><p>This endpoint is for obtaining an temporary credential.</p><div class="example"><a name="d0e496"></a><p class="title"><b>Example&nbsp;5.2.&nbsp;module/request.php</b></p><div class="example-contents"><pre class="programlisting">
+<span class="hl-directive" style="color: maroon">&lt;?php</span>
+
+<b class="hl-keyword">class</b> request <b class="hl-keyword">extends</b> PSX_Oauth_Provider_RequestAbstract
+{
+	<b class="hl-keyword">public</b> <b class="hl-keyword">function</b> getDependencies()
+	{
+		<b class="hl-keyword">return</b> <b class="hl-keyword">new</b> Test_Dependency_Default();
+	}
+
+	<b class="hl-keyword">public</b> <b class="hl-keyword">function</b> onLoad()
+	{
+		<b class="hl-keyword">try</b>
+		{
+			<i class="hl-comment" style="color: silver">// if we call the handle method the OAuth request is proccessed and</i>
+			<i class="hl-comment" style="color: silver">// the getConsumer() and getResponse() method is called</i>
+			$this-&gt;handle();
+		}
+		<b class="hl-keyword">catch</b>(<b class="hl-keyword">Exception</b> $e)
+		{
+			header(<b class="hl-string"><i style="color:red">'HTTP/1.1 500 Internal Server Error'</i></b>);
+
+			<b class="hl-keyword">echo</b> $e-&gt;getMessage();
+
+			<b class="hl-keyword">if</b>($this-&gt;config[<b class="hl-string"><i style="color:red">'psx_debug'</i></b>] === <b class="hl-keyword">true</b>)
+			{
+				<b class="hl-keyword">echo</b> <b class="hl-string"><i style="color:red">"\n\n"</i></b> . $e-&gt;getTraceAsString();
+			}
+		}
+	}
+
+	<b class="hl-keyword">protected</b> <b class="hl-keyword">function</b> getConsumer($consumerKey)
+	{
+		<b class="hl-keyword">if</b>($consumerKey == $this-&gt;config[<b class="hl-string"><i style="color:red">'consumer_key'</i></b>])
+		{
+			<b class="hl-keyword">return</b> <b class="hl-keyword">new</b> PSX_Oauth_Provider_Data_Consumer($this-&gt;config[<b class="hl-string"><i style="color:red">'consumer_key'</i></b>], $this-&gt;config[<b class="hl-string"><i style="color:red">'consumer_secret'</i></b>]);
+		}
+		<b class="hl-keyword">else</b>
+		{
+			<b class="hl-keyword">throw</b> <b class="hl-keyword">new</b> PSX_Oauth_Exception(<b class="hl-string"><i style="color:red">'Invalid consumer key'</i></b>);
+		}
+	}
+
+	<b class="hl-keyword">protected</b> <b class="hl-keyword">function</b> getResponse(PSX_Oauth_Provider_Data_Consumer $consumer, PSX_Oauth_Provider_Data_Request $request)
+	{
+		<i class="hl-comment" style="color: silver">// generate tokens</i>
+		$token       = sha1(uniqid(mt_rand(), <b class="hl-keyword">true</b>));
+		$tokenSecret = sha1(uniqid(mt_rand(), <b class="hl-keyword">true</b>));
+
+
+		<i class="hl-comment" style="color: silver">// insert request</i>
+		$this-&gt;sql-&gt;insert(<b class="hl-string"><i style="color:red">'request'</i></b>, <b class="hl-keyword">array</b>(
+
+			<b class="hl-string"><i style="color:red">'ip'</i></b>          =&gt; $_SERVER[<b class="hl-string"><i style="color:red">'REMOTE_ADDR'</i></b>],
+			<b class="hl-string"><i style="color:red">'token'</i></b>       =&gt; $token,
+			<b class="hl-string"><i style="color:red">'tokenSecret'</i></b> =&gt; $tokenSecret,
+			<b class="hl-string"><i style="color:red">'nonce'</i></b>       =&gt; $request-&gt;getNonce(),
+			<b class="hl-string"><i style="color:red">'callback'</i></b>    =&gt; $request-&gt;getCallback(),
+			<b class="hl-string"><i style="color:red">'insertDate'</i></b>  =&gt; date(PSX_Time::SQL),
+
+		));
+
+
+		<i class="hl-comment" style="color: silver">// return response</i>
+		$response = <b class="hl-keyword">new</b> PSX_Oauth_Provider_Data_Response();
+		$response-&gt;setToken($token);
+		$response-&gt;setTokenSecret($tokenSecret);
+
+		<b class="hl-keyword">return</b> $response;
+	}
+}
+					</pre></div></div><br class="example-break"></div><div class="sect2" title="5.2.2.&nbsp;Resource Owner Authorization"><div class="titlepage"><div><div><h3 class="title"><a name="resource-owner-authorization"></a>5.2.2.&nbsp;Resource Owner Authorization</h3></div></div></div><p>If the Oauth client has obtained the temporary credential the user will be redirected to
+				the <span class="property">Resource Owner Authorization</span> endpoint.</p><div class="example"><a name="d0e509"></a><p class="title"><b>Example&nbsp;5.3.&nbsp;module/auth.php</b></p><div class="example-contents"><pre class="programlisting">
+<span class="hl-directive" style="color: maroon">&lt;?php</span>
+
+<b class="hl-keyword">class</b> auth <b class="hl-keyword">extends</b> PSX_ModuleAbstract
+{
+	<b class="hl-keyword">public</b> <b class="hl-keyword">function</b> getDependencies()
+	{
+		<b class="hl-keyword">return</b> <b class="hl-keyword">new</b> Test_Dependency_Default();
+	}
+
+	<b class="hl-keyword">public</b> <b class="hl-keyword">function</b> onLoad()
+	{
+		$token = <b class="hl-keyword">isset</b>($_GET[<b class="hl-string"><i style="color:red">'oauth_token'</i></b>]) ? $_GET[<b class="hl-string"><i style="color:red">'oauth_token'</i></b>] : null;
+
+		<b class="hl-keyword">if</b>(!<b class="hl-keyword">empty</b>($token))
+		{
+			$row = $this-&gt;sql-&gt;getRow(<b class="hl-string"><i style="color:red">'SELECT id, ip, token, authorized, callback, insertDate FROM request WHERE token = ?'</i></b>, <b class="hl-keyword">array</b>($token));
+
+			<b class="hl-keyword">if</b>(!<b class="hl-keyword">empty</b>($row))
+			{
+				<i class="hl-comment" style="color: silver">//  validate</i>
+				<b class="hl-keyword">if</b>($_SERVER[<b class="hl-string"><i style="color:red">'REMOTE_ADDR'</i></b>] != $row[<b class="hl-string"><i style="color:red">'ip'</i></b>])
+				{
+					<b class="hl-keyword">throw</b> <b class="hl-keyword">new</b> <b class="hl-keyword">Exception</b>(<b class="hl-string"><i style="color:red">'Token was requested from another ip'</i></b>);
+				}
+
+				<b class="hl-keyword">if</b>($row[<b class="hl-string"><i style="color:red">'authorized'</i></b>] != <span class="hl-number">0</span>)
+				{
+					<b class="hl-keyword">throw</b> <b class="hl-keyword">new</b> <b class="hl-keyword">Exception</b>(<b class="hl-string"><i style="color:red">'Token was already authorized'</i></b>);
+				}
+
+				<i class="hl-comment" style="color: silver">// @todo check the insertDate whether token is expired</i>
+
+				<i class="hl-comment" style="color: silver">// generate verifier</i>
+				$verifier = substr(sha1(uniqid(mt_rand(), <b class="hl-keyword">true</b>)), <span class="hl-number">0</span>, <span class="hl-number">16</span>);
+
+				<i class="hl-comment" style="color: silver">// update request</i>
+				$con = <b class="hl-keyword">new</b> PSX_Sql_Condition(<b class="hl-keyword">array</b>(<b class="hl-string"><i style="color:red">'id'</i></b>, <b class="hl-string"><i style="color:red">'='</i></b>, $row[<b class="hl-string"><i style="color:red">'id'</i></b>]));
+
+				$this-&gt;sql-&gt;update(<b class="hl-string"><i style="color:red">'request'</i></b>, <b class="hl-keyword">array</b>(
+
+					<b class="hl-string"><i style="color:red">'verifier'</i></b>          =&gt; $verifier,
+					<b class="hl-string"><i style="color:red">'authorized'</i></b>        =&gt; <span class="hl-number">1</span>,
+					<b class="hl-string"><i style="color:red">'authorizationDate'</i></b> =&gt; date(PSX_Time::SQL),
+
+				), $con);
+
+				<i class="hl-comment" style="color: silver">// redirect user or display verifier</i>
+				<b class="hl-keyword">if</b>($row[<b class="hl-string"><i style="color:red">'callback'</i></b>] != <b class="hl-string"><i style="color:red">'oob'</i></b>)
+				{
+					$url = <b class="hl-keyword">new</b> PSX_Url($row[<b class="hl-string"><i style="color:red">'callback'</i></b>]);
+					$url-&gt;addParam(<b class="hl-string"><i style="color:red">'oauth_token'</i></b>, $row[<b class="hl-string"><i style="color:red">'token'</i></b>]);
+					$url-&gt;addParam(<b class="hl-string"><i style="color:red">'oauth_verifier'</i></b>, $verifier);
+
+					header(<b class="hl-string"><i style="color:red">'Location: '</i></b> . strval($url));
+					<b class="hl-keyword">exit</b>;
+				}
+				<b class="hl-keyword">else</b>
+				{
+					<b class="hl-keyword">echo</b> <b class="hl-string"><i style="color:red">'&lt;p&gt;You have successful authorized a token. Please provide the following verifier to your application in order to complete the authorization proccess.&lt;/p&gt;'</i></b>;
+					<b class="hl-keyword">echo</b> <b class="hl-string"><i style="color:red">'&lt;p&gt;Verifier:&lt;/p&gt;&lt;p&gt;&lt;b&gt;'</i></b> . $verifier . <b class="hl-string"><i style="color:red">'&lt;/b&gt;&lt;/p&gt;'</i></b>;
+				}
+			}
+			<b class="hl-keyword">else</b>
+			{
+				<b class="hl-keyword">throw</b> <b class="hl-keyword">new</b> <b class="hl-keyword">Exception</b>(<b class="hl-string"><i style="color:red">'Invalid token'</i></b>);
+			}
+		}
+		<b class="hl-keyword">else</b>
+		{
+			<b class="hl-keyword">throw</b> <b class="hl-keyword">new</b> <b class="hl-keyword">Exception</b>(<b class="hl-string"><i style="color:red">'Token not set'</i></b>);
+		}
+	}
+}
+					</pre></div></div><br class="example-break"></div><div class="sect2" title="5.2.3.&nbsp;Token Request"><div class="titlepage"><div><div><h3 class="title"><a name="token-request"></a>5.2.3.&nbsp;Token Request</h3></div></div></div><p></p><div class="example"><a name="d0e518"></a><p class="title"><b>Example&nbsp;5.4.&nbsp;module/access.php</b></p><div class="example-contents"><pre class="programlisting">
+<span class="hl-directive" style="color: maroon">&lt;?php</span>
+
+<b class="hl-keyword">class</b> access <b class="hl-keyword">extends</b> PSX_Oauth_Provider_AccessAbstract
+{
+	<b class="hl-keyword">private</b> $id;
+	<b class="hl-keyword">private</b> $nonce;
+	<b class="hl-keyword">private</b> $verifier;
+
+	<b class="hl-keyword">public</b> <b class="hl-keyword">function</b> getDependencies()
+	{
+		<b class="hl-keyword">return</b> <b class="hl-keyword">new</b> Test_Dependency_Default();
+	}
+
+	<b class="hl-keyword">public</b> <b class="hl-keyword">function</b> onLoad()
+	{
+		<b class="hl-keyword">try</b>
+		{
+			<i class="hl-comment" style="color: silver">// if we call the handle method the OAuth request is proccessed and</i>
+			<i class="hl-comment" style="color: silver">// the getConsumer() and getResponse() method is called</i>
+			$this-&gt;handle();
+		}
+		<b class="hl-keyword">catch</b>(<b class="hl-keyword">Exception</b> $e)
+		{
+			header(<b class="hl-string"><i style="color:red">'HTTP/1.1 500 Internal Server Error'</i></b>);
+
+			<b class="hl-keyword">echo</b> $e-&gt;getMessage();
+
+			<b class="hl-keyword">if</b>($this-&gt;config[<b class="hl-string"><i style="color:red">'psx_debug'</i></b>] === <b class="hl-keyword">true</b>)
+			{
+				<b class="hl-keyword">echo</b> <b class="hl-string"><i style="color:red">"\n\n"</i></b> . $e-&gt;getTraceAsString();
+			}
+
+			<b class="hl-keyword">exit</b>;
+		}
+	}
+
+	<b class="hl-keyword">protected</b> <b class="hl-keyword">function</b> getConsumer($consumerKey, $token)
+	{
+		<b class="hl-keyword">if</b>($consumerKey == $this-&gt;config[<b class="hl-string"><i style="color:red">'consumer_key'</i></b>])
+		{
+			$row = $this-&gt;sql-&gt;getRow(<b class="hl-string"><i style="color:red">'SELECT id, nonce, verifier, token, tokenSecret FROM request WHERE token = ? AND authorized = 1'</i></b>, <b class="hl-keyword">array</b>($token));
+
+			<b class="hl-keyword">if</b>(!<b class="hl-keyword">empty</b>($row))
+			{
+				$this-&gt;id       = $row[<b class="hl-string"><i style="color:red">'id'</i></b>];
+				$this-&gt;nonce    = $row[<b class="hl-string"><i style="color:red">'nonce'</i></b>];
+				$this-&gt;verifier = $row[<b class="hl-string"><i style="color:red">'verifier'</i></b>];
+
+				<b class="hl-keyword">return</b> <b class="hl-keyword">new</b> PSX_Oauth_Provider_Data_Consumer($this-&gt;config[<b class="hl-string"><i style="color:red">'consumer_key'</i></b>], $this-&gt;config[<b class="hl-string"><i style="color:red">'consumer_secret'</i></b>], $row[<b class="hl-string"><i style="color:red">'token'</i></b>], $row[<b class="hl-string"><i style="color:red">'tokenSecret'</i></b>]);
+			}
+			<b class="hl-keyword">else</b>
+			{
+				<b class="hl-keyword">throw</b> <b class="hl-keyword">new</b> PSX_Oauth_Exception(<b class="hl-string"><i style="color:red">'Invalid token'</i></b>);
+			}
+		}
+		<b class="hl-keyword">else</b>
+		{
+			<b class="hl-keyword">throw</b> <b class="hl-keyword">new</b> PSX_Oauth_Exception(<b class="hl-string"><i style="color:red">'Invalid consumer key'</i></b>);
+		}
+	}
+
+	<b class="hl-keyword">protected</b> <b class="hl-keyword">function</b> getResponse(PSX_Oauth_Provider_Data_Consumer $consumer, PSX_Oauth_Provider_Data_Request $request)
+	{
+		<i class="hl-comment" style="color: silver">// validate</i>
+		<b class="hl-keyword">if</b>($this-&gt;nonce == $request-&gt;getNonce())
+		{
+			<b class="hl-keyword">throw</b> <b class="hl-keyword">new</b> PSX_Oauth_Exception(<b class="hl-string"><i style="color:red">'Nonce hasnt changed'</i></b>);
+		}
+
+		<b class="hl-keyword">if</b>($this-&gt;verifier != $request-&gt;getVerifier())
+		{
+			<b class="hl-keyword">throw</b> <b class="hl-keyword">new</b> PSX_Oauth_Exception(<b class="hl-string"><i style="color:red">'Invalid verifier'</i></b>);
+		}
+
+		<i class="hl-comment" style="color: silver">// generate a new access token</i>
+		$token       = sha1(uniqid(mt_rand(), <b class="hl-keyword">true</b>));
+		$tokenSecret = sha1(uniqid(mt_rand(), <b class="hl-keyword">true</b>));
+
+		<i class="hl-comment" style="color: silver">// update request</i>
+		$con = <b class="hl-keyword">new</b> PSX_Sql_Condition(<b class="hl-keyword">array</b>(<b class="hl-string"><i style="color:red">'id'</i></b>, <b class="hl-string"><i style="color:red">'='</i></b>, $this-&gt;id));
+
+		$this-&gt;sql-&gt;update(<b class="hl-string"><i style="color:red">'request'</i></b>, <b class="hl-keyword">array</b>(
+
+			<b class="hl-string"><i style="color:red">'authorized'</i></b>   =&gt; <span class="hl-number">2</span>,
+			<b class="hl-string"><i style="color:red">'token'</i></b>        =&gt; $token,
+			<b class="hl-string"><i style="color:red">'tokenSecret'</i></b>  =&gt; $tokenSecret,
+			<b class="hl-string"><i style="color:red">'exchangeDate'</i></b> =&gt; date(PSX_Time::SQL),
+
+		), $con);
+
+		<i class="hl-comment" style="color: silver">// return response</i>
+		$response = <b class="hl-keyword">new</b> PSX_Oauth_Provider_Data_Response();
+		$response-&gt;setToken($token);
+		$response-&gt;setTokenSecret($tokenSecret);
+
+		<b class="hl-keyword">return</b> $response;
+	}
+}
+					</pre></div></div><br class="example-break"></div></div><div class="sect1" title="5.3.&nbsp;Protect the API endpoint"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d0e523"></a>5.3.&nbsp;Protect the API endpoint</h2></div></div></div><p>The class <code class="classname">news</code> must now extend the class
+			<code class="classname">PSX_Oauth_ProviderAbstract</code> instead of <code class="classname">PSX_ApiAbstract</code> in order to use the authentication.</p><div class="example"><a name="d0e537"></a><p class="title"><b>Example&nbsp;5.5.&nbsp;module/news.php (implement <code class="methodname">getConsumer</code> and <code class="methodname">onAuthenticated</code> method)</b></p><div class="example-contents"><pre class="programlisting">
+<b class="hl-keyword">protected</b> <b class="hl-keyword">function</b> getConsumer($consumerKey, $token)
+{
+	<b class="hl-keyword">if</b>($consumerKey == $this-&gt;config[<b class="hl-string"><i style="color:red">'consumer_key'</i></b>])
+	{
+		$row = $this-&gt;sql-&gt;getRow(<b class="hl-string"><i style="color:red">'SELECT token, tokenSecret FROM request WHERE token = ? AND authorized = 2'</i></b>, <b class="hl-keyword">array</b>($token));
+
+		<b class="hl-keyword">if</b>(!<b class="hl-keyword">empty</b>($row))
+		{
+			<b class="hl-keyword">return</b> <b class="hl-keyword">new</b> PSX_Oauth_Provider_Data_Consumer($this-&gt;config[<b class="hl-string"><i style="color:red">'consumer_key'</i></b>], $this-&gt;config[<b class="hl-string"><i style="color:red">'consumer_secret'</i></b>], $row[<b class="hl-string"><i style="color:red">'token'</i></b>], $row[<b class="hl-string"><i style="color:red">'tokenSecret'</i></b>]);
+		}
+		<b class="hl-keyword">else</b>
+		{
+			<b class="hl-keyword">throw</b> <b class="hl-keyword">new</b> PSX_Oauth_Exception(<b class="hl-string"><i style="color:red">'Invalid token'</i></b>);
+		}
+	}
+	<b class="hl-keyword">else</b>
+	{
+		<b class="hl-keyword">throw</b> <b class="hl-keyword">new</b> PSX_Oauth_Exception(<b class="hl-string"><i style="color:red">'Invalid consumer key'</i></b>);
+	}
+}
+
+<b class="hl-keyword">protected</b> <b class="hl-keyword">function</b> onAuthenticated()
+{
+	$this-&gt;isAuthed = <b class="hl-keyword">true</b>;
+}
+				</pre></div></div><br class="example-break"><p>Now we have to check for an <span class="property">Authentication</span> header if a POST request
+			was made. If we call the <code class="methodname">handle</code> method wich is defined by the class
+			<code class="classname">PSX_Oauth_ProviderAbstract</code> we check whether it is a valid Oauth request.</p><div class="example"><a name="d0e559"></a><p class="title"><b>Example&nbsp;5.6.&nbsp;module/news.php (implement <code class="methodname">onPost</code> method)</b></p><div class="example-contents"><pre class="programlisting">
+<b class="hl-keyword">public</b> <b class="hl-keyword">function</b> onPost()
+{
+	<b class="hl-keyword">try</b>
+	{
+		<i class="hl-comment" style="color: silver">// check for oauth authentication</i>
+		$this-&gt;handle();
+
+		<b class="hl-keyword">if</b>(!$this-&gt;isAuthed)
+		{
+			<b class="hl-keyword">throw</b> <b class="hl-keyword">new</b> PSX_Exception(<b class="hl-string"><i style="color:red">'Not authenticated'</i></b>, <span class="hl-number">401</span>);
+		}
+
+		<i class="hl-comment" style="color: silver">// create news record</i>
+		$news = <b class="hl-keyword">new</b> Example_News($this-&gt;config);
+		$news-&gt;import($this-&gt;getRequest());
+
+		<b class="hl-keyword">if</b>($news-&gt;hasFields(<b class="hl-string"><i style="color:red">'author'</i></b>, <b class="hl-string"><i style="color:red">'title'</i></b>, <b class="hl-string"><i style="color:red">'body'</i></b>))
+		{
+			$news-&gt;date = date(PSX_Time::SQL);
+
+			$this-&gt;sql-&gt;insert(<b class="hl-string"><i style="color:red">'news'</i></b>, $news-&gt;getData());
+
+			$msg = <b class="hl-keyword">new</b> PSX_Data_Message(<b class="hl-string"><i style="color:red">'News record successful created'</i></b>, <b class="hl-keyword">true</b>);
+
+			$this-&gt;setResponse($msg, null, <span class="hl-number">201</span>);
+		}
+		<b class="hl-keyword">else</b>
+		{
+			<b class="hl-keyword">throw</b> <b class="hl-keyword">new</b> <b class="hl-keyword">Exception</b>(<b class="hl-string"><i style="color:red">'Missing field in record'</i></b>);
+		}
+	}
+	<b class="hl-keyword">catch</b>(<b class="hl-keyword">Exception</b> $e)
+	{
+		$code = $e-&gt;getCode() == <span class="hl-number">0</span> ? <span class="hl-number">500</span> : $e-&gt;getCode();
+		$msg  = <b class="hl-keyword">new</b> PSX_Data_Message($e-&gt;getMessage(), <b class="hl-keyword">false</b>);
+
+		$this-&gt;setResponse($msg, null, $code);
+	}
+}
+				</pre></div></div><br class="example-break"><div class="sect2" title="5.3.1.&nbsp;Inserting"><div class="titlepage"><div><div><h3 class="title"><a name="d0e567"></a>5.3.1.&nbsp;Inserting</h3></div></div></div><p>Here an example Oauth request to insert a news</p><div class="example"><a name="d0e572"></a><p class="title"><b>Example&nbsp;5.7.&nbsp;Sample POST request</b></p><div class="example-contents"><pre class="programlisting">
+POST /tests/psx/public/ HTTP/1.1
+Host: 127.0.0.1
+Accept: application/xml
+Content-type: application/xml
+Content-Length: 171
+Authorization: OAuth realm="oat", oauth_signature="056413a4c2b9cb93bc2454902a2de25d549c219b%26eecde7a5f6e11556475c995252390b0160ba01e1", oauth_version="1.0", oauth_nonce="2ac118d94ca10fdfba2587b97a80dc89", oauth_signature_method="PLAINTEXT", oauth_consumer_key="64e197648df5f30acbc770d8a69d09bb391e78cb", oauth_token="901fbcf6e1f949f39c8458210f646c4407ec67f9", oauth_timestamp="1309609401"
+
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;news&gt;
+  &lt;author&gt;foobar&lt;/author&gt;
+  &lt;title&gt;And some great news&lt;/title&gt;
+  &lt;body&gt;And here the complete content ... hf ;D&lt;/body&gt;
+&lt;/news&gt;
+					</pre></div></div><br class="example-break"><div class="example"><a name="d0e577"></a><p class="title"><b>Example&nbsp;5.8.&nbsp;Sample POST response</b></p><div class="example-contents"><pre class="programlisting">
+HTTP/1.1 201 Created
+Date: Sat, 02 Jul 2011 12:23:21 GMT
+Server: Apache/2.2.12 (Win32) DAV/2 mod_ssl/2.2.12 OpenSSL/0.9.8k mod_autoindex_color PHP/5.3.0 mod_perl/2.0.4 Perl/v5.10.0
+X-Powered-By: psx
+Expires: Thu, 09 Oct 1986 01:00:00 GMT
+Last-Modified: Thu, 09 Oct 1986 01:00:00 GMT
+Cache-Control: no-store, no-cache, must-revalidate
+Pragma: no-cache
+Content-Length: 130
+Content-Type: application/xml
+
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;message&gt;
+ &lt;text&gt;News record successful created&lt;/text&gt;
+ &lt;success&gt;true&lt;/success&gt;
+&lt;/message&gt;
+					</pre></div></div><br class="example-break"></div></div><div class="sect1" title="5.4.&nbsp;Conclusion"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d0e582"></a>5.4.&nbsp;Conclusion</h2></div></div></div><p>This was an basic example howto protect your API with Oauth.</p><p>Note: This is an example implementation to show you the basic functionallity howto use
+			the Oauth classes of PSX. Because of simplicity we use only a single consumer key and consumer secret
+			normally you would save those in a table and generate per application a consumer key and secret. Please
+			see the <a class="ulink" href="http://amun.phpsx.org" target="_top">Amun</a> project for a real implementation of the OAuth
+			classes.</p></div></div><div class="chapter" title="Chapter&nbsp;6.&nbsp;Template"><div class="titlepage"><div><div><h2 class="title"><a name="template"></a>Chapter&nbsp;6.&nbsp;Template</h2></div></div></div><p>By default PSX uses simple php as template engine because it is fast and you have more freedom to design a
+		website. In your template you can access the variable (that you have assigned) with $[key].
+		You can also use some predefined variables wich are listed here:</p><div class="informaltable"><table border="1"><colgroup><col><col></colgroup><thead><tr><th>Variable</th><th>Description</th></tr></thead><tbody><tr><td>$config</td><td>The PSX_Config object wich holds the array from the configuration.php file. Note the object
+				may contain sensitive informations like sql username and password.</td></tr><tr><td>$self</td><td>This is the current URI. You can use this in a form to point to the module</td></tr><tr><td>$url</td><td>The complete url including the dispatch i.e. http://foobar.org/index.php/</td></tr><tr><td>$location</td><td>This is the path to your current template i.e. template/default in order to include other templates</td></tr><tr><td>$render</td><td>The rendering time in seconds</td></tr><tr><td>$base</td><td>The basepath wich can be used to include i.e. javascript, css or images.</td></tr></tbody></table></div></div><div class="chapter" title="Chapter&nbsp;7.&nbsp;Help"><div class="titlepage"><div><div><h2 class="title"><a name="help"></a>Chapter&nbsp;7.&nbsp;Help</h2></div></div></div><p>Because PSX is in an early stage the manual is not complete. I appreciate every help in making
+		this documentation better. The documentation is writte in XML against the docbook
+		specification. You can checkout the current version of this manual via SVN. The XML file is in
+		doc/docbook/manual.xml. If you have made some changes that you want commit please contact me.</p><div class="orderedlist" title="Further reading about PSX"><p class="title"><b>Further reading about PSX</b></p><ol class="orderedlist" type="I"><li class="listitem"><p>Mailinglist: <a class="ulink" href="http://groups.google.com/group/phpsx" target="_top">http://groups.google.com/group/phpsx</a></p></li><li class="listitem"><p>Examples: <a class="ulink" href="http://example.phpsx.org" target="_top">http://example.phpsx.org</a></p></li><li class="listitem"><p>Website: <a class="ulink" href="http://phpsx.org" target="_top">http://phpsx.org</a></p></li><li class="listitem"><p>Bugtracker: <a class="ulink" href="http://code.google.com/p/psx/issues/list" target="_top">http://code.google.com/p/psx/issues/list</a></p></li><li class="listitem"><p>Repository: <a class="ulink" href="http://code.google.com/p/psx/source/checkout" target="_top">http://code.google.com/p/psx/source/checkout</a></p></li></ol></div></div><div class="chapter" title="Chapter&nbsp;8.&nbsp;Appendix"><div class="titlepage"><div><div><h2 class="title"><a name="appendix"></a>Chapter&nbsp;8.&nbsp;Appendix</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="sect1"><a href="#d0e672">8.1. Code generation</a></span></dt></dl></div><div class="sect1" title="8.1.&nbsp;Code generation"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d0e672"></a>8.1.&nbsp;Code generation</h2></div></div></div><p>It is possible to generate the table and record classes from an mysql table. Therefor you have to
+			download <a class="ulink" href="http://code.google.com/p/delta-quadrant/downloads/detail?name=espeon_0.0.4_beta.zip" target="_top">espeon</a>
+			a little java tool wich can connect to an mysql database and generate code based on an table structure using a
+			template (<a class="ulink" href="http://freemarker.sourceforge.net/" target="_top">FreeMarker</a>). The following templates are for generating the
+			table and record classes.</p><div class="example"><a name="d0e683"></a><p class="title"><b>Example&nbsp;8.1.&nbsp;Table.php</b></p><div class="example-contents"><pre class="programlisting">
+<span class="hl-directive" style="color: maroon">&lt;?php</span>
+
+<b class="hl-keyword">class</b> ${namespace}_${name}_Table <b class="hl-keyword">extends</b> PSX_Sql_TableAbstract
+{
+	<b class="hl-keyword">public</b> <b class="hl-keyword">function</b> getConnections()
+	{
+		<b class="hl-keyword">return</b> <b class="hl-keyword">array</b>();
+	}
+
+	<b class="hl-keyword">public</b> <b class="hl-keyword">function</b> getName()
+	{
+		<b class="hl-keyword">return</b> <b class="hl-string"><i style="color:red">'${table}'</i></b>;
+	}
+
+	<b class="hl-keyword">public</b> <b class="hl-keyword">function</b> getColumns()
+	{
+		<b class="hl-keyword">return</b> <b class="hl-keyword">array</b>(
+
+			&lt;<i class="hl-comment" style="color: silver">#list columns as column&gt;</i>
+			<b class="hl-string"><i style="color:red">'${column.field}'</i></b> =&gt; self::TYPE_${column.type?upper_case}&lt;<i class="hl-comment" style="color: silver">#if column.length != ''&gt; | ${column.length}&lt;/#if&gt;&lt;#if column.key == 'PRI'&gt; | self::PRIMARY_KEY&lt;/#if&gt;&lt;#if column.key == 'auto_increment'&gt; | self::AUTO_INCREMENT&lt;/#if&gt;,</i>
+			&lt;/<i class="hl-comment" style="color: silver">#list&gt;</i>
+
+		);
+	}
+}
+				</pre></div></div><br class="example-break"><div class="example"><a name="d0e688"></a><p class="title"><b>Example&nbsp;8.2.&nbsp;Record.php</b></p><div class="example-contents"><pre class="programlisting">
+<span class="hl-directive" style="color: maroon">&lt;?php</span>
+
+<b class="hl-keyword">class</b> ${namespace}_${name} <b class="hl-keyword">extends</b> PSX_Data_Record_TableAbstract
+{
+	&lt;<i class="hl-comment" style="color: silver">#list columns as column&gt;</i>
+	<b class="hl-keyword">public</b> <b class="hl-keyword">function</b> set${column.field?cap_first}($${column.field})
+	{
+		$this-&gt;${column.field} = $${column.field};
+	}
+
+	&lt;/<i class="hl-comment" style="color: silver">#list&gt;</i>
+}
+				</pre></div></div><br class="example-break"></div></div></div></body></html>

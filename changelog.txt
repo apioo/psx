@@ -1,0 +1,159 @@
+
+0.4.7
+* Add user agent string to request headers
+* Fix http redirection header bei relativen urls
+* Added user agent string to most http calls
+* Add cache to PSX_Base getRequest method so calling the method multiple times
+  will always return the same object
+* Improved PSX_Loader class. The name of the index method must be now __index
+  wich is called if no other method is specified in the request. This was done 
+  because of constructor conflict if the class also the name index and to 
+  document the magical behavior 
+* Added method getValidator(), getMethod(), getUrl(), getHeaders(), getHeader(), 
+  getParameter() and getBody() to PSX_ModuleAbstract
+* Using PSX_PATH_CACHE path in file cache handler
+* Fix markdown class encode emphasis
+* Add method setSavePath to PSX_Session class
+
+0.4.6
+* Added Atom and RSS static request method
+* Improved docblock comments
+* Removed unused DOM package
+* Changed constructor of PSX_Sql class
+* Added cookie store to http package
+* Improved cache classes and tests
+* Moved class PSX_Get, PSX_Post, PSX_Cookie, PSX_Request, PSX_Files in input
+* package and improved tests
+* Updated paging class and tests
+* Added calendar class
+* Added improved psx html package add html5 lexer and filter library and updated
+* html parser
+* Added getParameters to dependency abstract
+* Added view dependency and renamed module DefaultAbstract to ViewAbstract
+
+0.4.5
+* Renamed constant in_psx to PSX because of namespace issue
+* Added data multipart/form-data reader
+* Added PSX_Base class containing informations about the framework and current
+  http request
+* Moved several methods from PSX_Config into PSX_Base class
+* Added data reader and writer factory
+* Added Oauth2 client library
+* Added payment paypal library
+* Improved log library
+* Removed ca-bundle.pem from library and add method to set ca path for curl
+  handler
+* Renamed static method "isFile" to "exists" in file class because the class
+  extends now SplFileObject wich already defines an isFile method
+* Fixed openid stateless mode and correct exception name
+
+0.4.4
+* Updated webfinger library and tests
+* Removed idna (punnycode) filter
+* Added uri and urn libraries
+* Added opensocial and activitystreams records
+* Improved tests
+* Added oembed library
+* Fix openid consumer and relying party library
+* Update documentation
+
+0.4.3
+* Fixed openid provider association implementation
+* Added openssl wrapper class
+* Added webfinger util library
+* Added util markdown parser class
+* Improve error and exception handling
+* Added sql selection class
+* Removed data servlet interface in favor of the sql table class
+* Added sql table abstract class
+* Add http upload libary
+* Added optional require parameter to input method
+* Added and improved several tests
+
+0.4.2
+* Updated atom and rss item parsing
+* Updated HTTP socks handler proper handling of chunked transfer encoding
+* Removed NestedSet library because they where not stable enough
+* Add OpenID provider implementation
+* Fix HTTP classes headers are stored now interal as key => value
+* Fix OpenId so that the claimed id is added on redirect if the local id doesent
+  exist and add getIdentifiert method
+* Update HTTP request class and fix curl handler follow location. Remove
+  "Expect: 100-Continue" header and update ca-bundle.pem
+* Added unit tests
+* Fixed several bugs
+
+0.4.1
+* Rewrote manual
+* Fix follow location in http curl handler
+* Improve tests
+
+0.4
+* Using now standard "camelcase" coding style for interoperability
+* Update data writer library for handling Atom and Rss feeds correctly
+* Add http library option to automatically follow redirects
+* Remove unused classes
+* Fixing many bugs
+
+0.3.4
+* rewrote html form / paging / grid using now the DomDocument object
+* remove task lib
+* add psx/api and psx/data package for building RESTful API services
+* moved the classes from psx/core in the package psx
+* rewroter filter system and add class psx_validate
+
+0.3.3
+* updated psx_srv_[atom|rss] class wich uses now the DateTime class
+* updated dom wich extends now the DomDocument class
+* updated time class wich extends now the DateTime class and some uneccasary
+  methods were removed
+* remove util/uri class
+* update sql library send SET NAMES UTF-8 command on creation
+
+0.3.2
+* unknown
+
+0.3.1
+* added form generation class
+* added and fixed tests
+* added request library
+* implemented psx_input interface
+* rewrote filter library
+* rewrote manual to version 0.3
+* fixed openid oauth and yadis library
+
+0.3
+* complete redesing of the framework the library is now more loosly coupled
+  because most classes using dependency injection.
+* The component section was removed and all classes are now in the psx library
+  folder
+* The interface psx_module_private was created if you implement that in your
+  module nobody can access the public methods via the browser
+* The standard PHP loader was implemented wich is also used by Zend etc.
+* adding sql pdo driver
+* fixing several bugs
+
+0.2.3
+* add pubsubhubbub library
+* add atom library to parse atom feeds
+* add html parse library to parse malformed html
+* we use XMLWriter now in the class rss/atom/opensearch to produce XML
+* fixed opensocial component bugs
+
+0.2.2
+* add openid, yadis, atom/rss2 and opensearch component
+* renamed folder lib to library and ext to extension
+* perfomance improvments
+* fixing bugs
+* delete include folder
+* add phpunit tests
+
+0.2.1
+* add component net/oauth
+* rewrote http lib
+* add phpunit tests
+* fixing bugs
+* redesign sample template
+* orm lib removed
+* parse lib removed
+
