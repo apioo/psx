@@ -6,7 +6,7 @@ if(!isset($_SERVER['argv'][1]))
 }
 
 define('VERSION', $_SERVER['argv'][1]);
-define('PATH', 'psx-release/library');
+define('PATH', 'psx/library');
 
 
 if(!is_dir(PATH))
@@ -40,14 +40,15 @@ $license = <<<LICENSE
 LICENSE;
 
 
+$file = 'psx-' . VERSION . '.phar';
 $dir  = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(PATH), RecursiveIteratorIterator::SELF_FIRST);
-$phar = new Phar(VERSION . '.phar', 0, VERSION . '.phar');
+$phar = new Phar($file, 0, $file);
 $phar->setMetadata($license);
 
 foreach($dir as $file)
 {
 	$path = (string) $file;
-	$name = substr($path, 20); // remove psx-release/library/ from path
+	$name = substr($path, 12); // remove psx/library/ from path
 
 	if($file->isFile())
 	{
