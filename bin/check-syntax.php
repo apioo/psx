@@ -34,6 +34,7 @@ catch(Exception $e)
 {
 	// most errors should be fatal errors but in case we have an exception
 	echo $e->getMessage();
+	exit(1);
 }
 
 function checkSyntax($path)
