@@ -10,7 +10,7 @@
     <email>k42b3@phpsx.org</email>
     <active>yes</active>
   </lead>
-  <date>2012-10-07</date>
+  <date>2012-10-12</date>
   <version>
     <release>0.4.7</release>
     <api>0.4.7</api>
@@ -20,7 +20,10 @@
     <api>stable</api>
   </stability>
   <license uri="http://www.gnu.org/licenses/">GPLv3 License</license>
-  <notes>* Add cache to PSX_Base getRequest method so calling the method multiple times
+  <notes>* Add user agent string to request headers
+* Fix http redirection header bei relativen urls
+* Added user agent string to most http calls
+* Add cache to PSX_Base getRequest method so calling the method multiple times
 will always return the same object
 * Improved PSX_Loader class. The name of the index method must be now __index
 wich is called if no other method is specified in the request. This was done
@@ -536,10 +539,8 @@ getParameter() and getBody() to PSX_ModuleAbstract
         <file name="Yadis.php" role="php"/>
       </dir>
       <dir name="tests">
-        <file name="AllTests.php" role="test"/>
         <file name="Bootstrap.php" role="test"/>
         <dir name="PSX">
-          <file name="AllTests.php" role="test"/>
           <dir name="Atom">
             <file name="EntryTest.php" role="test"/>
           </dir>
@@ -741,9 +742,7 @@ getParameter() and getBody() to PSX_ModuleAbstract
           </dir>
           <file name="YadisTest.php" role="test"/>
         </dir>
-        <file name="readme.txt" role="test"/>
-        <file name="run.bat" role="test"/>
-        <file name="run.sh" role="test"/>
+        <file name="config.xml" role="test"/>
       </dir>
     </dir>
   </contents>
@@ -934,7 +933,10 @@ extends now SplFileObject wich already defines an isFile method
       </stability>
       <date>2012-10-07</date>
       <license uri="http://www.gnu.org/licenses/">GPLv3 License</license>
-      <notes>* Add cache to PSX_Base getRequest method so calling the method multiple times
+      <notes>* Add user agent string to request headers
+* Fix http redirection header bei relativen urls
+* Added user agent string to most http calls
+* Add cache to PSX_Base getRequest method so calling the method multiple times
 will always return the same object
 * Improved PSX_Loader class. The name of the index method must be now __index
 wich is called if no other method is specified in the request. This was done

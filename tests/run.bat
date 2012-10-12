@@ -1,1 +1,0 @@
-phpunit --bootstrap Bootstrap.php AllTests.php

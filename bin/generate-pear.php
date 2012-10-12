@@ -1,7 +1,5 @@
 <?php
 
-date_default_timezone_set('Europe/Berlin');
-
 if(!isset($_SERVER['argv'][1]))
 {
 	throw new Exception('Argument one must be a version number');
@@ -10,6 +8,9 @@ if(!isset($_SERVER['argv'][1]))
 
 define('VERSION', $_SERVER['argv'][1]);
 define('PACKAGE', 'package.xml');
+
+
+date_default_timezone_set('Europe/Berlin');
 
 
 $impl = new DOMImplementation();
