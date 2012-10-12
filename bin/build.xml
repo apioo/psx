@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="psx" default="build-release" basedir="..">
+	<description>PSX build script</description>
+
+	<property name="build" location="bin/psx" />
+
+	<property name="bin" location="bin" />
+	<property name="cache" location="cache" />
+	<property name="doc" location="doc" />
+	<property name="library" location="library" />
+	<property name="module" location="module" />
+	<property name="public" location="public" />
+	<property name="template" location="template" />
+	<property name="tests" location="tests" />
+
+	<target name="get-version">
+		<exec dir="${bin}" executable="php" failonerror="true" outputproperty="version">
+			<arg line="get-version.php" />
+		</exec>
+		<echo message="Building version ${version}" />
+	</target>
+
+	<target name="syntax-check">
+		<exec dir="${bin}" executable="php" failonerror="true">
+			<arg line="check-syntax.php .." />
+		</exec>
+	</target>
+
+	<target name="test" depends="syntax-check">
+		<exec dir="${tests}" executable="phpunit.bat" failonerror="true">
+			<arg line="--configuration config.xml" />
+		</exec>
+	</target>
+
+	<target name="build-dir">
+		<mkdir dir="${build}" />
+		<mkdir dir="${build}/cache" />
+		<copy todir="${build}/doc">
+			<fileset dir="${doc}">
+				<exclude name="${doc}/docbook/**" />
+			</fileset>
+		</copy>
+		<copy todir="${build}/library">
+			<fileset dir="${library}" />
+		</copy>
+		<copy todir="${build}/public">
+			<fileset dir="${public}" />
+		</copy>
+		<copy todir="${build}/template">
+			<fileset dir="${template}" />
+		</copy>
+		<copy todir="${build}/tests">
+			<fileset dir="${tests}" />
+		</copy>
+	</target>
+
+	<target name="build-pear" depends="get-version,test,build-dir">
+		<exec dir="${bin}" executable="php" failonerror="true">
+			<arg line="generate-pear.php ${version}" />
+		</exec>
+		<mkdir dir="${bin}/PSX-${version}" />
+		<copy todir="${bin}/PSX-${version}">
+			<fileset dir="${library}" />
+		</copy>
+		<copy todir="${bin}/PSX-${version}/tests">
+			<fileset dir="${tests}" />
+		</copy>
+		<copy file="${bin}/package.xml" tofile="${bin}/PSX-${version}/package.xml" />
+		<tar destfile="${bin}/PSX-${version}.tar" basedir="${bin}/PSX-${version}" />
+	</target>
+
+	<target name="build-phar" depends="get-version,test,build-dir">
+		<exec dir="${bin}" executable="php" failonerror="true">
+			<arg line="generate-phar.php ${version}" />
+		</exec>
+	</target>
+
+	<target name="build-release" depends="get-version,test,build-dir">
+		<tar destfile="${bin}/psx_${version}.tar.gz" basedir="${build}" />
+		<zip destfile="${bin}/psx_${version}.zip" basedir="${build}" />
+	</target>
+
+	<target name="build-all" depends="build-pear,build-phar,build-release" />
+
+	<target name="clean" depends="get-version">
+		<delete dir="${build}" />
+		<delete file="${bin}/PSX-${version}.tar" />
+		<delete file="${bin}/psx-${version}.phar" />
+		<delete file="${bin}/psx_$version.tar.gz" />
+		<delete file="${bin}/psx_$version.zip" />
+	</target>
+
+	<target name="build-doc">
+		<xslt basedir="${doc}/docbook" destdir="${doc}" includes="**/*.xml" extension=".html" style="${doc}/psx.xsl">
+			<factory name="net.sf.saxon.TransformerFactoryImpl" />
+		</xslt>
+	</target>
+
+</project>
