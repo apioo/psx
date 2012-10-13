@@ -99,7 +99,10 @@ class PSX_Bootstrap
 
 	public function addIncludePath($path)
 	{
-		set_include_path($path . PATH_SEPARATOR . get_include_path());
+		if(strpos(get_include_path(), $path) === false)
+		{
+			set_include_path($path . PATH_SEPARATOR . get_include_path());
+		}
 	}
 
 	public static function errorHandler($errno, $errstr, $errfile, $errline)
@@ -138,9 +141,6 @@ class PSX_Bootstrap
 
 		$fileName.= str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
 
-		if(is_file($fileName))
-		{
-			require_once($fileName);
-		}
+		include_once($fileName);
 	}
 }
