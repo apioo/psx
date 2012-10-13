@@ -539,7 +539,6 @@ getParameter() and getBody() to PSX_ModuleAbstract
         <file name="Yadis.php" role="php"/>
       </dir>
       <dir name="tests">
-        <file name="Bootstrap.php" role="test"/>
         <dir name="PSX">
           <dir name="Atom">
             <file name="EntryTest.php" role="test"/>
@@ -742,7 +741,7 @@ getParameter() and getBody() to PSX_ModuleAbstract
           </dir>
           <file name="YadisTest.php" role="test"/>
         </dir>
-        <file name="config.xml" role="test"/>
+        <file name="bootstrap.php" role="test"/>
       </dir>
     </dir>
   </contents>

@@ -99,6 +99,10 @@
 		<xslt basedir="${doc}/docbook" destdir="${doc}" includes="**/*.xml" extension=".html" style="${doc}/psx.xsl">
 			<factory name="net.sf.saxon.TransformerFactoryImpl" />
 		</xslt>
+
+		<!-- correct css and js path of packages -->
+		<replace dir="${doc}/packages" token="&lt;link href=&quot;default.css&quot;" value="&lt;link href=&quot;../default.css&quot;" />
+		<replace dir="${doc}/packages" token="&lt;script src=&quot;default.js&quot;" value="&lt;script src=&quot;../default.js&quot;" />
 	</target>
 
 </project>

@@ -4,8 +4,6 @@
 
 	<bookinfo>
 		<title>PSX Manual</title>
-		<releaseinfo>$Revision: 525 $</releaseinfo>
-		<pubdate>$Date: 2012-04-08 14:01:34 +0200 (So, 08. Apr 2012) $</pubdate>
 		<abstract>
 			<para>This is the offical manual of the PSX framework.</para>
 		</abstract>
