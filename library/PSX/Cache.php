@@ -92,8 +92,22 @@ class PSX_Cache
 	 */
 	public function __construct($key, $expire = 0, PSX_Cache_HandlerInterface $handler = null)
 	{
+		if(!is_numeric($expire))
+		{
+			$interval = new DateInterval($expire);
+			$now      = new DateTime();
+			$tstamp   = $now->getTimestamp();
+
+			$now->add($interval);
+
+			$this->expire = $now->getTimestamp() - $tstamp;
+		}
+		else
+		{
+			$this->expire = $expire;
+		}
+
 		$this->key     = md5($key);
-		$this->expire  = $expire;
 		$this->handler = $handler !== null ? $handler : new PSX_Cache_Handler_File();
 		$this->enabled = true;
 	}
