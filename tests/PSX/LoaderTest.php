@@ -38,7 +38,9 @@ class PSX_LoaderTest extends PHPUnit_Framework_TestCase
 
 	protected function setUp()
 	{
-		$this->loader = new PSX_Loader_Test(PSX_Base_Default::getInstance());
+		$loader = new PSX_Loader_Test(PSX_Base_Default::getInstance());
+
+		$this->loader = $loader;
 	}
 
 	protected function tearDown()
