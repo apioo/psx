@@ -44,7 +44,7 @@ class PSX_Filter_DateTimeTest extends PHPUnit_Framework_TestCase
 
 	public function testDateTime()
 	{
-		$dateTime = new PSX_Filter_DateTime(PSX_Time::SQL);
+		$dateTime = new PSX_Filter_DateTime(PSX_DateTime::SQL);
 
 		$this->assertEquals('2010-10-10 00:00:00', $dateTime->apply('10.10.2010'));
 		$this->assertEquals(false, $dateTime->apply('foobar'));

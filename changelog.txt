@@ -1,5 +1,6 @@
 
 0.4.7
+* Renamed PSX_Time to PSX_DateTime 
 * Add user agent string to request headers
 * Fix http redirection header bei relativen urls
 * Added user agent string to most http calls

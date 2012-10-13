@@ -60,7 +60,7 @@ class PSX_Data_WriterTestRecord extends PSX_Data_RecordAbstract
 
 	public function getDate()
 	{
-		return new DateTime($this->date);
+		return new PSX_DateTime($this->date);
 	}
 
 	public function export(PSX_Data_WriterResult $result)

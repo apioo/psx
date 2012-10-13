@@ -51,7 +51,7 @@ class PSX_Data_Writer_AtomTest extends PSX_Data_WriterTestCase
 <entry xmlns="http://www.w3.org/2005/Atom">
   <title>bar</title>
   <id>1</id>
-  <updated>2012-03-11T13:37:21+01:00</updated>
+  <updated>2012-03-11T13:37:21+00:00</updated>
   <author>
     <name>foo</name>
   </author>
@@ -81,12 +81,12 @@ TEXT;
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title>foo</title>
   <id>bar</id>
-  <updated>2012-03-11T13:37:21+01:00</updated>
+  <updated>2012-03-11T13:37:21+00:00</updated>
   <generator>amun</generator>
   <entry xmlns="http://www.w3.org/2005/Atom">
     <title>bar</title>
     <id>1</id>
-    <updated>2012-03-11T13:37:21+01:00</updated>
+    <updated>2012-03-11T13:37:21+00:00</updated>
     <author>
       <name>foo</name>
     </author>
@@ -95,7 +95,7 @@ TEXT;
   <entry xmlns="http://www.w3.org/2005/Atom">
     <title>bar</title>
     <id>2</id>
-    <updated>2012-03-11T13:37:21+01:00</updated>
+    <updated>2012-03-11T13:37:21+00:00</updated>
     <author>
       <name>foo</name>
     </author>

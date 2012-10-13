@@ -94,7 +94,7 @@ class PSX_Cache_Handler_Sql implements PSX_Cache_HandlerInterface
 
 			$columnId      => $key,
 			$columnContent => $content,
-			$columnDate    => date(PSX_Time::SQL),
+			$columnDate    => date(PSX_DateTime::SQL),
 
 		));
 	}

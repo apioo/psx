@@ -68,7 +68,7 @@ class PSX_Session_Handler_Sql implements PSX_Session_HandlerInterface
 
 			'id'      => $id,
 			'content' => $data,
-			'date'    => date(PSX_Time::SQL),
+			'date'    => date(PSX_DateTime::SQL),
 
 		));
 	}
@@ -83,7 +83,7 @@ class PSX_Session_Handler_Sql implements PSX_Session_HandlerInterface
 	public function gc($maxTime)
 	{
 		$con = new PSX_Sql_Condition();
-		$con->add('DATE_ADD(date, "INTERVAL ' . $maxTime . ' SECOND")', '<', date(PSX_Time::SQL));
+		$con->add('DATE_ADD(date, "INTERVAL ' . $maxTime . ' SECOND")', '<', date(PSX_DateTime::SQL));
 
 		$this->sql->delete($this->table, $con);
 

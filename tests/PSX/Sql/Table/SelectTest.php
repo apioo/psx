@@ -94,7 +94,7 @@ SQL;
 
 				'userId' => $row['userId'],
 				'title'  => $row['title'],
-				'date'   => date(PSX_Time::SQL),
+				'date'   => date(PSX_DateTime::SQL),
 
 			));
 		}

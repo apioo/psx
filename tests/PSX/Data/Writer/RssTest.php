@@ -51,7 +51,7 @@ class PSX_Data_Writer_RssTest extends PSX_Data_WriterTestCase
 <item>
   <title>bar</title>
   <guid>1</guid>
-  <pubDate>Sun, 11 Mar 2012 13:37:21 +0100</pubDate>
+  <pubDate>Sun, 11 Mar 2012 13:37:21 +0000</pubDate>
   <author>foo</author>
   <description>foobar</description>
 </item>
@@ -83,14 +83,14 @@ TEXT;
     <item>
       <title>bar</title>
       <guid>1</guid>
-      <pubDate>Sun, 11 Mar 2012 13:37:21 +0100</pubDate>
+      <pubDate>Sun, 11 Mar 2012 13:37:21 +0000</pubDate>
       <author>foo</author>
       <description>foobar</description>
     </item>
     <item>
       <title>bar</title>
       <guid>2</guid>
-      <pubDate>Sun, 11 Mar 2012 13:37:21 +0100</pubDate>
+      <pubDate>Sun, 11 Mar 2012 13:37:21 +0000</pubDate>
       <author>foo</author>
       <description>foobar</description>
     </item>

@@ -107,7 +107,7 @@ class PSX_OpenId_Store_Sql implements PSX_OpenId_StoreInterface
 
 	public function save($opEndpoint, PSX_OpenId_Provider_Data_Association $assoc)
 	{
-		$now = new DateTime('NOW', new DateTimeZone('UTC'));
+		$now = new PSX_DateTime();
 
 		$this->sql->insert($this->table, array(
 
@@ -117,7 +117,7 @@ class PSX_OpenId_Store_Sql implements PSX_OpenId_StoreInterface
 			'sessionType' => $assoc->getSessionType(),
 			'secret'      => $assoc->getSecret(),
 			'expires'     => $assoc->getExpire(),
-			'date'        => $now->format(PSX_Time::SQL),
+			'date'        => $now->format(PSX_DateTime::SQL),
 
 		));
 	}

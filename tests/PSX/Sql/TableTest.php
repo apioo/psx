@@ -69,7 +69,7 @@ SQL;
 				$this->sql->insert($this->table, array(
 
 					'title' => $d,
-					'date'  => date(PSX_Time::SQL),
+					'date'  => date(PSX_DateTime::SQL),
 
 				));
 			}
@@ -265,7 +265,7 @@ SQL;
 		$table->insert(array(
 
 			'title' => $value,
-			'date'  => date(PSX_Time::SQL)
+			'date'  => date(PSX_DateTime::SQL)
 
 		));
 
@@ -279,7 +279,7 @@ SQL;
 		$record = new PSX_Data_Record('test', array(
 
 			'title' => $value,
-			'date'  => date(PSX_Time::SQL)
+			'date'  => date(PSX_DateTime::SQL)
 
 		));
 
@@ -298,7 +298,7 @@ SQL;
 		$table->update(array(
 
 			'title' => $value,
-			'date'  => date(PSX_Time::SQL)
+			'date'  => date(PSX_DateTime::SQL)
 
 		), $con);
 
@@ -317,7 +317,7 @@ SQL;
 
 			'id'    => 3,
 			'title' => $value,
-			'date'  => date(PSX_Time::SQL)
+			'date'  => date(PSX_DateTime::SQL)
 
 		));
 
@@ -334,7 +334,7 @@ SQL;
 		$record = new PSX_Data_Record('test', array(
 
 			'title' => $value,
-			'date'  => date(PSX_Time::SQL)
+			'date'  => date(PSX_DateTime::SQL)
 
 		));
 
@@ -354,7 +354,7 @@ SQL;
 
 			'id'    => 3,
 			'title' => $value,
-			'date'  => date(PSX_Time::SQL)
+			'date'  => date(PSX_DateTime::SQL)
 
 		));
 
@@ -375,7 +375,7 @@ SQL;
 
 			'id'    => 3,
 			'title' => $value,
-			'date'  => date(PSX_Time::SQL)
+			'date'  => date(PSX_DateTime::SQL)
 
 		));
 

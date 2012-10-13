@@ -50,7 +50,7 @@ class PSX_Log_Handler_Sql implements PSX_Log_HandlerInterface
 
 			'level' => $level,
 			'msg'   => $string,
-			'date'  => date(PSX_Time::SQL),
+			'date'  => date(PSX_DateTime::SQL),
 
 		));
 	}

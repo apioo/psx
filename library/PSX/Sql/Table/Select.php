@@ -297,9 +297,9 @@ class PSX_Sql_Table_Select implements PSX_Sql_Table_SelectInterface
 
 			if($dateColumn !== null)
 			{
-				$datetime = new DateTime($updatedSince);
+				$datetime = new PSX_DateTime($updatedSince);
 
-				$this->where($dateColumn, '>', $datetime->format(PSX_Time::SQL));
+				$this->where($dateColumn, '>', $datetime->format(PSX_DateTime::SQL));
 			}
 		}
 

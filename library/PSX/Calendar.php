@@ -42,7 +42,7 @@ class PSX_Calendar implements Iterator
 
 	public function __construct($date = null, DateTimeZone $timezone = null)
 	{
-		$this->setDate(new DateTime($date !== null ? $date : 'now'));
+		$this->setDate(new PSX_DateTime($date !== null ? $date : 'now'));
 
 		if($timezone !== null)
 		{
@@ -89,11 +89,11 @@ class PSX_Calendar implements Iterator
 	/**
 	 * Returns the easter date for the current year
 	 *
-	 * @return DateTime
+	 * @return PSX_DateTime
 	 */
 	public function getEasterDate()
 	{
-		$easter = new DateTime($this->getYear() . '-03-21');
+		$easter = new PSX_DateTime($this->getYear() . '-03-21');
 		$days   = easter_days($this->getYear());
 
 		return $easter->add(new DateInterval('P' . $days . 'D'));
@@ -186,7 +186,7 @@ class PSX_Calendar implements Iterator
 
 	public function rewind()
 	{
-		$this->itDate = new DateTime($this->getYear() . '-' . $this->getMonth() . '-01');
+		$this->itDate = new PSX_DateTime($this->getYear() . '-' . $this->getMonth() . '-01');
 	}
 
 	public function valid()

@@ -37,17 +37,16 @@ class PSX_Filter_DateTime extends PSX_FilterAbstract
 	private $format;
 	private $timezone;
 
-	public function __construct($format = 'Y-m-d H:i:s', DateTimeZone $timezone = null)
+	public function __construct($format = 'Y-m-d H:i:s')
 	{
-		$this->format   = $format;
-		$this->timezone = $timezone === null ? new DateTimeZone('UTC') : $timezone;
+		$this->format = $format;
 	}
 
 	public function apply($value)
 	{
 		try
 		{
-			$date = new DateTime($value, $this->timezone);
+			$date = new PSX_DateTime($value);
 
 			return $date->format($this->format);
 		}
