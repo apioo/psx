@@ -54,7 +54,7 @@ class PSX_Sql_Table_SelectTest extends PHPUnit_Framework_TestCase
 	{
 		try
 		{
-			$config = new PSX_Config('../configuration.php');
+			$config = new PSX_Config('configuration.php');
 
 			$this->sql = new PSX_Sql($config['psx_sql_host'],
 				$config['psx_sql_user'],

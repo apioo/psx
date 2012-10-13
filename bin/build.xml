@@ -27,9 +27,7 @@
 	</target>
 
 	<target name="test" depends="syntax-check">
-		<exec dir="${tests}" executable="phpunit.bat" failonerror="true">
-			<arg line="--configuration config.xml" />
-		</exec>
+		<exec executable="phpunit.bat" failonerror="true" />
 	</target>
 
 	<target name="build-dir">

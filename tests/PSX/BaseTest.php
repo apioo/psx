@@ -38,7 +38,7 @@ class PSX_BaseTest extends PHPUnit_Framework_TestCase
 
 	protected function setUp()
 	{
-		$config = new PSX_Config('../configuration.php');
+		$config = new PSX_Config('configuration.php');
 
 		$this->base = PSX_Base::initInstance($config);
 	}

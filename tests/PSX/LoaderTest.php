@@ -38,10 +38,7 @@ class PSX_LoaderTest extends PHPUnit_Framework_TestCase
 
 	protected function setUp()
 	{
-		$config = new PSX_Config('../configuration.php');
-		$base   = PSX_Base::initInstance($config);
-
-		$this->loader = new PSX_Loader_Test($base);
+		$this->loader = new PSX_Loader_Test(PSX_Base_Default::getInstance());
 	}
 
 	protected function tearDown()
@@ -67,12 +64,12 @@ class PSX_LoaderTest extends PHPUnit_Framework_TestCase
 	public function testParsePathException()
 	{
 		$resp   = $this->loader->parsePathPublic('foo/bar');
-		$expect = array('sample', '../module/sample.php', new ReflectionClass('sample'), false, array('foo', 'bar'));
+		$expect = array('sample', 'module/sample.php', new ReflectionClass('sample'), false, array('foo', 'bar'));
 
 		$this->assertEquals($expect, $resp);
 
 		$resp   = $this->loader->parsePathPublic('/foo/bar/');
-		$expect = array('sample', '../module/sample.php', new ReflectionClass('sample'), false, array('foo', 'bar'));
+		$expect = array('sample', 'module/sample.php', new ReflectionClass('sample'), false, array('foo', 'bar'));
 
 		$this->assertEquals($expect, $resp);
 	}
@@ -109,7 +106,7 @@ class PSX_LoaderTest extends PHPUnit_Framework_TestCase
 		$this->loader->addRoute('.host-meta/well-known', 'sample');
 
 		$resp   = $this->loader->parsePathPublic('.host-meta/well-known');
-		$expect = array('sample', '../module/sample.php', new ReflectionClass('sample'), false, array('.host-meta', 'well-known'));
+		$expect = array('sample', 'module/sample.php', new ReflectionClass('sample'), false, array('.host-meta', 'well-known'));
 
 		$this->assertEquals($expect, $resp);
 	}

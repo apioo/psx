@@ -63,7 +63,7 @@ class PSX_Bootstrap
 		// set include path
 		if(!empty($config['psx_path_library']))
 		{
-			set_include_path(PSX_PATH_LIBRARY . PATH_SEPARATOR . get_include_path());
+			$this->addIncludePath($config['psx_path_library']);
 		}
 
 		// include core loader
@@ -95,6 +95,11 @@ class PSX_Bootstrap
 
 		// define in psx
 		define('PSX', true);
+	}
+
+	public function addIncludePath($path)
+	{
+		set_include_path($path . PATH_SEPARATOR . get_include_path());
 	}
 
 	public static function errorHandler($errno, $errstr, $errfile, $errline)
