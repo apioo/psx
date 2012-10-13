@@ -34,12 +34,13 @@
 		<mkdir dir="${build}" />
 		<mkdir dir="${build}/cache" />
 		<copy todir="${build}/doc">
-			<fileset dir="${doc}">
-				<exclude name="${doc}/docbook/**" />
-			</fileset>
+			<fileset dir="${doc}" />
 		</copy>
 		<copy todir="${build}/library">
 			<fileset dir="${library}" />
+		</copy>
+		<copy todir="${build}/module">
+			<fileset dir="${module}" />
 		</copy>
 		<copy todir="${build}/public">
 			<fileset dir="${public}" />
@@ -50,6 +51,7 @@
 		<copy todir="${build}/tests">
 			<fileset dir="${tests}" />
 		</copy>
+		<copy file="configuration.php" tofile="${build}/configuration.php" />
 	</target>
 
 	<target name="build-pear" depends="get-version,test,build-dir">
