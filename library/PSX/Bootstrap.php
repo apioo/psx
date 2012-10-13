@@ -141,6 +141,6 @@ class PSX_Bootstrap
 
 		$fileName.= str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
 
-		include_once($fileName);
+		@include_once($fileName);
 	}
 }
