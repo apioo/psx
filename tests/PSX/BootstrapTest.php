@@ -51,24 +51,4 @@ class PSX_BootstrapTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals(true, defined('PSX'));
 		$this->assertEquals(true, strpos(get_include_path(), PSX_PATH_LIBRARY) !== false);
 	}
-
-	public function testAutoloader()
-	{
-		$funcs = spl_autoload_functions();
-		$found = false;
-
-		$this->assertEquals(true, is_array($funcs));
-		$this->assertEquals(true, count($funcs) > 0);
-
-		foreach($funcs as $func)
-		{
-			if(isset($func[0]) && $func[0] == 'PSX_Bootstrap' && isset($func[1]) && $func[1] == 'autoload')
-			{
-				$found = true;
-				break;
-			}
-		}
-
-		$this->assertEquals(true, $found);
-	}
 }
