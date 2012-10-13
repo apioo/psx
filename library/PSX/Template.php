@@ -35,11 +35,11 @@
  */
 class PSX_Template
 {
-	public $data = array();
+	protected $data = array();
 
-	public $dir;
-	public $file;
-	public $path = false;
+	protected $dir;
+	protected $file;
+	protected $path = false;
 
 	private $config;
 
@@ -47,13 +47,13 @@ class PSX_Template
 	{
 		$this->config = $config;
 
-		$this->dir($this->config['psx_template_dir']);
+		$this->setDir(PSX_PATH_TEMPLATE . '/' . $this->config['psx_template_dir']);
 		$this->set($this->config['psx_template_default']);
 	}
 
-	public function dir($dir)
+	public function setDir($dir)
 	{
-		if(is_dir(PSX_PATH_TEMPLATE . '/' . $dir))
+		if(is_dir($dir))
 		{
 			$this->dir = $dir;
 
@@ -63,13 +63,18 @@ class PSX_Template
 		return false;
 	}
 
+	public function getDir()
+	{
+		return $this->dir;
+	}
+
 	public function set($file)
 	{
 		if(!empty($file))
 		{
-			$path = PSX_PATH_TEMPLATE . '/' . $this->dir . '/' . $file;
+			$path = $this->dir . '/' . $file;
 
-			if(PSX_File::exists($path))
+			if(is_file($path))
 			{
 				$this->file = $file;
 				$this->path = $path;
@@ -79,6 +84,21 @@ class PSX_Template
 		}
 
 		return false;
+	}
+
+	public function getFile()
+	{
+		return $this->file;
+	}
+
+	public function getPath()
+	{
+		return $this->path;
+	}
+
+	public function getData()
+	{
+		return $this->data;
 	}
 
 	public function assign($key, $value)
@@ -105,7 +125,7 @@ class PSX_Template
 		$config   = $this->config;
 		$self     = isset($_SERVER['QUERY_STRING']) && !empty($_SERVER['QUERY_STRING']) ? $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING'] : $_SERVER['PHP_SELF'];
 		$url      = $this->config['psx_url'] . '/' . $this->config['psx_dispatch'];
-		$location = PSX_PATH_TEMPLATE . '/' . $this->dir;
+		$location = $this->dir;
 		$render   = round(microtime(true) - $GLOBALS['psx_benchmark'], 6);
 		$base     = parse_url($this->config['psx_url'], PHP_URL_PATH);
 
@@ -117,10 +137,7 @@ class PSX_Template
 
 		require_once($this->path);
 
-		$html = ob_get_contents();
-
-		ob_end_clean();
-
+		$html = ob_get_clean();
 
 		return $html;
 	}
