@@ -138,8 +138,9 @@ class PSX_Bootstrap
 
 		$fileName.= str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
 
-		require_once($fileName);
+		if(is_file($fileName))
+		{
+			require_once($fileName);
+		}
 	}
 }
-
-
