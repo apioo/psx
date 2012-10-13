@@ -86,7 +86,7 @@ class PSX_Cache
 	 * used.
 	 *
 	 * @param string $key
-	 * @param integer $expire
+	 * @param integer|DateInterval $expire
 	 * @param PSX_Cache_HandlerInterface $handler
 	 * @return PSX_Cache
 	 */
@@ -94,7 +94,7 @@ class PSX_Cache
 	{
 		if(!is_numeric($expire))
 		{
-			$interval = new DateInterval($expire);
+			$interval = $expire instanceof DateInterval ? $expire : new DateInterval($expire);
 			$now      = new DateTime();
 			$tstamp   = $now->getTimestamp();
 

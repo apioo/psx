@@ -47,6 +47,28 @@ class PSX_CacheTest extends PHPUnit_Framework_TestCase
 		return new PSX_Cache_Handler_File();
 	}
 
+	public function testMinimalCache()
+	{
+		$cache = new PSX_Cache('foo');
+		$cache->remove();
+
+		$content = $cache->load();
+
+		$this->assertEquals(false, $content);
+
+		$cache->write('foobar');
+
+		$content = $cache->load();
+
+		$this->assertEquals('foobar', $content);
+
+		$cache->remove();
+
+		$content = $cache->load();
+
+		$this->assertEquals(false, $content);
+	}
+
 	public function testCache()
 	{
 		$cache = new PSX_Cache('foo', 0, $this->getHandler());
@@ -72,6 +94,50 @@ class PSX_CacheTest extends PHPUnit_Framework_TestCase
 	public function testCacheExpires()
 	{
 		$cache = new PSX_Cache('foo', 2, $this->getHandler()); // expires in 2 seconds
+		$cache->remove();
+
+		$content = $cache->load();
+
+		$this->assertEquals(false, $content);
+
+		$cache->write('foobar');
+
+		$content = $cache->load();
+
+		$this->assertEquals('foobar', $content);
+
+		sleep(3); // wait 2 seconds
+
+		$content = $cache->load();
+
+		$this->assertEquals(false, $content);
+	}
+
+	public function testCacheExpiresString()
+	{
+		$cache = new PSX_Cache('foo', 'PT2S', $this->getHandler()); // expires in 2 seconds
+		$cache->remove();
+
+		$content = $cache->load();
+
+		$this->assertEquals(false, $content);
+
+		$cache->write('foobar');
+
+		$content = $cache->load();
+
+		$this->assertEquals('foobar', $content);
+
+		sleep(3); // wait 2 seconds
+
+		$content = $cache->load();
+
+		$this->assertEquals(false, $content);
+	}
+
+	public function testCacheExpiresDateInterval()
+	{
+		$cache = new PSX_Cache('foo', new DateInterval('PT2S'), $this->getHandler()); // expires in 2 seconds
 		$cache->remove();
 
 		$content = $cache->load();
