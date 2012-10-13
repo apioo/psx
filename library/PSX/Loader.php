@@ -187,7 +187,7 @@ class PSX_Loader
 			}
 			else
 			{
-				throw new PSX_Loader_Exception('Unkown module!');
+				throw new PSX_Loader_Exception('Unkown module "' . $x . '" in ' . $this->path);
 			}
 		}
 

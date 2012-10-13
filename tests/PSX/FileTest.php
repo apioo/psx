@@ -38,14 +38,7 @@ class PSX_FileTest extends PHPUnit_Framework_TestCase
 
 	protected function setUp()
 	{
-		if(isset($_SERVER['HOME']) && $_SERVER['HOME'][0] == '/')
-		{
-			$this->path = '/tmp/' . __CLASS__ . '.txt';
-		}
-		else
-		{
-			$this->path = PSX_PATH_CACHE . '/' . __CLASS__ . '.txt';
-		}
+		$this->path = PSX_PATH_CACHE . '/' . __CLASS__ . '.txt';
 	}
 
 	protected function tearDown()
