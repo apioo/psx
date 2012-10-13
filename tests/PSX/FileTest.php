@@ -51,7 +51,8 @@ class PSX_FileTest extends PHPUnit_Framework_TestCase
 		$file = new PSX_File($this->path);
 		$file = $file->openFile('w');
 
-		$this->assertEquals($this->path, (string) $file);
+		$this->assertEquals(__CLASS__ . '.txt', $file->getFilename());
+		$this->assertEquals(PSX_PATH_CACHE, $file->getPath());
 		$this->assertEquals(true, $file->isFile());
 		$this->assertEquals(true, PSX_File::exists($this->path));
 
