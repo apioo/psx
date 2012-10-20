@@ -1,6 +1,6 @@
 <?php
 /*
- *  $Id: FilterTest.php 560 2012-07-29 02:42:22Z k42b3.x@googlemail.com $
+ *  $Id: LexerTest.php 544 2012-07-10 22:28:16Z k42b3.x@googlemail.com $
  *
  * psx
  * A object oriented and modular based PHP framework for developing
@@ -24,15 +24,15 @@
  */
 
 /**
- * PSX_Html_FilterTest
+ * PSX_Html_Filter_Collection_Html5InlineTest
  *
  * @author     Christoph Kappestein <k42b3.x@gmail.com>
  * @license    http://www.gnu.org/licenses/gpl.html GPLv3
  * @link       http://phpsx.org
  * @category   tests
- * @version    $Revision: 560 $
+ * @version    $Revision: 544 $
  */
-class PSX_Html_FilterTest extends PHPUnit_Framework_TestCase
+class PSX_Html_Filter_Collection_Html5TextTest extends PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -42,28 +42,13 @@ class PSX_Html_FilterTest extends PHPUnit_Framework_TestCase
 	{
 	}
 
-	public function testFilterNormal()
-	{
-		$html = <<<HTML
-<p>sdfsdfsdf</p>
-HTML;
-
-		$expected = <<<HTML
-<p>sdfsdfsdf</p>
-HTML;
-
-		$filter = new PSX_Html_Filter($html);
-
-		$this->assertEquals($expected, $filter->filter());
-	}
-
-	public function testFilterFormat()
+	public function testNormalHtml()
 	{
 		$html = <<<HTML
 <p>foobar</p>
 <ul>
 	<li>lorem ipsum</li>
-	<li>lorem <h1>ipsum</h1></li>
+	<li>lorem </li>
 </ul>
 HTML;
 
@@ -75,7 +60,28 @@ HTML;
 </ul>
 HTML;
 
-		$filter = new PSX_Html_Filter($html);
+		$filter = new PSX_Html_Filter($html, new PSX_Html_Filter_Collection_Html5Text());
+
+		$this->assertEquals($expected, $filter->filter());
+	}
+
+	public function testInlineJavascript()
+	{
+		$html = <<<HTML
+<div id="fadeOut" style="display:none;">some content</div>
+<script type="text/javascript">
+$(document).ready(function(){
+	$('#fadeOut').fadeIn();
+});
+</script>
+HTML;
+
+		$expected = <<<HTML
+
+
+HTML;
+
+		$filter = new PSX_Html_Filter($html, new PSX_Html_Filter_Collection_Html5Text());
 
 		$this->assertEquals($expected, $filter->filter());
 	}
