@@ -49,7 +49,7 @@ class PSX_CacheTest extends PHPUnit_Framework_TestCase
 
 	public function testMinimalCache()
 	{
-		$cache = new PSX_Cache('foo');
+		$cache = new PSX_Cache(__METHOD__);
 		$cache->remove();
 
 		$content = $cache->load();
@@ -71,7 +71,7 @@ class PSX_CacheTest extends PHPUnit_Framework_TestCase
 
 	public function testCache()
 	{
-		$cache = new PSX_Cache('foo', 0, $this->getHandler());
+		$cache = new PSX_Cache(__METHOD__, 0, $this->getHandler());
 		$cache->remove();
 
 		$content = $cache->load();
@@ -93,7 +93,7 @@ class PSX_CacheTest extends PHPUnit_Framework_TestCase
 
 	public function testCacheExpires()
 	{
-		$cache = new PSX_Cache('foo', 2, $this->getHandler()); // expires in 2 seconds
+		$cache = new PSX_Cache(__METHOD__, 2, $this->getHandler()); // expires in 2 seconds
 		$cache->remove();
 
 		$content = $cache->load();
@@ -115,7 +115,7 @@ class PSX_CacheTest extends PHPUnit_Framework_TestCase
 
 	public function testCacheExpiresString()
 	{
-		$cache = new PSX_Cache('foo', 'PT2S', $this->getHandler()); // expires in 2 seconds
+		$cache = new PSX_Cache(__METHOD__, 'PT2S', $this->getHandler()); // expires in 2 seconds
 		$cache->remove();
 
 		$content = $cache->load();
@@ -137,7 +137,7 @@ class PSX_CacheTest extends PHPUnit_Framework_TestCase
 
 	public function testCacheExpiresDateInterval()
 	{
-		$cache = new PSX_Cache('foo', new DateInterval('PT2S'), $this->getHandler()); // expires in 2 seconds
+		$cache = new PSX_Cache(__METHOD__, new DateInterval('PT2S'), $this->getHandler()); // expires in 2 seconds
 		$cache->remove();
 
 		$content = $cache->load();
