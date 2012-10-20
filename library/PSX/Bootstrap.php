@@ -107,9 +107,8 @@ class PSX_Bootstrap
 
 	public static function errorHandler($errno, $errstr, $errfile, $errline)
 	{
-		// if someone add an @ to the function call to supress an error
-		// message the error reporting is 0 so in this case we dont
-		// throw an exception
+		// if someone add an @ to the function call to supress an error message
+		// the error reporting is 0 so in this case we dont throw an exception
 		if(error_reporting() == 0)
 		{
 			return false;
@@ -140,8 +139,11 @@ class PSX_Bootstrap
 		}
 
 		$fileName.= str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
+		$filePath = stream_resolve_include_path($fileName);
 
-		// stream_resolve_include_path
-		@include_once($fileName);
+		if($filePath !== false)
+		{
+			require($filePath);
+		}
 	}
 }
