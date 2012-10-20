@@ -38,6 +38,8 @@ class PSX_Html_Lexer_Token_Text extends PSX_Html_Lexer_TokenAbstract
 	public $name;
 	public $data;
 
+	public $parentNode = null;
+
 	public function __construct($data)
 	{
 		$this->name = '#PCDATA';

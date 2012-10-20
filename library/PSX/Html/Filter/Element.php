@@ -39,7 +39,7 @@ class PSX_Html_Filter_Element
 	private $attributes;
 	private $values;
 
-	public function __construct($name, array $attributes = array(), array $values = array())
+	public function __construct($name, array $attributes = array(), $values = array())
 	{
 		$this->setName($name);
 		$this->setAttributes($attributes);
@@ -65,8 +65,8 @@ class PSX_Html_Filter_Element
 	 * Adds an attribute filter to the element can be PSX_FilterAbstract or an
 	 * array<PSX_FilterAbstract> or an string.
 	 *
-	 * @param PSX_FilterAbstract|string|array
 	 * @param string $name
+	 * @param PSX_FilterAbstract|string|array $filter
 	 * @return void
 	 */
 	public function addAttribute($name, $filter)
@@ -77,10 +77,10 @@ class PSX_Html_Filter_Element
 	/**
 	 * Array of element names wich are allowed in this element
 	 *
-	 * @param array
+	 * @param array|constant $values
 	 * @return void
 	 */
-	public function setValues(array $values)
+	public function setValues($values)
 	{
 		$this->values = $values;
 	}

@@ -35,6 +35,9 @@
  */
 class PSX_Html_Filter
 {
+	const ANY_VALUE = 0x1;
+	const CONTENT_TRANSPARENT = 0x1;
+
 	private $content;
 	private $collection;
 
@@ -45,7 +48,7 @@ class PSX_Html_Filter
 	{
 		if($collection === null)
 		{
-			$collection = new PSX_Html_Filter_Collection_Html5Basic();
+			$collection = new PSX_Html_Filter_Collection_Html5Text();
 		}
 
 		$this->setContent($content);
@@ -81,7 +84,7 @@ class PSX_Html_Filter
 	public function filter()
 	{
 		$str  = '';
-		$root = PSX_Html_Lexer::parse('<html>' . $this->content . '</html>');
+		$root = PSX_Html_Lexer::parse('<body>' . $this->content . '</body>');
 
 		if($root !== null)
 		{
@@ -183,13 +186,20 @@ class PSX_Html_Filter
 					{
 						foreach($allowedAttr[$key] as $filter)
 						{
-							$val = $filter->apply($val);
-
-							if($val === false)
+							if($filter instanceof PSX_FilterAbstract)
 							{
-								unset($element->attr[$key]);
+								$val = $filter->apply($val);
 
-								break;
+								if($val === false)
+								{
+									unset($element->attr[$key]);
+
+									break;
+								}
+							}
+							else if((string) $filter === $element->attr[$key])
+							{
+								$val = true;
 							}
 						}
 
@@ -202,11 +212,21 @@ class PSX_Html_Filter
 							$element->attr[$key] = $val;
 						}
 					}
+					else if($allowedAttr[$key] === self::ANY_VALUE)
+					{
+						// the attribute can contain any content
+					}
 					else
 					{
 						unset($element->attr[$key]);
 					}
 				}
+				/*
+				else if(substr($key, 0, 5) == 'data-')
+				{
+					// allow data- elements
+				}
+				*/
 				else
 				{
 					unset($element->attr[$key]);
@@ -223,8 +243,37 @@ class PSX_Html_Filter
 				continue;
 			}
 
-			// if element is not allowed as child
-			if(!in_array($el->getName(), $this->collection[$element->name]->getValues()))
+			// get allowed childs. If the value is CONTENT_TRANSPARENT we look 
+			// up the parent elements and get the allowed childrens
+			$childs = $this->collection[$element->name]->getValues();
+
+			if(!is_array($childs))
+			{
+				if($childs === self::CONTENT_TRANSPARENT)
+				{
+					$parentNode = $element;
+
+					while($this->collection[$parentNode->name]->getValues() === self::CONTENT_TRANSPARENT)
+					{
+						$parentNode = $parentNode->parentNode;
+					}
+
+					if($parentNode instanceof PSX_Html_Lexer_Token_Element)
+					{
+						$childs = $this->collection[$parentNode->name]->getValues();
+					}
+					else
+					{
+						$childs = array();
+					}
+				}
+				else
+				{
+					throw new PSX_Html_Filter_Exception('Child must be either an array or PSX_Html_Filter constant');
+				}
+			}
+
+			if(!in_array($el->getName(), $childs))
 			{
 				unset($element->childNodes[$key]);
 

@@ -41,8 +41,9 @@ class PSX_Html_Lexer_Token_Element extends PSX_Html_Lexer_TokenAbstract
 	public $type;
 	public $name;
 	public $attr  = array();
-	public $short = false; // whether its an <b /> tag or nor
+	public $short = false; // whether its an <b /> tag or not
 
+	public $parentNode = null;
 	public $childNodes = array();
 
 	public function __construct($type, $name, array $attr = array(), $short = false)
@@ -78,6 +79,15 @@ class PSX_Html_Lexer_Token_Element extends PSX_Html_Lexer_TokenAbstract
 
 	public function appendChild(PSX_Html_Lexer_TokenAbstract $token)
 	{
+		if($token->parentNode !== null)
+		{
+			throw new PSX_Html_Lexer_Exception('Token is already appended to an element');
+		}
+		else
+		{
+			$token->parentNode = $this;
+		}
+
 		$this->childNodes[] = $token;
 	}
 
