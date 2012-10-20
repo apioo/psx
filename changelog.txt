@@ -1,8 +1,10 @@
 
 0.4.7
+* Improved autoloader using stream_resolve_include_path before require the class
+  so the autoload will not fail if the file doesnt exists
+* Added new html5 filter collections
 * Renamed PSX_Time to PSX_DateTime 
-* Add user agent string to request headers
-* Fix http redirection header bei relativen urls
+* Fix http redirection header of relative urls
 * Added user agent string to most http calls
 * Add cache to PSX_Base getRequest method so calling the method multiple times
   will always return the same object

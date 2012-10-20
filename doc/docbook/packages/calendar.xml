@@ -76,7 +76,7 @@
         </methodsynopsis>
         <methodsynopsis>
           <modifier>public</modifier>
-          <type>DateTime</type>
+          <type>PSX_DateTime</type>
           <methodname>getEasterDate</methodname>
           <void/>
         </methodsynopsis>

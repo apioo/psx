@@ -59,7 +59,7 @@ echo $content;
             <parameter>key</parameter>
           </methodparam>
           <methodparam choice="opt">
-            <type>integer</type>
+            <type>integer|DateInterval</type>
             <parameter>expire</parameter>
           </methodparam>
           <methodparam choice="opt">

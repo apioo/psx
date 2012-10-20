@@ -10,7 +10,7 @@
     <email>k42b3@phpsx.org</email>
     <active>yes</active>
   </lead>
-  <date>2012-10-13</date>
+  <date>2012-10-20</date>
   <version>
     <release>0.4.7</release>
     <api>0.4.7</api>
@@ -20,8 +20,11 @@
     <api>stable</api>
   </stability>
   <license uri="http://www.gnu.org/licenses/">GPLv3 License</license>
-  <notes>* Add user agent string to request headers
-* Fix http redirection header bei relativen urls
+  <notes>* Improved autoloader using stream_resolve_include_path before require the class
+so the autoload will not fail if the file doesnt exists
+* Added new html5 filter collections
+* Renamed PSX_Time to PSX_DateTime
+* Fix http redirection header of relative urls
 * Added user agent string to most http calls
 * Add cache to PSX_Base getRequest method so calling the method multiple times
 will always return the same object
@@ -138,6 +141,7 @@ getParameter() and getBody() to PSX_ModuleAbstract
           <file name="WriterInterface.php" role="php"/>
           <file name="WriterResult.php" role="php"/>
         </dir>
+        <file name="DateTime.php" role="php"/>
         <dir name="Dependency">
           <file name="Default.php" role="php"/>
           <file name="View.php" role="php"/>
@@ -174,7 +178,9 @@ getParameter() and getBody() to PSX_ModuleAbstract
           <file name="Exception.php" role="php"/>
           <dir name="Filter">
             <dir name="Collection">
-              <file name="Html5Basic.php" role="php"/>
+              <file name="Html5.php" role="php"/>
+              <file name="Html5Inline.php" role="php"/>
+              <file name="Html5Text.php" role="php"/>
             </dir>
             <file name="CollectionAbstract.php" role="php"/>
             <file name="Element.php" role="php"/>
@@ -465,10 +471,6 @@ getParameter() and getBody() to PSX_ModuleAbstract
           <file name="Exception.php" role="php"/>
         </dir>
         <file name="Template.php" role="php"/>
-        <dir name="Time">
-          <file name="Exception.php" role="php"/>
-        </dir>
-        <file name="Time.php" role="php"/>
         <dir name="Upload">
           <file name="Exception.php" role="php"/>
           <file name="File.php" role="php"/>
@@ -586,6 +588,7 @@ getParameter() and getBody() to PSX_ModuleAbstract
             <file name="WriterTestCase.php" role="test"/>
             <file name="WriterTestRecord.php" role="test"/>
           </dir>
+          <file name="DateTimeTest.php" role="test"/>
           <file name="FileTest.php" role="test"/>
           <dir name="Filter">
             <file name="AlnumTest.php" role="test"/>
@@ -608,6 +611,14 @@ getParameter() and getBody() to PSX_ModuleAbstract
             <file name="XdigitTest.php" role="test"/>
           </dir>
           <dir name="Html">
+            <dir name="Filter">
+              <dir name="Collection">
+                <file name="Html5InlineTest.php" role="test"/>
+                <file name="Html5Test.php" role="test"/>
+                <file name="Html5TextTest.php" role="test"/>
+              </dir>
+              <file name="XssTest.php" role="test"/>
+            </dir>
             <file name="FilterTest.php" role="test"/>
             <file name="LexerTest.php" role="test"/>
             <file name="PagingTest.php" role="test"/>
@@ -708,7 +719,6 @@ getParameter() and getBody() to PSX_ModuleAbstract
           </dir>
           <file name="SqlTest.php" role="test"/>
           <file name="TemplateTest.php" role="test"/>
-          <file name="TimeTest.php" role="test"/>
           <dir name="Upload">
             <file name="FileTest.php" role="test"/>
           </dir>
@@ -932,8 +942,11 @@ extends now SplFileObject wich already defines an isFile method
       </stability>
       <date>2012-10-07</date>
       <license uri="http://www.gnu.org/licenses/">GPLv3 License</license>
-      <notes>* Add user agent string to request headers
-* Fix http redirection header bei relativen urls
+      <notes>* Improved autoloader using stream_resolve_include_path before require the class
+so the autoload will not fail if the file doesnt exists
+* Added new html5 filter collections
+* Renamed PSX_Time to PSX_DateTime
+* Fix http redirection header of relative urls
 * Added user agent string to most http calls
 * Add cache to PSX_Base getRequest method so calling the method multiple times
 will always return the same object
