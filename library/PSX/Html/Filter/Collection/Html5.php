@@ -322,13 +322,13 @@ class PSX_Html_Filter_Collection_Html5 extends PSX_Html_Filter_CollectionAbstrac
 			'disabled' => PSX_Html_Filter::ANY_VALUE,
 			'form' => PSX_Html_Filter::ANY_VALUE,
 			'name' => PSX_Html_Filter::ANY_VALUE,
-		)), array_merge('legend', $this->flowContent)));
+		)), array_merge(array('legend'), $this->flowContent)));
 		$this->add(new PSX_Html_Filter_Element('legend', $this->globalAttributes, $this->phrasingContent));
-		$this->add(new PSX_Html_Filter_Element('label', array_merge($this->globalAttributesm, array(
+		$this->add(new PSX_Html_Filter_Element('label', array_merge($this->globalAttributes, array(
 			'form' => PSX_Html_Filter::ANY_VALUE,
 			'for' => PSX_Html_Filter::ANY_VALUE,
 		)), $this->phrasingContent));
-		$this->add(new PSX_Html_Filter_Element('input', array_merge($this->globalAttributesm, array(
+		$this->add(new PSX_Html_Filter_Element('input', array_merge($this->globalAttributes, array(
 			'accept' => PSX_Html_Filter::ANY_VALUE,
 			'alt' => PSX_Html_Filter::ANY_VALUE,
 			'autocomplete' => PSX_Html_Filter::ANY_VALUE,
@@ -382,7 +382,7 @@ class PSX_Html_Filter_Collection_Html5 extends PSX_Html_Filter_CollectionAbstrac
 			'required' => PSX_Html_Filter::ANY_VALUE,
 			'size' => PSX_Html_Filter::ANY_VALUE,
 		)), array('option', 'optgroup')));
-		$this->add(new PSX_Html_Filter_Element('datalist', $this->globalAttributes, array_merge('option', $this->phrasingContent)));
+		$this->add(new PSX_Html_Filter_Element('datalist', $this->globalAttributes, array_merge(array('option'), $this->phrasingContent)));
 		$this->add(new PSX_Html_Filter_Element('optgroup', array_merge($this->globalAttributes, array(
 			'disabled' => PSX_Html_Filter::ANY_VALUE,
 			'label' => PSX_Html_Filter::ANY_VALUE,
