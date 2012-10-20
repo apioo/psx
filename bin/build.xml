@@ -34,7 +34,14 @@
 		<mkdir dir="${build}" />
 		<mkdir dir="${build}/cache" />
 		<copy todir="${build}/doc">
-			<fileset dir="${doc}" />
+			<fileset dir="${doc}">
+				<include name="img/**" />
+				<include name="packages/**" />
+				<include name="default.css" />
+				<include name="default.js" />
+				<include name="gplv3.html" />
+				<include name="manual.html" />
+			</fileset>
 		</copy>
 		<copy todir="${build}/library">
 			<fileset dir="${library}" />
@@ -84,23 +91,31 @@
 		<zip destfile="${bin}/psx_${version}.zip" basedir="${build}" />
 	</target>
 
-	<target name="build-all" depends="build-pear,build-phar,build-release" />
+	<target name="build-all" depends="build-doc,build-pear,build-phar,build-release" />
 
 	<target name="clean" depends="get-version">
 		<delete dir="${build}" />
 		<delete dir="${bin}/PSX-${version}" />
+		<delete file="${bin}/PSX-${version}.tgz" />
 		<delete file="${bin}/PSX-${version}.tgz" />
 		<delete file="${bin}/psx-${version}.phar" />
 		<delete file="${bin}/psx_${version}.tar.gz" />
 		<delete file="${bin}/psx_${version}.zip" />
 	</target>
 
-	<target name="build-doc">
+	<target name="clean-doc">
+		<delete>
+			<fileset dir="${doc}/packages" includes="**/*.html" />
+		</delete>
+	</target>
+
+	<target name="build-doc" depends="clean-doc">
+		<exec dir="${bin}" executable="php" failonerror="true">
+			<arg line="generate-package-docbook.php" />
+		</exec>
 		<xslt basedir="${doc}/docbook" destdir="${doc}" includes="**/*.xml" extension=".html" style="${doc}/psx.xsl">
 			<factory name="net.sf.saxon.TransformerFactoryImpl" />
 		</xslt>
-
-		<!-- correct css and js path of packages -->
 		<replace dir="${doc}/packages" token="&lt;link href=&quot;default.css&quot;" value="&lt;link href=&quot;../default.css&quot;" />
 		<replace dir="${doc}/packages" token="&lt;script src=&quot;default.js&quot;" value="&lt;script src=&quot;../default.js&quot;" />
 	</target>
