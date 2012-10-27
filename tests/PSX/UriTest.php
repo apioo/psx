@@ -173,5 +173,13 @@ class PSX_UriTest extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals($e, $r);
 	}
+
+	public function testPercentEncode()
+	{
+		$this->assertEquals('foobar', PSX_Uri::percentEncode('foobar'));
+		$this->assertEquals('http%3A%2F%2Fgoogle.de', PSX_Uri::percentEncode('http://google.de'));
+		$this->assertEquals('http%3A%2F%2Fgoogle.de', PSX_Uri::percentEncode('http%3A%2F%2Fgoogle.de'));
+		$this->assertEquals('http%253A%252F%252Fgoogle.de', PSX_Uri::percentEncode('http%3A%2F%2Fgoogle.de', false));
+	}
 }
 

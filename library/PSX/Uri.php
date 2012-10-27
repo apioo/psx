@@ -218,5 +218,67 @@ class PSX_Uri
 
 		return $absolutePath;
 	}
+
+	/**
+	 * Percent encodes an value
+	 *
+	 * @param string $value
+	 * @return string
+	 */
+	public static function percentEncode($value, $preventDoubleEncode = true)
+	{
+		$len = strlen($value);
+		$val = '';
+
+		for($i = 0; $i < $len; $i++)
+		{
+			$j = ord($value[$i]);
+
+			if($j <= 0xFF)
+			{
+				// check for double encoding
+				if($preventDoubleEncode)
+				{
+					if($j == 0x25 && $i < $len - 2)
+					{
+						$hex = strtoupper(substr($value, $i + 1, 2));
+
+						if(ctype_xdigit($hex))
+						{
+							$val.= '%' . $hex;
+
+							$i+= 2;
+							continue;
+						}
+					}
+				}
+
+				// escape characters
+				if(($j >= 0x41 && $j <= 0x5A) || // alpha
+					($j >= 0x61 && $j <= 0x7A) || // alpha
+					($j >= 0x30 && $j <= 0x39) || // digit
+					$j == 0x2D || // hyphen
+					$j == 0x2E || // period
+					$j == 0x5F || // underscore
+					$j == 0x7E) // tilde
+				{
+					$val.= $value[$i];
+				}
+				else
+				{
+					$hex = dechex($j);
+					$hex = $j <= 0xF ? '0' . $hex : $hex;
+
+					$val.= '%' . strtoupper($hex);
+				}
+			}
+			else
+			{
+				$val.= $value[$i];
+			}
+		}
+
+		return $val;
+	}
 }
 
