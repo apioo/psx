@@ -369,7 +369,7 @@ HTML;
 
 		$expect = <<<HTML
 <html>
-	<body style="foo < bar">
+	<body style="foo &lt; bar">
 	</body>
 </html>
 HTML;
@@ -388,6 +388,7 @@ HTML;
 		$this->assertEquals(array('name' => 'be evil'), PSX_Html_Lexer::parseAttributes('name="be evil"'));
 		$this->assertEquals(array('name' => 'foo', 'bar' => 'name'), PSX_Html_Lexer::parseAttributes('name="foo" bar="name"'));
 		$this->assertEquals(array('name' => ' be evil '), PSX_Html_Lexer::parseAttributes(' name = " be evil " '));
+		$this->assertEquals(array('name' => ' be evil '), PSX_Html_Lexer::parseAttributes(" name = ' be evil ' "));
 		$this->assertEquals(array('itemscope' => 'itemscope', 'itemtype' => 'http://schema.org/WebPage'), PSX_Html_Lexer::parseAttributes('itemscope="itemscope" itemtype="http://schema.org/WebPage"'));
 		$this->assertEquals(array('itemscope' => 'itemscope', 'itemtype' => 'http://schema.org/WebPage'), PSX_Html_Lexer::parseAttributes('        itemscope  =  "itemscope"     itemtype  =  "http://schema.org/WebPage"      '));
 		$this->assertEquals(array(

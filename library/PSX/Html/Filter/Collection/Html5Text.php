@@ -54,7 +54,6 @@ class PSX_Html_Filter_Collection_Html5Text extends PSX_Html_Filter_CollectionAbs
 
 		// text level semantics
 		$this->add(new PSX_Html_Filter_Element('#PCDATA'));
-		$this->add(new PSX_Html_Filter_Element('a', array('href' => new PSX_Filter_Url()), array('#PCDATA')));
 		$this->add(new PSX_Html_Filter_Element('em', array(), array('#PCDATA')));
 		$this->add(new PSX_Html_Filter_Element('strong', array(), array('#PCDATA')));
 		$this->add(new PSX_Html_Filter_Element('small', array(), array('#PCDATA')));

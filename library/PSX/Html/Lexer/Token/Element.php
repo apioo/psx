@@ -143,7 +143,7 @@ class PSX_Html_Lexer_Token_Element extends PSX_Html_Lexer_TokenAbstract
 
 				foreach($token->attr as $key => $val)
 				{
-					$str.= ' ' . $key . '="' . $val . '"';
+					$str.= ' ' . $key . '="' . htmlspecialchars($val, ENT_COMPAT, 'UTF-8', false) . '"';
 				}
 
 				$str.= '>';
@@ -161,7 +161,7 @@ class PSX_Html_Lexer_Token_Element extends PSX_Html_Lexer_TokenAbstract
 
 				foreach($token->attr as $key => $val)
 				{
-					$str.= ' ' . $key . '="' . $val . '"';
+					$str.= ' ' . $key . '="' . htmlspecialchars($val, ENT_COMPAT, 'UTF-8', false) . '"';
 				}
 
 				$str.= ' />';
