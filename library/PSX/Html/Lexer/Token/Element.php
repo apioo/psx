@@ -69,6 +69,11 @@ class PSX_Html_Lexer_Token_Element extends PSX_Html_Lexer_TokenAbstract
 		return isset($this->attr[$key]) ? $this->attr[$key] : false;
 	}
 
+	public function setAttribute($key, $value)
+	{
+		$this->attr[$key] = $value;
+	}
+
 	public function removeAttribute($key)
 	{
 		if(isset($this->attr[$key]))
