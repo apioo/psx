@@ -251,7 +251,7 @@ abstract class PSX_Sql_TableAbstract implements PSX_Sql_TableInterface
 			throw new PSX_Sql_Table_Exception('No valid field set');
 		}
 
-		return $this->sql->update($this->getName(), $params, $condition, $modifier);
+		return $this->sql->update($this->getName(), $fields, $condition, $modifier);
 	}
 
 	public function replace($params, $modifier = 0)
@@ -275,7 +275,7 @@ abstract class PSX_Sql_TableAbstract implements PSX_Sql_TableInterface
 			throw new PSX_Sql_Table_Exception('No valid field set');
 		}
 
-		return $this->sql->replace($this->getName(), $params, $modifier);
+		return $this->sql->replace($this->getName(), $fields, $modifier);
 	}
 
 	public function delete($params, $modifier = 0)
