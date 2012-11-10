@@ -64,6 +64,11 @@ class PSX_Log
 		$this->setLevel(self::WARN);
 	}
 
+	public function setHandler(PSX_Log_HandlerInterface $handler)
+	{
+		$this->handler = array($handler);
+	}
+
 	public function addHandler(PSX_Log_HandlerInterface $handler)
 	{
 		$this->handler[] = $handler;
