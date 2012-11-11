@@ -35,10 +35,14 @@
 class PSX_LoaderTest extends PHPUnit_Framework_TestCase
 {
 	private $loader;
+	private $path = 'tests/PSX/Loader/module';
 
 	protected function setUp()
 	{
 		$loader = new PSX_Loader_Test(PSX_Base_Default::getInstance());
+		$loader->setPath($this->path);
+		$loader->setDefault('foo');
+		$loader->setNamespaceStrategy(new PSX_Loader_NamespaceStrategy_Path());
 
 		$this->loader = $loader;
 	}
@@ -49,92 +53,128 @@ class PSX_LoaderTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * parsePath path returns an array with the following values
+	 * parsePath returns an array with the following values:
 	 *
 	 * <code>
 	 * array(
-	 *
 	 * 	$path, // the path to the class from path_module
 	 * 	$file, // the path to the class file
-	 * 	$class, // the name of the class
+	 * 	$class, // the ReflectionClass of the class
 	 * 	$method, // the method wich is called or false
 	 * 	$uriFragments, // the uri fragments as array
-	 *
 	 * )
 	 * </code>
 	 */
-	public function testParsePathException()
+	public function testParsePath()
 	{
+		list($path, $file, $class, $method, $uriFragments) = $this->loader->parsePathPublic('foo');
+
+		$this->assertEquals('', $path);
+		$this->assertEquals($this->path . '/foo.php', $file);
+		$this->assertEquals(true, $class instanceof ReflectionClass);
+		$this->assertEquals('foo', $class->getName());
+		$this->assertEquals(false, $method);
+		$this->assertEquals(array(), $uriFragments);
+
+		list($path, $file, $class, $method, $uriFragments) = $this->loader->parsePathPublic('foo/test');
+
+		$this->assertEquals('', $path);
+		$this->assertEquals($this->path . '/foo.php', $file);
+		$this->assertEquals(true, $class instanceof ReflectionClass);
+		$this->assertEquals('foo', $class->getName());
+		$this->assertEquals('test', $method);
+		$this->assertEquals(array(), $uriFragments);
+
+		list($path, $file, $class, $method, $uriFragments) = $this->loader->parsePathPublic('foo/test/bar');
+
+		$this->assertEquals('', $path);
+		$this->assertEquals($this->path . '/foo.php', $file);
+		$this->assertEquals(true, $class instanceof ReflectionClass);
+		$this->assertEquals('foo', $class->getName());
+		$this->assertEquals('test', $method);
+		$this->assertEquals(array('bar'), $uriFragments);
+	}
+
+	public function testParsePathExplicit()
+	{
+		// normal
 		$resp   = $this->loader->parsePathPublic('foo/bar');
-		$expect = array('sample', 'module/sample.php', new ReflectionClass('sample'), false, array('foo', 'bar'));
+		$expect = array('', $this->path . '/foo.php', new ReflectionClass('foo'), false, array('bar'));
 
 		$this->assertEquals($expect, $resp);
 
+		// leading and trailing slash
 		$resp   = $this->loader->parsePathPublic('/foo/bar/');
-		$expect = array('sample', 'module/sample.php', new ReflectionClass('sample'), false, array('foo', 'bar'));
+		$expect = array('', $this->path . '/foo.php', new ReflectionClass('foo'), false, array('bar'));
+
+		$this->assertEquals($expect, $resp);
+
+		// method call
+		$resp   = $this->loader->parsePathPublic('/foo/test');
+		$expect = array('', $this->path . '/foo.php', new ReflectionClass('foo'), 'test', array());
 
 		$this->assertEquals($expect, $resp);
 	}
 
-	public function testParsePath()
+	public function testParsePathInDirExplicit()
 	{
-		list($path, $file, $class, $method) = $this->loader->parsePathPublic('sample');
+		// normal
+		$resp   = $this->loader->parsePathPublic('bar/foo/bar');
+		$expect = array('bar', $this->path . '/bar/foo.php', new ReflectionClass('bar\foo'), false, array('bar'));
 
-		$this->assertEquals('sample', $path);
-		$this->assertEquals(PSX_PATH_MODULE . '/sample.php', $file);
-		$this->assertEquals(true, $class instanceof ReflectionClass);
-		$this->assertEquals('sample', $class->getName());
-		$this->assertEquals(false, $method);
+		$this->assertEquals($expect, $resp);
 
-		list($path, $file, $class, $method) = $this->loader->parsePathPublic('sample/foo');
+		// leading and trailing slash
+		$resp   = $this->loader->parsePathPublic('/bar/foo/bar/');
+		$expect = array('bar', $this->path . '/bar/foo.php', new ReflectionClass('bar\foo'), false, array('bar'));
 
-		$this->assertEquals('sample', $path);
-		$this->assertEquals(PSX_PATH_MODULE . '/sample.php', $file);
-		$this->assertEquals(true, $class instanceof ReflectionClass);
-		$this->assertEquals('sample', $class->getName());
-		$this->assertEquals(false, $method);
+		$this->assertEquals($expect, $resp);
 
-		list($path, $file, $class, $method) = $this->loader->parsePathPublic('sample/foo/bar');
+		// method call
+		$resp   = $this->loader->parsePathPublic('/bar/foo/test');
+		$expect = array('bar', $this->path . '/bar/foo.php', new ReflectionClass('bar\foo'), 'test', array());
 
-		$this->assertEquals('sample', $path);
-		$this->assertEquals(PSX_PATH_MODULE . '/sample.php', $file);
-		$this->assertEquals(true, $class instanceof ReflectionClass);
-		$this->assertEquals('sample', $class->getName());
-		$this->assertEquals(false, $method);
+		$this->assertEquals($expect, $resp);
+	}
+
+	public function testParsePathInDirDefault()
+	{
+		// normal
+		$resp   = $this->loader->parsePathPublic('bar');
+		$expect = array('bar', $this->path . '/bar/index.php', new ReflectionClass('bar\index'), false, array());
+
+		$this->assertEquals($expect, $resp);
+
+		// leading and trailing slash
+		$resp   = $this->loader->parsePathPublic('/bar/');
+		$expect = array('bar', $this->path . '/bar/index.php', new ReflectionClass('bar\index'), false, array());
+
+		$this->assertEquals($expect, $resp);
+
+		// method call
+		$resp   = $this->loader->parsePathPublic('/bar/test');
+		$expect = array('bar', $this->path . '/bar/index.php', new ReflectionClass('bar\index'), 'test', array());
+
+		$this->assertEquals($expect, $resp);
 	}
 
 	public function testCustomRoutes()
 	{
-		$this->loader->addRoute('.host-meta/well-known', 'sample');
+		$this->loader->addRoute('.host-meta/well-known', 'foo');
 
 		$resp   = $this->loader->parsePathPublic('.host-meta/well-known');
-		$expect = array('sample', 'module/sample.php', new ReflectionClass('sample'), false, array('.host-meta', 'well-known'));
+		$expect = array('', $this->path . '/foo.php', new ReflectionClass('foo'), false, array('.host-meta', 'well-known'));
 
 		$this->assertEquals($expect, $resp);
 	}
 
-	public function testGetPart()
+	public function testGetLocation()
 	{
-		$part = PSX_Loader::getPart('some/foo/bar');
+		list($file, $path, $class) = $this->loader->getLocationPublic('foo/some/value');
 
-		$this->assertEquals('some', $part);
-
-		$part = PSX_Loader::getPart('foo/bar');
-
-		$this->assertEquals('foo', $part);
-
-		$part = PSX_Loader::getPart('bar');
-
-		$this->assertEquals('bar', $part);
-	}
-
-	public function testGetFPC()
-	{
-		list($file, $path, $class) = $this->loader->getFPCPublic('sample/some/value');
-
-		$this->assertEquals(PSX_PATH_MODULE . '/sample.php', $file);
-		$this->assertEquals('sample', $path);
-		$this->assertEquals('sample', $class);
+		$this->assertEquals($this->path . '/foo.php', $file);
+		$this->assertEquals('', $path);
+		$this->assertEquals('foo', $class);
 	}
 }
 
@@ -145,8 +185,8 @@ class PSX_Loader_Test extends PSX_Loader
 		return $this->parsePath($x);
 	}
 
-	public function getFPCPublic($path)
+	public function getLocationPublic($path)
 	{
-		return $this->getFPC($path);
+		return $this->getLocation($path);
 	}
 }
