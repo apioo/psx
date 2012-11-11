@@ -41,15 +41,19 @@ class PSX_Loader
 	protected $loaded;
 	protected $routes;
 	protected $path;
+	protected $default;
+
+	protected $namespaceStrategy;
 
 	public function __construct(PSX_Base $base)
 	{
-		$this->base   = $base;
-		$this->config = $base->getConfig();
+		$this->base    = $base;
+		$this->config  = $base->getConfig();
 
-		$this->loaded = array();
-		$this->routes = array();
-		$this->path   = $this->config['psx_path_module'];
+		$this->loaded  = array();
+		$this->routes  = array();
+		$this->path    = $this->config['psx_path_module'];
+		$this->default = $this->config['psx_module_default'];
 	}
 
 	public function load($path)
@@ -122,6 +126,28 @@ class PSX_Loader
 		return $this->path;
 	}
 
+	public function setDefault($default)
+	{
+		$this->default = $default;
+	}
+
+	public function getDefault()
+	{
+		return $this->default;
+	}
+
+	/**
+	 * Sets the strategy howto resolve a namespace for an class. If no strategy 
+	 * is set the loader assumes that the class is in the root namespace
+	 *
+	 * @param PSX_Loader_NamespaceStrategyInterface $namespaceStrategy
+	 * @return void
+	 */
+	public function setNamespaceStrategy(PSX_Loader_NamespaceStrategyInterface $namespaceStrategy)
+	{
+		$this->namespaceStrategy = $namespaceStrategy;
+	}
+
 	/**
 	 * URL format: index.php/[path/to/the/file]/class/[method][/foo/bar]
 	 *
@@ -132,26 +158,47 @@ class PSX_Loader
 	 */
 	protected function parsePath($x, $deep = 0)
 	{
-		$x   = empty($x) ? $this->config['psx_module_default'] : $x;
-		$x   = trim($x, '/');
-		$fpc = $this->getFPC($x);
+		$x = trim($x, '/');
+		$x = empty($x) ? $this->default : $x;
 
-		if($fpc !== false)
+		$location = $this->getLocation($x);
+
+		if($location !== false)
 		{
-			list($file, $path, $class) = $fpc;
+			list($file, $path, $class) = $location;
 
 			require_once($file);
 
-			$class = new ReflectionClass($class);
+			// create class
+			if($this->namespaceStrategy !== null)
+			{
+				$namespace = $this->namespaceStrategy->resolve($path);
+
+				$class = new ReflectionClass($namespace . '\\' . $class);
+			}
+			else
+			{
+				$class = new ReflectionClass('\\' . $class);
+			}
+
+			// remove path and class
+			$rest = $x;
+
+			if(!empty($path))
+			{
+				$rest = self::removePathPart($path, $rest);
+			}
+
+			$rest = self::removePathPart($class->getShortName(), $rest);
 
 			// control whether the method exists or not
 			$method   = false;
-			$rest     = substr($x, strlen($path) + 1);
 			$reserved = array('__construct', 'getDependencies', '_ini', 'onLoad', 'onGet', 'onPost', 'onPut', 'onDelete', 'processResponse');
 
 			if(!empty($rest))
 			{
-				$method = self::getPart($rest);
+				$pos    = strpos($rest, '/');
+				$method = $pos === false ? $rest : substr($rest, 0, $pos);
 
 				if(!in_array($method, $reserved) && $class->hasMethod($method))
 				{
@@ -181,7 +228,7 @@ class PSX_Loader
 		{
 			if($deep == 0)
 			{
-				$x = $this->config['psx_module_default'] . '/' . $x;
+				$x = $this->default . '/' . $x;
 
 				return $this->parsePath($x, ++$deep);
 			}
@@ -192,70 +239,80 @@ class PSX_Loader
 		}
 
 		return array(
-
 			$path,
 			$file,
 			$class,
 			$method,
 			$uriFragments,
-
 		);
 	}
 
-	protected function getFPC($path)
+	protected function getLocation($path)
 	{
-		$path = trim($path, '/');
+		$path     = trim($path, '/');
+		$explicit = $this->path . '/' . $path . '.php';
+		$default  = $this->path . '/' . (!empty($path) ? $path . '/' : '') . 'index.php';
 
-		if(is_file($this->path . '/' . $path . '.php'))
+		if(is_file($explicit))
 		{
-			$file = $this->path . '/' . $path . '.php';
+			$file = $explicit;
 			$pos  = strrpos($path, '/');
 
 			if($pos === false)
 			{
 				$class = $path;
+				$path  = '';
 			}
 			else
 			{
 				$class = substr($path, $pos + 1);
+				$path  = substr($path, 0, $pos);
 			}
 
-			return array($file, $path, $class);
+			return array(
+				$file,
+				$path,
+				$class,
+			);
 		}
-		elseif(is_file($this->path . '/' . $path . '/' . 'index.php'))
+		else if(is_file($default))
 		{
-			$file  = $this->path . '/' . $path . '/' . 'index.php';
+			$file  = $default;
 			$class = 'index';
 
-			return array($file, $path, $class);
+			return array(
+				$file,
+				$path,
+				$class,
+			);
 		}
 		else
 		{
-			$pos  = strrpos($path, '/');
-			$file = substr($path, 0, $pos);
+			$pos = strrpos($path, '/');
 
-			if($pos === false)
+			if($pos !== false)
 			{
-				return false;
+				return $this->getLocation(substr($path, 0, $pos));
 			}
 			else
 			{
-				return $this->getFPC($file);
+				return false;
 			}
 		}
 	}
 
-	public static function getPart($path)
+	public static function removePathPart($part, $path)
 	{
-		$pos = strpos($path, '/');
+		$path = trim($path, '/');
+		$len  = strlen($part);
 
-		if($pos === false)
+		if(substr($path, 0, $len) == $part)
 		{
-			return $path;
+			return substr($path, $len + 1);
 		}
 		else
 		{
-			return substr($path, 0, $pos);
+			return $path;
 		}
 	}
 }
