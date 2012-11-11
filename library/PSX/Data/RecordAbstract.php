@@ -33,15 +33,16 @@
  * @package    PSX_Data
  * @version    $Revision: 614 $
  */
-abstract class PSX_Data_RecordAbstract implements PSX_Data_RecordInterface
+abstract class PSX_Data_RecordAbstract implements PSX_Data_RecordInterface, Serializable
 {
 	public function hasFields()
 	{
+		$fields  = $this->getFields();
 		$columns = func_get_args();
 
 		foreach($columns as $column)
 		{
-			if(!isset($this->$column))
+			if(!isset($fields[$column]))
 			{
 				return false;
 			}
@@ -103,7 +104,6 @@ abstract class PSX_Data_RecordAbstract implements PSX_Data_RecordInterface
 			default:
 
 				throw new PSX_Data_Exception('Reader is not supported');
-
 				break;
 		}
 	}
@@ -117,14 +117,31 @@ abstract class PSX_Data_RecordAbstract implements PSX_Data_RecordInterface
 			case PSX_Data_WriterInterface::XML:
 
 				return $this->getData();
-
 				break;
 
 			default:
 
 				throw new PSX_Data_Exception('Writer is not supported');
-
 				break;
+		}
+	}
+
+	public function serialize()
+	{
+		return serialize($this->getFields());
+	}
+
+	public function unserialize($data)
+	{
+		$data   = unserialize($data);
+		$fields = $this->getFields();
+
+		foreach($fields as $k => $v)
+		{
+			if(isset($data[$k]))
+			{
+				$this->$k = $data[$k];
+			}
 		}
 	}
 }
