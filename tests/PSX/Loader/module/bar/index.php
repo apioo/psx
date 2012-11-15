@@ -8,6 +8,10 @@ class index extends \PSX_ModuleAbstract
 	{
 	}
 
+	/**
+	 * @httpMethod GET
+	 * @path /test
+	 */
 	public function test()
 	{
 	}

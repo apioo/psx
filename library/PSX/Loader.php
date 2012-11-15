@@ -65,30 +65,18 @@ class PSX_Loader
 
 		list($path, $file, $class, $method, $uriFragments) = $this->parsePath($path);
 
-		if(!in_array($path, $this->loaded))
+		if(!in_array($file, $this->loaded))
 		{
 			if($class->isSubclassOf('PSX_ModuleAbstract'))
 			{
 				$handle = $class->newInstance($this->base, $path, $uriFragments);
 				$handle->_ini();
 
-				$this->loaded[] = $path;
+				$this->loaded[] = $file;
 
-				if($handle instanceof PSX_Module_PrivateInterface)
+				if($method instanceof ReflectionMethod)
 				{
-					// we dont call any method if the class is private
-				}
-				else
-				{
-					if(!empty($method))
-					{
-						$method = $class->getMethod($method);
-
-						if(!$method->isStatic())
-						{
-							$method->invoke($handle);
-						}
-					}
+					$method->invoke($handle);
 				}
 
 				return $handle;
@@ -149,12 +137,13 @@ class PSX_Loader
 	}
 
 	/**
-	 * URL format: index.php/[path/to/the/file]/class/[method][/foo/bar]
+	 * URL format: index.php/[path/to/the/file]/class/[virtual_path]
 	 *
-	 * The brackets in [] are optional. the [method] is only called when it is
-	 * available. All values after the method are saved as uri fragment. You can
-	 * access these values in your module with $this->getUriFragment() wich
-	 * returns the values as an array where the values are exploded after '/'
+	 * If a method in the module has an docblock containing @httpMethod and
+	 * @path parameter the loader will call the method depending on the virtual 
+	 * path. I.e. if the virtual path is /foo/1 this will match if the path 
+	 * parameter is /foo/{bar}. You can access the values in the curly brackets
+	 * with $this->uriFragments['bar'].
 	 */
 	protected function parsePath($x, $deep = 0)
 	{
@@ -191,37 +180,64 @@ class PSX_Loader
 
 			$rest = self::removePathPart($class->getShortName(), $rest);
 
-			// control whether the method exists or not
-			$method   = false;
-			$reserved = array('__construct', 'getDependencies', '_ini', 'onLoad', 'onGet', 'onPost', 'onPut', 'onDelete', 'processResponse');
+			// search method wich sould be called
+			$uriFragments = array();
+			$method       = false;
 
 			if(!empty($rest))
 			{
-				$pos    = strpos($rest, '/');
-				$method = $pos === false ? $rest : substr($rest, 0, $pos);
+				$realPath = explode('/', trim($rest, '/'));
+				$reserved = array('__construct', 'getDependencies', '_ini', 'onLoad', 'onGet', 'onPost', 'onPut', 'onDelete', 'processResponse');
+				$methods  = $class->getMethods();
 
-				if(!in_array($method, $reserved) && $class->hasMethod($method))
+				foreach($methods as $m)
 				{
-					$rest = substr($rest, strlen($method) + 1);
-				}
-				else
-				{
-					$method = false;
+					if($m->isPublic() && !in_array($m->getName(), $reserved))
+					{
+						$doc         = PSX_Util_Annotation::parse($m->getDocComment());
+						$httpMethod  = $doc->getFirstAnnotation('httpMethod');
+						$virtualPath = $doc->getFirstAnnotation('path');
+
+						if(!empty($virtualPath))
+						{
+							$match       = true;
+							$virtualPath = explode('/', trim($virtualPath, '/'));
+
+							foreach($virtualPath as $k => $fragment)
+							{
+								if(isset($realPath[$k]) && !empty($fragment))
+								{
+									if($fragment[0] == '{')
+									{
+										$key = trim($fragment, '{}');
+
+										$uriFragments[$key] = $realPath[$k];
+									}
+									else if(strcasecmp($realPath[$k], $fragment) == 0)
+									{
+									}
+									else
+									{
+										$match = false;
+										break;
+									}
+								}
+							}
+
+							if($match && $httpMethod == PSX_Base::getRequestMethod())
+							{
+								$method = $m;
+								break;
+							}
+						}
+					}
 				}
 			}
 
 			// if we have no method look for an index
 			if($method === false && $class->hasMethod('__index'))
 			{
-				$method = '__index';
-			}
-
-			// get uri fragments
-			$uriFragments = array();
-
-			if(!empty($rest))
-			{
-				$uriFragments = explode('/', trim($rest, '/'));
+				$method = $class->getMethod('__index');
 			}
 		}
 		else

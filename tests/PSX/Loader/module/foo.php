@@ -6,6 +6,10 @@ class foo extends PSX_ModuleAbstract
 	{
 	}
 
+	/**
+	 * @httpMethod GET
+	 * @path /test/{foo}
+	 */
 	public function test()
 	{
 	}

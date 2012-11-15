@@ -82,7 +82,8 @@ class PSX_LoaderTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals($this->path . '/foo.php', $file);
 		$this->assertEquals(true, $class instanceof ReflectionClass);
 		$this->assertEquals('foo', $class->getName());
-		$this->assertEquals('test', $method);
+		$this->assertEquals(true, $method instanceof ReflectionMethod);
+		$this->assertEquals('test', $method->getName());
 		$this->assertEquals(array(), $uriFragments);
 
 		list($path, $file, $class, $method, $uriFragments) = $this->loader->parsePathPublic('foo/test/bar');
@@ -91,27 +92,29 @@ class PSX_LoaderTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals($this->path . '/foo.php', $file);
 		$this->assertEquals(true, $class instanceof ReflectionClass);
 		$this->assertEquals('foo', $class->getName());
-		$this->assertEquals('test', $method);
-		$this->assertEquals(array('bar'), $uriFragments);
+		$this->assertEquals(true, $method instanceof ReflectionMethod);
+		$this->assertEquals('test', $method->getName());
+		$this->assertEquals(array('foo' => 'bar'), $uriFragments);
 	}
 
 	public function testParsePathExplicit()
 	{
 		// normal
 		$resp   = $this->loader->parsePathPublic('foo/bar');
-		$expect = array('', $this->path . '/foo.php', new ReflectionClass('foo'), false, array('bar'));
+		$expect = array('', $this->path . '/foo.php', new ReflectionClass('foo'), false, array());
 
 		$this->assertEquals($expect, $resp);
 
 		// leading and trailing slash
 		$resp   = $this->loader->parsePathPublic('/foo/bar/');
-		$expect = array('', $this->path . '/foo.php', new ReflectionClass('foo'), false, array('bar'));
+		$expect = array('', $this->path . '/foo.php', new ReflectionClass('foo'), false, array());
 
 		$this->assertEquals($expect, $resp);
 
 		// method call
+		$class  = new ReflectionClass('foo');
 		$resp   = $this->loader->parsePathPublic('/foo/test');
-		$expect = array('', $this->path . '/foo.php', new ReflectionClass('foo'), 'test', array());
+		$expect = array('', $this->path . '/foo.php', $class, $class->getMethod('test'), array());
 
 		$this->assertEquals($expect, $resp);
 	}
@@ -120,19 +123,20 @@ class PSX_LoaderTest extends PHPUnit_Framework_TestCase
 	{
 		// normal
 		$resp   = $this->loader->parsePathPublic('bar/foo/bar');
-		$expect = array('bar', $this->path . '/bar/foo.php', new ReflectionClass('bar\foo'), false, array('bar'));
+		$expect = array('bar', $this->path . '/bar/foo.php', new ReflectionClass('bar\foo'), false, array());
 
 		$this->assertEquals($expect, $resp);
 
 		// leading and trailing slash
 		$resp   = $this->loader->parsePathPublic('/bar/foo/bar/');
-		$expect = array('bar', $this->path . '/bar/foo.php', new ReflectionClass('bar\foo'), false, array('bar'));
+		$expect = array('bar', $this->path . '/bar/foo.php', new ReflectionClass('bar\foo'), false, array());
 
 		$this->assertEquals($expect, $resp);
 
 		// method call
+		$class  = new ReflectionClass('bar\foo');
 		$resp   = $this->loader->parsePathPublic('/bar/foo/test');
-		$expect = array('bar', $this->path . '/bar/foo.php', new ReflectionClass('bar\foo'), 'test', array());
+		$expect = array('bar', $this->path . '/bar/foo.php', $class, $class->getMethod('test'), array());
 
 		$this->assertEquals($expect, $resp);
 	}
@@ -152,8 +156,9 @@ class PSX_LoaderTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals($expect, $resp);
 
 		// method call
+		$class  = new ReflectionClass('bar\index');
 		$resp   = $this->loader->parsePathPublic('/bar/test');
-		$expect = array('bar', $this->path . '/bar/index.php', new ReflectionClass('bar\index'), 'test', array());
+		$expect = array('bar', $this->path . '/bar/index.php', $class, $class->getMethod('test'), array());
 
 		$this->assertEquals($expect, $resp);
 	}
@@ -163,7 +168,7 @@ class PSX_LoaderTest extends PHPUnit_Framework_TestCase
 		$this->loader->addRoute('.host-meta/well-known', 'foo');
 
 		$resp   = $this->loader->parsePathPublic('.host-meta/well-known');
-		$expect = array('', $this->path . '/foo.php', new ReflectionClass('foo'), false, array('.host-meta', 'well-known'));
+		$expect = array('', $this->path . '/foo.php', new ReflectionClass('foo'), false, array());
 
 		$this->assertEquals($expect, $resp);
 	}

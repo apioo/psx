@@ -8,6 +8,10 @@ class bar extends \PSX_ModuleAbstract
 	{
 	}
 
+	/**
+	 * @httpMethod GET
+	 * @path /test/{bar}
+	 */
 	public function test()
 	{
 	}

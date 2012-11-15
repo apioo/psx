@@ -52,8 +52,8 @@ class PSX_Util_Annotation
 
 			if($line[0] == '@')
 			{
-				$line  = substr($line, 1);
-				$pos   = strpos($line, ' ');
+				$line = substr($line, 1);
+				$pos  = strpos($line, ' ');
 
 				if($pos !== false)
 				{
