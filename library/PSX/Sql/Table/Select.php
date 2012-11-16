@@ -436,7 +436,7 @@ class PSX_Sql_Table_Select implements PSX_Sql_Table_SelectInterface
 
 			foreach($this->orderBy as $key => $orderBy)
 			{
-				$sql.= ' ' . $orderBy[0] . ' ' . $orderBy[1] . ' ' . ($len == $key ? '' : ',');
+				$sql.= $this->availableColumns[$orderBy[0]] . ' ' . $orderBy[1] . ' ' . ($len == $key ? '' : ',');
 			}
 		}
 

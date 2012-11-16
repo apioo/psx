@@ -37,6 +37,7 @@ class PSX_Sql_Table_SelectTest extends PHPUnit_Framework_TestCase
 	private $sql;
 	private $tableNews;
 	private $tableUser;
+	private $tableUserNews;
 
 	private $dataNews = array(
 		array('userId' => 1, 'title' => 'foo'),
@@ -48,6 +49,15 @@ class PSX_Sql_Table_SelectTest extends PHPUnit_Framework_TestCase
 	private $dataUser = array(
 		array('name' => 'foo'),
 		array('name' => 'bar'),
+	);
+
+	private $dataUserNews = array(
+		array('userId' => 1, 'newsId' => 1),
+		array('userId' => 1, 'newsId' => 2),
+		array('userId' => 1, 'newsId' => 3),
+		array('userId' => 1, 'newsId' => 4),
+		array('userId' => 2, 'newsId' => 1),
+		array('userId' => 2, 'newsId' => 2),
 	);
 
 	protected function setUp()
@@ -63,6 +73,7 @@ class PSX_Sql_Table_SelectTest extends PHPUnit_Framework_TestCase
 
 			$this->setUpNews();
 			$this->setUpUser();
+			$this->setUpUserNews();
 		}
 		catch(Exception $e)
 		{
@@ -91,11 +102,9 @@ SQL;
 		foreach($this->dataNews as $row)
 		{
 			$this->tableNews->insert(array(
-
 				'userId' => $row['userId'],
 				'title'  => $row['title'],
 				'date'   => date(PSX_DateTime::SQL),
-
 			));
 		}
 	}
@@ -119,9 +128,33 @@ SQL;
 		foreach($this->dataUser as $row)
 		{
 			$this->tableUser->insert(array(
-
 				'name' => $row['name'],
+			));
+		}
+	}
 
+	private function setUpUserNews()
+	{
+		$this->tableUserNews = new PSX_Sql_Table_SelectTest_UserNews($this->sql);
+
+		$sql = <<<SQL
+CREATE TABLE IF NOT EXISTS `{$this->tableUserNews->getName()}` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `userId` int(10) NOT NULL,
+  `newsId` int(10) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+SQL;
+
+		$this->sql->exec($sql);
+
+		$this->sql->exec('TRUNCATE TABLE ' . $this->tableUserNews->getName());
+
+		foreach($this->dataUserNews as $row)
+		{
+			$this->tableUserNews->insert(array(
+				'userId' => $row['userId'],
+				'newsId' => $row['newsId'],
 			));
 		}
 	}
@@ -147,7 +180,7 @@ SQL;
 		$user   = new PSX_Sql_Table_SelectTest_User($this->sql);
 		$result = $news->select(array('id', 'userId', 'title'))
 			->join(PSX_Sql_Join::INNER, $user
-				->select(array('name'), 'user')
+				->select(array('id', 'name'), 'user')
 			)
 			->getAll();
 
@@ -158,7 +191,7 @@ SQL;
 		$user   = new PSX_Sql_Table_SelectTest_User($this->sql);
 		$result = $news->select(array('id', 'userId', 'title'))
 			->join(PSX_Sql_Join::LEFT, $user
-				->select(array('name'), 'user')
+				->select(array('id', 'name'), 'user')
 			)
 			->getAll();
 
@@ -167,6 +200,32 @@ SQL;
 
 	public function testJoinCardinality()
 	{
+		$news     = new PSX_Sql_Table_SelectTest_News($this->sql);
+		$user     = new PSX_Sql_Table_SelectTest_User($this->sql);
+		$userNews = new PSX_Sql_Table_SelectTest_UserNews($this->sql);
+
+		$result = $userNews->select(array('userId', 'newsId'))
+			->join(PSX_Sql_Join::INNER, $user
+				->select(array('id', 'name'), 'client')
+			)
+			->join(PSX_Sql_Join::INNER, $news
+				->select(array('id', 'title'), 'news')
+			)
+			->getAll();
+
+		$this->assertEquals(6, count($result));
+
+
+		$news     = new PSX_Sql_Table_SelectTest_News($this->sql);
+		$userNews = new PSX_Sql_Table_SelectTest_UserNews($this->sql);
+
+		$result = $news->select(array('id', 'title'))
+			->join(PSX_Sql_Join::INNER, $userNews
+				->select(array('userId', 'newsId'), 'foo')
+			, '1:n')
+			->getAll();
+
+		$this->assertEquals(6, count($result));
 	}
 
 	public function testGetAll()
@@ -176,8 +235,9 @@ SQL;
 		$user   = new PSX_Sql_Table_SelectTest_User($this->sql);
 		$result = $news->select(array('id', 'userId', 'title'))
 			->join(PSX_Sql_Join::INNER, $user
-				->select(array('name'), 'user')
+				->select(array('id', 'name'), 'client')
 			)
+			->orderBy('clientId', PSX_Sql::SORT_DESC)
 			->limit(1)
 			->getAll();
 
@@ -187,15 +247,17 @@ SQL;
 		$this->assertEquals(true, isset($row['id']));
 		$this->assertEquals(true, isset($row['userId']));
 		$this->assertEquals(true, isset($row['title']));
-		$this->assertEquals(true, isset($row['userName']));
+		$this->assertEquals(true, isset($row['clientId']));
+		$this->assertEquals(true, isset($row['clientName']));
 
 		// object
 		$news   = new PSX_Sql_Table_SelectTest_News($this->sql);
 		$user   = new PSX_Sql_Table_SelectTest_User($this->sql);
 		$result = $news->select(array('id', 'userId', 'title'))
 			->join(PSX_Sql_Join::INNER, $user
-				->select(array('name'), 'user')
+				->select(array('id', 'name'), 'client')
 			)
+			->orderBy('id', PSX_Sql::SORT_DESC)
 			->limit(1)
 			->getAll(PSX_Sql::FETCH_OBJECT);
 
@@ -205,7 +267,8 @@ SQL;
 		$this->assertEquals(true, isset($row->id));
 		$this->assertEquals(true, isset($row->userId));
 		$this->assertEquals(true, isset($row->title));
-		$this->assertEquals(true, isset($row->userName));
+		$this->assertEquals(true, isset($row->clientId));
+		$this->assertEquals(true, isset($row->clientName));
 	}
 
 	public function testGetRow()
@@ -215,7 +278,7 @@ SQL;
 		$user = new PSX_Sql_Table_SelectTest_User($this->sql);
 		$row  = $news->select(array('id', 'userId', 'title'))
 			->join(PSX_Sql_Join::INNER, $user
-				->select(array('name'), 'user')
+				->select(array('id', 'name'), 'client')
 			)
 			->limit(1)
 			->getRow();
@@ -224,14 +287,15 @@ SQL;
 		$this->assertEquals(true, isset($row['id']));
 		$this->assertEquals(true, isset($row['userId']));
 		$this->assertEquals(true, isset($row['title']));
-		$this->assertEquals(true, isset($row['userName']));
+		$this->assertEquals(true, isset($row['clientId']));
+		$this->assertEquals(true, isset($row['clientName']));
 
 		// object
 		$news = new PSX_Sql_Table_SelectTest_News($this->sql);
 		$user = new PSX_Sql_Table_SelectTest_User($this->sql);
 		$row  = $news->select(array('id', 'userId', 'title'))
 			->join(PSX_Sql_Join::INNER, $user
-				->select(array('name'), 'user')
+				->select(array('id', 'name'), 'client')
 			)
 			->limit(1)
 			->getRow(PSX_Sql::FETCH_OBJECT);
@@ -240,7 +304,8 @@ SQL;
 		$this->assertEquals(true, isset($row->id));
 		$this->assertEquals(true, isset($row->userId));
 		$this->assertEquals(true, isset($row->title));
-		$this->assertEquals(true, isset($row->userName));
+		$this->assertEquals(true, isset($row->clientId));
+		$this->assertEquals(true, isset($row->clientName));
 	}
 
 	public function testGetResultSet()
@@ -276,9 +341,7 @@ class PSX_Sql_Table_SelectTest_News extends PSX_Sql_TableAbstract
 	public function getConnections()
 	{
 		return array(
-
 			'userId' => 'PSX_Sql_Table_SelectTest_User',
-
 		);
 	}
 
@@ -290,12 +353,10 @@ class PSX_Sql_Table_SelectTest_News extends PSX_Sql_TableAbstract
 	public function getColumns()
 	{
 		return array(
-
 			'id'     => self::TYPE_INT | 10 | self::PRIMARY_KEY | self::AUTO_INCREMENT,
 			'userId' => self::TYPE_INT | 10,
 			'title'  => self::TYPE_VARCHAR | 32,
 			'date'   => self::TYPE_DATETIME,
-
 		);
 	}
 
@@ -325,10 +386,8 @@ class PSX_Sql_Table_SelectTest_User extends PSX_Sql_TableAbstract
 	public function getColumns()
 	{
 		return array(
-
 			'id'   => self::TYPE_INT | 10 | self::PRIMARY_KEY | self::AUTO_INCREMENT,
 			'name' => self::TYPE_VARCHAR | 16,
-
 		);
 	}
 
@@ -343,3 +402,37 @@ class PSX_Sql_Table_SelectTest_User extends PSX_Sql_TableAbstract
 	}
 }
 
+class PSX_Sql_Table_SelectTest_UserNews extends PSX_Sql_TableAbstract
+{
+	public function getConnections()
+	{
+		return array(
+			'userId' => 'PSX_Sql_Table_SelectTest_User',
+			'newsId' => 'PSX_Sql_Table_SelectTest_News',
+		);
+	}
+
+	public function getName()
+	{
+		return __CLASS__;
+	}
+
+	public function getColumns()
+	{
+		return array(
+			'id'     => self::TYPE_INT | 10 | self::PRIMARY_KEY | self::AUTO_INCREMENT,
+			'userId' => self::TYPE_INT | 10,
+			'newsId' => self::TYPE_INT | 10,
+		);
+	}
+
+	public function getDefaultRecordClass()
+	{
+		return 'stdClass';
+	}
+
+	public function getDefaultRecordArgs()
+	{
+		return array();
+	}
+}
