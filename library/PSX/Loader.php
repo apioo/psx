@@ -40,10 +40,9 @@ class PSX_Loader
 
 	protected $loaded;
 	protected $routes;
-	protected $path;
 	protected $default;
 
-	protected $namespaceStrategy;
+	protected $locationFinder;
 
 	public function __construct(PSX_Base $base)
 	{
@@ -52,32 +51,28 @@ class PSX_Loader
 
 		$this->loaded  = array();
 		$this->routes  = array();
-		$this->path    = $this->config['psx_path_module'];
 		$this->default = $this->config['psx_module_default'];
 	}
 
 	public function load($path)
 	{
-		if(($rewritePath = $this->getRoute($path)) !== false)
-		{
-			$path = $rewritePath;
-		}
+		list($location, $method, $uriFragments) = $this->resolvePath($path);
 
-		list($path, $file, $class, $method, $uriFragments) = $this->parsePath($path);
-
-		if(!in_array($file, $this->loaded))
+		if(!in_array($location->getId(), $this->loaded))
 		{
+			$class = $location->getClass();
+
 			if($class->isSubclassOf('PSX_ModuleAbstract'))
 			{
 				$handle = $class->newInstance($this->base, $path, $uriFragments);
 				$handle->_ini();
 
-				$this->loaded[] = $file;
-
 				if($method instanceof ReflectionMethod)
 				{
 					$method->invoke($handle);
 				}
+
+				$this->loaded[] = $location->getId();
 
 				return $handle;
 			}
@@ -104,16 +99,6 @@ class PSX_Loader
 		return isset($this->routes[$key]) ? $this->routes[$key] : false;
 	}
 
-	public function setPath($path)
-	{
-		$this->path = $path;
-	}
-
-	public function getPath()
-	{
-		return $this->path;
-	}
-
 	public function setDefault($default)
 	{
 		$this->default = $default;
@@ -125,110 +110,96 @@ class PSX_Loader
 	}
 
 	/**
-	 * Sets the strategy howto resolve a namespace for an class. If no strategy 
-	 * is set the loader assumes that the class is in the root namespace
+	 * Sets the strategy howto resolve a path to an location. If no strategy 
+	 * is set the filesystem location finder weill be used.
 	 *
-	 * @param PSX_Loader_NamespaceStrategyInterface $namespaceStrategy
+	 * @param PSX_Loader_LocationFinderInterface $locationFinder
 	 * @return void
 	 */
-	public function setNamespaceStrategy(PSX_Loader_NamespaceStrategyInterface $namespaceStrategy)
+	public function setLocationFinder(PSX_Loader_LocationFinderInterface $locationFinder)
 	{
-		$this->namespaceStrategy = $namespaceStrategy;
+		$this->locationFinder = $locationFinder;
 	}
 
 	/**
-	 * URL format: index.php/[path/to/the/file]/class/[virtual_path]
-	 *
 	 * If a method in the module has an docblock containing @httpMethod and
 	 * @path parameter the loader will call the method depending on the virtual 
 	 * path. I.e. if the virtual path is /foo/1 this will match if the path 
 	 * parameter is /foo/{bar}. You can access the values in the curly brackets
 	 * with $this->uriFragments['bar'].
+	 *
+	 * @param string $x
+	 * @param integer $deep
+	 * @return array
 	 */
-	protected function parsePath($x, $deep = 0)
+	protected function resolvePath($x, $deep = 0)
 	{
+		if(($rewritePath = $this->getRoute($x)) !== false)
+		{
+			$x = $rewritePath;
+		}
+
 		$x = trim($x, '/');
 		$x = empty($x) ? $this->default : $x;
 
-		$location = $this->getLocation($x);
-
-		if($location !== false)
+		if($this->locationFinder === null)
 		{
-			list($file, $path, $class) = $location;
+			$this->locationFinder = new PSX_Loader_LocationFinder_FileSystem($this->config['psx_path_module']);
+		}
 
-			require_once($file);
+		$location = $this->locationFinder->resolve($x);
 
-			// create class
-			if($this->namespaceStrategy !== null)
-			{
-				$namespace = $this->namespaceStrategy->resolve($path);
-
-				$class = new ReflectionClass($namespace . '\\' . $class);
-			}
-			else
-			{
-				$class = new ReflectionClass('\\' . $class);
-			}
-
-			// remove path and class
-			$rest = $x;
-
-			if(!empty($path))
-			{
-				$rest = self::removePathPart($path, $rest);
-			}
-
-			$rest = self::removePathPart($class->getShortName(), $rest);
+		if($location instanceof PSX_Loader_Location)
+		{
+			$path  = $location->getPath();
+			$class = $location->getClass();
 
 			// search method wich sould be called
 			$uriFragments = array();
 			$method       = false;
 
-			if(!empty($rest))
+			$realPath = explode('/', trim($location->getPath(), '/'));
+			$reserved = array('__construct', 'getDependencies', '_ini', 'onLoad', 'onGet', 'onPost', 'onPut', 'onDelete', 'processResponse');
+			$methods  = $class->getMethods();
+
+			foreach($methods as $m)
 			{
-				$realPath = explode('/', trim($rest, '/'));
-				$reserved = array('__construct', 'getDependencies', '_ini', 'onLoad', 'onGet', 'onPost', 'onPut', 'onDelete', 'processResponse');
-				$methods  = $class->getMethods();
-
-				foreach($methods as $m)
+				if($m->isPublic() && !in_array($m->getName(), $reserved))
 				{
-					if($m->isPublic() && !in_array($m->getName(), $reserved))
+					$doc         = PSX_Util_Annotation::parse($m->getDocComment());
+					$httpMethod  = $doc->getFirstAnnotation('httpMethod');
+					$virtualPath = $doc->getFirstAnnotation('path');
+
+					if(!empty($virtualPath) && $httpMethod == PSX_Base::getRequestMethod())
 					{
-						$doc         = PSX_Util_Annotation::parse($m->getDocComment());
-						$httpMethod  = $doc->getFirstAnnotation('httpMethod');
-						$virtualPath = $doc->getFirstAnnotation('path');
+						$match       = true;
+						$virtualPath = explode('/', trim($virtualPath, '/'));
 
-						if(!empty($virtualPath))
+						foreach($virtualPath as $k => $fragment)
 						{
-							$match       = true;
-							$virtualPath = explode('/', trim($virtualPath, '/'));
-
-							foreach($virtualPath as $k => $fragment)
+							if(isset($realPath[$k]) && !empty($fragment))
 							{
-								if(isset($realPath[$k]) && !empty($fragment))
+								if($fragment[0] == '{')
 								{
-									if($fragment[0] == '{')
-									{
-										$key = trim($fragment, '{}');
+									$key = trim($fragment, '{}');
 
-										$uriFragments[$key] = $realPath[$k];
-									}
-									else if(strcasecmp($realPath[$k], $fragment) == 0)
-									{
-									}
-									else
-									{
-										$match = false;
-										break;
-									}
+									$uriFragments[$key] = $realPath[$k];
+								}
+								else if(strcasecmp($realPath[$k], $fragment) == 0)
+								{
+								}
+								else
+								{
+									$match = false;
+									break;
 								}
 							}
+						}
 
-							if($match && $httpMethod == PSX_Base::getRequestMethod())
-							{
-								$method = $m;
-								break;
-							}
+						if($match)
+						{
+							$method = $m;
+							break;
 						}
 					}
 				}
@@ -246,90 +217,19 @@ class PSX_Loader
 			{
 				$x = $this->default . '/' . $x;
 
-				return $this->parsePath($x, ++$deep);
+				return $this->resolvePath($x, ++$deep);
 			}
 			else
 			{
-				throw new PSX_Loader_Exception('Unkown module "' . $x . '" in ' . $this->path);
+				throw new PSX_Loader_Exception('Unkown module "' . $x . '"');
 			}
 		}
 
 		return array(
-			$path,
-			$file,
-			$class,
+			$location,
 			$method,
 			$uriFragments,
 		);
-	}
-
-	protected function getLocation($path)
-	{
-		$path     = trim($path, '/');
-		$explicit = $this->path . '/' . $path . '.php';
-		$default  = $this->path . '/' . (!empty($path) ? $path . '/' : '') . 'index.php';
-
-		if(is_file($explicit))
-		{
-			$file = $explicit;
-			$pos  = strrpos($path, '/');
-
-			if($pos === false)
-			{
-				$class = $path;
-				$path  = '';
-			}
-			else
-			{
-				$class = substr($path, $pos + 1);
-				$path  = substr($path, 0, $pos);
-			}
-
-			return array(
-				$file,
-				$path,
-				$class,
-			);
-		}
-		else if(is_file($default))
-		{
-			$file  = $default;
-			$class = 'index';
-
-			return array(
-				$file,
-				$path,
-				$class,
-			);
-		}
-		else
-		{
-			$pos = strrpos($path, '/');
-
-			if($pos !== false)
-			{
-				return $this->getLocation(substr($path, 0, $pos));
-			}
-			else
-			{
-				return false;
-			}
-		}
-	}
-
-	public static function removePathPart($part, $path)
-	{
-		$path = trim($path, '/');
-		$len  = strlen($part);
-
-		if(substr($path, 0, $len) == $part)
-		{
-			return substr($path, $len + 1);
-		}
-		else
-		{
-			return $path;
-		}
 	}
 }
 
