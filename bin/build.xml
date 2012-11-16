@@ -97,7 +97,6 @@
 		<delete dir="${build}" />
 		<delete dir="${bin}/PSX-${version}" />
 		<delete file="${bin}/PSX-${version}.tgz" />
-		<delete file="${bin}/PSX-${version}.tgz" />
 		<delete file="${bin}/psx-${version}.phar" />
 		<delete file="${bin}/psx_${version}.tar.gz" />
 		<delete file="${bin}/psx_${version}.zip" />

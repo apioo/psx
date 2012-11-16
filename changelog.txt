@@ -1,5 +1,7 @@
 
 0.4.7
+* Added classes to generate an swagger api declaration and util annotation 
+  parser
 * Improved autoloader using stream_resolve_include_path before require the class
   so the autoload will not fail if the file doesnt exists
 * Added new html5 filter collections
@@ -10,8 +12,8 @@
   will always return the same object
 * Improved PSX_Loader class. The name of the index method must be now __index
   wich is called if no other method is specified in the request. This was done 
-  because of constructor conflict if the class also the name index and to 
-  document the magical behavior 
+  because of constructor conflict. Added annotation parser to loader for easier 
+  routing 
 * Added method getValidator(), getMethod(), getUrl(), getHeaders(), getHeader(), 
   getParameter() and getBody() to PSX_ModuleAbstract
 * Using PSX_PATH_CACHE path in file cache handler

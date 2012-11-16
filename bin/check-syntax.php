@@ -22,13 +22,16 @@ $config['psx_path_template'] = PATH . '/template';
 $bootstrap = new PSX_Bootstrap($config);
 
 // classes wich should be excluded from the class check
-$exclude = array('Memcache');
+$exclude = array(
+	'Memcache',
+);
 
 try
 {
-	checkSyntax(PSX_PATH_LIBRARY);
+	// container wich holds all loaded files
+	$count = checkSyntax(PSX_PATH_LIBRARY . '/PSX');
 
-	echo 'OK';
+	echo 'OK! Checked ' . $count . ' classes';
 }
 catch(Exception $e)
 {
@@ -55,20 +58,16 @@ function checkSyntax($path)
 
 			if(is_file($item))
 			{
+				$item = realpath($item);
 				$info = pathinfo($item);
 
-				if($info['extension'] == 'php')
+				if(isset($info['extension']) && $info['extension'] == 'php' && !in_array($item, get_included_files()))
 				{
 					// require file for syntax check
 					require_once($item);
 
 					// check used classes
-					$classes = getUsedClasses($item);
-
-					foreach($classes as $class)
-					{
-						$class = new ReflectionClass($class);
-					}
+					getUsedClasses($item);
 
 					$count++;
 				}
@@ -79,7 +78,7 @@ function checkSyntax($path)
 	return $count;
 }
 
-function getUsedClasses($file, array $loaded = array())
+function getUsedClasses($file)
 {
 	$result  = array();
 	$classes = array();
@@ -94,6 +93,7 @@ function getUsedClasses($file, array $loaded = array())
 		echo 'Check: ' . $file . "\n";
 	}
 
+	// parse content
 	$source = file_get_contents($file);
 	$tokens = token_get_all($source);
 	$count  = count($tokens);
@@ -139,7 +139,6 @@ function getUsedClasses($file, array $loaded = array())
 	}
 
 	$classes = array_unique($classes);
-	$files   = array();
 
 	// remove exclude classes
 	foreach($classes as $key => $class)
@@ -154,14 +153,22 @@ function getUsedClasses($file, array $loaded = array())
 	// new classes
 	foreach($classes as $class)
 	{
-		if(!in_array($class, $loaded))
-		{
-			$file  = PSX_PATH_LIBRARY . '/' . str_replace('_', '/', $class) . '.php';
-			$class = new ReflectionClass($class);
+		$classFile = realpath(PSX_PATH_LIBRARY . '/' . getClassFilePath($class));
 
-			if($class->isUserDefined())
+		if($classFile !== false && !in_array($classFile, get_included_files()))
+		{
+			try
 			{
-				$classes = array_merge($classes, getUsedClasses($file, array_merge($loaded, $classes)));
+				$class = new ReflectionClass($class);
+
+				if($class->isUserDefined())
+				{
+					$classes = array_merge($classes, getUsedClasses($classFile));
+				}
+			}
+			catch(ReflectionException $e)
+			{
+				throw new Exception('Class ' . $class . ' not found in ' . $classFile . ' used in ' . $file);
 			}
 		}
 	}
@@ -169,4 +176,18 @@ function getUsedClasses($file, array $loaded = array())
 	return $classes;
 }
 
+function getClassFilePath($className)
+{
+	$className = ltrim($className, '\\');
+	$fileName  = '';
+	$namespace = '';
 
+	if($lastNsPos = strripos($className, '\\'))
+	{
+		$namespace = substr($className, 0, $lastNsPos);
+		$className = substr($className, $lastNsPos + 1);
+		$fileName  = str_replace('\\', DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
+	}
+
+	return str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
+}

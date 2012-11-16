@@ -57,6 +57,9 @@ echo $atom-&gt;updated;
           <interfacename>Iterator</interfacename>
         </oointerface>
         <oointerface>
+          <interfacename>Serializable</interfacename>
+        </oointerface>
+        <oointerface>
           <interfacename>Countable</interfacename>
         </oointerface>
         <oointerface>
@@ -258,6 +261,19 @@ echo $atom-&gt;updated;
             <parameter>result</parameter>
           </methodparam>
         </methodsynopsis>
+        <methodsynopsis>
+          <modifier>public</modifier>
+          <methodname>serialize</methodname>
+          <void/>
+        </methodsynopsis>
+        <methodsynopsis>
+          <modifier>public</modifier>
+          <methodname>unserialize</methodname>
+          <methodparam>
+            <type>mixed</type>
+            <parameter>data</parameter>
+          </methodparam>
+        </methodsynopsis>
       </classsynopsis>
     </sect1>
     <sect1>
@@ -270,6 +286,9 @@ echo $atom-&gt;updated;
         <ooclass>
           <classname>PSX_Data_RecordAbstract</classname>
         </ooclass>
+        <oointerface>
+          <interfacename>Serializable</interfacename>
+        </oointerface>
         <oointerface>
           <interfacename>PSX_Data_RecordInterface</interfacename>
         </oointerface>
@@ -385,6 +404,19 @@ echo $atom-&gt;updated;
           <methodparam>
             <type>mixed</type>
             <parameter>result</parameter>
+          </methodparam>
+        </methodsynopsis>
+        <methodsynopsis>
+          <modifier>public</modifier>
+          <methodname>serialize</methodname>
+          <void/>
+        </methodsynopsis>
+        <methodsynopsis>
+          <modifier>public</modifier>
+          <methodname>unserialize</methodname>
+          <methodparam>
+            <type>mixed</type>
+            <parameter>data</parameter>
           </methodparam>
         </methodsynopsis>
       </classsynopsis>
