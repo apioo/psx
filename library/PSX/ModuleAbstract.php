@@ -35,6 +35,7 @@
  */
 abstract class PSX_ModuleAbstract
 {
+	protected $location;
 	protected $base;
 	protected $basePath;
 	protected $uriFragments = array();
@@ -43,8 +44,9 @@ abstract class PSX_ModuleAbstract
 	protected $_parameter;
 	protected $_body;
 
-	public function __construct(PSX_Base $base, $basePath, array $uriFragments)
+	public function __construct(PSX_Loader_Location $location, PSX_Base $base, $basePath, array $uriFragments)
 	{
+		$this->location     = $location;
 		$this->base         = $base;
 		$this->basePath     = $basePath;
 		$this->uriFragments = $uriFragments;
@@ -120,6 +122,11 @@ abstract class PSX_ModuleAbstract
 	public function processResponse($content)
 	{
 		return $content;
+	}
+
+	protected function getLocation()
+	{
+		return $this->location;
 	}
 
 	protected function getBasePath()

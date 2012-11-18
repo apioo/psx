@@ -64,7 +64,7 @@ class PSX_Loader
 
 			if($class->isSubclassOf('PSX_ModuleAbstract'))
 			{
-				$handle = $class->newInstance($this->base, $path, $uriFragments);
+				$handle = $class->newInstance($location, $this->base, $path, $uriFragments);
 				$handle->_ini();
 
 				if($method instanceof ReflectionMethod)
