@@ -43,6 +43,7 @@ class PSX_Sql_Join
 	private $table;
 	private $cardinality;
 	private $foreignKey;
+	private $alias;
 
 	public function __construct($type, PSX_Sql_TableInterface $table, $cardinality = '1:n', $foreignKey = null)
 	{
@@ -50,6 +51,8 @@ class PSX_Sql_Join
 		$this->setTable($table);
 		$this->setCardinality($cardinality);
 		$this->setForeignKey($foreignKey);
+
+		$this->alias = $table->getLastSelect()->getPrefix();
 	}
 
 	public function setType($type)
@@ -104,5 +107,10 @@ class PSX_Sql_Join
 	public function getForeignKey()
 	{
 		return $this->foreignKey;
+	}
+
+	public function getAlias()
+	{
+		return $this->alias;
 	}
 }

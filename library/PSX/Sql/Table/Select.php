@@ -77,7 +77,7 @@ class PSX_Sql_Table_Select implements PSX_Sql_Table_SelectInterface
 
 		if($table->getLastSelect() === null)
 		{
-			throw new PSX_Sql_Table_Exception('Nothing is selected on table ' . $table->getAlias());
+			throw new PSX_Sql_Table_Exception('Nothing is selected on table ' . $table->getName());
 		}
 
 		$this->joins[] = new PSX_Sql_Join($type, $table, $cardinality, $foreignKey);
@@ -168,7 +168,7 @@ class PSX_Sql_Table_Select implements PSX_Sql_Table_SelectInterface
 
 	public function setPrefix($prefix)
 	{
-		$this->prefix           = $prefix;
+		$this->prefix           = $prefix === null ? '__self' : $prefix;
 		$this->selfColumns      = $this->getSelfColumns();
 		$this->availableColumns = $this->selfColumns;
 
@@ -205,10 +205,10 @@ class PSX_Sql_Table_Select implements PSX_Sql_Table_SelectInterface
 
 		foreach($selfColumns as $column => $attr)
 		{
-			$alias = $this->prefix !== null ? $this->prefix . ucfirst($column) : $column;
-			$value = '`' . $this->table->getAlias() . '`.`' . $column . '`';
+			$key   = $this->prefix !== '__self' ? $this->prefix . ucfirst($column) : $column;
+			$value = '`' . $this->prefix . '`.`' . $column . '`';
 
-			$columns[$alias] = $value;
+			$columns[$key] = $value;
 		}
 
 		return $columns;
@@ -226,7 +226,7 @@ class PSX_Sql_Table_Select implements PSX_Sql_Table_SelectInterface
 
 		foreach($this->columns as $column)
 		{
-			if($this->prefix !== null && isset($columns[$column]))
+			if($this->prefix !== '__self' && isset($columns[$column]))
 			{
 				$column = $this->prefix . ucfirst($column);
 			}
@@ -365,26 +365,26 @@ class PSX_Sql_Table_Select implements PSX_Sql_Table_SelectInterface
 			$table = $join->getTable();
 			$cardi = $join->getCardinality();
 
-			$sql.= $join->getType() . ' JOIN `' . $table->getName() . '` AS `' . $table->getAlias() . '` ON ';
+			$sql.= $join->getType() . ' JOIN `' . $table->getName() . '` AS `' . $join->getAlias() . '` ON ';
 
 			if($cardi[0] == '1')
 			{
-				$sql.= '`' . $this->table->getAlias() . '`.`' . $this->table->getPrimaryKey() . '` = ';
+				$sql.= '`' . $this->prefix . '`.`' . $this->table->getPrimaryKey() . '` = ';
 			}
 			else if($cardi[0] == 'n')
 			{
 				$fk  = $fk === null ? $this->getForeignKeyByTable($this->table->getConnections(), $table->getName()) : $fk;
-				$sql.= '`' . $this->table->getAlias() . '`.`' . $fk . '` = ';
+				$sql.= '`' . $this->prefix . '`.`' . $fk . '` = ';
 			}
 
 			if($cardi[1] == '1')
 			{
-				$sql.= '`' . $table->getAlias() . '`.`' . $table->getPrimaryKey() . '`';
+				$sql.= '`' . $join->getAlias() . '`.`' . $table->getPrimaryKey() . '`';
 			}
 			else if($cardi[1] == 'n')
 			{
 				$fk  = $fk === null ? $this->getForeignKeyByTable($table->getConnections(), $this->table->getName()) : $fk;
-				$sql.= '`' . $table->getAlias() . '`.`' . $fk . '`';
+				$sql.= '`' . $join->getAlias() . '`.`' . $fk . '`';
 			}
 
 			$sql.= ' ' . $table->getLastSelect()->buildJoins() . ' ';
@@ -414,7 +414,7 @@ class PSX_Sql_Table_Select implements PSX_Sql_Table_SelectInterface
 			$i++;
 		}
 
-		$sql.= ' FROM `' . $this->table->getName() . '` AS `' . $this->table->getAlias() . '` ' . $this->buildJoins();
+		$sql.= ' FROM `' . $this->table->getName() . '` AS `' . $this->prefix . '` ' . $this->buildJoins();
 
 		// where
 		if($this->condition->hasCondition())
@@ -452,7 +452,7 @@ class PSX_Sql_Table_Select implements PSX_Sql_Table_SelectInterface
 	protected function buildCountQuery()
 	{
 		// select
-		$sql = 'SELECT COUNT(*) FROM `' . $this->table->getName() . '` AS `' . $this->table->getAlias() . '` ' . $this->buildJoins();
+		$sql = 'SELECT COUNT(*) FROM `' . $this->table->getName() . '` AS `' . $this->prefix . '` ' . $this->buildJoins();
 
 		// condition
 		if($this->condition->hasCondition())
@@ -473,6 +473,6 @@ class PSX_Sql_Table_Select implements PSX_Sql_Table_SelectInterface
 			}
 		}
 
-		throw new PSX_Sql_Table_Exception($foreignTable . ' is not connected to ' . $this->table->getAlias());
+		throw new PSX_Sql_Table_Exception($foreignTable . ' is not connected to ' . $this->table->getName());
 	}
 }

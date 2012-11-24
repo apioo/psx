@@ -35,27 +35,12 @@
  */
 abstract class PSX_Sql_TableAbstract implements PSX_Sql_TableInterface
 {
-	private static $aliasId = 0;
-
-	protected $alias;
 	protected $sql;
 	protected $select;
 
 	public function __construct(PSX_Sql $sql)
 	{
 		$this->sql = $sql;
-
-		$this->setAlias(self::$aliasId++);
-	}
-
-	public function getAlias()
-	{
-		return $this->alias;
-	}
-
-	public function setAlias($alias)
-	{
-		$this->alias = $alias;
 	}
 
 	public function getSql()
@@ -334,5 +319,3 @@ abstract class PSX_Sql_TableAbstract implements PSX_Sql_TableInterface
 		return array($this);
 	}
 }
-
-

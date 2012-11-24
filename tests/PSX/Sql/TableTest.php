@@ -91,31 +91,6 @@ SQL;
 		unset($this->sql);
 	}
 
-	public function testGetAlias()
-	{
-		$len     = 5;
-		$aliases = array();
-
-		for($i = 0; $i < $len; $i++)
-		{
-			$table = new PSX_Sql_TableTest_Table($this->sql);
-
-			$aliases[] = $table->getAlias();
-
-			unset($table);
-		}
-
-		$this->assertEquals($len, count(array_unique($aliases)));
-	}
-
-	public function testSetAlias()
-	{
-		$table = new PSX_Sql_TableTest_Table($this->sql);
-		$table->setAlias('foo');
-
-		$this->assertEquals('foo', $table->getAlias());
-	}
-
 	public function testGetSql()
 	{
 		$table = new PSX_Sql_TableTest_Table($this->sql);
