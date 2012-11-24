@@ -124,9 +124,9 @@ class PSX_Loader
 	/**
 	 * If a method in the module has an docblock containing @httpMethod and
 	 * @path parameter the loader will call the method depending on the virtual 
-	 * path. I.e. if the virtual path is /foo/1 this will match if the path 
-	 * parameter is /foo/{bar}. You can access the values in the curly brackets
-	 * with $this->uriFragments['bar'].
+	 * path and the request method. I.e. if the virtual path is /foo/1 this will 
+	 * match if the path parameter is /foo/{bar}. You can access the values in 
+	 * the curly brackets with $this->uriFragments['bar'].
 	 *
 	 * @param string $x
 	 * @param integer $deep
@@ -140,40 +140,77 @@ class PSX_Loader
 		}
 
 		$x = trim($x, '/');
-		$x = empty($x) ? $this->default : $x;
 
 		if($this->locationFinder === null)
 		{
 			$this->locationFinder = new PSX_Loader_LocationFinder_FileSystem($this->config['psx_path_module']);
 		}
 
-		$location = $this->locationFinder->resolve($x);
+		$location     = $this->locationFinder->resolve($x);
+		$uriFragments = array();
 
 		if($location instanceof PSX_Loader_Location)
 		{
-			$path  = $location->getPath();
-			$class = $location->getClass();
-
-			// search method wich sould be called
-			$uriFragments = array();
-			$method       = false;
-
-			$realPath = explode('/', trim($location->getPath(), '/'));
-			$reserved = array('__construct', 'getDependencies', '_ini', 'onLoad', 'onGet', 'onPost', 'onPut', 'onDelete', 'processResponse');
-			$methods  = $class->getMethods();
-
-			foreach($methods as $m)
+			$method = $this->getMethodToCall($location->getClass(), $location->getPath(), $uriFragments);
+		}
+		else
+		{
+			if($deep == 0)
 			{
-				if($m->isPublic() && !in_array($m->getName(), $reserved))
-				{
-					$doc         = PSX_Util_Annotation::parse($m->getDocComment());
-					$httpMethod  = $doc->getFirstAnnotation('httpMethod');
-					$virtualPath = $doc->getFirstAnnotation('path');
+				$x = $this->default . '/' . $x;
 
-					if(!empty($virtualPath) && $httpMethod == PSX_Base::getRequestMethod())
+				return $this->resolvePath($x, ++$deep);
+			}
+			else
+			{
+				throw new PSX_Loader_Exception('Unkown module "' . $x . '"');
+			}
+		}
+
+		return array(
+			$location,
+			$method,
+			$uriFragments,
+		);
+	}
+
+	protected function getMethodToCall(ReflectionClass $class, $path, &$uriFragments)
+	{
+		// search method wich sould be called
+		$method     = false;
+		$rootMethod = false;
+
+		$realPath = explode('/', trim($path, '/'));
+		$reserved = array('__construct', 'getDependencies', '_ini', 'onLoad', 'onGet', 'onPost', 'onPut', 'onDelete', 'processResponse');
+		$methods  = $class->getMethods();
+
+		foreach($methods as $m)
+		{
+			if($m->isPublic() && !in_array($m->getName(), $reserved))
+			{
+				$doc         = PSX_Util_Annotation::parse($m->getDocComment());
+				$httpMethod  = $doc->getFirstAnnotation('httpMethod');
+				$virtualPath = $doc->getFirstAnnotation('path');
+
+				if(!empty($virtualPath) && $httpMethod == PSX_Base::getRequestMethod())
+				{
+					$match       = true;
+					$virtualPath = trim($virtualPath, '/');
+
+					if(empty($virtualPath))
 					{
-						$match       = true;
-						$virtualPath = explode('/', trim($virtualPath, '/'));
+						if($rootMethod === false)
+						{
+							// we have an / path wich we will use if we find 
+							// no other fitting path
+							$rootMethod = $m;
+						}
+
+						$match = false;
+					}
+					else
+					{
+						$virtualPath = explode('/', $virtualPath);
 
 						foreach($virtualPath as $k => $fragment)
 						{
@@ -195,41 +232,30 @@ class PSX_Loader
 								}
 							}
 						}
+					}
 
-						if($match)
-						{
-							$method = $m;
-							break;
-						}
+					if($match)
+					{
+						$method = $m;
+						break;
 					}
 				}
 			}
-
-			// if we have no method look for an index
-			if($method === false && $class->hasMethod('__index'))
-			{
-				$method = $class->getMethod('__index');
-			}
 		}
-		else
+
+		// if we have an root method
+		if($method === false && $rootMethod !== false)
 		{
-			if($deep == 0)
-			{
-				$x = $this->default . '/' . $x;
-
-				return $this->resolvePath($x, ++$deep);
-			}
-			else
-			{
-				throw new PSX_Loader_Exception('Unkown module "' . $x . '"');
-			}
+			$method = $rootMethod;
 		}
 
-		return array(
-			$location,
-			$method,
-			$uriFragments,
-		);
+		// if we have no method look for an index
+		if($method === false && $class->hasMethod('__index'))
+		{
+			$method = $class->getMethod('__index');
+		}
+
+		return $method;
 	}
 }
 
