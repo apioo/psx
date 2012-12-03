@@ -44,10 +44,12 @@ class PSX_Swagger_Operation extends PSX_Data_RecordAbstract
 	private $errorResponses;
 	private $parameters = array();
 
-	public function __construct($httpMethod, $summary)
+	public function __construct($httpMethod, $nickname, $responseClass, $summary)
 	{
-		$this->httpMethod = $httpMethod;
-		$this->summary    = $summary;
+		$this->httpMethod    = $httpMethod;
+		$this->nickname      = $nickname;
+		$this->responseClass = $responseClass;
+		$this->summary       = $summary;
 	}
 
 	public function setNickname($nickname)

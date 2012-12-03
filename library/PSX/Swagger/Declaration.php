@@ -51,6 +51,11 @@ class PSX_Swagger_Declaration extends PSX_Data_RecordAbstract
 		$this->resourcePath = $resourcePath;
 	}
 
+	public function setResourcePath($resourcePath)
+	{
+		$this->resourcePath = $resourcePath;
+	}
+
 	public function addApi(PSX_Swagger_Api $api)
 	{
 		$this->apis[] = $api;
