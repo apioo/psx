@@ -180,9 +180,18 @@ class PSX_Loader
 		$method     = false;
 		$rootMethod = false;
 
-		$realPath = explode('/', trim($path, '/'));
+		$realPath = trim($path, '/');
 		$reserved = array('__construct', 'getDependencies', '_ini', 'onLoad', 'onGet', 'onPost', 'onPut', 'onDelete', 'processResponse');
 		$methods  = $class->getMethods();
+
+		if(!empty($realPath))
+		{
+			$realPath = explode('/', $realPath);
+		}
+		else
+		{
+			$realPath = null;
+		}
 
 		foreach($methods as $m)
 		{
@@ -204,6 +213,13 @@ class PSX_Loader
 							// we have an / path wich we will use if we find 
 							// no other fitting path
 							$rootMethod = $m;
+
+							// if we have an root method an the real path is 
+							// empty use the root method
+							if(empty($realPath))
+							{
+								break;
+							}
 						}
 
 						$match = false;
@@ -258,4 +274,3 @@ class PSX_Loader
 		return $method;
 	}
 }
-
