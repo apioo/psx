@@ -88,7 +88,7 @@ class PSX_LoaderTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals('foo', $location->getClass()->getName());
 		$this->assertEquals(true, $method instanceof ReflectionMethod);
 		$this->assertEquals('test', $method->getName());
-		$this->assertEquals(array(), $uriFragments);
+		$this->assertEquals(array('foo' => null), $uriFragments);
 
 		list($location, $method, $uriFragments) = $this->loader->resolvePathPublic('foo/test/bar');
 

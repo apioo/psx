@@ -190,7 +190,7 @@ class PSX_Loader
 		}
 		else
 		{
-			$realPath = null;
+			$realPath = array();
 		}
 
 		foreach($methods as $m)
@@ -230,15 +230,15 @@ class PSX_Loader
 
 						foreach($virtualPath as $k => $fragment)
 						{
-							if(isset($realPath[$k]) && !empty($fragment))
+							if(!empty($fragment))
 							{
 								if($fragment[0] == '{')
 								{
 									$key = trim($fragment, '{}');
 
-									$uriFragments[$key] = $realPath[$k];
+									$uriFragments[$key] = isset($realPath[$k]) ? $realPath[$k] : null;									
 								}
-								else if(strcasecmp($realPath[$k], $fragment) == 0)
+								else if(isset($realPath[$k]) && strcasecmp($realPath[$k], $fragment) == 0)
 								{
 								}
 								else
@@ -246,6 +246,11 @@ class PSX_Loader
 									$match = false;
 									break;
 								}
+							}
+							else
+							{
+								$match = false;
+								break;
 							}
 						}
 					}
