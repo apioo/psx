@@ -384,6 +384,10 @@ implementation are based on it.</para>
           <methodname>__construct</methodname>
           <methodparam>
             <type>mixed</type>
+            <parameter>location</parameter>
+          </methodparam>
+          <methodparam>
+            <type>mixed</type>
             <parameter>base</parameter>
           </methodparam>
           <methodparam>
@@ -453,6 +457,10 @@ implementation are based on it.</para>
         <methodsynopsis>
           <modifier>public</modifier>
           <methodname>__construct</methodname>
+          <methodparam>
+            <type>mixed</type>
+            <parameter>location</parameter>
+          </methodparam>
           <methodparam>
             <type>mixed</type>
             <parameter>base</parameter>
@@ -1060,6 +1068,10 @@ implementation are based on it.</para>
         <methodsynopsis>
           <modifier>public</modifier>
           <methodname>__construct</methodname>
+          <methodparam>
+            <type>mixed</type>
+            <parameter>location</parameter>
+          </methodparam>
           <methodparam>
             <type>mixed</type>
             <parameter>base</parameter>

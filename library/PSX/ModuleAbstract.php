@@ -40,6 +40,7 @@ abstract class PSX_ModuleAbstract
 	protected $basePath;
 	protected $uriFragments = array();
 
+	protected $_container;
 	protected $_validate;
 	protected $_parameter;
 	protected $_body;
@@ -57,22 +58,18 @@ abstract class PSX_ModuleAbstract
 		$this->_body      = new PSX_Input_Post($this->_validate);
 
 		// assign dependencies
-		$dependencies = $this->getDependencies();
+		$this->_container = $this->getDependencies();
+		$parameters       = $this->_container->getParameters();
 
-		if($dependencies instanceof PSX_DependencyAbstract)
+		foreach($parameters as $k => $obj)
 		{
-			$parameters = $dependencies->getParameters();
-
-			foreach($parameters as $k => $obj)
-			{
-				$this->$k = $obj;
-			}
+			$this->$k = $obj;
 		}
 	}
 
 	public function getDependencies()
 	{
-		return new PSX_Dependency_Default();
+		return new PSX_Dependency_Default($this->base->getConfig());
 	}
 
 	public function _ini()
@@ -144,6 +141,11 @@ abstract class PSX_ModuleAbstract
 		{
 			return $this->uriFragments;
 		}
+	}
+
+	protected function getContainer()
+	{
+		return $this->_container;
 	}
 
 	protected function getValidator()

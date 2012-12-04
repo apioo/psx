@@ -37,7 +37,7 @@ abstract class PSX_Module_ViewAbstract extends PSX_ModuleAbstract
 {
 	public function getDependencies()
 	{
-		return new PSX_Dependency_View();
+		return new PSX_Dependency_View($this->base->getConfig());
 	}
 
 	public function processResponse($content)

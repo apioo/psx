@@ -35,56 +35,83 @@
  */
 abstract class PSX_DependencyAbstract
 {
-	protected $base;
-	protected $registry;
+	private static $_container = array();
+
 	protected $config;
 
-	public function __construct(PSX_DependencyAbstract $dependency = null)
+	public function __construct(PSX_Config $config)
 	{
-		$this->base     = PSX_Base::getInstance();
-		$this->registry = PSX_Registry::getInstance();
-		$this->config   = $this->base->getConfig();
-
-		// if we have a parent dependency
-		if($dependency !== null)
-		{
-			$dependency->setup();
-		}
+		$this->config = $config;
 
 		$this->setup();
 	}
 
-	protected function setup()
+	public function setService($name, $obj)
 	{
-		if(!$this->registry->offsetExists('base'))
-		{
-			$this->registry->offsetSet('base', $this->base);
-		}
+		return self::$_container[$name] = $obj;
+	}
 
-		if(!$this->registry->offsetExists('config'))
-		{
-			$this->registry->offsetSet('config', $this->base->getConfig());
-		}
+	public function hasService($name)
+	{
+		return isset(self::$_container[$name]);
+	}
 
-		if(!$this->registry->offsetExists('loader'))
-		{
-			$this->registry->offsetSet('loader', $this->base->getLoader());
-		}
+	public function getService($name)
+	{
+		return self::$_container[$name];
 	}
 
 	/**
 	 * This array are the properties wich are available in an module if it uses
-	 * the dependency
+	 * this dependency
 	 *
 	 * @return array
 	 */
 	public function getParameters()
 	{
-		return array(
-			'base'   => $this->registry->offsetGet('base'),
-			'config' => $this->registry->offsetGet('config'),
-			'loader' => $this->registry->offsetGet('loader'),
-		);
+		return self::$_container;
+	}
+
+	/**
+	 * Method wich initializes all services wich sould be directly available in 
+	 * an module
+	 *
+	 * @return void
+	 */
+	protected function setup()
+	{
+		$this->getConfig();
+		$this->getLoader();
+	}
+
+	public function getBase()
+	{
+		if($this->hasService('base'))
+		{
+			return $this->getService('base');
+		}
+
+		return $this->setService('base', PSX_Base::getInstance());
+	}
+
+	public function getConfig()
+	{
+		if($this->hasService('config'))
+		{
+			return $this->getService('config');
+		}
+
+		return $this->setService('config', $this->getBase()->getConfig());
+	}
+
+	public function getLoader()
+	{
+		if($this->hasService('loader'))
+		{
+			return $this->getService('loader');
+		}
+
+		return $this->setService('loader', $this->getBase()->getLoader());
 	}
 }
 

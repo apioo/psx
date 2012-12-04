@@ -10,7 +10,7 @@
     <email>k42b3@phpsx.org</email>
     <active>yes</active>
   </lead>
-  <date>2012-11-16</date>
+  <date>2012-11-24</date>
   <version>
     <release>0.4.7</release>
     <api>0.4.7</api>
@@ -32,8 +32,7 @@ so the autoload will not fail if the file doesnt exists
 will always return the same object
 * Improved PSX_Loader class. The name of the index method must be now __index
 wich is called if no other method is specified in the request. This was done
-because of constructor conflict if the class also the name index and to
-document the magical behavior. Added annotation parser to loader for easier
+because of constructor conflict. Added annotation parser to loader for easier
 routing
 * Added method getValidator(), getMethod(), getUrl(), getHeaders(), getHeader(),
 getParameter() and getBody() to PSX_ModuleAbstract
@@ -1000,8 +999,7 @@ so the autoload will not fail if the file doesnt exists
 will always return the same object
 * Improved PSX_Loader class. The name of the index method must be now __index
 wich is called if no other method is specified in the request. This was done
-because of constructor conflict if the class also the name index and to
-document the magical behavior. Added annotation parser to loader for easier
+because of constructor conflict. Added annotation parser to loader for easier
 routing
 * Added method getValidator(), getMethod(), getUrl(), getHeaders(), getHeader(),
 getParameter() and getBody() to PSX_ModuleAbstract

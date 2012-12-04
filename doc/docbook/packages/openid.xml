@@ -2488,6 +2488,10 @@
           <methodname>__construct</methodname>
           <methodparam>
             <type>mixed</type>
+            <parameter>location</parameter>
+          </methodparam>
+          <methodparam>
+            <type>mixed</type>
             <parameter>base</parameter>
           </methodparam>
           <methodparam>

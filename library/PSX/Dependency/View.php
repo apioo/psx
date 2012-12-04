@@ -39,20 +39,16 @@ class PSX_Dependency_View extends PSX_DependencyAbstract
 	{
 		parent::setup();
 
-		// template
-		if(!$this->registry->offsetExists('template'))
-		{
-			$template = new PSX_Template($this->config);
-
-			$this->registry->offsetSet('template', $template);
-		}
+		$this->getTemplate();
 	}
 
-	public function getParameters()
+	public function getTemplate()
 	{
-		return array_merge(parent::getParameters(), array(
-			'template' => $this->registry->offsetGet('template'),
-		));
+		if($this->hasService('template'))
+		{
+			return $this->getService('template');
+		}
+
+		return $this->setService('template', new PSX_Template($this->config));
 	}
 }
-

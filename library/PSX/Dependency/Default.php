@@ -35,26 +35,28 @@
  */
 class PSX_Dependency_Default extends PSX_DependencyAbstract
 {
+	/*
 	protected function setup()
 	{
 		parent::setup();
 
-		// sql
-		/*
-		if(!$this->registry->offsetExists('sql'))
-		{
-			$sql = new PSX_Sql(new PSX_Sql_Driver_Pdo(), $this->config['psx_sql_host'], $this->config['psx_sql_user'], $this->config['psx_sql_pw'], $this->config['psx_sql_db']);
-
-			$this->registry->offsetSet('sql', $sql);
-		}
-		*/
+		$this->getSql();
 	}
 
-	public function getParameters()
+	public function getSql()
 	{
-		return array_merge(parent::getParameters(), array(
-			//'sql' => $this->registry->offsetGet('sql'),
-		));
-	}
-}
+		if($this->hasService('sql'))
+		{
+			return $this->getService('sql');
+		}
 
+		return $this->setService('sql', new PSX_Sql(
+			new PSX_Sql_Driver_Pdo(), 
+			$this->config['psx_sql_host'], 
+			$this->config['psx_sql_user'], 
+			$this->config['psx_sql_pw'], 
+			$this->config['psx_sql_db'])
+		);
+	}
+	*/
+}
