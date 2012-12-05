@@ -1504,6 +1504,11 @@ $sql->delete('news', $con);
           <methodname>getForeignKey</methodname>
           <void/>
         </methodsynopsis>
+        <methodsynopsis>
+          <modifier>public</modifier>
+          <methodname>getAlias</methodname>
+          <void/>
+        </methodsynopsis>
       </classsynopsis>
     </sect1>
     <sect1>
@@ -1799,19 +1804,6 @@ $sql->delete('news', $con);
           <methodparam>
             <type>mixed</type>
             <parameter>sql</parameter>
-          </methodparam>
-        </methodsynopsis>
-        <methodsynopsis>
-          <modifier>public</modifier>
-          <methodname>getAlias</methodname>
-          <void/>
-        </methodsynopsis>
-        <methodsynopsis>
-          <modifier>public</modifier>
-          <methodname>setAlias</methodname>
-          <methodparam>
-            <type>mixed</type>
-            <parameter>alias</parameter>
           </methodparam>
         </methodsynopsis>
         <methodsynopsis>

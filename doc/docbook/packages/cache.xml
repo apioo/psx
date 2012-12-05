@@ -727,19 +727,6 @@ CREATE TABLE IF NOT EXISTS `psx_cache` (
         </methodsynopsis>
         <methodsynopsis>
           <modifier>public</modifier>
-          <methodname>getAlias</methodname>
-          <void/>
-        </methodsynopsis>
-        <methodsynopsis>
-          <modifier>public</modifier>
-          <methodname>setAlias</methodname>
-          <methodparam>
-            <type>mixed</type>
-            <parameter>alias</parameter>
-          </methodparam>
-        </methodsynopsis>
-        <methodsynopsis>
-          <modifier>public</modifier>
           <methodname>getSql</methodname>
           <void/>
         </methodsynopsis>
