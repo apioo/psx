@@ -36,7 +36,7 @@
 class PSX_Dependency_Default extends PSX_DependencyAbstract
 {
 	/*
-	protected function setup()
+	public function setup()
 	{
 		parent::setup();
 

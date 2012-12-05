@@ -10,7 +10,7 @@
     <email>k42b3@phpsx.org</email>
     <active>yes</active>
   </lead>
-  <date>2012-11-24</date>
+  <date>2012-12-05</date>
   <version>
     <release>0.4.7</release>
     <api>0.4.7</api>
@@ -72,7 +72,6 @@ getParameter() and getBody() to PSX_ModuleAbstract
         </dir>
         <file name="Atom.php" role="php"/>
         <dir name="Base">
-          <file name="Default.php" role="php"/>
           <file name="Exception.php" role="php"/>
         </dir>
         <file name="Base.php" role="php"/>
@@ -255,10 +254,6 @@ getParameter() and getBody() to PSX_ModuleAbstract
             <file name="FileSystem.php" role="php"/>
           </dir>
           <file name="LocationFinderInterface.php" role="php"/>
-          <dir name="NamespaceStrategy">
-            <file name="Path.php" role="php"/>
-          </dir>
-          <file name="NamespaceStrategyInterface.php" role="php"/>
         </dir>
         <file name="Loader.php" role="php"/>
         <dir name="Log">
@@ -276,7 +271,6 @@ getParameter() and getBody() to PSX_ModuleAbstract
         <file name="Log.php" role="php"/>
         <dir name="Module">
           <file name="ApiAbstract.php" role="php"/>
-          <file name="PrivateInterface.php" role="php"/>
           <file name="ViewAbstract.php" role="php"/>
         </dir>
         <file name="ModuleAbstract.php" role="php"/>

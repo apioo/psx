@@ -39,7 +39,9 @@ class PSX_LoaderTest extends PHPUnit_Framework_TestCase
 
 	protected function setUp()
 	{
-		$loader = new PSX_Loader_Test(PSX_Base_Default::getInstance());
+		$container = new PSX_Dependency_Default(getConfig());
+
+		$loader = new PSX_Loader_Test($container->getBase());
 		$loader->setLocationFinder($this->getLocationFinder());
 		$loader->setDefault('foo');
 

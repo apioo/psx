@@ -38,7 +38,9 @@ class PSX_BaseTest extends PHPUnit_Framework_TestCase
 
 	protected function setUp()
 	{
-		$this->base = PSX_Base_Default::getInstance();
+		$container = new PSX_Dependency_Default(getConfig());
+
+		$this->base = $container->getBase();
 	}
 
 	protected function tearDown()
@@ -61,11 +63,6 @@ class PSX_BaseTest extends PHPUnit_Framework_TestCase
 	public function testGetConfig()
 	{
 		$this->assertEquals(true, $this->base->getConfig() instanceof PSX_Config);
-	}
-
-	public function testGetLoader()
-	{
-		$this->assertEquals(true, $this->base->getLoader() instanceof PSX_Loader);
 	}
 
 	public function testGetHost()

@@ -41,7 +41,7 @@ class PSX_SqlTest extends PHPUnit_Framework_TestCase
 	{
 		try
 		{
-			$config = PSX_Base_Default::getInstance()->getConfig();
+			$config = getConfig();
 
 			$this->table = __CLASS__;
 			$this->sql   = new PSX_Sql($config['psx_sql_host'],

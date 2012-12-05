@@ -38,7 +38,7 @@ class PSX_ConfigTest extends PHPUnit_Framework_TestCase
 
 	protected function setUp()
 	{
-		$this->config = PSX_Base_Default::getInstance()->getConfig();
+		$this->config = getConfig();
 	}
 
 	protected function tearDown()

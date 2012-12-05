@@ -35,7 +35,7 @@
  */
 class PSX_Dependency_View extends PSX_DependencyAbstract
 {
-	protected function setup()
+	public function setup()
 	{
 		parent::setup();
 
@@ -44,11 +44,11 @@ class PSX_Dependency_View extends PSX_DependencyAbstract
 
 	public function getTemplate()
 	{
-		if($this->hasService('template'))
+		if($this->has('template'))
 		{
-			return $this->getService('template');
+			return $this->get('template');
 		}
 
-		return $this->setService('template', new PSX_Template($this->config));
+		return $this->set('template', new PSX_Template($this->getConfig()));
 	}
 }

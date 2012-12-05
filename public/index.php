@@ -34,10 +34,10 @@ ob_start('responseProcess');
 try
 {
 	// initialize base class
-	$base = PSX_Base_Default::initInstance($config);
+	$container = new PSX_Dependency_Default($config);
 
 	// load module
-	$module = loadModule($base);
+	$module = loadModule($container);
 
 	// get output
 	$content = ob_get_contents();
@@ -121,9 +121,9 @@ function responseProcess($content)
  *
  * @return PSX_ModuleAbstract
  */
-function loadModule(PSX_Base $base)
+function loadModule(PSX_DependencyAbstract $container)
 {
-	$config  = $base->getConfig();
+	$config  = $container->getConfig();
 	$default = $config['psx_module_default'];
 	$input   = $config['psx_module_input'];
 	$length  = $config['psx_module_input_length'];
@@ -150,7 +150,7 @@ function loadModule(PSX_Base $base)
 		}
 	}
 
-	return $base->getLoader()->load($x);
+	return $container->getLoader()->load($x);
 }
 
 

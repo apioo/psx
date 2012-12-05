@@ -42,21 +42,19 @@ abstract class PSX_DependencyAbstract
 	public function __construct(PSX_Config $config)
 	{
 		$this->config = $config;
-
-		$this->setup();
 	}
 
-	public function setService($name, $obj)
+	public function set($name, $obj)
 	{
 		return self::$_container[$name] = $obj;
 	}
 
-	public function hasService($name)
+	public function has($name)
 	{
 		return isset(self::$_container[$name]);
 	}
 
-	public function getService($name)
+	public function get($name)
 	{
 		return self::$_container[$name];
 	}
@@ -78,40 +76,38 @@ abstract class PSX_DependencyAbstract
 	 *
 	 * @return void
 	 */
-	protected function setup()
+	public function setup()
 	{
-		$this->getConfig();
 		$this->getLoader();
 	}
 
 	public function getBase()
 	{
-		if($this->hasService('base'))
+		if($this->has('base'))
 		{
-			return $this->getService('base');
+			return $this->get('base');
 		}
 
-		return $this->setService('base', PSX_Base::getInstance());
+		return $this->set('base', new PSX_Base($this->getConfig()));
 	}
 
 	public function getConfig()
 	{
-		if($this->hasService('config'))
+		if($this->has('config'))
 		{
-			return $this->getService('config');
+			return $this->get('config');
 		}
 
-		return $this->setService('config', $this->getBase()->getConfig());
+		return $this->set('config', $this->config);
 	}
 
 	public function getLoader()
 	{
-		if($this->hasService('loader'))
+		if($this->has('loader'))
 		{
-			return $this->getService('loader');
+			return $this->get('loader');
 		}
 
-		return $this->setService('loader', $this->getBase()->getLoader());
+		return $this->set('loader', new PSX_Loader($this->getBase()));
 	}
 }
-

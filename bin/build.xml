@@ -91,7 +91,7 @@
 		<zip destfile="${bin}/psx_${version}.zip" basedir="${build}" />
 	</target>
 
-	<target name="build-all" depends="build-doc,build-pear,build-phar,build-release" />
+	<target name="build-all" depends="clean,build-pear,build-phar,build-release" />
 
 	<target name="clean" depends="get-version">
 		<delete dir="${build}" />

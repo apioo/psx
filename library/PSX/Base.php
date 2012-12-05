@@ -66,13 +66,6 @@ class PSX_Base
 	private static $rawInput;
 
 	/**
-	 * Contains the instance
-	 *
-	 * @var PSX_Base
-	 */
-	private static $instance;
-
-	/**
 	 * Contains the absolute url to the script using the psx_url from the
 	 * configuration
 	 *
@@ -95,9 +88,8 @@ class PSX_Base
 	protected $request;
 
 	protected $config;
-	protected $loader;
 
-	private function __construct(PSX_Config $config)
+	public function __construct(PSX_Config $config)
 	{
 		// set config
 		$this->config = $config;
@@ -123,24 +115,11 @@ class PSX_Base
 		{
 			throw new PSX_Base_Exception('PSX url not set');
 		}
-
-		// call global setup
-		$this->setup();
 	}
 
 	public function getConfig()
 	{
 		return $this->config;
-	}
-
-	public function getLoader()
-	{
-		return $this->loader;
-	}
-
-	public function setup()
-	{
-		$this->loader = new PSX_Loader($this);
 	}
 
 	/**
@@ -212,16 +191,6 @@ class PSX_Base
 		}
 
 		return $this->request;
-	}
-
-	public static function initInstance(PSX_Config $config)
-	{
-		return self::$instance = new static($config);
-	}
-
-	public static function getInstance()
-	{
-		return self::$instance;
 	}
 
 	/**

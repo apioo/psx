@@ -59,7 +59,9 @@ abstract class PSX_ModuleAbstract
 
 		// assign dependencies
 		$this->_container = $this->getDependencies();
-		$parameters       = $this->_container->getParameters();
+		$this->_container->setup();
+
+		$parameters = $this->_container->getParameters();
 
 		foreach($parameters as $k => $obj)
 		{
