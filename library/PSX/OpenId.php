@@ -343,12 +343,12 @@ class PSX_OpenId
 			# HTML based discovery
 			if($discoveredIdentity === false)
 			{
-				$request  = new PSX_Http_GetRequest($identity);
-				$request->setFollowLocation(true);
-
-				$response = $this->http->request($request, array(
+				$request  = new PSX_Http_GetRequest($identity, array(
 					'User-Agent' => __CLASS__ . ' ' . PSX_Base::VERSION
 				));
+				$request->setFollowLocation(true);
+
+				$response = $this->http->request($request);
 
 				return $this->htmlBasedDiscovery($response->getBody());
 			}
@@ -462,10 +462,10 @@ class PSX_OpenId
 	public function discoverXriIdentity($identity)
 	{
 		// we use the XRI resolver at xri.net
-		$request  = new PSX_Http_GetRequest(new PSX_Url('http://xri.net/' . $identity));
-		$response = $this->http->request($request, array(
+		$request  = new PSX_Http_GetRequest(new PSX_Url('http://xri.net/' . $identity), array(
 			'User-Agent' => __CLASS__ . ' ' . PSX_Base::VERSION
 		));
+		$response = $this->http->request($request);
 
 		// we accept all 3xx redirect status codes if we dont
 		// get redirected we couldnt resolve the XRI
@@ -575,10 +575,10 @@ class PSX_OpenId
 
 		);
 
-		$request  = new PSX_Http_PostRequest($this->identity->getServer(), array(), $params);
-		$response = $this->http->request($request, array(
+		$request  = new PSX_Http_PostRequest($this->identity->getServer(), array(
 			'User-Agent' => __CLASS__ . ' ' . PSX_Base::VERSION
-		));
+		), $params);
+		$response = $this->http->request($request);
 
 		if($response->getCode() == 200)
 		{
@@ -694,10 +694,10 @@ class PSX_OpenId
 		}
 
 		// make request
-		$request  = new PSX_Http_PostRequest($opEndpoint, array(), $params);
-		$response = $this->http->request($request, array(
+		$request  = new PSX_Http_PostRequest($opEndpoint, array(
 			'User-Agent' => __CLASS__ . ' ' . PSX_Base::VERSION
-		));
+		), $params);
+		$response = $this->http->request($request);
 
 		if($response->getCode() == 200)
 		{
