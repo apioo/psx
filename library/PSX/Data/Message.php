@@ -68,4 +68,25 @@ class PSX_Data_Message extends PSX_Data_RecordAbstract
 	{
 		$this->success = (boolean) $success;
 	}
+
+	public function export(PSX_Data_WriterResult $result)
+	{
+		switch($result->getType())
+		{
+			case PSX_Data_WriterInterface::ATOM:
+				$entry = $result->getWriter()->createEntry();
+				$entry->setTitle('Message');
+				$entry->setId('urn:uuid:' . PSX_Util_Uuid::nameBased($this->text));
+				$entry->setUpdated(new DateTime());
+				$entry->addAuthor('System');
+				$entry->setContent($this, 'application/xml');
+
+				return $entry;
+				break;
+
+			default:
+				return parent::export($result);
+				break;
+		}
+	}
 }
