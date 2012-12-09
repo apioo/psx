@@ -43,6 +43,7 @@ class PSX_Sql_Table_Select implements PSX_Sql_Table_SelectInterface
 	protected $columns = array();
 	protected $prefix;
 
+	protected $selectedColumns  = array();
 	protected $selfColumns      = array();
 	protected $availableColumns = array();
 
@@ -68,6 +69,8 @@ class PSX_Sql_Table_Select implements PSX_Sql_Table_SelectInterface
 		}
 		else if($table instanceof PSX_Sql_Table_SelectInterface)
 		{
+			$this->selectedColumns = array_merge($this->selectedColumns, $table->getSelectedColumns());
+
 			$table = $table->getTable();
 		}
 		else
@@ -182,13 +185,8 @@ class PSX_Sql_Table_Select implements PSX_Sql_Table_SelectInterface
 
 	public function setColumns(array $columns)
 	{
-		$this->columns = $columns;
-
-		// delete other column selections
-		foreach($this->joins as $join)
-		{
-			$join->getTable()->getLastSelect()->setColumns(array());
-		}
+		$this->columns         = $columns;
+		$this->selectedColumns = $this->getSelectedColumns();
 
 		return $this;
 	}
@@ -242,14 +240,7 @@ class PSX_Sql_Table_Select implements PSX_Sql_Table_SelectInterface
 
 	public function getAllSelectedColumns()
 	{
-		$selectedColumns = $this->getSelectedColumns();
-
-		foreach($this->joins as $join)
-		{
-			$selectedColumns = array_merge($selectedColumns, $join->getTable()->getLastSelect()->getAllSelectedColumns());
-		}
-
-		return $selectedColumns;
+		return $this->selectedColumns;
 	}
 
 	public function getResultSet($startIndex = 0, $count = 16, $sortBy = null, $sortOrder = null, $filterBy = null, $filterOp = null, $filterValue = null, $updatedSince = null, $mode = 0, $class = null, array $args = array())
