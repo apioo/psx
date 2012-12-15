@@ -35,7 +35,7 @@
  */
 class PSX_Base
 {
-	const VERSION = '0.4.7';
+	const VERSION = '0.4.8';
 
 	/**
 	 * The current request method
