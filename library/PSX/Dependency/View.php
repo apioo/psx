@@ -33,7 +33,7 @@
  * @package    PSX_Dependency
  * @version    $Revision: 542 $
  */
-class PSX_Dependency_View extends PSX_DependencyAbstract
+class PSX_Dependency_View extends PSX_Dependency_Default
 {
 	public function setup()
 	{

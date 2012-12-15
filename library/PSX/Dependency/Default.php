@@ -35,28 +35,57 @@
  */
 class PSX_Dependency_Default extends PSX_DependencyAbstract
 {
-	/*
 	public function setup()
 	{
 		parent::setup();
 
-		$this->getSql();
+		$this->getInputGet();
+		$this->getInputPost();
+		//$this->getSql();
+	}
+
+	public function getValidate()
+	{
+		if($this->has('validate'))
+		{
+			return $this->get('validate');
+		}
+
+		return $this->set('validate', new PSX_Validate());
+	}
+
+	public function getInputGet()
+	{
+		if($this->has('parameter'))
+		{
+			return $this->get('parameter');
+		}
+
+		return $this->set('parameter', new PSX_Input_Get($this->getValidate()));
+	}
+
+	public function getInputPost()
+	{
+		if($this->has('body'))
+		{
+			return $this->get('body');
+		}
+
+		return $this->set('body', new PSX_Input_Post($this->getValidate()));
 	}
 
 	public function getSql()
 	{
-		if($this->hasService('sql'))
+		if($this->has('sql'))
 		{
-			return $this->getService('sql');
+			return $this->get('sql');
 		}
 
-		return $this->setService('sql', new PSX_Sql(
-			new PSX_Sql_Driver_Pdo(), 
+		return $this->set('sql', new PSX_Sql(
 			$this->config['psx_sql_host'], 
 			$this->config['psx_sql_user'], 
 			$this->config['psx_sql_pw'], 
 			$this->config['psx_sql_db'])
 		);
 	}
-	*/
 }

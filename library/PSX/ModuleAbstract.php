@@ -41,9 +41,6 @@ abstract class PSX_ModuleAbstract
 	protected $uriFragments = array();
 
 	protected $_container;
-	protected $_validate;
-	protected $_parameter;
-	protected $_body;
 
 	public function __construct(PSX_Loader_Location $location, PSX_Base $base, $basePath, array $uriFragments)
 	{
@@ -51,13 +48,13 @@ abstract class PSX_ModuleAbstract
 		$this->base         = $base;
 		$this->basePath     = $basePath;
 		$this->uriFragments = $uriFragments;
-
-		// default objects
-		$this->_validate  = new PSX_Validate();
-		$this->_parameter = new PSX_Input_Get($this->_validate);
-		$this->_body      = new PSX_Input_Post($this->_validate);
 	}
 
+	/**
+	 * Returns the dependency container for the module
+	 *
+	 * @return PSX_DependencyAbstract
+	 */
 	public function getDependencies()
 	{
 		return new PSX_Dependency_Default($this->base->getConfig());
@@ -65,7 +62,7 @@ abstract class PSX_ModuleAbstract
 
 	public function _ini()
 	{
-		// assign dependencies
+		// load dependencies
 		$this->_container = $this->getDependencies();
 		$this->_container->setup();
 
@@ -76,7 +73,7 @@ abstract class PSX_ModuleAbstract
 			$this->$k = $obj;
 		}
 
-
+		// call event methods
 		$this->onLoad();
 
 		switch($this->getMethod())
@@ -119,6 +116,14 @@ abstract class PSX_ModuleAbstract
 	{
 	}
 
+	/**
+	 * Is called so that the module can process the content that means i.e. load
+	 * a template or output the content. The $content contains all output wich 
+	 * was captured through output buffering
+	 *
+	 * @param string $content
+	 * @return string
+	 */
 	public function processResponse($content)
 	{
 		return $content;
@@ -146,14 +151,9 @@ abstract class PSX_ModuleAbstract
 		}
 	}
 
-	protected function getContainer()
-	{
-		return $this->_container;
-	}
-
 	protected function getValidator()
 	{
-		return $this->_validate;
+		return $this->validate;
 	}
 
 	protected function getMethod()
@@ -178,12 +178,17 @@ abstract class PSX_ModuleAbstract
 
 	protected function getParameter()
 	{
-		return $this->_parameter;
+		return $this->parameter;
 	}
 
 	protected function getBody()
 	{
-		return $this->_body;
+		return $this->body;
+	}
+
+	protected function getContainer()
+	{
+		return $this->_container;
 	}
 }
 
