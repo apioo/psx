@@ -56,7 +56,15 @@ abstract class PSX_ModuleAbstract
 		$this->_validate  = new PSX_Validate();
 		$this->_parameter = new PSX_Input_Get($this->_validate);
 		$this->_body      = new PSX_Input_Post($this->_validate);
+	}
 
+	public function getDependencies()
+	{
+		return new PSX_Dependency_Default($this->base->getConfig());
+	}
+
+	public function _ini()
+	{
 		// assign dependencies
 		$this->_container = $this->getDependencies();
 		$this->_container->setup();
@@ -67,15 +75,8 @@ abstract class PSX_ModuleAbstract
 		{
 			$this->$k = $obj;
 		}
-	}
 
-	public function getDependencies()
-	{
-		return new PSX_Dependency_Default($this->base->getConfig());
-	}
 
-	public function _ini()
-	{
 		$this->onLoad();
 
 		switch($this->getMethod())
