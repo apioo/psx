@@ -81,6 +81,13 @@ class PSX_Base
 	protected $host;
 
 	/**
+	 * The path of the value of psx_url
+	 *
+	 * @var string
+	 */
+	protected $path;
+
+	/**
 	 * Contains the current http request object
 	 *
 	 * @var PSX_Http_Request
@@ -105,6 +112,7 @@ class PSX_Base
 			{
 				$this->self = $parts['scheme'] . '://' . $parts['host'] . (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '');
 				$this->host = $parts['host'];
+				$this->path = isset($parts['path']) ? $parts['path'] : '';
 			}
 			else
 			{
@@ -140,6 +148,16 @@ class PSX_Base
 	public function getHost()
 	{
 		return $this->host;
+	}
+
+	/**
+	 * Returns the path of the url
+	 *
+	 * @return string
+	 */
+	public function getPath()
+	{
+		return $this->path;
 	}
 
 	/**
