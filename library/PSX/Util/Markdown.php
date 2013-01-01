@@ -334,8 +334,20 @@ class PSX_Util_Markdown extends ArrayIterator
 
 	public static function encodeEmphasis($v)
 	{
-		$html = preg_replace('/((\_\_|\*\*)(\w+)(\_\_|\*\*))/', '<b>$3</b>', $v);
-		$html = preg_replace('/((\_|\*)(\w+)(\_|\*))/', '<i>$3</i>', $html);
+		// encode emphasis only if we are not in an url
+		$parts = preg_split('/(https?:\/\/\S*)/S', $v, -1, PREG_SPLIT_DELIM_CAPTURE);
+		$html  = '';
+
+		foreach($parts as $i => $part)
+		{
+			if($i % 2 == 0)
+			{
+				$part = preg_replace('/((\_\_|\*\*)(\w+)(\_\_|\*\*))/', '<b>$3</b>', $part);
+				$part = preg_replace('/((\_|\*)(\w+)(\_|\*))/', '<i>$3</i>', $part);
+			}
+
+			$html.= $part;
+		}
 
 		return $html;
 	}

@@ -236,6 +236,21 @@ TEXT;
 		$this->assertEquals($e, $a);
 	}
 
+	public function testEmphasisItalicUrl()
+	{
+		$md = <<<TEXT
+foo _bar_ foo http://foo.com/test_test_test.htm
+TEXT;
+
+		$a = PSX_Util_Markdown::decode($md);
+		$e = <<<TEXT
+<p>foo <i>bar</i> foo http://foo.com/test_test_test.htm </p>
+
+TEXT;
+
+		$this->assertEquals($e, $a);
+	}
+
 	public function testEmphasisBold()
 	{
 		$md = <<<TEXT
@@ -245,6 +260,21 @@ TEXT;
 		$a = PSX_Util_Markdown::decode($md);
 		$e = <<<TEXT
 <p>foo <b>bar</b> foo <b>bar</b> foo <b>bar</b> foo <b>bar</b> f**oo bar </p>
+
+TEXT;
+
+		$this->assertEquals($e, $a);
+	}
+
+	public function testEmphasisBoldUrl()
+	{
+		$md = <<<TEXT
+foo __bar__ foo http://foo.com/test__test__test.htm
+TEXT;
+
+		$a = PSX_Util_Markdown::decode($md);
+		$e = <<<TEXT
+<p>foo <b>bar</b> foo http://foo.com/test__test__test.htm </p>
 
 TEXT;
 
