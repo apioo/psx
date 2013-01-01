@@ -69,7 +69,7 @@ class PSX_Sql_Table_Select implements PSX_Sql_Table_SelectInterface
 		}
 		else if($table instanceof PSX_Sql_Table_SelectInterface)
 		{
-			$this->selectedColumns = array_merge($this->selectedColumns, $table->getSelectedColumns());
+			$this->selectedColumns = array_merge($this->selectedColumns, $table->getAllSelectedColumns());
 
 			$table = $table->getTable();
 		}
