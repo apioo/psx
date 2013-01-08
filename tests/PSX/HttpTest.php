@@ -143,7 +143,7 @@ class PSX_HttpTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals('HTTP/1.1', $response->getScheme());
 		$this->assertEquals(200, $response->getCode());
 		$this->assertEquals('OK', $response->getMessage());
-		$this->assertEquals('step2', $response->getBody());
+		$this->assertEquals('SUCCESS', $response->getBody());
 	}
 }
 

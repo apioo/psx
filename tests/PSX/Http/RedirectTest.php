@@ -52,7 +52,7 @@ class PSX_Http_RedirectTest extends PHPUnit_Framework_TestCase
 
 		$response = $http->request($request);
 
-		$this->assertEquals('step2', $response->getBody());
+		$this->assertEquals('SUCCESS', $response->getBody());
 	}
 
 	/**
@@ -80,7 +80,7 @@ class PSX_Http_RedirectTest extends PHPUnit_Framework_TestCase
 
 		$response = $http->request($request);
 
-		$this->assertEquals('step2', $response->getBody());
+		$this->assertEquals('SUCCESS', $response->getBody());
 	}
 
 	/**
