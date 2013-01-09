@@ -89,4 +89,34 @@ HTML;
 
 		$this->assertEquals($expected, $filter->filter());
 	}
+
+	public function testDataAttribute()
+	{
+		$html = <<<HTML
+<div id="foo" data-test="bar">foo</div>
+HTML;
+
+		$expected = <<<HTML
+<div id="foo" data-test="bar">foo</div>
+HTML;
+
+		$filter = new PSX_Html_Filter($html, new PSX_Html_Filter_Collection_Html5());
+
+		$this->assertEquals($expected, $filter->filter());
+	}
+
+	public function testInvalidDataAttribute()
+	{
+		$html = <<<HTML
+<div id="foo" data-t&est="bar">foo</div>
+HTML;
+
+		$expected = <<<HTML
+<div id="foo">foo</div>
+HTML;
+
+		$filter = new PSX_Html_Filter($html, new PSX_Html_Filter_Collection_Html5());
+
+		$this->assertEquals($expected, $filter->filter());
+	}
 }

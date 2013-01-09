@@ -156,9 +156,20 @@ class PSX_Html_Filter
 		if(!empty($element->attr))
 		{
 			$allowedAttr = $this->collection[$element->name]->getAttributes();
+			$allowedData = isset($allowedAttr['data-*']);
 
 			foreach($element->attr as $key => $val)
 			{
+				if($allowedData && substr($key, 0, 5) == 'data-')
+				{
+					$dataKey = substr($key, 5);
+
+					if(preg_match('/^[A-Za-z0-9-_.]{1,64}$/', $dataKey))
+					{
+						$key = 'data-*';
+					}
+				}
+
 				if(isset($allowedAttr[$key]))
 				{
 					if($allowedAttr[$key] instanceof PSX_FilterAbstract)
@@ -221,12 +232,6 @@ class PSX_Html_Filter
 						unset($element->attr[$key]);
 					}
 				}
-				/*
-				else if(substr($key, 0, 5) == 'data-')
-				{
-					// allow data- elements
-				}
-				*/
 				else
 				{
 					unset($element->attr[$key]);

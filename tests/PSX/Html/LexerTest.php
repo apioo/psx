@@ -76,10 +76,10 @@ HTML;
 		$html = <<<HTML
 <html>
 	<head>
-		<title>barfoo
+		<title>barfoo</title>
 	</head>
 	<body>
-		<h1>foobar</h1>
+		<h1>foobar
 	</body>
 </html>
 HTML;
@@ -87,12 +87,12 @@ HTML;
 		$expect = <<<HTML
 <html>
 	<head>
-		<title>barfoo
-	</title>
+		<title>barfoo</title>
+	</head>
 	<body>
-		<h1>foobar</h1>
-	</body>
-</head></html>
+		<h1>foobar
+	</h1>
+</body></html>
 HTML;
 
 		$root = PSX_Html_Lexer::parse($html);
@@ -116,11 +116,7 @@ HTML;
 		$expect = <<<HTML
 <html>
 	<head>
-		<title>barfoo
-	</title>
-	<body>
-		<h1>foobar</h1>
-</body></head></html>
+		<title /></head></html>
 HTML;
 
 		$root = PSX_Html_Lexer::parse($html);
@@ -379,6 +375,86 @@ HTML;
 		$this->assertEquals($expect, $root->__toString());
 	}
 
+	public function testYoutubeIframe()
+	{
+		$html = <<<HTML
+<iframe width="420" height="315" src="http://www.youtube.com/embed/jExym4mLx10?rel=0" frameborder="0" allowfullscreen></iframe>
+HTML;
+
+		$expect = <<<HTML
+<iframe width="420" height="315" src="http://www.youtube.com/embed/jExym4mLx10?rel=0" frameborder="0" allowfullscreen></iframe>
+HTML;
+
+		$root = PSX_Html_Lexer::parse($html);
+
+		$this->assertEquals($expect, $root->__toString());
+	}
+
+	public function testEmptyAttributes()
+	{
+		$html = <<<HTML
+<p>
+	<input readonly type="text" value="foo" />
+</p>
+HTML;
+
+		$expect = <<<HTML
+<p>
+	<input readonly type="text" value="foo" />
+</p>
+HTML;
+
+		$root = PSX_Html_Lexer::parse($html);
+
+		$this->assertEquals($expect, $root->__toString());
+	}
+
+	public function testScriptContent()
+	{
+		$html = <<<HTML
+<script type="text/javascript">
+if (0 < 1 && 1 > 0) {
+	alert('Oo');
+}
+</script>
+HTML;
+
+		$expect = <<<HTML
+<script type="text/javascript">
+if (0 < 1 && 1 > 0) {
+	alert('Oo');
+}
+</script>
+HTML;
+
+		$root = PSX_Html_Lexer::parse($html);
+
+		$this->assertEquals($expect, $root->__toString());
+	}
+
+	public function testTextareaContent()
+	{
+		$html = <<<HTML
+<textarea>
+	<a><b></a></b>
+	<<php
+	>>
+</textarea>
+HTML;
+
+		$expect = <<<HTML
+<textarea>
+	<a><b></a></b>
+	<<php
+	>>
+</textarea>
+HTML;
+
+		$root = PSX_Html_Lexer::parse($html);
+
+		$this->assertEquals($expect, $root->__toString());
+	}
+
 	public function testParseAttributes()
 	{
 		$this->assertEquals(array('disabled' => null), PSX_Html_Lexer::parseAttributes('disabled'));
@@ -388,7 +464,9 @@ HTML;
 		$this->assertEquals(array('name' => 'be evil'), PSX_Html_Lexer::parseAttributes('name="be evil"'));
 		$this->assertEquals(array('name' => 'foo', 'bar' => 'name'), PSX_Html_Lexer::parseAttributes('name="foo" bar="name"'));
 		$this->assertEquals(array('name' => ' be evil '), PSX_Html_Lexer::parseAttributes(' name = " be evil " '));
-		$this->assertEquals(array('name' => ' be evil '), PSX_Html_Lexer::parseAttributes(" name = ' be evil ' "));
+		$this->assertEquals(array('name' => ' be evil '), PSX_Html_Lexer::parseAttributes(' name = \' be evil \' '));
+		$this->assertEquals(array('name' => ' be \'evil '), PSX_Html_Lexer::parseAttributes(' name = " be \'evil " '));
+		$this->assertEquals(array('name' => ' be "evil '), PSX_Html_Lexer::parseAttributes(' name = \' be "evil \' '));
 		$this->assertEquals(array('itemscope' => 'itemscope', 'itemtype' => 'http://schema.org/WebPage'), PSX_Html_Lexer::parseAttributes('itemscope="itemscope" itemtype="http://schema.org/WebPage"'));
 		$this->assertEquals(array('itemscope' => 'itemscope', 'itemtype' => 'http://schema.org/WebPage'), PSX_Html_Lexer::parseAttributes('        itemscope  =  "itemscope"     itemtype  =  "http://schema.org/WebPage"      '));
 		$this->assertEquals(array(

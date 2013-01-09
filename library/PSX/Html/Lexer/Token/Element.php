@@ -148,7 +148,14 @@ class PSX_Html_Lexer_Token_Element extends PSX_Html_Lexer_TokenAbstract
 
 				foreach($token->attr as $key => $val)
 				{
-					$str.= ' ' . $key . '="' . htmlspecialchars($val, ENT_COMPAT, 'UTF-8', false) . '"';
+					if($val !== null)
+					{
+						$str.= ' ' . $key . '="' . htmlspecialchars($val, ENT_COMPAT, 'UTF-8', false) . '"';
+					}
+					else
+					{
+						$str.= ' ' . $key;
+					}
 				}
 
 				$str.= '>';
@@ -166,10 +173,25 @@ class PSX_Html_Lexer_Token_Element extends PSX_Html_Lexer_TokenAbstract
 
 				foreach($token->attr as $key => $val)
 				{
-					$str.= ' ' . $key . '="' . htmlspecialchars($val, ENT_COMPAT, 'UTF-8', false) . '"';
+					if($val !== null)
+					{
+						$str.= ' ' . $key . '="' . htmlspecialchars($val, ENT_COMPAT, 'UTF-8', false) . '"';
+					}
+					else
+					{
+						$str.= ' ' . $key;
+					}
 				}
 
-				$str.= ' />';
+				// specific elements can not be closed as short tag
+				if(in_array($token->name, array('script', 'iframe')))
+				{
+					$str.= '></' . $token->name . '>';
+				}
+				else
+				{
+					$str.= ' />';
+				}
 			}
 		}
 		else if($token instanceof PSX_Html_Lexer_Token_Text)

@@ -67,15 +67,15 @@ class PSX_Html_Lexer
 	 *
 	 * @var array
 	 */
-	private static $shortTags = array('base', 'link', 'meta', 'hr', 'br', 'wbr', 'img', 'embed', 'param', 'source', 'track', 'col', 'input', 'keygen', 'command');
+	private static $shortTags = array('area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'menuitem', 'meta', 'param', 'source', 'track', 'wbr');
 
 	/**
 	 * Tags where the content will not be parsed until an explicit ending token
-	 * was found
+	 * was found. In the hmtl spec these are Raw text and RCDATA elements
 	 *
 	 * @var array
 	 */
-	private static $npTags = array('style', 'script', 'textarea');
+	private static $npTags = array('script', 'style', 'textarea', 'title');
 
 	/**
 	 * Main method wich will try to parse the given html into an tree structure.

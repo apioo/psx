@@ -55,6 +55,7 @@ class PSX_Html_Filter_Collection_Html5 extends PSX_Html_Filter_CollectionAbstrac
 		'dir' => array('ltr', 'rtl', 'auto'),
 		'class' => PSX_Html_Filter::ANY_VALUE,
 		'style' => PSX_Html_Filter::ANY_VALUE,
+		'data-*' => PSX_Html_Filter::ANY_VALUE,
 	);
 
 	public function loadElements()
