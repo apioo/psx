@@ -98,7 +98,7 @@ class PSX_Oauth
 
 
 		// build the base string
-		$this->requestMethod = 'GET';
+		$this->requestMethod = 'POST';
 		$this->url           = $url;
 		$this->params        = array_merge($values, $url->getParams());
 
@@ -114,7 +114,7 @@ class PSX_Oauth
 
 
 		// request unauthorized token
-		$request   = new PSX_Http_GetRequest($url, array(
+		$request   = new PSX_Http_PostRequest($url, array(
 
 			'Authorization' => 'OAuth realm="psx", ' . self::buildAuthString($values),
 			'User-Agent'    => __CLASS__ . ' ' . PSX_Base::VERSION,
@@ -204,7 +204,7 @@ class PSX_Oauth
 
 
 		// build the base string
-		$this->requestMethod = 'GET';
+		$this->requestMethod = 'POST';
 		$this->url           = $url;
 		$this->params        = array_merge($values, $url->getParams());
 
@@ -220,7 +220,7 @@ class PSX_Oauth
 
 
 		// request access token
-		$request   = new PSX_Http_GetRequest($url, array(
+		$request   = new PSX_Http_PostRequest($url, array(
 
 			'Authorization' => 'OAuth realm="psx", ' . self::buildAuthString($values),
 			'User-Agent'    => __CLASS__ . ' ' . PSX_Base::VERSION,
