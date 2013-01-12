@@ -36,7 +36,7 @@
  */
 class PSX_Html_Filter_Collection_Html5Text extends PSX_Html_Filter_CollectionAbstract
 {
-	private $textSemantics = array('#PCDATA', 'a', 'em', 'strong', 'small', 's', 'cite', 'q', 'dfn', 'abbr', 'time', 'code', 'var', 'samp', 'lbd', 'sub', 'sup', 'i', 'b', 'u', 'mark', 'bdi', 'bdo', 'br', 'wbr', 'ins', 'del');
+	protected $textSemantics = array('#PCDATA', 'a', 'em', 'strong', 'small', 's', 'cite', 'q', 'dfn', 'abbr', 'time', 'code', 'var', 'samp', 'lbd', 'sub', 'sup', 'i', 'b', 'u', 'mark', 'bdi', 'bdo', 'br', 'wbr', 'ins', 'del');
 
 	public function loadElements()
 	{

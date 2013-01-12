@@ -27,7 +27,8 @@
  * Collection off all html5 elements from the current specification. See
  * http://www.w3.org/TR/html5/ for more informations. Must be only used with
  * trusted content because it allows all elements from the specification 
- * (script, forms, etc.)
+ * (script, forms, etc.). You can extend this collection and allow only the 
+ * elements wich are needed in your case
  *
  * @author     Christoph Kappestein <k42b3.x@gmail.com>
  * @license    http://www.gnu.org/licenses/gpl.html GPLv3
@@ -38,16 +39,16 @@
  */
 class PSX_Html_Filter_Collection_Html5 extends PSX_Html_Filter_CollectionAbstract
 {
-	private $metaContent = array('base', 'command', 'link', 'meta', 'noscript', 'script', 'style', 'title');
-	private $flowContent = array('#PCDATA', 'a', 'abbr', 'address', 'area', 'article', 'aside', 'audio', 'b', 'bdi', 'bdo', 'blockquote', 'br', 'button', 'canvas', 'cite', 'code', 'command', 'datalist', 'del', 'details', 'dfn', 'div', 'dl', 'em', 'embed', 'fieldset', 'figure', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'hgroup', 'hr', 'i', 'iframe', 'img', 'input', 'ins', 'kbd', 'keygen', 'label', 'map', 'mark', 'math', 'menu', 'meter', 'nav', 'noscript', 'object', 'ol', 'output', 'p', 'pre', 'progress', 'q', 'ruby', 's', 'samp', 'script', 'section', 'select', 'small', 'span', 'strong', 'style', 'sub', 'sup', 'svg', 'table', 'textarea', 'time', 'u', 'ul', 'var', 'video', 'wbr', 'text');
-	private $sectioningContent = array('article', 'aside', 'nav', 'section');
-	private $headingContent = array('h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hgroup');
-	private $phrasingContent = array('#PCDATA', 'a', 'abbr', 'area', 'audio', 'b', 'bdi', 'bdo', 'br', 'button', 'canvas', 'cite', 'code', 'command', 'datalist', 'del', 'dfn', 'em', 'embed', 'i', 'iframe', 'img', 'input', 'ins', 'kbd', 'keygen', 'label', 'map', 'mark', 'math', 'meter', 'noscript', 'object', 'output', 'progress', 'q', 'ruby', 's', 'samp', 'script', 'select', 'small', 'span', 'strong', 'sub', 'sup', 'svg', 'textarea', 'time', 'u', 'var', 'video', 'wbr');
-	private $embeddedContent = array('audio', 'canvas', 'embed', 'iframe', 'img', 'math', 'object', 'svg', 'video');
-	private $interactiveContent = array('a', 'audio', 'button', 'details', 'embed', 'iframe', 'img', 'input', 'keygen', 'label', 'menu', 'object', 'select', 'textarea', 'video');
+	protected $metaContent = array('base', 'command', 'link', 'meta', 'noscript', 'script', 'style', 'title');
+	protected $flowContent = array('#PCDATA', 'a', 'abbr', 'address', 'area', 'article', 'aside', 'audio', 'b', 'bdi', 'bdo', 'blockquote', 'br', 'button', 'canvas', 'cite', 'code', 'command', 'datalist', 'del', 'details', 'dfn', 'div', 'dl', 'em', 'embed', 'fieldset', 'figure', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'hgroup', 'hr', 'i', 'iframe', 'img', 'input', 'ins', 'kbd', 'keygen', 'label', 'map', 'mark', 'math', 'menu', 'meter', 'nav', 'noscript', 'object', 'ol', 'output', 'p', 'pre', 'progress', 'q', 'ruby', 's', 'samp', 'script', 'section', 'select', 'small', 'span', 'strong', 'style', 'sub', 'sup', 'svg', 'table', 'textarea', 'time', 'u', 'ul', 'var', 'video', 'wbr', 'text');
+	protected $sectioningContent = array('article', 'aside', 'nav', 'section');
+	protected $headingContent = array('h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hgroup');
+	protected $phrasingContent = array('#PCDATA', 'a', 'abbr', 'area', 'audio', 'b', 'bdi', 'bdo', 'br', 'button', 'canvas', 'cite', 'code', 'command', 'datalist', 'del', 'dfn', 'em', 'embed', 'i', 'iframe', 'img', 'input', 'ins', 'kbd', 'keygen', 'label', 'map', 'mark', 'math', 'meter', 'noscript', 'object', 'output', 'progress', 'q', 'ruby', 's', 'samp', 'script', 'select', 'small', 'span', 'strong', 'sub', 'sup', 'svg', 'textarea', 'time', 'u', 'var', 'video', 'wbr');
+	protected $embeddedContent = array('audio', 'canvas', 'embed', 'iframe', 'img', 'math', 'object', 'svg', 'video');
+	protected $interactiveContent = array('a', 'audio', 'button', 'details', 'embed', 'iframe', 'img', 'input', 'keygen', 'label', 'menu', 'object', 'select', 'textarea', 'video');
 
 	// attributes
-	private $globalAttributes = array(
+	protected $globalAttributes = array(
 		'id' => PSX_Html_Filter::ANY_VALUE, 
 		'title' => PSX_Html_Filter::ANY_VALUE,
 		'lang' => PSX_Html_Filter::ANY_VALUE, 
@@ -61,11 +62,45 @@ class PSX_Html_Filter_Collection_Html5 extends PSX_Html_Filter_CollectionAbstrac
 	public function loadElements()
 	{
 		// the root element
+		$this->loadRootElement();
+
+		// document metadata
+		$this->loadDocumentMetadataElements();
+
+		// scripting
+		$this->loadScriptingElements();
+
+		// sections
+		$this->loadSectionElements();
+
+		// grouping content
+		$this->loadGroupingContentElements();
+
+		// text level semantics
+		$this->loadTextLevelSemanticElements();
+
+		// edits
+		$this->loadEditElements();
+
+		// embedded content
+		$this->loadEmbeddedContentElements();
+
+		// tabular data
+		$this->loadTabularDataElements();
+
+		// forms
+		$this->loadFormElements();
+	}
+
+	protected function loadRootElement()
+	{
 		$this->add(new PSX_Html_Filter_Element('html', array_merge($this->globalAttributes, array(
 			'manifest' => PSX_Html_Filter::ANY_VALUE,
 		)), array('head', 'body')));
+	}
 
-		// document metadata
+	protected function loadDocumentMetadataElements()
+	{
 		$this->add(new PSX_Html_Filter_Element('head', $this->globalAttributes, $this->metaContent));
 		$this->add(new PSX_Html_Filter_Element('title', $this->globalAttributes, array('#PCDATA')));
 		$this->add(new PSX_Html_Filter_Element('base', array_merge($this->globalAttributes, array(
@@ -91,8 +126,10 @@ class PSX_Html_Filter_Collection_Html5 extends PSX_Html_Filter_CollectionAbstrac
 			'type' => PSX_Html_Filter::ANY_VALUE,
 			'scoped' => PSX_Html_Filter::ANY_VALUE,
 		)), array('#PCDATA')));
+	}
 
-		// scripting
+	protected function loadScriptingElements()
+	{
 		$this->add(new PSX_Html_Filter_Element('script', array_merge($this->globalAttributes, array(
 			'src' => PSX_Html_Filter::ANY_VALUE,
 			'async' => PSX_Html_Filter::ANY_VALUE,
@@ -101,8 +138,10 @@ class PSX_Html_Filter_Collection_Html5 extends PSX_Html_Filter_CollectionAbstrac
 			'charset' => PSX_Html_Filter::ANY_VALUE,
 		)), array('#PCDATA')));
 		$this->add(new PSX_Html_Filter_Element('noscript', $this->globalAttributes, PSX_Html_Filter::CONTENT_TRANSPARENT));
+	}
 
-		// sections
+	protected function loadSectionElements()
+	{
 		$this->add(new PSX_Html_Filter_Element('body', $this->globalAttributes, $this->flowContent));
 		$this->add(new PSX_Html_Filter_Element('section', $this->globalAttributes, $this->flowContent));
 		$this->add(new PSX_Html_Filter_Element('nav', $this->globalAttributes, $this->flowContent));
@@ -118,8 +157,10 @@ class PSX_Html_Filter_Collection_Html5 extends PSX_Html_Filter_CollectionAbstrac
 		$this->add(new PSX_Html_Filter_Element('header', $this->globalAttributes, $this->flowContent));
 		$this->add(new PSX_Html_Filter_Element('footer', $this->globalAttributes, $this->flowContent));
 		$this->add(new PSX_Html_Filter_Element('address', $this->globalAttributes, $this->flowContent));
+	}
 
-		// grouping content
+	protected function loadGroupingContentElements()
+	{
 		$this->add(new PSX_Html_Filter_Element('p', $this->globalAttributes, $this->phrasingContent));
 		$this->add(new PSX_Html_Filter_Element('hr', $this->globalAttributes));
 		$this->add(new PSX_Html_Filter_Element('pre', $this->globalAttributes, $this->phrasingContent));
@@ -139,8 +180,10 @@ class PSX_Html_Filter_Collection_Html5 extends PSX_Html_Filter_CollectionAbstrac
 		$this->add(new PSX_Html_Filter_Element('figure', $this->globalAttributes, $this->flowContent));
 		$this->add(new PSX_Html_Filter_Element('figcaption', $this->globalAttributes, $this->flowContent));
 		$this->add(new PSX_Html_Filter_Element('div', $this->globalAttributes, $this->flowContent));
+	}
 
-		// text level semantics
+	protected function loadTextLevelSemanticElements()
+	{
 		$this->add(new PSX_Html_Filter_Element('#PCDATA'));
 		$this->add(new PSX_Html_Filter_Element('a', array_merge($this->globalAttributes, array(
 			'href' => PSX_Html_Filter::ANY_VALUE,
@@ -178,8 +221,10 @@ class PSX_Html_Filter_Collection_Html5 extends PSX_Html_Filter_CollectionAbstrac
 		$this->add(new PSX_Html_Filter_Element('span', $this->globalAttributes, $this->phrasingContent));
 		$this->add(new PSX_Html_Filter_Element('br'));
 		$this->add(new PSX_Html_Filter_Element('wbr'));
+	}
 
-		// edits
+	protected function loadEditElements()
+	{
 		$this->add(new PSX_Html_Filter_Element('ins', array_merge($this->globalAttributes, array(
 			'cite' => PSX_Html_Filter::ANY_VALUE,
 			'datetime' => PSX_Html_Filter::ANY_VALUE,
@@ -188,8 +233,10 @@ class PSX_Html_Filter_Collection_Html5 extends PSX_Html_Filter_CollectionAbstrac
 			'cite' => PSX_Html_Filter::ANY_VALUE,
 			'datetime' => PSX_Html_Filter::ANY_VALUE,
 		)), PSX_Html_Filter::CONTENT_TRANSPARENT));
+	}
 
-		// embedded content
+	protected function loadEmbeddedContentElements()
+	{
 		$this->add(new PSX_Html_Filter_Element('img', array_merge($this->globalAttributes, array(
 			'alt' => PSX_Html_Filter::ANY_VALUE, 
 			'src' => PSX_Html_Filter::ANY_VALUE, 
@@ -281,8 +328,10 @@ class PSX_Html_Filter_Collection_Html5 extends PSX_Html_Filter_CollectionAbstrac
 			'hreflang' => PSX_Html_Filter::ANY_VALUE,
 			'type' => PSX_Html_Filter::ANY_VALUE,
 		))));
+	}
 
-		// tabular data
+	protected function loadTabularDataElements()
+	{
 		$this->add(new PSX_Html_Filter_Element('table', array_merge($this->globalAttributes, array(
 			'border' => PSX_Html_Filter::ANY_VALUE,
 		)), array('caption', 'colgroup', 'thead', 'tfoot', 'tbody', 'tr')));
@@ -307,8 +356,10 @@ class PSX_Html_Filter_Collection_Html5 extends PSX_Html_Filter_CollectionAbstrac
 			'rowspan' => PSX_Html_Filter::ANY_VALUE,
 			'headers' => PSX_Html_Filter::ANY_VALUE,
 		)), $this->flowContent));
+	}
 
-		// forms
+	protected function loadFormElements()
+	{
 		$this->add(new PSX_Html_Filter_Element('form', array_merge($this->globalAttributes, array(
 			'accept-charset' => PSX_Html_Filter::ANY_VALUE,
 			'action' => PSX_Html_Filter::ANY_VALUE,

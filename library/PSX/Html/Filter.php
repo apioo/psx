@@ -239,6 +239,36 @@ class PSX_Html_Filter
 			}
 		}
 
+		// get allowed childs. If the value is CONTENT_TRANSPARENT we look up 
+		// the parent elements and get the allowed childrens
+		$childs = $this->collection[$element->name]->getValues();
+
+		if(!is_array($childs))
+		{
+			if($childs === self::CONTENT_TRANSPARENT)
+			{
+				$parentNode = $element;
+
+				while($this->collection[$parentNode->name]->getValues() === self::CONTENT_TRANSPARENT)
+				{
+					$parentNode = $parentNode->parentNode;
+				}
+
+				if($parentNode instanceof PSX_Html_Lexer_Token_Element)
+				{
+					$childs = $this->collection[$parentNode->name]->getValues();
+				}
+				else
+				{
+					$childs = array();
+				}
+			}
+			else
+			{
+				throw new PSX_Html_Filter_Exception('Child must be either an array or PSX_Html_Filter constant');
+			}
+		}
+
 		// check childs
 		foreach($element->childNodes as $key => $el)
 		{
@@ -246,36 +276,6 @@ class PSX_Html_Filter
 			if($el instanceof PSX_Html_Lexer_Token_Text && $el->isWhitespace())
 			{
 				continue;
-			}
-
-			// get allowed childs. If the value is CONTENT_TRANSPARENT we look 
-			// up the parent elements and get the allowed childrens
-			$childs = $this->collection[$element->name]->getValues();
-
-			if(!is_array($childs))
-			{
-				if($childs === self::CONTENT_TRANSPARENT)
-				{
-					$parentNode = $element;
-
-					while($this->collection[$parentNode->name]->getValues() === self::CONTENT_TRANSPARENT)
-					{
-						$parentNode = $parentNode->parentNode;
-					}
-
-					if($parentNode instanceof PSX_Html_Lexer_Token_Element)
-					{
-						$childs = $this->collection[$parentNode->name]->getValues();
-					}
-					else
-					{
-						$childs = array();
-					}
-				}
-				else
-				{
-					throw new PSX_Html_Filter_Exception('Child must be either an array or PSX_Html_Filter constant');
-				}
 			}
 
 			if(!in_array($el->getName(), $childs))
