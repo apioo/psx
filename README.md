@@ -18,3 +18,6 @@ http://phpsx.org
 Examples:
 http://example.phpsx.org
 
+
+[![Build Status](https://travis-ci.org/k42b3/psx.png)](https://travis-ci.org/k42b3/psx)
+
