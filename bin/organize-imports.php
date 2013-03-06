@@ -88,12 +88,11 @@ function checkFile($file)
 {
 	try
 	{
-		$parts  = explode('/', $file);
-		$info   = pathinfo(substr($file, strlen(PSX_PATH)));
-		$vendor = $parts[0];
+		$path = substr($file, strlen(PSX_PATH) + 1);
+		$info = pathinfo($path);
 
 		// parse file
-		Logger::log(Logger::INFO, 'Check ' . $file);
+		Logger::log(Logger::INFO, 'Check ' . $path);
 
 		$parser = new TokenParser($file);
 		$parser->parse();
@@ -104,7 +103,7 @@ function checkFile($file)
 
 		if(empty($hasNs) || $hasNs != str_replace('/', '\\', $shouldNs))
 		{
-			Logger::log(Logger::NOTICE, 'Invalid namespace should be "' . $shouldNs . '" is "' . $hasNs . '" in ' . $file);
+			Logger::log(Logger::NOTICE, 'Invalid namespace should be "' . $shouldNs . '" is "' . $hasNs . '" in ' . $path);
 		}
 
 		// check whether the classes wich are used have are important through
@@ -113,7 +112,20 @@ function checkFile($file)
 		$uses        = $parser->getUses();
 
 		Logger::log(Logger::INFO, 'Found ' . count($usedClasses) . ' used classes');
+
+		foreach($usedClasses as $class)
+		{
+			Logger::log(Logger::INFO, ' - ' . $class);
+		}
+
 		Logger::log(Logger::INFO, 'Found ' . count($uses) . ' namespace imports');
+
+		foreach($uses as $use)
+		{
+			list($use, $alias) = $use;
+
+			Logger::log(Logger::INFO, ' - ' . $use . ' AS ' . $alias);
+		}
 
 		foreach($usedClasses as $class)
 		{
@@ -126,20 +138,15 @@ function checkFile($file)
 			// absolute path
 			if($class[0] == '\\')
 			{
-				// we check whether the file exists if the file refers to the 
-				// same vendor
+				// we check whether the file exists
 				$classParts = explode('\\', substr($class, 1));
+				$classFile  = PSX_PATH . '/' . implode('/', $classParts) . '.php';
 
-				if($classParts[0] == $vendor)
+				if(!is_file($classFile))
 				{
-					$classFile = PSX_PATH . '/' . implode('/', $classParts) . '.php';
-
-					if(!is_file($classFile))
-					{
-						Logger::log(Logger::NOTICE, 'Class "' . $class . '" does not exist in ' . $file);
-					}
-					continue;
+					Logger::log(Logger::NOTICE, 'Class "' . $class . '" does not exist in ' . $path);
 				}
+				continue;
 			}
 
 			// relative path
@@ -168,7 +175,7 @@ function checkFile($file)
 
 					if(!is_file($classFile))
 					{
-						Logger::log(Logger::NOTICE, 'Class "' . $class . '" does not exist in ' . $file);
+						Logger::log(Logger::NOTICE, 'Class "' . $class . '" does not exist in ' . $path);
 					}
 					else
 					{
@@ -182,7 +189,7 @@ function checkFile($file)
 
 					if(!is_file($classFile))
 					{
-						Logger::log(Logger::NOTICE, 'Class "' . $class . '" does not exist in ' . $file);
+						Logger::log(Logger::NOTICE, 'Class "' . $class . '" does not exist in ' . $path);
 					}
 					else
 					{
@@ -200,7 +207,7 @@ function checkFile($file)
 
 				if(!is_file($classFile))
 				{
-					Logger::log(Logger::NOTICE, 'Class "' . $class . '" does not exist in ' . $file);
+					Logger::log(Logger::NOTICE, 'Class "' . $class . '" does not exist in ' . $path);
 				}
 			}
 		}
@@ -376,7 +383,12 @@ class TokenParser
 				case T_NEW:
 					$this->next();
 
-					$this->addClass($this->getClassName());
+					$class = $this->getClassName();
+
+					if(!empty($class))
+					{
+						$this->addClass($class);
+					}
 					break;
 
 				case T_NAMESPACE:
@@ -386,16 +398,11 @@ class TokenParser
 					break;
 
 				case T_IMPLEMENTS:
-					while(true)
+					while($this->hasNext())
 					{
 						$token = $this->current();
 
-						if($token[0] == T_WHITESPACE)
-						{
-							$this->next();
-							continue;
-						}
-						else if($token[0] == ',')
+						if($token[0] == T_WHITESPACE || $token[0] == ',')
 						{
 							$this->next();
 							continue;
@@ -414,6 +421,44 @@ class TokenParser
 					break;
 
 				case T_USE:
+					while($this->hasNext())
+					{
+						$token = $this->current();
+
+						if($token[0] == T_WHITESPACE || $token[0] == ',')
+						{
+							$this->next();
+							continue;
+						}
+
+						$class = $this->getClassName();
+						$alias = null;
+
+						if(!empty($class))
+						{
+							if($this->tokens[$this->i][0] == T_WHITESPACE && $this->tokens[$this->i + 1][0] == T_AS)
+							{
+								$this->next();
+								$this->next();
+								$this->next();
+								$alias = $this->getClassName();
+							}
+
+							if(empty($alias))
+							{
+								$parts = explode('\\', $class);
+								$alias = end($parts);
+							}
+
+							$this->addUse(array($class, $alias));
+						}
+						else
+						{
+							break;
+						}
+					}
+
+					/*
 					$this->next();
 
 					$class = $this->getClassName();
@@ -427,7 +472,10 @@ class TokenParser
 					}
 
 					$this->addUse(array($class, $alias));
+					*/
 					break;
+
+				// @tood method type hinting
 			}
 		}
 	}
@@ -457,7 +505,7 @@ class TokenParser
 		return $this->tokens[$this->i--];
 	}
 
-	protected function gotoNextToken($token)
+	protected function gotoNextToken($token, $breakPoint = ';')
 	{
 		while($this->hasNext())
 		{
@@ -466,6 +514,10 @@ class TokenParser
 			if($tok[0] == $token)
 			{
 				return $tok;
+				break;
+			}
+			else if($tok[0] == $breakPoint)
+			{
 				break;
 			}
 		}
@@ -507,6 +559,7 @@ class TokenParser
 			}
 			else
 			{
+				$this->prev();
 				break;
 			}
 		}
