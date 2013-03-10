@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
 /**
  * PSX_Template
  *
@@ -33,7 +35,7 @@
  * @package    PSX_Template
  * @version    $Revision: 532 $
  */
-class PSX_Template
+class Template
 {
 	protected $data = array();
 
@@ -43,7 +45,7 @@ class PSX_Template
 
 	private $config;
 
-	public function __construct(PSX_Config $config)
+	public function __construct(Config $config)
 	{
 		$this->config = $config;
 
@@ -109,7 +111,7 @@ class PSX_Template
 		}
 		else
 		{
-			throw new PSX_Template_Exception('Key ' . $key . ' already set');
+			throw new Exception('Key ' . $key . ' already set');
 		}
 	}
 
@@ -118,7 +120,7 @@ class PSX_Template
 		// check whether path is set
 		if(empty($this->path))
 		{
-			throw new PSX_Template_Exception('No template set');
+			throw new Exception('No template set');
 		}
 
 		// predefined vars

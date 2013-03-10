@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Util;
+
+use PSX\Util\Annotation\DocBlock;
+
 /**
  * Util class to parse docblooks annotations
  *
@@ -34,11 +38,11 @@
  * @package    PSX_Util
  * @version    $Revision: 602 $
  */
-class PSX_Util_Annotation
+class Annotation
 {
 	public static function parse($doc)
 	{
-		$block = new PSX_Util_Annotation_DocBlock();
+		$block = new DocBlock();
 		$lines = explode("\n", $doc);
 		$text  = '';
 

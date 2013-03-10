@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Payment\Paypal;
+
 /**
  * PSX_Payment_Paypal_StoreInterface
  *
@@ -33,7 +35,7 @@
  * @package    PSX_Payment
  * @version    $Revision: 542 $
  */
-interface PSX_Payment_Paypal_StoreInterface
+interface StoreInterface
 {
 	public function loadToken($sessId);
 	public function saveToken($sessId, $token);

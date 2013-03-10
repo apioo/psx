@@ -23,6 +23,20 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\OpenId;
+
+use PSX\Exception;
+use PSX\Data\ReaderInterface;
+use PSX\Module\ApiAbstract;
+use PSX\OpenId;
+use PSX\OpenId\Provider\Association;
+use PSX\OpenId\Provider\Data\AssociationRequest;
+use PSX\OpenId\Provider\Data\ResRequest;
+use PSX\OpenId\Provider\Data\SetupRequest;
+use PSX\OpenSsl;
+use PSX\OpenSsl\PKey;
+use PSX\Url;
+
 /**
  * PSX_OpenId_ProviderAbstract
  *
@@ -33,7 +47,7 @@
  * @package    PSX_OpenId
  * @version    $Revision: 496 $
  */
-abstract class PSX_OpenId_ProviderAbstract extends PSX_Module_ApiAbstract
+abstract class ProviderAbstract extends ApiAbstract
 {
 	const NS   = 'http://specs.openid.net/auth/2.0';
 	const DH_P = 'dcf93a0b883972ec0e19989ac5a2ce310e1d37717e8d9571bb7623731866e61ef75a2e27898b057f9891c2e27a639c3f29b60814581cd3b2ca3986d2683705577d45c2e7e52dc81c7a171876e5cea74b1448bfdfaf18828efd2519f14e45e3826634af1949e5b535cc829a483b8a76223e5d490a257f05bdff16f2fb22c583ab';
@@ -46,7 +60,7 @@ abstract class PSX_OpenId_ProviderAbstract extends PSX_Module_ApiAbstract
 
 		if($ns != self::NS)
 		{
-			throw new PSX_OpenId_Provider_Exception('Namespace not set or invalid');
+			throw new Exception('Namespace not set or invalid');
 		}
 
 		switch($mode)
@@ -55,8 +69,8 @@ abstract class PSX_OpenId_ProviderAbstract extends PSX_Module_ApiAbstract
 
 				try
 				{
-					$request = new PSX_OpenId_Provider_Data_AssociationRequest();
-					$request->import($this->getRequest(PSX_Data_ReaderInterface::GPC));
+					$request = new AssociationRequest();
+					$request->import($this->getRequest(ReaderInterface::GPC));
 
 					$expiresIn = (integer) $this->onAsocciation($request->getAssociation());
 
@@ -65,16 +79,16 @@ abstract class PSX_OpenId_ProviderAbstract extends PSX_Module_ApiAbstract
 						$expiresIn = 46800; // fallback
 					}
 
-					echo PSX_OpenId::keyValueEncode(array_merge(array(
+					echo OpenId::keyValueEncode(array_merge(array(
 
 						'ns'         => self::NS,
 						'expires_in' => $expiresIn,
 
 					), $request->getFields()));
 				}
-				catch(Exception $e)
+				catch(\Exception $e)
 				{
-					echo PSX_OpenId::keyValueEncode(array(
+					echo OpenId::keyValueEncode(array(
 
 						'ns'         => self::NS,
 						'error'      => $e->getMessage(),
@@ -90,17 +104,17 @@ abstract class PSX_OpenId_ProviderAbstract extends PSX_Module_ApiAbstract
 
 				try
 				{
-					$request = new PSX_OpenId_Provider_Data_SetupRequest();
-					$request->import($this->getRequest(PSX_Data_ReaderInterface::GPC));
+					$request = new SetupRequest();
+					$request->import($this->getRequest(ReaderInterface::GPC));
 					$request->setImmediate($mode == 'checkid_immediate');
 
 					$this->onCheckidSetup($request);
 				}
-				catch(Exception $e)
+				catch(\Exception $e)
 				{
 					$returnTo = $request->getReturnTo();
 
-					if($returnTo instanceof PSX_Url)
+					if($returnTo instanceof Url)
 					{
 						if($request->isImmediate())
 						{
@@ -130,12 +144,12 @@ abstract class PSX_OpenId_ProviderAbstract extends PSX_Module_ApiAbstract
 
 				try
 				{
-					$request = new PSX_OpenId_Provider_Data_ResRequest();
-					$request->import($this->getRequest(PSX_Data_ReaderInterface::GPC));
+					$request = new ResRequest();
+					$request->import($this->getRequest(ReaderInterface::GPC));
 
 					if($this->onCheckAuthentication($request) === true)
 					{
-						echo PSX_OpenId::keyValueEncode(array(
+						echo OpenId::keyValueEncode(array(
 
 							'ns'       => self::NS,
 							'is_valid' => 'true',
@@ -144,12 +158,12 @@ abstract class PSX_OpenId_ProviderAbstract extends PSX_Module_ApiAbstract
 					}
 					else
 					{
-						throw new PSX_OpenId_Provider_Exception('Authentication not successful');
+						throw new Exception('Authentication not successful');
 					}
 				}
-				catch(Exception $e)
+				catch(\Exception $e)
 				{
-					echo PSX_OpenId::keyValueEncode(array(
+					echo OpenId::keyValueEncode(array(
 
 						'ns'       => self::NS,
 						'is_valid' => 'false',
@@ -161,7 +175,7 @@ abstract class PSX_OpenId_ProviderAbstract extends PSX_Module_ApiAbstract
 
 			default:
 
-				throw new PSX_OpenId_Provider_Exception('Invalid mode');
+				throw new Exception('Invalid mode');
 
 				break;
 		}
@@ -177,7 +191,7 @@ abstract class PSX_OpenId_ProviderAbstract extends PSX_Module_ApiAbstract
 	 *
 	 * @return void
 	 */
-	abstract public function onAsocciation(PSX_OpenId_Provider_Data_Association $assoc);
+	abstract public function onAsocciation(Association $assoc);
 
 	/**
 	 * onCheckidSetup
@@ -186,7 +200,7 @@ abstract class PSX_OpenId_ProviderAbstract extends PSX_Module_ApiAbstract
 	 *
 	 * @return void
 	 */
-	abstract public function onCheckidSetup(PSX_OpenId_Provider_Data_SetupRequest $request);
+	abstract public function onCheckidSetup(SetupRequest $request);
 
 	/**
 	 * getAuthentication
@@ -196,7 +210,7 @@ abstract class PSX_OpenId_ProviderAbstract extends PSX_Module_ApiAbstract
 	 *
 	 * @return PSX_OpenId_Data_Authentication
 	 */
-	abstract public function onCheckAuthentication(PSX_OpenId_Provider_Data_ResRequest $request);
+	abstract public function onCheckAuthentication(ResRequest $request);
 
 	/**
 	 * getExtension
@@ -252,7 +266,7 @@ abstract class PSX_OpenId_ProviderAbstract extends PSX_Module_ApiAbstract
 	{
 		if(empty($dhConsumerPublic))
 		{
-			throw new PSX_OpenId_Provider_Exception('Empty "openid.dh_consumer_public"');
+			throw new Exception('Empty "openid.dh_consumer_public"');
 		}
 
 		$g = empty($dhGen)     ? pack('H*', self::DH_G) : base64_decode($dhGen);
@@ -264,11 +278,11 @@ abstract class PSX_OpenId_ProviderAbstract extends PSX_Module_ApiAbstract
 
 		if(empty($dh))
 		{
-			throw new PSX_OpenId_Provider_Exception('Could not get dh details');
+			throw new Exception('Could not get dh details');
 		}
 
-		$sec    = PSX_OpenSsl::dhComputeKey(base64_decode($dhConsumerPublic), $dhKey);
-		$digest = PSX_OpenSsl::digest(self::btwoc($sec), $dhFunc, true);
+		$sec    = OpenSsl::dhComputeKey(base64_decode($dhConsumerPublic), $dhKey);
+		$digest = OpenSsl::digest(self::btwoc($sec), $dhFunc, true);
 
 		$res = array(
 
@@ -289,7 +303,7 @@ abstract class PSX_OpenId_ProviderAbstract extends PSX_Module_ApiAbstract
 			$dhOptions['priv_key'] = $privKey;
 		}
 
-		return new PSX_OpenSsl_PKey(array('dh' => $dhOptions));
+		return new PKey(array('dh' => $dhOptions));
 	}
 
 	public static function btwoc($str)

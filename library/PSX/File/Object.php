@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\File;
+
+use SplFileObject;
+
 /**
  * PSX_File_Object
  *
@@ -33,6 +37,6 @@
  * @package    PSX_File
  * @version    $Revision: 480 $
  */
-class PSX_File_Object extends SplFileObject
+class Object extends SplFileObject
 {
 }

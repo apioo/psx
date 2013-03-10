@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Upload;
+
 /**
  * PSX_Upload_Exception
  *
@@ -33,6 +35,6 @@
  * @package    PSX_Upload
  * @version    $Revision: 480 $
  */
-class PSX_Upload_Exception extends PSX_Exception
+class Exception extends \PSX\Exception
 {
 }

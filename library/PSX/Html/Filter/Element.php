@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Html\Filter;
+
 /**
  * PSX_Html_Filter_Element
  *
@@ -33,7 +35,7 @@
  * @package    PSX_Html
  * @version    $Revision: 560 $
  */
-class PSX_Html_Filter_Element
+class Element
 {
 	private $name;
 	private $attributes;

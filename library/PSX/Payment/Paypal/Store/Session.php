@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Payment\Paypal\Store;
+
+use PSX\Payment\Paypal\StoreInterface;
+
 /**
  * PSX_Payment_Paypal_StoreInterface
  *
@@ -33,33 +37,48 @@
  * @package    PSX_Payment
  * @version    $Revision: 542 $
  */
-class PSX_Payment_Paypal_Store_Session implements PSX_Payment_Paypal_StoreInterface
+class Session implements StoreInterface
 {
 	public function __construct()
 	{
-		if(!isset($_SESSION[__CLASS__]))
+		$key = $this->getName();
+
+		if(!isset($_SESSION[$key]))
 		{
-			$_SESSION[__CLASS__] = array();
+			$_SESSION[$key] = array();
 		}
 	}
 
 	public function loadToken($sessId)
 	{
-		return isset($_SESSION[__CLASS__]['token']) ? $_SESSION[__CLASS__]['token'] : false;
+		$key = $this->getName();
+
+		return isset($_SESSION[$key]['token']) ? $_SESSION[$key]['token'] : false;
 	}
 
 	public function saveToken($sessId, $token)
 	{
-		$_SESSION[__CLASS__]['token'] = $token;
+		$key = $this->getName();
+
+		$_SESSION[$key]['token'] = $token;
 	}
 
 	public function loadPayerId($sessId)
 	{
-		return isset($_SESSION[__CLASS__]['payerId']) ? $_SESSION[__CLASS__]['payerId'] : false;
+		$key = $this->getName();
+
+		return isset($_SESSION[$key]['payerId']) ? $_SESSION[$key]['payerId'] : false;
 	}
 
 	public function savePayerId($sessId, $payerId)
 	{
-		$_SESSION[__CLASS__]['payerId'] = $payerId;
+		$key = $this->getName();
+
+		$_SESSION[$key]['payerId'] = $payerId;
+	}
+
+	public function getName()
+	{
+		return __CLASS__;
 	}
 }

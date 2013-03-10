@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Filter;
+
 /**
  * PSX_Filter_IpTest
  *
@@ -32,7 +34,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_Filter_IpTest extends PHPUnit_Framework_TestCase
+class IpTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -44,7 +46,7 @@ class PSX_Filter_IpTest extends PHPUnit_Framework_TestCase
 
 	public function testIp()
 	{
-		$ip = new PSX_Filter_Ip();
+		$ip = new Ip();
 
 		$this->assertEquals(true, $ip->apply('80.80.80.80'));
 		$this->assertEquals(false, $ip->apply('foo'));

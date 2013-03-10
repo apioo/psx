@@ -23,6 +23,16 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Oauth2;
+
+use PSX\Data\ReaderFactory;
+use PSX\Data\ReaderInterface;
+use PSX\Data\Reader\Json;
+use PSX\Exception;
+use PSX\Http;
+use PSX\Http\PostRequest;
+use PSX\Url;
+
 /**
  * PSX_Oauth2_AuthorizationAbstract
  *
@@ -33,7 +43,7 @@
  * @package    PSX_Oauth2
  * @version    $Revision: 662 $
  */
-abstract class PSX_Oauth2_AuthorizationAbstract
+abstract class AuthorizationAbstract
 {
 	const AUTH_BASIC = 0x1;
 	const AUTH_POST  = 0x2;
@@ -45,7 +55,7 @@ abstract class PSX_Oauth2_AuthorizationAbstract
 	protected $clientSecret;
 	protected $type;
 
-	public function __construct(PSX_Http $http, PSX_Url $url)
+	public function __construct(Http $http, Url $url)
 	{
 		$this->http = $http;
 		$this->url  = $url;
@@ -64,7 +74,7 @@ abstract class PSX_Oauth2_AuthorizationAbstract
 	 *
 	 * @return PSX_Oauth2_AccessToken
 	 */
-	public function refreshToken(PSX_Oauth2_AccessToken $accessToken)
+	public function refreshToken(AccessToken $accessToken)
 	{
 		// request data
 		$refreshToken = $accessToken->getRefreshToken();
@@ -72,7 +82,7 @@ abstract class PSX_Oauth2_AuthorizationAbstract
 
 		if(empty($refreshToken))
 		{
-			throw new PSX_Oauth2_Authorization_Exception('No refresh token was set');
+			throw new Exception('No refresh token was set');
 		}
 
 		$data = array(
@@ -101,28 +111,28 @@ abstract class PSX_Oauth2_AuthorizationAbstract
 			$data['client_secret'] = $this->clientSecret;
 		}
 
-		$request  = new PSX_Http_PostRequest($this->url, $header, $data);
+		$request  = new PostRequest($this->url, $header, $data);
 		$response = $this->http->request($request);
 
 		if($response->getCode() == 200)
 		{
-			$reader = new PSX_Data_Reader_Json();
+			$reader = new Json();
 			$result = $reader->read($response);
 
-			$accessToken = new PSX_Oauth2_AccessToken();
+			$accessToken = new AccessToken();
 			$accessToken->import($result);
 
 			return $accessToken;
 		}
 		else
 		{
-			throw new PSX_Oauth2_Authorization_Exception('Could not refresh access token');
+			throw new Exception('Could not refresh access token');
 		}
 	}
 
 	protected function request(array $header, $data)
 	{
-		$request  = new PSX_Http_PostRequest($this->url, $header, $data);
+		$request  = new PostRequest($this->url, $header, $data);
 		$response = $this->http->request($request);
 
 		if($response->getCode() == 200)
@@ -131,26 +141,26 @@ abstract class PSX_Oauth2_AuthorizationAbstract
 			// asume application/x-www-form-urlencoded 
 			if(strpos($response->getHeader('Content-Type'), 'application/json') !== false)
 			{
-				$type = PSX_Data_ReaderInterface::JSON;
+				$type = ReaderInterface::JSON;
 			}
 			else
 			{
-				$type = PSX_Data_ReaderInterface::FORM;
+				$type = ReaderInterface::FORM;
 			}
 
 			// parse response
-			$reader = PSX_Data_ReaderFactory::getReader($type);
+			$reader = ReaderFactory::getReader($type);
 			$result = $reader->read($response);
 
 			// import data
-			$accessToken = new PSX_Oauth2_AccessToken();
+			$accessToken = new AccessToken();
 			$accessToken->import($result);
 
 			return $accessToken;
 		}
 		else
 		{
-			$resp = PSX_Json::decode($response->getBody());
+			$resp = Json::decode($response->getBody());
 
 			self::throwErrorException($resp);
 		}
@@ -191,7 +201,7 @@ abstract class PSX_Oauth2_AuthorizationAbstract
 
 		if(in_array($error, array('access_denied', 'invalid_client', 'invalid_grant', 'invalid_request', 'invalid_scope', 'server_error', 'temporarily_unavailable', 'unauthorized_client', 'unsupported_response_type')))
 		{
-			$exceptionClass = 'PSX_Oauth2_Authorization_Exception_' . implode('', array_map('ucfirst', explode('_', $error))) . 'Exception';
+			$exceptionClass = '\PSX\Oauth2\Authorization\Exception\\' . implode('', array_map('ucfirst', explode('_', $error))) . 'Exception';
 			$message        = '';
 
 			if(!empty($desc))
@@ -215,7 +225,7 @@ abstract class PSX_Oauth2_AuthorizationAbstract
 		}
 		else
 		{
-			throw new PSX_Oauth2_Authorization_Exception('Invalid error type');
+			throw new Exception('Invalid error type');
 		}
 	}
 }

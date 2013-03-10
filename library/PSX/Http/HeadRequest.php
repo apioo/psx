@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Http;
+
+use PSX\Url;
+
 /**
  * PSX_Http_HeadRequest
  *
@@ -33,7 +37,7 @@
  * @package    PSX_Http
  * @version    $Revision: 579 $
  */
-class PSX_Http_HeadRequest extends PSX_Http_Request
+class HeadRequest extends Request
 {
 	/**
 	 * __construct
@@ -44,7 +48,7 @@ class PSX_Http_HeadRequest extends PSX_Http_Request
 	 */
 	public function __construct($url, array $header = array())
 	{
-		$url    = $url instanceof PSX_Url ? $url : new PSX_Url((string) $url);
+		$url    = $url instanceof Url ? $url : new Url((string) $url);
 		$method = 'HEAD';
 		$header = self::mergeHeader(array(
 

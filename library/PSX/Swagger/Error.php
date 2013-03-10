@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Swagger;
+
+use PSX\Data\RecordAbstract;
+
 /**
  * PSX_Swagger_Error
  *
@@ -33,7 +37,7 @@
  * @package    PSX_Swagger
  * @version    $Revision: 582 $
  */
-class PSX_Swagger_Error extends PSX_Data_RecordAbstract
+class Error extends RecordAbstract
 {
 	private $code;
 	private $reason;

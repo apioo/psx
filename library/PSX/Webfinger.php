@@ -23,6 +23,11 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
+use SimpleXMLElement;
+use PSX\Http\GetRequest;
+
 /**
  * PSX_Webfinger
  *
@@ -33,11 +38,11 @@
  * @package    PSX_Webfinger
  * @version    $Revision: 663 $
  */
-class PSX_Webfinger
+class Webfinger
 {
 	private $http;
 
-	public function __construct(PSX_Http $http)
+	public function __construct(Http $http)
 	{
 		$this->http = $http;
 	}
@@ -49,21 +54,21 @@ class PSX_Webfinger
 	 *
 	 * @return PSX_Webfinger_Xrd
 	 */
-	public function getHostMeta(PSX_Url $url)
+	public function getHostMeta(Url $url)
 	{
 		$url = $url->getScheme() . '://' . $url->getHost() . '/.well-known/host-meta';
-		$url = new PSX_Url($url);
+		$url = new Url($url);
 
-		$request  = new PSX_Http_GetRequest($url, array(
+		$request  = new GetRequest($url, array(
 			'Accept'     => 'application/xrd+xml',
-			'User-Agent' => __CLASS__ . ' ' . PSX_Base::VERSION,
+			'User-Agent' => __CLASS__ . ' ' . Base::VERSION,
 		));
 		$request->setFollowLocation(true);
 		$response = $this->http->request($request);
 
 		if($response->getCode() == 200)
 		{
-			$xrd = simplexml_load_string($response->getBody(), 'PSX_Webfinger_Xrd');
+			$xrd = simplexml_load_string($response->getBody(), '\PSX\Webfinger\Xrd');
 
 			if($xrd instanceof SimpleXMLElement)
 			{
@@ -72,23 +77,23 @@ class PSX_Webfinger
 
 				if(strcmp($host, $url->getHost()) !== 0)
 				{
-					throw new PSX_Webfinger_Exception('Invalid host');
+					throw new Exception('Invalid host');
 				}
 
 				return $xrd;
 			}
 			else
 			{
-				throw new PSX_Webfinger_Exception('Could not parse xml');
+				throw new Exception('Could not parse xml');
 			}
 		}
 		else
 		{
-			throw new PSX_Webfinger_Exception('Could not request host-meta invalid response code ' . $response->getCode());
+			throw new Exception('Could not request host-meta invalid response code ' . $response->getCode());
 		}
 	}
 
-	public function getLrddTemplate(PSX_Url $url)
+	public function getLrddTemplate(Url $url)
 	{
 		$xrd  = $this->getHostMeta($url);
 		$link = $xrd->getLinkByRel('lrdd');
@@ -99,23 +104,23 @@ class PSX_Webfinger
 		}
 		else
 		{
-			throw new PSX_Webfinger_Exception('Found no link lrdd element');
+			throw new Exception('Found no link lrdd element');
 		}
 	}
 
 	public function getLrdd($uri, $lrddTemplate)
 	{
-		$lrddUrl  = new PSX_Url(str_replace('{uri}', urlencode($uri), $lrddTemplate));
-		$request  = new PSX_Http_GetRequest($lrddUrl, array(
+		$lrddUrl  = new Url(str_replace('{uri}', urlencode($uri), $lrddTemplate));
+		$request  = new GetRequest($lrddUrl, array(
 			'Accept'     => 'application/xml',
-			'User-Agent' => __CLASS__ . ' ' . PSX_Base::VERSION,
+			'User-Agent' => __CLASS__ . ' ' . Base::VERSION,
 		));
 		$request->setFollowLocation(true);
 		$response = $this->http->request($request);
 
 		if($response->getCode() == 200)
 		{
-			$xrd = simplexml_load_string($response->getBody(), 'PSX_Webfinger_Xrd');
+			$xrd = simplexml_load_string($response->getBody(), '\PSX\Webfinger\Xrd');
 
 			// check whether api has respond with an failure
 			if(isset($xrd->success) && strcasecmp($xrd->success, 'false') == 0)
@@ -124,11 +129,11 @@ class PSX_Webfinger
 
 				if(!empty($msg))
 				{
-					throw new PSX_Webfinger_Exception($msg);
+					throw new Exception($msg);
 				}
 				else
 				{
-					throw new PSX_Webfinger_Exception('Could not discover xrd');
+					throw new Exception('Could not discover xrd');
 				}
 			}
 
@@ -136,7 +141,7 @@ class PSX_Webfinger
 		}
 		else
 		{
-			throw new PSX_Webfinger_Exception('Invalid response code ' . $response->getCode());
+			throw new Exception('Invalid response code ' . $response->getCode());
 		}
 	}
 
@@ -153,7 +158,7 @@ class PSX_Webfinger
 
 		if(strcmp($xrd->getSubject(), $acct) !== 0)
 		{
-			throw new PSX_Webfinger_Exception('Invalid subject');
+			throw new Exception('Invalid subject');
 		}
 
 		$profile = $xrd->getLinkHref('profile');
@@ -164,7 +169,7 @@ class PSX_Webfinger
 		}
 		else
 		{
-			throw new PSX_Webfinger_Exception('Could not find profile');
+			throw new Exception('Could not find profile');
 		}
 	}
 }

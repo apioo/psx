@@ -23,6 +23,12 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Data;
+
+use PSX\OpenSocial\Type;
+use PSX\ActivityStream\Type\Article;
+use PSX\Data\ResultSet;
+
 /**
  * PSX_Data_WriterTestCase
  *
@@ -32,11 +38,11 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-abstract class PSX_Data_WriterTestCase extends PHPUnit_Framework_TestCase
+abstract class WriterTestCase extends \PHPUnit_Framework_TestCase
 {
 	public function getRecord()
 	{
-		$record          = new PSX_Data_WriterTestRecord();
+		$record          = new WriterTestRecord();
 		$record->id      = 1;
 		$record->author  = 'foo';
 		$record->title   = 'bar';
@@ -50,7 +56,7 @@ abstract class PSX_Data_WriterTestCase extends PHPUnit_Framework_TestCase
 	{
 		$entries = array();
 
-		$record          = new PSX_Data_WriterTestRecord();
+		$record          = new WriterTestRecord();
 		$record->id      = 1;
 		$record->author  = 'foo';
 		$record->title   = 'bar';
@@ -59,7 +65,7 @@ abstract class PSX_Data_WriterTestCase extends PHPUnit_Framework_TestCase
 
 		$entries[] = $record;
 
-		$record          = new PSX_Data_WriterTestRecord();
+		$record          = new WriterTestRecord();
 		$record->id      = 2;
 		$record->author  = 'foo';
 		$record->title   = 'bar';
@@ -68,33 +74,33 @@ abstract class PSX_Data_WriterTestCase extends PHPUnit_Framework_TestCase
 
 		$entries[] = $record;
 
-		return new PSX_Data_ResultSet(2, 0, 8, $entries);
+		return new ResultSet(2, 0, 8, $entries);
 	}
 
 	public function getComplexRecord()
 	{
-		$plural = new PSX_OpenSocial_Type_Plural();
+		$plural = new Type\Plural();
 
-		$acount = new PSX_OpenSocial_Type_Account();
+		$acount = new Type\Account();
 		$acount->domain = 'foo.com';
 		$acount->username = 'foo';
 		$acount->userId = 1;
 
 		$plural->add($acount, 'home', true);
 
-		$acount = new PSX_OpenSocial_Type_Account();
+		$acount = new Type\Account();
 		$acount->domain = 'bar.com';
 		$acount->username = 'foo';
 		$acount->userId = 1;
 
 		$plural->add($acount, 'work', false);
 
-		$author = new PSX_OpenSocial_Type_Person();
+		$author = new Type\Person();
 		$author->id = 1;
 		$author->displayName = 'foobar';
 		$author->accounts = $plural;
 
-		$article = new PSX_ActivityStream_Type_Article();
+		$article = new Article();
 		$article->author = $author;
 		$article->displayName = 'content';
 		$article->id = 1;

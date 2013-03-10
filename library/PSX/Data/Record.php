@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Data;
+
 /**
  * PSX_Data_Record
  *
@@ -33,7 +35,7 @@
  * @package    PSX_Data
  * @version    $Revision: 556 $
  */
-class PSX_Data_Record extends PSX_Data_RecordAbstract
+class Record extends RecordAbstract
 {
 	protected $name;
 	protected $fields;

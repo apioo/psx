@@ -23,6 +23,17 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
+use PSX\Http\Cookie;
+use PSX\Http\CookieStoreInterface;
+use PSX\Http\GetRequest;
+use PSX\Http\HandlerInterface;
+use PSX\Http\Handler\Curl;
+use PSX\Http\RedirectException;
+use PSX\Http\Request;
+use PSX\Http\Response;
+
 /**
  * This class offers a simple way to make http requests. It can use either curl
  * (recommended) or fsockopen handler to send the request. Here an example of
@@ -47,7 +58,7 @@
  * @package    PSX_Http
  * @version    $Revision: 660 $
  */
-class PSX_Http
+class Http
 {
 	public static $newLine = "\r\n";
 	public static $codes   = array(
@@ -104,9 +115,9 @@ class PSX_Http
 	 * @param PSX_Http_HandlerInterface $handler
 	 * @return PSX_Http
 	 */
-	public function __construct(PSX_Http_HandlerInterface $handler = null)
+	public function __construct(HandlerInterface $handler = null)
 	{
-		$this->setHandler($handler !== null ? $handler : new PSX_Http_Handler_Curl());
+		$this->setHandler($handler !== null ? $handler : new Curl());
 	}
 
 	/**
@@ -115,7 +126,7 @@ class PSX_Http
 	 * @param PSX_Http_Request $request
 	 * @return PSX_Http_Response
 	 */
-	public function request(PSX_Http_Request $request, $count = 0)
+	public function request(Request $request, $count = 0)
 	{
 		// set cookie headers
 		if($this->cookieStore !== null)
@@ -147,7 +158,7 @@ class PSX_Http
 		}
 
 		// make request
-		$response = PSX_Http_Response::convert($this->handler->request($request));
+		$response = Response::convert($this->handler->request($request));
 
 		// store request infos
 		$this->lastError = $this->handler->getLastError();
@@ -163,9 +174,9 @@ class PSX_Http
 			{
 				foreach($cookies as $rawCookie)
 				{
-					$cookie = PSX_Http_Cookie::convert($rawCookie);
+					$cookie = Cookie::convert($rawCookie);
 
-					if($cookie instanceof PSX_Http_Cookie)
+					if($cookie instanceof Cookie)
 					{
 						$domain = $cookie->getDomain() !== null ? $cookie->getDomain() : $request->getUrl()->getHost();
 
@@ -189,14 +200,14 @@ class PSX_Http
 						$location = $request->getUrl()->getScheme() . '://' . $request->getUrl()->getHost() . '/' . $location;
 					}
 
-					$locationRequest = new PSX_Http_GetRequest($location);
+					$locationRequest = new GetRequest($location);
 					$locationRequest->setFollowLocation(true, $request->getMaxRedirects());
 
 					return $this->request($locationRequest, ++$count);
 				}
 				else
 				{
-					throw new PSX_Http_Exception('Max redirection reached');
+					throw new RedirectException('Max redirection reached');
 				}
 			}
 		}
@@ -210,7 +221,7 @@ class PSX_Http
 	 * @param PSX_Http_HandlerInterface $handler
 	 * @return void
 	 */
-	public function setHandler(PSX_Http_HandlerInterface $handler)
+	public function setHandler(HandlerInterface $handler)
 	{
 		$this->handler = $handler;
 	}
@@ -230,7 +241,7 @@ class PSX_Http
 	 *
 	 * @return void
 	 */
-	public function setCookieStore(PSX_Http_CookieStoreInterface $cookieStore)
+	public function setCookieStore(CookieStoreInterface $cookieStore)
 	{
 		$this->cookieStore = $cookieStore;
 	}

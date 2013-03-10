@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Filter;
+
+use PSX\FilterAbstract;
+
 /**
  * PSX_Filter_Digit
  *
@@ -33,7 +37,7 @@
  * @package    PSX_Filter
  * @version    $Revision: 480 $
  */
-class PSX_Filter_Digit extends PSX_FilterAbstract
+class Digit extends FilterAbstract
 {
 	/**
 	 * Returns true if $value is a digit else false

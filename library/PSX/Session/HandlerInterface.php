@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Session;
+
 /**
  * PSX_Session_HandlerInterface
  *
@@ -33,7 +35,7 @@
  * @package    PSX_Session
  * @version    $Revision: 559 $
  */
-interface PSX_Session_HandlerInterface
+interface HandlerInterface
 {
 	public function open($path, $name);
 	public function close();

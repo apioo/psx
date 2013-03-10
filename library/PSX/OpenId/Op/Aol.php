@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\OpenId\Op;
+
+use PSX\OpenId;
+
 /**
  * PSX_Openid_Op_Aol
  *
@@ -33,7 +37,7 @@
  * @package    PSX_OpenId
  * @version    $Revision: 480 $
  */
-class PSX_Openid_Op_Aol extends PSX_OpenId
+class Aol extends OpenId
 {
 	private $endpoint = 'http://openid.aol.com/%s';
 

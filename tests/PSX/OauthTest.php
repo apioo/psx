@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
+use PSX\Http\GetRequest;
+
 /**
  * PSX_OauthTest
  *
@@ -32,7 +36,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_OauthTest extends PHPUnit_Framework_TestCase
+class OauthTest extends \PHPUnit_Framework_TestCase
 {
 	const URL_REQUEST_TOKEN = 'http://test.phpsx.org/oauth/requestToken';
 	const URL_AUTH          = 'http://test.phpsx.org/oauth/auth';
@@ -53,8 +57,8 @@ class PSX_OauthTest extends PHPUnit_Framework_TestCase
 
 	protected function setUp()
 	{
-		$this->http  = new PSX_Http(new PSX_Http_Handler_Curl());
-		$this->oauth = new PSX_Oauth($this->http);
+		$this->http  = new Http();
+		$this->oauth = new Oauth($this->http);
 	}
 
 	protected function tearDown()
@@ -63,7 +67,7 @@ class PSX_OauthTest extends PHPUnit_Framework_TestCase
 
 	public function testRequestToken()
 	{
-		$url = new PSX_Url(self::URL_REQUEST_TOKEN);
+		$url = new Url(self::URL_REQUEST_TOKEN);
 
 		$response = $this->oauth->requestToken($url, self::CONSUMER_KEY, self::CONSUMER_SECRET);
 
@@ -80,7 +84,7 @@ class PSX_OauthTest extends PHPUnit_Framework_TestCase
 			$lastError = $this->oauth->getLastError();
 			$lastError = !empty($lastError) ? $lastError : 'Couldnt get request token';
 
-			throw new PSX_Exception($lastError);
+			throw new Exception($lastError);
 		}
 	}
 
@@ -89,7 +93,7 @@ class PSX_OauthTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testAccessToken()
 	{
-		$url = new PSX_Url(self::URL_ACCESS_TOKEN);
+		$url = new Url(self::URL_ACCESS_TOKEN);
 
 		$response = $this->oauth->accessToken($url, self::CONSUMER_KEY, self::CONSUMER_SECRET, self::TMP_TOKEN, self::TMP_TOKEN_SECRET, self::VERIFIER);
 
@@ -106,7 +110,7 @@ class PSX_OauthTest extends PHPUnit_Framework_TestCase
 			$lastError = $this->oauth->getLastError();
 			$lastError = !empty($lastError) ? $lastError : 'Couldnt get access token';
 
-			throw new PSX_Exception($lastError);
+			throw new Exception($lastError);
 		}
 	}
 
@@ -115,9 +119,9 @@ class PSX_OauthTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testApiRequest()
 	{
-		$url = new PSX_Url(self::URL_API);
+		$url = new Url(self::URL_API);
 
-		$request = new PSX_Http_GetRequest($url, array(
+		$request = new GetRequest($url, array(
 
 			'Authorization' => $this->oauth->getAuthorizationHeader($url, self::CONSUMER_KEY, self::CONSUMER_SECRET, self::TOKEN, self::TOKEN_SECRET, 'HMAC-SHA1', 'GET'),
 
@@ -130,21 +134,21 @@ class PSX_OauthTest extends PHPUnit_Framework_TestCase
 
 	public function testOAuthBuildAuthString()
 	{
-		$data = PSX_Oauth::buildAuthString(array('fo o' => 'b~ar'));
+		$data = Oauth::buildAuthString(array('fo o' => 'b~ar'));
 
 		$this->assertEquals('fo%20o="b~ar"', $data);
 	}
 
 	public function testOAuthGetNormalizedUrl()
 	{
-		$url = new PSX_Url('HTTP://Example.com:80/resource?id=123');
+		$url = new Url('HTTP://Example.com:80/resource?id=123');
 
-		$this->assertEquals('http://example.com/resource', PSX_Oauth::getNormalizedUrl($url));
+		$this->assertEquals('http://example.com/resource', Oauth::getNormalizedUrl($url));
 
 
-		$url = new PSX_Url('http://localhost:8888/amun/public/index.php/api/auth/request');
+		$url = new Url('http://localhost:8888/amun/public/index.php/api/auth/request');
 
-		$this->assertEquals('http://localhost:8888/amun/public/index.php/api/auth/request', PSX_Oauth::getNormalizedUrl($url));
+		$this->assertEquals('http://localhost:8888/amun/public/index.php/api/auth/request', Oauth::getNormalizedUrl($url));
 
 	}
 
@@ -159,7 +163,7 @@ class PSX_OauthTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testOAuthGetNormalizedParameters()
 	{
-		$params = PSX_Oauth::getNormalizedParameters(array(
+		$params = Oauth::getNormalizedParameters(array(
 
 			'b5' => '=%3D',
 			//'a3' => 'a',
@@ -192,7 +196,7 @@ class PSX_OauthTest extends PHPUnit_Framework_TestCase
 
 		foreach($params as $expect => $param)
 		{
-			$this->assertEquals($expect, PSX_Oauth::getNormalizedParameters($param));
+			$this->assertEquals($expect, Oauth::getNormalizedParameters($param));
 		}
 	}
 
@@ -218,7 +222,7 @@ class PSX_OauthTest extends PHPUnit_Framework_TestCase
 
 		foreach($values as $k => $v)
 		{
-			$this->assertEquals($v, PSX_Oauth::urlEncode($k));
+			$this->assertEquals($v, Oauth::urlEncode($k));
 		}
 	}
 }

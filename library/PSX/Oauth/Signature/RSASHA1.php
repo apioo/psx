@@ -23,6 +23,11 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Oauth\Signature;
+
+use PSX\Exception;
+use PSX\Oauth\SignatureAbstract;
+
 /**
  * PSX_Oauth_Signature_RSASHA1
  *
@@ -33,11 +38,11 @@
  * @package    PSX_Oauth
  * @version    $Revision: 585 $
  */
-class PSX_Oauth_Signature_RSASHA1 extends PSX_Oauth_SignatureAbstract
+class RSASHA1 extends SignatureAbstract
 {
 	public function build($baseString, $consumerSecret, $tokenSecret = '')
 	{
-		throw new PSX_Oauth_Exception('RSA-SHA1 method is not implemented');
+		throw new Exception('RSA-SHA1 method is not implemented');
 	}
 }
 

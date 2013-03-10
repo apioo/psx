@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Data\Writer;
+
+use PSX\Data\WriterTestCase;
+
 /**
  * PSX_Data_Writer_JsonTest
  *
@@ -32,13 +36,13 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_Data_Writer_JsonTest extends PSX_Data_WriterTestCase
+class JsonTest extends WriterTestCase
 {
 	public function testWrite()
 	{
 		ob_start();
 
-		$writer = new PSX_Data_Writer_Json();
+		$writer = new Json();
 		$writer->write($this->getRecord());
 
 		$actual = ob_get_contents();
@@ -57,7 +61,7 @@ TEXT;
 	{
 		ob_start();
 
-		$writer = new PSX_Data_Writer_Json();
+		$writer = new Json();
 		$writer->write($this->getResultSet());
 
 		$actual = ob_get_contents();
@@ -76,7 +80,7 @@ TEXT;
 	{
 		ob_start();
 
-		$writer = new PSX_Data_Writer_Json();
+		$writer = new Json();
 		$writer->write($this->getComplexRecord());
 
 		$actual = ob_get_contents();

@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Filter;
+
 /**
  * PSX_Filter_UrlTest
  *
@@ -32,7 +34,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_Filter_UrlTest extends PHPUnit_Framework_TestCase
+class UrlTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -44,7 +46,7 @@ class PSX_Filter_UrlTest extends PHPUnit_Framework_TestCase
 
 	public function testUrl()
 	{
-		$url = new PSX_Filter_Url();
+		$url = new Url();
 
 		$this->assertEquals(true, $url->apply('http://google.de'));
 		$this->assertEquals(false, $url->apply('www.google.de'));

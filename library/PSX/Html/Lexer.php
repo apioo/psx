@@ -23,6 +23,12 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Html;
+
+use PSX\Html\Lexer\Dom;
+use PSX\Html\Lexer\Token\Text;
+use PSX\Html\Lexer\Token\Element;
+
 /**
  * Robust html5 parser to parse non well-formed markup. It splits the html in to
  * an element / text token stream wich is pushed into an dom builder who builds
@@ -51,7 +57,7 @@
  * @package    PSX_Html
  * @version    $Revision: 609 $
  */
-class PSX_Html_Lexer
+class Lexer
 {
 	const STATE_LT  = 0x1; // lower then
 	const STATE_GT  = 0x2; // greater then
@@ -89,7 +95,7 @@ class PSX_Html_Lexer
 	 */
 	public static function parse($html)
 	{
-		$dom   = new PSX_Html_Lexer_Dom();
+		$dom   = new Dom();
 		$len   = strlen($html);
 		$tag   = null;
 		$text  = null;
@@ -123,7 +129,7 @@ class PSX_Html_Lexer
 				{
 					if($text !== null)
 					{
-						$token = PSX_Html_Lexer_Token_Text::parse($text);
+						$token = Text::parse($text);
 
 						if($token !== null)
 						{
@@ -144,7 +150,7 @@ class PSX_Html_Lexer
 				{
 					if($tag !== null)
 					{
-						$token = PSX_Html_Lexer_Token_Element::parse($tag);
+						$token = Element::parse($tag);
 
 						if($token !== null)
 						{
@@ -153,18 +159,18 @@ class PSX_Html_Lexer
 
 							if($topToken !== false)
 							{
-								if($token->type === PSX_Html_Lexer_Token_Element::TYPE_START)
+								if($token->type === Element::TYPE_START)
 								{
 									if(in_array($topToken->name, self::$shortTags))
 									{
-										$dom->push(PSX_Html_Lexer_Token_Element::parse('/' . $topToken->name));
+										$dom->push(Element::parse('/' . $topToken->name));
 									}
 								}
-								else if($token->type === PSX_Html_Lexer_Token_Element::TYPE_END)
+								else if($token->type === Element::TYPE_END)
 								{
 									if(in_array($topToken->name, self::$shortTags) && $token->name != $topToken->name)
 									{
-										$dom->push(PSX_Html_Lexer_Token_Element::parse('/' . $topToken->name));
+										$dom->push(Element::parse('/' . $topToken->name));
 									}
 								}
 							}
@@ -173,13 +179,13 @@ class PSX_Html_Lexer
 							$dom->push($token);
 
 							// if we have an short token autmoatically close tag
-							if($token->type === PSX_Html_Lexer_Token_Element::TYPE_START && $token->isShort())
+							if($token->type === Element::TYPE_START && $token->isShort())
 							{
-								$dom->push(PSX_Html_Lexer_Token_Element::parse('/' . $token->name));
+								$dom->push(Element::parse('/' . $token->name));
 							}
 							// enter ignore mode if we have found an no parse
 							// start tag
-							else if($token->type === PSX_Html_Lexer_Token_Element::TYPE_START)
+							else if($token->type === Element::TYPE_START)
 							{
 								if(in_array($token->name, self::$npTags))
 								{

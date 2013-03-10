@@ -23,6 +23,14 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Data;
+
+use PSX\Data\NotSupportedException;
+use PSX\Data\RecordAbstract;
+use PSX\Data\WriterResult;
+use PSX\Data\WriterInterface;
+use PSX\DateTime;
+
 /**
  * PSX_Data_WriterTestRecord
  *
@@ -32,7 +40,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_Data_WriterTestRecord extends PSX_Data_RecordAbstract
+class WriterTestRecord extends RecordAbstract
 {
 	public $id;
 	public $author;
@@ -60,53 +68,41 @@ class PSX_Data_WriterTestRecord extends PSX_Data_RecordAbstract
 
 	public function getDate()
 	{
-		return new PSX_DateTime($this->date);
+		return new DateTime($this->date);
 	}
 
-	public function export(PSX_Data_WriterResult $result)
+	public function export(WriterResult $result)
 	{
 		switch($result->getType())
 		{
-			case PSX_Data_WriterInterface::JSON:
-			case PSX_Data_WriterInterface::XML:
-			case PSX_Data_WriterInterface::FORM:
-
+			case WriterInterface::JSON:
+			case WriterInterface::XML:
+			case WriterInterface::FORM:
 				return $this->getData();
-
 				break;
 
-			case PSX_Data_WriterInterface::ATOM:
-
+			case WriterInterface::ATOM:
 				$entry = $result->getWriter()->createEntry();
-
 				$entry->setTitle($this->title);
 				$entry->setId($this->id);
 				$entry->setUpdated($this->getDate());
 				$entry->addAuthor($this->author);
 				$entry->setContent($this->content, 'html');
-
 				return $entry;
-
 				break;
 
-			case PSX_Data_WriterInterface::RSS:
-
+			case WriterInterface::RSS:
 				$item = $result->getWriter()->createItem();
-
 				$item->setTitle($this->title);
 				$item->setGuid($this->id);
 				$item->setPubDate($this->getDate());
 				$item->setAuthor($this->author);
 				$item->setDescription($this->content);
-
 				return $item;
-
 				break;
 
 			default:
-
-				throw new PSX_Data_Exception('Writer is not supported');
-
+				throw new NotSupportedException('Writer is not supported');
 				break;
 		}
 	}

@@ -23,6 +23,15 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Cache\Handler;
+
+use PSX\DateTime;
+use PSX\Cache\HandlerInterface;
+use PSX\Cache\Item;
+use PSX\Sql\TableInterface;
+use PSX\Sql\Condition;
+use UnexpectedValueException;
+
 /**
  * This handler stores cache entries in an simple sql table. The table must have
  * the following structure
@@ -42,18 +51,18 @@
  * @package    PSX_Cache
  * @version    $Revision: 636 $
  */
-class PSX_Cache_Handler_Sql implements PSX_Cache_HandlerInterface
+class Sql implements HandlerInterface
 {
 	private $table;
 
-	public function __construct(PSX_Sql_TableInterface $table)
+	public function __construct(TableInterface $table)
 	{
 		$this->table = $table;
 	}
 
 	public function load($key)
 	{
-		$con = new PSX_Sql_Condition(array($this->table->getPrimaryKey(), '=', $key));
+		$con = new Condition(array($this->table->getPrimaryKey(), '=', $key));
 		$row = $this->table->getRow(array('content', 'date'), $con);
 
 		if(!empty($row))
@@ -61,7 +70,7 @@ class PSX_Cache_Handler_Sql implements PSX_Cache_HandlerInterface
 			$content = $row['content'];
 			$time    = strtotime($row['date']);
 
-			return new PSX_Cache_Item($content, $time);
+			return new Item($content, $time);
 		}
 		else
 		{
@@ -72,36 +81,36 @@ class PSX_Cache_Handler_Sql implements PSX_Cache_HandlerInterface
 	public function write($key, $content, $expire)
 	{
 		$columnId      = $this->table->getPrimaryKey();
-		$columnContent = $this->table->getFirstColumnWithType(PSX_Sql_TableInterface::TYPE_BLOB);
-		$columnDate    = $this->table->getFirstColumnWithType(PSX_Sql_TableInterface::TYPE_DATETIME);
+		$columnContent = $this->table->getFirstColumnWithType(TableInterface::TYPE_BLOB);
+		$columnDate    = $this->table->getFirstColumnWithType(TableInterface::TYPE_DATETIME);
 
 		if(empty($columnId))
 		{
-			throw new PSX_Cache_Exception('Missing column "id" in table ' . $this->table->getName());
+			throw new UnexpectedValueException('Missing column "id" in table ' . $this->table->getName());
 		}
 
 		if(empty($columnContent))
 		{
-			throw new PSX_Cache_Exception('Missing column "content" in table ' . $this->table->getName());
+			throw new UnexpectedValueException('Missing column "content" in table ' . $this->table->getName());
 		}
 
 		if(empty($columnDate))
 		{
-			throw new PSX_Cache_Exception('Missing column "date" in table ' . $this->table->getName());
+			throw new UnexpectedValueException('Missing column "date" in table ' . $this->table->getName());
 		}
 
 		$this->table->insert(array(
 
 			$columnId      => $key,
 			$columnContent => $content,
-			$columnDate    => date(PSX_DateTime::SQL),
+			$columnDate    => date(DateTime::SQL),
 
 		));
 	}
 
 	public function remove($key)
 	{
-		$con = new PSX_Sql_Condition(array($this->table->getPrimaryKey(), '=', $key));
+		$con = new Condition(array($this->table->getPrimaryKey(), '=', $key));
 
 		$this->table->delete($con);
 	}

@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Util;
+
+use UnexpectedValueException;
+
 /**
  * PSX_Util_Numerative
  *
@@ -33,7 +37,7 @@
  * @package    PSX_Util
  * @version    $Revision: 480 $
  */
-class PSX_Util_Numerative
+class Numerative
 {
 	const BIN = 0x1;
 	const OCT = 0x2;
@@ -113,7 +117,7 @@ class PSX_Util_Numerative
 	{
 		if(!isset(self::$systems[$system]))
 		{
-			throw new PSX_Util_Numerative_Exception('Invalid numerative system');
+			throw new UnexpectedValueException('Invalid numerative system');
 		}
 		else
 		{
@@ -137,7 +141,7 @@ class PSX_Util_Numerative
 	{
 		if(!isset(self::$systems[$system]))
 		{
-			throw new PSX_Util_Numerative_Exception('Invalid numerative system');
+			throw new UnexpectedValueException('Invalid numerative system');
 		}
 		else
 		{
@@ -153,7 +157,7 @@ class PSX_Util_Numerative
 
 			if($d < 0)
 			{
-				throw new PSX_Util_Numerative_Exception('Cant convert negative numbers because we have no sign to display negative values');
+				throw new UnexpectedValueException('Cant convert negative numbers because we have no sign to display negative values');
 			}
 
 			while($d > 0)

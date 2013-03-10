@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
 /**
  * PSX_OpengraphTest
  *
@@ -32,7 +34,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_OpengraphTest extends PHPUnit_Framework_TestCase
+class OpengraphTest extends \PHPUnit_Framework_TestCase
 {
 	const URL = 'http://test.phpsx.org/opengraph/graph';
 
@@ -46,10 +48,10 @@ class PSX_OpengraphTest extends PHPUnit_Framework_TestCase
 
 	public function testDiscover()
 	{
-		$http = new PSX_Http(new PSX_Http_Handler_Curl());
-		$og   = new PSX_Opengraph($http);
+		$http = new Http();
+		$og   = new Opengraph($http);
 
-		$data = $og->discover(new PSX_Url(self::URL), PSX_Opengraph::TITLE | PSX_Opengraph::URL);
+		$data = $og->discover(new Url(self::URL), Opengraph::TITLE | Opengraph::URL);
 
 		$this->assertEquals($data['title'], 'The Rock');
 		$this->assertEquals($data['url'], 'http://www.imdb.com/title/tt0117500/');

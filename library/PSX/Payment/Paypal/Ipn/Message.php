@@ -23,6 +23,11 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Payment\Paypal\Ipn;
+
+use PSX\DateTime;
+use PSX\Data\RecordAbstract;
+
 /**
  * Data object wich represents an IPN message send from paypal to the API
  * endpoint
@@ -34,7 +39,7 @@
  * @package    PSX_Payment
  * @version    $Revision: 488 $
  */
-class PSX_Payment_Paypal_Ipn_Message extends PSX_Data_RecordAbstract
+class Message extends RecordAbstract
 {
 	public $receiverEmail;
 	public $receiverId;

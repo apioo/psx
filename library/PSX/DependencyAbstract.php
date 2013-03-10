@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
 /**
  * PSX_DependencyAbstract
  *
@@ -33,13 +35,13 @@
  * @package    PSX_Dependency
  * @version    $Revision: 530 $
  */
-abstract class PSX_DependencyAbstract
+abstract class DependencyAbstract
 {
 	private static $_container = array();
 
 	protected $config;
 
-	public function __construct(PSX_Config $config)
+	public function __construct(Config $config)
 	{
 		$this->config = $config;
 	}
@@ -88,7 +90,7 @@ abstract class PSX_DependencyAbstract
 			return $this->get('base');
 		}
 
-		return $this->set('base', new PSX_Base($this->getConfig()));
+		return $this->set('base', new Base($this->getConfig()));
 	}
 
 	public function getConfig()
@@ -108,6 +110,6 @@ abstract class PSX_DependencyAbstract
 			return $this->get('loader');
 		}
 
-		return $this->set('loader', new PSX_Loader($this->getBase()));
+		return $this->set('loader', new Loader($this->getBase()));
 	}
 }

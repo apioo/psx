@@ -23,6 +23,15 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Oembed;
+
+use PSX\Exception;
+use PSX\Filter;
+use PSX\Input\Get;
+use PSX\Module\ApiAbstract;
+use PSX\Url;
+use PSX\Validate;
+
 /**
  * PSX_Oembed_ProviderAbstract
  *
@@ -33,26 +42,26 @@
  * @package    PSX_Oembed
  * @version    $Revision: 586 $
  */
-abstract class PSX_Oembed_ProviderAbstract extends PSX_Module_ApiAbstract
+abstract class ProviderAbstract extends ApiAbstract
 {
 	public static $mime = 'application/json+oembed';
 
 	public function onGet()
 	{
-		$validate = new PSX_Validate();
-		$get      = new PSX_Input_Get($validate);
+		$validate = new Validate();
+		$get      = new Get($validate);
 
-		$url       = $get->url('string', array(new PSX_Filter_Length(3, 512), new PSX_Filter_Url()), 'url', 'Url');
-		$maxWidth  = $get->maxwidth('integer', array(new PSX_Filter_Length(8, 4096)), 'maxwidth', 'Max width');
-		$maxHeight = $get->maxheight('integer', array(new PSX_Filter_Length(8, 4096)), 'maxheight', 'Max height');
-		//$format    = $get->format('string', array(new PSX_Filter_InArray(array('json', 'xml'))), 'format', 'Format', false);
+		$url       = $get->url('string', array(new Filter\Length(3, 512), new Filter\Url()), 'url', 'Url');
+		$maxWidth  = $get->maxwidth('integer', array(new Filter\Length(8, 4096)), 'maxwidth', 'Max width');
+		$maxHeight = $get->maxheight('integer', array(new Filter\Length(8, 4096)), 'maxheight', 'Max height');
+		//$format    = $get->format('string', array(new Filter\InArray(array('json', 'xml'))), 'format', 'Format', false);
 
 		if(!$validate->hasError())
 		{
-			$url  = new PSX_Url($url);
+			$url  = new Url($url);
 			$type = $this->onRequest($url, $maxWidth, $maxHeight);
 
-			if($type instanceof PSX_Oembed_TypeAbstract)
+			if($type instanceof TypeAbstract)
 			{
 				// @todo send correct content type
 				// header('Content-type: application/json+oembed');
@@ -62,18 +71,18 @@ abstract class PSX_Oembed_ProviderAbstract extends PSX_Module_ApiAbstract
 			}
 			else
 			{
-				throw new PSX_Oembed_Exception('Url not found', 404);
+				throw new Exception('Url not found', 404);
 			}
 		}
 		else
 		{
-			throw new PSX_Oembed_Exception($validate->getLastError());
+			throw new Exception($validate->getLastError());
 		}
 	}
 
 	public function onPost()
 	{
-		throw new PSX_Exception('Method not allowed', 405);
+		throw new Exception('Method not allowed', 405);
 	}
 
 	/**
@@ -86,7 +95,7 @@ abstract class PSX_Oembed_ProviderAbstract extends PSX_Module_ApiAbstract
 	 * @param integer $maxHeight
 	 * @return PSX_Oembed_TypeAbstract
 	 */
-	abstract public function onRequest(PSX_Url $url, $maxWidth, $maxHeight);
+	abstract public function onRequest(Url $url, $maxWidth, $maxHeight);
 
 	/**
 	 * Returns the html link tag wich can be used to discover the oembed source

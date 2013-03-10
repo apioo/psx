@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
+use stdClass;
+
 /**
  * PSX_RegistryTest
  *
@@ -32,7 +36,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_RegistryTest extends PHPUnit_Framework_TestCase
+class RegistryTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -44,59 +48,59 @@ class PSX_RegistryTest extends PHPUnit_Framework_TestCase
 
 	public function testRegistryClear()
 	{
-		PSX_Registry::getInstance()->clear();
+		Registry::getInstance()->clear();
 
-		PSX_Registry::set('foo', 'bar');
+		Registry::set('foo', 'bar');
 
-		$this->assertEquals(1, count(PSX_Registry::getInstance()));
+		$this->assertEquals(1, count(Registry::getInstance()));
 
-		PSX_Registry::getInstance()->clear();
+		Registry::getInstance()->clear();
 
-		$this->assertEquals(0, count(PSX_Registry::getInstance()));
+		$this->assertEquals(0, count(Registry::getInstance()));
 	}
 
 	public function testRegistryStaticGetSet()
 	{
-		PSX_Registry::getInstance()->clear();
+		Registry::getInstance()->clear();
 
 		$key   = 'stdClass';
 		$value = new stdClass;
 
-		$this->assertEquals(false, PSX_Registry::has($key));
+		$this->assertEquals(false, Registry::has($key));
 
-		PSX_Registry::set($key, $value);
+		Registry::set($key, $value);
 
-		$this->assertEquals(true, PSX_Registry::has($key));
-		$this->assertEquals($value, PSX_Registry::get($key));
+		$this->assertEquals(true, Registry::has($key));
+		$this->assertEquals($value, Registry::get($key));
 	}
 
 	public function testRegistryMethodGetSet()
 	{
-		PSX_Registry::getInstance()->clear();
+		Registry::getInstance()->clear();
 
 		$key   = 'stdClass';
 		$value = new stdClass;
 
-		$this->assertEquals(false, PSX_Registry::getInstance()->offsetExists($key));
+		$this->assertEquals(false, Registry::getInstance()->offsetExists($key));
 
-		PSX_Registry::getInstance()->offsetSet($key, $value);
+		Registry::getInstance()->offsetSet($key, $value);
 
-		$this->assertEquals(true, PSX_Registry::getInstance()->offsetExists($key));
-		$this->assertEquals($value, PSX_Registry::getInstance()->offsetGet($key));
+		$this->assertEquals(true, Registry::getInstance()->offsetExists($key));
+		$this->assertEquals($value, Registry::getInstance()->offsetGet($key));
 	}
 
 	public function testRegistryPropGetSet()
 	{
-		PSX_Registry::getInstance()->clear();
+		Registry::getInstance()->clear();
 
 		$key   = 'stdClass';
 		$value = new stdClass;
 
-		$this->assertEquals(false, isset(PSX_Registry::getInstance()->$key));
+		$this->assertEquals(false, isset(Registry::getInstance()->$key));
 
-		PSX_Registry::getInstance()->$key = $value;
+		Registry::getInstance()->$key = $value;
 
-		$this->assertEquals(true, isset(PSX_Registry::getInstance()->$key));
-		$this->assertEquals($value, PSX_Registry::getInstance()->$key);
+		$this->assertEquals(true, isset(Registry::getInstance()->$key));
+		$this->assertEquals($value, Registry::getInstance()->$key);
 	}
 }

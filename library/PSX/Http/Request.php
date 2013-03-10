@@ -23,6 +23,11 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Http;
+
+use PSX\Http;
+use PSX\Url;
+
 /**
  * PSX_Http_Request
  *
@@ -33,7 +38,7 @@
  * @package    PSX_Http
  * @version    $Revision: 584 $
  */
-class PSX_Http_Request extends PSX_Http_Message
+class Request extends Message
 {
 	protected $url;
 	protected $method;
@@ -56,7 +61,7 @@ class PSX_Http_Request extends PSX_Http_Message
 	 * @param string $scheme
 	 * @return PSX_Http_Request
 	 */
-	public function __construct(PSX_Url $url, $method, array $header = array(), $body = null, $scheme = 'HTTP/1.1')
+	public function __construct(Url $url, $method, array $header = array(), $body = null, $scheme = 'HTTP/1.1')
 	{
 		parent::__construct($header, $body);
 
@@ -77,7 +82,7 @@ class PSX_Http_Request extends PSX_Http_Message
 	 * @param PSX_Url $url
 	 * @return void
 	 */
-	public function setUrl(PSX_Url $url)
+	public function setUrl(Url $url)
 	{
 		$this->url = $url;
 
@@ -266,14 +271,14 @@ class PSX_Http_Request extends PSX_Http_Message
 	 */
 	public function toString()
 	{
-		$request = $this->getLine() . PSX_Http::$newLine;
+		$request = $this->getLine() . Http::$newLine;
 
 		foreach($this->header as $k => $v)
 		{
-			$request.= $k . ': ' . $v . PSX_Http::$newLine;
+			$request.= $k . ': ' . $v . Http::$newLine;
 		}
 
-		$request.= PSX_Http::$newLine;
+		$request.= Http::$newLine;
 		$request.= $this->getBody();
 
 		return $request;

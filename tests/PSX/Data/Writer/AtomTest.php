@@ -23,6 +23,11 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Data\Writer;
+
+use PSX\Data\WriterTestCase;
+use PSX\DateTime;
+
 /**
  * PSX_Data_Writer_AtomTest
  *
@@ -32,13 +37,13 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_Data_Writer_AtomTest extends PSX_Data_WriterTestCase
+class AtomTest extends WriterTestCase
 {
 	public function testWrite()
 	{
 		ob_start();
 
-		$writer = new PSX_Data_Writer_Atom();
+		$writer = new Atom();
 		$writer->write($this->getRecord());
 
 		$actual = ob_get_contents();
@@ -66,7 +71,7 @@ TEXT;
 	{
 		ob_start();
 
-		$writer = new PSX_Data_Writer_Atom();
+		$writer = new Atom();
 		$writer->setConfig('foo', 'bar', new DateTime('2012-03-11 13:37:21'));
 		$writer->setGenerator('amun');
 		$writer->write($this->getResultSet());

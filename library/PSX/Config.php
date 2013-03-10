@@ -23,6 +23,11 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
+use ArrayIterator;
+use PSX\Config\NotFoundException;
+
 /**
  * The class is the common config in psx. It includes the file provided in the
  * first argument of the constructor. This file must define an array $config
@@ -44,7 +49,7 @@
  * @package    PSX_Config
  * @version    $Revision: 615 $
  */
-class PSX_Config extends ArrayIterator
+class Config extends ArrayIterator
 {
 	/**
 	 * The container for the config array
@@ -71,7 +76,7 @@ class PSX_Config extends ArrayIterator
 		}
 		else
 		{
-			throw new PSX_Config_Exception('Couldnt find config in file');
+			throw new NotFoundException('Couldnt find config in file');
 		}
 	}
 }

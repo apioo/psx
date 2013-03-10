@@ -23,6 +23,14 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
+use ReflectionClass;
+use ReflectionMethod;
+use PSX\Dependency;
+use PSX\Loader\Location;
+use PSX\Loader\LocationFinder\FileSystem;
+
 /**
  * PSX_LoaderTest
  *
@@ -32,16 +40,16 @@
  * @category   tests
  * @version    $Revision: 658 $
  */
-class PSX_LoaderTest extends PHPUnit_Framework_TestCase
+class LoaderTest extends \PHPUnit_Framework_TestCase
 {
 	protected $loader;
 	protected $path = 'tests/PSX/Loader/module';
 
 	protected function setUp()
 	{
-		$container = new PSX_Dependency_Default(getConfig());
+		$container = new Dependency\Request(getConfig());
 
-		$loader = new PSX_Loader_Test($container->getBase());
+		$loader = new PublicLoader($container->getBase());
 		$loader->setLocationFinder($this->getLocationFinder());
 		$loader->setDefault('foo');
 
@@ -55,7 +63,7 @@ class PSX_LoaderTest extends PHPUnit_Framework_TestCase
 
 	protected function getLocationFinder()
 	{
-		return new PSX_Loader_LocationFinder_FileSystem($this->path);
+		return new FileSystem($this->path);
 	}
 
 	/**
@@ -73,7 +81,7 @@ class PSX_LoaderTest extends PHPUnit_Framework_TestCase
 	{
 		list($location, $method, $uriFragments) = $this->loader->resolvePathPublic('foo');
 
-		$this->assertEquals(true, $location instanceof PSX_Loader_Location);
+		$this->assertEquals(true, $location instanceof Location);
 		$this->assertEquals(true, $location->getId() != "");
 		$this->assertEquals('', $location->getPath());
 		$this->assertEquals(true, $location->getClass() instanceof ReflectionClass);
@@ -83,7 +91,7 @@ class PSX_LoaderTest extends PHPUnit_Framework_TestCase
 
 		list($location, $method, $uriFragments) = $this->loader->resolvePathPublic('foo/test');
 
-		$this->assertEquals(true, $location instanceof PSX_Loader_Location);
+		$this->assertEquals(true, $location instanceof Location);
 		$this->assertEquals(true, $location->getId() != "");
 		$this->assertEquals('test', $location->getPath());
 		$this->assertEquals(true, $location->getClass() instanceof ReflectionClass);
@@ -94,7 +102,7 @@ class PSX_LoaderTest extends PHPUnit_Framework_TestCase
 
 		list($location, $method, $uriFragments) = $this->loader->resolvePathPublic('foo/test/bar');
 
-		$this->assertEquals(true, $location instanceof PSX_Loader_Location);
+		$this->assertEquals(true, $location instanceof Location);
 		$this->assertEquals(true, $location->getId() != "");
 		$this->assertEquals('test/bar', $location->getPath());
 		$this->assertEquals(true, $location->getClass() instanceof ReflectionClass);
@@ -110,7 +118,7 @@ class PSX_LoaderTest extends PHPUnit_Framework_TestCase
 
 		list($location, $method, $uriFragments) = $this->loader->resolvePathPublic('.host-meta/well-known');
 
-		$this->assertEquals(true, $location instanceof PSX_Loader_Location);
+		$this->assertEquals(true, $location instanceof Location);
 		$this->assertEquals(true, $location->getId() != "");
 		$this->assertEquals('', $location->getPath());
 		$this->assertEquals(true, $location->getClass() instanceof ReflectionClass);
@@ -120,7 +128,7 @@ class PSX_LoaderTest extends PHPUnit_Framework_TestCase
 	}
 }
 
-class PSX_Loader_Test extends PSX_Loader
+class PublicLoader extends Loader
 {
 	public function resolvePathPublic($x)
 	{

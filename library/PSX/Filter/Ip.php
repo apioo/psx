@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Filter;
+
+use PSX\FilterAbstract;
+
 /**
  * PSX_Filter_Ip
  *
@@ -33,7 +37,7 @@
  * @package    PSX_Filter
  * @version    $Revision: 480 $
  */
-class PSX_Filter_Ip extends PSX_FilterAbstract
+class Ip extends FilterAbstract
 {
 	/**
 	 * Returns true if $value is a valid ip address and not in the private

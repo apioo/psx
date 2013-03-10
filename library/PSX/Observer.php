@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
+use PSX\Observer\ListenerInterface;
+
 /**
  * PSX_Observer
  *
@@ -33,7 +37,7 @@
  * @package    PSX_Observer
  * @version    $Revision: 508 $
  */
-class PSX_Observer
+class Observer
 {
 	private static $instance;
 
@@ -44,7 +48,7 @@ class PSX_Observer
 		$this->subscriber = array();
 	}
 
-	public function subscribe($eventName, PSX_Observer_ListenerInterface $listener)
+	public function subscribe($eventName, ListenerInterface $listener)
 	{
 		$key = spl_object_hash($listener);
 

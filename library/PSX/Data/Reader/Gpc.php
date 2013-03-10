@@ -23,6 +23,12 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Data\Reader;
+
+use PSX\Data\ReaderInterface;
+use PSX\Data\ReaderResult;
+use PSX\Http\Message;
+
 /**
  * PSX_Data_Reader_Gpc
  *
@@ -33,13 +39,13 @@
  * @package    PSX_Data
  * @version    $Revision: 480 $
  */
-class PSX_Data_Reader_Gpc implements PSX_Data_ReaderInterface
+class Gpc implements ReaderInterface
 {
 	public static $mime = 'text/html';
 
-	public function read(PSX_Http_Message $message)
+	public function read(Message $message)
 	{
-		return new PSX_Data_ReaderResult(PSX_Data_ReaderInterface::GPC, $_REQUEST);
+		return new ReaderResult(ReaderInterface::GPC, $_REQUEST);
 	}
 }
 

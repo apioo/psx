@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
+use PSX\Dependency;
+
 /**
  * PSX_BaseTest
  *
@@ -32,13 +36,13 @@
  * @category   tests
  * @version    $Revision: 516 $
  */
-class PSX_BaseTest extends PHPUnit_Framework_TestCase
+class BaseTest extends \PHPUnit_Framework_TestCase
 {
 	private $base;
 
 	protected function setUp()
 	{
-		$container = new PSX_Dependency_Default(getConfig());
+		$container = new Dependency\Request(getConfig());
 
 		$this->base = $container->getBase();
 	}
@@ -50,19 +54,19 @@ class PSX_BaseTest extends PHPUnit_Framework_TestCase
 
 	public function testHeaderSent()
 	{
-		$this->assertEquals(false, PSX_Base::hasHeaderSent('foo'));
+		$this->assertEquals(false, Base::hasHeaderSent('foo'));
 
 		/*
 		// unfortunately we cannot send an header because output is already made
 		header('Foo: bar');
 
-		$this->assertEquals(true, PSX_Base::hasHeaderSent('foo'));
+		$this->assertEquals(true, Base::hasHeaderSent('foo'));
 		*/
 	}
 
 	public function testGetConfig()
 	{
-		$this->assertEquals(true, $this->base->getConfig() instanceof PSX_Config);
+		$this->assertEquals(true, $this->base->getConfig() instanceof Config);
 	}
 
 	public function testGetHost()
@@ -100,7 +104,7 @@ class PSX_BaseTest extends PHPUnit_Framework_TestCase
 	public function testGetVersion()
 	{
 		// test whether the version is an "PHP-standardized" version
-		$this->assertEquals(true, version_compare(PSX_Base::getVersion(), '0.0.1') > 0);
+		$this->assertEquals(true, version_compare(Base::getVersion(), '0.0.1') > 0);
 	}
 }
 

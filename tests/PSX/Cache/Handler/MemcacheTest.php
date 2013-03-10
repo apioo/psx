@@ -23,6 +23,12 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Cache\Handler;
+
+use Memcache as Mem;
+use PSX\CacheTest;
+use PSX\Exception;
+
 /**
  * PSX_Cache_Handler_MemcacheTest
  *
@@ -32,7 +38,7 @@
  * @category   tests
  * @version    $Revision: 637 $
  */
-class PSX_Cache_Handler_MemcacheTest extends PSX_CacheTest
+class MemcacheTest extends CacheTest
 {
 	protected function setUp()
 	{
@@ -42,7 +48,7 @@ class PSX_Cache_Handler_MemcacheTest extends PSX_CacheTest
 		{
 			if(!function_exists('memcache_connect'))
 			{
-				throw new PSX_Exception('Memcache extension is not available');
+				throw new Exception('Memcache extension is not available');
 			}
 		}
 		catch(Exception $e)
@@ -53,10 +59,10 @@ class PSX_Cache_Handler_MemcacheTest extends PSX_CacheTest
 
 	protected function getHandler()
 	{
-		$memcache = new Memcache;
-		$memcache->connect('memcache_host', 11211);
+		$memcache = new Mem();
+		$memcache->connect('127.0.0.1', 11211);
 
-		return new PSX_Cache_Handler_Memcache($memcache);
+		return new Memcache($memcache);
 	}
 }
 

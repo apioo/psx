@@ -23,6 +23,12 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
+use PSX\Http\GetRequest;
+use PSX\Http\Message;
+use PSX\Data\Reader;
+
 /**
  * PSX_AtomTest
  *
@@ -32,7 +38,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_AtomTest extends PHPUnit_Framework_TestCase
+class AtomTest extends \PHPUnit_Framework_TestCase
 {
 	const URL = 'http://test.phpsx.org/atom/feed';
 
@@ -40,7 +46,7 @@ class PSX_AtomTest extends PHPUnit_Framework_TestCase
 
 	protected function setUp()
 	{
-		$this->http = new PSX_Http(new PSX_Http_Handler_Curl());
+		$this->http = new Http();
 	}
 
 	protected function tearDown()
@@ -49,19 +55,13 @@ class PSX_AtomTest extends PHPUnit_Framework_TestCase
 
 	public function testAtom()
 	{
-		$url = new PSX_Url(self::URL);
-
-		$request  = new PSX_Http_GetRequest($url);
-
+		$url      = new Url(self::URL);
+		$request  = new GetRequest($url);
 		$response = $this->http->request($request);
+		$reader   = new Reader\Dom();
 
-
-		$reader = new PSX_Data_Reader_Dom();
-
-		$atom = new PSX_Atom();
-
+		$atom = new Atom();
 		$atom->import($reader->read($response));
-
 
 		$this->assertEquals('dive into mark', $atom->title);
 		$this->assertEquals('A <em>lot</em> of effort went into making this effortless', $atom->subtitle);
@@ -136,15 +136,13 @@ class PSX_AtomTest extends PHPUnit_Framework_TestCase
 </feed>
 FEED;
 
-		$reader = new PSX_Data_Reader_Dom();
-
-		$atom = new PSX_Atom();
-
-		$atom->import($reader->read(new PSX_Http_Message(array(), $feed)));
+		$reader = new Reader\Dom();
+		$atom   = new Atom();
+		$atom->import($reader->read(new Message(array(), $feed)));
 
 		$entry = $atom->current();
 
-		$this->assertEquals(true, $entry->source instanceof PSX_Atom);
+		$this->assertEquals(true, $entry->source instanceof Atom);
 		$this->assertEquals('dive into mark', $entry->source->title);
 		$this->assertEquals('A <em>lot</em> of effort went into making this effortless', $entry->source->subtitle);
 		$this->assertEquals('2005-07-31', $entry->source->updated->format('Y-m-d'));

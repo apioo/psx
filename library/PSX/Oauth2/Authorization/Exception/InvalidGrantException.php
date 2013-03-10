@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Oauth2\Authorization\Exception;
+
+use PSX\Exception;
+
 /**
  * PSX_Oauth2_Authorization_Exception_InvalidGrantException
  *
@@ -33,6 +37,6 @@
  * @package    PSX_Oauth2
  * @version    $Revision: 494 $
  */
-class PSX_Oauth2_Authorization_Exception_InvalidGrantException extends PSX_Oauth2_Authorization_Exception
+class InvalidGrantException extends Exception
 {
 }

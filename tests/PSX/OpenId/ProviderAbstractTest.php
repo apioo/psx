@@ -23,6 +23,12 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\OpenId;
+
+use PSX\OpenId;
+use PSX\OpenSsl;
+use PSX\OpenSsl\PKey;
+
 /**
  * PSX_OpenId_ProviderAbstractTest
  *
@@ -32,7 +38,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_OpenId_ProviderAbstractTest extends PHPUnit_Framework_TestCase
+class ProviderAbstractTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -67,7 +73,7 @@ class PSX_OpenId_ProviderAbstractTest extends PHPUnit_Framework_TestCase
 			'type_fname'  => 'http://example.com/schema/fullname',
 			'value_fname' => 'John Smith',
 
-		), PSX_OpenId_ProviderAbstract::getExtension($data, 'http://openid.net/srv/ax/1.0'));
+		), ProviderAbstract::getExtension($data, 'http://openid.net/srv/ax/1.0'));
 
 		// ns http://openid.net/srv/ax/1.1
 		$this->assertEquals(array(
@@ -76,7 +82,7 @@ class PSX_OpenId_ProviderAbstractTest extends PHPUnit_Framework_TestCase
 			'type_fname'  => 'http://example.com/schema/fullname',
 			'value_fname' => 'Foo Bar',
 
-		), PSX_OpenId_ProviderAbstract::getExtension($data, 'http://openid.net/srv/ax/1.1'));
+		), ProviderAbstract::getExtension($data, 'http://openid.net/srv/ax/1.1'));
 	}
 
 	public function testDhSha1Round1()
@@ -119,17 +125,17 @@ class PSX_OpenId_ProviderAbstractTest extends PHPUnit_Framework_TestCase
 		$dhModulus     = $request['modulus'];
 		$dhConsumerPub = $request['consumer_public'];
 		$dhFunc        = 'SHA1';
-		$secret        = PSX_OpenId_ProviderAbstract::randomBytes(20);
+		$secret        = ProviderAbstract::randomBytes(20);
 
-		$res = PSX_OpenId_ProviderAbstract::generateDh($dhGen, $dhModulus, $dhConsumerPub, $dhFunc, $secret);
+		$res = ProviderAbstract::generateDh($dhGen, $dhModulus, $dhConsumerPub, $dhFunc, $secret);
 
 		$this->assertEquals(true, isset($res['pubKey']));
 		$this->assertEquals(true, isset($res['macKey']));
 
-		// calculate condumer
+		// calculate consumer
 		$serverPub    = base64_decode($res['pubKey']);
-		$dhSec        = PSX_OpenSsl::dhComputeKey($serverPub, $request['pkey']);
-		$sec          = PSX_OpenSsl::digest(PSX_OpenId_ProviderAbstract::btwoc($dhSec), $dhFunc, true);
+		$dhSec        = OpenSsl::dhComputeKey($serverPub, $request['pkey']);
+		$sec          = OpenSsl::digest(ProviderAbstract::btwoc($dhSec), $dhFunc, true);
 		$serverSecret = $sec ^ base64_decode($res['macKey']);
 
 		// compare with server
@@ -138,16 +144,16 @@ class PSX_OpenId_ProviderAbstractTest extends PHPUnit_Framework_TestCase
 
 	private function generateConsumerRequest()
 	{
-		$g = pack('H*', PSX_OpenId_ProviderAbstract::DH_G);
-		$p = pack('H*', PSX_OpenId_ProviderAbstract::DH_P);
+		$g = pack('H*', ProviderAbstract::DH_G);
+		$p = pack('H*', ProviderAbstract::DH_P);
 
-		$pkey    = new PSX_OpenSsl_PKey(array('dh' => array('p' => $p, 'g' => $g)));
+		$pkey    = new PKey(array('dh' => array('p' => $p, 'g' => $g)));
 		$details = $pkey->getDetails();
 
 		return array(
-			'modulus'         => base64_encode(PSX_OpenId_ProviderAbstract::btwoc($details['dh']['p'])),
-			'gen'             => base64_encode(PSX_OpenId_ProviderAbstract::btwoc($details['dh']['g'])),
-			'consumer_public' => base64_encode(PSX_OpenId_ProviderAbstract::btwoc($details['dh']['pub_key'])),
+			'modulus'         => base64_encode(ProviderAbstract::btwoc($details['dh']['p'])),
+			'gen'             => base64_encode(ProviderAbstract::btwoc($details['dh']['g'])),
+			'consumer_public' => base64_encode(ProviderAbstract::btwoc($details['dh']['pub_key'])),
 			'pkey'            => $pkey,
 		);
 	}

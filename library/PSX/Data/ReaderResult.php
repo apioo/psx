@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Data;
+
 /**
  * PSX_Data_ReaderResult
  *
@@ -33,7 +35,7 @@
  * @package    PSX_Data
  * @version    $Revision: 480 $
  */
-class PSX_Data_ReaderResult
+class ReaderResult
 {
 	private $type;
 	private $data;

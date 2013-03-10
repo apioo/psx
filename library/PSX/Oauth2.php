@@ -23,6 +23,11 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
+use PSX\Oauth2\AccessToken;
+use PSX\Oauth2\TokenAbstract;
+
 /**
  * PSX_Oauth2
  *
@@ -34,7 +39,7 @@
  * @package    PSX_Oauth2
  * @version    $Revision: 594 $
  */
-class PSX_Oauth2
+class Oauth2
 {
 	/**
 	 * If you have received an access token you can use this method to get the
@@ -52,9 +57,9 @@ class PSX_Oauth2
 	 * @param PSX_Oauth2_AccessToken $accessToken
 	 * @return string
 	 */
-	public function getAuthorizationHeader(PSX_Oauth2_AccessToken $accessToken)
+	public function getAuthorizationHeader(AccessToken $accessToken)
 	{
-		return PSX_Oauth2_TokenAbstract::factory($accessToken)->getHeader();
+		return TokenAbstract::factory($accessToken)->getHeader();
 	}
 }
 

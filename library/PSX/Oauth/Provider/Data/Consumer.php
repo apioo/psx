@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Oauth\Provider\Data;
+
 /**
  * PSX_Oauth_Provider_Data_Consumer
  *
@@ -33,7 +35,7 @@
  * @package    PSX_OAuth
  * @version    $Revision: 480 $
  */
-class PSX_Oauth_Provider_Data_Consumer
+class Consumer
 {
 	private $consumerKey;
 	private $consumerSecret;

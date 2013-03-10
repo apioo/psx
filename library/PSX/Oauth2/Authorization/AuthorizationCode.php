@@ -23,6 +23,12 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Oauth2\Authorization;
+
+use PSX\Base;
+use PSX\Oauth2\AuthorizationAbstract;
+use PSX\Url;
+
 /**
  * PSX_Oauth2_Authorization_AuthorizationCode
  *
@@ -33,7 +39,7 @@
  * @package    PSX_Oauth2
  * @version    $Revision: 662 $
  */
-class PSX_Oauth2_Authorization_AuthorizationCode extends PSX_Oauth2_AuthorizationAbstract
+class AuthorizationCode extends AuthorizationAbstract
 {
 	public function getAccessToken($redirectUri = null)
 	{
@@ -58,7 +64,7 @@ class PSX_Oauth2_Authorization_AuthorizationCode extends PSX_Oauth2_Authorizatio
 			// authentication
 			$header = array(
 				'Accept'     => 'application/json',
-				'User-Agent' => __CLASS__ . ' ' . PSX_Base::VERSION,
+				'User-Agent' => __CLASS__ . ' ' . Base::VERSION,
 			);
 
 			if($this->type == self::AUTH_BASIC)
@@ -81,7 +87,7 @@ class PSX_Oauth2_Authorization_AuthorizationCode extends PSX_Oauth2_Authorizatio
 		}
 	}
 
-	public static function redirect(PSX_Url $url, $clientId, $redirectUri = null, $scope = null, $state = null)
+	public static function redirect(Url $url, $clientId, $redirectUri = null, $scope = null, $state = null)
 	{
 		$url->setScheme('https');
 		$url->addParam('response_type', 'code');

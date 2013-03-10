@@ -23,6 +23,13 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
+use PDO;
+use PSX\Sql\Condition;
+use PSX\Sql\Connection;
+use stdClass;
+
 /**
  * PSX_Sql
  *
@@ -33,7 +40,7 @@
  * @package    PSX_Sql
  * @version    $Revision: 641 $
  */
-class PSX_Sql
+class Sql extends PDO implements Connection
 {
 	const LOW_PRIORITY  = 0x1;
 	const DELAYED       = 0x2;
@@ -52,174 +59,131 @@ class PSX_Sql
 	const SORT_ASC      = 0x0;
 	const SORT_DESC     = 0x1;
 
-	private $driver;
 	private $count = 0;
-	private $list  = array();
 
-	public function __construct($host, $user, $pw, $db, PSX_Sql_DriverInterface $driver = null)
+	public function __construct($host, $user, $pw, $db)
 	{
-		$this->driver = $driver !== null ? $driver : new PSX_Sql_Driver_Pdo();
+		$dsn = sprintf('mysql:dbname=%s;host=%s', $db, $host);
 
-		if(!($this->driver->connect($host, $user, $pw, $db)))
-		{
-			throw new PSX_Sql_Exception('Couldnt connect to database!');
-		}
-		else
-		{
-			// set default charset
-			$this->exec('SET NAMES "utf8"');
-		}
+		parent::__construct($dsn, $user, $pw);
+
+		// set default charset
+		$this->exec('SET NAMES "utf8"');
 	}
 
 	/**
 	 * Main method for data selection. It returns either an associative array
 	 * with the data or false. It uses prepared statments so you can write
-	 * questionmarks in your query and provide the values in the $params array
+	 * questionmarks in your query and provide the values in the $params array.
+	 * If the $class parameter is not null instances of the specific class will
+	 * returned in the array
 	 *
 	 * @param string $sql
 	 * @param array $params
-	 * @return array|false
-	 */
-	public function assoc($sql, array $params = array())
-	{
-		$stmt = $this->prepare($sql);
-
-		if(count($params) > 0)
-		{
-			foreach($params as $v)
-			{
-				$stmt->bindParam($v);
-			}
-		}
-
-		$stmt->execute();
-
-
-		$lastError = $stmt->error();
-
-		if(!empty($lastError))
-		{
-			throw new PSX_Sql_Exception($lastError);
-		}
-
-
-		$this->count++;
-
-		$content = false;
-
-		if($stmt->numRows() > 0)
-		{
-			$content = $stmt->fetchAssoc();
-		}
-
-		return $content;
-	}
-
-	/**
-	 * Method for data selection. This is an ORM like method where you get an
-	 * array of instances of the $class. As third argument you can give an array
-	 * of variables wich are passed to the constructor of the $class. This
-	 * method is maybe slower then assoc because it creates for each record an
-	 * instance of $class
-	 *
-	 * @param string $sql
 	 * @param string $class
 	 * @param array $args
-	 * @param array $params
-	 * @return array|false
+	 * @return array
 	 */
-	public function object($sql, array $params = array(), $class = 'stdClass', array $args = array())
+	public function assoc($sql, array $params = array(), $class = null, array $args = array())
 	{
+		// prepare statment
 		$stmt = $this->prepare($sql);
+
+		// error occured
+		if(!$stmt)
+		{
+			$lastError = $this->errorInfo();
+
+			throw new Exception($lastError[0] . ': ' . $lastError[2]);
+		}
+
+		// bind params
+		$bindParams = new stdClass();
 
 		if(count($params) > 0)
 		{
-			foreach($params as $v)
+			$params = array_values($params);
+
+			foreach($params as $k => $v)
 			{
-				$stmt->bindParam($v);
+				$k   = $k + 1;
+				$key = 'k_' . $k;
+				$bindParams->$key = $v;
+
+				$stmt->bindParam($k, $bindParams->$key, self::getType($v));
 			}
 		}
 
+		// execute
 		$stmt->execute();
-
-
-		$lastError = $stmt->error();
-
-		if(!empty($lastError))
-		{
-			throw new PSX_Sql_Exception($lastError);
-		}
-
 
 		$this->count++;
 
-		$content = false;
+		// fetch assoc
+		$result = array();
 
-		if($stmt->numRows() > 0)
+		if($class === null)
 		{
-			$content = $stmt->fetchObject($class, $args);
-		}
-
-		return $content;
-	}
-
-	/**
-	 * Main method for data manipulation (INSERT, UPDATE, REPLACE, DELETE). It
-	 * returns the number of affected rows. It uses prepared statments so you
-	 * can write questionmarks in your query and provide the values in the
-	 * $params array
-	 *
-	 * @param string $sql
-	 * @param array $params
-	 * @return boolean
-	 */
-	public function query($sql, array $params = array())
-	{
-		$stmt = $this->prepare($sql);
-
-		if(count($params) > 0)
-		{
-			foreach($params as $v)
+			while($row = $stmt->fetch(PDO::FETCH_ASSOC))
 			{
-				$stmt->bindParam($v);
+				$result[] = $row;
 			}
-		}
-
-		$stmt->execute();
-
-
-		$lastError = $stmt->error();
-
-		if(!empty($lastError))
-		{
-			throw new PSX_Sql_Exception($lastError);
-		}
-
-
-		$this->count++;
-
-		return $stmt->numRows();
-	}
-
-	/**
-	 * Main method for executing queries where you dont need prepared statments
-	 * i.e. setting the charset or selecting another database.
-	 *
-	 * @param string $sql
-	 * @return boolean
-	 */
-	public function exec($sql)
-	{
-		if($this->driver->exec($sql) === false)
-		{
-			throw new PSX_Sql_Exception($this->driver->error());
 		}
 		else
 		{
-			$this->count++;
-
-			return true;
+			while($row = $stmt->fetchObject($class, $args))
+			{
+				$result[] = $row;
+			}
 		}
+
+		return $result;
+	}
+
+	/**
+	 * Executes a query as prepared statment without returning any kind of 
+	 * result 
+	 *
+	 * @param string $sql
+	 * @param array $params
+	 * @return boolean
+	 */
+	public function execute($sql, array $params = array())
+	{
+		// prepare statment
+		$stmt = $this->prepare($sql);
+
+		// error occured
+		if(!$stmt)
+		{
+			$lastError = $this->errorInfo();
+
+			throw new Exception($lastError[0] . ': ' . $lastError[2]);
+		}
+
+		// bind params
+		$bindParams = new stdClass();
+
+		if(count($params) > 0)
+		{
+			$params = array_values($params);
+
+			foreach($params as $k => $v)
+			{
+				$k   = $k + 1;
+				$key = 'k_' . $k;
+				$bindParams->$key = $v;
+
+				$stmt->bindParam($k, $bindParams->$key, self::getType($v));
+			}
+		}
+
+		// execute
+		$result = $stmt->execute();
+
+		$this->count++;
+
+		return $result;
 	}
 
 	/**
@@ -327,20 +291,15 @@ class PSX_Sql
 		switch($mode)
 		{
 			case self::FETCH_ASSOC:
-
 				$result = $this->assoc($sql, $params);
-
 				break;
 
 			case self::FETCH_OBJECT:
-
-				$result = $this->object($sql, $params, $class, $args);
-
+				$result = $this->assoc($sql, $params, $class, $args);
 				break;
 
 			default:
-
-				throw new PSX_Sql_Exception('Invalid mode');
+				throw new Exception('Invalid mode');
 		}
 
 		return $result;
@@ -360,7 +319,7 @@ class PSX_Sql
 	 * @param integer $count
 	 * @return array
 	 */
-	public function select($table, array $fields, PSX_Sql_Condition $condition = null, $select = 0, $sortBy = null, $sortOrder = 0, $startIndex = null, $count = 32)
+	public function select($table, array $fields, Condition $condition = null, $select = 0, $sortBy = null, $sortOrder = 0, $startIndex = null, $count = 32)
 	{
 		if(!empty($fields))
 		{
@@ -397,27 +356,19 @@ class PSX_Sql
 			switch($select)
 			{
 				case self::SELECT_ALL:
-
 					$result = $this->getAll($sql, $params);
-
 					break;
 
 				case self::SELECT_ROW:
-
 					$result = $this->getRow($sql, $params);
-
 					break;
 
 				case self::SELECT_COL:
-
 					$result = $this->getCol($sql, $params);
-
 					break;
 
 				case self::SELECT_FIELD:
-
 					$result = $this->getField($sql, $params);
-
 					break;
 			}
 
@@ -425,7 +376,7 @@ class PSX_Sql
 		}
 		else
 		{
-			throw new PSX_Sql_Exception('Array must not be empty');
+			throw new Exception('Array must not be empty');
 		}
 	}
 
@@ -464,11 +415,11 @@ class PSX_Sql
 			$keys = array_keys($params);
 			$sql  = 'INSERT ' . $keywords . ' `' . $table . '` SET ' . implode(', ', array_map(__CLASS__ . '::helpPrepare', $keys));
 
-			return $this->query($sql, $params);
+			return $this->execute($sql, $params);
 		}
 		else
 		{
-			throw new PSX_Sql_Exception('Array must not be empty');
+			throw new Exception('Array must not be empty');
 		}
 	}
 
@@ -481,7 +432,7 @@ class PSX_Sql
 	 * @param integer $modifier
 	 * @return integer
 	 */
-	public function update($table, array $params, PSX_Sql_Condition $condition = null, $modifier = 0)
+	public function update($table, array $params, Condition $condition = null, $modifier = 0)
 	{
 		if(!empty($params))
 		{
@@ -510,11 +461,11 @@ class PSX_Sql
 				$params = array_values($params);
 			}
 
-			return $this->query($sql, $params);
+			return $this->execute($sql, $params);
 		}
 		else
 		{
-			throw new PSX_Sql_Exception('Array must not be empty');
+			throw new Exception('Array must not be empty');
 		}
 	}
 
@@ -544,11 +495,11 @@ class PSX_Sql
 			$keys = array_keys($params);
 			$sql  = 'REPLACE ' . $keywords . ' `' . $table . '` SET ' . implode(', ', array_map(__CLASS__ . '::helpPrepare', $keys));
 
-			return $this->query($sql, $params);
+			return $this->execute($sql, $params);
 		}
 		else
 		{
-			throw new PSX_Sql_Exception('Array must not be empty');
+			throw new Exception('Array must not be empty');
 		}
 	}
 
@@ -560,7 +511,7 @@ class PSX_Sql
 	 * @param integer $modifier
 	 * @return integer
 	 */
-	public function delete($table, PSX_Sql_Condition $condition = null, $modifier = 0)
+	public function delete($table, Condition $condition = null, $modifier = 0)
 	{
 		$keywords = '';
 
@@ -590,7 +541,7 @@ class PSX_Sql
 			$params = array();
 		}
 
-		return $this->query($sql, $params);
+		return $this->execute($sql, $params);
 	}
 
 	/**
@@ -598,7 +549,7 @@ class PSX_Sql
 	 *
 	 * @return integer
 	 */
-	public function count($table, PSX_Sql_Condition $condition = null)
+	public function count($table, Condition $condition = null)
 	{
 		if($condition !== null)
 		{
@@ -615,67 +566,6 @@ class PSX_Sql
 	}
 
 	/**
-	 * Starts an transaction if it is supported by the table engine
-	 *
-	 * @return void
-	 */
-	public function beginTransaction()
-	{
-		$this->driver->beginTransaction();
-	}
-
-	/**
-	 * Commits an transaction if it is supported by the table engine
-	 *
-	 * @return void
-	 */
-	public function commit()
-	{
-		$this->driver->commit();
-	}
-
-	/**
-	 * Rollback an transaction if it is supported by the table engine
-	 *
-	 * @return void
-	 */
-	public function rollback()
-	{
-		$this->driver->rollback();
-	}
-
-	/**
-	 * Closes the connection to the database
-	 *
-	 * @return void
-	 */
-	public function close()
-	{
-		$this->driver->close();
-	}
-
-	/**
-	 * Returns the last inserted id
-	 *
-	 * @return integer
-	 */
-	public function getLastInsertId()
-	{
-		return $this->driver->lastInsertId();
-	}
-
-	/**
-	 * Places quotes around the input string (if required) and escapes special
-	 * characters within the input string
-	 *
-	 * @return string
-	 */
-	public function quote($string)
-	{
-		return $this->driver->quote($string);
-	}
-
-	/**
 	 * Returns the number of executed sql queries
 	 *
 	 * @return integer
@@ -685,40 +575,9 @@ class PSX_Sql
 		return $this->count;
 	}
 
-	/**
-	 * Returns the used driver
-	 *
-	 * @return PSX_Sql_DriverInterface
-	 */
-	public function getDriver()
+	public function getLastInsertId()
 	{
-		return $this->driver;
-	}
-
-	/**
-	 * Prepares an raw sql query and returns an statment object. The query is
-	 * cached that means if you call the method two times with the same query
-	 * you will get the same statment object
-	 *
-	 * @param string $sql
-	 * @return PSX_Sql_StmtInterface
-	 */
-	public function prepare($sql)
-	{
-		$key = md5($sql);
-
-		if(!isset($this->list[$key]))
-		{
-			$stmt = $this->driver->prepare($sql);
-
-			$this->list[$key] = $stmt;
-		}
-		else
-		{
-			$stmt = $this->list[$key];
-		}
-
-		return $stmt;
+		return $this->lastInsertId();
 	}
 
 	public static function helpQuote($str)
@@ -729,6 +588,24 @@ class PSX_Sql
 	public static function helpPrepare($str)
 	{
 		return '`' . $str . '` = ?';
+	}
+
+	public static function getType($type)
+	{
+		switch(true)
+		{
+			case is_bool($type):
+				return PDO::PARAM_BOOL;
+
+			case is_null($type):
+				return PDO::PARAM_NULL;
+
+			case is_int($type):
+				return PDO::PARAM_INT;
+
+			default:
+				return PDO::PARAM_STR;
+		}
 	}
 }
 

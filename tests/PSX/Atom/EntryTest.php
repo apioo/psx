@@ -23,6 +23,12 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Atom;
+
+use PSX\Http\Message;
+use PSX\Data\Reader;
+use PSX\DateTime;
+
 /**
  * PSX_Atom_EntryTest
  *
@@ -32,7 +38,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_Atom_EntryTest extends PHPUnit_Framework_TestCase
+class EntryTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -55,10 +61,10 @@ class PSX_Atom_EntryTest extends PHPUnit_Framework_TestCase
 </entry>
 XML;
 
-		$message = new PSX_Http_Message(array(), $body);
-		$reader  = new PSX_Data_Reader_Dom();
+		$message = new Message(array(), $body);
+		$reader  = new Reader\Dom();
 
-		$entry = new PSX_Atom_Entry();
+		$entry = new Entry();
 		$entry->import($reader->read($message));
 
 		$link = current($entry->link);

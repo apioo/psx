@@ -23,6 +23,11 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
+use PSX\Input;
+use PSX\Filter\Alnum;
+
 /**
  * PSX_InputAbstractTest
  *
@@ -32,7 +37,7 @@
  * @category   tests
  * @version    $Revision: 560 $
  */
-class PSX_InputTest extends PHPUnit_Framework_TestCase
+class InputTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -44,7 +49,7 @@ class PSX_InputTest extends PHPUnit_Framework_TestCase
 
 	public function getInput()
 	{
-		return new PSX_Input_Get();
+		return new Input\Get();
 	}
 
 	public function testValidatorError()
@@ -59,21 +64,21 @@ class PSX_InputTest extends PHPUnit_Framework_TestCase
 	{
 		$input = $this->getInput();
 
-		$this->assertEquals('test', $input->foo('string', array(new PSX_Filter_Alnum()), 'foo', 'Foo', true, 'test'));
-		$this->assertEquals(false, $input->foo('string', array(new PSX_Filter_Alnum()), 'foo', 'Foo', true));
+		$this->assertEquals('test', $input->foo('string', array(new Alnum()), 'foo', 'Foo', true, 'test'));
+		$this->assertEquals(false, $input->foo('string', array(new Alnum()), 'foo', 'Foo', true));
 
 		$input->offsetSet('foo', 'bar');
 
-		$this->assertEquals('bar', $input->foo('string', array(new PSX_Filter_Alnum()), 'foo', 'Foo', true, 'test'));
-		$this->assertEquals('bar', $input->foo('string', array(new PSX_Filter_Alnum()), 'foo', 'Foo', true));
+		$this->assertEquals('bar', $input->foo('string', array(new Alnum()), 'foo', 'Foo', true, 'test'));
+		$this->assertEquals('bar', $input->foo('string', array(new Alnum()), 'foo', 'Foo', true));
 	}
 
 	public function testRequired()
 	{
 		$input = $this->getInput();
 
-		$this->assertEquals(false, $input->bar('string', array(new PSX_Filter_Alnum()), 'foo', 'Foo', true));
-		$this->assertEquals(false, $input->bar('string', array(new PSX_Filter_Alnum()), 'foo', 'Foo', false));
+		$this->assertEquals(false, $input->bar('string', array(new Alnum()), 'foo', 'Foo', true));
+		$this->assertEquals(false, $input->bar('string', array(new Alnum()), 'foo', 'Foo', false));
 		$this->assertEquals(1, count($input->getValidator()->getError()));
 	}
 

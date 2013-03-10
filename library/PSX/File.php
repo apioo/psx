@@ -23,6 +23,11 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
+use SplFileInfo;
+use PSX\File\Object;
+
 /**
  * Represents a file and offers a high-level object oriented interface to
  * information for an individual file. It doesnt touch the file if you create an
@@ -43,14 +48,14 @@
  * @package    PSX_File
  * @version    $Revision: 612 $
  */
-class PSX_File extends SplFileInfo
+class File extends SplFileInfo
 {
 	public function __construct($fileName)
 	{
 		parent::__construct($fileName);
 
-		$this->setInfoClass('PSX_File');
-		$this->setFileClass('PSX_File_Object');
+		$this->setInfoClass('\PSX\File');
+		$this->setFileClass('\PSX\File\Object');
 	}
 
 	/**
@@ -65,7 +70,7 @@ class PSX_File extends SplFileInfo
 	 */
 	public static function open($file, $mode = 'r', $useIncludePath = false)
 	{
-		return new PSX_File_Object($file, $mode, $useIncludePath);
+		return new Object($file, $mode, $useIncludePath);
 	}
 
 	/**

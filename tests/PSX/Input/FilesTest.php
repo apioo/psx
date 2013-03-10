@@ -23,6 +23,11 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
+use PSX\Input;
+use PSX\InputTest;
+
 /**
  * PSX_Input_FilesTest
  *
@@ -32,7 +37,7 @@
  * @category   tests
  * @version    $Revision: 560 $
  */
-class PSX_Input_FilesTest extends PSX_InputTest
+class FilesTest extends InputTest
 {
 	public function testNotImplemented()
 	{

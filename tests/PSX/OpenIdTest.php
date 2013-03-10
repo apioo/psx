@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
 /**
  * PSX_OpenIdTest
  *
@@ -32,7 +34,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_OpenIdTest extends PHPUnit_Framework_TestCase
+class OpenIdTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -48,9 +50,9 @@ class PSX_OpenIdTest extends PHPUnit_Framework_TestCase
 
 		$str = 'mode:error' . "\n" . 'error:This is an example message' . "\n";
 
-		$this->assertEquals($str, PSX_OpenId::keyValueEncode($expect));
+		$this->assertEquals($str, OpenId::keyValueEncode($expect));
 
-		$this->assertEquals($expect, PSX_OpenId::keyValueDecode($str));
+		$this->assertEquals($expect, OpenId::keyValueDecode($str));
 	}
 }
 

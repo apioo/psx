@@ -23,6 +23,12 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Html;
+
+use PSX\Url;
+use PSX\Data\ResultSet;
+use PSX\Html\Paging;
+
 /**
  * PSX_Html_PagingTest
  *
@@ -32,7 +38,7 @@
  * @category   tests
  * @version    $Revision: 635 $
  */
-class PSX_Html_PagingTest extends PHPUnit_Framework_TestCase
+class PagingTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -44,9 +50,9 @@ class PSX_Html_PagingTest extends PHPUnit_Framework_TestCase
 
 	public function testPagingUrls()
 	{
-		$url    = new PSX_Url('http://foobar.com');
-		$result = new PSX_Data_ResultSet(12, 0, 4, array());
-		$paging = new PSX_Html_Paging($url, $result);
+		$url    = new Url('http://foobar.com');
+		$result = new ResultSet(12, 0, 4, array());
+		$paging = new Paging($url, $result);
 
 		$this->assertEquals('http://foobar.com?startIndex=0', $paging->getFirstUrl());
 		$this->assertEquals('http://foobar.com?startIndex=0', $paging->getPrevUrl());
@@ -54,9 +60,9 @@ class PSX_Html_PagingTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals('http://foobar.com?startIndex=8', $paging->getLastUrl());
 
 
-		$url    = new PSX_Url('http://foobar.com');
-		$result = new PSX_Data_ResultSet(32, 16, 4, array());
-		$paging = new PSX_Html_Paging($url, $result);
+		$url    = new Url('http://foobar.com');
+		$result = new ResultSet(32, 16, 4, array());
+		$paging = new Paging($url, $result);
 
 		$this->assertEquals('http://foobar.com?startIndex=0', $paging->getFirstUrl());
 		$this->assertEquals('http://foobar.com?startIndex=12', $paging->getPrevUrl());
@@ -66,9 +72,9 @@ class PSX_Html_PagingTest extends PHPUnit_Framework_TestCase
 
 	public function testPagingIterator()
 	{
-		$url    = new PSX_Url('http://foobar.com');
-		$result = new PSX_Data_ResultSet(12, 0, 4, array());
-		$paging = new PSX_Html_Paging($url, $result);
+		$url    = new Url('http://foobar.com');
+		$result = new ResultSet(12, 0, 4, array());
+		$paging = new Paging($url, $result);
 
 		$this->assertEquals(1, $paging->getPage());
 		$this->assertEquals(3, $paging->getPages());

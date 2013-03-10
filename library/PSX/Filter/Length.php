@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Filter;
+
+use PSX\FilterAbstract;
+
 /**
  * PSX_Filter_Length
  *
@@ -33,7 +37,7 @@
  * @package    PSX_Filter
  * @version    $Revision: 643 $
  */
-class PSX_Filter_Length extends PSX_FilterAbstract
+class Length extends FilterAbstract
 {
 	public function __construct($min = null, $max = null)
 	{

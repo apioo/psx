@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Filter;
+
 /**
  * PSX_Filter_XdigitTest
  *
@@ -32,7 +34,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_Filter_XdigitTest extends PHPUnit_Framework_TestCase
+class XdigitTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -44,7 +46,7 @@ class PSX_Filter_XdigitTest extends PHPUnit_Framework_TestCase
 
 	public function testXdigit()
 	{
-		$xdigit = new PSX_Filter_Xdigit();
+		$xdigit = new Xdigit();
 
 		$this->assertEquals(false, $xdigit->apply('foo'));
 		$this->assertEquals(true, $xdigit->apply('abc123'));

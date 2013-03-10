@@ -23,6 +23,11 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Html;
+
+use PSX\Html\Lexer\Token;
+use PSX\Html\Parse\Element;
+
 /**
  * This class is for parsing html. It is especially designed for parsing invalid
  * html. It uses the html lexer and parses only the header or body part
@@ -35,7 +40,7 @@
  * @package    PSX_Html
  * @version    $Revision: 608 $
  */
-class PSX_Html_Parse
+class Parse
 {
 	private $content;
 
@@ -63,11 +68,11 @@ class PSX_Html_Parse
 	 * @param string $return
 	 * @return false|string
 	 */
-	public function fetchAttrFromHead(PSX_Html_Parse_Element $element, $return = false)
+	public function fetchAttrFromHead(Element $element, $return = false)
 	{
-		$root = PSX_Html_Lexer::parse($this->getHead());
+		$root = Lexer::parse($this->getHead());
 
-		if($root instanceof PSX_Html_Lexer_Token_Element)
+		if($root instanceof Token\Element)
 		{
 			$elements = $root->getElementsByTagName($element->getName());
 

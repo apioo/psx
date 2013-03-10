@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Loader;
+
 /**
  * PSX_Loader_LocationFinderInterface
  *
@@ -33,7 +35,7 @@
  * @package    PSX_Loader
  * @version    $Revision: 480 $
  */
-interface PSX_Loader_LocationFinderInterface
+interface LocationFinderInterface
 {
 	/**
 	 * Resolves the given path to an module

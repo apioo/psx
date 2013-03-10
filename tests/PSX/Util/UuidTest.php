@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Util;
+
 /**
  * PSX_Util_UuidTest
  *
@@ -32,7 +34,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_Util_UuidTest extends PHPUnit_Framework_TestCase
+class UuidTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -45,7 +47,7 @@ class PSX_Util_UuidTest extends PHPUnit_Framework_TestCase
 	public function testNameBased()
 	{
 		// Test UUID parts
-		$uuid = explode('-', PSX_Util_Uuid::nameBased('bar'));
+		$uuid = explode('-', Uuid::nameBased('bar'));
 
 		$this->assertEquals(5, count($uuid));
 		$this->assertEquals(true, ctype_xdigit($uuid[0]), 'time-low');
@@ -65,13 +67,13 @@ class PSX_Util_UuidTest extends PHPUnit_Framework_TestCase
 
 		// The UUIDs generated at different times from the same name in the same
 		// namespace MUST be equal.
-		$uuid = PSX_Util_Uuid::nameBased('foobar');
+		$uuid = Uuid::nameBased('foobar');
 		sleep(2);
-		$this->assertEquals(true, $uuid == PSX_Util_Uuid::nameBased('foobar'));
+		$this->assertEquals(true, $uuid == Uuid::nameBased('foobar'));
 
 
 		// The UUIDs generated from two different names in the same namespace
 		// should be different (with very high probability).
-		$this->assertEquals(true, PSX_Util_Uuid::nameBased('foobar') != PSX_Util_Uuid::nameBased('bar'));
+		$this->assertEquals(true, Uuid::nameBased('foobar') != Uuid::nameBased('bar'));
 	}
 }

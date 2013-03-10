@@ -23,6 +23,11 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Data;
+
+use DateTime;
+use PSX\Util\Uuid;
+
 /**
  * PSX_Data_Message
  *
@@ -33,7 +38,7 @@
  * @package    PSX_Data
  * @version    $Revision: 480 $
  */
-class PSX_Data_Message extends PSX_Data_RecordAbstract
+class Message extends RecordAbstract
 {
 	public $text;
 	public $success;
@@ -69,14 +74,14 @@ class PSX_Data_Message extends PSX_Data_RecordAbstract
 		$this->success = (boolean) $success;
 	}
 
-	public function export(PSX_Data_WriterResult $result)
+	public function export(WriterResult $result)
 	{
 		switch($result->getType())
 		{
-			case PSX_Data_WriterInterface::ATOM:
+			case WriterInterface::ATOM:
 				$entry = $result->getWriter()->createEntry();
 				$entry->setTitle('Message');
-				$entry->setId('urn:uuid:' . PSX_Util_Uuid::nameBased($this->text));
+				$entry->setId('urn:uuid:' . Uuid::nameBased($this->text));
 				$entry->setUpdated(new DateTime());
 				$entry->addAuthor('System');
 				$entry->setContent($this, 'application/xml');

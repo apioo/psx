@@ -23,6 +23,11 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Data\Reader;
+
+use PSX\Data\ReaderInterface;
+use PSX\Http\Message;
+
 /**
  * PSX_Data_Reader_JsonTest
  *
@@ -32,7 +37,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_Data_Reader_JsonTest extends PHPUnit_Framework_TestCase
+class JsonTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -48,15 +53,15 @@ class PSX_Data_Reader_JsonTest extends PHPUnit_Framework_TestCase
 {"foo":"bar","bar":["blub","bla"],"test":{"foo":"bar"}}
 INPUT;
 
-		$reader  = new PSX_Data_Reader_Json();
-		$message = new PSX_Http_Message(array(), $body);
+		$reader  = new Json();
+		$message = new Message(array(), $body);
 
 		$result = $reader->read($message);
 		$json   = $result->getData();
 
 		$e = array('foo' => 'bar', 'bar' => array('blub', 'bla'), 'test' => array('foo' => 'bar'));
 
-		$this->assertEquals(PSX_Data_ReaderInterface::JSON, $result->getType());
+		$this->assertEquals(ReaderInterface::JSON, $result->getType());
 		$this->assertEquals(true, is_array($json));
 		$this->assertEquals($e, $json);
 	}

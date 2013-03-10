@@ -23,6 +23,18 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\OpenId\Provider\Data;
+
+use PSX\Data\RecordAbstract;
+use PSX\Data\InvalidDataException;
+use PSX\Data\NotSupportedException;
+use PSX\Data\ReaderResult;
+use PSX\Data\ReaderInterface;
+use PSX\Data\WriterResult;
+use PSX\Data\WriterInterface;
+use PSX\Url;
+use PSX\OpenId;
+
 /**
  * PSX_OpenId_Provider_Data_ResRequest
  *
@@ -33,7 +45,7 @@
  * @package    PSX_OpenId
  * @version    $Revision: 480 $
  */
-class PSX_OpenId_Provider_Data_ResRequest extends PSX_Data_RecordAbstract
+class ResRequest extends RecordAbstract
 {
 	public $opEndpoint;
 	public $claimedId;
@@ -84,7 +96,7 @@ class PSX_OpenId_Provider_Data_ResRequest extends PSX_Data_RecordAbstract
 
 	public function setOpEndpoint($opEndpoint)
 	{
-		$this->opEndpoint = new PSX_Url($opEndpoint);
+		$this->opEndpoint = new Url($opEndpoint);
 	}
 
 	public function setClaimedId($claimedId)
@@ -99,7 +111,7 @@ class PSX_OpenId_Provider_Data_ResRequest extends PSX_Data_RecordAbstract
 
 	public function setReturnTo($returnTo)
 	{
-		$this->returnTo = new PSX_Url($returnTo);
+		$this->returnTo = new Url($returnTo);
 	}
 
 	public function setResponseNonce($responseNonce)
@@ -126,7 +138,7 @@ class PSX_OpenId_Provider_Data_ResRequest extends PSX_Data_RecordAbstract
 	{
 		if(empty($sig))
 		{
-			throw new PSX_Data_Exception('Signature must not be empty');
+			throw new InvalidDataException('Signature must not be empty');
 		}
 
 		$this->sig = $sig;
@@ -189,18 +201,18 @@ class PSX_OpenId_Provider_Data_ResRequest extends PSX_Data_RecordAbstract
 
 	public function isValidSignature($secret, $assocType)
 	{
-		$params     = PSX_OpenId::extractParams($this->params);
-		$signature  = PSX_OpenId::buildSignature($params, $this->getSigned(), $secret, $assocType);
+		$params     = OpenId::extractParams($this->params);
+		$signature  = OpenId::buildSignature($params, $this->getSigned(), $secret, $assocType);
 		$foreignSig = $this->getSig();
 
 		return strcmp($foreignSig, $signature) === 0;
 	}
 
-	public function import(PSX_Data_ReaderResult $result)
+	public function import(ReaderResult $result)
 	{
 		switch($result->getType())
 		{
-			case PSX_Data_ReaderInterface::GPC:
+			case ReaderInterface::GPC:
 
 				$params = $result->getData();
 
@@ -212,7 +224,7 @@ class PSX_OpenId_Provider_Data_ResRequest extends PSX_Data_RecordAbstract
 				}
 				else
 				{
-					throw new PSX_Data_Exception('OP endpoint not set');
+					throw new InvalidDataException('OP endpoint not set');
 				}
 
 				if(isset($params['openid_claimed_id']))
@@ -231,7 +243,7 @@ class PSX_OpenId_Provider_Data_ResRequest extends PSX_Data_RecordAbstract
 				}
 				else
 				{
-					throw new PSX_Data_Exception('Return to not set');
+					throw new InvalidDataException('Return to not set');
 				}
 
 				if(isset($params['openid_response_nonce']))
@@ -240,7 +252,7 @@ class PSX_OpenId_Provider_Data_ResRequest extends PSX_Data_RecordAbstract
 				}
 				else
 				{
-					throw new PSX_Data_Exception('Response nonce not set');
+					throw new InvalidDataException('Response nonce not set');
 				}
 
 				if(isset($params['openid_invalidate_handle']))
@@ -254,7 +266,7 @@ class PSX_OpenId_Provider_Data_ResRequest extends PSX_Data_RecordAbstract
 				}
 				else
 				{
-					throw new PSX_Data_Exception('Assoc handle not set');
+					throw new InvalidDataException('Assoc handle not set');
 				}
 
 				if(isset($params['openid_signed']))
@@ -263,7 +275,7 @@ class PSX_OpenId_Provider_Data_ResRequest extends PSX_Data_RecordAbstract
 				}
 				else
 				{
-					throw new PSX_Data_Exception('Signed not set');
+					throw new InvalidDataException('Signed not set');
 				}
 
 				if(isset($params['openid_sig']))
@@ -272,26 +284,26 @@ class PSX_OpenId_Provider_Data_ResRequest extends PSX_Data_RecordAbstract
 				}
 				else
 				{
-					throw new PSX_Data_Exception('Sig not set');
+					throw new InvalidDataException('Sig not set');
 				}
 
 				break;
 
 			default:
 
-				throw new PSX_Data_Exception('Can only import data from reader GPC');
+				throw new NotSupportedException('Can only import data from reader GPC');
 
 				break;
 		}
 	}
 
-	public function export(PSX_Data_WriterResult $result)
+	public function export(WriterResult $result)
 	{
 		switch($result->getType())
 		{
-			case PSX_Data_WriterInterface::FORM:
-			case PSX_Data_WriterInterface::JSON:
-			case PSX_Data_WriterInterface::XML:
+			case WriterInterface::FORM:
+			case WriterInterface::JSON:
+			case WriterInterface::XML:
 
 				return $this->getData();
 

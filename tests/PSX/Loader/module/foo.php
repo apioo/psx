@@ -1,6 +1,8 @@
 <?php
 
-class foo extends PSX_ModuleAbstract
+use PSX\ModuleAbstract;
+
+class foo extends ModuleAbstract
 {
 	public function onLoad()
 	{

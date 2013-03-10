@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
+use SimpleXMLElement;
+
 /**
  * PSX_Xml
  *
@@ -33,11 +37,11 @@
  * @package    PSX_Xml
  * @version    $Revision: 480 $
  */
-class PSX_Xml extends SimpleXMLElement
+class Xml extends SimpleXMLElement
 {
 	public function toJson()
 	{
-		return PSX_Json::encode($this);
+		return Json::encode($this);
 	}
 }
 

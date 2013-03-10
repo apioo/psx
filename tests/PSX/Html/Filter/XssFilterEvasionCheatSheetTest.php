@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Html\Filter;
+
 /**
  * Test html filter against several xss vectors to see how the filter behaves.
  * The XSS vextors are taken from http://ha.ckers.org/xss.html
@@ -33,7 +35,7 @@
  * @category   tests
  * @version    $Revision: 560 $
  */
-class PSX_Html_Filter_XssFilterEvasionCheatSheetTest extends PSX_Html_Filter_XssTestCase
+class XssFilterEvasionCheatSheetTest extends XssTestCase
 {
 	protected function setUp()
 	{

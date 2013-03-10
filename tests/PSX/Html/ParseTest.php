@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Html;
+
+use PSX\Html\Parse\Element;
+
 /**
  * PSX_Html_ParseTest
  *
@@ -32,7 +36,7 @@
  * @category   tests
  * @version    $Revision: 543 $
  */
-class PSX_Html_ParseTest extends PHPUnit_Framework_TestCase
+class ParseTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -82,8 +86,8 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 </html>
 HTML;
 
-		$parse  = new PSX_Html_Parse($html);
-		$actual = $parse->fetchAttrFromHead(new PSX_Html_Parse_Element('link', array(
+		$parse  = new Parse($html);
+		$actual = $parse->fetchAttrFromHead(new Element('link', array(
 
 			'rel'  => 'alternate',
 			'type' => 'application/atom+xml',
@@ -111,8 +115,8 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 </html>
 HTML;
 
-		$parse  = new PSX_Html_Parse($html);
-		$actual = $parse->fetchAttrFromHead(new PSX_Html_Parse_Element('link', array(
+		$parse  = new Parse($html);
+		$actual = $parse->fetchAttrFromHead(new Element('link', array(
 
 			'rel'  => 'alternate',
 			'type' => 'application/atom+xml',
@@ -146,7 +150,7 @@ HTML;
  </head>
 HTML;
 
-		$parse = new PSX_Html_Parse($html);
+		$parse = new Parse($html);
 		$head  = $parse->getHead();
 
 		$this->assertEquals($expect, $head);
@@ -174,7 +178,7 @@ HTML;
  </body>
 HTML;
 
-		$parse = new PSX_Html_Parse($html);
+		$parse = new Parse($html);
 		$head  = $parse->getBody();
 
 		$this->assertEquals($expect, $head);

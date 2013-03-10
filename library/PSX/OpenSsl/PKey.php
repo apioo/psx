@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\OpenSsl;
+
 /**
  * PSX_OpenSsl_PKey
  *
@@ -33,7 +35,7 @@
  * @package    PSX_OpenSsl
  * @version    $Revision: 480 $
  */
-class PSX_OpenSsl_PKey
+class PKey
 {
 	private $res;
 
@@ -47,7 +49,7 @@ class PSX_OpenSsl_PKey
 		}
 		else
 		{
-			throw new PSX_OpenSsl_Exception('Could not create private key');
+			throw new Exception('Could not create private key');
 		}
 	}
 
@@ -66,7 +68,7 @@ class PSX_OpenSsl_PKey
 		}
 		else
 		{
-			throw new PSX_OpenSsl_Exception('Could not get details');
+			throw new Exception('Could not get details');
 		}
 	}
 
@@ -95,7 +97,7 @@ class PSX_OpenSsl_PKey
 		}
 		else
 		{
-			throw new PSX_OpenSsl_Exception('Could not get private');
+			throw new Exception('Could not get private');
 		}
 	}
 
@@ -109,7 +111,7 @@ class PSX_OpenSsl_PKey
 		}
 		else
 		{
-			throw new PSX_OpenSsl_Exception('Could not get private');
+			throw new Exception('Could not get private');
 		}
 	}
 }

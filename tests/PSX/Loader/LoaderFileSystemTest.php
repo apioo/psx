@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Loader;
+
+use PSX\LoaderTest;
+
 /**
  * PSX_Loader_FileSystemTest
  *
@@ -32,6 +36,6 @@
  * @category   tests
  * @version    $Revision: 658 $
  */
-class PSX_Loader_FileSystemTest extends PSX_LoaderTest
+class FileSystemTest extends LoaderTest
 {
 }

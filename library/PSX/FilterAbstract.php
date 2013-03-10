@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
 /**
  * The abstract class wich each filter class must extend. If the method apply
  * returns false the validation fails if it returns true the validation is
@@ -35,7 +37,7 @@
  * @package    PSX_Filter
  * @version    $Revision: 617 $
  */
-abstract class PSX_FilterAbstract
+abstract class FilterAbstract
 {
 	/**
 	 * Applies the current filter to the $value

@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
 /**
  * PSX_JsonTest
  *
@@ -32,7 +34,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_JsonTest extends PHPUnit_Framework_TestCase
+class JsonTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -46,13 +48,13 @@ class PSX_JsonTest extends PHPUnit_Framework_TestCase
 	{
 		$val = array('foo' => 'bar');
 
-		$this->assertEquals('{"foo":"bar"}', psx_json::encode($val));
+		$this->assertEquals('{"foo":"bar"}', Json::encode($val));
 	}
 
 	public function testJsonDecode()
 	{
 		$val = '{"foo":"bar"}';
 
-		$this->assertEquals(array('foo' => 'bar'), psx_json::decode($val));
+		$this->assertEquals(array('foo' => 'bar'), Json::decode($val));
 	}
 }

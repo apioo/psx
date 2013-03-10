@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Sql;
+
+use PSX\Exception;
+
 /**
  * PSX_Sql_Join
  *
@@ -33,7 +37,7 @@
  * @package    PSX_Sql
  * @version    $Revision: 480 $
  */
-class PSX_Sql_Join
+class Join
 {
 	const INNER = 0x1;
 	const LEFT  = 0x2;
@@ -45,7 +49,7 @@ class PSX_Sql_Join
 	private $foreignKey;
 	private $alias;
 
-	public function __construct($type, PSX_Sql_TableInterface $table, $cardinality = '1:n', $foreignKey = null)
+	public function __construct($type, TableInterface $table, $cardinality = '1:n', $foreignKey = null)
 	{
 		$this->setType($type);
 		$this->setTable($table);
@@ -60,7 +64,7 @@ class PSX_Sql_Join
 		$this->type = $type === self::RIGHT ? 'RIGHT' : ($type === self::LEFT ? 'LEFT' : 'INNER');
 	}
 
-	public function setTable(PSX_Sql_TableInterface $table)
+	public function setTable(TableInterface $table)
 	{
 		$this->table = $table;
 	}
@@ -81,7 +85,7 @@ class PSX_Sql_Join
 			}
 		}
 
-		throw new PSX_Sql_Exception('Invalid cardinality');
+		throw new Exception('Invalid cardinality');
 	}
 
 	public function setForeignKey($foreignKey)

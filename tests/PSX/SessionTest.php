@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
 /**
  * PSX_SessionTest
  *
@@ -32,25 +34,24 @@
  * @category   tests
  * @version    $Revision: 562 $
  */
-class PSX_SessionTest extends PHPUnit_Framework_TestCase
+class SessionTest extends \PHPUnit_Framework_TestCase
 {
 	protected $sess;
 
 	protected function setUp()
 	{
-		$this->sess = new PSX_Session(__CLASS__, $this->getHandler());
-
 		ini_set('session.use_cookies', 0);
 		ini_set('session.use_only_cookies', 0);
 		ini_set('session.use_trans_sid', 1);
 		ini_set('session.cache_limiter', ''); // prevent sending header
 
+		$this->sess = new Session('PSX_Session', $this->getHandler());
 		$this->sess->start();
 	}
 
 	protected function tearDown()
 	{
-		if($this->sess instanceof PSX_Session)
+		if($this->sess instanceof Session)
 		{
 			$this->sess->close();
 		}
@@ -58,22 +59,18 @@ class PSX_SessionTest extends PHPUnit_Framework_TestCase
 
 	protected function getHandler()
 	{
+		// use default session handler
 		return null;
 	}
 
 	public function testSession()
 	{
-		$session = new PSX_Input_Session();
+		$_SESSION['foo'] = 'bar';
 
-		$session->offsetSet('foo', 'bar');
+		$this->assertEquals(true, isset($_SESSION['foo']));
 
-		$this->assertEquals('bar', $session->foo);
-		$this->assertEquals(true, $session->offsetExists('foo'));
+		unset($_SESSION['foo']);
 
-		$session->offsetUnset('foo');
-
-		$this->assertEquals(false, $session->offsetExists('foo'));
-		$this->assertEquals(false, $session->foo);
+		$this->assertEquals(false, isset($_SESSION['foo']));
 	}
 }
-

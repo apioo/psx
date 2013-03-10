@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
 /**
  * PSX_UriTest
  *
@@ -32,7 +34,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_UriTest extends PHPUnit_Framework_TestCase
+class UriTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -44,7 +46,7 @@ class PSX_UriTest extends PHPUnit_Framework_TestCase
 
 	public function testUri()
 	{
-		$uri = new PSX_Uri('foo://example.com:8042/over/there?name=ferret#nose');
+		$uri = new Uri('foo://example.com:8042/over/there?name=ferret#nose');
 
 		$this->assertEquals('foo', $uri->getScheme());
 		$this->assertEquals('example.com:8042', $uri->getAuthority());
@@ -55,7 +57,7 @@ class PSX_UriTest extends PHPUnit_Framework_TestCase
 
 	public function testParseUri()
 	{
-		$r = PSX_Uri::parse('foo://example.com:8042/over/there?name=ferret#nose');
+		$r = Uri::parse('foo://example.com:8042/over/there?name=ferret#nose');
 		$e = array(
 			'scheme'    => 'foo',
 			'authority' => 'example.com:8042',
@@ -66,7 +68,7 @@ class PSX_UriTest extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals($e, $r);
 
-		$r = PSX_Uri::parse('ftp://ftp.is.co.za/rfc/rfc1808.txt');
+		$r = Uri::parse('ftp://ftp.is.co.za/rfc/rfc1808.txt');
 		$e = array(
 			'scheme'    => 'ftp',
 			'authority' => 'ftp.is.co.za',
@@ -77,7 +79,7 @@ class PSX_UriTest extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals($e, $r);
 
-		$r = PSX_Uri::parse('http://www.ietf.org/rfc/rfc2396.txt');
+		$r = Uri::parse('http://www.ietf.org/rfc/rfc2396.txt');
 		$e = array(
 			'scheme'    => 'http',
 			'authority' => 'www.ietf.org',
@@ -88,7 +90,7 @@ class PSX_UriTest extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals($e, $r);
 
-		$r = PSX_Uri::parse('ldap://[2001:db8::7]/c=GB?objectClass?one');
+		$r = Uri::parse('ldap://[2001:db8::7]/c=GB?objectClass?one');
 		$e = array(
 			'scheme'    => 'ldap',
 			'authority' => '[2001:db8::7]',
@@ -99,7 +101,7 @@ class PSX_UriTest extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals($e, $r);
 
-		$r = PSX_Uri::parse('mailto:John.Doe@example.com');
+		$r = Uri::parse('mailto:John.Doe@example.com');
 		$e = array(
 			'scheme'    => 'mailto',
 			'authority' => null,
@@ -110,7 +112,7 @@ class PSX_UriTest extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals($e, $r);
 
-		$r = PSX_Uri::parse('mailto://John.Doe@example.com');
+		$r = Uri::parse('mailto://John.Doe@example.com');
 		$e = array(
 			'scheme'    => 'mailto',
 			'authority' => 'John.Doe@example.com',
@@ -121,7 +123,7 @@ class PSX_UriTest extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals($e, $r);
 
-		$r = PSX_Uri::parse('news:comp.infosystems.www.servers.unix');
+		$r = Uri::parse('news:comp.infosystems.www.servers.unix');
 		$e = array(
 			'scheme'    => 'news',
 			'authority' => null,
@@ -132,7 +134,7 @@ class PSX_UriTest extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals($e, $r);
 
-		$r = PSX_Uri::parse('tel:+1-816-555-1212');
+		$r = Uri::parse('tel:+1-816-555-1212');
 		$e = array(
 			'scheme'    => 'tel',
 			'authority' => null,
@@ -143,7 +145,7 @@ class PSX_UriTest extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals($e, $r);
 
-		$r = PSX_Uri::parse('telnet://192.0.2.16:80/');
+		$r = Uri::parse('telnet://192.0.2.16:80/');
 		$e = array(
 			'scheme'    => 'telnet',
 			'authority' => '192.0.2.16:80',
@@ -154,7 +156,7 @@ class PSX_UriTest extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals($e, $r);
 
-		$r = PSX_Uri::parse('urn:oasis:names:specification:docbook:dtd:xml:4.1.2');
+		$r = Uri::parse('urn:oasis:names:specification:docbook:dtd:xml:4.1.2');
 		$e = array(
 			'scheme'    => 'urn',
 			'authority' => null,
@@ -168,7 +170,7 @@ class PSX_UriTest extends PHPUnit_Framework_TestCase
 
 	public function testRemoveDotSegments()
 	{
-		$r = PSX_Uri::removeDotSegments('/a/b/c/./../../g');
+		$r = Uri::removeDotSegments('/a/b/c/./../../g');
 		$e = '/a/g';
 
 		$this->assertEquals($e, $r);
@@ -176,10 +178,10 @@ class PSX_UriTest extends PHPUnit_Framework_TestCase
 
 	public function testPercentEncode()
 	{
-		$this->assertEquals('foobar', PSX_Uri::percentEncode('foobar'));
-		$this->assertEquals('http%3A%2F%2Fgoogle.de', PSX_Uri::percentEncode('http://google.de'));
-		$this->assertEquals('http%3A%2F%2Fgoogle.de', PSX_Uri::percentEncode('http%3A%2F%2Fgoogle.de'));
-		$this->assertEquals('http%253A%252F%252Fgoogle.de', PSX_Uri::percentEncode('http%3A%2F%2Fgoogle.de', false));
+		$this->assertEquals('foobar', Uri::percentEncode('foobar'));
+		$this->assertEquals('http%3A%2F%2Fgoogle.de', Uri::percentEncode('http://google.de'));
+		$this->assertEquals('http%3A%2F%2Fgoogle.de', Uri::percentEncode('http%3A%2F%2Fgoogle.de'));
+		$this->assertEquals('http%253A%252F%252Fgoogle.de', Uri::percentEncode('http%3A%2F%2Fgoogle.de', false));
 	}
 }
 

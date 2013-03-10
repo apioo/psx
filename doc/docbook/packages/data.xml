@@ -317,6 +317,14 @@
         </methodsynopsis>
         <methodsynopsis>
           <modifier>public</modifier>
+          <methodname>export</methodname>
+          <methodparam>
+            <type>mixed</type>
+            <parameter>result</parameter>
+          </methodparam>
+        </methodsynopsis>
+        <methodsynopsis>
+          <modifier>public</modifier>
           <methodname>hasFields</methodname>
           <void/>
         </methodsynopsis>
@@ -328,14 +336,6 @@
         <methodsynopsis>
           <modifier>public</modifier>
           <methodname>import</methodname>
-          <methodparam>
-            <type>mixed</type>
-            <parameter>result</parameter>
-          </methodparam>
-        </methodsynopsis>
-        <methodsynopsis>
-          <modifier>public</modifier>
-          <methodname>export</methodname>
           <methodparam>
             <type>mixed</type>
             <parameter>result</parameter>

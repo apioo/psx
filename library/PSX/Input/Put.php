@@ -23,6 +23,12 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Input;
+
+use PSX\Base;
+use PSX\Input;
+use PSX\Validate;
+
 /**
  * A class to get the value of an PUT request. Here a short example how to get
  * values. This is only useful if the PUT request has the format of an
@@ -44,7 +50,7 @@
  * @package    PSX_Input
  * @version    $Revision: 625 $
  */
-class PSX_Input_Put extends PSX_Input
+class Put extends Input
 {
 	/**
 	 * We look whether we have receive a real PUT request or a fake via
@@ -53,13 +59,13 @@ class PSX_Input_Put extends PSX_Input
 	 *
 	 * @return void
 	 */
-	public function __construct(PSX_Validate $validate = null)
+	public function __construct(Validate $validate = null)
 	{
 		$GLOBALS['_PUT'] = array();
 
-		if(PSX_Base::isOverride() === false)
+		if(Base::isOverride() === false)
 		{
-			$content = PSX_Base::getRawInput();
+			$content = Base::getRawInput();
 
 			if(!empty($content))
 			{

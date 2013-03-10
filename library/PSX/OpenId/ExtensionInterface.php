@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\OpenId;
+
 /**
  * PSX_OpenId_ExtensionInterface
  *
@@ -33,7 +35,7 @@
  * @package    PSX_OpenId
  * @version    $Revision: 480 $
  */
-interface PSX_OpenId_ExtensionInterface
+interface ExtensionInterface
 {
 	public function getParams();
 	public function getNs();

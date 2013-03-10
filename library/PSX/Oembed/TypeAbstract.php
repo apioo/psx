@@ -23,6 +23,14 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Oembed;
+
+use PSX\Data\RecordAbstract;
+use PSX\Data\ReaderInterface;
+use PSX\Data\ReaderResult;
+use PSX\Data\InvalidDataException;
+use PSX\Data\NotSupportedException;
+
 /**
  * PSX_Oembed_TypeAbstract
  *
@@ -33,7 +41,7 @@
  * @package    PSX_Oembed
  * @version    $Revision: 480 $
  */
-abstract class PSX_Oembed_TypeAbstract extends PSX_Data_RecordAbstract
+abstract class TypeAbstract extends RecordAbstract
 {
 	public $type;
 	public $version;
@@ -72,7 +80,7 @@ abstract class PSX_Oembed_TypeAbstract extends PSX_Data_RecordAbstract
 	{
 		if(!in_array($type, array('link', 'photo', 'rich', 'video')))
 		{
-			throw new PSX_Data_Exception('Invalid type');
+			throw new InvalidDataException('Invalid type');
 		}
 
 		$this->type = $type;
@@ -82,7 +90,7 @@ abstract class PSX_Oembed_TypeAbstract extends PSX_Data_RecordAbstract
 	{
 		if($version != '1.0')
 		{
-			throw new PSX_Data_Exception('Invalid version');
+			throw new InvalidDataException('Invalid version');
 		}
 
 		$this->version = $version;
@@ -133,22 +141,22 @@ abstract class PSX_Oembed_TypeAbstract extends PSX_Data_RecordAbstract
 		$this->thumbnailHeight = $thumbnailHeight;
 	}
 
-	public static function factory(PSX_Data_ReaderResult $result)
+	public static function factory(ReaderResult $result)
 	{
 		switch($result->getType())
 		{
-			case PSX_Data_ReaderInterface::JSON:
-			case PSX_Data_ReaderInterface::XML:
+			case ReaderInterface::JSON:
+			case ReaderInterface::XML:
 
 				$data  = $result->getData();
 				$type  = isset($data['type']) ? strtolower($data['type']) : null;
 
 				if(!in_array($type, array('link', 'photo', 'rich', 'video')))
 				{
-					throw new PSX_Oembed_Exception('Invalid type');
+					throw new InvalidDataException('Invalid type');
 				}
 
-				$class = 'PSX_Oembed_Type_' . ucfirst($type);
+				$class = '\PSX\Oembed\Type\\' . ucfirst($type);
 
 				if(class_exists($class))
 				{
@@ -159,14 +167,14 @@ abstract class PSX_Oembed_TypeAbstract extends PSX_Data_RecordAbstract
 				}
 				else
 				{
-					throw new PSX_Oembed_Exception('Type class not found');
+					throw new InvalidDataException('Type class not found');
 				}
 
 				break;
 
 			default:
 
-				throw new PSX_Oembed_Exception('Invalid reader');
+				throw new NotSupportedException('Invalid reader');
 				break;
 		}
 	}

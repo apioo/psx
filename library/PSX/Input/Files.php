@@ -23,6 +23,12 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Input;
+
+use PSX\Input;
+use PSX\Upload\File;
+use PSX\Validate;
+
 /**
  * A class to get the $_FILES variables from an file upload. Here a short
  * example how to upload a file.
@@ -49,16 +55,16 @@
  * @package    PSX_Input
  * @version    $Revision: 623 $
  */
-class PSX_Input_Files extends PSX_Input
+class Files extends Input
 {
-	public function __construct(PSX_Validate $validate = null)
+	public function __construct(Validate $validate = null)
 	{
 		parent::__construct($_FILES, $validate);
 	}
 
 	public function offsetGet($offset)
 	{
-		return isset($this->container[$offset]) ? new PSX_Upload_File($this->container[$offset]) : false;
+		return isset($this->container[$offset]) ? new File($this->container[$offset]) : false;
 	}
 }
 

@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
 /**
  * PSX_Url
  *
@@ -33,7 +35,7 @@
  * @package    PSX_Url
  * @version    $Revision: 480 $
  */
-class PSX_Url extends PSX_Uri
+class Url extends Uri
 {
 	protected $host;
 	protected $port;
@@ -103,7 +105,7 @@ class PSX_Url extends PSX_Uri
 		}
 		else
 		{
-			throw new PSX_Url_Exception('Scheme not supported');
+			throw new Exception('Scheme not supported');
 		}
 	}
 
@@ -122,7 +124,7 @@ class PSX_Url extends PSX_Uri
 		}
 		else
 		{
-			throw new PSX_Url_Exception('No host set');
+			throw new Exception('No host set');
 		}
 
 		if(!empty($this->port) && $this->port != 80 && $this->port != 443)
@@ -216,7 +218,7 @@ class PSX_Url extends PSX_Uri
 		// validate url format
 		if(filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED) === false)
 		{
-			throw new PSX_Url_Exception('Invalid url syntax');
+			throw new Exception('Invalid url syntax');
 		}
 
 		$matches = parse_url($url);

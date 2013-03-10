@@ -23,6 +23,11 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Input;
+
+use PSX\Input;
+use PSX\Validate;
+
 /**
  * A class to set get and delete cookies. Here a short example how to get
  * cookie values.
@@ -46,9 +51,9 @@
  * @package    PSX_Input
  * @version    $Revision: 621 $
  */
-class PSX_Input_Cookie extends PSX_Input
+class Cookie extends Input
 {
-	public function __construct(PSX_Validate $validate = null)
+	public function __construct(Validate $validate = null)
 	{
 		parent::__construct($_COOKIE, $validate);
 	}

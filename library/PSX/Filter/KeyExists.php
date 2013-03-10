@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Filter;
+
+use PSX\FilterAbstract;
+
 /**
  * PSX_Filter_KeyExists
  *
@@ -33,7 +37,7 @@
  * @package    PSX_Filter
  * @version    $Revision: 480 $
  */
-class PSX_Filter_KeyExists extends PSX_FilterAbstract
+class KeyExists extends FilterAbstract
 {
 	private $container;
 

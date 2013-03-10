@@ -22,6 +22,11 @@
  * along with amun. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Filter;
+
+use Exception;
+use PSX\FilterAbstract;
+
 /**
  * PSX_Filter_DateTime
  *
@@ -32,7 +37,7 @@
  * @package    PSX_Filter
  * @version    $Revision: 409 $
  */
-class PSX_Filter_DateTime extends PSX_FilterAbstract
+class DateTime extends FilterAbstract
 {
 	private $format;
 	private $timezone;
@@ -46,7 +51,7 @@ class PSX_Filter_DateTime extends PSX_FilterAbstract
 	{
 		try
 		{
-			$date = new PSX_DateTime($value);
+			$date = new \PSX\DateTime($value);
 
 			return $date->format($this->format);
 		}

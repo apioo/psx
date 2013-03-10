@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Filter;
+
 /**
  * PSX_Filter_KeyExistsTest
  *
@@ -32,7 +34,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_Filter_KeyExistsTest extends PHPUnit_Framework_TestCase
+class KeyExistsTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -44,7 +46,7 @@ class PSX_Filter_KeyExistsTest extends PHPUnit_Framework_TestCase
 
 	public function testKeyExists()
 	{
-		$keyExists = new PSX_Filter_KeyExists(range(0, 9));
+		$keyExists = new KeyExists(range(0, 9));
 
 		$this->assertEquals(true, $keyExists->apply('2'));
 		$this->assertEquals(true, $keyExists->apply(2));

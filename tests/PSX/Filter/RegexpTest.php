@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Filter;
+
 /**
  * PSX_Filter_RegexpTest
  *
@@ -32,7 +34,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_Filter_RegexpTest extends PHPUnit_Framework_TestCase
+class RegexpTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -44,7 +46,7 @@ class PSX_Filter_RegexpTest extends PHPUnit_Framework_TestCase
 
 	public function testRegexp()
 	{
-		$regexp = new PSX_Filter_Regexp('/php/');
+		$regexp = new Regexp('/php/');
 
 		$this->assertEquals(false, $regexp->apply('foo bar'));
 		$this->assertEquals(true, $regexp->apply('foo php bar'));

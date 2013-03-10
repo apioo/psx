@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
+use ErrorException;
+
 /**
  * This class provides an easy way to setup a psx enviroment. The class
  * registers the autoloader and set an error handler.
@@ -39,9 +43,9 @@
  * @package    PSX_Bootstrap
  * @version    $Revision: 627 $
  */
-class PSX_Bootstrap
+class Bootstrap
 {
-	public function __construct(PSX_Config $config)
+	public function __construct(Config $config)
 	{
 		// define benchmark
 		$GLOBALS['psx_benchmark'] = microtime(true);
@@ -69,10 +73,9 @@ class PSX_Bootstrap
 		// include core loader
 		require_once('PSX/Exception.php');
 		require_once('PSX/Loader.php');
-		require_once('PSX/Loader/Exception.php');
 
 		// autoload register
-		spl_autoload_register('PSX_Bootstrap::autoload');
+		spl_autoload_register('\PSX\Bootstrap::autoload');
 
 		// error handling
 		if($config['psx_debug'] === true)
@@ -85,7 +88,7 @@ class PSX_Bootstrap
 		}
 
 		error_reporting($errorReporting);
-		set_error_handler('PSX_Bootstrap::errorHandler');
+		set_error_handler('\PSX\Bootstrap::errorHandler');
 
 		// ini settings
 		ini_set('date.timezone', $config['psx_timezone']);

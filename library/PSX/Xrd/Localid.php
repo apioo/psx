@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Xrd;
+
+use SimpleXMLElement;
+
 /**
  * PSX_Xrd_Localid
  *
@@ -33,7 +37,7 @@
  * @package    PSX_Xrd
  * @version    $Revision: 480 $
  */
-class PSX_Xrd_Localid
+class Localid
 {
 	public $priority;
 

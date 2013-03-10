@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Oauth\Signature;
+
 /**
  * PSX_Oauth_Signature_RSASHA1Test
  *
@@ -32,7 +34,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_Oauth_Signature_RSASHA1Test extends PHPUnit_Framework_TestCase
+class RSASHA1Test extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{

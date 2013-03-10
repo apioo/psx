@@ -23,6 +23,12 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Data\Reader;
+
+use PSX\Data\ReaderInterface;
+use PSX\Data\ReaderResult;
+use PSX\Http\Message;
+
 /**
  * PSX_Data_Reader_Xml
  *
@@ -33,15 +39,15 @@
  * @package    PSX_Data
  * @version    $Revision: 480 $
  */
-class PSX_Data_Reader_Xml implements PSX_Data_ReaderInterface
+class Xml implements ReaderInterface
 {
 	public static $mime = 'application/xml';
 
-	public function read(PSX_Http_Message $message)
+	public function read(Message $message)
 	{
-		$xml = new PSX_Xml($message->getBody());
+		$xml = new \PSX\Xml($message->getBody());
 
-		return new PSX_Data_ReaderResult(PSX_Data_ReaderInterface::XML, $xml);
+		return new ReaderResult(ReaderInterface::XML, $xml);
 	}
 }
 

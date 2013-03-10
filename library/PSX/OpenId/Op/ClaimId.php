@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\OpenId\Op;
+
+use PSX\OpenId;
+
 /**
  * PSX_OpenId_Op_ClaimId
  *
@@ -33,7 +37,7 @@
  * @package    PSX_OpenId
  * @version    $Revision: 480 $
  */
-class PSX_OpenId_Op_ClaimId extends PSX_OpenId
+class ClaimId extends OpenId
 {
 	private $endpoint = 'http://claimid.com/%s';
 

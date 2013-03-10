@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Html\Filter;
+
 /**
  * PSX_Html_Filter_XssTest
  *
@@ -32,7 +34,7 @@
  * @category   tests
  * @version    $Revision: 560 $
  */
-class PSX_Html_Filter_XssTest extends PSX_Html_Filter_XssTestCase
+class XssTest extends XssTestCase
 {
 	protected function setUp()
 	{

@@ -23,6 +23,12 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Data\Reader;
+
+use PSX\Data\ReaderInterface;
+use PSX\Http\Message;
+use SimpleXMLElement;
+
 /**
  * PSX_Data_Reader_XmlTest
  *
@@ -32,7 +38,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_Data_Reader_XmlTest extends PHPUnit_Framework_TestCase
+class XmlTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -59,15 +65,15 @@ class PSX_Data_Reader_XmlTest extends PHPUnit_Framework_TestCase
 </result>
 INPUT;
 
-		$reader  = new PSX_Data_Reader_Xml();
-		$message = new PSX_Http_Message(array(), $body);
+		$reader  = new Xml();
+		$message = new Message(array(), $body);
 
 		$result = $reader->read($message);
 		$xml    = $result->getData();
 
-		$e = new PSX_Xml($body);
+		$e = new \PSX\Xml($body);
 
-		$this->assertEquals(PSX_Data_ReaderInterface::XML, $result->getType());
+		$this->assertEquals(ReaderInterface::XML, $result->getType());
 		$this->assertEquals(true, $xml instanceof SimpleXMLElement);
 		$this->assertEquals($e, $xml);
 	}

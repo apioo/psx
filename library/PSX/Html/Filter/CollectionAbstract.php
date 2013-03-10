@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Html\Filter;
+
+use ArrayObject;
+
 /**
  * PSX_Html_Filter_CollectionAbstract
  *
@@ -33,7 +37,7 @@
  * @package    PSX_Html
  * @version    $Revision: 560 $
  */
-abstract class PSX_Html_Filter_CollectionAbstract extends ArrayObject
+abstract class CollectionAbstract extends ArrayObject
 {
 	protected $container = array();
 
@@ -44,7 +48,7 @@ abstract class PSX_Html_Filter_CollectionAbstract extends ArrayObject
 		$this->loadElements();
 	}
 
-	public function add(PSX_Html_Filter_Element $element)
+	public function add(Element $element)
 	{
 		$this->offsetSet($element->getName(), $element);
 	}

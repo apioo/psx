@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Util;
+
 /**
  * Util class to generate time based, pseudo random or name based UUIDs
  *
@@ -34,7 +36,7 @@
  * @package    PSX_Util_Uuid
  * @version    $Revision: 602 $
  */
-class PSX_Util_Uuid
+class Uuid
 {
 	const V_1 = 0x1000;
 	const V_2 = 0x2000;

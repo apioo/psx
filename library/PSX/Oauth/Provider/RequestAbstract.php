@@ -23,6 +23,18 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Oauth\Provider;
+
+use PSX\Exception;
+use PSX\Module\ApiAbstract;
+use PSX\Oauth;
+use PSX\Oauth\Provider\Data\Request;
+use PSX\Oauth\Provider\Data\Response;
+use PSX\Oauth\Provider\Data\Consumer;
+use PSX\Data\ReaderInterface;
+use PSX\Data\WriterInterface;
+use PSX\Url;
+
 /**
  * PSX_Oauth_Provider_RequestAbstract
  *
@@ -33,12 +45,11 @@
  * @package    PSX_Oauth
  * @version    $Revision: 506 $
  */
-abstract class PSX_Oauth_Provider_RequestAbstract extends PSX_Module_ApiAbstract
+abstract class RequestAbstract extends ApiAbstract
 {
 	protected function handle()
 	{
-		$request = new PSX_Oauth_Provider_Data_Request();
-
+		$request = new Request();
 		$request->setRequiredFields(array(
 
 			'consumerKey',
@@ -51,45 +62,45 @@ abstract class PSX_Oauth_Provider_RequestAbstract extends PSX_Module_ApiAbstract
 
 		));
 
-		$request->import($this->getRequest(PSX_Data_ReaderInterface::RAW));
+		$request->import($this->getRequest(ReaderInterface::RAW));
 
 
 		$consumer = $this->getConsumer($request->getConsumerKey());
 
-		if(is_object($consumer) && $consumer instanceof PSX_Oauth_Provider_Data_Consumer)
+		if($consumer instanceof Consumer)
 		{
-			$signature = PSX_Oauth::getSignature($request->getSignatureMethod());
+			$signature = Oauth::getSignature($request->getSignatureMethod());
 
 			$method = $_SERVER['REQUEST_METHOD'];
-			$url    = new PSX_Url($this->base->getSelf());
+			$url    = new Url($this->base->getSelf());
 			$params = array_merge($request->getData(), $_GET);
 
-			$baseString = PSX_Oauth::buildBasestring($method, $url, $params);
+			$baseString = Oauth::buildBasestring($method, $url, $params);
 
 
 			if($signature->verify($baseString, $consumer->getConsumerSecret(), '', $request->getSignature()) !== false)
 			{
 				$response = $this->getResponse($consumer, $request);
 
-				if(is_object($response) && $response instanceof PSX_Oauth_Provider_Data_Response)
+				if($response instanceof Response)
 				{
 					$response->addParam('oauth_callback_confirmed', true);
 
-					$this->setResponse($response, PSX_Data_WriterInterface::FORM);
+					$this->setResponse($response, WriterInterface::FORM);
 				}
 				else
 				{
-					throw new PSX_Oauth_Provider_Exception('Invalid response');
+					throw new Exception('Invalid response');
 				}
 			}
 			else
 			{
-				throw new PSX_Oauth_Provider_Exception('Invalid signature');
+				throw new Exception('Invalid signature');
 			}
 		}
 		else
 		{
-			throw new PSX_Oauth_Provider_Exception('Invalid Consumer Key');
+			throw new Exception('Invalid Consumer Key');
 		}
 	}
 
@@ -108,6 +119,6 @@ abstract class PSX_Oauth_Provider_RequestAbstract extends PSX_Module_ApiAbstract
 	 * @param PSX_Oauth_Provider_Data_Request $request
 	 * @return PSX_Oauth_Provider_Data_Response
 	 */
-	abstract protected function getResponse(PSX_Oauth_Provider_Data_Consumer $consumer, PSX_Oauth_Provider_Data_Request $request);
+	abstract protected function getResponse(Consumer $consumer, Request $request);
 }
 

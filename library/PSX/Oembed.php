@@ -23,6 +23,14 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
+use PSX\Data\Reader;
+use PSX\Html\Parse;
+use PSX\Html\Parse\Element;
+use PSX\Http\GetRequest;
+use PSX\Oembed\TypeAbstract;
+
 /**
  * PSX_Oembed
  *
@@ -33,11 +41,11 @@
  * @package    PSX_Oembed
  * @version    $Revision: 663 $
  */
-class PSX_Oembed
+class Oembed
 {
 	private $http;
 
-	public function __construct(PSX_Http $http)
+	public function __construct(Http $http)
 	{
 		$this->http = $http;
 	}
@@ -50,16 +58,16 @@ class PSX_Oembed
 	 * @param PSX_Url $url
 	 * @return PSX_Oembed_TypeAbstract
 	 */
-	public function request(PSX_Url $url)
+	public function request(Url $url)
 	{
 		if(!$url->issetParam('url'))
 		{
-			throw new PSX_Oembed_Exception('Required parameter url missing');
+			throw new Exception('Required parameter url missing');
 		}
 
 		$format   = $url->addParam('format', 'json');
-		$request  = new PSX_Http_GetRequest($url, array(
-			'User-Agent' => __CLASS__ . ' ' . PSX_Base::VERSION
+		$request  = new GetRequest($url, array(
+			'User-Agent' => __CLASS__ . ' ' . Base::VERSION
 		));
 		$response = $this->http->request($request);
 
@@ -68,28 +76,26 @@ class PSX_Oembed
 			switch($url->getParam('format'))
 			{
 				case 'json':
-
-					$reader = new PSX_Data_Reader_Json();
+					$reader = new Reader\Json();
 					$result = $reader->read($response);
 					break;
 
 				case 'xml':
-
-					$reader = new PSX_Data_Reader_Xml();
+					$reader = new Reader\Xml();
 					$result = $reader->read($response);
 					break;
 
 				default:
 
-					throw new PSX_Oembed_Exception('Invalid format');
+					throw new Exception('Invalid format');
 					break;
 			}
 
-			return PSX_Oembed_TypeAbstract::factory($result);
+			return TypeAbstract::factory($result);
 		}
 		else
 		{
-			throw new PSX_Oembed_Exception('Invalid response code ' . $response->getCode());
+			throw new Exception('Invalid response code ' . $response->getCode());
 		}
 	}
 
@@ -100,38 +106,37 @@ class PSX_Oembed
 	 * @param PSX_Url $url
 	 * @return PSX_Oembed_TypeAbstract
 	 */
-	public function discover(PSX_Url $url)
+	public function discover(Url $url)
 	{
-		$request  = new PSX_Http_GetRequest($url, array(
-			'User-Agent' => __CLASS__ . ' ' . PSX_Base::VERSION
+		$request  = new GetRequest($url, array(
+			'User-Agent' => __CLASS__ . ' ' . Base::VERSION
 		));
 		$response = $this->http->request($request);
 
 		if($response->getCode() >= 200 && $response->getCode() < 300)
 		{
-			return $this->request(new PSX_Url(self::findTag($response->getBody())));
+			return $this->request(new Url(self::findTag($response->getBody())));
 		}
 		else
 		{
-			throw new PSX_Oembed_Exception('Invalid response code ' . $response->getCode());
+			throw new Exception('Invalid response code ' . $response->getCode());
 		}
 	}
 
 	public static function findTag($content)
 	{
-		$parse   = new PSX_Html_Parse($content);
-
-		$element = new PSX_Html_Parse_Element('link', array('rel' => 'alternate', 'type' => 'application/json+oembed'));
+		$parse   = new Parse($content);
+		$element = new Element('link', array('rel' => 'alternate', 'type' => 'application/json+oembed'));
 		$href    = $parse->fetchAttrFromHead($element, 'href');
 
 		if(empty($href))
 		{
-			$element = new PSX_Html_Parse_Element('link', array('rel' => 'alternate', 'type' => 'text/xml+oembed'));
+			$element = new Element('link', array('rel' => 'alternate', 'type' => 'text/xml+oembed'));
 			$href    = $parse->fetchAttrFromHead($element, 'href');
 
 			if(empty($href))
 			{
-				throw new PSX_Oembed_Exception('Could not discover oembed link');
+				throw new Exception('Could not discover oembed link');
 			}
 		}
 

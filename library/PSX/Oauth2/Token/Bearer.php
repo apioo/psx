@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Oauth2\Token;
+
+use PSX\Oauth2\TokenAbstract;
+
 /**
  * PSX_Oauth2_Token_Bearer
  *
@@ -34,7 +38,7 @@
  * @package    PSX_Oauth2
  * @version    $Revision: 494 $
  */
-class PSX_Oauth2_Token_Bearer extends PSX_Oauth2_TokenAbstract
+class Bearer extends TokenAbstract
 {
 	public function getHeader()
 	{

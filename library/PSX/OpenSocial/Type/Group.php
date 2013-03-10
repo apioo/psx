@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\OpenSocial\Type;
+
+use PSX\OpenSocial\TypeAbstract;
+
 /**
  * PSX_OpenSocial_Type_Group
  *
@@ -33,7 +37,7 @@
  * @package    PSX_OpenSocial
  * @version    $Revision: 593 $
  */
-class PSX_OpenSocial_Type_Group extends PSX_OpenSocial_TypeAbstract
+class Group extends TypeAbstract
 {
 	public $id;
 	public $title;

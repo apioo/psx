@@ -23,6 +23,12 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Data\Writer\Rss;
+
+use DateTime;
+use PSX\Data\Writer;
+use XMLWriter;
+
 /**
  * PSX_Data_Writer_Rss_Item
  *
@@ -33,14 +39,13 @@
  * @package    PSX_Data
  * @version    $Revision: 480 $
  */
-class PSX_Data_Writer_Rss_Item
+class Item
 {
 	public $writer;
 
 	public function __construct(XMLWriter $writer)
 	{
 		$this->writer = $writer;
-
 		$this->writer->startElement('item');
 	}
 
@@ -57,9 +62,7 @@ class PSX_Data_Writer_Rss_Item
 	public function setDescription($description)
 	{
 		$this->writer->startElement('description');
-
 		$this->writer->text($description);
-
 		$this->writer->endElement();
 	}
 
@@ -70,7 +73,7 @@ class PSX_Data_Writer_Rss_Item
 
 	public function addCategory($category, $domain = false)
 	{
-		PSX_Data_Writer_Rss::categoryConstruct($this->writer, $category, $domain);
+		Writer\Rss::categoryConstruct($this->writer, $category, $domain);
 	}
 
 	public function setComments($comment)
@@ -81,13 +84,9 @@ class PSX_Data_Writer_Rss_Item
 	public function setEnclosure($url, $length, $type)
 	{
 		$this->writer->startElement('enclosure');
-
 		$this->writer->writeAttribute('url', $url);
-
 		$this->writer->writeAttribute('length', intval($length));
-
 		$this->writer->writeAttribute('type', $type);
-
 		$this->writer->endElement();
 	}
 
@@ -101,7 +100,6 @@ class PSX_Data_Writer_Rss_Item
 		}
 
 		$this->writer->text($guid);
-
 		$this->writer->endElement();
 	}
 
@@ -113,11 +111,8 @@ class PSX_Data_Writer_Rss_Item
 	public function setSource($url, $name)
 	{
 		$this->writer->startElement('source');
-
 		$this->writer->writeAttribute('url', $url);
-
 		$this->writer->text($name);
-
 		$this->writer->endElement();
 	}
 

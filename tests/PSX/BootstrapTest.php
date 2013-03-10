@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
 /**
  * PSX_BootstrapTest
  *
@@ -32,7 +34,7 @@
  * @category   tests
  * @version    $Revision: 528 $
  */
-class PSX_BootstrapTest extends PHPUnit_Framework_TestCase
+class BootstrapTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{

@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Http\Handler;
+
+use PSX\HttpTest;
+
 /**
  * PSX_Http_Handler_CurlTest
  *
@@ -32,10 +36,10 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_Http_Handler_CurlTest extends PSX_HttpTest
+class CurlTest extends HttpTest
 {
 	protected function getHandler()
 	{
-		return new PSX_Http_Handler_Curl();
+		return new Curl();
 	}
 }

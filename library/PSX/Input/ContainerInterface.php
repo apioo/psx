@@ -23,6 +23,11 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Input;
+
+use ArrayAccess;
+use Countable;
+
 /**
  * PSX_Input_ContainerInterface
  *
@@ -33,7 +38,7 @@
  * @package    PSX_Input
  * @version    $Revision: 560 $
  */
-interface PSX_Input_ContainerInterface extends Countable, ArrayAccess
+interface ContainerInterface extends Countable, ArrayAccess
 {
 	/**
 	 * Returns the container array

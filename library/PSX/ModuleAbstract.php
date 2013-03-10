@@ -23,6 +23,11 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
+use PSX\Dependency;
+use PSX\Loader\Location;
+
 /**
  * PSX_ModuleAbstract
  *
@@ -33,7 +38,7 @@
  * @package    PSX_Module
  * @version    $Revision: 653 $
  */
-abstract class PSX_ModuleAbstract
+abstract class ModuleAbstract
 {
 	protected $location;
 	protected $base;
@@ -42,7 +47,7 @@ abstract class PSX_ModuleAbstract
 
 	protected $_container;
 
-	public function __construct(PSX_Loader_Location $location, PSX_Base $base, $basePath, array $uriFragments)
+	public function __construct(Location $location, Base $base, $basePath, array $uriFragments)
 	{
 		$this->location     = $location;
 		$this->base         = $base;
@@ -57,7 +62,7 @@ abstract class PSX_ModuleAbstract
 	 */
 	public function getDependencies()
 	{
-		return new PSX_Dependency_Default($this->base->getConfig());
+		return new Dependency\Request($this->base->getConfig());
 	}
 
 	public function _ini()
@@ -158,7 +163,7 @@ abstract class PSX_ModuleAbstract
 
 	protected function getMethod()
 	{
-		return PSX_Base::getRequestMethod();
+		return Base::getRequestMethod();
 	}
 
 	protected function getUrl()
@@ -168,12 +173,12 @@ abstract class PSX_ModuleAbstract
 
 	protected function getHeaders()
 	{
-		return PSX_Base::getRequestHeader();
+		return Base::getRequestHeader();
 	}
 
 	protected function getHeader($key)
 	{
-		return PSX_Base::getRequestHeader($key);
+		return Base::getRequestHeader($key);
 	}
 
 	protected function getParameter()

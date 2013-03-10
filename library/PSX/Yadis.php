@@ -23,6 +23,12 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
+use PSX\Http\GetRequest;
+use PSX\Html\Parse;
+use PSX\Html\Parse\Element;
+
 /**
  * PSX_Yadis
  *
@@ -33,12 +39,12 @@
  * @package    PSX_Yadis
  * @version    $Revision: 663 $
  */
-class PSX_Yadis
+class Yadis
 {
 	private $maxRecursion;
 	private $http;
 
-	public function __construct(PSX_Http $http, $recursion = 3)
+	public function __construct(Http $http, $recursion = 3)
 	{
 		$this->http = $http;
 
@@ -50,7 +56,7 @@ class PSX_Yadis
 		$this->maxRecursion = (integer) $recursion;
 	}
 
-	public function discover(PSX_Url $url, $raw = false, $deep = 0)
+	public function discover(Url $url, $raw = false, $deep = 0)
 	{
 		if($this->maxRecursion >= $deep)
 		{
@@ -60,7 +66,7 @@ class PSX_Yadis
 			// x-xrds-location
 			if(isset($header['x-xrds-location']))
 			{
-				$location = new PSX_Url($header['x-xrds-location']);
+				$location = new Url($header['x-xrds-location']);
 
 				if(strcasecmp($url, $location) != 0)
 				{
@@ -86,8 +92,8 @@ class PSX_Yadis
 			}
 
 			// search for <meta /> tag
-			$parse    = new PSX_Html_Parse($response->getBody());
-			$element  = new PSX_Html_Parse_Element('meta', array('http-equiv' => 'X-XRDS-Location'));
+			$parse    = new Parse($response->getBody());
+			$element  = new Element('meta', array('http-equiv' => 'X-XRDS-Location'));
 
 			$location = $parse->fetchAttrFromHead($element, 'content');
 
@@ -101,7 +107,7 @@ class PSX_Yadis
 		}
 		else
 		{
-			throw new PSX_Yadis_Exception('Max recurison level reached');
+			throw new Exception('Max recurison level reached');
 		}
 	}
 
@@ -116,22 +122,22 @@ class PSX_Yadis
 
 			if(isset($xml->XRD))
 			{
-				$xrd = new PSX_Xrd($xml->XRD);
+				$xrd = new Xrd($xml->XRD);
 
 				return $xrd;
 			}
 		}
 		else
 		{
-			throw new PSX_Yadis_Exception('We dont receive an valid XRDS document');
+			throw new Exception('We dont receive an valid XRDS document');
 		}
 	}
 
-	public function request(PSX_Url $url)
+	public function request(Url $url)
 	{
-		$request = new PSX_Http_GetRequest($url, array(
+		$request = new GetRequest($url, array(
 			'Accept'     => 'application/xrds+xml',
-			'User-Agent' => __CLASS__ . ' ' . PSX_Base::VERSION,
+			'User-Agent' => __CLASS__ . ' ' . Base::VERSION,
 		));
 		$request->setFollowLocation(true);
 
@@ -144,7 +150,7 @@ class PSX_Yadis
 		}
 		else
 		{
-			throw new PSX_Yadis_Exception($lastError);
+			throw new Exception($lastError);
 		}
 	}
 }

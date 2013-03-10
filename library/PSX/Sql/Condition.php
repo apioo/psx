@@ -23,6 +23,11 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Sql;
+
+use Countable;
+use UnexpectedValueException;
+
 /**
  * PSX_Sql_Condition
  *
@@ -33,7 +38,7 @@
  * @package    PSX_Sql
  * @version    $Revision: 582 $
  */
-class PSX_Sql_Condition implements Countable
+class Condition implements Countable
 {
 	const COLUMN      = 0x0;
 	const OPERATOR    = 0x1;
@@ -105,12 +110,12 @@ class PSX_Sql_Condition implements Countable
 	{
 		if(!in_array($operator, self::$a_op))
 		{
-			throw new PSX_Sql_Condition_Exception('Invalid arithmetic operator (allowed: ' . implode(', ', self::$a_op) . ')');
+			throw new UnexpectedValueException('Invalid arithmetic operator (allowed: ' . implode(', ', self::$a_op) . ')');
 		}
 
 		if(!in_array($conjunction, self::$l_op))
 		{
-			throw new PSX_Sql_Condition_Exception('Invalid logic operator (allowed: ' . implode(', ', self::$l_op) . ')');
+			throw new UnexpectedValueException('Invalid logic operator (allowed: ' . implode(', ', self::$l_op) . ')');
 		}
 
 		if($operator == 'IN')
@@ -147,7 +152,7 @@ class PSX_Sql_Condition implements Countable
 	 * @param PSX_Sql_Condition $condition
 	 * @return PSX_Sql_Condition
 	 */
-	public function merge(PSX_Sql_Condition $condition)
+	public function merge(Condition $condition)
 	{
 		$this->values = array_merge($this->values, $condition->toArray());
 

@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Observer;
+
 /**
  * PSX_Observer_ListenerInterface
  *
@@ -33,7 +35,7 @@
  * @package    PSX_Observer
  * @version    $Revision: 574 $
  */
-interface PSX_Observer_ListenerInterface
+interface ListenerInterface
 {
 	public function notify($args);
 }

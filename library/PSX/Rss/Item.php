@@ -23,6 +23,18 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Rss;
+
+use DOMDocument;
+use DOMElement;
+use PSX\DateTime;
+use PSX\Data\InvalidDataException;
+use PSX\Data\NotSupportedException;
+use PSX\Data\ReaderInterface;
+use PSX\Data\ReaderResult;
+use PSX\Data\RecordAbstract;
+use PSX\Rss;
+
 /**
  * PSX_Rss_Item
  *
@@ -33,7 +45,7 @@
  * @package    PSX_Rss
  * @version    $Revision: 480 $
  */
-class PSX_Rss_Item extends PSX_Data_RecordAbstract
+class Item extends RecordAbstract
 {
 	public $title;
 	public $link;
@@ -72,11 +84,11 @@ class PSX_Rss_Item extends PSX_Data_RecordAbstract
 		);
 	}
 
-	public function import(PSX_Data_ReaderResult $result)
+	public function import(ReaderResult $result)
 	{
 		switch($result->getType())
 		{
-			case PSX_Data_ReaderInterface::DOM:
+			case ReaderInterface::DOM:
 
 				$item = $result->getData();
 
@@ -94,7 +106,7 @@ class PSX_Rss_Item extends PSX_Data_RecordAbstract
 				}
 				else
 				{
-					throw new PSX_Data_Exception('Data must be an instance of DOMDocument or DOMElement');
+					throw new InvalidDataException('Data must be an instance of DOMDocument or DOMElement');
 				}
 
 				if(strcasecmp($root->localName, 'item') == 0)
@@ -103,18 +115,18 @@ class PSX_Rss_Item extends PSX_Data_RecordAbstract
 				}
 				else
 				{
-					throw new PSX_Data_Exception('No item element found');
+					throw new InvalidDataException('No item element found');
 				}
 
 				break;
 
 			default:
 
-				throw new PSX_Data_Exception('Reader is not supported');
+				throw new NotSupportedException('Reader is not supported');
 		}
 	}
 
-	private function parseItemElement(DomElement $item)
+	private function parseItemElement(DOMElement $item)
 	{
 		$this->element = $item;
 
@@ -147,7 +159,7 @@ class PSX_Rss_Item extends PSX_Data_RecordAbstract
 
 				case 'category':
 
-					array_push($this->$name, PSX_Rss::categoryConstruct($item));
+					array_push($this->$name, Rss::categoryConstruct($item));
 
 					break;
 

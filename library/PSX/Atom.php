@@ -23,6 +23,23 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
+use Countable;
+use DOMElement;
+use Iterator;
+use PSX\Atom\Entry;
+use PSX\Data\InvalidDataException;
+use PSX\Data\NotSupportedException;
+use PSX\Data\ReaderInterface;
+use PSX\Data\ReaderResult;
+use PSX\Data\Reader\Dom;
+use PSX\Data\RecordAbstract;
+use PSX\Data\Writer;
+use PSX\Html\Parse;
+use PSX\Html\Parse\Element;
+use PSX\Http\GetRequest;
+
 /**
  * This class is for converting an raw ATOM XML feed into an readable object.
  * Where you can access all values without parsing the XML. You can import an
@@ -58,7 +75,7 @@
  * @version    $Revision: 663 $
  * @see        http://www.ietf.org/rfc/rfc4287.txt
  */
-class PSX_Atom extends PSX_Data_RecordAbstract implements Iterator, Countable
+class Atom extends RecordAbstract implements Iterator, Countable
 {
 	public static $xmlns = 'http://www.w3.org/2005/Atom';
 
@@ -147,13 +164,13 @@ class PSX_Atom extends PSX_Data_RecordAbstract implements Iterator, Countable
 		return count($this->entry);
 	}
 
-	public function import(PSX_Data_ReaderResult $result)
+	public function import(ReaderResult $result)
 	{
 		$this->dom = $result->getData();
 
 		switch($result->getType())
 		{
-			case PSX_Data_ReaderInterface::DOM:
+			case ReaderInterface::DOM:
 
 				$elementList = $this->dom->getElementsByTagNameNS(self::$xmlns, 'feed');
 
@@ -163,18 +180,18 @@ class PSX_Atom extends PSX_Data_RecordAbstract implements Iterator, Countable
 				}
 				else
 				{
-					throw new PSX_Data_Exception('No feed element found');
+					throw new InvalidDataException('No feed element found');
 				}
 
 				break;
 
 			default:
 
-				throw new PSX_Data_Exception('Can only import result of DOM reader');
+				throw new NotSupportedException('Can only import result of DOM reader');
 		}
 	}
 
-	private function parseFeedElement(DomElement $feed)
+	private function parseFeedElement(DOMElement $feed)
 	{
 		$childNodes = $feed->childNodes;
 
@@ -236,8 +253,8 @@ class PSX_Atom extends PSX_Data_RecordAbstract implements Iterator, Countable
 
 				case 'entry':
 
-					$result = new PSX_Data_ReaderResult(PSX_Data_ReaderInterface::DOM, $item);
-					$entry  = new PSX_Atom_Entry();
+					$result = new ReaderResult(ReaderInterface::DOM, $item);
+					$entry  = new Entry();
 
 					$entry->import($result);
 
@@ -338,11 +355,11 @@ class PSX_Atom extends PSX_Data_RecordAbstract implements Iterator, Countable
 
 	public static function findTag($content)
 	{
-		$parse   = new PSX_Html_Parse($content);
-		$element = new PSX_Html_Parse_Element('link', array(
+		$parse   = new Parse($content);
+		$element = new Element('link', array(
 
 			'rel'  => 'alternate',
-			'type' => PSX_Data_Writer_Atom::$mime,
+			'type' => Writer\Atom::$mime,
 
 		));
 
@@ -353,12 +370,12 @@ class PSX_Atom extends PSX_Data_RecordAbstract implements Iterator, Countable
 
 	public static function request($url)
 	{
-		$http     = new PSX_Http();
-		$request  = new PSX_Http_GetRequest($url, array(
-			'User-Agent' => __CLASS__ . ' ' . PSX_Base::VERSION
+		$http     = new Http();
+		$request  = new GetRequest($url, array(
+			'User-Agent' => __CLASS__ . ' ' . Base::VERSION
 		));
 		$response = $http->request($request);
-		$reader   = new PSX_Data_Reader_Dom();
+		$reader   = new Dom();
 
 		$atom = new self();
 		$atom->import($reader->read($response));

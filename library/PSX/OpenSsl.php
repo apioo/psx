@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
+use PSX\OpenSsl\PKey;
+
 /**
  * PSX_OpenSsl
  *
@@ -33,7 +37,7 @@
  * @package    PSX_OpenSsl
  * @version    $Revision: 480 $
  */
-class PSX_OpenSsl
+class OpenSsl
 {
 	public static function decrypt($data, $method, $password, $rawInput = false, $iv = '')
 	{
@@ -41,19 +45,19 @@ class PSX_OpenSsl
 
 		if($ret === false)
 		{
-			throw new PSX_OpenSsl_Exception('Could not decrypt data');
+			throw new Exception('Could not decrypt data');
 		}
 
 		return $ret;
 	}
 
-	public static function dhComputeKey($pubKey, PSX_OpenSsl_PKey $dhKey)
+	public static function dhComputeKey($pubKey, PKey $dhKey)
 	{
 		$ret = openssl_dh_compute_key($pubKey, $dhKey->getResource());
 
 		if($ret === false)
 		{
-			throw new PSX_OpenSsl_Exception('Could not compute secret');
+			throw new Exception('Could not compute secret');
 		}
 
 		return $ret;
@@ -65,7 +69,7 @@ class PSX_OpenSsl
 
 		if($ret === false)
 		{
-			throw new PSX_OpenSsl_Exception('Could not compute digest');
+			throw new Exception('Could not compute digest');
 		}
 
 		return $ret;
@@ -77,7 +81,7 @@ class PSX_OpenSsl
 
 		if($ret === false)
 		{
-			throw new PSX_OpenSsl_Exception('Could not encrypt data');
+			throw new Exception('Could not encrypt data');
 		}
 
 		return $ret;

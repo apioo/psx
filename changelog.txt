@@ -1,4 +1,11 @@
 
+0.4.8
+* Improved html parser library
+* Added pingback library
+* Validate, parameter and body objects are now loaded in an DI container
+* Load dependencies in _ini() method instead of __construct()
+* Fixed markdown parser and sql select
+
 0.4.7
 * Added classes to generate an swagger api declaration and util annotation 
   parser

@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\OpenId\Extension;
+
+use PSX\OpenId\ExtensionInterface;
+
 /**
  * PSX_OpenId_Extension_Ax
  *
@@ -33,7 +37,7 @@
  * @package    PSX_OpenId
  * @version    $Revision: 480 $
  */
-class PSX_OpenId_Extension_Ax implements PSX_OpenId_ExtensionInterface
+class Ax implements ExtensionInterface
 {
 	const NS = 'http://openid.net/srv/ax/1.0';
 

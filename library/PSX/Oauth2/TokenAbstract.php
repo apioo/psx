@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Oauth2;
+
+use PSX\Oauth2\Token\Bearer;
+
 /**
  * PSX_Oauth2_TokenAbstract
  *
@@ -33,27 +37,25 @@
  * @package    PSX_Oauth2
  * @version    $Revision: 494 $
  */
-abstract class PSX_Oauth2_TokenAbstract
+abstract class TokenAbstract
 {
 	protected $accessToken;
 
-	public function __construct(PSX_Oauth2_AccessToken $accessToken)
+	public function __construct(AccessToken $accessToken)
 	{
 		$this->accessToken = $accessToken;
 	}
 
 	abstract public function getHeader();
 
-	public static function factory(PSX_Oauth2_AccessToken $accessToken)
+	public static function factory(AccessToken $accessToken)
 	{
 		switch($accessToken->getTokenType())
 		{
 			case 'bearer':
 			default:
-
-				return new PSX_Oauth2_Token_Bearer($accessToken);
+				return new Bearer($accessToken);
 				break;
-
 		}
 	}
 }

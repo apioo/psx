@@ -23,6 +23,11 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Session\Handler;
+
+use PSX\Sql AS SqlDriver;
+use PSX\SessionTest;
+
 /**
  * PSX_Session_Handler_SqlTest
  *
@@ -32,7 +37,7 @@
  * @category   tests
  * @version    $Revision: 596 $
  */
-class PSX_Session_Handler_SqlTest extends PSX_SessionTest
+class SqlTest extends SessionTest
 {
 	protected $table;
 	protected $sql;
@@ -43,8 +48,8 @@ class PSX_Session_Handler_SqlTest extends PSX_SessionTest
 		{
 			$config = getConfig();
 
-			$this->table = __CLASS__;
-			$this->sql   = new PSX_Sql($config['psx_sql_host'],
+			$this->table = 'PSX_Session_Handler_Sql';
+			$this->sql   = new SqlDriver($config['psx_sql_host'],
 				$config['psx_sql_user'],
 				$config['psx_sql_pw'],
 				$config['psx_sql_db']);
@@ -59,10 +64,9 @@ CREATE TABLE IF NOT EXISTS `{$this->table}` (
 SQL;
 
 			$this->sql->exec($sql);
-
 			$this->sql->exec('TRUNCATE TABLE ' . $this->table);
 		}
-		catch(Exception $e)
+		catch(\Exception $e)
 		{
 			$this->markTestSkipped($e->getMessage());
 		}
@@ -74,7 +78,7 @@ SQL;
 	{
 		parent::tearDown();
 
-		if($this->sql instanceof PSX_Sql)
+		if($this->sql instanceof SqlDriver)
 		{
 			$this->sql->exec('TRUNCATE TABLE ' . $this->table);
 		}
@@ -85,6 +89,6 @@ SQL;
 
 	protected function getHandler()
 	{
-		return new PSX_Session_Handler_Sql($this->sql, $this->table);
+		return new Sql($this->sql, $this->table);
 	}
 }

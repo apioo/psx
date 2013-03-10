@@ -23,6 +23,14 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Http\Handler;
+
+use PSX\Http;
+use PSX\Http\HandlerException;
+use PSX\Http\HandlerInterface;
+use PSX\Http\NotSupportedException;
+use PSX\Http\Request;
+
 /**
  * PSX_Http_Handler_Socks
  *
@@ -33,13 +41,13 @@
  * @package    PSX_Http
  * @version    $Revision: 579 $
  */
-class PSX_Http_Handler_Socks implements PSX_Http_HandlerInterface
+class Socks implements HandlerInterface
 {
 	private $lastError;
 	private $request;
 	private $response;
 
-	public function request(PSX_Http_Request $request, $count = 0)
+	public function request(Request $request, $count = 0)
 	{
 		$scheme = null;
 
@@ -61,7 +69,7 @@ class PSX_Http_Handler_Socks implements PSX_Http_HandlerInterface
 			}
 			else
 			{
-				throw new PSX_Http_Exception('https is not supported by the system');
+				throw new NotSupportedException('https is not supported by the system');
 			}
 		}
 
@@ -97,7 +105,7 @@ class PSX_Http_Handler_Socks implements PSX_Http_HandlerInterface
 			// writer request
 			if(!fwrite($handle, $request->toString()))
 			{
-				throw new PSX_Http_Exception('Couldnt write to stream');
+				throw new HandlerException('Couldnt write to stream');
 			}
 
 			fflush($handle);
@@ -113,8 +121,7 @@ class PSX_Http_Handler_Socks implements PSX_Http_HandlerInterface
 			do
 			{
 				$header = trim(fgets($handle));
-
-				$pos = strpos($header, ':');
+				$pos    = strpos($header, ':');
 
 				if($pos !== false)
 				{
@@ -124,11 +131,11 @@ class PSX_Http_Handler_Socks implements PSX_Http_HandlerInterface
 					$headers[strtolower($key)] = $value;
 				}
 
-				$response.= $header . PSX_Http::$newLine;
+				$response.= $header . Http::$newLine;
 			}
 			while(!empty($header));
 
-			$response.= PSX_Http::$newLine;
+			$response.= Http::$newLine;
 
 
 			// read body

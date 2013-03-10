@@ -23,6 +23,13 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Http\Handler;
+
+use PSX\Http;
+use PSX\Http\HandlerInterface;
+use PSX\Http\RedirectException;
+use PSX\Http\Request;
+
 /**
  * The logic of following redirects is handeled in the PSX_Http class to avoid
  * that handlers have to deal with this. But because curl has an follow location
@@ -39,7 +46,7 @@
  * @package    PSX_Http
  * @version    $Revision: 579 $
  */
-class PSX_Http_Handler_Curl implements PSX_Http_HandlerInterface
+class Curl implements HandlerInterface
 {
 	private $lastError;
 	private $request;
@@ -70,7 +77,7 @@ class PSX_Http_Handler_Curl implements PSX_Http_HandlerInterface
 		$this->caInfo = $path;
 	}
 
-	public function request(PSX_Http_Request $request, $count = 0)
+	public function request(Request $request, $count = 0)
 	{
 		$handle = curl_init($request->getUrl()->__toString());
 
@@ -168,18 +175,18 @@ class PSX_Http_Handler_Curl implements PSX_Http_HandlerInterface
 			if($response === false)
 			{
 				// if the response is false max redirection is reached
-				throw new PSX_Http_Exception('Max redirection reached');
+				throw new RedirectException('Max redirection reached');
 			}
 			else
 			{
 				// if follow location is true all headers from each request are
 				// included in the response but we only want return the last
 				// headers
-				$pos = strrpos($response, PSX_Http::$newLine . 'HTTP/');
+				$pos = strrpos($response, Http::$newLine . 'HTTP/');
 
 				if($pos !== false)
 				{
-					$response = substr($response, $pos + strlen(PSX_Http::$newLine));
+					$response = substr($response, $pos + strlen(Http::$newLine));
 				}
 			}
 		}

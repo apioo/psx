@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Util;
+
 /**
  * PSX_Util_NumerativeTest
  *
@@ -32,7 +34,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_Util_NumerativeTest extends PHPUnit_Framework_TestCase
+class NumerativeTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -44,29 +46,29 @@ class PSX_Util_NumerativeTest extends PHPUnit_Framework_TestCase
 
 	public function testNumerativeBin()
 	{
-		$this->assertEquals(20, PSX_Util_Numerative::bin2oct(10000));
-		$this->assertEquals(16, PSX_Util_Numerative::bin2dez(10000));
-		$this->assertEquals(10, PSX_Util_Numerative::bin2hex(10000));
+		$this->assertEquals(20, Numerative::bin2oct(10000));
+		$this->assertEquals(16, Numerative::bin2dez(10000));
+		$this->assertEquals(10, Numerative::bin2hex(10000));
 	}
 
 	public function testNumerativeOct()
 	{
-		$this->assertEquals(10000, PSX_Util_Numerative::oct2bin(20));
-		$this->assertEquals(16, PSX_Util_Numerative::oct2dez(20));
-		$this->assertEquals(10, PSX_Util_Numerative::oct2hex(20));
+		$this->assertEquals(10000, Numerative::oct2bin(20));
+		$this->assertEquals(16, Numerative::oct2dez(20));
+		$this->assertEquals(10, Numerative::oct2hex(20));
 	}
 
 	public function testNumerativeDez()
 	{
-		$this->assertEquals(10000, PSX_Util_Numerative::dez2bin(16));
-		$this->assertEquals(20, PSX_Util_Numerative::dez2oct(16));
-		$this->assertEquals(10, PSX_Util_Numerative::dez2hex(16));
+		$this->assertEquals(10000, Numerative::dez2bin(16));
+		$this->assertEquals(20, Numerative::dez2oct(16));
+		$this->assertEquals(10, Numerative::dez2hex(16));
 	}
 
 	public function testNumerativeHex()
 	{
-		$this->assertEquals(10000, PSX_Util_Numerative::hex2bin(10));
-		$this->assertEquals(20, PSX_Util_Numerative::hex2oct(10));
-		$this->assertEquals(16, PSX_Util_Numerative::hex2dez(10));
+		$this->assertEquals(10000, Numerative::hex2bin(10));
+		$this->assertEquals(20, Numerative::hex2oct(10));
+		$this->assertEquals(16, Numerative::hex2dez(10));
 	}
 }

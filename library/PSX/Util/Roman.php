@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Util;
+
+use UnexpectedValueException;
+
 /**
  * PSX_Util_Roman
  *
@@ -33,7 +37,7 @@
  * @package    PSX_Util
  * @version    $Revision: 480 $
  */
-class PSX_Util_Roman
+class Roman
 {
 	public static $rm = array(
 
@@ -61,7 +65,7 @@ class PSX_Util_Roman
 
 		if($decimal <= 0)
 		{
-			throw new PSX_Util_Roman_Exception('Number must be an integer greater zero');
+			throw new UnexpectedValueException('Number must be an integer greater zero');
 		}
 		else
 		{
@@ -113,7 +117,7 @@ class PSX_Util_Roman
 
 			if(!array_key_exists($v, $rm))
 			{
-				throw new PSX_Util_Roman_Exception('Invalid roman number');
+				throw new UnexpectedValueException('Invalid roman number');
 			}
 			else
 			{

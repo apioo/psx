@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\OpenSocial;
+
+use PSX\Data\RecordAbstract;
+
 /**
  * PSX_OpenSocial_TypeAbstract
  *
@@ -33,6 +37,6 @@
  * @package    PSX_OpenSocial
  * @version    $Revision: 480 $
  */
-abstract class PSX_OpenSocial_TypeAbstract extends PSX_Data_RecordAbstract
+abstract class TypeAbstract extends RecordAbstract
 {
 }

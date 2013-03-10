@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Util;
+
+use ArrayIterator;
+
 /**
  * This parser implements a subset of the markdown syntax. It is optimized for
  * speed and uses almost no regular expressions for parsing.
@@ -37,7 +41,7 @@
  * @package    PSX_Util
  * @version    $Revision: 649 $
  */
-class PSX_Util_Markdown extends ArrayIterator
+class Markdown extends ArrayIterator
 {
 	const NONE           = 0x0;
 	const PARAGRAPH      = 0x1;
@@ -303,7 +307,7 @@ class PSX_Util_Markdown extends ArrayIterator
 			$content  = self::normalize($content);
 			$lines    = explode("\n", $content);
 
-			$markdown = new PSX_Util_Markdown($lines);
+			$markdown = new self($lines);
 
 			return $markdown->parse();
 		}

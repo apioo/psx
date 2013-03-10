@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Data;
+
+use PSX\Data\Reader;
+
 /**
  * PSX_Data_ReaderFactory
  *
@@ -33,7 +37,7 @@
  * @package    PSX_Data
  * @version    $Revision: 512 $
  */
-class PSX_Data_ReaderFactory
+class ReaderFactory
 {
 	public static function getReaderTypeByContentType($contentType)
 	{
@@ -41,24 +45,24 @@ class PSX_Data_ReaderFactory
 
 		switch(true)
 		{
-			case (stripos($contentType, PSX_Data_Reader_Form::$mime) !== false):
+			case (stripos($contentType, Reader\Form::$mime) !== false):
 
-				$readerType = PSX_Data_ReaderInterface::FORM;
+				$readerType = ReaderInterface::FORM;
 				break;
 
-			case (stripos($contentType, PSX_Data_Reader_Json::$mime) !== false):
+			case (stripos($contentType, Reader\Json::$mime) !== false):
 
-				$readerType = PSX_Data_ReaderInterface::JSON;
+				$readerType = ReaderInterface::JSON;
 				break;
 
-			case (stripos($contentType, PSX_Data_Reader_Multipart::$mime) !== false):
+			case (stripos($contentType, Reader\Multipart::$mime) !== false):
 
-				$readerType = PSX_Data_ReaderInterface::MULTIPART;
+				$readerType = ReaderInterface::MULTIPART;
 				break;
 
-			case (stripos($contentType, PSX_Data_Reader_Xml::$mime) !== false):
+			case (stripos($contentType, Reader\Xml::$mime) !== false):
 
-				$readerType = PSX_Data_ReaderInterface::XML;
+				$readerType = ReaderInterface::XML;
 				break;
 		}
 
@@ -78,39 +82,39 @@ class PSX_Data_ReaderFactory
 
 		switch($readerType)
 		{
-			case PSX_Data_ReaderInterface::DOM:
+			case ReaderInterface::DOM:
 
-				$reader = new PSX_Data_Reader_Dom();
+				$reader = new Reader\Dom();
 				break;
 
-			case PSX_Data_ReaderInterface::FORM:
+			case ReaderInterface::FORM:
 
-				$reader = new PSX_Data_Reader_Form();
+				$reader = new Reader\Form();
 				break;
 
-			case PSX_Data_ReaderInterface::GPC:
+			case ReaderInterface::GPC:
 
-				$reader = new PSX_Data_Reader_Gpc();
+				$reader = new Reader\Gpc();
 				break;
 
-			case PSX_Data_ReaderInterface::JSON:
+			case ReaderInterface::JSON:
 
-				$reader = new PSX_Data_Reader_Json();
+				$reader = new Reader\Json();
 				break;
 
-			case PSX_Data_ReaderInterface::MULTIPART:
+			case ReaderInterface::MULTIPART:
 
-				$reader = new PSX_Data_Reader_Multipart();
+				$reader = new Reader\Multipart();
 				break;
 
-			case PSX_Data_ReaderInterface::RAW:
+			case ReaderInterface::RAW:
 
-				$reader = new PSX_Data_Reader_Raw();
+				$reader = new Reader\Raw();
 				break;
 
-			case PSX_Data_ReaderInterface::XML:
+			case ReaderInterface::XML:
 
-				$reader = new PSX_Data_Reader_Xml();
+				$reader = new Reader\Xml();
 				break;
 		}
 

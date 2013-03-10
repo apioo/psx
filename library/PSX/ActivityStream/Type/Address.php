@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\ActivityStream\Type;
+
+use PSX\ActivityStream\TypeAbstract;
+
 /**
  * PSX_ActivityStream_Type_Address
  *
@@ -33,7 +37,7 @@
  * @package    PSX_ActivityStream
  * @version    $Revision: 480 $
  */
-class PSX_ActivityStream_Type_Address extends PSX_ActivityStream_TypeAbstract
+class Address extends TypeAbstract
 {
 	public $formatted;
 	public $streetAddress;

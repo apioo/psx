@@ -23,6 +23,11 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
+use stdClass;
+use PSX\Sql\Condition;
+
 /**
  * PSX_SqlTest
  *
@@ -32,7 +37,7 @@
  * @category   tests
  * @version    $Revision: 596 $
  */
-class PSX_SqlTest extends PHPUnit_Framework_TestCase
+class SqlTest extends \PHPUnit_Framework_TestCase
 {
 	protected $sql;
 	protected $table;
@@ -43,12 +48,11 @@ class PSX_SqlTest extends PHPUnit_Framework_TestCase
 		{
 			$config = getConfig();
 
-			$this->table = __CLASS__;
-			$this->sql   = new PSX_Sql($config['psx_sql_host'],
+			$this->table = 'PSX_Sql';
+			$this->sql   = new Sql($config['psx_sql_host'],
 				$config['psx_sql_user'],
 				$config['psx_sql_pw'],
-				$config['psx_sql_db'],
-				$this->getDriver());
+				$config['psx_sql_db']);
 
 		$sql = <<<SQL
 CREATE TABLE IF NOT EXISTS `{$this->table}` (
@@ -62,7 +66,7 @@ SQL;
 
 			$this->resetTable();
 		}
-		catch(Exception $e)
+		catch(\Exception $e)
 		{
 			$this->markTestSkipped($e->getMessage());
 		}
@@ -70,25 +74,13 @@ SQL;
 
 	protected function tearDown()
 	{
-		if($this->sql instanceof PSX_Sql)
+		if($this->sql instanceof Sql)
 		{
 			$this->sql->exec('TRUNCATE TABLE ' . $this->table);
 		}
 
 		unset($this->table);
 		unset($this->sql);
-	}
-
-	/**
-	 * getDriver
-	 *
-	 * will be overwritte by each driver test
-	 *
-	 * @return PSX_Sql_DriverInterface
-	 */
-	protected function getDriver()
-	{
-		return new PSX_Sql_Driver_Pdo();
 	}
 
 	public function testAssoc()
@@ -116,9 +108,9 @@ SQL;
 		$this->assertEquals($e, $r);
 	}
 
-	public function testObject()
+	public function testAssocObject()
 	{
-		$r = $this->sql->object('SELECT id, title FROM ' . $this->table . ' WHERE id < ? ORDER BY id ASC', array(3));
+		$r = $this->sql->assoc('SELECT id, title FROM ' . $this->table . ' WHERE id < ? ORDER BY id ASC', array(3), 'stdClass');
 
 		$row_1 = new stdClass();
 		$row_1->id = 1;
@@ -133,11 +125,14 @@ SQL;
 		$this->assertEquals($e, $r);
 	}
 
-	public function testQuery()
+	public function testExecute()
 	{
-		$r = $this->sql->query('SELECT id, title FROM ' . $this->table . ' WHERE id = ?', array(1));
+		$r = $this->sql->execute('DELETE FROM ' . $this->table);
 
-		$this->assertEquals(1, $r);
+		$this->assertEquals(true, $r);
+
+
+		$this->resetTable();
 	}
 
 	public function testGetAll()
@@ -184,35 +179,25 @@ SQL;
 		$this->assertEquals(false, $r);
 	}
 
-	public function testExec()
-	{
-		$r = $this->sql->exec('DELETE FROM ' . $this->table);
-
-		$this->assertEquals(true, $r);
-
-
-		$this->resetTable();
-	}
-
 	public function testSelect()
 	{
-		$r = $this->sql->select($this->table, array('id', 'title'), new PSX_Sql_Condition(array('id', '=', 1)), PSX_Sql::SELECT_ALL, 'id', PSX_Sql::SORT_ASC);
+		$r = $this->sql->select($this->table, array('id', 'title'), new Condition(array('id', '=', 1)), Sql::SELECT_ALL, 'id', Sql::SORT_ASC);
 
 		$this->assertEquals(array(array('id' => 1, 'title' => 'foo')), $r);
 
-		$r = $this->sql->select($this->table, array('id', 'title'), null, PSX_Sql::SELECT_ROW, 'id', PSX_Sql::SORT_ASC);
+		$r = $this->sql->select($this->table, array('id', 'title'), null, Sql::SELECT_ROW, 'id', Sql::SORT_ASC);
 
 		$this->assertEquals(array('id' => 1, 'title' => 'foo'), $r);
 
-		$r = $this->sql->select($this->table, array('title'), null, PSX_Sql::SELECT_COL, 'id', PSX_Sql::SORT_ASC);
+		$r = $this->sql->select($this->table, array('title'), null, Sql::SELECT_COL, 'id', Sql::SORT_ASC);
 
 		$this->assertEquals(array('foo', 'bar', 'test'), $r);
 
-		$r = $this->sql->select($this->table, array('id'), null, PSX_Sql::SELECT_FIELD, 'id', PSX_Sql::SORT_ASC);
+		$r = $this->sql->select($this->table, array('id'), null, Sql::SELECT_FIELD, 'id', Sql::SORT_ASC);
 
 		$this->assertEquals('1', $r);
 
-		$r = $this->sql->select($this->table, array('id'), null, PSX_Sql::SELECT_FIELD, 'id', PSX_Sql::SORT_DESC);
+		$r = $this->sql->select($this->table, array('id'), null, Sql::SELECT_FIELD, 'id', Sql::SORT_DESC);
 
 		$this->assertEquals('3', $r);
 	}
@@ -267,7 +252,7 @@ SQL;
 
 	public function testUpdate()
 	{
-		$con = new PSX_Sql_Condition(array('id', '=', 3));
+		$con = new Condition(array('id', '=', 3));
 
 		$this->sql->update($this->table, array(
 
@@ -275,7 +260,7 @@ SQL;
 
 		), $con);
 
-		$r = $this->sql->select($this->table, array('title'), $con, PSX_Sql::SELECT_FIELD);
+		$r = $this->sql->select($this->table, array('title'), $con, Sql::SELECT_FIELD);
 
 		$this->assertEquals('yoda', $r);
 
@@ -285,7 +270,7 @@ SQL;
 
 	public function testReplace()
 	{
-		$con = new PSX_Sql_Condition(array('id', '=', 3));
+		$con = new Condition(array('id', '=', 3));
 
 		$this->sql->replace($this->table, array(
 
@@ -294,7 +279,7 @@ SQL;
 
 		));
 
-		$r = $this->sql->select($this->table, array('title'), $con, PSX_Sql::SELECT_FIELD);
+		$r = $this->sql->select($this->table, array('title'), $con, Sql::SELECT_FIELD);
 
 		$this->assertEquals('yoda', $r);
 
@@ -306,7 +291,7 @@ SQL;
 
 		));
 
-		$r = $this->sql->select($this->table, array('title'), $con, PSX_Sql::SELECT_FIELD);
+		$r = $this->sql->select($this->table, array('title'), $con, Sql::SELECT_FIELD);
 
 		$this->assertEquals('wusahhh', $r);
 
@@ -316,7 +301,7 @@ SQL;
 
 	public function testDelete()
 	{
-		$this->sql->delete($this->table, new PSX_Sql_Condition(array('id', '=', 2)));
+		$this->sql->delete($this->table, new Condition(array('id', '=', 2)));
 
 		$r = $this->sql->assoc('SELECT id, title FROM ' . $this->table . ' ORDER BY id ASC');
 

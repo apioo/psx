@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Filter;
+
 /**
  * PSX_Filter_AlphaTest
  *
@@ -32,7 +34,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_Filter_AlphaTest extends PHPUnit_Framework_TestCase
+class AlphaTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -44,7 +46,7 @@ class PSX_Filter_AlphaTest extends PHPUnit_Framework_TestCase
 
 	public function testAlpha()
 	{
-		$alpha = new PSX_Filter_Alpha();
+		$alpha = new Alpha();
 
 		$this->assertEquals(true, $alpha->apply('foo'));
 		$this->assertEquals(false, $alpha->apply('foo123'));

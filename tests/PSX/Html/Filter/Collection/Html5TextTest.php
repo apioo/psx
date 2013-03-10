@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Html\Filter\Collection;
+
+use PSX\Html\Filter;
+
 /**
  * PSX_Html_Filter_Collection_Html5InlineTest
  *
@@ -32,7 +36,7 @@
  * @category   tests
  * @version    $Revision: 544 $
  */
-class PSX_Html_Filter_Collection_Html5TextTest extends PHPUnit_Framework_TestCase
+class Html5TextTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -60,7 +64,7 @@ HTML;
 </ul>
 HTML;
 
-		$filter = new PSX_Html_Filter($html, new PSX_Html_Filter_Collection_Html5Text());
+		$filter = new Filter($html, new Html5Text());
 
 		$this->assertEquals($expected, $filter->filter());
 	}
@@ -81,7 +85,7 @@ HTML;
 
 HTML;
 
-		$filter = new PSX_Html_Filter($html, new PSX_Html_Filter_Collection_Html5Text());
+		$filter = new Filter($html, new Html5Text());
 
 		$this->assertEquals($expected, $filter->filter());
 	}

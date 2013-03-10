@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Util;
+
 /**
  * PSX_Util_Conversion
  *
@@ -33,7 +35,7 @@
  * @package    PSX_Util
  * @version    $Revision: 480 $
  */
-class PSX_Util_Conversion
+class Conversion
 {
 	public static $bi = array(
 

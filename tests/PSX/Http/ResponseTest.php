@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Http;
+
+use PSX\Http;
+
 /**
  * PSX_Http_ResponseTest
  *
@@ -32,7 +36,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_Http_ResponseTest extends PHPUnit_Framework_TestCase
+class ResponseTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -44,12 +48,12 @@ class PSX_Http_ResponseTest extends PHPUnit_Framework_TestCase
 
 	public function testResponse()
 	{
-		$httpResponse = 'HTTP/1.1 200 OK' . PSX_Http::$newLine;
-		$httpResponse.= 'Content-type: text/html; charset=UTF-8' . PSX_Http::$newLine;
-		$httpResponse.= PSX_Http::$newLine;
+		$httpResponse = 'HTTP/1.1 200 OK' . Http::$newLine;
+		$httpResponse.= 'Content-type: text/html; charset=UTF-8' . Http::$newLine;
+		$httpResponse.= Http::$newLine;
 		$httpResponse.= 'foobar';
 
-		$response = PSX_Http_Response::convert($httpResponse);
+		$response = Response::convert($httpResponse);
 
 		$this->assertEquals('HTTP/1.1', $response->getScheme());
 		$this->assertEquals(200, $response->getCode());

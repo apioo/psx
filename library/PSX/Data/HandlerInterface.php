@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Data;
+
 /**
  * PSX_Data_HandlerInterface
  *
@@ -33,27 +35,27 @@
  * @package    PSX_Data
  * @version    $Revision: 480 $
  */
-interface PSX_Data_HandlerInterface
+interface HandlerInterface
 {
 	/**
 	 * Create the record
 	 *
 	 * @return void
 	 */
-	public function create(PSX_Data_RecordInterface $record);
+	public function create(RecordInterface $record);
 
 	/**
 	 * Update the record
 	 *
 	 * @return void
 	 */
-	public function update(PSX_Data_RecordInterface $record);
+	public function update(RecordInterface $record);
 
 	/**
 	 * Delete the record
 	 *
 	 * @return void
 	 */
-	public function delete(PSX_Data_RecordInterface $record);
+	public function delete(RecordInterface $record);
 }
 

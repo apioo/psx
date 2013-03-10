@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Http;
+
+use PSX\Http;
+
 /**
  * PSX_Http_Response
  *
@@ -33,7 +37,7 @@
  * @package    PSX_Http
  * @version    $Revision: 579 $
  */
-class PSX_Http_Response extends PSX_Http_Message
+class Response extends Message
 {
 	private $scheme;
 	private $code;
@@ -156,7 +160,7 @@ class PSX_Http_Response extends PSX_Http_Message
 	 */
 	public static function splitResponse($response)
 	{
-		$pos    = strpos($response, PSX_Http::$newLine . PSX_Http::$newLine);
+		$pos    = strpos($response, Http::$newLine . Http::$newLine);
 		$header = substr($response, 0, $pos);
 		$body   = trim(substr($response, $pos + 1));
 
@@ -177,7 +181,7 @@ class PSX_Http_Response extends PSX_Http_Message
 	 */
 	public static function headerToArray($header)
 	{
-		$lines  = explode(PSX_Http::$newLine, $header);
+		$lines  = explode(Http::$newLine, $header);
 		$header = array();
 
 		foreach($lines as $line)
@@ -226,18 +230,18 @@ class PSX_Http_Response extends PSX_Http_Message
 			}
 			else
 			{
-				throw new PSX_Http_Exception('Invalid status line format');
+				throw new ParseException('Invalid status line format');
 			}
 		}
 		else
 		{
-			throw new PSX_Http_Exception('Couldnt find status line');
+			throw new ParseException('Couldnt find status line');
 		}
 	}
 
 	private static function getStatusLine($response)
 	{
-		$pos = strpos($response, PSX_Http::$newLine);
+		$pos = strpos($response, Http::$newLine);
 
 		if($pos !== false)
 		{

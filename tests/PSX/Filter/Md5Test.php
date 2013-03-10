@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Filter;
+
 /**
  * PSX_Filter_Md5Test
  *
@@ -32,7 +34,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_Filter_Md5Test extends PHPUnit_Framework_TestCase
+class Md5Test extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -44,7 +46,7 @@ class PSX_Filter_Md5Test extends PHPUnit_Framework_TestCase
 
 	public function testMd5()
 	{
-		$md5 = new PSX_Filter_Md5();
+		$md5 = new Md5();
 
 		$this->assertEquals('d41d8cd98f00b204e9800998ecf8427e', $md5->apply(''));
 		$this->assertEquals('7e716d0e702df0505fc72e2b89467910', $md5->apply('Frank jagt im komplett verwahrlosten Taxi quer durch Bayern'));

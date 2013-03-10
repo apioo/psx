@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
+use ArrayObject;
+
 /**
  * This class offers methods to sanitize values that came from untrusted sources
  * The apply methods is the heart of this class here an example how you can
@@ -83,7 +87,7 @@
  * @package    PSX_Validate
  * @version    $Revision: 603 $
  */
-class PSX_Validate extends ArrayObject
+class Validate extends ArrayObject
 {
 	private $error;
 
@@ -121,30 +125,22 @@ class PSX_Validate extends ArrayObject
 		{
 			case 'int':
 			case 'integer':
-
 				$value = (integer) $value;
-
 				break;
 
 			case 'str':
 			case 'string':
-
 				$value = (string)  $value;
-
 				break;
 
 			case 'double':
 			case 'float':
-
 				$value = (float)   $value;
-
 				break;
 
 			case 'bool':
 			case 'boolean':
-
 				$value = (boolean) $value;
-
 				break;
 		}
 

@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Data;
+
 /**
  * PSX_Data_RecordInterface
  *
@@ -33,7 +35,7 @@
  * @package    PSX_Data
  * @version    $Revision: 480 $
  */
-interface PSX_Data_RecordInterface
+interface RecordInterface
 {
 	/**
 	 * Returns the name of the record or null
@@ -72,7 +74,7 @@ interface PSX_Data_RecordInterface
 	 *
 	 * @return void
 	 */
-	public function import(PSX_Data_ReaderResult $result);
+	public function import(ReaderResult $result);
 
 	/**
 	 * This method returns arbitiary data wich is proccesed by an
@@ -80,6 +82,6 @@ interface PSX_Data_RecordInterface
 	 *
 	 * @return mixed
 	 */
-	public function export(PSX_Data_WriterResult $result);
+	public function export(WriterResult $result);
 }
 

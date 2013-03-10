@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Html\Lexer\Token;
+
+use PSX\Html\Lexer\TokenAbstract;
+
 /**
  * PSX_Html_Lexer_Token_Text
  *
@@ -33,7 +37,7 @@
  * @package    PSX_Html
  * @version    $Revision: 549 $
  */
-class PSX_Html_Lexer_Token_Text extends PSX_Html_Lexer_TokenAbstract
+class Text extends TokenAbstract
 {
 	public $name;
 	public $data;

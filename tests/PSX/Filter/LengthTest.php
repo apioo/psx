@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Filter;
+
 /**
  * PSX_Filter_LengthTest
  *
@@ -32,7 +34,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_Filter_LengthTest extends PHPUnit_Framework_TestCase
+class LengthTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -44,14 +46,14 @@ class PSX_Filter_LengthTest extends PHPUnit_Framework_TestCase
 
 	public function testIntLength()
 	{
-		$length = new PSX_Filter_Length(3, 8);
+		$length = new Length(3, 8);
 
 		$this->assertEquals(false, $length->apply(2));
 		$this->assertEquals(true, $length->apply(3));
 		$this->assertEquals(true, $length->apply(8));
 		$this->assertEquals(false, $length->apply(9));
 
-		$length = new PSX_Filter_Length(8);
+		$length = new Length(8);
 
 		$this->assertEquals(true, $length->apply(2));
 		$this->assertEquals(true, $length->apply(3));
@@ -61,14 +63,14 @@ class PSX_Filter_LengthTest extends PHPUnit_Framework_TestCase
 
 	public function testFloatLength()
 	{
-		$length = new PSX_Filter_Length(3.4, 8.4);
+		$length = new Length(3.4, 8.4);
 
 		$this->assertEquals(false, $length->apply(3.3));
 		$this->assertEquals(true, $length->apply(3.4));
 		$this->assertEquals(true, $length->apply(8.4));
 		$this->assertEquals(false, $length->apply(8.5));
 
-		$length = new PSX_Filter_Length(8.4);
+		$length = new Length(8.4);
 
 		$this->assertEquals(true, $length->apply(3.3));
 		$this->assertEquals(true, $length->apply(3.4));
@@ -78,14 +80,14 @@ class PSX_Filter_LengthTest extends PHPUnit_Framework_TestCase
 
 	public function testArrayLength()
 	{
-		$length = new PSX_Filter_Length(3, 8);
+		$length = new Length(3, 8);
 
 		$this->assertEquals(false, $length->apply(range(0, 1)));
 		$this->assertEquals(true, $length->apply(range(0, 2)));
 		$this->assertEquals(true, $length->apply(range(0, 7)));
 		$this->assertEquals(false, $length->apply(range(0, 8)));
 
-		$length = new PSX_Filter_Length(8);
+		$length = new Length(8);
 
 		$this->assertEquals(true, $length->apply(range(0, 1)));
 		$this->assertEquals(true, $length->apply(range(0, 2)));
@@ -95,14 +97,14 @@ class PSX_Filter_LengthTest extends PHPUnit_Framework_TestCase
 
 	public function testStringLength()
 	{
-		$length = new PSX_Filter_Length(3, 8);
+		$length = new Length(3, 8);
 
 		$this->assertEquals(false, $length->apply('fo'));
 		$this->assertEquals(true, $length->apply('foo'));
 		$this->assertEquals(true, $length->apply('foobarte'));
 		$this->assertEquals(false, $length->apply('foobartes'));
 
-		$length = new PSX_Filter_Length(8);
+		$length = new Length(8);
 
 		$this->assertEquals(true, $length->apply('fo'));
 		$this->assertEquals(true, $length->apply('foo'));

@@ -23,6 +23,12 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Http;
+
+use PSX\Http;
+use PSX\HttpTest;
+use PSX\Url;
+
 /**
  * PSX_Http_PutRequestTest
  *
@@ -32,13 +38,11 @@
  * @category   tests
  * @version    $Revision: 579 $
  */
-class PSX_Http_PutRequestTest extends PHPUnit_Framework_TestCase
+class PutRequestTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
-		$handler = new PSX_Http_Handler_Curl();
-
-		$this->http = new PSX_Http($handler);
+		$this->http = new Http();
 	}
 
 	protected function tearDown()
@@ -47,7 +51,7 @@ class PSX_Http_PutRequestTest extends PHPUnit_Framework_TestCase
 
 	public function testPutRequest()
 	{
-		$request  = new PSX_Http_PutRequest(new PSX_Url(PSX_HttpTest::URL . '/put'));
+		$request  = new PutRequest(new Url(HttpTest::URL . '/put'));
 		$response = $this->http->request($request);
 
 		$this->assertEquals('HTTP/1.1', $response->getScheme());
@@ -57,11 +61,11 @@ class PSX_Http_PutRequestTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX_Url_Exception
+	 * @expectedException \PSX\Exception
 	 */
 	public function testWrongUrl()
 	{
-		new PSX_Http_PutRequest('foobar');
+		new PutRequest('foobar');
 	}
 }
 

@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Filter;
+
 /**
  * PSX_Filter_UrldecodeTest
  *
@@ -32,7 +34,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_Filter_UrldecodeTest extends PHPUnit_Framework_TestCase
+class UrldecodeTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -44,7 +46,7 @@ class PSX_Filter_UrldecodeTest extends PHPUnit_Framework_TestCase
 
 	public function testUrldecode()
 	{
-		$urldecode = new PSX_Filter_Urldecode();
+		$urldecode = new Urldecode();
 
 		$this->assertEquals('foobar', $urldecode->apply('foobar'));
 		$this->assertEquals('foo+!"§$%&/()=?bar', $urldecode->apply(urlencode('foo+!"§$%&/()=?bar')));

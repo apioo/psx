@@ -23,6 +23,19 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\PubSubHubBub;
+
+use PSX\Atom;
+use PSX\Base;
+use PSX\Data\ReaderInterface;
+use PSX\Exception;
+use PSX\Filter;
+use PSX\Input\Get;
+use PSX\Module\ApiAbstract;
+use PSX\Rss;
+use PSX\Url;
+use PSX\Validate;
+
 /**
  * PSX_PubSubHubBub_CallbackAbstract
  *
@@ -33,7 +46,7 @@
  * @package    PSX_PubSubHubBub
  * @version    $Revision: 588 $
  */
-abstract class PSX_PubSubHubBub_CallbackAbstract extends PSX_Module_ApiAbstract
+abstract class CallbackAbstract extends ApiAbstract
 {
 	/**
 	 * This method is called by the module wich extends this class. If the
@@ -45,99 +58,84 @@ abstract class PSX_PubSubHubBub_CallbackAbstract extends PSX_Module_ApiAbstract
 	 */
 	protected function handle()
 	{
-		switch(PSX_Base::getRequestMethod())
+		switch(Base::getRequestMethod())
 		{
 			case 'POST':
-
 				$this->callback();
 
-				PSX_Base::setResponseCode(200);
+				Base::setResponseCode(200);
 				//header('X-Hub-On-Behalf-Of: 0');
 
 				exit;
-
 				break;
 
 			case 'GET':
-
 				$this->verify();
-
 				break;
 
 			default:
-
-				throw new PSX_PubSubHubBub_Exception('PubSubHubBub subscriber endpoint');
-
+				throw new Exception('PubSubHubBub subscriber endpoint');
 				break;
 		}
 	}
 
 	protected function callback()
 	{
-		$contentType = PSX_Base::getRequestHeader('content-type');
+		$contentType = Base::getRequestHeader('content-type');
 
 		switch($contentType)
 		{
 			case 'application/atom+xml':
-
-				$atom = new PSX_Atom();
-
-				$atom->import($this->getRequest(PSX_Data_ReaderInterface::DOM));
+				$atom = new Atom();
+				$atom->import($this->getRequest(ReaderInterface::DOM));
 
 				$this->onAtom($atom);
-
 				break;
 
 			case 'application/rss+xml':
-
-				$rss = new PSX_Rss();
-
-				$rss->import($this->getRequest(PSX_Data_ReaderInterface::DOM));
+				$rss = new Rss();
+				$rss->import($this->getRequest(ReaderInterface::DOM));
 
 				$this->onRss($rss);
-
 				break;
 
 			default:
-
-				throw new PSX_PubSubHubBub_Exception('Invalid content type allowed is only application/atom+xml or application/rss+xml');
-
+				throw new Exception('Invalid content type allowed is only application/atom+xml or application/rss+xml');
 				break;
 		}
 	}
 
 	protected function verify()
 	{
-		$validate = new PSX_Validate();
-		$get      = new PSX_Input_Get($validate);
+		$validate = new Validate();
+		$get      = new Get($validate);
 
-		$mode         = $get->hub_mode('string', array(new PSX_Filter_InArray(array('subscribe', 'unsubscribe'))), 'hub.mode', 'Mode');
-		$topic        = $get->hub_topic('string', array(new PSX_Filter_Length(3, 512), new PSX_Filter_Url()), 'hub.topic', 'Topic');
-		$challenge    = $get->hub_challenge('string', array(new PSX_Filter_Length(1, 512), 'hub.challenge', 'Challenge'));
+		$mode         = $get->hub_mode('string', array(new Filter\InArray(array('subscribe', 'unsubscribe'))), 'hub.mode', 'Mode');
+		$topic        = $get->hub_topic('string', array(new Filter\Length(3, 512), new Filter\Url()), 'hub.topic', 'Topic');
+		$challenge    = $get->hub_challenge('string', array(new Filter\Length(1, 512), 'hub.challenge', 'Challenge'));
 		$leaseSeconds = $get->hub_lease_seconds('integer', null, 'hub.lease_seconds', 'Lease seconds', false);
 		$verifyToken  = $get->hub_verify_token('string', null, 'hub.verify_token', 'Verify token', false);
 
 
 		if(!$validate->hasError())
 		{
-			$topic = new PSX_Url($topic);
+			$topic = new Url($topic);
 
 			if($this->onVerify($mode, $topic, $leaseSeconds, $verifyToken) === true)
 			{
-				PSX_Base::setResponseCode(200);
+				Base::setResponseCode(200);
 
 				echo $challenge;
-
 				exit;
 			}
 			else
 			{
-				throw new PSX_PubSubHubBub_Exception('Invalid token');
+				throw new Exception('Invalid token');
 			}
 		}
 		else
 		{
-			throw new PSX_PubSubHubBub_Exception($validate->getLastError());
+			throw new Exception($validate->getLastError());
 		}
 	}
 
@@ -146,14 +144,14 @@ abstract class PSX_PubSubHubBub_CallbackAbstract extends PSX_Module_ApiAbstract
 	 *
 	 * @return void
 	 */
-	abstract protected function onAtom(PSX_Atom $atom);
+	abstract protected function onAtom(Atom $atom);
 
 	/**
 	 * Is called if the incomming entry from an hub is an rss entry
 	 *
 	 * @return void
 	 */
-	abstract protected function onRss(PSX_Rss $rss);
+	abstract protected function onRss(Rss $rss);
 
 	/**
 	 * This method is called if an verify request from the hub occurs. $mode is
@@ -163,6 +161,6 @@ abstract class PSX_PubSubHubBub_CallbackAbstract extends PSX_Module_ApiAbstract
 	 *
 	 * @return boolean
 	 */
-	abstract protected function onVerify($mode, PSX_Url $topic, $leaseSeconds, $verifyToken);
+	abstract protected function onVerify($mode, Url $topic, $leaseSeconds, $verifyToken);
 }
 

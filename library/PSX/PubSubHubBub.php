@@ -23,6 +23,12 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
+use PSX\Data\Reader\Dom;
+use PSX\Http\GetRequest;
+use PSX\Http\PostRequest;
+
 /**
  * This package is to help implementing an pubsubhubbub subscriber or publisher.
  * If you add new content to your feed you have to inform the hub about that.
@@ -80,7 +86,7 @@
  * @version    $Revision: 663 $
  * @see        http://code.google.com/p/pubsubhubbub/
  */
-class PSX_PubSubHubBub
+class PubSubHubBub
 {
 	const ATOM = 0x1;
 	const RSS2 = 0x2;
@@ -96,7 +102,7 @@ class PSX_PubSubHubBub
 	private $filter;
 	private $http;
 
-	public function __construct(PSX_Http $http)
+	public function __construct(Http $http)
 	{
 		$this->http = $http;
 	}
@@ -108,7 +114,7 @@ class PSX_PubSubHubBub
 	 * @param string $endpoint
 	 * @param string $topic
 	 */
-	public function notification(PSX_Url $endpoint, $topic)
+	public function notification(Url $endpoint, $topic)
 	{
 		$data = array(
 
@@ -118,9 +124,9 @@ class PSX_PubSubHubBub
 		);
 
 		$header  = array(
-			'User-Agent' => __CLASS__ . ' ' . PSX_Base::VERSION
+			'User-Agent' => __CLASS__ . ' ' . Base::VERSION
 		);
-		$request = new PSX_Http_PostRequest($endpoint, $header, $data);
+		$request = new PostRequest($endpoint, $header, $data);
 
 		$response  = $this->http->request($request);
 		$lastError = $this->http->getLastError();
@@ -136,16 +142,16 @@ class PSX_PubSubHubBub
 				$body = $response->getBody();
 				$msg  = !empty($body) ? $body : 'The hub returned an error status code';
 
-				throw new PSX_PubSubHubBub_Exception($msg);
+				throw new Exception($msg);
 			}
 			else
 			{
-				throw new PSX_PubSubHubBub_Exception('Unknown response code');
+				throw new Exception('Unknown response code');
 			}
 		}
 		else
 		{
-			throw new PSX_PubSubHubBub_Exception($lastError);
+			throw new Exception($lastError);
 		}
 	}
 
@@ -164,16 +170,16 @@ class PSX_PubSubHubBub
 	 * @param string $verify_token
 	 * @return boolean
 	 */
-	public function request(PSX_Url $endpoint, PSX_Url $callback, $mode, PSX_Url $topic, $verify, $leaseSeconds = false, $secret = false, $verifyToken = false)
+	public function request(Url $endpoint, Url $callback, $mode, Url $topic, $verify, $leaseSeconds = false, $secret = false, $verifyToken = false)
 	{
 		if(!in_array($mode, array('subscribe', 'unsubscribe')))
 		{
-			throw new PSX_PubSubHubBub_Exception('Invalid mode accept only "subscribe" or "unsubscribe"');
+			throw new Exception('Invalid mode accept only "subscribe" or "unsubscribe"');
 		}
 
 		if(!in_array($verify, array('sync', 'async')))
 		{
-			throw new PSX_PubSubHubBub_Exception('Invalid verfication mode accept only "sync" or "async"');
+			throw new Exception('Invalid verfication mode accept only "sync" or "async"');
 		}
 
 
@@ -201,7 +207,7 @@ class PSX_PubSubHubBub
 			$data['hub.verify_token'] = $verifyToken;
 		}
 
-		$request   = new PSX_Http_PostRequest($endpoint, array(), $data);
+		$request   = new PostRequest($endpoint, array(), $data);
 
 		$response  = $this->http->request($request);
 		$lastError = $this->http->getLastError();
@@ -217,16 +223,16 @@ class PSX_PubSubHubBub
 				$body = $response->getBody();
 				$msg  = !empty($body) ? $body : 'The hub returned an error status code';
 
-				throw new PSX_PubSubHubBub_Exception($msg);
+				throw new Exception($msg);
 			}
 			else
 			{
-				throw new PSX_PubSubHubBub_Exception('Unknown response code');
+				throw new Exception('Unknown response code');
 			}
 		}
 		else
 		{
-			throw new PSX_PubSubHubBub_Exception($lastError);
+			throw new Exception($lastError);
 		}
 	}
 
@@ -237,9 +243,9 @@ class PSX_PubSubHubBub
 	 * @param PSX_Url $url
 	 * @return PSX_Url|boolean
 	 */
-	public function discover(PSX_Url $url, $type = 0)
+	public function discover(Url $url, $type = 0)
 	{
-		$request   = new PSX_Http_GetRequest($url);
+		$request   = new GetRequest($url);
 		$request->setFollowLocation(true);
 
 		$response  = $this->http->request($request);
@@ -247,16 +253,16 @@ class PSX_PubSubHubBub
 
 		if(empty($lastError))
 		{
-			$reader = new PSX_Data_Reader_Dom();
+			$reader = new Dom();
 
 			switch($type)
 			{
 				case self::RSS2:
 
-					$rss = new PSX_Rss();
+					$rss = new Rss();
 					$rss->import($reader->read($response));
 
-					$elementList = $rss->getDom()->getElementsByTagNameNS(PSX_Atom::$xmlns, 'link');
+					$elementList = $rss->getDom()->getElementsByTagNameNS(Atom::$xmlns, 'link');
 
 					for($i = 0; $i < $elementList->length; $i++)
 					{
@@ -264,7 +270,7 @@ class PSX_PubSubHubBub
 
 						if(strcasecmp($link->getAttribute('rel'), 'hub') == 0)
 						{
-							$href = new PSX_Url($link->getAttribute('href'));
+							$href = new Url($link->getAttribute('href'));
 
 							return $this->lastHub = $href;
 						}
@@ -275,14 +281,14 @@ class PSX_PubSubHubBub
 				case self::ATOM:
 				default:
 
-					$atom = new PSX_Atom();
+					$atom = new Atom();
 					$atom->import($reader->read($response));
 
 					foreach($atom->link as $link)
 					{
 						if(strcasecmp($link['rel'], 'hub') == 0)
 						{
-							$href = new PSX_Url($link['href']);
+							$href = new Url($link['href']);
 
 							return $this->lastHub = $href;
 						}
@@ -293,7 +299,7 @@ class PSX_PubSubHubBub
 		}
 		else
 		{
-			throw new PSX_PubSubHubBub_Exception($lastError);
+			throw new Exception($lastError);
 		}
 
 		return false;

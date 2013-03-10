@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Util;
+
+use InvalidArgumentException;
+
 /**
  * PSX_Util_Bencoding
  *
@@ -33,7 +37,7 @@
  * @package    PSX_Util
  * @version    $Revision: 480 $
  */
-class PSX_Util_Bencoding
+class Bencoding
 {
 	public static function encode($value)
 	{
@@ -83,7 +87,7 @@ class PSX_Util_Bencoding
 
 			default:
 
-				throw new PSX_Util_Bencoding_Exception('Type must be integer / string or array');
+				throw new InvalidArgumentException('Type must be integer / string or array');
 				break;
 		}
 

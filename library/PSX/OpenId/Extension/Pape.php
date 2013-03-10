@@ -23,6 +23,11 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\OpenId\Extension;
+
+use PSX\Exception;
+use PSX\OpenId\ExtensionInterface;
+
 /**
  * PSX_OpenId_Extension_Pape
  *
@@ -33,7 +38,7 @@
  * @package    PSX_OpenId
  * @version    $Revision: 480 $
  */
-class PSX_OpenId_Extension_Pape implements PSX_OpenId_ExtensionInterface
+class Pape implements ExtensionInterface
 {
 	const NS = 'http://specs.openid.net/extensions/pape/1.0';
 
@@ -74,7 +79,7 @@ class PSX_OpenId_Extension_Pape implements PSX_OpenId_ExtensionInterface
 		}
 		else
 		{
-			throw new PSX_OpenId_Exception('Invalid auth policy ' . $policy);
+			throw new Exception('Invalid auth policy ' . $policy);
 		}
 	}
 

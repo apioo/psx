@@ -2,7 +2,9 @@
 
 namespace bar;
 
-class bar extends \PSX_ModuleAbstract
+use PSX\ModuleAbstract;
+
+class bar extends ModuleAbstract
 {
 	public function onLoad()
 	{

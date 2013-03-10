@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Http;
+
 /**
  * PSX_Http_HandlerInterface
  *
@@ -33,7 +35,7 @@
  * @package    PSX_Http
  * @version    $Revision: 583 $
  */
-interface PSX_Http_HandlerInterface
+interface HandlerInterface
 {
 	/**
 	 * Makes an http request and returns the raw response string including the
@@ -42,7 +44,7 @@ interface PSX_Http_HandlerInterface
 	 * @param PSX_Http_Request $request
 	 * @return string
 	 */
-	public function request(PSX_Http_Request $request);
+	public function request(Request $request);
 
 	/**
 	 * Must return the error message of the last request or false if no error

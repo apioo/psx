@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Sql\Table;
+
 /**
  * PSX_Sql_Table_SelectInterface
  *
@@ -33,7 +35,7 @@
  * @package    PSX_Sql
  * @version    $Revision: 480 $
  */
-interface PSX_Sql_Table_SelectInterface
+interface SelectInterface
 {
 	public function join($type, $table, $cardinality = 'n:1', $foreignKey = null);
 	public function where($column, $operator, $value, $conjunction = 'AND');

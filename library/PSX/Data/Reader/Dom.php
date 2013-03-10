@@ -23,6 +23,13 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Data\Reader;
+
+use DOMDocument;
+use PSX\Data\ReaderInterface;
+use PSX\Data\ReaderResult;
+use PSX\Http\Message;
+
 /**
  * PSX_Data_Reader_Dom
  *
@@ -33,15 +40,15 @@
  * @package    PSX_Data
  * @version    $Revision: 480 $
  */
-class PSX_Data_Reader_Dom implements PSX_Data_ReaderInterface
+class Dom implements ReaderInterface
 {
-	public function read(PSX_Http_Message $message)
+	public function read(Message $message)
 	{
-		$dom = new DomDocument();
+		$dom = new DOMDocument();
 		$dom->encoding = 'UTF-8';
 		$dom->loadXML($message->getBody());
 
-		return new PSX_Data_ReaderResult(PSX_Data_ReaderInterface::DOM, $dom);
+		return new ReaderResult(ReaderInterface::DOM, $dom);
 	}
 }
 

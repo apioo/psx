@@ -23,6 +23,12 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Data\Writer;
+
+use PSX\Data\RecordInterface;
+use PSX\Data\WriterInterface;
+use PSX\Data\WriterResult;
+
 /**
  * PSX_Data_Writer_Form
  *
@@ -33,15 +39,15 @@
  * @package    PSX_Data
  * @version    $Revision: 453 $
  */
-class PSX_Data_Writer_Form implements PSX_Data_WriterInterface
+class Form implements WriterInterface
 {
 	public static $mime = 'application/x-www-form-urlencoded';
 
 	public $writerResult;
 
-	public function write(PSX_Data_RecordInterface $record)
+	public function write(RecordInterface $record)
 	{
-		$this->writerResult = new PSX_Data_WriterResult(PSX_Data_WriterInterface::FORM, $this);
+		$this->writerResult = new WriterResult(WriterInterface::FORM, $this);
 
 		echo http_build_query($record->export($this->writerResult), '', '&');
 	}

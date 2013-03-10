@@ -23,6 +23,12 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
+use DateInterval;
+use DateTimeZone;
+use Iterator;
+
 /**
  * PSX_Calendar
  *
@@ -33,7 +39,7 @@
  * @package    PSX_Calendar
  * @version    $Revision: 560 $
  */
-class PSX_Calendar implements Iterator
+class Calendar implements Iterator
 {
 	protected $date;
 
@@ -42,7 +48,7 @@ class PSX_Calendar implements Iterator
 
 	public function __construct($date = null, DateTimeZone $timezone = null)
 	{
-		$this->setDate(new PSX_DateTime($date !== null ? $date : 'now'));
+		$this->setDate(new DateTime($date !== null ? $date : 'now'));
 
 		if($timezone !== null)
 		{
@@ -56,7 +62,7 @@ class PSX_Calendar implements Iterator
 	 *
 	 * @return void
 	 */
-	public function setDate(DateTime $date)
+	public function setDate(\DateTime $date)
 	{
 		$this->date = $date->setTime(0, 0, 0);
 	}
@@ -93,7 +99,7 @@ class PSX_Calendar implements Iterator
 	 */
 	public function getEasterDate()
 	{
-		$easter = new PSX_DateTime($this->getYear() . '-03-21');
+		$easter = new DateTime($this->getYear() . '-03-21');
 		$days   = easter_days($this->getYear());
 
 		return $easter->add(new DateInterval('P' . $days . 'D'));
@@ -186,7 +192,7 @@ class PSX_Calendar implements Iterator
 
 	public function rewind()
 	{
-		$this->itDate = new PSX_DateTime($this->getYear() . '-' . $this->getMonth() . '-01');
+		$this->itDate = new DateTime($this->getYear() . '-' . $this->getMonth() . '-01');
 	}
 
 	public function valid()

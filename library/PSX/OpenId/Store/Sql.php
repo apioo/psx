@@ -23,6 +23,14 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\OpenId\Store;
+
+use PSX\DateTime;
+use PSX\OpenId\Provider\Association;
+use PSX\OpenId\StoreInterface;
+use PSX\Sql;
+use PSX\Sql\Condition;
+
 /**
  * PSX_OpenId_Store_Sql
  *
@@ -47,12 +55,12 @@
  * @package    PSX_OpenId
  * @version    $Revision: 480 $
  */
-class PSX_OpenId_Store_Sql implements PSX_OpenId_StoreInterface
+class Sql implements StoreInterface
 {
 	private $sql;
 	private $table;
 
-	public function __construct(PSX_Sql $sql, $table)
+	public function __construct(Sql $sql, $table)
 	{
 		$this->sql   = $sql;
 		$this->table = $table;
@@ -60,11 +68,24 @@ class PSX_OpenId_Store_Sql implements PSX_OpenId_StoreInterface
 
 	public function load($opEndpoint)
 	{
-		$row = $this->sql->getRow('SELECT assocHandle, assocType, sessionType, secret, expires FROM ' . $this->table . ' WHERE opEndpoint = ?', array($opEndpoint));
+		$sql = <<<SQL
+SELECT
+	`assocHandle`,
+	`assocType`,
+	`sessionType`,
+	`secret`,
+	`expires`
+FROM
+	{$this->table}
+WHERE
+	`opEndpoint` = ?
+SQL;
+
+		$row = $this->sql->getRow($sql, array($opEndpoint));
 
 		if(!empty($row))
 		{
-			$assoc = new PSX_OpenId_Provider_Data_Association();
+			$assoc = new Association();
 			$assoc->setAssocHandle($row['assocHandle']);
 			$assoc->setAssocType($row['assocType']);
 			$assoc->setSessionType($row['sessionType']);
@@ -79,11 +100,26 @@ class PSX_OpenId_Store_Sql implements PSX_OpenId_StoreInterface
 
 	public function loadByHandle($opEndpoint, $assocHandle)
 	{
-		$row = $this->sql->getRow('SELECT assocHandle, assocType, sessionType, secret, expires FROM ' . $this->table . ' WHERE opEndpoint = ? AND assocHandle = ?', array($opEndpoint, $assocHandle));
+		$sql = <<<SQL
+SELECT
+	`assocHandle`,
+	`assocType`,
+	`sessionType`,
+	`secret`,
+	`expires`
+FROM
+	{$this->table}
+WHERE
+	`opEndpoint` = ?
+AND
+	`assocHandle` = ?
+SQL;
+
+		$row = $this->sql->getRow($sql, array($opEndpoint, $assocHandle));
 
 		if(!empty($row))
 		{
-			$assoc = new PSX_OpenId_Provider_Data_Association();
+			$assoc = new Association();
 			$assoc->setAssocHandle($row['assocHandle']);
 			$assoc->setAssocType($row['assocType']);
 			$assoc->setSessionType($row['sessionType']);
@@ -98,16 +134,16 @@ class PSX_OpenId_Store_Sql implements PSX_OpenId_StoreInterface
 
 	public function remove($opEndpoint, $assocHandle)
 	{
-		$con = new PSX_Sql_Condition();
+		$con = new Condition();
 		$con->add('opEndpoint', '=', $opEndpoint);
 		$con->add('assocHandle', '=', $assocHandle);
 
 		$this->sql->delete($con);
 	}
 
-	public function save($opEndpoint, PSX_OpenId_Provider_Data_Association $assoc)
+	public function save($opEndpoint, Association $assoc)
 	{
-		$now = new PSX_DateTime();
+		$now = new DateTime();
 
 		$this->sql->insert($this->table, array(
 
@@ -117,7 +153,7 @@ class PSX_OpenId_Store_Sql implements PSX_OpenId_StoreInterface
 			'sessionType' => $assoc->getSessionType(),
 			'secret'      => $assoc->getSecret(),
 			'expires'     => $assoc->getExpire(),
-			'date'        => $now->format(PSX_DateTime::SQL),
+			'date'        => $now->format(DateTime::SQL),
 
 		));
 	}

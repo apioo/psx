@@ -23,6 +23,11 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Data\Reader;
+
+use PSX\Data\ReaderInterface;
+use PSX\Http\Message;
+
 /**
  * PSX_Data_Reader_RawTest
  *
@@ -32,7 +37,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_Data_Reader_RawTest extends PHPUnit_Framework_TestCase
+class RawTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -48,16 +53,16 @@ class PSX_Data_Reader_RawTest extends PHPUnit_Framework_TestCase
 some foobar content
 INPUT;
 
-		$reader  = new PSX_Data_Reader_Raw();
-		$message = new PSX_Http_Message(array(), $body);
+		$reader  = new Raw();
+		$message = new Message(array(), $body);
 
 		$result = $reader->read($message);
 		$raw    = $result->getData();
 
 		$e = 'some foobar content';
 
-		$this->assertEquals(PSX_Data_ReaderInterface::RAW, $result->getType());
-		$this->assertEquals(true, $raw instanceof PSX_Http_Message);
+		$this->assertEquals(ReaderInterface::RAW, $result->getType());
+		$this->assertEquals(true, $raw instanceof Message);
 		$this->assertEquals($e, $raw->getBody());
 	}
 }

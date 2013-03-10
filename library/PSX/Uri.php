@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
 /**
  * PSX_Uri
  *
@@ -34,7 +36,7 @@
  * @package    PSX_Uri
  * @version    $Revision: 486 $
  */
-class PSX_Uri
+class Uri
 {
 	protected $scheme;
 	protected $authority;

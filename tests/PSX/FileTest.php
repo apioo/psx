@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
 /**
  * PSX_FileTest
  *
@@ -32,13 +34,13 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_FileTest extends PHPUnit_Framework_TestCase
+class FileTest extends \PHPUnit_Framework_TestCase
 {
 	private $path;
 
 	protected function setUp()
 	{
-		$this->path = PSX_PATH_CACHE . '/' . __CLASS__ . '.txt';
+		$this->path = PSX_PATH_CACHE . '/' . $this->getFileName();
 	}
 
 	protected function tearDown()
@@ -48,13 +50,13 @@ class PSX_FileTest extends PHPUnit_Framework_TestCase
 
 	public function testFileWrite()
 	{
-		$file = new PSX_File($this->path);
+		$file = new File($this->path);
 		$file = $file->openFile('w');
 
-		$this->assertEquals(__CLASS__ . '.txt', $file->getFilename());
+		$this->assertEquals($this->getFileName(), $file->getFilename());
 		$this->assertEquals(PSX_PATH_CACHE, $file->getPath());
 		$this->assertEquals(true, $file->isFile());
-		$this->assertEquals(true, PSX_File::exists($this->path));
+		$this->assertEquals(true, File::exists($this->path));
 
 		$bytes = $file->fwrite('foobar');
 
@@ -62,7 +64,7 @@ class PSX_FileTest extends PHPUnit_Framework_TestCase
 
 		unset($file);
 
-		$this->assertEquals('foobar', PSX_File::getContents($this->path));
+		$this->assertEquals('foobar', File::getContents($this->path));
 	}
 
 	/**
@@ -70,14 +72,12 @@ class PSX_FileTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testFileRead()
 	{
-		$file = PSX_File::open($this->path, 'r');
+		$file = File::open($this->path, 'r');
 
 		$buffer = '';
 
 		while(!$file->eof())
 		{
-			// we read two bytes because we have 6 bytes
-			// complete and we want also test the eof method
 			$buffer.= $file->fgets();
 		}
 
@@ -90,5 +90,10 @@ class PSX_FileTest extends PHPUnit_Framework_TestCase
 
 
 		unset($file);
+	}
+
+	private function getFileName()
+	{
+		return 'FileTest.txt';
 	}
 }

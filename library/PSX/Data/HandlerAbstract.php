@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Data;
+
+use PSX\Sql\TableInterface;
+
 /**
  * PSX_Data_HandlerAbstract
  *
@@ -33,26 +37,26 @@
  * @package    PSX_Data
  * @version    $Revision: 644 $
  */
-abstract class PSX_Data_HandlerAbstract implements PSX_Data_HandlerInterface
+abstract class HandlerAbstract implements HandlerInterface
 {
 	protected $table;
 
-	public function __construct(PSX_Sql_TableInterface $table)
+	public function __construct(TableInterface $table)
 	{
 		$this->table = $table;
 	}
 
-	public function create(PSX_Data_RecordInterface $record)
+	public function create(RecordInterface $record)
 	{
 		$this->table->insert($record);
 	}
 
-	public function update(PSX_Data_RecordInterface $record)
+	public function update(RecordInterface $record)
 	{
 		$this->table->update($record);
 	}
 
-	public function delete(PSX_Data_RecordInterface $record)
+	public function delete(RecordInterface $record)
 	{
 		$this->table->delete($record);
 	}

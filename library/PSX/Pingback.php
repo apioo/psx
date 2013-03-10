@@ -23,6 +23,14 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
+use PSX\Html\Parse;
+use PSX\Html\Parse\Element;
+use PSX\Http\GetRequest;
+use PSX\Http\PostRequest;
+use SimpleXMLElement;
+
 /**
  * PSX_Pingback
  *
@@ -33,7 +41,7 @@
  * @package    PSX_Pingback
  * @version    $Revision: 480 $
  */
-class PSX_Pingback
+class Pingback
 {
 	public static $errorCodes = array(
 
@@ -49,7 +57,7 @@ class PSX_Pingback
 
 	private $http;
 
-	public function __construct(PSX_Http $http)
+	public function __construct(Http $http)
 	{
 		$this->http = $http;
 	}
@@ -64,8 +72,8 @@ class PSX_Pingback
 	 */
 	public function send($sourceUri, $targetUri)
 	{
-		$request  = new PSX_Http_GetRequest($targetUri, array(
-			'User-Agent' => __CLASS__ . ' ' . PSX_Base::VERSION
+		$request  = new GetRequest($targetUri, array(
+			'User-Agent' => __CLASS__ . ' ' . Base::VERSION
 		));
 		$response = $this->http->request($request);
 
@@ -87,20 +95,20 @@ class PSX_Pingback
 			}
 			else
 			{
-				throw new PSX_Pingback_Exception('Could not find pingback server');
+				throw new Exception('Could not find pingback server');
 			}
 		}
 		else
 		{
-			throw new PSX_Pingback_Exception('Invalid response code ' . $response->getCode());
+			throw new Exception('Invalid response code ' . $response->getCode());
 		}
 	}
 
 	public function ping($server, $sourceUri, $targetUri)
 	{
 		$body     = $this->getRequestBody($sourceUri, $targetUri);
-		$request  = new PSX_Http_PostRequest($server, array(
-			'User-Agent' => __CLASS__ . ' ' . PSX_Base::VERSION
+		$request  = new PostRequest($server, array(
+			'User-Agent' => __CLASS__ . ' ' . Base::VERSION
 		), $body);
 		$response = $this->http->request($request);
 
@@ -114,11 +122,11 @@ class PSX_Pingback
 
 				if(isset(self::$errorCodes[$faultCode]))
 				{
-					throw new PSX_Pingback_Exception(self::$errorCodes[$faultCode]);
+					throw new Exception(self::$errorCodes[$faultCode]);
 				}
 				else
 				{
-					throw new PSX_Pingback_Exception('An unknown error occured');
+					throw new Exception('An unknown error occured');
 				}
 			}
 			else
@@ -128,7 +136,7 @@ class PSX_Pingback
 		}
 		else
 		{
-			throw new PSX_Pingback_Exception('Invalid response code ' . $response->getCode());
+			throw new Exception('Invalid response code ' . $response->getCode());
 		}
 	}
 
@@ -195,14 +203,13 @@ XML;
 
 	public static function findTag($content)
 	{
-		$parse   = new PSX_Html_Parse($content);
-
-		$element = new PSX_Html_Parse_Element('link', array('rel' => 'pingback'));
+		$parse   = new Parse($content);
+		$element = new Element('link', array('rel' => 'pingback'));
 		$href    = $parse->fetchAttrFromHead($element, 'href');
 
 		if(empty($href))
 		{
-			throw new PSX_Pingback_Exception('Could not discover pingback link');
+			throw new Exception('Could not discover pingback link');
 		}
 
 		return $href;

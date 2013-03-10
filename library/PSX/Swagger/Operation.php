@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Swagger;
+
+use PSX\Data\RecordAbstract;
+
 /**
  * PSX_Swagger_Operation
  *
@@ -33,7 +37,7 @@
  * @package    PSX_Swagger
  * @version    $Revision: 582 $
  */
-class PSX_Swagger_Operation extends PSX_Data_RecordAbstract
+class Operation extends RecordAbstract
 {
 	private $httpMethod;
 	private $nickname;
@@ -72,12 +76,12 @@ class PSX_Swagger_Operation extends PSX_Data_RecordAbstract
 		$this->notes = $notes;
 	}
 
-	public function addErrorResponse(PSX_Swagger_Error $error)
+	public function addErrorResponse(Error $error)
 	{
 		$this->errorResponses[] = $errorResponses;
 	}
 
-	public function addParameter(PSX_Swagger_ParameterAbstract $parameter)
+	public function addParameter(ParameterAbstract $parameter)
 	{
 		$this->parameters[] = $parameter;
 	}

@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
 /**
  * PSX_YadisTest
  *
@@ -32,7 +34,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_YadisTest extends PHPUnit_Framework_TestCase
+class YadisTest extends \PHPUnit_Framework_TestCase
 {
 	const URL = 'http://test.phpsx.org';
 
@@ -46,10 +48,10 @@ class PSX_YadisTest extends PHPUnit_Framework_TestCase
 
 	public function testDiscovery()
 	{
-		$yadis = new PSX_Yadis(new PSX_Http(new PSX_Http_Handler_Curl()));
-		$xrd   = $yadis->discover(new PSX_Url(self::URL));
+		$yadis = new Yadis(new Http());
+		$xrd   = $yadis->discover(new Url(self::URL));
 
-		$this->assertEquals(true, $xrd instanceof PSX_Xrd);
+		$this->assertEquals(true, $xrd instanceof Xrd);
 
 		$service = current($xrd->service);
 		$type    = current($service->getType());

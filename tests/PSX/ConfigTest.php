@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
 /**
  * PSX_ConfigTest
  *
@@ -32,7 +34,7 @@
  * @category   tests
  * @version    $Revision: 497 $
  */
-class PSX_ConfigTest extends PHPUnit_Framework_TestCase
+class ConfigTest extends \PHPUnit_Framework_TestCase
 {
 	private $config;
 

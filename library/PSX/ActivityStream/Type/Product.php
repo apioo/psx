@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\ActivityStream\Type;
+
+use PSX\ActivityStream\TypeAbstract;
+
 /**
  * PSX_ActivityStream_Type_Product
  *
@@ -33,7 +37,7 @@
  * @package    PSX_ActivityStream
  * @version    $Revision: 480 $
  */
-class PSX_ActivityStream_Type_Product extends PSX_ActivityStream_TypeAbstract
+class Product extends TypeAbstract
 {
 	public $author;
 	public $displayName;

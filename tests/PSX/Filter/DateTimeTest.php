@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Filter;
+
 /**
  * PSX_Filter_DateTimeTest
  *
@@ -32,7 +34,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_Filter_DateTimeTest extends PHPUnit_Framework_TestCase
+class DateTimeTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -44,7 +46,7 @@ class PSX_Filter_DateTimeTest extends PHPUnit_Framework_TestCase
 
 	public function testDateTime()
 	{
-		$dateTime = new PSX_Filter_DateTime(PSX_DateTime::SQL);
+		$dateTime = new DateTime();
 
 		$this->assertEquals('2010-10-10 00:00:00', $dateTime->apply('10.10.2010'));
 		$this->assertEquals(false, $dateTime->apply('foobar'));

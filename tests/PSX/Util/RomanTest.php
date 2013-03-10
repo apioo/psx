@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Util;
+
 /**
  * PSX_Util_RomanTest
  *
@@ -32,7 +34,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_Util_RomanTest extends PHPUnit_Framework_TestCase
+class RomanTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -44,15 +46,15 @@ class PSX_Util_RomanTest extends PHPUnit_Framework_TestCase
 
 	public function testRomanEncode()
 	{
-		$this->assertEquals('I', PSX_Util_Roman::encode(1));
-		$this->assertEquals('XVI', PSX_Util_Roman::encode(16));
-		$this->assertEquals('MCMXLXLVI', PSX_Util_Roman::encode(1986));
+		$this->assertEquals('I', Roman::encode(1));
+		$this->assertEquals('XVI', Roman::encode(16));
+		$this->assertEquals('MCMXLXLVI', Roman::encode(1986));
 	}
 
 	public function testRomanDecode()
 	{
-		$this->assertEquals(1, PSX_Util_Roman::decode('I'));
-		$this->assertEquals(16, PSX_Util_Roman::decode('XVI'));
-		$this->assertEquals(1986, PSX_Util_Roman::decode('MCMXLXLVI'));
+		$this->assertEquals(1, Roman::decode('I'));
+		$this->assertEquals(16, Roman::decode('XVI'));
+		$this->assertEquals(1986, Roman::decode('MCMXLXLVI'));
 	}
 }

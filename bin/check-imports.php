@@ -55,15 +55,24 @@ USAGE;
 		define('PATH', $path);
 
 		// error handler
-		set_error_handler("exceptionErrorHandler");
+		set_error_handler('exceptionErrorHandler');
+
+		// set include path
+		set_include_path(get_include_path() . PATH_SEPARATOR . $path);
+
+		// register autoloader
+		spl_autoload_register('autoloadHandler');
 
 		// logging level
 		$level = empty($level) ? Logger::NOTICE : intval($level);
 
 		Logger::setLevel($level);
 
+		// build class index
+		$classIndex = buildClassIndex($path);
+
 		// check imports
-		organizeImports(PATH);
+		organizeImports($path);
 	}
 }
 catch(Exception $e)
@@ -110,6 +119,8 @@ function organizeImports($path)
 
 function checkFile($file)
 {
+	global $classIndex;
+
 	$path = substr($file, strlen(PATH) + 1);
 	$info = pathinfo($path);
 
@@ -125,7 +136,7 @@ function checkFile($file)
 
 	if(empty($hasNs) || $hasNs != str_replace('/', '\\', $shouldNs))
 	{
-		Logger::log(Logger::NOTICE, 'Invalid namespace should be "' . $shouldNs . '" is "' . $hasNs . '" in ' . $path);
+		Logger::log(Logger::ERROR, 'Invalid namespace should be "' . $shouldNs . '" is "' . $hasNs . '" in ' . $path);
 	}
 
 	// check class name
@@ -134,7 +145,7 @@ function checkFile($file)
 
 	if(empty($hasClass) || $hasClass != $shouldClass)
 	{
-		Logger::log(Logger::NOTICE, 'Class name should be "' . $shouldClass . '" is "' . $hasClass . '" in ' . $path);
+		Logger::log(Logger::ERROR, 'Class name should be "' . $shouldClass . '" is "' . $hasClass . '" in ' . $path);
 	}
 
 	// check whether the classes wich are used are imported through use 
@@ -158,12 +169,14 @@ function checkFile($file)
 		Logger::log(Logger::INFO, ' - ' . $use . ' AS ' . $alias);
 	}
 
+	$used = array();
+
 	foreach($usedClasses as $class)
 	{
-		// check whether we have this method in the std library
-		if(class_exists($class, false) || interface_exists($class, false))
+		// if the class name has an underscore fix it to an namespaced name
+		if(strpos($class, '_') !== false)
 		{
-			continue;
+			$class = str_replace('_', '\\', $class);
 		}
 
 		// absolute path
@@ -173,57 +186,49 @@ function checkFile($file)
 			$classParts = explode('\\', substr($class, 1));
 			$classFile  = PATH . '/' . implode('/', $classParts) . '.php';
 
-			if(!is_file($classFile))
+			if(!is_file($classFile) && !(class_exists($class, false) || interface_exists($class, false)))
 			{
-				Logger::log(Logger::NOTICE, 'Class "' . $class . '" does not exist in ' . $path);
+				Logger::log(Logger::ERROR, 'Class "' . $class . '" does not exist in ' . $path);
 			}
 			continue;
 		}
 
 		// relative path
 		$classParts = explode('\\', $class);
-		$found = false;
+		$found      = false;
 
 		foreach($uses as $row)
 		{
 			list($use, $alias) = $row;
 
-			$useParts = explode('\\', $use);
-
-			// if the alias refers to an known class or interface
-			if($alias == $class)
-			{
-				if(class_exists($use, false) || interface_exists($use, false))
-				{
-					$found = true;
-					break;
-				}
-			}
-
-			if($use == $class || $alias == $class || end($useParts) == $class)
+			if($use == $class || $alias == $class)
 			{
 				$classFile = PATH . '/' . str_replace('\\', '/', $use) . '.php';
 
-				if(!is_file($classFile))
+				if(!is_file($classFile) && !(class_exists($use, false) || interface_exists($use, false)))
 				{
-					Logger::log(Logger::NOTICE, 'Class "' . $class . '" does not exist in ' . $path);
+					Logger::log(Logger::ERROR, 'Class "' . $class . '" does not exist in ' . $path);
 				}
 				else
 				{
+					$used[] = $use;
+
 					$found = true;
 					break;
 				}
 			}
-			else if(end($useParts) == $classParts[0] || $alias == $classParts[0])
+			else if($alias == $classParts[0])
 			{
 				$classFile = PATH . '/' . str_replace('\\', '/', $use) . '/' . implode('/', array_slice($classParts, 1)) . '.php';
 
-				if(!is_file($classFile))
+				if(!is_file($classFile) && !(class_exists($use, false) || interface_exists($use, false)))
 				{
-					Logger::log(Logger::NOTICE, 'Class "' . $class . '" does not exist in ' . $path);
+					Logger::log(Logger::ERROR, 'Class "' . $class . '" does not exist in ' . $path);
 				}
 				else
 				{
+					$used[] = $use;
+
 					$found = true;
 					break;
 				}
@@ -236,17 +241,157 @@ function checkFile($file)
 			$fullClass = $hasNs . '\\' . $class;
 			$classFile = PATH . '/' . str_replace('\\', '/', $fullClass) . '.php';
 
-			if(!is_file($classFile))
+			if(!is_file($classFile) && !(class_exists($use, false) || interface_exists($use, false)))
 			{
-				Logger::log(Logger::NOTICE, 'Class "' . $class . '" does not exist in ' . $path);
+				Logger::log(Logger::ERROR, 'Class "' . $class . '" does not exist in ' . $path);
+			}
+			else
+			{
+				$found = true;
 			}
 		}
+
+		if(!$found)
+		{
+			// check whether we have this method in the std library
+			if(class_exists($class, false) || interface_exists($class, false))
+			{
+				$used[] = $class;
+
+				$found = true;
+			}
+		}
+
+		if(!$found)
+		{
+			// probably we dont have any use statment for the class we try to  
+			// look in our class index
+			$className = null;
+			$count     = 0;
+
+			foreach($classIndex as $fullClass => $shortClass)
+			{
+				if($shortClass == $class)
+				{
+					$className = $fullClass;
+					$count++;
+				}
+			}
+
+			if($count == 0)
+			{
+				Logger::log(Logger::NOTICE, 'Found no class in index for "' . $class . '" in ' . $path);
+			}
+			else if($count == 1)
+			{
+				$used[] = $className;
+
+				Logger::log(Logger::NOTICE, 'Found distinct class in index for "' . $class . '" in ' . $path);
+			}
+			else
+			{
+				Logger::log(Logger::NOTICE, 'Found ambiguous classes in index for "' . $class . '" in ' . $path);
+			}
+		}
+	}
+
+	// unique uses
+	$used = array_unique($used);
+
+	// remove use wich are in the same namespace
+	foreach($used as $k => $use)
+	{
+		$ns    = substr($use, 0, strlen($hasNs) + 1);
+		$class = substr($use, strlen($hasNs) + 1);
+
+		if($ns == $hasNs . '\\' && !empty($class) && strpos($class, '\\') === false)
+		{
+			$fullClass = $hasNs . '\\' . $class;
+			$classFile = PATH . '/' . str_replace('\\', '/', $fullClass) . '.php';
+
+			if(is_file($classFile))
+			{
+				Logger::log(Logger::NOTICE, 'Found unused import for class ' . $use . ' in ' . $path);
+
+				unset($used[$k]);
+			}
+		}
+	}
+
+	// output
+	if(count($used) > 0 && count($used) != count($uses))
+	{
+		Logger::log(Logger::NOTICE, 'Only the following uses are necessary in ' . $path);
+
+		sort($used);
+
+		foreach($used as $use)
+		{
+			Logger::log(Logger::NOTICE, 'use ' . $use . ';');
+		}
+
+		Logger::log(Logger::NOTICE, '--');
+	}
+	else if(count($used) == 0 && count($uses) > 0)
+	{
+		Logger::log(Logger::NOTICE, 'No uses needed in ' . $path);
 	}
 }
 
 function exceptionErrorHandler($errno, $errstr, $errfile, $errline)
 {
 	throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
+}
+
+function autoloadHandler($className)
+{
+    $className = ltrim($className, '\\');
+    $fileName  = '';
+    $namespace = '';
+    if ($lastNsPos = strrpos($className, '\\')) {
+        $namespace = substr($className, 0, $lastNsPos);
+        $className = substr($className, $lastNsPos + 1);
+        $fileName  = str_replace('\\', DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
+    }
+    $fileName .= str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
+
+    require $fileName;
+}
+
+function buildClassIndex($path)
+{
+	$result = array();
+	$files  = scandir($path);
+
+	foreach($files as $file)
+	{
+		$item = $path . '/' . $file;
+
+		if($file[0] != '.')
+		{
+			if(is_dir($item))
+			{
+				$result = array_merge($result, buildClassIndex($item));
+			}
+
+			if(is_file($item))
+			{
+				$info = pathinfo($item);
+
+				if(isset($info['extension']) && $info['extension'] == 'php')
+				{
+					$fullClass  = str_replace('/', '\\', trim(substr($info['dirname'], strlen(PATH) + 1) . '/' . $info['filename'], '/'));
+					$shortClass = $info['filename'];
+
+					$result[$fullClass] = $shortClass;
+				}
+			}
+		}
+	}
+
+	Logger::log(Logger::INFO, 'Found ' . count($result) . ' classes');
+
+	return $result;
 }
 
 class Logger
@@ -271,12 +416,16 @@ class Logger
 
 		switch($level)
 		{
-			case self::INFO:
-				echo '[INFO] ' . $msg . PHP_EOL;
+			case self::ERROR:
+				echo '[ERROR] ' . $msg . PHP_EOL;
 				break;
 
 			case self::NOTICE:
 				echo '[NOTICE] ' . $msg . PHP_EOL;
+				break;
+
+			case self::INFO:
+				echo '[INFO] ' . $msg . PHP_EOL;
 				break;
 		}
 	}
@@ -380,11 +529,14 @@ class TokenParser
 				case T_ABSTRACT:
 				case T_CLASS:
 				case T_INTERFACE:
-					$this->setType($token[0]);
+					if($this->class == null)
+					{
+						$this->setType($token[0]);
 
-					$token = $this->gotoNextToken(T_STRING);
+						$token = $this->gotoNextToken(T_STRING);
 
-					$this->setClass($token[1]);
+						$this->setClass($token[1]);
+					}
 					break;
 
 				case T_CATCH:
@@ -401,7 +553,34 @@ class TokenParser
 					break;
 
 				case T_DOUBLE_COLON:
-					// @todo classes of static method calls
+					$i = $this->i - 2;
+					$classParts = array();
+
+					while($i > 0)
+					{
+						if($this->tokens[$i][0] == T_STRING)
+						{
+							$classParts[] = $this->tokens[$i][1];
+						}
+						else if($this->tokens[$i][0] == T_NS_SEPARATOR)
+						{
+							$classParts[] = '\\';
+						}
+						else
+						{
+							break;
+						}
+
+						$i--;
+					}
+
+					if(!empty($classParts))
+					{
+						$class = implode('', array_reverse($classParts));
+
+						$this->addClass($class);
+					}
+					$this->next();
 					break;
 
 				case T_EXTENDS:
@@ -487,7 +666,28 @@ class TokenParser
 					break;
 
 				case T_FUNCTION:
-					// @tood classes in method type hinting
+					$this->gotoNextToken('(');
+
+					while($this->hasNext())
+					{
+						$token = $this->current();
+
+						if($token[0] == T_WHITESPACE || $token[0] == ',' || $token[0] == T_VARIABLE)
+						{
+							$this->next();
+							continue;
+						}
+
+						$class = $this->getClassName();
+						if(!empty($class))
+						{
+							$this->addClass($class);
+						}
+						else
+						{
+							break;
+						}
+					}
 					break;
 			}
 		}
@@ -538,22 +738,6 @@ class TokenParser
 		return null;
 	}
 
-	protected function gotoPrevToken($token)
-	{
-		while($this->hasPrev())
-		{
-			$tok = $this->prev();
-
-			if($tok[0] == $token)
-			{
-				return $tok;
-				break;
-			}
-		}
-
-		return null;
-	}
-
 	protected function getClassName()
 	{
 		$class = '';
@@ -595,30 +779,5 @@ class TokenParser
 		}
 
 		return null;
-	}
-
-	protected function getClassNamePrev()
-	{
-		$class = '';
-
-		while($this->hasPrev())
-		{
-			$token = $this->prev();
-
-			if($token[0] == T_STRING)
-			{
-				$class.= $token[1];
-			}
-			else if($token[0] == T_NS_SEPARATOR)
-			{
-				$class.= '\\';
-			}
-			else
-			{
-				break;
-			}
-		}
-
-		return $class;
 	}
 }

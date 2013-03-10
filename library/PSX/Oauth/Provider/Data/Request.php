@@ -23,6 +23,19 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Oauth\Provider\Data;
+
+use PSX\Data\ReaderResult;
+use PSX\Data\ReaderInterface;
+use PSX\Data\RecordAbstract;
+use PSX\Data\InvalidDataException;
+use PSX\Data\NotSupportedException;
+use PSX\Filter\Digit;
+use PSX\Filter\Length;
+use PSX\Filter\Url;
+use PSX\Oauth;
+use PSX\Validate;
+
 /**
  * PSX_Oauth_Provider_Data_Request
  *
@@ -33,7 +46,7 @@
  * @package    PSX_Oauth
  * @version    $Revision: 480 $
  */
-class PSX_Oauth_Provider_Data_Request extends PSX_Data_RecordAbstract
+class Request extends RecordAbstract
 {
 	public $consumerKey;
 	public $token;
@@ -63,7 +76,7 @@ class PSX_Oauth_Provider_Data_Request extends PSX_Data_RecordAbstract
 
 	public function __construct()
 	{
-		$this->validate = new PSX_Validate();
+		$this->validate = new Validate();
 	}
 
 	public function getName()
@@ -106,15 +119,11 @@ class PSX_Oauth_Provider_Data_Request extends PSX_Data_RecordAbstract
 			case 'HMAC-SHA1':
 			case 'RSA-SHA1':
 			case 'PLAINTEXT':
-
 				$this->signatureMethod = $signatureMethod;
-
 				break;
 
 			default:
-
-				throw new PSX_Data_Exception('Invalid signature method');
-
+				throw new InvalidDataException('Invalid signature method');
 				break;
 		}
 	}
@@ -132,7 +141,7 @@ class PSX_Oauth_Provider_Data_Request extends PSX_Data_RecordAbstract
 		// 10 signs ... should be future safe xD ... if many websites
 		// uses in the future psx and they get problems because of that
 		// ... shame on me ^^
-		$timestamp = $this->validate->apply($timestamp, 'string', array(new PSX_Filter_Length(10, 10), new PSX_Filter_Digit()), 'timestamp', 'Timestamp');
+		$timestamp = $this->validate->apply($timestamp, 'string', array(new Length(10, 10), new Digit()), 'timestamp', 'Timestamp');
 
 		if(!$this->validate->hasError())
 		{
@@ -140,7 +149,7 @@ class PSX_Oauth_Provider_Data_Request extends PSX_Data_RecordAbstract
 		}
 		else
 		{
-			throw new PSX_Data_Exception($this->validate->getLastError());
+			throw new InvalidDataException($this->validate->getLastError());
 		}
 	}
 
@@ -159,7 +168,7 @@ class PSX_Oauth_Provider_Data_Request extends PSX_Data_RecordAbstract
 		}
 		else
 		{
-			$callback = $this->validate->apply($callback, 'string', array(new PSX_Filter_Length(7, 256), new PSX_Filter_Url()), 'callback', 'Callback');
+			$callback = $this->validate->apply($callback, 'string', array(new Length(7, 256), new Url()), 'callback', 'Callback');
 
 			if(!$this->validate->hasError())
 			{
@@ -167,7 +176,7 @@ class PSX_Oauth_Provider_Data_Request extends PSX_Data_RecordAbstract
 			}
 			else
 			{
-				throw new PSX_Data_Exception($this->validate->getLastError());
+				throw new InvalidDataException($this->validate->getLastError());
 			}
 		}
 	}
@@ -179,7 +188,7 @@ class PSX_Oauth_Provider_Data_Request extends PSX_Data_RecordAbstract
 
 	public function setVerifier($verifier)
 	{
-		$verifier = $this->validate->apply($verifier, 'string', array(new PSX_Filter_Length(16, 512)), 'verifier', 'Verifier');
+		$verifier = $this->validate->apply($verifier, 'string', array(new Length(16, 512)), 'verifier', 'Verifier');
 
 		if(!$this->validate->hasError())
 		{
@@ -187,7 +196,7 @@ class PSX_Oauth_Provider_Data_Request extends PSX_Data_RecordAbstract
 		}
 		else
 		{
-			throw new PSX_Data_Exception($this->validate->getLastError());
+			throw new InvalidDataException($this->validate->getLastError());
 		}
 	}
 
@@ -241,11 +250,11 @@ class PSX_Oauth_Provider_Data_Request extends PSX_Data_RecordAbstract
 		$this->requiredFields = $requiredFields;
 	}
 
-	public function import(PSX_Data_ReaderResult $result)
+	public function import(ReaderResult $result)
 	{
 		switch($result->getType())
 		{
-			case PSX_Data_ReaderInterface::RAW:
+			case ReaderInterface::RAW:
 
 				$header = $result->getData()->getHeader();
 
@@ -272,7 +281,7 @@ class PSX_Oauth_Provider_Data_Request extends PSX_Data_RecordAbstract
 									$key = substr(strtolower($pair[0]), 6);
 									$val = trim($pair[1], '"');
 
-									$data[$key] = PSX_Oauth::urlDecode($val);
+									$data[$key] = Oauth::urlDecode($val);
 								}
 							}
 						}
@@ -291,30 +300,30 @@ class PSX_Oauth_Provider_Data_Request extends PSX_Data_RecordAbstract
 								}
 								else
 								{
-									throw new PSX_Data_Exception('Unknown parameter');
+									throw new InvalidDataException('Unknown parameter');
 								}
 							}
 							else if(in_array($k, $this->requiredFields))
 							{
-								throw new PSX_Data_Exception('Required parameter "' . $v . '" is missing');
+								throw new InvalidDataException('Required parameter "' . $v . '" is missing');
 							}
 						}
 					}
 					else
 					{
-						throw new PSX_Data_Exception('Unknown OAuth authentication');
+						throw new InvalidDataException('Unknown OAuth authentication');
 					}
 				}
 				else
 				{
-					throw new PSX_Data_Exception('Missing Authorization header');
+					throw new InvalidDataException('Missing Authorization header');
 				}
 
 				break;
 
 			default:
 
-				throw new PSX_Data_Exception('Can only import data from reader Raw');
+				throw new NotSupportedException('Can only import data from reader Raw');
 
 				break;
 		}

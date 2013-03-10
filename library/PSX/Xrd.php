@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
+use SimpleXMLElement;
+
 /**
  * PSX_Xrd
  *
@@ -33,7 +37,7 @@
  * @package    PSX_Xrd
  * @version    $Revision: 480 $
  */
-class PSX_Xrd
+class Xrd
 {
 	public static $verifyAttrGroup         = array('absent', 'off', 'verified', 'failed');
 	public static $selectionAttrGroupMatch = array('default', 'any', 'non-null', 'null');
@@ -91,7 +95,7 @@ class PSX_Xrd
 				case 'localid':
 				case 'service':
 
-					$class = 'PSX_Xrd_' . ucfirst($k);
+					$class = '\PSX\Xrd\\' . ucfirst($k);
 
 					array_push($this->$k, new $class($child));
 

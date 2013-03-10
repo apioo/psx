@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Filter;
+
 /**
  * PSX_Filter_DateIntervalTest
  *
@@ -32,7 +34,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_Filter_DateIntervalTest extends PHPUnit_Framework_TestCase
+class DateIntervalTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -44,7 +46,7 @@ class PSX_Filter_DateIntervalTest extends PHPUnit_Framework_TestCase
 
 	public function testDateInterval()
 	{
-		$dateInterval = new PSX_Filter_DateInterval();
+		$dateInterval = new DateInterval();
 
 		$this->assertEquals(true, $dateInterval->apply('P1M'));
 		$this->assertEquals(true, $dateInterval->apply('P1Y4D'));

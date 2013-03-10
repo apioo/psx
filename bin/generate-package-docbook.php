@@ -9,6 +9,8 @@ $bootstrap = new PSX_Bootstrap($config);
 parsePackages('../doc/docbook/packages');
 
 
+$packages = array();
+
 function parsePackages($path)
 {
 	$files = scandir($path);
@@ -68,13 +70,14 @@ function buildPackage($file, $name)
 	}
 
 	// write dependecies
-	//writeDependecies($doc, $name, $result);
-
-	// write synopsis
-	writeSynopsis($doc, $name, $result);
+	writeDependecies($doc, $name, $result);
 
 	// save package
 	file_put_contents($file, $doc->saveXML());
+
+
+
+
 }
 
 function scanRecClasses($path, $basePath)
@@ -203,6 +206,20 @@ function getClassDependencies(ClassUsed $parentClass, $deep = 0, array $loaded =
 			}
 		}
 	}
+}
+
+function writeDependecies($doc, $name, array $classes)
+{
+	$result = array();
+
+	foreach($classes as $class)
+	{
+
+	}
+}
+
+function writeRecDependecies($doc, $name, array $classes)
+{
 }
 
 function writeSynopsis($doc, $name, array $classes)

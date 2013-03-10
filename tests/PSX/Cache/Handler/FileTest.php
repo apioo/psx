@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Cache\Handler;
+
+use PSX\CacheTest;
+
 /**
  * PSX_Cache_Handler_FileTest
  *
@@ -32,10 +36,10 @@
  * @category   tests
  * @version    $Revision: 559 $
  */
-class PSX_Cache_Handler_FileTest extends PSX_CacheTest
+class FileTest extends CacheTest
 {
 	protected function getHandler()
 	{
-		return new PSX_Cache_Handler_File();
+		return new File();
 	}
 }

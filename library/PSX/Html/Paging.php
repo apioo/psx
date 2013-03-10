@@ -23,6 +23,13 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Html;
+
+use Countable;
+use PSX\Data\ResultSet;
+use PSX\Url;
+use Iterator;
+
 /**
  * PSX_Html_Paging
  *
@@ -33,7 +40,7 @@
  * @package    PSX_Html
  * @version    $Revision: 635 $
  */
-class PSX_Html_Paging implements Countable, Iterator
+class Paging implements Countable, Iterator
 {
 	private $url;
 	private $resultSet;
@@ -56,7 +63,7 @@ class PSX_Html_Paging implements Countable, Iterator
 	public $next;
 	public $last;
 
-	public function __construct(PSX_Url $url, PSX_Data_ResultSet $resultSet, $range = 2)
+	public function __construct(Url $url, ResultSet $resultSet, $range = 2)
 	{
 		$this->url       = $url;
 		$this->resultSet = $resultSet;

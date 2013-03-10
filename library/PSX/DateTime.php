@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
+use DateTimeZone;
+
 /**
  * PSX_DateTime
  *
@@ -33,7 +37,7 @@
  * @package    PSX_DateTime
  * @version    $Revision: 480 $
  */
-class PSX_DateTime extends DateTime
+class DateTime extends \DateTime
 {
 	const HTTP = 'D, d M Y H:i:s \G\M\T';
 	const SQL  = 'Y-m-d H:i:s';

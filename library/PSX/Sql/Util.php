@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Sql;
+
+use PSX\Exception;
+
 /**
  * PSX_Sql_Util
  *
@@ -33,7 +37,7 @@
  * @package    PSX_Sql
  * @version    $Revision: 480 $
  */
-class PSX_Sql_Util
+class Util
 {
 	/**
 	 * The method parses an SQL statment and tries to extract the selected
@@ -103,14 +107,14 @@ class PSX_Sql_Util
 
 
 			// condition
-			$condition = PSX_Sql_Condition::parse(trim($stmt));
+			$condition = Condition::parse(trim($stmt));
 
 
 			return array($fields, $table, $condition);
 		}
 		else
 		{
-			throw new PSX_Sql_Exception('Invalid sql statment');
+			throw new Exception('Invalid sql statment');
 		}
 	}
 }

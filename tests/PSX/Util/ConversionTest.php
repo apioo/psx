@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Util;
+
 /**
  * PSX_Util_ConversionTest
  *
@@ -32,7 +34,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_Util_ConversionTest extends PHPUnit_Framework_TestCase
+class ConversionTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -44,31 +46,31 @@ class PSX_Util_ConversionTest extends PHPUnit_Framework_TestCase
 
 	public function testConversionBi()
 	{
-		$this->assertEquals('32 byte', PSX_Util_Conversion::bi(32));
-		$this->assertEquals('1 Kibi', PSX_Util_Conversion::bi(1024));
+		$this->assertEquals('32 byte', Conversion::bi(32));
+		$this->assertEquals('1 Kibi', Conversion::bi(1024));
 	}
 
 	public function testConversionByte()
 	{
-		$this->assertEquals('32 byte', PSX_Util_Conversion::byte(32));
-		$this->assertEquals('1.02 kB', PSX_Util_Conversion::byte(1024));
+		$this->assertEquals('32 byte', Conversion::byte(32));
+		$this->assertEquals('1.02 kB', Conversion::byte(1024));
 	}
 
 	public function testConversionMeter()
 	{
-		$this->assertEquals('1 m', PSX_Util_Conversion::meter(1));
-		$this->assertEquals('1.02 km', PSX_Util_Conversion::meter(1024));
+		$this->assertEquals('1 m', Conversion::meter(1));
+		$this->assertEquals('1.02 km', Conversion::meter(1024));
 	}
 
 	public function testConversionGram()
 	{
-		$this->assertEquals('1 g', PSX_Util_Conversion::gram(1));
-		$this->assertEquals('1.02 kg', PSX_Util_Conversion::gram(1024));
+		$this->assertEquals('1 g', Conversion::gram(1));
+		$this->assertEquals('1.02 kg', Conversion::gram(1024));
 	}
 
 	public function testConversionSeconds()
 	{
-		$this->assertEquals('1 s', PSX_Util_Conversion::seconds(1));
-		$this->assertEquals('6 ms', PSX_Util_Conversion::seconds(0.006));
+		$this->assertEquals('1 s', Conversion::seconds(1));
+		$this->assertEquals('6 ms', Conversion::seconds(0.006));
 	}
 }

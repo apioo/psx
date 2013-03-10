@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Log;
+
 /**
  * PSX_Log_HandlerInterface
  *
@@ -33,7 +35,7 @@
  * @package    PSX_Log
  * @version    $Revision: 480 $
  */
-interface PSX_Log_HandlerInterface
+interface HandlerInterface
 {
 	public function write($level, $string);
 }

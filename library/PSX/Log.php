@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
+use PSX\Log\HandlerInterface;
+
 /**
  * The class offers basic log functionality. The following example writes all
  * logs to the file log.txt. If no handler is attached to the logger all
@@ -43,7 +47,7 @@
  * @package    PSX_Log
  * @version    $Revision: 613 $
  */
-class PSX_Log
+class Log
 {
 	const ALL   = 0x7;
 	const TRACE = 0x6;
@@ -64,12 +68,12 @@ class PSX_Log
 		$this->setLevel(self::WARN);
 	}
 
-	public function setHandler(PSX_Log_HandlerInterface $handler)
+	public function setHandler(HandlerInterface $handler)
 	{
 		$this->handler = array($handler);
 	}
 
-	public function addHandler(PSX_Log_HandlerInterface $handler)
+	public function addHandler(HandlerInterface $handler)
 	{
 		$this->handler[] = $handler;
 	}

@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
 /**
  * PSX_PingbackTest
  *
@@ -32,7 +34,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_PingbackTest extends PHPUnit_Framework_TestCase
+class PingbackTest extends \PHPUnit_Framework_TestCase
 {
 	const SERVER_URL   = 'http://test.phpsx.org/pingback/server';
 	const RESOURCE_URL = 'http://test.phpsx.org/pingback/resource';
@@ -47,7 +49,7 @@ class PSX_PingbackTest extends PHPUnit_Framework_TestCase
 
 	public function testDiscovery()
 	{
-		$pingback = new PSX_Pingback(new PSX_Http());
+		$pingback = new Pingback(new Http());
 		$response = $pingback->send('http://foobar.com', self::RESOURCE_URL);
 
 		$this->assertEquals(true, $response);

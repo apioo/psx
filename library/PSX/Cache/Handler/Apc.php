@@ -23,6 +23,11 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Cache\Handler;
+
+use PSX\Cache\HandlerInterface;
+use PSX\Cache\Item;
+
 /**
  * PSX_Cache_Handler_Apc
  *
@@ -33,7 +38,7 @@
  * @package    PSX_Cache
  * @version    $Revision: 637 $
  */
-class PSX_Cache_Handler_Apc implements PSX_Cache_HandlerInterface
+class Apc implements HandlerInterface
 {
 	public function load($key)
 	{
@@ -41,7 +46,7 @@ class PSX_Cache_Handler_Apc implements PSX_Cache_HandlerInterface
 		{
 			$content = apc_fetch($key);
 
-			return new PSX_Cache_Item($content, null);
+			return new Item($content, null);
 		}
 		else
 		{

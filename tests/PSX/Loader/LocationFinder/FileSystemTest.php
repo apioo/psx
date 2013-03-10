@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Loader\LocationFinder;
+
+use ReflectionClass;
+
 /**
  * PSX_Loader_LocationFinder_FileSystemTest
  *
@@ -32,14 +36,14 @@
  * @category   tests
  * @version    $Revision: 658 $
  */
-class PSX_Loader_LocationFinder_FileSystemTest extends PHPUnit_Framework_TestCase
+class FileSystemTest extends \PHPUnit_Framework_TestCase
 {
 	private $finder;
 	private $path = 'tests/PSX/Loader/module';
 
 	protected function setUp()
 	{
-		$this->finder = new PSX_Loader_LocationFinder_FileSystem($this->path);
+		$this->finder = new FileSystem($this->path);
 	}
 
 	protected function tearDown()
@@ -129,7 +133,7 @@ class PSX_Loader_LocationFinder_FileSystemTest extends PHPUnit_Framework_TestCas
 	}
 
 	/**
-	 * @expectedException PSX_Loader_Exception
+	 * @expectedException \PSX\Exception
 	 */
 	public function testMaliciousInput()
 	{

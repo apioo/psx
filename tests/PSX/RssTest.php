@@ -23,6 +23,11 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
+use PSX\Http\GetRequest;
+use PSX\Data\Reader;
+
 /**
  * PSX_RssTest
  *
@@ -32,7 +37,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_RssTest extends PHPUnit_Framework_TestCase
+class RssTest extends \PHPUnit_Framework_TestCase
 {
 	const URL = 'http://test.phpsx.org/index.php/rss/feed';
 
@@ -40,7 +45,7 @@ class PSX_RssTest extends PHPUnit_Framework_TestCase
 
 	protected function setUp()
 	{
-		$this->http = new PSX_Http(new PSX_Http_Handler_Curl());
+		$this->http = new Http();
 	}
 
 	protected function tearDown()
@@ -49,19 +54,13 @@ class PSX_RssTest extends PHPUnit_Framework_TestCase
 
 	public function testRss()
 	{
-		$url = new PSX_Url(self::URL);
-
-		$request  = new PSX_Http_GetRequest($url);
-
+		$url      = new Url(self::URL);
+		$request  = new GetRequest($url);
 		$response = $this->http->request($request);
+		$reader   = new Reader\Dom();
 
-
-		$reader = new PSX_Data_Reader_Dom();
-
-		$rss = new PSX_Rss();
-
+		$rss = new Rss();
 		$rss->import($reader->read($response));
-
 
 		$this->assertEquals('Liftoff News', $rss->title);
 		$this->assertEquals('http://liftoff.msfc.nasa.gov/', $rss->link);

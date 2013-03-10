@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Html\Filter\Collection;
+
 /**
  * Collection of all html5 elements wich can be used inside of an body tag. Must 
  * be only used with trusted content because it allows all elements from the 
@@ -35,7 +37,7 @@
  * @package    PSX_Html
  * @version    $Revision: 560 $
  */
-class PSX_Html_Filter_Collection_Html5Inline extends PSX_Html_Filter_Collection_Html5
+class Html5Inline extends Html5
 {
 	public function loadElements()
 	{

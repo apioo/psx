@@ -23,6 +23,14 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Sql;
+
+use PSX\Data\RecordInterface;
+use PSX\Exception;
+use PSX\Sql;
+use PSX\Sql\Table\Select;
+use ReflectionClass;
+
 /**
  * PSX_Sql_TableAbstract
  *
@@ -33,12 +41,12 @@
  * @package    PSX_Sql
  * @version    $Revision: 642 $
  */
-abstract class PSX_Sql_TableAbstract implements PSX_Sql_TableInterface
+abstract class TableAbstract implements TableInterface
 {
 	protected $sql;
 	protected $select;
 
-	public function __construct(PSX_Sql $sql)
+	public function __construct(Sql $sql)
 	{
 		$this->sql = $sql;
 	}
@@ -46,6 +54,11 @@ abstract class PSX_Sql_TableAbstract implements PSX_Sql_TableInterface
 	public function getSql()
 	{
 		return $this->sql;
+	}
+
+	public function getConnections()
+	{
+		return array();
 	}
 
 	public function getDisplayName()
@@ -98,7 +111,7 @@ abstract class PSX_Sql_TableAbstract implements PSX_Sql_TableInterface
 
 	public function select(array $columns = array(), $prefix = null)
 	{
-		$this->select = new PSX_Sql_Table_Select($this, $prefix);
+		$this->select = new Select($this, $prefix);
 
 		if(in_array('*', $columns))
 		{
@@ -124,13 +137,13 @@ abstract class PSX_Sql_TableAbstract implements PSX_Sql_TableInterface
 
 		if($id !== null)
 		{
-			$fields = implode(', ', array_map('PSX_Sql::helpQuote', array_keys($this->getColumns())));
+			$fields = implode(', ', array_map('\PSX\Sql::helpQuote', array_keys($this->getColumns())));
 			$sql    = 'SELECT ' . $fields . ' FROM `' . $this->getName() . '` WHERE `' . $this->getPrimaryKey() . '` = ?';
-			$record = $this->sql->getRow($sql, array($id), PSX_Sql::FETCH_OBJECT, $class, $args);
+			$record = $this->sql->getRow($sql, array($id), Sql::FETCH_OBJECT, $class, $args);
 
 			if(empty($record))
 			{
-				throw new PSX_Sql_Exception('Invalid record id');
+				throw new Exception('Invalid record id');
 			}
 		}
 		else
@@ -142,35 +155,35 @@ abstract class PSX_Sql_TableAbstract implements PSX_Sql_TableInterface
 		return $record;
 	}
 
-	public function getAll(array $fields, PSX_Sql_Condition $condition = null, $sortBy = null, $sortOrder = 0, $startIndex = null, $count = 32)
+	public function getAll(array $fields, Condition $condition = null, $sortBy = null, $sortOrder = 0, $startIndex = null, $count = 32)
 	{
 		$fields = $this->getValidColumns($fields);
 
-		return $this->sql->select($this->getName(), $fields, $condition, PSX_Sql::SELECT_ALL, $sortBy, $sortOrder, $startIndex, $count);
+		return $this->sql->select($this->getName(), $fields, $condition, Sql::SELECT_ALL, $sortBy, $sortOrder, $startIndex, $count);
 	}
 
-	public function getRow(array $fields, PSX_Sql_Condition $condition = null, $sortBy = null, $sortOrder = 0)
+	public function getRow(array $fields, Condition $condition = null, $sortBy = null, $sortOrder = 0)
 	{
 		$fields = $this->getValidColumns($fields);
 
-		return $this->sql->select($this->getName(), $fields, $condition, PSX_Sql::SELECT_ROW, $sortBy, $sortOrder);
+		return $this->sql->select($this->getName(), $fields, $condition, Sql::SELECT_ROW, $sortBy, $sortOrder);
 	}
 
-	public function getCol($field, PSX_Sql_Condition $condition = null, $sortBy = null, $sortOrder = 0, $startIndex = null, $count = 32)
+	public function getCol($field, Condition $condition = null, $sortBy = null, $sortOrder = 0, $startIndex = null, $count = 32)
 	{
 		$fields = $this->getValidColumns(array($field));
 
-		return $this->sql->select($this->getName(), $fields, $condition, PSX_Sql::SELECT_COL, $sortBy, $sortOrder, $startIndex, $count);
+		return $this->sql->select($this->getName(), $fields, $condition, Sql::SELECT_COL, $sortBy, $sortOrder, $startIndex, $count);
 	}
 
-	public function getField($field, PSX_Sql_Condition $condition = null, $sortBy = null, $sortOrder = 0)
+	public function getField($field, Condition $condition = null, $sortBy = null, $sortOrder = 0)
 	{
 		$fields = $this->getValidColumns(array($field));
 
-		return $this->sql->select($this->getName(), $fields, $condition, PSX_Sql::SELECT_FIELD, $sortBy, $sortOrder);
+		return $this->sql->select($this->getName(), $fields, $condition, Sql::SELECT_FIELD, $sortBy, $sortOrder);
 	}
 
-	public function count(PSX_Sql_Condition $condition = null)
+	public function count(Condition $condition = null)
 	{
 		return $this->sql->count($this->getName(), $condition);
 	}
@@ -180,37 +193,37 @@ abstract class PSX_Sql_TableAbstract implements PSX_Sql_TableInterface
 		if(is_array($params))
 		{
 		}
-		else if($params instanceof PSX_Data_RecordInterface)
+		else if($params instanceof RecordInterface)
 		{
 			$params = $params->getData();
 		}
 		else
 		{
-			throw new PSX_Sql_Table_Exception('Params must be either an array or instance of PSX_Data_RecordInterface');
+			throw new Exception('Params must be either an array or instance of PSX_Data_RecordInterface');
 		}
 
 		$fields = array_intersect_key($params, $this->getColumns());
 
 		if(empty($fields))
 		{
-			throw new PSX_Sql_Table_Exception('No valid field set');
+			throw new Exception('No valid field set');
 		}
 
 		return $this->sql->insert($this->getName(), $fields, $modifier);
 	}
 
-	public function update($params, PSX_Sql_Condition $condition = null, $modifier = 0)
+	public function update($params, Condition $condition = null, $modifier = 0)
 	{
 		if(is_array($params))
 		{
 		}
-		else if($params instanceof PSX_Data_RecordInterface)
+		else if($params instanceof RecordInterface)
 		{
 			$params = $params->getData();
 		}
 		else
 		{
-			throw new PSX_Sql_Table_Exception('Params must be either an array or instance of PSX_Data_RecordInterface');
+			throw new Exception('Params must be either an array or instance of PSX_Data_RecordInterface');
 		}
 
 		$fields = array_intersect_key($params, $this->getColumns());
@@ -223,17 +236,17 @@ abstract class PSX_Sql_TableAbstract implements PSX_Sql_TableInterface
 
 				if(isset($fields[$pk]))
 				{
-					$condition = new PSX_Sql_Condition(array($pk, '=', $fields[$pk]));
+					$condition = new Condition(array($pk, '=', $fields[$pk]));
 				}
 				else
 				{
-					throw new PSX_Sql_Table_Exception('No primary key set');
+					throw new Exception('No primary key set');
 				}
 			}
 		}
 		else
 		{
-			throw new PSX_Sql_Table_Exception('No valid field set');
+			throw new Exception('No valid field set');
 		}
 
 		return $this->sql->update($this->getName(), $fields, $condition, $modifier);
@@ -244,20 +257,20 @@ abstract class PSX_Sql_TableAbstract implements PSX_Sql_TableInterface
 		if(is_array($params))
 		{
 		}
-		else if($params instanceof PSX_Data_RecordInterface)
+		else if($params instanceof RecordInterface)
 		{
 			$params = $params->getData();
 		}
 		else
 		{
-			throw new PSX_Sql_Table_Exception('Params must be either an array or instance of PSX_Data_RecordInterface');
+			throw new Exception('Params must be either an array or instance of PSX_Data_RecordInterface');
 		}
 
 		$fields = array_intersect_key($params, $this->getColumns());
 
 		if(empty($fields))
 		{
-			throw new PSX_Sql_Table_Exception('No valid field set');
+			throw new Exception('No valid field set');
 		}
 
 		return $this->sql->replace($this->getName(), $fields, $modifier);
@@ -270,17 +283,17 @@ abstract class PSX_Sql_TableAbstract implements PSX_Sql_TableInterface
 		if(is_array($params))
 		{
 		}
-		else if($params instanceof PSX_Data_RecordInterface)
+		else if($params instanceof RecordInterface)
 		{
 			$params = $params->getData();
 		}
-		else if($params instanceof PSX_Sql_Condition)
+		else if($params instanceof Condition)
 		{
 			$condition = $params;
 		}
 		else
 		{
-			throw new PSX_Sql_Table_Exception('Params must be either an array or instance of PSX_Data_RecordInterface');
+			throw new Exception('Params must be either an array or instance of PSX_Data_RecordInterface');
 		}
 
 		if($condition === null)
@@ -293,16 +306,16 @@ abstract class PSX_Sql_TableAbstract implements PSX_Sql_TableInterface
 
 				if(isset($fields[$pk]))
 				{
-					$condition = new PSX_Sql_Condition(array($pk, '=', $fields[$pk]));
+					$condition = new Condition(array($pk, '=', $fields[$pk]));
 				}
 				else
 				{
-					throw new PSX_Sql_Table_Exception('No primary key set');
+					throw new Exception('No primary key set');
 				}
 			}
 			else
 			{
-				throw new PSX_Sql_Table_Exception('No valid field set');
+				throw new Exception('No valid field set');
 			}
 		}
 

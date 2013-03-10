@@ -23,6 +23,16 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Data\Writer;
+
+use DateTime;
+use PSX\Data\RecordInterface;
+use PSX\Data\ResultSet;
+use PSX\Data\Writer\Rss\Item;
+use PSX\Data\WriterInterface;
+use PSX\Data\WriterResult;
+use XMLWriter;
+
 /**
  * PSX_Data_Writer_Rss
  *
@@ -33,7 +43,7 @@
  * @package    PSX_Data
  * @version    $Revision: 480 $
  */
-class PSX_Data_Writer_Rss implements PSX_Data_WriterInterface
+class Rss implements WriterInterface
 {
 	public static $mime = 'application/rss+xml';
 
@@ -47,27 +57,19 @@ class PSX_Data_Writer_Rss implements PSX_Data_WriterInterface
 	public function __construct()
 	{
 		$this->writer = new XMLWriter();
-
 		$this->writer->openMemory();
-
 		$this->writer->setIndent(true);
-
 		$this->writer->startDocument('1.0', 'UTF-8');
 	}
 
 	public function setConfig($title, $link, $description)
 	{
 		$this->writer->startElement('rss');
-
 		$this->writer->writeAttribute('version', '2.0');
-
 		$this->writer->startElement('channel');
 
-
 		$this->setTitle($title);
-
 		$this->setLink($link);
-
 		$this->setDescription($description);
 	}
 
@@ -84,9 +86,7 @@ class PSX_Data_Writer_Rss implements PSX_Data_WriterInterface
 	public function setDescription($description)
 	{
 		$this->writer->startElement('description');
-
 		$this->writer->text($description);
-
 		$this->writer->endElement();
 	}
 
@@ -138,17 +138,11 @@ class PSX_Data_Writer_Rss implements PSX_Data_WriterInterface
 	public function addCloud($domain, $port, $path, $registerProcedure, $protocol)
 	{
 		$this->writer->startElement('cloud');
-
 		$this->writer->writeAttribute('domain', $domain);
-
 		$this->writer->writeAttribute('port', $port);
-
 		$this->writer->writeAttribute('path', $path);
-
 		$this->writer->writeAttribute('registerProcedure', $registerProcedure);
-
 		$this->writer->writeAttribute('protocol', $protocol);
-
 		$this->writer->endElement();
 	}
 
@@ -160,11 +154,8 @@ class PSX_Data_Writer_Rss implements PSX_Data_WriterInterface
 	public function setImage($url, $title, $link, $width = false, $height = false)
 	{
 		$this->writer->startElement('image');
-
 		$this->writer->writeElement('url', $url);
-
 		$this->writer->writeElement('title', $title);
-
 		$this->writer->writeElement('link', $link);
 
 		if($width !== false && $height !== false)
@@ -176,7 +167,6 @@ class PSX_Data_Writer_Rss implements PSX_Data_WriterInterface
 			$height = $height <= 400 && $height >= 0 ? $height : 31;
 
 			$this->writer->writeElement('width', $width);
-
 			$this->writer->writeElement('height', $height);
 		}
 
@@ -194,19 +184,14 @@ class PSX_Data_Writer_Rss implements PSX_Data_WriterInterface
 	public function setTextInput($title, $description, $name, $link)
 	{
 		$this->writer->startElement('textInput');
-
 		$this->writer->writeElement('title', $title);
-
 		$this->writer->writeElement('description', $description);
-
 		$this->writer->writeElement('name', $name);
-
 		$this->writer->writeElement('link', $link);
-
 		$this->writer->endElement();
 	}
 
-	public function add(PSX_Data_Writer_Rss_Item $item)
+	public function add(Item $item)
 	{
 		$item->close();
 	}
@@ -214,9 +199,7 @@ class PSX_Data_Writer_Rss implements PSX_Data_WriterInterface
 	public function close()
 	{
 		$this->writer->endElement();
-
 		$this->writer->endElement();
-
 		$this->writer->endDocument();
 
 		echo $this->writer->outputMemory();
@@ -224,14 +207,14 @@ class PSX_Data_Writer_Rss implements PSX_Data_WriterInterface
 
 	public function createItem()
 	{
-		return new PSX_Data_Writer_Rss_Item($this->writer);
+		return new Item($this->writer);
 	}
 
-	public function write(PSX_Data_RecordInterface $record)
+	public function write(RecordInterface $record)
 	{
-		$this->writerResult = new PSX_Data_WriterResult(PSX_Data_WriterInterface::RSS, $this);
+		$this->writerResult = new WriterResult(WriterInterface::RSS, $this);
 
-		if($record instanceof PSX_Data_ResultSet)
+		if($record instanceof ResultSet)
 		{
 			foreach($record->entry as $entry)
 			{
@@ -260,13 +243,12 @@ class PSX_Data_Writer_Rss implements PSX_Data_WriterInterface
 		}
 
 		$writer->text($category);
-
 		$writer->endElement();
 	}
 
 	public static function link($title, $href)
 	{
-		return '<link rel="alternate" type="' . PSX_Data_Writer_Rss::$mime . '" title="' . $title . '" href="' . $href . '" />';
+		return '<link rel="alternate" type="' . self::$mime . '" title="' . $title . '" href="' . $href . '" />';
 	}
 }
 

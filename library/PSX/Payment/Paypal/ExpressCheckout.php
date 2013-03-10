@@ -23,6 +23,13 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Payment\Paypal;
+
+use PSX\Http;
+use PSX\Http\PostRequest;
+use PSX\Payment\Paypal\Store\Session;
+use PSX\Url;
+
 /**
  * PSX_Payment_Paypal_ExpressCheckout
  *
@@ -33,7 +40,7 @@
  * @package    PSX_Payment
  * @version    $Revision: 515 $
  */
-class PSX_Payment_Paypal_ExpressCheckout
+class ExpressCheckout
 {
 	const API  = 'https://api.sandbox.paypal.com/nvp';
 	const WEB  = 'https://www.sandbox.paypal.com/webscr';
@@ -49,16 +56,16 @@ class PSX_Payment_Paypal_ExpressCheckout
 	private $store;
 	private $currencyId;
 
-	public function __construct(PSX_Http $http, PSX_Payment_Paypal_StoreInterface $store = null)
+	public function __construct(Http $http, StoreInterface $store = null)
 	{
 		$this->http  = $http;
-		$this->store = $store === null ? new PSX_Payment_Paypal_Store_Session() : $store;
+		$this->store = $store === null ? new Session() : $store;
 
 		// set default currency
 		$this->setCurrencyId('EUR');
 	}
 
-	public function setStore(PSX_Payment_Paypal_StoreInterface $store)
+	public function setStore(StoreInterface $store)
 	{
 		$this->store = $store;
 	}
@@ -105,8 +112,8 @@ class PSX_Payment_Paypal_ExpressCheckout
 		}
 
 		// request
-		$url      = new PSX_Url(self::API);
-		$request  = new PSX_Http_PostRequest($url, array(), $data);
+		$url      = new Url(self::API);
+		$request  = new PostRequest($url, array(), $data);
 		$response = $this->http->request($request);
 
 		if($response->getCode() == 200)
@@ -126,12 +133,12 @@ class PSX_Payment_Paypal_ExpressCheckout
 			}
 			else
 			{
-				throw new PSX_Payment_Paypal_Exception('No token set');
+				throw new Exception('No token set');
 			}
 		}
 		else
 		{
-			throw new PSX_Payment_Paypal_Exception('Invalid response code');
+			throw new Exception('Invalid response code');
 		}
 	}
 
@@ -147,10 +154,10 @@ class PSX_Payment_Paypal_ExpressCheckout
 
 		if(empty($token))
 		{
-			throw new PSX_Payment_Paypal_Exception('No token available');
+			throw new Exception('No token available');
 		}
 
-		$url = new PSX_Url(self::WEB);
+		$url = new Url(self::WEB);
 		$url->addParam('cmd', '_express-checkout');
 		$url->addParam('token', $token);
 
@@ -173,7 +180,7 @@ class PSX_Payment_Paypal_ExpressCheckout
 
 		if(empty($token))
 		{
-			throw new PSX_Payment_Paypal_Exception('No token available');
+			throw new Exception('No token available');
 		}
 
 		// build request data
@@ -189,8 +196,8 @@ class PSX_Payment_Paypal_ExpressCheckout
 		);
 
 		// request
-		$url      = new PSX_Url(self::API);
-		$request  = new PSX_Http_PostRequest($url, array(), $data);
+		$url      = new Url(self::API);
+		$request  = new PostRequest($url, array(), $data);
 		$response = $this->http->request($request);
 
 		if($response->getCode() == 200)
@@ -211,7 +218,7 @@ class PSX_Payment_Paypal_ExpressCheckout
 		}
 		else
 		{
-			throw new PSX_Payment_Paypal_Exception('Invalid response code');
+			throw new Exception('Invalid response code');
 		}
 	}
 
@@ -228,7 +235,7 @@ class PSX_Payment_Paypal_ExpressCheckout
 
 		if(empty($token))
 		{
-			throw new PSX_Payment_Paypal_Exception('No token available');
+			throw new Exception('No token available');
 		}
 
 		// get payerid
@@ -236,7 +243,7 @@ class PSX_Payment_Paypal_ExpressCheckout
 
 		if(empty($payerId))
 		{
-			throw new PSX_Payment_Paypal_Exception('No payer id available');
+			throw new Exception('No payer id available');
 		}
 
 		// build request data
@@ -273,8 +280,8 @@ class PSX_Payment_Paypal_ExpressCheckout
 		}
 
 		// request
-		$url      = new PSX_Url(self::API);
-		$request  = new PSX_Http_PostRequest($url, array(), $data);
+		$url      = new Url(self::API);
+		$request  = new PostRequest($url, array(), $data);
 		$response = $this->http->request($request);
 
 		if($response->getCode() == 200)
@@ -289,7 +296,7 @@ class PSX_Payment_Paypal_ExpressCheckout
 		}
 		else
 		{
-			throw new PSX_Payment_Paypal_Exception('Invalid response code');
+			throw new Exception('Invalid response code');
 		}
 	}
 
@@ -301,7 +308,7 @@ class PSX_Payment_Paypal_ExpressCheckout
 		}
 		else
 		{
-			throw new PSX_Payment_Paypal_Exception('Invalid currency');
+			throw new Exception('Invalid currency');
 		}
 	}
 
@@ -329,17 +336,17 @@ class PSX_Payment_Paypal_ExpressCheckout
 					{
 						if(isset($data['L_ERRORCODE' . $i]) && isset($data['L_LONGMESSAGE' . $i]))
 						{
-							throw new PSX_Payment_Paypal_Exception($data['L_LONGMESSAGE' . $i], $data['L_ERRORCODE' . $i]);
+							throw new Exception($data['L_LONGMESSAGE' . $i], $data['L_ERRORCODE' . $i]);
 						}
 					}
 
-					throw new PSX_Payment_Paypal_Exception('Error occured');
+					throw new Exception('Error occured');
 					break;
 			}
 		}
 		else
 		{
-			throw new PSX_Payment_Paypal_Exception('ACK key not set');
+			throw new Exception('ACK key not set');
 		}
 	}
 }

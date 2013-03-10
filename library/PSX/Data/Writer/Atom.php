@@ -23,6 +23,16 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Data\Writer;
+
+use DateTime;
+use PSX\Data\RecordInterface;
+use PSX\Data\ResultSet;
+use PSX\Data\Writer\Atom\Entry;
+use PSX\Data\WriterInterface;
+use PSX\Data\WriterResult;
+use XMLWriter;
+
 /**
  * PSX_Data_Writer_Atom
  *
@@ -33,10 +43,9 @@
  * @package    PSX_Data
  * @version    $Revision: 480 $
  */
-class PSX_Data_Writer_Atom implements PSX_Data_WriterInterface
+class Atom implements WriterInterface
 {
 	public static $mime = 'application/atom+xml';
-
 	public static $xmlns = 'http://www.w3.org/2005/Atom';
 
 	private $title;
@@ -49,25 +58,18 @@ class PSX_Data_Writer_Atom implements PSX_Data_WriterInterface
 	public function __construct()
 	{
 		$this->writer = new XMLWriter();
-
 		$this->writer->openMemory();
-
 		$this->writer->setIndent(true);
-
 		$this->writer->startDocument('1.0', 'UTF-8');
 	}
 
 	public function setConfig($title, $id, DateTime $updated)
 	{
 		$this->writer->startElement('feed');
-
 		$this->writer->writeAttribute('xmlns', self::$xmlns);
 
-
 		$this->setTitle($title);
-
 		$this->setId($id);
-
 		$this->setUpdated($updated);
 	}
 
@@ -109,7 +111,6 @@ class PSX_Data_Writer_Atom implements PSX_Data_WriterInterface
 		}
 
 		$this->writer->text($generator);
-
 		$this->writer->endElement();
 	}
 
@@ -138,14 +139,11 @@ class PSX_Data_Writer_Atom implements PSX_Data_WriterInterface
 		$this->writer->writeElement('rights', $rights);
 	}
 
-	public function setSubTitle($type, $sub_title)
+	public function setSubTitle($type, $subTitle)
 	{
 		$this->writer->startElement('subtitle');
-
 		$this->writer->writeAttribute('type', $type);
-
-		$this->writer->text($sub_title);
-
+		$this->writer->text($subTitle);
 		$this->writer->endElement();
 	}
 
@@ -159,7 +157,7 @@ class PSX_Data_Writer_Atom implements PSX_Data_WriterInterface
 		$this->writer->writeElement('updated', $updated->format(DateTime::ATOM));
 	}
 
-	public function add(PSX_Data_Writer_Atom_Entry $entry)
+	public function add(Entry $entry)
 	{
 		$entry->close();
 	}
@@ -167,7 +165,6 @@ class PSX_Data_Writer_Atom implements PSX_Data_WriterInterface
 	public function close()
 	{
 		$this->writer->endElement();
-
 		$this->writer->endDocument();
 
 		echo $this->writer->outputMemory();
@@ -175,14 +172,14 @@ class PSX_Data_Writer_Atom implements PSX_Data_WriterInterface
 
 	public function createEntry()
 	{
-		return new PSX_Data_Writer_Atom_Entry($this->writer);
+		return new Entry($this->writer);
 	}
 
-	public function write(PSX_Data_RecordInterface $record)
+	public function write(RecordInterface $record)
 	{
-		$this->writerResult = new PSX_Data_WriterResult(PSX_Data_WriterInterface::ATOM, $this);
+		$this->writerResult = new WriterResult(WriterInterface::ATOM, $this);
 
-		if($record instanceof PSX_Data_ResultSet)
+		if($record instanceof ResultSet)
 		{
 			foreach($record->entry as $entry)
 			{
@@ -219,7 +216,6 @@ class PSX_Data_Writer_Atom implements PSX_Data_WriterInterface
 	public static function categoryConstruct(XMLWriter $writer, $term, $scheme, $label)
 	{
 		$writer->startElement('category');
-
 		$writer->writeAttribute('term', $term);
 
 		if(!empty($scheme))
@@ -238,7 +234,6 @@ class PSX_Data_Writer_Atom implements PSX_Data_WriterInterface
 	public static function linkConstruct(XMLWriter $writer, $href, $rel = false, $type = false, $hreflang = false, $title = false, $length = false)
 	{
 		$writer->startElement('link');
-
 		$writer->writeAttribute('href', $href);
 
 		if(!empty($rel))
@@ -277,25 +272,17 @@ class PSX_Data_Writer_Atom implements PSX_Data_WriterInterface
 		{
 			case 'text':
 			case 'html':
-
 				$writer->writeAttribute('type', $type);
-
 				$writer->text($content);
-
 				break;
 
 			case 'xhtml':
-
 				$writer->writeAttribute('type', $type);
-
 				$writer->writeRaw($content);
-
 				break;
 
 			default:
-
 				$writer->text($content);
-
 				break;
 		}
 
@@ -304,6 +291,6 @@ class PSX_Data_Writer_Atom implements PSX_Data_WriterInterface
 
 	public static function link($title, $href)
 	{
-		return '<link rel="alternate" type="' . PSX_Data_Writer_Atom::$mime . '" title="' . $title . '" href="' . $href . '" />';
+		return '<link rel="alternate" type="' . self::$mime . '" title="' . $title . '" href="' . $href . '" />';
 	}
 }

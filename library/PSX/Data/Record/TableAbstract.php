@@ -23,6 +23,11 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Data\Record;
+
+use PSX\Data\RecordAbstract;
+use PSX\Sql\TableInterface;
+
 /**
  * PSX_Data_Record_TableAbstract
  *
@@ -33,11 +38,11 @@
  * @package    PSX_Data
  * @version    $Revision: 480 $
  */
-abstract class PSX_Data_Record_TableAbstract extends PSX_Data_RecordAbstract
+abstract class TableAbstract extends RecordAbstract
 {
 	protected $_table;
 
-	public function __construct(PSX_Sql_TableInterface $table)
+	public function __construct(TableInterface $table)
 	{
 		$this->_table = $table;
 	}

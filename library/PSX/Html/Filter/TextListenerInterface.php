@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Html\Filter;
+
+use PSX\Html\Lexer\Token\Text;
+
 /**
  * TextListenerInterface
  *
@@ -33,7 +37,7 @@
  * @package    PSX_Html
  * @version    $Revision: 560 $
  */
-interface PSX_Html_Filter_TextListenerInterface
+interface TextListenerInterface
 {
 	/**
 	 * Is called if an text occurs if the method returns false the text gets
@@ -42,5 +46,5 @@ interface PSX_Html_Filter_TextListenerInterface
 	 *
 	 * @return boolean|PSX_Html_Lexer_Token_Text
 	 */
-	public function onText(PSX_Html_Lexer_Token_Text $text);
+	public function onText(Text $text);
 }

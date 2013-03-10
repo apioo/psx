@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
 /**
  * PSX_Urn
  *
@@ -34,7 +36,7 @@
  * @package    PSX_Urn
  * @version    $Revision: 480 $
  */
-class PSX_Urn extends PSX_Uri
+class Urn extends Uri
 {
 	public function __construct($uri)
 	{
@@ -109,7 +111,7 @@ class PSX_Urn extends PSX_Uri
 
 		if($parts['scheme'] != 'urn')
 		{
-			throw new PSX_Urn_Exception('Invalid urn syntax');
+			throw new Exception('Invalid urn syntax');
 		}
 
 		return $parts;

@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
+use PSX\Filter\InArray;
+
 /**
  * PSX_ValidateTest
  *
@@ -32,7 +36,7 @@
  * @category   tests
  * @version    $Revision: 559 $
  */
-class PSX_ValidateTest extends PHPUnit_Framework_TestCase
+class PSX_ValidateTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -44,18 +48,18 @@ class PSX_ValidateTest extends PHPUnit_Framework_TestCase
 
 	public function testApply()
 	{
-		$validate = new PSX_Validate();
+		$validate = new Validate();
 
 		$this->assertEquals('foo', $validate->apply('foo', 'string', array()));
-		$this->assertEquals(false, $validate->apply('foo', 'string', array(new PSX_Filter_InArray(array('test')))));
-		$this->assertEquals(false, $validate->apply('foo', 'string', array(new PSX_Filter_InArray(array('test'))), 'bar'));
-		$this->assertEquals(false, $validate->apply('foo', 'string', array(new PSX_Filter_InArray(array('test'))), 'bar', 'Bar'));
+		$this->assertEquals(false, $validate->apply('foo', 'string', array(new InArray(array('test')))));
+		$this->assertEquals(false, $validate->apply('foo', 'string', array(new InArray(array('test'))), 'bar'));
+		$this->assertEquals(false, $validate->apply('foo', 'string', array(new InArray(array('test'))), 'bar', 'Bar'));
 
 	}
 
 	public function testApplyScalar()
 	{
-		$validate = new PSX_Validate();
+		$validate = new Validate();
 
 		$this->assertEquals('foo', $validate->apply('foo', 'string'));
 		$this->assertEquals(0, $validate->apply('foo', 'integer'));
@@ -65,25 +69,25 @@ class PSX_ValidateTest extends PHPUnit_Framework_TestCase
 
 	public function testApplyRequired()
 	{
-		$validate = new PSX_Validate();
+		$validate = new Validate();
 
-		$this->assertEquals(false, $validate->apply('foo', 'string', array(new PSX_Filter_InArray(array('test'))), 'bar', 'Bar', false));
+		$this->assertEquals(false, $validate->apply('foo', 'string', array(new InArray(array('test'))), 'bar', 'Bar', false));
 		$this->assertEquals(false, $validate->hasError());
-		$this->assertEquals(false, $validate->apply('foo', 'string', array(new PSX_Filter_InArray(array('test'))), 'bar', 'Bar', true));
+		$this->assertEquals(false, $validate->apply('foo', 'string', array(new InArray(array('test'))), 'bar', 'Bar', true));
 		$this->assertEquals(true, $validate->hasError());
 	}
 
 	public function testApplyReturnValue()
 	{
-		$validate = new PSX_Validate();
+		$validate = new Validate();
 
 		$this->assertEquals('foo', $validate->apply('foo', 'string', array(), 'bar', 'Bar', true, 'test'));
-		$this->assertEquals('test', $validate->apply('foo', 'string', array(new PSX_Filter_InArray(array('test'))), 'bar', 'Bar', true, 'test'));
+		$this->assertEquals('test', $validate->apply('foo', 'string', array(new InArray(array('test'))), 'bar', 'Bar', true, 'test'));
 	}
 
 	public function testAddError()
 	{
-		$validate = new PSX_Validate();
+		$validate = new Validate();
 		$validate->addError('foo', 'bar');
 
 		$this->assertEquals(array('foo' => 'bar'), $validate->getError());
@@ -91,7 +95,7 @@ class PSX_ValidateTest extends PHPUnit_Framework_TestCase
 
 	public function testHasError()
 	{
-		$validate = new PSX_Validate();
+		$validate = new Validate();
 
 		$this->assertEquals(false, $validate->hasError());
 
@@ -102,7 +106,7 @@ class PSX_ValidateTest extends PHPUnit_Framework_TestCase
 
 	public function testGetError()
 	{
-		$validate = new PSX_Validate();
+		$validate = new Validate();
 		$validate->addError('foo', 'bar');
 
 		$this->assertEquals(array('foo' => 'bar'), $validate->getError());
@@ -110,7 +114,7 @@ class PSX_ValidateTest extends PHPUnit_Framework_TestCase
 
 	public function testGetLastError()
 	{
-		$validate = new PSX_Validate();
+		$validate = new Validate();
 		$validate->addError('foo', 'bar');
 		$validate->addError('bar', 'foo');
 

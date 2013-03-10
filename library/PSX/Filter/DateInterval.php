@@ -22,6 +22,11 @@
  * along with amun. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Filter;
+
+use Exception;
+use PSX\FilterAbstract;
+
 /**
  * PSX_Filter_DateInterval
  *
@@ -32,7 +37,7 @@
  * @package    PSX_Filter
  * @version    $Revision: 464 $
  */
-class PSX_Filter_DateInterval extends PSX_FilterAbstract
+class DateInterval extends FilterAbstract
 {
 	public function apply($value)
 	{
@@ -40,7 +45,7 @@ class PSX_Filter_DateInterval extends PSX_FilterAbstract
 		{
 			if(!empty($value))
 			{
-				$interval = new DateInterval($value);
+				$interval = new \DateInterval($value);
 			}
 
 			return true;

@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Util;
+
 /**
  * PSX_Util_MarkdownTest
  *
@@ -32,7 +34,7 @@
  * @category   tests
  * @version    $Revision: 649 $
  */
-class PSX_Util_MarkdownTest extends PHPUnit_Framework_TestCase
+class MarkdownTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -51,7 +53,7 @@ including a new line and so on
 and another text
 TEXT;
 
-		$a = PSX_Util_Markdown::decode($md);
+		$a = Markdown::decode($md);
 		$e = <<<TEXT
 <p>some content with text including a new line and so on </p>
 <p>and another text </p>
@@ -70,7 +72,7 @@ including a new line and so on
 and another text
 TEXT;
 
-		$a = PSX_Util_Markdown::decode($md);
+		$a = Markdown::decode($md);
 		$e = <<<TEXT
 <p>some content with text  <br /> including a new line and so on </p>
 <p>and another text </p>
@@ -90,7 +92,7 @@ TEXT;
 and an reply to this quote
 TEXT;
 
-		$a = PSX_Util_Markdown::decode($md);
+		$a = Markdown::decode($md);
 		$e = <<<TEXT
 <blockquote>
 <p>this is a test quote </p>
@@ -113,7 +115,7 @@ some content
 * bar
 TEXT;
 
-		$a = PSX_Util_Markdown::decode($md);
+		$a = Markdown::decode($md);
 		$e = <<<TEXT
 <p>some content </p>
 <ul>
@@ -135,7 +137,7 @@ some content
 2. bar
 TEXT;
 
-		$a = PSX_Util_Markdown::decode($md);
+		$a = Markdown::decode($md);
 		$e = <<<TEXT
 <p>some content </p>
 <ol>
@@ -159,7 +161,7 @@ TEXT;
 ###### foobar
 TEXT;
 
-		$a = PSX_Util_Markdown::decode($md);
+		$a = Markdown::decode($md);
 		$e = <<<TEXT
 <h1>foobar</h1>
 <h2>foobar</h2>
@@ -181,7 +183,7 @@ some content
 some other content
 TEXT;
 
-		$a = PSX_Util_Markdown::decode($md);
+		$a = Markdown::decode($md);
 		$e = <<<TEXT
 <p>some content </p>
 <hr />
@@ -205,7 +207,7 @@ some code description
 	}
 TEXT;
 
-		$a = PSX_Util_Markdown::decode($md);
+		$a = Markdown::decode($md);
 		$e = <<<TEXT
 <p>some code description </p>
 <pre class="prettyprint">class Voila {
@@ -227,7 +229,7 @@ TEXT;
 foo _bar_ foo *bar* foo *bar* foo _bar_ f*oo bar
 TEXT;
 
-		$a = PSX_Util_Markdown::decode($md);
+		$a = Markdown::decode($md);
 		$e = <<<TEXT
 <p>foo <i>bar</i> foo <i>bar</i> foo <i>bar</i> foo <i>bar</i> f*oo bar </p>
 
@@ -242,7 +244,7 @@ TEXT;
 foo _bar_ foo http://foo.com/test_test_test.htm
 TEXT;
 
-		$a = PSX_Util_Markdown::decode($md);
+		$a = Markdown::decode($md);
 		$e = <<<TEXT
 <p>foo <i>bar</i> foo http://foo.com/test_test_test.htm </p>
 
@@ -257,7 +259,7 @@ TEXT;
 foo __bar__ foo **bar** foo **bar** foo __bar__ f**oo bar
 TEXT;
 
-		$a = PSX_Util_Markdown::decode($md);
+		$a = Markdown::decode($md);
 		$e = <<<TEXT
 <p>foo <b>bar</b> foo <b>bar</b> foo <b>bar</b> foo <b>bar</b> f**oo bar </p>
 
@@ -272,7 +274,7 @@ TEXT;
 foo __bar__ foo http://foo.com/test__test__test.htm
 TEXT;
 
-		$a = PSX_Util_Markdown::decode($md);
+		$a = Markdown::decode($md);
 		$e = <<<TEXT
 <p>foo <b>bar</b> foo http://foo.com/test__test__test.htm </p>
 

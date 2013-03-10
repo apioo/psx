@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\OpenId;
+
+use PSX\OpenId\Provider\Association;
+
 /**
  * PSX_OpenId_StoreInterface
  *
@@ -33,11 +37,11 @@
  * @package    PSX_OpenId
  * @version    $Revision: 480 $
  */
-interface PSX_OpenId_StoreInterface
+interface StoreInterface
 {
 	public function load($opEndpoint);
 	public function loadByHandle($opEndpoint, $assocHandle);
 	public function remove($opEndpoint, $assocHandle);
-	public function save($opEndpoint, PSX_OpenId_Provider_Data_Association $assoc);
+	public function save($opEndpoint, Association $assoc);
 }
 

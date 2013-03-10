@@ -23,6 +23,13 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Oauth\Provider\Data;
+
+use PSX\Data\RecordAbstract;
+use PSX\Data\ReaderResult;
+use PSX\Data\ReaderInterface;
+use PSX\Data\NotSupportedException;
+
 /**
  * PSX_Oauth_Provider_Data_Response
  *
@@ -33,7 +40,7 @@
  * @package    PSX_Oauth
  * @version    $Revision: 480 $
  */
-class PSX_Oauth_Provider_Data_Response extends PSX_Data_RecordAbstract
+class Response extends RecordAbstract
 {
 	public $token;
 	public $tokenSecret;
@@ -89,11 +96,11 @@ class PSX_Oauth_Provider_Data_Response extends PSX_Data_RecordAbstract
 		$this->params[$key] = $value;
 	}
 
-	public function import(PSX_Data_ReaderResult $result)
+	public function import(ReaderResult $result)
 	{
 		switch($result->getType())
 		{
-			case PSX_Data_ReaderInterface::FORM:
+			case ReaderInterface::FORM:
 
 				$data = $result->getData();
 
@@ -102,21 +109,15 @@ class PSX_Oauth_Provider_Data_Response extends PSX_Data_RecordAbstract
 					switch($k)
 					{
 						case 'oauth_token':
-
 							$this->setToken($v);
-
 							break;
 
 						case 'oauth_token_secret':
-
 							$this->setTokenSecret($v);
-
 							break;
 
 						default:
-
 							$this->addParam($k, $v);
-
 							break;
 					}
 				}
@@ -125,7 +126,7 @@ class PSX_Oauth_Provider_Data_Response extends PSX_Data_RecordAbstract
 
 			default:
 
-				throw new PSX_Data_Exception('Can only import results from reader form');
+				throw new NotSupportedException('Can only import results from reader form');
 
 				break;
 		}

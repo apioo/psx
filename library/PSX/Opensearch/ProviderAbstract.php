@@ -23,6 +23,12 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Opensearch;
+
+use PSX\Exception;
+use PSX\ModuleAbstract;
+use XMLWriter;
+
 /**
  * PSX_Opensearch_ProviderAbstract
  *
@@ -33,7 +39,7 @@
  * @package    PSX_Opensearch
  * @version    $Revision: 620 $
  */
-abstract class PSX_Opensearch_ProviderAbstract extends PSX_ModuleAbstract
+abstract class ProviderAbstract extends ModuleAbstract
 {
 	public static $mime  = 'application/opensearchdescription+xml';
 	public static $xmlns = 'http://a9.com/-/spec/opensearch/1.1/';
@@ -65,7 +71,7 @@ abstract class PSX_Opensearch_ProviderAbstract extends PSX_ModuleAbstract
 
 		if(strlen($name) > 16)
 		{
-			throw new PSX_Opensearch_Exception('The value must contain 16 or fewer characters');
+			throw new Exception('The value must contain 16 or fewer characters');
 		}
 		else
 		{
@@ -79,7 +85,7 @@ abstract class PSX_Opensearch_ProviderAbstract extends PSX_ModuleAbstract
 
 		if(strlen($description) > 1024)
 		{
-			throw new PSX_Opensearch_Exception('The value must contain 1024 or fewer characters');
+			throw new Exception('The value must contain 1024 or fewer characters');
 		}
 		else
 		{
@@ -99,7 +105,7 @@ abstract class PSX_Opensearch_ProviderAbstract extends PSX_ModuleAbstract
 		{
 			if(!in_array($rel, self::$rel))
 			{
-				throw new PSX_Opensearch_Exception('rel must be one of the following values: ' . implode(', ', $this->rel));
+				throw new Exception('rel must be one of the following values: ' . implode(', ', $this->rel));
 			}
 			else
 			{
@@ -131,7 +137,7 @@ abstract class PSX_Opensearch_ProviderAbstract extends PSX_ModuleAbstract
 
 		if(strlen($tags) > 256)
 		{
-			throw new PSX_Opensearch_Exception('The value must contain 256 or fewer characters');
+			throw new Exception('The value must contain 256 or fewer characters');
 		}
 		else
 		{
@@ -145,7 +151,7 @@ abstract class PSX_Opensearch_ProviderAbstract extends PSX_ModuleAbstract
 
 		if(strlen($longName) > 48)
 		{
-			throw new PSX_Opensearch_Exception('The value must contain 48 or fewer characters');
+			throw new Exception('The value must contain 48 or fewer characters');
 		}
 		else
 		{
@@ -171,7 +177,7 @@ abstract class PSX_Opensearch_ProviderAbstract extends PSX_ModuleAbstract
 		{
 			if(!in_array($type, self::$type))
 			{
-				throw new PSX_Opensearch_Exception('Invalid mime type allowed: ' . implode(', ', $this->mime));
+				throw new Exception('Invalid mime type allowed: ' . implode(', ', $this->mime));
 			}
 			else
 			{
@@ -205,7 +211,7 @@ abstract class PSX_Opensearch_ProviderAbstract extends PSX_ModuleAbstract
 	{
 		if(!in_array($syndicationRight, self::$right))
 		{
-			throw new PSX_Opensearch_Exception('Invalid syndication right allowed: ' . implode(', ', $this->syndication_right));
+			throw new Exception('Invalid syndication right allowed: ' . implode(', ', $this->syndication_right));
 		}
 		else
 		{

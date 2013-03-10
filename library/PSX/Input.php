@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
+use PSX\Input\ContainerInterface;
+
 /**
  * This class is for handling data wich came from untrusted sources i.e. GET or
  * POST values.
@@ -34,15 +38,15 @@
  * @package    PSX_Input
  * @version    $Revision: 604 $
  */
-class PSX_Input implements PSX_Input_ContainerInterface
+class Input implements ContainerInterface
 {
 	protected $container;
 	protected $validate;
 
-	public function __construct(array &$container, PSX_Validate $validate = null)
+	public function __construct(array &$container, Validate $validate = null)
 	{
 		$this->container =& $container;
-		$this->validate  = $validate === null ? new PSX_Validate() : $validate;
+		$this->validate  = $validate === null ? new Validate() : $validate;
 	}
 
 	public function getContainer()

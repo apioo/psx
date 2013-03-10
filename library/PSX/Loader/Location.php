@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Loader;
+
+use ReflectionClass;
+
 /**
  * Represents an location wich must be returned by an LocationFinderInterface
  *
@@ -33,7 +37,7 @@
  * @package    PSX_Loader
  * @version    $Revision: 480 $
  */
-class PSX_Loader_Location
+class Location
 {
 	private $id;
 	private $path;

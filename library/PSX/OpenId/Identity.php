@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\OpenId;
+
+use PSX\Url;
+
 /**
  * PSX_OpenId_Identity
  *
@@ -33,27 +37,27 @@
  * @package    PSX_OpenId
  * @version    $Revision: 480 $
  */
-class PSX_OpenId_Identity
+class Identity
 {
 	private $server;
 	private $localId;
 
 	public function __construct($server, $localId = null)
 	{
-		$this->setServer(new PSX_Url($server));
+		$this->setServer(new Url($server));
 
 		if(!empty($localId))
 		{
-			$this->setLocalId(new PSX_Url($localId));
+			$this->setLocalId(new Url($localId));
 		}
 	}
 
-	public function setServer(PSX_Url $server)
+	public function setServer(Url $server)
 	{
 		$this->server = $server;
 	}
 
-	public function setLocalId(PSX_Url $localId)
+	public function setLocalId(Url $localId)
 	{
 		$this->localId = $localId;
 	}

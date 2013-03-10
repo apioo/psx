@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
+use ArrayObject;
+
 /**
  * This class is for managing global objects in your application. Here some
  * examples howto set and get objects:
@@ -50,7 +54,7 @@
  * @package    PSX_Registry
  * @version    $Revision: 616 $
  */
-class PSX_Registry extends ArrayObject
+class Registry extends ArrayObject
 {
 	protected static $_instance;
 

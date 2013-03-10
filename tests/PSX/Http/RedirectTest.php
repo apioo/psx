@@ -23,6 +23,13 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Http;
+
+use PSX\Http;
+use PSX\Http\Handler;
+use PSX\HttpTest;
+use PSX\Url;
+
 /**
  * PSX_Http_RedirectTest
  *
@@ -32,7 +39,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_Http_RedirectTest extends PHPUnit_Framework_TestCase
+class RedirectTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -44,10 +51,8 @@ class PSX_Http_RedirectTest extends PHPUnit_Framework_TestCase
 
 	public function testRedirect()
 	{
-		$handler = new PSX_Http_Handler_Curl();
-		$http    = new PSX_Http($handler);
-
-		$request = new PSX_Http_GetRequest(new PSX_Url(PSX_HttpTest::URL . '/redirect'));
+		$http    = new Http();
+		$request = new GetRequest(new Url(HttpTest::URL . '/redirect'));
 		$request->setFollowLocation(true);
 
 		$response = $http->request($request);
@@ -56,14 +61,12 @@ class PSX_Http_RedirectTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX_Http_Exception
+	 * @expectedException \PSX\Http\RedirectException
 	 */
 	public function testMaxRedirect()
 	{
-		$handler = new PSX_Http_Handler_Curl();
-		$http    = new PSX_Http($handler);
-
-		$request = new PSX_Http_GetRequest(new PSX_Url(PSX_HttpTest::URL . '/redirect'));
+		$http    = new Http();
+		$request = new GetRequest(new Url(HttpTest::URL . '/redirect'));
 		$request->setFollowLocation(true, 1);
 
 		$response = $http->request($request);
@@ -71,11 +74,11 @@ class PSX_Http_RedirectTest extends PHPUnit_Framework_TestCase
 
 	public function testManualRedirect()
 	{
-		$handler = new PSX_Http_Handler_Curl();
+		$handler = new Handler\Curl();
 		$handler->setFollowLocation(false);
-		$http    = new PSX_Http($handler);
+		$http    = new Http($handler);
 
-		$request = new PSX_Http_GetRequest(new PSX_Url(PSX_HttpTest::URL . '/redirect'));
+		$request = new GetRequest(new Url(HttpTest::URL . '/redirect'));
 		$request->setFollowLocation(true);
 
 		$response = $http->request($request);
@@ -84,15 +87,15 @@ class PSX_Http_RedirectTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX_Http_Exception
+	 * @expectedException \PSX\Http\RedirectException
 	 */
 	public function testManualMaxRedirect()
 	{
-		$handler = new PSX_Http_Handler_Curl();
+		$handler = new Handler\Curl();
 		$handler->setFollowLocation(false);
-		$http    = new PSX_Http($handler);
+		$http    = new Http($handler);
 
-		$request = new PSX_Http_GetRequest(new PSX_Url(PSX_HttpTest::URL . '/redirect'));
+		$request = new GetRequest(new Url(HttpTest::URL . '/redirect'));
 		$request->setFollowLocation(true, 1);
 
 		$response = $http->request($request);

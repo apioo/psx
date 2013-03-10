@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Html\Filter;
+
 /**
  * Test html filter against several xss vectors to see how the filter behaves.
  * The XSS vextors are taken from http://ha.ckers.org/xss.html
@@ -33,7 +35,7 @@
  * @category   tests
  * @version    $Revision: 560 $
  */
-class PSX_Html_Filter_XssTestCase extends PHPUnit_Framework_TestCase
+class XssTestCase extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -45,7 +47,7 @@ class PSX_Html_Filter_XssTestCase extends PHPUnit_Framework_TestCase
 
 	public function assertXss($expected, $actual)
 	{
-		$filter = new PSX_Html_Filter($actual);
+		$filter = new \PSX\Html\Filter($actual);
 
 		$this->assertEquals($expected, $filter->filter());
 	}

@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Oembed\Type;
+
+use PSX\Oembed\TypeAbstract;
+
 /**
  * PSX_Oembed_Type_Rich
  *
@@ -33,7 +37,7 @@
  * @package    PSX_Oembed
  * @version    $Revision: 480 $
  */
-class PSX_Oembed_Type_Rich extends PSX_Oembed_TypeAbstract
+class Rich extends TypeAbstract
 {
 	public $html;
 	public $width;

@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Html\Lexer;
+
+use PSX\Html\Lexer\Token\Element;
+
 /**
  * PSX_Html_Lexer_Dom
  *
@@ -33,26 +37,26 @@
  * @package    PSX_Html
  * @version    $Revision: 541 $
  */
-class PSX_Html_Lexer_Dom
+class Dom
 {
 	private $root;
 	private $stack = array();
 
-	public function push(PSX_Html_Lexer_TokenAbstract $token)
+	public function push(TokenAbstract $token)
 	{
 		$topToken = $this->getTopToken();
 
 		if($topToken !== false)
 		{
-			if($token instanceof PSX_Html_Lexer_Token_Element)
+			if($token instanceof Element)
 			{
-				if($token->type == PSX_Html_Lexer_Token_Element::TYPE_START)
+				if($token->type == Element::TYPE_START)
 				{
 					array_push($this->stack, $token);
 
 					$topToken->appendChild($token);
 				}
-				else if($token->type == PSX_Html_Lexer_Token_Element::TYPE_END)
+				else if($token->type == Element::TYPE_END)
 				{
 					if($topToken->name == $token->name)
 					{
@@ -62,7 +66,7 @@ class PSX_Html_Lexer_Dom
 					{
 						// close the missing tag and hope that the next tokens
 						// gets better
-						$token = PSX_Html_Lexer_Token_Element::parse('/' . $topToken->name);
+						$token = Element::parse('/' . $topToken->name);
 
 						$this->push($token);
 					}
@@ -76,7 +80,7 @@ class PSX_Html_Lexer_Dom
 		else
 		{
 			// if the stack is empty add only an element token as root
-			if($token instanceof PSX_Html_Lexer_Token_Element)
+			if($token instanceof Element)
 			{
 				$this->stack[] = $this->root = $token;
 			}

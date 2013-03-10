@@ -23,6 +23,12 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\OpenId\Store;
+
+use PSX\File;
+use PSX\OpenId\StoreInterface;
+use PSX\OpenId\Provider\Association;
+
 /**
  * PSX_OpenId_Store_File
  *
@@ -33,7 +39,7 @@
  * @package    PSX_OpenId
  * @version    $Revision: 573 $
  */
-class PSX_OpenId_Store_File implements PSX_OpenId_StoreInterface
+class File implements StoreInterface
 {
 	private $file;
 
@@ -41,21 +47,21 @@ class PSX_OpenId_Store_File implements PSX_OpenId_StoreInterface
 	{
 		$this->file = PSX_PATH_CACHE . '/' . ($file === null ? strtolower(__CLASS__ . '.store') : $file);
 
-		if(!PSX_File::exists($this->file))
+		if(!File::exists($this->file))
 		{
-			PSX_File::putContents($this->file, serialize(array()));
+			File::putContents($this->file, serialize(array()));
 		}
 	}
 
 	public function load($opEndpoint)
 	{
-		$data = unserialize(PSX_File::getContents($this->file));
+		$data = unserialize(File::getContents($this->file));
 		$key  = md5($opEndpoint);
 		$row  = isset($data[$key]) ? $data[$key] : null;
 
 		if(!empty($row))
 		{
-			$assoc = new PSX_OpenId_Provider_Data_Association();
+			$assoc = new Association();
 			$assoc->setAssocHandle($row['assocHandle']);
 			$assoc->setAssocType($row['assocType']);
 			$assoc->setSessionType($row['sessionType']);
@@ -70,13 +76,13 @@ class PSX_OpenId_Store_File implements PSX_OpenId_StoreInterface
 
 	public function loadByHandle($opEndpoint, $assocHandle)
 	{
-		$data = unserialize(PSX_File::getContents($this->file));
+		$data = unserialize(File::getContents($this->file));
 		$key  = md5($opEndpoint);
 		$row  = isset($data[$key]) ? $data[$key] : null;
 
 		if(!empty($row) && $row['assocHandle'] == $assocHandle)
 		{
-			$assoc = new PSX_OpenId_Provider_Data_Association();
+			$assoc = new Association();
 			$assoc->setAssocHandle($row['assocHandle']);
 			$assoc->setAssocType($row['assocType']);
 			$assoc->setSessionType($row['sessionType']);
@@ -91,7 +97,7 @@ class PSX_OpenId_Store_File implements PSX_OpenId_StoreInterface
 
 	public function remove($opEndpoint, $assocHandle)
 	{
-		$data = unserialize(PSX_File::getContents($this->file));
+		$data = unserialize(File::getContents($this->file));
 		$key  = md5($opEndpoint);
 		$row  = isset($data[$key]) ? $data[$key] : null;
 
@@ -99,26 +105,24 @@ class PSX_OpenId_Store_File implements PSX_OpenId_StoreInterface
 		{
 			unset($data[$key]);
 
-			PSX_File::putContents($this->file, serialize($data));
+			File::putContents($this->file, serialize($data));
 		}
 	}
 
-	public function save($opEndpoint, PSX_OpenId_Provider_Data_Association $assoc)
+	public function save($opEndpoint, Association $assoc)
 	{
-		$data = unserialize(PSX_File::getContents($this->file));
+		$data = unserialize(File::getContents($this->file));
 		$key  = md5($opEndpoint);
 
 		$data[$key] = array(
-
 			'opEndpoint'  => $opEndpoint,
 			'assocHandle' => $assoc->getAssocHandle(),
 			'assocType'   => $assoc->getAssocType(),
 			'sessionType' => $assoc->getSessionType(),
 			'secret'      => $assoc->getSecret(),
 			'expires'     => $assoc->getExpire(),
-
 		);
 
-		PSX_File::putContents($this->file, serialize($data));
+		File::putContents($this->file, serialize($data));
 	}
 }

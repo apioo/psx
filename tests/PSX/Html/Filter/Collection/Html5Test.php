@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Html\Filter\Collection;
+
+use PSX\Html\Filter;
+
 /**
  * PSX_Html_Filter_Collection_Html5InlineTest
  *
@@ -32,7 +36,7 @@
  * @category   tests
  * @version    $Revision: 544 $
  */
-class PSX_Html_Filter_Collection_Html5Test extends PHPUnit_Framework_TestCase
+class Html5Test extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -60,7 +64,7 @@ HTML;
 </ul>
 HTML;
 
-		$filter = new PSX_Html_Filter($html, new PSX_Html_Filter_Collection_Html5());
+		$filter = new Filter($html, new Html5());
 
 		$this->assertEquals($expected, $filter->filter());
 	}
@@ -85,7 +89,7 @@ $(document).ready(function(){
 </script>
 HTML;
 
-		$filter = new PSX_Html_Filter($html, new PSX_Html_Filter_Collection_Html5());
+		$filter = new Filter($html, new Html5());
 
 		$this->assertEquals($expected, $filter->filter());
 	}
@@ -100,7 +104,7 @@ HTML;
 <div id="foo" data-test="bar">foo</div>
 HTML;
 
-		$filter = new PSX_Html_Filter($html, new PSX_Html_Filter_Collection_Html5());
+		$filter = new Filter($html, new Html5());
 
 		$this->assertEquals($expected, $filter->filter());
 	}
@@ -115,7 +119,7 @@ HTML;
 <div id="foo">foo</div>
 HTML;
 
-		$filter = new PSX_Html_Filter($html, new PSX_Html_Filter_Collection_Html5());
+		$filter = new Filter($html, new Html5());
 
 		$this->assertEquals($expected, $filter->filter());
 	}

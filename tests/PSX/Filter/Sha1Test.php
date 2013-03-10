@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Filter;
+
 /**
  * PSX_Filter_Sha1Test
  *
@@ -32,7 +34,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_Filter_Sha1Test extends PHPUnit_Framework_TestCase
+class Sha1Test extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -44,7 +46,7 @@ class PSX_Filter_Sha1Test extends PHPUnit_Framework_TestCase
 
 	public function testSha1()
 	{
-		$sha1 = new PSX_Filter_Sha1();
+		$sha1 = new Sha1();
 
 		$this->assertEquals('da39a3ee5e6b4b0d3255bfef95601890afd80709', $sha1->apply(''));
 		$this->assertEquals('d8e8ece39c437e515aa8997c1a1e94f1ed2a0e62', $sha1->apply('Frank jagt im komplett verwahrlosten Taxi quer durch Bayern'));

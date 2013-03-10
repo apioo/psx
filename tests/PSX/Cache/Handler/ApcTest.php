@@ -23,6 +23,11 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Cache\Handler;
+
+use PSX\CacheTest;
+use PSX\Exception;
+
 /**
  * PSX_Cache_Handler_ApcTest
  *
@@ -32,7 +37,7 @@
  * @category   tests
  * @version    $Revision: 637 $
  */
-class PSX_Cache_Handler_ApcTest extends PSX_CacheTest
+class ApcTest extends CacheTest
 {
 	protected $table;
 	protected $sql;
@@ -45,7 +50,7 @@ class PSX_Cache_Handler_ApcTest extends PSX_CacheTest
 		{
 			if(!function_exists('apc_store'))
 			{
-				throw new PSX_Exception('APC extension is not available');
+				throw new Exception('APC extension is not available');
 			}
 		}
 		catch(Exception $e)
@@ -56,7 +61,7 @@ class PSX_Cache_Handler_ApcTest extends PSX_CacheTest
 
 	protected function getHandler()
 	{
-		return new PSX_Cache_Handler_Apc();
+		return new Apc();
 	}
 }
 

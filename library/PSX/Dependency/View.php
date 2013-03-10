@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Dependency;
+
+use PSX\Template;
+
 /**
  * PSX_Dependency_View
  *
@@ -33,7 +37,7 @@
  * @package    PSX_Dependency
  * @version    $Revision: 542 $
  */
-class PSX_Dependency_View extends PSX_Dependency_Default
+class View extends Request
 {
 	public function setup()
 	{
@@ -49,6 +53,6 @@ class PSX_Dependency_View extends PSX_Dependency_Default
 			return $this->get('template');
 		}
 
-		return $this->set('template', new PSX_Template($this->getConfig()));
+		return $this->set('template', new Template($this->getConfig()));
 	}
 }

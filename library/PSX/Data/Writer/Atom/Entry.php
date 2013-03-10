@@ -23,6 +23,13 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Data\Writer\Atom;
+
+use DateTime;
+use PSX\Data\RecordInterface;
+use PSX\Data\Writer;
+use XMLWriter;
+
 /**
  * PSX_Data_Writer_Atom_Entry
  *
@@ -33,31 +40,29 @@
  * @package    PSX_Data
  * @version    $Revision: 480 $
  */
-class PSX_Data_Writer_Atom_Entry extends PSX_Data_Writer_Xml
+class Entry extends Writer\Xml
 {
 	public $writer;
 
 	public function __construct(XMLWriter $writer)
 	{
 		$this->writer = $writer;
-
 		$this->writer->startElement('entry');
-
-		$this->writer->writeAttribute('xmlns', PSX_Data_Writer_Atom::$xmlns);
+		$this->writer->writeAttribute('xmlns', Writer\Atom::$xmlns);
 	}
 
 	public function addAuthor($name, $uri = false, $email = false)
 	{
 		$this->writer->startElement('author');
 
-		PSX_Data_Writer_Atom::personConstruct($this->writer, $name, $uri, $email);
+		Writer\Atom::personConstruct($this->writer, $name, $uri, $email);
 
 		$this->writer->endElement();
 	}
 
 	public function addCategory($term, $scheme = false, $label = false)
 	{
-		PSX_Data_Writer_Atom::categoryConstruct($this->writer, $term, $scheme, $label);
+		Writer\Atom::categoryConstruct($this->writer, $term, $scheme, $label);
 	}
 
 	public function setContent($content, $type, $src = null)
@@ -72,7 +77,7 @@ class PSX_Data_Writer_Atom_Entry extends PSX_Data_Writer_Xml
 
 					$this->writer->writeAttribute('type', $type);
 
-					if($content instanceof PSX_Data_RecordInterface)
+					if($content instanceof RecordInterface)
 					{
 						$this->recXmlEncode($content->getName(), $content->getData());
 					}
@@ -87,7 +92,6 @@ class PSX_Data_Writer_Atom_Entry extends PSX_Data_Writer_Xml
 				case 'html':
 
 					$this->writer->writeAttribute('type', $type);
-
 					$this->writer->text($content);
 
 					break;
@@ -95,7 +99,6 @@ class PSX_Data_Writer_Atom_Entry extends PSX_Data_Writer_Xml
 				case 'xhtml':
 
 					$this->writer->writeAttribute('type', $type);
-
 					$this->writer->writeRaw($content);
 
 					break;
@@ -119,7 +122,7 @@ class PSX_Data_Writer_Atom_Entry extends PSX_Data_Writer_Xml
 	{
 		$this->writer->startElement('contributor');
 
-		PSX_Data_Writer_Atom::personConstruct($this->writer, $name, $uri, $email);
+		Writer\Atom::personConstruct($this->writer, $name, $uri, $email);
 
 		$this->writer->endElement();
 	}
@@ -131,7 +134,7 @@ class PSX_Data_Writer_Atom_Entry extends PSX_Data_Writer_Xml
 
 	public function addLink($href, $rel = false, $type = false, $hreflang = false, $title = false, $length = false)
 	{
-		PSX_Data_Writer_Atom::linkConstruct($this->writer, $href, $rel, $type, $hreflang, $title, $length);
+		Writer\Atom::linkConstruct($this->writer, $href, $rel, $type, $hreflang, $title, $length);
 	}
 
 	public function setPublished(DateTime $published)
@@ -146,12 +149,12 @@ class PSX_Data_Writer_Atom_Entry extends PSX_Data_Writer_Xml
 
 	public function setSummary($summary, $type = null)
 	{
-		PSX_Data_Writer_Atom::textConstruct($this->writer, 'summary', $summary, $type);
+		Writer\Atom::textConstruct($this->writer, 'summary', $summary, $type);
 	}
 
 	public function setTitle($title, $type = null)
 	{
-		PSX_Data_Writer_Atom::textConstruct($this->writer, 'title', $title, $type);
+		Writer\Atom::textConstruct($this->writer, 'title', $title, $type);
 	}
 
 	public function setUpdated(DateTime $updated)

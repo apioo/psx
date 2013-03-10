@@ -23,6 +23,11 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Data\Reader;
+
+use PSX\Data\ReaderInterface;
+use PSX\Http\Message;
+
 /**
  * PSX_Data_Reader_GpcTest
  *
@@ -32,7 +37,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_Data_Reader_GpcTest extends PHPUnit_Framework_TestCase
+class GpcTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -47,15 +52,15 @@ class PSX_Data_Reader_GpcTest extends PHPUnit_Framework_TestCase
 		$_REQUEST['foo'] = 'bar';
 		$_REQUEST['bar'] = 'foo';
 
-		$reader  = new PSX_Data_Reader_Gpc();
-		$message = new PSX_Http_Message(array(), '');
+		$reader  = new Gpc();
+		$message = new Message(array(), '');
 
 		$result = $reader->read($message);
 		$gpc    = $result->getData();
 
 		$e = array('foo' => 'bar', 'bar' => 'foo');
 
-		$this->assertEquals(PSX_Data_ReaderInterface::GPC, $result->getType());
+		$this->assertEquals(ReaderInterface::GPC, $result->getType());
 		$this->assertEquals(true, is_array($gpc));
 		$this->assertEquals($e, $gpc);
 	}

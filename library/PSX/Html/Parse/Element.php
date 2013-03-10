@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Html\Parse;
+
 /**
  * PSX_Html_Parse_Element
  *
@@ -33,7 +35,7 @@
  * @package    PSX_Html
  * @version    $Revision: 480 $
  */
-class PSX_Html_Parse_Element
+class Element
 {
 	private $name;
 	private $attributes;

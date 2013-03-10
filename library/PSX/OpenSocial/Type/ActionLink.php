@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\OpenSocial\Type;
+
+use PSX\OpenSocial\TypeAbstract;
+
 /**
  * PSX_OpenSocial_Type_ActionLink
  *
@@ -33,7 +37,7 @@
  * @package    PSX_OpenSocial
  * @version    $Revision: 480 $
  */
-class PSX_OpenSocial_Type_ActionLink extends PSX_OpenSocial_TypeAbstract
+class ActionLink extends TypeAbstract
 {
 	public $caption;
 	public $target;

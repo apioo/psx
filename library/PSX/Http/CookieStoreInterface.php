@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Http;
+
 /**
  * PSX_Http_CookieStoreInterface
  *
@@ -33,7 +35,7 @@
  * @package    PSX_Http
  * @version    $Revision: 579 $
  */
-interface PSX_Http_CookieStoreInterface
+interface CookieStoreInterface
 {
 	/**
 	 * Saves a cookie for the domain
@@ -42,7 +44,7 @@ interface PSX_Http_CookieStoreInterface
 	 * @param PSX_Http_Cookie $cookie
 	 * @return void
 	 */
-	public function store($domain, PSX_Http_Cookie $cookie);
+	public function store($domain, Cookie $cookie);
 
 	/**
 	 * Returns all cookies for the domain
@@ -59,6 +61,6 @@ interface PSX_Http_CookieStoreInterface
 	 * @param PSX_Http_Cookie $cookie
 	 * @return void
 	 */
-	public function remove($domain, PSX_Http_Cookie $cookie);
+	public function remove($domain, Cookie $cookie);
 }
 

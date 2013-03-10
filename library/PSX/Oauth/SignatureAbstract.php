@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Oauth;
+
+use PSX\Oauth;
+
 /**
  * PSX_Oauth_SignatureAbstract
  *
@@ -33,7 +37,7 @@
  * @package    PSX_Oauth
  * @version    $Revision: 480 $
  */
-abstract class PSX_Oauth_SignatureAbstract
+abstract class SignatureAbstract
 {
 	/**
 	 * Creates a signature from the base string with the consumer secret
@@ -60,8 +64,8 @@ abstract class PSX_Oauth_SignatureAbstract
 	 */
 	public function verify($baseString, $consumerSecret, $tokenSecret = '', $signature)
 	{
-		$lft = PSX_Oauth::urlDecode($signature);
-		$rgt = PSX_Oauth::urlDecode($this->build($baseString, $consumerSecret, $tokenSecret));
+		$lft = Oauth::urlDecode($signature);
+		$rgt = Oauth::urlDecode($this->build($baseString, $consumerSecret, $tokenSecret));
 
 		return strcasecmp($lft, $rgt) == 0;
 	}

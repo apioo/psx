@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
+use PSX\Session\HandlerInterface;
+
 /**
  * PSX_Session
  *
@@ -33,14 +37,14 @@
  * @package    PSX_Session
  * @version    $Revision: 651 $
  */
-class PSX_Session
+class Session
 {
 	protected $name;
 	protected $token;
 
 	protected $sessionTokenKey;
 
-	public function __construct($name, PSX_Session_HandlerInterface $handler = null)
+	public function __construct($name, HandlerInterface $handler = null)
 	{
 		$this->setSessionTokenKey(__CLASS__);
 		$this->setName($name);
@@ -118,7 +122,7 @@ class PSX_Session
 		return session_id();
 	}
 
-	public function setSaveHandler(PSX_Session_HandlerInterface $handler)
+	public function setSaveHandler(HandlerInterface $handler)
 	{
 		session_set_save_handler(
 

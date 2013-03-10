@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Cache;
+
 /**
  * PSX_Cache_Item
  *
@@ -33,7 +35,7 @@
  * @package    PSX_Cache
  * @version    $Revision: 636 $
  */
-class PSX_Cache_Item
+class Item
 {
 	protected $content;
 	protected $time;

@@ -23,6 +23,12 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Data\Writer;
+
+use PSX\Data\RecordInterface;
+use PSX\Data\WriterInterface;
+use PSX\Data\WriterResult;
+
 /**
  * PSX_Data_Writer_Json
  *
@@ -33,17 +39,17 @@
  * @package    PSX_Data
  * @version    $Revision: 480 $
  */
-class PSX_Data_Writer_Json implements PSX_Data_WriterInterface
+class Json implements WriterInterface
 {
 	public static $mime = 'application/json';
 
 	public $writerResult;
 
-	public function write(PSX_Data_RecordInterface $record)
+	public function write(RecordInterface $record)
 	{
-		$this->writerResult = new PSX_Data_WriterResult(PSX_Data_WriterInterface::JSON, $this);
+		$this->writerResult = new WriterResult(WriterInterface::JSON, $this);
 
-		echo PSX_Json::encode($this->recJsonEncode($record->export($this->writerResult)));
+		echo \PSX\Json::encode($this->recJsonEncode($record->export($this->writerResult)));
 	}
 
 	protected function recJsonEncode(array $fields)
@@ -52,7 +58,7 @@ class PSX_Data_Writer_Json implements PSX_Data_WriterInterface
 
 		foreach($fields as $k => $v)
 		{
-			if($v instanceof PSX_Data_RecordInterface)
+			if($v instanceof RecordInterface)
 			{
 				$data[$k] = $this->recJsonEncode($v->export($this->writerResult));
 			}

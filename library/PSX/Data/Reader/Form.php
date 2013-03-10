@@ -23,6 +23,12 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Data\Reader;
+
+use PSX\Data\ReaderInterface;
+use PSX\Data\ReaderResult;
+use PSX\Http\Message;
+
 /**
  * PSX_Data_Reader_Form
  *
@@ -33,17 +39,17 @@
  * @package    PSX_Data
  * @version    $Revision: 480 $
  */
-class PSX_Data_Reader_Form implements PSX_Data_ReaderInterface
+class Form implements ReaderInterface
 {
 	public static $mime = 'application/x-www-form-urlencoded';
 
-	public function read(PSX_Http_Message $message)
+	public function read(Message $message)
 	{
 		$form = array();
 
 		parse_str($message->getBody(), $form);
 
-		return new PSX_Data_ReaderResult(PSX_Data_ReaderInterface::FORM, $form);
+		return new ReaderResult(ReaderInterface::FORM, $form);
 	}
 }
 

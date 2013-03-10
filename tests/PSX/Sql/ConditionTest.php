@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Sql;
+
 /**
  * PSX_Sql_ConditionTest
  *
@@ -32,7 +34,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_Sql_ConditionTest extends PHPUnit_Framework_TestCase
+class ConditionTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -44,14 +46,14 @@ class PSX_Sql_ConditionTest extends PHPUnit_Framework_TestCase
 
 	public function testCondition()
 	{
-		$con = new PSX_Sql_Condition(array('id', '=', '1'));
+		$con = new Condition(array('id', '=', '1'));
 
 		$this->assertEquals('WHERE id = ?', $con->getStatment());
 		$this->assertEquals(array('1'), $con->getValues());
 		$this->assertEquals(true, $con->hasCondition());
 
 
-		$con = new PSX_Sql_Condition();
+		$con = new Condition();
 		$con->add('id', '=', '1');
 
 		$this->assertEquals('WHERE id = ?', $con->getStatment());
@@ -61,14 +63,14 @@ class PSX_Sql_ConditionTest extends PHPUnit_Framework_TestCase
 
 	public function testConditionMultiple()
 	{
-		$con = new PSX_Sql_Condition(array('id', '=', '1'), array('id', '=', '2'));
+		$con = new Condition(array('id', '=', '1'), array('id', '=', '2'));
 
 		$this->assertEquals('WHERE id = ? AND id = ?', $con->getStatment());
 		$this->assertEquals(array('1', '2'), $con->getValues());
 		$this->assertEquals(true, $con->hasCondition());
 
 
-		$con = new PSX_Sql_Condition(array('id', '=', '1', 'OR'), array('id', '=', '2'));
+		$con = new Condition(array('id', '=', '1', 'OR'), array('id', '=', '2'));
 
 		$this->assertEquals('WHERE id = ? OR id = ?', $con->getStatment());
 		$this->assertEquals(array('1', '2'), $con->getValues());
@@ -77,7 +79,7 @@ class PSX_Sql_ConditionTest extends PHPUnit_Framework_TestCase
 
 	public function testAdd()
 	{
-		$con = new PSX_Sql_Condition();
+		$con = new Condition();
 		$con->add('id', '=', '1');
 
 		$this->assertEquals('WHERE id = ?', $con->getStatment());
@@ -87,7 +89,7 @@ class PSX_Sql_ConditionTest extends PHPUnit_Framework_TestCase
 
 	public function testCount()
 	{
-		$con = new PSX_Sql_Condition();
+		$con = new Condition();
 		$con->add('id', '=', '1');
 		$con->add('id', '=', '2');
 		$con->add('id', '=', '3');
@@ -97,8 +99,8 @@ class PSX_Sql_ConditionTest extends PHPUnit_Framework_TestCase
 
 	public function testMerge()
 	{
-		$con_1 = new PSX_Sql_Condition(array('id', '=', '1'));
-		$con_2 = new PSX_Sql_Condition(array('id', '=', '2'));
+		$con_1 = new Condition(array('id', '=', '1'));
+		$con_2 = new Condition(array('id', '=', '2'));
 
 		$this->assertEquals(true, $con_1->hasCondition());
 
@@ -111,7 +113,7 @@ class PSX_Sql_ConditionTest extends PHPUnit_Framework_TestCase
 
 	public function testRemove()
 	{
-		$con = new PSX_Sql_Condition();
+		$con = new Condition();
 		$con->add('id', '=', '1');
 		$con->add('title', '=', '2');
 		$con->add('date', '=', '3');
@@ -125,7 +127,7 @@ class PSX_Sql_ConditionTest extends PHPUnit_Framework_TestCase
 
 	public function testRemoveAll()
 	{
-		$con = new PSX_Sql_Condition(array('id', '=', '1'));
+		$con = new Condition(array('id', '=', '1'));
 
 		$this->assertEquals('WHERE id = ?', $con->getStatment());
 		$this->assertEquals(array('1'), $con->getValues());
@@ -140,16 +142,16 @@ class PSX_Sql_ConditionTest extends PHPUnit_Framework_TestCase
 
 	public function testToArray()
 	{
-		$con = new PSX_Sql_Condition();
+		$con = new Condition();
 		$con->add('id', '=', '1');
 
 		$this->assertEquals(array(array(
 
-			PSX_Sql_Condition::COLUMN      => 'id',
-			PSX_Sql_Condition::OPERATOR    => '=',
-			PSX_Sql_Condition::VALUE       => '1',
-			PSX_Sql_Condition::CONJUNCTION => 'AND',
-			PSX_Sql_Condition::TYPE        => PSX_Sql_Condition::TYPE_SCALAR,
+			Condition::COLUMN      => 'id',
+			Condition::OPERATOR    => '=',
+			Condition::VALUE       => '1',
+			Condition::CONJUNCTION => 'AND',
+			Condition::TYPE        => Condition::TYPE_SCALAR,
 
 		)), $con->toArray());
 	}

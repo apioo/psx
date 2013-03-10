@@ -23,6 +23,13 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Module;
+
+use PSX\Base;
+use PSX\Exception;
+use PSX\Dependency\View;
+use PSX\ModuleAbstract;
+
 /**
  * PSX_Module_ViewAbstract
  *
@@ -33,11 +40,11 @@
  * @package    PSX_Module
  * @version    $Revision: 542 $
  */
-abstract class PSX_Module_ViewAbstract extends PSX_ModuleAbstract
+abstract class ViewAbstract extends ModuleAbstract
 {
 	public function getDependencies()
 	{
-		return new PSX_Dependency_View($this->base->getConfig());
+		return new View($this->base->getConfig());
 	}
 
 	public function processResponse($content)
@@ -46,11 +53,11 @@ abstract class PSX_Module_ViewAbstract extends PSX_ModuleAbstract
 		{
 			if(!($response = $this->template->transform()))
 			{
-				throw new PSX_Exception('Error while transforming template');
+				throw new Exception('Error while transforming template');
 			}
 
 
-			$acceptEncoding = PSX_Base::getRequestHeader('Accept-Encoding');
+			$acceptEncoding = Base::getRequestHeader('Accept-Encoding');
 
 			if($this->config['psx_gzip'] === true && strpos($acceptEncoding, 'gzip') !== false)
 			{

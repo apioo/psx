@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Cache;
+
 /**
  * PSX_Cache_HandlerInterface
  *
@@ -33,7 +35,7 @@
  * @package    PSX_Cache
  * @version    $Revision: 636 $
  */
-interface PSX_Cache_HandlerInterface
+interface HandlerInterface
 {
 	/**
 	 * Returns the cache item with the given key or false if the cache item

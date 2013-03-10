@@ -23,6 +23,11 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Data;
+
+use Countable;
+use Iterator;
+
 /**
  * PSX_Data_ResultSet
  *
@@ -33,7 +38,7 @@
  * @package    PSX_Data
  * @version    $Revision: 480 $
  */
-class PSX_Data_ResultSet extends PSX_Data_RecordAbstract implements Iterator, Countable
+class ResultSet extends RecordAbstract implements Iterator, Countable
 {
 	public $totalResults;
 	public $startIndex;

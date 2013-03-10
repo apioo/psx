@@ -23,6 +23,17 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\OpenId\Provider\Data;
+
+use PSX\Data\RecordAbstract;
+use PSX\Data\NotSupportedException;
+use PSX\Data\ReaderResult;
+use PSX\Data\ReaderInterface;
+use PSX\Data\WriterResult;
+use PSX\Data\WriterInterface;
+use PSX\OpenId\ProviderAbstract;
+use PSX\Url;
+
 /**
  * PSX_OpenId_Provider_Data_SetupRequest
  *
@@ -33,7 +44,7 @@
  * @package    PSX_OpenId
  * @version    $Revision: 480 $
  */
-class PSX_OpenId_Provider_Data_SetupRequest extends PSX_Data_RecordAbstract
+class SetupRequest extends RecordAbstract
 {
 	public $claimedId;
 	public $identity;
@@ -92,7 +103,7 @@ class PSX_OpenId_Provider_Data_SetupRequest extends PSX_Data_RecordAbstract
 
 	public function setReturnTo($returnTo)
 	{
-		$this->returnTo = new PSX_Url($returnTo);
+		$this->returnTo = new Url($returnTo);
 	}
 
 	public function setRealm($realm)
@@ -137,7 +148,7 @@ class PSX_OpenId_Provider_Data_SetupRequest extends PSX_Data_RecordAbstract
 
 	public function getExtension($ns)
 	{
-		return PSX_OpenId_ProviderAbstract::getExtension($this->params, $ns);
+		return ProviderAbstract::getExtension($this->params, $ns);
 	}
 
 	public function setParams(array $params)
@@ -150,11 +161,11 @@ class PSX_OpenId_Provider_Data_SetupRequest extends PSX_Data_RecordAbstract
 		return $this->params;
 	}
 
-	public function import(PSX_Data_ReaderResult $result)
+	public function import(ReaderResult $result)
 	{
 		switch($result->getType())
 		{
-			case PSX_Data_ReaderInterface::GPC:
+			case ReaderInterface::GPC:
 
 				$params = $result->getData();
 
@@ -189,19 +200,19 @@ class PSX_OpenId_Provider_Data_SetupRequest extends PSX_Data_RecordAbstract
 
 			default:
 
-				throw new PSX_Data_Exception('Can only import data from reader Raw');
+				throw new NotSupportedException('Can only import data from reader Raw');
 
 				break;
 		}
 	}
 
-	public function export(PSX_Data_WriterResult $result)
+	public function export(WriterResult $result)
 	{
 		switch($result->getType())
 		{
-			case PSX_Data_WriterInterface::FORM:
-			case PSX_Data_WriterInterface::JSON:
-			case PSX_Data_WriterInterface::XML:
+			case WriterInterface::FORM:
+			case WriterInterface::JSON:
+			case WriterInterface::XML:
 
 				return $this->getData();
 

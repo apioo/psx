@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Data;
+
+use PSX\Data\Writer;
+
 /**
  * PSX_Data_WriterFactory
  *
@@ -33,7 +37,7 @@
  * @package    PSX_Data
  * @version    $Revision: 498 $
  */
-class PSX_Data_WriterFactory
+class WriterFactory
 {
 	public static function getWriterTypeByContentType($contentType)
 	{
@@ -41,30 +45,30 @@ class PSX_Data_WriterFactory
 
 		switch(true)
 		{
-			case (stripos($contentType, PSX_Data_Writer_Atom::$mime) !== false):
+			case (stripos($contentType, Writer\Atom::$mime) !== false):
 
-				$writerType = PSX_Data_WriterInterface::ATOM;
+				$writerType = WriterInterface::ATOM;
 				break;
 
-			case (stripos($contentType, PSX_Data_Writer_Form::$mime) !== false):
+			case (stripos($contentType, Writer\Form::$mime) !== false):
 
-				$writerType = PSX_Data_WriterInterface::FORM;
+				$writerType = WriterInterface::FORM;
 				break;
 
 			default:
-			case (stripos($contentType, PSX_Data_Writer_Json::$mime) !== false):
+			case (stripos($contentType, Writer\Json::$mime) !== false):
 
-				$writerType = PSX_Data_WriterInterface::JSON;
+				$writerType = WriterInterface::JSON;
 				break;
 
-			case (stripos($contentType, PSX_Data_Writer_Rss::$mime) !== false):
+			case (stripos($contentType, Writer\Rss::$mime) !== false):
 
-				$writerType = PSX_Data_WriterInterface::RSS;
+				$writerType = WriterInterface::RSS;
 				break;
 
-			case (stripos($contentType, PSX_Data_Writer_Xml::$mime) !== false):
+			case (stripos($contentType, Writer\Xml::$mime) !== false):
 
-				$writerType = PSX_Data_WriterInterface::XML;
+				$writerType = WriterInterface::XML;
 				break;
 		}
 
@@ -84,39 +88,39 @@ class PSX_Data_WriterFactory
 
 		switch($writerType)
 		{
-			case PSX_Data_WriterInterface::ATOM:
+			case WriterInterface::ATOM:
 
-				header('Content-type: ' . PSX_Data_Writer_Atom::$mime);
+				header('Content-type: ' . Writer\Atom::$mime);
 
-				$writer = new PSX_Data_Writer_Atom();
+				$writer = new Writer\Atom();
 				break;
 
-			case PSX_Data_WriterInterface::FORM:
+			case WriterInterface::FORM:
 
-				header('Content-type: ' . PSX_Data_Writer_Form::$mime);
+				header('Content-type: ' . Writer\Form::$mime);
 
-				$writer = new PSX_Data_Writer_Form();
+				$writer = new Writer\Form();
 				break;
 
-			case PSX_Data_WriterInterface::JSON:
+			case WriterInterface::JSON:
 
-				header('Content-type: ' . PSX_Data_Writer_Json::$mime);
+				header('Content-type: ' . Writer\Json::$mime);
 
-				$writer = new PSX_Data_Writer_Json();
+				$writer = new Writer\Json();
 				break;
 
-			case PSX_Data_WriterInterface::RSS:
+			case WriterInterface::RSS:
 
-				header('Content-type: ' . PSX_Data_Writer_Rss::$mime);
+				header('Content-type: ' . Writer\Rss::$mime);
 
-				$writer = new PSX_Data_Writer_Rss();
+				$writer = new Writer\Rss();
 				break;
 
-			case PSX_Data_WriterInterface::XML:
+			case WriterInterface::XML:
 
-				header('Content-type: ' . PSX_Data_Writer_Xml::$mime);
+				header('Content-type: ' . Writer\Xml::$mime);
 
-				$writer = new PSX_Data_Writer_Xml();
+				$writer = new Writer\Xml();
 				break;
 		}
 

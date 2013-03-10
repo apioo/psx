@@ -23,6 +23,12 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Data\Reader;
+
+use DOMDocument;
+use PSX\Data\ReaderInterface;
+use PSX\Http\Message;
+
 /**
  * PSX_Data_Reader_DomTest
  *
@@ -32,7 +38,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_Data_Reader_DomTest extends PHPUnit_Framework_TestCase
+class DomTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -52,8 +58,8 @@ class PSX_Data_Reader_DomTest extends PHPUnit_Framework_TestCase
 </foo>
 INPUT;
 
-		$reader  = new PSX_Data_Reader_Dom();
-		$message = new PSX_Http_Message(array(), $body);
+		$reader  = new Dom();
+		$message = new Message(array(), $body);
 
 		$result = $reader->read($message);
 		$dom    = $result->getData();
@@ -66,8 +72,8 @@ INPUT;
 			}
 		}
 
-		$this->assertEquals(PSX_Data_ReaderInterface::DOM, $result->getType());
-		$this->assertEquals(true, $dom instanceof DomDocument);
+		$this->assertEquals(ReaderInterface::DOM, $result->getType());
+		$this->assertEquals(true, $dom instanceof DOMDocument);
 		$this->assertEquals('foo', $root->localName);
 	}
 }

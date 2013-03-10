@@ -23,6 +23,12 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Log\Handler;
+
+use PSX\DateTime;
+use PSX\Log\HandlerInterface;
+use PSX\Sql;
+
 /**
  * PSX_Log_Handler_Sql
  *
@@ -33,12 +39,12 @@
  * @package    PSX_Log
  * @version    $Revision: 480 $
  */
-class PSX_Log_Handler_Sql implements PSX_Log_HandlerInterface
+class Sql implements HandlerInterface
 {
 	private $sql;
 	private $table;
 
-	public function __construct(PSX_Sql $sql, $table)
+	public function __construct(Sql $sql, $table)
 	{
 		$this->sql   = $sql;
 		$this->table = $table;
@@ -50,7 +56,7 @@ class PSX_Log_Handler_Sql implements PSX_Log_HandlerInterface
 
 			'level' => $level,
 			'msg'   => $string,
-			'date'  => date(PSX_DateTime::SQL),
+			'date'  => date(DateTime::SQL),
 
 		));
 	}

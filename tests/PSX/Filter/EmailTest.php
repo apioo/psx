@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Filter;
+
 /**
  * PSX_Filter_EmailTest
  *
@@ -32,7 +34,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_Filter_EmailTest extends PHPUnit_Framework_TestCase
+class EmailTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -44,7 +46,7 @@ class PSX_Filter_EmailTest extends PHPUnit_Framework_TestCase
 
 	public function testEmail()
 	{
-		$email = new PSX_Filter_Email();
+		$email = new Email();
 
 		$this->assertEquals(false, $email->apply('foo'));
 		$this->assertEquals(true, $email->apply('foo@bar.com'));

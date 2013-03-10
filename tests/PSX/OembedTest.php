@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
+use PSX\Oembed\Type;
+
 /**
  * PSX_OembedTest
  *
@@ -32,7 +36,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_OembedTest extends PHPUnit_Framework_TestCase
+class OembedTest extends \PHPUnit_Framework_TestCase
 {
 	const URL        = 'http://test.phpsx.org/oembed/server';
 	const TYPE_LINK  = 'http://test.phpsx.org/oembed/link';
@@ -45,8 +49,8 @@ class PSX_OembedTest extends PHPUnit_Framework_TestCase
 
 	protected function setUp()
 	{
-		$this->http   = new PSX_Http(new PSX_Http_Handler_Curl());
-		$this->oembed = new PSX_Oembed($this->http);
+		$this->http   = new Http();
+		$this->oembed = new Oembed($this->http);
 	}
 
 	protected function tearDown()
@@ -57,11 +61,11 @@ class PSX_OembedTest extends PHPUnit_Framework_TestCase
 
 	public function testLinkRequest()
 	{
-		$url  = new PSX_Url(self::URL);
+		$url  = new Url(self::URL);
 		$url->addParam('url', self::TYPE_LINK);
 		$type = $this->oembed->request($url);
 
-		$this->assertEquals(true, $type instanceof PSX_Oembed_Type_Link);
+		$this->assertEquals(true, $type instanceof Type\Link);
 		$this->assertEquals('link', $type->type);
 		$this->assertEquals('1.0', $type->version);
 		$this->assertEquals('Beethoven - Rondo \'Die wut ueber den verlorenen groschen\'', $type->title);
@@ -76,11 +80,11 @@ class PSX_OembedTest extends PHPUnit_Framework_TestCase
 
 	public function testPhotoRequest()
 	{
-		$url  = new PSX_Url(self::URL);
+		$url  = new Url(self::URL);
 		$url->addParam('url', self::TYPE_PHOTO);
 		$type = $this->oembed->request($url);
 
-		$this->assertEquals(true, $type instanceof PSX_Oembed_Type_Photo);
+		$this->assertEquals(true, $type instanceof Type\Photo);
 		$this->assertEquals('photo', $type->type);
 		$this->assertEquals('1.0', $type->version);
 		$this->assertEquals('Beethoven - Rondo \'Die wut ueber den verlorenen groschen\'', $type->title);
@@ -98,11 +102,11 @@ class PSX_OembedTest extends PHPUnit_Framework_TestCase
 
 	public function testRichRequest()
 	{
-		$url  = new PSX_Url(self::URL);
+		$url  = new Url(self::URL);
 		$url->addParam('url', self::TYPE_RICH);
 		$type = $this->oembed->request($url);
 
-		$this->assertEquals(true, $type instanceof PSX_Oembed_Type_Rich);
+		$this->assertEquals(true, $type instanceof Type\Rich);
 		$this->assertEquals('rich', $type->type);
 		$this->assertEquals('1.0', $type->version);
 		$this->assertEquals('Beethoven - Rondo \'Die wut ueber den verlorenen groschen\'', $type->title);
@@ -120,11 +124,11 @@ class PSX_OembedTest extends PHPUnit_Framework_TestCase
 
 	public function testVideoRequest()
 	{
-		$url  = new PSX_Url(self::URL);
+		$url  = new Url(self::URL);
 		$url->addParam('url', self::TYPE_VIDEO);
 		$type = $this->oembed->request($url);
 
-		$this->assertEquals(true, $type instanceof PSX_Oembed_Type_Video);
+		$this->assertEquals(true, $type instanceof Type\Video);
 		$this->assertEquals('video', $type->type);
 		$this->assertEquals('1.0', $type->version);
 		$this->assertEquals('Beethoven - Rondo \'Die wut ueber den verlorenen groschen\'', $type->title);

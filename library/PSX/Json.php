@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
 /**
  * This class is a wrapper to the json_encode / json_decode functions. Here an
  * simple example howto use it.
@@ -39,7 +41,7 @@
  * @package    PSX_Json
  * @version    $Revision: 606 $
  */
-class PSX_Json
+class Json
 {
 	/**
 	 * Returns the json encoded value as string of $value

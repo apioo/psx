@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Oauth2\Authorization\Exception;
+
+use PSX\Exception;
+
 /**
  * PSX_Oauth2_Authorization_Exception_AccessDeniedException
  *
@@ -33,6 +37,6 @@
  * @package    PSX_Oauth2
  * @version    $Revision: 492 $
  */
-class PSX_Oauth2_Authorization_Exception_AccessDeniedException extends PSX_Oauth2_Authorization_Exception
+class AccessDeniedException extends Exception
 {
 }

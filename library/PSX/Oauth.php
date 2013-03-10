@@ -23,10 +23,15 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
+use PSX\Data\Reader\Form;
+use PSX\Http\PostRequest;
+use PSX\Oauth\Provider\Data\Response;
+use PSX\Oauth\Signature;
+
 /**
- * This is a consumer implementation of OAuth Core 1.0. I would like to thank
- * Andy Smith for his reference implementation of OAuth many ideas of this
- * implementation are based on it.
+ * This is a consumer implementation of OAuth Core 1.0
  *
  * @author     Christoph Kappestein <k42b3.x@gmail.com>
  * @author     Andy Smith <http://term.ie>
@@ -37,7 +42,7 @@
  * @package    PSX_Oauth
  * @version    $Revision: 663 $
  */
-class PSX_Oauth
+class Oauth
 {
 	private $requestMethod;
 	private $url;
@@ -48,7 +53,7 @@ class PSX_Oauth
 	private $lastError;
 	private $http;
 
-	public function __construct(PSX_Http $http)
+	public function __construct(Http $http)
 	{
 		$this->http = $http;
 	}
@@ -73,7 +78,7 @@ class PSX_Oauth
 	 * @param string $method
 	 * @return PSX_Oauth_Provider_Data_Response
 	 */
-	public function requestToken(PSX_Url $url, $consumerKey, $consumerSecret, $method = 'HMAC-SHA1', $callback = false)
+	public function requestToken(Url $url, $consumerKey, $consumerSecret, $method = 'HMAC-SHA1', $callback = false)
 	{
 		$values = array(
 
@@ -114,10 +119,10 @@ class PSX_Oauth
 
 
 		// request unauthorized token
-		$request   = new PSX_Http_PostRequest($url, array(
+		$request   = new PostRequest($url, array(
 
 			'Authorization' => 'OAuth realm="psx", ' . self::buildAuthString($values),
-			'User-Agent'    => __CLASS__ . ' ' . PSX_Base::VERSION,
+			'User-Agent'    => __CLASS__ . ' ' . Base::VERSION,
 
 		));
 
@@ -130,10 +135,9 @@ class PSX_Oauth
 			$this->lastError = false;
 
 			// parse the response
-			$reader = new PSX_Data_Reader_Form();
+			$reader = new Form();
 
-			$dataResponse = new PSX_Oauth_Provider_Data_Response();
-
+			$dataResponse = new Response();
 			$dataResponse->import($reader->read($response));
 
 			return $dataResponse;
@@ -156,7 +160,7 @@ class PSX_Oauth
 	 * @param string $token
 	 * @return void
 	 */
-	public function userAuthorization(PSX_Url $url, array $params = array())
+	public function userAuthorization(Url $url, array $params = array())
 	{
 		$url->addParams($params);
 
@@ -188,7 +192,7 @@ class PSX_Oauth
 	 * @param string $verifier
 	 * @param string $method
 	 */
-	public function accessToken(PSX_Url $url, $consumerKey, $consumerSecret, $token, $tokenSecret, $verifier, $method = 'HMAC-SHA1')
+	public function accessToken(Url $url, $consumerKey, $consumerSecret, $token, $tokenSecret, $verifier, $method = 'HMAC-SHA1')
 	{
 		$values = array(
 
@@ -220,10 +224,10 @@ class PSX_Oauth
 
 
 		// request access token
-		$request   = new PSX_Http_PostRequest($url, array(
+		$request   = new PostRequest($url, array(
 
 			'Authorization' => 'OAuth realm="psx", ' . self::buildAuthString($values),
-			'User-Agent'    => __CLASS__ . ' ' . PSX_Base::VERSION,
+			'User-Agent'    => __CLASS__ . ' ' . Base::VERSION,
 
 		));
 
@@ -236,10 +240,9 @@ class PSX_Oauth
 			$this->lastError = false;
 
 			// parse the response
-			$reader = new PSX_Data_Reader_Form();
+			$reader = new Form();
 
-			$dataResponse = new PSX_Oauth_Provider_Data_Response();
-
+			$dataResponse = new Response();
 			$dataResponse->import($reader->read($response));
 
 			return $dataResponse;
@@ -275,7 +278,7 @@ class PSX_Oauth
 	 * @param string $requestMethod
 	 * @return string
 	 */
-	public function getAuthorizationHeader(PSX_Url $url, $consumerKey, $consumerSecret, $token, $tokenSecret, $method = 'HMAC-SHA1', $requestMethod = 'GET')
+	public function getAuthorizationHeader(Url $url, $consumerKey, $consumerSecret, $token, $tokenSecret, $method = 'HMAC-SHA1', $requestMethod = 'GET')
 	{
 		$values = array(
 
@@ -323,27 +326,19 @@ class PSX_Oauth
 		switch($method)
 		{
 			case 'HMAC-SHA1':
-
-				return new PSX_Oauth_Signature_HMACSHA1();
-
+				return new Signature\HMACSHA1();
 				break;
 
 			case 'RSA-SHA1':
-
-				return new PSX_Oauth_Signature_RSASHA1();
-
+				return new Signature\RSASHA1();
 				break;
 
 			case 'PLAINTEXT':
-
-				return new PSX_Oauth_Signature_PLAINTEXT();
-
+				return new Signature\PLAINTEXT();
 				break;
 
 			default:
-
-				throw new PSX_Oauth_Exception('Invalid signature method');
-
+				throw new Exception('Invalid signature method');
 				break;
 		}
 	}
@@ -375,14 +370,11 @@ class PSX_Oauth
 	 * @param array $data
 	 * @return string
 	 */
-	public static function buildBasestring($method, PSX_Url $url, array $data)
+	public static function buildBasestring($method, Url $url, array $data)
 	{
 		$base = array();
-
 		$base[] = self::urlEncode(self::getNormalizedMethod($method));
-
 		$base[] = self::urlEncode(self::getNormalizedUrl($url));
-
 		$base[] = self::urlEncode(self::getNormalizedParameters($data));
 
 		return implode('&', $base);
@@ -406,7 +398,7 @@ class PSX_Oauth
 	 * @param string $url
 	 * @return false|string
 	 */
-	public static function getNormalizedUrl(PSX_Url $url)
+	public static function getNormalizedUrl(Url $url)
 	{
 		$scheme = $url->getScheme();
 		$host   = $url->getHost();
@@ -426,7 +418,7 @@ class PSX_Oauth
 			}
 			else
 			{
-				throw new PSX_Oauth_Exception('No port specified');
+				throw new Exception('No port specified');
 			}
 		}
 
@@ -443,8 +435,8 @@ class PSX_Oauth
 	{
 		$params = array();
 
-		$keys   = array_map('PSX_Oauth::urlEncode', array_keys($data));
-		$values = array_map('PSX_Oauth::urlEncode', array_values($data));
+		$keys   = array_map('PSX\Oauth::urlEncode', array_keys($data));
+		$values = array_map('PSX\Oauth::urlEncode', array_values($data));
 		$data   = array_combine($keys, $values);
 
 
@@ -545,7 +537,7 @@ class PSX_Oauth
 		}
 
 
-		$response = new PSX_Oauth_Provider_Data_Response($token, $tokenSecret);
+		$response = new Response($token, $tokenSecret);
 
 		return $response;
 	}

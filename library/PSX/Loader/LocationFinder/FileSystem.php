@@ -23,6 +23,13 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Loader\LocationFinder;
+
+use PSX\Loader\InvalidPathException;
+use PSX\Loader\Location;
+use PSX\Loader\LocationFinderInterface;
+use ReflectionClass;
+
 /**
  * Basic implementation of an LocationFinder wich resolves an module depending 
  * on the filesystem. The path has the following format: /[file/path]/class. The 
@@ -36,7 +43,7 @@
  * @package    PSX_Loader
  * @version    $Revision: 480 $
  */
-class PSX_Loader_LocationFinder_FileSystem implements PSX_Loader_LocationFinderInterface
+class FileSystem implements LocationFinderInterface
 {
 	protected $path;
 
@@ -54,7 +61,7 @@ class PSX_Loader_LocationFinder_FileSystem implements PSX_Loader_LocationFinderI
 	{
 		if(strpos($pathInfo, '..') !== false)
 		{
-			throw new PSX_Loader_Exception('Invalid signs in input');
+			throw new InvalidPathException('Invalid signs in input');
 		}
 
 		$location = $this->getLocation($pathInfo);
@@ -82,7 +89,7 @@ class PSX_Loader_LocationFinder_FileSystem implements PSX_Loader_LocationFinderI
 			$rest = self::removePathPart($class->getShortName(), $rest);
 
 			// return location
-			return new PSX_Loader_Location(md5($file), $rest, $class);
+			return new Location(md5($file), $rest, $class);
 		}
 	}
 

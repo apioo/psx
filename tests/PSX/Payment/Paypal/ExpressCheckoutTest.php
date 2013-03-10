@@ -23,6 +23,11 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Payment\Paypal;
+
+use PSX\Http;
+use PSX\Payment\Paypal\Store\Session;
+
 /**
  * PSX_Payment_Paypal_ExpressCheckoutTest
  *
@@ -32,15 +37,15 @@
  * @category   tests
  * @version    $Revision: 542 $
  */
-class PSX_Payment_Paypal_ExpressCheckoutTest extends PHPUnit_Framework_TestCase
+class ExpressCheckoutTest extends \PHPUnit_Framework_TestCase
 {
 	private $http;
 	private $ec;
 
 	protected function setUp()
 	{
-		$this->http = new PSX_Http(new PSX_Http_Handler_Curl());
-		$this->ec   = new PSX_Payment_Paypal_ExpressCheckout($this->http);
+		$this->http = new Http();
+		$this->ec   = new ExpressCheckout($this->http);
 	}
 
 	/**
@@ -54,7 +59,7 @@ class PSX_Payment_Paypal_ExpressCheckoutTest extends PHPUnit_Framework_TestCase
 		$this->markTestSkipped('This test requires user interaction');
 
 		// set store
-		$store = new PSX_Payment_Paypal_Store_Session();
+		$store = new Session();
 
 		$this->ec->setStore($store);
 
@@ -69,7 +74,7 @@ class PSX_Payment_Paypal_ExpressCheckoutTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals(true, isset($data['BUILD']));
 
 		// now you have to login and pay the amount with an test account
-		echo "\n" . 'URL: ' . PSX_Payment_Paypal_ExpressCheckout::WEB . '?cmd=_express-checkout&token=' . urlencode($data['TOKEN']) . "\n";
+		echo "\n" . 'URL: ' . ExpressCheckout::WEB . '?cmd=_express-checkout&token=' . urlencode($data['TOKEN']) . "\n";
 		echo 'Press Enter to continue' . "\n";
 
 		fgets(STDIN);
@@ -77,7 +82,7 @@ class PSX_Payment_Paypal_ExpressCheckoutTest extends PHPUnit_Framework_TestCase
 		// testGetExpressCheckoutDetails
 		$token = $data['TOKEN'];
 
-		$store->saveToken(PSX_Payment_Paypal_ExpressCheckout::getSessionId(), $token);
+		$store->saveToken(ExpressCheckout::getSessionId(), $token);
 
 		$data = $this->ec->getExpressCheckoutDetails();
 
@@ -87,7 +92,7 @@ class PSX_Payment_Paypal_ExpressCheckoutTest extends PHPUnit_Framework_TestCase
 		// testDoExpressCheckoutPayment
 		$payerId = $data['PAYERID'];
 
-		$store->savePayerId(PSX_Payment_Paypal_ExpressCheckout::getSessionId(), $payerId);
+		$store->savePayerId(ExpressCheckout::getSessionId(), $payerId);
 
 		$data = $this->ec->doExpressCheckoutPayment(12.00);
 

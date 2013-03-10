@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Data;
+
+use Serializable;
+
 /**
  * PSX_Data_RecordAbstract
  *
@@ -33,7 +37,7 @@
  * @package    PSX_Data
  * @version    $Revision: 614 $
  */
-abstract class PSX_Data_RecordAbstract implements PSX_Data_RecordInterface, Serializable
+abstract class RecordAbstract implements RecordInterface, Serializable
 {
 	public function hasFields()
 	{
@@ -67,15 +71,15 @@ abstract class PSX_Data_RecordAbstract implements PSX_Data_RecordInterface, Seri
 		return $data;
 	}
 
-	public function import(PSX_Data_ReaderResult $result)
+	public function import(ReaderResult $result)
 	{
 		switch($result->getType())
 		{
-			case PSX_Data_ReaderInterface::FORM:
-			case PSX_Data_ReaderInterface::GPC:
-			case PSX_Data_ReaderInterface::JSON:
-			case PSX_Data_ReaderInterface::MULTIPART:
-			case PSX_Data_ReaderInterface::XML:
+			case ReaderInterface::FORM:
+			case ReaderInterface::GPC:
+			case ReaderInterface::JSON:
+			case ReaderInterface::MULTIPART:
+			case ReaderInterface::XML:
 
 				$data = (array) $result->getData();
 				$data = array_intersect_key($data, $this->getFields());
@@ -103,25 +107,25 @@ abstract class PSX_Data_RecordAbstract implements PSX_Data_RecordInterface, Seri
 
 			default:
 
-				throw new PSX_Data_Exception('Reader is not supported');
+				throw new NotSupportedException('Reader is not supported');
 				break;
 		}
 	}
 
-	public function export(PSX_Data_WriterResult $result)
+	public function export(WriterResult $result)
 	{
 		switch($result->getType())
 		{
-			case PSX_Data_WriterInterface::FORM:
-			case PSX_Data_WriterInterface::JSON:
-			case PSX_Data_WriterInterface::XML:
+			case WriterInterface::FORM:
+			case WriterInterface::JSON:
+			case WriterInterface::XML:
 
 				return $this->getData();
 				break;
 
 			default:
 
-				throw new PSX_Data_Exception('Writer is not supported');
+				throw new NotSupportedException('Writer is not supported');
 				break;
 		}
 	}

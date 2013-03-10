@@ -23,6 +23,19 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\OpenId\Provider\Data;
+
+use PSX\Data\InvalidDataException;
+use PSX\Data\NotSupportedException;
+use PSX\Data\RecordAbstract;
+use PSX\Data\ReaderResult;
+use PSX\Data\ReaderInterface;
+use PSX\Data\WriterResult;
+use PSX\Data\WriterInterface;
+use PSX\OpenId;
+use PSX\OpenId\ProviderAbstract;
+use PSX\OpenId\Provider\Association;
+
 /**
  * PSX_OpenId_Provider_Data_AssociationRequest
  *
@@ -33,7 +46,7 @@
  * @package    PSX_OpenId
  * @version    $Revision: 480 $
  */
-class PSX_OpenId_Provider_Data_AssociationRequest extends PSX_Data_RecordAbstract
+class AssociationRequest extends RecordAbstract
 {
 	public $assocType;
 	public $sessionType;
@@ -76,7 +89,7 @@ class PSX_OpenId_Provider_Data_AssociationRequest extends PSX_Data_RecordAbstrac
 
 			default:
 
-				throw new PSX_OpenId_Provider_Exception('Invalid session type');
+				throw new InvalidDataException('Invalid session type');
 				break;
 		}
 
@@ -85,25 +98,25 @@ class PSX_OpenId_Provider_Data_AssociationRequest extends PSX_Data_RecordAbstrac
 
 	public function setAssocType($assocType)
 	{
-		if(in_array($assocType, PSX_OpenId::$supportedAssocTypes))
+		if(in_array($assocType, OpenId::$supportedAssocTypes))
 		{
 			$this->assocType = $assocType;
 		}
 		else
 		{
-			throw new PSX_OpenId_Provider_Exception('Invalid association type');
+			throw new InvalidDataException('Invalid association type');
 		}
 	}
 
 	public function setSessionType($sessionType)
 	{
-		if(in_array($sessionType, PSX_OpenId::$supportedSessionTypes))
+		if(in_array($sessionType, OpenId::$supportedSessionTypes))
 		{
 			$this->sessionType = $sessionType;
 		}
 		else
 		{
-			throw new PSX_OpenId_Provider_Exception('Invalid session type');
+			throw new InvalidDataException('Invalid session type');
 		}
 	}
 
@@ -147,11 +160,11 @@ class PSX_OpenId_Provider_Data_AssociationRequest extends PSX_Data_RecordAbstrac
 		return $this->dhConsumerPublic;
 	}
 
-	public function import(PSX_Data_ReaderResult $result)
+	public function import(ReaderResult $result)
 	{
 		switch($result->getType())
 		{
-			case PSX_Data_ReaderInterface::GPC:
+			case ReaderInterface::GPC:
 
 				$params = $result->getData();
 
@@ -186,19 +199,19 @@ class PSX_OpenId_Provider_Data_AssociationRequest extends PSX_Data_RecordAbstrac
 
 			default:
 
-				throw new PSX_Data_Exception('Can only import data from reader Raw');
+				throw new NotSupportedException('Can only import data from reader Raw');
 
 				break;
 		}
 	}
 
-	public function export(PSX_Data_WriterResult $result)
+	public function export(WriterResult $result)
 	{
 		switch($result->getType())
 		{
-			case PSX_Data_WriterInterface::FORM:
-			case PSX_Data_WriterInterface::JSON:
-			case PSX_Data_WriterInterface::XML:
+			case WriterInterface::FORM:
+			case WriterInterface::JSON:
+			case WriterInterface::XML:
 
 				return $this->getData();
 
@@ -218,19 +231,19 @@ class PSX_OpenId_Provider_Data_AssociationRequest extends PSX_Data_RecordAbstrac
 		{
 			case 'HMAC-SHA1':
 
-				$secret  = PSX_OpenId_ProviderAbstract::randomBytes(20);
+				$secret  = ProviderAbstract::randomBytes(20);
 				$macFunc = 'SHA1';
 				break;
 
 			case 'HMAC-SHA256':
 
-				$secret  = PSX_OpenId_ProviderAbstract::randomBytes(32);
+				$secret  = ProviderAbstract::randomBytes(32);
 				$macFunc = 'SHA256';
 				break;
 
 			default:
 
-				throw new PSX_OpenId_Provider_Exception('Invalid association type');
+				throw new InvalidDataException('Invalid association type');
 				break;
 		}
 
@@ -241,12 +254,12 @@ class PSX_OpenId_Provider_Data_AssociationRequest extends PSX_Data_RecordAbstrac
 
 				// $secret = base64_encode($secret);
 				// $this->macKey = $secret;
-				throw new PSX_OpenId_Provider_Exception('no-encryption not supported');
+				throw new InvalidDataException('no-encryption not supported');
 				break;
 
 			case 'DH-SHA1':
 
-				$dh = PSX_OpenId_ProviderAbstract::generateDh($this->getDhGen(), $this->getDhModulus(), $this->getDhConsumerPublic(), $macFunc, $secret);
+				$dh = ProviderAbstract::generateDh($this->getDhGen(), $this->getDhModulus(), $this->getDhConsumerPublic(), $macFunc, $secret);
 
 				$this->dhServerPublic = $dh['pubKey'];
 				$this->encMacKey      = $dh['macKey'];
@@ -254,7 +267,7 @@ class PSX_OpenId_Provider_Data_AssociationRequest extends PSX_Data_RecordAbstrac
 
 			case 'DH-SHA256':
 
-				$dh = PSX_OpenId_ProviderAbstract::generateDh($this->getDhGen(), $this->getDhModulus(), $this->getDhConsumerPublic(), $macFunc, $secret);
+				$dh = ProviderAbstract::generateDh($this->getDhGen(), $this->getDhModulus(), $this->getDhConsumerPublic(), $macFunc, $secret);
 
 				$this->dhServerPublic = $dh['pubKey'];
 				$this->encMacKey      = $dh['macKey'];
@@ -262,13 +275,13 @@ class PSX_OpenId_Provider_Data_AssociationRequest extends PSX_Data_RecordAbstrac
 
 			default:
 
-				throw new PSX_OpenId_Provider_Exception('Invalid association type');
+				throw new InvalidDataException('Invalid association type');
 				break;
 		}
 
-		$this->assocHandle = PSX_OpenId_ProviderAbstract::generateHandle();
+		$this->assocHandle = ProviderAbstract::generateHandle();
 
-		$this->assoc = new PSX_OpenId_Provider_Data_Association();
+		$this->assoc = new Association();
 		$this->assoc->setAssocHandle($this->assocHandle);
 		$this->assoc->setAssocType($this->assocType);
 		$this->assoc->setSessionType($this->sessionType);

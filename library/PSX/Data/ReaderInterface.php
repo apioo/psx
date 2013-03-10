@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Data;
+
+use PSX\Http\Message;
+
 /**
  * PSX_Data_ReaderInterface
  *
@@ -33,7 +37,7 @@
  * @package    PSX_Data
  * @version    $Revision: 512 $
  */
-interface PSX_Data_ReaderInterface
+interface ReaderInterface
 {
 	const DOM       = 0x1;
 	const FORM      = 0x2;
@@ -52,7 +56,7 @@ interface PSX_Data_ReaderInterface
 	 * @param PSX_Http_Request $request
 	 * @return PSX_Data_ReaderResult
 	 */
-	public function read(PSX_Http_Message $message);
+	public function read(Message $message);
 }
 
 

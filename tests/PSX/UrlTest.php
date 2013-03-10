@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
 /**
  * PSX_UrlTest
  *
@@ -32,7 +34,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_UrlTest extends PHPUnit_Framework_TestCase
+class UrlTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -44,7 +46,7 @@ class PSX_UrlTest extends PHPUnit_Framework_TestCase
 
 	public function testUrl()
 	{
-		$url = new PSX_Url('http://benutzername:passwort@hostname:8080/pfad?argument=wert#textanker');
+		$url = new Url('http://benutzername:passwort@hostname:8080/pfad?argument=wert#textanker');
 
 		$this->assertEquals('http', $url->getScheme());
 		$this->assertEquals('benutzername', $url->getUser());
@@ -57,11 +59,11 @@ class PSX_UrlTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX_Url_Exception
+	 * @expectedException \PSX\Exception
 	 */
 	public function testInvalidUrl()
 	{
-		new PSX_Url('foobar');
+		new Url('foobar');
 	}
 
 	public function testUrltoString()
@@ -81,7 +83,7 @@ class PSX_UrlTest extends PHPUnit_Framework_TestCase
 
 		foreach($urls as $u)
 		{
-			$url = new PSX_Url($u);
+			$url = new Url($u);
 
 			$this->assertEquals($u, $url->__toString());
 		}

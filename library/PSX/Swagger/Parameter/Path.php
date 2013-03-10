@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Swagger\Parameter;
+
+use PSX\Swagger\ParameterAbstract;
+
 /**
  * PSX_Swagger_Parameter_Path
  *
@@ -33,7 +37,7 @@
  * @package    PSX_Swagger
  * @version    $Revision: 582 $
  */
-class PSX_Swagger_Parameter_Path extends PSX_Swagger_ParameterAbstract
+class Path extends ParameterAbstract
 {
 	public function __construct($name, $description, $dataType, $required = true)
 	{

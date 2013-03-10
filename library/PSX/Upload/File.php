@@ -23,6 +23,11 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Upload;
+
+use PSX\Base;
+use PSX\File;
+
 /**
  * PSX_Upload_File
  *
@@ -33,7 +38,7 @@
  * @package    PSX_Upload
  * @version    $Revision: 513 $
  */
-class PSX_Upload_File
+class File
 {
 	private $name;
 	private $type;
@@ -56,7 +61,7 @@ class PSX_Upload_File
 		}
 		else
 		{
-			throw new PSX_Upload_Exception('File was not uploaded');
+			throw new Exception('File was not uploaded');
 		}
 	}
 
@@ -99,7 +104,7 @@ class PSX_Upload_File
 	{
 		if($this->_tmpFile === null)
 		{
-			$this->_tmpFile = PSX_File::open($this->tmpName, $mode);
+			$this->_tmpFile = File::open($this->tmpName, $mode);
 		}
 
 		return $this->_tmpFile;
@@ -109,7 +114,7 @@ class PSX_Upload_File
 	{
 		if($this->_tmpContent === null)
 		{
-			$this->_tmpContent = PSX_File::getContents($this->tmpName);
+			$this->_tmpContent = File::getContents($this->tmpName);
 		}
 
 		return $this->_tmpContent;
@@ -122,70 +127,52 @@ class PSX_Upload_File
 
 	private function isValidUpload(array $file)
 	{
-		$headers = PSX_Base::getRequestHeader();
+		$headers = Base::getRequestHeader();
 
 		if(strpos($headers['content-type'], 'multipart/form-data') !== false)
 		{
 			switch($file['error'])
 			{
 				case UPLOAD_ERR_OK:
-
 					return is_uploaded_file($file['tmp_name']);
-
 					break;
 
 				case UPLOAD_ERR_INI_SIZE:
-
-					throw new PSX_Upload_Exception('The uploaded file exceeds the upload_max_filesize directive in php.ini');
-
+					throw new Exception('The uploaded file exceeds the upload_max_filesize directive in php.ini');
 					break;
 
 				case UPLOAD_ERR_FORM_SIZE:
-
-					throw new PSX_Upload_Exception('The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form');
-
+					throw new Exception('The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form');
 					break;
 
 				case UPLOAD_ERR_PARTIAL:
-
-					throw new PSX_Upload_Exception('The uploaded file was only partially uploaded');
-
+					throw new Exception('The uploaded file was only partially uploaded');
 					break;
 
 				case UPLOAD_ERR_NO_FILE:
-
-					throw new PSX_Upload_Exception('No file was uploaded');
-
+					throw new Exception('No file was uploaded');
 					break;
 
 				case UPLOAD_ERR_NO_TMP_DIR:
-
-					throw new PSX_Upload_Exception('Missing a temporary folder');
-
+					throw new Exception('Missing a temporary folder');
 					break;
 
 				case UPLOAD_ERR_CANT_WRITE:
-
-					throw new PSX_Upload_Exception('Failed to write file to disk');
-
+					throw new Exception('Failed to write file to disk');
 					break;
 
 				case UPLOAD_ERR_EXTENSION:
-
-					throw new PSX_Upload_Exception('A PHP extension stopped the file upload');
-
+					throw new Exception('A PHP extension stopped the file upload');
 					break;
 
 				default:
-
-					throw new PSX_Upload_Exception('Invalid error code');
-
+					throw new Exception('Invalid error code');
 					break;
 			}
 		}
 		else
 		{
-			throw new PSX_Upload_Exception('Invalid content type');
+			throw new Exception('Invalid content type');
 		}
 	}
 }

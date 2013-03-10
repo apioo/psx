@@ -23,6 +23,14 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Swagger;
+
+use ReflectionClass;
+use PSX\Data\RecordAbstract;
+use PSX\Data\RecordInterface;
+use PSX\Data\Record;
+use PSX\Util\Annotation;
+
 /**
  * PSX_Swagger_Declaration
  *
@@ -33,7 +41,7 @@
  * @package    PSX_Swagger
  * @version    $Revision: 582 $
  */
-class PSX_Swagger_Declaration extends PSX_Data_RecordAbstract
+class Declaration extends RecordAbstract
 {
 	const VERSION = '1.1';
 
@@ -56,12 +64,12 @@ class PSX_Swagger_Declaration extends PSX_Data_RecordAbstract
 		$this->resourcePath = $resourcePath;
 	}
 
-	public function addApi(PSX_Swagger_Api $api)
+	public function addApi(Api $api)
 	{
 		$this->apis[] = $api;
 	}
 
-	public function addModel(PSX_Data_RecordInterface $record)
+	public function addModel(RecordInterface $record)
 	{
 		$this->models[] = self::getComplexDatatypeByRecord($record);
 	}
@@ -89,7 +97,7 @@ class PSX_Swagger_Declaration extends PSX_Data_RecordAbstract
 	 * @param PSX_Data_RecordInterface $record
 	 * @return PSX_Data_RecordInterface
 	 */
-	public static function getComplexDatatypeByRecord(PSX_Data_RecordInterface $record)
+	public static function getComplexDatatypeByRecord(RecordInterface $record)
 	{
 		$class = new ReflectionClass($record);
 		$props = array();
@@ -115,7 +123,7 @@ class PSX_Swagger_Declaration extends PSX_Data_RecordAbstract
 			{
 				if($method->getName() == $methodName)
 				{
-					$doc    = PSX_Util_Annotation::parse($method->getDocComment());
+					$doc    = Annotation::parse($method->getDocComment());
 					$params = $doc->getAnnotation('param');
 
 					foreach($params as $param)
@@ -165,7 +173,7 @@ class PSX_Swagger_Declaration extends PSX_Data_RecordAbstract
 			}
 		}
 
-		return new PSX_Data_Record($record->getName(), array(
+		return new Record($record->getName(), array(
 			'id'         => $record->getName(),
 			'properties' => $props,
 		));

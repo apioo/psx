@@ -23,6 +23,13 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Session\Handler;
+
+use PSX\DateTime;
+use PSX\Session\HandlerInterface;
+use PSX\Sql as SqlDriver;
+use PSX\Sql\Condition;
+
 /**
  * PSX_Session_Handler_Sql
  *
@@ -33,12 +40,12 @@
  * @package    PSX_Session
  * @version    $Revision: 559 $
  */
-class PSX_Session_Handler_Sql implements PSX_Session_HandlerInterface
+class Sql implements HandlerInterface
 {
 	protected $sql;
 	protected $table;
 
-	public function __construct(PSX_Sql $sql, $table)
+	public function __construct(SqlDriver $sql, $table)
 	{
 		$this->sql   = $sql;
 		$this->table = $table;
@@ -56,8 +63,8 @@ class PSX_Session_Handler_Sql implements PSX_Session_HandlerInterface
 
 	public function read($id)
 	{
-		$con  = new PSX_Sql_Condition(array('id', '=', $id));
-		$data = $this->sql->select($this->table, array('content'), $con, PSX_Sql::SELECT_FIELD);
+		$con  = new Condition(array('id', '=', $id));
+		$data = $this->sql->select($this->table, array('content'), $con, SqlDriver::SELECT_FIELD);
 
 		return $data;
 	}
@@ -68,22 +75,22 @@ class PSX_Session_Handler_Sql implements PSX_Session_HandlerInterface
 
 			'id'      => $id,
 			'content' => $data,
-			'date'    => date(PSX_DateTime::SQL),
+			'date'    => date(DateTime::SQL),
 
 		));
 	}
 
 	public function delete($id)
 	{
-		$con = new PSX_Sql_Condition(array('id', '=', $id));
+		$con = new Condition(array('id', '=', $id));
 
 		$this->sql->delete($this->table, $con);
 	}
 
 	public function gc($maxTime)
 	{
-		$con = new PSX_Sql_Condition();
-		$con->add('DATE_ADD(date, "INTERVAL ' . $maxTime . ' SECOND")', '<', date(PSX_DateTime::SQL));
+		$con = new Condition();
+		$con->add('DATE_ADD(date, "INTERVAL ' . $maxTime . ' SECOND")', '<', date(DateTime::SQL));
 
 		$this->sql->delete($this->table, $con);
 

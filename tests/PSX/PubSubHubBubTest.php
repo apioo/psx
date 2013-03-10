@@ -23,6 +23,11 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
+use PSX\Data\Writer;
+use PSX\Http\Request;
+
 /**
  * PSX_PubSubHubBubTest
  *
@@ -32,7 +37,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_PubSubHubBubTest extends PHPUnit_Framework_TestCase
+class PubSubHubBubTest extends \PHPUnit_Framework_TestCase
 {
 	const URL_TOPIC    = 'http://test.phpsx.org/pubsubhubbub/topic';
 	const URL_HUB      = 'http://test.phpsx.org/pubsubhubbub/hub';
@@ -43,8 +48,8 @@ class PSX_PubSubHubBubTest extends PHPUnit_Framework_TestCase
 
 	protected function setUp()
 	{
-		$this->http = new PSX_Http(new PSX_Http_Handler_Curl());
-		$this->pshb = new PSX_PubSubHubBub($this->http);
+		$this->http = new Http();
+		$this->pshb = new PubSubHubBub($this->http);
 	}
 
 	protected function tearDown()
@@ -53,25 +58,25 @@ class PSX_PubSubHubBubTest extends PHPUnit_Framework_TestCase
 
 	public function testAtomDiscover()
 	{
-		$url = new PSX_Url(self::URL_TOPIC . '/atom');
-		$url = $this->pshb->discover($url, PSX_PubSubHubBub::ATOM);
+		$url = new Url(self::URL_TOPIC . '/atom');
+		$url = $this->pshb->discover($url, PubSubHubBub::ATOM);
 
-		$this->assertEquals(true, $url instanceof PSX_Url);
+		$this->assertEquals(true, $url instanceof Url);
 		$this->assertEquals(self::URL_HUB, (string) $url);
 	}
 
 	public function testRssDiscover()
 	{
-		$url = new PSX_Url(self::URL_TOPIC . '/rss');
-		$url = $this->pshb->discover($url, PSX_PubSubHubBub::RSS2);
+		$url = new Url(self::URL_TOPIC . '/rss');
+		$url = $this->pshb->discover($url, PubSubHubBub::RSS2);
 
-		$this->assertEquals(true, $url instanceof PSX_Url);
+		$this->assertEquals(true, $url instanceof Url);
 		$this->assertEquals(self::URL_HUB, (string) $url);
 	}
 
 	public function testInsertAtom()
 	{
-		$header = array('Content-type' => PSX_Data_Writer_Atom::$mime);
+		$header = array('Content-type' => Writer\Atom::$mime);
 		$body   = <<<FEED
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
@@ -86,7 +91,7 @@ class PSX_PubSubHubBubTest extends PHPUnit_Framework_TestCase
 </feed>
 FEED;
 
-		$request  = new PSX_Http_Request(new PSX_Url(self::URL_CALLBACK), 'POST', $header, $body);
+		$request  = new Request(new Url(self::URL_CALLBACK), 'POST', $header, $body);
 		$response = $this->http->request($request);
 
 		$this->assertEquals(200, $response->getCode(), $response->getBody());
@@ -95,7 +100,7 @@ FEED;
 
 	public function testInsertRss()
 	{
-		$header = array('Content-type' => PSX_Data_Writer_Rss::$mime);
+		$header = array('Content-type' => Writer\Rss::$mime);
 		$body   = <<<FEED
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
@@ -112,7 +117,7 @@ FEED;
 </rss>
 FEED;
 
-		$request  = new PSX_Http_Request(new PSX_Url(self::URL_CALLBACK), 'POST', $header, $body);
+		$request  = new Request(new Url(self::URL_CALLBACK), 'POST', $header, $body);
 		$response = $this->http->request($request);
 
 		$this->assertEquals(200, $response->getCode(), $response->getBody());

@@ -23,6 +23,11 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Data\Reader;
+
+use PSX\Data\ReaderInterface;
+use PSX\Http\Message;
+
 /**
  * PSX_Data_Reader_FormTest
  *
@@ -32,7 +37,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_Data_Reader_FormTest extends PHPUnit_Framework_TestCase
+class FormTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -48,15 +53,15 @@ class PSX_Data_Reader_FormTest extends PHPUnit_Framework_TestCase
 foo=bar&bar%5B0%5D=blub&bar%5B1%5D=bla&test%5Bfoo%5D=bar
 INPUT;
 
-		$reader  = new PSX_Data_Reader_Form();
-		$message = new PSX_Http_Message(array(), $body);
+		$reader  = new Form();
+		$message = new Message(array(), $body);
 
 		$result = $reader->read($message);
 		$form   = $result->getData();
 
 		$e = array('foo' => 'bar', 'bar' => array('blub', 'bla'), 'test' => array('foo' => 'bar'));
 
-		$this->assertEquals(PSX_Data_ReaderInterface::FORM, $result->getType());
+		$this->assertEquals(ReaderInterface::FORM, $result->getType());
 		$this->assertEquals(true, is_array($form));
 		$this->assertEquals($e, $form);
 	}

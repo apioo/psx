@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Http;
+
 /**
  * PSX_Http_Message
  *
@@ -33,7 +35,7 @@
  * @package    PSX_Http
  * @version    $Revision: 578 $
  */
-class PSX_Http_Message
+class Message
 {
 	protected $header;
 	protected $body;

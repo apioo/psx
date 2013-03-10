@@ -23,6 +23,16 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Sql\Table;
+
+use PSX\DateTime;
+use PSX\Data\ResultSet;
+use PSX\Exception;
+use PSX\Sql;
+use PSX\Sql\Condition;
+use PSX\Sql\Join;
+use PSX\Sql\TableInterface;
+
 /**
  * PSX_Sql_Table_Select
  *
@@ -33,7 +43,7 @@
  * @package    PSX_Sql
  * @version    $Revision: 480 $
  */
-class PSX_Sql_Table_Select implements PSX_Sql_Table_SelectInterface
+class Select implements SelectInterface
 {
 	protected $table;
 	protected $sql;
@@ -53,21 +63,21 @@ class PSX_Sql_Table_Select implements PSX_Sql_Table_SelectInterface
 	protected $orderBy = array();
 	protected $groupBy = array();
 
-	public function __construct(PSX_Sql_TableInterface $table, $prefix = null)
+	public function __construct(TableInterface $table, $prefix = null)
 	{
 		$this->table     = $table;
 		$this->sql       = $table->getSql();
-		$this->condition = new PSX_Sql_Condition();
+		$this->condition = new Condition();
 
 		$this->setPrefix($prefix);
 	}
 
 	public function join($type, $table, $cardinality = 'n:1', $foreignKey = null)
 	{
-		if($table instanceof PSX_Sql_TableInterface)
+		if($table instanceof TableInterface)
 		{
 		}
-		else if($table instanceof PSX_Sql_Table_SelectInterface)
+		else if($table instanceof SelectInterface)
 		{
 			$this->selectedColumns = array_merge($this->selectedColumns, $table->getAllSelectedColumns());
 
@@ -75,15 +85,15 @@ class PSX_Sql_Table_Select implements PSX_Sql_Table_SelectInterface
 		}
 		else
 		{
-			throw new PSX_Sql_Table_Exception('Invalid table must be instanceof PSX_Sql_TableInterface or PSX_Sql_Table_SelectInterface');
+			throw new Exception('Invalid table must be instanceof PSX_Sql_TableInterface or PSX_Sql_Table_SelectInterface');
 		}
 
 		if($table->getLastSelect() === null)
 		{
-			throw new PSX_Sql_Table_Exception('Nothing is selected on table ' . $table->getName());
+			throw new Exception('Nothing is selected on table ' . $table->getName());
 		}
 
-		$this->joins[] = new PSX_Sql_Join($type, $table, $cardinality, $foreignKey);
+		$this->joins[] = new Join($type, $table, $cardinality, $foreignKey);
 
 		$this->condition->merge($table->getLastSelect()->getCondition());
 
@@ -96,7 +106,7 @@ class PSX_Sql_Table_Select implements PSX_Sql_Table_SelectInterface
 	{
 		if(!isset($this->availableColumns[$column]))
 		{
-			throw new PSX_Sql_Table_Exception('Invalid column');
+			throw new Exception('Invalid column');
 		}
 
 		$this->condition->add($this->availableColumns[$column], $operator, $value, $conjunction);
@@ -108,7 +118,7 @@ class PSX_Sql_Table_Select implements PSX_Sql_Table_SelectInterface
 	{
 		if(!isset($this->availableColumns[$column]))
 		{
-			throw new PSX_Sql_Table_Exception('Invalid column');
+			throw new Exception('Invalid column');
 		}
 
 		$this->groupBy[] = $this->availableColumns[$column];
@@ -120,10 +130,10 @@ class PSX_Sql_Table_Select implements PSX_Sql_Table_SelectInterface
 	{
 		if(!isset($this->availableColumns[$column]))
 		{
-			throw new PSX_Sql_Table_Exception('Invalid column');
+			throw new Exception('Invalid column');
 		}
 
-		$this->orderBy[] = array($column, $sort === PSX_Sql::SORT_ASC ? 'ASC' : 'DESC');
+		$this->orderBy[] = array($column, $sort === Sql::SORT_ASC ? 'ASC' : 'DESC');
 
 		return $this;
 	}
@@ -248,35 +258,27 @@ class PSX_Sql_Table_Select implements PSX_Sql_Table_SelectInterface
 		$start     = $startIndex !== null ? (integer) $startIndex : 0;
 		$count     = $count      !== null ? (integer) $count      : 16;
 		$sortBy    = $sortBy     !== null && isset($this->availableColumns[$sortBy]) ? $sortBy : current($this->columns);
-		$sortOrder = $sortOrder  !== null ? (strcasecmp($sortOrder, 'ascending') == 0 ? PSX_Sql::SORT_ASC : PSX_Sql::SORT_DESC) : PSX_Sql::SORT_DESC;
+		$sortOrder = $sortOrder  !== null ? (strcasecmp($sortOrder, 'ascending') == 0 ? Sql::SORT_ASC : Sql::SORT_DESC) : Sql::SORT_DESC;
 
 		if(isset($this->availableColumns[$filterBy]))
 		{
 			switch($filterOp)
 			{
 				case 'contains':
-
 					$this->where($filterBy, 'LIKE', '%' . $filterValue . '%');
-
 					break;
 
 				case 'equals':
-
 					$this->where($filterBy, '=', $filterValue);
-
 					break;
 
 				case 'startsWith':
-
 					$this->where($filterBy, 'LIKE', $filterValue . '%');
-
 					break;
 
 				case 'present':
-
 					$this->where($filterBy, 'IS NOT', 'NULL', 'AND');
 					$this->where($filterBy, 'NOT LIKE', '');
-
 					break;
 			}
 		}
@@ -288,9 +290,9 @@ class PSX_Sql_Table_Select implements PSX_Sql_Table_SelectInterface
 
 			if($dateColumn !== null)
 			{
-				$datetime = new PSX_DateTime($updatedSince);
+				$datetime = new DateTime($updatedSince);
 
-				$this->where($dateColumn, '>', $datetime->format(PSX_DateTime::SQL));
+				$this->where($dateColumn, '>', $datetime->format(DateTime::SQL));
 			}
 		}
 
@@ -300,14 +302,14 @@ class PSX_Sql_Table_Select implements PSX_Sql_Table_SelectInterface
 		$totalResults = $this->getTotalResults();
 		$entries      = $this->getAll($mode, $class, $args);
 
-		$resultSet = new PSX_Data_ResultSet($totalResults, $start, $count, $entries);
+		$resultSet = new ResultSet($totalResults, $start, $count, $entries);
 
 		return $resultSet;
 	}
 
 	public function getAll($mode = 0, $class = null, array $args = array())
 	{
-		if($mode === PSX_Sql::FETCH_OBJECT && $class === null && $args === array())
+		if($mode === Sql::FETCH_OBJECT && $class === null && $args === array())
 		{
 			$class = $this->table->getDefaultRecordClass();
 			$args  = $this->table->getDefaultRecordArgs();
@@ -318,7 +320,7 @@ class PSX_Sql_Table_Select implements PSX_Sql_Table_SelectInterface
 
 	public function getRow($mode = 0, $class = null, array $args = array())
 	{
-		if($mode === PSX_Sql::FETCH_OBJECT && $class === null && $args === array())
+		if($mode === Sql::FETCH_OBJECT && $class === null && $args === array())
 		{
 			$class = $this->table->getDefaultRecordClass();
 			$args  = $this->table->getDefaultRecordArgs();
@@ -390,7 +392,7 @@ class PSX_Sql_Table_Select implements PSX_Sql_Table_SelectInterface
 
 		if(empty($selectedColumns))
 		{
-			throw new PSX_Sql_Table_Exception('No valid columns selected');
+			throw new Exception('No valid columns selected');
 		}
 
 		// select
@@ -464,6 +466,6 @@ class PSX_Sql_Table_Select implements PSX_Sql_Table_SelectInterface
 			}
 		}
 
-		throw new PSX_Sql_Table_Exception($foreignTable . ' is not connected to ' . $this->table->getName());
+		throw new Exception($foreignTable . ' is not connected to ' . $this->table->getName());
 	}
 }

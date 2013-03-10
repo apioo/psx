@@ -23,6 +23,15 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
+use PSX\Loader\Location;
+use PSX\Loader\LocationFinderInterface;
+use PSX\Loader\LocationFinder\FileSystem;
+use PSX\Util\Annotation;
+use ReflectionClass;
+use ReflectionMethod;
+
 /**
  * Class to load modules of psx.
  *
@@ -33,7 +42,7 @@
  * @package    PSX_Loader
  * @version    $Revision: 658 $
  */
-class PSX_Loader
+class Loader
 {
 	protected $base;
 	protected $config;
@@ -44,7 +53,7 @@ class PSX_Loader
 
 	protected $locationFinder;
 
-	public function __construct(PSX_Base $base)
+	public function __construct(Base $base)
 	{
 		$this->base    = $base;
 		$this->config  = $base->getConfig();
@@ -62,7 +71,7 @@ class PSX_Loader
 		{
 			$class = $location->getClass();
 
-			if($class->isSubclassOf('PSX_ModuleAbstract'))
+			if($class->isSubclassOf('\PSX\ModuleAbstract'))
 			{
 				$handle = $class->newInstance($location, $this->base, $path, $uriFragments);
 				$handle->_ini();
@@ -78,7 +87,7 @@ class PSX_Loader
 			}
 			else
 			{
-				throw new PSX_Loader_Exception('Class is not an instance of PSX_ModuleAbstract');
+				throw new Exception('Class is not an instance of PSX_ModuleAbstract');
 			}
 		}
 
@@ -116,7 +125,7 @@ class PSX_Loader
 	 * @param PSX_Loader_LocationFinderInterface $locationFinder
 	 * @return void
 	 */
-	public function setLocationFinder(PSX_Loader_LocationFinderInterface $locationFinder)
+	public function setLocationFinder(LocationFinderInterface $locationFinder)
 	{
 		$this->locationFinder = $locationFinder;
 	}
@@ -143,13 +152,13 @@ class PSX_Loader
 
 		if($this->locationFinder === null)
 		{
-			$this->locationFinder = new PSX_Loader_LocationFinder_FileSystem($this->config['psx_path_module']);
+			$this->locationFinder = new FileSystem($this->config['psx_path_module']);
 		}
 
 		$location     = $this->locationFinder->resolve($x);
 		$uriFragments = array();
 
-		if($location instanceof PSX_Loader_Location)
+		if($location instanceof Location)
 		{
 			$method = $this->getMethodToCall($location->getClass(), $location->getPath(), $uriFragments);
 		}
@@ -163,7 +172,7 @@ class PSX_Loader
 			}
 			else
 			{
-				throw new PSX_Loader_Exception('Unkown module "' . $x . '"');
+				throw new Exception('Unkown module "' . $x . '"');
 			}
 		}
 
@@ -197,11 +206,11 @@ class PSX_Loader
 		{
 			if($m->isPublic() && !in_array($m->getName(), $reserved))
 			{
-				$doc         = PSX_Util_Annotation::parse($m->getDocComment());
+				$doc         = Annotation::parse($m->getDocComment());
 				$httpMethod  = $doc->getFirstAnnotation('httpMethod');
 				$virtualPath = $doc->getFirstAnnotation('path');
 
-				if(!empty($virtualPath) && $httpMethod == PSX_Base::getRequestMethod())
+				if(!empty($virtualPath) && $httpMethod == Base::getRequestMethod())
 				{
 					$match       = true;
 					$virtualPath = trim($virtualPath, '/');

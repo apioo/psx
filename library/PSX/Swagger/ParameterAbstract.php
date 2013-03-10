@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Swagger;
+
+use PSX\Data\RecordAbstract;
+
 /**
  * PSX_Swagger_ParameterAbstract
  *
@@ -33,7 +37,7 @@
  * @package    PSX_Swagger
  * @version    $Revision: 582 $
  */
-abstract class PSX_Swagger_ParameterAbstract extends PSX_Data_RecordAbstract
+abstract class ParameterAbstract extends RecordAbstract
 {
 	private $paramType;
 	private $name;

@@ -23,6 +23,17 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Module;
+
+use PSX\Base;
+use PSX\Data\NotFoundException;
+use PSX\Data\ReaderFactory;
+use PSX\Data\RecordInterface;
+use PSX\Data\Writer;
+use PSX\Data\WriterFactory;
+use PSX\Data\WriterResult;
+use PSX\ModuleAbstract;
+
 /**
  * PSX_Module_ApiAbstract
  *
@@ -33,7 +44,7 @@
  * @package    PSX_Module
  * @version    $Revision: 645 $
  */
-abstract class PSX_Module_ApiAbstract extends PSX_ModuleAbstract
+abstract class ApiAbstract extends ModuleAbstract
 {
 	/**
 	 * Returns an associative array containing all available request parameters
@@ -144,16 +155,16 @@ abstract class PSX_Module_ApiAbstract extends PSX_ModuleAbstract
 		// find best reader type
 		if($readerType === null)
 		{
-			$contentType = PSX_Base::getRequestHeader('Content-Type');
-			$readerType  = PSX_Data_ReaderFactory::getReaderTypeByContentType($contentType);
+			$contentType = Base::getRequestHeader('Content-Type');
+			$readerType  = ReaderFactory::getReaderTypeByContentType($contentType);
 		}
 
 		// get reader
-		$reader = PSX_Data_ReaderFactory::getReader($readerType);
+		$reader = ReaderFactory::getReader($readerType);
 
 		if($reader === null)
 		{
-			throw new PSX_Exception('Could not find fitting data reader');
+			throw new NotFoundException('Could not find fitting data reader');
 		}
 
 		// try to read request
@@ -171,47 +182,46 @@ abstract class PSX_Module_ApiAbstract extends PSX_ModuleAbstract
 	 * @param integer $code
 	 * @return void
 	 */
-	protected function setResponse(PSX_Data_RecordInterface $record, $writerType = null, $code = 200)
+	protected function setResponse(RecordInterface $record, $writerType = null, $code = 200)
 	{
 		// set response code
-		PSX_Base::setResponseCode($code);
+		Base::setResponseCode($code);
 
 		// find best writer type if not set
 		if($writerType === null)
 		{
 			$formats = array(
-
-				'atom' => PSX_Data_Writer_Atom::$mime,
-				'form' => PSX_Data_Writer_Form::$mime,
-				'json' => PSX_Data_Writer_Json::$mime,
-				'rss'  => PSX_Data_Writer_Rss::$mime,
-				'xml'  => PSX_Data_Writer_Xml::$mime,
-
+				'atom' => Writer\Atom::$mime,
+				'form' => Writer\Form::$mime,
+				'json' => Writer\Json::$mime,
+				'rss'  => Writer\Rss::$mime,
+				'xml'  => Writer\Xml::$mime,
 			);
 
 			$format      = isset($_GET['format']) && strlen($_GET['format']) < 16 ? $_GET['format'] : null;
 			$contentType = isset($formats[$format]) ? $formats[$format] : PSX_Base::getRequestHeader('Accept');
-			$writerType  = PSX_Data_WriterFactory::getWriterTypeByContentType($contentType);
+			$writerType  = WriterFactory::getWriterTypeByContentType($contentType);
 		}
 
 		// get writer
-		$writer = PSX_Data_WriterFactory::getWriter($writerType);
+		$writer = WriterFactory::getWriter($writerType);
 
 		if($writer === null)
 		{
-			throw new PSX_Exception('Could not find fitting data writer');
+			throw new NotFoundException('Could not find fitting data writer');
 		}
 
 		// for iframe file uploads we need an text/html content type header even 
 		// if we want serve json content. If all browsers support the FormData
 		// api we can send file uploads per ajax but for now we use this hack.
 		// Note do not rely on this param it will be removed as soon as possible
-		if (isset($_GET['htmlMime'])) {
+		if(isset($_GET['htmlMime']))
+		{
 			header('Content-Type: text/html');
 		}
 
 		// try to write response with preferred writer
-		$writerResult = new PSX_Data_WriterResult($writerType, $writer);
+		$writerResult = new WriterResult($writerType, $writer);
 
 		$this->setWriterConfig($writerResult);
 
@@ -226,7 +236,7 @@ abstract class PSX_Module_ApiAbstract extends PSX_ModuleAbstract
 	 * @param PSX_Data_WriterResult $result
 	 * @return void
 	 */
-	protected function setWriterConfig(PSX_Data_WriterResult $result)
+	protected function setWriterConfig(WriterResult $result)
 	{
 	}
 }

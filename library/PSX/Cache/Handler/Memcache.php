@@ -23,6 +23,12 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Cache\Handler;
+
+use Memcache;
+use PSX\Cache\HandlerInterface;
+use PSX\Cache\Item;
+
 /**
  * PSX_Cache_Handler_Memcache
  *
@@ -33,7 +39,7 @@
  * @package    PSX_Cache
  * @version    $Revision: 637 $
  */
-class PSX_Cache_Handler_Memcache implements PSX_Cache_HandlerInterface
+class Memcache implements HandlerInterface
 {
 	private $memcache;
 
@@ -48,7 +54,7 @@ class PSX_Cache_Handler_Memcache implements PSX_Cache_HandlerInterface
 
 		if($content !== false)
 		{
-			return new PSX_Cache_Item($content, null);
+			return new Item($content, null);
 		}
 		else
 		{

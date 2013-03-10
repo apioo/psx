@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Util;
+
 /**
  * PSX_Util_BencodingTest
  *
@@ -32,7 +34,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_Util_BencodingTest extends PHPUnit_Framework_TestCase
+class BencodingTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -44,19 +46,19 @@ class PSX_Util_BencodingTest extends PHPUnit_Framework_TestCase
 
 	public function testBencodingEncode()
 	{
-		$this->assertEquals('3:foo', PSX_Util_Bencoding::encode('foo'));
-		$this->assertEquals('i6e', PSX_Util_Bencoding::encode(6));
-		$this->assertEquals('l3:foo3:bare', PSX_Util_Bencoding::encode(array('foo', 'bar')));
-		$this->assertEquals('d3:foo3:bare', PSX_Util_Bencoding::encode(array('foo' => 'bar')));
-		$this->assertEquals('d3:fool3:bar4:testee', PSX_Util_Bencoding::encode(array('foo' => array('bar', 'test'))));
+		$this->assertEquals('3:foo', Bencoding::encode('foo'));
+		$this->assertEquals('i6e', Bencoding::encode(6));
+		$this->assertEquals('l3:foo3:bare', Bencoding::encode(array('foo', 'bar')));
+		$this->assertEquals('d3:foo3:bare', Bencoding::encode(array('foo' => 'bar')));
+		$this->assertEquals('d3:fool3:bar4:testee', Bencoding::encode(array('foo' => array('bar', 'test'))));
 	}
 
 	public function testBencodingDecode()
 	{
-		$this->assertEquals('foo', PSX_Util_Bencoding::decode('3:foo'));
-		$this->assertEquals(6, PSX_Util_Bencoding::decode('i6e'));
-		$this->assertEquals(array('foo', 'bar'), PSX_Util_Bencoding::decode('l3:foo3:bare'));
-		$this->assertEquals(array('foo' => 'bar'), PSX_Util_Bencoding::decode('d3:foo3:bare'));
-		$this->assertEquals(array('foo' => array('bar', 'test')), PSX_Util_Bencoding::decode('d3:fool3:bar4:testee'));
+		$this->assertEquals('foo', Bencoding::decode('3:foo'));
+		$this->assertEquals(6, Bencoding::decode('i6e'));
+		$this->assertEquals(array('foo', 'bar'), Bencoding::decode('l3:foo3:bare'));
+		$this->assertEquals(array('foo' => 'bar'), Bencoding::decode('d3:foo3:bare'));
+		$this->assertEquals(array('foo' => array('bar', 'test')), Bencoding::decode('d3:fool3:bar4:testee'));
 	}
 }

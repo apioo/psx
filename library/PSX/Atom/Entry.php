@@ -23,6 +23,21 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Atom;
+
+use DOMDocument;
+use DOMElement;
+use PSX\Exception;
+use PSX\Atom;
+use PSX\Data\InvalidDataException;
+use PSX\Data\NotSupportedException;
+use PSX\Data\ReaderInterface;
+use PSX\Data\ReaderResult;
+use PSX\Data\RecordAbstract;
+use PSX\Http;
+use PSX\Http\GetRequest;
+use PSX\Url;
+
 /**
  * PSX_Atom_Entry
  *
@@ -33,7 +48,7 @@
  * @package    PSX_Atom
  * @version    $Revision: 480 $
  */
-class PSX_Atom_Entry extends PSX_Data_RecordAbstract
+class Entry extends RecordAbstract
 {
 	public $author      = array();
 	public $category    = array();
@@ -87,11 +102,11 @@ class PSX_Atom_Entry extends PSX_Data_RecordAbstract
 		);
 	}
 
-	public function import(PSX_Data_ReaderResult $result)
+	public function import(ReaderResult $result)
 	{
 		switch($result->getType())
 		{
-			case PSX_Data_ReaderInterface::DOM:
+			case ReaderInterface::DOM:
 
 				$entry = $result->getData();
 
@@ -109,7 +124,7 @@ class PSX_Atom_Entry extends PSX_Data_RecordAbstract
 				}
 				else
 				{
-					throw new PSX_Data_Exception('Data must be an instance of DOMDocument or DOMElement');
+					throw new InvalidDataException('Data must be an instance of DOMDocument or DOMElement');
 				}
 
 				if(strcasecmp($root->localName, 'entry') == 0)
@@ -118,18 +133,18 @@ class PSX_Atom_Entry extends PSX_Data_RecordAbstract
 				}
 				else
 				{
-					throw new PSX_Data_Exception('No entry element found');
+					throw new InvalidDataException('No entry element found');
 				}
 
 				break;
 
 			default:
 
-				throw new PSX_Data_Exception('Reader is not supported');
+				throw new NotSupportedException('Reader is not supported');
 		}
 	}
 
-	private function parseEntryElement(DomElement $entry)
+	private function parseEntryElement(DOMElement $entry)
 	{
 		$this->element = $entry;
 
@@ -152,13 +167,13 @@ class PSX_Atom_Entry extends PSX_Data_RecordAbstract
 				case 'author':
 				case 'contributor':
 
-					array_push($this->$name, PSX_Atom::personConstruct($item));
+					array_push($this->$name, Atom::personConstruct($item));
 
 					break;
 
 				case 'category':
 
-					$this->category[] = PSX_Atom::categoryConstruct($item);
+					$this->category[] = Atom::categoryConstruct($item);
 
 					break;
 
@@ -170,7 +185,7 @@ class PSX_Atom_Entry extends PSX_Data_RecordAbstract
 
 					if($this->fetchRemoteContent && !empty($src))
 					{
-						$this->fetchRemoteContent($item, new PSX_Url($src));
+						$this->fetchRemoteContent($item, new Url($src));
 					}
 
 					if(empty($type) || $type == 'text' || $type == 'html' || substr($type, 0, 5) == 'text/')
@@ -206,21 +221,21 @@ class PSX_Atom_Entry extends PSX_Data_RecordAbstract
 				case 'published':
 				case 'updated':
 
-					$this->$name = PSX_Atom::dateConstruct($item);
+					$this->$name = Atom::dateConstruct($item);
 
 					break;
 
 				case 'link':
 
-					array_push($this->$name, PSX_Atom::linkConstruct($item));
+					array_push($this->$name, Atom::linkConstruct($item));
 
 					break;
 
 				case 'source':
 
-					$dom = new DomDocument();
+					$dom = new DOMDocument();
 
-					$feed = $dom->createElementNS(PSX_Atom::$xmlns, 'feed');
+					$feed = $dom->createElementNS(Atom::$xmlns, 'feed');
 
 					foreach($item->childNodes as $node)
 					{
@@ -233,9 +248,9 @@ class PSX_Atom_Entry extends PSX_Data_RecordAbstract
 
 					$dom->appendChild($feed);
 
-					$result = new PSX_Data_ReaderResult(PSX_Data_ReaderInterface::DOM, $dom);
+					$result = new ReaderResult(ReaderInterface::DOM, $dom);
 
-					$atom = new PSX_Atom();
+					$atom = new Atom();
 					$atom->import($result);
 
 					$this->source = $atom;
@@ -244,7 +259,7 @@ class PSX_Atom_Entry extends PSX_Data_RecordAbstract
 
 				case 'summary':
 
-					$this->summary = PSX_Atom::textConstruct($item);
+					$this->summary = Atom::textConstruct($item);
 
 					break;
 			}
@@ -267,15 +282,15 @@ class PSX_Atom_Entry extends PSX_Data_RecordAbstract
 
 		if($this->fetchRemoteContent)
 		{
-			$this->http = new PSX_Http(new PSX_Http_Handler_Curl());
+			$this->http = new Http();
 		}
 	}
 
-	public function fetchRemoteContent(DomElement $parent, PSX_Url $url)
+	public function fetchRemoteContent(DOMElement $parent, Url $url)
 	{
 		if($url->getScheme() == 'http' || $url->getScheme() == 'https')
 		{
-			$request  = new PSX_Http_GetRequest($url);
+			$request  = new GetRequest($url);
 			$response = $this->http->request($request);
 
 			if($response->getCode() == 200)
@@ -288,11 +303,11 @@ class PSX_Atom_Entry extends PSX_Data_RecordAbstract
 		}
 		else
 		{
-			throw new PSX_Atom_Exception('Can only fetch http or https sources');
+			throw new Exception('Can only fetch http or https sources');
 		}
 	}
 
-	private function getFirstChild(DomElement $element)
+	private function getFirstChild(DOMElement $element)
 	{
 		foreach($element->childNodes as $child)
 		{

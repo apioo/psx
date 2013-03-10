@@ -23,6 +23,12 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Data\Reader;
+
+use PSX\Data\ReaderInterface;
+use PSX\Data\ReaderResult;
+use PSX\Http\Message;
+
 /**
  * PSX_Data_Reader_Multipart
  *
@@ -33,11 +39,11 @@
  * @package    PSX_Data
  * @version    $Revision: 542 $
  */
-class PSX_Data_Reader_Multipart implements PSX_Data_ReaderInterface
+class Multipart implements ReaderInterface
 {
 	public static $mime = 'multipart/form-data';
 
-	public function read(PSX_Http_Message $message)
+	public function read(Message $message)
 	{
 		// post params
 		$data = $_POST;
@@ -51,7 +57,7 @@ class PSX_Data_Reader_Multipart implements PSX_Data_ReaderInterface
 			}
 		}
 
-		return new PSX_Data_ReaderResult(PSX_Data_ReaderInterface::MULTIPART, $data);
+		return new ReaderResult(ReaderInterface::MULTIPART, $data);
 	}
 }
 

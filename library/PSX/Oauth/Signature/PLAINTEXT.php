@@ -23,6 +23,11 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Oauth\Signature;
+
+use PSX\Oauth;
+use PSX\Oauth\SignatureAbstract;
+
 /**
  * PSX_Oauth_Signature_PLAINTEXT
  *
@@ -33,13 +38,13 @@
  * @package    PSX_Oauth
  * @version    $Revision: 480 $
  */
-class PSX_Oauth_Signature_PLAINTEXT extends PSX_Oauth_SignatureAbstract
+class PLAINTEXT extends SignatureAbstract
 {
 	public function build($baseString, $consumerSecret, $tokenSecret = '')
 	{
-		$key = PSX_Oauth::urlEncode($consumerSecret) . '&' . PSX_Oauth::urlEncode($tokenSecret);
+		$key = Oauth::urlEncode($consumerSecret) . '&' . Oauth::urlEncode($tokenSecret);
 
-		return PSX_Oauth::urlEncode($key);
+		return Oauth::urlEncode($key);
 	}
 }
 

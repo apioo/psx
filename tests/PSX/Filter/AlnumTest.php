@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Filter;
+
 /**
  * PSX_Filter_AlnumTest
  *
@@ -32,7 +34,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_Filter_AlnumTest extends PHPUnit_Framework_TestCase
+class AlnumTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -44,7 +46,7 @@ class PSX_Filter_AlnumTest extends PHPUnit_Framework_TestCase
 
 	public function testAlnum()
 	{
-		$alnum = new PSX_Filter_Alnum();
+		$alnum = new Alnum();
 
 		$this->assertEquals(true, $alnum->apply('foo'));
 		$this->assertEquals(true, $alnum->apply('foo123'));

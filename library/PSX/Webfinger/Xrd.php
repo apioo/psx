@@ -23,6 +23,12 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Webfinger;
+
+use SimpleXMLElement;
+use DateTimeZone;
+use PSX\DateTime;
+
 /**
  * Class wich represents an Extensible Resource Descriptor. It offers some
  * methods to easily access the values.
@@ -35,7 +41,7 @@
  * @package    PSX_Webfinger
  * @version    $Revision: 480 $
  */
-class PSX_Webfinger_Xrd extends SimpleXMLElement
+class Xrd extends SimpleXMLElement
 {
 	const LINK_REL  = 0x1;
 	const LINK_TYPE = 0x2;

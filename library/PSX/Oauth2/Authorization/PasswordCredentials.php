@@ -23,6 +23,11 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Oauth2\Authorization;
+
+use PSX\Base;
+use PSX\Oauth2\AuthorizationAbstract;
+
 /**
  * PSX_Oauth2_Authorization_PasswordCredentials
  *
@@ -33,7 +38,7 @@
  * @package    PSX_Oauth2
  * @version    $Revision: 662 $
  */
-class PSX_Oauth2_Authorization_PasswordCredentials extends PSX_Oauth2_AuthorizationAbstract
+class PasswordCredentials extends AuthorizationAbstract
 {
 	public function getAccessToken($username, $password, $scope = null)
 	{
@@ -54,7 +59,7 @@ class PSX_Oauth2_Authorization_PasswordCredentials extends PSX_Oauth2_Authorizat
 		// authentication
 		$header = array(
 			'Accept'     => 'application/json',
-			'User-Agent' => __CLASS__ . ' ' . PSX_Base::VERSION,
+			'User-Agent' => __CLASS__ . ' ' . Base::VERSION,
 		);
 
 		if($this->type == self::AUTH_BASIC)

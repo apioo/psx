@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Html\Lexer;
+
 /**
  * PSX_Html_Lexer_TokenAbstract
  *
@@ -33,7 +35,7 @@
  * @package    PSX_Html
  * @version    $Revision: 549 $
  */
-abstract class PSX_Html_Lexer_TokenAbstract
+abstract class TokenAbstract
 {
 	abstract public function getName();
 	abstract public function __toString();

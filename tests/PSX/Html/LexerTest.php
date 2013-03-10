@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Html;
+
+use PSX\Html\Lexer\Token\Element;
+
 /**
  * PSX_Html_LexerTest
  *
@@ -32,7 +36,7 @@
  * @category   tests
  * @version    $Revision: 544 $
  */
-class PSX_Html_LexerTest extends PHPUnit_Framework_TestCase
+class LexerTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -66,7 +70,7 @@ HTML;
 </html>
 HTML;
 
-		$root = PSX_Html_Lexer::parse($html);
+		$root = Lexer::parse($html);
 
 		$this->assertEquals($expect, $root->__toString());
 	}
@@ -95,7 +99,7 @@ HTML;
 </body></html>
 HTML;
 
-		$root = PSX_Html_Lexer::parse($html);
+		$root = Lexer::parse($html);
 
 		$this->assertEquals($expect, $root->__toString());
 	}
@@ -119,7 +123,7 @@ HTML;
 		<title /></head></html>
 HTML;
 
-		$root = PSX_Html_Lexer::parse($html);
+		$root = Lexer::parse($html);
 
 		$this->assertEquals($expect, $root->__toString());
 	}
@@ -150,7 +154,7 @@ HTML;
 </html>
 HTML;
 
-		$root = PSX_Html_Lexer::parse($html);
+		$root = Lexer::parse($html);
 
 		$this->assertEquals($expect, $root->__toString());
 	}
@@ -181,7 +185,7 @@ HTML;
 </html>
 HTML;
 
-		$root = PSX_Html_Lexer::parse($html);
+		$root = Lexer::parse($html);
 
 		$this->assertEquals($expect, $root->__toString());
 	}
@@ -212,7 +216,7 @@ HTML;
 </html>
 HTML;
 
-		$root = PSX_Html_Lexer::parse($html);
+		$root = Lexer::parse($html);
 
 		$this->assertEquals($expect, $root->__toString());
 	}
@@ -237,7 +241,7 @@ HTML;
 </html>
 HTML;
 
-		$root = PSX_Html_Lexer::parse($html);
+		$root = Lexer::parse($html);
 
 		$this->assertEquals($expect, $root->__toString());
 	}
@@ -248,9 +252,9 @@ HTML;
 <html name="test" foo="bar" />
 HTML;
 
-		$root = PSX_Html_Lexer::parse($html);
+		$root = Lexer::parse($html);
 
-		$this->assertEquals(true, $root instanceof PSX_Html_Lexer_Token_Element);
+		$this->assertEquals(true, $root instanceof Element);
 		$this->assertEquals('html', $root->name);
 		$this->assertEquals('test', $root->getAttribute('name'));
 		$this->assertEquals('bar', $root->getAttribute('foo'));
@@ -262,7 +266,7 @@ HTML;
 lorem ipsum
 HTML;
 
-		$root = PSX_Html_Lexer::parse($html);
+		$root = Lexer::parse($html);
 
 		$this->assertEquals(null, $root);
 	}
@@ -273,9 +277,9 @@ HTML;
 lorem <ipsum> foobar
 HTML;
 
-		$root = PSX_Html_Lexer::parse($html);
+		$root = Lexer::parse($html);
 
-		$this->assertEquals(true, $root instanceof PSX_Html_Lexer_Token_Element);
+		$this->assertEquals(true, $root instanceof Element);
 		$this->assertEquals('ipsum', $root->name);
 		$this->assertEquals(array(), $root->getAttributes());
 	}
@@ -286,7 +290,7 @@ HTML;
 {"foo":"bar"}
 HTML;
 
-		$root = PSX_Html_Lexer::parse($html);
+		$root = Lexer::parse($html);
 
 		$this->assertEquals(null, $root);
 	}
@@ -307,7 +311,7 @@ HTML;
 </html>
 HTML;
 
-		$root = PSX_Html_Lexer::parse($html);
+		$root = Lexer::parse($html);
 
 		$this->assertEquals($expect, $root->__toString());
 	}
@@ -328,7 +332,7 @@ HTML;
 </html>
 HTML;
 
-		$root = PSX_Html_Lexer::parse($html);
+		$root = Lexer::parse($html);
 
 		$this->assertEquals($expect, $root->__toString());
 	}
@@ -349,7 +353,7 @@ HTML;
 </html>
 HTML;
 
-		$root = PSX_Html_Lexer::parse($html);
+		$root = Lexer::parse($html);
 
 		$this->assertEquals($expect, $root->__toString());
 	}
@@ -370,7 +374,7 @@ HTML;
 </html>
 HTML;
 
-		$root = PSX_Html_Lexer::parse($html);
+		$root = Lexer::parse($html);
 
 		$this->assertEquals($expect, $root->__toString());
 	}
@@ -385,7 +389,7 @@ HTML;
 <iframe width="420" height="315" src="http://www.youtube.com/embed/jExym4mLx10?rel=0" frameborder="0" allowfullscreen></iframe>
 HTML;
 
-		$root = PSX_Html_Lexer::parse($html);
+		$root = Lexer::parse($html);
 
 		$this->assertEquals($expect, $root->__toString());
 	}
@@ -404,7 +408,7 @@ HTML;
 </p>
 HTML;
 
-		$root = PSX_Html_Lexer::parse($html);
+		$root = Lexer::parse($html);
 
 		$this->assertEquals($expect, $root->__toString());
 	}
@@ -427,7 +431,7 @@ if (0 < 1 && 1 > 0) {
 </script>
 HTML;
 
-		$root = PSX_Html_Lexer::parse($html);
+		$root = Lexer::parse($html);
 
 		$this->assertEquals($expect, $root->__toString());
 	}
@@ -450,25 +454,25 @@ HTML;
 </textarea>
 HTML;
 
-		$root = PSX_Html_Lexer::parse($html);
+		$root = Lexer::parse($html);
 
 		$this->assertEquals($expect, $root->__toString());
 	}
 
 	public function testParseAttributes()
 	{
-		$this->assertEquals(array('disabled' => null), PSX_Html_Lexer::parseAttributes('disabled'));
-		$this->assertEquals(array('value' => 'yes'), PSX_Html_Lexer::parseAttributes('value=yes'));
-		$this->assertEquals(array('value' => 'yes'), PSX_Html_Lexer::parseAttributes('value =yes'));
-		$this->assertEquals(array('type' => 'checkbox'), PSX_Html_Lexer::parseAttributes('type=\'checkbox\''));
-		$this->assertEquals(array('name' => 'be evil'), PSX_Html_Lexer::parseAttributes('name="be evil"'));
-		$this->assertEquals(array('name' => 'foo', 'bar' => 'name'), PSX_Html_Lexer::parseAttributes('name="foo" bar="name"'));
-		$this->assertEquals(array('name' => ' be evil '), PSX_Html_Lexer::parseAttributes(' name = " be evil " '));
-		$this->assertEquals(array('name' => ' be evil '), PSX_Html_Lexer::parseAttributes(' name = \' be evil \' '));
-		$this->assertEquals(array('name' => ' be \'evil '), PSX_Html_Lexer::parseAttributes(' name = " be \'evil " '));
-		$this->assertEquals(array('name' => ' be "evil '), PSX_Html_Lexer::parseAttributes(' name = \' be "evil \' '));
-		$this->assertEquals(array('itemscope' => 'itemscope', 'itemtype' => 'http://schema.org/WebPage'), PSX_Html_Lexer::parseAttributes('itemscope="itemscope" itemtype="http://schema.org/WebPage"'));
-		$this->assertEquals(array('itemscope' => 'itemscope', 'itemtype' => 'http://schema.org/WebPage'), PSX_Html_Lexer::parseAttributes('        itemscope  =  "itemscope"     itemtype  =  "http://schema.org/WebPage"      '));
+		$this->assertEquals(array('disabled' => null), Lexer::parseAttributes('disabled'));
+		$this->assertEquals(array('value' => 'yes'), Lexer::parseAttributes('value=yes'));
+		$this->assertEquals(array('value' => 'yes'), Lexer::parseAttributes('value =yes'));
+		$this->assertEquals(array('type' => 'checkbox'), Lexer::parseAttributes('type=\'checkbox\''));
+		$this->assertEquals(array('name' => 'be evil'), Lexer::parseAttributes('name="be evil"'));
+		$this->assertEquals(array('name' => 'foo', 'bar' => 'name'), Lexer::parseAttributes('name="foo" bar="name"'));
+		$this->assertEquals(array('name' => ' be evil '), Lexer::parseAttributes(' name = " be evil " '));
+		$this->assertEquals(array('name' => ' be evil '), Lexer::parseAttributes(' name = \' be evil \' '));
+		$this->assertEquals(array('name' => ' be \'evil '), Lexer::parseAttributes(' name = " be \'evil " '));
+		$this->assertEquals(array('name' => ' be "evil '), Lexer::parseAttributes(' name = \' be "evil \' '));
+		$this->assertEquals(array('itemscope' => 'itemscope', 'itemtype' => 'http://schema.org/WebPage'), Lexer::parseAttributes('itemscope="itemscope" itemtype="http://schema.org/WebPage"'));
+		$this->assertEquals(array('itemscope' => 'itemscope', 'itemtype' => 'http://schema.org/WebPage'), Lexer::parseAttributes('        itemscope  =  "itemscope"     itemtype  =  "http://schema.org/WebPage"      '));
 		$this->assertEquals(array(
 			'bgcolor' => '#ffffff',
 			'text' => '#000000',
@@ -476,6 +480,6 @@ HTML;
 			'vlink' => '#551a8b',
 			'alink' => '#ff0000',
 			'onload' => 'document.f&&document.f.q.focus();document.gbqf&&document.gbqf.q.focus();if(document.images)new Image().src=\'/images/srpr/nav_logo80.png\'',
-		), PSX_Html_Lexer::parseAttributes('bgcolor=#ffffff text=#000000 link=#0000cc vlink=#551a8b alink=#ff0000 onload="document.f&&document.f.q.focus();document.gbqf&&document.gbqf.q.focus();if(document.images)new Image().src=\'/images/srpr/nav_logo80.png\'"'));
+		), Lexer::parseAttributes('bgcolor=#ffffff text=#000000 link=#0000cc vlink=#551a8b alink=#ff0000 onload="document.f&&document.f.q.focus();document.gbqf&&document.gbqf.q.focus();if(document.images)new Image().src=\'/images/srpr/nav_logo80.png\'"'));
 	}
 }

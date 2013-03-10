@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
 /**
  * PSX_Exception
  *
@@ -33,6 +35,6 @@
  * @package    PSX_Exception
  * @version    $Revision: 480 $
  */
-class PSX_Exception extends Exception
+class Exception extends \Exception
 {
 }

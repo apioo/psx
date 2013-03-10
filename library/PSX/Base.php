@@ -23,6 +23,12 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
+use PSX\Http\Request;
+use PSX\Util\Uuid;
+use UnexpectedValueException;
+
 /**
  * PSX_Base
  *
@@ -33,7 +39,7 @@
  * @package    PSX_Base
  * @version    $Revision: 661 $
  */
-class PSX_Base
+class Base
 {
 	const VERSION = '0.4.8';
 
@@ -96,32 +102,23 @@ class PSX_Base
 
 	protected $config;
 
-	public function __construct(PSX_Config $config)
+	public function __construct(Config $config)
 	{
 		// set config
 		$this->config = $config;
 
 		// assign the host
-		$url = $this->config['psx_url'];
+		$parts = parse_url($this->config['psx_url']);
 
-		if(!empty($url))
+		if($parts !== false && isset($parts['scheme']) && isset($parts['host']))
 		{
-			$parts = parse_url($url);
-
-			if($parts !== false && isset($parts['scheme']) && isset($parts['host']))
-			{
-				$this->self = $parts['scheme'] . '://' . $parts['host'] . (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '');
-				$this->host = $parts['host'];
-				$this->path = isset($parts['path']) ? $parts['path'] : '';
-			}
-			else
-			{
-				throw new PSX_Base_Exception('Invalid PSX url');
-			}
+			$this->self = $parts['scheme'] . '://' . $parts['host'] . (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '');
+			$this->host = $parts['host'];
+			$this->path = isset($parts['path']) ? $parts['path'] : '';
 		}
 		else
 		{
-			throw new PSX_Base_Exception('PSX url not set');
+			throw new UnexpectedValueException('Invalid PSX url');
 		}
 	}
 
@@ -167,7 +164,7 @@ class PSX_Base
 	 */
 	public function getUrn()
 	{
-		return PSX_Urn::buildUrn(array_merge(array('psx', $this->host), func_get_args()));
+		return Urn::buildUrn(array_merge(array('psx', $this->host), func_get_args()));
 	}
 
 	/**
@@ -175,9 +172,9 @@ class PSX_Base
 	 *
 	 * @return string
 	 */
-	public function getTag(DateTime $date, $specific)
+	public function getTag(\DateTime $date, $specific)
 	{
-		return PSX_Uri::buildTag($this->host, $date, $specific);
+		return Uri::buildTag($this->host, $date, $specific);
 	}
 
 	/**
@@ -188,7 +185,7 @@ class PSX_Base
 	 */
 	public function getUUID($name)
 	{
-		return PSX_Util_Uuid::nameBased($this->host . $name);
+		return Uuid::nameBased($this->host . $name);
 	}
 
 	/**
@@ -200,12 +197,12 @@ class PSX_Base
 	{
 		if($this->request === null)
 		{
-			$url    = new PSX_Url($this->self);
+			$url    = new Url($this->self);
 			$method = self::getRequestMethod();
 			$header = self::getRequestHeader();
 			$body   = self::getRawInput();
 
-			$this->request = new PSX_Http_Request($url, $method, $header, $body);
+			$this->request = new Request($url, $method, $header, $body);
 		}
 
 		return $this->request;
@@ -368,13 +365,13 @@ class PSX_Base
 	 */
 	public static function setResponseCode($code)
 	{
-		if(isset(PSX_Http::$codes[$code]))
+		if(isset(Http::$codes[$code]))
 		{
-			header(self::getProtocol() . ' ' . $code . ' ' . PSX_Http::$codes[$code]);
+			header(self::getProtocol() . ' ' . $code . ' ' . Http::$codes[$code]);
 		}
 		else
 		{
-			throw new PSX_Exception('Invalid http code');
+			throw new UnexpectedValueException('Invalid http code');
 		}
 	}
 

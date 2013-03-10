@@ -23,6 +23,12 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Rss;
+
+use PSX\Data\Reader;
+use PSX\DateTime;
+use PSX\Http\Message;
+
 /**
  * PSX_Rss_ItemTest
  *
@@ -32,7 +38,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_Rss_ItemTest extends PHPUnit_Framework_TestCase
+class ItemTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -54,10 +60,10 @@ class PSX_Rss_ItemTest extends PHPUnit_Framework_TestCase
 </item>
 XML;
 
-		$message = new PSX_Http_Message(array(), $body);
-		$reader  = new PSX_Data_Reader_Dom();
+		$message = new Message(array(), $body);
+		$reader  = new Reader\Dom();
 
-		$item = new PSX_Rss_Item();
+		$item = new Item();
 		$item->import($reader->read($message));
 
 		$this->assertEquals('Star City', $item->title);

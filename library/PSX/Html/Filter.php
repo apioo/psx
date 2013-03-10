@@ -23,6 +23,17 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Html;
+
+use PSX\Exception;
+use PSX\FilterAbstract;
+use PSX\Html\Filter\CollectionAbstract;
+use PSX\Html\Filter\Collection\Html5Text;
+use PSX\Html\Filter\ElementListenerInterface;
+use PSX\Html\Filter\TextListenerInterface;
+use PSX\Html\Lexer\Token\Element;
+use PSX\Html\Lexer\Token\Text;
+
 /**
  * Filter html input based on an whitelist collection of allowed elements
  *
@@ -33,7 +44,7 @@
  * @package    PSX_Html
  * @version    $Revision: 611 $
  */
-class PSX_Html_Filter
+class Filter
 {
 	const ANY_VALUE = 0x1;
 	const CONTENT_TRANSPARENT = 0x1;
@@ -44,11 +55,11 @@ class PSX_Html_Filter
 	private $elementListener = array();
 	private $textListener    = array();
 
-	public function __construct($content, PSX_Html_Filter_CollectionAbstract $collection = null)
+	public function __construct($content, CollectionAbstract $collection = null)
 	{
 		if($collection === null)
 		{
-			$collection = new PSX_Html_Filter_Collection_Html5Text();
+			$collection = new Html5Text();
 		}
 
 		$this->setContent($content);
@@ -60,17 +71,17 @@ class PSX_Html_Filter
 		$this->content = $content;
 	}
 
-	public function setCollection(PSX_Html_Filter_CollectionAbstract $collection)
+	public function setCollection(CollectionAbstract $collection)
 	{
 		$this->collection = $collection;
 	}
 
-	public function addElementListener(PSX_Html_Filter_ElementListenerInterface $elementListener)
+	public function addElementListener(ElementListenerInterface $elementListener)
 	{
 		$this->elementListener[] = $elementListener;
 	}
 
-	public function addTextListener(PSX_Html_Filter_TextListenerInterface $textListener)
+	public function addTextListener(TextListenerInterface $textListener)
 	{
 		$this->textListener[] = $textListener;
 	}
@@ -84,14 +95,14 @@ class PSX_Html_Filter
 	public function filter()
 	{
 		$str  = '';
-		$root = PSX_Html_Lexer::parse('<body>' . $this->content . '</body>');
+		$root = Lexer::parse('<body>' . $this->content . '</body>');
 
 		if($root !== null)
 		{
 			// filter root element
 			foreach($root->childNodes as $key => $el)
 			{
-				if($el instanceof PSX_Html_Lexer_Token_Element)
+				if($el instanceof Element)
 				{
 					// filter value
 					if($this->filterElement($el) === false)
@@ -110,13 +121,13 @@ class PSX_Html_Filter
 						{
 							unset($root->childNodes[$key]);
 						}
-						else if($result instanceof PSX_Html_Lexer_Token_Element)
+						else if($result instanceof Element)
 						{
 							$root->childNodes[$key] = $result;
 						}
 					}
 				}
-				else if($el instanceof PSX_Html_Lexer_Token_Text)
+				else if($el instanceof Text)
 				{
 					// call text listener
 					foreach($this->textListener as $listener)
@@ -127,7 +138,7 @@ class PSX_Html_Filter
 						{
 							unset($root->childNodes[$key]);
 						}
-						else if($result instanceof PSX_Html_Lexer_Token_Text)
+						else if($result instanceof Text)
 						{
 							$root->childNodes[$key] = $result;
 						}
@@ -145,7 +156,7 @@ class PSX_Html_Filter
 		return $str;
 	}
 
-	private function filterElement(PSX_Html_Lexer_Token_Element $element)
+	private function filterElement(Element $element)
 	{
 		if(!isset($this->collection[$element->name]))
 		{
@@ -172,7 +183,7 @@ class PSX_Html_Filter
 
 				if(isset($allowedAttr[$key]))
 				{
-					if($allowedAttr[$key] instanceof PSX_FilterAbstract)
+					if($allowedAttr[$key] instanceof FilterAbstract)
 					{
 						$val = $allowedAttr[$key]->apply($val);
 
@@ -197,7 +208,7 @@ class PSX_Html_Filter
 					{
 						foreach($allowedAttr[$key] as $filter)
 						{
-							if($filter instanceof PSX_FilterAbstract)
+							if($filter instanceof FilterAbstract)
 							{
 								$val = $filter->apply($val);
 
@@ -254,7 +265,7 @@ class PSX_Html_Filter
 					$parentNode = $parentNode->parentNode;
 				}
 
-				if($parentNode instanceof PSX_Html_Lexer_Token_Element)
+				if($parentNode instanceof Element)
 				{
 					$childs = $this->collection[$parentNode->name]->getValues();
 				}
@@ -265,7 +276,7 @@ class PSX_Html_Filter
 			}
 			else
 			{
-				throw new PSX_Html_Filter_Exception('Child must be either an array or PSX_Html_Filter constant');
+				throw new Exception('Child must be either an array or PSX_Html_Filter constant');
 			}
 		}
 
@@ -273,7 +284,7 @@ class PSX_Html_Filter
 		foreach($element->childNodes as $key => $el)
 		{
 			// allow every whitespace to keep format
-			if($el instanceof PSX_Html_Lexer_Token_Text && $el->isWhitespace())
+			if($el instanceof Text && $el->isWhitespace())
 			{
 				continue;
 			}
@@ -285,7 +296,7 @@ class PSX_Html_Filter
 				continue;
 			}
 
-			if($el instanceof PSX_Html_Lexer_Token_Element)
+			if($el instanceof Element)
 			{
 				// filter value
 				if($this->filterElement($el) === false)
@@ -304,13 +315,13 @@ class PSX_Html_Filter
 					{
 						unset($element->childNodes[$key]);
 					}
-					else if($result instanceof PSX_Html_Lexer_Token_Element)
+					else if($result instanceof Element)
 					{
 						$element->childNodes[$key] = $result;
 					}
 				}
 			}
-			else if($el instanceof PSX_Html_Lexer_Token_Text)
+			else if($el instanceof Text)
 			{
 				// call text listener
 				foreach($this->textListener as $listener)
@@ -321,7 +332,7 @@ class PSX_Html_Filter
 					{
 						unset($element->childNodes[$key]);
 					}
-					else if($result instanceof PSX_Html_Lexer_Token_Text)
+					else if($result instanceof Text)
 					{
 						$element->childNodes[$key] = $result;
 					}

@@ -10,35 +10,21 @@
     <email>k42b3@phpsx.org</email>
     <active>yes</active>
   </lead>
-  <date>2012-12-09</date>
+  <date>2013-01-14</date>
   <version>
-    <release>0.4.7</release>
-    <api>0.4.7</api>
+    <release>0.4.8</release>
+    <api>0.4.8</api>
   </version>
   <stability>
     <release>stable</release>
     <api>stable</api>
   </stability>
   <license uri="http://www.gnu.org/licenses/">GPLv3 License</license>
-  <notes>* Added classes to generate an swagger api declaration and util annotation
-parser
-* Improved autoloader using stream_resolve_include_path before require the class
-so the autoload will not fail if the file doesnt exists
-* Added new html5 filter collections
-* Renamed PSX_Time to PSX_DateTime
-* Fix http redirection header of relative urls
-* Added user agent string to most http calls
-* Add cache to PSX_Base getRequest method so calling the method multiple times
-will always return the same object
-* Improved PSX_Loader class. The name of the index method must be now __index
-wich is called if no other method is specified in the request. This was done
-because of constructor conflict. Added annotation parser to loader for easier
-routing
-* Added method getValidator(), getMethod(), getUrl(), getHeaders(), getHeader(),
-getParameter() and getBody() to PSX_ModuleAbstract
-* Using PSX_PATH_CACHE path in file cache handler
-* Fix markdown class encode emphasis
-* Add method setSavePath to PSX_Session class</notes>
+  <notes>* Improved html parser library
+* Added pingback library
+* Validate, parameter and body objects are now loaded in an DI container
+* Load dependencies in _ini() method instead of __construct()
+* Fixed markdown parser and sql select</notes>
   <contents>
     <dir name="/">
       <dir name="PSX">
@@ -421,6 +407,10 @@ getParameter() and getBody() to PSX_ModuleAbstract
             <file name="StoreInterface.php" role="php"/>
           </dir>
         </dir>
+        <dir name="Pingback">
+          <file name="Exception.php" role="php"/>
+        </dir>
+        <file name="Pingback.php" role="php"/>
         <dir name="PubSubHubBub">
           <file name="CallbackAbstract.php" role="php"/>
           <file name="Exception.php" role="php"/>
@@ -726,6 +716,7 @@ getParameter() and getBody() to PSX_ModuleAbstract
               <file name="ExpressCheckoutTest.php" role="test"/>
             </dir>
           </dir>
+          <file name="PingbackTest.php" role="test"/>
           <file name="PubSubHubBubTest.php" role="test"/>
           <file name="RegistryTest.php" role="test"/>
           <dir name="Rss">
@@ -1000,6 +991,23 @@ getParameter() and getBody() to PSX_ModuleAbstract
 * Using PSX_PATH_CACHE path in file cache handler
 * Fix markdown class encode emphasis
 * Add method setSavePath to PSX_Session class</notes>
+    </release>
+    <release>
+      <version>
+        <release>0.4.8</release>
+        <api>0.4.8</api>
+      </version>
+      <stability>
+        <release>beta</release>
+        <api>beta</api>
+      </stability>
+      <date>2012-12-15</date>
+      <license uri="http://www.gnu.org/licenses/">GPLv3 License</license>
+      <notes>* Improved html parser library
+* Added pingback library
+* Validate, parameter and body objects are now loaded in an DI container
+* Load dependencies in _ini() method instead of __construct()
+* Fixed markdown parser and sql select</notes>
     </release>
   </changelog>
 </package>

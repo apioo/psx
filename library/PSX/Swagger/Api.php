@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Swagger;
+
+use PSX\Data\RecordAbstract;
+
 /**
  * PSX_Swagger_Api
  *
@@ -33,7 +37,7 @@
  * @package    PSX_Swagger
  * @version    $Revision: 582 $
  */
-class PSX_Swagger_Api extends PSX_Data_RecordAbstract
+class Api extends RecordAbstract
 {
 	private $path;
 	private $description;
@@ -46,7 +50,7 @@ class PSX_Swagger_Api extends PSX_Data_RecordAbstract
 		$this->description = $description;
 	}
 
-	public function addOperation(PSX_Swagger_Operation $operation)
+	public function addOperation(Operation $operation)
 	{
 		$this->operations[] = $operation;
 	}

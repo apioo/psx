@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Http;
+
+use DateTime;
+
 /**
  * PSX_Http_Cookie
  *
@@ -33,7 +37,7 @@
  * @package    PSX_Http
  * @version    $Revision: 579 $
  */
-class PSX_Http_Cookie
+class Cookie
 {
 	private $name;
 	private $value;

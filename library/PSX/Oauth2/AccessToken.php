@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Oauth2;
+
+use PSX\Data\RecordAbstract;
+
 /**
  * PSX_Oauth2_AccessToken
  *
@@ -33,7 +37,7 @@
  * @package    PSX_Oauth2
  * @version    $Revision: 496 $
  */
-class PSX_Oauth2_AccessToken extends PSX_Data_RecordAbstract
+class AccessToken extends RecordAbstract
 {
 	public $accessToken;
 	public $tokenType;

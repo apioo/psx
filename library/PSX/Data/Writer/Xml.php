@@ -23,6 +23,13 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Data\Writer;
+
+use PSX\Data\RecordInterface;
+use PSX\Data\WriterInterface;
+use PSX\Data\WriterResult;
+use XMLWriter;
+
 /**
  * PSX_Data_Writer_Xml
  *
@@ -33,7 +40,7 @@
  * @package    PSX_Data
  * @version    $Revision: 453 $
  */
-class PSX_Data_Writer_Xml implements PSX_Data_WriterInterface
+class Xml implements WriterInterface
 {
 	public static $mime = 'application/xml';
 
@@ -43,17 +50,14 @@ class PSX_Data_Writer_Xml implements PSX_Data_WriterInterface
 	public function __construct()
 	{
 		$this->writer = new XMLWriter();
-
 		$this->writer->openMemory();
-
 		$this->writer->setIndent(true);
-
 		$this->writer->startDocument('1.0', 'UTF-8');
 	}
 
-	public function write(PSX_Data_RecordInterface $record)
+	public function write(RecordInterface $record)
 	{
-		$this->writerResult = new PSX_Data_WriterResult(PSX_Data_WriterInterface::XML, $this);
+		$this->writerResult = new WriterResult(WriterInterface::XML, $this);
 
 		$this->recXmlEncode($record->getName(), $record->export($this->writerResult));
 
@@ -75,7 +79,7 @@ class PSX_Data_Writer_Xml implements PSX_Data_WriterInterface
 
 			foreach($fields as $k => $v)
 			{
-				if($v instanceof PSX_Data_RecordInterface)
+				if($v instanceof RecordInterface)
 				{
 					$this->recXmlEncode($k, $v->export($this->writerResult));
 				}
@@ -99,7 +103,7 @@ class PSX_Data_Writer_Xml implements PSX_Data_WriterInterface
 		{
 			foreach($fields as $k => $v)
 			{
-				if($v instanceof PSX_Data_RecordInterface)
+				if($v instanceof RecordInterface)
 				{
 					$this->recXmlEncode($name, $v->export($this->writerResult));
 				}

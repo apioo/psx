@@ -23,6 +23,13 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
+use DateInterval;
+use PSX\Cache\Handler\File;
+use PSX\Cache\Item;
+use PSX\Cache\HandlerInterface;
+
 /**
  * Provides a general caching mechanism. This class abstracts how cached items
  * are saved (i.e. file, sql, ...) and handels expire times. Here an example how
@@ -48,7 +55,7 @@
  * @package    PSX_Cache
  * @version    $Revision: 636 $
  */
-class PSX_Cache
+class Cache
 {
 	/**
 	 * The cache key
@@ -90,7 +97,7 @@ class PSX_Cache
 	 * @param PSX_Cache_HandlerInterface $handler
 	 * @return PSX_Cache
 	 */
-	public function __construct($key, $expire = 0, PSX_Cache_HandlerInterface $handler = null)
+	public function __construct($key, $expire = 0, HandlerInterface $handler = null)
 	{
 		if(!is_numeric($expire))
 		{
@@ -108,7 +115,7 @@ class PSX_Cache
 		}
 
 		$this->key     = md5($key);
-		$this->handler = $handler !== null ? $handler : new PSX_Cache_Handler_File();
+		$this->handler = $handler !== null ? $handler : new File();
 		$this->enabled = true;
 	}
 
@@ -127,7 +134,7 @@ class PSX_Cache
 	{
 		if($this->enabled && ($item = $this->handler->load($this->key)))
 		{
-			if($item instanceof PSX_Cache_Item)
+			if($item instanceof Item)
 			{
 				if($this->expire > 0 && $item->getTime() !== null && (time() - $item->getTime()) > $this->expire)
 				{

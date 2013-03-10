@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Payment\Paypal;
+
 /**
  * PSX_Payment_Paypal_Exception
  *
@@ -33,6 +35,6 @@
  * @package    PSX_Payment
  * @version    $Revision: 488 $
  */
-class PSX_Payment_Paypal_Exception extends PSX_Payment_Exception
+class Exception extends \PSX\Exception
 {
 }

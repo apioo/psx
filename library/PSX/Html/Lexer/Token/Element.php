@@ -23,6 +23,12 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Html\Lexer\Token;
+
+use PSX\Html\Lexer\TokenAbstract;
+use PSX\Html\Lexer\DomException;
+use PSX\Html\Lexer;
+
 /**
  * PSX_Html_Lexer_Token_Element
  *
@@ -33,7 +39,7 @@
  * @package    PSX_Html
  * @version    $Revision: 542 $
  */
-class PSX_Html_Lexer_Token_Element extends PSX_Html_Lexer_TokenAbstract
+class Element extends TokenAbstract
 {
 	const TYPE_START = 0x1; // start tag <b>
 	const TYPE_END   = 0x2; // end tag </b>
@@ -82,11 +88,11 @@ class PSX_Html_Lexer_Token_Element extends PSX_Html_Lexer_TokenAbstract
 		}
 	}
 
-	public function appendChild(PSX_Html_Lexer_TokenAbstract $token)
+	public function appendChild(TokenAbstract $token)
 	{
 		if($token->parentNode !== null)
 		{
-			throw new PSX_Html_Lexer_Exception('Token is already appended to an element');
+			throw new DomException('Token is already appended to an element');
 		}
 		else
 		{
@@ -112,7 +118,7 @@ class PSX_Html_Lexer_Token_Element extends PSX_Html_Lexer_TokenAbstract
 
 		foreach($this->childNodes as $token)
 		{
-			if($token instanceof PSX_Html_Lexer_Token_Element)
+			if($token instanceof Element)
 			{
 				$result = $token->getElementsByTagName($name);
 
@@ -136,11 +142,11 @@ class PSX_Html_Lexer_Token_Element extends PSX_Html_Lexer_TokenAbstract
 		return $this->toString($this);
 	}
 
-	private function toString(PSX_Html_Lexer_TokenAbstract $token, $deep = 0)
+	private function toString(TokenAbstract $token, $deep = 0)
 	{
 		$str = '';
 
-		if($token instanceof PSX_Html_Lexer_Token_Element)
+		if($token instanceof Element)
 		{
 			if(!empty($token->childNodes))
 			{
@@ -194,7 +200,7 @@ class PSX_Html_Lexer_Token_Element extends PSX_Html_Lexer_TokenAbstract
 				}
 			}
 		}
-		else if($token instanceof PSX_Html_Lexer_Token_Text)
+		else if($token instanceof Text)
 		{
 			//$str.= $token->data;
 			$str.= $token->data;
@@ -231,7 +237,7 @@ class PSX_Html_Lexer_Token_Element extends PSX_Html_Lexer_TokenAbstract
 		// get values
 		$type = self::parseType($html);
 		$name = self::parseName($html);
-		$attr = PSX_Html_Lexer::parseAttributes($html);
+		$attr = Lexer::parseAttributes($html);
 
 		// check name
 		if(empty($name) || !ctype_alnum($name))

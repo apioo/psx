@@ -23,6 +23,23 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
+use Countable;
+use DOMElement;
+use Iterator;
+use PSX\Data\InvalidDataException;
+use PSX\Data\NotSupportedException;
+use PSX\Data\ReaderInterface;
+use PSX\Data\ReaderResult;
+use PSX\Data\RecordAbstract;
+use PSX\Data\Reader;
+use PSX\Data\Writer;
+use PSX\Html\Parse;
+use PSX\Html\Parse\Element;
+use PSX\Http\GetRequest;
+use PSX\Rss\Item;
+
 /**
  * PSX_Rss
  *
@@ -34,7 +51,7 @@
  * @version    $Revision: 663 $
  * @see        http://www.ietf.org/rfc/rfc4287.txt
  */
-class PSX_Rss extends PSX_Data_RecordAbstract implements Iterator, Countable
+class Rss extends RecordAbstract implements Iterator, Countable
 {
 	public $title;
 	public $link;
@@ -134,19 +151,19 @@ class PSX_Rss extends PSX_Data_RecordAbstract implements Iterator, Countable
 		return count($this->item);
 	}
 
-	public function import(PSX_Data_ReaderResult $result)
+	public function import(ReaderResult $result)
 	{
 		$this->dom = $result->getData();
 
 		switch($result->getType())
 		{
-			case PSX_Data_ReaderInterface::DOM:
+			case ReaderInterface::DOM:
 
 				$elementList = $this->dom->getElementsByTagName('rss');
 
 				if($elementList->length == 0)
 				{
-					throw new PSX_Data_Exception('Could not find rss element');
+					throw new InvalidDataException('Could not find rss element');
 				}
 
 				/*
@@ -154,7 +171,7 @@ class PSX_Rss extends PSX_Data_RecordAbstract implements Iterator, Countable
 
 				if($rss->getAttribute('version') != '2.0')
 				{
-					throw new PSX_Data_Exception('Invalid RSS version must be 2.0');
+					throw new InvalidDataException('Invalid RSS version must be 2.0');
 				}
 				*/
 
@@ -166,18 +183,18 @@ class PSX_Rss extends PSX_Data_RecordAbstract implements Iterator, Countable
 				}
 				else
 				{
-					throw new PSX_Data_Exception('No channel element found');
+					throw new InvalidDataException('No channel element found');
 				}
 
 				break;
 
 			default:
 
-				throw new PSX_Data_Exception('Can only import result of DOM reader');
+				throw new NotSupportedException('Can only import result of DOM reader');
 		}
 	}
 
-	private function parseChannelElement(DomElement $channel)
+	private function parseChannelElement(DOMElement $channel)
 	{
 		$childNodes = $channel->childNodes;
 
@@ -236,8 +253,8 @@ class PSX_Rss extends PSX_Data_RecordAbstract implements Iterator, Countable
 
 				case 'item':
 
-					$result = new PSX_Data_ReaderResult(PSX_Data_ReaderInterface::DOM, $item);
-					$item   = new PSX_Rss_Item();
+					$result = new ReaderResult(ReaderInterface::DOM, $item);
+					$item   = new Item();
 
 					$item->import($result);
 
@@ -248,7 +265,7 @@ class PSX_Rss extends PSX_Data_RecordAbstract implements Iterator, Countable
 		}
 	}
 
-	public static function categoryConstruct(DomElement $category)
+	public static function categoryConstruct(DOMElement $category)
 	{
 		return array(
 
@@ -258,7 +275,7 @@ class PSX_Rss extends PSX_Data_RecordAbstract implements Iterator, Countable
 		);
 	}
 
-	public static function cloudConstruct(DomElement $cloud)
+	public static function cloudConstruct(DOMElement $cloud)
 	{
 		return array(
 
@@ -273,11 +290,11 @@ class PSX_Rss extends PSX_Data_RecordAbstract implements Iterator, Countable
 
 	public static function findTag($content)
 	{
-		$parse   = new PSX_Html_Parse($content);
-		$element = new PSX_Html_Parse_Element('link', array(
+		$parse   = new Parse($content);
+		$element = new Element('link', array(
 
 			'rel'  => 'alternate',
-			'type' => PSX_Data_Writer_Rss::$mime,
+			'type' => Writer\Rss::$mime,
 
 		));
 
@@ -288,12 +305,12 @@ class PSX_Rss extends PSX_Data_RecordAbstract implements Iterator, Countable
 
 	public static function request($url)
 	{
-		$http     = new PSX_Http();
-		$request  = new PSX_Http_GetRequest($url, array(
-			'User-Agent' => __CLASS__ . ' ' . PSX_Base::VERSION
+		$http     = new Http();
+		$request  = new GetRequest($url, array(
+			'User-Agent' => __CLASS__ . ' ' . Base::VERSION
 		));
 		$response = $http->request($request);
-		$reader   = new PSX_Data_Reader_Dom();
+		$reader   = new Reader\Dom();
 
 		$rss = new self();
 		$rss->import($reader->read($response));

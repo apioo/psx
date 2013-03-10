@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Data;
+
+use PSX\Exception;
+
 /**
  * PSX_Data_ResultSetTest
  *
@@ -32,7 +36,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_Data_ResultSetTest extends PHPUnit_Framework_TestCase
+class ResultSetTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -51,7 +55,7 @@ class PSX_Data_ResultSetTest extends PHPUnit_Framework_TestCase
 			array('id' => 4, 'title' => 'bla'),
 		);
 
-		$resultSet = new PSX_Data_ResultSet(12, 0, 2, $entries);
+		$resultSet = new ResultSet(12, 0, 2, $entries);
 
 		$this->assertEquals(4, count($resultSet));
 		$this->assertEquals(4, $resultSet->getLength());
@@ -65,7 +69,7 @@ class PSX_Data_ResultSetTest extends PHPUnit_Framework_TestCase
 
 	public function testEmptyResultSet()
 	{
-		$resultSet = new PSX_Data_ResultSet(12, 0, 2, array());
+		$resultSet = new ResultSet(12, 0, 2, array());
 
 		$this->assertEquals(0, count($resultSet));
 		$this->assertEquals(0, $resultSet->getLength());

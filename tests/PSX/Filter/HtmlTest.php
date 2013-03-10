@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Filter;
+
 /**
  * PSX_Filter_HtmlTest
  *
@@ -32,7 +34,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_Filter_HtmlTest extends PHPUnit_Framework_TestCase
+class HtmlTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -44,7 +46,7 @@ class PSX_Filter_HtmlTest extends PHPUnit_Framework_TestCase
 
 	public function testHtml()
 	{
-		$html = new PSX_Filter_Html();
+		$html = new Html();
 
 		$this->assertEquals('&lt;a&gt;test&lt;/a&gt;', $html->apply('<a>test</a>'));
 		$this->assertEquals('test', $html->apply('test'));

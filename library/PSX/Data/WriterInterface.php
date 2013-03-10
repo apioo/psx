@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Data;
+
 /**
  * PSX_Data_WriterInterface
  *
@@ -33,7 +35,7 @@
  * @package    PSX_Data
  * @version    $Revision: 480 $
  */
-interface PSX_Data_WriterInterface
+interface WriterInterface
 {
 	const ATOM = 0x1;
 	const FORM = 0x2;
@@ -41,5 +43,5 @@ interface PSX_Data_WriterInterface
 	const RSS  = 0x8;
 	const XML  = 0x10;
 
-	public function write(PSX_Data_RecordInterface $record);
+	public function write(RecordInterface $record);
 }

@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Data\Writer;
+
+use PSX\Data\WriterTestCase;
+
 /**
  * PSX_Data_Writer_RssTest
  *
@@ -32,13 +36,13 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_Data_Writer_RssTest extends PSX_Data_WriterTestCase
+class RssTest extends WriterTestCase
 {
 	public function testWrite()
 	{
 		ob_start();
 
-		$writer = new PSX_Data_Writer_Rss();
+		$writer = new Rss();
 		$writer->write($this->getRecord());
 
 		$actual = ob_get_contents();
@@ -64,7 +68,7 @@ TEXT;
 	{
 		ob_start();
 
-		$writer = new PSX_Data_Writer_Rss();
+		$writer = new Rss();
 		$writer->setConfig('foo', '#', 'bar');
 		$writer->write($this->getResultSet());
 

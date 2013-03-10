@@ -23,6 +23,11 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
+use PSX\Input;
+use PSX\InputTest;
+
 /**
  * PSX_PutTest
  *
@@ -32,10 +37,10 @@
  * @category   tests
  * @version    $Revision: 560 $
  */
-class PSX_Input_PutTest extends PSX_InputTest
+class PutTest extends InputTest
 {
 	public function getInput()
 	{
-		return new PSX_Input_Put();
+		return new Input\Put();
 	}
 }

@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
 /**
  * PSX_WebfingerTest
  *
@@ -32,7 +34,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_WebfingerTest extends PHPUnit_Framework_TestCase
+class WebfingerTest extends \PHPUnit_Framework_TestCase
 {
 	const URL  = 'http://test.phpsx.org';
 	const ACCT = 'foo@foo.com';
@@ -47,44 +49,44 @@ class PSX_WebfingerTest extends PHPUnit_Framework_TestCase
 
 	public function testGetHostMeta()
 	{
-		$webfinger = new PSX_Webfinger(new PSX_Http(new PSX_Http_Handler_Curl()));
-		$xrd       = $webfinger->getHostMeta(new PSX_Url(self::URL));
+		$webfinger = new Webfinger(new Http());
+		$xrd       = $webfinger->getHostMeta(new Url(self::URL));
 
-		$this->assertEquals($xrd instanceof PSX_Webfinger_Xrd, true);
+		$this->assertEquals($xrd instanceof Webfinger\Xrd, true);
 		$this->assertEquals($xrd->getSubject(), self::URL);
 	}
 
 	public function testGetHostMetaFullUrl()
 	{
 		$url       = self::URL . '/foobar/test?bar=foo#test';
-		$webfinger = new PSX_Webfinger(new PSX_Http(new PSX_Http_Handler_Curl()));
-		$xrd       = $webfinger->getHostMeta(new PSX_Url($url));
+		$webfinger = new Webfinger(new Http());
+		$xrd       = $webfinger->getHostMeta(new Url($url));
 
-		$this->assertEquals($xrd instanceof PSX_Webfinger_Xrd, true);
+		$this->assertEquals($xrd instanceof Webfinger\Xrd, true);
 		$this->assertEquals($xrd->getSubject(), self::URL);
 	}
 
 	public function testGetLrddTemplate()
 	{
-		$webfinger = new PSX_Webfinger(new PSX_Http(new PSX_Http_Handler_Curl()));
-		$template  = $webfinger->getLrddTemplate(new PSX_Url(self::URL));
+		$webfinger = new Webfinger(new Http());
+		$template  = $webfinger->getLrddTemplate(new Url(self::URL));
 
 		$this->assertEquals($template, 'http://test.phpsx.org/webfinger/lrdd?uri={uri}');
 	}
 
 	public function testGetLrdd()
 	{
-		$webfinger = new PSX_Webfinger(new PSX_Http(new PSX_Http_Handler_Curl()));
-		$xrd       = $webfinger->getLrdd('acct:' . self::ACCT, $webfinger->getLrddTemplate(new PSX_Url(self::URL)));
+		$webfinger = new Webfinger(new Http());
+		$xrd       = $webfinger->getLrdd('acct:' . self::ACCT, $webfinger->getLrddTemplate(new Url(self::URL)));
 
-		$this->assertEquals($xrd instanceof PSX_Webfinger_Xrd, true);
+		$this->assertEquals($xrd instanceof Webfinger\Xrd, true);
 		$this->assertEquals($xrd->getSubject(), 'acct:' . self::ACCT);
 	}
 
 	public function testGetAcctProfile()
 	{
-		$webfinger = new PSX_Webfinger(new PSX_Http(new PSX_Http_Handler_Curl()));
-		$profile   = $webfinger->getAcctProfile(self::ACCT, $webfinger->getLrddTemplate(new PSX_Url(self::URL)));
+		$webfinger = new Webfinger(new Http());
+		$profile   = $webfinger->getAcctProfile(self::ACCT, $webfinger->getLrddTemplate(new Url(self::URL)));
 
 		$this->assertEquals($profile, 'http://test.phpsx.org/profile/foo');
 	}

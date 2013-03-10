@@ -23,6 +23,16 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Payment\Paypal;
+
+use PSX\Base;
+use PSX\Data\ReaderInterface;
+use PSX\Exception;
+use PSX\Http;
+use PSX\Http\PostRequest;
+use PSX\Module\ApiAbstract;
+use PSX\Payment\Paypal\Ipn\Message;
+
 /**
  * PSX_Payment_Paypal_IpnAbstract
  *
@@ -33,27 +43,22 @@
  * @package    PSX_Payment
  * @version    $Revision: 496 $
  */
-abstract class PSX_Payment_Paypal_IpnAbstract extends PSX_Module_ApiAbstract
+abstract class IpnAbstract extends ApiAbstract
 {
 	//const ENDPOINT = 'https://www.paypal.com/cgi-bin/webscr';
 	const ENDPOINT = 'https://www.sandbox.paypal.com/cgi-bin/webscr';
 
 	protected function handle()
 	{
-		switch(PSX_Base::getRequestMethod())
+		switch(Base::getRequestMethod())
 		{
 			case 'POST':
-
 				$this->processIpnMessage();
-
 				exit;
-
 				break;
 
 			default:
-
-				throw new PSX_Payment_Paypal_Exception('Method not allowed', 405);
-
+				throw new Exception('Method not allowed', 405);
 				break;
 		}
 	}
@@ -61,20 +66,20 @@ abstract class PSX_Payment_Paypal_IpnAbstract extends PSX_Module_ApiAbstract
 	protected function processIpnMessage()
 	{
 		$data    = 'cmd=_notify-validate';
-		$request = PSX_Base::getRawInput();
+		$request = Base::getRawInput();
 
 		if(!empty($request))
 		{
 			$data    = $data . '&' . $request;
-			$http    = new PSX_Http(new PSX_Http_Handler_Curl());
-			$request = new PSX_Http_PostRequest(self::ENDPOINT, array(), $data);
+			$http    = new Http();
+			$request = new PostRequest(self::ENDPOINT, array(), $data);
 
 			$response = $http->send($request);
 
 			if($response->getCode() == 200)
 			{
-				$message = new PSX_Payment_Paypal_Ipn_Message();
-				$message->import($this->getRequest(PSX_Data_ReaderInterface::FORM));
+				$message = new Message();
+				$message->import($this->getRequest(ReaderInterface::FORM));
 
 				if(strpos($response->getBody(), 'VERIFIED') !== false)
 				{
@@ -86,17 +91,17 @@ abstract class PSX_Payment_Paypal_IpnAbstract extends PSX_Module_ApiAbstract
 				}
 				else
 				{
-					throw new PSX_Payment_Paypal_Exception('Invalid response format');
+					throw new Exception('Invalid response format');
 				}
 			}
 			else
 			{
-				throw new PSX_Payment_Paypal_Exception('Invalid response code');
+				throw new Exception('Invalid response code');
 			}
 		}
 		else
 		{
-			throw new PSX_Payment_Paypal_Exception('No post data given');
+			throw new Exception('No post data given');
 		}
 	}
 
@@ -116,7 +121,7 @@ abstract class PSX_Payment_Paypal_IpnAbstract extends PSX_Module_ApiAbstract
 	 * @param PSX_Payment_Paypal_Ipn_Message $message
 	 * @return void
 	 */
-	abstract protected function onVerified(PSX_Payment_Paypal_Ipn_Message $message);
+	abstract protected function onVerified(Message $message);
 
 	/**
 	 * Is called if an IPN message was invalid
@@ -124,6 +129,6 @@ abstract class PSX_Payment_Paypal_IpnAbstract extends PSX_Module_ApiAbstract
 	 * @param PSX_Payment_Paypal_Ipn_Message $message
 	 * @return void
 	 */
-	abstract protected function onInvalid(PSX_Payment_Paypal_Ipn_Message $message);
+	abstract protected function onInvalid(Message $message);
 }
 

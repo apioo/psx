@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Sql;
+
 /**
  * PSX_Sql_TableInterface
  *
@@ -33,7 +35,7 @@
  * @package    PSX_Sql
  * @version    $Revision: 640 $
  */
-interface PSX_Sql_TableInterface
+interface TableInterface
 {
 	const PRIMARY_KEY     = 0x10000000;
 	const AUTO_INCREMENT  = 0x20000000;
@@ -213,7 +215,7 @@ interface PSX_Sql_TableInterface
 	 * @param integer $count
 	 * @return array
 	 */
-	public function getAll(array $fields, PSX_Sql_Condition $condition = null, $sortBy = null, $sortOrder = 0, $startIndex = null, $count = 32);
+	public function getAll(array $fields, Condition $condition = null, $sortBy = null, $sortOrder = 0, $startIndex = null, $count = 32);
 
 	/**
 	 * Method wich returns an single row as associatve array containing all 
@@ -225,7 +227,7 @@ interface PSX_Sql_TableInterface
 	 * @param integer $sortOrder
 	 * @return array
 	 */
-	public function getRow(array $fields, PSX_Sql_Condition $condition = null, $sortBy = null, $sortOrder = 0);
+	public function getRow(array $fields, Condition $condition = null, $sortBy = null, $sortOrder = 0);
 
 	/**
 	 * Returns the values of one column as array
@@ -238,7 +240,7 @@ interface PSX_Sql_TableInterface
 	 * @param integer $count
 	 * @return array
 	 */
-	public function getCol($field, PSX_Sql_Condition $condition = null, $sortBy = null, $sortOrder = 0, $startIndex = null, $count = 32);
+	public function getCol($field, Condition $condition = null, $sortBy = null, $sortOrder = 0, $startIndex = null, $count = 32);
 
 	/**
 	 * Returns the first value from the $field
@@ -249,7 +251,7 @@ interface PSX_Sql_TableInterface
 	 * @param integer $sortOrder
 	 * @return string
 	 */
-	public function getField($field, PSX_Sql_Condition $condition = null, $sortBy = null, $sortOrder = 0);
+	public function getField($field, Condition $condition = null, $sortBy = null, $sortOrder = 0);
 
 	/**
 	 * Returns the number of rows according to the $condition or the complete
@@ -258,7 +260,7 @@ interface PSX_Sql_TableInterface
 	 * @param PSX_Sql_Condition $condition
 	 * @return integer
 	 */
-	public function count(PSX_Sql_Condition $condition = null);
+	public function count(Condition $condition = null);
 
 	/**
 	 * Inserts an row into the table. It validates all columns  according to the 
@@ -280,7 +282,7 @@ interface PSX_Sql_TableInterface
 	 * @param integer $modifier
 	 * @return integer
 	 */
-	public function update($params, PSX_Sql_Condition $condition = null, $modifier = 0);
+	public function update($params, Condition $condition = null, $modifier = 0);
 
 	/**
 	 * Replaces an row on the table. If no condition is specified the method 

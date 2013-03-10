@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Data;
+
 /**
  * PSX_Data_WriterResult
  *
@@ -33,13 +35,13 @@
  * @package    PSX_Data
  * @version    $Revision: 480 $
  */
-class PSX_Data_WriterResult
+class WriterResult
 {
 	private $type;
 	private $writer;
 	private $params;
 
-	public function __construct($type, PSX_Data_WriterInterface $writer)
+	public function __construct($type, WriterInterface $writer)
 	{
 		$this->setType($type);
 		$this->setWriter($writer);
@@ -50,7 +52,7 @@ class PSX_Data_WriterResult
 		$this->type = (integer) $type;
 	}
 
-	public function setWriter(PSX_Data_WriterInterface $writer)
+	public function setWriter(WriterInterface $writer)
 	{
 		$this->writer = $writer;
 	}

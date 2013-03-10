@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Oauth\Signature;
+
 /**
  * PSX_Oauth_Signature_HMACSHA1Test
  *
@@ -32,7 +34,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_Oauth_Signature_HMACSHA1Test extends PHPUnit_Framework_TestCase
+class HMACSHA1Test extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -44,7 +46,7 @@ class PSX_Oauth_Signature_HMACSHA1Test extends PHPUnit_Framework_TestCase
 
 	public function testSignature()
 	{
-		$signature = new PSX_Oauth_Signature_HMACSHA1();
+		$signature = new HMACSHA1();
 
 		$this->assertEquals('yUsI5jibqNBZ9W+XPOJaeyrwluM=', $signature->build('', 'djr9rjt0jd78jf88', 'jjd999tj88uiths3'));
 		$this->assertEquals('DiK4c9nwDwPEAQPV1XL153JMKvc=', $signature->build('', 'djr9rjt0jd78jf88', 'jjd99$tj88uiths3'));

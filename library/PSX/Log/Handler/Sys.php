@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Log\Handler;
+
+use PSX\Log\HandlerInterface;
+
 /**
  * PSX_Log_Handler_Sys
  *
@@ -33,7 +37,7 @@
  * @package    PSX_Log
  * @version    $Revision: 480 $
  */
-class PSX_Log_Handler_Sys implements PSX_Log_HandlerInterface
+class Sys implements HandlerInterface
 {
 	private $levels = array(
 

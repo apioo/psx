@@ -23,6 +23,12 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
+use PSX\Html\Parse;
+use PSX\Html\Parse\Element;
+use PSX\Http\GetRequest;
+
 /**
  * Discovers opengraph tags on an specific url. The discovery method make an GET
  * request to the specified url and tries to fetch all opengraph tags from the
@@ -48,7 +54,7 @@
  * @package    PSX_Opengraph
  * @version    $Revision: 619 $
  */
-class PSX_Opengraph
+class Opengraph
 {
 	const TITLE          = 0x1;
 	const TYPE           = 0x2;
@@ -85,14 +91,14 @@ class PSX_Opengraph
 
 	private $http;
 
-	public function __construct(PSX_Http $http)
+	public function __construct(Http $http)
 	{
 		$this->http = $http;
 	}
 
-	public function discover(PSX_Url $url, $type = PSX_Opengraph::ALL)
+	public function discover(Url $url, $type = Opengraph::ALL)
 	{
-		$request   = new PSX_Http_GetRequest($url);
+		$request   = new GetRequest($url);
 
 		$response  = $this->http->request($request);
 		$lastError = $this->http->getLastError();
@@ -101,7 +107,7 @@ class PSX_Opengraph
 		{
 			$data   = array();
 			$fields = array();
-			$parser = new PSX_Html_Parse($response->getBody());
+			$parser = new Parse($response->getBody());
 
 			if($type & self::TITLE)          { $fields['title']         = $this->metadata['title']; }
 			if($type & self::TYPE)           { $fields['type']          = $this->metadata['type']; }
@@ -118,7 +124,7 @@ class PSX_Opengraph
 			if($type & self::COUNTRY_NAME)   { $fields['countryName']   = $this->metadata['countryName']; }
 			if($type & self::ALL)            { $fields                  = $this->metadata; }
 
-			$element = new PSX_Html_Parse_Element('meta');
+			$element = new Element('meta');
 
 			foreach($fields as $key => $meta)
 			{
@@ -133,7 +139,7 @@ class PSX_Opengraph
 		}
 		else
 		{
-			throw new PSX_Opengraph_Exception($lastError);
+			throw new Exception($lastError);
 		}
 	}
 }

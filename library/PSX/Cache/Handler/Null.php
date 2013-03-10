@@ -23,6 +23,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Cache\Handler;
+
+use PSX\Cache\HandlerInterface;
+
 /**
  * PSX_Cache_Handler_Null
  *
@@ -33,7 +37,7 @@
  * @package    PSX_Cache
  * @version    $Revision: 637 $
  */
-class PSX_Cache_Handler_Null implements PSX_Cache_HandlerInterface
+class Null implements HandlerInterface
 {
 	public function load($key)
 	{

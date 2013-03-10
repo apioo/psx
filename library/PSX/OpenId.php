@@ -23,6 +23,19 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
+use PSX\Html\Parse;
+use PSX\Html\Parse\Element;
+use PSX\Http\GetRequest;
+use PSX\Http\PostRequest;
+use PSX\OpenId\ExtensionInterface;
+use PSX\OpenId\Identity;
+use PSX\OpenId\ProviderAbstract;
+use PSX\OpenId\StoreInterface;
+use PSX\OpenId\provider\Association;
+use PSX\OpenSsl\PKey;
+
 /**
  * PSX_OpenId
  *
@@ -33,7 +46,7 @@
  * @package    PSX_OpenId
  * @version    $Revision: 663 $
  */
-class PSX_OpenId
+class OpenId
 {
 	public static $xriGlobalContextSymbol = array('=', '@', '+', '$', '!', '(');
 	public static $supportedAssocTypes    = array('HMAC-SHA1', 'HMAC-SHA256');
@@ -52,7 +65,7 @@ class PSX_OpenId
 	private $store;
 	private $assoc;
 
-	public function __construct(PSX_Http $http, $trustRoot, PSX_OpenId_StoreInterface $store = null)
+	public function __construct(Http $http, $trustRoot, StoreInterface $store = null)
 	{
 		$this->http      = $http;
 		$this->trustRoot = $trustRoot;
@@ -77,7 +90,7 @@ class PSX_OpenId
 	 * @param PSX_OpenId_ExtensionInterface $extension
 	 * @return void
 	 */
-	public function add(PSX_OpenId_ExtensionInterface $extension)
+	public function add(ExtensionInterface $extension)
 	{
 		if(empty($this->types))
 		{
@@ -91,7 +104,7 @@ class PSX_OpenId
 			}
 			else
 			{
-				throw new PSX_OpenId_Exception('The extension ' . $extension->getNs() . ' is not supported by the service');
+				throw new Exception('The extension ' . $extension->getNs() . ' is not supported by the service');
 			}
 		}
 	}
@@ -100,7 +113,7 @@ class PSX_OpenId
 	{
 		$params = array(
 
-			'openid.ns'        => PSX_OpenId_ProviderAbstract::NS,
+			'openid.ns'        => ProviderAbstract::NS,
 			'openid.mode'      => 'checkid_setup',
 			'openid.return_to' => $this->returnTo,
 			'openid.realm'     => $this->trustRoot,
@@ -159,14 +172,14 @@ class PSX_OpenId
 
 		if($mode == 'cancel')
 		{
-			throw new PSX_OpenId_Exception('User has canceled the request');
+			throw new Exception('User has canceled the request');
 		}
 
 		if($mode == 'error')
 		{
 			$msg = isset($data['openid_error']) ? $data['openid_error'] : false;
 
-			throw new PSX_OpenId_Exception(!empty($msg) ? $msg : 'An error occured but no message was specified');
+			throw new Exception(!empty($msg) ? $msg : 'An error occured but no message was specified');
 		}
 
 		if($mode == 'id_res')
@@ -176,16 +189,16 @@ class PSX_OpenId
 
 			if(count($diff) > 0)
 			{
-				throw new PSX_OpenId_Exception('Missing fields ' . implode(', ', $diff));
+				throw new Exception('Missing fields ' . implode(', ', $diff));
 			}
 
-			if($data['openid_ns'] != PSX_OpenId_ProviderAbstract::NS)
+			if($data['openid_ns'] != ProviderAbstract::NS)
 			{
-				throw new PSX_OpenId_Exception('Invalid namesspace');
+				throw new Exception('Invalid namesspace');
 			}
 
-			$opEndpoint    = new PSX_Url($data['openid_op_endpoint']);
-			$returnTo      = new PSX_Url($data['openid_return_to']);
+			$opEndpoint    = new Url($data['openid_op_endpoint']);
+			$returnTo      = new Url($data['openid_return_to']);
 			$responseNonce = $data['openid_response_nonce'];
 			$assocHandle   = $data['openid_assoc_handle'];
 			$signed        = explode(',', $data['openid_signed']);
@@ -240,19 +253,19 @@ class PSX_OpenId
 
 				if(!empty($server))
 				{
-					$this->identity  = new PSX_OpenId_Identity($server, $localId);
+					$this->identity  = new Identity($server, $localId);
 					$this->claimedId = $claimedId;
 				}
 				else
 				{
-					throw new PSX_OpenId_Exception('Missing data in response');
+					throw new Exception('Missing data in response');
 				}
 
 				return true;
 			}
 			else
 			{
-				throw new PSX_OpenId_Exception('Authentication fails');
+				throw new Exception('Authentication fails');
 			}
 		}
 	}
@@ -306,7 +319,7 @@ class PSX_OpenId
 	 */
 	public function getIdentifier()
 	{
-		if($this->identity instanceof PSX_OpenId_Identity)
+		if($this->identity instanceof Identity)
 		{
 			$identifier = $this->identity->getLocalId() === null ? $this->getClaimedId() : $this->identity->getLocalId();
 
@@ -314,7 +327,7 @@ class PSX_OpenId
 		}
 		else
 		{
-			throw new PSX_OpenId_Exception('Identity not discovered');
+			throw new Exception('Identity not discovered');
 		}
 	}
 
@@ -330,12 +343,12 @@ class PSX_OpenId
 		$identity = $this->normalizeUri($identity);
 
 		// we could get the identity via XRI
-		if($identity instanceof PSX_OpenId_Identity)
+		if($identity instanceof Identity)
 		{
 			return $identity;
 		}
 		// its an url wich we must discover
-		else if($identity instanceof PSX_Url)
+		else if($identity instanceof Url)
 		{
 			# YADIS discovery
 			$discoveredIdentity = $this->fetchXrds($identity);
@@ -343,8 +356,8 @@ class PSX_OpenId
 			# HTML based discovery
 			if($discoveredIdentity === false)
 			{
-				$request  = new PSX_Http_GetRequest($identity, array(
-					'User-Agent' => __CLASS__ . ' ' . PSX_Base::VERSION
+				$request  = new GetRequest($identity, array(
+					'User-Agent' => __CLASS__ . ' ' . Base::VERSION
 				));
 				$request->setFollowLocation(true);
 
@@ -359,7 +372,7 @@ class PSX_OpenId
 		}
 		else
 		{
-			throw new PSX_OpenId_Exception('Invalid openid identity');
+			throw new Exception('Invalid openid identity');
 		}
 	}
 
@@ -371,9 +384,9 @@ class PSX_OpenId
 	 * @param string $url
 	 * @return array
 	 */
-	private function fetchXrds(PSX_Url $url)
+	private function fetchXrds(Url $url)
 	{
-		$yadis = new PSX_Yadis($this->http);
+		$yadis = new Yadis($this->http);
 		$xrds  = $yadis->discover($url);
 
 		if($xrds !== false && isset($xrds->service))
@@ -385,7 +398,7 @@ class PSX_OpenId
 				{
 					$this->types = $service->getType();
 
-					$identity = new PSX_OpenId_Identity($service->getUri());
+					$identity = new Identity($service->getUri());
 
 					return $identity;
 				}
@@ -398,7 +411,7 @@ class PSX_OpenId
 				{
 					$this->types = $service->getType();
 
-					$identity = new PSX_OpenId_Identity($service->getUri(), $service->getLocalId());
+					$identity = new Identity($service->getUri(), $service->getLocalId());
 
 					return $identity;
 				}
@@ -439,7 +452,7 @@ class PSX_OpenId
 					$uri = 'http://' . $uri;
 				}
 
-				$url = new PSX_Url($uri);
+				$url = new Url($uri);
 
 				if($url->getScheme() == 'http' || $url->getScheme() == 'https')
 				{
@@ -447,7 +460,7 @@ class PSX_OpenId
 				}
 				else
 				{
-					throw new PSX_OpenId_Exception('Unknown protocol in identity');
+					throw new Exception('Unknown protocol in identity');
 				}
 			}
 			else
@@ -462,8 +475,8 @@ class PSX_OpenId
 	public function discoverXriIdentity($identity)
 	{
 		// we use the XRI resolver at xri.net
-		$request  = new PSX_Http_GetRequest(new PSX_Url('http://xri.net/' . $identity), array(
-			'User-Agent' => __CLASS__ . ' ' . PSX_Base::VERSION
+		$request  = new GetRequest(new Url('http://xri.net/' . $identity), array(
+			'User-Agent' => __CLASS__ . ' ' . Base::VERSION
 		));
 		$response = $this->http->request($request);
 
@@ -475,22 +488,20 @@ class PSX_OpenId
 		{
 			// we make an YADIS request to the resolved URI to get
 			// an XRDS document
-			$location = new PSX_Url($header['location']);
+			$location = new Url($header['location']);
 
 			return $this->fetchXrds($location);
 		}
 		else
 		{
-			throw new PSX_OpenId_Exception('Couldnt resolve XRI');
+			throw new Exception('Couldnt resolve XRI');
 		}
 	}
 
 	private function htmlBasedDiscovery($html)
 	{
-		$parse = new PSX_Html_Parse($html);
-
-
-		$element = new PSX_Html_Parse_Element('link', array('rel' => 'openid2.provider'));
+		$parse   = new Parse($html);
+		$element = new Element('link', array('rel' => 'openid2.provider'));
 		$server  = $parse->fetchAttrFromHead($element, 'href');
 
 		if(empty($server))
@@ -501,7 +512,7 @@ class PSX_OpenId
 		}
 
 
-		$element = new PSX_Html_Parse_Element('link', array('rel' => 'openid2.local_id'));
+		$element = new Element('link', array('rel' => 'openid2.local_id'));
 		$localId = $parse->fetchAttrFromHead($element, 'href');
 
 		if(empty($localId))
@@ -514,13 +525,13 @@ class PSX_OpenId
 
 		if(!empty($server))
 		{
-			$identity = new PSX_OpenId_Identity($server, $localId);
+			$identity = new Identity($server, $localId);
 
 			return $identity;
 		}
 		else
 		{
-			throw new PSX_OpenId_Exception('Couldnt find server in identifier');
+			throw new Exception('Couldnt find server in identifier');
 		}
 	}
 
@@ -558,25 +569,25 @@ class PSX_OpenId
 	private function establishAssociaton($assocType = 'HMAC-SHA256', $sessionType = 'DH-SHA256')
 	{
 		// request association
-		$g = pack('H*', PSX_OpenId_ProviderAbstract::DH_G);
-		$p = pack('H*', PSX_OpenId_ProviderAbstract::DH_P);
+		$g = pack('H*', ProviderAbstract::DH_G);
+		$p = pack('H*', ProviderAbstract::DH_P);
 
-		$pkey    = new PSX_OpenSsl_PKey(array('dh' => array('p' => $p, 'g' => $g)));
+		$pkey    = new PKey(array('dh' => array('p' => $p, 'g' => $g)));
 		$details = $pkey->getDetails();
 		$params  = array(
 
-			'openid.ns'                 => PSX_OpenId_ProviderAbstract::NS,
+			'openid.ns'                 => ProviderAbstract::NS,
 			'openid.mode'               => 'associate',
 			'openid.assoc_type'         => $assocType,
 			'openid.session_type'       => $sessionType,
-			'openid.dh_modulus'         => base64_encode(PSX_OpenId_ProviderAbstract::btwoc($details['dh']['p'])),
-			'openid.dh_gen'             => base64_encode(PSX_OpenId_ProviderAbstract::btwoc($details['dh']['g'])),
-			'openid.dh_consumer_public' => base64_encode(PSX_OpenId_ProviderAbstract::btwoc($details['dh']['pub_key'])),
+			'openid.dh_modulus'         => base64_encode(ProviderAbstract::btwoc($details['dh']['p'])),
+			'openid.dh_gen'             => base64_encode(ProviderAbstract::btwoc($details['dh']['g'])),
+			'openid.dh_consumer_public' => base64_encode(ProviderAbstract::btwoc($details['dh']['pub_key'])),
 
 		);
 
-		$request  = new PSX_Http_PostRequest($this->identity->getServer(), array(
-			'User-Agent' => __CLASS__ . ' ' . PSX_Base::VERSION
+		$request  = new PostRequest($this->identity->getServer(), array(
+			'User-Agent' => __CLASS__ . ' ' . Base::VERSION
 		), $params);
 		$response = $this->http->request($request);
 
@@ -589,22 +600,22 @@ class PSX_OpenId
 
 			if(count($diff) > 0)
 			{
-				throw new PSX_OpenId_Exception('Missing fields ' . implode(', ', $diff));
+				throw new Exception('Missing fields ' . implode(', ', $diff));
 			}
 
-			if($data['ns'] != PSX_OpenId_ProviderAbstract::NS)
+			if($data['ns'] != ProviderAbstract::NS)
 			{
-				throw new PSX_OpenId_Exception('Invalid namesspace');
+				throw new Exception('Invalid namesspace');
 			}
 
 			if(!in_array($data['session_type'], self::$supportedSessionTypes))
 			{
-				throw new PSX_OpenId_Exception('Invalid session type');
+				throw new Exception('Invalid session type');
 			}
 
 			if(!in_array($data['assoc_type'], self::$supportedAssocTypes))
 			{
-				throw new PSX_OpenId_Exception('Invalid assoc type');
+				throw new Exception('Invalid assoc type');
 			}
 
 			// decrypt shared secret
@@ -612,25 +623,25 @@ class PSX_OpenId
 			{
 				if(!isset($data['dh_server_public']))
 				{
-					throw new PSX_OpenId_Exception('DH server public not set');
+					throw new Exception('DH server public not set');
 				}
 
 				if(!isset($data['enc_mac_key']))
 				{
-					throw new PSX_OpenId_Exception('Encoded mac key not set');
+					throw new Exception('Encoded mac key not set');
 				}
 
 				$dhFunc       = str_replace('DH-', '', $data['session_type']);
 				$serverPub    = base64_decode($data['dh_server_public']);
-				$dhSec        = PSX_OpenSsl::dhComputeKey($serverPub, $pkey);
-				$sec          = PSX_OpenSsl::digest(PSX_OpenId_ProviderAbstract::btwoc($dhSec), $dhFunc, true);
+				$dhSec        = OpenSsl::dhComputeKey($serverPub, $pkey);
+				$sec          = OpenSsl::digest(ProviderAbstract::btwoc($dhSec), $dhFunc, true);
 				$serverSecret = base64_encode($sec ^ base64_decode($data['enc_mac_key']));
 			}
 			else
 			{
 				if(!isset($data['mac_key']))
 				{
-					throw new PSX_OpenId_Exception('Mac key not set');
+					throw new Exception('Mac key not set');
 				}
 
 				$dhFunc       = null;
@@ -638,7 +649,7 @@ class PSX_OpenId
 			}
 
 			// build association
-			$assoc = new PSX_OpenId_Provider_Data_Association();
+			$assoc = new Association();
 			$assoc->setAssocHandle($data['assoc_handle']);
 			$assoc->setAssocType($data['assoc_type']);
 			$assoc->setSessionType($data['session_type']);
@@ -649,7 +660,7 @@ class PSX_OpenId
 		}
 		else
 		{
-			throw new PSX_OpenId_Exception('Could not establish associaton received ' . $response->getCode());
+			throw new Exception('Could not establish associaton received ' . $response->getCode());
 		}
 	}
 
@@ -690,12 +701,12 @@ class PSX_OpenId
 		}
 		else
 		{
-			throw new PSX_OpenId_Exception('No values are signed');
+			throw new Exception('No values are signed');
 		}
 
 		// make request
-		$request  = new PSX_Http_PostRequest($opEndpoint, array(
-			'User-Agent' => __CLASS__ . ' ' . PSX_Base::VERSION
+		$request  = new PostRequest($opEndpoint, array(
+			'User-Agent' => __CLASS__ . ' ' . Base::VERSION
 		), $params);
 		$response = $this->http->request($request);
 
@@ -705,7 +716,7 @@ class PSX_OpenId
 
 			if(isset($data['error']))
 			{
-				throw new PSX_OpenId_Exception($data['error']);
+				throw new Exception($data['error']);
 			}
 
 			if(isset($data['is_valid']) && $data['is_valid'] == 'true')
@@ -714,12 +725,12 @@ class PSX_OpenId
 			}
 			else
 			{
-				throw new PSX_OpenId_Exception('Identity is not valid');
+				throw new Exception('Identity is not valid');
 			}
 		}
 		else
 		{
-			throw new PSX_OpenId_Exception('Invalid response code ' . $response->getCode());
+			throw new Exception('Invalid response code ' . $response->getCode());
 		}
 	}
 
@@ -813,7 +824,7 @@ class PSX_OpenId
 
 		if(count(array_diff(array_intersect($mustSigned, $signed), $mustSigned)) > 0)
 		{
-			throw new PSX_OpenId_Exception('You must sign at least: ' . implode(',', $mustSigned));
+			throw new Exception('You must sign at least: ' . implode(',', $mustSigned));
 		}
 
 		if(in_array($hashAlgo, self::$supportedAssocTypes))
@@ -822,7 +833,7 @@ class PSX_OpenId
 		}
 		else
 		{
-			throw new PSX_OpenId_Exception('Invalid hash algo');
+			throw new Exception('Invalid hash algo');
 		}
 
 		// build base string

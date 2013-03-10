@@ -23,6 +23,11 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Http\CookieStore;
+
+use PSX\Http\Cookie;
+use PSX\Http\CookieStoreInterface;
+
 /**
  * PSX_Http_CookieStore_Memory
  *
@@ -33,11 +38,11 @@
  * @package    PSX_Http
  * @version    $Revision: 579 $
  */
-class PSX_Http_CookieStore_Memory implements PSX_Http_CookieStoreInterface
+class Memory implements CookieStoreInterface
 {
 	private $container = array();
 
-	public function store($domain, PSX_Http_Cookie $cookie)
+	public function store($domain, Cookie $cookie)
 	{
 		$key = md5($domain);
 
@@ -59,7 +64,7 @@ class PSX_Http_CookieStore_Memory implements PSX_Http_CookieStoreInterface
 		}
 	}
 
-	public function remove($domain, PSX_Http_Cookie $cookie)
+	public function remove($domain, Cookie $cookie)
 	{
 		$key = md5($domain);
 

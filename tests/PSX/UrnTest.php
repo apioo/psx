@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX;
+
 /**
  * PSX_UrnTest
  *
@@ -32,7 +34,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_UrnTest extends PHPUnit_Framework_TestCase
+class UrnTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -44,7 +46,7 @@ class PSX_UrnTest extends PHPUnit_Framework_TestCase
 
 	public function testUrn()
 	{
-		$urn = new PSX_Urn('urn:uuid:f81d4fae-7dec-11d0-a765-00a0c91e6bf6');
+		$urn = new Urn('urn:uuid:f81d4fae-7dec-11d0-a765-00a0c91e6bf6');
 
 		$this->assertEquals('urn', $urn->getScheme());
 		$this->assertEquals('uuid:f81d4fae-7dec-11d0-a765-00a0c91e6bf6', $urn->getPath());
@@ -53,15 +55,15 @@ class PSX_UrnTest extends PHPUnit_Framework_TestCase
 
 	public function testBuidUrn()
 	{
-		$this->assertEquals('urn:foo:bar', PSX_Urn::buildUrn(array('foo', 'bar')));
+		$this->assertEquals('urn:foo:bar', Urn::buildUrn(array('foo', 'bar')));
 	}
 
 	/**
-	 * @expectedException PSX_Urn_Exception
+	 * @expectedException \PSX\Exception
 	 */
 	public function testInvalidUrn()
 	{
-		new PSX_Urn('foobar');
+		new Urn('foobar');
 	}
 
 	public function testUrnCompare()
@@ -77,7 +79,7 @@ class PSX_UrnTest extends PHPUnit_Framework_TestCase
 
 		foreach($urns as $rawUrn)
 		{
-			$urn = new PSX_Urn($rawUrn);
+			$urn = new Urn($rawUrn);
 
 			$this->assertEquals('urn:foo:a123,456', $urn->__toString());
 		}

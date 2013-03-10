@@ -23,6 +23,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace PSX\Oauth\Signature;
+
 /**
  * PSX_Oauth_Signature_PLAINTEXTTest
  *
@@ -32,7 +34,7 @@
  * @category   tests
  * @version    $Revision: 480 $
  */
-class PSX_Oauth_Signature_PLAINTEXTTest extends PHPUnit_Framework_TestCase
+class PLAINTEXTTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
@@ -44,12 +46,10 @@ class PSX_Oauth_Signature_PLAINTEXTTest extends PHPUnit_Framework_TestCase
 
 	public function testSignature()
 	{
-		$signature = new PSX_Oauth_Signature_PLAINTEXT();
+		$signature = new PLAINTEXT();
 
 		$this->assertEquals('djr9rjt0jd78jf88%26jjd999tj88uiths3', $signature->build('', 'djr9rjt0jd78jf88', 'jjd999tj88uiths3'));
-
 		$this->assertEquals('djr9rjt0jd78jf88%26jjd99%2524tj88uiths3', $signature->build('', 'djr9rjt0jd78jf88', 'jjd99$tj88uiths3'));
-
 		$this->assertEquals('djr9rjt0jd78jf88%26', $signature->build('', 'djr9rjt0jd78jf88'));
 	}
 }
