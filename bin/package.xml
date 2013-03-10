@@ -10,7 +10,7 @@
     <email>k42b3@phpsx.org</email>
     <active>yes</active>
   </lead>
-  <date>2013-01-14</date>
+  <date>2013-03-10</date>
   <version>
     <release>0.4.8</release>
     <api>0.4.8</api>
@@ -54,44 +54,35 @@
         </dir>
         <dir name="Atom">
           <file name="Entry.php" role="php"/>
-          <file name="Exception.php" role="php"/>
         </dir>
         <file name="Atom.php" role="php"/>
-        <dir name="Base">
-          <file name="Exception.php" role="php"/>
-        </dir>
         <file name="Base.php" role="php"/>
         <file name="Bootstrap.php" role="php"/>
         <dir name="Cache">
-          <file name="Exception.php" role="php"/>
           <dir name="Handler">
             <file name="Apc.php" role="php"/>
             <file name="File.php" role="php"/>
             <file name="Memcache.php" role="php"/>
             <file name="Null.php" role="php"/>
-            <dir name="Sql">
-              <file name="TableAbstract.php" role="php"/>
-            </dir>
             <file name="Sql.php" role="php"/>
           </dir>
           <file name="HandlerInterface.php" role="php"/>
           <file name="Item.php" role="php"/>
         </dir>
         <file name="Cache.php" role="php"/>
-        <dir name="Calendar">
-          <file name="Exception.php" role="php"/>
-        </dir>
         <file name="Calendar.php" role="php"/>
         <dir name="Config">
-          <file name="Exception.php" role="php"/>
+          <file name="NotFoundException.php" role="php"/>
         </dir>
         <file name="Config.php" role="php"/>
         <dir name="Data">
-          <file name="Array.php" role="php"/>
-          <file name="Exception.php" role="php"/>
+          <file name="ArrayList.php" role="php"/>
           <file name="HandlerAbstract.php" role="php"/>
           <file name="HandlerInterface.php" role="php"/>
+          <file name="InvalidDataException.php" role="php"/>
           <file name="Message.php" role="php"/>
+          <file name="NotFoundException.php" role="php"/>
+          <file name="NotSupportedException.php" role="php"/>
           <dir name="Reader">
             <file name="Dom.php" role="php"/>
             <file name="Form.php" role="php"/>
@@ -130,13 +121,12 @@
         </dir>
         <file name="DateTime.php" role="php"/>
         <dir name="Dependency">
-          <file name="Default.php" role="php"/>
+          <file name="Request.php" role="php"/>
           <file name="View.php" role="php"/>
         </dir>
         <file name="DependencyAbstract.php" role="php"/>
         <file name="Exception.php" role="php"/>
         <dir name="File">
-          <file name="Exception.php" role="php"/>
           <file name="Object.php" role="php"/>
         </dir>
         <file name="File.php" role="php"/>
@@ -147,6 +137,7 @@
           <file name="DateTime.php" role="php"/>
           <file name="Digit.php" role="php"/>
           <file name="Email.php" role="php"/>
+          <file name="Hash.php" role="php"/>
           <file name="Html.php" role="php"/>
           <file name="InArray.php" role="php"/>
           <file name="Ip.php" role="php"/>
@@ -162,7 +153,6 @@
         </dir>
         <file name="FilterAbstract.php" role="php"/>
         <dir name="Html">
-          <file name="Exception.php" role="php"/>
           <dir name="Filter">
             <dir name="Collection">
               <file name="Html5.php" role="php"/>
@@ -172,13 +162,12 @@
             <file name="CollectionAbstract.php" role="php"/>
             <file name="Element.php" role="php"/>
             <file name="ElementListenerInterface.php" role="php"/>
-            <file name="Exception.php" role="php"/>
             <file name="TextListenerInterface.php" role="php"/>
           </dir>
           <file name="Filter.php" role="php"/>
           <dir name="Lexer">
             <file name="Dom.php" role="php"/>
-            <file name="Exception.php" role="php"/>
+            <file name="DomException.php" role="php"/>
             <dir name="Token">
               <file name="Element.php" role="php"/>
               <file name="Text.php" role="php"/>
@@ -186,13 +175,9 @@
             <file name="TokenAbstract.php" role="php"/>
           </dir>
           <file name="Lexer.php" role="php"/>
-          <dir name="Paging">
-            <file name="Exception.php" role="php"/>
-          </dir>
           <file name="Paging.php" role="php"/>
           <dir name="Parse">
             <file name="Element.php" role="php"/>
-            <file name="Exception.php" role="php"/>
           </dir>
           <file name="Parse.php" role="php"/>
         </dir>
@@ -203,17 +188,20 @@
           </dir>
           <file name="CookieStoreInterface.php" role="php"/>
           <file name="DeleteRequest.php" role="php"/>
-          <file name="Exception.php" role="php"/>
           <file name="GetRequest.php" role="php"/>
           <dir name="Handler">
             <file name="Curl.php" role="php"/>
             <file name="Socks.php" role="php"/>
           </dir>
+          <file name="HandlerException.php" role="php"/>
           <file name="HandlerInterface.php" role="php"/>
           <file name="HeadRequest.php" role="php"/>
           <file name="Message.php" role="php"/>
+          <file name="NotSupportedException.php" role="php"/>
+          <file name="ParseException.php" role="php"/>
           <file name="PostRequest.php" role="php"/>
           <file name="PutRequest.php" role="php"/>
+          <file name="RedirectException.php" role="php"/>
           <file name="Request.php" role="php"/>
           <file name="Response.php" role="php"/>
         </dir>
@@ -226,15 +214,11 @@
           <file name="Post.php" role="php"/>
           <file name="Put.php" role="php"/>
           <file name="Request.php" role="php"/>
-          <file name="Session.php" role="php"/>
         </dir>
         <file name="Input.php" role="php"/>
-        <dir name="Json">
-          <file name="Exception.php" role="php"/>
-        </dir>
         <file name="Json.php" role="php"/>
         <dir name="Loader">
-          <file name="Exception.php" role="php"/>
+          <file name="InvalidPathException.php" role="php"/>
           <file name="Location.php" role="php"/>
           <dir name="LocationFinder">
             <file name="FileSystem.php" role="php"/>
@@ -243,12 +227,11 @@
         </dir>
         <file name="Loader.php" role="php"/>
         <dir name="Log">
-          <file name="Exception.php" role="php"/>
           <dir name="Handler">
-            <file name="Default.php" role="php"/>
             <file name="Email.php" role="php"/>
+            <file name="ErrorLog.php" role="php"/>
             <file name="File.php" role="php"/>
-            <file name="Print.php" role="php"/>
+            <file name="Println.php" role="php"/>
             <file name="Sql.php" role="php"/>
             <file name="Sys.php" role="php"/>
           </dir>
@@ -261,7 +244,6 @@
         </dir>
         <file name="ModuleAbstract.php" role="php"/>
         <dir name="Oauth">
-          <file name="Exception.php" role="php"/>
           <dir name="Provider">
             <file name="AccessAbstract.php" role="php"/>
             <dir name="Data">
@@ -269,7 +251,6 @@
               <file name="Request.php" role="php"/>
               <file name="Response.php" role="php"/>
             </dir>
-            <file name="Exception.php" role="php"/>
             <file name="RequestAbstract.php" role="php"/>
           </dir>
           <file name="ProviderAbstract.php" role="php"/>
@@ -297,11 +278,9 @@
               <file name="UnauthorizedClientException.php" role="php"/>
               <file name="UnsupportedResponseTypeException.php" role="php"/>
             </dir>
-            <file name="Exception.php" role="php"/>
             <file name="PasswordCredentials.php" role="php"/>
           </dir>
           <file name="AuthorizationAbstract.php" role="php"/>
-          <file name="Exception.php" role="php"/>
           <dir name="Token">
             <file name="Bearer.php" role="php"/>
           </dir>
@@ -313,7 +292,6 @@
         </dir>
         <file name="Observer.php" role="php"/>
         <dir name="Oembed">
-          <file name="Exception.php" role="php"/>
           <file name="ProviderAbstract.php" role="php"/>
           <dir name="Type">
             <file name="Link.php" role="php"/>
@@ -325,7 +303,6 @@
         </dir>
         <file name="Oembed.php" role="php"/>
         <dir name="OpenId">
-          <file name="Exception.php" role="php"/>
           <dir name="Extension">
             <file name="Ax.php" role="php"/>
             <file name="Oauth.php" role="php"/>
@@ -346,14 +323,13 @@
             <file name="Yahoo.php" role="php"/>
           </dir>
           <dir name="Provider">
+            <file name="Association.php" role="php"/>
             <dir name="Data">
-              <file name="Association.php" role="php"/>
               <file name="AssociationRequest.php" role="php"/>
-              <file name="Redirect.php" role="php"/>
               <file name="ResRequest.php" role="php"/>
               <file name="SetupRequest.php" role="php"/>
             </dir>
-            <file name="Exception.php" role="php"/>
+            <file name="Redirect.php" role="php"/>
           </dir>
           <file name="ProviderAbstract.php" role="php"/>
           <dir name="Store">
@@ -380,20 +356,14 @@
           <file name="TypeAbstract.php" role="php"/>
         </dir>
         <dir name="OpenSsl">
-          <file name="Exception.php" role="php"/>
           <file name="PKey.php" role="php"/>
         </dir>
         <file name="OpenSsl.php" role="php"/>
-        <dir name="Opengraph">
-          <file name="Exception.php" role="php"/>
-        </dir>
         <file name="Opengraph.php" role="php"/>
         <dir name="Opensearch">
-          <file name="Exception.php" role="php"/>
           <file name="ProviderAbstract.php" role="php"/>
         </dir>
         <dir name="Payment">
-          <file name="Exception.php" role="php"/>
           <dir name="Paypal">
             <file name="Exception.php" role="php"/>
             <file name="ExpressCheckout.php" role="php"/>
@@ -407,26 +377,17 @@
             <file name="StoreInterface.php" role="php"/>
           </dir>
         </dir>
-        <dir name="Pingback">
-          <file name="Exception.php" role="php"/>
-        </dir>
         <file name="Pingback.php" role="php"/>
         <dir name="PubSubHubBub">
           <file name="CallbackAbstract.php" role="php"/>
-          <file name="Exception.php" role="php"/>
         </dir>
         <file name="PubSubHubBub.php" role="php"/>
-        <dir name="Registry">
-          <file name="Exception.php" role="php"/>
-        </dir>
         <file name="Registry.php" role="php"/>
         <dir name="Rss">
-          <file name="Exception.php" role="php"/>
           <file name="Item.php" role="php"/>
         </dir>
         <file name="Rss.php" role="php"/>
         <dir name="Session">
-          <file name="Exception.php" role="php"/>
           <dir name="Handler">
             <file name="Sql.php" role="php"/>
           </dir>
@@ -434,26 +395,10 @@
         </dir>
         <file name="Session.php" role="php"/>
         <dir name="Sql">
-          <dir name="Condition">
-            <file name="Exception.php" role="php"/>
-          </dir>
           <file name="Condition.php" role="php"/>
-          <dir name="Driver">
-            <dir name="Mysqli">
-              <file name="Stmt.php" role="php"/>
-            </dir>
-            <file name="Mysqli.php" role="php"/>
-            <dir name="Pdo">
-              <file name="Stmt.php" role="php"/>
-            </dir>
-            <file name="Pdo.php" role="php"/>
-          </dir>
-          <file name="DriverInterface.php" role="php"/>
-          <file name="Exception.php" role="php"/>
+          <file name="Connection.php" role="php"/>
           <file name="Join.php" role="php"/>
-          <file name="StmtInterface.php" role="php"/>
           <dir name="Table">
-            <file name="Exception.php" role="php"/>
             <file name="Select.php" role="php"/>
             <file name="SelectInterface.php" role="php"/>
           </dir>
@@ -475,71 +420,33 @@
           </dir>
           <file name="ParameterAbstract.php" role="php"/>
         </dir>
-        <dir name="Template">
-          <file name="Exception.php" role="php"/>
-        </dir>
         <file name="Template.php" role="php"/>
         <dir name="Upload">
           <file name="Exception.php" role="php"/>
           <file name="File.php" role="php"/>
         </dir>
-        <dir name="Uri">
-          <file name="Exception.php" role="php"/>
-        </dir>
         <file name="Uri.php" role="php"/>
-        <dir name="Url">
-          <file name="Exception.php" role="php"/>
-        </dir>
         <file name="Url.php" role="php"/>
-        <dir name="Urn">
-          <file name="Exception.php" role="php"/>
-        </dir>
         <file name="Urn.php" role="php"/>
         <dir name="Util">
           <dir name="Annotation">
             <file name="DocBlock.php" role="php"/>
-            <file name="Exception.php" role="php"/>
           </dir>
           <file name="Annotation.php" role="php"/>
-          <dir name="Bencoding">
-            <file name="Exception.php" role="php"/>
-          </dir>
           <file name="Bencoding.php" role="php"/>
-          <dir name="Conversion">
-            <file name="Exception.php" role="php"/>
-          </dir>
           <file name="Conversion.php" role="php"/>
-          <dir name="Markdown">
-            <file name="Exception.php" role="php"/>
-          </dir>
           <file name="Markdown.php" role="php"/>
-          <dir name="Numerative">
-            <file name="Exception.php" role="php"/>
-          </dir>
           <file name="Numerative.php" role="php"/>
-          <dir name="Roman">
-            <file name="Exception.php" role="php"/>
-          </dir>
           <file name="Roman.php" role="php"/>
-          <file name="Unquote.php" role="php"/>
-          <file name="Unregister.php" role="php"/>
           <file name="Uuid.php" role="php"/>
-        </dir>
-        <dir name="Validate">
-          <file name="Exception.php" role="php"/>
         </dir>
         <file name="Validate.php" role="php"/>
         <dir name="Webfinger">
-          <file name="Exception.php" role="php"/>
           <file name="Xrd.php" role="php"/>
         </dir>
         <file name="Webfinger.php" role="php"/>
-        <dir name="Xml">
-          <file name="Exception.php" role="php"/>
-        </dir>
         <file name="Xml.php" role="php"/>
         <dir name="Xrd">
-          <file name="Exception.php" role="php"/>
           <file name="Expires.php" role="php"/>
           <file name="Localid.php" role="php"/>
           <file name="Serverstatus.php" role="php"/>
@@ -548,9 +455,6 @@
           <file name="Type.php" role="php"/>
         </dir>
         <file name="Xrd.php" role="php"/>
-        <dir name="Yadis">
-          <file name="Exception.php" role="php"/>
-        </dir>
         <file name="Yadis.php" role="php"/>
       </dir>
       <dir name="tests">
@@ -572,8 +476,6 @@
           <file name="CacheTest.php" role="test"/>
           <file name="ConfigTest.php" role="test"/>
           <dir name="Data">
-            <file name="ArrayTest.php" role="test"/>
-            <file name="MessageTest.php" role="test"/>
             <dir name="Reader">
               <file name="DomTest.php" role="test"/>
               <file name="FormTest.php" role="test"/>
@@ -582,7 +484,6 @@
               <file name="RawTest.php" role="test"/>
               <file name="XmlTest.php" role="test"/>
             </dir>
-            <file name="ReaderResultTest.php" role="test"/>
             <file name="ResultSetTest.php" role="test"/>
             <dir name="Writer">
               <dir name="Atom">
@@ -597,11 +498,9 @@
               <file name="RssTest.php" role="test"/>
               <file name="XmlTest.php" role="test"/>
             </dir>
-            <file name="WriterResultTest.php" role="test"/>
             <file name="WriterTestCase.php" role="test"/>
             <file name="WriterTestRecord.php" role="test"/>
           </dir>
-          <file name="DateTimeTest.php" role="test"/>
           <file name="FileTest.php" role="test"/>
           <dir name="Filter">
             <file name="AlnumTest.php" role="test"/>
@@ -662,7 +561,6 @@
             <file name="PostTest.php" role="test"/>
             <file name="PutTest.php" role="test"/>
             <file name="RequestTest.php" role="test"/>
-            <file name="SessionTest.php" role="test"/>
           </dir>
           <file name="InputTest.php" role="test"/>
           <file name="JsonTest.php" role="test"/>
@@ -681,23 +579,7 @@
             </dir>
           </dir>
           <file name="LoaderTest.php" role="test"/>
-          <dir name="Log">
-            <dir name="Handler">
-              <file name="FileTest.php" role="test"/>
-              <file name="PrintTest.php" role="test"/>
-              <file name="SqlTest.php" role="test"/>
-              <file name="SysTest.php" role="test"/>
-            </dir>
-          </dir>
-          <file name="LogTest.php" role="test"/>
           <dir name="Oauth">
-            <dir name="Provider">
-              <dir name="Data">
-                <file name="ConsumerTest.php" role="test"/>
-                <file name="RequestTest.php" role="test"/>
-                <file name="ResponseTest.php" role="test"/>
-              </dir>
-            </dir>
             <dir name="Signature">
               <file name="HMACSHA1Test.php" role="test"/>
               <file name="PLAINTEXTTest.php" role="test"/>
@@ -731,16 +613,6 @@
           <file name="SessionTest.php" role="test"/>
           <dir name="Sql">
             <file name="ConditionTest.php" role="test"/>
-            <dir name="Driver">
-              <dir name="Mysqli">
-                <file name="StmtTest.php" role="test"/>
-              </dir>
-              <file name="MysqliTest.php" role="test"/>
-              <dir name="Pdo">
-                <file name="StmtTest.php" role="test"/>
-              </dir>
-              <file name="PdoTest.php" role="test"/>
-            </dir>
             <dir name="Table">
               <file name="SelectTest.php" role="test"/>
             </dir>
@@ -748,10 +620,6 @@
             <file name="UtilTest.php" role="test"/>
           </dir>
           <file name="SqlTest.php" role="test"/>
-          <file name="TemplateTest.php" role="test"/>
-          <dir name="Upload">
-            <file name="FileTest.php" role="test"/>
-          </dir>
           <file name="UriTest.php" role="test"/>
           <file name="UrlTest.php" role="test"/>
           <file name="UrnTest.php" role="test"/>
@@ -761,24 +629,11 @@
             <file name="MarkdownTest.php" role="test"/>
             <file name="NumerativeTest.php" role="test"/>
             <file name="RomanTest.php" role="test"/>
-            <file name="UnquoteTest.php" role="test"/>
-            <file name="UnregisterTest.php" role="test"/>
             <file name="UuidTest.php" role="test"/>
           </dir>
           <file name="ValidateTest.php" role="test"/>
           <file name="WebfingerTest.php" role="test"/>
           <file name="XmlTest.php" role="test"/>
-          <dir name="Yadis">
-            <dir name="Xrd">
-              <file name="ExpiresTest.php" role="test"/>
-              <file name="LocalidTest.php" role="test"/>
-              <file name="ServerstatusTest.php" role="test"/>
-              <file name="ServiceTest.php" role="test"/>
-              <file name="StatusTest.php" role="test"/>
-              <file name="TypeTest.php" role="test"/>
-            </dir>
-            <file name="XrdTest.php" role="test"/>
-          </dir>
           <file name="YadisTest.php" role="test"/>
         </dir>
         <file name="bootstrap.php" role="test"/>

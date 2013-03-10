@@ -25,7 +25,7 @@
 
 namespace PSX\Data;
 
-use PSX\Http\Message;
+use PSX\Http\Message as HttpMessage;
 
 /**
  * PSX_Data_ReaderInterface
@@ -56,7 +56,7 @@ interface ReaderInterface
 	 * @param PSX_Http_Request $request
 	 * @return PSX_Data_ReaderResult
 	 */
-	public function read(Message $message);
+	public function read(HttpMessage $message);
 }
 
 

@@ -25,7 +25,7 @@
 
 namespace PSX\OpenId\Store;
 
-use PSX\File;
+use PSX\File as FileObject;
 use PSX\OpenId\StoreInterface;
 use PSX\OpenId\Provider\Association;
 
@@ -47,15 +47,15 @@ class File implements StoreInterface
 	{
 		$this->file = PSX_PATH_CACHE . '/' . ($file === null ? strtolower(__CLASS__ . '.store') : $file);
 
-		if(!File::exists($this->file))
+		if(!FileObject::exists($this->file))
 		{
-			File::putContents($this->file, serialize(array()));
+			FileObject::putContents($this->file, serialize(array()));
 		}
 	}
 
 	public function load($opEndpoint)
 	{
-		$data = unserialize(File::getContents($this->file));
+		$data = unserialize(FileObject::getContents($this->file));
 		$key  = md5($opEndpoint);
 		$row  = isset($data[$key]) ? $data[$key] : null;
 
@@ -76,7 +76,7 @@ class File implements StoreInterface
 
 	public function loadByHandle($opEndpoint, $assocHandle)
 	{
-		$data = unserialize(File::getContents($this->file));
+		$data = unserialize(FileObject::getContents($this->file));
 		$key  = md5($opEndpoint);
 		$row  = isset($data[$key]) ? $data[$key] : null;
 
@@ -97,7 +97,7 @@ class File implements StoreInterface
 
 	public function remove($opEndpoint, $assocHandle)
 	{
-		$data = unserialize(File::getContents($this->file));
+		$data = unserialize(FileObject::getContents($this->file));
 		$key  = md5($opEndpoint);
 		$row  = isset($data[$key]) ? $data[$key] : null;
 
@@ -105,13 +105,13 @@ class File implements StoreInterface
 		{
 			unset($data[$key]);
 
-			File::putContents($this->file, serialize($data));
+			FileObject::putContents($this->file, serialize($data));
 		}
 	}
 
 	public function save($opEndpoint, Association $assoc)
 	{
-		$data = unserialize(File::getContents($this->file));
+		$data = unserialize(FileObject::getContents($this->file));
 		$key  = md5($opEndpoint);
 
 		$data[$key] = array(
@@ -123,6 +123,6 @@ class File implements StoreInterface
 			'expires'     => $assoc->getExpire(),
 		);
 
-		File::putContents($this->file, serialize($data));
+		FileObject::putContents($this->file, serialize($data));
 	}
 }

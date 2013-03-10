@@ -27,7 +27,7 @@ namespace PSX\Log\Handler;
 
 use PSX\DateTime;
 use PSX\Log\HandlerInterface;
-use PSX\Sql;
+use PSX\Sql as SqlDriver;
 
 /**
  * PSX_Log_Handler_Sql
@@ -44,7 +44,7 @@ class Sql implements HandlerInterface
 	private $sql;
 	private $table;
 
-	public function __construct(Sql $sql, $table)
+	public function __construct(SqlDriver $sql, $table)
 	{
 		$this->sql   = $sql;
 		$this->table = $table;

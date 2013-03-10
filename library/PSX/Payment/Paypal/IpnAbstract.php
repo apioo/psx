@@ -27,7 +27,6 @@ namespace PSX\Payment\Paypal;
 
 use PSX\Base;
 use PSX\Data\ReaderInterface;
-use PSX\Exception;
 use PSX\Http;
 use PSX\Http\PostRequest;
 use PSX\Module\ApiAbstract;

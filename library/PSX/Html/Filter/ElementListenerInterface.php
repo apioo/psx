@@ -25,7 +25,7 @@
 
 namespace PSX\Html\Filter;
 
-use PSX\Html\Lexer\Token\Element;
+use PSX\Html\Lexer\Token;
 
 /**
  * TextListenerInterface
@@ -46,5 +46,5 @@ interface ElementListenerInterface
 	 *
 	 * @return boolean|PSX_Html_Lexer_Token_Element
 	 */
-	public function onElement(Element $element);
+	public function onElement(Token\Element $element);
 }

@@ -28,7 +28,7 @@ namespace PSX\OpenId\Store;
 use PSX\DateTime;
 use PSX\OpenId\Provider\Association;
 use PSX\OpenId\StoreInterface;
-use PSX\Sql;
+use PSX\Sql as SqlDriver;
 use PSX\Sql\Condition;
 
 /**
@@ -60,7 +60,7 @@ class Sql implements StoreInterface
 	private $sql;
 	private $table;
 
-	public function __construct(Sql $sql, $table)
+	public function __construct(SqlDriver $sql, $table)
 	{
 		$this->sql   = $sql;
 		$this->table = $table;

@@ -26,7 +26,7 @@
 namespace PSX\Upload;
 
 use PSX\Base;
-use PSX\File;
+use PSX\File as FileObject;
 
 /**
  * PSX_Upload_File
@@ -104,7 +104,7 @@ class File
 	{
 		if($this->_tmpFile === null)
 		{
-			$this->_tmpFile = File::open($this->tmpName, $mode);
+			$this->_tmpFile = FileObject::open($this->tmpName, $mode);
 		}
 
 		return $this->_tmpFile;
@@ -114,7 +114,7 @@ class File
 	{
 		if($this->_tmpContent === null)
 		{
-			$this->_tmpContent = File::getContents($this->tmpName);
+			$this->_tmpContent = FileObject::getContents($this->tmpName);
 		}
 
 		return $this->_tmpContent;
