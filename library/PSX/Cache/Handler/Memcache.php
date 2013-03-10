@@ -25,7 +25,7 @@
 
 namespace PSX\Cache\Handler;
 
-use Memcache;
+use Memcache as Mem;
 use PSX\Cache\HandlerInterface;
 use PSX\Cache\Item;
 
@@ -43,7 +43,7 @@ class Memcache implements HandlerInterface
 {
 	private $memcache;
 
-	public function __construct(Memcache $memcache)
+	public function __construct(Mem $memcache)
 	{
 		$this->memcache = $memcache;
 	}
