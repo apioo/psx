@@ -10,21 +10,17 @@
     <email>k42b3@phpsx.org</email>
     <active>yes</active>
   </lead>
-  <date>2013-03-10</date>
+  <date>2013-03-11</date>
   <version>
-    <release>0.4.8</release>
-    <api>0.4.8</api>
+    <release>0.5</release>
+    <api>0.5</api>
   </version>
   <stability>
     <release>stable</release>
     <api>stable</api>
   </stability>
   <license uri="http://www.gnu.org/licenses/">GPLv3 License</license>
-  <notes>* Improved html parser library
-* Added pingback library
-* Validate, parameter and body objects are now loaded in an DI container
-* Load dependencies in _ini() method instead of __construct()
-* Fixed markdown parser and sql select</notes>
+  <notes></notes>
   <contents>
     <dir name="/">
       <dir name="PSX">
@@ -863,6 +859,19 @@ getParameter() and getBody() to PSX_ModuleAbstract
 * Validate, parameter and body objects are now loaded in an DI container
 * Load dependencies in _ini() method instead of __construct()
 * Fixed markdown parser and sql select</notes>
+    </release>
+    <release>
+      <version>
+        <release>0.5</release>
+        <api>0.5</api>
+      </version>
+      <stability>
+        <release>beta</release>
+        <api>beta</api>
+      </stability>
+      <date>2013-03-11</date>
+      <license uri="http://www.gnu.org/licenses/">GPLv3 License</license>
+      <notes></notes>
     </release>
   </changelog>
 </package>

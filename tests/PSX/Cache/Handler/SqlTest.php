@@ -25,7 +25,9 @@
 
 namespace PSX\Cache\Handler;
 
+use PDOException;
 use PSX\Sql AS SqlDriver;
+use PSX\Sql\DbTestCase;
 use PSX\Sql\TableAbstract;
 use PSX\Sql\TableInterface;
 use PSX\CacheTest;
@@ -42,8 +44,7 @@ use PSX\Exception;
  */
 class SqlTest extends CacheTest
 {
-	protected $table;
-	protected $sql;
+	protected $table = 'psx_cache_handler_sql_test';
 
 	protected function setUp()
 	{
@@ -53,8 +54,7 @@ class SqlTest extends CacheTest
 		{
 			$config = getConfig();
 
-			$this->table = 'PSX_Cache_Handler_SqlTest';
-			$this->sql   = new SqlDriver($config['psx_sql_host'],
+			$this->sql = new SqlDriver($config['psx_sql_host'],
 				$config['psx_sql_user'],
 				$config['psx_sql_pw'],
 				$config['psx_sql_db']);
@@ -69,36 +69,24 @@ CREATE TABLE IF NOT EXISTS `{$this->table}` (
 SQL;
 
 			$this->sql->exec($sql);
-			$this->sql->exec('TRUNCATE TABLE ' . $this->table);
 		}
-		catch(Exception $e)
+		catch(PDOException $e)
 		{
 			$this->markTestSkipped($e->getMessage());
 		}
 	}
 
-	protected function tearDown()
-	{
-		if($this->sql instanceof SqlDriver)
-		{
-			$this->sql->exec('TRUNCATE TABLE ' . $this->table);
-		}
-
-		unset($this->table);
-		unset($this->sql);
-	}
-
 	protected function getHandler()
 	{
-		return new Sql(new TableAbstractTest($this->sql));
+		return new Sql(new TableCacheTest($this->sql));
 	}
 }
 
-class TableAbstractTest extends TableAbstract
+class TableCacheTest extends TableAbstract
 {
 	public function getName()
 	{
-		return 'PSX_Cache_Handler_SqlTest';
+		return 'psx_cache_handler_sql_test';
 	}
 
 	public function getColumns()

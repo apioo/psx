@@ -30,6 +30,7 @@ use PSX\Data\Record;
 use PSX\DateTime;
 use PSX\Sql;
 use PSX\Sql\Table\Select;
+use PSX\Test\TableDataSet;
 
 /**
  * PSX_Sql_TableTest
@@ -40,24 +41,14 @@ use PSX\Sql\Table\Select;
  * @category   tests
  * @version    $Revision: 639 $
  */
-class TableTest extends \PHPUnit_Framework_TestCase
+class TableTest extends DbTestCase
 {
-	protected $sql;
-	protected $table;
+	protected $table = 'psx_sql_table_test';
 
-	protected function setUp()
+	public function getBeforeQueries()
 	{
-		try
-		{
-			$config = getConfig();
-
-			$this->table = 'TableTestTable';
-			$this->sql   = new Sql($config['psx_sql_host'],
-				$config['psx_sql_user'],
-				$config['psx_sql_pw'],
-				$config['psx_sql_db']);
-
-		$sql = <<<SQL
+		$queries   = array();
+		$queries[] = <<<SQL
 CREATE TABLE IF NOT EXISTS `{$this->table}` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `title` varchar(32) NOT NULL,
@@ -66,50 +57,27 @@ CREATE TABLE IF NOT EXISTS `{$this->table}` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8
 SQL;
 
-			$this->sql->exec($sql);
-			$this->sql->exec('TRUNCATE TABLE ' . $this->table);
-
-			$data = array('foo', 'bar', 'test', 'fooooo');
-
-			foreach($data as $d)
-			{
-				$this->sql->insert($this->table, array(
-
-					'title' => $d,
-					'date'  => date(DateTime::SQL),
-
-				));
-			}
-		}
-		catch(\Exception $e)
-		{
-			$this->markTestSkipped($e->getMessage());
-		}
+		return $queries;
 	}
 
-	protected function tearDown()
+	public function getDataSet()
 	{
-		if($this->sql instanceof Sql)
-		{
-			$this->sql->exec('TRUNCATE TABLE ' . $this->table);
-		}
+		$dataSet = new TableDataSet();
+		$dataSet->addTable(new TableTestTable($this->sql), array(
+			array('id' => null, 'title' => 'foo', 'date' => date(DateTime::SQL)),
+			array('id' => null, 'title' => 'bar', 'date' => date(DateTime::SQL)),
+			array('id' => null, 'title' => 'test', 'date' => date(DateTime::SQL)),
+			array('id' => null, 'title' => 'fooooo', 'date' => date(DateTime::SQL)),
+		));
 
-		unset($this->table);
-		unset($this->sql);
-	}
-
-	public function testGetSql()
-	{
-		$table = new TableTestTable($this->sql);
-
-		$this->assertEquals(true, $table->getSql() instanceof Sql);
+		return $dataSet;
 	}
 
 	public function testGetDisplayName()
 	{
 		$table = new TableTestTable($this->sql);
 
-		$this->assertEquals('TableTestTable', $table->getDisplayName());
+		$this->assertEquals('test', $table->getDisplayName());
 	}
 
 	public function testGetPrimaryKey()
@@ -140,10 +108,10 @@ SQL;
 	{
 		$table = new TableTestTable($this->sql);
 
-		$r = $table->getValidColumns(array('test', 'date', 'id', 'foo', 'bar', 'title', 'blub'));
-		$e = array(1 => 'date', 2 => 'id', 5 => 'title');
+		$actual = $table->getValidColumns(array('test', 'date', 'id', 'foo', 'bar', 'title', 'blub'));
+		$expect = array(1 => 'date', 2 => 'id', 5 => 'title');
 
-		$this->assertEquals($e, $r);
+		$this->assertEquals($expect, $actual);
 	}
 
 	public function testSelect()
@@ -183,52 +151,52 @@ SQL;
 	{
 		$table = new TableTestTable($this->sql);
 
-		$r = $table->getAll(array('title'), new Condition(array('id', '=', 2)));
-		$e = array(array('title' => 'bar'));
+		$actual = $table->getAll(array('title'), new Condition(array('id', '=', 2)));
+		$expect = array(array('title' => 'bar'));
 
-		$this->assertEquals($e, $r);
-
-
-		$r = $table->getAll(array('title'), new Condition(array('title', 'LIKE', 'fo%')), 'id', Sql::SORT_DESC);
-		$e = array(array('title' => 'fooooo'), array('title' => 'foo'));
-
-		$this->assertEquals($e, $r);
+		$this->assertEquals($expect, $actual);
 
 
-		$r = $table->getAll(array('title'), new Condition(array('title', 'LIKE', 'fo%')), 'id', Sql::SORT_ASC, 0, 1);
-		$e = array(array('title' => 'foo'));
+		$actual = $table->getAll(array('title'), new Condition(array('title', 'LIKE', 'fo%')), 'id', Sql::SORT_DESC);
+		$expect = array(array('title' => 'fooooo'), array('title' => 'foo'));
 
-		$this->assertEquals($e, $r);
+		$this->assertEquals($expect, $actual);
+
+
+		$actual = $table->getAll(array('title'), new Condition(array('title', 'LIKE', 'fo%')), 'id', Sql::SORT_ASC, 0, 1);
+		$expect = array(array('title' => 'foo'));
+
+		$this->assertEquals($expect, $actual);
 	}
 
 	public function testGetRow()
 	{
 		$table = new TableTestTable($this->sql);
 
-		$r = $table->getRow(array('title'), new Condition(array('id', '=', 2)));
-		$e = array('title' => 'bar');
+		$actual = $table->getRow(array('title'), new Condition(array('id', '=', 2)));
+		$expect = array('title' => 'bar');
 
-		$this->assertEquals($e, $r);
+		$this->assertEquals($expect, $actual);
 	}
 
 	public function testGetCol()
 	{
 		$table = new TableTestTable($this->sql);
 
-		$r = $table->getCol('title', new Condition(array('title', 'LIKE', 'fo%')), 'id', Sql::SORT_DESC);
-		$e = array('fooooo', 'foo');
+		$actual = $table->getCol('title', new Condition(array('title', 'LIKE', 'fo%')), 'id', Sql::SORT_DESC);
+		$expect = array('fooooo', 'foo');
 
-		$this->assertEquals($e, $r);
+		$this->assertEquals($expect, $actual);
 	}
 
 	public function testGetField()
 	{
 		$table = new TableTestTable($this->sql);
 
-		$r = $table->getField('title', new Condition(array('id', '=', 2)));
-		$e = 'bar';
+		$actual = $table->getField('title', new Condition(array('id', '=', 2)));
+		$expect = 'bar';
 
-		$this->assertEquals($e, $r);
+		$this->assertEquals($expect, $actual);
 	}
 
 	public function testCount()
@@ -245,13 +213,13 @@ SQL;
 		$table = new TableTestTable($this->sql);
 
 		$table->insert(array(
-
 			'title' => $value,
 			'date'  => date(DateTime::SQL)
-
 		));
 
-		$this->assertEquals($value, $table->getField('title', new Condition(array('title', '=', $value))));
+		$actual = $table->getField('title', new Condition(array('title', '=', $value)));
+
+		$this->assertEquals($value, $actual);
 	}
 
 	public function testInsertRecord()
@@ -259,15 +227,15 @@ SQL;
 		$value  = 'foobar_' . rand(0, 999);
 		$table  = new TableTestTable($this->sql);
 		$record = new Record('test', array(
-
 			'title' => $value,
 			'date'  => date(DateTime::SQL)
-
 		));
 
 		$table->insert($record);
 
-		$this->assertEquals($value, $table->getField('title', new Condition(array('title', '=', $value))));
+		$actual = $table->getField('title', new Condition(array('title', '=', $value)));
+
+		$this->assertEquals($value, $actual);
 	}
 
 	public function testUpdate()
@@ -278,10 +246,8 @@ SQL;
 		$resp  = $table->getField('title', $con);
 
 		$table->update(array(
-
 			'title' => $value,
 			'date'  => date(DateTime::SQL)
-
 		), $con);
 
 		$this->assertEquals(false, $resp === $table->getField('title', $con));
@@ -296,11 +262,9 @@ SQL;
 		$resp  = $table->getField('title', $con);
 
 		$table->update(array(
-
 			'id'    => 3,
 			'title' => $value,
 			'date'  => date(DateTime::SQL)
-
 		));
 
 		$this->assertEquals(false, $resp === $table->getField('title', $con));
@@ -313,11 +277,10 @@ SQL;
 		$table  = new TableTestTable($this->sql);
 		$con    = new Condition(array('id', '=', 3));
 		$resp   = $table->getField('title', $con);
-		$record = new Record('test', array(
 
+		$record = new Record('test', array(
 			'title' => $value,
 			'date'  => date(DateTime::SQL)
-
 		));
 
 		$table->update($record, $con);
@@ -332,12 +295,11 @@ SQL;
 		$table  = new TableTestTable($this->sql);
 		$con    = new Condition(array('id', '=', 3));
 		$resp   = $table->getField('title', $con);
-		$record = new Record('test', array(
 
+		$record = new Record('test', array(
 			'id'    => 3,
 			'title' => $value,
 			'date'  => date(DateTime::SQL)
-
 		));
 
 		$table->update($record);
@@ -354,11 +316,9 @@ SQL;
 		$resp  = $table->getField('title', $con);
 
 		$table->replace(array(
-
 			'id'    => 3,
 			'title' => $value,
 			'date'  => date(DateTime::SQL)
-
 		));
 
 		$this->assertEquals(false, $resp === $table->getField('title', $con));
@@ -381,9 +341,7 @@ SQL;
 		$con   = new Condition(array('id', '=', 3));
 
 		$table->delete(array(
-
 			'id' => 3
-
 		));
 
 		$this->assertEquals(false, $table->getField('title', $con));
@@ -394,9 +352,7 @@ SQL;
 		$table  = new TableTestTable($this->sql);
 		$con    = new Condition(array('id', '=', 3));
 		$record = new Record('test', array(
-
 			'id' => 3,
-
 		));
 
 		$table->delete($record);
@@ -414,7 +370,7 @@ class TableTestTable extends TableAbstract
 
 	public function getName()
 	{
-		return 'TableTestTable';
+		return 'psx_sql_table_test';
 	}
 
 	public function getColumns()

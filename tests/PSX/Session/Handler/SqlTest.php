@@ -25,6 +25,7 @@
 
 namespace PSX\Session\Handler;
 
+use PDOException;
 use PSX\Sql AS SqlDriver;
 use PSX\SessionTest;
 
@@ -39,8 +40,8 @@ use PSX\SessionTest;
  */
 class SqlTest extends SessionTest
 {
-	protected $table;
-	protected $sql;
+	protected $table = 'psx_session_handler_sql_test';
+	protected $sess;
 
 	protected function setUp()
 	{
@@ -48,13 +49,12 @@ class SqlTest extends SessionTest
 		{
 			$config = getConfig();
 
-			$this->table = 'PSX_Session_Handler_Sql';
-			$this->sql   = new SqlDriver($config['psx_sql_host'],
+			$this->sql = new SqlDriver($config['psx_sql_host'],
 				$config['psx_sql_user'],
 				$config['psx_sql_pw'],
 				$config['psx_sql_db']);
 
-		$sql = <<<SQL
+			$sql = <<<SQL
 CREATE TABLE IF NOT EXISTS `{$this->table}` (
   `id` VARCHAR(32) NOT NULL,
   `content` BLOB NOT NULL,
@@ -64,27 +64,13 @@ CREATE TABLE IF NOT EXISTS `{$this->table}` (
 SQL;
 
 			$this->sql->exec($sql);
-			$this->sql->exec('TRUNCATE TABLE ' . $this->table);
 		}
-		catch(\Exception $e)
+		catch(PDOException $e)
 		{
 			$this->markTestSkipped($e->getMessage());
 		}
 
 		parent::setUp();
-	}
-
-	protected function tearDown()
-	{
-		parent::tearDown();
-
-		if($this->sql instanceof SqlDriver)
-		{
-			$this->sql->exec('TRUNCATE TABLE ' . $this->table);
-		}
-
-		unset($this->table);
-		unset($this->sql);
 	}
 
 	protected function getHandler()

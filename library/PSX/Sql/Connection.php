@@ -26,7 +26,7 @@
 namespace PSX\Sql;
 
 /**
- * PSX_Sql_Condition
+ * Connection
  *
  * @author     Christoph Kappestein <k42b3.x@gmail.com>
  * @license    http://www.gnu.org/licenses/gpl.html GPLv3

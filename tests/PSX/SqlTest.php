@@ -27,6 +27,10 @@ namespace PSX;
 
 use stdClass;
 use PSX\Sql\Condition;
+use PSX\Sql\DbTestCase;
+use PSX\Sql\Table;
+use PSX\Sql\TableInterface;
+use PSX\Test\TableDataSet;
 
 /**
  * PSX_SqlTest
@@ -37,24 +41,14 @@ use PSX\Sql\Condition;
  * @category   tests
  * @version    $Revision: 596 $
  */
-class SqlTest extends \PHPUnit_Framework_TestCase
+class SqlTest extends DbTestCase
 {
-	protected $sql;
-	protected $table;
+	protected $table = 'psx_sql_test';
 
-	protected function setUp()
+	public function getBeforeQueries()
 	{
-		try
-		{
-			$config = getConfig();
-
-			$this->table = 'PSX_Sql';
-			$this->sql   = new Sql($config['psx_sql_host'],
-				$config['psx_sql_user'],
-				$config['psx_sql_pw'],
-				$config['psx_sql_db']);
-
-		$sql = <<<SQL
+		$queries   = array();
+		$queries[] = <<<SQL
 CREATE TABLE IF NOT EXISTS `{$this->table}` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `title` varchar(32) NOT NULL,
@@ -62,55 +56,38 @@ CREATE TABLE IF NOT EXISTS `{$this->table}` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8
 SQL;
 
-			$this->sql->exec($sql);
-
-			$this->resetTable();
-		}
-		catch(\Exception $e)
-		{
-			$this->markTestSkipped($e->getMessage());
-		}
+		return $queries;
 	}
 
-	protected function tearDown()
+	public function getDataSet()
 	{
-		if($this->sql instanceof Sql)
-		{
-			$this->sql->exec('TRUNCATE TABLE ' . $this->table);
-		}
+		$dataSet = new TableDataSet();
+		$dataSet->addTable(new Table($this->sql, $this->table, array(
+			'id'    => TableInterface::TYPE_INT | 10 | TableInterface::PRIMARY_KEY | TableInterface::AUTO_INCREMENT,
+			'title' => TableInterface::TYPE_VARCHAR | 64,
+		)), array(
+			array('id' => null, 'title' => 'foo'),
+			array('id' => null, 'title' => 'bar'),
+			array('id' => null, 'title' => 'test'),
+		));
 
-		unset($this->table);
-		unset($this->sql);
+		return $dataSet;
 	}
 
 	public function testAssoc()
 	{
-		$r = $this->sql->assoc('SELECT id, title FROM ' . $this->table . ' WHERE id < ? ORDER BY id ASC', array(3));
-
-		$e = array(
-
-			array(
-
-				'id'    => 1,
-				'title' => 'foo',
-
-			),
-
-			array(
-
-				'id'    => 2,
-				'title' => 'bar',
-
-			),
-
+		$actual = $this->sql->assoc('SELECT id, title FROM ' . $this->table . ' WHERE id < ? ORDER BY id ASC', array(3));
+		$expect = array(
+			array('id' => 1, 'title' => 'foo'),
+			array('id' => 2, 'title' => 'bar'),
 		);
 
-		$this->assertEquals($e, $r);
+		$this->assertEquals($expect, $actual);
 	}
 
 	public function testAssocObject()
 	{
-		$r = $this->sql->assoc('SELECT id, title FROM ' . $this->table . ' WHERE id < ? ORDER BY id ASC', array(3), 'stdClass');
+		$actual = $this->sql->assoc('SELECT id, title FROM ' . $this->table . ' WHERE id < ? ORDER BY id ASC', array(3), 'stdClass');
 
 		$row_1 = new stdClass();
 		$row_1->id = 1;
@@ -120,134 +97,117 @@ SQL;
 		$row_2->id = 2;
 		$row_2->title = 'bar';
 
-		$e = array($row_1, $row_2);
+		$expect = array($row_1, $row_2);
 
-		$this->assertEquals($e, $r);
+		$this->assertEquals($expect, $actual);
 	}
 
 	public function testExecute()
 	{
-		$r = $this->sql->execute('DELETE FROM ' . $this->table);
+		$actual = $this->sql->execute('DELETE FROM ' . $this->table);
 
-		$this->assertEquals(true, $r);
+		$this->assertEquals(true, $actual);
 
+		$actual = $this->sql->count($this->table);
 
-		$this->resetTable();
+		$this->assertEquals(0, $actual);
 	}
 
 	public function testGetAll()
 	{
-		$r = $this->sql->getAll('SELECT id, title FROM ' . $this->table . ' WHERE id = 1 ORDER BY id ASC');
+		$actual = $this->sql->getAll('SELECT id, title FROM ' . $this->table . ' WHERE id = 1 ORDER BY id ASC');
+		$expect = array(array('id' => 1, 'title' => 'foo'));
 
-		$this->assertEquals(array(array('id' => 1, 'title' => 'foo')), $r);
+		$this->assertEquals($expect, $actual);
 
-		$r = $this->sql->getAll('SELECT id, title FROM ' . $this->table . ' WHERE id = 404');
+		$actual = $this->sql->getAll('SELECT id, title FROM ' . $this->table . ' WHERE id = 404');
+		$expect = array();
 
-		$this->assertEquals(array(), $r);
+		$this->assertEquals($expect, $actual);
 	}
 
 	public function testGetRow()
 	{
-		$r = $this->sql->getRow('SELECT id, title FROM ' . $this->table . ' ORDER BY id ASC');
+		$actual = $this->sql->getRow('SELECT id, title FROM ' . $this->table . ' ORDER BY id ASC');
+		$expect = array('id' => 1, 'title' => 'foo');
 
-		$this->assertEquals(array('id' => 1, 'title' => 'foo'), $r);
+		$this->assertEquals($expect, $actual);
 
-		$r = $this->sql->getRow('SELECT id, title FROM ' . $this->table . ' WHERE id = 404');
+		$actual = $this->sql->getRow('SELECT id, title FROM ' . $this->table . ' WHERE id = 404');
+		$expect = array();
 
-		$this->assertEquals(array(), $r);
+		$this->assertEquals($expect, $actual);
 	}
 
 	public function testGetCol()
 	{
-		$r = $this->sql->getCol('SELECT title FROM ' . $this->table . ' ORDER BY id ASC');
+		$actual = $this->sql->getCol('SELECT title FROM ' . $this->table . ' ORDER BY id ASC');
+		$expect = array('foo', 'bar', 'test');
 
-		$this->assertEquals(array('foo', 'bar', 'test'), $r);
+		$this->assertEquals($expect, $actual);
 
-		$r = $this->sql->getRow('SELECT title FROM ' . $this->table . ' WHERE id = 404');
+		$actual = $this->sql->getRow('SELECT title FROM ' . $this->table . ' WHERE id = 404');
+		$expect = array();
 
-		$this->assertEquals(array(), $r);
+		$this->assertEquals($expect, $actual);
 	}
 
 	public function testGetField()
 	{
-		$r = $this->sql->getField('SELECT id FROM ' . $this->table . ' ORDER BY id ASC');
+		$actual = $this->sql->getField('SELECT id FROM ' . $this->table . ' ORDER BY id ASC');
+		$expect = '1';
 
-		$this->assertEquals('1', $r);
+		$this->assertEquals($expect, $actual);
 
-		$r = $this->sql->getField('SELECT id FROM ' . $this->table . ' WHERE id = 404');
+		$actual = $this->sql->getField('SELECT id FROM ' . $this->table . ' WHERE id = 404');
+		$expect = false;
 
-		$this->assertEquals(false, $r);
+		$this->assertEquals($expect, $actual);
 	}
 
 	public function testSelect()
 	{
-		$r = $this->sql->select($this->table, array('id', 'title'), new Condition(array('id', '=', 1)), Sql::SELECT_ALL, 'id', Sql::SORT_ASC);
+		$actual = $this->sql->select($this->table, array('id', 'title'), new Condition(array('id', '=', 1)), Sql::SELECT_ALL, 'id', Sql::SORT_ASC);
+		$expect = array(array('id' => 1, 'title' => 'foo'));
 
-		$this->assertEquals(array(array('id' => 1, 'title' => 'foo')), $r);
+		$this->assertEquals($expect, $actual);
 
-		$r = $this->sql->select($this->table, array('id', 'title'), null, Sql::SELECT_ROW, 'id', Sql::SORT_ASC);
+		$actual = $this->sql->select($this->table, array('id', 'title'), null, Sql::SELECT_ROW, 'id', Sql::SORT_ASC);
+		$expect = array('id' => 1, 'title' => 'foo');
 
-		$this->assertEquals(array('id' => 1, 'title' => 'foo'), $r);
+		$this->assertEquals($expect, $actual);
 
-		$r = $this->sql->select($this->table, array('title'), null, Sql::SELECT_COL, 'id', Sql::SORT_ASC);
+		$actual = $this->sql->select($this->table, array('title'), null, Sql::SELECT_COL, 'id', Sql::SORT_ASC);
+		$expect = array('foo', 'bar', 'test');
 
-		$this->assertEquals(array('foo', 'bar', 'test'), $r);
+		$this->assertEquals($expect, $actual);
 
-		$r = $this->sql->select($this->table, array('id'), null, Sql::SELECT_FIELD, 'id', Sql::SORT_ASC);
+		$actual = $this->sql->select($this->table, array('id'), null, Sql::SELECT_FIELD, 'id', Sql::SORT_ASC);
+		$expect = '1';
 
-		$this->assertEquals('1', $r);
+		$this->assertEquals($expect, $actual);
 
-		$r = $this->sql->select($this->table, array('id'), null, Sql::SELECT_FIELD, 'id', Sql::SORT_DESC);
+		$actual = $this->sql->select($this->table, array('id'), null, Sql::SELECT_FIELD, 'id', Sql::SORT_DESC);
+		$expect = '3';
 
-		$this->assertEquals('3', $r);
+		$this->assertEquals($expect, $actual);
 	}
 
 	public function testInsert()
 	{
 		$this->sql->insert($this->table, array(
-
 			'title' => 'wusahh',
-
 		));
 
-		$r = $this->sql->assoc('SELECT id, title FROM ' . $this->table . ' ORDER BY id ASC');
-
-		$e = array(
-
-			array(
-
-				'id'    => 1,
-				'title' => 'foo',
-
-			),
-
-			array(
-
-				'id'    => 2,
-				'title' => 'bar',
-
-			),
-
-			array(
-
-				'id'    => 3,
-				'title' => 'test',
-
-			),
-
-			array(
-
-				'id'    => 4,
-				'title' => 'wusahh',
-
-			),
-
+		$actual = $this->sql->assoc('SELECT id, title FROM ' . $this->table . ' ORDER BY id ASC');
+		$expect = array(
+			array('id' => 1, 'title' => 'foo'),
+			array('id' => 2, 'title' => 'bar'),
+			array('id' => 3, 'title' => 'test'),
+			array('id' => 4, 'title' => 'wusahh'),
 		);
 
-		$this->assertEquals($e, $r);
-
-
-		$this->resetTable();
+		$this->assertEquals($expect, $actual);
 	}
 
 	public function testUpdate()
@@ -255,17 +215,12 @@ SQL;
 		$con = new Condition(array('id', '=', 3));
 
 		$this->sql->update($this->table, array(
-
 			'title' => 'yoda',
-
 		), $con);
 
-		$r = $this->sql->select($this->table, array('title'), $con, Sql::SELECT_FIELD);
+		$actual = $this->sql->select($this->table, array('title'), $con, Sql::SELECT_FIELD);
 
-		$this->assertEquals('yoda', $r);
-
-
-		$this->resetTable();
+		$this->assertEquals('yoda', $actual);
 	}
 
 	public function testReplace()
@@ -273,90 +228,50 @@ SQL;
 		$con = new Condition(array('id', '=', 3));
 
 		$this->sql->replace($this->table, array(
-
 			'id'    => 3,
 			'title' => 'yoda',
-
 		));
 
-		$r = $this->sql->select($this->table, array('title'), $con, Sql::SELECT_FIELD);
+		$actual = $this->sql->select($this->table, array('title'), $con, Sql::SELECT_FIELD);
 
-		$this->assertEquals('yoda', $r);
+		$this->assertEquals('yoda', $actual);
 
 
 		$this->sql->replace($this->table, array(
-
 			'id'    => 3,
 			'title' => 'wusahhh',
-
 		));
 
-		$r = $this->sql->select($this->table, array('title'), $con, Sql::SELECT_FIELD);
+		$actual = $this->sql->select($this->table, array('title'), $con, Sql::SELECT_FIELD);
 
-		$this->assertEquals('wusahhh', $r);
-
-
-		$this->resetTable();
+		$this->assertEquals('wusahhh', $actual);
 	}
 
 	public function testDelete()
 	{
-		$this->sql->delete($this->table, new Condition(array('id', '=', 2)));
+		$con = new Condition(array('id', '=', 2));
 
-		$r = $this->sql->assoc('SELECT id, title FROM ' . $this->table . ' ORDER BY id ASC');
+		$this->sql->delete($this->table, $con);
 
-		$e = array(
-
-			array(
-
-				'id'    => 1,
-				'title' => 'foo',
-
-			),
-
-			array(
-
-				'id'    => 3,
-				'title' => 'test',
-
-			),
-
+		$actual = $this->sql->assoc('SELECT id, title FROM ' . $this->table . ' ORDER BY id ASC');
+		$expect = array(
+			array('id' => 1, 'title' => 'foo'),
+			array('id' => 3, 'title' => 'test'),
 		);
 
-		$this->assertEquals($e, $r);
-
-
-		$this->resetTable();
+		$this->assertEquals($expect, $actual);
 	}
 
 	public function testQuote()
 	{
-		$r = $this->sql->quote("foo'ba\"r");
-		$e = "'foo\'ba\\\"r'";
+		$actual = $this->sql->quote("foo'ba\"r");
+		$expect = "'foo\'ba\\\"r'";
 
-		$this->assertEquals($e, $r);
+		$this->assertEquals($expect, $actual);
 
-		$r = $this->sql->quote("Co'mpl''ex \"st'\"ring");
-		$e = "'Co\\'mpl\\'\\'ex \\\"st\\'\\\"ring'";
+		$actual = $this->sql->quote("Co'mpl''ex \"st'\"ring");
+		$expect = "'Co\\'mpl\\'\\'ex \\\"st\\'\\\"ring'";
 
-		$this->assertEquals($e, $r);
-	}
-
-	private function resetTable()
-	{
-		$this->sql->exec('TRUNCATE TABLE ' . $this->table);
-
-		$data = array(
-
-			array('title' => 'foo'),
-			array('title' => 'bar'),
-			array('title' => 'test'),
-
-		);
-
-		foreach($data as $d)
-		{
-			$this->sql->insert($this->table, $d);
-		}
+		$this->assertEquals($expect, $actual);
 	}
 }

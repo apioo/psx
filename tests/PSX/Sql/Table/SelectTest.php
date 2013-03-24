@@ -28,8 +28,10 @@ namespace PSX\Sql\Table;
 use PSX\Data\ResultSet;
 use PSX\DateTime;
 use PSX\Sql;
+use PSX\Sql\DbTestCase;
 use PSX\Sql\Join;
 use PSX\Sql\TableAbstract;
+use PSX\Test\TableDataSet;
 
 /**
  * PSX_Sql_Table_SelectTest
@@ -40,61 +42,17 @@ use PSX\Sql\TableAbstract;
  * @category   tests
  * @version    $Revision: 596 $
  */
-class SelectTest extends \PHPUnit_Framework_TestCase
+class SelectTest extends DbTestCase
 {
-	private $sql;
-	private $tableNews;
-	private $tableUser;
-	private $tableUserNews;
+	protected $tableNews = 'psx_sql_table_select_news';
+	protected $tableUser = 'psx_sql_table_select_user';
+	protected $tableUserNews = 'psx_sql_table_select_usernews';
 
-	private $dataNews = array(
-		array('userId' => 1, 'title' => 'foo'),
-		array('userId' => 1, 'title' => 'bar'),
-		array('userId' => 2, 'title' => 'test'),
-		array('userId' => 3, 'title' => 'blub'),
-	);
-
-	private $dataUser = array(
-		array('name' => 'foo'),
-		array('name' => 'bar'),
-	);
-
-	private $dataUserNews = array(
-		array('userId' => 1, 'newsId' => 1),
-		array('userId' => 1, 'newsId' => 2),
-		array('userId' => 1, 'newsId' => 3),
-		array('userId' => 1, 'newsId' => 4),
-		array('userId' => 2, 'newsId' => 1),
-		array('userId' => 2, 'newsId' => 2),
-	);
-
-	protected function setUp()
+	public function getBeforeQueries()
 	{
-		try
-		{
-			$config = getConfig();
-
-			$this->sql = new Sql($config['psx_sql_host'],
-				$config['psx_sql_user'],
-				$config['psx_sql_pw'],
-				$config['psx_sql_db']);
-
-			$this->setUpNews();
-			$this->setUpUser();
-			$this->setUpUserNews();
-		}
-		catch(\Exception $e)
-		{
-			$this->markTestSkipped($e->getMessage());
-		}
-	}
-
-	private function setUpNews()
-	{
-		$this->tableNews = new SelectTestNews($this->sql);
-
-		$sql = <<<SQL
-CREATE TABLE IF NOT EXISTS `{$this->tableNews->getName()}` (
+		$queries   = array();
+		$queries[] = <<<SQL
+CREATE TABLE IF NOT EXISTS `{$this->tableNews}` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `userId` int(10) NOT NULL,
   `title` varchar(32) NOT NULL,
@@ -103,50 +61,16 @@ CREATE TABLE IF NOT EXISTS `{$this->tableNews->getName()}` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8
 SQL;
 
-		$this->sql->exec($sql);
-
-		$this->sql->exec('TRUNCATE TABLE ' . $this->tableNews->getName());
-
-		foreach($this->dataNews as $row)
-		{
-			$this->tableNews->insert(array(
-				'userId' => $row['userId'],
-				'title'  => $row['title'],
-				'date'   => date(DateTime::SQL),
-			));
-		}
-	}
-
-	private function setUpUser()
-	{
-		$this->tableUser = new SelectTestUser($this->sql);
-
-		$sql = <<<SQL
-CREATE TABLE IF NOT EXISTS `{$this->tableUser->getName()}` (
+		$queries[] = <<<SQL
+CREATE TABLE IF NOT EXISTS `{$this->tableUser}` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `name` varchar(16) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8
 SQL;
 
-		$this->sql->exec($sql);
-
-		$this->sql->exec('TRUNCATE TABLE ' . $this->tableUser->getName());
-
-		foreach($this->dataUser as $row)
-		{
-			$this->tableUser->insert(array(
-				'name' => $row['name'],
-			));
-		}
-	}
-
-	private function setUpUserNews()
-	{
-		$this->tableUserNews = new SelectTestUserNews($this->sql);
-
-		$sql = <<<SQL
-CREATE TABLE IF NOT EXISTS `{$this->tableUserNews->getName()}` (
+		$queries[] = <<<SQL
+CREATE TABLE IF NOT EXISTS `{$this->tableUserNews}` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `userId` int(10) NOT NULL,
   `newsId` int(10) NOT NULL,
@@ -154,31 +78,34 @@ CREATE TABLE IF NOT EXISTS `{$this->tableUserNews->getName()}` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8
 SQL;
 
-		$this->sql->exec($sql);
-
-		$this->sql->exec('TRUNCATE TABLE ' . $this->tableUserNews->getName());
-
-		foreach($this->dataUserNews as $row)
-		{
-			$this->tableUserNews->insert(array(
-				'userId' => $row['userId'],
-				'newsId' => $row['newsId'],
-			));
-		}
+		return $queries;
 	}
 
-	protected function tearDown()
+	public function getDataSet()
 	{
-		if($this->sql instanceof Sql)
-		{
-			$this->sql->exec('TRUNCATE TABLE ' . $this->tableNews->getName());
+		$dataSet = new TableDataSet();
+		$dataSet->addTable(new SelectTestNews($this->sql), array(
+			array('id' => null, 'userId' => 1, 'title' => 'foo', 'date' => date(DateTime::SQL)),
+			array('id' => null, 'userId' => 1, 'title' => 'bar', 'date' => date(DateTime::SQL)),
+			array('id' => null, 'userId' => 2, 'title' => 'test', 'date' => date(DateTime::SQL)),
+			array('id' => null, 'userId' => 3, 'title' => 'blub', 'date' => date(DateTime::SQL)),
+		));
 
-			$this->sql->exec('TRUNCATE TABLE ' . $this->tableUser->getName());
-		}
+		$dataSet->addTable(new SelectTestUser($this->sql), array(
+			array('id' => null, 'name' => 'foo'),
+			array('id' => null, 'name' => 'bar'),
+		));
 
-		unset($this->tableUser);
-		unset($this->tableNews);
-		unset($this->sql);
+		$dataSet->addTable(new SelectTestUserNews($this->sql), array(
+			array('id' => null, 'userId' => 1, 'newsId' => 1),
+			array('id' => null, 'userId' => 1, 'newsId' => 2),
+			array('id' => null, 'userId' => 1, 'newsId' => 3),
+			array('id' => null, 'userId' => 1, 'newsId' => 4),
+			array('id' => null, 'userId' => 2, 'newsId' => 1),
+			array('id' => null, 'userId' => 2, 'newsId' => 2),
+		));
+
+		return $dataSet;
 	}
 
 	public function testJoinType()
@@ -326,20 +253,18 @@ SQL;
 		$this->assertEquals(4, $result->getLength());
 		$this->assertEquals(4, count($result->entry));
 
-		$i = 1;
+		reset($result);
+		$len = count($result);
 
-		foreach($this->dataNews as $row)
+		for($i = 1; $i <= $len; $i++)
 		{
 			$entry = $result->current();
 
 			$this->assertEquals(true, isset($entry['id']));
 			$this->assertEquals(true, isset($entry['title']));
 			$this->assertEquals($i, $entry['id']);
-			$this->assertEquals($row['userId'], $entry['userId']);
-			$this->assertEquals($row['title'], $entry['title']);
 
 			$result->next();
-			$i++;
 		}
 	}
 }
@@ -349,13 +274,13 @@ class SelectTestNews extends TableAbstract
 	public function getConnections()
 	{
 		return array(
-			'userId' => 'PSX_Sql_Table_SelectTestUser',
+			'userId' => 'psx_sql_table_select_user',
 		);
 	}
 
 	public function getName()
 	{
-		return 'PSX_Sql_Table_SelectTestNews';
+		return 'psx_sql_table_select_news';
 	}
 
 	public function getColumns()
@@ -388,7 +313,7 @@ class SelectTestUser extends TableAbstract
 
 	public function getName()
 	{
-		return 'PSX_Sql_Table_SelectTestUser';
+		return 'psx_sql_table_select_user';
 	}
 
 	public function getColumns()
@@ -415,14 +340,14 @@ class SelectTestUserNews extends TableAbstract
 	public function getConnections()
 	{
 		return array(
-			'userId' => 'PSX_Sql_Table_SelectTestUser',
-			'newsId' => 'PSX_Sql_Table_SelectTestNews',
+			'userId' => 'psx_sql_table_select_user',
+			'newsId' => 'psx_sql_table_select_news',
 		);
 	}
 
 	public function getName()
 	{
-		return 'PSX_Sql_Table_SelectTestUserNews';
+		return 'psx_sql_table_select_usernews';
 	}
 
 	public function getColumns()

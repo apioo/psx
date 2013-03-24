@@ -45,16 +45,14 @@ class SessionTest extends \PHPUnit_Framework_TestCase
 		ini_set('session.use_trans_sid', 1);
 		ini_set('session.cache_limiter', ''); // prevent sending header
 
-		$this->sess = new Session('PSX_Session', $this->getHandler());
+		$this->sess = new Session('psx_session', $this->getHandler());
 		$this->sess->start();
 	}
 
 	protected function tearDown()
 	{
-		if($this->sess instanceof Session)
-		{
-			$this->sess->close();
-		}
+		$this->sess->destroy();
+		$this->sess->close();
 	}
 
 	protected function getHandler()
@@ -63,14 +61,17 @@ class SessionTest extends \PHPUnit_Framework_TestCase
 		return null;
 	}
 
-	public function testSession()
+	public function testGetSet()
 	{
+		$this->assertEquals(false, isset($_SESSION['foo']));
+		$this->assertEquals(false, $this->sess->foo);
+		$this->assertEquals(false, $this->sess->get('foo'));
+
 		$_SESSION['foo'] = 'bar';
 
 		$this->assertEquals(true, isset($_SESSION['foo']));
-
-		unset($_SESSION['foo']);
-
-		$this->assertEquals(false, isset($_SESSION['foo']));
+		$this->assertEquals('bar', $_SESSION['foo']);
+		$this->assertEquals('bar', $this->sess->foo);
+		$this->assertEquals('bar', $this->sess->get('foo'));
 	}
 }
