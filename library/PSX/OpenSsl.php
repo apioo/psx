@@ -109,12 +109,12 @@ class OpenSsl
 
 	public static function getPrivateKey($key, $passphrase = null)
 	{
-		return PSX_OpenSsl_PKey::getPrivate($key, $passphrase);
+		return PKey::getPrivate($key, $passphrase);
 	}
 
 	public static function getPublicKey($certificate)
 	{
-		return PSX_OpenSsl_PKey::getPublic($certificate);
+		return PKey::getPublic($certificate);
 	}
 
 	public static function open($sealedData, &$openData, $envKey, $privKeyId)
