@@ -1,5 +1,7 @@
 
-0.4.8
+0.5
+* Added namespace support
+* Improved db tests
 * Improved html parser library
 * Added pingback library
 * Validate, parameter and body objects are now loaded in an DI container

@@ -24,6 +24,10 @@ $bootstrap = new PSX\Bootstrap($config);
 // classes wich should be excluded from the class check
 $exclude = array(
 	'Memcache',
+	'PHPUnit_Extensions_Database_DataSet_ITable',
+	'PHPUnit_Extensions_Database_DataSet_AbstractDataSet',
+	'PHPUnit_Extensions_Database_DataSet_ITableMetaData',
+	'PHPUnit_Extensions_Database_DataSet_DefaultTableIterator',
 );
 
 try
@@ -64,7 +68,7 @@ function checkSyntax($path)
 				if(isset($info['extension']) && $info['extension'] == 'php' && !in_array($item, get_included_files()))
 				{
 					// require file for syntax check
-					require_once($item);
+					//require_once($item);
 
 					// check used classes
 					getUsedClasses($item);

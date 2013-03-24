@@ -10,7 +10,7 @@
     <email>k42b3@phpsx.org</email>
     <active>yes</active>
   </lead>
-  <date>2013-03-11</date>
+  <date>2013-03-24</date>
   <version>
     <release>0.5</release>
     <api>0.5</api>
@@ -20,7 +20,13 @@
     <api>stable</api>
   </stability>
   <license uri="http://www.gnu.org/licenses/">GPLv3 License</license>
-  <notes></notes>
+  <notes>* Added namespace support
+* Improved db tests
+* Improved html parser library
+* Added pingback library
+* Validate, parameter and body objects are now loaded in an DI container
+* Load dependencies in _ini() method instead of __construct()
+* Fixed markdown parser and sql select</notes>
   <contents>
     <dir name="/">
       <dir name="PSX">
@@ -398,6 +404,7 @@
             <file name="Select.php" role="php"/>
             <file name="SelectInterface.php" role="php"/>
           </dir>
+          <file name="Table.php" role="php"/>
           <file name="TableAbstract.php" role="php"/>
           <file name="TableInterface.php" role="php"/>
           <file name="Util.php" role="php"/>
@@ -417,6 +424,11 @@
           <file name="ParameterAbstract.php" role="php"/>
         </dir>
         <file name="Template.php" role="php"/>
+        <dir name="Test">
+          <file name="Table.php" role="php"/>
+          <file name="TableDataSet.php" role="php"/>
+          <file name="TableMetaData.php" role="php"/>
+        </dir>
         <dir name="Upload">
           <file name="Exception.php" role="php"/>
           <file name="File.php" role="php"/>
@@ -609,6 +621,7 @@
           <file name="SessionTest.php" role="test"/>
           <dir name="Sql">
             <file name="ConditionTest.php" role="test"/>
+            <file name="DbTestCase.php" role="test"/>
             <dir name="Table">
               <file name="SelectTest.php" role="test"/>
             </dir>
@@ -871,7 +884,13 @@ getParameter() and getBody() to PSX_ModuleAbstract
       </stability>
       <date>2013-03-11</date>
       <license uri="http://www.gnu.org/licenses/">GPLv3 License</license>
-      <notes></notes>
+      <notes>* Added namespace support
+* Improved db tests
+* Improved html parser library
+* Added pingback library
+* Validate, parameter and body objects are now loaded in an DI container
+* Load dependencies in _ini() method instead of __construct()
+* Fixed markdown parser and sql select</notes>
     </release>
   </changelog>
 </package>
