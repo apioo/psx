@@ -109,6 +109,13 @@ abstract class TableAbstract implements TableInterface
 		return array_intersect($columns, array_keys($this->getColumns()));
 	}
 
+	public function hasColumn($column)
+	{
+		$columns = array_keys($this->getColumns());
+
+		return isset($columns[$column]);
+	}
+
 	public function select(array $columns = array(), $prefix = null)
 	{
 		$this->select = new Select($this, $prefix);
