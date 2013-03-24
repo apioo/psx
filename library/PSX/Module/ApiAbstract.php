@@ -199,7 +199,7 @@ abstract class ApiAbstract extends ModuleAbstract
 			);
 
 			$format      = isset($_GET['format']) && strlen($_GET['format']) < 16 ? $_GET['format'] : null;
-			$contentType = isset($formats[$format]) ? $formats[$format] : PSX_Base::getRequestHeader('Accept');
+			$contentType = isset($formats[$format]) ? $formats[$format] : Base::getRequestHeader('Accept');
 			$writerType  = WriterFactory::getWriterTypeByContentType($contentType);
 		}
 

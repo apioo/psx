@@ -27,10 +27,11 @@ namespace PSX\Oauth2;
 
 use PSX\Data\ReaderFactory;
 use PSX\Data\ReaderInterface;
-use PSX\Data\Reader\Json;
+use PSX\Data\Reader;
 use PSX\Exception;
 use PSX\Http;
 use PSX\Http\PostRequest;
+use PSX\Json;
 use PSX\Url;
 
 /**
@@ -116,7 +117,7 @@ abstract class AuthorizationAbstract
 
 		if($response->getCode() == 200)
 		{
-			$reader = new Json();
+			$reader = new Reader\Json();
 			$result = $reader->read($response);
 
 			$accessToken = new AccessToken();
