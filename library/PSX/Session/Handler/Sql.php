@@ -63,10 +63,7 @@ class Sql implements HandlerInterface
 
 	public function read($id)
 	{
-		$con  = new Condition(array('id', '=', $id));
-		$data = $this->sql->select($this->table, array('content'), $con, SqlDriver::SELECT_FIELD);
-
-		return $data;
+		return $this->sql->getField('SELECT `content` FROM `' . $this->table . '` WHERE `id` = ?', array($id));
 	}
 
 	public function write($id, $data)
@@ -90,7 +87,7 @@ class Sql implements HandlerInterface
 	public function gc($maxTime)
 	{
 		$con = new Condition();
-		$con->add('DATE_ADD(date, "INTERVAL ' . $maxTime . ' SECOND")', '<', date(DateTime::SQL));
+		$con->add('DATE_ADD(`date`, "INTERVAL ' . $maxTime . ' SECOND")', '<', date(DateTime::SQL));
 
 		$this->sql->delete($this->table, $con);
 
