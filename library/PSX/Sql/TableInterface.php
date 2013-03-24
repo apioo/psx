@@ -133,13 +133,6 @@ interface TableInterface
 	public function getColumns();
 
 	/**
-	 * Returns the underling sql object
-	 *
-	 * @return PSX_Sql
-	 */
-	public function getSql();
-
-	/**
 	 * Returns the name of the record wich should contain only alpha characters.
 	 * Table names are typically seperated with _ (underscore). This method
 	 * should return the last part of the table name i.e. "amun_system_request"
@@ -176,6 +169,13 @@ interface TableInterface
 	 * @return array
 	 */
 	public function getValidColumns(array $columns);
+
+	/**
+	 * Returns whether the table has the $column
+	 *
+	 * @return boolean
+	 */
+	public function hasColumn($column);
 
 	/**
 	 * Starts a new complex selection on this table
