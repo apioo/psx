@@ -67,6 +67,9 @@ class Sql extends PDO implements Connection
 
 		parent::__construct($dsn, $user, $pw);
 
+		// set error handler
+		$this->setAttribute(self::ATTR_ERRMODE, self::ERRMODE_EXCEPTION);
+
 		// set default charset
 		$this->exec('SET NAMES "utf8"');
 	}
@@ -88,14 +91,6 @@ class Sql extends PDO implements Connection
 	{
 		// prepare statment
 		$stmt = $this->prepare($sql);
-
-		// error occured
-		if(!$stmt)
-		{
-			$lastError = $this->errorInfo();
-
-			throw new Exception($lastError[0] . ': ' . $lastError[2]);
-		}
 
 		// bind params
 		$bindParams = new stdClass();
@@ -152,14 +147,6 @@ class Sql extends PDO implements Connection
 	{
 		// prepare statment
 		$stmt = $this->prepare($sql);
-
-		// error occured
-		if(!$stmt)
-		{
-			$lastError = $this->errorInfo();
-
-			throw new Exception($lastError[0] . ': ' . $lastError[2]);
-		}
 
 		// bind params
 		$bindParams = new stdClass();
