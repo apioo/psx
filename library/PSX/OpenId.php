@@ -33,7 +33,7 @@ use PSX\OpenId\ExtensionInterface;
 use PSX\OpenId\Identity;
 use PSX\OpenId\ProviderAbstract;
 use PSX\OpenId\StoreInterface;
-use PSX\OpenId\provider\Association;
+use PSX\OpenId\Provider\Association;
 use PSX\OpenSsl\PKey;
 
 /**
