@@ -171,12 +171,7 @@ abstract class ModuleAbstract
 		return $this->base->getRequest()->getUrl();
 	}
 
-	protected function getHeaders()
-	{
-		return Base::getRequestHeader();
-	}
-
-	protected function getHeader($key)
+	protected function getHeader($key = null)
 	{
 		return Base::getRequestHeader($key);
 	}
@@ -194,6 +189,11 @@ abstract class ModuleAbstract
 	protected function getContainer()
 	{
 		return $this->_container;
+	}
+
+	protected function setResponseCode($code)
+	{
+		Base::setResponseCode($code);
 	}
 }
 
