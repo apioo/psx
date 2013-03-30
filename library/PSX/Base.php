@@ -41,7 +41,7 @@ use UnexpectedValueException;
  */
 class Base
 {
-	const VERSION = '0.5';
+	const VERSION = '0.5.1';
 
 	/**
 	 * The current request method
@@ -273,6 +273,8 @@ class Base
 	{
 		if(self::$headers === null)
 		{
+			self::$headers = array();
+
 			if(function_exists('apache_request_headers'))
 			{
 				$headers = apache_request_headers();
