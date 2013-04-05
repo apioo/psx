@@ -63,7 +63,8 @@ interface RecordInterface
 	public function hasFields();
 
 	/**
-	 * Returns all record fields wich are not null
+	 * Returns all record fields wich are not null. If an value of the field is
+	 * an RecordInterface the getData method is called on this object
 	 *
 	 * @return array
 	 */

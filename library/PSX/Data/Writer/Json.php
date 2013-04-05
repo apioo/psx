@@ -49,30 +49,7 @@ class Json implements WriterInterface
 	{
 		$this->writerResult = new WriterResult(WriterInterface::JSON, $this);
 
-		echo \PSX\Json::encode($this->recJsonEncode($record->export($this->writerResult)));
-	}
-
-	protected function recJsonEncode(array $fields)
-	{
-		$data = array();
-
-		foreach($fields as $k => $v)
-		{
-			if($v instanceof RecordInterface)
-			{
-				$data[$k] = $this->recJsonEncode($v->export($this->writerResult));
-			}
-			else if(is_array($v))
-			{
-				$data[$k] = $this->recJsonEncode($v);
-			}
-			else
-			{
-				$data[$k] = $v;
-			}
-		}
-
-		return $data;
+		echo \PSX\Json::encode($record->export($this->writerResult));
 	}
 }
 

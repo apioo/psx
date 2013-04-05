@@ -79,11 +79,7 @@ class Xml implements WriterInterface
 
 			foreach($fields as $k => $v)
 			{
-				if($v instanceof RecordInterface)
-				{
-					$this->recXmlEncode($k, $v->export($this->writerResult));
-				}
-				else if(is_array($v))
+				if(is_array($v))
 				{
 					$this->recXmlEncode($k, $v);
 				}
@@ -103,11 +99,7 @@ class Xml implements WriterInterface
 		{
 			foreach($fields as $k => $v)
 			{
-				if($v instanceof RecordInterface)
-				{
-					$this->recXmlEncode($name, $v->export($this->writerResult));
-				}
-				else if(is_array($v))
+				if(is_array($v))
 				{
 					$this->recXmlEncode($name, $v);
 				}

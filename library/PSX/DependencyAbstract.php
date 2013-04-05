@@ -83,6 +83,25 @@ abstract class DependencyAbstract
 		$this->getLoader();
 	}
 
+	/**
+	 * Search the container for an object wich is an instanceof $type. Returns
+	 * the object or null if nothing is found
+	 *
+	 * @return object
+	 */
+	public function getByType($type)
+	{
+		foreach(self::$_container as $obj)
+		{
+			if($obj instanceof $type)
+			{
+				return $obj;
+			}
+		}
+
+		return null;
+	}
+
 	public function getBase()
 	{
 		if($this->has('base'))
