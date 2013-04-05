@@ -51,8 +51,11 @@ class SessionTest extends \PHPUnit_Framework_TestCase
 
 	protected function tearDown()
 	{
-		$this->sess->destroy();
-		$this->sess->close();
+		if($this->sess instanceof Session)
+		{
+			$this->sess->destroy();
+			$this->sess->close();
+		}
 	}
 
 	protected function getHandler()

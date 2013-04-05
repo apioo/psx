@@ -1,4 +1,7 @@
 
+0.5.1
+* Fixed wrong name in OpenId provider namespace
+
 0.5
 * Added namespace support
 * Improved db tests

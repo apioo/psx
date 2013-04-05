@@ -33,9 +33,10 @@ $exclude = array(
 try
 {
 	// container wich holds all loaded files
-	$count = checkSyntax(PSX_PATH_LIBRARY . '/PSX');
+	$path  = realpath(PSX_PATH_LIBRARY . '/PSX');
+	$count = checkSyntax($path);
 
-	echo 'OK! Checked ' . $count . ' classes';
+	echo 'OK! Checked ' . $count . ' classes in ' . $path;
 }
 catch(Exception $e)
 {

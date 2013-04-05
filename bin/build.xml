@@ -3,15 +3,28 @@
 	<description>PSX build script</description>
 
 	<property name="build" location="bin/psx" />
-
 	<property name="bin" location="bin" />
-	<property name="cache" location="cache" />
 	<property name="doc" location="doc" />
 	<property name="library" location="library" />
-	<property name="module" location="module" />
-	<property name="public" location="public" />
-	<property name="template" location="template" />
 	<property name="tests" location="tests" />
+
+	<taskdef name="git-clone" classname="org.eclipse.jgit.ant.tasks.GitCloneTask" />
+
+	<!-- clone the repository -->
+	<target name="git-clone">
+		<git-clone uri="https://github.com/k42b3/psx.git" dest="${build}" />
+	</target>
+
+	<!-- removes all files wich are not needed in the release -->
+	<target name="clean-git">
+		<delete dir="${build}/.git" />
+		<delete dir="${build}/bin" />
+		<delete dir="${build}/tests" />
+		<delete file="${build}/.travis.yml" />
+		<delete file="${build}/composer.json" />
+		<delete file="${build}/phpunit.xml" />
+		<delete file="${build}/README.md" />
+	</target>
 
 	<target name="get-version">
 		<exec dir="${bin}" executable="php" failonerror="true" outputproperty="version">
@@ -20,48 +33,22 @@
 		<echo message="Building version ${version}" />
 	</target>
 
+	<!-- syntax check of all files -->
 	<target name="syntax-check">
 		<exec dir="${bin}" executable="php" failonerror="true">
-			<arg line="check-syntax.php .." />
+			<arg line="check-syntax.php psx" />
 		</exec>
 	</target>
 
-	<target name="test" depends="syntax-check">
-		<exec executable="phpunit.bat" failonerror="true" />
+	<!-- run phpunit tests -->
+	<target name="phpunit" depends="syntax-check">
+		<exec dir="${build}" executable="phpunit.bat" failonerror="true" />
 	</target>
 
-	<target name="build-dir">
-		<mkdir dir="${build}" />
-		<mkdir dir="${build}/cache" />
-		<copy todir="${build}/doc">
-			<fileset dir="${doc}">
-				<include name="img/**" />
-				<include name="packages/**" />
-				<include name="default.css" />
-				<include name="default.js" />
-				<include name="gplv3.html" />
-				<include name="manual.html" />
-			</fileset>
-		</copy>
-		<copy todir="${build}/library">
-			<fileset dir="${library}" />
-		</copy>
-		<copy todir="${build}/module">
-			<fileset dir="${module}" />
-		</copy>
-		<copy todir="${build}/public">
-			<fileset dir="${public}" />
-		</copy>
-		<copy todir="${build}/template">
-			<fileset dir="${template}" />
-		</copy>
-		<copy todir="${build}/tests">
-			<fileset dir="${tests}" />
-		</copy>
-		<copy file="configuration.php" tofile="${build}/configuration.php" />
+	<target name="build-init" depends="git-clone,get-version,phpunit">
 	</target>
 
-	<target name="build-pear" depends="get-version,test,build-dir">
+	<target name="build-pear" depends="build-init">
 		<exec dir="${bin}" executable="php" failonerror="true">
 			<arg line="generate-pear.php ${version}" />
 		</exec>
@@ -78,28 +65,23 @@
 		<delete file="${bin}/PSX-${version}.tar" />
 	</target>
 
-	<target name="build-phar" depends="get-version,test,build-dir">
+	<target name="build-phar" depends="build-init">
 		<exec dir="${bin}" executable="php" failonerror="true">
 			<arg line="generate-phar.php ${version}" />
 		</exec>
 	</target>
 
-	<target name="build-release" depends="get-version,test,build-dir">
+	<target name="build-release" depends="build-init">
 		<tar destfile="${bin}/psx_${version}.tar" basedir="${build}" />
 		<gzip destfile="${bin}/psx_${version}.tar.gz" src="${bin}/psx_${version}.tar" />
 		<delete file="${bin}/psx_${version}.tar" />
 		<zip destfile="${bin}/psx_${version}.zip" basedir="${build}" />
 	</target>
 
-	<target name="build-all" depends="clean,build-pear,build-phar,build-release" />
+	<target name="build-all" depends="clean,build-pear,build-phar,clean-git,build-release" />
 
-	<target name="clean" depends="get-version">
+	<target name="clean">
 		<delete dir="${build}" />
-		<delete dir="${bin}/PSX-${version}" />
-		<delete file="${bin}/PSX-${version}.tgz" />
-		<delete file="${bin}/psx-${version}.phar" />
-		<delete file="${bin}/psx_${version}.tar.gz" />
-		<delete file="${bin}/psx_${version}.zip" />
 	</target>
 
 	<target name="clean-doc">
