@@ -1,6 +1,6 @@
 <?php
 /*
- *  $Id: StoreInterface.php 542 2012-07-10 20:20:59Z k42b3.x@googlemail.com $
+ *  $Id: Message.php 488 2012-05-28 12:44:38Z k42b3.x@googlemail.com $
  *
  * psx
  * A object oriented and modular based PHP framework for developing
@@ -23,22 +23,46 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Payment\Paypal;
+namespace PSX\Payment\Paypal\Data;
 
-use PSX\Oauth2\AccessToken;
+use PSX\Data\RecordAbstract;
 
 /**
- * StoreInterface
+ * Data object wich represents an IPN message send from paypal to the API
+ * endpoint
  *
  * @author     Christoph Kappestein <k42b3.x@gmail.com>
  * @license    http://www.gnu.org/licenses/gpl.html GPLv3
  * @link       http://phpsx.org
  * @category   PSX
  * @package    PSX_Payment
- * @version    $Revision: 542 $
+ * @version    $Revision: 488 $
  */
-interface StoreInterface
+class FundingInstrument extends RecordAbstract
 {
-	public function save(AccessToken $accessToken);
-	public function load();
+	protected $creditCard;
+	protected $creditCardToken;
+
+	public function getName()
+	{
+		return 'fundingInstrument';
+	}
+
+	public function getFields()
+	{
+		return array(
+			'credit_card'       => $this->creditCard,
+			'credit_card_token' => $this->creditCardToken,
+		);
+	}
+
+	public function setCreditCard(CreditCard $creditCard)
+	{
+		$this->creditCard = $creditCard;
+	}
+
+	public function setCreditCardToken(CreditCardToken $creditCardToken)
+	{
+		$this->creditCardToken = $creditCardToken;
+	}
 }

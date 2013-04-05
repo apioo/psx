@@ -1,6 +1,6 @@
 <?php
 /*
- *  $Id: StoreInterface.php 542 2012-07-10 20:20:59Z k42b3.x@googlemail.com $
+ *  $Id: Message.php 488 2012-05-28 12:44:38Z k42b3.x@googlemail.com $
  *
  * psx
  * A object oriented and modular based PHP framework for developing
@@ -23,22 +23,18 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Payment\Paypal;
-
-use PSX\Oauth2\AccessToken;
+namespace PSX\Payment\Paypal\Exception;
 
 /**
- * StoreInterface
+ * InternalServiceErrorException
  *
  * @author     Christoph Kappestein <k42b3.x@gmail.com>
  * @license    http://www.gnu.org/licenses/gpl.html GPLv3
  * @link       http://phpsx.org
  * @category   PSX
  * @package    PSX_Payment
- * @version    $Revision: 542 $
+ * @version    $Revision: 488 $
  */
-interface StoreInterface
+class PaymentApprovalExpiredException extends \PSX\Exception
 {
-	public function save(AccessToken $accessToken);
-	public function load();
 }

@@ -1,6 +1,6 @@
 <?php
 /*
- *  $Id: StoreInterface.php 542 2012-07-10 20:20:59Z k42b3.x@googlemail.com $
+ *  $Id: Message.php 488 2012-05-28 12:44:38Z k42b3.x@googlemail.com $
  *
  * psx
  * A object oriented and modular based PHP framework for developing
@@ -23,22 +23,68 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Payment\Paypal;
+namespace PSX\Payment\Paypal\Data;
 
-use PSX\Oauth2\AccessToken;
+use PSX\Data\RecordAbstract;
+use PSX\Url;
 
 /**
- * StoreInterface
+ * Link
  *
  * @author     Christoph Kappestein <k42b3.x@gmail.com>
  * @license    http://www.gnu.org/licenses/gpl.html GPLv3
  * @link       http://phpsx.org
  * @category   PSX
  * @package    PSX_Payment
- * @version    $Revision: 542 $
+ * @version    $Revision: 488 $
  */
-interface StoreInterface
+class Link extends RecordAbstract
 {
-	public function save(AccessToken $accessToken);
-	public function load();
+	protected $href;
+	protected $rel;
+	protected $method;
+
+	public function getName()
+	{
+		return 'link';
+	}
+
+	public function getFields()
+	{
+		return array(
+			'href'   => $this->href,
+			'rel'    => $this->rel,
+			'method' => $this->method,
+		);
+	}
+
+	public function setHref($href)
+	{
+		$this->href = $href;
+	}
+
+	public function getHref()
+	{
+		return $this->href;
+	}
+
+	public function setRel($rel)
+	{
+		$this->rel = $rel;
+	}
+
+	public function getRel()
+	{
+		return $this->rel;
+	}
+
+	public function setMethod($method)
+	{
+		$this->method = $method;
+	}
+
+	public function getMethod()
+	{
+		return $this->method;
+	}
 }

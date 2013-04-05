@@ -1,6 +1,6 @@
 <?php
 /*
- *  $Id: Session.php 542 2012-07-10 20:20:59Z k42b3.x@googlemail.com $
+ *  $Id: Message.php 488 2012-05-28 12:44:38Z k42b3.x@googlemail.com $
  *
  * psx
  * A object oriented and modular based PHP framework for developing
@@ -23,42 +23,61 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Payment\Paypal\Store;
+namespace PSX\Payment\Paypal\Data;
 
-use PSX\Payment\Paypal\StoreInterface;
-use PSX\Oauth2\AccessToken;
+use PSX\Data\RecordAbstract;
 
 /**
- * PSX_Payment_Paypal_StoreInterface
+ * Data object wich represents an IPN message send from paypal to the API
+ * endpoint
  *
  * @author     Christoph Kappestein <k42b3.x@gmail.com>
  * @license    http://www.gnu.org/licenses/gpl.html GPLv3
  * @link       http://phpsx.org
  * @category   PSX
  * @package    PSX_Payment
- * @version    $Revision: 542 $
+ * @version    $Revision: 488 $
  */
-class Session implements StoreInterface
+class Payer extends RecordAbstract
 {
-	protected $key;
+	protected $paymentMethod;
+	protected $fundingInstruments;
+	protected $payerInfo;
 
-	public function __construct()
+	public function getName()
 	{
-		$this->key = __CLASS__;
+		return 'payer';
 	}
 
-	public function save(AccessToken $accessToken)
+	public function getFields()
 	{
-		$_SESSION[$this->key] = $accessToken;
+		return array(
+			'payment_method'      => $this->paymentMethod,
+			'funding_instruments' => $this->fundingInstruments,
+			'payer_info'          => $this->payerInfo,
+		);
 	}
 
-	public function load()
+	public function setPaymentMethod($paymentMethod)
 	{
-		if(isset($_SESSION[$this->key]))
+		if(!in_array($paymentMethod, array('credit_card', 'paypal')))
 		{
-			return $_SESSION[$this->key];
+			throw new Exception('Invalid payment method');
 		}
 
-		return null;
+		$this->paymentMethod = $paymentMethod;
+	}
+
+	public function addFundingInstrument(FundingInstrument $fundingInstrument)
+	{
+		$this->fundingInstruments[] = $fundingInstrument;
+	}
+
+	/**
+	 * @param PSX\Payment\Paypal\Data\PayerInfo $payerInfo
+	 */
+	public function setPayerInfo(PayerInfo $payerInfo)
+	{
+		$this->payerInfo = $payerInfo;
 	}
 }
