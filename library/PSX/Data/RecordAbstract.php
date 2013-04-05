@@ -25,6 +25,10 @@
 
 namespace PSX\Data;
 
+use PSX\Exception;
+use PSX\Util\Annotation;
+use ReflectionClass;
+use ReflectionMethod;
 use Serializable;
 
 /**
@@ -57,22 +61,13 @@ abstract class RecordAbstract implements RecordInterface, Serializable
 
 	public function getData()
 	{
-		$data   = array();
-		$fields = $this->getFields();
-
-		foreach($fields as $k => $v)
-		{
-			if(isset($v))
-			{
-				$data[$k] = $v;
-			}
-		}
-
-		return $data;
+		return $this->getRecData($this->getFields());
 	}
 
 	public function import(ReaderResult $result)
 	{
+		$class = new ReflectionClass($this);
+
 		switch($result->getType())
 		{
 			case ReaderInterface::FORM:
@@ -94,11 +89,12 @@ abstract class RecordAbstract implements RecordInterface, Serializable
 							$k = implode('', array_map('ucfirst', explode('_', $k)));
 						}
 
-						$method = 'set' . ucfirst($k);
+						$methodName = 'set' . ucfirst($k);
+						$method = $class->getMethod($methodName);
 
-						if(is_callable(array($this, $method)))
+						if($method instanceof ReflectionMethod)
 						{
-							$this->$method($v);
+							$this->$methodName($this->getMethodValue($method, $v, $result->getType()));
 						}
 					}
 				}
@@ -132,21 +128,136 @@ abstract class RecordAbstract implements RecordInterface, Serializable
 
 	public function serialize()
 	{
-		return serialize($this->getFields());
+		$vars = get_class_vars(get_class($this));
+		$data = array();
+
+		foreach($vars as $k => $v)
+		{
+			if($k[0] != '_')
+			{
+				$data[$k] = $this->$k;
+			}
+		}
+
+		return serialize($data);
 	}
 
 	public function unserialize($data)
 	{
-		$data   = unserialize($data);
-		$fields = $this->getFields();
+		$data = unserialize($data);
+
+		foreach($data as $k => $v)
+		{
+			$this->$k = $v;
+		}
+	}
+
+	protected function getMethodValue(ReflectionMethod $method, $value, $resultType)
+	{
+		$comment = $method->getDocComment();
+
+		if(!empty($comment))
+		{
+			$doc   = Annotation::parse($comment);
+			$param = $doc->getFirstAnnotation('param');
+
+			if(!empty($param))
+			{
+				$param = explode(' ', $param);
+				$type  = isset($param[0]) ? $param[0] : null;
+
+				if(substr($type, 0, 6) == 'array<')
+				{
+					$type   = substr($type, 6, -1);
+					$values = (array) $value;
+					$value  = array();
+
+					foreach($values as $row)
+					{
+						$value[] = $this->getMethodType($type, $row, $resultType);
+					}
+				}
+				else
+				{
+					$value = $this->getMethodType($type, $value, $resultType);
+				}
+			}
+		}
+
+		return $value;
+	}
+
+	protected function getMethodType($type, $value, $resultType)
+	{
+		switch($type)
+		{
+			case 'integer':
+				$value = (integer) $value;
+				break;
+
+			case 'float':
+				$value = (float) $value;
+				break;
+
+			case 'boolean':
+				$value = (boolean) $value;
+				break;
+
+			case 'string':
+				$value = (string) $value;
+				break;
+
+			case 'array':
+				$value = (array) $value;
+				break;
+
+			default:
+				$class = new ReflectionClass($type);
+				if($class->implementsInterface('PSX\Data\RecordInterface'))
+				{
+					$result = new ReaderResult($resultType, $value);
+
+					$value = $class->newInstance();
+					$value->import($result);
+				}
+				else
+				{
+					$value = $class->newInstance($value);
+				}
+				break;
+		}
+
+		return $value;
+	}
+
+	protected function getRecData(array $fields)
+	{
+		$data = array();
 
 		foreach($fields as $k => $v)
 		{
-			if(isset($data[$k]))
+			if(isset($v))
 			{
-				$this->$k = $data[$k];
+				if(is_array($v))
+				{
+					$data[$k] = $this->getRecData($v);
+				}
+				else if($v instanceof RecordInterface)
+				{
+					$data[$k] = $v->getData();
+				}
+				else if(is_object($v))
+				{
+					$data[$k] = (string) $v;
+				}
+				else
+				{
+					$data[$k] = $v;
+				}
 			}
 		}
+
+		return $data;
 	}
 }
 
