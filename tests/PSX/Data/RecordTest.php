@@ -26,7 +26,6 @@
 namespace PSX\Data;
 
 use PSX\Exception;
-use PSX\Data\Reader\Json;
 use PSX\Http\Message;
 
 /**
@@ -48,7 +47,7 @@ class RecordTest extends \PHPUnit_Framework_TestCase
 	{
 	}
 
-	public function testImport()
+	public function testImportJson()
 	{
 		$body = <<<DATA
 {
@@ -58,20 +57,20 @@ class RecordTest extends \PHPUnit_Framework_TestCase
 	"count": 12,
 	"rating": 12.45,
 	"person": {
-		"name": "Foo"
+		"title": "Foo"
 	},
 	"tags": [{
-		"name": "bar"
+		"title": "bar"
 	},{
-		"name": "foo"
+		"title": "foo"
 	},{
-		"name": "test"
+		"title": "test"
 	}]
 }
 DATA;
 
 		// read json
-		$reader  = new Json();
+		$reader  = new Reader\Json();
 		$message = new Message(array(), $body);
 
 		$result = $reader->read($message);
@@ -97,6 +96,145 @@ DATA;
 		{
 			$this->assertInstanceOf('PSX\Data\Tag', $tag);
 		}
+	}
+
+	public function testExportJson()
+	{
+		$body = <<<DATA
+{
+	"id": 1,
+	"title": "foobar",
+	"active": 1,
+	"count": 12,
+	"rating": 12.45,
+	"person": {
+		"title": "Foo"
+	},
+	"tags": [{
+		"title": "bar"
+	},{
+		"title": "foo"
+	},{
+		"title": "test"
+	}]
+}
+DATA;
+
+		// read json
+		$reader  = new Reader\Json();
+		$message = new Message(array(), $body);
+
+		$result = $reader->read($message);
+
+		$news = new News();
+		$news->import($result);
+
+		$writer = new Writer\Json();
+
+		ob_start();
+
+		$writer->write($news);
+
+		$resp = ob_get_contents();
+
+		ob_end_clean();
+
+		$this->assertJsonStringEqualsJsonString($body, $resp);
+	}
+
+
+	public function testImportXml()
+	{
+		$body = <<<DATA
+<news>
+	<id>1</id>
+	<title>foobar</title>
+	<active>1</active>
+	<count>12</count>
+	<rating>12.45</rating>
+	<person>
+		<title>Foo</title>
+	</person>
+	<tags>
+		<title>bar</title>
+	</tags>
+	<tags>
+		<title>foo</title>
+	</tags>
+	<tags>
+		<title>test</title>
+	</tags>
+</news>
+DATA;
+
+		// read json
+		$reader  = new Reader\Xml();
+		$message = new Message(array(), $body);
+
+		$result = $reader->read($message);
+
+		// create news object
+		$news = new News();
+		$news->import($result);
+
+		$this->assertEquals(1, $news->getId());
+		$this->assertEquals('foobar', $news->getTitle());
+		$this->assertEquals(true, $news->getActive());
+		$this->assertEquals(12, $news->getCount());
+		$this->assertEquals(12.45, $news->getRating());
+		$this->assertInstanceOf('PSX\Data\Person', $news->getPerson());
+		$this->assertEquals(true, is_array($news->getTags()));
+
+		foreach($news->getTags() as $tag)
+		{
+			$this->assertInstanceOf('PSX\Data\Tag', $tag);
+		}
+	}
+
+	public function testExportXml()
+	{
+		$body = <<<DATA
+<news>
+	<id>1</id>
+	<title>foobar</title>
+	<active>true</active>
+	<count>12</count>
+	<rating>12.45</rating>
+	<person>
+		<title>Foo</title>
+	</person>
+	<tags>
+		<title>bar</title>
+	</tags>
+	<tags>
+		<title>foo</title>
+	</tags>
+	<tags>
+		<title>test</title>
+	</tags>
+</news>
+DATA;
+
+		// read json
+		$reader  = new Reader\Xml();
+		$message = new Message(array(), $body);
+
+		$result = $reader->read($message);
+
+		$news = new News();
+		$news->import($result);
+
+		$writer = new Writer\Xml();
+
+		ob_start();
+
+		$writer->write($news);
+
+		$resp = ob_get_contents();
+
+		ob_end_clean();
+
+		$this->assertXmlStringEqualsXmlString($body, $resp);
 	}
 }
 
