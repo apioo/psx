@@ -63,8 +63,8 @@ class SkrillTest extends \PHPUnit_Framework_TestCase
 		$payment->setDetail1Text('Romeo and Juliet (W. Shakespeare)');
 		$payment->setConfirmationNote('Samplemerchant wishes you pleasure reading your new book!');
 
-		$this->skrill->createPayment($payment);
+		$return = $this->skrill->createPayment($payment);
 
-		//$this->assertEquals('created', $payment->getState());
+		$this->assertEquals(true, $return);
 	}
 }
