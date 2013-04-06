@@ -47,7 +47,7 @@ class Cookie
 	private $secure;
 	private $httponly;
 
-	public function __construct($name, $value, DateTime $expires, $path, $domain, $secure, $httponly)
+	public function __construct($name, $value, DateTime $expires = null, $path = null, $domain = null, $secure = null, $httponly = null)
 	{
 		$this->name     = $name;
 		$this->value    = $value;
