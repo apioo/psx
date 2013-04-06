@@ -39,7 +39,7 @@ use PSX\Exception;
  * @package    PSX_Payment
  * @version    $Revision: 542 $
  */
-abstract class StatusAbstract extends ApiAbstract
+abstract class CallbackAbstract extends ApiAbstract
 {
 	/**
 	 * @httpMethod POST
