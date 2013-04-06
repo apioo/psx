@@ -23,7 +23,7 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Oauth2\AccessTokenStore;
+namespace PSX\Data\RecordStore;
 
 use PSX\Data\RecordStoreInterface;
 use PSX\Data\RecordInterface;

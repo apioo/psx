@@ -26,11 +26,11 @@
 namespace PSX\Payment;
 
 use PSX\Data\Reader;
+use PSX\Data\RecordStoreInterface;
 use PSX\Payment\Paypal\Data;
 use PSX\Oauth2;
 use PSX\Oauth2\Authorization\ClientCredentials;
 use PSX\Oauth2\AccessToken;
-use PSX\Oauth2\AccessTokenStoreInterface;
 use PSX\Http;
 use PSX\Http\GetRequest;
 use PSX\Http\PostRequest;
@@ -134,7 +134,12 @@ class Paypal
 			$payment->import($result);
 
 			// save approval uri
-			$this->approvalUrl = $payment->getLinkByRel('approval_url');
+			$link = $payment->getLinkByRel('approval_url');
+
+			if($link instanceof Data\Link)
+			{
+				$this->approvalUrl = $link->getHref();
+			}
 
 			return $payment;
 		}
