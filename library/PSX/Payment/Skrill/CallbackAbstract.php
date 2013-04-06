@@ -41,6 +41,8 @@ use PSX\Exception;
  */
 abstract class CallbackAbstract extends ApiAbstract
 {
+	protected $skrill;
+
 	/**
 	 * @httpMethod POST
 	 * @path /return

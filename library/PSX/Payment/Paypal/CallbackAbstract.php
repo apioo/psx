@@ -30,6 +30,7 @@ use PSX\Payment\Paypal\Data\Payment;
 use PSX\ModuleAbstract;
 use PSX\Http;
 use PSX\Exception;
+use PSX\Data\RecordStore;
 
 /**
  * StoreInterface
@@ -62,7 +63,14 @@ abstract class CallbackAbstract extends ModuleAbstract
 
 			if($payment instanceof Payment)
 			{
-				$this->onPayment($payment);
+				if($payment->getState() == 'approved')
+				{
+					$this->onPayment($payment);
+				}
+				else
+				{
+					$this->onCancel($payment);
+				}
 			}
 			else
 			{
@@ -109,7 +117,7 @@ abstract class CallbackAbstract extends ModuleAbstract
 		if($this->paypal == null)
 		{
 			$http    = new Http();
-			$session = new Paypal\Store\Session();
+			$session = new RecordStore\Session();
 			$paypal  = new Paypal($http, $session);
 
 			$this->paypal = $paypal;
@@ -127,7 +135,7 @@ abstract class CallbackAbstract extends ModuleAbstract
 
 	/**
 	 * Is called if the return endpoint was requested. Contains the executed 
-	 * payment. You have to check whether the payment was approved
+	 * payment
 	 *
 	 * @param PSX\Payment\Paypal\Data\Payment
 	 * @return void
@@ -135,8 +143,8 @@ abstract class CallbackAbstract extends ModuleAbstract
 	abstract public function onPayment(Payment $payment);
 
 	/**
-	 * Is called of the cancel endpoint was requested. Contains alll available
-	 * informations of the payment
+	 * Is called if the cancel endpoint was requested or the payment was not 
+	 * approved
 	 *
 	 * @param PSX\Payment\Paypal\Data\Payment
 	 * @return void
