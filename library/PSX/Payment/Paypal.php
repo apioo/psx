@@ -27,10 +27,10 @@ namespace PSX\Payment;
 
 use PSX\Data\Reader;
 use PSX\Payment\Paypal\Data;
-use PSX\Payment\Paypal\StoreInterface;
 use PSX\Oauth2;
 use PSX\Oauth2\Authorization\ClientCredentials;
 use PSX\Oauth2\AccessToken;
+use PSX\Oauth2\AccessTokenStoreInterface;
 use PSX\Http;
 use PSX\Http\GetRequest;
 use PSX\Http\PostRequest;
@@ -50,9 +50,11 @@ use PSX\Exception;
  */
 class Paypal
 {
+	//const ENDPOINT      = 'https://api.paypal.com';
 	const ENDPOINT      = 'https://api.sandbox.paypal.com';
 	const CLIENT_ID     = 'AbGnaxBKBZGDeEYdiF9K5S4PgCydA6vp_7F24PQOVNSDRv8PZ8XiCPXkS4HV';
 	const CLIENT_SECRET = 'EEjJJBCD6AIExdxj9a5_1hY8IpH-WpwuUHsp0HTWzrFQC66ycYuiPEwG6wr4';
+	//const CERTIFICATE   = 'api.paypal.com.pem';
 	const CERTIFICATE   = 'api.sandbox.paypal.com.pem';
 
 	const PAYMENT = '/v1/payments/payment';
@@ -66,11 +68,14 @@ class Paypal
 	protected $store;
 	protected $accessToken;
 
-	public function __construct(Http $http, StoreInterface $store = null)
+	protected $approvalUrl;
+
+	public function __construct(Http $http, RecordStoreInterface $store = null)
 	{
 		if($http->getHandler() instanceof Http\Handler\Curl)
 		{
-			$http->getHandler()->setCaInfo(__DIR__ . '/Paypal/' . self::CERTIFICATE);
+			$caInfo = realpath(__DIR__ . '/Paypal/' . self::CERTIFICATE);
+			$http->getHandler()->setCaInfo($caInfo);
 		}
 
 		$this->http   = $http;
@@ -84,7 +89,7 @@ class Paypal
 
 		if($this->store !== null)
 		{
-			$accessToken = $this->store->load();
+			$accessToken = $this->store->load(__CLASS__);
 		}
 
 		if(!$accessToken instanceof AccessToken)
@@ -98,7 +103,7 @@ class Paypal
 			{
 				if($this->store !== null)
 				{
-					$this->store->save($accessToken);
+					$this->store->save(__CLASS__, $accessToken);
 				}
 			}
 			else
@@ -128,6 +133,9 @@ class Paypal
 			$payment = new Data\Payment();
 			$payment->import($result);
 
+			// save approval uri
+			$this->approvalUrl = $payment->getLinkByRel('approval_url');
+
 			return $payment;
 		}
 		else
@@ -136,6 +144,17 @@ class Paypal
 
 			$this->handleError($error);
 		}
+	}
+
+	public function redirect()
+	{
+		if(empty($this->approvalUrl))
+		{
+			throw new Exception('No approval url available');
+		}
+
+		header('Location: ' . $this->approvalUrl);
+		exit;
 	}
 
 	public function getPayment($paymentId)
