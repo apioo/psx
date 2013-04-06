@@ -23,7 +23,7 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Payment\Paypal;
+namespace PSX\Payment;
 
 use PSX\Http;
 use PSX\Payment\Paypal;

@@ -1,5 +1,8 @@
 
 0.5.1
+* Added payment paypal library
+* Improve record added import annotation parsing and added Serializable 
+  interface
 * Fixed wrong name in OpenId provider namespace
 
 0.5
