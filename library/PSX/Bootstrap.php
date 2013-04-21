@@ -66,14 +66,9 @@ class Bootstrap
 			$this->addIncludePath($config['psx_path_library']);
 		}
 
-		// if enabled handle autoloading
+		// if enabled register autoloader
 		if($config['psx_autoload'] === true)
 		{
-			// include core loader
-			require_once('PSX' . DIRECTORY_SEPARATOR . 'Exception.php');
-			require_once('PSX' . DIRECTORY_SEPARATOR . 'Loader.php');
-
-			// autoload register
 			spl_autoload_register('\PSX\Bootstrap::autoload');
 		}
 
