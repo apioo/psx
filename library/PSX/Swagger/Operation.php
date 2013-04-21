@@ -39,14 +39,14 @@ use PSX\Data\RecordAbstract;
  */
 class Operation extends RecordAbstract
 {
-	private $httpMethod;
-	private $nickname;
-	private $responseClass;
-	private $summary;
-	private $notes;
+	protected $httpMethod;
+	protected $nickname;
+	protected $responseClass;
+	protected $summary;
+	protected $notes;
 
-	private $errorResponses;
-	private $parameters = array();
+	protected $errorResponses;
+	protected $parameters = array();
 
 	public function __construct($httpMethod, $nickname, $responseClass, $summary)
 	{

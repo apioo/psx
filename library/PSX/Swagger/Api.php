@@ -39,10 +39,10 @@ use PSX\Data\RecordAbstract;
  */
 class Api extends RecordAbstract
 {
-	private $path;
-	private $description;
+	protected $path;
+	protected $description;
 
-	private $operations = array();
+	protected $operations = array();
 
 	public function __construct($path, $description)
 	{

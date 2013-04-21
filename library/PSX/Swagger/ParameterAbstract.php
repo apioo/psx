@@ -39,12 +39,12 @@ use PSX\Data\RecordAbstract;
  */
 abstract class ParameterAbstract extends RecordAbstract
 {
-	private $paramType;
-	private $name;
-	private $description;
-	private $dataType;
-	private $required;
-	private $allowMultiple;
+	protected $paramType;
+	protected $name;
+	protected $description;
+	protected $dataType;
+	protected $required;
+	protected $allowMultiple;
 
 	public function __construct($paramType, $name, $description, $dataType, $required = true)
 	{

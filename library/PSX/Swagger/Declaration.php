@@ -45,12 +45,12 @@ class Declaration extends RecordAbstract
 {
 	const VERSION = '1.1';
 
-	private $apiVersion;
-	private $basePath;
-	private $resourcePath;
+	protected $apiVersion;
+	protected $basePath;
+	protected $resourcePath;
 
-	private $apis = array();
-	private $models = array();
+	protected $apis = array();
+	protected $models = array();
 
 	public function __construct($apiVersion, $basePath, $resourcePath)
 	{

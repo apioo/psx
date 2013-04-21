@@ -39,8 +39,8 @@ use PSX\Data\RecordAbstract;
  */
 class Error extends RecordAbstract
 {
-	private $code;
-	private $reason;
+	protected $code;
+	protected $reason;
 
 	public function __construct($code, $reason)
 	{
