@@ -1,6 +1,8 @@
 
 0.5.1
-* Added payment paypal library
+* Added autoload parameter in config to disable autoloading in case an external
+  autoloader like composer is used
+* Added payment paypal and skrill library
 * Improve record added import annotation parsing and added Serializable 
   interface
 * Fixed wrong name in OpenId provider namespace
