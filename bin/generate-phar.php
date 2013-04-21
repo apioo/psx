@@ -54,7 +54,7 @@ foreach($dir as $file)
 	{
 		$phar->addFromString($name, php_strip_whitespace($path));
 	}
-	else if($file->isDir())
+	else if($file->isDir() && $file->getFilename() != '.' && $file->getFilename() != '..')
 	{
 		$phar->addEmptyDir($name);
 	}
