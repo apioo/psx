@@ -28,10 +28,9 @@ namespace PSX;
 use ErrorException;
 
 /**
- * This class provides an easy way to setup a psx enviroment. The class
- * registers an PSR-0 autoloader for the library folder if the config 
- * psx_autoload is true. It also sets the include_path of PHP to
- * psx_path_library from the config if the value is not empty.
+ * This class provides an easy way to setup a psx enviroment. If psx_autoload is
+ * true an PSR-0 autoloader is registered . If psx_include_path is true the
+ * library folder is added to the include path
  *
  * @author     Christoph Kappestein <k42b3.x@gmail.com>
  * @license    http://www.gnu.org/licenses/gpl.html GPLv3
@@ -62,7 +61,7 @@ class Bootstrap
 		define('PSX_PATH_TEMPLATE', $config['psx_path_template']);
 
 		// set include path
-		if(!empty($config['psx_path_library']))
+		if($config['psx_include_path'] === true)
 		{
 			$this->addIncludePath($config['psx_path_library']);
 		}
