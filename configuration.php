@@ -30,6 +30,7 @@ $config = array(
 	'psx_timezone'            => 'UTC',
 	'psx_gzip'                => false,
 	'psx_debug'               => true,
+	'psx_autoload'            => true,
 
 	'psx_module_default'      => 'sample',
 	'psx_module_input'        => isset($_GET['x']) ? $_GET['x'] : (isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : (isset($_SERVER['argv'][1]) ? $_SERVER['argv'][1] : '')),

@@ -29,12 +29,9 @@ use ErrorException;
 
 /**
  * This class provides an easy way to setup a psx enviroment. The class
- * registers the autoloader and set an error handler.
- *
- * It also sets the include_path of PHP to psx_path_library and from the config.
- * You should keep that in mind if you embed this into another application. Set
- * psx_path_library to an empty value if the library is already in your
- * include_path
+ * registers an PSR-0 autoloader for the library folder if the config 
+ * psx_autoload is true. It also sets the include_path of PHP to
+ * psx_path_library from the config if the value is not empty.
  *
  * @author     Christoph Kappestein <k42b3.x@gmail.com>
  * @license    http://www.gnu.org/licenses/gpl.html GPLv3
@@ -70,12 +67,16 @@ class Bootstrap
 			$this->addIncludePath($config['psx_path_library']);
 		}
 
-		// include core loader
-		require_once('PSX/Exception.php');
-		require_once('PSX/Loader.php');
+		// if enabled handle autoloading
+		if($config['psx_autoload'] === true)
+		{
+			// include core loader
+			require_once('PSX' . DIRECTORY_SEPARATOR . 'Exception.php');
+			require_once('PSX' . DIRECTORY_SEPARATOR . 'Loader.php');
 
-		// autoload register
-		spl_autoload_register('\PSX\Bootstrap::autoload');
+			// autoload register
+			spl_autoload_register('\PSX\Bootstrap::autoload');
+		}
 
 		// error handling
 		if($config['psx_debug'] === true)
