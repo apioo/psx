@@ -50,11 +50,6 @@ class ReaderFactory
 				$readerType = ReaderInterface::FORM;
 				break;
 
-			case (stripos($contentType, Reader\Json::$mime) !== false):
-
-				$readerType = ReaderInterface::JSON;
-				break;
-
 			case (stripos($contentType, Reader\Multipart::$mime) !== false):
 
 				$readerType = ReaderInterface::MULTIPART;
@@ -63,6 +58,12 @@ class ReaderFactory
 			case (stripos($contentType, Reader\Xml::$mime) !== false):
 
 				$readerType = ReaderInterface::XML;
+				break;
+
+			default:
+			case (stripos($contentType, Reader\Json::$mime) !== false):
+
+				$readerType = ReaderInterface::JSON;
 				break;
 		}
 

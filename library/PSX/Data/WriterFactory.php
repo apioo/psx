@@ -55,12 +55,6 @@ class WriterFactory
 				$writerType = WriterInterface::FORM;
 				break;
 
-			default:
-			case (stripos($contentType, Writer\Json::$mime) !== false):
-
-				$writerType = WriterInterface::JSON;
-				break;
-
 			case (stripos($contentType, Writer\Rss::$mime) !== false):
 
 				$writerType = WriterInterface::RSS;
@@ -69,6 +63,12 @@ class WriterFactory
 			case (stripos($contentType, Writer\Xml::$mime) !== false):
 
 				$writerType = WriterInterface::XML;
+				break;
+
+			default:
+			case (stripos($contentType, Writer\Json::$mime) !== false):
+
+				$writerType = WriterInterface::JSON;
 				break;
 		}
 
