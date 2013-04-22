@@ -112,7 +112,10 @@ class Base
 
 		if($parts !== false && isset($parts['scheme']) && isset($parts['host']))
 		{
-			$this->self = $parts['scheme'] . '://' . $parts['host'] . (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '');
+			$port = !empty($parts['port']) ? ':' . $parts['port'] : '';
+			$path = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+
+			$this->self = $parts['scheme'] . '://' . $parts['host'] . $port . $path;
 			$this->host = $parts['host'];
 			$this->path = isset($parts['path']) ? $parts['path'] : '';
 		}
