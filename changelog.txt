@@ -1,4 +1,8 @@
 
+0.5.2
+* Use port in base self url
+* Config option to set include path
+
 0.5.1
 * Added autoload parameter in config to disable autoloading in case an external
   autoloader like composer is used

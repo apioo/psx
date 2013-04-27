@@ -37,6 +37,6 @@ use PSX\Exception;
  * @package    PSX_Oauth2
  * @version    $Revision: 492 $
  */
-class UnsupportedResponseTypeException extends Exception
+class UnsupportedGrantTypeException extends Exception
 {
 }

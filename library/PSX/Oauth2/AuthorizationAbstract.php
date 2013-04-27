@@ -182,8 +182,15 @@ abstract class AuthorizationAbstract
 	 *
 	 * @throws PSX_Oauth2_Authorization_Exception
 	 */
-	public static function throwErrorException(array $data)
+	public static function throwErrorException($data)
 	{
+		// we do not type hint as array because we want throw a clean exception
+		// in case data is not an array
+		if(!is_array($data))
+		{
+			throw new Exception('Invalid response');
+		}
+
 		// unfortunatly facebook doesnt follow the oauth draft 26 and set in the 
 		// response error key the correct error string instead the error key 
 		// contains an object with the type and message. Temporary we will use 
@@ -200,7 +207,7 @@ abstract class AuthorizationAbstract
 		$desc  = isset($data['error_description']) ? htmlspecialchars($data['error_description']) : null;
 		$uri   = isset($data['error_uri']) ? $data['error_uri'] : null;
 
-		if(in_array($error, array('access_denied', 'invalid_client', 'invalid_grant', 'invalid_request', 'invalid_scope', 'server_error', 'temporarily_unavailable', 'unauthorized_client', 'unsupported_response_type')))
+		if(in_array($error, array('invalid_request', 'invalid_client', 'invalid_grant', 'unauthorized_client', 'unsupported_grant_type', 'invalid_scope')))
 		{
 			$exceptionClass = '\PSX\Oauth2\Authorization\Exception\\' . implode('', array_map('ucfirst', explode('_', $error))) . 'Exception';
 			$message        = '';

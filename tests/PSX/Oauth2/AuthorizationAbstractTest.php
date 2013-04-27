@@ -1,0 +1,118 @@
+<?php
+/*
+ *  $Id: OauthTest.php 480 2012-05-01 18:13:54Z k42b3.x@googlemail.com $
+ *
+ * psx
+ * A object oriented and modular based PHP framework for developing
+ * dynamic web applications. For the current version and informations
+ * visit <http://phpsx.org>
+ *
+ * Copyright (c) 2010-2012 Christoph Kappestein <k42b3.x@gmail.com>
+ *
+ * This file is part of psx. psx is free software: you can
+ * redistribute it and/or modify it under the terms of the
+ * GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or any later version.
+ *
+ * psx is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with psx. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+namespace PSX\Oauth2;
+
+use PSX\Exception;
+
+/**
+ * PSX_OauthTest
+ *
+ * @author     Christoph Kappestein <k42b3.x@gmail.com>
+ * @license    http://www.gnu.org/licenses/gpl.html GPLv3
+ * @link       http://phpsx.org
+ * @category   tests
+ * @version    $Revision: 480 $
+ */
+class AuthorizationAbstractTest extends \PHPUnit_Framework_TestCase
+{
+	protected function setUp()
+	{
+	}
+
+	protected function tearDown()
+	{
+	}
+
+	/**
+	 * @expectedException \PSX\Oauth2\Authorization\Exception\InvalidRequestException
+	 */
+	public function testNormalErrorException()
+	{
+		AuthorizationAbstract::throwErrorException(array(
+			'error' => 'invalid_request',
+			'error_description' => 'Foobar',
+			'error_uri' => 'http://foo.bar'
+		));
+	}
+
+	/**
+	 * @expectedException \PSX\Exception
+	 */
+	public function testEmptyErrorException()
+	{
+		AuthorizationAbstract::throwErrorException('');
+	}
+
+	/**
+	 * @expectedException \PSX\Exception
+	 */
+	public function testUnknownErrorException()
+	{
+		AuthorizationAbstract::throwErrorException(array(
+			'error' => 'foobar',
+		));
+	}
+
+	/**
+	 *
+	 * @expectedException \PSX\Oauth2\Authorization\Exception\InvalidRequestException
+	 */
+	public function testFacebookErrorException()
+	{
+		AuthorizationAbstract::throwErrorException(array(
+			'error' => array(
+				'message' => 'Message describing the error',
+				'type' => 'OAuthException',
+				'code' => 190,
+				'error_subcode' => 460
+			)
+		));
+	}
+
+	public function testTypeErrorException()
+	{
+		$errors = array('invalid_request', 'invalid_client', 'invalid_grant', 'unauthorized_client', 'unsupported_grant_type', 'invalid_scope');
+
+		foreach($errors as $error)
+		{
+			try
+			{
+				AuthorizationAbstract::throwErrorException(array(
+					'error' => $error,
+					'error_description' => 'Foobar'
+				));
+			}
+			catch(Exception $e)
+			{
+				$exceptionClass = '\PSX\Oauth2\Authorization\Exception\\' . implode('', array_map('ucfirst', explode('_', $error))) . 'Exception';
+
+				$this->assertInstanceOf($exceptionClass, $e);
+				$this->assertEquals('Foobar', $e->getMessage());
+			}
+		}
+	}
+}
+
