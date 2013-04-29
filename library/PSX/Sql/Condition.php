@@ -57,41 +57,17 @@ class Condition implements Countable
 	private $stmt;
 	private $str;
 
-	public function __construct(array $con_1 = array(), array $con_2 = array(), array $con_3 = array())
+	public function __construct(array $condition = array())
 	{
-		if(count($con_1) >= 3)
+		if(count($condition) >= 3)
 		{
-			if(isset($con_1[3]))
+			if(isset($condition[3]))
 			{
-				$this->add($con_1[0], $con_1[1], $con_1[2], $con_1[3]);
+				$this->add($condition[0], $condition[1], $condition[2], $condition[3]);
 			}
 			else
 			{
-				$this->add($con_1[0], $con_1[1], $con_1[2]);
-			}
-		}
-
-		if(count($con_2) >= 3)
-		{
-			if(isset($con_2[3]))
-			{
-				$this->add($con_2[0], $con_2[1], $con_2[2], $con_2[3]);
-			}
-			else
-			{
-				$this->add($con_2[0], $con_2[1], $con_2[2]);
-			}
-		}
-
-		if(count($con_3) >= 3)
-		{
-			if(isset($con_1[3]))
-			{
-				$this->add($con_3[0], $con_3[1], $con_3[2], $con_3[3]);
-			}
-			else
-			{
-				$this->add($con_3[0], $con_3[1], $con_3[2]);
+				$this->add($condition[0], $condition[1], $condition[2]);
 			}
 		}
 	}
@@ -387,144 +363,26 @@ class Condition implements Countable
 		}
 	}
 
-	public static function parse($stmt)
+	public static function fromCriteria(array $criteria)
 	{
 		$condition = new self();
 
-		do
+		foreach($criteria as $field => $value)
 		{
-			$column      = self::getColumn($stmt);
-			$operator    = self::getOperator($stmt);
-			$value       = self::getValue($stmt);
-			$conjunction = self::getConjunction($stmt);
-
-			if(!empty($conjunction))
+			if(is_array($value))
 			{
-				$condition->add($column, $operator, $value, $conjunction);
+				$condition->add($field, 'IN', $value);
+			}
+			else if(is_null($value))
+			{
+				$condition->add($field, 'IS', 'NULL', 'AND', self::TYPE_RAW);
 			}
 			else
 			{
-				$condition->add($column, $operator, $value);
+				$condition->add($field, '=', $value);
 			}
 		}
-		while(!empty($column) && !empty($operator) && !empty($value));
 
 		return $condition;
-	}
-
-	private static function getColumn(&$str)
-	{
-		$str = trim($str);
-		$pos = strpos($str, ' ');
-
-		if($pos !== false)
-		{
-			$column = substr($str, 0, $pos);
-			$str    = substr($str, $pos);
-
-			return $column;
-		}
-		else
-		{
-			$column = $str;
-			$str    = '';
-
-			return $column;
-		}
-	}
-
-	private static function getOperator(&$str)
-	{
-		$str = trim($str);
-
-		foreach(self::$a_op as $op)
-		{
-			$len = strlen($op);
-
-			if(strcasecmp(substr($str, 0, $len), $op) == 0)
-			{
-				$operator = substr($str, 0, $len);
-				$str      = substr($str, $len);
-
-				return $operator;
-			}
-		}
-
-		return false;
-	}
-
-	private static function getValue(&$str)
-	{
-		$str = trim($str);
-
-		if(empty($str))
-		{
-			return false;
-		}
-
-		if($str[0] == '"')
-		{
-			$pos = strpos($str, '"', 1);
-
-			if($pos !== false)
-			{
-				$value = substr($str, 1, $pos);
-				$str   = substr($str, $pos);
-
-				return $value;
-			}
-		}
-		elseif($str[0] == '\'')
-		{
-			$pos = strpos($str, '\'', 1);
-
-			if($pos !== false)
-			{
-				$value = substr($str, 1, $pos);
-				$str   = substr($str, $pos);
-
-				return $value;
-			}
-		}
-		else
-		{
-			$len = strlen($str);
-
-			for($i = 0; $i < $len; $i++)
-			{
-				if(!trim($str[$i]))
-				{
-					$value = substr($str, 0, $i);
-					$str   = substr($str, $i);
-
-					return $value;
-				}
-			}
-
-			$value = $str;
-			$str   = '';
-
-			return $value;
-		}
-	}
-
-	private static function getConjunction(&$str)
-	{
-		$str = trim($str);
-
-		foreach(self::$l_op as $op)
-		{
-			$len = strlen($op);
-
-			if(strcasecmp(substr($str, 0, $len), $op) == 0)
-			{
-				$conjunction = substr($str, 0, $len);
-				$str         = substr($str, $len);
-
-				return $conjunction;
-			}
-		}
-
-		return false;
 	}
 }
