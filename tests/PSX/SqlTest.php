@@ -45,20 +45,6 @@ class SqlTest extends DbTestCase
 {
 	protected $table = 'psx_sql_test';
 
-	public function getBeforeQueries()
-	{
-		$queries   = array();
-		$queries[] = <<<SQL
-CREATE TABLE IF NOT EXISTS `{$this->table}` (
-  `id` int(10) NOT NULL AUTO_INCREMENT,
-  `title` varchar(32) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8
-SQL;
-
-		return $queries;
-	}
-
 	public function getDataSet()
 	{
 		$dataSet = new TableDataSet();

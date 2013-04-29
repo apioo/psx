@@ -48,39 +48,6 @@ class SelectTest extends DbTestCase
 	protected $tableUser = 'psx_sql_table_select_user';
 	protected $tableUserNews = 'psx_sql_table_select_usernews';
 
-	public function getBeforeQueries()
-	{
-		$queries   = array();
-		$queries[] = <<<SQL
-CREATE TABLE IF NOT EXISTS `{$this->tableNews}` (
-  `id` int(10) NOT NULL AUTO_INCREMENT,
-  `userId` int(10) NOT NULL,
-  `title` varchar(32) NOT NULL,
-  `date` datetime NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
-SQL;
-
-		$queries[] = <<<SQL
-CREATE TABLE IF NOT EXISTS `{$this->tableUser}` (
-  `id` int(10) NOT NULL AUTO_INCREMENT,
-  `name` varchar(16) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
-SQL;
-
-		$queries[] = <<<SQL
-CREATE TABLE IF NOT EXISTS `{$this->tableUserNews}` (
-  `id` int(10) NOT NULL AUTO_INCREMENT,
-  `userId` int(10) NOT NULL,
-  `newsId` int(10) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
-SQL;
-
-		return $queries;
-	}
-
 	public function getDataSet()
 	{
 		$dataSet = new TableDataSet();

@@ -69,21 +69,8 @@ abstract class DbTestCase extends \PHPUnit_Extensions_Database_TestCase
 		if($this->sql === null)
 		{
 			$this->sql = self::$con;
-
-			// create tables
-			$queries = $this->getBeforeQueries();
-
-			foreach($queries as $query)
-			{
-				$this->sql->exec($query);
-			}
 		}
 
 		return $this->createDefaultDBConnection($this->sql, $config['psx_sql_db']);
-	}
-
-	public function getBeforeQueries()
-	{
-		return array();
 	}
 }

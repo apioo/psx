@@ -63,14 +63,18 @@ class ConditionTest extends \PHPUnit_Framework_TestCase
 
 	public function testConditionMultiple()
 	{
-		$con = new Condition(array('id', '=', '1'), array('id', '=', '2'));
+		$con = new Condition();
+		$con->add('id', '=', '1');
+		$con->add('id', '=', '2');
 
 		$this->assertEquals('WHERE id = ? AND id = ?', $con->getStatment());
 		$this->assertEquals(array('1', '2'), $con->getValues());
 		$this->assertEquals(true, $con->hasCondition());
 
 
-		$con = new Condition(array('id', '=', '1', 'OR'), array('id', '=', '2'));
+		$con = new Condition();
+		$con->add('id', '=', '1', 'OR');
+		$con->add('id', '=', '2');
 
 		$this->assertEquals('WHERE id = ? OR id = ?', $con->getStatment());
 		$this->assertEquals(array('1', '2'), $con->getValues());

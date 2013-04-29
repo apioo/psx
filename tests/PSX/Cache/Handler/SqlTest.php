@@ -58,17 +58,6 @@ class SqlTest extends CacheTest
 				$config['psx_sql_user'],
 				$config['psx_sql_pw'],
 				$config['psx_sql_db']);
-
-			$sql = <<<SQL
-CREATE TABLE IF NOT EXISTS `{$this->table}` (
-  `id` VARCHAR(32) NOT NULL,
-  `content` BLOB NOT NULL,
-  `date` DATETIME NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8
-SQL;
-
-			$this->sql->exec($sql);
 		}
 		catch(PDOException $e)
 		{

@@ -65,6 +65,12 @@ class ResultSetTest extends \PHPUnit_Framework_TestCase
 		{
 			$this->assertEquals($i + 1, $result['id']);
 		}
+
+		// test internal reset
+		foreach($resultSet as $i => $result)
+		{
+			$this->assertEquals($i + 1, $result['id']);
+		}
 	}
 
 	public function testEmptyResultSet()

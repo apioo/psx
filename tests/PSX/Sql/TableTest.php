@@ -45,21 +45,6 @@ class TableTest extends DbTestCase
 {
 	protected $table = 'psx_sql_table_test';
 
-	public function getBeforeQueries()
-	{
-		$queries   = array();
-		$queries[] = <<<SQL
-CREATE TABLE IF NOT EXISTS `{$this->table}` (
-  `id` int(10) NOT NULL AUTO_INCREMENT,
-  `title` varchar(32) NOT NULL,
-  `date` datetime NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
-SQL;
-
-		return $queries;
-	}
-
 	public function getDataSet()
 	{
 		$dataSet = new TableDataSet();
@@ -134,7 +119,7 @@ SQL;
 	{
 		// update
 		$table  = new TableTestTable($this->sql);
-		$record = $table->getRecord(1);
+		$record = $table->getRecord(1, '\PSX\Sql\TableTestRecord');
 
 		$this->assertEquals(true, $record instanceof TableTestRecord);
 		$this->assertEquals(1, $record->id);
@@ -142,7 +127,7 @@ SQL;
 
 		// create
 		$table  = new TableTestTable($this->sql);
-		$record = $table->getRecord();
+		$record = $table->getRecord(null, '\PSX\Sql\TableTestRecord');
 
 		$this->assertEquals(true, $record instanceof TableTestRecord);
 	}
@@ -382,17 +367,6 @@ class TableTestTable extends TableAbstract
 			'date'  => self::TYPE_DATETIME,
 
 		);
-	}
-
-	public function getDefaultRecordClass()
-	{
-		return '\PSX\Sql\TableTestRecord';
-	}
-
-
-	public function getDefaultRecordArgs()
-	{
-		return array();
 	}
 }
 
