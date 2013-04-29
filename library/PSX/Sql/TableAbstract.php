@@ -137,10 +137,12 @@ abstract class TableAbstract implements TableInterface
 		return $this->select;
 	}
 
-	public function getRecord($id = null)
+	public function getRecord($id = null, $class = null, array $args = array())
 	{
-		$class = $this->getDefaultRecordClass();
-		$args  = $this->getDefaultRecordArgs();
+		if($class === null)
+		{
+			$class = 'stdClass';
+		}
 
 		if($id !== null)
 		{
@@ -327,15 +329,5 @@ abstract class TableAbstract implements TableInterface
 		}
 
 		return $this->sql->delete($this->getName(), $condition, $modifier);
-	}
-
-	public function getDefaultRecordClass()
-	{
-		return substr(get_class($this), 0, -6);
-	}
-
-	public function getDefaultRecordArgs()
-	{
-		return array($this);
 	}
 }
