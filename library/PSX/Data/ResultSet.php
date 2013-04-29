@@ -72,9 +72,19 @@ class ResultSet extends RecordAbstract implements Iterator, Countable
 		);
 	}
 
+	public function getTotalResults()
+	{
+		return $this->totalResults;
+	}
+
 	public function setTotalResults($totalResults)
 	{
 		$this->totalResults = $totalResults;
+	}
+
+	public function getStartIndex()
+	{
+		return $this->startIndex;
 	}
 
 	public function setStartIndex($startIndex)
@@ -82,9 +92,19 @@ class ResultSet extends RecordAbstract implements Iterator, Countable
 		$this->startIndex = $startIndex;
 	}
 
+	public function getItemsPerPage()
+	{
+		return $this->itemsPerPage;
+	}
+
 	public function setItemsPerPage($itemsPerPage)
 	{
 		$this->itemsPerPage = $itemsPerPage;
+	}
+
+	public function getEntry()
+	{
+		return $this->entry;
 	}
 
 	public function setEntry(array $entry)
@@ -102,10 +122,26 @@ class ResultSet extends RecordAbstract implements Iterator, Countable
 		return count($this->entry);
 	}
 
+	public function add(RecordInterface $row)
+	{
+		$this->entry[] = $row;
+	}
+
+	public function addData(array $row)
+	{
+		$this->entry[] = $row;
+	}
+
+	public function clear()
+	{
+		$this->entry = array();
+		$this->rewind();
+	}
+
 	// Iterator
 	public function current()
 	{
-		return $this->pointer = current($this->entry);
+		return current($this->entry);
 	}
 
 	public function key()
