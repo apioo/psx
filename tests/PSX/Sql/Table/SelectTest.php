@@ -102,6 +102,7 @@ class SelectTest extends DbTestCase
 
 	public function testJoinCardinality()
 	{
+		// test normal join
 		$news     = new SelectTestNews($this->sql);
 		$user     = new SelectTestUser($this->sql);
 		$userNews = new SelectTestUserNews($this->sql);
@@ -117,7 +118,17 @@ class SelectTest extends DbTestCase
 
 		$this->assertEquals(6, count($result));
 
+		foreach($result as $row)
+		{
+			$this->assertArrayHasKey('userId', $row);
+			$this->assertArrayHasKey('newsId', $row);
+			$this->assertArrayHasKey('clientId', $row);
+			$this->assertArrayHasKey('clientName', $row);
+			$this->assertArrayHasKey('newsId', $row);
+			$this->assertArrayHasKey('newsTitle', $row);
+		}
 
+		// test 1:n join
 		$news     = new SelectTestNews($this->sql);
 		$userNews = new SelectTestUserNews($this->sql);
 
@@ -128,6 +139,34 @@ class SelectTest extends DbTestCase
 			->getAll();
 
 		$this->assertEquals(6, count($result));
+
+		foreach($result as $row)
+		{
+			$this->assertArrayHasKey('id', $row);
+			$this->assertArrayHasKey('title', $row);
+			$this->assertArrayHasKey('fooUserId', $row);
+			$this->assertArrayHasKey('fooNewsId', $row);
+		}
+
+		// test n:1 join
+		$news     = new SelectTestNews($this->sql);
+		$userNews = new SelectTestUserNews($this->sql);
+
+		$result = $userNews->select(array('userId', 'newsId'))
+			->join(Join::INNER, $news
+				->select(array('id', 'title'), 'foo')
+			, 'n:1')
+			->getAll();
+
+		$this->assertEquals(6, count($result));
+
+		foreach($result as $row)
+		{
+			$this->assertArrayHasKey('userId', $row);
+			$this->assertArrayHasKey('newsId', $row);
+			$this->assertArrayHasKey('fooId', $row);
+			$this->assertArrayHasKey('fooTitle', $row);
+		}
 	}
 
 	public function testGetAll()
@@ -146,13 +185,13 @@ class SelectTest extends DbTestCase
 		$row = current($result);
 
 		$this->assertEquals(true, is_array($row));
-		$this->assertEquals(true, isset($row['id']));
-		$this->assertEquals(true, isset($row['userId']));
-		$this->assertEquals(true, isset($row['title']));
-		$this->assertEquals(true, isset($row['clientId']));
-		$this->assertEquals(true, isset($row['clientName']));
+		$this->assertArrayHasKey('id', $row);
+		$this->assertArrayHasKey('userId', $row);
+		$this->assertArrayHasKey('title', $row);
+		$this->assertArrayHasKey('clientId', $row);
+		$this->assertArrayHasKey('clientName', $row);
 
-		// object
+		// default object
 		$news   = new SelectTestNews($this->sql);
 		$user   = new SelectTestUser($this->sql);
 		$result = $news->select(array('id', 'userId', 'title'))
@@ -165,12 +204,32 @@ class SelectTest extends DbTestCase
 
 		$row = current($result);
 
-		$this->assertEquals(true, $row instanceof \stdClass);
-		$this->assertEquals(true, isset($row->id));
-		$this->assertEquals(true, isset($row->userId));
-		$this->assertEquals(true, isset($row->title));
-		$this->assertEquals(true, isset($row->clientId));
-		$this->assertEquals(true, isset($row->clientName));
+		$this->assertInstanceOf('stdClass', $row);
+		$this->assertObjectHasAttribute('id', $row);
+		$this->assertObjectHasAttribute('userId', $row);
+		$this->assertObjectHasAttribute('title', $row);
+		$this->assertObjectHasAttribute('clientId', $row);
+		$this->assertObjectHasAttribute('clientName', $row);
+
+		// custom object
+		$news   = new SelectTestNews($this->sql);
+		$user   = new SelectTestUser($this->sql);
+		$result = $news->select(array('id', 'userId', 'title'))
+			->join(Join::INNER, $user
+				->select(array('id', 'name'), 'client')
+			)
+			->orderBy('id', Sql::SORT_DESC)
+			->limit(1)
+			->getAll(Sql::FETCH_OBJECT, '\PSX\Sql\Table\SelectTestRecord', array('foo', 'bar'));
+
+		$row = current($result);
+
+		$this->assertInstanceOf('\PSX\Sql\Table\SelectTestRecord', $row);
+		$this->assertObjectHasAttribute('id', $row);
+		$this->assertObjectHasAttribute('userId', $row);
+		$this->assertObjectHasAttribute('title', $row);
+		$this->assertObjectHasAttribute('clientId', $row);
+		$this->assertObjectHasAttribute('clientName', $row);
 	}
 
 	public function testGetRow()
@@ -186,13 +245,13 @@ class SelectTest extends DbTestCase
 			->getRow();
 
 		$this->assertEquals(true, is_array($row));
-		$this->assertEquals(true, isset($row['id']));
-		$this->assertEquals(true, isset($row['userId']));
-		$this->assertEquals(true, isset($row['title']));
-		$this->assertEquals(true, isset($row['clientId']));
-		$this->assertEquals(true, isset($row['clientName']));
+		$this->assertArrayHasKey('id', $row);
+		$this->assertArrayHasKey('userId', $row);
+		$this->assertArrayHasKey('title', $row);
+		$this->assertArrayHasKey('clientId', $row);
+		$this->assertArrayHasKey('clientName', $row);
 
-		// object
+		// default object
 		$news = new SelectTestNews($this->sql);
 		$user = new SelectTestUser($this->sql);
 		$row  = $news->select(array('id', 'userId', 'title'))
@@ -202,37 +261,29 @@ class SelectTest extends DbTestCase
 			->limit(1)
 			->getRow(Sql::FETCH_OBJECT);
 
-		$this->assertEquals(true, $row instanceof \stdClass);
-		$this->assertEquals(true, isset($row->id));
-		$this->assertEquals(true, isset($row->userId));
-		$this->assertEquals(true, isset($row->title));
-		$this->assertEquals(true, isset($row->clientId));
-		$this->assertEquals(true, isset($row->clientName));
-	}
+		$this->assertInstanceOf('stdClass', $row);
+		$this->assertObjectHasAttribute('id', $row);
+		$this->assertObjectHasAttribute('userId', $row);
+		$this->assertObjectHasAttribute('title', $row);
+		$this->assertObjectHasAttribute('clientId', $row);
+		$this->assertObjectHasAttribute('clientName', $row);
 
-	public function testGetResultSet()
-	{
-		$news   = new SelectTestNews($this->sql);
-		$result = $news->select(array('id', 'userId', 'title'))
-			->getResultSet(0, 16, 'id', 'ascending');
+		// custom object
+		$news = new SelectTestNews($this->sql);
+		$user = new SelectTestUser($this->sql);
+		$row  = $news->select(array('id', 'userId', 'title'))
+			->join(Join::INNER, $user
+				->select(array('id', 'name'), 'client')
+			)
+			->limit(1)
+			->getRow(Sql::FETCH_OBJECT, '\PSX\Sql\Table\SelectTestRecord', array('foo', 'bar'));
 
-		$this->assertEquals(true, $result instanceof ResultSet);
-		$this->assertEquals(4, $result->getLength());
-		$this->assertEquals(4, count($result->entry));
-
-		reset($result);
-		$len = count($result);
-
-		for($i = 1; $i <= $len; $i++)
-		{
-			$entry = $result->current();
-
-			$this->assertEquals(true, isset($entry['id']));
-			$this->assertEquals(true, isset($entry['title']));
-			$this->assertEquals($i, $entry['id']);
-
-			$result->next();
-		}
+		$this->assertInstanceOf('\PSX\Sql\Table\SelectTestRecord', $row);
+		$this->assertObjectHasAttribute('id', $row);
+		$this->assertObjectHasAttribute('userId', $row);
+		$this->assertObjectHasAttribute('title', $row);
+		$this->assertObjectHasAttribute('clientId', $row);
+		$this->assertObjectHasAttribute('clientName', $row);
 	}
 }
 
@@ -259,16 +310,6 @@ class SelectTestNews extends TableAbstract
 			'date'   => self::TYPE_DATETIME,
 		);
 	}
-
-	public function getDefaultRecordClass()
-	{
-		return 'stdClass';
-	}
-
-	public function getDefaultRecordArgs()
-	{
-		return array();
-	}
 }
 
 class SelectTestUser extends TableAbstract
@@ -289,16 +330,6 @@ class SelectTestUser extends TableAbstract
 			'id'   => self::TYPE_INT | 10 | self::PRIMARY_KEY | self::AUTO_INCREMENT,
 			'name' => self::TYPE_VARCHAR | 16,
 		);
-	}
-
-	public function getDefaultRecordClass()
-	{
-		return 'stdClass';
-	}
-
-	public function getDefaultRecordArgs()
-	{
-		return array();
 	}
 }
 
@@ -325,14 +356,11 @@ class SelectTestUserNews extends TableAbstract
 			'newsId' => self::TYPE_INT | 10,
 		);
 	}
+}
 
-	public function getDefaultRecordClass()
+class SelectTestRecord
+{
+	public function __construct($foo, $bar)
 	{
-		return 'stdClass';
-	}
-
-	public function getDefaultRecordArgs()
-	{
-		return array();
 	}
 }
