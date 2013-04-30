@@ -90,6 +90,11 @@ abstract class HandlerAbstract implements HandlerInterface
 			$class = $this->getClassName();
 		}
 
+		if($mode == Sql::FETCH_OBJECT && empty($args))
+		{
+			$args = $this->getClassArgs();
+		}
+
 		return $select->getAll($mode, $class, $args);
 	}
 
@@ -106,6 +111,11 @@ abstract class HandlerAbstract implements HandlerInterface
 		if($mode == Sql::FETCH_OBJECT && $class === null)
 		{
 			$class = $this->getClassName();
+		}
+
+		if($mode == Sql::FETCH_OBJECT && empty($args))
+		{
+			$args = $this->getClassArgs();
 		}
 
 		return $select->where('id', '=', $id)
