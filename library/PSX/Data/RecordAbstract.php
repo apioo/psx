@@ -144,7 +144,7 @@ abstract class RecordAbstract implements RecordInterface, Serializable
 
 	public function unserialize($data)
 	{
-		$data = json_decode($data);
+		$data = json_decode($data, true);
 
 		if(is_array($data))
 		{
