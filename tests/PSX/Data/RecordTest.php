@@ -236,6 +236,21 @@ DATA;
 
 		$this->assertXmlStringEqualsXmlString($body, $resp);
 	}
+
+	public function testSerialize()
+	{
+		$news = new News();
+		$news->setTitle('foo');
+		$news->setCount(1);
+
+		$this->assertEquals('foo', $news->getTitle());
+		$this->assertEquals(1, $news->getCount());
+
+		$news = unserialize(serialize($news));
+
+		$this->assertEquals('foo', $news->getTitle());
+		$this->assertEquals(1, $news->getCount());
+	}
 }
 
 class News extends RecordAbstract
