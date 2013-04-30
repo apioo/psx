@@ -255,11 +255,21 @@ class Select implements SelectInterface
 
 	public function getAll($mode = 0, $class = null, array $args = array())
 	{
+		if($mode == Sql::FETCH_OBJECT && $class === null)
+		{
+			$class = 'stdClass';
+		}
+
 		return $this->sql->getAll($this->buildQuery(), $this->condition->getValues(), $mode, $class, $args);
 	}
 
 	public function getRow($mode = 0, $class = null, array $args = array())
 	{
+		if($mode == Sql::FETCH_OBJECT && $class === null)
+		{
+			$class = 'stdClass';
+		}
+
 		$this->limit(1);
 
 		return $this->sql->getRow($this->buildQuery(), $this->condition->getValues(), $mode, $class, $args);
