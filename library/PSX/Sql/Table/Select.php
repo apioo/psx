@@ -253,79 +253,13 @@ class Select implements SelectInterface
 		return $this->selectedColumns;
 	}
 
-	public function getResultSet($startIndex = 0, $count = 16, $sortBy = null, $sortOrder = null, $filterBy = null, $filterOp = null, $filterValue = null, $updatedSince = null, $mode = 0, $class = null, array $args = array())
-	{
-		$start     = $startIndex !== null ? (integer) $startIndex : 0;
-		$count     = $count      !== null ? (integer) $count      : 16;
-		$sortBy    = $sortBy     !== null && isset($this->availableColumns[$sortBy]) ? $sortBy : current($this->columns);
-		$sortOrder = $sortOrder  !== null ? (strcasecmp($sortOrder, 'ascending') == 0 ? Sql::SORT_ASC : Sql::SORT_DESC) : Sql::SORT_DESC;
-
-		if(isset($this->availableColumns[$filterBy]))
-		{
-			switch($filterOp)
-			{
-				case 'contains':
-					$this->where($filterBy, 'LIKE', '%' . $filterValue . '%');
-					break;
-
-				case 'equals':
-					$this->where($filterBy, '=', $filterValue);
-					break;
-
-				case 'startsWith':
-					$this->where($filterBy, 'LIKE', $filterValue . '%');
-					break;
-
-				case 'present':
-					$this->where($filterBy, 'IS NOT', 'NULL', 'AND');
-					$this->where($filterBy, 'NOT LIKE', '');
-					break;
-			}
-		}
-
-		if($updatedSince !== null)
-		{
-			// search datetime field
-			$dateColumn = $this->table->getFirstColumnWithType(self::TYPE_DATETIME);
-
-			if($dateColumn !== null)
-			{
-				$datetime = new DateTime($updatedSince);
-
-				$this->where($dateColumn, '>', $datetime->format(DateTime::SQL));
-			}
-		}
-
-		$this->orderBy($sortBy, $sortOrder);
-		$this->limit($start, $count);
-
-		$totalResults = $this->getTotalResults();
-		$entries      = $this->getAll($mode, $class, $args);
-
-		$resultSet = new ResultSet($totalResults, $start, $count, $entries);
-
-		return $resultSet;
-	}
-
 	public function getAll($mode = 0, $class = null, array $args = array())
 	{
-		if($mode === Sql::FETCH_OBJECT && $class === null && $args === array())
-		{
-			$class = $this->table->getDefaultRecordClass();
-			$args  = $this->table->getDefaultRecordArgs();
-		}
-
 		return $this->sql->getAll($this->buildQuery(), $this->condition->getValues(), $mode, $class, $args);
 	}
 
 	public function getRow($mode = 0, $class = null, array $args = array())
 	{
-		if($mode === Sql::FETCH_OBJECT && $class === null && $args === array())
-		{
-			$class = $this->table->getDefaultRecordClass();
-			$args  = $this->table->getDefaultRecordArgs();
-		}
-
 		$this->limit(1);
 
 		return $this->sql->getRow($this->buildQuery(), $this->condition->getValues(), $mode, $class, $args);
