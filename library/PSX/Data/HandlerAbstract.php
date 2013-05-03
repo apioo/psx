@@ -25,6 +25,8 @@
 
 namespace PSX\Data;
 
+use BadMethodCallException;
+use InvalidArgumentException;
 use PSX\Data\ResultSet;
 use PSX\Sql;
 use PSX\Sql\Condition;
@@ -67,6 +69,10 @@ abstract class HandlerAbstract implements HandlerInterface
 		{
 			$select->setColumns($fields);
 		}
+		else
+		{
+			$select->setColumns($select->getAllColumns());
+		}
 
 		$select->orderBy($sortBy, $sortOrder)
 			->limit($startIndex, $count);
@@ -98,7 +104,53 @@ abstract class HandlerAbstract implements HandlerInterface
 		return $select->getAll($mode, $class, $args);
 	}
 
-	public function getById($id, array $fields = array(), $mode = 0, $class = null, array $args = array())
+	public function getBy(Condition $con, array $fields = array(), $mode = 0, $class = null, array $args = array())
+	{
+		return $this->getAll($fields, null, null, null, null, $con, $mode, $class, $args);
+	}
+
+	public function getOneBy(Condition $con, array $fields = array(), $mode = 0, $class = null, array $args = array())
+	{
+		$select = $this->getSelect();
+		$fields = array_intersect($fields, $select->getSupportedFields());
+
+		if(!empty($fields))
+		{
+			$select->setColumns($fields);
+		}
+		else
+		{
+			$select->setColumns($select->getAllColumns());
+		}
+
+		if($mode == Sql::FETCH_OBJECT && $class === null)
+		{
+			$class = $this->getClassName();
+		}
+
+		if($mode == Sql::FETCH_OBJECT && empty($args))
+		{
+			$args = $this->getClassArgs();
+		}
+
+		if($con->hasCondition())
+		{
+			$values = $con->toArray();
+
+			foreach($values as $row)
+			{
+				$select->where($row[Condition::COLUMN], 
+					$row[Condition::OPERATOR], 
+					$row[Condition::VALUE], 
+					$row[Condition::CONJUNCTION], 
+					$row[Condition::TYPE]);
+			}
+		}
+
+		return $select->getRow($mode, $class, $args);
+	}
+
+	public function get($id, array $fields = array(), $mode = 0, $class = null, array $args = array())
 	{
 		$select = $this->getSelect();
 		$fields = array_intersect($fields, $select->getSupportedFields());
@@ -118,8 +170,9 @@ abstract class HandlerAbstract implements HandlerInterface
 			$args = $this->getClassArgs();
 		}
 
-		return $select->where('id', '=', $id)
-			->getRow($mode, $class, $args);
+		$select->where($select->getTable()->getPrimaryKey(), '=', $id);
+
+		return $select->getRow($mode, $class, $args);
 	}
 
 	public function getResultSet(array $fields, $startIndex = 0, $count = 16, $sortBy = null, $sortOrder = null, Condition $con = null, $mode = 0, $class = null, array $args = array())
@@ -194,6 +247,54 @@ abstract class HandlerAbstract implements HandlerInterface
 	public function delete(RecordInterface $record)
 	{
 		$this->table->delete($record);
+	}
+
+	public function __call($method, $arguments)
+	{
+		if(substr($method, 0, 8) == 'getOneBy')
+		{
+			$column = lcfirst(substr($method, 8));
+			$value  = isset($arguments[0]) ? $arguments[0] : null;
+			$fields = isset($arguments[1]) ? $arguments[1] : array();
+			$mode   = isset($arguments[2]) ? $arguments[2] : 0;
+			$class  = isset($arguments[3]) ? $arguments[3] : null;
+			$args   = isset($arguments[4]) ? $arguments[4] : array();
+
+			if(!empty($value))
+			{
+				$con = new Condition(array($column, '=', $value));
+			}
+			else
+			{
+				throw new InvalidArgumentException('Value required');
+			}
+
+			return $this->getOneBy($con, $fields, $mode, $class, $args);
+		}
+		else if(substr($method, 0, 5) == 'getBy')
+		{
+			$column = lcfirst(substr($method, 5));
+			$value  = isset($arguments[0]) ? $arguments[0] : null;
+			$fields = isset($arguments[1]) ? $arguments[1] : array();
+			$mode   = isset($arguments[2]) ? $arguments[2] : 0;
+			$class  = isset($arguments[3]) ? $arguments[3] : null;
+			$args   = isset($arguments[4]) ? $arguments[4] : array();
+
+			if(!empty($value))
+			{
+				$con = new Condition(array($column, '=', $value));
+			}
+			else
+			{
+				throw new InvalidArgumentException('Value required');
+			}
+
+			return $this->getBy($con, $fields, $mode, $class, $args);
+		}
+		else
+		{
+			throw new BadMethodCallException('Undefined method');
+		}
 	}
 
 	protected function getSelect()

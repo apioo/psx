@@ -204,11 +204,38 @@ class HandlerTest extends DbTestCase
 		}
 	}
 
-	public function testGetById()
+	public function testGetBy()
 	{
 		$handler = $this->getHandler();
 
-		$row = $handler->getById(1, array('id', 'title'));
+		$result = $handler->getByUserId(1, array('id', 'title'));
+
+		foreach($result as $row)
+		{
+			$this->assertEquals(true, is_array($row));
+			$this->assertEquals(true, isset($row['id']));
+			$this->assertEquals(false, isset($row['userId']));
+			$this->assertEquals(true, isset($row['title']));
+			$this->assertEquals(false, isset($row['date']));
+		}
+
+		$result = $handler->getByUserId(1, array('id', 'title'), Sql::FETCH_OBJECT);
+
+		foreach($result as $obj)
+		{
+			$this->assertInstanceOf('stdClass', $obj);
+			$this->assertEquals(true, isset($obj->id));
+			$this->assertEquals(false, isset($obj->userId));
+			$this->assertEquals(true, isset($obj->title));
+			$this->assertEquals(false, isset($obj->date));
+		}
+	}
+
+	public function testGetOneBy()
+	{
+		$handler = $this->getHandler();
+
+		$row = $handler->getOneById(1, array('id', 'title'));
 
 		$this->assertEquals(true, is_array($row));
 		$this->assertEquals(true, isset($row['id']));
@@ -216,7 +243,28 @@ class HandlerTest extends DbTestCase
 		$this->assertEquals(true, isset($row['title']));
 		$this->assertEquals(false, isset($row['date']));
 
-		$obj = $handler->getById(1, array('id', 'title'), Sql::FETCH_OBJECT);
+		$obj = $handler->getOneById(1, array('id', 'title'), Sql::FETCH_OBJECT);
+
+		$this->assertInstanceOf('stdClass', $obj);
+		$this->assertEquals(true, isset($obj->id));
+		$this->assertEquals(false, isset($obj->userId));
+		$this->assertEquals(true, isset($obj->title));
+		$this->assertEquals(false, isset($obj->date));
+	}
+
+	public function testGet()
+	{
+		$handler = $this->getHandler();
+
+		$row = $handler->get(1, array('id', 'title'));
+
+		$this->assertEquals(true, is_array($row));
+		$this->assertEquals(true, isset($row['id']));
+		$this->assertEquals(false, isset($row['userId']));
+		$this->assertEquals(true, isset($row['title']));
+		$this->assertEquals(false, isset($row['date']));
+
+		$obj = $handler->get(1, array('id', 'title'), Sql::FETCH_OBJECT);
 
 		$this->assertInstanceOf('stdClass', $obj);
 		$this->assertEquals(true, isset($obj->id));

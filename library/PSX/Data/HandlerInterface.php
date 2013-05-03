@@ -44,9 +44,9 @@ use PSX\Sql\Condition;
 interface HandlerInterface
 {
 	/**
-	 * Returns an array of records matching the conditions
+	 * Returns an array of records matching the condition
 	 *
-	 * @return array<RecordInterface>
+	 * @return array<array|RecordInterface>
 	 */
 	public function getAll(array $fields, 
 		$startIndex = 0, 
@@ -59,11 +59,33 @@ interface HandlerInterface
 		array $args = array());
 
 	/**
-	 * Returns an record by the id
+	 * Returns an array of records matching the condition
 	 *
-	 * @return RecordInterface
+	 * @return array<array|RecordInterface>
 	 */
-	public function getById($id, 
+	public function getBy(Condition $con, 
+		array $fields = array(), 
+		$mode = 0, 
+		$class = null, 
+		array $args = array());
+
+	/**
+	 * Returns an record by the condition
+	 *
+	 * @return array|RecordInterface
+	 */
+	public function getOneBy(Condition $con, 
+		array $fields = array(), 
+		$mode = 0, 
+		$class = null, 
+		array $args = array());
+
+	/**
+	 * Returns an record by the primary key
+	 *
+	 * @return array|RecordInterface
+	 */
+	public function get($id, 
 		array $fields = array(), 
 		$mode = 0, 
 		$class = null, 
