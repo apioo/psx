@@ -71,7 +71,7 @@ abstract class HandlerAbstract implements HandlerInterface
 		}
 		else
 		{
-			$select->setColumns($select->getAllColumns());
+			$select->setColumns(array_keys($select->getAllColumns()));
 		}
 
 		$select->orderBy($sortBy, $sortOrder)
@@ -120,7 +120,7 @@ abstract class HandlerAbstract implements HandlerInterface
 		}
 		else
 		{
-			$select->setColumns($select->getAllColumns());
+			$select->setColumns(array_keys($select->getAllColumns()));
 		}
 
 		if($mode == Sql::FETCH_OBJECT && $class === null)
