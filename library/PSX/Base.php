@@ -41,7 +41,7 @@ use UnexpectedValueException;
  */
 class Base
 {
-	const VERSION = '0.5.4';
+	const VERSION = '0.5.5';
 
 	/**
 	 * The current request method
