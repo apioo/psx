@@ -28,6 +28,7 @@ namespace PSX\Data;
 use PSX\Exception;
 use PSX\Util\Annotation;
 use ReflectionClass;
+use ReflectionException;
 use ReflectionMethod;
 use Serializable;
 
@@ -89,12 +90,19 @@ abstract class RecordAbstract implements RecordInterface, Serializable
 							$k = implode('', array_map('ucfirst', explode('_', $k)));
 						}
 
-						$methodName = 'set' . ucfirst($k);
-						$method = $class->getMethod($methodName);
-
-						if($method instanceof ReflectionMethod)
+						try
 						{
-							$this->$methodName($this->getMethodValue($method, $v, $result->getType()));
+							$methodName = 'set' . ucfirst($k);
+							$method = $class->getMethod($methodName);
+
+							if($method instanceof ReflectionMethod)
+							{
+								$this->$methodName($this->getMethodValue($method, $v, $result->getType()));
+							}
+						}
+						catch(ReflectionException $e)
+						{
+							// method does not exist
 						}
 					}
 				}
