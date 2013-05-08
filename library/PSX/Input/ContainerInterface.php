@@ -1,13 +1,11 @@
 <?php
 /*
- *  $Id: ContainerInterface.php 560 2012-07-29 02:42:22Z k42b3.x@googlemail.com $
- *
  * psx
  * A object oriented and modular based PHP framework for developing
  * dynamic web applications. For the current version and informations
  * visit <http://phpsx.org>
  *
- * Copyright (c) 2010-2012 Christoph Kappestein <k42b3.x@gmail.com>
+ * Copyright (c) 2010-2013 Christoph Kappestein <k42b3.x@gmail.com>
  *
  * This file is part of psx. psx is free software: you can
  * redistribute it and/or modify it under the terms of the
@@ -29,14 +27,11 @@ use ArrayAccess;
 use Countable;
 
 /**
- * PSX_Input_ContainerInterface
+ * ContainerInterface
  *
- * @author     Christoph Kappestein <k42b3.x@gmail.com>
- * @license    http://www.gnu.org/licenses/gpl.html GPLv3
- * @link       http://phpsx.org
- * @category   PSX
- * @package    PSX_Input
- * @version    $Revision: 560 $
+ * @author  Christoph Kappestein <k42b3.x@gmail.com>
+ * @license http://www.gnu.org/licenses/gpl.html GPLv3
+ * @link    http://phpsx.org
  */
 interface ContainerInterface extends Countable, ArrayAccess
 {
@@ -50,7 +45,7 @@ interface ContainerInterface extends Countable, ArrayAccess
 	/**
 	 * Returns the validator object
 	 *
-	 * @return PSX_Validate
+	 * @return PSX\Validate
 	 */
 	public function getValidator();
 }

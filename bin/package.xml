@@ -10,17 +10,24 @@
     <email>k42b3@phpsx.org</email>
     <active>yes</active>
   </lead>
-  <date>2013-03-30</date>
+  <date>2013-04-30</date>
   <version>
-    <release>0.5.1</release>
-    <api>0.5.1</api>
+    <release>0.5.3</release>
+    <api>0.5.3</api>
   </version>
   <stability>
     <release>stable</release>
     <api>stable</api>
   </stability>
   <license uri="http://www.gnu.org/licenses/">GPLv3 License</license>
-  <notes></notes>
+  <notes>* Fix Oauth2 error exception types
+* Improve handler abstract and interface
+* Use json encode/decode to un/serialize records
+* ResultSet add getter methods and add(), clear() method
+* Remove static parse methods from Condition
+* Remove getDefaultRecordClass from TableAbstract since the table has not to
+decide wich object should be used this is part of the handler
+* Improve tests and remove create table statments in tests</notes>
   <contents>
     <dir name="/">
       <dir name="PSX">
@@ -97,6 +104,11 @@
           <file name="Record.php" role="php"/>
           <file name="RecordAbstract.php" role="php"/>
           <file name="RecordInterface.php" role="php"/>
+          <dir name="RecordStore">
+            <file name="Memory.php" role="php"/>
+            <file name="Session.php" role="php"/>
+          </dir>
+          <file name="RecordStoreInterface.php" role="php"/>
           <file name="ResultSet.php" role="php"/>
           <dir name="Writer">
             <dir name="Atom">
@@ -264,15 +276,12 @@
             <file name="AuthorizationCode.php" role="php"/>
             <file name="ClientCredentials.php" role="php"/>
             <dir name="Exception">
-              <file name="AccessDeniedException.php" role="php"/>
               <file name="InvalidClientException.php" role="php"/>
               <file name="InvalidGrantException.php" role="php"/>
               <file name="InvalidRequestException.php" role="php"/>
               <file name="InvalidScopeException.php" role="php"/>
-              <file name="ServerErrorException.php" role="php"/>
-              <file name="TemporarilyUnavailableException.php" role="php"/>
               <file name="UnauthorizedClientException.php" role="php"/>
-              <file name="UnsupportedResponseTypeException.php" role="php"/>
+              <file name="UnsupportedGrantTypeException.php" role="php"/>
             </dir>
             <file name="PasswordCredentials.php" role="php"/>
           </dir>
@@ -361,17 +370,66 @@
         </dir>
         <dir name="Payment">
           <dir name="Paypal">
-            <file name="Exception.php" role="php"/>
-            <file name="ExpressCheckout.php" role="php"/>
-            <dir name="Ipn">
-              <file name="Message.php" role="php"/>
+            <file name="CallbackAbstract.php" role="php"/>
+            <dir name="Data">
+              <file name="Address.php" role="php"/>
+              <file name="Amount.php" role="php"/>
+              <file name="CreditCard.php" role="php"/>
+              <file name="CreditCardToken.php" role="php"/>
+              <file name="Details.php" role="php"/>
+              <file name="FundingInstrument.php" role="php"/>
+              <file name="Item.php" role="php"/>
+              <file name="ItemList.php" role="php"/>
+              <file name="Link.php" role="php"/>
+              <file name="Payer.php" role="php"/>
+              <file name="PayerInfo.php" role="php"/>
+              <file name="Payment.php" role="php"/>
+              <file name="RedirectUrls.php" role="php"/>
+              <file name="Refund.php" role="php"/>
+              <file name="Sale.php" role="php"/>
+              <file name="ShippingAddress.php" role="php"/>
+              <file name="Transaction.php" role="php"/>
             </dir>
-            <file name="IpnAbstract.php" role="php"/>
-            <dir name="Store">
-              <file name="Session.php" role="php"/>
+            <dir name="Exception">
+              <file name="CreditCardCvvCheckFailedException.php" role="php"/>
+              <file name="CreditCardRefusedException.php" role="php"/>
+              <file name="DateRetrievalException.php" role="php"/>
+              <file name="DuplicateRequestIdException.php" role="php"/>
+              <file name="ExpiredCreditCardException.php" role="php"/>
+              <file name="ExpiredCreditCardTokenException.php" role="php"/>
+              <file name="FullRefundNotAllowedAfterPartialRefundException.php" role="php"/>
+              <file name="InternalServiceErrorException.php" role="php"/>
+              <file name="InvalidAccountNumberException.php" role="php"/>
+              <file name="InvalidPayerIdException.php" role="php"/>
+              <file name="InvalidResourceIdException.php" role="php"/>
+              <file name="MalformedRequestException.php" role="php"/>
+              <file name="PayeeAccountLockedOrClosedException.php" role="php"/>
+              <file name="PayeeAccountRestrictedException.php" role="php"/>
+              <file name="PaymentApprovalExpiredException.php" role="php"/>
+              <file name="PaymentExpiredException.php" role="php"/>
+              <file name="PaymentNotApprovedForExecutionException.php" role="php"/>
+              <file name="PermissionDeniedException.php" role="php"/>
+              <file name="RefundTimeLimitExceededException.php" role="php"/>
+              <file name="TransactionAlreadyRefundedException.php" role="php"/>
+              <file name="TransactionLimitExceededException.php" role="php"/>
+              <file name="TransactionRefusedException.php" role="php"/>
+              <file name="ValidationErrorException.php" role="php"/>
             </dir>
-            <file name="StoreInterface.php" role="php"/>
+            <file name="api.paypal.com.pem" role="php"/>
+            <file name="api.sandbox.paypal.com.pem" role="php"/>
           </dir>
+          <file name="Paypal.php" role="php"/>
+          <dir name="Skrill">
+            <file name="CallbackAbstract.php" role="php"/>
+            <dir name="Data">
+              <file name="Customer.php" role="php"/>
+              <file name="Merchant.php" role="php"/>
+              <file name="Payment.php" role="php"/>
+              <file name="Status.php" role="php"/>
+            </dir>
+            <file name="www.moneybookers.com.pem" role="php"/>
+          </dir>
+          <file name="Skrill.php" role="php"/>
         </dir>
         <file name="Pingback.php" role="php"/>
         <dir name="PubSubHubBub">
@@ -401,7 +459,6 @@
           <file name="Table.php" role="php"/>
           <file name="TableAbstract.php" role="php"/>
           <file name="TableInterface.php" role="php"/>
-          <file name="Util.php" role="php"/>
         </dir>
         <file name="Sql.php" role="php"/>
         <dir name="Swagger">
@@ -478,6 +535,7 @@
           <file name="CacheTest.php" role="test"/>
           <file name="ConfigTest.php" role="test"/>
           <dir name="Data">
+            <file name="HandlerTest.php" role="test"/>
             <dir name="Reader">
               <file name="DomTest.php" role="test"/>
               <file name="FormTest.php" role="test"/>
@@ -486,6 +544,7 @@
               <file name="RawTest.php" role="test"/>
               <file name="XmlTest.php" role="test"/>
             </dir>
+            <file name="RecordTest.php" role="test"/>
             <file name="ResultSetTest.php" role="test"/>
             <dir name="Writer">
               <dir name="Atom">
@@ -588,6 +647,9 @@
               <file name="RSASHA1Test.php" role="test"/>
             </dir>
           </dir>
+          <dir name="Oauth2">
+            <file name="AuthorizationAbstractTest.php" role="test"/>
+          </dir>
           <file name="OauthTest.php" role="test"/>
           <file name="OembedTest.php" role="test"/>
           <dir name="OpenId">
@@ -596,9 +658,8 @@
           <file name="OpenIdTest.php" role="test"/>
           <file name="OpengraphTest.php" role="test"/>
           <dir name="Payment">
-            <dir name="Paypal">
-              <file name="ExpressCheckoutTest.php" role="test"/>
-            </dir>
+            <file name="PaypalTest.php" role="test"/>
+            <file name="SkrillTest.php" role="test"/>
           </dir>
           <file name="PingbackTest.php" role="test"/>
           <file name="PubSubHubBubTest.php" role="test"/>
@@ -640,6 +701,7 @@
           <file name="YadisTest.php" role="test"/>
         </dir>
         <file name="bootstrap.php" role="test"/>
+        <file name="psx.sql" role="test"/>
       </dir>
     </dir>
   </contents>
@@ -897,7 +959,46 @@ getParameter() and getBody() to PSX_ModuleAbstract
       </stability>
       <date>2013-03-30</date>
       <license uri="http://www.gnu.org/licenses/">GPLv3 License</license>
-      <notes></notes>
+      <notes>* Added autoload parameter in config to disable autoloading in case an external
+autoloader like composer is used
+* Added payment paypal and skrill library
+* Improve record added import annotation parsing and added Serializable
+interface
+* Fixed wrong name in OpenId provider namespace</notes>
+    </release>
+    <release>
+      <version>
+        <release>0.5.2</release>
+        <api>0.5.2</api>
+      </version>
+      <stability>
+        <release>beta</release>
+        <api>beta</api>
+      </stability>
+      <date>2013-04-21</date>
+      <license uri="http://www.gnu.org/licenses/">GPLv3 License</license>
+      <notes>* Use port in base self url
+* Config option to set include path</notes>
+    </release>
+    <release>
+      <version>
+        <release>0.5.3</release>
+        <api>0.5.3</api>
+      </version>
+      <stability>
+        <release>beta</release>
+        <api>beta</api>
+      </stability>
+      <date>2013-04-30</date>
+      <license uri="http://www.gnu.org/licenses/">GPLv3 License</license>
+      <notes>* Fix Oauth2 error exception types
+* Improve handler abstract and interface
+* Use json encode/decode to un/serialize records
+* ResultSet add getter methods and add(), clear() method
+* Remove static parse methods from Condition
+* Remove getDefaultRecordClass from TableAbstract since the table has not to
+decide wich object should be used this is part of the handler
+* Improve tests and remove create table statments in tests</notes>
     </release>
   </changelog>
 </package>

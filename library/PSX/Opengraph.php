@@ -1,13 +1,11 @@
 <?php
 /*
- *  $Id: Opengraph.php 619 2012-08-25 11:17:06Z k42b3.x@googlemail.com $
- *
  * psx
  * A object oriented and modular based PHP framework for developing
  * dynamic web applications. For the current version and informations
  * visit <http://phpsx.org>
  *
- * Copyright (c) 2010-2012 Christoph Kappestein <k42b3.x@gmail.com>
+ * Copyright (c) 2010-2013 Christoph Kappestein <k42b3.x@gmail.com>
  *
  * This file is part of psx. psx is free software: you can
  * redistribute it and/or modify it under the terms of the
@@ -34,25 +32,23 @@ use PSX\Http\GetRequest;
  * request to the specified url and tries to fetch all opengraph tags from the
  * response body. You can also specifiy wich tags should be fetched in example:
  * <code>
- * $http = new PSX_Http(new PSX_Http_Handler_Curl());
- * $og   = new PSX_Opengraph($http)
+ * $http = new Http();
+ * $og   = new Opengraph($http)
  *
- * $tags = $og->discover(new PSX_Url('http://opengraphprotocol.org/'));
+ * $tags = $og->discover(new Url('http://opengraphprotocol.org/'));
+ * $tags = $og->discover(new Url('http://opengraphprotocol.org/'), Opengraph::TITLE | Opengraph::TYPE);
  *
- * $tags = $og->discover(new PSX_Url('http://opengraphprotocol.org/'), PSX_Opengraph::TITLE | PSX_Opengraph::TYPE);
+ * echo $tags['title'];
  * </code>
  *
  * The discover method returns an associative array wich has as key the meta
- * name without "og:" and "-" are replaced with "_". As value either false if
- * the tag was not found or the value of the content attribute.
+ * name without "og:". As value either false if the tag was not found or the 
+ * value of the content attribute.
  *
- * @author     Christoph Kappestein <k42b3.x@gmail.com>
- * @license    http://www.gnu.org/licenses/gpl.html GPLv3
- * @link       http://phpsx.org
- * @see        http://opengraphprotocol.org
- * @category   PSX
- * @package    PSX_Opengraph
- * @version    $Revision: 619 $
+ * @author  Christoph Kappestein <k42b3.x@gmail.com>
+ * @license http://www.gnu.org/licenses/gpl.html GPLv3
+ * @link    http://phpsx.org
+ * @see     http://opengraphprotocol.org
  */
 class Opengraph
 {

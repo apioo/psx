@@ -1,13 +1,11 @@
 <?php
 /*
- *  $Id: ViewAbstract.php 542 2012-07-10 20:20:59Z k42b3.x@googlemail.com $
- *
  * psx
  * A object oriented and modular based PHP framework for developing
  * dynamic web applications. For the current version and informations
  * visit <http://phpsx.org>
  *
- * Copyright (c) 2010-2012 Christoph Kappestein <k42b3.x@gmail.com>
+ * Copyright (c) 2010-2013 Christoph Kappestein <k42b3.x@gmail.com>
  *
  * This file is part of psx. psx is free software: you can
  * redistribute it and/or modify it under the terms of the
@@ -31,14 +29,11 @@ use PSX\Dependency\View;
 use PSX\ModuleAbstract;
 
 /**
- * PSX_Module_ViewAbstract
+ * ViewAbstract
  *
- * @author     Christoph Kappestein <k42b3.x@gmail.com>
- * @license    http://www.gnu.org/licenses/gpl.html GPLv3
- * @link       http://phpsx.org
- * @category   PSX
- * @package    PSX_Module
- * @version    $Revision: 542 $
+ * @author  Christoph Kappestein <k42b3.x@gmail.com>
+ * @license http://www.gnu.org/licenses/gpl.html GPLv3
+ * @link    http://phpsx.org
  */
 abstract class ViewAbstract extends ModuleAbstract
 {

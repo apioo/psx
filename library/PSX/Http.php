@@ -1,13 +1,11 @@
 <?php
 /*
- *  $Id: Http.php 660 2012-10-07 16:30:13Z k42b3.x@googlemail.com $
- *
  * psx
  * A object oriented and modular based PHP framework for developing
  * dynamic web applications. For the current version and informations
  * visit <http://phpsx.org>
  *
- * Copyright (c) 2010-2012 Christoph Kappestein <k42b3.x@gmail.com>
+ * Copyright (c) 2010-2013 Christoph Kappestein <k42b3.x@gmail.com>
  *
  * This file is part of psx. psx is free software: you can
  * redistribute it and/or modify it under the terms of the
@@ -39,10 +37,8 @@ use PSX\Http\Response;
  * (recommended) or fsockopen handler to send the request. Here an example of
  * an basic GET request
  * <code>
- * $http = new PSX_Http(new PSX_Http_Handler_Curl());
- * $url  = new PSX_Url('http://google.com');
- *
- * $request  = new PSX_Http_GetRequest($url);
+ * $http     = new Http();
+ * $request  = new GetRequest('http://google.com');
  * $response = $http->request($request);
  *
  * if($response->getCode() == 200)
@@ -51,12 +47,9 @@ use PSX\Http\Response;
  * }
  * </code>
  *
- * @author     Christoph Kappestein <k42b3.x@gmail.com>
- * @license    http://www.gnu.org/licenses/gpl.html GPLv3
- * @link       http://phpsx.org
- * @category   PSX
- * @package    PSX_Http
- * @version    $Revision: 660 $
+ * @author  Christoph Kappestein <k42b3.x@gmail.com>
+ * @license http://www.gnu.org/licenses/gpl.html GPLv3
+ * @link    http://phpsx.org
  */
 class Http
 {
@@ -112,8 +105,7 @@ class Http
 	/**
 	 * If no handler is defined the curl handler is used as fallback
 	 *
-	 * @param PSX_Http_HandlerInterface $handler
-	 * @return PSX_Http
+	 * @param PSX\Http\HandlerInterface $handler
 	 */
 	public function __construct(HandlerInterface $handler = null)
 	{
@@ -123,8 +115,8 @@ class Http
 	/**
 	 * Sends the request through the given handler and returns the response
 	 *
-	 * @param PSX_Http_Request $request
-	 * @return PSX_Http_Response
+	 * @param PSX\Http\Request $request
+	 * @return PSX\Http\Response
 	 */
 	public function request(Request $request, $count = 0)
 	{
@@ -218,7 +210,7 @@ class Http
 	/**
 	 * Sets the handler
 	 *
-	 * @param PSX_Http_HandlerInterface $handler
+	 * @param PSX\Http\HandlerInterface $handler
 	 * @return void
 	 */
 	public function setHandler(HandlerInterface $handler)
@@ -229,7 +221,7 @@ class Http
 	/**
 	 * Returns the handler
 	 *
-	 * @return PSX_Http_HandlerInterface
+	 * @return PSX\Http\HandlerInterface
 	 */
 	public function getHandler()
 	{
@@ -249,7 +241,7 @@ class Http
 	/**
 	 * Returns the cookie store
 	 *
-	 * @return PSX_Http_CookieStoreInterface
+	 * @return PSX\Http\CookieStoreInterface
 	 */
 	public function getCookieStore()
 	{

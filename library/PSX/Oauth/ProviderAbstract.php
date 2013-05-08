@@ -1,13 +1,11 @@
 <?php
 /*
- *  $Id: ProviderAbstract.php 506 2012-06-03 13:44:51Z k42b3.x@googlemail.com $
- *
  * psx
  * A object oriented and modular based PHP framework for developing
  * dynamic web applications. For the current version and informations
  * visit <http://phpsx.org>
  *
- * Copyright (c) 2010-2012 Christoph Kappestein <k42b3.x@gmail.com>
+ * Copyright (c) 2010-2013 Christoph Kappestein <k42b3.x@gmail.com>
  *
  * This file is part of psx. psx is free software: you can
  * redistribute it and/or modify it under the terms of the
@@ -34,14 +32,11 @@ use PSX\Oauth\Provider\Data\Consumer;
 use PSX\Url;
 
 /**
- * PSX_Oauth_ProviderAbstract
+ * ProviderAbstract
  *
- * @author     Christoph Kappestein <k42b3.x@gmail.com>
- * @license    http://www.gnu.org/licenses/gpl.html GPLv3
- * @link       http://phpsx.org
- * @category   PSX
- * @package    PSX_Oauth
- * @version    $Revision: 506 $
+ * @author  Christoph Kappestein <k42b3.x@gmail.com>
+ * @license http://www.gnu.org/licenses/gpl.html GPLv3
+ * @link    http://phpsx.org
  */
 abstract class ProviderAbstract extends ApiAbstract
 {
@@ -95,7 +90,7 @@ abstract class ProviderAbstract extends ApiAbstract
 	 *
 	 * @param string $consumerKey
 	 * @param string $token
-	 * @return PSX_Oauth_Provider_Data_Consumer
+	 * @return PSX\Oauth\Provider\Data\Consumer
 	 */
 	abstract protected function getConsumer($consumerKey, $token);
 

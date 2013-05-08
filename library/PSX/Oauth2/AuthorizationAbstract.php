@@ -1,13 +1,11 @@
 <?php
 /*
- *  $Id: AuthorizationAbstract.php 662 2012-10-07 16:45:03Z k42b3.x@googlemail.com $
- *
  * psx
  * A object oriented and modular based PHP framework for developing
  * dynamic web applications. For the current version and informations
  * visit <http://phpsx.org>
  *
- * Copyright (c) 2010-2012 Christoph Kappestein <k42b3.x@gmail.com>
+ * Copyright (c) 2010-2013 Christoph Kappestein <k42b3.x@gmail.com>
  *
  * This file is part of psx. psx is free software: you can
  * redistribute it and/or modify it under the terms of the
@@ -35,14 +33,11 @@ use PSX\Json;
 use PSX\Url;
 
 /**
- * PSX_Oauth2_AuthorizationAbstract
+ * AuthorizationAbstract
  *
- * @author     Christoph Kappestein <k42b3.x@gmail.com>
- * @license    http://www.gnu.org/licenses/gpl.html GPLv3
- * @link       http://phpsx.org
- * @category   PSX
- * @package    PSX_Oauth2
- * @version    $Revision: 662 $
+ * @author  Christoph Kappestein <k42b3.x@gmail.com>
+ * @license http://www.gnu.org/licenses/gpl.html GPLv3
+ * @link    http://phpsx.org
  */
 abstract class AuthorizationAbstract
 {
@@ -73,7 +68,7 @@ abstract class AuthorizationAbstract
 	 * Tries to refresh an access token if an refresh token is available.
 	 * Returns the new received access token or throws an excepion
 	 *
-	 * @return PSX_Oauth2_AccessToken
+	 * @return PSX\Oauth2\AccessToken
 	 */
 	public function refreshToken(AccessToken $accessToken)
 	{
@@ -168,11 +163,11 @@ abstract class AuthorizationAbstract
 	}
 
 	/**
-	 * Each class wich extends PSX_Oauth2_Authorization should have the method
+	 * Each class wich extends PSX\Oauth2\Authorization should have the method
 	 * getAccessToken(). Since the method can have different arguments we can
 	 * not declare the method as abstract but it will stay here for reference
 	 *
-	 * @return PSX_Oauth2_AccessToken
+	 * @return PSX\Oauth2\AccessToken
 	 */
 	//abstract public function getAccessToken();
 
@@ -180,7 +175,7 @@ abstract class AuthorizationAbstract
 	 * Parses the $data array for an error response and throws the most fitting
 	 * exception including also the error message and url if available
 	 *
-	 * @throws PSX_Oauth2_Authorization_Exception
+	 * @throws PSX\Oauth2\Authorization\Exception
 	 */
 	public static function throwErrorException($data)
 	{

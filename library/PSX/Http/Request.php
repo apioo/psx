@@ -1,13 +1,11 @@
 <?php
 /*
- *  $Id: Request.php 584 2012-08-15 21:27:46Z k42b3.x@googlemail.com $
- *
  * psx
  * A object oriented and modular based PHP framework for developing
  * dynamic web applications. For the current version and informations
  * visit <http://phpsx.org>
  *
- * Copyright (c) 2010-2012 Christoph Kappestein <k42b3.x@gmail.com>
+ * Copyright (c) 2010-2013 Christoph Kappestein <k42b3.x@gmail.com>
  *
  * This file is part of psx. psx is free software: you can
  * redistribute it and/or modify it under the terms of the
@@ -29,14 +27,11 @@ use PSX\Http;
 use PSX\Url;
 
 /**
- * PSX_Http_Request
+ * Request
  *
- * @author     Christoph Kappestein <k42b3.x@gmail.com>
- * @license    http://www.gnu.org/licenses/gpl.html GPLv3
- * @link       http://phpsx.org
- * @category   PSX
- * @package    PSX_Http
- * @version    $Revision: 584 $
+ * @author  Christoph Kappestein <k42b3.x@gmail.com>
+ * @license http://www.gnu.org/licenses/gpl.html GPLv3
+ * @link    http://phpsx.org
  */
 class Request extends Message
 {
@@ -54,12 +49,11 @@ class Request extends Message
 	/**
 	 * __construct
 	 *
-	 * @param PSX_Url $url
+	 * @param PSX\Url $url
 	 * @param string $method
 	 * @param array $header
 	 * @param string $body
 	 * @param string $scheme
-	 * @return PSX_Http_Request
 	 */
 	public function __construct(Url $url, $method, array $header = array(), $body = null, $scheme = 'HTTP/1.1')
 	{
@@ -79,7 +73,7 @@ class Request extends Message
 	 * Sets the request url and automatically adds an "Host" header with the url
 	 * host
 	 *
-	 * @param PSX_Url $url
+	 * @param PSX\Url $url
 	 * @return void
 	 */
 	public function setUrl(Url $url)
@@ -149,7 +143,7 @@ class Request extends Message
 	/**
 	 * Returns the request url
 	 *
-	 * @return PSX_Url
+	 * @return PSX\Url
 	 */
 	public function getUrl()
 	{

@@ -43,6 +43,10 @@
 	<!-- run phpunit tests -->
 	<target name="phpunit" depends="syntax-check">
 		<exec dir="${build}" executable="phpunit.bat" failonerror="true" />
+		<!-- clean temp files from test -->
+		<delete>
+			<fileset dir="${build}/cache" />
+		</delete>
 	</target>
 
 	<target name="build-init" depends="git-clone,get-version,phpunit">

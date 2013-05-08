@@ -1,13 +1,11 @@
 <?php
 /*
- *  $Id: RequestAbstract.php 506 2012-06-03 13:44:51Z k42b3.x@googlemail.com $
- *
  * psx
  * A object oriented and modular based PHP framework for developing
  * dynamic web applications. For the current version and informations
  * visit <http://phpsx.org>
  *
- * Copyright (c) 2010-2012 Christoph Kappestein <k42b3.x@gmail.com>
+ * Copyright (c) 2010-2013 Christoph Kappestein <k42b3.x@gmail.com>
  *
  * This file is part of psx. psx is free software: you can
  * redistribute it and/or modify it under the terms of the
@@ -36,14 +34,11 @@ use PSX\Data\WriterInterface;
 use PSX\Url;
 
 /**
- * PSX_Oauth_Provider_RequestAbstract
+ * RequestAbstract
  *
- * @author     Christoph Kappestein <k42b3.x@gmail.com>
- * @license    http://www.gnu.org/licenses/gpl.html GPLv3
- * @link       http://phpsx.org
- * @category   PSX
- * @package    PSX_Oauth
- * @version    $Revision: 506 $
+ * @author  Christoph Kappestein <k42b3.x@gmail.com>
+ * @license http://www.gnu.org/licenses/gpl.html GPLv3
+ * @link    http://phpsx.org
  */
 abstract class RequestAbstract extends ApiAbstract
 {
@@ -108,16 +103,16 @@ abstract class RequestAbstract extends ApiAbstract
 	 * Returns the consumer object with the $consumerKey and $token
 	 *
 	 * @param string $consumerKey
-	 * @return PSX_Oauth_Provider_Data_Consumer
+	 * @return PSX\Oauth\Provider\Data\Consumer
 	 */
 	abstract protected function getConsumer($consumerKey);
 
 	/**
 	 * Returns the response depending on the $consumer and $request
 	 *
-	 * @param PSX_Oauth_Provider_Data_Consumer $consumer
-	 * @param PSX_Oauth_Provider_Data_Request $request
-	 * @return PSX_Oauth_Provider_Data_Response
+	 * @param PSX\Oauth\Provider\Data\Consumer $consumer
+	 * @param PSX\Oauth\Provider\Data\Request $request
+	 * @return PSX\Oauth\Provider\Data\Response
 	 */
 	abstract protected function getResponse(Consumer $consumer, Request $request);
 }

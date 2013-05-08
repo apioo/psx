@@ -1,13 +1,11 @@
 <?php
 /*
- *  $Id: Audio.php 480 2012-05-01 18:13:54Z k42b3.x@googlemail.com $
- *
  * psx
  * A object oriented and modular based PHP framework for developing
  * dynamic web applications. For the current version and informations
  * visit <http://phpsx.org>
  *
- * Copyright (c) 2010-2012 Christoph Kappestein <k42b3.x@gmail.com>
+ * Copyright (c) 2010-2013 Christoph Kappestein <k42b3.x@gmail.com>
  *
  * This file is part of psx. psx is free software: you can
  * redistribute it and/or modify it under the terms of the
@@ -25,28 +23,20 @@
 
 namespace PSX\ActivityStream\Type;
 
-use PSX\ActivityStream\TypeAbstract;
+use PSX\ActivityStream\Object;
+use PSX\ActivityStream\MediaLink;
 
 /**
- * PSX_ActivityStream_Type_Audio
+ * Audio
  *
- * @author     Christoph Kappestein <k42b3.x@gmail.com>
- * @license    http://www.gnu.org/licenses/gpl.html GPLv3
- * @link       http://phpsx.org
- * @category   PSX
- * @package    PSX_ActivityStream
- * @version    $Revision: 480 $
+ * @author  Christoph Kappestein <k42b3.x@gmail.com>
+ * @license http://www.gnu.org/licenses/gpl.html GPLv3
+ * @link    http://phpsx.org
  */
-class Audio extends TypeAbstract
+class Audio extends Object
 {
-	public $author;
-	public $displayName;
-	public $embedCode;
-	public $id;
-	public $published;
-	public $stream ;
-	public $summary;
-	public $updated;
+	protected $embedCode;
+	protected $stream;
 
 	public function getName()
 	{
@@ -55,19 +45,28 @@ class Audio extends TypeAbstract
 
 	public function getFields()
 	{
-		return array(
+		return array_merge(parent::getFields(), array(
 
-			'objectType'  => $this->getName(),
-			'author'      => $this->author,
-			'displayName' => $this->displayName,
-			'embedCode'   => $this->embedCode,
-			'id'          => $this->id,
-			'published'   => $this->published,
-			'stream '     => $this->stream ,
-			'summary'     => $this->summary,
-			'updated'     => $this->updated,
+			'embedCode' => $this->embedCode,
+			'stream'    => $this->stream,
 
-		);
+		));
+	}
+
+	/**
+	 * @param string
+	 */
+	public function setEmbedCode($embedCode)
+	{
+		$this->embedCode = $embedCode;
+	}
+
+	/**
+	 * @param PSX\ActivityStream\MediaLink
+	 */
+	public function setStream(MediaLink $stream)
+	{
+		$this->stream = $stream;
 	}
 }
 

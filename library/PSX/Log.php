@@ -1,13 +1,11 @@
 <?php
 /*
- *  $Id: Log.php 613 2012-08-25 11:14:39Z k42b3.x@googlemail.com $
- *
  * psx
  * A object oriented and modular based PHP framework for developing
  * dynamic web applications. For the current version and informations
  * visit <http://phpsx.org>
  *
- * Copyright (c) 2010-2012 Christoph Kappestein <k42b3.x@gmail.com>
+ * Copyright (c) 2010-2013 Christoph Kappestein <k42b3.x@gmail.com>
  *
  * This file is part of psx. psx is free software: you can
  * redistribute it and/or modify it under the terms of the
@@ -28,24 +26,21 @@ namespace PSX;
 use PSX\Log\HandlerInterface;
 
 /**
- * The class offers basic log functionality. The following example writes all
- * logs to the file log.txt. If no handler is attached to the logger all
+ * The class offers basic logging functionality. The following example writes
+ * all logs to the file log.txt. If no handler is attached to the logger all
  * messages are discarded
  * <code>
- * PSX_Log::getLogger()->addHandler(new PSX_Log_Handler_File('log.txt'));
+ * Log::getLogger()->addHandler(new Handler\File('log.txt'));
  *
  * if($isAdmin === true)
  * {
- * 	PSX_Log::info($_SERVER['REMOTE_ADDR'] . ' has entered admin area');
+ * 	Log::info($_SERVER['REMOTE_ADDR'] . ' has entered admin area');
  * }
  * </code>
  *
- * @author     Christoph Kappestein <k42b3.x@gmail.com>
- * @license    http://www.gnu.org/licenses/gpl.html GPLv3
- * @link       http://phpsx.org
- * @category   PSX
- * @package    PSX_Log
- * @version    $Revision: 613 $
+ * @author  Christoph Kappestein <k42b3.x@gmail.com>
+ * @license http://www.gnu.org/licenses/gpl.html GPLv3
+ * @link    http://phpsx.org
  */
 class Log
 {

@@ -1,13 +1,11 @@
 <?php
 /*
- *  $Id: Loader.php 658 2012-10-06 22:39:32Z k42b3.x@googlemail.com $
- *
  * psx
  * A object oriented and modular based PHP framework for developing
  * dynamic web applications. For the current version and informations
  * visit <http://phpsx.org>
  *
- * Copyright (c) 2010-2012 Christoph Kappestein <k42b3.x@gmail.com>
+ * Copyright (c) 2010-2013 Christoph Kappestein <k42b3.x@gmail.com>
  *
  * This file is part of psx. psx is free software: you can
  * redistribute it and/or modify it under the terms of the
@@ -35,12 +33,9 @@ use ReflectionMethod;
 /**
  * Class to load modules of psx.
  *
- * @author     Christoph Kappestein <k42b3.x@gmail.com>
- * @license    http://www.gnu.org/licenses/gpl.html GPLv3
- * @link       http://phpsx.org
- * @category   PSX
- * @package    PSX_Loader
- * @version    $Revision: 658 $
+ * @author  Christoph Kappestein <k42b3.x@gmail.com>
+ * @license http://www.gnu.org/licenses/gpl.html GPLv3
+ * @link    http://phpsx.org
  */
 class Loader
 {
@@ -87,7 +82,7 @@ class Loader
 			}
 			else
 			{
-				throw new Exception('Class is not an instance of PSX_ModuleAbstract');
+				throw new Exception('Class is not an instance of PSX\ModuleAbstract');
 			}
 		}
 
@@ -122,7 +117,7 @@ class Loader
 	 * Sets the strategy howto resolve a path to an location. If no strategy 
 	 * is set the filesystem location finder weill be used.
 	 *
-	 * @param PSX_Loader_LocationFinderInterface $locationFinder
+	 * @param PSX\Loader\LocationFinderInterface $locationFinder
 	 * @return void
 	 */
 	public function setLocationFinder(LocationFinderInterface $locationFinder)

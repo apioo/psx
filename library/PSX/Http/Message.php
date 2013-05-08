@@ -1,13 +1,11 @@
 <?php
 /*
- *  $Id: Message.php 578 2012-08-12 15:00:28Z k42b3.x@googlemail.com $
- *
  * psx
  * A object oriented and modular based PHP framework for developing
  * dynamic web applications. For the current version and informations
  * visit <http://phpsx.org>
  *
- * Copyright (c) 2010-2012 Christoph Kappestein <k42b3.x@gmail.com>
+ * Copyright (c) 2010-2013 Christoph Kappestein <k42b3.x@gmail.com>
  *
  * This file is part of psx. psx is free software: you can
  * redistribute it and/or modify it under the terms of the
@@ -26,14 +24,11 @@
 namespace PSX\Http;
 
 /**
- * PSX_Http_Message
+ * Message
  *
- * @author     Christoph Kappestein <k42b3.x@gmail.com>
- * @license    http://www.gnu.org/licenses/gpl.html GPLv3
- * @link       http://phpsx.org
- * @category   PSX
- * @package    PSX_Http
- * @version    $Revision: 578 $
+ * @author  Christoph Kappestein <k42b3.x@gmail.com>
+ * @license http://www.gnu.org/licenses/gpl.html GPLv3
+ * @link    http://phpsx.org
  */
 class Message
 {
@@ -45,7 +40,6 @@ class Message
 	 *
 	 * @param array $header
 	 * @param string $body
-	 * @return PSX_Http_Message
 	 */
 	public function __construct(array $header = array(), $body = null)
 	{

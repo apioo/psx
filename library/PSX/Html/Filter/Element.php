@@ -1,13 +1,11 @@
 <?php
 /*
- *  $Id: Element.php 560 2012-07-29 02:42:22Z k42b3.x@googlemail.com $
- *
  * psx
  * A object oriented and modular based PHP framework for developing
  * dynamic web applications. For the current version and informations
  * visit <http://phpsx.org>
  *
- * Copyright (c) 2010-2012 Christoph Kappestein <k42b3.x@gmail.com>
+ * Copyright (c) 2010-2013 Christoph Kappestein <k42b3.x@gmail.com>
  *
  * This file is part of psx. psx is free software: you can
  * redistribute it and/or modify it under the terms of the
@@ -26,14 +24,11 @@
 namespace PSX\Html\Filter;
 
 /**
- * PSX_Html_Filter_Element
+ * Element
  *
- * @author     Christoph Kappestein <k42b3.x@gmail.com>
- * @license    http://www.gnu.org/licenses/gpl.html GPLv3
- * @link       http://phpsx.org
- * @category   PSX
- * @package    PSX_Html
- * @version    $Revision: 560 $
+ * @author  Christoph Kappestein <k42b3.x@gmail.com>
+ * @license http://www.gnu.org/licenses/gpl.html GPLv3
+ * @link    http://phpsx.org
  */
 class Element
 {
@@ -64,11 +59,11 @@ class Element
 	}
 
 	/**
-	 * Adds an attribute filter to the element can be PSX_FilterAbstract or an
-	 * array<PSX_FilterAbstract> or an string.
+	 * Adds an attribute filter to the element can be PSX\FilterAbstract or an
+	 * array<PSX\FilterAbstract> or an string.
 	 *
 	 * @param string $name
-	 * @param PSX_FilterAbstract|string|array $filter
+	 * @param PSX\FilterAbstract|string|array $filter
 	 * @return void
 	 */
 	public function addAttribute($name, $filter)

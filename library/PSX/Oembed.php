@@ -1,13 +1,11 @@
 <?php
 /*
- *  $Id: Oembed.php 663 2012-10-07 16:45:52Z k42b3.x@googlemail.com $
- *
  * psx
  * A object oriented and modular based PHP framework for developing
  * dynamic web applications. For the current version and informations
  * visit <http://phpsx.org>
  *
- * Copyright (c) 2010-2012 Christoph Kappestein <k42b3.x@gmail.com>
+ * Copyright (c) 2010-2013 Christoph Kappestein <k42b3.x@gmail.com>
  *
  * This file is part of psx. psx is free software: you can
  * redistribute it and/or modify it under the terms of the
@@ -32,14 +30,11 @@ use PSX\Http\GetRequest;
 use PSX\Oembed\TypeAbstract;
 
 /**
- * PSX_Oembed
+ * Oembed
  *
- * @author     Christoph Kappestein <k42b3.x@gmail.com>
- * @license    http://www.gnu.org/licenses/gpl.html GPLv3
- * @link       http://phpsx.org
- * @category   PSX
- * @package    PSX_Oembed
- * @version    $Revision: 663 $
+ * @author  Christoph Kappestein <k42b3.x@gmail.com>
+ * @license http://www.gnu.org/licenses/gpl.html GPLv3
+ * @link    http://phpsx.org
  */
 class Oembed
 {
@@ -55,8 +50,8 @@ class Oembed
 	 * must be pointing to an oembed provider i.e.:
 	 * http://flickr.com/services/oembed?url=http%3A//flickr.com/photos/bees/2362225867/
 	 *
-	 * @param PSX_Url $url
-	 * @return PSX_Oembed_TypeAbstract
+	 * @param PSX\Url $url
+	 * @return PSX\Oembed\TypeAbstract
 	 */
 	public function request(Url $url)
 	{
@@ -103,8 +98,8 @@ class Oembed
 	 * Tries to discover an oembed link from an html page. Returns the
 	 * discovered oembed object
 	 *
-	 * @param PSX_Url $url
-	 * @return PSX_Oembed_TypeAbstract
+	 * @param PSX\Url $url
+	 * @return PSX\Oembed\TypeAbstract
 	 */
 	public function discover(Url $url)
 	{

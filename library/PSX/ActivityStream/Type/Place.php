@@ -1,13 +1,11 @@
 <?php
 /*
- *  $Id: Place.php 480 2012-05-01 18:13:54Z k42b3.x@googlemail.com $
- *
  * psx
  * A object oriented and modular based PHP framework for developing
  * dynamic web applications. For the current version and informations
  * visit <http://phpsx.org>
  *
- * Copyright (c) 2010-2012 Christoph Kappestein <k42b3.x@gmail.com>
+ * Copyright (c) 2010-2013 Christoph Kappestein <k42b3.x@gmail.com>
  *
  * This file is part of psx. psx is free software: you can
  * redistribute it and/or modify it under the terms of the
@@ -25,25 +23,19 @@
 
 namespace PSX\ActivityStream\Type;
 
-use PSX\ActivityStream\TypeAbstract;
+use PSX\ActivityStream\Object;
 
 /**
- * PSX_ActivityStream_Type_Place
+ * Place
  *
- * @author     Christoph Kappestein <k42b3.x@gmail.com>
- * @license    http://www.gnu.org/licenses/gpl.html GPLv3
- * @link       http://phpsx.org
- * @category   PSX
- * @package    PSX_ActivityStream
- * @version    $Revision: 480 $
+ * @author  Christoph Kappestein <k42b3.x@gmail.com>
+ * @license http://www.gnu.org/licenses/gpl.html GPLv3
+ * @link    http://phpsx.org
  */
-class Place extends TypeAbstract
+class Place extends Object
 {
-	public $displayName;
-	public $id;
-	public $position;
-	public $address;
-	public $url;
+	protected $position;
+	protected $address;
 
 	public function getName()
 	{
@@ -52,16 +44,28 @@ class Place extends TypeAbstract
 
 	public function getFields()
 	{
-		return array(
+		return array_merge(parent::getFields(), array(
 
-			'objectType'  => $this->getName(),
-			'displayName' => $this->displayName,
-			'id'          => $this->id,
-			'position'    => $this->position,
-			'address'     => $this->address,
-			'url'         => $this->url,
+			'position' => $this->position,
+			'address'  => $this->address,
 
-		);
+		));
+	}
+
+	/**
+	 * @param PSX\ActivityStream\ObjectFactory
+	 */
+	public function setPosition(Object $position)
+	{
+		$this->position = $position;
+	}
+
+	/**
+	 * @param PSX\ActivityStream\ObjectFactory
+	 */
+	public function setAddress(Object $address)
+	{
+		$this->address = $address;
 	}
 }
 

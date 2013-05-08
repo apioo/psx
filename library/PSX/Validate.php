@@ -1,13 +1,11 @@
 <?php
 /*
- *  $Id: Validate.php 603 2012-08-25 11:10:50Z k42b3.x@googlemail.com $
- *
  * psx
  * A object oriented and modular based PHP framework for developing
  * dynamic web applications. For the current version and informations
  * visit <http://phpsx.org>
  *
- * Copyright (c) 2010-2012 Christoph Kappestein <k42b3.x@gmail.com>
+ * Copyright (c) 2010-2013 Christoph Kappestein <k42b3.x@gmail.com>
  *
  * This file is part of psx. psx is free software: you can
  * redistribute it and/or modify it under the terms of the
@@ -32,9 +30,8 @@ use ArrayObject;
  * The apply methods is the heart of this class here an example how you can
  * easily validate data.
  * <code>
- * $val = new PSX_Validate();
- *
- * $value = $val->apply($input, 'string', array(new PSX_Filter_Validate_Length(3, 8)));
+ * $validator = new Validate();
+ * $value     = $validator->apply($input, 'string', array(new Filter\Length(3, 8)));
  *
  * if($value === false)
  * {
@@ -52,27 +49,26 @@ use ArrayObject;
  * boolean. Optional you can pass an array of filters wich validates the value.
  * Here some examples:
  * <code>
- * $val = new PSX_Validate();
+ * $validator = new Validate();
  *
  * // we use the length and email filter
- * $value = $val->apply($input, 'string', array(new PSX_Filter_Length(3, 32), new PSX_Filter_Email()));
+ * $value = $validator->apply($input, 'string', array(new Filter\Length(3, 32), new Filter\Email()));
  *
  * // we use the regular expression filter. The value must contain the string
  * // "php"
- * $value = $val->apply($input, 'string', array(new PSX_Filter_Regexp('/php/')));
+ * $value = $validator->apply($input, 'string', array(new Filter\Regexp('/php/')));
  *
  * // we us the length filter and the value must be an interger wich is min 10
  * // and max 100
- * $value = $val->apply($input, 'integer', array(new PSX_Filter_Length(10, 100)));
+ * $value = $validator->apply($input, 'integer', array(new Filter\Length(10, 100)));
  * </code>
  *
- * If you have validate the values you can check the filter whether their was an
- * error.
+ * If you have validate the values you can check whether their was an error.
  * <code>
- * if($filter->hasError())
+ * if($validator->hasError())
  * {
  * 	echo 'The following errors occured:' . "\n";
- * 	echo implode("\n", $filter->getError());
+ * 	echo implode("\n", $validator->getError());
  * }
  * else
  * {
@@ -80,12 +76,9 @@ use ArrayObject;
  * }
  * </code>
  *
- * @author     Christoph Kappestein <k42b3.x@gmail.com>
- * @license    http://www.gnu.org/licenses/gpl.html GPLv3
- * @link       http://phpsx.org
- * @category   PSX
- * @package    PSX_Validate
- * @version    $Revision: 603 $
+ * @author  Christoph Kappestein <k42b3.x@gmail.com>
+ * @license http://www.gnu.org/licenses/gpl.html GPLv3
+ * @link    http://phpsx.org
  */
 class Validate extends ArrayObject
 {
@@ -97,14 +90,14 @@ class Validate extends ArrayObject
 	}
 
 	/**
-	 * Applies the $filter array containing PSX_FilterAbstract on the $value. If
+	 * Applies the $filter array containing PSX\FilterAbstract on the $value. If
 	 * an error occurs $returnValue is returned else the $value is returned.
 	 * Note each filter can manipulate the $value. If $required is set to true
 	 * an error will be added if $value is false.
 	 *
 	 * @param string $value
 	 * @param string $type
-	 * @param array<PSX_FilterAbstract> $filter
+	 * @param array<PSX\FilterAbstract> $filter
 	 * @param string $key
 	 * @param string $title
 	 * @param string $required

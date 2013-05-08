@@ -1,13 +1,11 @@
 <?php
 /*
- *  $Id: Bearer.php 494 2012-06-01 18:18:14Z k42b3.x@googlemail.com $
- *
  * psx
  * A object oriented and modular based PHP framework for developing
  * dynamic web applications. For the current version and informations
  * visit <http://phpsx.org>
  *
- * Copyright (c) 2010-2012 Christoph Kappestein <k42b3.x@gmail.com>
+ * Copyright (c) 2010-2013 Christoph Kappestein <k42b3.x@gmail.com>
  *
  * This file is part of psx. psx is free software: you can
  * redistribute it and/or modify it under the terms of the
@@ -28,15 +26,12 @@ namespace PSX\Oauth2\Token;
 use PSX\Oauth2\TokenAbstract;
 
 /**
- * PSX_Oauth2_Token_Bearer
+ * Bearer
  *
- * @author     Christoph Kappestein <k42b3.x@gmail.com>
- * @license    http://www.gnu.org/licenses/gpl.html GPLv3
- * @link       http://phpsx.org
- * @see        http://tools.ietf.org/html/rfc5849
- * @category   PSX
- * @package    PSX_Oauth2
- * @version    $Revision: 494 $
+ * @author  Christoph Kappestein <k42b3.x@gmail.com>
+ * @license http://www.gnu.org/licenses/gpl.html GPLv3
+ * @link    http://phpsx.org
+ * @see     http://tools.ietf.org/html/rfc5849
  */
 class Bearer extends TokenAbstract
 {

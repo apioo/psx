@@ -1,13 +1,11 @@
 <?php
 /*
- *  $Id: PubSubHubBub.php 663 2012-10-07 16:45:52Z k42b3.x@googlemail.com $
- *
  * psx
  * A object oriented and modular based PHP framework for developing
  * dynamic web applications. For the current version and informations
  * visit <http://phpsx.org>
  *
- * Copyright (c) 2010-2012 Christoph Kappestein <k42b3.x@gmail.com>
+ * Copyright (c) 2010-2013 Christoph Kappestein <k42b3.x@gmail.com>
  *
  * This file is part of psx. psx is free software: you can
  * redistribute it and/or modify it under the terms of the
@@ -34,20 +32,20 @@ use PSX\Http\PostRequest;
  * If you add new content to your feed you have to inform the hub about that.
  * You can use the method "notification" to send an content notification i.e.
  * <code>
- * $http = new PSX_Http(new PSX_Http_Handler_Curl());
- * $pshb = new PSX_PubSubHubBub($http);
+ * $http = new Http();
+ * $pshb = new PubSubHubBub($http);
  * $url  = ''; # this is the absolute url to your feed
  *
- * $pshb->notification(new PSX_Url('http://pubsubhubbub.appspot.com'), $url);
+ * $pshb->notification(new Url('http://pubsubhubbub.appspot.com'), $url);
  * </code>
  *
  * To implement a subscriber you have todo the following steps. First you have
  * to subscribe to a topic (a topic is an url to an ATOM feed) you can use the
  * request method to subscribe or unsubscribe to an topic i.e.
  * <code>
- * $http  = new PSX_Http(new PSX_Http_Handler_Curl());
- * $pshb  = new PSX_PubSubHubBub($http);
- * $topic = new PSX_Url(''); # this is an url to an ATOM feed that you want subscribe
+ * $http  = new Http();
+ * $pshb  = new PubSubHubBub($http);
+ * $topic = new Url(''); # this is an url to an ATOM feed that you want subscribe
  *
  * try
  * {
@@ -56,9 +54,9 @@ use PSX\Http\PostRequest;
  *
  * 	if(!empty($hub))
  * 	{
- * 		# url to the module wich extends the class psx_net_pubsubhubbub_callback
- * 		$callback = new PSX_Url('http://google.de');
- * 		$topic    = new PSX_Url('http://google.de');
+ * 		# url to the module wich extends the module PSX\PubSubHubBub\CallbackAbstract
+ * 		$callback = new Url('http://google.de');
+ * 		$topic    = new Url('http://google.de');
  *
  * 		if($pshb->request($hub, $callback, 'subscribe', $topic, 'async'))
  * 		{
@@ -67,7 +65,7 @@ use PSX\Http\PostRequest;
  * 	}
  * 	else
  * 	{
- * 		throw new PSX_Exception('Couldnt discover hub in feed url');
+ * 		throw new Exception('Couldnt discover hub in feed url');
  * 	}
  * }
  * catch(Exception $e)
@@ -78,13 +76,10 @@ use PSX\Http\PostRequest;
  *
  * More informations howto implement the callback at PubSubHubBub/CallbackAbstract.php
  *
- * @author     Christoph Kappestein <k42b3.x@gmail.com>
- * @license    http://www.gnu.org/licenses/gpl.html GPLv3
- * @link       http://phpsx.org
- * @category   PSX
- * @package    PSX_PubSubHubBub
- * @version    $Revision: 663 $
- * @see        http://code.google.com/p/pubsubhubbub/
+ * @author  Christoph Kappestein <k42b3.x@gmail.com>
+ * @license http://www.gnu.org/licenses/gpl.html GPLv3
+ * @link    http://phpsx.org
+ * @see     http://code.google.com/p/pubsubhubbub/
  */
 class PubSubHubBub
 {
@@ -111,7 +106,7 @@ class PubSubHubBub
 	 * Send an notification to the hub $endpoint that there is new content in
 	 * the feed $topic
 	 *
-	 * @param string $endpoint
+	 * @param PSX\Url $endpoint
 	 * @param string $topic
 	 */
 	public function notification(Url $endpoint, $topic)
@@ -160,14 +155,14 @@ class PubSubHubBub
 	 * must be an url to an hub. If the request was successful it returns true
 	 * else it throws an exception
 	 *
-	 * @param string $endpoint
-	 * @param string $callback
+	 * @param PSX\Url $endpoint
+	 * @param PSX\Url $callback
 	 * @param string $mode
-	 * @param string $topic
+	 * @param PSX\Url $topic
 	 * @param string $verify
-	 * @param string $lease_seconds
+	 * @param string $leaseSeconds
 	 * @param string $secret
-	 * @param string $verify_token
+	 * @param string $verifyToken
 	 * @return boolean
 	 */
 	public function request(Url $endpoint, Url $callback, $mode, Url $topic, $verify, $leaseSeconds = false, $secret = false, $verifyToken = false)
@@ -238,10 +233,10 @@ class PubSubHubBub
 
 	/**
 	 * $url should be an url to an ATOM or RSS feed. If the feed has an hub tag
-	 * the url will be returned as PSX_Url object
+	 * the url will be returned as PSX\Url object
 	 *
-	 * @param PSX_Url $url
-	 * @return PSX_Url|boolean
+	 * @param PSX\Url $url
+	 * @return PSX\Url|boolean
 	 */
 	public function discover(Url $url, $type = 0)
 	{

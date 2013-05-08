@@ -1,13 +1,11 @@
 <?php
 /*
- *  $Id: Parse.php 608 2012-08-25 11:13:12Z k42b3.x@googlemail.com $
- *
  * psx
  * A object oriented and modular based PHP framework for developing
  * dynamic web applications. For the current version and informations
  * visit <http://phpsx.org>
  *
- * Copyright (c) 2010-2012 Christoph Kappestein <k42b3.x@gmail.com>
+ * Copyright (c) 2010-2013 Christoph Kappestein <k42b3.x@gmail.com>
  *
  * This file is part of psx. psx is free software: you can
  * redistribute it and/or modify it under the terms of the
@@ -33,12 +31,9 @@ use PSX\Html\Parse\Element;
  * html. It uses the html lexer and parses only the header or body part
  * dependening on the value wich you want fetch
  *
- * @author     Christoph Kappestein <k42b3.x@gmail.com>
- * @license    http://www.gnu.org/licenses/gpl.html GPLv3
- * @link       http://phpsx.org
- * @category   PSX
- * @package    PSX_Html
- * @version    $Revision: 608 $
+ * @author  Christoph Kappestein <k42b3.x@gmail.com>
+ * @license http://www.gnu.org/licenses/gpl.html GPLv3
+ * @link    http://phpsx.org
  */
 class Parse
 {
@@ -60,11 +55,11 @@ class Parse
 	}
 
 	/**
-	 * This method search for the PSX_Html_Parse_Element in the head section
+	 * This method search for the PSX\Html\Parse\Element in the head section
 	 * of an html document. If the element is found it returns the attribute
 	 * $return or false if its not available.
 	 *
-	 * @param PSX_Html_Parse_Element $element
+	 * @param PSX\Html\Parse\Element $element
 	 * @param string $return
 	 * @return false|string
 	 */

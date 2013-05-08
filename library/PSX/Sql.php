@@ -1,13 +1,11 @@
 <?php
 /*
- *  $Id: Sql.php 641 2012-09-30 22:45:49Z k42b3.x@googlemail.com $
- *
  * psx
  * A object oriented and modular based PHP framework for developing
  * dynamic web applications. For the current version and informations
  * visit <http://phpsx.org>
  *
- * Copyright (c) 2010-2012 Christoph Kappestein <k42b3.x@gmail.com>
+ * Copyright (c) 2010-2013 Christoph Kappestein <k42b3.x@gmail.com>
  *
  * This file is part of psx. psx is free software: you can
  * redistribute it and/or modify it under the terms of the
@@ -31,14 +29,11 @@ use PSX\Sql\Connection;
 use stdClass;
 
 /**
- * PSX_Sql
+ * Sql
  *
- * @author     Christoph Kappestein <k42b3.x@gmail.com>
- * @license    http://www.gnu.org/licenses/gpl.html GPLv3
- * @link       http://phpsx.org
- * @category   PSX
- * @package    PSX_Sql
- * @version    $Revision: 641 $
+ * @author  Christoph Kappestein <k42b3.x@gmail.com>
+ * @license http://www.gnu.org/licenses/gpl.html GPLv3
+ * @link    http://phpsx.org
  */
 class Sql extends PDO implements Connection
 {
@@ -298,7 +293,7 @@ class Sql extends PDO implements Connection
 	 *
 	 * @param string $table
 	 * @param array $fields
-	 * @param PSX_Sql_Condition $condition
+	 * @param PSX\Sql\Condition $condition
 	 * @param integer $select
 	 * @param string $sortBy
 	 * @param integer $sortOrder
@@ -415,7 +410,7 @@ class Sql extends PDO implements Connection
 	 *
 	 * @param string $table
 	 * @param array $params
-	 * @param PSX_Sql_Condition $condition
+	 * @param PSX\Sql\Condition $condition
 	 * @param integer $modifier
 	 * @return integer
 	 */
@@ -494,7 +489,7 @@ class Sql extends PDO implements Connection
 	 * Deletes the record on the $table with the $condition
 	 *
 	 * @param string $table
-	 * @param PSX_Sql_Condition $condition
+	 * @param PSX\Sql\Condition $condition
 	 * @param integer $modifier
 	 * @return integer
 	 */
@@ -534,6 +529,8 @@ class Sql extends PDO implements Connection
 	/**
 	 * Returns the count of rows from the $table with the $condition
 	 *
+	 * @param string $table
+	 * @param PSX\Sql\Condition $condition
 	 * @return integer
 	 */
 	public function count($table, Condition $condition = null)

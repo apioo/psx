@@ -1,13 +1,11 @@
 <?php
 /*
- *  $Id: HandlerInterface.php 583 2012-08-15 21:27:23Z k42b3.x@googlemail.com $
- *
  * psx
  * A object oriented and modular based PHP framework for developing
  * dynamic web applications. For the current version and informations
  * visit <http://phpsx.org>
  *
- * Copyright (c) 2010-2012 Christoph Kappestein <k42b3.x@gmail.com>
+ * Copyright (c) 2010-2013 Christoph Kappestein <k42b3.x@gmail.com>
  *
  * This file is part of psx. psx is free software: you can
  * redistribute it and/or modify it under the terms of the
@@ -26,14 +24,11 @@
 namespace PSX\Http;
 
 /**
- * PSX_Http_HandlerInterface
+ * HandlerInterface
  *
- * @author     Christoph Kappestein <k42b3.x@gmail.com>
- * @license    http://www.gnu.org/licenses/gpl.html GPLv3
- * @link       http://phpsx.org
- * @category   PSX
- * @package    PSX_Http
- * @version    $Revision: 583 $
+ * @author  Christoph Kappestein <k42b3.x@gmail.com>
+ * @license http://www.gnu.org/licenses/gpl.html GPLv3
+ * @link    http://phpsx.org
  */
 interface HandlerInterface
 {
@@ -41,7 +36,7 @@ interface HandlerInterface
 	 * Makes an http request and returns the raw response string including the
 	 * header
 	 *
-	 * @param PSX_Http_Request $request
+	 * @param PSX\Http\Request $request
 	 * @return string
 	 */
 	public function request(Request $request);

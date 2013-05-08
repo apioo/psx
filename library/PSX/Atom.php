@@ -1,13 +1,11 @@
 <?php
 /*
- *  $Id: Atom.php 663 2012-10-07 16:45:52Z k42b3.x@googlemail.com $
- *
  * psx
  * A object oriented and modular based PHP framework for developing
  * dynamic web applications. For the current version and informations
  * visit <http://phpsx.org>
  *
- * Copyright (c) 2010-2012 Christoph Kappestein <k42b3.x@gmail.com>
+ * Copyright (c) 2010-2013 Christoph Kappestein <k42b3.x@gmail.com>
  *
  * This file is part of psx. psx is free software: you can
  * redistribute it and/or modify it under the terms of the
@@ -43,10 +41,10 @@ use PSX\Http\GetRequest;
 /**
  * This class is for converting an raw ATOM XML feed into an readable object.
  * Where you can access all values without parsing the XML. You can import an
- * existing feed with the PSX_Data_Reader_Dom. Here an example howto read an
+ * existing feed with the Dom reader. Here an example howto read an
  * external atom feed.
  * <code>
- * $atom = PSX_Atom::request('http://test.phpsx.org/index.php/atom');
+ * $atom = Atom::request('http://test.phpsx.org/index.php/atom');
  *
  * echo $atom->title:
  * echo $atom->updated;
@@ -57,23 +55,20 @@ use PSX\Http\GetRequest;
  * }
  * </code>
  *
- * If your module extends the PSX_Module_ApiAbstract class you can parse an atom
- * feed wich is send to your via an HTTP request with the getRequest() method
+ * If your module extends the ApiAbstract class you can parse an atom
+ * feed wich is send to you via an HTTP request with the getRequest() method
  * <code>
- * $atom = new PSX_Atom();
- * $atom->import($this->getRequest(PSX_Data_ReaderInterface::DOM));
+ * $atom = new Atom();
+ * $atom->import($this->getRequest(ReaderInterface::DOM));
  *
  * echo $atom->title:
  * echo $atom->updated;
  * </code>
  *
- * @author     Christoph Kappestein <k42b3.x@gmail.com>
- * @license    http://www.gnu.org/licenses/gpl.html GPLv3
- * @link       http://phpsx.org
- * @category   PSX
- * @package    PSX_Atom
- * @version    $Revision: 663 $
- * @see        http://www.ietf.org/rfc/rfc4287.txt
+ * @author  Christoph Kappestein <k42b3.x@gmail.com>
+ * @license http://www.gnu.org/licenses/gpl.html GPLv3
+ * @link    http://phpsx.org
+ * @see     http://www.ietf.org/rfc/rfc4287.txt
  */
 class Atom extends RecordAbstract implements Iterator, Countable
 {

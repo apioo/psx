@@ -1,13 +1,11 @@
 <?php
 /*
- *  $Id: Registry.php 616 2012-08-25 11:16:03Z k42b3.x@googlemail.com $
- *
  * psx
  * A object oriented and modular based PHP framework for developing
  * dynamic web applications. For the current version and informations
  * visit <http://phpsx.org>
  *
- * Copyright (c) 2010-2012 Christoph Kappestein <k42b3.x@gmail.com>
+ * Copyright (c) 2010-2013 Christoph Kappestein <k42b3.x@gmail.com>
  *
  * This file is part of psx. psx is free software: you can
  * redistribute it and/or modify it under the terms of the
@@ -32,27 +30,19 @@ use ArrayObject;
  * examples howto set and get objects:
  * <code>
  * // set an object
- * PSX_Registry::set('stdClass', new stdClass);
- *
- * PSX_Registry::getInstance()->offsetSet('stdClass', new stdClass);
- *
- * PSX_Registry::getInstance()->stdClass = new stdClass();
- *
+ * Registry::set('stdClass', new stdClass);
+ * Registry::getInstance()->offsetSet('stdClass', new stdClass);
+ * Registry::getInstance()->stdClass = new stdClass();
  *
  * // get an object
- * $stdClass = PSX_Registry::get('stdClass');
- *
- * $stdClass = PSX_Registry::getInstance()->offsetGet('stdClass');
- *
- * $stdClass = PSX_Registry::getInstance()->stdClass;
+ * $stdClass = Registry::get('stdClass');
+ * $stdClass = Registry::getInstance()->offsetGet('stdClass');
+ * $stdClass = Registry::getInstance()->stdClass;
  * </code>
  *
- * @author     Christoph Kappestein <k42b3.x@gmail.com>
- * @license    http://www.gnu.org/licenses/gpl.html GPLv3
- * @link       http://phpsx.org
- * @category   PSX
- * @package    PSX_Registry
- * @version    $Revision: 616 $
+ * @author  Christoph Kappestein <k42b3.x@gmail.com>
+ * @license http://www.gnu.org/licenses/gpl.html GPLv3
+ * @link    http://phpsx.org
  */
 class Registry extends ArrayObject
 {

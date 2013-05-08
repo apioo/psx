@@ -1,13 +1,11 @@
 <?php
 /*
- *  $Id: Xrd.php 480 2012-05-01 18:13:54Z k42b3.x@googlemail.com $
- *
  * psx
  * A object oriented and modular based PHP framework for developing
  * dynamic web applications. For the current version and informations
  * visit <http://phpsx.org>
  *
- * Copyright (c) 2010-2012 Christoph Kappestein <k42b3.x@gmail.com>
+ * Copyright (c) 2010-2013 Christoph Kappestein <k42b3.x@gmail.com>
  *
  * This file is part of psx. psx is free software: you can
  * redistribute it and/or modify it under the terms of the
@@ -33,13 +31,10 @@ use PSX\DateTime;
  * Class wich represents an Extensible Resource Descriptor. It offers some
  * methods to easily access the values.
  *
- * @author     Christoph Kappestein <k42b3.x@gmail.com>
- * @license    http://www.gnu.org/licenses/gpl.html GPLv3
- * @see        http://docs.oasis-open.org/xri/xrd/v1.0/xrd-1.0.html
- * @link       http://phpsx.org
- * @category   PSX
- * @package    PSX_Webfinger
- * @version    $Revision: 480 $
+ * @author  Christoph Kappestein <k42b3.x@gmail.com>
+ * @license http://www.gnu.org/licenses/gpl.html GPLv3
+ * @link    http://phpsx.org
+ * @see     http://docs.oasis-open.org/xri/xrd/v1.0/xrd-1.0.html
  */
 class Xrd extends SimpleXMLElement
 {

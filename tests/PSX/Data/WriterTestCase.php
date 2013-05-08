@@ -25,8 +25,8 @@
 
 namespace PSX\Data;
 
-use PSX\OpenSocial\Type;
-use PSX\ActivityStream\Type\Article;
+use PSX\ActivityStream;
+use PSX\DateTime;
 use PSX\Data\ResultSet;
 
 /**
@@ -79,33 +79,30 @@ abstract class WriterTestCase extends \PHPUnit_Framework_TestCase
 
 	public function getComplexRecord()
 	{
-		$plural = new Type\Plural();
+		$actor = new ActivityStream\Object();
+		$actor->setUrl('http://example.org/martin');
+		$actor->setObjectType('person');
+		$actor->setId('tag:example.org,2011:martin');
+		$actor->setDisplayName('Martin Smith');
 
-		$acount = new Type\Account();
-		$acount->domain = 'foo.com';
-		$acount->username = 'foo';
-		$acount->userId = 1;
+		$object = new ActivityStream\Object();
+		$object->setUrl('http://example.org/blog/2011/02/entry');
+		$object->setId('tag:example.org,2011:abc123/xyz');
 
-		$plural->add($acount, 'home', true);
+		$target = new ActivityStream\Object();
+		$target->setUrl('http://example.org/blog/');
+		$target->setObjectType('blog');
+		$target->setId('tag:example.org,2011:abc123');
+		$target->setDisplayName('Martin\'s Blog');
 
-		$acount = new Type\Account();
-		$acount->domain = 'bar.com';
-		$acount->username = 'foo';
-		$acount->userId = 1;
+		$activity = new ActivityStream\Activity();
+		$activity->setPublished(new DateTime('2011-02-10T15:04:55Z'));
+		$activity->setActor($actor);
+		$activity->setVerb('post');
+		$activity->setObject($object);
+		$activity->setTarget($target);
 
-		$plural->add($acount, 'work', false);
-
-		$author = new Type\Person();
-		$author->id = 1;
-		$author->displayName = 'foobar';
-		$author->accounts = $plural;
-
-		$article = new Article();
-		$article->author = $author;
-		$article->displayName = 'content';
-		$article->id = 1;
-
-		return $article;
+		return $activity;
 	}
 
 	abstract public function testWrite();

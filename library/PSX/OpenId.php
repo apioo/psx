@@ -1,13 +1,11 @@
 <?php
 /*
- *  $Id: OpenId.php 663 2012-10-07 16:45:52Z k42b3.x@googlemail.com $
- *
  * psx
  * A object oriented and modular based PHP framework for developing
  * dynamic web applications. For the current version and informations
  * visit <http://phpsx.org>
  *
- * Copyright (c) 2010-2012 Christoph Kappestein <k42b3.x@gmail.com>
+ * Copyright (c) 2010-2013 Christoph Kappestein <k42b3.x@gmail.com>
  *
  * This file is part of psx. psx is free software: you can
  * redistribute it and/or modify it under the terms of the
@@ -37,14 +35,11 @@ use PSX\OpenId\Provider\Association;
 use PSX\OpenSsl\PKey;
 
 /**
- * PSX_OpenId
+ * OpenId
  *
- * @author     Christoph Kappestein <k42b3.x@gmail.com>
- * @license    http://www.gnu.org/licenses/gpl.html GPLv3
- * @link       http://phpsx.org
- * @category   PSX
- * @package    PSX_OpenId
- * @version    $Revision: 663 $
+ * @author  Christoph Kappestein <k42b3.x@gmail.com>
+ * @license http://www.gnu.org/licenses/gpl.html GPLv3
+ * @link    http://phpsx.org
  */
 class OpenId
 {
@@ -87,7 +82,7 @@ class OpenId
 	 * extension if we have no informations what types are supported by the
 	 * endpoint we add the params and hope that the server support it
 	 *
-	 * @param PSX_OpenId_ExtensionInterface $extension
+	 * @param PSX\OpenId\ExtensionInterface $extension
 	 * @return void
 	 */
 	public function add(ExtensionInterface $extension)
@@ -333,10 +328,10 @@ class OpenId
 
 	/**
 	 * Discovers an openid identity (URI or XRI). It uses the xri.net web
-	 * service to resolve XRIs. Returns either an PSX_OpenId_Identity
+	 * service to resolve XRIs. Returns either an PSX\OpenId\Identity
 	 *
 	 * @param string $identity
-	 * @return PSX_OpenId_Identity
+	 * @return PSX\OpenId\Identity
 	 */
 	private function discovery($identity)
 	{
@@ -381,7 +376,7 @@ class OpenId
 	 * service the method returns the endpoint uri and if available a
 	 * claimed id else it returns false
 	 *
-	 * @param string $url
+	 * @param PSX\Url $url
 	 * @return array
 	 */
 	private function fetchXrds(Url $url)
@@ -422,10 +417,10 @@ class OpenId
 	}
 
 	/**
-	 * Resolves the $uri either to an PSX_OpenId_Identity if its an XRI or
-	 * to an PSX_Url
+	 * Resolves the $uri either to an PSX\OpenId\Identity if its an XRI or
+	 * to an PSX\Url
 	 *
-	 * @return PSX_OpenId_Identity|PSX_Url
+	 * @return PSX\OpenId\Identity|PSX\Url
 	 */
 	public function normalizeUri($uri)
 	{
@@ -561,10 +556,10 @@ class OpenId
 
 	/**
 	 * Tries to establish a association with the op if a store is available. The
-	 * method returns null or PSX_OpenId_Provider_Data_Association. Discovery
+	 * method returns null or PSX\OpenId\Provider\Data\Association. Discovery
 	 * must be made before calling this method
 	 *
-	 * @return PSX_OpenId_Provider_Data_Association|null
+	 * @return PSX\OpenId\Provider\Data\Association|null
 	 */
 	private function establishAssociaton($assocType = 'HMAC-SHA256', $sessionType = 'DH-SHA256')
 	{

@@ -1,13 +1,11 @@
 <?php
 /*
- *  $Id: Get.php 622 2012-08-25 11:18:20Z k42b3.x@googlemail.com $
- *
  * psx
  * A object oriented and modular based PHP framework for developing
  * dynamic web applications. For the current version and informations
  * visit <http://phpsx.org>
  *
- * Copyright (c) 2010-2012 Christoph Kappestein <k42b3.x@gmail.com>
+ * Copyright (c) 2010-2013 Christoph Kappestein <k42b3.x@gmail.com>
  *
  * This file is part of psx. psx is free software: you can
  * redistribute it and/or modify it under the terms of the
@@ -31,28 +29,25 @@ use PSX\Validate;
 /**
  * A class to get the $_GET variables. Here a short example how to get values.
  * <code>
- * $get = new PSX_Input_Get();
+ * $get = new Input\Get();
  *
  * // returns (integer) $_GET['foo'] or false if foo ist not set
  * $bar = $get->foo('integer');
  *
  * // foo must be an integer value >= 3 and <= 64
- * $bar = $get->foo('integer', array(new PSX_Filter_Length(3, 64)));
+ * $bar = $get->foo('integer', array(new Filter\Length(3, 64)));
  *
  * // returns an md5 representation of foo if it contains only alphanumeric
  * // signs else it returns false
- * $bar = $get->foo('string', array(new PSX_Filter_Alnum(), new PSX_Filter_Md5()));
+ * $bar = $get->foo('string', array(new Filter\Alnum(), new Filter\Md5()));
  * </code>
  *
  * If the $_GET variable id is available it contains an integer representation
  * else false
  *
- * @author     Christoph Kappestein <k42b3.x@gmail.com>
- * @license    http://www.gnu.org/licenses/gpl.html GPLv3
- * @link       http://phpsx.org
- * @category   PSX
- * @package    PSX_Input
- * @version    $Revision: 622 $
+ * @author  Christoph Kappestein <k42b3.x@gmail.com>
+ * @license http://www.gnu.org/licenses/gpl.html GPLv3
+ * @link    http://phpsx.org
  */
 class Get extends Input
 {

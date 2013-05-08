@@ -1,4 +1,25 @@
 
+0.5.5
+* Removed
+* Improved activity stream classes
+* Add method get, getBy and getOneBy to handler interface
+
+0.5.4
+* Fixed record serialize
+* Fix select remove getDefaultRecordClass call from underlying table and remove
+  getResultSet method
+* Improved select and record test
+
+0.5.3
+* Fix Oauth2 error exception types
+* Improve handler abstract and interface
+* Use json encode/decode to un/serialize records
+* ResultSet add getter methods and add(), clear() method
+* Remove static parse methods from Condition
+* Remove getDefaultRecordClass from TableAbstract since the table has not to 
+  decide wich object should be used this is part of the handler
+* Improve tests and remove create table statments in tests
+
 0.5.2
 * Use port in base self url
 * Config option to set include path

@@ -1,13 +1,11 @@
 <?php
 /*
- *  $Id: Config.php 615 2012-08-25 11:15:48Z k42b3.x@googlemail.com $
- *
  * psx
  * A object oriented and modular based PHP framework for developing
  * dynamic web applications. For the current version and informations
  * visit <http://phpsx.org>
  *
- * Copyright (c) 2010-2012 Christoph Kappestein <k42b3.x@gmail.com>
+ * Copyright (c) 2010-2013 Christoph Kappestein <k42b3.x@gmail.com>
  *
  * This file is part of psx. psx is free software: you can
  * redistribute it and/or modify it under the terms of the
@@ -34,7 +32,7 @@ use PSX\Config\NotFoundException;
  * wich is assigned to the private property $container. Here an example how to
  * create an access the config.
  * <code>
- * $config = new PSX_Config('configuration.php');
+ * $config = new Config('configuration.php');
  *
  * echo $config['psx_url'];
  * </code>
@@ -42,12 +40,9 @@ use PSX\Config\NotFoundException;
  * The config class also provides methods to get useful informations of the
  * current request. For more informations see the methods.
  *
- * @author     Christoph Kappestein <k42b3.x@gmail.com>
- * @license    http://www.gnu.org/licenses/gpl.html GPLv3
- * @link       http://phpsx.org
- * @category   PSX
- * @package    PSX_Config
- * @version    $Revision: 615 $
+ * @author  Christoph Kappestein <k42b3.x@gmail.com>
+ * @license http://www.gnu.org/licenses/gpl.html GPLv3
+ * @link    http://phpsx.org
  */
 class Config extends ArrayIterator
 {

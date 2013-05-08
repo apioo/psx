@@ -116,33 +116,26 @@ TEXT;
 
 		$expect = <<<TEXT
 <?xml version="1.0" encoding="UTF-8"?>
-<article>
-  <objectType>article</objectType>
-  <author>
-    <accounts>
-      <value>
-        <domain>foo.com</domain>
-        <username>foo</username>
-        <userId>1</userId>
-      </value>
-      <type>home</type>
-      <primary>true</primary>
-    </accounts>
-    <accounts>
-      <value>
-        <domain>bar.com</domain>
-        <username>foo</username>
-        <userId>1</userId>
-      </value>
-      <type>work</type>
-      <primary>false</primary>
-    </accounts>
-    <displayName>foobar</displayName>
-    <id>1</id>
-  </author>
-  <displayName>content</displayName>
-  <id>1</id>
-</article>
+<activity>
+  <published>2011-02-10T15:04:55+00:00</published>
+  <actor>
+    <displayName>Martin Smith</displayName>
+    <id>tag:example.org,2011:martin</id>
+    <objectType>person</objectType>
+    <url>http://example.org/martin</url>
+  </actor>
+  <object>
+    <id>tag:example.org,2011:abc123/xyz</id>
+    <url>http://example.org/blog/2011/02/entry</url>
+  </object>
+  <target>
+    <displayName>Martin's Blog</displayName>
+    <id>tag:example.org,2011:abc123</id>
+    <objectType>blog</objectType>
+    <url>http://example.org/blog/</url>
+  </target>
+  <verb>post</verb>
+</activity>
 TEXT;
 
 		$this->assertXmlStringEqualsXmlString($expect, $actual);

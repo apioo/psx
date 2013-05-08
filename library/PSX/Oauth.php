@@ -1,13 +1,11 @@
 <?php
 /*
- *  $Id: Oauth.php 663 2012-10-07 16:45:52Z k42b3.x@googlemail.com $
- *
  * psx
  * A object oriented and modular based PHP framework for developing
  * dynamic web applications. For the current version and informations
  * visit <http://phpsx.org>
  *
- * Copyright (c) 2010-2012 Christoph Kappestein <k42b3.x@gmail.com>
+ * Copyright (c) 2010-2013 Christoph Kappestein <k42b3.x@gmail.com>
  *
  * This file is part of psx. psx is free software: you can
  * redistribute it and/or modify it under the terms of the
@@ -33,14 +31,11 @@ use PSX\Oauth\Signature;
 /**
  * This is a consumer implementation of OAuth Core 1.0
  *
- * @author     Christoph Kappestein <k42b3.x@gmail.com>
- * @author     Andy Smith <http://term.ie>
- * @license    http://www.gnu.org/licenses/gpl.html GPLv3
- * @link       http://phpsx.org
- * @see        http://tools.ietf.org/html/rfc5849
- * @category   PSX
- * @package    PSX_Oauth
- * @version    $Revision: 663 $
+ * @author  Christoph Kappestein <k42b3.x@gmail.com>
+ * @author  Andy Smith <http://term.ie>
+ * @license http://www.gnu.org/licenses/gpl.html GPLv3
+ * @link    http://phpsx.org
+ * @see     http://tools.ietf.org/html/rfc5849
  */
 class Oauth
 {
@@ -63,20 +58,18 @@ class Oauth
 	 * secret. The $url must be valid request token endpoint. Returns an array
 	 * with all key values pairs from the response i.e.
 	 * <code>
-	 *
 	 * $response = $oauth->requestToken(...);
 	 *
 	 * $token       = $response->getToken();
 	 * $tokenSecret = $response->getTokenSecret();
-	 *
 	 * </code>
 	 *
 	 * @see http://oauth.net/core/1.0a#rfc.section.6.1
-	 * @param string $url
+	 * @param PSX\Url $url
 	 * @param string $consumerKey
 	 * @param string $consumerSecret
 	 * @param string $method
-	 * @return PSX_Oauth_Provider_Data_Response
+	 * @return PSX\Oauth\Provider\Data\Response
 	 */
 	public function requestToken(Url $url, $consumerKey, $consumerSecret, $method = 'HMAC-SHA1', $callback = false)
 	{
@@ -156,8 +149,8 @@ class Oauth
 	 * authorization endpoint. All values in $params are added to the url as
 	 * GET vars.
 	 *
-	 * @param string $url
-	 * @param string $token
+	 * @param PSX\Url $url
+	 * @param array $params
 	 * @return void
 	 */
 	public function userAuthorization(Url $url, array $params = array())
@@ -165,7 +158,6 @@ class Oauth
 		$url->addParams($params);
 
 		header('Location: ' . strval($url));
-
 		exit;
 	}
 
@@ -175,22 +167,21 @@ class Oauth
 	 * callback in this redirect are the $token and $verifier. Returns an access
 	 * token and secret i.e.
 	 * <code>
-	 *
 	 * $response = $oauth->accessToken(...);
 	 *
 	 * $token       = $response->getToken();
 	 * $tokenSecret = $response->getTokenSecret();
-	 *
 	 * </code>
 	 *
 	 * @see http://oauth.net/core/1.0a#rfc.section.6.3
-	 * @param string $url
+	 * @param PSX\Url $url
 	 * @param string $consumerKey
 	 * @param string $consumerSecret
 	 * @param string $token
 	 * @param string $tokenSecret
 	 * @param string $verifier
 	 * @param string $method
+	 * @return PSX\Oauth\Provider\Data\Response
 	 */
 	public function accessToken(Url $url, $consumerKey, $consumerSecret, $token, $tokenSecret, $verifier, $method = 'HMAC-SHA1')
 	{
@@ -260,16 +251,13 @@ class Oauth
 	 * If you have established a token and token secret you can use this method
 	 * to get the authorization header. You can add the header to an http
 	 * request to make an valid oauth request i.e.
-	 *
 	 * <code>
 	 * $header = array(
-	 *
 	 * 	'Authorization: ' . $oauth->getAuthorizationHeader(...),
-	 *
 	 * );
 	 * </code>
 	 *
-	 * @param string $url
+	 * @param PSX\Url $url
 	 * @param string $consumerKey
 	 * @param string $consumerSecret
 	 * @param string $token
@@ -319,7 +307,7 @@ class Oauth
 	 * the method is not supported
 	 *
 	 * @param string $method
-	 * @return oauth_isignature
+	 * @return PSX\Oauth\SignatureAbstract
 	 */
 	public static function getSignature($method)
 	{
@@ -366,7 +354,7 @@ class Oauth
 	 *
 	 * @see http://oauth.net/core/1.0a#rfc.section.9.1
 	 * @param string $method
-	 * @param string $url
+	 * @param PSX\Url $url
 	 * @param array $data
 	 * @return string
 	 */
@@ -395,7 +383,7 @@ class Oauth
 	 * Normalize the url like defined in
 	 *
 	 * @see http://oauth.net/core/1.0a#rfc.section.9.1.2
-	 * @param string $url
+	 * @param PSX\Url $url
 	 * @return false|string
 	 */
 	public static function getNormalizedUrl(Url $url)
@@ -514,7 +502,7 @@ class Oauth
 	 * data.
 	 *
 	 * @param string $response
-	 * @return PSX_Oauth_Provider_Data_Response
+	 * @return PSX\Oauth\Provider\Data\Response
 	 */
 	public static function parseResponse($response)
 	{

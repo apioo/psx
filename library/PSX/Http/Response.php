@@ -1,13 +1,11 @@
 <?php
 /*
- *  $Id: Response.php 579 2012-08-14 18:22:10Z k42b3.x@googlemail.com $
- *
  * psx
  * A object oriented and modular based PHP framework for developing
  * dynamic web applications. For the current version and informations
  * visit <http://phpsx.org>
  *
- * Copyright (c) 2010-2012 Christoph Kappestein <k42b3.x@gmail.com>
+ * Copyright (c) 2010-2013 Christoph Kappestein <k42b3.x@gmail.com>
  *
  * This file is part of psx. psx is free software: you can
  * redistribute it and/or modify it under the terms of the
@@ -26,16 +24,14 @@
 namespace PSX\Http;
 
 use PSX\Http;
+use PSX\Exception;
 
 /**
- * PSX_Http_Response
+ * Response
  *
- * @author     Christoph Kappestein <k42b3.x@gmail.com>
- * @license    http://www.gnu.org/licenses/gpl.html GPLv3
- * @link       http://phpsx.org
- * @category   PSX
- * @package    PSX_Http
- * @version    $Revision: 579 $
+ * @author  Christoph Kappestein <k42b3.x@gmail.com>
+ * @license http://www.gnu.org/licenses/gpl.html GPLv3
+ * @link    http://phpsx.org
  */
 class Response extends Message
 {
@@ -51,7 +47,6 @@ class Response extends Message
 	 * @param string $message
 	 * @param array $header
 	 * @param string $body
-	 * @return PSX_Http_Response
 	 */
 	public function __construct($scheme = null, $code = null, $message = null, array $header = array(), $body = null)
 	{
@@ -127,14 +122,19 @@ class Response extends Message
 	}
 
 	/**
-	 * Converts an raw http response into an PSX_Http_Response object. Throws an
+	 * Converts an raw http response into an PSX\Http\Response object. Throws an
 	 * exception if the response has not an valid status line
 	 *
 	 * @param string $content
-	 * @return PSX_Http_Response
+	 * @return PSX\Http\Response
 	 */
 	public static function convert($content)
 	{
+		if(empty($content))
+		{
+			throw new Exception('Empty response');
+		}
+
 		$response = new self();
 
 		list($scheme, $code, $message) = self::getStatus($content);

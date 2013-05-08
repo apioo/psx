@@ -1,13 +1,11 @@
 <?php
 /*
- *  $Id: Request.php 626 2012-08-25 11:19:36Z k42b3.x@googlemail.com $
- *
  * psx
  * A object oriented and modular based PHP framework for developing
  * dynamic web applications. For the current version and informations
  * visit <http://phpsx.org>
  *
- * Copyright (c) 2010-2012 Christoph Kappestein <k42b3.x@gmail.com>
+ * Copyright (c) 2010-2013 Christoph Kappestein <k42b3.x@gmail.com>
  *
  * This file is part of psx. psx is free software: you can
  * redistribute it and/or modify it under the terms of the
@@ -32,7 +30,7 @@ use PSX\Validate;
  * A class to get the $_REQUEST variables. Here a short example how to get
  * values.
  * <code>
- * $request = new PSX_Input_Request();
+ * $request = new Input\Request();
  *
  * $id = $request->id('integer');
  * </code>
@@ -40,12 +38,9 @@ use PSX\Validate;
  * If the $_REQUEST variable id is available it contains an integer
  * representation else of it else false
  *
- * @author     Christoph Kappestein <k42b3.x@gmail.com>
- * @license    http://www.gnu.org/licenses/gpl.html GPLv3
- * @link       http://phpsx.org
- * @category   PSX
- * @package    PSX_Input
- * @version    $Revision: 626 $
+ * @author  Christoph Kappestein <k42b3.x@gmail.com>
+ * @license http://www.gnu.org/licenses/gpl.html GPLv3
+ * @link    http://phpsx.org
  */
 class Request extends Input
 {

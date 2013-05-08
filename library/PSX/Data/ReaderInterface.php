@@ -1,13 +1,11 @@
 <?php
 /*
- *  $Id: ReaderInterface.php 512 2012-06-07 15:03:09Z k42b3.x@googlemail.com $
- *
  * psx
  * A object oriented and modular based PHP framework for developing
  * dynamic web applications. For the current version and informations
  * visit <http://phpsx.org>
  *
- * Copyright (c) 2010-2012 Christoph Kappestein <k42b3.x@gmail.com>
+ * Copyright (c) 2010-2013 Christoph Kappestein <k42b3.x@gmail.com>
  *
  * This file is part of psx. psx is free software: you can
  * redistribute it and/or modify it under the terms of the
@@ -28,14 +26,11 @@ namespace PSX\Data;
 use PSX\Http\Message as HttpMessage;
 
 /**
- * PSX_Data_ReaderInterface
+ * ReaderInterface
  *
- * @author     Christoph Kappestein <k42b3.x@gmail.com>
- * @license    http://www.gnu.org/licenses/gpl.html GPLv3
- * @link       http://phpsx.org
- * @category   PSX
- * @package    PSX_Data
- * @version    $Revision: 512 $
+ * @author  Christoph Kappestein <k42b3.x@gmail.com>
+ * @license http://www.gnu.org/licenses/gpl.html GPLv3
+ * @link    http://phpsx.org
  */
 interface ReaderInterface
 {
@@ -49,12 +44,12 @@ interface ReaderInterface
 
 	/**
 	 * Transforms the $request into an parseable form this can be an array
-	 * or DomDocument etc. This method returns an PSX_Data_ReaderResult.
+	 * or DomDocument etc. This method returns an PSX\Data\ReaderResult.
 	 * The import method of each record can be used to insert insert the
 	 * results.
 	 *
-	 * @param PSX_Http_Request $request
-	 * @return PSX_Data_ReaderResult
+	 * @param PSX\Http\Request $request
+	 * @return PSX\Data\ReaderResult
 	 */
 	public function read(HttpMessage $message);
 }

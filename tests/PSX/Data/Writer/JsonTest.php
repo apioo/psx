@@ -89,7 +89,7 @@ TEXT;
 
 
 		$expect = <<<TEXT
-{"objectType":"article","author":{"accounts":[{"value":{"domain":"foo.com","username":"foo","userId":1},"type":"home","primary":true},{"value":{"domain":"bar.com","username":"foo","userId":1},"type":"work","primary":false}],"displayName":"foobar","id":1},"displayName":"content","id":1}
+{"published":"2011-02-10T15:04:55+00:00","actor":{"displayName":"Martin Smith","id":"tag:example.org,2011:martin","objectType":"person","url":"http:\/\/example.org\/martin"},"object":{"id":"tag:example.org,2011:abc123\/xyz","url":"http:\/\/example.org\/blog\/2011\/02\/entry"},"target":{"displayName":"Martin's Blog","id":"tag:example.org,2011:abc123","objectType":"blog","url":"http:\/\/example.org\/blog\/"},"verb":"post"}
 TEXT;
 
 		$this->assertEquals($expect, $actual);

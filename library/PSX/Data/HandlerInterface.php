@@ -1,13 +1,11 @@
 <?php
 /*
- *  $Id: HandlerInterface.php 480 2012-05-01 18:13:54Z k42b3.x@googlemail.com $
- *
  * psx
  * A object oriented and modular based PHP framework for developing
  * dynamic web applications. For the current version and informations
  * visit <http://phpsx.org>
  *
- * Copyright (c) 2010-2012 Christoph Kappestein <k42b3.x@gmail.com>
+ * Copyright (c) 2010-2013 Christoph Kappestein <k42b3.x@gmail.com>
  *
  * This file is part of psx. psx is free software: you can
  * redistribute it and/or modify it under the terms of the
@@ -34,12 +32,9 @@ use PSX\Sql\Condition;
  * getLatestNews() to your news handler instead of writing the query in the 
  * controller.
  *
- * @author     Christoph Kappestein <k42b3.x@gmail.com>
- * @license    http://www.gnu.org/licenses/gpl.html GPLv3
- * @link       http://phpsx.org
- * @category   PSX
- * @package    PSX_Data
- * @version    $Revision: 480 $
+ * @author  Christoph Kappestein <k42b3.x@gmail.com>
+ * @license http://www.gnu.org/licenses/gpl.html GPLv3
+ * @link    http://phpsx.org
  */
 interface HandlerInterface
 {
@@ -72,7 +67,7 @@ interface HandlerInterface
 	/**
 	 * Returns an record by the condition
 	 *
-	 * @return array|RecordInterface
+	 * @return array|PSX\Data\RecordInterface
 	 */
 	public function getOneBy(Condition $con, 
 		array $fields = array(), 
@@ -83,7 +78,7 @@ interface HandlerInterface
 	/**
 	 * Returns an record by the primary key
 	 *
-	 * @return array|RecordInterface
+	 * @return array|PSX\Data\RecordInterface
 	 */
 	public function get($id, 
 		array $fields = array(), 
@@ -96,7 +91,7 @@ interface HandlerInterface
 	 * of records. Returns an resultset wich can easily displayed on an html 
 	 * page with a pagination or exported as XML or JSON for an API
 	 *
-	 * @return ResultSet
+	 * @return PSX\Data\ResultSet
 	 */
 	public function getResultSet(array $fields, 
 		$startIndex = 0, 
@@ -126,7 +121,7 @@ interface HandlerInterface
 	 * Returns a new record if the $id is not defined else an existing record
 	 *
 	 * @param integer $id
-	 * @return PSX_Data_RecordInterface
+	 * @return PSX\Data\RecordInterface
 	 */
 	public function getRecord($id = null);
 

@@ -1,13 +1,11 @@
 <?php
 /*
- *  $Id: ProviderAbstract.php 496 2012-06-02 18:41:54Z k42b3.x@googlemail.com $
- *
  * psx
  * A object oriented and modular based PHP framework for developing
  * dynamic web applications. For the current version and informations
  * visit <http://phpsx.org>
  *
- * Copyright (c) 2010-2012 Christoph Kappestein <k42b3.x@gmail.com>
+ * Copyright (c) 2010-2013 Christoph Kappestein <k42b3.x@gmail.com>
  *
  * This file is part of psx. psx is free software: you can
  * redistribute it and/or modify it under the terms of the
@@ -38,14 +36,11 @@ use PSX\OpenSsl\PKey;
 use PSX\Url;
 
 /**
- * PSX_OpenId_ProviderAbstract
+ * ProviderAbstract
  *
- * @author     Christoph Kappestein <k42b3.x@gmail.com>
- * @license    http://www.gnu.org/licenses/gpl.html GPLv3
- * @link       http://phpsx.org
- * @category   PSX
- * @package    PSX_OpenId
- * @version    $Revision: 496 $
+ * @author  Christoph Kappestein <k42b3.x@gmail.com>
+ * @license http://www.gnu.org/licenses/gpl.html GPLv3
+ * @link    http://phpsx.org
  */
 abstract class ProviderAbstract extends ApiAbstract
 {
@@ -208,7 +203,7 @@ abstract class ProviderAbstract extends ApiAbstract
 	 * Returns the authentication response wich was previously send to the user
 	 * by the assoc_handle.
 	 *
-	 * @return PSX_OpenId_Data_Authentication
+	 * @return PSX\OpenId\Data\Authentication
 	 */
 	abstract public function onCheckAuthentication(ResRequest $request);
 

@@ -1,13 +1,11 @@
 <?php
 /*
- *  $Id: ProviderAbstract.php 586 2012-08-15 21:29:03Z k42b3.x@googlemail.com $
- *
  * psx
  * A object oriented and modular based PHP framework for developing
  * dynamic web applications. For the current version and informations
  * visit <http://phpsx.org>
  *
- * Copyright (c) 2010-2012 Christoph Kappestein <k42b3.x@gmail.com>
+ * Copyright (c) 2010-2013 Christoph Kappestein <k42b3.x@gmail.com>
  *
  * This file is part of psx. psx is free software: you can
  * redistribute it and/or modify it under the terms of the
@@ -33,14 +31,11 @@ use PSX\Url;
 use PSX\Validate;
 
 /**
- * PSX_Oembed_ProviderAbstract
+ * ProviderAbstract
  *
- * @author     Christoph Kappestein <k42b3.x@gmail.com>
- * @license    http://www.gnu.org/licenses/gpl.html GPLv3
- * @link       http://phpsx.org
- * @category   PSX
- * @package    PSX_Oembed
- * @version    $Revision: 586 $
+ * @author  Christoph Kappestein <k42b3.x@gmail.com>
+ * @license http://www.gnu.org/licenses/gpl.html GPLv3
+ * @link    http://phpsx.org
  */
 abstract class ProviderAbstract extends ApiAbstract
 {
@@ -87,13 +82,13 @@ abstract class ProviderAbstract extends ApiAbstract
 
 	/**
 	 * Is called if an oembed request was made must return an
-	 * PSX_Oembed_TypeAbstract object. If no PSX_Oembed_TypeAbstract object is
+	 * PSX\Oembed\TypeAbstract object. If no PSX\Oembed\TypeAbstract object is
 	 * returned an 404 status code is send
 	 *
-	 * @param PSX_Url $url
+	 * @param PSX\Url $url
 	 * @param integer $maxWidth
 	 * @param integer $maxHeight
-	 * @return PSX_Oembed_TypeAbstract
+	 * @return PSX\Oembed\TypeAbstract
 	 */
 	abstract public function onRequest(Url $url, $maxWidth, $maxHeight);
 

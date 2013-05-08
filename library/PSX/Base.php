@@ -1,13 +1,11 @@
 <?php
 /*
- *  $Id: Base.php 661 2012-10-07 16:31:07Z k42b3.x@googlemail.com $
- *
  * psx
  * A object oriented and modular based PHP framework for developing
  * dynamic web applications. For the current version and informations
  * visit <http://phpsx.org>
  *
- * Copyright (c) 2010-2012 Christoph Kappestein <k42b3.x@gmail.com>
+ * Copyright (c) 2010-2013 Christoph Kappestein <k42b3.x@gmail.com>
  *
  * This file is part of psx. psx is free software: you can
  * redistribute it and/or modify it under the terms of the
@@ -30,14 +28,11 @@ use PSX\Util\Uuid;
 use UnexpectedValueException;
 
 /**
- * PSX_Base
+ * Base
  *
- * @author     Christoph Kappestein <k42b3.x@gmail.com>
- * @license    http://www.gnu.org/licenses/gpl.html GPLv3
- * @link       http://phpsx.org
- * @category   PSX
- * @package    PSX_Base
- * @version    $Revision: 661 $
+ * @author  Christoph Kappestein <k42b3.x@gmail.com>
+ * @license http://www.gnu.org/licenses/gpl.html GPLv3
+ * @link    http://phpsx.org
  */
 class Base
 {
@@ -96,7 +91,7 @@ class Base
 	/**
 	 * Contains the current http request object
 	 *
-	 * @var PSX_Http_Request
+	 * @var PSX\Http\Request
 	 */
 	protected $request;
 
@@ -194,7 +189,7 @@ class Base
 	/**
 	 * Returns the current http request
 	 *
-	 * @return PSX_Http_Request
+	 * @return PSX\Http\Request
 	 */
 	public function getRequest()
 	{
@@ -261,7 +256,7 @@ class Base
 	 * http headers are case-insensitive so you dont have to search the complete
 	 * array instead you can acces it with the key i.e.:
 	 * <code>
-	 * $headers = PSX_Base::getRequestHeader();
+	 * $headers = Base::getRequestHeader();
 	 *
 	 * echo $headers['Content-Type'];
 	 * </code>

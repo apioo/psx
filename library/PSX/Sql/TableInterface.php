@@ -1,13 +1,11 @@
 <?php
 /*
- *  $Id: TableInterface.php 640 2012-09-30 22:44:36Z k42b3.x@googlemail.com $
- *
  * psx
  * A object oriented and modular based PHP framework for developing
  * dynamic web applications. For the current version and informations
  * visit <http://phpsx.org>
  *
- * Copyright (c) 2010-2012 Christoph Kappestein <k42b3.x@gmail.com>
+ * Copyright (c) 2010-2013 Christoph Kappestein <k42b3.x@gmail.com>
  *
  * This file is part of psx. psx is free software: you can
  * redistribute it and/or modify it under the terms of the
@@ -26,14 +24,11 @@
 namespace PSX\Sql;
 
 /**
- * PSX_Sql_TableInterface
+ * TableInterface
  *
- * @author     Christoph Kappestein <k42b3.x@gmail.com>
- * @license    http://www.gnu.org/licenses/gpl.html GPLv3
- * @link       http://phpsx.org
- * @category   PSX
- * @package    PSX_Sql
- * @version    $Revision: 640 $
+ * @author  Christoph Kappestein <k42b3.x@gmail.com>
+ * @license http://www.gnu.org/licenses/gpl.html GPLv3
+ * @link    http://phpsx.org
  */
 interface TableInterface
 {
@@ -180,14 +175,14 @@ interface TableInterface
 	/**
 	 * Starts a new complex selection on this table
 	 *
-	 * @return PSX_Sql_Table_SelectInterface
+	 * @return PSX\Sql\Table\SelectInterface
 	 */
 	public function select(array $columns = array(), $prefix = null);
 
 	/**
 	 * Returns the last selection wich was created by the method select()
 	 *
-	 * @return PSX_Sql_Table_SelectInterface
+	 * @return PSX\Sql\Table\SelectInterface
 	 */
 	public function getLastSelect();
 
@@ -198,7 +193,7 @@ interface TableInterface
 	 * exception is thrown
 	 *
 	 * @param integer $id
-	 * @return PSX_Data_RecordInterface
+	 * @return PSX\Data\RecordInterface
 	 */
 	public function getRecord($id = null);
 
@@ -208,7 +203,7 @@ interface TableInterface
 	 * select method if you want join between tables
 	 *
 	 * @param array $fields
-	 * @param PSX_Sql_Condition $condition
+	 * @param PSX\Sql\Condition $condition
 	 * @param string $sortBy
 	 * @param integer $sortOrder
 	 * @param integer $startIndex
@@ -222,7 +217,7 @@ interface TableInterface
 	 * $fields
 	 *
 	 * @param array $fields
-	 * @param PSX_Sql_Condition $condition
+	 * @param PSX\Sql\Condition $condition
 	 * @param string $sortBy
 	 * @param integer $sortOrder
 	 * @return array
@@ -233,7 +228,7 @@ interface TableInterface
 	 * Returns the values of one column as array
 	 *
 	 * @param string $field
-	 * @param PSX_Sql_Condition $condition
+	 * @param PSX\Sql\Condition $condition
 	 * @param string $sortBy
 	 * @param integer $sortOrder
 	 * @param integer $startIndex
@@ -246,7 +241,7 @@ interface TableInterface
 	 * Returns the first value from the $field
 	 *
 	 * @param string $field
-	 * @param PSX_Sql_Condition $condition
+	 * @param PSX\Sql\Condition $condition
 	 * @param string $sortBy
 	 * @param integer $sortOrder
 	 * @return string
@@ -257,7 +252,7 @@ interface TableInterface
 	 * Returns the number of rows according to the $condition or the complete
 	 * count of the table if $condition is null
 	 *
-	 * @param PSX_Sql_Condition $condition
+	 * @param PSX\Sql\Condition $condition
 	 * @return integer
 	 */
 	public function count(Condition $condition = null);
@@ -266,7 +261,7 @@ interface TableInterface
 	 * Inserts an row into the table. It validates all columns  according to the 
 	 * table definition
 	 *
-	 * @param array|PSX_Data_RecordInterface $params
+	 * @param array|PSX\Data\RecordInterface $params
 	 * @param integer $modifier
 	 * @return integer
 	 */
@@ -277,19 +272,17 @@ interface TableInterface
 	 * looks for the primary key in the $params and uses this value to update 
 	 * the row
 	 *
-	 * @param array|PSX_Data_RecordInterface $params
-	 * @param PSX_Sql_Condition $condition
+	 * @param array|PSX\Data\RecordInterface $params
+	 * @param PSX\Sql\Condition $condition
 	 * @param integer $modifier
 	 * @return integer
 	 */
 	public function update($params, Condition $condition = null, $modifier = 0);
 
 	/**
-	 * Replaces an row on the table. If no condition is specified the method 
-	 * looks for the primary key in the $params and uses this value to replace 
-	 * the row
+	 * Replaces an row on the table
 	 *
-	 * @param array|PSX_Data_RecordInterface $params
+	 * @param array|PSX\Data\RecordInterface $params
 	 * @param integer $modifier
 	 * @return integer
 	 */
@@ -301,8 +294,7 @@ interface TableInterface
 	 * If $params is an condition all rows according to the condition will be
 	 * deleted
 	 *
-	 * @param array|PSX_Data_RecordInterface|PSX_Sql_Condition $params
-	 * @param PSX_Sql_Condition $condition
+	 * @param array|PSX\Data\RecordInterface|PSX\Sql\Condition $params
 	 * @param integer $modifier
 	 * @return integer
 	 */

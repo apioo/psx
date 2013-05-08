@@ -1,13 +1,11 @@
 <?php
 /*
- *  $Id: Condition.php 582 2012-08-15 21:27:02Z k42b3.x@googlemail.com $
- *
  * psx
  * A object oriented and modular based PHP framework for developing
  * dynamic web applications. For the current version and informations
  * visit <http://phpsx.org>
  *
- * Copyright (c) 2010-2012 Christoph Kappestein <k42b3.x@gmail.com>
+ * Copyright (c) 2010-2013 Christoph Kappestein <k42b3.x@gmail.com>
  *
  * This file is part of psx. psx is free software: you can
  * redistribute it and/or modify it under the terms of the
@@ -29,14 +27,11 @@ use Countable;
 use UnexpectedValueException;
 
 /**
- * PSX_Sql_Condition
+ * Condition
  *
- * @author     Christoph Kappestein <k42b3.x@gmail.com>
- * @license    http://www.gnu.org/licenses/gpl.html GPLv3
- * @link       http://phpsx.org
- * @category   PSX
- * @package    PSX_Sql
- * @version    $Revision: 582 $
+ * @author  Christoph Kappestein <k42b3.x@gmail.com>
+ * @license http://www.gnu.org/licenses/gpl.html GPLv3
+ * @link    http://phpsx.org
  */
 class Condition implements Countable
 {
@@ -80,7 +75,7 @@ class Condition implements Countable
 	 * @param string $value
 	 * @param string $conjunction
 	 * @param int $type
-	 * @return PSX_Sql_Condition
+	 * @return PSX\Sql\Condition
 	 */
 	public function add($column, $operator, $value, $conjunction = 'AND', $type = 0x1)
 	{
@@ -125,8 +120,8 @@ class Condition implements Countable
 	/**
 	 * Merges an existing condition
 	 *
-	 * @param PSX_Sql_Condition $condition
-	 * @return PSX_Sql_Condition
+	 * @param PSX\Sql\Condition $condition
+	 * @return PSX\Sql\Condition
 	 */
 	public function merge(Condition $condition)
 	{

@@ -1,13 +1,11 @@
 <?php
 /*
- *  $Id: Curl.php 579 2012-08-14 18:22:10Z k42b3.x@googlemail.com $
- *
  * psx
  * A object oriented and modular based PHP framework for developing
  * dynamic web applications. For the current version and informations
  * visit <http://phpsx.org>
  *
- * Copyright (c) 2010-2012 Christoph Kappestein <k42b3.x@gmail.com>
+ * Copyright (c) 2010-2013 Christoph Kappestein <k42b3.x@gmail.com>
  *
  * This file is part of psx. psx is free software: you can
  * redistribute it and/or modify it under the terms of the
@@ -31,20 +29,17 @@ use PSX\Http\RedirectException;
 use PSX\Http\Request;
 
 /**
- * The logic of following redirects is handeled in the PSX_Http class to avoid
+ * The logic of following redirects is handeled in the PSX\Http class to avoid
  * that handlers have to deal with this. But because curl has an follow location
  * option wich is probably faster you can enable this in the handler. Note
- * CURLOPT_FOLLOWLOCATION throws an error if in safe mode or and open_basedir is
+ * CURLOPT_FOLLOWLOCATION throws an error if in safe mode or open_basedir is
  * set. If you use the curl redirection the redirect will not include any
  * cookies of the store. Because of these drawbacks the option is by default
  * disabled
  *
- * @author     Christoph Kappestein <k42b3.x@gmail.com>
- * @license    http://www.gnu.org/licenses/gpl.html GPLv3
- * @link       http://phpsx.org
- * @category   PSX
- * @package    PSX_Http
- * @version    $Revision: 579 $
+ * @author  Christoph Kappestein <k42b3.x@gmail.com>
+ * @license http://www.gnu.org/licenses/gpl.html GPLv3
+ * @link    http://phpsx.org
  */
 class Curl implements HandlerInterface
 {
