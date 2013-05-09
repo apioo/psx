@@ -53,14 +53,11 @@ including a new line and so on
 and another text
 TEXT;
 
-		$a = Markdown::decode($md);
-		$e = <<<TEXT
-<p>some content with text including a new line and so on </p>
-<p>and another text </p>
+		$actual = Markdown::decode($md);
+		$expect = '<p>some content with text including a new line and so on </p>' . "\n";
+		$expect.= '<p>and another text </p>' . "\n";
 
-TEXT;
-
-		$this->assertEquals($e, $a);
+		$this->assertEquals($expect, $actual);
 	}
 
 	public function testBr()
@@ -72,14 +69,11 @@ including a new line and so on
 and another text
 TEXT;
 
-		$a = Markdown::decode($md);
-		$e = <<<TEXT
-<p>some content with text  <br /> including a new line and so on </p>
-<p>and another text </p>
+		$actual = Markdown::decode($md);
+		$expect = '<p>some content with text  <br /> including a new line and so on </p>' . "\n";
+		$expect.= '<p>and another text </p>' . "\n";
 
-TEXT;
-
-		$this->assertEquals($e, $a);
+		$this->assertEquals($expect, $actual);
 	}
 
 	public function testQuote()
@@ -92,18 +86,15 @@ TEXT;
 and an reply to this quote
 TEXT;
 
-		$a = Markdown::decode($md);
-		$e = <<<TEXT
-<blockquote>
-<p>this is a test quote </p>
-<h2>some heading</h2>
-<p>another text </p>
-</blockquote>
-<p>and an reply to this quote </p>
+		$actual = Markdown::decode($md);
+		$expect = '<blockquote>' . "\n";
+		$expect.= '<p>this is a test quote </p>' . "\n";
+		$expect.= '<h2>some heading</h2>' . "\n";
+		$expect.= '<p>another text </p>' . "\n";
+		$expect.= '</blockquote>' . "\n";
+		$expect.= '<p>and an reply to this quote </p>' . "\n";
 
-TEXT;
-
-		$this->assertEquals($e, $a);
+		$this->assertEquals($expect, $actual);
 	}
 
 	public function testUnorderedList()
@@ -115,17 +106,14 @@ some content
 * bar
 TEXT;
 
-		$a = Markdown::decode($md);
-		$e = <<<TEXT
-<p>some content </p>
-<ul>
-	<li>foo</li>
-	<li>bar</li>
-</ul>
+		$actual = Markdown::decode($md);
+		$expect = '<p>some content </p>' . "\n";
+		$expect.= '<ul>' . "\n";
+		$expect.= '	<li>foo</li>' . "\n";
+		$expect.= '	<li>bar</li>' . "\n";
+		$expect.= '</ul>' . "\n";
 
-TEXT;
-
-		$this->assertEquals($e, $a);
+		$this->assertEquals($expect, $actual);
 	}
 
 	public function testOrderedList()
@@ -137,17 +125,14 @@ some content
 2. bar
 TEXT;
 
-		$a = Markdown::decode($md);
-		$e = <<<TEXT
-<p>some content </p>
-<ol>
-	<li>foo</li>
-	<li>bar</li>
-</ol>
+		$actual = Markdown::decode($md);
+		$expect = '<p>some content </p>' . "\n";
+		$expect.= '<ol>' . "\n";
+		$expect.= '	<li>foo</li>' . "\n";
+		$expect.= '	<li>bar</li>' . "\n";
+		$expect.= '</ol>' . "\n";
 
-TEXT;
-
-		$this->assertEquals($e, $a);
+		$this->assertEquals($expect, $actual);
 	}
 
 	public function testHeading()
@@ -161,18 +146,15 @@ TEXT;
 ###### foobar
 TEXT;
 
-		$a = Markdown::decode($md);
-		$e = <<<TEXT
-<h1>foobar</h1>
-<h2>foobar</h2>
-<h3>foobar</h3>
-<h4>foobar</h4>
-<h5>foobar</h5>
-<h6>foobar</h6>
+		$actual = Markdown::decode($md);
+		$expect = '<h1>foobar</h1>' . "\n";
+		$expect.= '<h2>foobar</h2>' . "\n";
+		$expect.= '<h3>foobar</h3>' . "\n";
+		$expect.= '<h4>foobar</h4>' . "\n";
+		$expect.= '<h5>foobar</h5>' . "\n";
+		$expect.= '<h6>foobar</h6>' . "\n";
 
-TEXT;
-
-		$this->assertEquals($e, $a);
+		$this->assertEquals($expect, $actual);
 	}
 
 	public function testLine()
@@ -183,15 +165,12 @@ some content
 some other content
 TEXT;
 
-		$a = Markdown::decode($md);
-		$e = <<<TEXT
-<p>some content </p>
-<hr />
-<p>some other content </p>
+		$actual = Markdown::decode($md);
+		$expect = '<p>some content </p>' . "\n";
+		$expect.= '<hr />' . "\n";
+		$expect.= '<p>some other content </p>' . "\n";
 
-TEXT;
-
-		$this->assertEquals($e, $a);
+		$this->assertEquals($expect, $actual);
 	}
 
 	public function testCode()
@@ -207,20 +186,17 @@ some code description
 	}
 TEXT;
 
-		$a = Markdown::decode($md);
-		$e = <<<TEXT
-<p>some code description </p>
-<pre class="prettyprint">class Voila {
-public:
-  // Voila
-  static const string VOILA = "Voila";
-  // will not interfere with embedded tags.
-}
-</pre>
+		$actual = Markdown::decode($md);
+		$expect = '<p>some code description </p>' . "\n";
+		$expect.= '<pre class="prettyprint">class Voila {' . "\n";
+		$expect.= 'public:' . "\n";
+		$expect.= '  // Voila' . "\n";
+		$expect.= '  static const string VOILA = "Voila";' . "\n";
+		$expect.= '  // will not interfere with embedded tags.' . "\n";
+		$expect.= '}' . "\n";
+		$expect.= '</pre>' . "\n";
 
-TEXT;
-
-		$this->assertEquals($e, $a);
+		$this->assertEquals($expect, $actual);
 	}
 
 	public function testEmphasisItalic()
@@ -229,13 +205,10 @@ TEXT;
 foo _bar_ foo *bar* foo *bar* foo _bar_ f*oo bar
 TEXT;
 
-		$a = Markdown::decode($md);
-		$e = <<<TEXT
-<p>foo <i>bar</i> foo <i>bar</i> foo <i>bar</i> foo <i>bar</i> f*oo bar </p>
+		$actual = Markdown::decode($md);
+		$expect = '<p>foo <i>bar</i> foo <i>bar</i> foo <i>bar</i> foo <i>bar</i> f*oo bar </p>' . "\n";
 
-TEXT;
-
-		$this->assertEquals($e, $a);
+		$this->assertEquals($expect, $actual);
 	}
 
 	public function testEmphasisItalicUrl()
@@ -244,13 +217,10 @@ TEXT;
 foo _bar_ foo http://foo.com/test_test_test.htm
 TEXT;
 
-		$a = Markdown::decode($md);
-		$e = <<<TEXT
-<p>foo <i>bar</i> foo http://foo.com/test_test_test.htm </p>
+		$actual = Markdown::decode($md);
+		$expect = '<p>foo <i>bar</i> foo http://foo.com/test_test_test.htm </p>' . "\n";
 
-TEXT;
-
-		$this->assertEquals($e, $a);
+		$this->assertEquals($expect, $actual);
 	}
 
 	public function testEmphasisBold()
@@ -259,13 +229,10 @@ TEXT;
 foo __bar__ foo **bar** foo **bar** foo __bar__ f**oo bar
 TEXT;
 
-		$a = Markdown::decode($md);
-		$e = <<<TEXT
-<p>foo <b>bar</b> foo <b>bar</b> foo <b>bar</b> foo <b>bar</b> f**oo bar </p>
+		$actual = Markdown::decode($md);
+		$expect = '<p>foo <b>bar</b> foo <b>bar</b> foo <b>bar</b> foo <b>bar</b> f**oo bar </p>' . "\n";
 
-TEXT;
-
-		$this->assertEquals($e, $a);
+		$this->assertEquals($expect, $actual);
 	}
 
 	public function testEmphasisBoldUrl()
@@ -274,12 +241,9 @@ TEXT;
 foo __bar__ foo http://foo.com/test__test__test.htm
 TEXT;
 
-		$a = Markdown::decode($md);
-		$e = <<<TEXT
-<p>foo <b>bar</b> foo http://foo.com/test__test__test.htm </p>
+		$actual = Markdown::decode($md);
+		$expect = '<p>foo <b>bar</b> foo http://foo.com/test__test__test.htm </p>' . "\n";
 
-TEXT;
-
-		$this->assertEquals($e, $a);
+		$this->assertEquals($expect, $actual);
 	}
 }
