@@ -39,7 +39,7 @@ class WriterTest extends \PHPUnit_Framework_TestCase
 		$writer->addService('http://www.myopenid.com/server', array('http://specs.openid.net/auth/2.0/signon'), 20);
 
 		$actual   = $writer->toString();
-		$expected = <<<XML
+		$expected = <<<'XML'
 <?xml version="1.0" encoding="UTF-8"?>
 <xrds:XRDS xmlns="xri://$xrd*($v*2.0)" xmlns:xrds="xri://$xrds">
   <XRD>
