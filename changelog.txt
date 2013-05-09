@@ -1,5 +1,8 @@
 
 0.5.5
+* Extract xml, atom and rss writer into class for useage outside of the data 
+  writer context
+* Added Sitemap an Odata libraries
 * Removed
 * Improved activity stream classes
 * Add method get, getBy and getOneBy to handler interface

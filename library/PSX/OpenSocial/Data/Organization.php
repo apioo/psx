@@ -159,8 +159,8 @@ class Organization extends DataAbstract
 	{
 		$this->name = $name;
 	}
-	
-	public function getName()
+
+	public function getOrganizationName()
 	{
 		return $this->name;
 	}
