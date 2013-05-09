@@ -89,8 +89,8 @@ class Declaration extends RecordAbstract
 	/**
 	 * Generates an complex swagger datatype record from the given $record class 
 	 *
-	 * @param PSX_Data_RecordInterface $record
-	 * @return PSX_Data_RecordInterface
+	 * @param PSX\Data\RecordInterface $record
+	 * @return PSX\Data\RecordInterface
 	 */
 	public static function getComplexDatatypeByRecord(RecordInterface $record)
 	{
@@ -147,7 +147,7 @@ class Declaration extends RecordAbstract
 								$type = 'int';
 								break;
 
-							case 'DateTime':
+							case 'datetime':
 								$type = 'Date';
 								break;
 
