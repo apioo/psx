@@ -88,7 +88,7 @@ TEXT;
   <id>bar</id>
   <updated>2012-03-11T13:37:21+00:00</updated>
   <generator>amun</generator>
-  <entry xmlns="http://www.w3.org/2005/Atom">
+  <entry>
     <title>bar</title>
     <id>1</id>
     <updated>2012-03-11T13:37:21+00:00</updated>
@@ -97,7 +97,7 @@ TEXT;
     </author>
     <content type="html">foobar</content>
   </entry>
-  <entry xmlns="http://www.w3.org/2005/Atom">
+  <entry>
     <title>bar</title>
     <id>2</id>
     <updated>2012-03-11T13:37:21+00:00</updated>

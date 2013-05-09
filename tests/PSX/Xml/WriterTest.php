@@ -21,36 +21,46 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Data\Writer;
-
-use PSX\Data\RecordInterface;
-use PSX\Data\WriterInterface;
-use PSX\Data\WriterResult;
-use PSX\Xml\Writer;
-use XMLWriter;
+namespace PSX\Xml;
 
 /**
- * Xml
+ * WriterTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Xml implements WriterInterface
+class WriterTest extends \PHPUnit_Framework_TestCase
 {
-	public static $mime = 'application/xml';
-
-	public $writerResult;
-
-	protected $writer;
-
-	public function write(RecordInterface $record)
+	public function testWriter()
 	{
-		$this->writerResult = new WriterResult(WriterInterface::XML, $this);
+		$writer = new Writer();
+		$writer->setRecord('foo', array(
+			'foo1' => 'bar',
+			'foo2' => array(
+				'bar1' => 'foo', 
+				'bar2' => 'foo',
+			),
+			'foo3' => 'bar',
+			'foo4' => 'bar',
+			'foo5' => 'bar',
+		));
 
-		$this->writer = new Writer();
-		$this->writer->setRecord($record->getName(), $record->export($this->writerResult));
+		$actual   = $writer->toString();
+		$expected = <<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<foo>
+  <foo1>bar</foo1>
+  <foo2>
+    <bar1>foo</bar1>
+    <bar2>foo</bar2>
+  </foo2>
+  <foo3>bar</foo3>
+  <foo4>bar</foo4>
+  <foo5>bar</foo5>
+</foo>
+XML;
 
-		echo $this->writer->toString();
+		$this->assertXmlStringEqualsXmlString($expected, $actual);
 	}
 }

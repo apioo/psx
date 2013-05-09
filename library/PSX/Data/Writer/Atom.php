@@ -24,11 +24,12 @@
 namespace PSX\Data\Writer;
 
 use DateTime;
+use PSX\Atom\Writer;
 use PSX\Data\RecordInterface;
 use PSX\Data\ResultSet;
-use PSX\Data\Writer\Atom\Entry;
 use PSX\Data\WriterInterface;
 use PSX\Data\WriterResult;
+use PSX\Exception;
 use XMLWriter;
 
 /**
@@ -41,133 +42,14 @@ use XMLWriter;
 class Atom implements WriterInterface
 {
 	public static $mime = 'application/atom+xml';
-	public static $xmlns = 'http://www.w3.org/2005/Atom';
 
-	private $title;
-	private $id;
-	private $updated;
-
-	public $writer;
 	public $writerResult;
 
-	public function __construct()
-	{
-		$this->writer = new XMLWriter();
-		$this->writer->openMemory();
-		$this->writer->setIndent(true);
-		$this->writer->startDocument('1.0', 'UTF-8');
-	}
+	protected $writer;
 
 	public function setConfig($title, $id, DateTime $updated)
 	{
-		$this->writer->startElement('feed');
-		$this->writer->writeAttribute('xmlns', self::$xmlns);
-
-		$this->setTitle($title);
-		$this->setId($id);
-		$this->setUpdated($updated);
-	}
-
-	public function addAuthor($name, $uri = false, $email = false)
-	{
-		$this->writer->startElement('author');
-
-		self::personConstruct($this->writer, $name, $uri, $email);
-
-		$this->writer->endElement();
-	}
-
-	public function addCategory($term, $scheme = false, $label = false)
-	{
-		self::categoryConstruct($term, $scheme, $label);
-	}
-
-	public function addContributor($name, $uri = false, $email = false)
-	{
-		$this->writer->startElement('contributor');
-
-		self::personConstruct($this->writer, $name, $uri, $email);
-
-		$this->writer->endElement();
-	}
-
-	public function setGenerator($generator, $uri = false, $version = false)
-	{
-		$this->writer->startElement('generator');
-
-		if(!empty($uri))
-		{
-			$this->writer->writeAttribute('uri', $uri);
-		}
-
-		if(!empty($version))
-		{
-			$this->writer->writeAttribute('version', $version);
-		}
-
-		$this->writer->text($generator);
-		$this->writer->endElement();
-	}
-
-	public function setIcon($icon)
-	{
-		$this->writer->writeElement('icon', $icon);
-	}
-
-	public function setLogo($logo)
-	{
-		$this->writer->writeElement('logo', $logo);
-	}
-
-	public function setId($id)
-	{
-		$this->writer->writeElement('id', $id);
-	}
-
-	public function addLink($href, $rel = false, $type = false, $hreflang = false, $title = false, $length = false)
-	{
-		self::linkConstruct($this->writer, $href, $rel, $type, $hreflang, $title, $length);
-	}
-
-	public function setRights($rights)
-	{
-		$this->writer->writeElement('rights', $rights);
-	}
-
-	public function setSubTitle($type, $subTitle)
-	{
-		$this->writer->startElement('subtitle');
-		$this->writer->writeAttribute('type', $type);
-		$this->writer->text($subTitle);
-		$this->writer->endElement();
-	}
-
-	public function setTitle($title)
-	{
-		$this->writer->writeElement('title', $title);
-	}
-
-	public function setUpdated(DateTime $updated)
-	{
-		$this->writer->writeElement('updated', $updated->format(DateTime::ATOM));
-	}
-
-	public function add(Entry $entry)
-	{
-		$entry->close();
-	}
-
-	public function close()
-	{
-		$this->writer->endElement();
-		$this->writer->endDocument();
-
-		echo $this->writer->outputMemory();
-	}
-
-	public function createEntry()
-	{
-		return new Entry($this->writer);
+		$this->writer = new Writer($title, $id, $updated);
 	}
 
 	public function write(RecordInterface $record)
@@ -179,113 +61,40 @@ class Atom implements WriterInterface
 			foreach($record->entry as $entry)
 			{
 				$entry = $entry->export($this->writerResult);
-
-				$this->add($entry);
+				$entry->close();
 			}
 
-			$this->close();
+			echo $this->writer->toString();
 		}
 		else
 		{
-			$record->export($this->writerResult);
+			$entry = $record->export($this->writerResult);
 
-			$this->close();
+			echo $entry->toString();
 		}
 	}
 
-	public static function personConstruct(XMLWriter $writer, $name, $uri = false, $email = false)
+	public function createEntry()
 	{
-		$writer->writeElement('name', $name);
-
-		if(!empty($uri))
+		if($this->writer !== null)
 		{
-			$writer->writeElement('uri', $uri);
+			return $this->writer->createEntry();
 		}
-
-		if(!empty($email))
+		else
 		{
-			$writer->writeElement('email', $email);
+			return new Writer\Entry();
 		}
 	}
 
-	public static function categoryConstruct(XMLWriter $writer, $term, $scheme, $label)
+	public function __call($name, $args)
 	{
-		$writer->startElement('category');
-		$writer->writeAttribute('term', $term);
-
-		if(!empty($scheme))
+		if($this->writer !== null)
 		{
-			$writer->writeAttribute('scheme', $scheme);
+			return call_user_func_array(array($this->writer, $name), $args);
 		}
-
-		if(!empty($label))
+		else
 		{
-			$writer->writeAttribute('label', $label);
+			throw new Exception('Writer is not initialized');
 		}
-
-		$writer->endElement();
-	}
-
-	public static function linkConstruct(XMLWriter $writer, $href, $rel = false, $type = false, $hreflang = false, $title = false, $length = false)
-	{
-		$writer->startElement('link');
-		$writer->writeAttribute('href', $href);
-
-		if(!empty($rel))
-		{
-			$writer->writeAttribute('rel', $rel);
-		}
-
-		if(!empty($type))
-		{
-			$writer->writeAttribute('type', $type);
-		}
-
-		if(!empty($hreflang))
-		{
-			$writer->writeAttribute('hreflang', $hreflang);
-		}
-
-		if(!empty($title))
-		{
-			$writer->writeAttribute('title', $title);
-		}
-
-		if(!empty($length))
-		{
-			$writer->writeAttribute('length', $length);
-		}
-
-		$writer->endElement();
-	}
-
-	public static function textConstruct(XMLWriter $writer, $element, $content, $type = null)
-	{
-		$writer->startElement($element);
-
-		switch($type)
-		{
-			case 'text':
-			case 'html':
-				$writer->writeAttribute('type', $type);
-				$writer->text($content);
-				break;
-
-			case 'xhtml':
-				$writer->writeAttribute('type', $type);
-				$writer->writeRaw($content);
-				break;
-
-			default:
-				$writer->text($content);
-				break;
-		}
-
-		$writer->endElement();
-	}
-
-	public static function link($title, $href)
-	{
-		return '<link rel="alternate" type="' . self::$mime . '" title="' . $title . '" href="' . $href . '" />';
 	}
 }

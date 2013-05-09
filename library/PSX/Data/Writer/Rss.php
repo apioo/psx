@@ -26,9 +26,10 @@ namespace PSX\Data\Writer;
 use DateTime;
 use PSX\Data\RecordInterface;
 use PSX\Data\ResultSet;
-use PSX\Data\Writer\Rss\Item;
+use PSX\Rss\Writer;
 use PSX\Data\WriterInterface;
 use PSX\Data\WriterResult;
+use PSX\Exception;
 use XMLWriter;
 
 /**
@@ -42,167 +43,13 @@ class Rss implements WriterInterface
 {
 	public static $mime = 'application/rss+xml';
 
-	private $title;
-	private $id;
-	private $updated;
-
-	public $writer;
 	public $writerResult;
 
-	public function __construct()
-	{
-		$this->writer = new XMLWriter();
-		$this->writer->openMemory();
-		$this->writer->setIndent(true);
-		$this->writer->startDocument('1.0', 'UTF-8');
-	}
+	protected $writer;
 
 	public function setConfig($title, $link, $description)
 	{
-		$this->writer->startElement('rss');
-		$this->writer->writeAttribute('version', '2.0');
-		$this->writer->startElement('channel');
-
-		$this->setTitle($title);
-		$this->setLink($link);
-		$this->setDescription($description);
-	}
-
-	public function setTitle($title)
-	{
-		$this->writer->writeElement('title', $title);
-	}
-
-	public function setLink($link)
-	{
-		$this->writer->writeElement('link', $link);
-	}
-
-	public function setDescription($description)
-	{
-		$this->writer->startElement('description');
-		$this->writer->text($description);
-		$this->writer->endElement();
-	}
-
-	public function setLanguage($language)
-	{
-		$this->writer->writeElement('language', $language);
-	}
-
-	public function setCopyright($copyright)
-	{
-		$this->writer->writeElement('copyright', $copyright);
-	}
-
-	public function setManagingEditor($managingEditor)
-	{
-		$this->writer->writeElement('managingEditor', $managingEditor);
-	}
-
-	public function setWebMaster($webMaster)
-	{
-		$this->writer->writeElement('webMaster', $webMaster);
-	}
-
-	public function setPubDate(DateTime $pubDate)
-	{
-		$this->writer->writeElement('pubDate', $pubDate->format(DateTime::RSS));
-	}
-
-	public function setLastBuildDate($lastBuildDate)
-	{
-		$this->writer->writeElement('lastBuildDate', $lastBuildDate);
-	}
-
-	public function addCategory($category, $domain = false)
-	{
-		self::categoryConstruct($this->writer, $category, $domain);
-	}
-
-	public function setGenerator($generator)
-	{
-		$this->writer->writeElement('generator', $generator);
-	}
-
-	public function setDocs($docs = 'http://www.rssboard.org/rss-specification')
-	{
-		$this->writer->writeElement('docs', $docs);
-	}
-
-	public function addCloud($domain, $port, $path, $registerProcedure, $protocol)
-	{
-		$this->writer->startElement('cloud');
-		$this->writer->writeAttribute('domain', $domain);
-		$this->writer->writeAttribute('port', $port);
-		$this->writer->writeAttribute('path', $path);
-		$this->writer->writeAttribute('registerProcedure', $registerProcedure);
-		$this->writer->writeAttribute('protocol', $protocol);
-		$this->writer->endElement();
-	}
-
-	public function setTtl($ttl)
-	{
-		$this->writer->writeElement('ttl', intval($ttl));
-	}
-
-	public function setImage($url, $title, $link, $width = false, $height = false)
-	{
-		$this->writer->startElement('image');
-		$this->writer->writeElement('url', $url);
-		$this->writer->writeElement('title', $title);
-		$this->writer->writeElement('link', $link);
-
-		if($width !== false && $height !== false)
-		{
-			$width  = intval($width);
-			$height = intval($height);
-
-			$width  = $width  <= 144 && $width  >= 0 ? $width  : 88;
-			$height = $height <= 400 && $height >= 0 ? $height : 31;
-
-			$this->writer->writeElement('width', $width);
-			$this->writer->writeElement('height', $height);
-		}
-
-		$this->writer->endElement();
-	}
-
-	/**
-	 * @see http://www.w3.org/PICS/
-	 */
-	public function setRating($rating)
-	{
-		$this->writer->writeElement('rating', $rating);
-	}
-
-	public function setTextInput($title, $description, $name, $link)
-	{
-		$this->writer->startElement('textInput');
-		$this->writer->writeElement('title', $title);
-		$this->writer->writeElement('description', $description);
-		$this->writer->writeElement('name', $name);
-		$this->writer->writeElement('link', $link);
-		$this->writer->endElement();
-	}
-
-	public function add(Item $item)
-	{
-		$item->close();
-	}
-
-	public function close()
-	{
-		$this->writer->endElement();
-		$this->writer->endElement();
-		$this->writer->endDocument();
-
-		echo $this->writer->outputMemory();
-	}
-
-	public function createItem()
-	{
-		return new Item($this->writer);
+		$this->writer = new Writer($title, $link, $description);
 	}
 
 	public function write(RecordInterface $record)
@@ -213,37 +60,42 @@ class Rss implements WriterInterface
 		{
 			foreach($record->entry as $entry)
 			{
-				$item = $entry->export($this->writerResult);
-
-				$this->add($item);
+				$entry = $entry->export($this->writerResult);
+				$entry->close();
 			}
 
-			$this->close();
+			echo $this->writer->toString();
 		}
 		else
 		{
-			$record->export($this->writerResult);
+			$entry = $record->export($this->writerResult);
 
-			$this->close();
+			echo $entry->toString();
 		}
 	}
 
-	public static function categoryConstruct(XMLWriter $write, $category, $domain = false)
+	public function createItem()
 	{
-		$writer->startElement('category');
-
-		if(!empty($domain))
+		if($this->writer !== null)
 		{
-			$writer->writeAttribute('domain', $domain);
+			return $this->writer->createItem();
 		}
-
-		$writer->text($category);
-		$writer->endElement();
+		else
+		{
+			return new Writer\Item();
+		}
 	}
 
-	public static function link($title, $href)
+	public function __call($name, $args)
 	{
-		return '<link rel="alternate" type="' . self::$mime . '" title="' . $title . '" href="' . $href . '" />';
+		if($this->writer !== null)
+		{
+			return call_user_func_array(array($this->writer, $name), $args);
+		}
+		else
+		{
+			throw new Exception('Writer is not initialized');
+		}
 	}
 }
 

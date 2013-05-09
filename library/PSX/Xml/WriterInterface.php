@@ -21,36 +21,45 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Data\Writer;
-
-use PSX\Data\RecordInterface;
-use PSX\Data\WriterInterface;
-use PSX\Data\WriterResult;
-use PSX\Xml\Writer;
-use XMLWriter;
+namespace PSX\Xml;
 
 /**
- * Xml
+ * Contract to all xml producing writer classes. The classes are designed to 
+ * used either independently producing an complete xml document or used in an
+ * context producing only an xml fragment
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Xml implements WriterInterface
+interface WriterInterface
 {
-	public static $mime = 'application/xml';
+	/**
+	 * Closes all open element levels
+	 *
+	 * @return void
+	 */
+	public function close();
 
-	public $writerResult;
+	/**
+	 * Should send an appropriated content type header and output the xml
+	 *
+	 * @return void
+	 */
+	public function output();
 
-	protected $writer;
+	/**
+	 * Returns the xml as string. In most cases this method calls the close()
+	 * method, ends the document and returns the result as string
+	 *
+	 * @return string
+	 */
+	public function toString();
 
-	public function write(RecordInterface $record)
-	{
-		$this->writerResult = new WriterResult(WriterInterface::XML, $this);
-
-		$this->writer = new Writer();
-		$this->writer->setRecord($record->getName(), $record->export($this->writerResult));
-
-		echo $this->writer->toString();
-	}
+	/**
+	 * Returns the underlying xml writer
+	 *
+	 * @return XMLWriter
+	 */
+	public function getWriter();
 }
