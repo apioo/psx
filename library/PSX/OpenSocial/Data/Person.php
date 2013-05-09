@@ -412,7 +412,7 @@ class Person extends DataAbstract
 	}
 
 	/**
-	 * @param PSX\DateTime
+	 * @param DateTime
 	 */
 	public function setPublished(DateTime $published)
 	{
@@ -477,7 +477,7 @@ class Person extends DataAbstract
 	}
 
 	/**
-	 * @param PSX\DateTime
+	 * @param DateTime
 	 */
 	public function setUpdated(DateTime $updated)
 	{

@@ -26,46 +26,71 @@ namespace PSX\OpenSocial;
 use PSX\Data\RecordAbstract;
 
 /**
- * Plural
+ * Field
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Plural extends RecordAbstract
+class Field extends RecordAbstract
 {
-	protected $fields = array();
+	protected $value;
+	protected $type;
+	protected $primary;
 
 	public function getName()
 	{
-		return 'plural';
+		return 'field';
 	}
 
 	public function getFields()
 	{
 		return array(
 
-			'fields' => $this->fields,
+			'value'   => $this->value,
+			'type'    => $this->type,
+			'primary' => $this->primary,
 
 		);
 	}
 
 	/**
-	 * @param array<PSX\OpenSocial\Field>
+	 * @param string
 	 */
-	public function setFields(array $fields)
+	public function setValue($value)
 	{
-		$this->fields = $fields;
+		$this->value = $value;
+	}
+	
+	public function getValue()
+	{
+		return $this->value;
 	}
 
-	public function addField(Field $field)
+	/**
+	 * @param string
+	 */
+	public function setType($type)
 	{
-		$this->fields[] = $field;
+		$this->type = $type;
+	}
+	
+	public function getType()
+	{
+		return $this->type;
 	}
 
-	public function clear()
+	/**
+	 * @param boolean
+	 */
+	public function setPrimary($primary)
 	{
-		$this->fields = array();
+		$this->primary = $primary;
+	}
+	
+	public function getPrimary()
+	{
+		return $this->primary;
 	}
 }
 

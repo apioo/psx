@@ -23,6 +23,7 @@
 
 namespace PSX\OpenSocial\Data;
 
+use DateTime;
 use PSX\OpenSocial\DataAbstract;
 
 /**
@@ -181,7 +182,7 @@ class Message extends DataAbstract
 	}
 
 	/**
-	 * @param PSX\DateTime
+	 * @param DateTime
 	 */
 	public function setTimeSent(DateTime $timeSent)
 	{
@@ -233,7 +234,7 @@ class Message extends DataAbstract
 	}
 
 	/**
-	 * @param PSX\DateTime
+	 * @param DateTime
 	 */
 	public function setUpdated(DateTime $updated)
 	{
