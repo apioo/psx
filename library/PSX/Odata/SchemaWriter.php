@@ -153,7 +153,7 @@ class SchemaWriter implements WriterInterface
 					if(!empty($param))
 					{
 						$parts = explode(' ', $param, 2);
-						$type  = strtolower($parts[0]);
+						$type  = $parts[0];
 						$type  = $this->getType($type);
 
 						if($type !== null)

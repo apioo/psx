@@ -1,5 +1,6 @@
 
 0.5.5
+* Add simple xrds writer
 * Extract xml, atom and rss writer into class for useage outside of the data 
   writer context
 * Added Sitemap an Odata libraries
