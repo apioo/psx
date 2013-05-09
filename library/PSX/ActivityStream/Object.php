@@ -23,8 +23,8 @@
 
 namespace PSX\ActivityStream;
 
-use PSX\Data\RecordAbstract;
 use DateTime;
+use PSX\Data\RecordAbstract;
 
 /**
  * Object
@@ -128,7 +128,7 @@ class Object extends RecordAbstract
 	}
 
 	/**
-	 * @param PSX\DateTime
+	 * @param DateTime
 	 */
 	public function setPublished(DateTime $published)
 	{
@@ -141,7 +141,7 @@ class Object extends RecordAbstract
 	}
 
 	/**
-	 * @param PSX\DateTime
+	 * @param DateTime
 	 */
 	public function setUpdated(DateTime $updated)
 	{

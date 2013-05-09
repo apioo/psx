@@ -193,7 +193,7 @@ class Activity extends Object
 	}
 
 	/**
-	 * @param PSX\DateTime
+	 * @param DateTime
 	 */
 	public function setUpdated(DateTime $updated)
 	{
