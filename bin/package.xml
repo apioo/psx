@@ -10,53 +10,55 @@
     <email>k42b3@phpsx.org</email>
     <active>yes</active>
   </lead>
-  <date>2013-04-30</date>
+  <date>2013-05-09</date>
   <version>
-    <release>0.5.3</release>
-    <api>0.5.3</api>
+    <release>0.5.5</release>
+    <api>0.5.5</api>
   </version>
   <stability>
     <release>stable</release>
     <api>stable</api>
   </stability>
   <license uri="http://www.gnu.org/licenses/">GPLv3 License</license>
-  <notes>* Fix Oauth2 error exception types
-* Improve handler abstract and interface
-* Use json encode/decode to un/serialize records
-* ResultSet add getter methods and add(), clear() method
-* Remove static parse methods from Condition
-* Remove getDefaultRecordClass from TableAbstract since the table has not to
-decide wich object should be used this is part of the handler
-* Improve tests and remove create table statments in tests</notes>
+  <notes>* Add simple xrds writer
+* Extract xml, atom and rss writer into class for useage outside of the data
+writer context
+* Added Sitemap an Odata libraries
+* Removed
+* Improved activity stream classes
+* Add method get, getBy and getOneBy to handler interface</notes>
   <contents>
     <dir name="/">
       <dir name="PSX">
         <dir name="ActivityStream">
+          <file name="Activity.php" role="php"/>
+          <file name="Address.php" role="php"/>
+          <file name="Collection.php" role="php"/>
+          <file name="Context.php" role="php"/>
+          <file name="Location.php" role="php"/>
+          <file name="MediaLink.php" role="php"/>
+          <file name="Mood.php" role="php"/>
+          <file name="Object.php" role="php"/>
+          <file name="ObjectFactory.php" role="php"/>
+          <file name="Position.php" role="php"/>
+          <file name="Result.php" role="php"/>
+          <file name="Source.php" role="php"/>
           <dir name="Type">
-            <file name="Address.php" role="php"/>
-            <file name="Article.php" role="php"/>
             <file name="Audio.php" role="php"/>
-            <file name="Badge.php" role="php"/>
-            <file name="Bookmark.php" role="php"/>
-            <file name="Collection.php" role="php"/>
-            <file name="Comment.php" role="php"/>
+            <file name="Binary.php" role="php"/>
             <file name="Event.php" role="php"/>
-            <file name="File.php" role="php"/>
-            <file name="Group.php" role="php"/>
-            <file name="Image.php" role="php"/>
-            <file name="Note.php" role="php"/>
-            <file name="Person.php" role="php"/>
+            <file name="Issue.php" role="php"/>
             <file name="Place.php" role="php"/>
-            <file name="Product.php" role="php"/>
-            <file name="Question.php" role="php"/>
-            <file name="Review.php" role="php"/>
-            <file name="Service.php" role="php"/>
+            <file name="Task.php" role="php"/>
             <file name="Video.php" role="php"/>
           </dir>
-          <file name="TypeAbstract.php" role="php"/>
         </dir>
         <dir name="Atom">
           <file name="Entry.php" role="php"/>
+          <dir name="Writer">
+            <file name="Entry.php" role="php"/>
+          </dir>
+          <file name="Writer.php" role="php"/>
         </dir>
         <file name="Atom.php" role="php"/>
         <file name="Base.php" role="php"/>
@@ -80,6 +82,7 @@ decide wich object should be used this is part of the handler
         <file name="Config.php" role="php"/>
         <dir name="Data">
           <file name="ArrayList.php" role="php"/>
+          <file name="FactoryInterface.php" role="php"/>
           <file name="HandlerAbstract.php" role="php"/>
           <file name="HandlerInterface.php" role="php"/>
           <file name="InvalidDataException.php" role="php"/>
@@ -111,15 +114,9 @@ decide wich object should be used this is part of the handler
           <file name="RecordStoreInterface.php" role="php"/>
           <file name="ResultSet.php" role="php"/>
           <dir name="Writer">
-            <dir name="Atom">
-              <file name="Entry.php" role="php"/>
-            </dir>
             <file name="Atom.php" role="php"/>
             <file name="Form.php" role="php"/>
             <file name="Json.php" role="php"/>
-            <dir name="Rss">
-              <file name="Item.php" role="php"/>
-            </dir>
             <file name="Rss.php" role="php"/>
             <file name="Xml.php" role="php"/>
           </dir>
@@ -296,6 +293,9 @@ decide wich object should be used this is part of the handler
           <file name="ListenerInterface.php" role="php"/>
         </dir>
         <file name="Observer.php" role="php"/>
+        <dir name="Odata">
+          <file name="SchemaWriter.php" role="php"/>
+        </dir>
         <dir name="Oembed">
           <file name="ProviderAbstract.php" role="php"/>
           <dir name="Type">
@@ -345,7 +345,7 @@ decide wich object should be used this is part of the handler
         </dir>
         <file name="OpenId.php" role="php"/>
         <dir name="OpenSocial">
-          <dir name="Type">
+          <dir name="Data">
             <file name="Account.php" role="php"/>
             <file name="ActionLink.php" role="php"/>
             <file name="Address.php" role="php"/>
@@ -356,9 +356,13 @@ decide wich object should be used this is part of the handler
             <file name="Name.php" role="php"/>
             <file name="Organization.php" role="php"/>
             <file name="Person.php" role="php"/>
-            <file name="Plural.php" role="php"/>
           </dir>
-          <file name="TypeAbstract.php" role="php"/>
+          <file name="DataAbstract.php" role="php"/>
+          <file name="Field.php" role="php"/>
+          <file name="GlobalId.php" role="php"/>
+          <file name="LocalId.php" role="php"/>
+          <file name="ObjectId.php" role="php"/>
+          <file name="Plural.php" role="php"/>
         </dir>
         <dir name="OpenSsl">
           <file name="PKey.php" role="php"/>
@@ -366,7 +370,7 @@ decide wich object should be used this is part of the handler
         <file name="OpenSsl.php" role="php"/>
         <file name="Opengraph.php" role="php"/>
         <dir name="Opensearch">
-          <file name="ProviderAbstract.php" role="php"/>
+          <file name="Writer.php" role="php"/>
         </dir>
         <dir name="Payment">
           <dir name="Paypal">
@@ -439,6 +443,10 @@ decide wich object should be used this is part of the handler
         <file name="Registry.php" role="php"/>
         <dir name="Rss">
           <file name="Item.php" role="php"/>
+          <dir name="Writer">
+            <file name="Item.php" role="php"/>
+          </dir>
+          <file name="Writer.php" role="php"/>
         </dir>
         <file name="Rss.php" role="php"/>
         <dir name="Session">
@@ -448,6 +456,9 @@ decide wich object should be used this is part of the handler
           <file name="HandlerInterface.php" role="php"/>
         </dir>
         <file name="Session.php" role="php"/>
+        <dir name="Sitemap">
+          <file name="Writer.php" role="php"/>
+        </dir>
         <dir name="Sql">
           <file name="Condition.php" role="php"/>
           <file name="Connection.php" role="php"/>
@@ -504,6 +515,10 @@ decide wich object should be used this is part of the handler
           <file name="Xrd.php" role="php"/>
         </dir>
         <file name="Webfinger.php" role="php"/>
+        <dir name="Xml">
+          <file name="Writer.php" role="php"/>
+          <file name="WriterInterface.php" role="php"/>
+        </dir>
         <file name="Xml.php" role="php"/>
         <dir name="Xrd">
           <file name="Expires.php" role="php"/>
@@ -514,12 +529,19 @@ decide wich object should be used this is part of the handler
           <file name="Type.php" role="php"/>
         </dir>
         <file name="Xrd.php" role="php"/>
+        <dir name="Xrds">
+          <file name="Writer.php" role="php"/>
+        </dir>
         <file name="Yadis.php" role="php"/>
       </dir>
       <dir name="tests">
         <dir name="PSX">
+          <dir name="ActivityStream">
+            <file name="ActivityTest.php" role="test"/>
+          </dir>
           <dir name="Atom">
             <file name="EntryTest.php" role="test"/>
+            <file name="WriterTest.php" role="test"/>
           </dir>
           <file name="AtomTest.php" role="test"/>
           <file name="BaseTest.php" role="test"/>
@@ -546,16 +568,11 @@ decide wich object should be used this is part of the handler
             </dir>
             <file name="RecordTest.php" role="test"/>
             <file name="ResultSetTest.php" role="test"/>
+            <file name="SerializeTestAbstract.php" role="test"/>
             <dir name="Writer">
-              <dir name="Atom">
-                <file name="EntryTest.php" role="test"/>
-              </dir>
               <file name="AtomTest.php" role="test"/>
               <file name="FormTest.php" role="test"/>
               <file name="JsonTest.php" role="test"/>
-              <dir name="Rss">
-                <file name="ItemTest.php" role="test"/>
-              </dir>
               <file name="RssTest.php" role="test"/>
               <file name="XmlTest.php" role="test"/>
             </dir>
@@ -651,12 +668,26 @@ decide wich object should be used this is part of the handler
             <file name="AuthorizationAbstractTest.php" role="test"/>
           </dir>
           <file name="OauthTest.php" role="test"/>
+          <dir name="Odata">
+            <file name="SchemaWriterTest.php" role="test"/>
+          </dir>
           <file name="OembedTest.php" role="test"/>
           <dir name="OpenId">
             <file name="ProviderAbstractTest.php" role="test"/>
           </dir>
           <file name="OpenIdTest.php" role="test"/>
+          <dir name="OpenSocial">
+            <file name="ActionLinkTest.php" role="test"/>
+            <file name="AlbumTest.php" role="test"/>
+            <file name="GroupTest.php" role="test"/>
+            <file name="MediaItem.php" role="test"/>
+            <file name="MessageTest.php" role="test"/>
+            <file name="PersonTest.php" role="test"/>
+          </dir>
           <file name="OpengraphTest.php" role="test"/>
+          <dir name="Opensearch">
+            <file name="WriterTest.php" role="test"/>
+          </dir>
           <dir name="Payment">
             <file name="PaypalTest.php" role="test"/>
             <file name="SkrillTest.php" role="test"/>
@@ -666,6 +697,7 @@ decide wich object should be used this is part of the handler
           <file name="RegistryTest.php" role="test"/>
           <dir name="Rss">
             <file name="ItemTest.php" role="test"/>
+            <file name="WriterTest.php" role="test"/>
           </dir>
           <file name="RssTest.php" role="test"/>
           <dir name="Session">
@@ -674,6 +706,9 @@ decide wich object should be used this is part of the handler
             </dir>
           </dir>
           <file name="SessionTest.php" role="test"/>
+          <dir name="Sitemap">
+            <file name="WriterTest.php" role="test"/>
+          </dir>
           <dir name="Sql">
             <file name="ConditionTest.php" role="test"/>
             <file name="DbTestCase.php" role="test"/>
@@ -697,7 +732,13 @@ decide wich object should be used this is part of the handler
           </dir>
           <file name="ValidateTest.php" role="test"/>
           <file name="WebfingerTest.php" role="test"/>
+          <dir name="Xml">
+            <file name="WriterTest.php" role="test"/>
+          </dir>
           <file name="XmlTest.php" role="test"/>
+          <dir name="Xrds">
+            <file name="WriterTest.php" role="test"/>
+          </dir>
           <file name="YadisTest.php" role="test"/>
         </dir>
         <file name="bootstrap.php" role="test"/>
@@ -999,6 +1040,25 @@ interface
 * Remove getDefaultRecordClass from TableAbstract since the table has not to
 decide wich object should be used this is part of the handler
 * Improve tests and remove create table statments in tests</notes>
+    </release>
+    <release>
+      <version>
+        <release>0.5.5</release>
+        <api>0.5.5</api>
+      </version>
+      <stability>
+        <release>beta</release>
+        <api>beta</api>
+      </stability>
+      <date>2013-05-09</date>
+      <license uri="http://www.gnu.org/licenses/">GPLv3 License</license>
+      <notes>* Add simple xrds writer
+* Extract xml, atom and rss writer into class for useage outside of the data
+writer context
+* Added Sitemap an Odata libraries
+* Removed
+* Improved activity stream classes
+* Add method get, getBy and getOneBy to handler interface</notes>
     </release>
   </changelog>
 </package>
