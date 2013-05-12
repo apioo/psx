@@ -1,13 +1,11 @@
 <?php
 /*
- *  $Id: MarkdownTest.php 649 2012-10-06 22:15:23Z k42b3.x@googlemail.com $
- *
  * psx
  * A object oriented and modular based PHP framework for developing
  * dynamic web applications. For the current version and informations
  * visit <http://phpsx.org>
  *
- * Copyright (c) 2010-2012 Christoph Kappestein <k42b3.x@gmail.com>
+ * Copyright (c) 2010-2013 Christoph Kappestein <k42b3.x@gmail.com>
  *
  * This file is part of psx. psx is free software: you can
  * redistribute it and/or modify it under the terms of the
@@ -26,13 +24,11 @@
 namespace PSX\Util;
 
 /**
- * PSX_Util_MarkdownTest
+ * MarkdownTest
  *
- * @author     Christoph Kappestein <k42b3.x@gmail.com>
- * @license    http://www.gnu.org/licenses/gpl.html GPLv3
- * @link       http://phpsx.org
- * @category   tests
- * @version    $Revision: 649 $
+ * @author  Christoph Kappestein <k42b3.x@gmail.com>
+ * @license http://www.gnu.org/licenses/gpl.html GPLv3
+ * @link    http://phpsx.org
  */
 class MarkdownTest extends \PHPUnit_Framework_TestCase
 {

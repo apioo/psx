@@ -37,6 +37,7 @@ interface WriterInterface
 	const JSON = 0x4;
 	const RSS  = 0x8;
 	const XML  = 0x10;
+	const JAS  = 0x20;
 
 	public function write(RecordInterface $record);
 }

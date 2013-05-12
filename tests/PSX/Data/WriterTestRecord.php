@@ -1,13 +1,11 @@
 <?php
 /*
- *  $Id: WriterTestRecord.php 480 2012-05-01 18:13:54Z k42b3.x@googlemail.com $
- *
  * psx
  * A object oriented and modular based PHP framework for developing
  * dynamic web applications. For the current version and informations
  * visit <http://phpsx.org>
  *
- * Copyright (c) 2010-2012 Christoph Kappestein <k42b3.x@gmail.com>
+ * Copyright (c) 2010-2013 Christoph Kappestein <k42b3.x@gmail.com>
  *
  * This file is part of psx. psx is free software: you can
  * redistribute it and/or modify it under the terms of the
@@ -25,6 +23,7 @@
 
 namespace PSX\Data;
 
+use PSX\ActivityStream;
 use PSX\Data\NotSupportedException;
 use PSX\Data\RecordAbstract;
 use PSX\Data\WriterResult;
@@ -32,13 +31,11 @@ use PSX\Data\WriterInterface;
 use PSX\DateTime;
 
 /**
- * PSX_Data_WriterTestRecord
+ * WriterTestRecord
  *
- * @author     Christoph Kappestein <k42b3.x@gmail.com>
- * @license    http://www.gnu.org/licenses/gpl.html GPLv3
- * @link       http://phpsx.org
- * @category   tests
- * @version    $Revision: 480 $
+ * @author  Christoph Kappestein <k42b3.x@gmail.com>
+ * @license http://www.gnu.org/licenses/gpl.html GPLv3
+ * @link    http://phpsx.org
  */
 class WriterTestRecord extends RecordAbstract
 {
@@ -99,6 +96,25 @@ class WriterTestRecord extends RecordAbstract
 				$item->setAuthor($this->author);
 				$item->setDescription($this->content);
 				return $item;
+				break;
+
+			case WriterInterface::JAS:
+				$actor = new ActivityStream\Object();
+				$actor->setObjectType('person');
+				$actor->setDisplayName($this->author);
+
+				$object = new ActivityStream\Object();
+				$object->setDisplayName($this->title);
+				$object->setId($this->id);
+				$object->setObjectType('article');
+				$object->setPublished($this->getDate());
+				$object->setContent($this->content);
+
+				$activity = new ActivityStream\Activity();
+				$activity->setActor($actor);
+				$activity->setVerb('post');
+				$activity->setObject($object);
+				return $activity;
 				break;
 
 			default:

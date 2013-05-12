@@ -1,13 +1,11 @@
 <?php
 /*
- *  $Id: CacheTest.php 636 2012-09-01 10:32:42Z k42b3.x@googlemail.com $
- *
  * psx
  * A object oriented and modular based PHP framework for developing
  * dynamic web applications. For the current version and informations
  * visit <http://phpsx.org>
  *
- * Copyright (c) 2010-2012 Christoph Kappestein <k42b3.x@gmail.com>
+ * Copyright (c) 2010-2013 Christoph Kappestein <k42b3.x@gmail.com>
  *
  * This file is part of psx. psx is free software: you can
  * redistribute it and/or modify it under the terms of the
@@ -29,13 +27,11 @@ use DateInterval;
 use PSX\Cache\Handler;
 
 /**
- * PSX_CacheTest
+ * CacheTest
  *
- * @author     Christoph Kappestein <k42b3.x@gmail.com>
- * @license    http://www.gnu.org/licenses/gpl.html GPLv3
- * @link       http://phpsx.org
- * @category   tests
- * @version    $Revision: 636 $
+ * @author  Christoph Kappestein <k42b3.x@gmail.com>
+ * @license http://www.gnu.org/licenses/gpl.html GPLv3
+ * @link    http://phpsx.org
  */
 class CacheTest extends \PHPUnit_Framework_TestCase
 {

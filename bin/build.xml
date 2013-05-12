@@ -95,9 +95,6 @@
 	</target>
 
 	<target name="build-doc" depends="clean-doc">
-		<exec dir="${bin}" executable="php" failonerror="true">
-			<arg line="generate-package-docbook.php" />
-		</exec>
 		<xslt basedir="${doc}/docbook" destdir="${doc}" includes="**/*.xml" extension=".html" style="${doc}/psx.xsl">
 			<factory name="net.sf.saxon.TransformerFactoryImpl" />
 		</xslt>

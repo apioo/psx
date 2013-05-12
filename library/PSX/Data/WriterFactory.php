@@ -60,6 +60,11 @@ class WriterFactory
 				$writerType = WriterInterface::XML;
 				break;
 
+			case (stripos($contentType, Writer\Jas::$mime) !== false):
+
+				$writerType = WriterInterface::JAS;
+				break;
+
 			default:
 			case (stripos($contentType, Writer\Json::$mime) !== false):
 
@@ -116,6 +121,13 @@ class WriterFactory
 				header('Content-type: ' . Writer\Xml::$mime);
 
 				$writer = new Writer\Xml();
+				break;
+
+			case WriterInterface::JAS:
+
+				header('Content-type: ' . Writer\Jas::$mime);
+
+				$writer = new Writer\Jas();
 				break;
 		}
 
