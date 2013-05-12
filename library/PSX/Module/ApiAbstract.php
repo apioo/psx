@@ -191,6 +191,7 @@ abstract class ApiAbstract extends ModuleAbstract
 				'json' => Writer\Json::$mime,
 				'rss'  => Writer\Rss::$mime,
 				'xml'  => Writer\Xml::$mime,
+				'jas'  => Writer\Jas::$mime,
 			);
 
 			$format      = isset($_GET['format']) && strlen($_GET['format']) < 16 ? $_GET['format'] : null;
