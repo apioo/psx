@@ -64,10 +64,6 @@ abstract class HandlerAbstract implements HandlerInterface
 		{
 			$select->setColumns($fields);
 		}
-		else
-		{
-			$select->setColumns(array_keys($select->getAllColumns()));
-		}
 
 		$select->orderBy($sortBy, $sortOrder)
 			->limit($startIndex, $count);
@@ -112,10 +108,6 @@ abstract class HandlerAbstract implements HandlerInterface
 		if(!empty($fields))
 		{
 			$select->setColumns($fields);
-		}
-		else
-		{
-			$select->setColumns(array_keys($select->getAllColumns()));
 		}
 
 		if($mode == Sql::FETCH_OBJECT && $class === null)
