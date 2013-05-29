@@ -122,6 +122,56 @@ class Response extends Message
 	}
 
 	/**
+	 * Tries to detect the character encoding of the body. Returns the detected 
+	 * charset or false
+	 *
+	 * @return string|false
+	 */
+	public function getCharset()
+	{
+		// header
+		$contentType = $this->getHeader('Content-Type');
+
+		if(!empty($contentType))
+		{
+			$pos = strpos($contentType, 'charset=');
+
+			if($pos !== false)
+			{
+				return strtoupper(trim(substr($contentType, $pos + 8)));
+			}
+		}
+
+		// meta
+		// @todo check for meta http-equiv content-type tag
+
+		// detect
+		// @todo try to guess encoding with mb_detect_encoding
+
+		return false;
+	}
+
+	/**
+	 * Converts the body to the given outCharset if the encoding of the body 
+	 * could be detected
+	 *
+	 * @param string $outCharset
+	 * @return string
+	 */
+	public function getBodyAsString($outCharset = 'UTF-8//IGNORE')
+	{
+		$inCharset = $this->getCharset();
+		$body      = $this->getBody();
+
+		if($inCharset !== false)
+		{
+			$body = iconv($inCharset, $outCharset, $body);
+		}
+
+		return $body;
+	}
+
+	/**
 	 * Converts an raw http response into an PSX\Http\Response object. Throws an
 	 * exception if the response has not an valid status line
 	 *

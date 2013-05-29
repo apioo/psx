@@ -55,9 +55,62 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(200, $response->getCode());
 		$this->assertEquals('OK', $response->getMessage());
 		$this->assertEquals('foobar', $response->getBody());
+		$this->assertEquals('UTF-8', $response->getCharset());
 
 		$header = $response->getHeader();
 
 		$this->assertEquals('text/html; charset=UTF-8', $header['content-type']);
+	}
+
+	public function testGetCharset()
+	{
+		// normal charset
+		$httpResponse = 'HTTP/1.1 200 OK' . Http::$newLine;
+		$httpResponse.= 'Content-type: text/html; charset=UTF-8' . Http::$newLine;
+		$httpResponse.= Http::$newLine;
+
+		$response = Response::convert($httpResponse);
+
+		$this->assertEquals('UTF-8', $response->getCharset());
+
+		// lowercase charset
+		$httpResponse = 'HTTP/1.1 200 OK' . Http::$newLine;
+		$httpResponse.= 'Content-type: text/html; charset=utf-8' . Http::$newLine;
+		$httpResponse.= Http::$newLine;
+
+		$response = Response::convert($httpResponse);
+
+		$this->assertEquals('UTF-8', $response->getCharset());
+
+		// unknown charset
+		$httpResponse = 'HTTP/1.1 200 OK' . Http::$newLine;
+		$httpResponse.= 'Content-type: text/html; charset=foo' . Http::$newLine;
+		$httpResponse.= Http::$newLine;
+
+		$response = Response::convert($httpResponse);
+
+		$this->assertEquals('FOO', $response->getCharset());
+
+		// no charset
+		$httpResponse = 'HTTP/1.1 200 OK' . Http::$newLine;
+		$httpResponse.= 'Content-type: text/html' . Http::$newLine;
+		$httpResponse.= Http::$newLine;
+
+		$response = Response::convert($httpResponse);
+
+		$this->assertEquals(false, $response->getCharset());
+	}
+
+	public function testGetBodyAsString()
+	{
+		$httpResponse = 'HTTP/1.1 200 OK' . Http::$newLine;
+		$httpResponse.= 'Content-type: text/html; charset=UTF-8' . Http::$newLine;
+		$httpResponse.= Http::$newLine;
+		$httpResponse.= chr(0xE2) . chr(0x82) . chr(0xAC);
+
+		$response = Response::convert($httpResponse);
+
+		$this->assertEquals('€', $response->getBodyAsString());
+		$this->assertEquals('', $response->getBodyAsString('ISO-8859-1//IGNORE'));
 	}
 }
