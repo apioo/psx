@@ -225,9 +225,6 @@ class Paypal
 			}
 		}
 
-		session_destroy();
-		var_dump($_SESSION, $this->http->getResponse());exit;
-
 		throw new Exception('Unknown error occured');
 	}
 }
