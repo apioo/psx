@@ -39,14 +39,39 @@ abstract class ViewAbstract extends ModuleAbstract
 {
 	public function getDependencies()
 	{
-		return new View($this->base->getConfig());
+		return new View($this->getConfig());
 	}
 
 	public function processResponse($content)
 	{
+		// assign default values
+		$config = $this->getConfig();
+		$self   = isset($_SERVER['QUERY_STRING']) && !empty($_SERVER['QUERY_STRING']) ? $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING'] : $_SERVER['PHP_SELF'];
+		$url    = $config['psx_url'] . '/' . $config['psx_dispatch'];
+		$dir    = PSX_PATH_TEMPLATE . '/' . $config['psx_template_dir'];
+		$base   = parse_url($config['psx_url'], PHP_URL_PATH);
+		$render = round(microtime(true) - $GLOBALS['psx_benchmark'], 6);
+
+		$this->getTemplate()->assign('config', $config);
+		$this->getTemplate()->assign('self', $self);
+		$this->getTemplate()->assign('url', $url);
+		$this->getTemplate()->assign('location', $dir);
+		$this->getTemplate()->assign('base', $base);
+
+		// set template dir
+		$this->getTemplate()->setDir($dir);
+
+		// set default template if no template is set
+		if(!$this->getTemplate()->hasFile())
+		{
+			$file = str_replace('\\', '/', $this->location->getClass()->getName() . '.tpl');
+
+			$this->getTemplate()->set($file);
+		}
+
 		if(empty($content))
 		{
-			if(!($response = $this->template->transform()))
+			if(!($response = $this->getTemplate()->transform()))
 			{
 				throw new Exception('Error while transforming template');
 			}
@@ -54,7 +79,7 @@ abstract class ViewAbstract extends ModuleAbstract
 
 			$acceptEncoding = Base::getRequestHeader('Accept-Encoding');
 
-			if($this->config['psx_gzip'] === true && strpos($acceptEncoding, 'gzip') !== false)
+			if($config['psx_gzip'] === true && strpos($acceptEncoding, 'gzip') !== false)
 			{
 				header('Content-Encoding: gzip');
 
