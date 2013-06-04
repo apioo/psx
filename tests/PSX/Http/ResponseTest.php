@@ -111,6 +111,6 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
 		$response = Response::convert($httpResponse);
 
 		$this->assertEquals('€', $response->getBodyAsString());
-		$this->assertEquals('', $response->getBodyAsString('ISO-8859-1//IGNORE'));
+		$this->assertEquals('EUR', $response->getBodyAsString('ISO-8859-1//TRANSLIT'));
 	}
 }

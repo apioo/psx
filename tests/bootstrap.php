@@ -1,10 +1,9 @@
 <?php
 
-require_once('library/PSX/Config.php');
-require_once('library/PSX/Bootstrap.php');
+$loader = require_once('vendor/autoload.php');
+$loader->add('PSX', 'tests');
 
 $bootstrap = new PSX\Bootstrap(getConfig());
-$bootstrap->addIncludePath('tests');
 
 function getConfig()
 {

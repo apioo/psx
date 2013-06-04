@@ -47,6 +47,5 @@ class BootstrapTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(true, defined('PSX_PATH_MODULE'));
 		$this->assertEquals(true, defined('PSX_PATH_TEMPLATE'));
 		$this->assertEquals(true, defined('PSX'));
-		$this->assertEquals(true, strpos(get_include_path(), PSX_PATH_LIBRARY) !== false);
 	}
 }
