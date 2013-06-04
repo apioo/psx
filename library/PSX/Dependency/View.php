@@ -34,20 +34,8 @@ use PSX\Template;
  */
 class View extends Request
 {
-	public function setup()
-	{
-		parent::setup();
-
-		$this->getTemplate();
-	}
-
 	public function getTemplate()
 	{
-		if($this->has('template'))
-		{
-			return $this->get('template');
-		}
-
-		return $this->set('template', new Template($this->getConfig()));
+		return new Template();
 	}
 }

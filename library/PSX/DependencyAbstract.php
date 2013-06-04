@@ -23,6 +23,8 @@
 
 namespace PSX;
 
+use PSX\Config;
+
 /**
  * DependencyAbstract
  *
@@ -30,15 +32,25 @@ namespace PSX;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-abstract class DependencyAbstract
+abstract class DependencyAbstract implements DependencyInterface
 {
 	private static $_container = array();
 
-	protected $config;
-
 	public function __construct(Config $config)
 	{
-		$this->config = $config;
+		$methods = get_class_methods($this);
+
+		foreach($methods as $method)
+		{
+			$service = lcfirst(substr($method, 3));
+
+			if(substr($method, 0, 3) == 'get' && !empty($service))
+			{
+				self::$_container[$service] = null;
+			}
+		}
+
+		self::set('config', $config);
 	}
 
 	public function set($name, $obj)
@@ -46,84 +58,27 @@ abstract class DependencyAbstract
 		return self::$_container[$name] = $obj;
 	}
 
-	public function has($name)
-	{
-		return isset(self::$_container[$name]);
-	}
-
 	public function get($name)
 	{
-		return self::$_container[$name];
-	}
-
-	/**
-	 * This array are the properties wich are available in an module if it uses
-	 * this dependency
-	 *
-	 * @return array
-	 */
-	public function getParameters()
-	{
-		return self::$_container;
-	}
-
-	/**
-	 * Method wich initializes all services wich sould be directly available in 
-	 * an module
-	 *
-	 * @return void
-	 */
-	public function setup()
-	{
-		$this->getLoader();
-	}
-
-	/**
-	 * Search the container for an object wich is an instanceof $type. Returns
-	 * the object or null if nothing is found
-	 *
-	 * @return object
-	 */
-	public function getByType($type)
-	{
-		foreach(self::$_container as $obj)
+		if(!isset(self::$_container[$name]))
 		{
-			if($obj instanceof $type)
+			$method = 'get' . ucfirst($name);
+
+			if(self::has($name))
 			{
-				return $obj;
+				self::$_container[$name] = $this->$method();
+			}
+			else
+			{
+				throw new Exception('Service not defined');
 			}
 		}
 
-		return null;
+		return self::$_container[$name];
 	}
 
-	public function getBase()
+	public function has($name)
 	{
-		if($this->has('base'))
-		{
-			return $this->get('base');
-		}
-
-		return $this->set('base', new Base($this->getConfig()));
-	}
-
-	public function getConfig()
-	{
-		if($this->has('config'))
-		{
-			return $this->get('config');
-		}
-
-		return $this->set('config', $this->config);
-	}
-
-	public function getLoader()
-	{
-		if($this->has('loader'))
-		{
-			return $this->get('loader');
-		}
-
-		return $this->set('loader', new Loader($this->getBase()));
+		return array_key_exists($name, self::$_container);
 	}
 }

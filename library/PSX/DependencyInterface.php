@@ -21,49 +21,42 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Dependency;
-
-use PSX\DependencyAbstract;
-use PSX\Validate;
-use PSX\Input\Get;
-use PSX\Input\Post;
-use PSX\Sql;
-use PSX\Http;
+namespace PSX;
 
 /**
- * Request
+ * Interface wich describes an DI container. These are the methods wich an DI
+ * container must have. Because psx doesnt explicit check whether an
+ * DependencyInterface type is returned you can also return an symfony DI 
+ * container wich implements the same methods.
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Request extends DependencyAbstract
+interface DependencyInterface
 {
-	public function getValidate()
-	{
-		return new Validate();
-	}
+	/**
+	 * Sets an service to the container
+	 *
+	 * @param string $name
+	 * @param object $obj
+	 * @return void
+	 */
+	public function set($name, $obj);
 
-	public function getInputGet()
-	{
-		return new Input\Get($this->get('validate'));
-	}
+	/**
+	 * Gets an service from the container
+	 *
+	 * @param string $name
+	 * @return object
+	 */
+	public function get($name);
 
-	public function getInputPost()
-	{
-		return new Input\Get($this->get('validate'));
-	}
-
-	public function getSql()
-	{
-		return new Sql($this->config['psx_sql_host'],
-			$this->config['psx_sql_user'],
-			$this->config['psx_sql_pw'],
-			$this->config['psx_sql_db']);
-	}
-
-	public function getHttp()
-	{
-		return new Http();
-	}
+	/**
+	 * Checks wheterh the service is available
+	 *
+	 * @param string $name
+	 * @return boolean
+	 */
+	public function has($name);
 }
