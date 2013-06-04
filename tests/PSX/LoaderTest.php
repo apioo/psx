@@ -25,7 +25,7 @@ namespace PSX;
 
 use ReflectionClass;
 use ReflectionMethod;
-use PSX\Dependency;
+use PSX\Base;
 use PSX\Loader\Location;
 use PSX\Loader\LocationFinder\FileSystem;
 
@@ -43,9 +43,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 
 	protected function setUp()
 	{
-		$container = new Dependency\Request(getConfig());
-
-		$loader = new PublicLoader($container->getBase());
+		$loader = new PublicLoader(new Base(getConfig()));
 		$loader->setLocationFinder($this->getLocationFinder());
 		$loader->setDefault('foo');
 

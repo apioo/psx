@@ -23,7 +23,7 @@
 
 namespace PSX;
 
-use PSX\Dependency;
+use PSX\Base;
 
 /**
  * BaseTest
@@ -38,9 +38,7 @@ class BaseTest extends \PHPUnit_Framework_TestCase
 
 	protected function setUp()
 	{
-		$container = new Dependency\Request(getConfig());
-
-		$this->base = $container->getBase();
+		$this->base = new Base(getConfig());
 	}
 
 	protected function tearDown()
