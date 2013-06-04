@@ -21,16 +21,20 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX;
+namespace PSX\Template;
+
+use Twig_Environment;
+use Twig_Loader_Filesystem;
+use PSX\TemplateInterface;
 
 /**
- * Template
+ * Twig
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Template implements TemplateInterface
+class Twig implements TemplateInterface
 {
 	protected $dir;
 	protected $file;
@@ -54,31 +58,15 @@ class Template implements TemplateInterface
 
 	public function assign($key, $value)
 	{
-		if(!isset($this->data[$key]))
-		{
-			$this->data[$key] = $value;
-		}
-		else
-		{
-			throw new Exception('Key ' . $key . ' already set');
-		}
+		$this->data[$key] = $value;
 	}
 
 	public function transform()
 	{
-		// check whether path is set
-		$path = $this->dir . '/' . $this->file;
+		$loader = new Twig_Loader_Filesystem($this->dir);
+		$twig   = new Twig_Environment($loader);
 
-		// populate the data vars in the scope of the template
-		extract($this->data, EXTR_SKIP);
-
-		// parse template
-		ob_start();
-
-		require_once($path);
-
-		$html = ob_get_clean();
-
-		return $html;
+		return $twig->render($this->file, $this->data);
 	}
 }
+

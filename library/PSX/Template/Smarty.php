@@ -21,25 +21,32 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX;
+namespace PSX\Template;
+
+use PSX\TemplateInterface;
 
 /**
- * Template
+ * Smarty
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Template implements TemplateInterface
+class Smarty implements TemplateInterface
 {
-	protected $dir;
+	protected $smarty;
 	protected $file;
 
 	protected $data = array();
 
+	public function __construct()
+	{
+		$this->smarty = new \Smarty();
+	}
+
 	public function setDir($dir)
 	{
-		$this->dir = $dir;
+		$this->smarty->setTemplateDir($dir);
 	}
 
 	public function set($file)
@@ -54,31 +61,11 @@ class Template implements TemplateInterface
 
 	public function assign($key, $value)
 	{
-		if(!isset($this->data[$key]))
-		{
-			$this->data[$key] = $value;
-		}
-		else
-		{
-			throw new Exception('Key ' . $key . ' already set');
-		}
+		$this->smarty->assign($key, $value);
 	}
 
 	public function transform()
 	{
-		// check whether path is set
-		$path = $this->dir . '/' . $this->file;
-
-		// populate the data vars in the scope of the template
-		extract($this->data, EXTR_SKIP);
-
-		// parse template
-		ob_start();
-
-		require_once($path);
-
-		$html = ob_get_clean();
-
-		return $html;
+		return $this->smarty->fetch($this->file);
 	}
 }

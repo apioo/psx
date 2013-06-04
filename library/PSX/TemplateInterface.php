@@ -24,61 +24,51 @@
 namespace PSX;
 
 /**
- * Template
+ * Interface wich describes an template engine. If your code uses these methods 
+ * you can simply switch between template engines without changing the buisness 
+ * logic
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Template implements TemplateInterface
+interface TemplateInterface
 {
-	protected $dir;
-	protected $file;
+	/**
+	 * Sets the dir from where to load the template file
+	 *
+	 * @param string $dir
+	 * @return void
+	 */
+	public function setDir($dir);
 
-	protected $data = array();
+	/**
+	 * Sets the current template file
+	 *
+	 * @param string $file
+	 * @return void
+	 */
+	public function set($file);
 
-	public function setDir($dir)
-	{
-		$this->dir = $dir;
-	}
+	/**
+	 * Returns whether an template file was set or not
+	 *
+	 * @return boolean
+	 */
+	public function hasFile();
 
-	public function set($file)
-	{
-		$this->file = $file;
-	}
+	/**
+	 * Assigns an variable to the template
+	 *
+	 * @param string $name
+	 * @return void
+	 */
+	public function assign($key, $value);
 
-	public function hasFile()
-	{
-		return !empty($this->file);
-	}
-
-	public function assign($key, $value)
-	{
-		if(!isset($this->data[$key]))
-		{
-			$this->data[$key] = $value;
-		}
-		else
-		{
-			throw new Exception('Key ' . $key . ' already set');
-		}
-	}
-
-	public function transform()
-	{
-		// check whether path is set
-		$path = $this->dir . '/' . $this->file;
-
-		// populate the data vars in the scope of the template
-		extract($this->data, EXTR_SKIP);
-
-		// parse template
-		ob_start();
-
-		require_once($path);
-
-		$html = ob_get_clean();
-
-		return $html;
-	}
+	/**
+	 * Transforms the template file
+	 *
+	 * @return string
+	 */
+	public function transform();
 }
