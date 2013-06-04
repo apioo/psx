@@ -50,7 +50,7 @@ abstract class HandlerAbstract implements HandlerInterface
 		$this->table = $table;
 	}
 
-	public function getAll(array $fields, $startIndex = 0, $count = 16, $sortBy = null, $sortOrder = null, Condition $con = null, $mode = 0, $class = null, array $args = array())
+	public function getAll(array $fields = array(), $startIndex = 0, $count = 16, $sortBy = null, $sortOrder = null, Condition $con = null, $mode = 0, $class = null, array $args = array())
 	{
 		$startIndex = $startIndex !== null ? (integer) $startIndex : 0;
 		$count      = !empty($count)       ? (integer) $count      : 16;
