@@ -1,5 +1,9 @@
 
 0.5.5
+* Improved template and added template wrapper classes for twig and smarty
+* Improved DI container interoperability it is now possible to use the symfony 
+  DI container instead of the psx DI container
+* Use composer autoloader
 * Added json activity stream writer
 * Add simple xrds writer
 * Extract xml, atom and rss writer into class for useage outside of the data 
