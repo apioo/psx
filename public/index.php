@@ -21,8 +21,7 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once('../library/PSX/Config.php');
-require_once('../library/PSX/Bootstrap.php');
+require_once('../vendor/autoload.php');
 
 $config    = new PSX\Config('../configuration.php');
 $bootstrap = new PSX\Bootstrap($config);
@@ -31,11 +30,8 @@ ob_start('responseProcess');
 
 try
 {
-	// initialize base class
-	$container = new PSX\Dependency\Request($config);
-
 	// load module
-	$module = loadModule($container);
+	$module = loadModule($config);
 
 	// get output
 	$content = ob_get_contents();
@@ -112,16 +108,16 @@ function responseProcess($content)
 }
 
 /**
- * loadModule
- *
  * Loads the requested module depending on the psx_module_input field from the
  * config
  *
- * @return PSX_ModuleAbstract
+ * @return PSX\ModuleAbstract
  */
-function loadModule(PSX\DependencyAbstract $container)
+function loadModule(PSX\Config $config)
 {
-	$config  = $container->getConfig();
+	$base    = new PSX\Base($config);
+	$loader  = new PSX\Loader($base);
+
 	$default = $config['psx_module_default'];
 	$input   = $config['psx_module_input'];
 	$length  = $config['psx_module_input_length'];
@@ -148,7 +144,7 @@ function loadModule(PSX\DependencyAbstract $container)
 		}
 	}
 
-	return $container->getLoader()->load($x);
+	return $loader->load($x);
 }
 
 

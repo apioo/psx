@@ -1,7 +1,6 @@
 <?php
 
 use PSX\Module\ViewAbstract;
-use PSX\Odata\MetaDataWriter;
 
 class sample extends ViewAbstract
 {
