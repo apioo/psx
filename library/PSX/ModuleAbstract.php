@@ -57,21 +57,13 @@ abstract class ModuleAbstract
 	 */
 	public function getDependencies()
 	{
-		return new Dependency\Request($this->base->getConfig());
+		return new Dependency\Request($this->getConfig());
 	}
 
 	public function _ini()
 	{
 		// load dependencies
 		$this->_container = $this->getDependencies();
-		$this->_container->setup();
-
-		$parameters = $this->_container->getParameters();
-
-		foreach($parameters as $k => $obj)
-		{
-			$this->$k = $obj;
-		}
 
 		// call event methods
 		$this->onLoad();
@@ -93,6 +85,27 @@ abstract class ModuleAbstract
 			case 'DELETE':
 				$this->onDelete();
 				break;
+		}
+	}
+
+	/**
+	 * If the called method starts with "get" the matching service from the di 
+	 * container is returned else null
+	 *
+	 * @return object
+	 */
+	public function __call($name, $args)
+	{
+		if(substr($name, 0, 3) == 'get')
+		{
+			$service = lcfirst(substr($name, 3));
+
+			if($this->_container->has($service))
+			{
+				return $this->_container->get($service);
+			}
+
+			return null;
 		}
 	}
 
@@ -127,6 +140,11 @@ abstract class ModuleAbstract
 	public function processResponse($content)
 	{
 		return $content;
+	}
+
+	protected function getConfig()
+	{
+		return $this->base->getConfig();
 	}
 
 	protected function getLocation()
