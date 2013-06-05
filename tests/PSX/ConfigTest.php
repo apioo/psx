@@ -54,10 +54,12 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 	public function testConfigOffsetExists()
 	{
 		$this->assertEquals(false, isset($this->config['foobar']));
+		$this->assertEquals(false, $this->config->has('foobar'));
 
 		$this->config['foobar'] = 'test';
 
 		$this->assertEquals(true, isset($this->config['foobar']));
+		$this->assertEquals(true, $this->config->has('foobar'));
 	}
 
 	public function testConfigOffsetUnset()
@@ -74,6 +76,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 		$this->config['bar'] = 'test';
 
 		$this->assertEquals('test', $this->config['bar']);
+		$this->assertEquals('test', $this->config->get('bar'));
 	}
 }
 

@@ -74,5 +74,15 @@ class Config extends ArrayIterator
 			throw new NotFoundException('Couldnt find config in file');
 		}
 	}
+
+	public function get($key)
+	{
+		return $this->offsetGet($key);
+	}
+
+	public function has($key)
+	{
+		return $this->offsetExists($key);
+	}
 }
 
