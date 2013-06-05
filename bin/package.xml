@@ -10,7 +10,7 @@
     <email>k42b3@phpsx.org</email>
     <active>yes</active>
   </lead>
-  <date>2013-05-10</date>
+  <date>2013-06-05</date>
   <version>
     <release>0.5.5</release>
     <api>0.5.5</api>
@@ -20,7 +20,12 @@
     <api>stable</api>
   </stability>
   <license uri="http://www.gnu.org/licenses/">GPLv3 License</license>
-  <notes>* Add simple xrds writer
+  <notes>* Improved template and added template wrapper classes for twig and smarty
+* Improved DI container interoperability it is now possible to use the symfony
+DI container instead of the psx DI container
+* Use composer autoloader
+* Added json activity stream writer
+* Add simple xrds writer
 * Extract xml, atom and rss writer into class for useage outside of the data
 writer context
 * Added Sitemap an Odata libraries
@@ -116,6 +121,7 @@ writer context
           <dir name="Writer">
             <file name="Atom.php" role="php"/>
             <file name="Form.php" role="php"/>
+            <file name="Jas.php" role="php"/>
             <file name="Json.php" role="php"/>
             <file name="Rss.php" role="php"/>
             <file name="Xml.php" role="php"/>
@@ -130,6 +136,7 @@ writer context
           <file name="View.php" role="php"/>
         </dir>
         <file name="DependencyAbstract.php" role="php"/>
+        <file name="DependencyInterface.php" role="php"/>
         <file name="Exception.php" role="php"/>
         <dir name="File">
           <file name="Object.php" role="php"/>
@@ -412,6 +419,7 @@ writer context
               <file name="PaymentApprovalExpiredException.php" role="php"/>
               <file name="PaymentExpiredException.php" role="php"/>
               <file name="PaymentNotApprovedForExecutionException.php" role="php"/>
+              <file name="PaymentStateInvalidException.php" role="php"/>
               <file name="PermissionDeniedException.php" role="php"/>
               <file name="RefundTimeLimitExceededException.php" role="php"/>
               <file name="TransactionAlreadyRefundedException.php" role="php"/>
@@ -485,7 +493,12 @@ writer context
           </dir>
           <file name="ParameterAbstract.php" role="php"/>
         </dir>
+        <dir name="Template">
+          <file name="Smarty.php" role="php"/>
+          <file name="Twig.php" role="php"/>
+        </dir>
         <file name="Template.php" role="php"/>
+        <file name="TemplateInterface.php" role="php"/>
         <dir name="Test">
           <file name="Table.php" role="php"/>
           <file name="TableDataSet.php" role="php"/>
@@ -572,6 +585,7 @@ writer context
             <dir name="Writer">
               <file name="AtomTest.php" role="test"/>
               <file name="FormTest.php" role="test"/>
+              <file name="JasTest.php" role="test"/>
               <file name="JsonTest.php" role="test"/>
               <file name="RssTest.php" role="test"/>
               <file name="XmlTest.php" role="test"/>
@@ -1052,7 +1066,12 @@ decide wich object should be used this is part of the handler
       </stability>
       <date>2013-05-09</date>
       <license uri="http://www.gnu.org/licenses/">GPLv3 License</license>
-      <notes>* Add simple xrds writer
+      <notes>* Improved template and added template wrapper classes for twig and smarty
+* Improved DI container interoperability it is now possible to use the symfony
+DI container instead of the psx DI container
+* Use composer autoloader
+* Added json activity stream writer
+* Add simple xrds writer
 * Extract xml, atom and rss writer into class for useage outside of the data
 writer context
 * Added Sitemap an Odata libraries
