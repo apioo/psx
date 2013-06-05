@@ -31,6 +31,8 @@ use PSX\Data\Writer;
 use PSX\Data\WriterFactory;
 use PSX\Data\WriterResult;
 use PSX\ModuleAbstract;
+use PSX\Sql;
+use PSX\Sql\Condition;
 
 /**
  * ApiAbstract
@@ -41,6 +43,81 @@ use PSX\ModuleAbstract;
  */
 abstract class ApiAbstract extends ModuleAbstract
 {
+	/**
+	 * Returns an condition object depending on the filter param
+	 *
+	 * @param string $dateColumn
+	 * @return PSX\Sql\Condition
+	 */
+	protected function getRequestCondition($dateColumn = 'date')
+	{
+		$con          = new Condition();
+		$params       = $this->getRequestParams();
+		$filterBy     = $params['filterBy'];
+		$filterOp     = $params['filterOp'];
+		$filterValue  = $params['filterValue'];
+		$updatedSince = $params['updatedSince'];
+
+		if(!empty($filterBy) && !empty($filterOp) && !empty($filterValue))
+		{
+			switch($filterOp)
+			{
+				case 'contains':
+					$con->add($filterBy, 'LIKE', '%' . $filterValue . '%');
+					break;
+
+				case 'equals':
+					$con->add($filterBy, '=', $filterValue);
+					break;
+
+				case 'startsWith':
+					$con->add($filterBy, 'LIKE', $filterValue . '%');
+					break;
+
+				case 'present':
+					$con->add($filterBy, 'IS NOT', 'NULL', 'AND');
+					$con->add($filterBy, 'NOT LIKE', '');
+					break;
+			}
+		}
+
+		if(!empty($updatedSince))
+		{
+			$datetime = new DateTime($updatedSince);
+
+			$con->add($dateColumn, '>', $datetime->format(DateTime::SQL));
+		}
+
+		return $con;
+	}
+
+	/**
+	 * Returns wich fetch mode should be used. For json and xml we can use 
+	 * assoc because the writer can simply transform an array. For more complex
+	 * formats like atom we need objects
+	 *
+	 * @return integer
+	 */
+	protected function getMode()
+	{
+		$format = isset($_GET['format']) ? $_GET['format'] : null;
+
+		switch($format)
+		{
+			case 'atom':
+			case 'jas':
+			case 'rss':
+				return Sql::FETCH_OBJECT;
+				break;
+
+			case 'json':
+			case 'xml':
+			default:
+				return Sql::FETCH_ASSOC;
+				break;
+		}
+	}
+
 	/**
 	 * Returns an associative array containing all available request parameters
 	 *
