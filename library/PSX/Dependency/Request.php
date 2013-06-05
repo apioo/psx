@@ -25,8 +25,7 @@ namespace PSX\Dependency;
 
 use PSX\DependencyAbstract;
 use PSX\Validate;
-use PSX\Input\Get;
-use PSX\Input\Post;
+use PSX\Input;
 use PSX\Sql;
 use PSX\Http;
 
@@ -56,10 +55,12 @@ class Request extends DependencyAbstract
 
 	public function getSql()
 	{
-		return new Sql($this->config['psx_sql_host'],
-			$this->config['psx_sql_user'],
-			$this->config['psx_sql_pw'],
-			$this->config['psx_sql_db']);
+		$config = $this->get('config');
+
+		return new Sql($config['psx_sql_host'],
+			$config['psx_sql_user'],
+			$config['psx_sql_pw'],
+			$config['psx_sql_db']);
 	}
 
 	public function getHttp()
