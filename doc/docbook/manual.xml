@@ -16,43 +16,6 @@
 		and provides classes to use and implement OAuth, OpenID, Opengraph, Opensocial, Opensearch, PubSubHubbub, Atom,
 		and RSS. At the <ulink url="http://example.phpsx.org/">example</ulink> page you can see sample implementations using
 		various PSX classes. The following sections explain briefly the features of PSX.</para>
-		<sect1 id="introduction-technical-interoperability">
-			<title>Technical interoperability</title>
-			<para>PSX offers a comprehensive PHP library wich is loosly coupled and designed after standard naming
-			conventions (PSR-0) so it can be used with other projects like i.e. PEAR, Symfony or Zend. All classes are
-			independently usable because of dependency injection.</para>
-		</sect1>
-		<sect1 id="introduction-dependency-managment">
-			<title>Dependency managment</title>
-			<para>PSX offers an extensible architecture to handle dependencies for each controller.</para>
-			<figure>
-				<title>Dependency managment</title>
-				<mediaobject>
-					<imageobject>
-						<imagedata format="PNG" fileref="img/psx_dependency_managment.png" />
-					</imageobject>
-				</mediaobject>
-			</figure>
-		</sect1>
-		<sect1 id="introduction-restful-api">
-			<title>API flow</title>
-			<para>PSX supports you in building RESTful APIs using web standard formats like JSON, XML, Atom and RSS with
-			standard request parameters like defined in the
-			<ulink url="http://opensocial-resources.googlecode.com/svn/spec/2.0.1/Core-API-Server.xml#rfc.section.6">OpenSocial Core API Spec.</ulink></para>
-			<figure>
-				<title>API flow</title>
-				<mediaobject>
-					<imageobject>
-						<imagedata format="PNG" fileref="img/psx_api_flow.png" />
-					</imageobject>
-				</mediaobject>
-			</figure>
-		</sect1>
-		<sect1 id="introduction-lightweight-mvc">
-			<title>Lightweight MVC</title>
-			<para>PSX includes a simple MVC architecture with an fast routing mechanism and PHP as template engine.
-			The class loader defined by the php standard group is used.</para>
-		</sect1>
 	</chapter>
 
 	<chapter id="installation">
@@ -106,7 +69,7 @@ pear install psx/PSX]]></programlisting>
 			</row>
 			<row>
 				<entry>psx_dispatch</entry>
-				<entry>Where we get the input path normally index.php/. If you use .htaccess to redirect all requestst to the index.php you can also set this empty.</entry>
+				<entry>Where we get the input path normally index.php/. If you use .htaccess to redirect all requestst to the index.php you can also set this to ''.</entry>
 			</row>
 			<row>
 				<entry>psx_timezone</entry>
@@ -136,38 +99,24 @@ pear install psx/PSX]]></programlisting>
 
 			<row>
 				<entry>psx_sql_host</entry>
-				<entry>Your sql host. Only necessary if you need a sql connection</entry>
+				<entry>Your sql host</entry>
 			</row>
 			<row>
 				<entry>psx_sql_user</entry>
-				<entry>Your sql user. Only necessary if you need a sql connection</entry>
+				<entry>Your sql user</entry>
 			</row>
 			<row>
 				<entry>psx_sql_pw</entry>
-				<entry>Your sql pw. Only necessary if you need a sql connection</entry>
+				<entry>Your sql pw</entry>
 			</row>
 			<row>
 				<entry>psx_sql_db</entry>
-				<entry>Your sql db. Only necessary if you need a sql connection</entry>
-			</row>
-
-			<row>
-				<entry>psx_cache_enabled</entry>
-				<entry>The general option whether caching is enabled or not</entry>
-			</row>
-			<row>
-				<entry>psx_cache_expire</entry>
-				<entry>How long the cached result will remain in seconds</entry>
+				<entry>Your sql db</entry>
 			</row>
 
 			<row>
 				<entry>psx_template_dir</entry>
 				<entry>This is the name of an folder in the template dir</entry>
-			</row>
-			<row>
-				<entry>psx_template_default</entry>
-				<entry>By default you have to set in each module a template. Here you can set a default template wich is loaded
-				if no template is specified. This must be a path to a template file in the template dir.</entry>
 			</row>
 
 			<row>
@@ -176,8 +125,7 @@ pear install psx/PSX]]></programlisting>
 			</row>
 			<row>
 				<entry>psx_path_library</entry>
-				<entry>The path to the library folder. If this is null the classes are loaded from the include_path i.e.
-				you can set this to null if you have installed the library via PEAR.</entry>
+				<entry>The path to the library folder. If this is null the classes are loaded from the include_path</entry>
 			</row>
 			<row>
 				<entry>psx_path_module</entry>
@@ -198,10 +146,128 @@ pear install psx/PSX]]></programlisting>
 		</sect1>
 	</chapter>
 
+	<chapter id="controller">
+		<title>Controller</title>
+		<para>This chapter describes the structure of the controller.</para>
+
+		<sect1 id="controller-routing">
+			<title>Routing</title>
+			<para>The controller is placed in the module folder. Each controller must have the same name as the file and the
+			namespace represents the path i.e. if the controller is at module/foo/bar.php the class must be bar and the namespace
+			foo. In this example the controller can be accessed with index.php/foo/bar. Wich method of 
+			the controller is called depends on the annotation i.e. index.php/foo/bar/test to call the <methodname>doTest</methodname> method.</para>
+			<programlisting role="php"><![CDATA[
+<?php
+
+namespace foo;
+
+use PSX\Module\ViewAbstract;
+
+class bar extends ViewAbstract
+{
+	/**
+	 * @httpMethod GET
+	 * @path /
+	 */
+	public function doIndex()
+	{
+		$this->getTemplate()->assign('foo', 'bar');
+		$this->getTemplate()->set('bar.tpl');
+	}
+
+	/**
+	 * @httpMethod GET
+	 * @path /test
+	 */
+	public function doTest()
+	{
+		echo 'test';
+	}
+}
+			]]></programlisting>
+			<para>The following event methods are called independently of the annotation. The <methodname>onLoad</methodname> method is called 
+			everytime the controller is loaded and the <methodname>onGet</methodname>, <methodname>onPost</methodname>, <methodname>onPut</methodname> 
+			and <methodname>onDelete</methodname> method is called depending on the request method.</para>
+		</sect1>
+
+		<sect1 id="controller-dependency-managment">
+			<title>Dependency managment</title>
+			<para>Each controller can define the DI container. The services can be accessed through the get* methods in the controller
+			wich are proxied to the DI container. You can overwrite the <methodname>getDependencies</methodname> method to return another DI container.</para>
+			<programlisting role="php"><![CDATA[
+<?php
+
+namespace foo;
+
+use PSX\Module\ViewAbstract;
+use PSX\Dependency;
+
+class bar extends ViewAbstract
+{
+	public function getDependencies()
+	{
+		return new Dependency\View($this->getConfig());
+	}
+
+	/**
+	 * @httpMethod GET
+	 * @path /
+	 */
+	public function doIndex()
+	{
+		$result = $this->getSql()->getAll("SELECT * FROM foo");
+
+		$this->getTemplate()->assign('result', $result);
+	}
+}
+			]]></programlisting>
+			<para>It is also possible to return an symfony DI container</para>
+			<programlisting role="php"><![CDATA[
+<?php
+
+namespace foo;
+
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Reference;
+use PSX\Module\ViewAbstract;
+
+class bar extends ViewAbstract
+{
+	public function getDependencies()
+	{
+		$config = $this->getConfig();
+
+		$cb = new ContainerBuilder();
+		$cb->register('sql', '\PSX\Sql')
+			->addArgument($config['psx_sql_host'])
+			->addArgument($config['psx_sql_user'])
+			->addArgument($config['psx_sql_pw'])
+			->addArgument($config['psx_sql_db']);
+		$cb->register('template', '\PSX\Template');
+
+		return $cb;
+	}
+
+	/**
+	 * @httpMethod GET
+	 * @path /
+	 */
+	public function doIndex()
+	{
+		$result = $this->getSql()->getAll("SELECT * FROM foo");
+
+		$this->getTemplate()->assign('result', $result);
+	}
+}
+			]]></programlisting>
+		</sect1>
+
+	</chapter>
+
 	<chapter id="developing-restful-api">
 		<title>Developing a RESTful API</title>
 		<para>This is the main chapter of the manual wich explains step by step howto develop a RESTful API
-		based on PSX. In this example we create a simple news API where you can create and receive news records.</para>
+		based on PSX. In this example we create a simple news API where you can create and receive news.</para>
 		<sect1>
 			<title>Setting up the table</title>
 			<para>For our example we need a simple table called <property>news</property> where all records are stored.</para>
@@ -211,28 +277,29 @@ pear install psx/PSX]]></programlisting>
 CREATE TABLE IF NOT EXISTS `news` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `userId` int(10) NOT NULL,
-  `title` varchar(64) NOT NULL,
+  `title` varchar(128) NOT NULL,
   `text` text NOT NULL,
   `date` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 				]]></programlisting>
 			</example>
 		</sect1>
 		<sect1>
-			<title>Creating the table class</title>
-			<para>The table class represents the table and contains all informations about the record
+			<title>Creating the table</title>
+			<para>The table represents an database table and contains all informations about the record
 			i.e. wich columns are available.</para>
-			<programlisting role="php"><![CDATA[
+			<example>
+				<title>library/Test/News/Table.php</title>
+				<programlisting role="php"><![CDATA[
 <?php
 
-class Test_News_Table extends PSX_Sql_TableAbstract
-{
-	public function getConnections()
-	{
-		return array();
-	}
+namespace Test\News;
 
+use PSX\Sql\TableAbstract;
+
+class Table extends TableAbstract
+{
 	public function getName()
 	{
 		return 'news';
@@ -251,28 +318,54 @@ class Test_News_Table extends PSX_Sql_TableAbstract
 		);
 	}
 }
-			]]></programlisting>
+
+				]]></programlisting>
+			</example>
 		</sect1>
 		<sect1>
-			<title>Creating the record</title>
-			<para>Now we have to create the model for the News. The class must be created in the file library/Example/News.php.
-			The record must implement the <interfacename>PSX_Data_RecordInterface</interfacename> in this case we use the class
-			<classname>PSX_Data_Record_TableAbstract</classname> wich already implements the
-			<interfacename>PSX_Data_RecordInterface</interfacename> and has some useful methods already implemented.</para>
+			<title>Creating the handler</title>
+			<para>The handler is a concept similar to a repository in doctrine wich abstracts the sql queries
+			away from the controller. Instead of creating sql queries you should add "<methodname>getByFoo</methodname>"" methods 
+			to the handler. The Handler is also responsible to create, update and delete an record. In our case
+			the default select methods wich are provided by the HandlerAbstract are sufficient for our api so we dont
+			have to add additional methods.</para>
 			<example>
-				<title>library/Test/News.php</title>
+				<title>library/Test/News/Handler.php</title>
 				<programlisting role="php"><![CDATA[
 <?php
 
-class Test_News extends PSX_Data_Record_TableAbstract
-{
-	public $id;
-	public $userId;
-	public $title;
-	public $text;
-	public $date;
+namespace Test\News;
 
-	private $_date;
+use PSX\Data\HandlerAbstract;
+
+class Handler extends HandlerAbstract
+{
+}
+				]]></programlisting>
+			</example>
+		</sect1>
+		<sect1>
+			<title>Creating the record</title>
+			<para>The record represents an row from an database. If we post a news to the api endpoint this record is created
+			and the setter methods are called. This is the place where you have to validate the user data.</para>
+			<example>
+				<title>library/Test/News/Record.php</title>
+				<programlisting role="php"><![CDATA[
+<?php
+
+namespace Test\News;
+
+use PSX\Data\RecordAbstract;
+
+class Record extends RecordAbstract
+{
+	protected $id;
+	protected $userId;
+	protected $title;
+	protected $text;
+	protected $date;
+
+	protected $_date;
 
 	public function setId($id)
 	{
@@ -313,54 +406,35 @@ class Test_News extends PSX_Data_Record_TableAbstract
 			</example>
 		</sect1>
 		<sect1>
-			<title>Dependencies</title>
-			<para>Because the API needs to store informations in an mysql database we need a instance of
-			the database class.</para>
-			<example>
-				<title>library/Test/Dependency/Default.php</title>
-				<programlisting role="php"><![CDATA[
-class Test_Dependency_Default extends PSX_DependencyAbstract
-{
-	protected function setup()
-	{
-		parent::setup();
-
-		// sql
-		if(!$this->registry->offsetExists('sql'))
-		{
-			$sql = new PSX_Sql(new PSX_Sql_Driver_Pdo(), $this->config['psx_sql_host'], $this->config['psx_sql_user'], $this->config['psx_sql_pw'], $this->config['psx_sql_db']);
-
-			$this->registry->offsetSet('sql', $sql);
-		}
-	}
-}
-				]]></programlisting>
-			</example>
-		</sect1>
-		<sect1>
 			<title>The API endpoint</title>
-			<para>We create a file called news.php in the module folder. This file can be
-			accessed via http://127.0.0.1/psx/public/index.php/news. We define the <methodname>onLoad</methodname> method
-			wich is called when the module was loaded. The method <methodname>getDependencies</methodname> returns the
-			dependency class wich brings the database instance in our module.</para>
+			<para>We create a file called news.php in the module/api folder. This file can be
+			accessed via http://localhost/index.php/api/news. We define the <methodname>onLoad</methodname> method
+			wich is called when the module was loaded.</para>
 			<para>This is now our REST API endpoint where we can make <property>GET</property> and <property>POST</property>
 			requests. You can versioning your API by creating a folder structure i.e. put the news.php in the folder "v1"
-			and the endpoint url would be http://127.0.0.1/psx/public/index.php/v1/news</para>
+			and the endpoint url would be http://localhost/index.php/api/v1/news</para>
 			<example>
-				<title>module/news.php</title>
+				<title>module/api/news.php</title>
 				<programlisting role="php"><![CDATA[
 <?php
 
-class news extends PSX_Module_ApiAbstract
-{
-	public function getDependencies()
-	{
-		return new Test_Dependency_Default();
-	}
+namespace api;
 
+use DateTime;
+use PSX\Base;
+use PSX\Data\ArrayList;
+use PSX\Data\Message;
+use PSX\Data\WriterResult;
+use PSX\Data\WriterInterface;
+use PSX\Module\ApiAbstract;
+use Test\News\Table;
+use Test\News\Handler;
+
+class news extends ApiAbstract
+{
 	public function onLoad()
 	{
-		$this->table = new Test_News_Table($this->sql);
+		$this->handler = new Handler(new Table($this->getSql()));
 	}
 }
 				]]></programlisting>
@@ -368,36 +442,59 @@ class news extends PSX_Module_ApiAbstract
 			<sect2>
 				<title>Receiving</title>
 				<para>If someone makes an <property>GET</property> request to the endpoint we want return
-				the latest news. This method creates in general an <classname>PSX_Data_ResultSet</classname> object
-				containing multiple <classname>Example_News</classname> objects. If we call the <methodname>setResponse</methodname>
-				method with the <classname>PSX_Data_ResultSet</classname> object the object is transformed
+				the latest news. This method creates in general an <classname>PSX\Data\ResultSet</classname> object
+				containing multiple <classname>Example\News\Record</classname> objects. If we call the <methodname>setResponse</methodname>
+				method with the <classname>PSX\Data\ResultSet</classname> object the object is transformed
 				into the preferred format (wich was set either by the <property>GET</property> parameter "format"
 				or by the "Accept" header field).</para>
 				<example>
-					<title>module/news.php (implement <methodname>onGet</methodname> method)</title>
+					<title>module/api/news.php (implement <methodname>getNews</methodname> method)</title>
 					<programlisting role="php"><![CDATA[
-public function onGet()
+/**
+ * @httpMethod GET
+ * @path /
+ */
+public function getNews()
 {
-	$select    = $this->table->select(array('id', 'title', 'date'));
-	$fragments = $this->getUriFragments();
-	$params    = $this->getRequestParams();
-
-	if(isset($fragments[0]) && $fragments[0] == '@supportedFields')
+	try
 	{
-		$array = new PSX_Data_Array($select->getSupportedFields());
+		$params    = $this->getRequestParams();
+		$fields    = (array) $params['fields'];
+		$resultSet = $this->handler->getResultSet($fields, 
+			$params['startIndex'], 
+			$params['count'], 
+			$params['sortBy'], 
+			$params['sortOrder'], 
+			$this->getRequestCondition(),
+			$this->getMode());
+
+		$this->setResponse($resultSet);
+	}
+	catch(\Exception $e)
+	{
+		$msg = new Message($e->getMessage(), false);
+
+		$this->setResponse($msg);
+	}
+}
+
+/**
+ * @httpMethod GET
+ * @path /@supportedFields
+ */
+public function getSupportedFields()
+{
+	try
+	{
+		$array = new ArrayList($this->handler->getSupportedFields());
 
 		$this->setResponse($array);
 	}
-	else
+	catch(\Exception $e)
 	{
-		if(!empty($params['fields']))
-		{
-			$select->setColumns($params['fields']);
-		}
+		$msg = new Message($e->getMessage(), false);
 
-		$resultSet = $select->getResultSet($params['startIndex'], $params['count'], $params['sortBy'], $params['sortOrder'], $params['filterBy'], $params['filterOp'], $params['filterValue'], $params['updatedSince'], PSX_Sql::FETCH_OBJECT);
-
-		$this->setResponse($resultSet);
+		$this->setResponse($msg);
 	}
 }
 					]]></programlisting>
@@ -405,79 +502,67 @@ public function onGet()
 				<para>Because we want create <property>Atom</property> and <property>Rss</property> feeds we have to
 				set the writer config by overriding the method <methodname>setWriterConfig</methodname>.</para>
 				<example>
-					<title>module/news.php (implement <methodname>setWriterConfig</methodname> method)</title>
+					<title>module/api/news.php (implement <methodname>setWriterConfig</methodname> method)</title>
 					<programlisting role="php"><![CDATA[
-protected function setWriterConfig(PSX_Data_WriterResult $writer)
+protected function setWriterConfig(WriterResult $writer)
 {
 	switch($writer->getType())
 	{
-		case PSX_Data_WriterInterface::RSS:
-
-			$updated = $this->sql->getField('SELECT `date` FROM news ORDER BY `date` DESC');
-
+		case WriterInterface::RSS:
 			$title       = 'News';
-			$link        = $this->config['psx_url'];
+			$link        = $this->getConfig()->get('psx_url');
 			$description = 'Example RESTful News API based on PSX ';
 
 			$writer = $writer->getWriter();
 			$writer->setConfig($title, $link, $description);
-			$writer->setGenerator('psx ' . PSX_Base::getVersion());
-
+			$writer->setGenerator('psx ' . Base::getVersion());
 			break;
 
-		case PSX_Data_WriterInterface::ATOM:
-
-			$updated = $this->sql->getField('SELECT `date` FROM news ORDER BY `date` DESC');
-
+		case WriterInterface::ATOM:
 			$title   = 'News';
-			$id      = $this->base->getUrn('psx', 'example', 'news');
-			$updated = new DateTime($updated);
+			$id      = $this->base->getUrn('news');
+			$updated = new DateTime($this->handler->getUpdated());
 
 			$writer = $writer->getWriter();
 			$writer->setConfig($title, $id, $updated);
-			$writer->setGenerator('psx ' . PSX_Base::getVersion());
-
+			$writer->setGenerator('psx ' . Base::getVersion());
 			break;
 	}
 }
 					]]></programlisting>
 				</example>
-				<para>Because we want that the record can be exported in different formats like <property>JSON</property>,
-				<property>XML</property>, <property>Atom</property> and <property>Rss</property> we have to specific the method
-				<methodname>export</methodname> in the <classname>Example_News</classname> record. By default JSON and XML is
-				supported.</para>
+				<para>Because we want that the record can be exported in <property>Atom</property> and <property>Rss</property> we have 
+				to specific the method <methodname>export</methodname> in the <classname>Example\News\Record</classname>. By default JSON 
+				and XML is supported.</para>
 				<example>
-					<title>library/Example/News.php (implement <methodname>export</methodname> method)</title>
+					<title>library/Example/News/Record.php (implement <methodname>export</methodname> method)</title>
 					<programlisting role="php"><![CDATA[
-public function export(PSX_Data_WriterResult $result)
+public function export(WriterResult $result)
 {
 	switch($result->getType())
 	{
-		case PSX_Data_WriterInterface::RSS:
-
+		case WriterInterface::RSS:
 			$item = $result->getWriter()->createItem();
 
 			$item->setTitle($this->title);
-			$item->setLink('#');
+			$item->setGuid('urn:uuid:' . Uuid::nameBased('test:' . $this->id));
 			$item->setDescription($this->text);
 
 			return $item;
 			break;
 
-		case PSX_Data_WriterInterface::ATOM:
-
+		case WriterInterface::ATOM:
 			$entry = $result->getWriter()->createEntry();
 
 			$entry->setTitle($this->title);
-			$entry->setId($this->id);
+			$entry->setId('urn:uuid:' . Uuid::nameBased('test:' . $this->id));
 			$entry->setUpdated($this->getDate());
-			$entry->setContent($this->text, 'text');
+			$entry->setContent($this->text, 'html');
 
 			return $entry;
 			break;
 
 		default:
-
 			return parent::export($result);
 			break;
 	}
@@ -488,9 +573,9 @@ public function export(PSX_Data_WriterResult $result)
 				<example>
 					<title>Sample GET request</title>
 					<programlisting><![CDATA[
-GET /projects/psx/public/index.php/news HTTP/1.1
+GET /index.php/api/news HTTP/1.1
 Host: 127.0.0.1
-User-Agent: Lynx 2.8.7
+Connection: Keep-Alive
 Accept: application/xml
 					]]></programlisting>
 				</example>
@@ -498,34 +583,30 @@ Accept: application/xml
 					<title>Sample GET response</title>
 					<programlisting role="xml"><![CDATA[
 HTTP/1.1 200 OK
-Date: Sun, 04 Dec 2011 02:14:46 GMT
-Content-Length: 966
+Date: Wed, 05 Jun 2013 22:18:22 GMT
+Server: Apache/2.2.17 (Win32) mod_ssl/2.2.17 OpenSSL/0.9.8o PHP/5.3.4 mod_perl/2.0.4 Perl/v5.10.1
+X-Powered-By: psx
 Expires: Thu, 09 Oct 1986 01:00:00 GMT
 Last-Modified: Thu, 09 Oct 1986 01:00:00 GMT
-Keep-Alive: timeout=5, max=100
-Content-Type: application/xml
-Connection: Keep-Alive
-X-Powered-By: psx
-Server: Apache/2.2.17 (Win32) mod_ssl/2.2.17 OpenSSL/0.9.8o PHP/5.3.4 mod_perl/2.0.4 Perl/v5.10.1
-Pragma: no-cache
 Cache-Control: no-store, no-cache, must-revalidate
+Pragma: no-cache
+Content-Length: 288
+Keep-Alive: timeout=5, max=100
+Connection: Keep-Alive
+Content-Type: application/xml
 
 <?xml version="1.0" encoding="UTF-8"?>
 <resultset>
- <totalResults>9</totalResults>
+ <totalResults>1</totalResults>
  <startIndex>0</startIndex>
- <itemsPerPage>32</itemsPerPage>
+ <itemsPerPage>16</itemsPerPage>
  <entry>
   <id>1</id>
-  <title>foo</title>
-  <date>2011-12-04 02:11:46</date>
+  <userId>1</userId>
+  <title>dsfsd</title>
+  <text>fsdf</text>
+  <date>2013-06-05 23:21:00</date>
  </entry>
- <entry>
-  <id>2</id>
-  <title>fdsfs</title>
-  <date>0000-00-00 00:00:00</date>
- </entry>
- ...
 </resultset>
 					]]></programlisting>
 				</example>
@@ -533,32 +614,35 @@ Cache-Control: no-store, no-cache, must-revalidate
 			<sect2>
 				<title>Inserting</title>
 				<para>If someone makes a <property>POST</property> request we want insert the news in
-				the table. We create a new <classname>Example_News</classname> object and import the
+				the table. We create a new <classname>Example\News\Record</classname> object and import the
 				request data into the record.</para>
 				<example>
-					<title>module/news.php (implement <methodname>onPost</methodname> method)</title>
+					<title>module/api/news.php (implement <methodname>onPost</methodname> method)</title>
 					<programlisting role="php"><![CDATA[
-public function onPost()
+/**
+ * @httpMethod POST
+ * @path /
+ */
+public function insertNews()
 {
 	try
 	{
-		$handler = new Test_News_Handler($this->table);
+		$record = $this->handler->getRecord();
+		$record->import($this->getRequest());
 
-		$news = new Test_News($this->table);
-		$news->import($this->getRequest());
-
-		$handler->create($news);
+		// insert
+		$this->handler->create($record);
 
 
-		$message = new PSX_Data_Message('You have successful create a news', true);
+		$msg = new Message('You have successful create a ' . $record->getName(), true);
 
-		$this->setResponse($message);
+		$this->setResponse($msg);
 	}
-	catch(Exception $e)
+	catch(\Exception $e)
 	{
-		$message = new PSX_Data_Message($e->getMessage(), false);
+		$msg = new Message($e->getMessage(), false);
 
-		$this->setResponse($message);
+		$this->setResponse($msg);
 	}
 }
 					]]></programlisting>
@@ -583,18 +667,18 @@ Content-Type: application/xml
 				<example>
 					<title>Sample POST response</title>
 					<programlisting role="xml"><![CDATA[
-HTTP/1.1 201 Created
-Date: Sun, 04 Dec 2011 02:17:40 GMT
-Content-Length: 133
+HTTP/1.1 200 OK
+Date: Wed, 05 Jun 2013 22:20:35 GMT
+Server: Apache/2.2.17 (Win32) mod_ssl/2.2.17 OpenSSL/0.9.8o PHP/5.3.4 mod_perl/2.0.4 Perl/v5.10.1
+X-Powered-By: psx
 Expires: Thu, 09 Oct 1986 01:00:00 GMT
 Last-Modified: Thu, 09 Oct 1986 01:00:00 GMT
-Keep-Alive: timeout=5, max=100
-Content-Type: application/xml
-Connection: Keep-Alive
-X-Powered-By: psx
-Server: Apache/2.2.17 (Win32) mod_ssl/2.2.17 OpenSSL/0.9.8o PHP/5.3.4 mod_perl/2.0.4 Perl/v5.10.1
-Pragma: no-cache
 Cache-Control: no-store, no-cache, must-revalidate
+Pragma: no-cache
+Content-Length: 133
+Keep-Alive: timeout=5, max=100
+Connection: Keep-Alive
+Content-Type: application/xml
 
 <?xml version="1.0" encoding="UTF-8"?>
 <message>
@@ -610,7 +694,9 @@ Cache-Control: no-store, no-cache, must-revalidate
 			<para>This example has shown you howto build an API with PSX wich serves content
 			in <property>Atom</property>, <property>RSS</property>, <property>Json</property> and
 			<property>XML</property> on an <property>GET</property> request. Also it is possible to
-			insert new records with a <property>POST</property> request.</para>
+			insert new records with a <property>POST</property> request. You can specify the fields
+			wich are selected with the parameter fields i.e. "fields=id,title" to select only
+			the id and title.</para>
 		</sect1>
 	</chapter>
 
@@ -664,15 +750,15 @@ CREATE TABLE IF NOT EXISTS `request` (
 			<tbody>
 				<row>
 					<entry><link linkend="temporary-credential-request">Temporary Credential Request</link></entry>
-					<entry>http://127.0.0.1/psx/public/index.php/request</entry>
+					<entry>http://localhost/index.php/api/request</entry>
 				</row>
 				<row>
 					<entry><link linkend="resource-owner-authorization">Resource Owner Authorization</link></entry>
-					<entry>http://127.0.0.1/psx/public/index.php/auth</entry>
+					<entry>http://localhost/index.php/api/auth</entry>
 				</row>
 				<row>
 					<entry><link linkend="token-request">Token Request</link></entry>
-					<entry>http://127.0.0.1/psx/public/index.php/access</entry>
+					<entry>http://localhost/index.php/api/access</entry>
 				</row>
 			</tbody>
 			</tgroup>
@@ -685,13 +771,12 @@ CREATE TABLE IF NOT EXISTS `request` (
 					<programlisting role="php"><![CDATA[
 <?php
 
-class request extends PSX_Oauth_Provider_RequestAbstract
-{
-	public function getDependencies()
-	{
-		return new Test_Dependency_Default();
-	}
+namespace api;
 
+use PSX\Oauth\Provider\RequestAbstract;
+
+class request extends RequestAbstract
+{
 	public function onLoad()
 	{
 		try
@@ -767,11 +852,6 @@ class request extends PSX_Oauth_Provider_RequestAbstract
 
 class auth extends PSX_ModuleAbstract
 {
-	public function getDependencies()
-	{
-		return new Test_Dependency_Default();
-	}
-
 	public function onLoad()
 	{
 		$token = isset($_GET['oauth_token']) ? $_GET['oauth_token'] : null;
@@ -1136,19 +1216,16 @@ Content-Type: application/xml
 		<orderedlist numeration="upperroman">
 		<title>Further reading about PSX</title>
 		<listitem>
-			<para>Mailinglist: <ulink url="http://groups.google.com/group/phpsx">http://groups.google.com/group/phpsx</ulink></para>
+			<para>Repository: <ulink url="https://github.com/k42b3/psx">https://github.com/k42b3/psx</ulink></para>
 		</listitem>
 		<listitem>
-			<para>Examples: <ulink url="http://example.phpsx.org">http://example.phpsx.org</ulink></para>
+			<para>Bugtracker: <ulink url="https://github.com/k42b3/psx/issues">https://github.com/k42b3/psx/issues</ulink></para>
 		</listitem>
 		<listitem>
 			<para>Website: <ulink url="http://phpsx.org">http://phpsx.org</ulink></para>
 		</listitem>
 		<listitem>
-			<para>Bugtracker: <ulink url="http://code.google.com/p/psx/issues/list">http://code.google.com/p/psx/issues/list</ulink></para>
-		</listitem>
-		<listitem>
-			<para>Repository: <ulink url="http://code.google.com/p/psx/source/checkout">http://code.google.com/p/psx/source/checkout</ulink></para>
+			<para>Examples: <ulink url="http://example.phpsx.org">http://example.phpsx.org</ulink></para>
 		</listitem>
 		</orderedlist>
 	</chapter>
