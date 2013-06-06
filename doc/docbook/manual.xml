@@ -192,7 +192,7 @@ class bar extends ViewAbstract
 
 		<sect1 id="controller-dependency-managment">
 			<title>Dependency managment</title>
-			<para>Each controller can define the DI container. The services can be accessed through the get* methods in the controller
+			<para>Each controller can define an DI container. The services can be accessed through the get* methods in the controller
 			wich are proxied to the DI container. You can overwrite the <methodname>getDependencies</methodname> method to return another DI container.</para>
 			<programlisting role="php"><![CDATA[
 <?php
@@ -767,13 +767,16 @@ CREATE TABLE IF NOT EXISTS `request` (
 				<title>Temporary Credential Request</title>
 				<para>This endpoint is for obtaining an temporary credential.</para>
 				<example>
-					<title>module/request.php</title>
+					<title>module/api/request.php</title>
 					<programlisting role="php"><![CDATA[
 <?php
 
 namespace api;
 
+use PSX\DateTime;
+use PSX\Exception;
 use PSX\Oauth\Provider\RequestAbstract;
+use PSX\Oauth\Provider\Data;
 
 class request extends RequestAbstract
 {
@@ -785,7 +788,7 @@ class request extends RequestAbstract
 			// the getConsumer() and getResponse() method is called
 			$this->handle();
 		}
-		catch(Exception $e)
+		catch(\Exception $e)
 		{
 			header('HTTP/1.1 500 Internal Server Error');
 
@@ -802,42 +805,41 @@ class request extends RequestAbstract
 	{
 		if($consumerKey == $this->config['consumer_key'])
 		{
-			return new PSX_Oauth_Provider_Data_Consumer($this->config['consumer_key'], $this->config['consumer_secret']);
+			return new Data\Consumer($this->config['consumer_key'], $this->config['consumer_secret']);
 		}
 		else
 		{
-			throw new PSX_Oauth_Exception('Invalid consumer key');
+			throw new Exception('Invalid consumer key');
 		}
 	}
 
-	protected function getResponse(PSX_Oauth_Provider_Data_Consumer $consumer, PSX_Oauth_Provider_Data_Request $request)
+	protected function getResponse(Data\Consumer $consumer, Data\Request $request)
 	{
 		// generate tokens
 		$token       = sha1(uniqid(mt_rand(), true));
 		$tokenSecret = sha1(uniqid(mt_rand(), true));
 
-
 		// insert request
-		$this->sql->insert('request', array(
+		$this->getSql()->insert('request', array(
 
 			'ip'          => $_SERVER['REMOTE_ADDR'],
 			'token'       => $token,
 			'tokenSecret' => $tokenSecret,
 			'nonce'       => $request->getNonce(),
 			'callback'    => $request->getCallback(),
-			'insertDate'  => date(PSX_Time::SQL),
+			'insertDate'  => date(DateTime::SQL),
 
 		));
 
-
 		// return response
-		$response = new PSX_Oauth_Provider_Data_Response();
+		$response = new Data\Response();
 		$response->setToken($token);
 		$response->setTokenSecret($tokenSecret);
 
 		return $response;
 	}
 }
+
 					]]></programlisting>
 				</example>
 			</sect2>
@@ -846,11 +848,19 @@ class request extends RequestAbstract
 				<para>If the Oauth client has obtained the temporary credential the user will be redirected to
 				the <property>Resource Owner Authorization</property> endpoint.</para>
 				<example>
-					<title>module/auth.php</title>
+					<title>module/api/auth.php</title>
 					<programlisting role="php"><![CDATA[
 <?php
 
-class auth extends PSX_ModuleAbstract
+namespace api;
+
+use PSX\Exception;
+use PSX\DateTime;
+use PSX\Url;
+use PSX\ModuleAbstract;
+use PSX\Sql\Condition;
+
+class auth extends ModuleAbstract
 {
 	public function onLoad()
 	{
@@ -858,7 +868,7 @@ class auth extends PSX_ModuleAbstract
 
 		if(!empty($token))
 		{
-			$row = $this->sql->getRow('SELECT id, ip, token, authorized, callback, insertDate FROM request WHERE token = ?', array($token));
+			$row = $this->getSql()->getRow('SELECT id, ip, token, authorized, callback, insertDate FROM request WHERE token = ?', array($token));
 
 			if(!empty($row))
 			{
@@ -879,20 +889,20 @@ class auth extends PSX_ModuleAbstract
 				$verifier = substr(sha1(uniqid(mt_rand(), true)), 0, 16);
 
 				// update request
-				$con = new PSX_Sql_Condition(array('id', '=', $row['id']));
+				$con = new Condition(array('id', '=', $row['id']));
 
-				$this->sql->update('request', array(
+				$this->getSql()->update('request', array(
 
 					'verifier'          => $verifier,
 					'authorized'        => 1,
-					'authorizationDate' => date(PSX_Time::SQL),
+					'authorizationDate' => date(DateTime::SQL),
 
 				), $con);
 
 				// redirect user or display verifier
 				if($row['callback'] != 'oob')
 				{
-					$url = new PSX_Url($row['callback']);
+					$url = new Url($row['callback']);
 					$url->addParam('oauth_token', $row['token']);
 					$url->addParam('oauth_verifier', $verifier);
 
@@ -923,20 +933,23 @@ class auth extends PSX_ModuleAbstract
 				<title>Token Request</title>
 				<para></para>
 				<example>
-					<title>module/access.php</title>
+					<title>module/api/access.php</title>
 					<programlisting role="php"><![CDATA[
 <?php
 
-class access extends PSX_Oauth_Provider_AccessAbstract
-{
-	private $id;
-	private $nonce;
-	private $verifier;
+namespace api;
 
-	public function getDependencies()
-	{
-		return new Test_Dependency_Default();
-	}
+use PSX\DateTime;
+use PSX\Exception;
+use PSX\Oauth\Provider\AccessAbstract;
+use PSX\Oauth\Provider\Data;
+use PSX\Sql\Condition;
+
+class access extends AccessAbstract
+{
+	protected $id;
+	protected $nonce;
+	protected $verifier;
 
 	public function onLoad()
 	{
@@ -946,7 +959,7 @@ class access extends PSX_Oauth_Provider_AccessAbstract
 			// the getConsumer() and getResponse() method is called
 			$this->handle();
 		}
-		catch(Exception $e)
+		catch(\Exception $e)
 		{
 			header('HTTP/1.1 500 Internal Server Error');
 
@@ -965,7 +978,7 @@ class access extends PSX_Oauth_Provider_AccessAbstract
 	{
 		if($consumerKey == $this->config['consumer_key'])
 		{
-			$row = $this->sql->getRow('SELECT id, nonce, verifier, token, tokenSecret FROM request WHERE token = ? AND authorized = 1', array($token));
+			$row = $this->getSql()->getRow('SELECT id, nonce, verifier, token, tokenSecret FROM request WHERE token = ? AND authorized = 1', array($token));
 
 			if(!empty($row))
 			{
@@ -973,30 +986,30 @@ class access extends PSX_Oauth_Provider_AccessAbstract
 				$this->nonce    = $row['nonce'];
 				$this->verifier = $row['verifier'];
 
-				return new PSX_Oauth_Provider_Data_Consumer($this->config['consumer_key'], $this->config['consumer_secret'], $row['token'], $row['tokenSecret']);
+				return new Data\Consumer($this->config['consumer_key'], $this->config['consumer_secret'], $row['token'], $row['tokenSecret']);
 			}
 			else
 			{
-				throw new PSX_Oauth_Exception('Invalid token');
+				throw new Exception('Invalid token');
 			}
 		}
 		else
 		{
-			throw new PSX_Oauth_Exception('Invalid consumer key');
+			throw new Exception('Invalid consumer key');
 		}
 	}
 
-	protected function getResponse(PSX_Oauth_Provider_Data_Consumer $consumer, PSX_Oauth_Provider_Data_Request $request)
+	protected function getResponse(Data\Consumer $consumer, Data\Request $request)
 	{
 		// validate
 		if($this->nonce == $request->getNonce())
 		{
-			throw new PSX_Oauth_Exception('Nonce hasnt changed');
+			throw new Exception('Nonce hasnt changed');
 		}
 
 		if($this->verifier != $request->getVerifier())
 		{
-			throw new PSX_Oauth_Exception('Invalid verifier');
+			throw new Exception('Invalid verifier');
 		}
 
 		// generate a new access token
@@ -1004,25 +1017,26 @@ class access extends PSX_Oauth_Provider_AccessAbstract
 		$tokenSecret = sha1(uniqid(mt_rand(), true));
 
 		// update request
-		$con = new PSX_Sql_Condition(array('id', '=', $this->id));
+		$con = new Condition(array('id', '=', $this->id));
 
-		$this->sql->update('request', array(
+		$this->getSql()->update('request', array(
 
 			'authorized'   => 2,
 			'token'        => $token,
 			'tokenSecret'  => $tokenSecret,
-			'exchangeDate' => date(PSX_Time::SQL),
+			'exchangeDate' => date(DateTime::SQL),
 
 		), $con);
 
 		// return response
-		$response = new PSX_Oauth_Provider_Data_Response();
+		$response = new Data\Response();
 		$response->setToken($token);
 		$response->setTokenSecret($tokenSecret);
 
 		return $response;
 	}
 }
+
 					]]></programlisting>
 				</example>
 			</sect2>
@@ -1030,28 +1044,43 @@ class access extends PSX_Oauth_Provider_AccessAbstract
 		<sect1>
 			<title>Protect the API endpoint</title>
 			<para>The class <classname>news</classname> must now extend the class
-			<classname>PSX_Oauth_ProviderAbstract</classname> instead of <classname>PSX_ApiAbstract</classname> in order to use the authentication.</para>
+			<classname>PSX\Oauth\ProviderAbstract</classname> instead of <classname>PSX\ApiAbstract</classname> in order to use the authentication.</para>
 			<example>
-				<title>module/news.php (implement <methodname>getConsumer</methodname> and <methodname>onAuthenticated</methodname> method)</title>
+				<title>module/api/news.php (implement <methodname>getConsumer</methodname> and <methodname>onAuthenticated</methodname> method)</title>
 				<programlisting role="php"><![CDATA[
+public function onLoad()
+{
+	// check for oauth authentication
+	$this->handle();
+
+	if(!$this->isAuthed)
+	{
+		throw new Exception('Not authenticated', 401);
+	}
+
+	$this->handler = new Handler(new Table($this->getSql()));
+}
+
+// ...
+
 protected function getConsumer($consumerKey, $token)
 {
 	if($consumerKey == $this->config['consumer_key'])
 	{
-		$row = $this->sql->getRow('SELECT token, tokenSecret FROM request WHERE token = ? AND authorized = 2', array($token));
+		$row = $this->getSql()->getRow('SELECT token, tokenSecret FROM request WHERE token = ? AND authorized = 2', array($token));
 
 		if(!empty($row))
 		{
-			return new PSX_Oauth_Provider_Data_Consumer($this->config['consumer_key'], $this->config['consumer_secret'], $row['token'], $row['tokenSecret']);
+			return new Data\Consumer($this->config['consumer_key'], $this->config['consumer_secret'], $row['token'], $row['tokenSecret']);
 		}
 		else
 		{
-			throw new PSX_Oauth_Exception('Invalid token');
+			throw new Exception('Invalid token');
 		}
 	}
 	else
 	{
-		throw new PSX_Oauth_Exception('Invalid consumer key');
+		throw new Exception('Invalid consumer key');
 	}
 }
 
@@ -1061,93 +1090,44 @@ protected function onAuthenticated()
 }
 				]]></programlisting>
 			</example>
-			<para>Now we have to check for an <property>Authentication</property> header if a POST request
-			was made. If we call the <methodname>handle</methodname> method wich is defined by the class
-			<classname>PSX_Oauth_ProviderAbstract</classname> we check whether it is a valid Oauth request.</para>
-			<example>
-				<title>module/news.php (implement <methodname>onPost</methodname> method)</title>
-				<programlisting role="php"><![CDATA[
-public function onPost()
-{
-	try
-	{
-		// check for oauth authentication
-		$this->handle();
-
-		if(!$this->isAuthed)
-		{
-			throw new PSX_Exception('Not authenticated', 401);
-		}
-
-		// create news record
-		$news = new Example_News($this->config);
-		$news->import($this->getRequest());
-
-		if($news->hasFields('author', 'title', 'body'))
-		{
-			$news->date = date(PSX_Time::SQL);
-
-			$this->sql->insert('news', $news->getData());
-
-			$msg = new PSX_Data_Message('News record successful created', true);
-
-			$this->setResponse($msg, null, 201);
-		}
-		else
-		{
-			throw new Exception('Missing field in record');
-		}
-	}
-	catch(Exception $e)
-	{
-		$code = $e->getCode() == 0 ? 500 : $e->getCode();
-		$msg  = new PSX_Data_Message($e->getMessage(), false);
-
-		$this->setResponse($msg, null, $code);
-	}
-}
-				]]></programlisting>
-			</example>
 			<sect2>
 				<title>Inserting</title>
 				<para>Here an example Oauth request to insert a news</para>
 				<example>
 					<title>Sample POST request</title>
 					<programlisting><![CDATA[
-POST /tests/psx/public/ HTTP/1.1
+POST /index.php/api/news HTTP/1.1
 Host: 127.0.0.1
-Accept: application/xml
-Content-type: application/xml
-Content-Length: 171
-Authorization: OAuth realm="oat", oauth_signature="056413a4c2b9cb93bc2454902a2de25d549c219b%26eecde7a5f6e11556475c995252390b0160ba01e1", oauth_version="1.0", oauth_nonce="2ac118d94ca10fdfba2587b97a80dc89", oauth_signature_method="PLAINTEXT", oauth_consumer_key="64e197648df5f30acbc770d8a69d09bb391e78cb", oauth_token="901fbcf6e1f949f39c8458210f646c4407ec67f9", oauth_timestamp="1309609401"
+Connection: Keep-Alive
+Content-Type: application/xml
+Authorization: OAuth realm="Aletheia", oauth_signature="iH%2Frqr8h%2Bv74G0UhV2i9ikasSxM%3D", oauth_version="1.0", oauth_nonce="b86440fa6e025b41820cdf8f6124ceaa", oauth_signature_method="HMAC-SHA1", oauth_consumer_key="19b6db8e0de8a287f65a2ae83d6b4f88", oauth_token="88ad358b1e983ac293b290b7547c3dbc28bc92f7", oauth_timestamp="1370551822"
+Content-Length: 72
+Expect: 100-continue
 
-<?xml version="1.0" encoding="UTF-8"?>
 <news>
-  <author>foobar</author>
-  <title>And some great news</title>
-  <body>And here the complete content ... hf ;D</body>
+	<userId>1</userId>
+	<title>foo</title>
+	<text>bar</text>
 </news>
 					]]></programlisting>
 				</example>
 				<example>
 					<title>Sample POST response</title>
 					<programlisting><![CDATA[
-HTTP/1.1 201 Created
-Date: Sat, 02 Jul 2011 12:23:21 GMT
-Server: Apache/2.2.12 (Win32) DAV/2 mod_ssl/2.2.12 OpenSSL/0.9.8k mod_autoindex_color PHP/5.3.0 mod_perl/2.0.4 Perl/v5.10.0
+HTTP/1.1 200 OK
+Date: Thu, 06 Jun 2013 20:50:22 GMT
+Server: Apache/2.2.17 (Win32) mod_ssl/2.2.17 OpenSSL/0.9.8o PHP/5.3.4 mod_perl/2.0.4 Perl/v5.10.1
 X-Powered-By: psx
 Expires: Thu, 09 Oct 1986 01:00:00 GMT
 Last-Modified: Thu, 09 Oct 1986 01:00:00 GMT
 Cache-Control: no-store, no-cache, must-revalidate
 Pragma: no-cache
-Content-Length: 130
-Content-Type: application/xml
+Content-Length: 59
+Keep-Alive: timeout=5, max=100
+Connection: Keep-Alive
+Content-Type: application/json
 
-<?xml version="1.0" encoding="UTF-8"?>
-<message>
- <text>News record successful created</text>
- <success>true</success>
-</message>
+{"text":"You have successful create a news","success":true}
 					]]></programlisting>
 				</example>
 			</sect2>
@@ -1228,65 +1208,6 @@ Content-Type: application/xml
 			<para>Examples: <ulink url="http://example.phpsx.org">http://example.phpsx.org</ulink></para>
 		</listitem>
 		</orderedlist>
-	</chapter>
-
-	<chapter id="appendix">
-		<title>Appendix</title>
-		<sect1>
-			<title>Code generation</title>
-			<para>It is possible to generate the table and record classes from an mysql table. Therefor you have to
-			download <ulink url="http://code.google.com/p/delta-quadrant/downloads/detail?name=espeon_0.0.4_beta.zip">espeon</ulink>
-			a little java tool wich can connect to an mysql database and generate code based on an table structure using a
-			template (<ulink url="http://freemarker.sourceforge.net/">FreeMarker</ulink>). The following templates are for generating the
-			table and record classes.</para>
-			<example>
-				<title>Table.php</title>
-				<programlisting role="php"><![CDATA[
-<?php
-
-class ${namespace}_${name}_Table extends PSX_Sql_TableAbstract
-{
-	public function getConnections()
-	{
-		return array();
-	}
-
-	public function getName()
-	{
-		return '${table}';
-	}
-
-	public function getColumns()
-	{
-		return array(
-
-			<#list columns as column>
-			'${column.field}' => self::TYPE_${column.type?upper_case}<#if column.length != ''> | ${column.length}</#if><#if column.key == 'PRI'> | self::PRIMARY_KEY</#if><#if column.key == 'auto_increment'> | self::AUTO_INCREMENT</#if>,
-			</#list>
-
-		);
-	}
-}
-				]]></programlisting>
-			</example>
-			<example>
-				<title>Record.php</title>
-				<programlisting role="php"><![CDATA[
-<?php
-
-class ${namespace}_${name} extends PSX_Data_Record_TableAbstract
-{
-	<#list columns as column>
-	public function set${column.field?cap_first}($${column.field})
-	{
-		$this->${column.field} = $${column.field};
-	}
-
-	</#list>
-}
-				]]></programlisting>
-			</example>
-		</sect1>
 	</chapter>
 
 </book>

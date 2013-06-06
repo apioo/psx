@@ -1,5 +1,5 @@
 
-0.5.5
+0.6
 * Improved template and added template wrapper classes for twig and smarty
 * Improved DI container interoperability it is now possible to use the symfony 
   DI container instead of the psx DI container
