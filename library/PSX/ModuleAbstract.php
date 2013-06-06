@@ -37,6 +37,7 @@ abstract class ModuleAbstract
 {
 	protected $location;
 	protected $base;
+	protected $config;
 	protected $basePath;
 	protected $uriFragments = array();
 
@@ -46,6 +47,7 @@ abstract class ModuleAbstract
 	{
 		$this->location     = $location;
 		$this->base         = $base;
+		$this->config       = $base->getConfig();
 		$this->basePath     = $basePath;
 		$this->uriFragments = $uriFragments;
 	}
