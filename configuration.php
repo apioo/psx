@@ -41,7 +41,6 @@ $config = array(
 	'psx_sql_db'              => 'psx',
 
 	'psx_template_dir'        => 'default',
-	'psx_template_default'    => false,
 
 	'psx_path_cache'          => '../cache',
 	'psx_path_library'        => '../library',
