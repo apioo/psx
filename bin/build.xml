@@ -82,24 +82,31 @@
 		<zip destfile="${bin}/psx_${version}.zip" basedir="${build}" />
 	</target>
 
-	<target name="build-all" depends="clean,build-pear,build-phar,clean-git,build-release" />
-
 	<target name="clean">
 		<delete dir="${build}" />
 	</target>
 
+	<target name="build-all" depends="clean,build-pear,build-phar,clean-git,build-release" />
+
+	<!-- docs -->
+	<target name="build-doc" depends="clean-doc,manual-doc,api-doc" />
+
 	<target name="clean-doc">
 		<delete>
-			<fileset dir="${doc}/packages" includes="**/*.html" />
+			<fileset dir="${doc}/api" includes="**/*.html" />
 		</delete>
 	</target>
 
-	<target name="build-doc" depends="clean-doc">
+	<target name="manual-doc">
 		<xslt basedir="${doc}/docbook" destdir="${doc}" includes="**/*.xml" extension=".html" style="${doc}/psx.xsl">
 			<factory name="net.sf.saxon.TransformerFactoryImpl" />
 		</xslt>
-		<replace dir="${doc}/packages" token="&lt;link href=&quot;default.css&quot;" value="&lt;link href=&quot;../default.css&quot;" />
-		<replace dir="${doc}/packages" token="&lt;script src=&quot;default.js&quot;" value="&lt;script src=&quot;../default.js&quot;" />
+	</target>
+
+	<target name="api-doc">
+		<exec dir="${build}" executable="apigen.bat" failonerror="true">
+			<arg line="-s ${library} -d ${doc}/api" />
+		</exec>
 	</target>
 
 </project>
