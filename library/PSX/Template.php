@@ -66,16 +66,13 @@ class Template implements TemplateInterface
 
 	public function transform()
 	{
-		// check whether path is set
-		$path = $this->dir . '/' . $this->file;
-
 		// populate the data vars in the scope of the template
 		extract($this->data, EXTR_SKIP);
 
 		// parse template
 		ob_start();
 
-		require_once($path);
+		require_once($this->dir . '/' . $this->file);
 
 		$html = ob_get_clean();
 
