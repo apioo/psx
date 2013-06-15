@@ -23,7 +23,6 @@
 		<delete file="${build}/.travis.yml" />
 		<delete file="${build}/composer.json" />
 		<delete file="${build}/phpunit.xml" />
-		<delete file="${build}/README.md" />
 	</target>
 
 	<target name="get-version">

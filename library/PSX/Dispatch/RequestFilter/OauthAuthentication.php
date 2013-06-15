@@ -135,26 +135,26 @@ class OauthAuthentication implements RequestFilterInterface
 
 					if($signature->verify($baseString, $consumer->getConsumerSecret(), $consumer->getTokenSecret(), $params['oauth_signature']) !== false)
 					{
-						call_user_func($this->successCallback);
+						$this->callSuccess();
 					}
 					else
 					{
-						call_user_func($this->failureCallback);
+						$this->callFailure();
 					}
 				}
 				else
 				{
-					call_user_func($this->failureCallback);
+					$this->callFailure();
 				}
 			}
 			else
 			{
-				call_user_func($this->missingCallback);
+				$this->callMissing();
 			}
 		}
 		else
 		{
-			call_user_func($this->missingCallback);
+			$this->callMissing();
 		}
 	}
 
@@ -171,5 +171,20 @@ class OauthAuthentication implements RequestFilterInterface
 	public function onMissing(Closure $missingCallback)
 	{
 		$this->missingCallback = $missingCallback;
+	}
+
+	protected function callSuccess()
+	{
+		call_user_func($this->successCallback);
+	}
+
+	protected function callFailure()
+	{
+		call_user_func($this->failureCallback);
+	}
+
+	protected function callMissing()
+	{
+		call_user_func($this->missingCallback);
 	}
 }

@@ -10,10 +10,10 @@
     <email>k42b3@phpsx.org</email>
     <active>yes</active>
   </lead>
-  <date>2013-06-05</date>
+  <date>2013-06-15</date>
   <version>
-    <release>0.5.5</release>
-    <api>0.5.5</api>
+    <release>0.6</release>
+    <api>0.6</api>
   </version>
   <stability>
     <release>stable</release>
@@ -137,6 +137,20 @@ writer context
         </dir>
         <file name="DependencyAbstract.php" role="php"/>
         <file name="DependencyInterface.php" role="php"/>
+        <dir name="Dispatch">
+          <dir name="RequestFilter">
+            <file name="BasicAuthentication.php" role="php"/>
+            <file name="DigestAccessAuthentication.php" role="php"/>
+            <file name="OauthAuthentication.php" role="php"/>
+          </dir>
+          <file name="RequestFilterInterface.php" role="php"/>
+          <dir name="ResponseFilter">
+            <file name="ContentMd5.php" role="php"/>
+            <file name="GzipEncode.php" role="php"/>
+          </dir>
+          <file name="ResponseFilterInterface.php" role="php"/>
+        </dir>
+        <file name="Dispatch.php" role="php"/>
         <file name="Exception.php" role="php"/>
         <dir name="File">
           <file name="Object.php" role="php"/>
@@ -194,6 +208,7 @@ writer context
           <file name="Parse.php" role="php"/>
         </dir>
         <dir name="Http">
+          <file name="Authentication.php" role="php"/>
           <file name="Cookie.php" role="php"/>
           <dir name="CookieStore">
             <file name="Memory.php" role="php"/>
@@ -592,6 +607,13 @@ writer context
             </dir>
             <file name="WriterTestCase.php" role="test"/>
             <file name="WriterTestRecord.php" role="test"/>
+          </dir>
+          <dir name="Dispatch">
+            <dir name="RequestFilter">
+              <file name="BasicAuthenticationTest.php" role="test"/>
+              <file name="DigestAccessAuthenticationTest.php" role="test"/>
+              <file name="OauthAuthenticationTest.php" role="test"/>
+            </dir>
           </dir>
           <file name="FileTest.php" role="test"/>
           <dir name="Filter">
@@ -1065,6 +1087,30 @@ decide wich object should be used this is part of the handler
         <api>beta</api>
       </stability>
       <date>2013-05-09</date>
+      <license uri="http://www.gnu.org/licenses/">GPLv3 License</license>
+      <notes>* Improved template and added template wrapper classes for twig and smarty
+* Improved DI container interoperability it is now possible to use the symfony
+DI container instead of the psx DI container
+* Use composer autoloader
+* Added json activity stream writer
+* Add simple xrds writer
+* Extract xml, atom and rss writer into class for useage outside of the data
+writer context
+* Added Sitemap an Odata libraries
+* Removed
+* Improved activity stream classes
+* Add method get, getBy and getOneBy to handler interface</notes>
+    </release>
+    <release>
+      <version>
+        <release>0.6</release>
+        <api>0.6</api>
+      </version>
+      <stability>
+        <release>beta</release>
+        <api>beta</api>
+      </stability>
+      <date>2013-06-15</date>
       <license uri="http://www.gnu.org/licenses/">GPLv3 License</license>
       <notes>* Improved template and added template wrapper classes for twig and smarty
 * Improved DI container interoperability it is now possible to use the symfony

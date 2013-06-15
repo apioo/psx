@@ -97,21 +97,21 @@ class BasicAuthentication implements RequestFilterInterface
 
 				if($result === true)
 				{
-					call_user_func($this->successCallback);
+					$this->callSuccess();
 				}
 				else
 				{
-					call_user_func($this->failureCallback);
+					$this->callFailure();
 				}
 			}
 			else
 			{
-				call_user_func($this->missingCallback);
+				$this->callMissing();
 			}
 		}
 		else
 		{
-			call_user_func($this->missingCallback);
+			$this->callMissing();
 		}
 	}
 
@@ -128,5 +128,20 @@ class BasicAuthentication implements RequestFilterInterface
 	public function onMissing(Closure $missingCallback)
 	{
 		$this->missingCallback = $missingCallback;
+	}
+
+	protected function callSuccess()
+	{
+		call_user_func($this->successCallback);
+	}
+
+	protected function callFailure()
+	{
+		call_user_func($this->failureCallback);
+	}
+
+	protected function callMissing()
+	{
+		call_user_func($this->missingCallback);
 	}
 }
