@@ -53,7 +53,9 @@ abstract class ModuleAbstract
 	}
 
 	/**
-	 * Returns the dependency container for the module
+	 * Returns the dependency container for the module. This can return any DI
+	 * container wich has the methods defined in DependencyInterface i.e. the
+	 * Symfony\Component\DependencyInjection\ContainerInterface
 	 *
 	 * @return PSX\DependencyAbstract
 	 */
@@ -62,32 +64,31 @@ abstract class ModuleAbstract
 		return new Dependency\Request($this->getConfig());
 	}
 
+	/**
+	 * Returns an array of request filters wich are applied on the current 
+	 * request
+	 *
+	 * @return array<PSX\Dispatch\RequestFilterInterface>
+	 */
+	public function getRequestFilter()
+	{
+		return array();
+	}
+
+	/**
+	 * Returns an array of response filters wich are applied on the response
+	 *
+	 * @return array<PSX\Dispatch\ResponseFilterInterface>
+	 */
+	public function getResponseFilter()
+	{
+		return array();
+	}
+
 	public function _ini()
 	{
 		// load dependencies
 		$this->_container = $this->getDependencies();
-
-		// call event methods
-		$this->onLoad();
-
-		switch($this->getMethod())
-		{
-			case 'GET':
-				$this->onGet();
-				break;
-
-			case 'POST':
-				$this->onPost();
-				break;
-
-			case 'PUT':
-				$this->onPut();
-				break;
-
-			case 'DELETE':
-				$this->onDelete();
-				break;
-		}
 	}
 
 	/**

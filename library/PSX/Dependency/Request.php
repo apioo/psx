@@ -23,6 +23,8 @@
 
 namespace PSX\Dependency;
 
+use PSX\Base;
+use PSX\Loader;
 use PSX\DependencyAbstract;
 use PSX\Validate;
 use PSX\Input;
@@ -38,6 +40,16 @@ use PSX\Http;
  */
 class Request extends DependencyAbstract
 {
+	public function getBase()
+	{
+		return new Base($this->get('config'));
+	}
+
+	public function getLoader()
+	{
+		return new Loader($this->get('base'));
+	}
+
 	public function getValidate()
 	{
 		return new Validate();

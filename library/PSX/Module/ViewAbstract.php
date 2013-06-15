@@ -26,6 +26,7 @@ namespace PSX\Module;
 use PSX\Base;
 use PSX\Exception;
 use PSX\Dependency\View;
+use PSX\Dispatch\RequestFilter\GzipEncode;
 use PSX\ModuleAbstract;
 
 /**
@@ -40,6 +41,18 @@ abstract class ViewAbstract extends ModuleAbstract
 	public function getDependencies()
 	{
 		return new View($this->getConfig());
+	}
+
+	public function getResponseFilter()
+	{
+		$filter = array();
+
+		if($this->config['psx_gzip'] === true)
+		{
+			$filter[] = new GzipEncode();
+		}
+
+		return $filter;
 	}
 
 	public function processResponse($content)
@@ -57,6 +70,7 @@ abstract class ViewAbstract extends ModuleAbstract
 		$this->getTemplate()->assign('url', $url);
 		$this->getTemplate()->assign('location', $dir);
 		$this->getTemplate()->assign('base', $base);
+		$this->getTemplate()->assign('render', $render);
 
 		// set template dir
 		$this->getTemplate()->setDir($dir);
@@ -74,16 +88,6 @@ abstract class ViewAbstract extends ModuleAbstract
 			if(!($response = $this->getTemplate()->transform()))
 			{
 				throw new Exception('Error while transforming template');
-			}
-
-
-			$acceptEncoding = Base::getRequestHeader('Accept-Encoding');
-
-			if($config['psx_gzip'] === true && strpos($acceptEncoding, 'gzip') !== false)
-			{
-				header('Content-Encoding: gzip');
-
-				$response = gzencode($response, 9);
 			}
 
 			return $response;

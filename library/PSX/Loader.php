@@ -68,12 +68,45 @@ class Loader
 
 			if($class->isSubclassOf('\PSX\ModuleAbstract'))
 			{
+				$request = $this->base->getRequest();
+
 				$handle = $class->newInstance($location, $this->base, $path, $uriFragments);
 				$handle->_ini();
 
+				// call request filter
+				$filters = $handle->getRequestFilter();
+
+				foreach($filters as $filter)
+				{
+					$filter->handle($request);
+				}
+
+				// call event methods
+				$handle->onLoad();
+
+				switch(Base::getRequestMethod())
+				{
+					case 'GET':
+						$handle->onGet();
+						break;
+
+					case 'POST':
+						$handle->onPost();
+						break;
+
+					case 'PUT':
+						$handle->onPut();
+						break;
+
+					case 'DELETE':
+						$handle->onDelete();
+						break;
+				}
+
+				// call method if available
 				if($method instanceof ReflectionMethod)
 				{
-					$method->invoke($handle);
+					$method->invoke($handle, $request);
 				}
 
 				$this->loaded[] = $location->getId();

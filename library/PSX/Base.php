@@ -36,7 +36,7 @@ use UnexpectedValueException;
  */
 class Base
 {
-	const VERSION = '0.5.5';
+	const VERSION = '0.6';
 
 	/**
 	 * The current request method
@@ -65,6 +65,13 @@ class Base
 	 * @var string
 	 */
 	private static $rawInput;
+
+	/**
+	 * Contains the response code
+	 *
+	 * @var string
+	 */
+	private static $responseCode = null;
 
 	/**
 	 * Contains the absolute url to the script using the psx_url from the
@@ -367,12 +374,24 @@ class Base
 	{
 		if(isset(Http::$codes[$code]))
 		{
+			self::$responseCode = $code;
+
 			header(self::getProtocol() . ' ' . $code . ' ' . Http::$codes[$code]);
 		}
 		else
 		{
 			throw new UnexpectedValueException('Invalid http code');
 		}
+	}
+
+	/**
+	 * Returns the response code
+	 *
+	 * @return integer
+	 */
+	public static function getResponseCode()
+	{
+		return self::$responseCode;
 	}
 
 	/**

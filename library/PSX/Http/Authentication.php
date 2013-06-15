@@ -23,81 +23,51 @@
 
 namespace PSX\Http;
 
+use DateTime;
+
 /**
- * Message
+ * Util class to handle Authentication header
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Message
+class Authentication
 {
-	protected $header;
-	protected $body;
-
-	/**
-	 * __construct
-	 *
-	 * @param array $header
-	 * @param string $body
-	 */
-	public function __construct(array $header = array(), $body = null)
+	public static function decodeParameters($data)
 	{
-		$this->setHeader($header);
-		$this->setBody($body);
-	}
+		$params = array();
+		$parts  = explode(',', $data);
 
-	/**
-	 * Sets the message header
-	 *
-	 * @param array $header
-	 * @return void
-	 */
-	public function setHeader(array $header)
-	{
-		$this->header = array_change_key_case($header);
-	}
-
-	/**
-	 * Sets the message body
-	 *
-	 * @param string $body
-	 * @return void
-	 */
-	public function setBody($body)
-	{
-		$this->body = (string) $body;
-	}
-
-	/**
-	 * Returns the complete header array if key is null or the specific header
-	 * value if available
-	 *
-	 * @param string $key
-	 * @return array|string
-	 */
-	public function getHeader($key = null)
-	{
-		if($key !== null)
+		foreach($parts as $value)
 		{
-			$key = strtolower($key);
+			$value = trim($value);
+			$pair  = explode('=', $value);
 
-			return isset($this->header[$key]) ? $this->header[$key] : null;
+			$key   = isset($pair[0]) ? $pair[0] : null;
+			$value = isset($pair[1]) ? $pair[1] : null;
+
+			if(!empty($key))
+			{
+				$key   = strtolower($key);
+				$value = trim($value, '"');
+
+				$params[$key] = $value;
+			}
 		}
-		else
-		{
-			return $this->header;
-		}
+
+		return $params;
 	}
 
-	/**
-	 * Returns the message body
-	 *
-	 * @return string
-	 */
-	public function getBody()
+	public static function encodeParameters(array $params)
 	{
-		return $this->body;
+		$parts = array();
+
+		foreach($params as $key => $value)
+		{
+			$parts[] = $key . '="' . $value . '"';
+		}
+
+		return implode(', ', $parts);
 	}
 }
-

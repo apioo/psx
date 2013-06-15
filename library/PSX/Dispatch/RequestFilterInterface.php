@@ -21,13 +21,18 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once('../vendor/autoload.php');
+namespace PSX\Dispatch;
 
-$config    = new PSX\Config('../configuration.php');
-$bootstrap = new PSX\Bootstrap($config);
-$container = new PSX\Dependency\Request($config);
+use PSX\Http\Request;
 
-$dispatch  = new PSX\Dispatch($config, $container->get('loader'), $container->get('base'));
-$response  = $dispatch->route($container->get('base')->getRequest());
-
-echo $response->getBody();
+/**
+ * RequestFilterInterface
+ *
+ * @author  Christoph Kappestein <k42b3.x@gmail.com>
+ * @license http://www.gnu.org/licenses/gpl.html GPLv3
+ * @link    http://phpsx.org
+ */
+interface RequestFilterInterface
+{
+	public function handle(Request $request);
+}

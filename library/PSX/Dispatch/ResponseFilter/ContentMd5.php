@@ -21,13 +21,22 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once('../vendor/autoload.php');
+namespace PSX\Dispatch\ResponseFilter;
 
-$config    = new PSX\Config('../configuration.php');
-$bootstrap = new PSX\Bootstrap($config);
-$container = new PSX\Dependency\Request($config);
+use PSX\Dispatch\ResponseFilterInterface;
+use PSX\Http\Response;
 
-$dispatch  = new PSX\Dispatch($config, $container->get('loader'), $container->get('base'));
-$response  = $dispatch->route($container->get('base')->getRequest());
-
-echo $response->getBody();
+/**
+ * ContentMd5
+ *
+ * @author  Christoph Kappestein <k42b3.x@gmail.com>
+ * @license http://www.gnu.org/licenses/gpl.html GPLv3
+ * @link    http://phpsx.org
+ */
+class ContentMd5 implements ResponseFilterInterface
+{
+	public function handle(Response $response)
+	{
+		header('Content-MD5: ' . md5($response->getBody()));
+	}
+}
