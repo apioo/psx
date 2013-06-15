@@ -145,14 +145,19 @@ abstract class ModuleAbstract
 		return $content;
 	}
 
-	protected function getConfig()
-	{
-		return $this->base->getConfig();
-	}
-
 	protected function getLocation()
 	{
 		return $this->location;
+	}
+
+	protected function getBase()
+	{
+		return $this->base;
+	}
+
+	protected function getConfig()
+	{
+		return $this->base->getConfig();
 	}
 
 	protected function getBasePath()
@@ -170,11 +175,6 @@ abstract class ModuleAbstract
 		{
 			return $this->uriFragments;
 		}
-	}
-
-	protected function getValidator()
-	{
-		return $this->validate;
 	}
 
 	protected function getMethod()
