@@ -105,7 +105,10 @@ class Container extends DependencyAbstract
 
 	public function getSession()
 	{
-		return new Session($this->getParameter('session.name'));
+		$session = new Session($this->getParameter('session.name'));
+		$session->start();
+
+		return $session;
 	}
 
 	public function getSql()
