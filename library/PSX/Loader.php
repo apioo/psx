@@ -41,6 +41,7 @@ class Loader
 {
 	protected $base;
 	protected $config;
+	protected $container;
 
 	protected $loaded;
 	protected $routes;
@@ -48,10 +49,11 @@ class Loader
 
 	protected $locationFinder;
 
-	public function __construct(Base $base)
+	public function __construct($container)
 	{
-		$this->base    = $base;
-		$this->config  = $base->getConfig();
+		$this->base      = $container->get('base');
+		$this->config    = $container->get('config');
+		$this->container = $container;
 
 		$this->loaded  = array();
 		$this->routes  = array();
@@ -70,8 +72,8 @@ class Loader
 			{
 				$request = $this->base->getRequest();
 
-				$handle = $class->newInstance($location, $this->base, $path, $uriFragments);
-				$handle->_ini();
+				// create controller
+				$handle = $class->newInstance($this->container, $location, $path, $uriFragments);
 
 				// call request filter
 				$filters = $handle->getRequestFilter();

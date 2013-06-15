@@ -23,8 +23,6 @@
 
 namespace PSX;
 
-use PSX\Config;
-
 /**
  * DependencyAbstract
  *
@@ -34,9 +32,10 @@ use PSX\Config;
  */
 abstract class DependencyAbstract implements DependencyInterface
 {
-	private static $_container = array();
+	protected $services   = array();
+	protected $parameters = array();
 
-	public function __construct(Config $config)
+	public function __construct()
 	{
 		$methods = get_class_methods($this);
 
@@ -44,41 +43,54 @@ abstract class DependencyAbstract implements DependencyInterface
 		{
 			$service = lcfirst(substr($method, 3));
 
-			if(substr($method, 0, 3) == 'get' && !empty($service))
+			if(substr($method, 0, 3) == 'get' && !empty($service) && $service != 'parameter')
 			{
-				self::$_container[$service] = null;
+				$this->services[$service] = null;
 			}
 		}
-
-		self::set('config', $config);
 	}
 
 	public function set($name, $obj)
 	{
-		return self::$_container[$name] = $obj;
+		return $this->services[$name] = $obj;
 	}
 
 	public function get($name)
 	{
-		if(!isset(self::$_container[$name]))
+		if(!isset($this->services[$name]))
 		{
 			$method = 'get' . ucfirst($name);
 
-			if(self::has($name))
+			if($this->has($name))
 			{
-				self::$_container[$name] = $this->$method();
+				$this->services[$name] = $this->$method();
 			}
 			else
 			{
-				throw new Exception('Service not defined');
+				throw new Exception('Service "' . $name . '" not defined');
 			}
 		}
 
-		return self::$_container[$name];
+		return $this->services[$name];
 	}
 
 	public function has($name)
 	{
-		return array_key_exists($name, self::$_container);
+		return array_key_exists($name, $this->services);
+	}
+
+	public function setParameter($name, $value)
+	{
+		$this->parameters[$name] = $value;
+	}
+
+	public function getParameter($name)
+	{
+		return isset($this->parameters[$name]) ? $this->parameters[$name] : null;
+	}
+
+	public function hasParameter($name)
+	{
+		return isset($this->parameters[$name]);
 	}
 }

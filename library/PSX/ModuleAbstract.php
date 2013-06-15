@@ -35,33 +35,23 @@ use PSX\Loader\Location;
  */
 abstract class ModuleAbstract
 {
+	protected $container;
 	protected $location;
-	protected $base;
-	protected $config;
 	protected $basePath;
 	protected $uriFragments = array();
 
-	protected $_container;
+	protected $base;
+	protected $config;
 
-	public function __construct(Location $location, Base $base, $basePath, array $uriFragments)
+	public function __construct($container, Location $location, $basePath, array $uriFragments)
 	{
+		$this->container    = $container;
 		$this->location     = $location;
-		$this->base         = $base;
-		$this->config       = $base->getConfig();
 		$this->basePath     = $basePath;
 		$this->uriFragments = $uriFragments;
-	}
 
-	/**
-	 * Returns the dependency container for the module. This can return any DI
-	 * container wich has the methods defined in DependencyInterface i.e. the
-	 * Symfony\Component\DependencyInjection\ContainerInterface
-	 *
-	 * @return PSX\DependencyAbstract
-	 */
-	public function getDependencies()
-	{
-		return new Dependency\Request($this->getConfig());
+		$this->base         = $container->get('base');
+		$this->config       = $container->get('config');
 	}
 
 	/**
@@ -85,12 +75,6 @@ abstract class ModuleAbstract
 		return array();
 	}
 
-	public function _ini()
-	{
-		// load dependencies
-		$this->_container = $this->getDependencies();
-	}
-
 	/**
 	 * If the called method starts with "get" the matching service from the di 
 	 * container is returned else null
@@ -103,9 +87,9 @@ abstract class ModuleAbstract
 		{
 			$service = lcfirst(substr($name, 3));
 
-			if($this->_container->has($service))
+			if($this->container->has($service))
 			{
-				return $this->_container->get($service);
+				return $this->container->get($service);
 			}
 
 			return null;
@@ -145,6 +129,11 @@ abstract class ModuleAbstract
 		return $content;
 	}
 
+	protected function getContainer()
+	{
+		return $this->container;
+	}
+
 	protected function getLocation()
 	{
 		return $this->location;
@@ -153,11 +142,6 @@ abstract class ModuleAbstract
 	protected function getBase()
 	{
 		return $this->base;
-	}
-
-	protected function getConfig()
-	{
-		return $this->base->getConfig();
 	}
 
 	protected function getBasePath()
@@ -177,6 +161,11 @@ abstract class ModuleAbstract
 		}
 	}
 
+	protected function getConfig()
+	{
+		return $this->config;
+	}
+
 	protected function getMethod()
 	{
 		return Base::getRequestMethod();
@@ -194,17 +183,12 @@ abstract class ModuleAbstract
 
 	protected function getParameter()
 	{
-		return $this->parameter;
+		return $this->container->get('inputGet');
 	}
 
 	protected function getBody()
 	{
-		return $this->body;
-	}
-
-	protected function getContainer()
-	{
-		return $this->_container;
+		return $this->container->get('inputPost');
 	}
 
 	protected function setResponseCode($code)

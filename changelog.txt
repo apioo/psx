@@ -11,6 +11,7 @@
 * Add simple xrds writer
 * Extract xml, atom and rss writer into class for usage outside of the data 
   writer context
+* Remove logging library
 * Added Sitemap an Odata libraries
 * Improved activity stream classes
 * Add method get, getBy and getOneBy to handler interface

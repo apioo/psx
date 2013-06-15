@@ -39,10 +39,10 @@ interface DependencyInterface
 	 * Sets an service to the container
 	 *
 	 * @param string $name
-	 * @param object $obj
+	 * @param object $service
 	 * @return void
 	 */
-	public function set($name, $obj);
+	public function set($name, $service);
 
 	/**
 	 * Gets an service from the container
@@ -53,10 +53,35 @@ interface DependencyInterface
 	public function get($name);
 
 	/**
-	 * Checks wheterh the service is available
+	 * Checks whether the service is available
 	 *
 	 * @param string $name
 	 * @return boolean
 	 */
 	public function has($name);
+
+	/**
+	 * Sets an parameter
+	 *
+	 * @param string $name
+	 * @param string $value
+	 * @return void
+	 */
+	public function setParameter($name, $value);
+
+	/**
+	 * Gets an parameter
+	 *
+	 * @param string $name
+	 * @return string
+	 */
+	public function getParameter($name);
+
+	/**
+	 * Has an parameter
+	 *
+	 * @param string $name
+	 * @return boolean
+	 */
+	public function hasParameter($name);
 }
