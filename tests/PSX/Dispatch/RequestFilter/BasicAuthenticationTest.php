@@ -36,6 +36,14 @@ use PSX\Http\Request;
  */
 class BasicAuthenticationTest extends \PHPUnit_Framework_TestCase
 {
+	protected function setUp()
+	{
+		if(version_compare(PHP_VERSION, '5.4.0') < 0)
+		{
+			$this->markTestSkipped('PHP 5.4.0 required');
+		}
+	}
+
 	/**
 	 * @expectedException \PSX\Dispatch\RequestFilter\SuccessException
 	 */

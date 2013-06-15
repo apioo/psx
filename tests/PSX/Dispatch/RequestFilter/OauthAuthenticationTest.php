@@ -45,6 +45,14 @@ class OauthAuthenticationTest extends \PHPUnit_Framework_TestCase
 	const TOKEN           = 'hh5s93j4hdidpola';
 	const TOKEN_SECRET    = 'hdhd0244k9j7ao03';
 
+	protected function setUp()
+	{
+		if(version_compare(PHP_VERSION, '5.4.0') < 0)
+		{
+			$this->markTestSkipped('PHP 5.4.0 required');
+		}
+	}
+
 	/**
 	 * @expectedException \PSX\Dispatch\RequestFilter\SuccessException
 	 */
