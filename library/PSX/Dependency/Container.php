@@ -81,7 +81,7 @@ class Container extends DependencyAbstract
 
 	public function getInputPost()
 	{
-		return new Input\Get($this->get('validate'));
+		return new Input\Post($this->get('validate'));
 	}
 
 	public function getInputRequest()
