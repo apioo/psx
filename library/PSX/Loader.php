@@ -23,6 +23,7 @@
 
 namespace PSX;
 
+use PSX\Http\Request;
 use PSX\Loader\Location;
 use PSX\Loader\LocationFinderInterface;
 use PSX\Loader\LocationFinder\FileSystem;
@@ -51,7 +52,6 @@ class Loader
 
 	public function __construct($container)
 	{
-		$this->base      = $container->get('base');
 		$this->config    = $container->get('config');
 		$this->container = $container;
 
@@ -60,7 +60,7 @@ class Loader
 		$this->default = $this->config['psx_module_default'];
 	}
 
-	public function load($path)
+	public function load($path, Request $request)
 	{
 		list($location, $method, $uriFragments) = $this->resolvePath($path);
 
@@ -70,8 +70,6 @@ class Loader
 
 			if($class->isSubclassOf('\PSX\ModuleAbstract'))
 			{
-				$request = $this->base->getRequest();
-
 				// create controller
 				$handle = $class->newInstance($this->container, $location, $path, $uriFragments);
 

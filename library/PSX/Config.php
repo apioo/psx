@@ -75,6 +75,11 @@ class Config extends ArrayIterator
 		}
 	}
 
+	public function set($key, $value)
+	{
+		$this->offsetSet($key, $value);
+	}
+
 	public function get($key)
 	{
 		return $this->offsetGet($key);

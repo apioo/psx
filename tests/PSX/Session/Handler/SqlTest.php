@@ -24,7 +24,6 @@
 namespace PSX\Session\Handler;
 
 use PDOException;
-use PSX\Sql AS SqlDriver;
 use PSX\SessionTest;
 
 /**
@@ -43,12 +42,7 @@ class SqlTest extends SessionTest
 	{
 		try
 		{
-			$config = getConfig();
-
-			$this->sql = new SqlDriver($config['psx_sql_host'],
-				$config['psx_sql_user'],
-				$config['psx_sql_pw'],
-				$config['psx_sql_db']);
+			$this->sql = getContainer()->get('sql');
 
 			$sql = <<<SQL
 CREATE TABLE IF NOT EXISTS `{$this->table}` (

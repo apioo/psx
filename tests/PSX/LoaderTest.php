@@ -43,7 +43,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 
 	protected function setUp()
 	{
-		$loader = new PublicLoader(new Base(getConfig()));
+		$loader = new PublicLoader(getContainer());
 		$loader->setLocationFinder($this->getLocationFinder());
 		$loader->setDefault('foo');
 

@@ -27,7 +27,6 @@ use PDOException;
 use PSX\Config;
 use PSX\Data\Record;
 use PSX\DateTime;
-use PSX\Sql;
 use PSX\Sql\Table\Select;
 
 /**
@@ -45,16 +44,11 @@ abstract class DbTestCase extends \PHPUnit_Extensions_Database_TestCase
 
 	public function getConnection()
 	{
-		$config = getConfig();
-
 		if(self::$con === null)
 		{
 			try
 			{
-				self::$con = new Sql($config['psx_sql_host'],
-					$config['psx_sql_user'],
-					$config['psx_sql_pw'],
-					$config['psx_sql_db']);
+				self::$con = getContainer()->get('sql');
 			}
 			catch(PDOException $e)
 			{
@@ -67,6 +61,6 @@ abstract class DbTestCase extends \PHPUnit_Extensions_Database_TestCase
 			$this->sql = self::$con;
 		}
 
-		return $this->createDefaultDBConnection($this->sql, $config['psx_sql_db']);
+		return $this->createDefaultDBConnection($this->sql, getContainer()->get('config')->get('psx_sql_db'));
 	}
 }

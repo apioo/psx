@@ -38,7 +38,7 @@ class BaseTest extends \PHPUnit_Framework_TestCase
 
 	protected function setUp()
 	{
-		$this->base = new Base(getConfig());
+		$this->base = getContainer()->get('base');
 	}
 
 	protected function tearDown()
@@ -46,39 +46,16 @@ class BaseTest extends \PHPUnit_Framework_TestCase
 		unset($this->base);
 	}
 
-	public function testHeaderSent()
-	{
-		$this->assertEquals(false, Base::hasHeaderSent('foo'));
-
-		/*
-		// unfortunately we cannot send an header because output is already made
-		header('Foo: bar');
-
-		$this->assertEquals(true, Base::hasHeaderSent('foo'));
-		*/
-	}
-
-	public function testGetConfig()
-	{
-		$this->assertEquals(true, $this->base->getConfig() instanceof Config);
-	}
-
 	public function testGetHost()
 	{
 		$this->assertEquals('127.0.0.1', $this->base->getHost());
 	}
 
-	/**
-	 * @depends testGetHost
-	 */
 	public function testGetUrn()
 	{
 		$this->assertEquals('urn:psx:127.0.0.1:foo:bar', $this->base->getUrn('foo', 'bar'));
 	}
 
-	/**
-	 * @depends testGetHost
-	 */
 	public function testGetTag()
 	{
 		$date = new DateTime('1986-10-09 00:00:00');
@@ -87,12 +64,47 @@ class BaseTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('tag:127.0.0.1,1986-10-09:foo', $this->base->getTag($date, $specific));
 	}
 
-	/**
-	 * @depends testGetHost
-	 */
 	public function testGetUUID()
 	{
 		$this->assertEquals('31a897ea-a0f4-53c3-922a-a72d8bf9b7e1', $this->base->getUUID('foo'));
+	}
+
+	public function testGetRequest()
+	{
+		$this->assertInstanceOf('\PSX\Http\Request', $this->base->getRequest());
+	}
+
+	public function testGetRequestHeader()
+	{
+		$this->assertEquals(false, Base::getRequestHeader('Foo'));
+	}
+
+	public function testGetRawInput()
+	{
+		$this->assertEquals(false, Base::getRawInput());
+	}
+
+	public function testHeaderSent()
+	{
+		$this->assertEquals(false, Base::hasHeaderSent('foo'));
+	}
+
+	/**
+	 * @expectedException UnexpectedValueException
+	 */
+	public function testSetResponseCodeWrong()
+	{
+		Base::setResponseCode(12);
+	}
+
+	public function testSetResponseCode()
+	{
+		$this->assertEquals(null, Base::getResponseCode());
+
+		// supress error because sending an header does not work
+		@Base::setResponseCode(200);
+
+		$this->assertEquals(200, Base::getResponseCode());
 	}
 
 	public function testGetVersion()

@@ -55,18 +55,6 @@ class Bootstrap
 		define('PSX_PATH_MODULE', $config['psx_path_module']);
 		define('PSX_PATH_TEMPLATE', $config['psx_path_template']);
 
-		// set include path
-		if($config['psx_include_path'] === true)
-		{
-			$this->addIncludePath($config['psx_path_library']);
-		}
-
-		// if enabled register autoloader
-		if($config['psx_autoload'] === true)
-		{
-			spl_autoload_register('\PSX\Bootstrap::autoload');
-		}
-
 		// error handling
 		if($config['psx_debug'] === true)
 		{

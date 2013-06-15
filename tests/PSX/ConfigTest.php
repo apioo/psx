@@ -32,11 +32,11 @@ namespace PSX;
  */
 class ConfigTest extends \PHPUnit_Framework_TestCase
 {
-	private $config;
+	protected $config;
 
 	protected function setUp()
 	{
-		$this->config = getConfig();
+		$this->config = getContainer()->get('config');
 	}
 
 	protected function tearDown()
@@ -49,6 +49,10 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 		$this->config['foo'] = 'bar';
 
 		$this->assertEquals('bar', $this->config['foo']);
+
+		$this->config->set('bar', 'foo');
+
+		$this->assertEquals('foo', $this->config['bar']);
 	}
 
 	public function testConfigOffsetExists()

@@ -48,13 +48,13 @@ class Dispatch extends \Exception
 	public function route(Request $request)
 	{
 		$controller = null;
-
+		
 		ob_start();
 
 		try
 		{
 			// load controller
-			$controller = $this->loader->load($this->getPath());
+			$controller = $this->loader->load($this->getPath(), $request);
 
 			// get output
 			$content = ob_get_contents();
@@ -86,7 +86,11 @@ class Dispatch extends \Exception
 			}
 
 			// build response
-			if(strpos($accept, 'text/html') !== false)
+			if(PHP_SAPI == 'cli')
+			{
+				$body = $message . "\n" . $trace;
+			}
+			else if(strpos($accept, 'text/html') !== false)
 			{
 				Base::setResponseCode($code);
 				header('Content-type: text/html');
@@ -100,9 +104,6 @@ class Dispatch extends \Exception
 
 				$body = $message . "\n" . $trace;
 			}
-
-			// logging
-			Log::error($e->getMessage() . "\n" . 'Stack trace:' . "\n" . $e->getTraceAsString() . "\n");
 		}
 
 		ob_end_clean();
@@ -124,37 +125,6 @@ class Dispatch extends \Exception
 		return $response;
 	}
 
-	protected function getPath()
-	{
-		$default = $this->config['psx_module_default'];
-		$input   = $this->config['psx_module_input'];
-		$length  = $this->config['psx_module_input_length'];
-
-		if(!empty($input))
-		{
-			$x = $input;
-		}
-		else
-		{
-			$x = $default;
-		}
-
-		if(strpos($x, '..') !== false)
-		{
-			throw new PSX\Exception('Invalid signs in input');
-		}
-
-		if($length != 0)
-		{
-			if(strlen($x) > $length)
-			{
-				throw new PSX\Exception('Max length of input is ' . $length, 414);
-			}
-		}
-
-		return $x;
-	}
-
 	protected function buildResponse($body)
 	{
 		$code    = Base::getResponseCode();
@@ -162,6 +132,11 @@ class Dispatch extends \Exception
 		$header  = Response::headerToArray(implode(Http::$newLine, headers_list()));
 
 		return new Response(Base::getProtocol(), Base::getResponseCode(), $message, $header, $body);
+	}
+
+	protected function getPath()
+	{
+		return isset($_GET['x']) ? $_GET['x'] : (isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : (isset($_SERVER['argv'][1]) ? $_SERVER['argv'][1] : ''));
 	}
 
 	protected function getErrorTemplate($message, $trace)
