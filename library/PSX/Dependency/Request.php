@@ -40,16 +40,6 @@ use PSX\Http;
  */
 class Request extends DependencyAbstract
 {
-	public function getBase()
-	{
-		return new Base($this->get('config'));
-	}
-
-	public function getLoader()
-	{
-		return new Loader($this->get('base'));
-	}
-
 	public function getValidate()
 	{
 		return new Validate();

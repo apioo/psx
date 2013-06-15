@@ -25,9 +25,13 @@ require_once('../vendor/autoload.php');
 
 $config    = new PSX\Config('../configuration.php');
 $bootstrap = new PSX\Bootstrap($config);
-$container = new PSX\Dependency\Request($config);
+$base      = new PSX\Base($config);
+$loader    = new PSX\Loader($base);
 
-$dispatch  = new PSX\Dispatch($config, $container->get('loader'), $container->get('base'));
-$response  = $dispatch->route($container->get('base')->getRequest());
+// configure loader
+//$loader->addRoute('.well-known/host-meta', 'foo');
+
+$dispatch  = new PSX\Dispatch($config, $loader);
+$response  = $dispatch->route($base->getRequest());
 
 echo $response->getBody();

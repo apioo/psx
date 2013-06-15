@@ -37,7 +37,6 @@ use PSX\Http\Response;
 class Dispatch extends \Exception
 {
 	protected $config;
-	protected $base;
 	protected $loader;
 
 	public function __construct(Config $config, Loader $loader)
