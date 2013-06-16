@@ -38,11 +38,6 @@ use PSX\ModuleAbstract;
  */
 abstract class ViewAbstract extends ModuleAbstract
 {
-	public function getDependencies()
-	{
-		return new View($this->getConfig());
-	}
-
 	public function getResponseFilter()
 	{
 		$filter = array();
