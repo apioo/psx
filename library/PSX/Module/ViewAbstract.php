@@ -61,7 +61,7 @@ abstract class ViewAbstract extends ModuleAbstract
 		$render = round(microtime(true) - $GLOBALS['psx_benchmark'], 6);
 
 		$this->getTemplate()->assign('config', $config);
-		$this->getTemplate()->assign('self', $self);
+		$this->getTemplate()->assign('self', htmlspecialchars($self));
 		$this->getTemplate()->assign('url', $url);
 		$this->getTemplate()->assign('location', $dir);
 		$this->getTemplate()->assign('base', $base);
