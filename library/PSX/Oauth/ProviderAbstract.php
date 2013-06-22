@@ -32,7 +32,10 @@ use PSX\Oauth\Provider\Data\Consumer;
 use PSX\Url;
 
 /**
- * ProviderAbstract
+ * This class is deprecated instead of extending this class add the method
+ * getRequestFilter() in your module and return the filter
+ * Dispatch\RequestFilter\OauthAuthentication in order to provide oauth 
+ * authentication to your module
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
