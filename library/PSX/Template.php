@@ -54,14 +54,7 @@ class Template implements TemplateInterface
 
 	public function assign($key, $value)
 	{
-		if(!isset($this->data[$key]))
-		{
-			$this->data[$key] = $value;
-		}
-		else
-		{
-			throw new Exception('Key ' . $key . ' already set');
-		}
+		$this->data[$key] = $value;
 	}
 
 	public function transform()
