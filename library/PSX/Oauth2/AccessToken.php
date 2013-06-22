@@ -34,11 +34,11 @@ use PSX\Data\RecordAbstract;
  */
 class AccessToken extends RecordAbstract
 {
-	public $accessToken;
-	public $tokenType;
-	public $expiresIn;
-	public $refreshToken;
-	public $scope;
+	protected $accessToken;
+	protected $tokenType;
+	protected $expiresIn;
+	protected $refreshToken;
+	protected $scope;
 
 	public function getName()
 	{
