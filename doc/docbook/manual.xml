@@ -11,33 +11,27 @@
 
 	<chapter id="introduction">
 		<title>Introduction</title>
-		<para>PSX is a framework for developing dynamic websites in PHP. The goal of PSX is to help you developing
-		RESTful APIs serving web standard formats like JSON, XML, Atom and RSS. It has a focus on social technologies
-		and provides classes to use and implement OAuth, OpenID, Opengraph, Opensocial, Opensearch, PubSubHubbub, Atom,
-		and RSS. At the <ulink url="http://example.phpsx.org/">example</ulink> page you can see sample implementations using
-		various PSX classes. The following sections explain briefly the features of PSX.</para>
+		<para>PSX is a framework written in PHP to create RESTful APIs. It helps you building clean URLs serving web standard 
+		formats like JSON, XML, Atom and RSS. At the core PSX is build of three parts. A handler system (similar to repositories 
+		in doctrine) wich abstracts away the actual SQL queries from the domain logic. An routing system wich executes the 
+		fitting controller method depending on	the location of the controller and the annotation of the method. And an flexible 
+		data system to convert data records from the database into different formats like JSON, XML, Atom and RSS. PSX uses a 
+		lightweight DI container to handle dependencies (but is also compatible with the symfony DI container). The controller 
+		can return request or response filter wich can react or modify the HTTP request or response. PSX offers some basic 
+		request filter to handle i.e. Basic or Oauth authentication. In addition PSX offers some cool components to use and 
+		implement OAuth, OpenID, Opengraph, Opensocial, Opensearch, PubSubHubbub, WebFinger, Atom, and RSS. At the 
+		<ulink url="http://example.phpsx.org/">example</ulink> page you can see sample implementations using various PSX classes.</para>
 	</chapter>
 
 	<chapter id="installation">
 		<title>Installation</title>
-		<para>There are a few ways to install PSX. If you want use PSX fully including the routing mechanism you have to download the
-		framework manually because the requests must go to the index.php. If you only want use specific classes of PSX you can also install it
-		via PEAR or Composer.</para>
+		<para>If you want use PSX fully including the routing mechanism you have to download the framework manually because 
+		the requests must go to the index.php. If you only want use specific classes of PSX you can install it via Composer.</para>
 		<sect1 id="installation-manual">
 			<title>Manual</title>
 			<para>You can download the current version of psx from the offical website <ulink url="http://phpsx.org">phpsx.org</ulink>.
 			Put the folder on your web or local server. Goto http://host/path/to/psx/public and if you see a website with the title
 			"Template sample" psx is running successfully.</para>
-		</sect1>
-		<sect1 id="installation-pear">
-			<title>PEAR</title>
-			<para>You can install the PSX library through pear. Therefor you have to discover the pear channel
-			<ulink url="http://pear.phpsx.org">pear.phpsx.org</ulink></para>
-			<programlisting><![CDATA[
-pear channel-discover pear.phpsx.org]]></programlisting>
-			<para>and install the PSX package</para>
-			<programlisting><![CDATA[
-pear install psx/PSX]]></programlisting>
 		</sect1>
 		<sect1 id="installation-composer">
 			<title>Composer</title>
@@ -48,10 +42,6 @@ pear install psx/PSX]]></programlisting>
 
 	<chapter id="configuration">
 		<title>Configuration</title>
-		<para>To configure PSX you must make two steps first edit the configuration.php and second set the
-		rights for the cache folder if you want use the caching mechanism.</para>
-		<sect1>
-		<title id="configuration-edit">Edit</title>
 		<para>The config is an php array with key value pairs. You must change the key "psx_url" so that it
 		points to the psx public root. All other entries are optional. The following table describes each entry.</para>
 		<informaltable>
@@ -83,18 +73,13 @@ pear install psx/PSX]]></programlisting>
 				<entry>psx_debug</entry>
 				<entry>Whether psx runs in debug mode or not. If not the error reporting is set to 0.</entry>
 			</row>
-
 			<row>
 				<entry>psx_module_default</entry>
 				<entry>The module wich is loaded by default</entry>
 			</row>
 			<row>
-				<entry>psx_module_input</entry>
-				<entry>From wich source we get our input string</entry>
-			</row>
-			<row>
-				<entry>psx_module_input_length</entry>
-				<entry>The max length of an input. If the request is longer the user gets an "414 Request-URI Too Long" response</entry>
+				<entry>psx_template_dir</entry>
+				<entry>This is the name of an folder in the template dir</entry>
 			</row>
 
 			<row>
@@ -112,11 +97,6 @@ pear install psx/PSX]]></programlisting>
 			<row>
 				<entry>psx_sql_db</entry>
 				<entry>Your sql db</entry>
-			</row>
-
-			<row>
-				<entry>psx_template_dir</entry>
-				<entry>This is the name of an folder in the template dir</entry>
 			</row>
 
 			<row>
@@ -138,130 +118,6 @@ pear install psx/PSX]]></programlisting>
 		</tbody>
 		</tgroup>
 		</informaltable>
-		</sect1>
-		<sect1 id="configuration-rights">
-		<title>Rights</title>
-		<para>If you want use the cache class you need in the folder "psx_path_cache" read and write permissions. This is the
-		place where all cache files are stored.</para>
-		</sect1>
-	</chapter>
-
-	<chapter id="controller">
-		<title>Controller</title>
-		<para>This chapter describes the structure of the controller.</para>
-
-		<sect1 id="controller-routing">
-			<title>Routing</title>
-			<para>The controller is placed in the module folder. Each controller must have the same name as the file and the
-			namespace represents the path i.e. if the controller is at module/foo/bar.php the class must be bar and the namespace
-			foo. In this example the controller can be accessed with index.php/foo/bar. Wich method of 
-			the controller is called depends on the annotation i.e. index.php/foo/bar/test to call the <methodname>doTest</methodname> method.</para>
-			<programlisting role="php"><![CDATA[
-<?php
-
-namespace foo;
-
-use PSX\Module\ViewAbstract;
-
-class bar extends ViewAbstract
-{
-	/**
-	 * @httpMethod GET
-	 * @path /
-	 */
-	public function doIndex()
-	{
-		$this->getTemplate()->assign('foo', 'bar');
-		$this->getTemplate()->set('bar.tpl');
-	}
-
-	/**
-	 * @httpMethod GET
-	 * @path /test
-	 */
-	public function doTest()
-	{
-		echo 'test';
-	}
-}
-			]]></programlisting>
-			<para>The following event methods are called independently of the annotation. The <methodname>onLoad</methodname> method is called 
-			everytime the controller is loaded and the <methodname>onGet</methodname>, <methodname>onPost</methodname>, <methodname>onPut</methodname> 
-			and <methodname>onDelete</methodname> method is called depending on the request method.</para>
-		</sect1>
-
-		<sect1 id="controller-dependency-managment">
-			<title>Dependency managment</title>
-			<para>Each controller can define an DI container. The services can be accessed through the get* methods in the controller
-			wich are proxied to the DI container. You can overwrite the <methodname>getDependencies</methodname> method to return another DI container.</para>
-			<programlisting role="php"><![CDATA[
-<?php
-
-namespace foo;
-
-use PSX\Module\ViewAbstract;
-use PSX\Dependency;
-
-class bar extends ViewAbstract
-{
-	public function getDependencies()
-	{
-		return new Dependency\View($this->getConfig());
-	}
-
-	/**
-	 * @httpMethod GET
-	 * @path /
-	 */
-	public function doIndex()
-	{
-		$result = $this->getSql()->getAll("SELECT * FROM foo");
-
-		$this->getTemplate()->assign('result', $result);
-	}
-}
-			]]></programlisting>
-			<para>It is also possible to return an symfony DI container</para>
-			<programlisting role="php"><![CDATA[
-<?php
-
-namespace foo;
-
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Reference;
-use PSX\Module\ViewAbstract;
-
-class bar extends ViewAbstract
-{
-	public function getDependencies()
-	{
-		$config = $this->getConfig();
-
-		$cb = new ContainerBuilder();
-		$cb->register('sql', '\PSX\Sql')
-			->addArgument($config['psx_sql_host'])
-			->addArgument($config['psx_sql_user'])
-			->addArgument($config['psx_sql_pw'])
-			->addArgument($config['psx_sql_db']);
-		$cb->register('template', '\PSX\Template');
-
-		return $cb;
-	}
-
-	/**
-	 * @httpMethod GET
-	 * @path /
-	 */
-	public function doIndex()
-	{
-		$result = $this->getSql()->getAll("SELECT * FROM foo");
-
-		$this->getTemplate()->assign('result', $result);
-	}
-}
-			]]></programlisting>
-		</sect1>
-
 	</chapter>
 
 	<chapter id="developing-restful-api">
@@ -282,65 +138,6 @@ CREATE TABLE IF NOT EXISTS `news` (
   `date` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
-				]]></programlisting>
-			</example>
-		</sect1>
-		<sect1>
-			<title>Creating the table</title>
-			<para>The table represents an database table and contains all informations about the record
-			i.e. wich columns are available.</para>
-			<example>
-				<title>library/Test/News/Table.php</title>
-				<programlisting role="php"><![CDATA[
-<?php
-
-namespace Test\News;
-
-use PSX\Sql\TableAbstract;
-
-class Table extends TableAbstract
-{
-	public function getName()
-	{
-		return 'news';
-	}
-
-	public function getColumns()
-	{
-		return array(
-
-			'id' => self::TYPE_INT | 10 | self::PRIMARY_KEY | self::AUTO_INCREMENT,
-			'userId' => self::TYPE_INT | 10,
-			'title' => self::TYPE_VARCHAR | 64,
-			'text' => self::TYPE_TEXT,
-			'date' => self::TYPE_DATETIME,
-
-		);
-	}
-}
-
-				]]></programlisting>
-			</example>
-		</sect1>
-		<sect1>
-			<title>Creating the handler</title>
-			<para>The handler is a concept similar to a repository in doctrine wich abstracts the sql queries
-			away from the controller. Instead of creating sql queries you should add "<methodname>getByFoo</methodname>"" methods 
-			to the handler. The Handler is also responsible to create, update and delete an record. In our case
-			the default select methods wich are provided by the HandlerAbstract are sufficient for our api so we dont
-			have to add additional methods.</para>
-			<example>
-				<title>library/Test/News/Handler.php</title>
-				<programlisting role="php"><![CDATA[
-<?php
-
-namespace Test\News;
-
-use PSX\Data\HandlerAbstract;
-
-class Handler extends HandlerAbstract
-{
-}
 				]]></programlisting>
 			</example>
 		</sect1>
@@ -402,6 +199,76 @@ class Record extends RecordAbstract
 		return $this->_date;
 	}
 }
+				]]></programlisting>
+			</example>
+		</sect1>
+		<sect1>
+			<title>Creating the handler</title>
+			<para>The handler is a concept similar to a repository in doctrine wich abstracts the sql queries
+			away from the controller. Instead of creating sql queries you should add "<methodname>getByFoo</methodname>" methods 
+			to the handler. The Handler is also responsible to create, update and delete an record. In our case
+			the default select methods wich are provided by the HandlerAbstract are sufficient for our api so we dont
+			have to add additional methods.</para>
+			<example>
+				<title>library/Test/News/Handler.php</title>
+				<programlisting role="php"><![CDATA[
+<?php
+
+namespace Test\News;
+
+use PSX\Data\HandlerAbstract;
+
+class Handler extends HandlerAbstract
+{
+}
+				]]></programlisting>
+			</example>
+		</sect1>
+		<sect1>
+			<title>Creating the table</title>
+			<para>Note the key parts of PSX are the records and handler the table class wich we now create is only a helper
+			class for the handler in order to retrieve records from an mysql table via PDO. You are free to implement your own 
+			HandlerInterface and use an ORM like doctrine, simple SQL queries or any other system to CRUD records.</para>
+			<para>The table represents an database table. It contains the table name wich columns are available and the 
+			relations to other tables. In this example we have no relation to another table but to give an example the
+			<methodname>getConnection</methodname> method is implemented</para>
+			<example>
+				<title>library/Test/News/Table.php</title>
+				<programlisting role="php"><![CDATA[
+<?php
+
+namespace Test\News;
+
+use PSX\Sql\TableAbstract;
+
+class Table extends TableAbstract
+{
+	public function getName()
+	{
+		return 'news';
+	}
+
+	public function getColumns()
+	{
+		return array(
+			'id' => self::TYPE_INT | 10 | self::PRIMARY_KEY | self::AUTO_INCREMENT,
+			'userId' => self::TYPE_INT | 10,
+			'title' => self::TYPE_VARCHAR | 64,
+			'text' => self::TYPE_TEXT,
+			'date' => self::TYPE_DATETIME,
+		);
+	}
+
+	/*
+	public function getConnection()
+	{
+		return array(
+			'userId' => 'users'
+		);
+	}
+	*/
+}
+
 				]]></programlisting>
 			</example>
 		</sect1>
@@ -520,7 +387,7 @@ protected function setWriterConfig(WriterResult $writer)
 
 		case WriterInterface::ATOM:
 			$title   = 'News';
-			$id      = $this->base->getUrn('news');
+			$id      = $this->getBase()->getUrn('news');
 			$updated = new DateTime($this->handler->getUpdated());
 
 			$writer = $writer->getWriter();
@@ -617,7 +484,7 @@ Content-Type: application/xml
 				the table. We create a new <classname>Example\News\Record</classname> object and import the
 				request data into the record.</para>
 				<example>
-					<title>module/api/news.php (implement <methodname>onPost</methodname> method)</title>
+					<title>module/api/news.php (implement <methodname>insertNews</methodname> method)</title>
 					<programlisting role="php"><![CDATA[
 /**
  * @httpMethod POST
@@ -700,14 +567,86 @@ Content-Type: application/xml
 		</sect1>
 	</chapter>
 
+	<chapter id="api-authorization">
+		<title>API authorization</title>
+		<para>It is often the case that you want that only registered users can POST new entries to 
+		the API endpoint. In this case the user has to authorize before submitting a new record. PSX
+		offers several authorization methods for your API. In this chapter we will look at different 
+		authentication methods and howto implement them.</para>
+		<sect1>
+			<title>Basic authentication</title>
+			<para>Basic authentication is the most simple authentication method where a user provides
+			an username and password in the header. Note if you use basic authentication you should
+			use https since the username and password is transported in plaintext over the wire.
+			Add the following method to the news API in order to add basic authentication.</para>
+			<example>
+				<title>module/api/news.php (add basic authentication)</title>
+				<programlisting role="php"><![CDATA[
+use PSX\Dispatch\RequestFilter\BasicAuthentication;
+
+...
+
+public function getRequestFilter()
+{
+	$auth = new BasicAuthentication(function($username, $password){
+
+		if($username == '[username]' && $password == '[passsword]')
+		{
+			return true;
+		}
+
+		return false;
+
+	});
+
+	return array($auth);
+}
+				]]></programlisting>
+			</example>
+		</sect1>
+		<sect1>
+			<title>Oauth authentication</title>
+			<para>-</para>
+			<example>
+				<title>module/api/news.php (add oauth authentication)</title>
+				<programlisting role="php"><![CDATA[
+use PSX\Dispatch\RequestFilter\OauthAuthentication;
+use PSX\Oauth\Provider\Data\Consumer;
+
+...
+
+public function getRequestFilter()
+{
+	$auth = new OauthAuthentication(function($consumerKey, $token){
+
+		// this is only to illustrate what to return. Normally you have to check
+		// - is it a valid consumerKey
+		// - does the token belongs to an valid request with a valid status
+		// - is the token not expired
+		// PSX calculates and compares the signature if you return an consumer.
+		// For more informations see http://tools.ietf.org/html/rfc5849
+		if($consumerKey == '[consumerKey]' && $token == '[token]')
+		{
+			return new Consumer('[consumerKey]', '[consumerSecret]', '[token]', '[tokenSecret]');
+		}
+
+		return false;
+
+	});
+
+	return array($auth);
+}
+				]]></programlisting>
+			</example>
+		</sect1>
+	</chapter>
+
 	<chapter id="oauth-based-api-authorization">
-		<title>Oauth based API authorization</title>
-		<para>It is often the case that you want that only registered users can POST new entries to the API
-		endpoint. In this case the user has to authorize before submitting a new record. The current standard
-		for API authorization is Oauth. PSX comes with a set of classes wich helps implementing OAuth authorization
-		for your endpoint. PSX supports the Oauth 1.0 specification (http://tools.ietf.org/html/rfc5849).
-		In this chapter we will demonstrate how to protect the news API wich we have developed in the chapter before
-		with Oauth so that only user with a valid consumer key and consumer secret can insert news records.</para>
+		<title>Oauth implementation</title>
+		<para>If you want offer an Oauth endpoint for applications PSX offers some classes to implement
+		the Oauth 1.0 specification. In the following section we will implement a bas Oauth endpoint
+		where a client can get tokens and access an protected API. More informations about Oauth at
+		http://tools.ietf.org/html/rfc5849.</para>
 		<sect1>
 			<title>Setting up the table</title>
 			<para>In order to store the Oauth requests we use the following table</para>
@@ -868,11 +807,18 @@ class auth extends ModuleAbstract
 
 		if(!empty($token))
 		{
-			$row = $this->getSql()->getRow('SELECT id, ip, token, authorized, callback, insertDate FROM request WHERE token = ?', array($token));
+			$row = $this->getSql()->getRow('SELECT `id`, `ip`, `token`, `authorized`, `callback`, `insertDate` FROM `request` WHERE `token` = ?', array($token));
 
 			if(!empty($row))
 			{
-				//  validate
+				// @todo normally we have to check here whether the current user
+				// is authenticated. If not the user has to login. Then a form 
+				// should be displayed whether the user wants to grant or deny 
+				// the application. If the user allows the application we 
+				// approve the request. To simplify things we acccept the 
+				// request on load
+
+				// validate
 				if($_SERVER['REMOTE_ADDR'] != $row['ip'])
 				{
 					throw new Exception('Token was requested from another ip');
@@ -931,7 +877,7 @@ class auth extends ModuleAbstract
 			</sect2>
 			<sect2 id="token-request">
 				<title>Token Request</title>
-				<para></para>
+				<para>-</para>
 				<example>
 					<title>module/api/access.php</title>
 					<programlisting role="php"><![CDATA[
@@ -1043,50 +989,39 @@ class access extends AccessAbstract
 		</sect1>
 		<sect1>
 			<title>Protect the API endpoint</title>
-			<para>The class <classname>news</classname> must now extend the class
-			<classname>PSX\Oauth\ProviderAbstract</classname> instead of <classname>PSX\ApiAbstract</classname> in order to use the authentication.</para>
+			<para>Now we can protect our API like defined in the "API authorization" chapter. Here
+			an simple implementation.</para>
 			<example>
-				<title>module/api/news.php (implement <methodname>getConsumer</methodname> and <methodname>onAuthenticated</methodname> method)</title>
+				<title>module/api/news.php (add oauth authentication)</title>
 				<programlisting role="php"><![CDATA[
-public function onLoad()
+public function getRequestFilter()
 {
-	// check for oauth authentication
-	$this->handle();
+	$config = $this->getConfig();
+	$sql    = $this->getSql();
 
-	if(!$this->isAuthed)
-	{
-		throw new Exception('Not authenticated', 401);
-	}
+	$auth = new OauthAuthentication(function($consumerKey, $token) use ($config, $sql){
 
-	$this->handler = new Handler(new Table($this->getSql()));
-}
-
-// ...
-
-protected function getConsumer($consumerKey, $token)
-{
-	if($consumerKey == $this->config['consumer_key'])
-	{
-		$row = $this->getSql()->getRow('SELECT token, tokenSecret FROM request WHERE token = ? AND authorized = 2', array($token));
-
-		if(!empty($row))
+		if($consumerKey == $config['consumer_key'])
 		{
-			return new Data\Consumer($this->config['consumer_key'], $this->config['consumer_secret'], $row['token'], $row['tokenSecret']);
+			$row = $sql->getRow('SELECT token, tokenSecret FROM request WHERE token = ? AND authorized = 2', array($token));
+
+			if(!empty($row))
+			{
+				return new Data\Consumer($config['consumer_key'], $config['consumer_secret'], $row['token'], $row['tokenSecret']);
+			}
+			else
+			{
+				throw new Exception('Invalid token');
+			}
 		}
 		else
 		{
-			throw new Exception('Invalid token');
+			throw new Exception('Invalid consumer key');
 		}
-	}
-	else
-	{
-		throw new Exception('Invalid consumer key');
-	}
-}
 
-protected function onAuthenticated()
-{
-	$this->isAuthed = true;
+	});
+
+	return array($auth);
 }
 				]]></programlisting>
 			</example>
@@ -1134,57 +1069,13 @@ Content-Type: application/json
 		</sect1>
 		<sect1>
 			<title>Conclusion</title>
-			<para>This was an basic example howto protect your API with Oauth.</para>
-			<para>Note: This is an example implementation to show you the basic functionallity howto use
+			<para>This was an basic example howto create an Oauth endpoint and to protect your API.</para>
+			<para>Note: This is an example implementation to show you the basic functionality howto use
 			the Oauth classes of PSX. Because of simplicity we use only a single consumer key and consumer secret
 			normally you would save those in a table and generate per application a consumer key and secret. Please
 			see the <ulink url="http://amun.phpsx.org">Amun</ulink> project for a real implementation of the OAuth
 			classes.</para>
 		</sect1>
-	</chapter>
-
-	<chapter id="template">
-		<title>Template</title>
-		<para>By default PSX uses simple php as template engine because it is fast and you have more freedom to design a
-		website. In your template you can access the variable (that you have assigned) with $[key].
-		You can also use some predefined variables wich are listed here:</para>
-		<informaltable>
-		<tgroup cols="2">
-		<thead>
-			<row>
-				<entry>Variable</entry>
-				<entry>Description</entry>
-			</row>
-		</thead>
-		<tbody>
-			<row>
-				<entry>$config</entry>
-				<entry>The PSX_Config object wich holds the array from the configuration.php file. Note the object
-				may contain sensitive informations like sql username and password.</entry>
-			</row>
-			<row>
-				<entry>$self</entry>
-				<entry>This is the current URI. You can use this in a form to point to the module</entry>
-			</row>
-			<row>
-				<entry>$url</entry>
-				<entry>The complete url including the dispatch i.e. http://foobar.org/index.php/</entry>
-			</row>
-			<row>
-				<entry>$location</entry>
-				<entry>This is the path to your current template i.e. template/default in order to include other templates</entry>
-			</row>
-			<row>
-				<entry>$render</entry>
-				<entry>The rendering time in seconds</entry>
-			</row>
-			<row>
-				<entry>$base</entry>
-				<entry>The basepath wich can be used to include i.e. javascript, css or images.</entry>
-			</row>
-		</tbody>
-		</tgroup>
-		</informaltable>
 	</chapter>
 
 	<chapter id="help">
