@@ -50,111 +50,195 @@ class CacheTest extends \PHPUnit_Framework_TestCase
 
 	public function testMinimalCache()
 	{
-		$cache = new Cache(__METHOD__);
-		$cache->remove();
+		$cache = new Cache('[key]');
 
-		$content = $cache->load();
-
-		$this->assertEquals(false, $content);
-
-		$cache->write('foobar');
-
-		$content = $cache->load();
-
-		$this->assertEquals('foobar', $content);
-
-		$cache->remove();
-
-		$content = $cache->load();
-
-		$this->assertEquals(false, $content);
+		$this->checkUnlimitedCache($cache);
 	}
 
 	public function testCache()
 	{
-		$cache = new Cache(__METHOD__, 0, $this->getHandler());
-		$cache->remove();
+		$cache = new Cache('[key]', 0, $this->getHandler());
 
-		$content = $cache->load();
-
-		$this->assertEquals(false, $content);
-
-		$cache->write('foobar');
-
-		$content = $cache->load();
-
-		$this->assertEquals('foobar', $content);
-
-		$cache->remove();
-
-		$content = $cache->load();
-
-		$this->assertEquals(false, $content);
+		$this->checkUnlimitedCache($cache);
 	}
 
 	public function testCacheExpires()
 	{
-		$cache = new Cache(__METHOD__, 2, $this->getHandler()); // expires in 2 seconds
-		$cache->remove();
+		$cache = new Cache('[key]', 2, $this->getHandler()); // expires in 2 seconds
 
-		$content = $cache->load();
-
-		$this->assertEquals(false, $content);
-
-		$cache->write('foobar');
-
-		$content = $cache->load();
-
-		$this->assertEquals('foobar', $content);
-
-		sleep(3); // wait 2 seconds
-
-		$content = $cache->load();
-
-		$this->assertEquals(false, $content);
+		$this->checkLimitedCache($cache);
 	}
 
 	public function testCacheExpiresString()
 	{
-		$cache = new Cache(__METHOD__, 'PT2S', $this->getHandler()); // expires in 2 seconds
-		$cache->remove();
+		$cache = new Cache('[key]', 'PT2S', $this->getHandler()); // expires in 2 seconds
 
-		$content = $cache->load();
-
-		$this->assertEquals(false, $content);
-
-		$cache->write('foobar');
-
-		$content = $cache->load();
-
-		$this->assertEquals('foobar', $content);
-
-		sleep(3); // wait 2 seconds
-
-		$content = $cache->load();
-
-		$this->assertEquals(false, $content);
+		$this->checkLimitedCache($cache);
 	}
 
 	public function testCacheExpiresDateInterval()
 	{
-		$cache = new Cache(__METHOD__, new DateInterval('PT2S'), $this->getHandler()); // expires in 2 seconds
+		$cache = new Cache('[key]', new DateInterval('PT2S'), $this->getHandler()); // expires in 2 seconds
+
+		$this->checkLimitedCache($cache);
+	}
+
+	public function testCacheDisabled()
+	{
+		$cache = new Cache('[key]');
+
+		$this->checkDisabledCache($cache);
+	}
+
+	protected function checkUnlimitedCache(Cache $cache)
+	{
 		$cache->remove();
+
+		$this->assertEquals(md5('[key]'), $cache->getKey());
+		$this->assertEquals(0, $cache->getExpire());
+		$this->assertEquals(true, $cache->isEnabled());
+		$this->assertEquals(false, $cache->exists());
+		$this->assertEquals(true, $cache->isExpired());
+		$this->assertEquals(null, $cache->get());
 
 		$content = $cache->load();
 
+		$this->assertEquals(md5('[key]'), $cache->getKey());
+		$this->assertEquals(0, $cache->getExpire());
+		$this->assertEquals(true, $cache->isEnabled());
+		$this->assertEquals(false, $cache->exists());
+		$this->assertEquals(true, $cache->isExpired());
+		$this->assertEquals(null, $cache->get());
 		$this->assertEquals(false, $content);
 
 		$cache->write('foobar');
 
 		$content = $cache->load();
 
+		$this->assertEquals(md5('[key]'), $cache->getKey());
+		$this->assertEquals(0, $cache->getExpire());
+		$this->assertEquals(true, $cache->isEnabled());
+		$this->assertEquals(true, $cache->exists());
+		$this->assertEquals(false, $cache->isExpired());
+		$this->assertInstanceOf('\PSX\Cache\Item', $cache->get());
+		$this->assertEquals('foobar', $cache->get()->getContent());
 		$this->assertEquals('foobar', $content);
+
+		// check whether multiple load calls return the same result
+		$this->assertEquals('foobar', $cache->load());
+
+		$cache->remove();
+
+		$content = $cache->load();
+
+		$this->assertEquals(md5('[key]'), $cache->getKey());
+		$this->assertEquals(0, $cache->getExpire());
+		$this->assertEquals(true, $cache->isEnabled());
+		$this->assertEquals(false, $cache->exists());
+		$this->assertEquals(true, $cache->isExpired());
+		$this->assertEquals(null, $cache->get());
+		$this->assertEquals(false, $content);
+	}
+
+	protected function checkLimitedCache(Cache $cache)
+	{
+		$cache->remove();
+
+		$this->assertEquals(md5('[key]'), $cache->getKey());
+		$this->assertEquals(2, $cache->getExpire());
+		$this->assertEquals(true, $cache->isEnabled());
+		$this->assertEquals(false, $cache->exists());
+		$this->assertEquals(true, $cache->isExpired());
+		$this->assertEquals(null, $cache->get());
+
+		$content = $cache->load();
+
+		$this->assertEquals(md5('[key]'), $cache->getKey());
+		$this->assertEquals(2, $cache->getExpire());
+		$this->assertEquals(true, $cache->isEnabled());
+		$this->assertEquals(false, $cache->exists());
+		$this->assertEquals(true, $cache->isExpired());
+		$this->assertEquals(null, $cache->get());
+		$this->assertEquals(false, $content);
+
+		$cache->write('foobar');
+
+		$content = $cache->load();
+
+		$this->assertEquals(md5('[key]'), $cache->getKey());
+		$this->assertEquals(2, $cache->getExpire());
+		$this->assertEquals(true, $cache->isEnabled());
+		$this->assertEquals(true, $cache->exists());
+		$this->assertEquals(false, $cache->isExpired());
+		$this->assertInstanceOf('\PSX\Cache\Item', $cache->get());
+		$this->assertEquals('foobar', $cache->get()->getContent());
+		$this->assertEquals('foobar', $content);
+
+		// check whether multiple load calls return the same result
+		$this->assertEquals('foobar', $cache->load());
 
 		sleep(3); // wait 2 seconds
 
 		$content = $cache->load();
 
+		$this->assertEquals(md5('[key]'), $cache->getKey());
+		$this->assertEquals(2, $cache->getExpire());
+		$this->assertEquals(true, $cache->isEnabled());
+		$this->assertEquals(true, $cache->exists());
+		$this->assertEquals(true, $cache->isExpired());
+		$this->assertInstanceOf('\PSX\Cache\Item', $cache->get());
+		$this->assertEquals('foobar', $cache->get()->getContent());
+		$this->assertEquals(false, $content);
+	}
+
+	protected function checkDisabledCache(Cache $cache)
+	{
+		// remove
+		$cache->remove();
+		$cache->setEnabled(false);
+
+		$this->assertEquals(md5('[key]'), $cache->getKey());
+		$this->assertEquals(0, $cache->getExpire());
+		$this->assertEquals(false, $cache->isEnabled());
+		$this->assertEquals(false, $cache->exists());
+		$this->assertEquals(true, $cache->isExpired());
+		$this->assertEquals(null, $cache->get());
+
+		$content = $cache->load();
+
+		$this->assertEquals(md5('[key]'), $cache->getKey());
+		$this->assertEquals(0, $cache->getExpire());
+		$this->assertEquals(false, $cache->isEnabled());
+		$this->assertEquals(false, $cache->exists());
+		$this->assertEquals(true, $cache->isExpired());
+		$this->assertEquals(null, $cache->get());
+		$this->assertEquals(false, $content);
+
+		$cache->write('foobar');
+
+		$content = $cache->load();
+
+		$this->assertEquals(md5('[key]'), $cache->getKey());
+		$this->assertEquals(0, $cache->getExpire());
+		$this->assertEquals(false, $cache->isEnabled());
+		$this->assertEquals(false, $cache->exists());
+		$this->assertEquals(true, $cache->isExpired());
+		$this->assertEquals(null, $cache->get());
+		$this->assertEquals(false, $content);
+
+		// check whether multiple load calls return the same result
+		$this->assertEquals(false, $cache->load());
+
+		$cache->remove();
+
+		$content = $cache->load();
+
+		$this->assertEquals(md5('[key]'), $cache->getKey());
+		$this->assertEquals(0, $cache->getExpire());
+		$this->assertEquals(false, $cache->isEnabled());
+		$this->assertEquals(false, $cache->exists());
+		$this->assertEquals(true, $cache->isExpired());
+		$this->assertEquals(null, $cache->get());
 		$this->assertEquals(false, $content);
 	}
 }

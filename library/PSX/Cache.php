@@ -57,28 +57,35 @@ class Cache
 	 *
 	 * @var string
 	 */
-	public $key;
+	protected $key;
 
 	/**
 	 * The expire time of the cache in seconds
 	 *
 	 * @var integer
 	 */
-	public $expire;
+	protected $expire;
 
 	/**
 	 * Whether to write the cache or not
 	 *
 	 * @var boolean
 	 */
-	public $enabled;
+	protected $enabled;
 
 	/**
 	 * The handler for the class
 	 *
 	 * @var PSX\Cache\HandlerInterface
 	 */
-	private $handler;
+	protected $handler;
+
+	/**
+	 * The cache item
+	 *
+	 * @var PSX\Cache\Item
+	 */
+	protected $item;
 
 	/**
 	 * To create an cache object we need an $key wich identifies the cache. The
@@ -113,6 +120,21 @@ class Cache
 		$this->enabled = true;
 	}
 
+	public function getKey()
+	{
+		return $this->key;
+	}
+
+	public function getExpire()
+	{
+		return $this->expire;
+	}
+
+	public function isEnabled()
+	{
+		return $this->enabled;
+	}
+
 	public function setEnabled($enabled)
 	{
 		$this->enabled = (boolean) $enabled;
@@ -126,22 +148,76 @@ class Cache
 	 */
 	public function load()
 	{
-		if($this->enabled && ($item = $this->handler->load($this->key)))
+		if($this->enabled && $this->exists() && !$this->isExpired())
 		{
-			if($item instanceof Item)
-			{
-				if($this->expire > 0 && $item->getTime() !== null && (time() - $item->getTime()) > $this->expire)
-				{
-					return false;
-				}
-				else
-				{
-					return $item->getContent();
-				}
-			}
+			return $this->get()->getContent();
 		}
 
 		return false;
+	}
+
+	/**
+	 * Returns whether the cache item is expired. Note if the underlying cache
+	 * item does not exist it is also expired
+	 *
+	 * @return boolean
+	 */
+	public function isExpired()
+	{
+		if($this->exists())
+		{
+			if($this->expire > 0 && $this->get()->getTime() !== null && (time() - $this->get()->getTime()) > $this->expire)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Returns whether an cache exists
+	 *
+	 * @return boolean
+	 */
+	public function exists()
+	{
+		return $this->get() instanceof Item;
+	}
+
+	/**
+	 * Returns the cache item or null if not available. The cache item contains
+	 * the cache content and time and is independent from the underlying cache
+	 * handler
+	 *
+	 * @return PSX\Cache\Item
+	 */
+	public function get()
+	{
+		if($this->item === null)
+		{
+			$item = $this->handler->load($this->key);
+
+			if($item instanceof Item)
+			{
+				$this->item = $item;
+			}
+		}
+
+		return $this->item;
+	}
+
+	/**
+	 * Removes the internal cache wich is present if you call the load method so
+	 * you can reload the cache item
+	 */
+	public function reset()
+	{
+		$this->item = null;
 	}
 
 	/**
@@ -155,6 +231,8 @@ class Cache
 		if($this->enabled)
 		{
 			$this->handler->write($this->key, $content, $this->expire);
+
+			$this->reset();
 		}
 	}
 
@@ -168,6 +246,8 @@ class Cache
 		if($this->enabled)
 		{
 			$this->handler->remove($this->key);
+
+			$this->reset();
 		}
 	}
 }
