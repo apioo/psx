@@ -1,4 +1,7 @@
 
+0.6.1
+* Improved cache class
+
 0.6
 * Added dispatch class wich routes the request to the controller. Also applies
   the request and response filter wich are defined by the controller
