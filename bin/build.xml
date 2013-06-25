@@ -51,23 +51,6 @@
 	<target name="build-init" depends="git-clone,get-version,phpunit">
 	</target>
 
-	<target name="build-pear" depends="build-init">
-		<exec dir="${bin}" executable="php" failonerror="true">
-			<arg line="generate-pear.php ${version}" />
-		</exec>
-		<mkdir dir="${bin}/PSX-${version}" />
-		<copy todir="${bin}/PSX-${version}">
-			<fileset dir="${library}" />
-		</copy>
-		<copy todir="${bin}/PSX-${version}/tests">
-			<fileset dir="${tests}" />
-		</copy>
-		<copy file="${bin}/package.xml" tofile="${bin}/PSX-${version}/package.xml" />
-		<tar destfile="${bin}/PSX-${version}.tar" basedir="${bin}/PSX-${version}" />
-		<gzip destfile="${bin}/PSX-${version}.tgz" src="${bin}/PSX-${version}.tar" />
-		<delete file="${bin}/PSX-${version}.tar" />
-	</target>
-
 	<target name="build-phar" depends="build-init">
 		<exec dir="${bin}" executable="php" failonerror="true">
 			<arg line="generate-phar.php ${version}" />
@@ -85,7 +68,7 @@
 		<delete dir="${build}" />
 	</target>
 
-	<target name="build-all" depends="clean,build-pear,build-phar,clean-git,build-release" />
+	<target name="build-all" depends="clean,build-phar,clean-git,build-release" />
 
 	<!-- docs -->
 	<target name="build-doc" depends="clean-doc,manual-doc,api-doc" />
