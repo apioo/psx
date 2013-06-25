@@ -58,7 +58,7 @@ class DigestAccessAuthentication implements RequestFilterInterface
 	/**
 	 * The ha1Callback should return "md5([username]:[realm]:[pw])" wich is then
 	 * used to compare the response from the client. If its successful the 
-	 * onSuccess callback is called else the onFailure. Of the Authorization 
+	 * onSuccess callback is called else the onFailure. If the Authorization 
 	 * header is missing the onMissong callback is called. The default behavior
 	 * is to store the nonce and opaque in the session but you can overwrite 
 	 * that by providing a nonce and opaque in the constructor and overwrite the
