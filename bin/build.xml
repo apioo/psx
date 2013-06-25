@@ -21,8 +21,8 @@
 		<delete dir="${build}/bin" />
 		<delete dir="${build}/tests" />
 		<delete file="${build}/.travis.yml" />
-		<delete file="${build}/composer.json" />
 		<delete file="${build}/phpunit.xml" />
+		<delete file="${build}/todo.txt" />
 	</target>
 
 	<target name="get-version">
@@ -57,6 +57,33 @@
 		</exec>
 	</target>
 
+	<!-- docs -->
+	<target name="build-doc" depends="clean-doc,manual-doc,api-doc" />
+
+	<target name="clean-doc">
+		<delete>
+			<fileset file="${build}/doc/manual.html" />
+			<fileset dir="${build}/doc/api" includes="**/*.html" erroronmissingdir="false" />
+		</delete>
+	</target>
+
+	<target name="manual-doc">
+		<xslt basedir="${build}/doc/docbook" destdir="${build}/doc" includes="**/*.xml" extension=".html" style="${build}/doc/psx.xsl">
+			<factory name="net.sf.saxon.TransformerFactoryImpl" />
+		</xslt>
+		<delete dir="${build}/doc/docbook" />
+		<delete dir="${build}/doc/img" />
+		<delete dir="${build}/doc/xsl" />
+		<delete file="${build}/doc/psx.xsl" />
+	</target>
+
+	<target name="api-doc">
+		<exec dir="${build}" executable="apigen.bat" failonerror="true">
+			<arg line="-s ${build}/library -d ${build}/doc/api" />
+		</exec>
+	</target>
+
+	<!-- compress -->
 	<target name="build-release" depends="build-init">
 		<tar destfile="${bin}/psx_${version}.tar" basedir="${build}" />
 		<gzip destfile="${bin}/psx_${version}.tar.gz" src="${bin}/psx_${version}.tar" />
@@ -64,31 +91,11 @@
 		<zip destfile="${bin}/psx_${version}.zip" basedir="${build}" />
 	</target>
 
+	<!-- delete build folder -->
 	<target name="clean">
 		<delete dir="${build}" />
 	</target>
 
-	<target name="build-all" depends="clean,build-phar,clean-git,build-release" />
-
-	<!-- docs -->
-	<target name="build-doc" depends="clean-doc,manual-doc,api-doc" />
-
-	<target name="clean-doc">
-		<delete>
-			<fileset dir="${doc}/api" includes="**/*.html" />
-		</delete>
-	</target>
-
-	<target name="manual-doc">
-		<xslt basedir="${doc}/docbook" destdir="${doc}" includes="**/*.xml" extension=".html" style="${doc}/psx.xsl">
-			<factory name="net.sf.saxon.TransformerFactoryImpl" />
-		</xslt>
-	</target>
-
-	<target name="api-doc">
-		<exec dir="${build}" executable="apigen.bat" failonerror="true">
-			<arg line="-s ${library} -d ${doc}/api" />
-		</exec>
-	</target>
+	<target name="build-all" depends="clean,build-phar,build-doc,clean-git,build-release" />
 
 </project>
