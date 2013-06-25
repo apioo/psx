@@ -67,7 +67,7 @@ class Element extends TokenAbstract
 
 	public function getAttribute($key)
 	{
-		return isset($this->attr[$key]) ? $this->attr[$key] : false;
+		return isset($this->attr[$key]) ? htmlspecialchars_decode($this->attr[$key]) : false;
 	}
 
 	public function setAttribute($key, $value)
