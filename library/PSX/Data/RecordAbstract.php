@@ -131,7 +131,7 @@ abstract class RecordAbstract implements RecordInterface, Serializable
 
 	public function serialize()
 	{
-		$vars = get_class_vars(get_class($this));
+		$vars = get_object_vars($this);
 		$data = array();
 
 		foreach($vars as $k => $v)
