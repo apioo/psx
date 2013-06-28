@@ -11,32 +11,35 @@
 
 	<chapter id="introduction">
 		<title>Introduction</title>
-		<para>PSX is a framework written in PHP to create RESTful APIs. It helps you building clean URLs serving web standard 
-		formats like JSON, XML, Atom and RSS. At the core PSX is build of three parts. A handler system (similar to repositories 
-		in doctrine) wich abstracts away the actual SQL queries from the domain logic. An routing system wich executes the 
-		fitting controller method depending on	the location of the controller and the annotation of the method. And an flexible 
-		data system to convert data records from the database into different formats like JSON, XML, Atom and RSS. PSX uses a 
-		lightweight DI container to handle dependencies (but is also compatible with the symfony DI container). The controller 
-		can return request or response filter wich can react or modify the HTTP request or response. PSX offers some basic 
-		request filter to handle i.e. Basic or Oauth authentication. In addition PSX offers some cool components to use and 
-		implement OAuth, OpenID, Opengraph, Opensocial, Opensearch, PubSubHubbub, WebFinger, Atom, and RSS. At the 
-		<ulink url="http://example.phpsx.org/">example</ulink> page you can see sample implementations using various PSX classes.</para>
+		<para>PSX is a framework written in PHP to create RESTful APIs. It helps you building clean URLs serving web 
+		standard formats like JSON, XML, Atom and RSS. At the core PSX is build of three parts. A handler system 
+		(similar to repositories in doctrine) wich abstracts away the actual SQL queries from the domain logic. An 
+		routing system wich executes the fitting controller method depending on	the location of the controller and the 
+		annotation of the method. And an flexible data system to convert data records from the database into different 
+		formats like JSON, XML, Atom and RSS. PSX uses a lightweight DI container to handle dependencies (but is also 
+		compatible with the symfony DI container). The controller can return request or response filter wich can react 
+		or modify the HTTP request or response. PSX offers some basic request filter to handle i.e. Basic or Oauth 
+		authentication. In addition PSX offers some cool components to use and implement OAuth, OpenID, Opengraph, 
+		Opensocial, Opensearch, PubSubHubbub, WebFinger, Atom, and RSS. At the <ulink url="http://example.phpsx.org/">
+		example</ulink> page you can see sample implementations using various PSX classes.</para>
 	</chapter>
 
 	<chapter id="installation">
 		<title>Installation</title>
-		<para>If you want use PSX fully including the routing mechanism you have to download the framework manually because 
-		the requests must go to the index.php. If you only want use specific classes of PSX you can install it via Composer.</para>
+		<para>If you want use PSX fully including the routing mechanism you have to download the framework manually 
+		because the requests must go to the index.php. If you only want use specific classes of PSX you can install it 
+		via Composer.</para>
 		<sect1 id="installation-manual">
 			<title>Manual</title>
-			<para>You can download the current version of psx from the offical website <ulink url="http://phpsx.org">phpsx.org</ulink>.
-			Put the folder on your web or local server. Goto http://host/path/to/psx/public and if you see a website with the title
-			"Template sample" psx is running successfully.</para>
+			<para>You can download the current version of psx from the offical website <ulink url="http://phpsx.org">
+			phpsx.org</ulink>. Put the folder on your web or local server. Goto http://host/path/to/psx/public and if 
+			you see a website with the title "Template sample" psx is running successfully.</para>
 		</sect1>
 		<sect1 id="installation-composer">
 			<title>Composer</title>
-			<para>If you use classes of PSX in your application you can add PSX as dependency in your composer.json file. The
-			package name is psx/psx. More informations at <ulink url="http://packagist.org/packages/psx/psx">packagist.org</ulink>.</para>
+			<para>If you use classes of PSX in your application you can add PSX as dependency in your composer.json 
+			file. The package name is psx/psx. More informations at <ulink url="http://packagist.org/packages/psx/psx">
+			packagist.org</ulink>.</para>
 		</sect1>
 	</chapter>
 
@@ -59,7 +62,8 @@
 			</row>
 			<row>
 				<entry>psx_dispatch</entry>
-				<entry>Where we get the input path normally index.php/. If you use .htaccess to redirect all requestst to the index.php you can also set this to ''.</entry>
+				<entry>Where we get the input path normally index.php/. If you use .htaccess to redirect all requestst 
+				to the index.php you can also set this to ''.</entry>
 			</row>
 			<row>
 				<entry>psx_timezone</entry>
@@ -67,7 +71,8 @@
 			</row>
 			<row>
 				<entry>psx_gzip</entry>
-				<entry>Whether to gzip the output of psx. The content gets only compressed if the browser support gzip.</entry>
+				<entry>Whether to gzip the output of psx. The content gets only compressed if the browser support 
+				gzip.</entry>
 			</row>
 			<row>
 				<entry>psx_debug</entry>
@@ -105,7 +110,8 @@
 			</row>
 			<row>
 				<entry>psx_path_library</entry>
-				<entry>The path to the library folder. If this is null the classes are loaded from the include_path</entry>
+				<entry>The path to the library folder. If this is null the classes are loaded from the 
+				include_path</entry>
 			</row>
 			<row>
 				<entry>psx_path_module</entry>
@@ -122,11 +128,12 @@
 
 	<chapter id="developing-restful-api">
 		<title>Developing a RESTful API</title>
-		<para>This is the main chapter of the manual wich explains step by step howto develop a RESTful API
-		based on PSX. In this example we create a simple news API where you can create and receive news.</para>
+		<para>This is the main chapter of the manual wich explains step by step howto develop a RESTful API based on 
+		PSX. In this example we create a simple news API where you can create and receive news.</para>
 		<sect1>
 			<title>Setting up the table</title>
-			<para>For our example we need a simple table called <property>news</property> where all records are stored.</para>
+			<para>For our example we need a simple table called <property>news</property> where all records are 
+			stored.</para>
 			<example>
 				<title><database>news</database> table</title>
 				<programlisting role="sql"><![CDATA[
@@ -143,8 +150,9 @@ CREATE TABLE IF NOT EXISTS `news` (
 		</sect1>
 		<sect1>
 			<title>Creating the record</title>
-			<para>The record represents an row from an database. If we post a news to the api endpoint this record is created
-			and the setter methods are called. This is the place where you have to validate the user data.</para>
+			<para>The record represents an row from an database. If we post a news to the api endpoint this record is 
+			created and the setter methods are called. This is the place where you have to validate the user 
+			data.</para>
 			<example>
 				<title>library/Test/News/Record.php</title>
 				<programlisting role="php"><![CDATA[
@@ -152,9 +160,10 @@ CREATE TABLE IF NOT EXISTS `news` (
 
 namespace Test\News;
 
-use PSX\Data\RecordAbstract;
+use DateTime;
+use PSX\Data\Record\TableAbstract;
 
-class Record extends RecordAbstract
+class Record extends TableAbstract
 {
 	protected $id;
 	protected $userId;
@@ -164,29 +173,44 @@ class Record extends RecordAbstract
 
 	protected $_date;
 
+	/**
+	 * @param integer $id
+	 */
 	public function setId($id)
 	{
 		$this->id = $id;
 	}
 
+	/**
+	 * @param integer $userId
+	 */
 	public function setUserId($userId)
 	{
 		$this->userId = $userId;
 	}
 
+	/**
+	 * @param string $title
+	 */
 	public function setTitle($title)
 	{
 		$this->title = $title;
 	}
 
+	/**
+	 * @param string $text
+	 */
 	public function setText($text)
 	{
 		$this->text = $text;
 	}
 
-	public function setDate($date)
+	/**
+	 * @param DateTime $date
+	 */
+	public function setDate(DateTime $date)
 	{
-		$this->date = $date;
+		$this->date = $date->format('Y-m-d H:i:s');
 	}
 
 	public function getDate()
@@ -204,11 +228,11 @@ class Record extends RecordAbstract
 		</sect1>
 		<sect1>
 			<title>Creating the handler</title>
-			<para>The handler is a concept similar to a repository in doctrine wich abstracts the sql queries
-			away from the controller. Instead of creating sql queries you should add "<methodname>getByFoo</methodname>" methods 
-			to the handler. The Handler is also responsible to create, update and delete an record. In our case
-			the default select methods wich are provided by the HandlerAbstract are sufficient for our api so we dont
-			have to add additional methods.</para>
+			<para>The handler is a concept similar to a repository in doctrine wich abstracts the sql queries away from 
+			the controller. Instead of creating sql queries you should add <methodname>getByFoo</methodname> methods to
+			the handler. The Handler is also responsible to create, update and delete an record. In our case the default
+			select methods wich are provided by the HandlerAbstract are sufficient for our api so we dont have to add 
+			additional methods.</para>
 			<example>
 				<title>library/Test/News/Handler.php</title>
 				<programlisting role="php"><![CDATA[
@@ -226,9 +250,10 @@ class Handler extends HandlerAbstract
 		</sect1>
 		<sect1>
 			<title>Creating the table</title>
-			<para>Note the key parts of PSX are the records and handler the table class wich we now create is only a helper
-			class for the handler in order to retrieve records from an mysql table via PDO. You are free to implement your own 
-			HandlerInterface and use an ORM like doctrine, simple SQL queries or any other system to CRUD records.</para>
+			<para>Note the key parts of PSX are the records and handler the table class wich we now create is only a 
+			helper class for the handler in order to retrieve records from an mysql table via PDO. You are free to 
+			implement your own HandlerInterface and use an ORM like doctrine, simple SQL queries or any other system to 
+			CRUD records.</para>
 			<para>The table represents an database table. It contains the table name wich columns are available and the 
 			relations to other tables. In this example we have no relation to another table but to give an example the
 			<methodname>getConnection</methodname> method is implemented</para>
@@ -274,12 +299,12 @@ class Table extends TableAbstract
 		</sect1>
 		<sect1>
 			<title>The API endpoint</title>
-			<para>We create a file called news.php in the module/api folder. This file can be
-			accessed via http://localhost/index.php/api/news. We define the <methodname>onLoad</methodname> method
-			wich is called when the module was loaded.</para>
-			<para>This is now our REST API endpoint where we can make <property>GET</property> and <property>POST</property>
-			requests. You can versioning your API by creating a folder structure i.e. put the news.php in the folder "v1"
-			and the endpoint url would be http://localhost/index.php/api/v1/news</para>
+			<para>We create a file called news.php in the module/api folder. This file can be accessed via 
+			http://localhost/index.php/api/news. We define the <methodname>onLoad</methodname> method wich is called 
+			when the module was loaded.</para>
+			<para>This is now our REST API endpoint where we can make <property>GET</property> and <property>POST
+			</property> requests. You can versioning your API by creating a folder structure i.e. put the news.php in 
+			the folder "v1" and the endpoint url would be http://localhost/index.php/api/v1/news</para>
 			<example>
 				<title>module/api/news.php</title>
 				<programlisting role="php"><![CDATA[
@@ -308,12 +333,12 @@ class news extends ApiAbstract
 			</example>
 			<sect2>
 				<title>Receiving</title>
-				<para>If someone makes an <property>GET</property> request to the endpoint we want return
-				the latest news. This method creates in general an <classname>PSX\Data\ResultSet</classname> object
-				containing multiple <classname>Example\News\Record</classname> objects. If we call the <methodname>setResponse</methodname>
-				method with the <classname>PSX\Data\ResultSet</classname> object the object is transformed
-				into the preferred format (wich was set either by the <property>GET</property> parameter "format"
-				or by the "Accept" header field).</para>
+				<para>If someone makes an <property>GET</property> request to the endpoint we want return the latest 
+				news. This method creates in general an <classname>PSX\Data\ResultSet</classname> object containing 
+				multiple <classname>Example\News\Record</classname> objects. If we call the <methodname>setResponse
+				</methodname> method with the <classname>PSX\Data\ResultSet</classname> object the object is transformed 
+				into the preferred format (wich was set either by the <property>GET</property> parameter "format" or by 
+				the "Accept" header field).</para>
 				<example>
 					<title>module/api/news.php (implement <methodname>getNews</methodname> method)</title>
 					<programlisting role="php"><![CDATA[
@@ -366,8 +391,8 @@ public function getSupportedFields()
 }
 					]]></programlisting>
 				</example>
-				<para>Because we want create <property>Atom</property> and <property>Rss</property> feeds we have to
-				set the writer config by overriding the method <methodname>setWriterConfig</methodname>.</para>
+				<para>Because we want create <property>Atom</property> and <property>Rss</property> feeds we have to set 
+				the writer config by overriding the method <methodname>setWriterConfig</methodname>.</para>
 				<example>
 					<title>module/api/news.php (implement <methodname>setWriterConfig</methodname> method)</title>
 					<programlisting role="php"><![CDATA[
@@ -398,11 +423,11 @@ protected function setWriterConfig(WriterResult $writer)
 }
 					]]></programlisting>
 				</example>
-				<para>Because we want that the record can be exported in <property>Atom</property> and <property>Rss</property> we have 
-				to specific the method <methodname>export</methodname> in the <classname>Example\News\Record</classname>. By default JSON 
-				and XML is supported.</para>
+				<para>Because we want that the record can be exported in <property>Atom</property> and <property>Rss
+				</property> we have to specific the method <methodname>export</methodname> in the <classname>
+				Example\News\Record</classname>. By default JSON and XML is supported.</para>
 				<example>
-					<title>library/Example/News/Record.php (implement <methodname>export</methodname> method)</title>
+					<title>library/Test/News/Record.php (implement <methodname>export</methodname> method)</title>
 					<programlisting role="php"><![CDATA[
 public function export(WriterResult $result)
 {
@@ -480,9 +505,9 @@ Content-Type: application/xml
 			</sect2>
 			<sect2>
 				<title>Inserting</title>
-				<para>If someone makes a <property>POST</property> request we want insert the news in
-				the table. We create a new <classname>Example\News\Record</classname> object and import the
-				request data into the record.</para>
+				<para>If someone makes a <property>POST</property> request we want insert the news in the table. We 
+				create a new <classname>Example\News\Record</classname> object and import the request data into the 
+				record.</para>
 				<example>
 					<title>module/api/news.php (implement <methodname>insertNews</methodname> method)</title>
 					<programlisting role="php"><![CDATA[
@@ -558,27 +583,25 @@ Content-Type: application/xml
 		</sect1>
 		<sect1>
 			<title>Conclusion</title>
-			<para>This example has shown you howto build an API with PSX wich serves content
-			in <property>Atom</property>, <property>RSS</property>, <property>Json</property> and
-			<property>XML</property> on an <property>GET</property> request. Also it is possible to
-			insert new records with a <property>POST</property> request. You can specify the fields
-			wich are selected with the parameter fields i.e. "fields=id,title" to select only
-			the id and title.</para>
+			<para>This example has shown you howto build an API with PSX wich serves content in <property>Atom
+			</property>, <property>RSS</property>, <property>Json</property> and <property>XML</property> on an 
+			<property>GET</property> request. Also it is possible to insert new records with a <property>POST</property> 
+			request. You can specify the fields wich are selected with the parameter fields i.e. "fields=id,title" to 
+			select only the id and title.</para>
 		</sect1>
 	</chapter>
 
 	<chapter id="api-authorization">
 		<title>API authorization</title>
-		<para>It is often the case that you want that only registered users can POST new entries to 
-		the API endpoint. In this case the user has to authorize before submitting a new record. PSX
-		offers several authorization methods for your API. In this chapter we will look at different 
-		authentication methods and howto implement them.</para>
+		<para>It is often the case that you want that only registered users can POST new entries to the API endpoint. In 
+		this case the user has to authorize before submitting a new record. PSX offers several authorization methods for 
+		your API. In this chapter we will look at different authentication methods and howto implement them.</para>
 		<sect1>
 			<title>Basic authentication</title>
-			<para>Basic authentication is the most simple authentication method where a user provides
-			an username and password in the header. Note if you use basic authentication you should
-			use https since the username and password is transported in plaintext over the wire.
-			Add the following method to the news API in order to add basic authentication.</para>
+			<para>Basic authentication is the most simple authentication method where a user provides an username and 
+			password in the header. Note if you use basic authentication you should use https since the username and 
+			password is transported in plaintext over the wire. Add the following method to the news API in order to add 
+			basic authentication.</para>
 			<example>
 				<title>module/api/news.php (add basic authentication)</title>
 				<programlisting role="php"><![CDATA[
@@ -643,10 +666,10 @@ public function getRequestFilter()
 
 	<chapter id="oauth-based-api-authorization">
 		<title>Oauth implementation</title>
-		<para>If you want offer an Oauth endpoint for applications PSX offers some classes to implement
-		the Oauth 1.0 specification. In the following section we will implement a bas Oauth endpoint
-		where a client can get tokens and access an protected API. More informations about Oauth at
-		http://tools.ietf.org/html/rfc5849.</para>
+		<para>If you want offer an Oauth endpoint for applications PSX offers some classes to implement the Oauth 1.0 
+		specification. In the following section we will implement a basic Oauth endpoint where a client can get tokens 
+		and access an protected API. More informations about Oauth at <ulink url="http://tools.ietf.org/html/rfc5849">
+		rfc5849</ulink>.</para>
 		<sect1>
 			<title>Setting up the table</title>
 			<para>In order to store the Oauth requests we use the following table</para>
@@ -676,8 +699,8 @@ CREATE TABLE IF NOT EXISTS `request` (
 		</sect1>
 		<sect1>
 			<title>Oauth endpoints</title>
-			<para>In order to enable Oauth authentication we have to implement the following endpoints like
-			defined in the specification.</para>
+			<para>In order to enable Oauth authentication we have to implement the following endpoints like defined in 
+			the specification.</para>
 			<informaltable>
 			<tgroup cols="2">
 			<thead>
@@ -784,8 +807,8 @@ class request extends RequestAbstract
 			</sect2>
 			<sect2 id="resource-owner-authorization">
 				<title>Resource Owner Authorization</title>
-				<para>If the Oauth client has obtained the temporary credential the user will be redirected to
-				the <property>Resource Owner Authorization</property> endpoint.</para>
+				<para>If the Oauth client has obtained the temporary credential the user will be redirected to the 
+				<property>Resource Owner Authorization</property> endpoint.</para>
 				<example>
 					<title>module/api/auth.php</title>
 					<programlisting role="php"><![CDATA[
@@ -989,8 +1012,8 @@ class access extends AccessAbstract
 		</sect1>
 		<sect1>
 			<title>Protect the API endpoint</title>
-			<para>Now we can protect our API like defined in the "API authorization" chapter. Here
-			an simple implementation.</para>
+			<para>Now we can protect our API like defined in the "API authorization" chapter. Here an simple 
+			implementation.</para>
 			<example>
 				<title>module/api/news.php (add oauth authentication)</title>
 				<programlisting role="php"><![CDATA[
@@ -1070,20 +1093,186 @@ Content-Type: application/json
 		<sect1>
 			<title>Conclusion</title>
 			<para>This was an basic example howto create an Oauth endpoint and to protect your API.</para>
-			<para>Note: This is an example implementation to show you the basic functionality howto use
-			the Oauth classes of PSX. Because of simplicity we use only a single consumer key and consumer secret
-			normally you would save those in a table and generate per application a consumer key and secret. Please
-			see the <ulink url="http://amun.phpsx.org">Amun</ulink> project for a real implementation of the OAuth
-			classes.</para>
+			<para>Note: This is an example implementation to show you the basic functionality howto use the Oauth 
+			classes of PSX. Because of simplicity we use only a single consumer key and consumer secret normally you 
+			would save those in a table and generate per application a consumer key and secret. Please see the 
+			<ulink url="http://amun.phpsx.org">Amun</ulink> project for a real implementation of the OAuth classes.
+			</para>
 		</sect1>
+	</chapter>
+
+	<chapter id="record">
+		<title>Import data into records</title>
+		<para>This chapter explains more detailed howto define and import data into records. As example we use the 
+		following <property>News</property> and <property>User</property> records.</para>
+		<example>
+			<title>Example news record</title>
+			<programlisting role="php"><![CDATA[
+<?php
+
+namespace Test\News;
+
+use DateTime;
+use Test\User;
+use PSX\Data\RecordAbstract;
+
+class News extends RecordAbstract
+{
+	protected $id;
+	protected $author;
+	protected $to;
+	protected $title;
+	protected $date;
+
+	public function getName()
+	{
+		return 'news';
+	}
+
+	public function getFields()
+	{
+		return array(
+			'id'     => $this->id,
+			'author' => $this->author,
+			'to'     => $this->to,
+			'title'  => $this->title,
+			'date'   => $this->date,
+		);
+	}
+
+	/**
+	 * @param integer $id
+	 */
+	public function setId($id)
+	{
+		$this->id = $id;
+	}
+
+	/**
+	 * @param \Test\User\Record $user
+	 */
+	public function setAuthor(User\Record $author)
+	{
+		$this->author = $author;
+	}
+
+	/**
+	 * @param array<\Test\User\Record> $user
+	 */
+	public function setTo(array $to)
+	{
+		$this->to = $to;
+	}
+
+	/**
+	 * @param string $title
+	 */
+	public function setTitle($title)
+	{
+		$this->title = $title;
+	}
+
+	/**
+	 * @param DateTime $date
+	 */
+	public function setDate(DateTime $date)
+	{
+		$this->date = $date;
+	}
+}
+			]]></programlisting>
+		</example>
+		<example>
+			<title>Example user record</title>
+			<programlisting role="php"><![CDATA[
+<?php
+
+namespace Test\User;
+
+use PSX\Data\RecordAbstract;
+
+class User extends RecordAbstract
+{
+	protected $id;
+	protected $name;
+
+	public function getName()
+	{
+		return 'user';
+	}
+
+	public function getFields()
+	{
+		return array(
+			'id'   => $this->id,
+			'name' => $this->name,
+		);
+	}
+
+	/**
+	 * @param integer $id
+	 */
+	public function setId($id)
+	{
+		$this->id = $id;
+	}
+
+	/**
+	 * @param string $name
+	 */
+	public function setName($name)
+	{
+		$this->name = $name;
+	}
+}
+			]]></programlisting>
+		</example>
+		<para>In abstract a record is a collection of key value pairs. The key is an string and the value can be either 
+		an scalar value or an object itself. The <methodname>getFields</methodname> method returns an array 
+		representation of the record.</para>
+		<para>If you import an request into the record the annotations of the setter methods are parsed. That means
+		if your param is an integer PSX will cast the value to integer. If the parameter is an class name then an object 
+		is created of this class. If the class is an instance of PSX\Data\RecordInterface the data is imported else 
+		the value is passed to the constructor. So in the example news record at the <methodname>setDate
+		</methodname> method the value is passed to the DateTime contructor. It is also possible to accept an array
+		of variables or class names see the <methodname>setTo</methodname> method. In order to create a new news 
+		record we would send the following JSON or XML data.</para>
+		<programlisting role="php"><![CDATA[
+{
+	author: {
+		name: "foo"
+	},
+	to: [{
+		name: "bar"
+	},{
+		name: "test"
+	}]
+	title: "foo",
+	date: "2013-06-28 18:50:00",
+}
+		]]></programlisting>
+		<programlisting role="php"><![CDATA[
+<news>
+	<author>
+		<name>foo</name>
+	</author>
+	<to>
+		<name>bar</name>
+	</to>
+	<to>
+		<name>test</name>
+	</to>
+	<title>foo</title>
+	<date>2013-06-28 18:50:00</date>
+</news>
+		]]></programlisting>
 	</chapter>
 
 	<chapter id="help">
 		<title>Help</title>
-		<para>Because PSX is in an early stage the manual is not complete. I appreciate every help in making
-		this documentation better. The documentation is writte in XML against the docbook
-		specification. You can checkout the current version of this manual via SVN. The XML file is in
-		doc/docbook/manual.xml. If you have made some changes that you want commit please contact me.</para>
+		<para>Because PSX is in an early stage the manual is not complete. We appreciate every help in making this 
+		documentation better. The documentation is writte in XML against the docbook specification. You can checkout the 
+		current version of this manual via GIT. The XML file is in doc/docbook/manual.xml.</para>
 		<orderedlist numeration="upperroman">
 		<title>Further reading about PSX</title>
 		<listitem>

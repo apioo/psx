@@ -5,4 +5,5 @@
 	<xsl:param name="chapter.autolabel" select="1" />
 	<xsl:param name="appendix.autolabel" select="1" />
 	<xsl:param name="section.label.includes.component.label" select="1" />
+	<xsl:param name="table.borders.with.css" select="1" />
 </xsl:stylesheet>
