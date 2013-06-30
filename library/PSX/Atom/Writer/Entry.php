@@ -25,6 +25,7 @@ namespace PSX\Atom\Writer;
 
 use DateTime;
 use PSX\Atom\Writer as Atom;
+use PSX\Data\RecordInterface;
 use PSX\Xml\Writer as Xml;
 use PSX\Xml\WriterInterface;
 use XMLWriter;
