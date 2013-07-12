@@ -23,7 +23,7 @@
 
 namespace PSX;
 
-use PSX\Http;
+use DOMDocument;
 use PSX\Http\Request;
 use PSX\Http\Response;
 
@@ -76,6 +76,7 @@ class Dispatch extends \Exception
 			}
 
 			$accept  = Base::getRequestHeader('Accept');
+			$with    = Base::getRequestHeader('X-Requested-With');
 			$message = $e->getMessage();
 			$trace   = '';
 
@@ -85,22 +86,78 @@ class Dispatch extends \Exception
 				$trace   = $e->getTraceAsString();
 			}
 
+			// in the best case we have an clean exception where no output was
+			// made before if output was already made we append the output to 
+			// the error message to save the error context
+			$context = ob_get_contents();
+
 			// build response
 			if(PHP_SAPI == 'cli')
 			{
+				if(!empty($context))
+				{
+					$message = $context . "\n" . $message;
+				}
+
 				$body = $message . "\n" . $trace;
+			}
+			else if($with == 'XMLHttpRequest' || (strpos($accept, 'text/json') !== false || strpos($accept, 'application/json') !== false))
+			{
+				Base::setResponseCode($code);
+				header('Content-type: application/json');
+
+				if(!empty($context))
+				{
+					$message = $context . "\n" . $message;
+				}
+
+				$body = json_encode(array('success' => false, 'message' => $message, 'trace' => $trace));
 			}
 			else if(strpos($accept, 'text/html') !== false)
 			{
 				Base::setResponseCode($code);
 				header('Content-type: text/html');
 
+				if(!empty($context))
+				{
+					$message = htmlspecialchars($context) . "\n" . $message;
+				}
+
 				$body = $this->getErrorTemplate($message, $trace);
+			}
+			else if(strpos($accept, 'text/xml') !== false || strpos($accept, 'application/xml') !== false)
+			{
+				Base::setResponseCode($code);
+				header('Content-type: application/xml');
+
+				if(!empty($context))
+				{
+					$message = $context . "\n" . $message;
+				}
+
+				$dom = new DOMDocument();
+
+				$response = $dom->createElement('response');
+				$response->appendChild($dom->createElement('success', 'false'));
+				$response->appendChild($dom->createElement('message', $message));
+				$response->appendChild($dom->createElement('trace', $trace));
+
+				$dom->appendChild($response);
+
+				$body = $dom->saveXML();
 			}
 			else
 			{
+				// sorry we have no idea what content to serve so hopefully 
+				// plain text is understandable
+
 				Base::setResponseCode($code);
 				header('Content-type: text/plain');
+
+				if(!empty($context))
+				{
+					$message = $context . "\n" . $message;
+				}
 
 				$body = $message . "\n" . $trace;
 			}
@@ -141,6 +198,15 @@ class Dispatch extends \Exception
 
 	protected function getErrorTemplate($message, $trace)
 	{
+		// set default values
+		$config = $this->config;
+		$self   = isset($_SERVER['QUERY_STRING']) && !empty($_SERVER['QUERY_STRING']) ? $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING'] : $_SERVER['PHP_SELF'];
+		$url    = $config['psx_url'] . '/' . $config['psx_dispatch'];
+		$dir    = PSX_PATH_TEMPLATE . '/' . $config['psx_template_dir'];
+		$base   = parse_url($config['psx_url'], PHP_URL_PATH);
+		$render = round(microtime(true) - $GLOBALS['psx_benchmark'], 6);
+
+		// get template
 		ob_start();
 
 		include PSX_PATH_TEMPLATE . '/' . $this->config['psx_template_dir'] . '/error.tpl';
