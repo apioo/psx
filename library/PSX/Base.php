@@ -36,7 +36,7 @@ use UnexpectedValueException;
  */
 class Base
 {
-	const VERSION = '0.6.1';
+	const VERSION = '0.6.2';
 
 	/**
 	 * The current request method
@@ -202,12 +202,22 @@ class Base
 	{
 		if($this->request === null)
 		{
-			$url    = new Url($this->self);
-			$method = self::getRequestMethod();
-			$header = self::getRequestHeader();
-			$body   = self::getRawInput();
+			if(PHP_SAPI == 'cli')
+			{
+				$path   = isset($_SERVER['argv'][1]) ? '/' . ltrim($_SERVER['argv'][1], '/') : '/';
+				$url    = new Url($this->self . $path);
 
-			$this->request = new Request($url, $method, $header, $body);
+				$this->request = new Request($url, 'GET');
+			}
+			else
+			{
+				$url    = new Url($this->self);
+				$method = self::getRequestMethod();
+				$header = self::getRequestHeader();
+				$body   = self::getRawInput();
+
+				$this->request = new Request($url, $method, $header, $body);
+			}
 		}
 
 		return $this->request;
