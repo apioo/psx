@@ -23,6 +23,8 @@
 
 namespace PSX;
 
+use PSX\Data\NotFoundException;
+use PSX\Data\ReaderFactory;
 use PSX\Dependency;
 use PSX\Loader\Location;
 
@@ -42,6 +44,9 @@ abstract class ModuleAbstract
 
 	protected $base;
 	protected $config;
+
+	protected $parameter;
+	protected $body;
 
 	public function __construct($container, Location $location, $basePath, array $uriFragments)
 	{
@@ -166,6 +171,26 @@ abstract class ModuleAbstract
 		return $this->config;
 	}
 
+	/**
+	 * Sets the http response code
+	 *
+	 * @param integer $code
+	 */
+	protected function setResponseCode($code)
+	{
+		Base::setResponseCode($code);
+	}
+
+	/**
+	 * Forwards the request to another controller
+	 *
+	 * @param string $path
+	 */
+	protected function forward($path)
+	{
+		$this->container->get('loader')->load($path, $this->base->getRequest());
+	}
+
 	protected function getMethod()
 	{
 		return Base::getRequestMethod();
@@ -183,17 +208,68 @@ abstract class ModuleAbstract
 
 	protected function getParameter()
 	{
-		return $this->container->get('inputGet');
+		if($this->parameter === null)
+		{
+			$parameter = $this->getUrl()->getParams();
+
+			$this->parameter = new Input($parameter, $this->container->get('validate'));
+		}
+
+		return $this->parameter;
 	}
 
-	protected function getBody()
+	/**
+	 * Returns the result data from the reader wich is in most cases an array or 
+	 * an SimpleXMLElement if the Content-Type is application/xml
+	 *
+	 * @param integer $readerType
+	 * @param boolean $returnResult
+	 * @return mixed
+	 */
+	protected function getBody($readerType = null)
 	{
-		return $this->container->get('inputPost');
+		if($this->body === null)
+		{
+			try
+			{
+				$this->body = $this->getRequest($readerType)->getData();
+			}
+			catch(NotFoundException $e)
+			{
+			}
+		}
+
+		return $this->body;
 	}
 
-	protected function setResponseCode($code)
+	/**
+	 * Returns an PSX\Data\ReaderResult object depending of the $readerType.
+	 * If the reader type is not set the content-type of the request is used to 
+	 * get the best fitting reader. You can import the reader result into an 
+	 * record with the import method
+	 *
+	 * @param integer $readerType
+	 * @return PSX\Data\ReaderResult
+	 */
+	protected function getRequest($readerType = null)
 	{
-		Base::setResponseCode($code);
+		// find best reader type
+		if($readerType === null)
+		{
+			$contentType = Base::getRequestHeader('Content-Type');
+			$readerType  = ReaderFactory::getReaderTypeByContentType($contentType);
+		}
+
+		// get reader
+		$reader = ReaderFactory::getReader($readerType);
+
+		if($reader === null)
+		{
+			throw new NotFoundException('Could not find fitting data reader');
+		}
+
+		// try to read request
+		return $reader->read($this->base->getRequest());
 	}
 }
 

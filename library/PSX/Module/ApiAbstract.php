@@ -25,7 +25,6 @@ namespace PSX\Module;
 
 use PSX\Base;
 use PSX\Data\NotFoundException;
-use PSX\Data\ReaderFactory;
 use PSX\Data\RecordInterface;
 use PSX\Data\Writer;
 use PSX\Data\WriterFactory;
@@ -211,38 +210,6 @@ abstract class ApiAbstract extends ModuleAbstract
 		}
 
 		return $params;
-	}
-
-	/**
-	 * Returns an PSX\Data\ReaderResult object depending of the $reader string.
-	 * If the reader type is not set the content-type of the request is used to 
-	 * get the best fitting reader. You can use the method import of an record 
-	 * to transform the request into an record
-	 *
-	 * @param integer $readerType
-	 * @return PSX\Data\ReaderResult
-	 */
-	protected function getRequest($readerType = null)
-	{
-		// find best reader type
-		if($readerType === null)
-		{
-			$contentType = Base::getRequestHeader('Content-Type');
-			$readerType  = ReaderFactory::getReaderTypeByContentType($contentType);
-		}
-
-		// get reader
-		$reader = ReaderFactory::getReader($readerType);
-
-		if($reader === null)
-		{
-			throw new NotFoundException('Could not find fitting data reader');
-		}
-
-		// try to read request
-		$request = $this->base->getRequest();
-
-		return $reader->read($request);
 	}
 
 	/**
