@@ -284,7 +284,7 @@ class Base
 	 * @param string $key
 	 * @return string|array
 	 */
-	public static function getRequestHeader($key = false)
+	public static function getRequestHeader($key = null)
 	{
 		if(self::$headers === null)
 		{
@@ -315,7 +315,7 @@ class Base
 			}
 		}
 
-		if($key === false)
+		if($key === null)
 		{
 			return self::$headers;
 		}
