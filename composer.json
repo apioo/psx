@@ -1,10 +1,8 @@
 {
   "name": "psx/psx",
   "description": "PSX Framework",
-  "keywords": [],
   "homepage": "http://phpsx.org",
-  "type": "library",
-  "license": "GPLv3",
+  "license": "GPL-3.0",
   "authors": [
     {
       "name": "Christoph Kappestein",
