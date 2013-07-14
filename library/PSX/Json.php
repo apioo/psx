@@ -49,13 +49,45 @@ class Json
 	}
 
 	/**
-	 * Returns a php variable from the json decoded value
+	 * Returns a php variable from the json decoded value. Throws an exception 
+	 * if decoding the data is not possible
 	 *
 	 * @param string $value
 	 * @return mixed
 	 */
 	public static function decode($value)
 	{
-		return json_decode($value, true);
+		$data = json_decode($value, true);
+
+		switch(json_last_error())
+		{
+			case JSON_ERROR_NONE:
+				return $data;
+				break;
+
+			case JSON_ERROR_DEPTH:
+				throw new Exception('Maximum stack depth exceeded');
+				break;
+
+			case JSON_ERROR_STATE_MISMATCH:
+				throw new Exception('Underflow or the modes mismatch');
+				break;
+
+			case JSON_ERROR_CTRL_CHAR:
+				throw new Exception('Unexpected control character found');
+				break;
+
+			case JSON_ERROR_SYNTAX:
+				throw new Exception('Syntax error, malformed JSON');
+				break;
+
+			case JSON_ERROR_UTF8:
+				throw new Exception('Malformed UTF-8 characters, possibly incorrectly encoded');
+				break;
+
+			default:
+				throw new Exception('Unknown error');
+				break;
+		}
 	}
 }
