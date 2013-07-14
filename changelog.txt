@@ -1,4 +1,11 @@
 
+0.6.2
+* Added JWT and JWS library
+* Json decode throws now an exception if decoding fails
+* Add void session
+* Add support to call controller through cli to simplify testing
+* Improve error response handling
+
 0.6.1
 * Improved cache class
 
