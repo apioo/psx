@@ -184,5 +184,9 @@ class Validate extends ArrayObject
 
 		return end($error);
 	}
-}
 
+	public function clearError()
+	{
+		$this->exchangeArray($this->error = array());
+	}
+}
