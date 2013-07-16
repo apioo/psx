@@ -23,6 +23,7 @@
 
 namespace PSX;
 
+use PSX\Dispatch\RequestFilterInterface;
 use PSX\Http\Request;
 use PSX\Loader\Location;
 use PSX\Loader\LocationFinderInterface;
@@ -74,40 +75,65 @@ class Loader
 				$handle = $class->newInstance($this->container, $location, $path, $uriFragments);
 
 				// call request filter
-				$filters = $handle->getRequestFilter();
-
-				foreach($filters as $filter)
+				if($handle->getStage() & ModuleAbstract::CALL_REQUEST_FILTER)
 				{
-					$filter->handle($request);
+					$filters = $handle->getRequestFilter();
+
+					foreach($filters as $filter)
+					{
+						if($filter instanceof RequestFilterInterface)
+						{
+							$filter->handle($request);
+						}
+						else if(is_callable($filter))
+						{
+							call_user_func_array($filter, array($request));
+						}
+						else
+						{
+							throw new Exception('Invalid request filter');
+						}
+					}
 				}
 
-				// call event methods
-				$handle->onLoad();
-
-				switch(Base::getRequestMethod())
+				// call onload method
+				if($handle->getStage() & ModuleAbstract::CALL_ONLOAD)
 				{
-					case 'GET':
-						$handle->onGet();
-						break;
+					$handle->onLoad();
+				}
 
-					case 'POST':
-						$handle->onPost();
-						break;
+				// call request method
+				if($handle->getStage() & ModuleAbstract::CALL_REQUEST_METHOD)
+				{
+					switch(Base::getRequestMethod())
+					{
+						case 'GET':
+							$handle->onGet();
+							break;
 
-					case 'PUT':
-						$handle->onPut();
-						break;
+						case 'POST':
+							$handle->onPost();
+							break;
 
-					case 'DELETE':
-						$handle->onDelete();
-						break;
+						case 'PUT':
+							$handle->onPut();
+							break;
+
+						case 'DELETE':
+							$handle->onDelete();
+							break;
+					}
 				}
 
 				// call method if available
-				if($method instanceof ReflectionMethod)
+				if($handle->getStage() & ModuleAbstract::CALL_METHOD)
 				{
-					$method->invoke($handle, $request);
+					if($method instanceof ReflectionMethod)
+					{
+						$method->invoke($handle, $request);
+					}
 				}
+
 
 				$this->loaded[] = $location->getId();
 

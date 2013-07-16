@@ -24,6 +24,7 @@
 namespace PSX;
 
 use DOMDocument;
+use PSX\Dispatch\ResponseFilterInterface;
 use PSX\Http\Request;
 use PSX\Http\Response;
 
@@ -47,8 +48,6 @@ class Dispatch extends \Exception
 
 	public function route(Request $request)
 	{
-		$controller = null;
-		
 		ob_start();
 
 		try
@@ -60,124 +59,46 @@ class Dispatch extends \Exception
 			$content = ob_get_contents();
 
 			// process response
-			$body = $controller->processResponse($content);
-		}
-		catch(\Exception $e)
-		{
-			$code = Base::getResponseCode();
-
-			if($code === null && isset(Http::$codes[$e->getCode()]))
+			if($controller->getStage() & ModuleAbstract::CALL_PROCESS_RESPONSE)
 			{
-				$code = $e->getCode();
-			}
-			else if($code === null)
-			{
-				$code = 500;
-			}
-
-			$accept  = Base::getRequestHeader('Accept');
-			$with    = Base::getRequestHeader('X-Requested-With');
-			$message = $e->getMessage();
-			$trace   = '';
-
-			if($this->config['psx_debug'] === true)
-			{
-				$message.= ' in ' . $e->getFile() . ' on line ' . $e->getLine();
-				$trace   = $e->getTraceAsString();
-			}
-
-			// in the best case we have an clean exception where no output was
-			// made before if output was already made we append the output to 
-			// the error message to save the error context
-			$context = ob_get_contents();
-
-			// build response
-			if(PHP_SAPI == 'cli')
-			{
-				if(!empty($context))
-				{
-					$message = $context . "\n" . $message;
-				}
-
-				$body = $message . "\n" . $trace;
-			}
-			else if($with == 'XMLHttpRequest' || (strpos($accept, 'text/json') !== false || strpos($accept, 'application/json') !== false))
-			{
-				Base::setResponseCode($code);
-				header('Content-type: application/json');
-
-				if(!empty($context))
-				{
-					$message = $context . "\n" . $message;
-				}
-
-				$body = json_encode(array('success' => false, 'message' => $message, 'trace' => $trace));
-			}
-			else if(strpos($accept, 'text/html') !== false)
-			{
-				Base::setResponseCode($code);
-				header('Content-type: text/html');
-
-				if(!empty($context))
-				{
-					$message = htmlspecialchars($context) . "\n" . $message;
-				}
-
-				$body = $this->getErrorTemplate($message, $trace);
-			}
-			else if(strpos($accept, 'text/xml') !== false || strpos($accept, 'application/xml') !== false)
-			{
-				Base::setResponseCode($code);
-				header('Content-type: application/xml');
-
-				if(!empty($context))
-				{
-					$message = $context . "\n" . $message;
-				}
-
-				$dom = new DOMDocument();
-
-				$response = $dom->createElement('response');
-				$response->appendChild($dom->createElement('success', 'false'));
-				$response->appendChild($dom->createElement('message', $message));
-				$response->appendChild($dom->createElement('trace', $trace));
-
-				$dom->appendChild($response);
-
-				$body = $dom->saveXML();
+				$body = $controller->processResponse($content);
 			}
 			else
 			{
-				// sorry we have no idea what content to serve so hopefully 
-				// plain text is understandable
-
-				Base::setResponseCode($code);
-				header('Content-type: text/plain');
-
-				if(!empty($context))
-				{
-					$message = $context . "\n" . $message;
-				}
-
-				$body = $message . "\n" . $trace;
+				$body = $content;
 			}
+
+			// build response
+			$response = $this->buildResponse($body);
+
+			// call response filter
+			if($controller->getStage() & ModuleAbstract::CALL_RESPONSE_FILTER)
+			{
+				$filters = $controller->getResponseFilter();
+
+				foreach($filters as $filter)
+				{
+					if($filter instanceof ResponseFilterInterface)
+					{
+						$filter->handle($response);
+					}
+					else if(is_callable($filter))
+					{
+						call_user_func_array($filter, array($response));
+					}
+					else
+					{
+						throw new Exception('Invalid response filter');
+					}
+				}
+			}
+		}
+		catch(\Exception $e)
+		{
+			$response = $this->handleException($e);
 		}
 
 		ob_end_clean();
-
-		// build response
-		$response = $this->buildResponse($body);
-
-		// call response filter
-		if($controller instanceof ModuleAbstract)
-		{
-			$filters = $controller->getResponseFilter();
-
-			foreach($filters as $filter)
-			{
-				$filter->handle($response);
-			}
-		}
 
 		return $response;
 	}
@@ -216,5 +137,108 @@ class Dispatch extends \Exception
 		ob_end_clean();
 
 		return $template;
+	}
+
+	protected function handleException(\Exception $e)
+	{
+		$code = Base::getResponseCode();
+
+		if($code === null && isset(Http::$codes[$e->getCode()]))
+		{
+			$code = $e->getCode();
+		}
+		else if($code === null)
+		{
+			$code = 500;
+		}
+
+		$accept  = Base::getRequestHeader('Accept');
+		$with    = Base::getRequestHeader('X-Requested-With');
+		$message = $e->getMessage();
+		$trace   = '';
+
+		if($this->config['psx_debug'] === true)
+		{
+			$message.= ' in ' . $e->getFile() . ' on line ' . $e->getLine();
+			$trace   = $e->getTraceAsString();
+		}
+
+		// in the best case we have an clean exception where no output was
+		// made before if output was already made we append the output to 
+		// the error message to save the error context
+		$context = ob_get_contents();
+
+		// build response
+		if(PHP_SAPI == 'cli')
+		{
+			if(!empty($context))
+			{
+				$message = $context . "\n" . $message;
+			}
+
+			$body = $message . "\n" . $trace;
+		}
+		else if($with == 'XMLHttpRequest' || (strpos($accept, 'text/json') !== false || strpos($accept, 'application/json') !== false))
+		{
+			Base::setResponseCode($code);
+			header('Content-type: application/json');
+
+			if(!empty($context))
+			{
+				$message = $context . "\n" . $message;
+			}
+
+			$body = json_encode(array('success' => false, 'message' => $message, 'trace' => $trace));
+		}
+		else if(strpos($accept, 'text/html') !== false)
+		{
+			Base::setResponseCode($code);
+			header('Content-type: text/html');
+
+			if(!empty($context))
+			{
+				$message = htmlspecialchars($context) . "\n" . $message;
+			}
+
+			$body = $this->getErrorTemplate($message, $trace);
+		}
+		else if(strpos($accept, 'text/xml') !== false || strpos($accept, 'application/xml') !== false)
+		{
+			Base::setResponseCode($code);
+			header('Content-type: application/xml');
+
+			if(!empty($context))
+			{
+				$message = $context . "\n" . $message;
+			}
+
+			$dom = new DOMDocument();
+
+			$response = $dom->createElement('response');
+			$response->appendChild($dom->createElement('success', 'false'));
+			$response->appendChild($dom->createElement('message', $message));
+			$response->appendChild($dom->createElement('trace', $trace));
+
+			$dom->appendChild($response);
+
+			$body = $dom->saveXML();
+		}
+		else
+		{
+			// sorry we have no idea what content to serve so hopefully 
+			// plain text is understandable
+
+			Base::setResponseCode($code);
+			header('Content-type: text/plain');
+
+			if(!empty($context))
+			{
+				$message = $context . "\n" . $message;
+			}
+
+			$body = $message . "\n" . $trace;
+		}
+
+		return $this->buildResponse($body);
 	}
 }

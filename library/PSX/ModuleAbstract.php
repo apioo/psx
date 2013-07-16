@@ -37,10 +37,18 @@ use PSX\Loader\Location;
  */
 abstract class ModuleAbstract
 {
+	const CALL_REQUEST_FILTER   = 0x1;
+	const CALL_ONLOAD           = 0x2;
+	const CALL_REQUEST_METHOD   = 0x4;
+	const CALL_METHOD           = 0x8;
+	const CALL_PROCESS_RESPONSE = 0x10;
+	const CALL_RESPONSE_FILTER  = 0x20;
+
 	protected $container;
 	protected $location;
 	protected $basePath;
 	protected $uriFragments = array();
+	protected $stage;
 
 	protected $base;
 	protected $config;
@@ -54,9 +62,21 @@ abstract class ModuleAbstract
 		$this->location     = $location;
 		$this->basePath     = $basePath;
 		$this->uriFragments = $uriFragments;
+		$this->stage        = 0x3F;
 
 		$this->base         = $container->get('base');
 		$this->config       = $container->get('config');
+	}
+
+	/**
+	 * The module can control the behaviour wich method should be called by the
+	 * loader. In most cases you do not need to modify this behaviour
+	 *
+	 * @return integer
+	 */
+	public function getStage()
+	{
+		return $this->stage;
 	}
 
 	/**

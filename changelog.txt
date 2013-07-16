@@ -1,4 +1,11 @@
 
+0.6.3
+* Response and request filter can now return also callables
+* Added getStage() method to the controller to control wich methods should be 
+  called
+* Improve void session to save values in memory
+* Added clearError() method to validate
+
 0.6.2
 * Added JWT and JWS library
 * Json decode throws now an exception if decoding fails
