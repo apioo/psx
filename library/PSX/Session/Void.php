@@ -33,6 +33,8 @@ namespace PSX\Session;
  */
 class Void extends \PSX\Session
 {
+	protected $container = array();
+
 	public function __construct($name, HandlerInterface $handler = null)
 	{
 		$this->setSessionTokenKey(__CLASS__);
@@ -42,16 +44,17 @@ class Void extends \PSX\Session
 
 	public function set($key, $value)
 	{
+		$this->container[$key] = $value;
 	}
 
 	public function get($key)
 	{
-		return null;
+		return isset($this->container[$key]) ? $this->container[$key] : null;
 	}
 
 	public function has($key)
 	{
-		return false;
+		return isset($this->container[$key]);
 	}
 
 	public function setSessionTokenKey($tokenKey)
@@ -114,7 +117,6 @@ class Void extends \PSX\Session
 
 	public function isActive()
 	{
-		return false;
+		return true;
 	}
 }
-
