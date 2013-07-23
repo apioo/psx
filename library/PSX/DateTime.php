@@ -24,6 +24,7 @@
 namespace PSX;
 
 use DateTimeZone;
+use DateInterval;
 
 /**
  * DateTime
@@ -50,5 +51,32 @@ class DateTime extends \DateTime
 	public function __toString()
 	{
 		return parent::format(self::SQL);
+	}
+
+	/**
+	 * Returns the seconds of an DateInterval recalculating years, months etc.
+	 *
+	 * @param DateInterval $interval
+	 * @return integer
+	 */
+	public static function convertIntervalToSeconds(DateInterval $interval)
+	{
+		$map   = array(
+			365 * 24 * 60 * 60, // year
+			30 * 24 * 60 * 60, // month
+			24 * 60 * 60, // day
+			60 * 60, // hour
+			60, // minute
+			1, // second
+		);
+		$parts = explode('.', $interval->format('%y.%m.%d.%h.%i.%s'));
+		$value = 0;
+
+		foreach($parts as $key => $val)
+		{
+			$value+= $val * $map[$key];
+		}
+
+		return $value;
 	}
 }

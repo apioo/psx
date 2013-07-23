@@ -1,5 +1,6 @@
 
 0.6.3
+* DateTime added convertIntervalToSeconds method
 * Response and request filter can now return also callables
 * Added getStage() method to the controller to control wich methods should be 
   called
