@@ -48,6 +48,11 @@ class CreditCardToken extends RecordAbstract
 		);
 	}
 
+	public function getCreditCardId()
+	{
+		return $this->creditCardId;
+	}
+
 	public function setCreditCardId($creditCardId)
 	{
 		$this->creditCardId = $creditCardId;

@@ -50,11 +50,27 @@ class FundingInstrument extends RecordAbstract
 		);
 	}
 
+	public function getCreditCard()
+	{
+		return $this->creditCard;
+	}
+
+	/**
+	 * @param PSX\Payment\Paypal\Data\CreditCard $creditCard
+	 */
 	public function setCreditCard(CreditCard $creditCard)
 	{
 		$this->creditCard = $creditCard;
 	}
 
+	public function getCreditCardToken()
+	{
+		return $this->creditCardToken;
+	}
+
+	/**
+	 * @param PSX\Payment\Paypal\Data\CreditCardToken $creditCardToken
+	 */
 	public function setCreditCardToken(CreditCardToken $creditCardToken)
 	{
 		$this->creditCardToken = $creditCardToken;

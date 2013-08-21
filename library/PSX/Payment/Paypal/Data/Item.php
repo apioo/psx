@@ -56,6 +56,11 @@ class Item extends RecordAbstract
 		);
 	}
 
+	public function getQuantity()
+	{
+		return $this->quantity;
+	}
+
 	public function setQuantity($quantity)
 	{
 		if(strlen($quantity) > 10)
@@ -64,6 +69,11 @@ class Item extends RecordAbstract
 		}
 
 		$this->quantity = $quantity;
+	}
+
+	public function getName()
+	{
+		return $this->name;
 	}
 
 	public function setName($name)
@@ -76,6 +86,11 @@ class Item extends RecordAbstract
 		$this->name = $name;
 	}
 
+	public function getPrice()
+	{
+		return $this->price;
+	}
+
 	public function setPrice($price)
 	{
 		if(strlen($name) > 10)
@@ -86,6 +101,11 @@ class Item extends RecordAbstract
 		$this->price = $price;
 	}
 
+	public function getCurrency()
+	{
+		return $this->currency;
+	}
+
 	public function setCurrency($currency)
 	{
 		if(!in_array($currency, Amount::$currencyCodes))
@@ -94,6 +114,11 @@ class Item extends RecordAbstract
 		}
 
 		$this->currency = $currency;
+	}
+
+	public function getSku()
+	{
+		return $this->sku;
 	}
 
 	public function setSku($sku)

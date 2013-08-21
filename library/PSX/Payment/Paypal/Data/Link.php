@@ -53,19 +53,14 @@ class Link extends RecordAbstract
 		);
 	}
 
-	public function setHref($href)
-	{
-		$this->href = $href;
-	}
-
 	public function getHref()
 	{
 		return $this->href;
 	}
 
-	public function setRel($rel)
+	public function setHref($href)
 	{
-		$this->rel = $rel;
+		$this->href = $href;
 	}
 
 	public function getRel()
@@ -73,13 +68,18 @@ class Link extends RecordAbstract
 		return $this->rel;
 	}
 
-	public function setMethod($method)
+	public function setRel($rel)
 	{
-		$this->method = $method;
+		$this->rel = $rel;
 	}
 
 	public function getMethod()
 	{
 		return $this->method;
+	}
+
+	public function setMethod($method)
+	{
+		$this->method = $method;
 	}
 }

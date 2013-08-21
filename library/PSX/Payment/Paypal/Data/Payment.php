@@ -65,6 +65,11 @@ class Payment extends RecordAbstract
 		);
 	}
 
+	public function getIntent()
+	{
+		return $this->intent;
+	}
+
 	public function setIntent($intent)
 	{
 		if(!in_array($intent, array('sale')))
@@ -75,6 +80,11 @@ class Payment extends RecordAbstract
 		$this->intent = $intent;
 	}
 
+	public function getPayer()
+	{
+		return $this->payer;
+	}
+
 	/**
 	 * @param PSX\Payment\Paypal\Data\Payer $payer
 	 */
@@ -83,12 +93,22 @@ class Payment extends RecordAbstract
 		$this->payer = $payer;
 	}
 
+	public function getRedirectUrls()
+	{
+		return $this->redirectUrls;
+	}
+
 	/**
 	 * @param PSX\Payment\Paypal\Data\RedirectUrls $redirectUrls
 	 */
 	public function setRedirectUrls(RedirectUrls $redirectUrls)
 	{
 		$this->redirectUrls = $redirectUrls;
+	}
+
+	public function getTransactions()
+	{
+		return $this->transactions;
 	}
 
 	/**
@@ -104,9 +124,9 @@ class Payment extends RecordAbstract
 		$this->transactions[] = $transaction;
 	}
 
-	public function getTransactions()
+	public function getId()
 	{
-		return $this->transactions;
+		return $this->id;
 	}
 
 	public function setId($id)
@@ -114,9 +134,9 @@ class Payment extends RecordAbstract
 		$this->id = $id;
 	}
 
-	public function getId()
+	public function getCreateTime()
 	{
-		return $this->id;
+		return $this->createTime;
 	}
 
 	/**
@@ -127,9 +147,9 @@ class Payment extends RecordAbstract
 		$this->createTime = $createTime;
 	}
 
-	public function getCreateTime()
+	public function getState()
 	{
-		return $this->createTime;
+		return $this->state;
 	}
 
 	public function setState($state)
@@ -137,9 +157,9 @@ class Payment extends RecordAbstract
 		$this->state = $state;
 	}
 
-	public function getState()
+	public function getUpdateTime()
 	{
-		return $this->state;
+		return $this->updateTime;
 	}
 
 	/**
@@ -150,9 +170,9 @@ class Payment extends RecordAbstract
 		$this->updateTime = $updateTime;
 	}
 
-	public function getUpdateTime()
+	public function getLinks()
 	{
-		return $this->updateTime;
+		return $this->links;
 	}
 
 	/**
@@ -161,11 +181,6 @@ class Payment extends RecordAbstract
 	public function setLinks($links)
 	{
 		$this->links = $links;
-	}
-
-	public function getLinks()
-	{
-		return $this->links;
 	}
 
 	public function getLinkByRel($rel)

@@ -54,6 +54,11 @@ class Amount extends RecordAbstract
 		);
 	}
 
+	public function getCurrency()
+	{
+		return $this->currency;
+	}
+
 	public function setCurrency($currency)
 	{
 		if(!in_array($currency, self::$currencyCodes))
@@ -62,6 +67,11 @@ class Amount extends RecordAbstract
 		}
 
 		$this->currency = $currency;
+	}
+
+	public function getTotal()
+	{
+		return $this->total;
 	}
 
 	public function setTotal($total)
@@ -75,6 +85,11 @@ class Amount extends RecordAbstract
 		}
 
 		$this->total = $total;
+	}
+
+	public function getDetails()
+	{
+		return $this->details;
 	}
 
 	/**

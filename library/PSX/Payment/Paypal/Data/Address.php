@@ -62,6 +62,11 @@ class Address extends RecordAbstract
 		);
 	}
 
+	public function getType()
+	{
+		return $this->type;
+	}
+
 	public function setType($type)
 	{
 		if(!in_array($type, array('residential', 'business', 'mailbox')))
@@ -70,6 +75,11 @@ class Address extends RecordAbstract
 		}
 
 		$this->type = $type;
+	}
+
+	public function getLine1()
+	{
+		return $this->line1;
 	}
 
 	public function setLine1($line1)
@@ -82,6 +92,11 @@ class Address extends RecordAbstract
 		$this->line1 = $line1;
 	}
 
+	public function getLine2()
+	{
+		return $this->line2;
+	}
+
 	public function setLine2($line2)
 	{
 		if(strlen($line2) > 100)
@@ -90,6 +105,11 @@ class Address extends RecordAbstract
 		}
 
 		$this->line2 = $line2;
+	}
+
+	public function getCity()
+	{
+		return $this->city;
 	}
 
 	public function setCity($city)
@@ -102,6 +122,11 @@ class Address extends RecordAbstract
 		$this->city = $city;
 	}
 
+	public function getCountryCode()
+	{
+		return $this->countryCode;
+	}
+
 	public function setCountryCode($countryCode)
 	{
 		if(strlen($countryCode) > 2)
@@ -110,6 +135,11 @@ class Address extends RecordAbstract
 		}
 
 		$this->countryCode = $countryCode;
+	}
+
+	public function getPostalCode()
+	{
+		return $this->postalCode;
 	}
 
 	public function setPostalCode($postalCode)
@@ -122,6 +152,11 @@ class Address extends RecordAbstract
 		$this->postalCode = $postalCode;
 	}
 
+	public function getState()
+	{
+		return $this->state;
+	}
+
 	public function setState($state)
 	{
 		if(strlen($state) > 100)
@@ -130,6 +165,11 @@ class Address extends RecordAbstract
 		}
 
 		$this->state = $state;
+	}
+
+	public function getPhone()
+	{
+		return $this->phone;
 	}
 
 	public function setPhone($phone)

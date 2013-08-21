@@ -58,9 +58,19 @@ class PayerInfo extends RecordAbstract
 		);
 	}
 
+	public function getEmail()
+	{
+		return $this->email;
+	}
+
 	public function setEmail($email)
 	{
 		$this->email = $email;
+	}
+
+	public function getFirstName()
+	{
+		return $this->firstName;
 	}
 
 	public function setFirstName($firstName)
@@ -68,9 +78,19 @@ class PayerInfo extends RecordAbstract
 		$this->firstName = $firstName;
 	}
 
+	public function getLastName()
+	{
+		return $this->lastName;
+	}
+
 	public function setLastName($lastName)
 	{
 		$this->lastName = $lastName;
+	}
+
+	public function getPayerId()
+	{
+		return $this->payerId;
 	}
 
 	public function setPayerId($payerId)
@@ -78,11 +98,24 @@ class PayerInfo extends RecordAbstract
 		$this->payerId = $payerId;
 	}
 
+	public function getPhone()
+	{
+		return $this->phone;
+	}
+
 	public function setPhone($phone)
 	{
 		$this->phone = $phone;
 	}
 
+	public function getShippingAddress()
+	{
+		return $this->shippingAddress;
+	}
+
+	/**
+	 * @param PSX\Payment\Paypal\Data\ShippingAddress $shippingAddress
+	 */
 	public function setShippingAddress(ShippingAddress $shippingAddress)
 	{
 		$this->shippingAddress = $shippingAddress;

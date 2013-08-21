@@ -63,9 +63,19 @@ class Sale extends RecordAbstract
 		);
 	}
 
+	public function getId()
+	{
+		return $this->id;
+	}
+
 	public function setId($id)
 	{
 		$this->id = $id;
+	}
+
+	public function getAmount()
+	{
+		return $this->amount;
 	}
 
 	/**
@@ -76,9 +86,19 @@ class Sale extends RecordAbstract
 		$this->amount = $amount;
 	}
 
+	public function getDescription()
+	{
+		return $this->description;
+	}
+
 	public function setDescription($description)
 	{
 		$this->description = $description;
+	}
+
+	public function getCreateTime()
+	{
+		return $this->createTime;
 	}
 
 	/**
@@ -87,6 +107,11 @@ class Sale extends RecordAbstract
 	public function setCreateTime(DateTime $createTime)
 	{
 		$this->createTime = $createTime;
+	}
+
+	public function getState()
+	{
+		return $this->state;
 	}
 
 	public function setState($state)
@@ -99,14 +124,29 @@ class Sale extends RecordAbstract
 		$this->state = $state;
 	}
 
+	public function getSaleId()
+	{
+		return $this->saleId;
+	}
+
 	public function setSaleId($saleId)
 	{
 		$this->saleId = $saleId;
 	}
 
+	public function getParentPayment()
+	{
+		return $this->parentPayment;
+	}
+
 	public function setParentPayment($parentPayment)
 	{
 		$this->parentPayment = $parentPayment;
+	}
+
+	public function getUpdateTime()
+	{
+		return $this->updateTime;
 	}
 
 	/**

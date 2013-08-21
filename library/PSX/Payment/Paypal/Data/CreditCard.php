@@ -68,14 +68,29 @@ class CreditCard extends RecordAbstract
 		);
 	}
 
+	public function getId()
+	{
+		return $this->id;
+	}
+
 	public function setId($id)
 	{
 		$this->id = $id;
 	}
 
+	public function getNumber()
+	{
+		return $this->number;
+	}
+
 	public function setNumber($number)
 	{
 		$this->number = $number;
+	}
+
+	public function getType()
+	{
+		return $this->type;
 	}
 
 	public function setType($type)
@@ -88,6 +103,11 @@ class CreditCard extends RecordAbstract
 		$this->type = $type;
 	}
 
+	public function getExpireMonth()
+	{
+		return $this->expireMonth;
+	}
+
 	public function setExpireMonth($expireMonth)
 	{
 		if(strlen($expireMonth) > 2)
@@ -96,6 +116,11 @@ class CreditCard extends RecordAbstract
 		}
 
 		$this->expireMonth = $expireMonth;
+	}
+
+	public function getExpireYear()
+	{
+		return $this->expireYear;
 	}
 
 	public function setExpireYear($expireYear)
@@ -108,6 +133,11 @@ class CreditCard extends RecordAbstract
 		$this->expireYear = $expireYear;
 	}
 
+	public function getCvv2()
+	{
+		return $this->cvv2;
+	}
+
 	public function setCvv2($cvv2)
 	{
 		if(strlen($cvv2) > 4)
@@ -118,9 +148,19 @@ class CreditCard extends RecordAbstract
 		$this->cvv2 = $cvv2;
 	}
 
+	public function getFirstName()
+	{
+		return $this->firstName;
+	}
+
 	public function setFirstName($firstName)
 	{
 		$this->firstName = $firstName;
+	}
+
+	public function getLastName()
+	{
+		return $this->lastName;
 	}
 
 	public function setLastName($lastName)
@@ -128,9 +168,22 @@ class CreditCard extends RecordAbstract
 		$this->lastName = $lastName;
 	}
 
+	public function getBillingAddress()
+	{
+		return $this->billingAddress;
+	}
+
+	/**
+	 * @param PSX\Payment\Paypal\Data\Address $billingAddress
+	 */
 	public function setBillingAddress(Address $billingAddress)
 	{
 		$this->billingAddress = $billingAddress;
+	}
+
+	public function getState()
+	{
+		return $this->state;
 	}
 
 	public function setState($state)
@@ -141,6 +194,11 @@ class CreditCard extends RecordAbstract
 		}
 
 		$this->state = $state;
+	}
+
+	public function getValidUntil()
+	{
+		return $this->validUntil;
 	}
 
 	public function setValidUntil($validUntil)

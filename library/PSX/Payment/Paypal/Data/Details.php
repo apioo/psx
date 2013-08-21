@@ -54,6 +54,11 @@ class Details extends RecordAbstract
 		);
 	}
 
+	public function getShipping()
+	{
+		return $this->shipping;
+	}
+
 	public function setShipping($shipping)
 	{
 		$shipping = (float) $shipping;
@@ -65,6 +70,11 @@ class Details extends RecordAbstract
 		}
 
 		$this->shipping = $shipping;
+	}
+
+	public function getSubtotal()
+	{
+		return $this->subtotal;
 	}
 
 	public function setSubtotal($subtotal)
@@ -80,6 +90,11 @@ class Details extends RecordAbstract
 		$this->subtotal = $subtotal;
 	}
 
+	public function getTax()
+	{
+		return $this->tax;
+	}
+
 	public function setTax($tax)
 	{
 		$tax = (float) $tax;
@@ -91,6 +106,11 @@ class Details extends RecordAbstract
 		}
 
 		$this->tax = $tax;
+	}
+
+	public function getFee()
+	{
+		return $this->fee;
 	}
 
 	public function setFee($fee)

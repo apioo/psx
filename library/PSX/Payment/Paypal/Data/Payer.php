@@ -52,6 +52,11 @@ class Payer extends RecordAbstract
 		);
 	}
 
+	public function getPaymentMethod()
+	{
+		return $this->paymentMethod;
+	}
+
 	public function setPaymentMethod($paymentMethod)
 	{
 		if(!in_array($paymentMethod, array('credit_card', 'paypal')))
@@ -62,9 +67,27 @@ class Payer extends RecordAbstract
 		$this->paymentMethod = $paymentMethod;
 	}
 
+	public function getFundingInstruments()
+	{
+		return $this->fundingInstruments;
+	}
+
+	/**
+	 * @param array<PSX\Payment\Paypal\Data\FundingInstrument> $fundingInstruments
+	 */
+	public function setFundingInstruments($fundingInstruments)
+	{
+		$this->fundingInstruments = $fundingInstruments;
+	}
+
 	public function addFundingInstrument(FundingInstrument $fundingInstrument)
 	{
 		$this->fundingInstruments[] = $fundingInstrument;
+	}
+
+	public function getPayerInfo()
+	{
+		return $this->payerInfo;
 	}
 
 	/**

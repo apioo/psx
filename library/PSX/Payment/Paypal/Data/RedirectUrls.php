@@ -51,12 +51,22 @@ class RedirectUrls extends RecordAbstract
 		);
 	}
 
+	public function getReturnUrl()
+	{
+		return $this->returnUrl;
+	}
+
 	/**
 	 * @param PSX\Url $returnUrl
 	 */
 	public function setReturnUrl(Url $returnUrl)
 	{
 		$this->returnUrl = $returnUrl;
+	}
+
+	public function getCancelUrl()
+	{
+		return $this->cancelUrl;
 	}
 
 	/**

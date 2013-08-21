@@ -36,7 +36,6 @@ class Refund extends RecordAbstract
 {
 	protected $id;
 	protected $amount;
-	protected $description;
 	protected $createTime;
 	protected $state;
 	protected $saleId;
@@ -53,12 +52,90 @@ class Refund extends RecordAbstract
 		return array(
 			'id'             => $this->id,
 			'amount'         => $this->amount,
-			'description'    => $this->description,
 			'create_time'    => $this->createTime,
 			'state'          => $this->state,
 			'sale_id'        => $this->saleId,
 			'parent_payment' => $this->parentPayment,
 			'update_time'    => $this->updateTime,
 		);
+	}
+
+	public function setId($id)
+	{
+		$this->id = $id;
+	}
+	
+	public function getId()
+	{
+		return $this->id;
+	}
+
+	/**
+	 * @param PSX\Payment\Paypal\Data\Amount $amount
+	 */
+	public function setAmount(Amount $amount)
+	{
+		$this->amount = $amount;
+	}
+	
+	public function getAmount()
+	{
+		return $this->amount;
+	}
+
+	/**
+	 * @param DateTime $createTime
+	 */
+	public function setCreateTime(DateTime $createTime)
+	{
+		$this->createTime = $createTime;
+	}
+	
+	public function getCreateTime()
+	{
+		return $this->createTime;
+	}
+
+	public function setState($state)
+	{
+		$this->state = $state;
+	}
+	
+	public function getState()
+	{
+		return $this->state;
+	}
+
+	public function setSaleId($saleId)
+	{
+		$this->saleId = $saleId;
+	}
+	
+	public function getSaleId()
+	{
+		return $this->saleId;
+	}
+
+	public function setParentPayment($parentPayment)
+	{
+		$this->parentPayment = $parentPayment;
+	}
+	
+	public function getParentPayment()
+	{
+		return $this->parentPayment;
+	}
+
+	/**
+	 * @param DateTime $updateTime
+	 */
+	public function setUpdateTime(DateTime $updateTime)
+	{
+		$this->updateTime = $updateTime;
+	}
+	
+	public function getUpdateTime()
+	{
+		return $this->updateTime;
 	}
 }

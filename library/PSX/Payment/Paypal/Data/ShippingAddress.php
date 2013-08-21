@@ -48,6 +48,11 @@ class ShippingAddress extends Address
 		));
 	}
 
+	public function getRecipientName()
+	{
+		return $this->recipientName;
+	}
+
 	public function setRecipientName($recipientName)
 	{
 		$this->recipientName = $recipientName;

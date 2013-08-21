@@ -50,6 +50,19 @@ class ItemList extends RecordAbstract
 		);
 	}
 
+	public function getItems()
+	{
+		return $this->items;
+	}
+
+	/**
+	 * @param array<PSX\Payment\Paypal\Data\Item> $items
+	 */
+	public function setItems($items)
+	{
+		$this->items = $items;
+	}
+
 	public function addItem(Item $item)
 	{
 		$this->items[] = $item;
@@ -60,6 +73,14 @@ class ItemList extends RecordAbstract
 		$this->items = array();
 	}
 
+	public function getShippingAddress()
+	{
+		return $this->shippingAddress;
+	}
+
+	/**
+	 * @param PSX\Payment\Paypal\Data\ShippingAddress $shippingAddress
+	 */
 	public function setShippingAddress(ShippingAddress $shippingAddress)
 	{
 		$this->shippingAddress = $shippingAddress;

@@ -52,6 +52,11 @@ class Transaction extends RecordAbstract
 		);
 	}
 
+	public function getAmount()
+	{
+		return $this->amount;
+	}
+
 	/**
 	 * @param PSX\Payment\Paypal\Data\Amount $amount
 	 */
@@ -60,9 +65,19 @@ class Transaction extends RecordAbstract
 		$this->amount = $amount;
 	}
 
+	public function getDescription()
+	{
+		return $this->description;
+	}
+
 	public function setDescription($description)
 	{
 		$this->description = (string) $description;
+	}
+
+	public function getItemList()
+	{
+		return $this->itemList;
 	}
 
 	/**
