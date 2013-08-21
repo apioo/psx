@@ -212,6 +212,69 @@ class Paypal
 		}
 	}
 
+	public function getPayments($count = null, $startIndex = null, $sortBy = null, $sortOrder = null, $startId = null, DateTime $startTime = null, DateTime $endTime = null)
+	{
+		$url    = new Url(self::ENDPOINT . self::PAYMENT);
+		$header = array(
+			'Authorization' => $this->oauth2->getAuthorizationHeader($this->getAccessToken()),
+			'Content-Type'  => 'application/json',
+		);
+
+		if($count !== null && $count > 0 && $count <= 20)
+		{
+			$url->addParam('count', (integer) $count);
+		}
+
+		if($startIndex !== null && $startIndex > 0)
+		{
+			$url->addParam('start_index', (integer) $startIndex);
+		}
+
+		if($sortBy !== null && in_array($sortBy, array('create_time', 'update_time')))
+		{
+			$url->addParam('sort_by', $sortBy);
+		}
+
+		if($sortOrder !== null && in_array($sortBy, array('asc', 'desc')))
+		{
+			$url->addParam('sort_order', $sortOrder);
+		}
+
+		if($startId !== null)
+		{
+			$url->addParam('start_id', $startId);
+		}
+
+		if($startTime !== null)
+		{
+			$url->addParam('start_time', $startTime->format(DateTime::RFC3339));
+		}
+
+		if($endTime !== null)
+		{
+			$url->addParam('end_time', $endTime->format(DateTime::RFC3339));
+		}
+
+		$request  = new GetRequest($url, $header);
+		$response = $this->http->request($request);
+
+		if($response->getCode() == 200)
+		{
+			$reader   = new Reader\Json();
+			$result   = $reader->read($response);
+			$payments = new Data\Payments();
+			$payments->import($result);
+
+			return $payments;
+		}
+		else
+		{
+			$error = Json::decode($response->getBody());
+
+			$this->handleError($error);
+		}
+	}
+
 	protected function handleError($data)
 	{
 		if(isset($data['name']))
