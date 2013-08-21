@@ -74,4 +74,16 @@ class PaypalTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals('created', $payment->getState());
 	}
+
+	public function testListPayment()
+	{
+		$payments = $this->paypal->getPayments();
+
+		$this->assertInstanceOf('PSX\Payment\Paypal\Data\Payments', $payments);
+
+		foreach($payments as $payment)
+		{
+			$this->assertInstanceOf('PSX\Payment\Paypal\Data\Payment', $payment);
+		}
+	}
 }
