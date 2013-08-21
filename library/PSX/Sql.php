@@ -109,25 +109,15 @@ class Sql extends PDO implements Connection
 
 		$this->count++;
 
-		// fetch assoc
-		$result = array();
-
+		// fetch
 		if($class === null)
 		{
-			while($row = $stmt->fetch(PDO::FETCH_ASSOC))
-			{
-				$result[] = $row;
-			}
+			return $stmt->fetchAll(PDO::FETCH_ASSOC);
 		}
 		else
 		{
-			while($row = $stmt->fetchObject($class, $args))
-			{
-				$result[] = $row;
-			}
+			return $stmt->fetchAll(PDO::FETCH_CLASS, $class, $args);
 		}
-
-		return $result;
 	}
 
 	/**
