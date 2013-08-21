@@ -120,12 +120,12 @@ class Dispatch extends \Exception
 	protected function getErrorTemplate($message, $trace)
 	{
 		// set default values
-		$config = $this->config;
-		$self   = isset($_SERVER['QUERY_STRING']) && !empty($_SERVER['QUERY_STRING']) ? $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING'] : $_SERVER['PHP_SELF'];
-		$url    = $config['psx_url'] . '/' . $config['psx_dispatch'];
-		$dir    = PSX_PATH_TEMPLATE . '/' . $config['psx_template_dir'];
-		$base   = parse_url($config['psx_url'], PHP_URL_PATH);
-		$render = round(microtime(true) - $GLOBALS['psx_benchmark'], 6);
+		$config   = $this->config;
+		$self     = isset($_SERVER['QUERY_STRING']) && !empty($_SERVER['QUERY_STRING']) ? $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING'] : $_SERVER['PHP_SELF'];
+		$url      = $config['psx_url'] . '/' . $config['psx_dispatch'];
+		$location = PSX_PATH_TEMPLATE . '/' . $config['psx_template_dir'];
+		$base     = parse_url($config['psx_url'], PHP_URL_PATH);
+		$render   = round(microtime(true) - $GLOBALS['psx_benchmark'], 6);
 
 		// get template
 		ob_start();
