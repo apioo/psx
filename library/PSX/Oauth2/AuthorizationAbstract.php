@@ -192,7 +192,7 @@ abstract class AuthorizationAbstract
 		// this hack since the spec is not an rfc. If the rfc is released we 
 		// will strictly follow the spec and remove this hack hopefully facebook 
 		// too
-		if(is_array($data['error']) && isset($data['error']['type']) && isset($data['error']['message']))
+		if(isset($data['error']) && is_array($data['error']) && isset($data['error']['type']) && isset($data['error']['message']))
 		{
 			$data['error_description'] = $data['error']['message'];
 			$data['error'] = 'invalid_request';
