@@ -53,22 +53,22 @@ abstract class ViewAbstract extends ModuleAbstract
 	public function processResponse($content)
 	{
 		// assign default values
-		$config = $this->getConfig();
-		$self   = isset($_SERVER['QUERY_STRING']) && !empty($_SERVER['QUERY_STRING']) ? $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING'] : $_SERVER['PHP_SELF'];
-		$url    = $config['psx_url'] . '/' . $config['psx_dispatch'];
-		$dir    = PSX_PATH_TEMPLATE . '/' . $config['psx_template_dir'];
-		$base   = parse_url($config['psx_url'], PHP_URL_PATH);
-		$render = round(microtime(true) - $GLOBALS['psx_benchmark'], 6);
+		$config   = $this->getConfig();
+		$self     = isset($_SERVER['QUERY_STRING']) && !empty($_SERVER['QUERY_STRING']) ? $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING'] : $_SERVER['PHP_SELF'];
+		$url      = $config['psx_url'] . '/' . $config['psx_dispatch'];
+		$location = PSX_PATH_TEMPLATE . '/' . $config['psx_template_dir'];
+		$base     = parse_url($config['psx_url'], PHP_URL_PATH);
+		$render   = round(microtime(true) - $GLOBALS['psx_benchmark'], 6);
 
 		$this->getTemplate()->assign('config', $config);
 		$this->getTemplate()->assign('self', htmlspecialchars($self));
 		$this->getTemplate()->assign('url', $url);
-		$this->getTemplate()->assign('location', $dir);
+		$this->getTemplate()->assign('location', $location);
 		$this->getTemplate()->assign('base', $base);
 		$this->getTemplate()->assign('render', $render);
 
 		// set template dir
-		$this->getTemplate()->setDir($dir);
+		$this->getTemplate()->setDir($location);
 
 		// set default template if no template is set
 		if(!$this->getTemplate()->hasFile())
