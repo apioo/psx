@@ -4,7 +4,8 @@ $loader = require_once('vendor/autoload.php');
 $loader->add('PSX', 'tests');
 
 $container = getContainer();
-$bootstrap = new PSX\Bootstrap($container->get('config'));
+
+PSX\Bootstrap::setupEnvironment($container->get('config'));
 
 function getContainer()
 {

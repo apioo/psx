@@ -36,53 +36,48 @@ use ErrorException;
  */
 class Bootstrap
 {
-	public function __construct(Config $config)
+	public static function setupEnvironment(Config $config)
 	{
-		// define benchmark
-		$GLOBALS['psx_benchmark'] = microtime(true);
-
-		// setting default headers
-		header('Content-type: text/html; charset=UTF-8');
-		header('X-Powered-By: psx');
-		header('Expires: Thu, 09 Oct 1986 01:00:00 GMT');
-		header('Last-Modified: Thu, 09 Oct 1986 01:00:00 GMT');
-		header('Cache-Control: no-store, no-cache, must-revalidate');
-		header('Pragma: no-cache');
-
-		// define paths
-		define('PSX_PATH_CACHE', $config['psx_path_cache']);
-		define('PSX_PATH_LIBRARY', $config['psx_path_library']);
-		define('PSX_PATH_MODULE', $config['psx_path_module']);
-		define('PSX_PATH_TEMPLATE', $config['psx_path_template']);
-
-		// error handling
-		if($config['psx_debug'] === true)
+		if(!defined('PSX'))
 		{
-			$errorReporting = E_ALL | E_STRICT;
-		}
-		else
-		{
-			$errorReporting = 0;
-		}
+			// define benchmark
+			$GLOBALS['psx_benchmark'] = microtime(true);
 
-		error_reporting($errorReporting);
-		set_error_handler('\PSX\Bootstrap::errorHandler');
+			// setting default headers
+			header('Content-type: text/html; charset=UTF-8');
+			header('X-Powered-By: psx');
+			header('Expires: Thu, 09 Oct 1986 01:00:00 GMT');
+			header('Last-Modified: Thu, 09 Oct 1986 01:00:00 GMT');
+			header('Cache-Control: no-store, no-cache, must-revalidate');
+			header('Pragma: no-cache');
 
-		// ini settings
-		ini_set('date.timezone', $config['psx_timezone']);
-		ini_set('session.use_only_cookies', '1');
-		ini_set('docref_root', '');
-		ini_set('html_errors', '0');
+			// define paths
+			define('PSX_PATH_CACHE', $config['psx_path_cache']);
+			define('PSX_PATH_LIBRARY', $config['psx_path_library']);
+			define('PSX_PATH_MODULE', $config['psx_path_module']);
+			define('PSX_PATH_TEMPLATE', $config['psx_path_template']);
 
-		// define in psx
-		define('PSX', true);
-	}
+			// error handling
+			if($config['psx_debug'] === true)
+			{
+				$errorReporting = E_ALL | E_STRICT;
+			}
+			else
+			{
+				$errorReporting = 0;
+			}
 
-	public function addIncludePath($path)
-	{
-		if(strpos(get_include_path(), $path) === false)
-		{
-			set_include_path($path . PATH_SEPARATOR . get_include_path());
+			error_reporting($errorReporting);
+			set_error_handler('\PSX\Bootstrap::errorHandler');
+
+			// ini settings
+			ini_set('date.timezone', $config['psx_timezone']);
+			ini_set('session.use_only_cookies', '1');
+			ini_set('docref_root', '');
+			ini_set('html_errors', '0');
+
+			// define in psx
+			define('PSX', true);
 		}
 	}
 

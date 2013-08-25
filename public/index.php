@@ -26,7 +26,8 @@ require_once('../vendor/autoload.php');
 $container = new PSX\Dependency\Container();
 $container->setParameter('config.file', '../configuration.php');
 
-$bootstrap = new PSX\Bootstrap($container->get('config'));
+PSX\Bootstrap::setupEnvironment($container->get('config'));
+
 $response  = $container->get('dispatch')->route($container->get('base')->getRequest());
 
 echo $response->getBody();
