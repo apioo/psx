@@ -1,5 +1,8 @@
 
 0.6.3
+* Added static method setupEnvironment to Bootstrap
+* Improve sql library
+* Fixed getErrorTemplate() env vars
 * DateTime added convertIntervalToSeconds method
 * Response and request filter can now return also callables
 * Added getStage() method to the controller to control wich methods should be 
