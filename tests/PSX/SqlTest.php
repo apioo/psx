@@ -84,6 +84,17 @@ class SqlTest extends DbTestCase
 		$this->assertEquals($expect, $actual);
 	}
 
+	public function testAssocMultipleConditions()
+	{
+		$actual = $this->sql->assoc('SELECT id, title FROM ' . $this->table . ' WHERE id < ? AND id < ? AND id < ? ORDER BY id ASC', array(3, 3, 3));
+		$expect = array(
+			array('id' => 1, 'title' => 'foo'),
+			array('id' => 2, 'title' => 'bar'),
+		);
+
+		$this->assertEquals($expect, $actual);
+	}
+
 	public function testExecute()
 	{
 		$actual = $this->sql->execute('DELETE FROM ' . $this->table);

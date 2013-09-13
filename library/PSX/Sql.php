@@ -256,27 +256,6 @@ class Sql extends PDO implements Connection
 		return $content;
 	}
 
-	public function getResult($sql, array $params = array(), $mode = 0, $class = 'stdClass', array $args = array())
-	{
-		$result = null;
-
-		switch($mode)
-		{
-			case self::FETCH_ASSOC:
-				$result = $this->assoc($sql, $params);
-				break;
-
-			case self::FETCH_OBJECT:
-				$result = $this->assoc($sql, $params, $class, $args);
-				break;
-
-			default:
-				throw new Exception('Invalid mode');
-		}
-
-		return $result;
-	}
-
 	/**
 	 * Selects all $fields from the $table with the $condition. Calls depending
 	 * on the $select value the getAll, getRow, getCol or getField method
@@ -295,6 +274,11 @@ class Sql extends PDO implements Connection
 	{
 		if(!empty($fields))
 		{
+			if($select === self::SELECT_FIELD && count($fields) > 1)
+			{
+				$fields = array_slice($fields, 0, 1);
+			}
+
 			if($condition !== null)
 			{
 				$sql    = 'SELECT ' . implode(', ', array_map(__CLASS__ . '::helpQuote', $fields)) . ' FROM `' . $table . '` ' . $condition->getStatment() . ' ';
@@ -311,16 +295,13 @@ class Sql extends PDO implements Connection
 				$sql.= 'ORDER BY `' . $sortBy . '` ' . ($sortOrder == self::SORT_ASC ? 'ASC' : 'DESC') . ' ';
 			}
 
-			if($startIndex !== null)
+			if($select === self::SELECT_ROW || $select === self::SELECT_FIELD)
 			{
-				if($select === self::SELECT_ROW || $select === self::SELECT_FIELD)
-				{
-					$sql.= 'LIMIT 0, 1';
-				}
-				else
-				{
-					$sql.= 'LIMIT ' . intval($startIndex) . ', ' . intval($count);
-				}
+				$sql.= 'LIMIT 0, 1';
+			}
+			else if($startIndex !== null)
+			{
+				$sql.= 'LIMIT ' . intval($startIndex) . ', ' . intval($count);
 			}
 
 			$result = null;
@@ -552,6 +533,23 @@ class Sql extends PDO implements Connection
 	public function getLastInsertId()
 	{
 		return $this->lastInsertId();
+	}
+
+	protected function getResult($sql, array $params = array(), $mode = 0, $class = 'stdClass', array $args = array())
+	{
+		switch($mode)
+		{
+			case self::FETCH_ASSOC:
+				return $this->assoc($sql, $params);
+				break;
+
+			case self::FETCH_OBJECT:
+				return $this->assoc($sql, $params, $class, $args);
+				break;
+
+			default:
+				throw new Exception('Invalid mode');
+		}
 	}
 
 	public static function helpQuote($str)
