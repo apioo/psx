@@ -142,12 +142,12 @@ abstract class RecordAbstract implements RecordInterface, Serializable
 			}
 		}
 
-		return json_encode($data);
+		return serialize($data);
 	}
 
 	public function unserialize($data)
 	{
-		$data = json_decode($data, true);
+		$data = unserialize($data);
 
 		if(is_array($data))
 		{
