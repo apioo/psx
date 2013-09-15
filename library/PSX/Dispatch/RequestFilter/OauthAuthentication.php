@@ -126,7 +126,7 @@ class OauthAuthentication implements RequestFilterInterface
 					$url    = $request->getUrl();
 					$params = array_merge($params, $_GET);
 
-					if($request->getHeader('Content-Type') == 'application/x-www-form-urlencoded')
+					if(strpos($request->getHeader('Content-Type'), 'application/x-www-form-urlencoded') !== false)
 					{
 						$params = array_merge($params, $_POST);
 					}
