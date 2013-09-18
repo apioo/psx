@@ -41,14 +41,14 @@ use PSX\Url;
  */
 class SetupRequest extends RecordAbstract
 {
-	public $claimedId;
-	public $identity;
-	public $assocHandle;
-	public $returnTo;
-	public $realm;
-	public $isImmediate;
+	protected $claimedId;
+	protected $identity;
+	protected $assocHandle;
+	protected $returnTo;
+	protected $realm;
+	protected $isImmediate;
+	protected $params;
 
-	private $params;
 	private $map = array(
 
 		'claimedId'   => 'claimed_id',

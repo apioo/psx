@@ -42,17 +42,17 @@ use PSX\OpenId;
  */
 class ResRequest extends RecordAbstract
 {
-	public $opEndpoint;
-	public $claimedId;
-	public $identity;
-	public $returnTo;
-	public $responseNonce;
-	public $invalidateHandle;
-	public $assocHandle;
-	public $signed;
-	public $sig;
+	protected $opEndpoint;
+	protected $claimedId;
+	protected $identity;
+	protected $returnTo;
+	protected $responseNonce;
+	protected $invalidateHandle;
+	protected $assocHandle;
+	protected $signed;
+	protected $sig;
+	protected $params;
 
-	private $params;
 	private $map = array(
 
 		'opEndpoint'       => 'op_endpoint',

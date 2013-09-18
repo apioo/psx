@@ -43,16 +43,16 @@ use PSX\OpenId\Provider\Association;
  */
 class AssociationRequest extends RecordAbstract
 {
-	public $assocType;
-	public $sessionType;
-	public $dhModulus;
-	public $dhGen;
-	public $dhConsumerPublic;
+	protected $assocType;
+	protected $sessionType;
+	protected $dhModulus;
+	protected $dhGen;
+	protected $dhConsumerPublic;
 
-	public $assocHandle;
-	public $macKey;
-	public $dhServerPublic;
-	public $encMacKey;
+	protected $assocHandle;
+	protected $macKey;
+	protected $dhServerPublic;
+	protected $encMacKey;
 
 	private $assoc;
 
