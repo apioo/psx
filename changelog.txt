@@ -1,5 +1,7 @@
 
 0.6.4
+* Add proper clone behavior for select class
+* Set openid request record attributes protected
 * Fix oauth request filter content type detection
 
 0.6.3
