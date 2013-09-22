@@ -325,6 +325,11 @@ class Select implements SelectInterface
 		return $sql;
 	}
 
+	public function __clone()
+	{
+		$this->condition = clone $this->condition;
+	}
+
 	protected function buildQuery()
 	{
 		$selectedColumns = $this->getAllSelectedColumns();

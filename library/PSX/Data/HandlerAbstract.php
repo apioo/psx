@@ -292,7 +292,6 @@ abstract class HandlerAbstract implements HandlerInterface
 		}
 
 		$select = clone $this->_select;
-		$select->getCondition()->removeAll();
 
 		return $select;
 	}
