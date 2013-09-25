@@ -47,8 +47,8 @@ class Paypal
 {
 	//const ENDPOINT      = 'https://api.paypal.com';
 	const ENDPOINT      = 'https://api.sandbox.paypal.com';
-	const CLIENT_ID     = 'AbGnaxBKBZGDeEYdiF9K5S4PgCydA6vp_7F24PQOVNSDRv8PZ8XiCPXkS4HV';
-	const CLIENT_SECRET = 'EEjJJBCD6AIExdxj9a5_1hY8IpH-WpwuUHsp0HTWzrFQC66ycYuiPEwG6wr4';
+	const CLIENT_ID     = '';
+	const CLIENT_SECRET = '';
 	//const CERTIFICATE   = 'api.paypal.com.pem';
 	const CERTIFICATE   = 'api.sandbox.paypal.com.pem';
 
