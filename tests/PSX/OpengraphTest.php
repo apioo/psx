@@ -23,6 +23,9 @@
 
 namespace PSX;
 
+use PSX\Http\Handler\Mock;
+use PSX\Http\Handler\MockCapture;
+
 /**
  * OpengraphTest
  *
@@ -34,20 +37,27 @@ class OpengraphTest extends \PHPUnit_Framework_TestCase
 {
 	const URL = 'http://test.phpsx.org/opengraph/graph';
 
+	private $http;
+	private $og;
+
 	protected function setUp()
 	{
+		//$mockCapture = new MockCapture('tests/PSX/Opengraph/opengraph_http_fixture.xml');
+		$mock = Mock::getByXmlDefinition('tests/PSX/Opengraph/opengraph_http_fixture.xml');
+
+		$this->http = new Http($mock);
+		$this->og   = new Opengraph($this->http);
 	}
 
 	protected function tearDown()
 	{
+		unset($this->og);
+		unset($this->http);
 	}
 
 	public function testDiscover()
 	{
-		$http = new Http();
-		$og   = new Opengraph($http);
-
-		$data = $og->discover(new Url(self::URL), Opengraph::TITLE | Opengraph::URL);
+		$data = $this->og->discover(new Url(self::URL), Opengraph::TITLE | Opengraph::URL);
 
 		$this->assertEquals($data['title'], 'The Rock');
 		$this->assertEquals($data['url'], 'http://www.imdb.com/title/tt0117500/');

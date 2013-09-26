@@ -24,6 +24,8 @@
 namespace PSX\Payment;
 
 use PSX\Http;
+use PSX\Http\Handler\Mock;
+use PSX\Http\Handler\MockCapture;
 use PSX\Payment\Paypal;
 use PSX\Payment\Paypal\Data;
 use PSX\Url;
@@ -42,7 +44,10 @@ class PaypalTest extends \PHPUnit_Framework_TestCase
 
 	protected function setUp()
 	{
-		$this->http   = new Http();
+		//$mockCapture = new MockCapture('tests/PSX/Payment/paypal_http_fixture.xml');
+		$mock = Mock::getByXmlDefinition('tests/PSX/Payment/paypal_http_fixture.xml');
+
+		$this->http   = new Http($mock);
 		$this->paypal = new Paypal($this->http);
 	}
 
@@ -85,5 +90,16 @@ class PaypalTest extends \PHPUnit_Framework_TestCase
 		{
 			$this->assertInstanceOf('PSX\Payment\Paypal\Data\Payment', $payment);
 		}
+
+		$transactions = $payment->getTransactions();
+		$transaction = current($transactions);
+
+		$this->assertInstanceOf('PSX\Payment\Paypal\Data\Transaction', $transaction);
+
+		$relatedResource = $transaction->getRelatedResources();
+
+		$this->assertInstanceOf('PSX\Payment\Paypal\Data\RelatedResource', $relatedResource);
+		$this->assertInstanceOf('PSX\Payment\Paypal\Data\Sale', $relatedResource->getSale());
+		$this->assertEquals('completed', $relatedResource->getSale()->getState());
 	}
 }

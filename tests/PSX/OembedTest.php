@@ -23,6 +23,8 @@
 
 namespace PSX;
 
+use PSX\Http\Handler\Mock;
+use PSX\Http\Handler\MockCapture;
 use PSX\Oembed\Type;
 
 /**
@@ -45,7 +47,10 @@ class OembedTest extends \PHPUnit_Framework_TestCase
 
 	protected function setUp()
 	{
-		$this->http   = new Http();
+		//$mockCapture = new MockCapture('tests/PSX/Oembed/oembed_http_fixture.xml');
+		$mock = Mock::getByXmlDefinition('tests/PSX/Oembed/oembed_http_fixture.xml');
+
+		$this->http   = new Http($mock);
 		$this->oembed = new Oembed($this->http);
 	}
 

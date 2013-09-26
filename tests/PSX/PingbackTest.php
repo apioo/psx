@@ -23,6 +23,9 @@
 
 namespace PSX;
 
+use PSX\Http\Handler\Mock;
+use PSX\Http\Handler\MockCapture;
+
 /**
  * PingbackTest
  *
@@ -35,8 +38,16 @@ class PingbackTest extends \PHPUnit_Framework_TestCase
 	const SERVER_URL   = 'http://test.phpsx.org/pingback/server';
 	const RESOURCE_URL = 'http://test.phpsx.org/pingback/resource';
 
+	private $http;
+	private $pingback;
+
 	protected function setUp()
 	{
+		//$mockCapture = new MockCapture('tests/PSX/Pingback/pingback_http_fixture.xml');
+		$mock = Mock::getByXmlDefinition('tests/PSX/Pingback/pingback_http_fixture.xml');
+
+		$this->http     = new Http($mock);
+		$this->pingback = new Pingback($this->http);
 	}
 
 	protected function tearDown()
@@ -45,8 +56,7 @@ class PingbackTest extends \PHPUnit_Framework_TestCase
 
 	public function testDiscovery()
 	{
-		$pingback = new Pingback(new Http());
-		$response = $pingback->send('http://foobar.com', self::RESOURCE_URL);
+		$response = $this->pingback->send('http://foobar.com', self::RESOURCE_URL);
 
 		$this->assertEquals(true, $response);
 	}

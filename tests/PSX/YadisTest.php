@@ -23,6 +23,9 @@
 
 namespace PSX;
 
+use PSX\Http\Handler\Mock;
+use PSX\Http\Handler\MockCapture;
+
 /**
  * YadisTest
  *
@@ -34,18 +37,27 @@ class YadisTest extends \PHPUnit_Framework_TestCase
 {
 	const URL = 'http://test.phpsx.org';
 
+	private $http;
+	private $yadis;
+
 	protected function setUp()
 	{
+		//$mockCapture = new MockCapture('tests/PSX/Yadis/yadis_http_fixture.xml');
+		$mock = Mock::getByXmlDefinition('tests/PSX/Yadis/yadis_http_fixture.xml');
+
+		$this->http  = new Http($mock);
+		$this->yadis = new Yadis($this->http);
 	}
 
 	protected function tearDown()
 	{
+		unset($this->yadis);
+		unset($this->http);
 	}
 
 	public function testDiscovery()
 	{
-		$yadis = new Yadis(new Http());
-		$xrd   = $yadis->discover(new Url(self::URL));
+		$xrd = $this->yadis->discover(new Url(self::URL));
 
 		$this->assertEquals(true, $xrd instanceof Xrd);
 

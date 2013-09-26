@@ -23,8 +23,10 @@
 
 namespace PSX;
 
-use PSX\Http\GetRequest;
 use PSX\Data\Reader;
+use PSX\Http\GetRequest;
+use PSX\Http\Handler\Mock;
+use PSX\Http\Handler\MockCapture;
 
 /**
  * RssTest
@@ -41,11 +43,15 @@ class RssTest extends \PHPUnit_Framework_TestCase
 
 	protected function setUp()
 	{
-		$this->http = new Http();
+		//$mockCapture = new MockCapture('tests/PSX/Rss/rss_http_fixture.xml');
+		$mock = Mock::getByXmlDefinition('tests/PSX/Rss/rss_http_fixture.xml');
+
+		$this->http = new Http($mock);
 	}
 
 	protected function tearDown()
 	{
+		unset($this->http);
 	}
 
 	public function testRss()

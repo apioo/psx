@@ -24,6 +24,8 @@
 namespace PSX;
 
 use PSX\Http\GetRequest;
+use PSX\Http\Handler\Mock;
+use PSX\Http\Handler\MockCapture;
 
 /**
  * OauthTest
@@ -53,12 +55,17 @@ class OauthTest extends \PHPUnit_Framework_TestCase
 
 	protected function setUp()
 	{
-		$this->http  = new Http();
+		//$mockCapture = new MockCapture('tests/PSX/Oauth/oauth_http_fixture.xml');
+		$mock = Mock::getByXmlDefinition('tests/PSX/Oauth/oauth_http_fixture.xml');
+
+		$this->http  = new Http($mock);
 		$this->oauth = new Oauth($this->http);
 	}
 
 	protected function tearDown()
 	{
+		unset($this->oauth);
+		unset($this->http);
 	}
 
 	public function testRequestToken()

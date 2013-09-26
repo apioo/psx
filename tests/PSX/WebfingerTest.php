@@ -23,6 +23,9 @@
 
 namespace PSX;
 
+use PSX\Http\Handler\Mock;
+use PSX\Http\Handler\MockCapture;
+
 /**
  * WebfingerTest
  *
@@ -35,18 +38,27 @@ class WebfingerTest extends \PHPUnit_Framework_TestCase
 	const URL  = 'http://test.phpsx.org';
 	const ACCT = 'foo@foo.com';
 
+	private $http;
+	private $webfinger;
+
 	protected function setUp()
 	{
+		//$mockCapture = new MockCapture('tests/PSX/Webfinger/webfinger_http_fixture.xml');
+		$mock = Mock::getByXmlDefinition('tests/PSX/Webfinger/webfinger_http_fixture.xml');
+
+		$this->http      = new Http($mock);
+		$this->webfinger = new Webfinger($this->http);
 	}
 
 	protected function tearDown()
 	{
+		unset($this->webfinger);
+		unset($this->http);
 	}
 
 	public function testGetHostMeta()
 	{
-		$webfinger = new Webfinger(new Http());
-		$xrd       = $webfinger->getHostMeta(new Url(self::URL));
+		$xrd = $this->webfinger->getHostMeta(new Url(self::URL));
 
 		$this->assertEquals($xrd instanceof Webfinger\Xrd, true);
 		$this->assertEquals($xrd->getSubject(), self::URL);
@@ -54,9 +66,8 @@ class WebfingerTest extends \PHPUnit_Framework_TestCase
 
 	public function testGetHostMetaFullUrl()
 	{
-		$url       = self::URL . '/foobar/test?bar=foo#test';
-		$webfinger = new Webfinger(new Http());
-		$xrd       = $webfinger->getHostMeta(new Url($url));
+		$url = self::URL . '/foobar/test?bar=foo#test';
+		$xrd = $this->webfinger->getHostMeta(new Url($url));
 
 		$this->assertEquals($xrd instanceof Webfinger\Xrd, true);
 		$this->assertEquals($xrd->getSubject(), self::URL);
@@ -64,16 +75,14 @@ class WebfingerTest extends \PHPUnit_Framework_TestCase
 
 	public function testGetLrddTemplate()
 	{
-		$webfinger = new Webfinger(new Http());
-		$template  = $webfinger->getLrddTemplate(new Url(self::URL));
+		$template = $this->webfinger->getLrddTemplate(new Url(self::URL));
 
 		$this->assertEquals($template, 'http://test.phpsx.org/webfinger/lrdd?uri={uri}');
 	}
 
 	public function testGetLrdd()
 	{
-		$webfinger = new Webfinger(new Http());
-		$xrd       = $webfinger->getLrdd('acct:' . self::ACCT, $webfinger->getLrddTemplate(new Url(self::URL)));
+		$xrd = $this->webfinger->getLrdd('acct:' . self::ACCT, $this->webfinger->getLrddTemplate(new Url(self::URL)));
 
 		$this->assertEquals($xrd instanceof Webfinger\Xrd, true);
 		$this->assertEquals($xrd->getSubject(), 'acct:' . self::ACCT);
@@ -81,8 +90,7 @@ class WebfingerTest extends \PHPUnit_Framework_TestCase
 
 	public function testGetAcctProfile()
 	{
-		$webfinger = new Webfinger(new Http());
-		$profile   = $webfinger->getAcctProfile(self::ACCT, $webfinger->getLrddTemplate(new Url(self::URL)));
+		$profile = $this->webfinger->getAcctProfile(self::ACCT, $this->webfinger->getLrddTemplate(new Url(self::URL)));
 
 		$this->assertEquals($profile, 'http://test.phpsx.org/profile/foo');
 	}

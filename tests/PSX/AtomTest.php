@@ -23,9 +23,11 @@
 
 namespace PSX;
 
-use PSX\Http\GetRequest;
-use PSX\Http\Message;
 use PSX\Data\Reader;
+use PSX\Http\GetRequest;
+use PSX\Http\Handler\Mock;
+use PSX\Http\Handler\MockCapture;
+use PSX\Http\Message;
 
 /**
  * AtomTest
@@ -42,11 +44,15 @@ class AtomTest extends \PHPUnit_Framework_TestCase
 
 	protected function setUp()
 	{
-		$this->http = new Http();
+		//$mockCapture = new MockCapture('tests/PSX/Atom/atom_http_fixture.xml');
+		$mock = Mock::getByXmlDefinition('tests/PSX/Atom/atom_http_fixture.xml');
+
+		$this->http = new Http($mock);
 	}
 
 	protected function tearDown()
 	{
+		unset($this->http);
 	}
 
 	public function testAtom()
