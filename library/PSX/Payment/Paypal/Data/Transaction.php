@@ -37,6 +37,7 @@ class Transaction extends RecordAbstract
 	public $amount;
 	public $description;
 	public $itemList;
+	public $relatedResources;
 
 	public function getName()
 	{
@@ -46,15 +47,11 @@ class Transaction extends RecordAbstract
 	public function getFields()
 	{
 		return array(
-			'amount'      => $this->amount,
-			'description' => $this->description,
-			'itemList'    => $this->itemList,
+			'amount'            => $this->amount,
+			'description'       => $this->description,
+			'item_list'         => $this->itemList,
+			'related_resources' => $this->relatedResources,
 		);
-	}
-
-	public function getAmount()
-	{
-		return $this->amount;
 	}
 
 	/**
@@ -65,9 +62,9 @@ class Transaction extends RecordAbstract
 		$this->amount = $amount;
 	}
 
-	public function getDescription()
+	public function getAmount()
 	{
-		return $this->description;
+		return $this->amount;
 	}
 
 	public function setDescription($description)
@@ -75,9 +72,9 @@ class Transaction extends RecordAbstract
 		$this->description = (string) $description;
 	}
 
-	public function getItemList()
+	public function getDescription()
 	{
-		return $this->itemList;
+		return $this->description;
 	}
 
 	/**
@@ -86,5 +83,23 @@ class Transaction extends RecordAbstract
 	public function setItemList(ItemList $itemList)
 	{
 		$this->itemList = $itemList;
+	}
+
+	public function getItemList()
+	{
+		return $this->itemList;
+	}
+
+	/**
+	 * @param PSX\Payment\Paypal\Data\RelatedResource $relatedResources
+	 */
+	public function setRelatedResources($relatedResources)
+	{
+		$this->relatedResources = $relatedResources;
+	}
+	
+	public function getRelatedResources()
+	{
+		return $this->relatedResources;
 	}
 }
