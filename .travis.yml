@@ -3,6 +3,7 @@ php:
   - "5.3"
   - "5.4"
 before_script:
+  - composer install
   - mysql -e 'create database psx;'
   - mysql -u root psx < tests/psx.sql
   - pear channel-discover pear.phpunit.de
