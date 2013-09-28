@@ -24,6 +24,7 @@
 namespace PSX;
 
 use DOMDocument;
+use PSX\Base;
 use PSX\Dispatch\ResponseFilterInterface;
 use PSX\Http\Request;
 use PSX\Http\Response;
@@ -120,21 +121,50 @@ class Dispatch extends \Exception
 	protected function getErrorTemplate($message, $trace)
 	{
 		// set default values
-		$config   = $this->config;
-		$self     = isset($_SERVER['QUERY_STRING']) && !empty($_SERVER['QUERY_STRING']) ? $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING'] : $_SERVER['PHP_SELF'];
-		$url      = $config['psx_url'] . '/' . $config['psx_dispatch'];
-		$location = PSX_PATH_TEMPLATE . '/' . $config['psx_template_dir'];
-		$base     = parse_url($config['psx_url'], PHP_URL_PATH);
-		$render   = round(microtime(true) - $GLOBALS['psx_benchmark'], 6);
+		$config = $this->config;
+		$self   = isset($_SERVER['QUERY_STRING']) && !empty($_SERVER['QUERY_STRING']) ? $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING'] : $_SERVER['PHP_SELF'];
+		$url    = $config['psx_url'] . '/' . $config['psx_dispatch'];
+		$base   = parse_url($config['psx_url'], PHP_URL_PATH);
+		$render = round(microtime(true) - $GLOBALS['psx_benchmark'], 6);
 
 		// get template
-		ob_start();
+		if(!empty($this->config['psx_error_template']))
+		{
+			ob_start();
 
-		include PSX_PATH_TEMPLATE . '/' . $this->config['psx_template_dir'] . '/error.tpl';
+			include $this->config['psx_error_template'];
 
-		$template = ob_get_contents();
+			$template = ob_get_contents();
 
-		ob_end_clean();
+			ob_end_clean();
+		}
+		else
+		{
+			$template = <<<HTML
+<!DOCTYPE>
+<html>
+<head>
+	<title>Internal Server Error</title>
+	<style type="text/css"><!--
+		body { color: #000000; background-color: #FFFFFF; }
+		a:link { color: #0000CC; }
+		p, address, pre {margin-left: 3em;}
+		span {font-size: smaller;}
+	--></style>
+</head>
+
+<body>
+<h1>Internal Server Error</h1>
+<p>
+	{$message}
+</p>
+<p>
+	<pre>{$trace}</pre>
+</p>
+</body>
+</html>
+HTML;
+		}
 
 		return $template;
 	}
