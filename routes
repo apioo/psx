@@ -1,0 +1,5 @@
+
+# example routing file
+
+GET / Foobar\Application\Index
+GET|POST /detail Foobar\Application\Detail
