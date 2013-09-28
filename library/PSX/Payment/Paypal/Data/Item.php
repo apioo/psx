@@ -71,12 +71,12 @@ class Item extends RecordAbstract
 		$this->quantity = $quantity;
 	}
 
-	public function getName()
+	public function getItemName()
 	{
 		return $this->name;
 	}
 
-	public function setName($name)
+	public function setItemName($name)
 	{
 		if(strlen($name) > 127)
 		{
