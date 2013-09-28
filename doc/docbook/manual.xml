@@ -30,7 +30,7 @@
 		way you get an ready to use instance of PSX.</para>
 		<programlisting>php composer.phar create-project psx/sample . dev-master</programlisting>
 		<para>If you only want use specific classes of PSX you can also require it via Composer. The package name is 
-		psx/psx. More informations at <ulink url="http://packagist.org/packages/psx/psx">packagist.org</para>
+		psx/psx. More informations at <ulink url="http://packagist.org/packages/psx/psx">packagist.org</ulink></para>
 	</chapter>
 
 	<chapter id="configuration">
