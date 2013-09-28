@@ -34,9 +34,7 @@
 
 	<!-- syntax check of all files -->
 	<target name="syntax-check">
-		<exec dir="${bin}" executable="php" failonerror="true">
-			<arg line="check-syntax.php psx" />
-		</exec>
+		<exec dir="${bin}" executable="check-syntax.bat" failonerror="true" osfamily="windows" />
 	</target>
 
 	<!-- run phpunit tests -->
