@@ -1,4 +1,15 @@
 
+0.7
+* Added get method to TemplateInterface
+* Load template from Resource folder in ViewAbstract
+* Added custom template error config
+* Removed template and module folder
+* Added routing location finder and remove filesystem router
+* Removed constant PSX_PATH_MODULE and PSX_PATH_TEMPLATE
+* Improved paypal library
+* Added http mock and mock capture handler
+* Improved unit tests
+
 0.6.4
 * Add proper clone behavior for select class
 * Set openid request record attributes protected
