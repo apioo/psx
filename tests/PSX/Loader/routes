@@ -1,0 +1,7 @@
+
+# example routing file
+
+GET /foo/bar PSX\Loader\FooModule
+GET /bar/foo PSX\Loader\FooModule
+GET /bar PSX\Loader\BarModule
+POST /bar PSX\Loader\BarModule

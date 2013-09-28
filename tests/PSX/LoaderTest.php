@@ -24,10 +24,10 @@
 namespace PSX;
 
 use ReflectionClass;
-use ReflectionMethod;
-use PSX\Base;
+use PSX\Http\Request;
+use PSX\Url;
 use PSX\Loader\Location;
-use PSX\Loader\LocationFinder\FileSystem;
+use PSX\Loader\LocationFinder\CallbackMethod;
 
 /**
  * LoaderTest
@@ -38,94 +38,100 @@ use PSX\Loader\LocationFinder\FileSystem;
  */
 class LoaderTest extends \PHPUnit_Framework_TestCase
 {
-	protected $loader;
-	protected $path = 'tests/PSX/Loader/module';
-
-	protected function setUp()
+	public function testLoadIndexCall()
 	{
-		$loader = new PublicLoader(getContainer());
-		$loader->setLocationFinder($this->getLocationFinder());
-		$loader->setDefault('foo');
+		$testCase = $this;
 
-		$this->loader = $loader;
+		$loader = new Loader(getContainer());
+		$loader->setLocationFinder(new CallbackMethod(function($path) use ($testCase){
+
+			$testCase->assertEquals('foobar', $path);
+
+			return new Location(md5($path), '/', new ReflectionClass('PSX\Loader\ProbeModule'));
+
+		}));
+
+		$path    = '/foobar';
+		$request = new Request(new Url('http://127.0.0.1' . $path), 'GET');
+		$module  = $loader->load($path, $request);
+
+		$expect = array(
+			'PSX\Loader\ProbeModule::__construct',
+			'PSX\Loader\ProbeModule::getStage',
+			'PSX\Loader\ProbeModule::getRequestFilter',
+			'PSX\Loader\ProbeModule::getStage',
+			'PSX\Loader\ProbeModule::onLoad',
+			'PSX\Loader\ProbeModule::getStage',
+			'PSX\Loader\ProbeModule::onGet',
+			'PSX\Loader\ProbeModule::getStage',
+			'PSX\Loader\ProbeModule::doIndex',
+		);
+
+		$this->assertEquals($expect, $module->getMethodsCalled());
 	}
 
-	protected function tearDown()
+	public function testLoadDetailCall()
 	{
-		unset($this->loader);
+		$testCase = $this;
+
+		$loader = new Loader(getContainer());
+		$loader->setLocationFinder(new CallbackMethod(function($path) use ($testCase){
+
+			$testCase->assertEquals('foobar/detail/12', $path);
+
+			return new Location(md5($path), '/detail/12', new ReflectionClass('PSX\Loader\ProbeModule'));
+
+		}));
+
+		$path    = '/foobar/detail/12';
+		$request = new Request(new Url('http://127.0.0.1' . $path), 'GET');
+		$module  = $loader->load($path, $request);
+
+		$expect = array(
+			'PSX\Loader\ProbeModule::__construct',
+			'PSX\Loader\ProbeModule::getStage',
+			'PSX\Loader\ProbeModule::getRequestFilter',
+			'PSX\Loader\ProbeModule::getStage',
+			'PSX\Loader\ProbeModule::onLoad',
+			'PSX\Loader\ProbeModule::getStage',
+			'PSX\Loader\ProbeModule::onGet',
+			'PSX\Loader\ProbeModule::getStage',
+			'PSX\Loader\ProbeModule::doShowDetails',
+		);
+
+		$this->assertEquals($expect, $module->getMethodsCalled());
+		$this->assertEquals(array('id' => 12), $module->getFragments());
 	}
 
-	protected function getLocationFinder()
+	public function testLoadNewCall()
 	{
-		return new FileSystem($this->path);
-	}
+		$testCase = $this;
 
-	/**
-	 * The resolvePath method returns an array with the following values:
-	 *
-	 * <code>
-	 * array(
-	 * 	$location, // the location object returned by the location finder
-	 * 	$method, // the method wich is called or false
-	 * 	$uriFragments, // the uri fragments as array
-	 * )
-	 * </code>
-	 */
-	public function testResolvePath()
-	{
-		list($location, $method, $uriFragments) = $this->loader->resolvePathPublic('foo');
+		$loader = new Loader(getContainer());
+		$loader->setLocationFinder(new CallbackMethod(function($path) use ($testCase){
 
-		$this->assertEquals(true, $location instanceof Location);
-		$this->assertEquals(true, $location->getId() != "");
-		$this->assertEquals('', $location->getPath());
-		$this->assertEquals(true, $location->getClass() instanceof ReflectionClass);
-		$this->assertEquals('foo', $location->getClass()->getName());
-		$this->assertEquals(false, $method);
-		$this->assertEquals(array(), $uriFragments);
+			$testCase->assertEquals('foobar/new', $path);
 
-		list($location, $method, $uriFragments) = $this->loader->resolvePathPublic('foo/test');
+			return new Location(md5($path), '/new', new ReflectionClass('PSX\Loader\ProbeModule'));
 
-		$this->assertEquals(true, $location instanceof Location);
-		$this->assertEquals(true, $location->getId() != "");
-		$this->assertEquals('test', $location->getPath());
-		$this->assertEquals(true, $location->getClass() instanceof ReflectionClass);
-		$this->assertEquals('foo', $location->getClass()->getName());
-		$this->assertEquals(true, $method instanceof ReflectionMethod);
-		$this->assertEquals('test', $method->getName());
-		$this->assertEquals(array('foo' => null), $uriFragments);
+		}));
 
-		list($location, $method, $uriFragments) = $this->loader->resolvePathPublic('foo/test/bar');
+		$path    = '/foobar/new';
+		$request = new Request(new Url('http://127.0.0.1' . $path), 'POST');
+		$module  = $loader->load($path, $request);
 
-		$this->assertEquals(true, $location instanceof Location);
-		$this->assertEquals(true, $location->getId() != "");
-		$this->assertEquals('test/bar', $location->getPath());
-		$this->assertEquals(true, $location->getClass() instanceof ReflectionClass);
-		$this->assertEquals('foo', $location->getClass()->getName());
-		$this->assertEquals(true, $method instanceof ReflectionMethod);
-		$this->assertEquals('test', $method->getName());
-		$this->assertEquals(array('foo' => 'bar'), $uriFragments);
-	}
+		$expect = array(
+			'PSX\Loader\ProbeModule::__construct',
+			'PSX\Loader\ProbeModule::getStage',
+			'PSX\Loader\ProbeModule::getRequestFilter',
+			'PSX\Loader\ProbeModule::getStage',
+			'PSX\Loader\ProbeModule::onLoad',
+			'PSX\Loader\ProbeModule::getStage',
+			'PSX\Loader\ProbeModule::onGet',
+			'PSX\Loader\ProbeModule::getStage',
+			'PSX\Loader\ProbeModule::doInsert',
+		);
 
-	public function testCustomRoutes()
-	{
-		$this->loader->addRoute('.host-meta/well-known', 'foo');
-
-		list($location, $method, $uriFragments) = $this->loader->resolvePathPublic('.host-meta/well-known');
-
-		$this->assertEquals(true, $location instanceof Location);
-		$this->assertEquals(true, $location->getId() != "");
-		$this->assertEquals('', $location->getPath());
-		$this->assertEquals(true, $location->getClass() instanceof ReflectionClass);
-		$this->assertEquals('foo', $location->getClass()->getName());
-		$this->assertEquals(false, $method);
-		$this->assertEquals(array(), $uriFragments);
-	}
-}
-
-class PublicLoader extends Loader
-{
-	public function resolvePathPublic($x)
-	{
-		return $this->resolvePath($x);
+		$this->assertEquals($expect, $module->getMethodsCalled());
 	}
 }

@@ -23,15 +23,38 @@
 
 namespace PSX\Loader;
 
-use PSX\LoaderTest;
+use PSX\ModuleAbstract;
 
 /**
- * FileSystemTest
+ * FooModule
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class FileSystemTest extends LoaderTest
+class FooModule extends ModuleAbstract
 {
+	/**
+	 * @httpMethod GET
+	 * @path /
+	 */
+	public function doIndex()
+	{
+	}
+
+	/**
+	 * @httpMethod GET
+	 * @path /detail/{id}
+	 */
+	public function doShowDetails()
+	{
+	}
+
+	/**
+	 * @httpMethod POST
+	 * @path /new
+	 */
+	public function doInsert()
+	{
+	}
 }

@@ -27,7 +27,7 @@ use PSX\Dispatch\RequestFilterInterface;
 use PSX\Http\Request;
 use PSX\Loader\Location;
 use PSX\Loader\LocationFinderInterface;
-use PSX\Loader\LocationFinder\FileSystem;
+use PSX\Loader\LocationFinder\RoutingFile;
 use PSX\Util\Annotation;
 use ReflectionClass;
 use ReflectionMethod;
@@ -47,7 +47,6 @@ class Loader
 
 	protected $loaded;
 	protected $routes;
-	protected $default;
 
 	protected $locationFinder;
 
@@ -58,12 +57,11 @@ class Loader
 
 		$this->loaded  = array();
 		$this->routes  = array();
-		$this->default = $this->config['psx_module_default'];
 	}
 
 	public function load($path, Request $request)
 	{
-		list($location, $method, $uriFragments) = $this->resolvePath($path);
+		list($location, $method, $uriFragments) = $this->resolvePath($path, $request);
 
 		if(!in_array($location->getId(), $this->loaded))
 		{
@@ -162,16 +160,6 @@ class Loader
 		return isset($this->routes[$key]) ? $this->routes[$key] : false;
 	}
 
-	public function setDefault($default)
-	{
-		$this->default = $default;
-	}
-
-	public function getDefault()
-	{
-		return $this->default;
-	}
-
 	/**
 	 * Sets the strategy howto resolve a path to an location. If no strategy 
 	 * is set the filesystem location finder weill be used.
@@ -192,10 +180,10 @@ class Loader
 	 * the curly brackets with $this->uriFragments['bar'].
 	 *
 	 * @param string $x
-	 * @param integer $deep
+	 * @param PSX\Http\Request $request
 	 * @return array
 	 */
-	protected function resolvePath($x, $deep = 0)
+	protected function resolvePath($x, Request $request)
 	{
 		if(($rewritePath = $this->getRoute($x)) !== false)
 		{
@@ -206,28 +194,20 @@ class Loader
 
 		if($this->locationFinder === null)
 		{
-			$this->locationFinder = new FileSystem($this->config['psx_path_module']);
+			$this->locationFinder = new RoutingFile($this->config['psx_routing']);
 		}
 
 		$location     = $this->locationFinder->resolve($x);
+		$method       = null;
 		$uriFragments = array();
 
 		if($location instanceof Location)
 		{
-			$method = $this->getMethodToCall($location->getClass(), $location->getPath(), $uriFragments);
+			$method = $this->getMethodToCall($location->getClass(), $location->getPath(), $uriFragments, $request);
 		}
 		else
 		{
-			if($deep == 0)
-			{
-				$x = $this->default . '/' . $x;
-
-				return $this->resolvePath($x, ++$deep);
-			}
-			else
-			{
-				throw new Exception('Unkown module "' . $x . '"');
-			}
+			throw new Exception('Unkown module "' . $x . '"', 404);
 		}
 
 		return array(
@@ -237,14 +217,14 @@ class Loader
 		);
 	}
 
-	protected function getMethodToCall(ReflectionClass $class, $path, &$uriFragments)
+	protected function getMethodToCall(ReflectionClass $class, $path, &$uriFragments, Request $request)
 	{
 		// search method wich sould be called
 		$method     = false;
 		$rootMethod = false;
 
 		$realPath = trim($path, '/');
-		$reserved = array('__construct', 'getDependencies', '_ini', 'onLoad', 'onGet', 'onPost', 'onPut', 'onDelete', 'processResponse');
+		$reserved = array('__construct', 'getStage', 'getRequestFilter', 'getResponseFilter', '__call', 'onLoad', 'onGet', 'onPost', 'onPut', 'onDelete', 'processResponse');
 		$methods  = $class->getMethods();
 
 		if(!empty($realPath))
@@ -264,7 +244,7 @@ class Loader
 				$httpMethod  = $doc->getFirstAnnotation('httpMethod');
 				$virtualPath = $doc->getFirstAnnotation('path');
 
-				if(!empty($virtualPath) && $httpMethod == Base::getRequestMethod())
+				if(!empty($virtualPath) && $httpMethod == $request->getMethod())
 				{
 					$match       = true;
 					$virtualPath = trim($virtualPath, '/');
