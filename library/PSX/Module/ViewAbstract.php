@@ -52,35 +52,43 @@ abstract class ViewAbstract extends ModuleAbstract
 
 	public function processResponse($content)
 	{
-		// assign default values
 		$config   = $this->getConfig();
-		$self     = isset($_SERVER['QUERY_STRING']) && !empty($_SERVER['QUERY_STRING']) ? $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING'] : $_SERVER['PHP_SELF'];
-		$url      = $config['psx_url'] . '/' . $config['psx_dispatch'];
-		$location = PSX_PATH_TEMPLATE . '/' . $config['psx_template_dir'];
-		$base     = parse_url($config['psx_url'], PHP_URL_PATH);
-		$render   = round(microtime(true) - $GLOBALS['psx_benchmark'], 6);
-
-		$this->getTemplate()->assign('config', $config);
-		$this->getTemplate()->assign('self', htmlspecialchars($self));
-		$this->getTemplate()->assign('url', $url);
-		$this->getTemplate()->assign('location', $location);
-		$this->getTemplate()->assign('base', $base);
-		$this->getTemplate()->assign('render', $render);
+		$template = $this->getTemplate();
 
 		// set template dir
-		$this->getTemplate()->setDir($location);
+		$template->setDir(PSX_PATH_LIBRARY);
 
 		// set default template if no template is set
-		if(!$this->getTemplate()->hasFile())
+		if(!$template->hasFile())
 		{
-			$file = str_replace('\\', '/', $this->location->getClass()->getName() . '.tpl');
+			$class = str_replace('\\', '/', $this->location->getClass()->getName());
+			$file  = strtolower(substr(strstr($class, 'Application'), 12)) . '.tpl';
+			$path  = strstr($class, 'Application', true) . 'Resource';
 
-			$this->getTemplate()->set($file);
+			$template->set($path . '/' . $file);
 		}
+		else
+		{
+			$file  = $template->get();
+			$path  = strstr($class, 'Application', true) . 'Resource';
+		}
+
+		// assign default values
+		$self   = isset($_SERVER['QUERY_STRING']) && !empty($_SERVER['QUERY_STRING']) ? $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING'] : $_SERVER['PHP_SELF'];
+		$url    = $config['psx_url'] . '/' . $config['psx_dispatch'];
+		$base   = parse_url($config['psx_url'], PHP_URL_PATH);
+		$render = round(microtime(true) - $GLOBALS['psx_benchmark'], 6);
+
+		$template->assign('config', $config);
+		$template->assign('self', htmlspecialchars($self));
+		$template->assign('url', $url);
+		$template->assign('base', $base);
+		$template->assign('render', $render);
+		$template->assign('location', PSX_PATH_LIBRARY . '/' . $path);
 
 		if(empty($content))
 		{
-			if(!($response = $this->getTemplate()->transform()))
+			if(!($response = $template->transform()))
 			{
 				throw new Exception('Error while transforming template');
 			}
