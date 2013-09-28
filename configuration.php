@@ -28,19 +28,15 @@ $config = array(
 	'psx_timezone'            => 'UTC',
 	'psx_gzip'                => false,
 	'psx_debug'               => true,
-	'psx_module_default'      => 'sample',
-	'psx_template_dir'        => 'default',
 
 	'psx_sql_host'            => 'localhost',
 	'psx_sql_user'            => 'root',
 	'psx_sql_pw'              => '',
 	'psx_sql_db'              => 'psx',
 
+	'psx_routing'             => '../routes',
+	'psx_error_template'      => null,
 	'psx_path_cache'          => '../cache',
 	'psx_path_library'        => '../library',
-	'psx_path_module'         => '../module',
-	'psx_path_template'       => '../template',
 
 );
-
-
