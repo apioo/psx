@@ -4,4 +4,3 @@
 GET / PSX\Loader\FooModule
 GET /foo PSX\Loader\BarModule
 GET /foo/foo PSX\Loader\FooModule
-

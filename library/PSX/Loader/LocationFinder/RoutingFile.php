@@ -57,7 +57,7 @@ class RoutingFile implements LocationFinderInterface
 
 			if(!empty($line) && $line[0] != '#')
 			{
-				$parts   = array_filter(explode(' ', $line));
+				$parts   = array_values(array_filter(explode(' ', $line)));
 				$allowed = isset($parts[0]) ? explode('|', $parts[0]) : array();
 				$path    = isset($parts[1]) ? trim($parts[1], '/') : null;
 				$class   = isset($parts[2]) ? $parts[2] : null;

@@ -72,6 +72,21 @@ class RoutingFileTest extends \PHPUnit_Framework_TestCase
 		$module = $this->load('tests/PSX/Loader/routes', '/', 'GET');
 	}
 
+	/**
+	 * @expectedException PSX\Loader\InvalidPathException
+	 */
+	public function testInvalidEmptyRoute()
+	{
+		$module = $this->load('tests/PSX/Loader/routes', '', 'GET');
+	}
+
+	public function testWhitespaceRoute()
+	{
+		$module = $this->load('tests/PSX/Loader/routes', '/whitespace', 'GET');
+
+		$this->assertInstanceOf('PSX\Loader\BarModule', $module);
+	}
+
 	public function testFallbackRoute()
 	{
 		$module = $this->load('tests/PSX/Loader/routes_fallback', '/foo/bar', 'GET');
@@ -87,6 +102,10 @@ class RoutingFileTest extends \PHPUnit_Framework_TestCase
 		$this->assertInstanceOf('PSX\Loader\BarModule', $module);
 
 		$module = $this->load('tests/PSX/Loader/routes_fallback', '/', 'GET');
+
+		$this->assertInstanceOf('PSX\Loader\FooModule', $module);
+
+		$module = $this->load('tests/PSX/Loader/routes_fallback', '', 'GET');
 
 		$this->assertInstanceOf('PSX\Loader\FooModule', $module);
 	}
