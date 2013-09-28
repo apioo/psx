@@ -54,8 +54,6 @@ class Bootstrap
 			// define paths
 			define('PSX_PATH_CACHE', $config['psx_path_cache']);
 			define('PSX_PATH_LIBRARY', $config['psx_path_library']);
-			define('PSX_PATH_MODULE', $config['psx_path_module']);
-			define('PSX_PATH_TEMPLATE', $config['psx_path_template']);
 
 			// error handling
 			if($config['psx_debug'] === true)
