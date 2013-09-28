@@ -15,6 +15,13 @@
 		<git-clone uri="https://github.com/k42b3/psx.git" dest="${build}" />
 	</target>
 
+	<!-- composer install -->
+	<target name="composer-install">
+		<exec dir="${build}" executable="composer.bat" failonerror="true">
+			<arg line="install" />
+		</exec>
+	</target>
+
 	<!-- removes all files wich are not needed in the release -->
 	<target name="clean-git">
 		<delete dir="${build}/.git" />
@@ -46,7 +53,7 @@
 		</delete>
 	</target>
 
-	<target name="build-init" depends="git-clone,get-version,phpunit">
+	<target name="build-init" depends="git-clone,composer-install,get-version,phpunit">
 	</target>
 
 	<target name="build-phar" depends="build-init">
