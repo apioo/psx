@@ -26,21 +26,11 @@
 
 	<chapter id="installation">
 		<title>Installation</title>
-		<para>If you want use PSX fully including the routing mechanism you have to download the framework manually 
-		because the requests must go to the index.php. If you only want use specific classes of PSX you can install it 
-		via Composer.</para>
-		<sect1 id="installation-manual">
-			<title>Manual</title>
-			<para>You can download the current version of psx from the offical website <ulink url="http://phpsx.org">
-			phpsx.org</ulink>. Put the folder on your web or local server. Goto http://host/path/to/psx/public and if 
-			you see a website with the title "Template sample" psx is running successfully.</para>
-		</sect1>
-		<sect1 id="installation-composer">
-			<title>Composer</title>
-			<para>If you use classes of PSX in your application you can add PSX as dependency in your composer.json 
-			file. The package name is psx/psx. More informations at <ulink url="http://packagist.org/packages/psx/psx">
-			packagist.org</ulink>.</para>
-		</sect1>
+		<para>The preferred way of installing PSX is to use composer and install the sample package. With this
+		way you get an ready to use instance of PSX.</para>
+		<programlisting>php composer.phar create-project psx/sample . dev-master</programlisting>
+		<para>If you only want use specific classes of PSX you can also require it via Composer. The package name is 
+		psx/psx. More informations at <ulink url="http://packagist.org/packages/psx/psx">packagist.org</para>
 	</chapter>
 
 	<chapter id="configuration">
@@ -58,12 +48,13 @@
 		<tbody>
 			<row>
 				<entry>psx_url</entry>
-				<entry>The absolute url to the psx public folder (i.e. http://127.0.0.1/psx/public).</entry>
+				<entry>The absolute url to the psx public folder (i.e. http://127.0.0.1/psx/public) or your domain
+				name if you have setup a virutal host wich points to the public folder</entry>
 			</row>
 			<row>
 				<entry>psx_dispatch</entry>
 				<entry>Where we get the input path normally index.php/. If you use .htaccess to redirect all requestst 
-				to the index.php you can also set this to ''.</entry>
+				to the index.php you can also set this to ''</entry>
 			</row>
 			<row>
 				<entry>psx_timezone</entry>
@@ -72,19 +63,11 @@
 			<row>
 				<entry>psx_gzip</entry>
 				<entry>Whether to gzip the output of psx. The content gets only compressed if the browser support 
-				gzip.</entry>
+				gzip</entry>
 			</row>
 			<row>
 				<entry>psx_debug</entry>
-				<entry>Whether psx runs in debug mode or not. If not the error reporting is set to 0.</entry>
-			</row>
-			<row>
-				<entry>psx_module_default</entry>
-				<entry>The module wich is loaded by default</entry>
-			</row>
-			<row>
-				<entry>psx_template_dir</entry>
-				<entry>This is the name of an folder in the template dir</entry>
+				<entry>Whether psx runs in debug mode or not. If not the error reporting is set to 0</entry>
 			</row>
 
 			<row>
@@ -105,31 +88,117 @@
 			</row>
 
 			<row>
+				<entry>psx_routing</entry>
+				<entry>Path to the routing file. Default is ../routes</entry>
+			</row>
+			<row>
+				<entry>psx_error_template</entry>
+				<entry>Path to an error template wich gets displayed if an error occured</entry>
+			</row>
+			<row>
 				<entry>psx_path_cache</entry>
-				<entry>The path to the cache folder. You can set this i.e. to /tmp.</entry>
+				<entry>The path to the cache folder. You can set this i.e. to /tmp</entry>
 			</row>
 			<row>
 				<entry>psx_path_library</entry>
-				<entry>The path to the library folder. If this is null the classes are loaded from the 
-				include_path</entry>
-			</row>
-			<row>
-				<entry>psx_path_module</entry>
-				<entry>The path to the module folder</entry>
-			</row>
-			<row>
-				<entry>psx_path_template</entry>
-				<entry>The path to the template folder</entry>
+				<entry>The path to the library folder</entry>
 			</row>
 		</tbody>
 		</tgroup>
 		</informaltable>
 	</chapter>
 
+	<chapter id="routing">
+		<title>Routing</title>
+		<para>PSX uses by default a simple file based routing mechanism to redirect the incomming requests to a
+		controller. See the file routes. Each routing definition must contain the following informations.</para>
+		<programlisting>[method] [path] [controller]</programlisting>
+		<para>In short that means the http request method, request path and the absolute class name of the controller. 
+		I.e. to create a route wich will be called on GET /foo HTTP/1.1</para>
+		<programlisting>GET /foo Foo\Application\Index</programlisting>
+		<para>It is also possible to specify multiple request methods i.e. GET|POST. If you set a route to / this
+		controller will always be used if no other controller was found. The routing mechanism chooses the route with the
+		most conformance of the path. To explain this here an routing file and below a table to see wich controller
+		gets called.</para>
+		<programlisting>GET / Foo\Application\Index
+GET /foo Foo\Application\Foo</programlisting>
+		<informaltable>
+		<tgroup cols="2">
+		<thead>
+			<row>
+				<entry>Paht</entry>
+				<entry>Controller</entry>
+			</row>
+		</thead>
+		<tbody>
+			<row>
+				<entry>/</entry>
+				<entry>Foo\Application\Index</entry>
+			</row>
+			<row>
+				<entry>/foo</entry>
+				<entry>Foo\Application\Foo</entry>
+			</row>
+			<row>
+				<entry>/foo/bar</entry>
+				<entry>Foo\Application\Foo</entry>
+			</row>
+			<row>
+				<entry>/bar</entry>
+				<entry>Foo\Application\Index</entry>
+			</row>
+		</tbody>
+		</tgroup>
+		</informaltable>
+		<para>You see that also on the request /foo/bar the Foo\Application\Foo controller gets called. This is intended
+		because the controller itself can also specify path methods via annotation to control wich method gets called.
+		This is also the place where you add dynamic placeholders. I.e. if you want have an url like /news/detail/[id]
+		you should add a route /news to the controller and in the controller you should add the following method</para>
+		<programlisting role="php"><![CDATA[
+<?php
+
+namespace Foo\Application;
+
+use PSX\ModuleAbstract;
+
+class News extends ModuleAbstract
+{
+	/**
+	 * @httpMethod GET
+	 * @path /
+	 */
+	public function doIndex()
+	{
+	}
+
+	/**
+	 * @httpMethod GET
+	 * @path /detail/{id}
+	 */
+	public function doDetails()
+	{
+		$id = $this->getUriFragments('id');
+	}
+
+	/**
+	 * @httpMethod POST
+	 * @path /
+	 */
+	public function doNew()
+	{
+	}
+}
+
+]]></programlisting>
+		<para>Another advantage of such a routing file from a security perspective is that you get simply an overview
+		wich endpoints can be requested by your application</para>
+	</chapter>
+
 	<chapter id="developing-restful-api">
 		<title>Developing a RESTful API</title>
 		<para>This is the main chapter of the manual wich explains step by step howto develop a RESTful API based on 
-		PSX. In this example we create a simple news API where you can create and receive news.</para>
+		PSX. In this example we create a simple news API where you can create and receive news. If you have installed 
+		the PSX Sample package this API is already included in the source code.</para>
 		<sect1>
 			<title>Setting up the table</title>
 			<para>For our example we need a simple table called <property>news</property> where all records are 
@@ -154,11 +223,11 @@ CREATE TABLE IF NOT EXISTS `news` (
 			created and the setter methods are called. This is the place where you have to validate the user 
 			data.</para>
 			<example>
-				<title>library/Test/News/Record.php</title>
+				<title>library/Sample/News/Record.php</title>
 				<programlisting role="php"><![CDATA[
 <?php
 
-namespace Test\News;
+namespace Sample\News;
 
 use DateTime;
 use PSX\Data\Record\TableAbstract;
@@ -234,11 +303,11 @@ class Record extends TableAbstract
 			select methods wich are provided by the HandlerAbstract are sufficient for our api so we dont have to add 
 			additional methods.</para>
 			<example>
-				<title>library/Test/News/Handler.php</title>
+				<title>library/Sample/News/Handler.php</title>
 				<programlisting role="php"><![CDATA[
 <?php
 
-namespace Test\News;
+namespace Sample\News;
 
 use PSX\Data\HandlerAbstract;
 
@@ -258,7 +327,7 @@ class Handler extends HandlerAbstract
 			relations to other tables. In this example we have no relation to another table but to give an example the
 			<methodname>getConnection</methodname> method is implemented</para>
 			<example>
-				<title>library/Test/News/Table.php</title>
+				<title>library/Sample/News/Table.php</title>
 				<programlisting role="php"><![CDATA[
 <?php
 
@@ -299,18 +368,20 @@ class Table extends TableAbstract
 		</sect1>
 		<sect1>
 			<title>The API endpoint</title>
-			<para>We create a file called news.php in the module/api folder. This file can be accessed via 
-			http://localhost/index.php/api/news. We define the <methodname>onLoad</methodname> method wich is called 
-			when the module was loaded.</para>
+			<para>We create a file called Index.php in the Sample/News/Api folder. After that we should add the following
+			route.</para>
+			<programlisting>GET|POST /news Sample\News\Api\Index</programlisting>
+			<para>This API can be accessed via http://localhost/index.php/news. We define the <methodname>onLoad</methodname> 
+			method wich is called when the module was loaded.</para>
 			<para>This is now our REST API endpoint where we can make <property>GET</property> and <property>POST
 			</property> requests. You can versioning your API by creating a folder structure i.e. put the news.php in 
 			the folder "v1" and the endpoint url would be http://localhost/index.php/api/v1/news</para>
 			<example>
-				<title>module/api/news.php</title>
+				<title>library/Sample/News/Api/Index.php</title>
 				<programlisting role="php"><![CDATA[
 <?php
 
-namespace api;
+namespace Sample\News\Api;
 
 use DateTime;
 use PSX\Base;
@@ -319,10 +390,10 @@ use PSX\Data\Message;
 use PSX\Data\WriterResult;
 use PSX\Data\WriterInterface;
 use PSX\Module\ApiAbstract;
-use Test\News\Table;
-use Test\News\Handler;
+use Sample\News\Table;
+use Sample\News\Handler;
 
-class news extends ApiAbstract
+class Index extends ApiAbstract
 {
 	public function onLoad()
 	{
@@ -335,12 +406,12 @@ class news extends ApiAbstract
 				<title>Receiving</title>
 				<para>If someone makes an <property>GET</property> request to the endpoint we want return the latest 
 				news. This method creates in general an <classname>PSX\Data\ResultSet</classname> object containing 
-				multiple <classname>Example\News\Record</classname> objects. If we call the <methodname>setResponse
+				multiple <classname>Sample\News\Record</classname> objects. If we call the <methodname>setResponse
 				</methodname> method with the <classname>PSX\Data\ResultSet</classname> object the object is transformed 
 				into the preferred format (wich was set either by the <property>GET</property> parameter "format" or by 
 				the "Accept" header field).</para>
 				<example>
-					<title>module/api/news.php (implement <methodname>getNews</methodname> method)</title>
+					<title>library/Sample/News/Api/Index.php (implement <methodname>getNews</methodname> method)</title>
 					<programlisting role="php"><![CDATA[
 /**
  * @httpMethod GET
@@ -394,7 +465,7 @@ public function getSupportedFields()
 				<para>Because we want create <property>Atom</property> and <property>Rss</property> feeds we have to set 
 				the writer config by overriding the method <methodname>setWriterConfig</methodname>.</para>
 				<example>
-					<title>module/api/news.php (implement <methodname>setWriterConfig</methodname> method)</title>
+					<title>library/Sample/News/Api/Index.php (implement <methodname>setWriterConfig</methodname> method)</title>
 					<programlisting role="php"><![CDATA[
 protected function setWriterConfig(WriterResult $writer)
 {
@@ -403,7 +474,7 @@ protected function setWriterConfig(WriterResult $writer)
 		case WriterInterface::RSS:
 			$title       = 'News';
 			$link        = $this->getConfig()->get('psx_url');
-			$description = 'Example RESTful News API based on PSX ';
+			$description = 'Sample RESTful News API based on PSX ';
 
 			$writer = $writer->getWriter();
 			$writer->setConfig($title, $link, $description);
@@ -425,9 +496,9 @@ protected function setWriterConfig(WriterResult $writer)
 				</example>
 				<para>Because we want that the record can be exported in <property>Atom</property> and <property>Rss
 				</property> we have to specific the method <methodname>export</methodname> in the <classname>
-				Example\News\Record</classname>. By default JSON and XML is supported.</para>
+				Sample\News\Record</classname>. By default JSON and XML is supported.</para>
 				<example>
-					<title>library/Test/News/Record.php (implement <methodname>export</methodname> method)</title>
+					<title>library/Sample/News/Record.php (implement <methodname>export</methodname> method)</title>
 					<programlisting role="php"><![CDATA[
 public function export(WriterResult $result)
 {
@@ -506,10 +577,10 @@ Content-Type: application/xml
 			<sect2>
 				<title>Inserting</title>
 				<para>If someone makes a <property>POST</property> request we want insert the news in the table. We 
-				create a new <classname>Example\News\Record</classname> object and import the request data into the 
+				create a new <classname>Sample\News\Record</classname> object and import the request data into the 
 				record.</para>
 				<example>
-					<title>module/api/news.php (implement <methodname>insertNews</methodname> method)</title>
+					<title>library/Sample/News/Api/Index.php (implement <methodname>insertNews</methodname> method)</title>
 					<programlisting role="php"><![CDATA[
 /**
  * @httpMethod POST
@@ -1106,7 +1177,7 @@ Content-Type: application/json
 		<para>This chapter explains more detailed howto define and import data into records. As example we use the 
 		following <property>News</property> and <property>User</property> records.</para>
 		<example>
-			<title>Example news record</title>
+			<title>Sample news record</title>
 			<programlisting role="php"><![CDATA[
 <?php
 
@@ -1183,7 +1254,7 @@ class News extends RecordAbstract
 			]]></programlisting>
 		</example>
 		<example>
-			<title>Example user record</title>
+			<title>Sample user record</title>
 			<programlisting role="php"><![CDATA[
 <?php
 
