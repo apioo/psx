@@ -51,6 +51,13 @@ interface TemplateInterface
 	public function set($file);
 
 	/**
+	 * Returns the template file wich was set
+	 *
+	 * @return string
+	 */
+	public function get();
+
+	/**
 	 * Returns whether an template file was set or not
 	 *
 	 * @return boolean

@@ -47,6 +47,11 @@ class Template implements TemplateInterface
 		$this->file = $file;
 	}
 
+	public function get()
+	{
+		return $this->file;
+	}
+
 	public function hasFile()
 	{
 		return !empty($this->file);
