@@ -1,4 +1,9 @@
 
+0.7.1
+* Improve template detection
+* Curl handler option to set a proxy
+* Use real request method in oauth authentication filter
+
 0.7
 * Added get method to TemplateInterface
 * Load template from Resource folder in ViewAbstract
