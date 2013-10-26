@@ -122,7 +122,7 @@ class OauthAuthentication implements RequestFilterInterface
 				{
 					$signature = Oauth::getSignature($params['oauth_signature_method']);
 
-					$method = $request->getMethod();
+					$method = $_SERVER['REQUEST_METHOD'];
 					$url    = $request->getUrl();
 					$params = array_merge($params, $_GET);
 
