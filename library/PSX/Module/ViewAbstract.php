@@ -59,18 +59,19 @@ abstract class ViewAbstract extends ModuleAbstract
 		$template->setDir(PSX_PATH_LIBRARY);
 
 		// set default template if no template is set
+		$class = str_replace('\\', '/', $this->location->getClass()->getName());
+
 		if(!$template->hasFile())
 		{
-			$class = str_replace('\\', '/', $this->location->getClass()->getName());
-			$file  = strtolower(substr(strstr($class, 'Application'), 12)) . '.tpl';
-			$path  = strstr($class, 'Application', true) . 'Resource';
+			$file = strtolower(substr(strstr($class, 'Application'), 12)) . '.tpl';
+			$path = strstr($class, 'Application', true) . 'Resource';
 
 			$template->set($path . '/' . $file);
 		}
 		else
 		{
-			$file  = $template->get();
-			$path  = strstr($class, 'Application', true) . 'Resource';
+			$file = $template->get();
+			$path = strstr($class, 'Application', true) . 'Resource';
 		}
 
 		// assign default values
