@@ -212,7 +212,7 @@ class Base
 			else
 			{
 				$url    = new Url($this->self);
-				$method = self::getRequestMethod();
+				$method = $_SERVER['REQUEST_METHOD'];
 				$header = self::getRequestHeader();
 				$body   = self::getRawInput();
 
