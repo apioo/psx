@@ -49,6 +49,7 @@ class Curl implements HandlerInterface
 
 	private $hasFollowLocation;
 	private $caInfo;
+	private $proxy;
 
 	public function __construct()
 	{
@@ -58,6 +59,11 @@ class Curl implements HandlerInterface
 	public function setFollowLocation($followLocation)
 	{
 		$this->hasFollowLocation = (boolean) $followLocation;
+	}
+
+	public function setProxy($proxy)
+	{
+		$this->proxy = $proxy;
 	}
 
 	/**
@@ -81,6 +87,10 @@ class Curl implements HandlerInterface
 		curl_setopt($handle, CURLOPT_CUSTOMREQUEST, $request->getMethod());
 		curl_setopt($handle, CURLINFO_HEADER_OUT, true);
 
+		if(!empty($this->proxy))
+		{
+			curl_setopt($handle, CURLOPT_PROXY, $this->proxy);
+		}
 
 		$header = $request->getHeader();
 
