@@ -24,6 +24,8 @@
 namespace PSX\Payment;
 
 use PSX\Http;
+use PSX\Http\Handler\Mock;
+use PSX\Http\Handler\MockCapture;
 use PSX\Payment\Skrill;
 use PSX\Payment\Skrill\Data;
 use PSX\Url;
@@ -42,7 +44,10 @@ class SkrillTest extends \PHPUnit_Framework_TestCase
 
 	protected function setUp()
 	{
-		$this->http   = new Http();
+		//$mockCapture = new MockCapture('tests/PSX/Payment/skrill_http_fixture.xml');
+		$mock = Mock::getByXmlDefinition('tests/PSX/Payment/skrill_http_fixture.xml');
+
+		$this->http   = new Http($mock);
 		$this->skrill = new Skrill($this->http);
 	}
 
