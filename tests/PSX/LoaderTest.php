@@ -103,20 +103,20 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(array('id' => 12), $module->getFragments());
 	}
 
-	public function testLoadNewCall()
+	public function testLoadInsertCall()
 	{
 		$testCase = $this;
 
 		$loader = new Loader(getContainer());
 		$loader->setLocationFinder(new CallbackMethod(function($path) use ($testCase){
 
-			$testCase->assertEquals('foobar/new', $path);
+			$testCase->assertEquals('foobar', $path);
 
-			return new Location(md5($path), '/new', new ReflectionClass('PSX\Loader\ProbeModule'));
+			return new Location(md5($path), '/', new ReflectionClass('PSX\Loader\ProbeModule'));
 
 		}));
 
-		$path    = '/foobar/new';
+		$path    = '/foobar';
 		$request = new Request(new Url('http://127.0.0.1' . $path), 'POST');
 		$module  = $loader->load($path, $request);
 
@@ -130,6 +130,166 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 			'PSX\Loader\ProbeModule::onGet',
 			'PSX\Loader\ProbeModule::getStage',
 			'PSX\Loader\ProbeModule::doInsert',
+		);
+
+		$this->assertEquals($expect, $module->getMethodsCalled());
+	}
+
+	public function testLoadInsertNestedCall()
+	{
+		$testCase = $this;
+
+		$loader = new Loader(getContainer());
+		$loader->setLocationFinder(new CallbackMethod(function($path) use ($testCase){
+
+			$testCase->assertEquals('foobar/foo', $path);
+
+			return new Location(md5($path), '/foo', new ReflectionClass('PSX\Loader\ProbeModule'));
+
+		}));
+
+		$path    = '/foobar/foo';
+		$request = new Request(new Url('http://127.0.0.1' . $path), 'POST');
+		$module  = $loader->load($path, $request);
+
+		$expect = array(
+			'PSX\Loader\ProbeModule::__construct',
+			'PSX\Loader\ProbeModule::getStage',
+			'PSX\Loader\ProbeModule::getRequestFilter',
+			'PSX\Loader\ProbeModule::getStage',
+			'PSX\Loader\ProbeModule::onLoad',
+			'PSX\Loader\ProbeModule::getStage',
+			'PSX\Loader\ProbeModule::onGet',
+			'PSX\Loader\ProbeModule::getStage',
+			'PSX\Loader\ProbeModule::doInsertNested',
+		);
+
+		$this->assertEquals($expect, $module->getMethodsCalled());
+	}
+
+	public function testLoadUpdateCall()
+	{
+		$testCase = $this;
+
+		$loader = new Loader(getContainer());
+		$loader->setLocationFinder(new CallbackMethod(function($path) use ($testCase){
+
+			$testCase->assertEquals('foobar', $path);
+
+			return new Location(md5($path), '/', new ReflectionClass('PSX\Loader\ProbeModule'));
+
+		}));
+
+		$path    = '/foobar';
+		$request = new Request(new Url('http://127.0.0.1' . $path), 'PUT');
+		$module  = $loader->load($path, $request);
+
+		$expect = array(
+			'PSX\Loader\ProbeModule::__construct',
+			'PSX\Loader\ProbeModule::getStage',
+			'PSX\Loader\ProbeModule::getRequestFilter',
+			'PSX\Loader\ProbeModule::getStage',
+			'PSX\Loader\ProbeModule::onLoad',
+			'PSX\Loader\ProbeModule::getStage',
+			'PSX\Loader\ProbeModule::onGet',
+			'PSX\Loader\ProbeModule::getStage',
+			'PSX\Loader\ProbeModule::doUpdate',
+		);
+
+		$this->assertEquals($expect, $module->getMethodsCalled());
+	}
+
+	public function testLoadUpdateNestedCall()
+	{
+		$testCase = $this;
+
+		$loader = new Loader(getContainer());
+		$loader->setLocationFinder(new CallbackMethod(function($path) use ($testCase){
+
+			$testCase->assertEquals('foobar/foo', $path);
+
+			return new Location(md5($path), '/foo', new ReflectionClass('PSX\Loader\ProbeModule'));
+
+		}));
+
+		$path    = '/foobar/foo';
+		$request = new Request(new Url('http://127.0.0.1' . $path), 'PUT');
+		$module  = $loader->load($path, $request);
+
+		$expect = array(
+			'PSX\Loader\ProbeModule::__construct',
+			'PSX\Loader\ProbeModule::getStage',
+			'PSX\Loader\ProbeModule::getRequestFilter',
+			'PSX\Loader\ProbeModule::getStage',
+			'PSX\Loader\ProbeModule::onLoad',
+			'PSX\Loader\ProbeModule::getStage',
+			'PSX\Loader\ProbeModule::onGet',
+			'PSX\Loader\ProbeModule::getStage',
+			'PSX\Loader\ProbeModule::doUpdateNested',
+		);
+
+		$this->assertEquals($expect, $module->getMethodsCalled());
+	}
+
+	public function testLoadDeleteCall()
+	{
+		$testCase = $this;
+
+		$loader = new Loader(getContainer());
+		$loader->setLocationFinder(new CallbackMethod(function($path) use ($testCase){
+
+			$testCase->assertEquals('foobar', $path);
+
+			return new Location(md5($path), '/', new ReflectionClass('PSX\Loader\ProbeModule'));
+
+		}));
+
+		$path    = '/foobar';
+		$request = new Request(new Url('http://127.0.0.1' . $path), 'DELETE');
+		$module  = $loader->load($path, $request);
+
+		$expect = array(
+			'PSX\Loader\ProbeModule::__construct',
+			'PSX\Loader\ProbeModule::getStage',
+			'PSX\Loader\ProbeModule::getRequestFilter',
+			'PSX\Loader\ProbeModule::getStage',
+			'PSX\Loader\ProbeModule::onLoad',
+			'PSX\Loader\ProbeModule::getStage',
+			'PSX\Loader\ProbeModule::onGet',
+			'PSX\Loader\ProbeModule::getStage',
+			'PSX\Loader\ProbeModule::doDelete',
+		);
+
+		$this->assertEquals($expect, $module->getMethodsCalled());
+	}
+
+	public function testLoadDeleteNestedCall()
+	{
+		$testCase = $this;
+
+		$loader = new Loader(getContainer());
+		$loader->setLocationFinder(new CallbackMethod(function($path) use ($testCase){
+
+			$testCase->assertEquals('foobar/foo', $path);
+
+			return new Location(md5($path), '/foo', new ReflectionClass('PSX\Loader\ProbeModule'));
+
+		}));
+
+		$path    = '/foobar/foo';
+		$request = new Request(new Url('http://127.0.0.1' . $path), 'DELETE');
+		$module  = $loader->load($path, $request);
+
+		$expect = array(
+			'PSX\Loader\ProbeModule::__construct',
+			'PSX\Loader\ProbeModule::getStage',
+			'PSX\Loader\ProbeModule::getRequestFilter',
+			'PSX\Loader\ProbeModule::getStage',
+			'PSX\Loader\ProbeModule::onLoad',
+			'PSX\Loader\ProbeModule::getStage',
+			'PSX\Loader\ProbeModule::onGet',
+			'PSX\Loader\ProbeModule::getStage',
+			'PSX\Loader\ProbeModule::doDeleteNested',
 		);
 
 		$this->assertEquals($expect, $module->getMethodsCalled());

@@ -27,6 +27,7 @@ use PSX\Dispatch;
 use PSX\Http\Request;
 use PSX\Loader;
 use PSX\Loader\Location;
+use PSX\Loader\LocationFinder\CallbackMethod;
 use PSX\ModuleAbstract;
 use ReflectionClass;
 
@@ -50,22 +51,17 @@ class DispatchTest extends \PHPUnit_Framework_TestCase
 
 	public function testRoute()
 	{
-		$loader   = new DummyLoader(getContainer());
+		$loader = new Loader(getContainer());
+		$loader->setLocationFinder(new CallbackMethod(function($path){
+
+			return new Location(md5($path), $path, new ReflectionClass('PSX\DummyModule'));
+
+		}));
+
 		$dispatch = new Dispatch(getContainer()->get('config'), $loader);
 		$response = $dispatch->route(new Request(new Url('http://localhost.com'), 'GET'));
 
 		$this->assertEquals('foo', $response->getBody());
-	}
-}
-
-class DummyLoader extends Loader
-{
-	public function load($path, Request $request)
-	{
-		$module = new DummyModule($this->container, new Location('', $path, new ReflectionClass('\PSX\DummyModule')), $path, array());
-		$module->onLoad();
-
-		return $module;
 	}
 }
 
