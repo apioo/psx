@@ -36,7 +36,7 @@ use UnexpectedValueException;
  */
 class Base
 {
-	const VERSION = '0.7.1';
+	const VERSION = '0.7.2';
 
 	/**
 	 * The current request method
@@ -212,7 +212,7 @@ class Base
 			else
 			{
 				$url    = new Url($this->self);
-				$method = $_SERVER['REQUEST_METHOD'];
+				$method = self::getRequestMethod();
 				$header = self::getRequestHeader();
 				$body   = self::getRawInput();
 

@@ -80,6 +80,10 @@ class OauthAuthenticationTest extends \PHPUnit_Framework_TestCase
 		$oauth = new Oauth(new Http());
 		$value = $oauth->getAuthorizationHeader(new Url('http://localhost/index.php'), self::CONSUMER_KEY, self::CONSUMER_SECRET, self::TOKEN, self::TOKEN_SECRET);
 
+		// set since we use $_SERVER['REQUEST_METHOD'] because we need the real
+		// reques method also if an http method overwrite header was set
+		$_SERVER['REQUEST_METHOD'] = 'GET';
+
 		$request = new Request(new Url('http://localhost/index.php'), 'GET', array('Authorization' => $value));
 
 		$handle->handle($request);
@@ -88,15 +92,13 @@ class OauthAuthenticationTest extends \PHPUnit_Framework_TestCase
 	/**
 	 * @expectedException \PSX\Dispatch\RequestFilter\FailureException
 	 */
-	public function testFailure()
+	public function testFailureEmptyCredentials()
 	{
-		$nonce  = md5(uniqid());
-		$opaque = md5(uniqid());
-		$cnonce = md5(uniqid());
-		$nc     = '00000001';
-
-		$handle = new DigestAccessAuthentication(function($username){
-			return md5($username . ':psx:test');
+		$handle = new OauthAuthentication(function($consumerKey, $token){
+			if($consumerKey == self::CONSUMER_KEY && $token == self::TOKEN)
+			{
+				return new Consumer(self::CONSUMER_KEY, self::CONSUMER_SECRET, self::TOKEN, self::TOKEN_SECRET);
+			}
 		});
 
 		$handle->onSuccess(function(){
@@ -111,28 +113,158 @@ class OauthAuthenticationTest extends \PHPUnit_Framework_TestCase
 			throw new MissingException();
 		});
 
-		$handle->setNonce($nonce);
-		$handle->setOpaque($opaque);
+		$oauth = new Oauth(new Http());
+		$value = $oauth->getAuthorizationHeader(new Url('http://localhost/index.php'), '', '', '', '');
 
-		$username = 'foo';
-		$password = 'bar';
+		// set since we use $_SERVER['REQUEST_METHOD'] because we need the real
+		// reques method also if an http method overwrite header was set
+		$_SERVER['REQUEST_METHOD'] = 'GET';
 
-		$ha1      = md5($username . ':psx:' . $password);
-		$ha2      = md5('GET:/index.php');
-		$response = md5($ha1 . ':' . $nonce . ':' . $nc . ':' . $cnonce . ':auth:' . $ha2);
+		$request = new Request(new Url('http://localhost/index.php'), 'GET', array('Authorization' => $value));
 
-		$params = array(
-			'username' => $username,
-			'realm'    => 'psx',
-			'nonce'    => $nonce,
-			'qop'      => 'auth',
-			'nc'       => $nc,
-			'cnonce'   => $cnonce,
-			'response' => $response,
-			'opaque'   => $opaque,
-		);
+		$handle->handle($request);
+	}
 
-		$request = new Request(new Url('http://localhost/index.php'), 'GET', array('Authorization' => 'Digest ' . Authentication::encodeParameters($params)));
+	/**
+	 * @expectedException \PSX\Dispatch\RequestFilter\FailureException
+	 */
+	public function testFailureWrongConsumerKey()
+	{
+		$handle = new OauthAuthentication(function($consumerKey, $token){
+			if($consumerKey == self::CONSUMER_KEY && $token == self::TOKEN)
+			{
+				return new Consumer(self::CONSUMER_KEY, self::CONSUMER_SECRET, self::TOKEN, self::TOKEN_SECRET);
+			}
+		});
+
+		$handle->onSuccess(function(){
+			throw new SuccessException();
+		});
+
+		$handle->onFailure(function(){
+			throw new FailureException();
+		});
+
+		$handle->onMissing(function(){
+			throw new MissingException();
+		});
+
+		$oauth = new Oauth(new Http());
+		$value = $oauth->getAuthorizationHeader(new Url('http://localhost/index.php'), 'foobar', self::CONSUMER_SECRET, self::TOKEN, self::TOKEN_SECRET);
+
+		// set since we use $_SERVER['REQUEST_METHOD'] because we need the real
+		// reques method also if an http method overwrite header was set
+		$_SERVER['REQUEST_METHOD'] = 'GET';
+
+		$request = new Request(new Url('http://localhost/index.php'), 'GET', array('Authorization' => $value));
+
+		$handle->handle($request);
+	}
+
+	/**
+	 * @expectedException \PSX\Dispatch\RequestFilter\FailureException
+	 */
+	public function testFailureWrongConsumerSecret()
+	{
+		$handle = new OauthAuthentication(function($consumerKey, $token){
+			if($consumerKey == self::CONSUMER_KEY && $token == self::TOKEN)
+			{
+				return new Consumer(self::CONSUMER_KEY, self::CONSUMER_SECRET, self::TOKEN, self::TOKEN_SECRET);
+			}
+		});
+
+		$handle->onSuccess(function(){
+			throw new SuccessException();
+		});
+
+		$handle->onFailure(function(){
+			throw new FailureException();
+		});
+
+		$handle->onMissing(function(){
+			throw new MissingException();
+		});
+
+		$oauth = new Oauth(new Http());
+		$value = $oauth->getAuthorizationHeader(new Url('http://localhost/index.php'), self::CONSUMER_KEY, 'foobar', self::TOKEN, self::TOKEN_SECRET);
+
+		// set since we use $_SERVER['REQUEST_METHOD'] because we need the real
+		// reques method also if an http method overwrite header was set
+		$_SERVER['REQUEST_METHOD'] = 'GET';
+
+		$request = new Request(new Url('http://localhost/index.php'), 'GET', array('Authorization' => $value));
+
+		$handle->handle($request);
+	}
+
+	/**
+	 * @expectedException \PSX\Dispatch\RequestFilter\FailureException
+	 */
+	public function testFailureWrongToken()
+	{
+		$handle = new OauthAuthentication(function($consumerKey, $token){
+			if($consumerKey == self::CONSUMER_KEY && $token == self::TOKEN)
+			{
+				return new Consumer(self::CONSUMER_KEY, self::CONSUMER_SECRET, self::TOKEN, self::TOKEN_SECRET);
+			}
+		});
+
+		$handle->onSuccess(function(){
+			throw new SuccessException();
+		});
+
+		$handle->onFailure(function(){
+			throw new FailureException();
+		});
+
+		$handle->onMissing(function(){
+			throw new MissingException();
+		});
+
+		$oauth = new Oauth(new Http());
+		$value = $oauth->getAuthorizationHeader(new Url('http://localhost/index.php'), self::CONSUMER_KEY, self::CONSUMER_SECRET, 'foobar', self::TOKEN_SECRET);
+
+		// set since we use $_SERVER['REQUEST_METHOD'] because we need the real
+		// reques method also if an http method overwrite header was set
+		$_SERVER['REQUEST_METHOD'] = 'GET';
+
+		$request = new Request(new Url('http://localhost/index.php'), 'GET', array('Authorization' => $value));
+
+		$handle->handle($request);
+	}
+
+	/**
+	 * @expectedException \PSX\Dispatch\RequestFilter\FailureException
+	 */
+	public function testFailureWrongTokenSecret()
+	{
+		$handle = new OauthAuthentication(function($consumerKey, $token){
+			if($consumerKey == self::CONSUMER_KEY && $token == self::TOKEN)
+			{
+				return new Consumer(self::CONSUMER_KEY, self::CONSUMER_SECRET, self::TOKEN, self::TOKEN_SECRET);
+			}
+		});
+
+		$handle->onSuccess(function(){
+			throw new SuccessException();
+		});
+
+		$handle->onFailure(function(){
+			throw new FailureException();
+		});
+
+		$handle->onMissing(function(){
+			throw new MissingException();
+		});
+
+		$oauth = new Oauth(new Http());
+		$value = $oauth->getAuthorizationHeader(new Url('http://localhost/index.php'), self::CONSUMER_KEY, self::CONSUMER_SECRET, self::TOKEN, 'foobar');
+
+		// set since we use $_SERVER['REQUEST_METHOD'] because we need the real
+		// reques method also if an http method overwrite header was set
+		$_SERVER['REQUEST_METHOD'] = 'GET';
+
+		$request = new Request(new Url('http://localhost/index.php'), 'GET', array('Authorization' => $value));
 
 		$handle->handle($request);
 	}
@@ -142,8 +274,11 @@ class OauthAuthenticationTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testMissing()
 	{
-		$handle = new DigestAccessAuthentication(function($username){
-			return md5($username . ':psx:test');
+		$handle = new OauthAuthentication(function($consumerKey, $token){
+			if($consumerKey == self::CONSUMER_KEY && $token == self::TOKEN)
+			{
+				return new Consumer(self::CONSUMER_KEY, self::CONSUMER_SECRET, self::TOKEN, self::TOKEN_SECRET);
+			}
 		});
 
 		$handle->onSuccess(function(){
@@ -158,7 +293,14 @@ class OauthAuthenticationTest extends \PHPUnit_Framework_TestCase
 			throw new MissingException();
 		});
 
-		$request = new Request(new Url('http://localhost'), 'GET');
+		$oauth = new Oauth(new Http());
+		$value = $oauth->getAuthorizationHeader(new Url('http://localhost/index.php'), self::CONSUMER_KEY, self::CONSUMER_SECRET, self::TOKEN, self::TOKEN_SECRET);
+
+		// set since we use $_SERVER['REQUEST_METHOD'] because we need the real
+		// reques method also if an http method overwrite header was set
+		$_SERVER['REQUEST_METHOD'] = 'GET';
+
+		$request = new Request(new Url('http://localhost/index.php'), 'GET');
 
 		$handle->handle($request);
 	}
@@ -168,8 +310,11 @@ class OauthAuthenticationTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testMissingWrongType()
 	{
-		$handle = new DigestAccessAuthentication(function($username){
-			return md5($username . ':psx:test');
+		$handle = new OauthAuthentication(function($consumerKey, $token){
+			if($consumerKey == self::CONSUMER_KEY && $token == self::TOKEN)
+			{
+				return new Consumer(self::CONSUMER_KEY, self::CONSUMER_SECRET, self::TOKEN, self::TOKEN_SECRET);
+			}
 		});
 
 		$handle->onSuccess(function(){
@@ -184,7 +329,14 @@ class OauthAuthenticationTest extends \PHPUnit_Framework_TestCase
 			throw new MissingException();
 		});
 
-		$request = new Request(new Url('http://localhost'), 'GET', array('Authorization' => 'Foo'));
+		$oauth = new Oauth(new Http());
+		$value = $oauth->getAuthorizationHeader(new Url('http://localhost/index.php'), self::CONSUMER_KEY, self::CONSUMER_SECRET, self::TOKEN, self::TOKEN_SECRET);
+
+		// set since we use $_SERVER['REQUEST_METHOD'] because we need the real
+		// reques method also if an http method overwrite header was set
+		$_SERVER['REQUEST_METHOD'] = 'GET';
+
+		$request = new Request(new Url('http://localhost/index.php'), 'GET', array('Authorization' => 'Foo'));
 
 		$handle->handle($request);
 	}
