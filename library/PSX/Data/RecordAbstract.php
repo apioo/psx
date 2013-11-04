@@ -118,6 +118,7 @@ abstract class RecordAbstract implements RecordInterface, Serializable
 			case WriterInterface::FORM:
 			case WriterInterface::JSON:
 			case WriterInterface::XML:
+			case WriterInterface::JSONP:
 
 				return $this->getData();
 				break;
