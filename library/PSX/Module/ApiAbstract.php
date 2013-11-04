@@ -110,6 +110,7 @@ abstract class ApiAbstract extends ModuleAbstract
 				break;
 
 			case 'json':
+			case 'jsonp':
 			case 'xml':
 			default:
 				return Sql::FETCH_ASSOC;
@@ -230,15 +231,16 @@ abstract class ApiAbstract extends ModuleAbstract
 		if($writerType === null)
 		{
 			$formats = array(
-				'atom' => Writer\Atom::$mime,
-				'form' => Writer\Form::$mime,
-				'json' => Writer\Json::$mime,
-				'rss'  => Writer\Rss::$mime,
-				'xml'  => Writer\Xml::$mime,
-				'jas'  => Writer\Jas::$mime,
+				'atom'  => Writer\Atom::$mime,
+				'form'  => Writer\Form::$mime,
+				'json'  => Writer\Json::$mime,
+				'rss'   => Writer\Rss::$mime,
+				'xml'   => Writer\Xml::$mime,
+				'jas'   => Writer\Jas::$mime,
+				'jsonp' => Writer\Jsonp::$mime,
 			);
 
-			$format      = isset($_GET['format']) && strlen($_GET['format']) < 16 ? $_GET['format'] : null;
+			$format      = isset($_GET['format']) ? $_GET['format'] : null;
 			$contentType = isset($formats[$format]) ? $formats[$format] : Base::getRequestHeader('Accept');
 			$writerType  = WriterFactory::getWriterTypeByContentType($contentType);
 		}

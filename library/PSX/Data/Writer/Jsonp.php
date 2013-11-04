@@ -21,24 +21,61 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Data;
+namespace PSX\Data\Writer;
+
+use PSX\Data\RecordInterface;
+use PSX\Data\WriterInterface;
+use PSX\Data\WriterResult;
 
 /**
- * WriterInterface
+ * Jsonp
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-interface WriterInterface
+class Jsonp extends Json
 {
-	const ATOM  = 0x1;
-	const FORM  = 0x2;
-	const JSON  = 0x4;
-	const RSS   = 0x8;
-	const XML   = 0x10;
-	const JAS   = 0x20;
-	const JSONP = 0x40;
+	public static $mime = 'application/javascript';
 
-	public function write(RecordInterface $record);
+	protected $callbackName;
+
+	public function write(RecordInterface $record)
+	{
+		$callbackName = $this->getCallbackName();
+
+		if(!empty($callbackName))
+		{
+			echo $callbackName . '(';
+			parent::write($record);
+			echo ')';
+		}
+		else
+		{
+			parent::write($record);
+		}
+	}
+
+	public function getCallbackName()
+	{
+		if($this->callbackName === null)
+		{
+			$callbackName = isset($_GET['callback']) ? $_GET['callback'] : null;
+
+			if(!empty($callbackName))
+			{
+				$this->setCallbackName($callbackName);
+			}
+		}
+
+		return $this->callbackName;
+	}
+
+	public function setCallbackName($callbackName)
+	{
+		if(preg_match('/^([A-Za-z0-9._]{3,32})$/', $callbackName))
+		{
+			$this->callbackName = $callbackName;
+		}
+	}
 }

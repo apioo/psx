@@ -65,6 +65,11 @@ class WriterFactory
 				$writerType = WriterInterface::JAS;
 				break;
 
+			case (stripos($contentType, Writer\Jsonp::$mime) !== false):
+
+				$writerType = WriterInterface::JSONP;
+				break;
+
 			default:
 			case (stripos($contentType, Writer\Json::$mime) !== false):
 
@@ -128,6 +133,13 @@ class WriterFactory
 				header('Content-type: ' . Writer\Jas::$mime);
 
 				$writer = new Writer\Jas();
+				break;
+
+			case WriterInterface::JSONP:
+
+				header('Content-type: ' . Writer\Jsonp::$mime);
+
+				$writer = new Writer\Jsonp();
 				break;
 		}
 
