@@ -21,44 +21,31 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Xrd;
+namespace PSX\Xri\Xrd;
 
+use DateTime;
 use SimpleXMLElement;
 
 /**
- * Status
+ * Expires
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Status
+class Expires extends DateTime
 {
-	public $code;
-	public $cid;
-	public $ceid;
+	protected $value;
 
-	private $value;
-	private $raw;
-
-	public function __construct(SimpleXMLElement $status)
+	public function __construct(SimpleXMLElement $expires)
 	{
-		$this->code  = isset($status['code']) ? intval($status['code']) : false;
-		$this->cid   = isset($status['cid'])  ? strval($status['cid'])  : false;
-		$this->ceid  = isset($status['ceid']) ? strval($status['ceid']) : false;
+		$this->value = (string) $expires;
 
-		$this->value = strval($status);
-		$this->raw   = $status;
+		parent::__construct($this->value);
 	}
 
 	public function getValue()
 	{
 		return $this->value;
 	}
-
-	public function getRaw()
-	{
-		return $this->raw;
-	}
 }
-

@@ -21,7 +21,7 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Xrd;
+namespace PSX\Xri\Xrd;
 
 use SimpleXMLElement;
 
@@ -34,21 +34,20 @@ use SimpleXMLElement;
  */
 class Service
 {
-	private $providerid;
-	private $path;
-	private $mediatype;
-	private $uri;
-	private $redirect;
-	private $ref;
-	private $localid;
-	private $priority;
-	private $raw;
-	private $type       = array();
+	protected $providerid;
+	protected $path;
+	protected $mediatype;
+	protected $redirect;
+	protected $ref;
+	protected $localid;
+	protected $priority;
+
+	protected $uri  = array();
+	protected $type = array();
 
 	public function __construct(SimpleXMLElement $service)
 	{
 		$this->priority = isset($service['priority']) ? intval($service['priority']) : 0;
-		$this->raw      = $service;
 
 		foreach($service->children() as $child)
 		{
@@ -59,15 +58,15 @@ class Service
 				case 'providerid':
 				case 'path':
 				case 'mediatype':
-				case 'uri':
 				case 'redirect':
 				case 'ref':
 				case 'localid':
-					$this->$k = strval($child);
+					$this->$k = trim(strval($child));
 					break;
 
+				case 'uri':
 				case 'type':
-					array_push($this->$k, strval($child));
+					array_push($this->$k, trim(strval($child)));
 					break;
 			}
 		}
@@ -90,6 +89,11 @@ class Service
 
 	public function getUri()
 	{
+		return current($this->uri);
+	}
+
+	public function getUris()
+	{
 		return $this->uri;
 	}
 
@@ -108,19 +112,19 @@ class Service
 		return $this->localid;
 	}
 
-	public function getType()
-	{
-		return $this->type;
-	}
-
 	public function getPriority()
 	{
 		return $this->priority;
 	}
 
-	public function getRaw()
+	public function getType()
 	{
-		return $this->raw;
+		return $this->type;
+	}
+
+	public function hasType($type)
+	{
+		return in_array($type, $this->type);
 	}
 }
 

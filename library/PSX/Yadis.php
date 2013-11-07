@@ -26,6 +26,8 @@ namespace PSX;
 use PSX\Http\GetRequest;
 use PSX\Html\Parse;
 use PSX\Html\Parse\Element;
+use PSX\Xri\Xrd;
+use SimpleXMLElement;
 
 /**
  * Yadis
@@ -110,21 +112,13 @@ class Yadis
 	{
 		$xml = simplexml_load_string($xrds);
 
-		if($xml !== false)
+		if($xml instanceof SimpleXMLElement)
 		{
-			$redirect = isset($xml['redirect']) ? strval($xml['redirect']) : false;
-			$ref      = isset($xml['ref'])      ? strval($xml['ref'])      : false;
-
-			if(isset($xml->XRD))
-			{
-				$xrd = new Xrd($xml->XRD);
-
-				return $xrd;
-			}
+			return Xrd::fromXrds($xml);
 		}
 		else
 		{
-			throw new Exception('We dont receive an valid XRDS document');
+			throw new Exception('Invalid XML document');
 		}
 	}
 

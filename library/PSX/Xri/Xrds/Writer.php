@@ -21,7 +21,7 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Xrds;
+namespace PSX\Xri\Xrds;
 
 use PSX\Xml\WriterInterface;
 use XMLWriter;

@@ -35,9 +35,6 @@ use PSX\Http\Handler\MockCapture;
  */
 class WebfingerTest extends \PHPUnit_Framework_TestCase
 {
-	const URL  = 'http://test.phpsx.org';
-	const ACCT = 'foo@foo.com';
-
 	private $http;
 	private $webfinger;
 
@@ -56,43 +53,49 @@ class WebfingerTest extends \PHPUnit_Framework_TestCase
 		unset($this->http);
 	}
 
-	public function testGetHostMeta()
+	/**
+	 * Test discover from an google endpoint using hostmeta fallback discovery
+	 */
+	public function testDiscoverByEmailHostmeta()
 	{
-		$xrd = $this->webfinger->getHostMeta(new Url(self::URL));
+		$document = $this->webfinger->discoverByEmail('romeda@gmail.com');
 
-		$this->assertEquals($xrd instanceof Webfinger\Xrd, true);
-		$this->assertEquals($xrd->getSubject(), self::URL);
+		$this->assertInstanceOf('PSX\Hostmeta\DocumentAbstract', $document);
+
+		$this->assertEquals('acct:romeda@gmail.com', $document->getSubject());
+		$this->assertEquals(array('http://www.google.com/profiles/romeda'), $document->getAliases());
+
+		$links = $document->getLinks();
+
+		$this->assertEquals(8, count($links));
+
+		$this->assertEquals('http://portablecontacts.net/spec/1.0', $links[0]->getRel());
+		$this->assertEquals('http://www-opensocial.googleusercontent.com/api/people/', $links[0]->getHref());
+
+		$this->assertEquals('http://portablecontacts.net/spec/1.0#me', $links[1]->getRel());
+		$this->assertEquals('http://www-opensocial.googleusercontent.com/api/people/113651174506128852447/', $links[1]->getHref());
+
+		$this->assertEquals('http://webfinger.net/rel/profile-page', $links[2]->getRel());
+		$this->assertEquals('text/plain', $links[2]->getType());
+		$this->assertEquals('http://www.google.com/profiles/romeda', $links[2]->getHref());
 	}
 
-	public function testGetHostMetaFullUrl()
+	/**
+	 * Test discover from an pump.io endpoint wich has an webfinger endpoint
+	 */
+	public function testDiscoverByEmailWebfinger()
 	{
-		$url = self::URL . '/foobar/test?bar=foo#test';
-		$xrd = $this->webfinger->getHostMeta(new Url($url));
+		$document = $this->webfinger->discoverByEmail('test@pumpity.net');
 
-		$this->assertEquals($xrd instanceof Webfinger\Xrd, true);
-		$this->assertEquals($xrd->getSubject(), self::URL);
-	}
+		$this->assertInstanceOf('PSX\Hostmeta\DocumentAbstract', $document);
 
-	public function testGetLrddTemplate()
-	{
-		$template = $this->webfinger->getLrddTemplate(new Url(self::URL));
+		$links = $document->getLinks();
 
-		$this->assertEquals($template, 'http://test.phpsx.org/webfinger/lrdd?uri={uri}');
-	}
+		$this->assertEquals(9, count($links));
 
-	public function testGetLrdd()
-	{
-		$xrd = $this->webfinger->getLrdd('acct:' . self::ACCT, $this->webfinger->getLrddTemplate(new Url(self::URL)));
-
-		$this->assertEquals($xrd instanceof Webfinger\Xrd, true);
-		$this->assertEquals($xrd->getSubject(), 'acct:' . self::ACCT);
-	}
-
-	public function testGetAcctProfile()
-	{
-		$profile = $this->webfinger->getAcctProfile(self::ACCT, $this->webfinger->getLrddTemplate(new Url(self::URL)));
-
-		$this->assertEquals($profile, 'http://test.phpsx.org/profile/foo');
+		$this->assertEquals('http://webfinger.net/rel/profile-page', $links[0]->getRel());
+		$this->assertEquals('text/html', $links[0]->getType());
+		$this->assertEquals('https://pumpity.net/test', $links[0]->getHref());
 	}
 }
 

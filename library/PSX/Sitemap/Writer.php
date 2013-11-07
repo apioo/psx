@@ -125,7 +125,7 @@ class Writer implements WriterInterface
 		$this->close();
 		$this->writer->endDocument();
 
-		return $this->writer->outputMemory();		
+		return $this->writer->outputMemory();
 	}
 
 	public function getWriter()

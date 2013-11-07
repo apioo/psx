@@ -21,38 +21,40 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Xrd;
-
-use SimpleXMLElement;
+namespace PSX\Xri\Xrds;
 
 /**
- * Serverstatus
+ * WriterTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Serverstatus
+class WriterTest extends \PHPUnit_Framework_TestCase
 {
-	public $code;
-
-	private $value;
-	private $raw;
-
-	public function __construct(SimpleXMLElement $serverstatus)
+	public function testWriter()
 	{
-		$this->code  = isset($serverstatus['code']) ? intval($serverstatus['code']) : false;
-		$this->value = strval($serverstatus);
-		$this->raw   = $serverstatus;
-	}
+		$writer = new Writer();
+		$writer->addService('http://www.myopenid.com/server', array('http://specs.openid.net/auth/2.0/signon'));
+		$writer->addService('http://www.myopenid.com/server', array('http://specs.openid.net/auth/2.0/signon'), 20);
 
-	public function getValue()
-	{
-		return $this->value;
-	}
+		$actual   = $writer->toString();
+		$expected = <<<'XML'
+<?xml version="1.0" encoding="UTF-8"?>
+<xrds:XRDS xmlns="xri://$xrd*($v*2.0)" xmlns:xrds="xri://$xrds">
+  <XRD>
+    <Service>
+      <Type>http://specs.openid.net/auth/2.0/signon</Type>
+      <URI>http://www.myopenid.com/server</URI>
+    </Service>
+    <Service priority="20">
+      <Type>http://specs.openid.net/auth/2.0/signon</Type>
+      <URI>http://www.myopenid.com/server</URI>
+    </Service>
+  </XRD>
+</xrds:XRDS>
+XML;
 
-	public function getRaw()
-	{
-		return $this->raw;
+		$this->assertXmlStringEqualsXmlString($expected, $actual);
 	}
 }

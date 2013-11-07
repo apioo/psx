@@ -59,12 +59,13 @@ class YadisTest extends \PHPUnit_Framework_TestCase
 	{
 		$xrd = $this->yadis->discover(new Url(self::URL));
 
-		$this->assertEquals(true, $xrd instanceof Xrd);
+		$this->assertInstanceOf('PSX\Xri\Xrd', $xrd);
 
-		$service = current($xrd->service);
-		$type    = current($service->getType());
+		$service = $xrd->getService();
 
-		$this->assertEquals('http://test.phpsx.org', $service->getUri());
-		$this->assertEquals('http://ns.test.phpsx.org/2011/test', $type);
+		$this->assertEquals(1, count($service));
+		$this->assertInstanceOf('PSX\Xri\Xrd\Service', $service[0]);
+		$this->assertEquals('http://test.phpsx.org', $service[0]->getUri());
+		$this->assertEquals(array('http://ns.test.phpsx.org/2011/test'), $service[0]->getType());
 	}
 }

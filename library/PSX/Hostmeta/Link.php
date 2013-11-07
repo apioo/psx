@@ -21,39 +21,83 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Xrd;
+namespace PSX\Hostmeta;
 
-use SimpleXMLElement;
+use PSX\Exception;
 
 /**
- * Type
+ * Link
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Type
+class Link
 {
-	public $match;
+	protected $rel;
+	protected $type;
+	protected $href;
+	protected $template;
+	protected $titles;
+	protected $properties;
 
-	private $value;
-	private $raw;
-
-	public function __construct(SimpleXMLElement $type)
+	public function setRel($rel)
 	{
-		$this->match = isset($type['match']) ? strval($type['match']) : false;
-		$this->value = strval($type);
-		$this->raw   = $type;
+		$this->rel = $rel;
+	}
+	
+	public function getRel()
+	{
+		return $this->rel;
 	}
 
-	public function getValue()
+	public function setType($type)
 	{
-		return $this->value;
+		$this->type = $type;
+	}
+	
+	public function getType()
+	{
+		return $this->type;
 	}
 
-	public function getRaw()
+	public function setHref($href)
 	{
-		return $this->raw;
+		$this->href = $href;
+	}
+	
+	public function getHref()
+	{
+		return $this->href;
+	}
+
+	public function setTemplate($template)
+	{
+		$this->template = $template;
+	}
+	
+	public function getTemplate()
+	{
+		return $this->template;
+	}
+
+	public function setTitles($titles)
+	{
+		$this->titles = $titles;
+	}
+	
+	public function getTitles()
+	{
+		return $this->titles;
+	}
+
+	public function setProperties($properties)
+	{
+		$this->properties = $properties;
+	}
+	
+	public function getProperties()
+	{
+		return $this->properties;
 	}
 }
-

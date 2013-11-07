@@ -21,38 +21,35 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Xrd;
+namespace PSX\Xri\Xrd;
 
 use SimpleXMLElement;
 
 /**
- * Localid
+ * Serverstatus
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Localid
+class Serverstatus
 {
-	public $priority;
+	protected $code;
+	protected $value;
 
-	private $value;
-	private $raw;
-
-	public function __construct(SimpleXMLElement $localid)
+	public function __construct(SimpleXMLElement $serverstatus)
 	{
-		$this->priority = isset($localid['priority']) ? intval($localid['priority']) : 0;
-		$this->value    = strval($localid);
-		$this->raw      = $localid;
+		$this->code  = isset($serverstatus['code']) ? intval($serverstatus['code']) : null;
+		$this->value = strval($serverstatus);
+	}
+
+	public function getCode()
+	{
+		return $this->code;
 	}
 
 	public function getValue()
 	{
 		return $this->value;
-	}
-
-	public function getRaw()
-	{
-		return $this->raw;
 	}
 }

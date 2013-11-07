@@ -21,35 +21,50 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Xrd;
+namespace PSX\Xri\Xrd;
 
 use SimpleXMLElement;
 
 /**
- * Expires
+ * Status
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Expires
+class Status
 {
-	private $value;
-	private $raw;
+	protected $code;
+	protected $cid;
+	protected $ceid;
+	protected $value;
 
-	public function __construct(SimpleXMLElement $expires)
+	public function __construct(SimpleXMLElement $status)
 	{
-		$this->value = strval($expires);
-		$this->raw   = $expires;
+		$this->code  = isset($status['code']) ? intval($status['code']) : null;
+		$this->cid   = isset($status['cid'])  ? strval($status['cid'])  : null;
+		$this->ceid  = isset($status['ceid']) ? strval($status['ceid']) : null;
+		$this->value = strval($status);
+	}
+
+	public function getCode()
+	{
+		return $this->code;
+	}
+
+	public function getCid()
+	{
+		return $this->cid;
+	}
+
+	public function getCeId()
+	{
+		return $this->ceid;
 	}
 
 	public function getValue()
 	{
 		return $this->value;
 	}
-
-	public function getRaw()
-	{
-		return $this->raw;
-	}
 }
+
