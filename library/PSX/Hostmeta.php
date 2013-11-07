@@ -78,14 +78,16 @@ class Hostmeta
 		{
 			$contentType = $response->getHeader('Content-Type');
 
-			if(strpos($contentType, 'application/jrd+json') !== false || strpos($contentType, 'application/json') !== false)
+			if(strpos($contentType, 'application/jrd+json') !== false || 
+				strpos($contentType, 'application/json') !== false)
 			{
 				$jrd = new Jrd();
 				$jrd->import(Json::decode($response->getBody()));
 
 				return $jrd;
 			}
-			else if(strpos($contentType, 'application/xrd+xml') !== false || strpos($contentType, 'application/xml') !== false)
+			else if(strpos($contentType, 'application/xrd+xml') !== false || 
+				strpos($contentType, 'application/xml') !== false)
 			{
 				$xrd = new Xrd();
 				$xrd->import(simplexml_load_string($response->getBody()));
@@ -99,7 +101,7 @@ class Hostmeta
 		}
 		else
 		{
-			throw new Exception('Invalid response code ' . $response->getCode());
+			throw new Exception('Invalid response code ' . $response->getCode() . ' from ' . strval($url));
 		}
 	}
 }

@@ -23,6 +23,7 @@
 
 namespace PSX;
 
+use PSX\Webfinger\ResourceNotFoundException;
 use PSX\Http\Handler\Mock;
 use PSX\Http\Handler\MockCapture;
 
@@ -96,6 +97,33 @@ class WebfingerTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('http://webfinger.net/rel/profile-page', $links[0]->getRel());
 		$this->assertEquals('text/html', $links[0]->getType());
 		$this->assertEquals('https://pumpity.net/test', $links[0]->getHref());
+	}
+
+	/**
+	 * This test simply discovers various identites to test service 
+	 * interoperability
+	 */
+	public function testDiscoverVariousIdentities()
+	{
+		$identities = array(
+			'evalpaul@gmail.com',
+			// yahoo does not follow the spec properly when resolving a template 
+			// the email must provided without acct: scheme also the xrd 
+			// document gets served as text/plain
+			//'mcorne@yahoo.com',
+			'M4dSquirrels@aol.com', 
+			'kevinkleinman@joindiaspora.com', 
+			'test@pumpity.net', 
+			'singpolyma@identi.ca', 
+			'romeda@gmail.com',
+		);
+
+		foreach($identities as $identity)
+		{
+			$document = $this->webfinger->discoverByEmail($identity);
+
+			$this->assertInstanceOf('PSX\Hostmeta\DocumentAbstract', $document);
+		}
 	}
 }
 

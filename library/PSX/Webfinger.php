@@ -83,7 +83,7 @@ class Webfinger
 			}
 		}
 
-		throw new ResourceNotFoundException('Could not discover resource');
+		throw new ResourceNotFoundException(!empty($this->lastError) ? $this->lastError : 'Could not discover resource');
 	}
 
 	public function discoverByEmail($email)
@@ -94,7 +94,7 @@ class Webfinger
 		}
 
 		$host = substr(strstr($email, '@'), 1);
-		$url  = new Url('https://' . $host);
+		$url  = new Url('http://' . $host);
 
 		return $this->discover($url, 'acct:' . $email);
 	}
