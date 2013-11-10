@@ -76,7 +76,7 @@ class RoutingFile implements LocationFinderInterface
 
 		if(!empty($class))
 		{
-			return new Location(md5($class), substr($pathInfo, strlen($path)), new ReflectionClass($class));
+			return new Location(md5($class), substr($pathInfo, key($matches)), new ReflectionClass($class));
 		}
 		else
 		{
