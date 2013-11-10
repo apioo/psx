@@ -64,7 +64,7 @@ abstract class DocumentAbstract
 		return $this->expires;
 	}
 
-	public function setAliases($aliases)
+	public function setAliases(array $aliases)
 	{
 		$this->aliases = $aliases;
 	}
