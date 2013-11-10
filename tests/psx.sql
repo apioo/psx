@@ -81,6 +81,16 @@ CREATE TABLE `psx_session_handler_sql_test` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `psx_sql_table_select_group`
+--
+
+CREATE TABLE IF NOT EXISTS `psx_sql_table_select_group` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `name` varchar(16) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+--
 -- Table structure for table `psx_sql_table_select_news`
 --
 
@@ -105,6 +115,7 @@ DROP TABLE IF EXISTS `psx_sql_table_select_user`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `psx_sql_table_select_user` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
+  `groupId` int(10) NOT NULL,
   `name` varchar(16) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
