@@ -149,105 +149,6 @@ class Select implements SelectInterface
 		return $this;
 	}
 
-	public function getTable()
-	{
-		return $this->table;
-	}
-
-	public function getSql()
-	{
-		return $this->sql;
-	}
-
-	public function getCondition()
-	{
-		return $this->condition;
-	}
-
-	public function getJoins()
-	{
-		return $this->joins;
-	}
-
-	public function getPrefix()
-	{
-		return $this->prefix;
-	}
-
-	public function setPrefix($prefix)
-	{
-		$this->prefix           = $prefix === null ? '__self' : $prefix;
-		$this->selfColumns      = $this->getSelfColumns();
-		$this->availableColumns = $this->selfColumns;
-
-		return $this;
-	}
-
-	public function getColumns()
-	{
-		return $this->columns;
-	}
-
-	public function setColumns(array $columns)
-	{
-		$this->columns         = $columns;
-		$this->selectedColumns = $this->getSelectedColumns();
-
-		return $this;
-	}
-
-	public function getSupportedFields()
-	{
-		return array_keys($this->availableColumns);
-	}
-
-	public function getSelfColumns()
-	{
-		$columns     = array();
-		$selfColumns = $this->table->getColumns();
-
-		foreach($selfColumns as $column => $attr)
-		{
-			$key   = $this->prefix !== '__self' ? $this->prefix . ucfirst($column) : $column;
-			$value = '`' . $this->prefix . '`.`' . $column . '`';
-
-			$columns[$key] = $value;
-		}
-
-		return $columns;
-	}
-
-	public function getAllColumns()
-	{
-		return $this->availableColumns;
-	}
-
-	public function getSelectedColumns()
-	{
-		$selectedColumns = array();
-		$columns         = $this->table->getColumns();
-
-		foreach($this->columns as $column)
-		{
-			if($this->prefix !== '__self' && isset($columns[$column]))
-			{
-				$column = $this->prefix . ucfirst($column);
-			}
-
-			if(isset($this->availableColumns[$column]))
-			{
-				$selectedColumns[$column] = $this->availableColumns[$column];
-			}
-		}
-
-		return $selectedColumns;
-	}
-
-	public function getAllSelectedColumns()
-	{
-		return $this->selectedColumns;
-	}
-
 	public function getAll($mode = 0, $class = null, array $args = array())
 	{
 		if($mode == Sql::FETCH_OBJECT && $class === null)
@@ -287,6 +188,129 @@ class Select implements SelectInterface
 		return (integer) $this->sql->getField($this->buildCountQuery(), $this->condition->getValues());
 	}
 
+	public function getSupportedFields()
+	{
+		return array_keys($this->availableColumns);
+	}
+
+	public function setColumns(array $columns)
+	{
+		$this->columns         = $columns;
+		$this->selectedColumns = $this->getSelectedColumns();
+
+		return $this;
+	}
+
+	public function getColumns()
+	{
+		return $this->columns;
+	}
+
+	public function setSelectedColumns(array $columns)
+	{
+		$selectedColumns = array();
+
+		foreach($columns as $column)
+		{
+			if(isset($this->availableColumns[$column]))
+			{
+				$selectedColumns[$column] = $this->availableColumns[$column];
+			}
+		}
+
+		$this->selectedColumns = $selectedColumns;
+	}
+
+	/**
+	 * Returns the underlying table
+	 *
+	 * @return PSX\Sql\TableInterface
+	 */
+	public function getTable()
+	{
+		return $this->table;
+	}
+
+	/**
+	 * Returns the sql connection from the table
+	 *
+	 * @return PSX\Sql
+	 */
+	public function getSql()
+	{
+		return $this->sql;
+	}
+
+	/**
+	 * Returns the condition
+	 *
+	 * @return PSX\Sql\Condition
+	 */
+	public function getCondition()
+	{
+		return $this->condition;
+	}
+
+	/**
+	 * Returns all available joins
+	 *
+	 * @return PSX\Sql\Join
+	 */
+	public function getJoins()
+	{
+		return $this->joins;
+	}
+
+	/**
+	 * Returns the prefix for this select
+	 *
+	 * @return string
+	 */
+	public function getPrefix()
+	{
+		return $this->prefix;
+	}
+
+	/**
+	 * Set the prefix
+	 *
+	 * @param string $prefix
+	 */
+	public function setPrefix($prefix)
+	{
+		$this->prefix           = $prefix === null ? '__self' : $prefix;
+		$this->selfColumns      = $this->getSelfColumns();
+		$this->availableColumns = $this->selfColumns;
+
+		return $this;
+	}
+
+	/**
+	 * Returns all available columns
+	 *
+	 * @return array
+	 */
+	public function getAllColumns()
+	{
+		return $this->availableColumns;
+	}
+
+	/**
+	 * Returns all selected columns
+	 *
+	 * @return array
+	 */
+	public function getAllSelectedColumns()
+	{
+		return $this->selectedColumns;
+	}
+
+	/**
+	 * Returns the join sql query. Is internally used to build the complete sql
+	 * query
+	 *
+	 * @return string
+	 */
 	public function buildJoins()
 	{
 		$sql = '';
@@ -328,6 +352,43 @@ class Select implements SelectInterface
 	public function __clone()
 	{
 		$this->condition = clone $this->condition;
+	}
+
+	protected function getSelfColumns()
+	{
+		$columns     = array();
+		$selfColumns = $this->table->getColumns();
+
+		foreach($selfColumns as $column => $attr)
+		{
+			$key   = $this->prefix !== '__self' ? $this->prefix . ucfirst($column) : $column;
+			$value = '`' . $this->prefix . '`.`' . $column . '`';
+
+			$columns[$key] = $value;
+		}
+
+		return $columns;
+	}
+
+	protected function getSelectedColumns()
+	{
+		$selectedColumns = array();
+		$columns         = $this->table->getColumns();
+
+		foreach($this->columns as $column)
+		{
+			if($this->prefix !== '__self' && isset($columns[$column]))
+			{
+				$column = $this->prefix . ucfirst($column);
+			}
+
+			if(isset($this->availableColumns[$column]))
+			{
+				$selectedColumns[$column] = $this->availableColumns[$column];
+			}
+		}
+
+		return $selectedColumns;
 	}
 
 	protected function buildQuery()

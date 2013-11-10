@@ -32,28 +32,118 @@ namespace PSX\Sql\Table;
  */
 interface SelectInterface
 {
+	/**
+	 * Joins another table on this selection
+	 *
+	 * @param integer $type
+	 * @param PSX\Sql\TableInterface $table
+	 * @param string $cardinality
+	 * @param string $foreignKey
+	 * @return PSX\Sql\SelectInterface
+	 */
 	public function join($type, $table, $cardinality = 'n:1', $foreignKey = null);
+
+	/**
+	 * Adds a condition to the select
+	 *
+	 * @param string $column
+	 * @param string $operator
+	 * @param string $value
+	 * @param string $conjunction
+	 * @return PSX\Sql\SelectInterface
+	 */
 	public function where($column, $operator, $value, $conjunction = 'AND');
+
+	/**
+	 * Groups the select by the given column
+	 *
+	 * @param string $column
+	 * @return PSX\Sql\SelectInterface
+	 */
 	public function groupBy($column);
+
+	/**
+	 * Orders the result by the given column
+	 *
+	 * @param string $column
+	 * @param integer $sort
+	 * @return PSX\Sql\SelectInterface
+	 */
 	public function orderBy($column, $sort = 0x1);
+
+	/**
+	 * Limits the result
+	 *
+	 * @param integer $start
+	 * @param integer $count
+	 * @return PSX\Sql\SelectInterface
+	 */
 	public function limit($start, $count = null);
 
+	/**
+	 * Returns all results from the given selection
+	 *
+	 * @return array
+	 */
 	public function getAll($mode = 0, $class = null, array $args = array());
+
+	/**
+	 * Returns this first row from the given selection
+	 *
+	 * @return array
+	 */
 	public function getRow($mode = 0, $class = null, array $args = array());
+
+	/**
+	 * Returns an array wich contains the value of each the first column from 
+	 * the given selection
+	 *
+	 * @return array
+	 */
 	public function getCol();
+
+	/**
+	 * Returns the value of the first row and column
+	 *
+	 * @return string
+	 */
 	public function getField();
+
+	/**
+	 * Returns the total result count of the selection
+	 *
+	 * @return integer
+	 */
 	public function getTotalResults();
 
-	public function getTable();
-	public function getSql();
-	public function getCondition();
-	public function setPrefix($prefix);
-	public function setColumns(array $columns);
+	/**
+	 * Returns an array of all supported columns
+	 *
+	 * @return array<string>
+	 */
 	public function getSupportedFields();
-	public function getSelfColumns();
-	public function getAllColumns();
-	public function getSelectedColumns();
-	public function getAllSelectedColumns();
-	public function buildJoins();
+
+	/**
+	 * Selects the specific columns for the table. The columns refers only to
+	 * this table if you want set columns from the complete select use the
+	 * setSelectedColumns method
+	 *
+	 * @param array $columns
+	 */
+	public function setColumns(array $columns);
+
+	/**
+	 * Returns all selected columns
+	 *
+	 * @return array<string>
+	 */
+	public function getColumns();
+
+	/**
+	 * Sets the selected columns
+	 *
+	 * @param array $columns
+	 */
+	public function setSelectedColumns(array $columns);
 }
 
