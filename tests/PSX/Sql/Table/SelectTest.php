@@ -55,8 +55,8 @@ class SelectTest extends DbTestCase
 		));
 
 		$dataSet->addTable(new SelectTestUser($this->sql), array(
-			array('id' => null, 'name' => 'foo'),
-			array('id' => null, 'name' => 'bar'),
+			array('id' => null, 'groupId' => 1, 'name' => 'foo'),
+			array('id' => null, 'groupId' => 1, 'name' => 'bar'),
 		));
 
 		$dataSet->addTable(new SelectTestUserNews($this->sql), array(
@@ -68,10 +68,14 @@ class SelectTest extends DbTestCase
 			array('id' => null, 'userId' => 2, 'newsId' => 2),
 		));
 
+		$dataSet->addTable(new SelectTestGroup($this->sql), array(
+			array('id' => null, 'name' => 'test'),
+		));
+
 		return $dataSet;
 	}
 
-	public function testJoinType()
+	public function testJoin()
 	{
 		// inner
 		$news   = new SelectTestNews($this->sql);
@@ -94,6 +98,108 @@ class SelectTest extends DbTestCase
 			->getAll();
 
 		$this->assertEquals(4, count($result));
+
+		// right
+		$news   = new SelectTestNews($this->sql);
+		$user   = new SelectTestUser($this->sql);
+		$result = $news->select(array('id', 'userId', 'title'))
+			->join(Join::RIGHT, $user
+				->select(array('id', 'name'), 'user')
+			)
+			->getAll();
+
+		$this->assertEquals(3, count($result));
+	}
+
+	public function testWhere()
+	{
+		$news = new SelectTestNews($this->sql);
+
+		// where
+		$result = $news->select(array('id', 'userId', 'title'))
+			->where('userId', '=', 1)
+			->getAll();
+
+		$this->assertEquals(2, count($result));
+
+		// or where
+		$result = $news->select(array('id', 'userId', 'title'))
+			->where('userId', '=', 3, 'OR')
+			->where('userId', '=', 1)
+			->getAll();
+
+		$this->assertEquals(3, count($result));
+
+		// and where
+		$result = $news->select(array('id', 'userId', 'title'))
+			->where('userId', '=', 1, 'AND')
+			->where('title', '=', 'foo')
+			->getAll();
+
+		$this->assertEquals(1, count($result));
+	}
+
+	public function testGroupBy()
+	{
+		$news = new SelectTestNews($this->sql);
+
+		$result = $news->select(array('id', 'userId', 'title'))
+			->groupBy('userId')
+			->getAll();
+
+		$this->assertEquals(3, count($result));
+	}
+
+	public function testOrderBy()
+	{
+		$user = new SelectTestUser($this->sql);
+
+		$result = $user->select(array('id', 'name'))
+			->orderBy('name')
+			->getAll();
+
+		$this->assertEquals('foo', $result[0]['name']);
+		$this->assertEquals('bar', $result[1]['name']);
+
+		$result = $user->select(array('id', 'name'))
+			->orderBy('name', Sql::SORT_ASC)
+			->getAll();
+
+		$this->assertEquals('bar', $result[0]['name']);
+		$this->assertEquals('foo', $result[1]['name']);
+
+		$result = $user->select(array('id', 'name'))
+			->orderBy('name', Sql::SORT_DESC)
+			->getAll();
+
+		$this->assertEquals('foo', $result[0]['name']);
+		$this->assertEquals('bar', $result[1]['name']);
+	}
+
+	public function testLimit()
+	{
+		$user = new SelectTestUser($this->sql);
+
+		$result = $user->select(array('id', 'name'))
+			->limit(1)
+			->getAll();
+
+		$this->assertEquals(1, count($result));
+		$this->assertEquals('foo', $result[0]['name']);
+
+		$result = $user->select(array('id', 'name'))
+			->limit(0, 1)
+			->getAll();
+
+		$this->assertEquals(1, count($result));
+		$this->assertEquals('foo', $result[0]['name']);
+
+		$result = $user->select(array('id', 'name'))
+			->limit(1, 1)
+			->getAll();
+
+		$this->assertEquals(1, count($result));
+		$this->assertEquals('bar', $result[0]['name']);
 	}
 
 	public function testJoinCardinality()
@@ -103,7 +209,7 @@ class SelectTest extends DbTestCase
 		$user     = new SelectTestUser($this->sql);
 		$userNews = new SelectTestUserNews($this->sql);
 
-		$result = $userNews->select(array('userId', 'newsId'))
+		$result = $userNews->select(array('userId'))
 			->join(Join::INNER, $user
 				->select(array('id', 'name'), 'client')
 			)
@@ -210,13 +316,14 @@ class SelectTest extends DbTestCase
 		// custom object
 		$news   = new SelectTestNews($this->sql);
 		$user   = new SelectTestUser($this->sql);
+		$args   = array('foo', 'bar');
 		$result = $news->select(array('id', 'userId', 'title'))
 			->join(Join::INNER, $user
 				->select(array('id', 'name'), 'client')
 			)
 			->orderBy('id', Sql::SORT_DESC)
 			->limit(1)
-			->getAll(Sql::FETCH_OBJECT, '\PSX\Sql\Table\SelectTestRecord', array('foo', 'bar'));
+			->getAll(Sql::FETCH_OBJECT, '\PSX\Sql\Table\SelectTestRecord', $args);
 
 		$row = current($result);
 
@@ -226,6 +333,7 @@ class SelectTest extends DbTestCase
 		$this->assertObjectHasAttribute('title', $row);
 		$this->assertObjectHasAttribute('clientId', $row);
 		$this->assertObjectHasAttribute('clientName', $row);
+		$this->assertEquals($args, $row->getArgs());
 	}
 
 	public function testGetRow()
@@ -267,12 +375,13 @@ class SelectTest extends DbTestCase
 		// custom object
 		$news = new SelectTestNews($this->sql);
 		$user = new SelectTestUser($this->sql);
+		$args = array('foo', 'bar');
 		$row  = $news->select(array('id', 'userId', 'title'))
 			->join(Join::INNER, $user
 				->select(array('id', 'name'), 'client')
 			)
 			->limit(1)
-			->getRow(Sql::FETCH_OBJECT, '\PSX\Sql\Table\SelectTestRecord', array('foo', 'bar'));
+			->getRow(Sql::FETCH_OBJECT, '\PSX\Sql\Table\SelectTestRecord', $args);
 
 		$this->assertInstanceOf('\PSX\Sql\Table\SelectTestRecord', $row);
 		$this->assertObjectHasAttribute('id', $row);
@@ -280,6 +389,63 @@ class SelectTest extends DbTestCase
 		$this->assertObjectHasAttribute('title', $row);
 		$this->assertObjectHasAttribute('clientId', $row);
 		$this->assertObjectHasAttribute('clientName', $row);
+		$this->assertEquals($args, $row->getArgs());
+	}
+
+	public function testDeepJoins()
+	{
+		$news     = new SelectTestNews($this->sql);
+		$userNews = new SelectTestUserNews($this->sql);
+		$user     = new SelectTestUser($this->sql);
+		$group    = new SelectTestGroup($this->sql);
+		$result   = $news->select(array('id', 'userId', 'title'))
+			->join(Join::INNER, $userNews
+				->select(array(), 'userNews')
+				->join(Join::INNER, $user
+					->select(array('name'), 'user')
+					->join(Join::INNER, $group
+						->select(array('name'), 'group')
+					)
+				)
+			, '1:n')
+			->getAll();
+
+		foreach($result as $row)
+		{
+			$this->assertArrayHasKey('id', $row);
+			$this->assertArrayHasKey('userId', $row);
+			$this->assertArrayHasKey('title', $row);
+			$this->assertArrayHasKey('userName', $row);
+			$this->assertArrayHasKey('groupName', $row);
+		}
+	}
+
+	public function testNoPrimaryPrefix()
+	{
+		$news     = new SelectTestNews($this->sql);
+		$userNews = new SelectTestUserNews($this->sql);
+		$user     = new SelectTestUser($this->sql);
+		$group    = new SelectTestGroup($this->sql);
+		$result   = $news->select(array('id', 'userId', 'title'), 'news')
+			->join(Join::INNER, $userNews
+				->select(array(), 'userNews')
+				->join(Join::INNER, $user
+					->select(array('name'))
+					->join(Join::INNER, $group
+						->select(array('name'), 'group')
+					)
+				)
+			, '1:n')
+			->getAll();
+
+		foreach($result as $row)
+		{
+			$this->assertArrayHasKey('newsId', $row);
+			$this->assertArrayHasKey('newsUserId', $row);
+			$this->assertArrayHasKey('newsTitle', $row);
+			$this->assertArrayHasKey('name', $row);
+			$this->assertArrayHasKey('groupName', $row);
+		}
 	}
 }
 
@@ -312,7 +478,9 @@ class SelectTestUser extends TableAbstract
 {
 	public function getConnections()
 	{
-		return array();
+		return array(
+			'groupId' => 'psx_sql_table_select_group',
+		);
 	}
 
 	public function getName()
@@ -323,8 +491,9 @@ class SelectTestUser extends TableAbstract
 	public function getColumns()
 	{
 		return array(
-			'id'   => self::TYPE_INT | 10 | self::PRIMARY_KEY | self::AUTO_INCREMENT,
-			'name' => self::TYPE_VARCHAR | 16,
+			'id'      => self::TYPE_INT | 10 | self::PRIMARY_KEY | self::AUTO_INCREMENT,
+			'groupId' => self::TYPE_INT | 10,
+			'name'    => self::TYPE_VARCHAR | 16,
 		);
 	}
 }
@@ -354,9 +523,34 @@ class SelectTestUserNews extends TableAbstract
 	}
 }
 
-class SelectTestRecord
+class SelectTestGroup extends TableAbstract
 {
-	public function __construct($foo, $bar)
+	public function getName()
 	{
+		return 'psx_sql_table_select_group';
+	}
+
+	public function getColumns()
+	{
+		return array(
+			'id'   => self::TYPE_INT | 10 | self::PRIMARY_KEY | self::AUTO_INCREMENT,
+			'name' => self::TYPE_VARCHAR | 16,
+		);
 	}
 }
+
+class SelectTestRecord
+{
+	protected $args;
+
+	public function __construct($foo, $bar)
+	{
+		$this->args = func_get_args();
+	}
+
+	public function getArgs()
+	{
+		return $this->args;
+	}
+}
+
