@@ -51,6 +51,8 @@ abstract class AuthorizationAbstract
 	protected $clientSecret;
 	protected $type;
 
+	protected $accessTokenClass;
+
 	public function __construct(Http $http, Url $url)
 	{
 		$this->http = $http;
@@ -62,6 +64,18 @@ abstract class AuthorizationAbstract
 		$this->clientId     = $clientId;
 		$this->clientSecret = $clientSecret;
 		$this->type         = $type;
+	}
+
+	/**
+	 * Sets the class wich is created when an access token gets returned. Should
+	 * be an instance of PSX\Oauth2\AccessToken. This can be used to handle 
+	 * custom parameters
+	 *
+	 * @param string $accessTokenClass
+	 */
+	public function setAccessTokenClass($accessTokenClass)
+	{
+		$this->accessTokenClass = $accessTokenClass;
 	}
 
 	/**
@@ -82,10 +96,8 @@ abstract class AuthorizationAbstract
 		}
 
 		$data = array(
-
 			'grant_type'    => 'refresh_token',
 			'refresh_token' => $refreshToken,
-
 		);
 
 		if(!empty($scope))
@@ -115,7 +127,15 @@ abstract class AuthorizationAbstract
 			$reader = new Reader\Json();
 			$result = $reader->read($response);
 
-			$accessToken = new AccessToken();
+			if($this->accessTokenClass != null && class_exists($this->accessTokenClass))
+			{
+				$accessToken = new $this->accessTokenClass();
+			}
+			else
+			{
+				$accessToken = new AccessToken();
+			}
+
 			$accessToken->import($result);
 
 			return $accessToken;
@@ -149,7 +169,15 @@ abstract class AuthorizationAbstract
 			$result = $reader->read($response);
 
 			// import data
-			$accessToken = new AccessToken();
+			if($this->accessTokenClass != null && class_exists($this->accessTokenClass))
+			{
+				$accessToken = new $this->accessTokenClass();
+			}
+			else
+			{
+				$accessToken = new AccessToken();
+			}
+
 			$accessToken->import($result);
 
 			return $accessToken;

@@ -21,52 +21,36 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Oauth2\Authorization;
-
-use PSX\Base;
-use PSX\Oauth2\AuthorizationAbstract;
+namespace PSX\OpenId\Connect;
 
 /**
- * PasswordCredentials
+ * AccessToken
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class PasswordCredentials extends AuthorizationAbstract
+class AccessToken extends \PSX\Oauth2\AccessToken
 {
-	public function getAccessToken($username, $password, $scope = null)
+	protected $idToken;
+
+	public function getFields()
 	{
-		// request data
-		$data = array(
-			'grant_type' => 'password',
-			'username'   => $username,
-			'password'   => $password,
-		);
+		return array_merge(parent::getFields(), array(
+			'id_token' => $this->idToken,
+		));
+	}
 
-		if(isset($scope))
-		{
-			$data['scope'] = $scope;
-		}
-
-		// authentication
-		$header = array(
-			'Accept'     => 'application/json',
-			'User-Agent' => __CLASS__ . ' ' . Base::VERSION,
-		);
-
-		if($this->type == self::AUTH_BASIC)
-		{
-			$header['Authorization'] = 'Basic ' . base64_encode($this->clientId . ':' . $this->clientSecret);
-		}
-
-		if($this->type == self::AUTH_POST)
-		{
-			$data['client_id']     = $this->clientId;
-			$data['client_secret'] = $this->clientSecret;
-		}
-
-		// send request
-		return $this->request($header, $data);
+	/**
+	 * @param PSX\Json\WebToken
+	 */
+	public function setIdToken($idToken)
+	{
+		$this->idToken = $idToken;
+	}
+	
+	public function getIdToken()
+	{
+		return $this->idToken;
 	}
 }

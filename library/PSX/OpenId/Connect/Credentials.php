@@ -21,52 +21,49 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Oauth2\Authorization;
+namespace PSX\OpenId\Connect;
 
-use PSX\Base;
-use PSX\Oauth2\AuthorizationAbstract;
+use PSX\Url;
 
 /**
- * PasswordCredentials
+ * Credentials
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class PasswordCredentials extends AuthorizationAbstract
+class Credentials
 {
-	public function getAccessToken($username, $password, $scope = null)
+	protected $authorizeUrl;
+	protected $accessTokenUrl;
+	protected $clientId;
+	protected $clientSecret;
+
+	public function __construct(Url $authorizeUrl, Url $accessTokenUrl, $clientId, $clientSecret)
 	{
-		// request data
-		$data = array(
-			'grant_type' => 'password',
-			'username'   => $username,
-			'password'   => $password,
-		);
+		$this->authorizeUrl   = $authorizeUrl;
+		$this->accessTokenUrl = $accessTokenUrl;
+		$this->clientId       = $clientId;
+		$this->clientSecret   = $clientSecret;
+	}
 
-		if(isset($scope))
-		{
-			$data['scope'] = $scope;
-		}
+	public function getAuthorizeUrl()
+	{
+		return $this->authorizeUrl;
+	}
 
-		// authentication
-		$header = array(
-			'Accept'     => 'application/json',
-			'User-Agent' => __CLASS__ . ' ' . Base::VERSION,
-		);
+	public function getAccessTokenUrl()
+	{
+		return $this->accessTokenUrl;
+	}
 
-		if($this->type == self::AUTH_BASIC)
-		{
-			$header['Authorization'] = 'Basic ' . base64_encode($this->clientId . ':' . $this->clientSecret);
-		}
+	public function getClientId()
+	{
+		return $this->clientId;
+	}
 
-		if($this->type == self::AUTH_POST)
-		{
-			$data['client_id']     = $this->clientId;
-			$data['client_secret'] = $this->clientSecret;
-		}
-
-		// send request
-		return $this->request($header, $data);
+	public function getClientSecret()
+	{
+		return $this->clientSecret;
 	}
 }

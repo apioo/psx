@@ -36,50 +36,44 @@ use PSX\Url;
  */
 class AuthorizationCode extends AuthorizationAbstract
 {
-	public function getAccessToken($redirectUri = null)
+	public function getAccessToken($code, $redirectUri = null)
 	{
-		$state = isset($_GET['state']) ? $_GET['state'] : null;
-
-		if(!isset($_GET['error']))
-		{
-			// request data
-			$code = isset($_GET['code']) ? $_GET['code'] : null;
-			$data = array(
-
-				'grant_type' => 'authorization_code',
-				'code'       => $code,
-
-			);
-
-			if(isset($redirectUri))
-			{
-				$data['redirect_uri'] = $redirectUri;
-			}
-
-			// authentication
-			$header = array(
-				'Accept'     => 'application/json',
-				'User-Agent' => __CLASS__ . ' ' . Base::VERSION,
-			);
-
-			if($this->type == self::AUTH_BASIC)
-			{
-				$header['Authorization'] = 'Basic ' . base64_encode($this->clientId . ':' . $this->clientSecret);
-			}
-
-			if($this->type == self::AUTH_POST)
-			{
-				$data['client_id']     = $this->clientId;
-				$data['client_secret'] = $this->clientSecret;
-			}
-
-			// send request
-			return $this->request($header, $data);
-		}
-		else
+		// error detection
+		if(isset($_GET['error']))
 		{
 			self::throwErrorException($_GET);
 		}
+
+		// request data
+		$data = array(
+			'grant_type' => 'authorization_code',
+			'code'       => $code,
+		);
+
+		if(isset($redirectUri))
+		{
+			$data['redirect_uri'] = $redirectUri;
+		}
+
+		// authentication
+		$header = array(
+			'Accept'     => 'application/json',
+			'User-Agent' => __CLASS__ . ' ' . Base::VERSION,
+		);
+
+		if($this->type == self::AUTH_BASIC)
+		{
+			$header['Authorization'] = 'Basic ' . base64_encode($this->clientId . ':' . $this->clientSecret);
+		}
+
+		if($this->type == self::AUTH_POST)
+		{
+			$data['client_id']     = $this->clientId;
+			$data['client_secret'] = $this->clientSecret;
+		}
+
+		// send request
+		return $this->request($header, $data);
 	}
 
 	public static function redirect(Url $url, $clientId, $redirectUri = null, $scope = null, $state = null)

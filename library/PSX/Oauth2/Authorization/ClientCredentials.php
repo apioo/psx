@@ -39,9 +39,7 @@ class ClientCredentials extends AuthorizationAbstract
 	{
 		// request data
 		$data = array(
-
 			'grant_type' => 'client_credentials',
-
 		);
 
 		// authentication
