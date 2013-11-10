@@ -23,6 +23,7 @@
 
 namespace PSX\OpenId\Connect;
 
+use Closure;
 use PSX\Base;
 use PSX\Data\RecordStore;
 use PSX\Data\RecordStoreInterface;
