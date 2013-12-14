@@ -16,8 +16,7 @@
   },
   "autoload": {
     "psr-0": {
-      "PSX": "library/",
-      "Foo": "library/"
+      "PSX": "library/"
     }
   }
 }
