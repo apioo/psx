@@ -44,7 +44,6 @@ class Bootstrap
 			$GLOBALS['psx_benchmark'] = microtime(true);
 
 			// setting default headers
-			header('Content-type: text/html; charset=UTF-8');
 			header('X-Powered-By: psx');
 			header('Expires: Thu, 09 Oct 1986 01:00:00 GMT');
 			header('Last-Modified: Thu, 09 Oct 1986 01:00:00 GMT');
