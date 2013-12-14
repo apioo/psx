@@ -212,6 +212,25 @@ abstract class ModuleAbstract
 		$this->container->get('loader')->load($path, $this->base->getRequest());
 	}
 
+	/**
+	 * Sends an location header and exits the application. If path is not an url
+	 * the complete url will be created with the base url from the config
+	 *
+	 * @param string $path
+	 * @param integer $code
+	 */
+	protected function redirect($path, $code = 307)
+	{
+		if(!filter_var($path, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED))
+		{
+			$url = $this->config['psx_url'] . '/' . $this->config['psx_dispatch'] . ltrim($path, '/');
+		}
+
+		Base::setResponseCode($code);
+		header('Location: ' . $url);
+		exit;
+	}
+
 	protected function getMethod()
 	{
 		return Base::getRequestMethod();
@@ -251,7 +270,7 @@ abstract class ModuleAbstract
 		if($this->body === null)
 		{
 			$reader = $this->getRequestReader($readerType);
-			$body   = $reader->getDefaultImporter($record, $reader->read($this->base->getRequest()));
+			$body   = $reader->getDefaultImporter()->import($record, $reader->read($this->base->getRequest()));
 
 			$this->body = $body;
 		}
