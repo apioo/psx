@@ -25,7 +25,9 @@ namespace PSX\Payment\Paypal\Data;
 
 use Countable;
 use Iterator;
+use PSX\Data\CollectionAbstract;
 use PSX\Data\RecordAbstract;
+use PSX\Data\RecordInfo;
 
 /**
  * Payments
@@ -34,27 +36,13 @@ use PSX\Data\RecordAbstract;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Payments extends RecordAbstract implements Iterator, Countable
+class Payments extends CollectionAbstract
 {
-	protected $payments = array();
-
-	private $pointer;
-
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'payments';
-	}
-
-	public function getFields()
-	{
-		return array(
-			'payments' => $this->payments,
-		);
-	}
-
-	public function getPayments()
-	{
-		return $this->payments;
+		return new RecordInfo('payments', array(
+			'payments' => $this->collection,
+		));
 	}
 
 	/**
@@ -62,48 +50,11 @@ class Payments extends RecordAbstract implements Iterator, Countable
 	 */
 	public function setPayments($payments)
 	{
-		$this->payments = $payments;
+		$this->collection = $payments;
 	}
 
-	public function add(Payment $payment)
+	public function getPayments()
 	{
-		$this->payments[] = $payment;
-	}
-
-	public function clear()
-	{
-		return $this->payments = array();
-	}
-
-	// Iterator
-	public function current()
-	{
-		return current($this->payments);
-	}
-
-	public function key()
-	{
-		return key($this->payments);
-	}
-
-	public function next()
-	{
-		return $this->pointer = next($this->payments);
-	}
-
-	public function rewind()
-	{
-		$this->pointer = reset($this->payments);
-	}
-
-	public function valid()
-	{
-		return $this->pointer;
-	}
-
-	// Countable
-	public function count()
-	{
-		return count($this->payments);
+		return $this->payments;
 	}
 }

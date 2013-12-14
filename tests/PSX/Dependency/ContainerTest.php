@@ -55,7 +55,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 		$this->assertInstanceOf('\PSX\Input\Request', $container->get('inputRequest'));
 		$this->assertInstanceOf('\PSX\Loader', $container->get('loader'));
 		//$this->assertInstanceOf('\PSX\Session', $container->get('session'));
-		$this->assertInstanceOf('\PSX\Sql', $container->get('sql'));
+		//$this->assertInstanceOf('\PSX\Sql', $container->get('sql'));
 		$this->assertInstanceOf('\PSX\Template', $container->get('template'));
 		$this->assertInstanceOf('\PSX\Validate', $container->get('validate'));
 	}

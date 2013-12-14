@@ -23,7 +23,8 @@
 
 namespace PSX\OpenSocial\Data;
 
-use PSX\OpenSocial\DataAbstract;
+use PSX\Data\RecordAbstract;
+use PSX\Data\RecordInfo;
 
 /**
  * Address
@@ -32,7 +33,7 @@ use PSX\OpenSocial\DataAbstract;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Address extends DataAbstract
+class Address extends RecordAbstract
 {
 	protected $country;
 	protected $formatted;
@@ -44,15 +45,9 @@ class Address extends DataAbstract
 	protected $streetAddress;
 	protected $type;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'address';
-	}
-
-	public function getFields()
-	{
-		return array(
-
+		return new RecordInfo('address', array(
 			'country'       => $this->country,
 			'formatted'     => $this->formatted,
 			'latitude'      => $this->latitude,
@@ -62,8 +57,7 @@ class Address extends DataAbstract
 			'region'        => $this->region,
 			'streetAddress' => $this->streetAddress,
 			'type'          => $this->type,
-
-		);
+		));
 	}
 
 	/**

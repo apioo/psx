@@ -23,6 +23,7 @@
 
 namespace PSX\Oembed\Type;
 
+use PSX\Data\RecordInfo;
 use PSX\Oembed\TypeAbstract;
 
 /**
@@ -34,13 +35,8 @@ use PSX\Oembed\TypeAbstract;
  */
 class Link extends TypeAbstract
 {
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'link';
-	}
-
-	public function getFields()
-	{
-		return parent::getFields();
+		return new RecordInfo('link', array(), parent::getRecordInfo());
 	}
 }

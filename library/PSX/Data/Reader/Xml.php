@@ -23,9 +23,12 @@
 
 namespace PSX\Data\Reader;
 
-use PSX\Data\ReaderInterface;
+use PSX\Data\ReaderAbstract;
 use PSX\Data\ReaderResult;
+use PSX\Data\Record\DefaultImporter;
 use PSX\Http\Message;
+use PSX\Xml as XmlParser;
+use SimpleXMLElement;
 
 /**
  * Xml
@@ -34,15 +37,41 @@ use PSX\Http\Message;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Xml implements ReaderInterface
+class Xml extends ReaderAbstract
 {
 	public static $mime = 'application/xml';
 
 	public function read(Message $message)
 	{
-		$xml = new \PSX\Xml($message->getBody());
+		$xml = new XmlParser($message->getBody());
 
-		return new ReaderResult(ReaderInterface::XML, $xml);
+		return $this->recToXml((array) $xml);
+	}
+
+	public function isContentTypeSupported($contentType)
+	{
+		return stripos($contentType, self::$mime) !== false;
+	}
+
+	public function getDefaultImporter()
+	{
+		return new DefaultImporter();
+	}
+
+	protected function recToXml(array $element)
+	{
+		foreach($element as $key => $value)
+		{
+			if($value instanceof SimpleXMLElement)
+			{
+				$element[$key] = $this->recToXml((array) $value);
+			}
+			else if(is_array($value))
+			{
+				$element[$key] = $this->recToXml($value);
+			}
+		}
+
+		return $element;
 	}
 }
-

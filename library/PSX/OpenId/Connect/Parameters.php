@@ -23,6 +23,8 @@
 
 namespace PSX\OpenId\Connect;
 
+use InvalidArgumentException;
+use PSX\Data\RecordInfo;
 use PSX\Data\RecordAbstract;
 
 /**
@@ -49,14 +51,9 @@ class Parameters extends RecordAbstract
 	protected $loginHint;
 	protected $acrValues;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'parameters';
-	}
-
-	public function getFields()
-	{
-		return array(
+		return new RecordInfo('parameters', array(
 			'response_type' => $this->responseType,
 			'client_id'     => $this->clientId,
 			'scope'         => $this->scope,
@@ -71,7 +68,7 @@ class Parameters extends RecordAbstract
 			'idTokenHint'   => $this->idTokenHint,
 			'loginHint'     => $this->loginHint,
 			'acrValues'     => $this->acrValues,
-		);
+		));
 	}
 
 	/**
@@ -159,7 +156,7 @@ class Parameters extends RecordAbstract
 	{
 		if(!in_array($display, array('page', 'popup', 'touch', 'wap')))
 		{
-			throw new Exception('Invalid display value');
+			throw new InvalidArgumentException('Invalid display value');
 		}
 
 		$this->display = $display;
@@ -177,7 +174,7 @@ class Parameters extends RecordAbstract
 	{
 		if(!in_array($prompt, array('none', 'login', 'consent', 'select_account')))
 		{
-			throw new Exception('Invalid prompt value');
+			throw new InvalidArgumentException('Invalid prompt value');
 		}
 
 		$this->prompt = $prompt;

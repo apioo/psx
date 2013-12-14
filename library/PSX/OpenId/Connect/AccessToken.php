@@ -34,11 +34,11 @@ class AccessToken extends \PSX\Oauth2\AccessToken
 {
 	protected $idToken;
 
-	public function getFields()
+	public function getRecordInfo()
 	{
-		return array_merge(parent::getFields(), array(
+		return new RecordInfo('token', array(
 			'id_token' => $this->idToken,
-		));
+		), parent::getRecordInfo());
 	}
 
 	/**

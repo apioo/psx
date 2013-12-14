@@ -23,12 +23,12 @@
 
 namespace PSX\Data;
 
+use DateTime;
 use PSX\ActivityStream;
 use PSX\Data\NotSupportedException;
 use PSX\Data\RecordAbstract;
 use PSX\Data\WriterResult;
 use PSX\Data\WriterInterface;
-use PSX\DateTime;
 
 /**
  * WriterTestRecord
@@ -39,87 +39,73 @@ use PSX\DateTime;
  */
 class WriterTestRecord extends RecordAbstract
 {
-	public $id;
-	public $author;
-	public $title;
-	public $content;
-	public $date;
+	protected $id;
+	protected $author;
+	protected $title;
+	protected $content;
+	protected $date;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'record';
-	}
-
-	public function getFields()
-	{
-		return array(
-
+		return new RecordInfo('record', array(
 			'id'      => $this->id,
 			'author'  => $this->author,
 			'title'   => $this->title,
 			'content' => $this->content,
 			'date'    => $this->date,
-
-		);
+		));
 	}
 
+	public function setId($id)
+	{
+		$this->id = $id;
+	}
+	
+	public function getId()
+	{
+		return $this->id;
+	}
+
+	public function setAuthor($author)
+	{
+		$this->author = $author;
+	}
+	
+	public function getAuthor()
+	{
+		return $this->author;
+	}
+
+	public function setTitle($title)
+	{
+		$this->title = $title;
+	}
+	
+	public function getTitle()
+	{
+		return $this->title;
+	}
+
+	public function setContent($content)
+	{
+		$this->content = $content;
+	}
+	
+	public function getContent()
+	{
+		return $this->content;
+	}
+
+	/**
+	 * @param DateTime $date
+	 */
+	public function setDate(DateTime $date)
+	{
+		$this->date = $date;
+	}
+	
 	public function getDate()
 	{
-		return new DateTime($this->date);
-	}
-
-	public function export(WriterResult $result)
-	{
-		switch($result->getType())
-		{
-			case WriterInterface::JSON:
-			case WriterInterface::XML:
-			case WriterInterface::FORM:
-				return $this->getData();
-				break;
-
-			case WriterInterface::ATOM:
-				$entry = $result->getWriter()->createEntry();
-				$entry->setTitle($this->title);
-				$entry->setId($this->id);
-				$entry->setUpdated($this->getDate());
-				$entry->addAuthor($this->author);
-				$entry->setContent($this->content, 'html');
-				return $entry;
-				break;
-
-			case WriterInterface::RSS:
-				$item = $result->getWriter()->createItem();
-				$item->setTitle($this->title);
-				$item->setGuid($this->id);
-				$item->setPubDate($this->getDate());
-				$item->setAuthor($this->author);
-				$item->setDescription($this->content);
-				return $item;
-				break;
-
-			case WriterInterface::JAS:
-				$actor = new ActivityStream\Object();
-				$actor->setObjectType('person');
-				$actor->setDisplayName($this->author);
-
-				$object = new ActivityStream\Object();
-				$object->setDisplayName($this->title);
-				$object->setId($this->id);
-				$object->setObjectType('article');
-				$object->setPublished($this->getDate());
-				$object->setContent($this->content);
-
-				$activity = new ActivityStream\Activity();
-				$activity->setActor($actor);
-				$activity->setVerb('post');
-				$activity->setObject($object);
-				return $activity;
-				break;
-
-			default:
-				throw new NotSupportedException('Writer is not supported');
-				break;
-		}
+		return $this->date;
 	}
 }

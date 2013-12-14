@@ -47,30 +47,27 @@ class XmlTest extends \PHPUnit_Framework_TestCase
 	public function testRead()
 	{
 		$body = <<<INPUT
-<result>
-	<row>
-		<title>foo</title>
-		<user_id>1</user_id>
-		<date>1301507663</date>
-	</row>
-	<row>
-		<title>bar</title>
-		<user_id>2</user_id>
-		<date>1301507667</date>
-	</row>
-</result>
+<test>
+	<foo>bar</foo>
+	<bar>blub</bar>
+	<bar>bla</bar>
+	<test>
+		<foo>bar</foo>
+	</test>
+</test>
 INPUT;
 
 		$reader  = new Xml();
 		$message = new Message(array(), $body);
+		$xml     = $reader->read($message);
 
-		$result = $reader->read($message);
-		$xml    = $result->getData();
+		$expect = array(
+			'foo' => 'bar', 
+			'bar' => array('blub', 'bla'), 
+			'test' => array('foo' => 'bar')
+		);
 
-		$e = new \PSX\Xml($body);
-
-		$this->assertEquals(ReaderInterface::XML, $result->getType());
-		$this->assertEquals(true, $xml instanceof SimpleXMLElement);
-		$this->assertEquals($e, $xml);
+		$this->assertEquals(true, is_array($xml));
+		$this->assertEquals($expect, $xml);
 	}
 }

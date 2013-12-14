@@ -24,7 +24,9 @@
 namespace PSX\Data;
 
 /**
- * FactoryInterface
+ * If an method has as parameter an class wich implements this interface the
+ * data is passed to the factory wich returns an specific RecordInterface. The
+ * data gets then imported into the record
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
@@ -33,10 +35,10 @@ namespace PSX\Data;
 interface FactoryInterface
 {
 	/**
-	 * Returns the object depending on the reader result
+	 * Returns the object depending on the result
 	 *
 	 * @return RecordInterface
 	 */
-	public function factory(ReaderResult $result);
+	public function factory($data);
 }
 

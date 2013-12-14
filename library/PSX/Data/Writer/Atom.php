@@ -24,6 +24,9 @@
 namespace PSX\Data\Writer;
 
 use DateTime;
+use PSX\Atom as AtomRecord;
+use PSX\Atom\Entry;
+use PSX\Atom\Text;
 use PSX\Atom\Writer;
 use PSX\Data\RecordInterface;
 use PSX\Data\ResultSet;
@@ -43,58 +46,170 @@ class Atom implements WriterInterface
 {
 	public static $mime = 'application/atom+xml';
 
-	public $writerResult;
-
-	protected $writer;
-
-	public function setConfig($title, $id, DateTime $updated)
-	{
-		$this->writer = new Writer($title, $id, $updated);
-	}
-
 	public function write(RecordInterface $record)
 	{
-		$this->writerResult = new WriterResult(WriterInterface::ATOM, $this);
-
-		if($record instanceof ResultSet)
+		if($record instanceof AtomRecord)
 		{
-			foreach($record->entry as $entry)
+			$writer = new Writer($record->getTitle(), $record->getId(), $record->getUpdated());
+
+			$this->buildFeed($record, $writer);
+
+			foreach($record as $row)
 			{
-				$entry = $entry->export($this->writerResult);
+				$entry = $writer->createEntry();
+
+				$this->buildEntry($row, $entry);
+
 				$entry->close();
 			}
 
-			echo $this->writer->toString();
+			return $writer->toString();
 		}
-		else
+		else if($record instanceof Entry)
 		{
-			$entry = $record->export($this->writerResult);
+			$writer = new Writer\Entry();
 
-			echo $entry->toString();
+			$this->buildEntry($record, $writer);
+
+			return $writer->toString();
 		}
 	}
 
-	public function createEntry()
+	public function isContentTypeSupported($contentType)
 	{
-		if($this->writer !== null)
+		return stripos($contentType, self::$mime) !== false;
+	}
+
+	public function getContentType()
+	{
+		return self::$mime;
+	}
+
+	protected function buildFeed(AtomRecord $atom, Writer $writer)
+	{
+		$subTitle = $atom->getSubTitle();
+		if(!empty($subTitle))
 		{
-			return $this->writer->createEntry();
+			$writer->setSubTitle($subTitle->getType(), $subTitle->getContent());
 		}
-		else
+
+		foreach($atom->getLink() as $link)
 		{
-			return new Writer\Entry();
+			$writer->addLink($link->getHref(), $link->getRel(), $link->getType(), $link->getHrefLang(), $link->getTitle(), $link->getLength());
+		}
+
+		$rights = $atom->getRights();
+		if(!empty($rights))
+		{
+			$writer->setRights($rights);
+		}
+
+		$generator = $atom->getGenerator();
+		if(!empty($generator))
+		{
+			$writer->setGenerator($generator->getText(), $generator->getUri(), $generator->getVersion());
+		}
+
+		foreach($atom->getAuthor() as $author)
+		{
+			$writer->addAuthor($author->getName(), $author->getUri(), $author->getEmail());
+		}
+
+		foreach($atom->getCategory() as $category)
+		{
+			$writer->addCategory($category->getTerm(), $category->getScheme(), $category->getLabel());
+		}
+
+		foreach($atom->getContributor() as $contributor)
+		{
+			$writer->addContributor($contributor->getName(), $contributor->getUri(), $contributor->getEmail());
+		}
+
+		$icon = $atom->getIcon();
+		if(!empty($icon))
+		{
+			$writer->setIcon($icon);
+		}
+
+		$logo = $atom->getLogo();
+		if(!empty($logo))
+		{
+			$writer->setLogo($logo);
 		}
 	}
 
-	public function __call($name, $args)
+	protected function buildEntry(Entry $entry, Writer\Entry $writer)
 	{
-		if($this->writer !== null)
+		$id = $entry->getId();
+		if(!empty($id))
 		{
-			return call_user_func_array(array($this->writer, $name), $args);
+			$writer->setId($id);
 		}
-		else
+
+		$title = $entry->getTitle();
+		if(!empty($title))
 		{
-			throw new Exception('Writer is not initialized');
+			$writer->setTitle($title);
+		}
+
+		$updated = $entry->getUpdated();
+		if($updated instanceof DateTime)
+		{
+			$writer->setUpdated($updated);
+		}
+
+		$published = $entry->getPublished();
+		if($published instanceof DateTime)
+		{
+			$writer->setPublished($published);
+		}
+
+		foreach($entry->getLink() as $link)
+		{
+			$writer->addLink($link->getHref(), $link->getRel(), $link->getType(), $link->getHrefLang(), $link->getTitle(), $link->getLength());
+		}
+
+		$rights = $entry->getRights();
+		if(!empty($rights))
+		{
+			$entry->setRights($rights);
+		}
+
+		foreach($entry->getAuthor() as $author)
+		{
+			$writer->addAuthor($author->getName(), $author->getUri(), $author->getEmail());
+		}
+
+		foreach($entry->getCategory() as $category)
+		{
+			$writer->addCategory($category->getTerm(), $category->getScheme(), $category->getLabel());
+		}
+
+		foreach($entry->getContributor() as $contributor)
+		{
+			$writer->addContributor($contributor->getName(), $contributor->getUri(), $contributor->getEmail());
+		}
+
+		$content = $entry->getContent();
+		if($content instanceof Text)
+		{
+			$writer->setContent($content->getContent(), $content->getType());
+		}
+
+		$summary = $entry->getSummary();
+		if($summary instanceof Text)
+		{
+			$writer->setSummary($summary->getContent(), $summary->getType());
+		}
+
+		$source = $entry->getSource();
+		if($source instanceof AtomRecord)
+		{
+			$sourceWriter = new Writer($source->getTitle(), $source->getId(), $source->getUpdated(), $writer->getWriter(), 'source', false);
+
+			$this->buildFeed($source, $sourceWriter);
+
+			$sourceWriter->close();
 		}
 	}
 }

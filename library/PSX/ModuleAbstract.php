@@ -277,11 +277,18 @@ abstract class ModuleAbstract
 		if($readerType === null)
 		{
 			$contentType = Base::getRequestHeader('Content-Type');
-			$readerType  = ReaderFactory::getReaderTypeByContentType($contentType);
+
+			$reader = $this->container->get('readerFactory')->getReaderByContentType($contentType);
+		}
+		else
+		{
+			$reader = $this->container->get('readerFactory')->getReaderByInstance($readerType);
 		}
 
-		// get reader
-		$reader = ReaderFactory::getReader($readerType);
+		if($reader === null)
+		{
+			$this->container->get('readerFactory')->getDefaultReader();
+		}
 
 		if($reader === null)
 		{

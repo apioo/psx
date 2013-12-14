@@ -24,6 +24,7 @@
 namespace PSX\Data;
 
 use PSX\Data\Reader;
+use ReflectionException;
 
 /**
  * ReaderFactory
@@ -34,86 +35,41 @@ use PSX\Data\Reader;
  */
 class ReaderFactory
 {
-	public static function getReaderTypeByContentType($contentType)
+	protected $readers = array();
+
+	public function addReader(ReaderInterface $reader, $priority = 0)
 	{
-		$readerType = null;
-
-		switch(true)
-		{
-			case (stripos($contentType, Reader\Form::$mime) !== false):
-
-				$readerType = ReaderInterface::FORM;
-				break;
-
-			case (stripos($contentType, Reader\Multipart::$mime) !== false):
-
-				$readerType = ReaderInterface::MULTIPART;
-				break;
-
-			case (stripos($contentType, Reader\Xml::$mime) !== false):
-
-				$readerType = ReaderInterface::XML;
-				break;
-
-			default:
-			case (stripos($contentType, Reader\Json::$mime) !== false):
-
-				$readerType = ReaderInterface::JSON;
-				break;
-		}
-
-		return $readerType;
+		$this->readers[] = $reader;
 	}
 
-	public static function getReaderByContentType($contentType, $fallbackReaderType = null)
+	public function getDefaultReader()
 	{
-		$reader = self::getReader(self::getReaderTypeByContentType($contentType));
-
-		return $reader !== null ? $reader : self::getReader($fallbackReaderType);
+		return current($this->readers);
 	}
 
-	public static function getReader($readerType)
+	public function getReaderByContentType($contentType)
 	{
-		$reader = null;
-
-		switch($readerType)
+		foreach($this->readers as $reader)
 		{
-			case ReaderInterface::DOM:
-
-				$reader = new Reader\Dom();
-				break;
-
-			case ReaderInterface::FORM:
-
-				$reader = new Reader\Form();
-				break;
-
-			case ReaderInterface::GPC:
-
-				$reader = new Reader\Gpc();
-				break;
-
-			case ReaderInterface::JSON:
-
-				$reader = new Reader\Json();
-				break;
-
-			case ReaderInterface::MULTIPART:
-
-				$reader = new Reader\Multipart();
-				break;
-
-			case ReaderInterface::RAW:
-
-				$reader = new Reader\Raw();
-				break;
-
-			case ReaderInterface::XML:
-
-				$reader = new Reader\Xml();
-				break;
+			if($reader->isContentTypeSupported($contentType))
+			{
+				return $reader;
+			}
 		}
 
-		return $reader;
+		return null;
+	}
+
+	public function getReaderByInstance($className)
+	{
+		foreach($this->readers as $reader)
+		{
+			if($reader instanceof $className)
+			{
+				return $reader;
+			}
+		}
+
+		return null;
 	}
 }

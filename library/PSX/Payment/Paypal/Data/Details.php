@@ -24,6 +24,7 @@
 namespace PSX\Payment\Paypal\Data;
 
 use PSX\Data\RecordAbstract;
+use PSX\Data\RecordInfo;
 
 /**
  * Details
@@ -39,19 +40,14 @@ class Details extends RecordAbstract
 	protected $tax;
 	protected $fee;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'details';
-	}
-
-	public function getFields()
-	{
-		return array(
+		return new RecordInfo('details', array(
 			'shipping' => $this->shipping,
 			'subtotal' => $this->subtotal,
 			'tax'      => $this->tax,
 			'fee'      => $this->fee,
-		);
+		));
 	}
 
 	public function getShipping()

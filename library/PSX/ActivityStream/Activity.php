@@ -24,6 +24,7 @@
 namespace PSX\ActivityStream;
 
 use DateTime;
+use PSX\Data\RecordInfo;
 use PSX\Data\RecordAbstract;
 
 /**
@@ -54,15 +55,9 @@ class Activity extends Object
 	protected $updated;
 	protected $verb;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'activity';
-	}
-
-	public function getFields()
-	{
-		return array_merge(parent::getFields(), array(
-
+		return new RecordInfo('activity', array(
 			'actor'     => $this->actor,
 			'bcc'       => $this->bcc,
 			'bto'       => $this->bto,
@@ -81,8 +76,7 @@ class Activity extends Object
 			'url'       => $this->url,
 			'updated'   => $this->updated !== null ? $this->updated->format(DateTime::RFC3339) : null,
 			'verb'      => $this->verb,
-
-		));
+		), parent::getRecordInfo());
 	}
 
 	/**

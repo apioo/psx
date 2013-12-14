@@ -24,6 +24,7 @@
 namespace PSX\Payment\Paypal\Data;
 
 use PSX\Data\RecordAbstract;
+use PSX\Data\RecordInfo;
 
 /**
  * CreditCard
@@ -46,14 +47,9 @@ class CreditCard extends RecordAbstract
 	protected $state;
 	protected $validUntil;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'creditCard';
-	}
-
-	public function getFields()
-	{
-		return array(
+		return new RecordInfo('credit_card', array(
 			'id'              => $this->id,
 			'number'          => $this->number,
 			'type'            => $this->type,
@@ -65,7 +61,7 @@ class CreditCard extends RecordAbstract
 			'billing_address' => $this->billingAddress,
 			'state'           => $this->state,
 			'valid_until'     => $this->validUntil,
-		);
+		));
 	}
 
 	public function getId()

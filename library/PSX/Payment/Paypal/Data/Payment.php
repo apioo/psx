@@ -24,6 +24,7 @@
 namespace PSX\Payment\Paypal\Data;
 
 use PSX\Data\RecordAbstract;
+use PSX\Data\RecordInfo;
 use DateTime;
 
 /**
@@ -45,14 +46,9 @@ class Payment extends RecordAbstract
 	protected $updateTime;
 	protected $links;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'payment';
-	}
-
-	public function getFields()
-	{
-		return array(
+		return new RecordInfo('payment', array(
 			'intent'        => $this->intent,
 			'payer'         => $this->payer,
 			'redirect_urls' => $this->redirectUrls,
@@ -62,7 +58,7 @@ class Payment extends RecordAbstract
 			'state'         => $this->state,
 			'update_time'   => $this->updateTime,
 			'links'         => $this->links,
-		);
+		));
 	}
 
 	public function getIntent()

@@ -23,6 +23,7 @@
 
 namespace PSX\Html\Lexer;
 
+use PSX\Html\Lexer;
 use PSX\Html\Lexer\Token\Element;
 
 /**
@@ -47,23 +48,23 @@ class Dom
 			{
 				if($token->type == Element::TYPE_START)
 				{
-					array_push($this->stack, $token);
+					if(!$token->isShort() && !in_array($token->name, Lexer::$voidTags))
+					{
+						array_push($this->stack, $token);
+					}
 
 					$topToken->appendChild($token);
 				}
 				else if($token->type == Element::TYPE_END)
 				{
-					if($topToken->name == $token->name)
+					if(in_array($token->name, Lexer::$voidTags))
+					{
+						// if we have an close tag from an void element ignore 
+						// it
+					}
+					else if($topToken->name == $token->name)
 					{
 						array_pop($this->stack);
-					}
-					else
-					{
-						// close the missing tag and hope that the next tokens
-						// gets better
-						$token = Element::parse('/' . $topToken->name);
-
-						$this->push($token);
 					}
 				}
 			}
@@ -74,10 +75,10 @@ class Dom
 		}
 		else
 		{
-			// if the stack is empty add only an element token as root
+			// if the stack is empty add element as root
 			if($token instanceof Element)
 			{
-				$this->stack[] = $this->root = $token;
+				array_push($this->stack, $this->root = $token);
 			}
 		}
 	}

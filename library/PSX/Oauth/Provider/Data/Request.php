@@ -23,9 +23,10 @@
 
 namespace PSX\Oauth\Provider\Data;
 
-use PSX\Data\ReaderResult;
-use PSX\Data\ReaderInterface;
 use PSX\Data\RecordAbstract;
+use PSX\Data\ReaderResult;
+use PSX\Data\RecordInfo;
+use PSX\Data\ReaderInterface;
 use PSX\Data\InvalidDataException;
 use PSX\Data\NotSupportedException;
 use PSX\Filter\Digit;
@@ -43,68 +44,49 @@ use PSX\Validate;
  */
 class Request extends RecordAbstract
 {
-	public $consumerKey;
-	public $token;
-	public $signatureMethod;
-	public $signature;
-	public $timestamp;
-	public $nonce;
-	public $callback;
-	public $version;
-	public $verifier;
+	protected $consumerKey;
+	protected $token;
+	protected $signatureMethod;
+	protected $signature;
+	protected $timestamp;
+	protected $nonce;
+	protected $callback;
+	protected $version;
+	protected $verifier;
 
-	private $validate;
-	private $requiredFields;
-	private $map = array(
-
-		'consumerKey'     => 'consumer_key',
-		'token'           => 'token',
-		'signatureMethod' => 'signature_method',
-		'signature'       => 'signature',
-		'timestamp'       => 'timestamp',
-		'nonce'           => 'nonce',
-		'callback'        => 'callback',
-		'version'         => 'version',
-		'verifier'        => 'verifier'
-
-	);
-
-	public function __construct()
+	public function getRecordInfo()
 	{
-		$this->validate = new Validate();
-	}
-
-	public function getName()
-	{
-		return 'request';
-	}
-
-	public function getFields()
-	{
-		$fields = array();
-
-		foreach($this->map as $k => $v)
-		{
-			$key   = 'oauth_' . $v;
-			$value = $this->$k;
-
-			if(!empty($value))
-			{
-				$fields[$key] = $value;
-			}
-		}
-
-		return $fields;
+		return new RecordInfo('request', array(
+			'consumer_key'     => $this->consumerKey,
+			'token'            => $this->token,
+			'signature_method' => $this->signatureMethod,
+			'signature'        => $this->signature,
+			'timestamp'        => $this->timestamp,
+			'nonce'            => $this->nonce,
+			'callback'         => $this->callback,
+			'version'          => $this->version,
+			'verifier'         => $this->verifier
+		));
 	}
 
 	public function setConsumerKey($consumerKey)
 	{
 		$this->consumerKey = $consumerKey;
 	}
+	
+	public function getConsumerKey()
+	{
+		return $this->consumerKey;
+	}
 
 	public function setToken($token)
 	{
 		$this->token = $token;
+	}
+	
+	public function getToken()
+	{
+		return $this->token;
 	}
 
 	public function setSignatureMethod($signatureMethod)
@@ -123,91 +105,14 @@ class Request extends RecordAbstract
 		}
 	}
 
-	public function setSignature($signature)
-	{
-		$this->signature = $signature;
-	}
-
-	public function setTimestamp($timestamp)
-	{
-		// currenty a timestamp has 10 signs i.e. 1256852759 in ca 300
-		// years we get a timestamp that has 11 signs ... because of
-		// that we check without considering whether the timestamp has
-		// 10 signs ... should be future safe xD ... if many websites
-		// uses in the future psx and they get problems because of that
-		// ... shame on me ^^
-		$timestamp = $this->validate->apply($timestamp, 'string', array(new Length(10, 10), new Digit()), 'timestamp', 'Timestamp');
-
-		if(!$this->validate->hasError())
-		{
-			$this->timestamp = $timestamp;
-		}
-		else
-		{
-			throw new InvalidDataException($this->validate->getLastError());
-		}
-	}
-
-	public function setNonce($nonce)
-	{
-		$this->nonce = $nonce;
-	}
-
-	public function setCallback($callback)
-	{
-		if($callback == 'oob')
-		{
-			// callback was set "out of bound" ... we get the url
-			// later from the consumer object
-			$this->callback = 'oob';
-		}
-		else
-		{
-			$callback = $this->validate->apply($callback, 'string', array(new Length(7, 256), new Url()), 'callback', 'Callback');
-
-			if(!$this->validate->hasError())
-			{
-				$this->callback = $callback;
-			}
-			else
-			{
-				throw new InvalidDataException($this->validate->getLastError());
-			}
-		}
-	}
-
-	public function setVersion($version)
-	{
-		$this->version = $version;
-	}
-
-	public function setVerifier($verifier)
-	{
-		$verifier = $this->validate->apply($verifier, 'string', array(new Length(16, 512)), 'verifier', 'Verifier');
-
-		if(!$this->validate->hasError())
-		{
-			$this->verifier = $verifier;
-		}
-		else
-		{
-			throw new InvalidDataException($this->validate->getLastError());
-		}
-	}
-
-	public function getConsumerKey()
-	{
-		return $this->consumerKey;
-	}
-
-	public function getToken()
-	{
-		return $this->token;
-	}
-
 	public function getSignatureMethod()
 	{
 		return $this->signatureMethod;
+	}
+
+	public function setSignature($signature)
+	{
+		$this->signature = $signature;
 	}
 
 	public function getSignature()
@@ -215,9 +120,35 @@ class Request extends RecordAbstract
 		return $this->signature;
 	}
 
+	/**
+	 * Currenty a timestamp has 10 signs i.e. 1256852759 in ca 300 years we get 
+	 * a timestamp that has 11 signs ... because of that we check without 
+	 * consideration whether the timestamp has 10 signs ... should be future 
+	 * safe if many websites uses in the future psx and they get problems 
+	 * because of that ... shame on me ^^
+	 *
+	 * @param integer $timestamp
+	 */
+	public function setTimestamp($timestamp)
+	{
+		if(is_numeric($timestamp) && strlen($timestamp) == 10)
+		{
+			$this->timestamp = $timestamp;
+		}
+		else
+		{
+			throw new InvalidDataException('Invalid timestamp format');
+		}
+	}
+
 	public function getTimestamp()
 	{
 		return $this->timestamp;
+	}
+
+	public function setNonce($nonce)
+	{
+		$this->nonce = $nonce;
 	}
 
 	public function getNonce()
@@ -225,14 +156,49 @@ class Request extends RecordAbstract
 		return $this->nonce;
 	}
 
+	public function setCallback($callback)
+	{
+		if($callback == 'oob')
+		{
+			// callback was set "out of bound" ... we get the url later from the 
+			// consumer object
+			$this->callback = 'oob';
+		}
+		else if(strlen($callback) >= 7 && strlen($callback) <= 256 && filter_var($callback, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED))
+		{
+			$this->callback = $callback;
+		}
+		else
+		{
+			throw new InvalidDataException('Invalid callback format');
+		}
+	}
+
 	public function getCallback()
 	{
 		return $this->callback;
 	}
 
+	public function setVersion($version)
+	{
+		$this->version = $version;
+	}
+
 	public function getVersion()
 	{
 		return $this->version;
+	}
+
+	public function setVerifier($verifier)
+	{
+		if(strlen($verifier) >= 16 && strlen($verifier) <= 512)
+		{
+			$this->verifier = $verifier;
+		}
+		else
+		{
+			throw new InvalidDataException('Invalid verifier format');
+		}
 	}
 
 	public function getVerifier()
@@ -243,85 +209,6 @@ class Request extends RecordAbstract
 	public function setRequiredFields(array $requiredFields)
 	{
 		$this->requiredFields = $requiredFields;
-	}
-
-	public function import(ReaderResult $result)
-	{
-		switch($result->getType())
-		{
-			case ReaderInterface::RAW:
-
-				$header = $result->getData()->getHeader();
-
-				if(isset($header['authorization']))
-				{
-					$auth = $header['authorization'];
-
-					if(strpos($auth, 'OAuth') !== false)
-					{
-						// get oauth data
-						$data  = array();
-						$items = explode(',', $auth);
-
-						foreach($items as $v)
-						{
-							$v = trim($v);
-
-							if(substr($v, 0, 6) == 'oauth_')
-							{
-								$pair = explode('=', $v);
-
-								if(isset($pair[0]) && isset($pair[1]))
-								{
-									$key = substr(strtolower($pair[0]), 6);
-									$val = trim($pair[1], '"');
-
-									$data[$key] = Oauth::urlDecode($val);
-								}
-							}
-						}
-
-
-						// check whether all required values are available
-						foreach($this->map as $k => $v)
-						{
-							if(isset($data[$v]))
-							{
-								$method = 'set' . ucfirst($k);
-
-								if(is_callable(array($this, $method)))
-								{
-									$this->$method($data[$v]);
-								}
-								else
-								{
-									throw new InvalidDataException('Unknown parameter');
-								}
-							}
-							else if(in_array($k, $this->requiredFields))
-							{
-								throw new InvalidDataException('Required parameter "' . $v . '" is missing');
-							}
-						}
-					}
-					else
-					{
-						throw new InvalidDataException('Unknown OAuth authentication');
-					}
-				}
-				else
-				{
-					throw new InvalidDataException('Missing Authorization header');
-				}
-
-				break;
-
-			default:
-
-				throw new NotSupportedException('Can only import data from reader Raw');
-
-				break;
-		}
 	}
 }
 

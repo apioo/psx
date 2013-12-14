@@ -54,8 +54,8 @@ class ResultSetTest extends \PHPUnit_Framework_TestCase
 		$resultSet = new ResultSet(12, 0, 2, $entries);
 
 		$this->assertEquals(4, count($resultSet));
-		$this->assertEquals(4, $resultSet->getLength());
-		$this->assertEquals(true, $resultSet->hasResults());
+		$this->assertEquals(4, $resultSet->count());
+		$this->assertEquals(false, $resultSet->isEmpty());
 
 		foreach($resultSet as $i => $result)
 		{
@@ -74,8 +74,8 @@ class ResultSetTest extends \PHPUnit_Framework_TestCase
 		$resultSet = new ResultSet(12, 0, 2, array());
 
 		$this->assertEquals(0, count($resultSet));
-		$this->assertEquals(0, $resultSet->getLength());
-		$this->assertEquals(false, $resultSet->hasResults());
+		$this->assertEquals(0, $resultSet->count());
+		$this->assertEquals(true, $resultSet->isEmpty());
 
 		foreach($resultSet as $row)
 		{

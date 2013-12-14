@@ -23,6 +23,7 @@
 
 namespace PSX\ActivityStream;
 
+use PSX\Data\RecordInfo;
 use PSX\Data\RecordAbstract;
 
 /**
@@ -39,21 +40,14 @@ class MediaLink extends RecordAbstract
 	protected $url;
 	protected $width;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'mediaLink';
-	}
-
-	public function getFields()
-	{
-		return array(
-
+		return new RecordInfo('mediaLink', array(
 			'duration' => $this->duration,
 			'height'   => $this->height,
 			'url'      => $this->url,
 			'width'    => $this->width,
-
-		);
+		));
 	}
 
 	/**

@@ -50,14 +50,14 @@ class GpcTest extends \PHPUnit_Framework_TestCase
 
 		$reader  = new Gpc();
 		$message = new Message(array(), '');
+		$gpc     = $reader->read($message);
 
-		$result = $reader->read($message);
-		$gpc    = $result->getData();
+		$expect = array(
+			'foo' => 'bar', 
+			'bar' => 'foo'
+		);
 
-		$e = array('foo' => 'bar', 'bar' => 'foo');
-
-		$this->assertEquals(ReaderInterface::GPC, $result->getType());
 		$this->assertEquals(true, is_array($gpc));
-		$this->assertEquals($e, $gpc);
+		$this->assertEquals($expect, $gpc);
 	}
 }

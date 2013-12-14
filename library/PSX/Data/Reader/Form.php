@@ -23,8 +23,9 @@
 
 namespace PSX\Data\Reader;
 
-use PSX\Data\ReaderInterface;
+use PSX\Data\ReaderAbstract;
 use PSX\Data\ReaderResult;
+use PSX\Data\Record\DefaultImporter;
 use PSX\Http\Message;
 
 /**
@@ -34,7 +35,7 @@ use PSX\Http\Message;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Form implements ReaderInterface
+class Form extends ReaderAbstract
 {
 	public static $mime = 'application/x-www-form-urlencoded';
 
@@ -44,7 +45,17 @@ class Form implements ReaderInterface
 
 		parse_str($message->getBody(), $form);
 
-		return new ReaderResult(ReaderInterface::FORM, $form);
+		return $form;
+	}
+
+	public function isContentTypeSupported($contentType)
+	{
+		return stripos($contentType, self::$mime) !== false;
+	}
+
+	public function getDefaultImporter()
+	{
+		return new DefaultImporter();
 	}
 }
 

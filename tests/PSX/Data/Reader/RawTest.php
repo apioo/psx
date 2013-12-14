@@ -51,14 +51,11 @@ INPUT;
 
 		$reader  = new Raw();
 		$message = new Message(array(), $body);
+		$raw     = $reader->read($message);
 
-		$result = $reader->read($message);
-		$raw    = $result->getData();
+		$expect = 'some foobar content';
 
-		$e = 'some foobar content';
-
-		$this->assertEquals(ReaderInterface::RAW, $result->getType());
 		$this->assertEquals(true, $raw instanceof Message);
-		$this->assertEquals($e, $raw->getBody());
+		$this->assertEquals($expect, $raw->getBody());
 	}
 }

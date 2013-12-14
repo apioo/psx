@@ -32,11 +32,11 @@ namespace PSX\OpenId\Provider;
  */
 class Association
 {
-	private $assocHandle;
-	private $assocType;
-	private $sessionType;
-	private $secret;
-	private $expire;
+	protected $assocHandle;
+	protected $assocType;
+	protected $sessionType;
+	protected $secret;
+	protected $expire;
 
 	public function setAssocHandle($assocHandle)
 	{

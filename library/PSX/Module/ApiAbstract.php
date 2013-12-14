@@ -217,8 +217,8 @@ abstract class ApiAbstract extends ModuleAbstract
 	 * Writes the $record with the writer $writerType or depending on the get 
 	 * parameter format or of the mime type of the Accept header
 	 *
-	 * @param PSX\Data\Record $record
-	 * @param integer $writerType
+	 * @param PSX\Data\RecordInterface $record
+	 * @param string $writerType
 	 * @param integer $code
 	 * @return void
 	 */
@@ -236,21 +236,35 @@ abstract class ApiAbstract extends ModuleAbstract
 				'json'  => Writer\Json::$mime,
 				'rss'   => Writer\Rss::$mime,
 				'xml'   => Writer\Xml::$mime,
-				'jas'   => Writer\Jas::$mime,
 				'jsonp' => Writer\Jsonp::$mime,
 			);
 
 			$format      = isset($_GET['format']) ? $_GET['format'] : null;
 			$contentType = isset($formats[$format]) ? $formats[$format] : Base::getRequestHeader('Accept');
-			$writerType  = WriterFactory::getWriterTypeByContentType($contentType);
+
+			$writer = $this->container->get('writerFactory')->getWriterByContentType($contentType);
+		}
+		else
+		{
+			$writer = $this->container->get('writerFactory')->getWriteByInstance($writerType);
 		}
 
-		// get writer
-		$writer = WriterFactory::getWriter($writerType);
+		if($writer === null)
+		{
+			$writer = $this->container->get('writerFactory')->getDefaultWriter();
+		}
 
 		if($writer === null)
 		{
 			throw new NotFoundException('Could not find fitting data writer');
+		}
+
+		$response = $writer->write($record);
+
+		// send content type header if not sent
+		if(!Base::hasHeaderSent('Content-Type'))
+		{
+			header('Content-Type: ' . $writer->getContentType());
 		}
 
 		// for iframe file uploads we need an text/html content type header even 
@@ -262,24 +276,7 @@ abstract class ApiAbstract extends ModuleAbstract
 			header('Content-Type: text/html');
 		}
 
-		// try to write response with preferred writer
-		$writerResult = new WriterResult($writerType, $writer);
-
-		$this->setWriterConfig($writerResult);
-
-		$writer->write($record);
-	}
-
-	/**
-	 * You can override this method to configure the writer. Some writers
-	 * require configuration i.e. the atom writer needs to know wich fields
-	 * should be used for an entry.
-	 *
-	 * @param PSX\Data\WriterResult $result
-	 * @return void
-	 */
-	protected function setWriterConfig(WriterResult $result)
-	{
+		echo $response;
 	}
 }
 

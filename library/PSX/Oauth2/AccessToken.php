@@ -24,6 +24,7 @@
 namespace PSX\Oauth2;
 
 use PSX\Data\RecordAbstract;
+use PSX\Data\RecordInfo;
 
 /**
  * AccessToken
@@ -40,23 +41,16 @@ class AccessToken extends RecordAbstract
 	protected $refreshToken;
 	protected $scope;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'token';
-	}
-
-	public function getFields()
-	{
-		return array(
-
+		return new RecordInfo('token', array(
 			'access_token'  => $this->accessToken,
 			'token_type'    => $this->tokenType,
 			'expires'       => $this->expiresIn, // facebook specific
 			'expires_in'    => $this->expiresIn,
 			'refresh_token' => $this->refreshToken,
 			'scope'         => $this->scope,
-
-		);
+		));
 	}
 
 	public function setAccessToken($accessToken)

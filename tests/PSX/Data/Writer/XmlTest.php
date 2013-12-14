@@ -36,15 +36,8 @@ class XmlTest extends WriterTestCase
 {
 	public function testWrite()
 	{
-		ob_start();
-
 		$writer = new Xml();
-		$writer->write($this->getRecord());
-
-		$actual = ob_get_contents();
-
-		ob_end_clean();
-
+		$actual = $writer->write($this->getRecord());
 
 		$expect = <<<TEXT
 <?xml version="1.0" encoding="UTF-8"?>
@@ -53,7 +46,7 @@ class XmlTest extends WriterTestCase
   <author>foo</author>
   <title>bar</title>
   <content>foobar</content>
-  <date>2012-03-11 13:37:21</date>
+  <date>2012-03-11T13:37:21+00:00</date>
 </record>
 TEXT;
 
@@ -62,15 +55,8 @@ TEXT;
 
 	public function testWriteResultSet()
 	{
-		ob_start();
-
 		$writer = new Xml();
-		$writer->write($this->getResultSet());
-
-		$actual = ob_get_contents();
-
-		ob_end_clean();
-
+		$actual = $writer->write($this->getResultSet());
 
 		$expect = <<<TEXT
 <?xml version="1.0" encoding="UTF-8"?>
@@ -83,14 +69,14 @@ TEXT;
     <author>foo</author>
     <title>bar</title>
     <content>foobar</content>
-    <date>2012-03-11 13:37:21</date>
+    <date>2012-03-11T13:37:21+00:00</date>
   </entry>
   <entry>
     <id>2</id>
     <author>foo</author>
     <title>bar</title>
     <content>foobar</content>
-    <date>2012-03-11 13:37:21</date>
+    <date>2012-03-11T13:37:21+00:00</date>
   </entry>
 </resultset>
 TEXT;
@@ -100,20 +86,12 @@ TEXT;
 
 	public function testWriteComplex()
 	{
-		ob_start();
-
 		$writer = new Xml();
-		$writer->write($this->getComplexRecord());
-
-		$actual = ob_get_contents();
-
-		ob_end_clean();
-
+		$actual = $writer->write($this->getComplexRecord());
 
 		$expect = <<<TEXT
 <?xml version="1.0" encoding="UTF-8"?>
 <activity>
-  <published>2011-02-10T15:04:55+00:00</published>
   <actor>
     <displayName>Martin Smith</displayName>
     <id>tag:example.org,2011:martin</id>
@@ -131,6 +109,7 @@ TEXT;
     <url>http://example.org/blog/</url>
   </target>
   <verb>post</verb>
+  <published>2011-02-10T15:04:55+00:00</published>
 </activity>
 TEXT;
 

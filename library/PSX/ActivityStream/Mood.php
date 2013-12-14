@@ -23,6 +23,7 @@
 
 namespace PSX\ActivityStream;
 
+use PSX\Data\RecordInfo;
 use PSX\Data\RecordAbstract;
 
 /**
@@ -37,19 +38,12 @@ class Mood extends RecordAbstract
 	protected $displayName;
 	protected $image;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'mood';
-	}
-
-	public function getFields()
-	{
-		return array(
-
+		return new RecordInfo('mood', array(
 			'displayName' => $this->displayName,
 			'image'       => $this->image,
-
-		);
+		));
 	}
 
 	/**

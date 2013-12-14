@@ -45,20 +45,17 @@ abstract class ProviderAbstract extends ApiAbstract
 {
 	protected function handle()
 	{
-		$request = new Request();
-		$request->setRequiredFields(array(
-
+		$request  = new Request();
+		$importer = new Data\RequestImporter();
+		$importer->setRequiredFields(array(
 			'consumerKey',
 			'token',
 			'signatureMethod',
 			'signature',
 			'timestamp',
 			'nonce',
-
 		));
-
-		$request->import($this->getRequest(ReaderInterface::RAW));
-
+		$importer->import($request, $this->getRequest(ReaderInterface::RAW));
 
 		$consumer = $this->getConsumer($request->getConsumerKey(), $request->getToken());
 

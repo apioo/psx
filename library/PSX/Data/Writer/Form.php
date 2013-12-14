@@ -34,17 +34,23 @@ use PSX\Data\WriterResult;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Form implements WriterInterface
+class Form extends ArrayAbstract
 {
 	public static $mime = 'application/x-www-form-urlencoded';
 
-	public $writerResult;
-
 	public function write(RecordInterface $record)
 	{
-		$this->writerResult = new WriterResult(WriterInterface::FORM, $this);
+		return http_build_query($this->export($record), '', '&');
+	}
 
-		echo http_build_query($record->export($this->writerResult), '', '&');
+	public function isContentTypeSupported($contentType)
+	{
+		return stripos($contentType, self::$mime) !== false;
+	}
+
+	public function getContentType()
+	{
+		return self::$mime;
 	}
 }
 

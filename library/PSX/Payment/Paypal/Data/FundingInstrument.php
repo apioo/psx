@@ -24,6 +24,7 @@
 namespace PSX\Payment\Paypal\Data;
 
 use PSX\Data\RecordAbstract;
+use PSX\Data\RecordInfo;
 
 /**
  * FundingInstrument
@@ -37,17 +38,12 @@ class FundingInstrument extends RecordAbstract
 	protected $creditCard;
 	protected $creditCardToken;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'fundingInstrument';
-	}
-
-	public function getFields()
-	{
-		return array(
+		return new RecordInfo('funding_instrument', array(
 			'credit_card'       => $this->creditCard,
 			'credit_card_token' => $this->creditCardToken,
-		);
+		));
 	}
 
 	public function getCreditCard()

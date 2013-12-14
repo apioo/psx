@@ -357,11 +357,9 @@ class TableTestTable extends TableAbstract
 	public function getColumns()
 	{
 		return array(
-
 			'id'    => self::TYPE_INT | 10 | self::PRIMARY_KEY | self::AUTO_INCREMENT,
 			'title' => self::TYPE_VARCHAR | 32,
 			'date'  => self::TYPE_DATETIME,
-
 		);
 	}
 }

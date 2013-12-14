@@ -24,7 +24,7 @@
 namespace PSX\Data\Reader;
 
 use DOMDocument;
-use PSX\Data\ReaderInterface;
+use PSX\Data\ReaderAbstract;
 use PSX\Data\ReaderResult;
 use PSX\Http\Message;
 
@@ -35,7 +35,7 @@ use PSX\Http\Message;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Dom implements ReaderInterface
+class Dom extends ReaderAbstract
 {
 	public function read(Message $message)
 	{
@@ -43,8 +43,17 @@ class Dom implements ReaderInterface
 		$dom->encoding = 'UTF-8';
 		$dom->loadXML($message->getBody());
 
-		return new ReaderResult(ReaderInterface::DOM, $dom);
+		return $dom;
+	}
+
+	public function isContentTypeSupported($contentType)
+	{
+		return false;
+	}
+
+	public function getDefaultImporter()
+	{
+		return null;
 	}
 }
-
 

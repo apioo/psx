@@ -56,21 +56,10 @@ INPUT;
 
 		$reader  = new Dom();
 		$message = new Message(array(), $body);
+		$dom     = $reader->read($message);
 
-		$result = $reader->read($message);
-		$dom    = $result->getData();
-
-		foreach($dom->childNodes as $node)
-		{
-			if($node->nodeType == XML_ELEMENT_NODE)
-			{
-				$root = $node;
-			}
-		}
-
-		$this->assertEquals(ReaderInterface::DOM, $result->getType());
 		$this->assertEquals(true, $dom instanceof DOMDocument);
-		$this->assertEquals('foo', $root->localName);
+		$this->assertEquals('foo', $dom->documentElement->localName);
 	}
 }
 

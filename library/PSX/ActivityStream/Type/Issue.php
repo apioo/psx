@@ -24,6 +24,7 @@
 namespace PSX\ActivityStream\Type;
 
 use PSX\ActivityStream\Object;
+use PSX\Data\RecordInfo;
 
 /**
  * Issue
@@ -36,18 +37,11 @@ class Issue extends Object
 {
 	protected $types;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'issue';
-	}
-
-	public function getFields()
-	{
-		return array_merge(parent::getFields(), array(
-
+		return new RecordInfo('issue', array(
 			'types' => $this->types,
-
-		));
+		), parent::getRecordInfo());
 	}
 
 	/**

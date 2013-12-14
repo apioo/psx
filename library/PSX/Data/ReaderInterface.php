@@ -34,17 +34,17 @@ use PSX\Http\Message as HttpMessage;
  */
 interface ReaderInterface
 {
-	const DOM       = 0x1;
-	const FORM      = 0x2;
-	const GPC       = 0x4;
-	const JSON      = 0x8;
-	const MULTIPART = 0x10;
-	const RAW       = 0x20;
-	const XML       = 0x40;
+	const DOM       = 'PSX\Data\Reader\Dom';
+	const FORM      = 'PSX\Data\Reader\Form';
+	const GPC       = 'PSX\Data\Reader\Gpc';
+	const JSON      = 'PSX\Data\Reader\Json';
+	const MULTIPART = 'PSX\Data\Reader\Multipart';
+	const RAW       = 'PSX\Data\Reader\Raw';
+	const XML       = 'PSX\Data\Reader\Xml';
 
 	/**
 	 * Transforms the $request into an parseable form this can be an array
-	 * or DomDocument etc. This method returns an PSX\Data\ReaderResult.
+	 * or DOMDocument etc. This method returns an PSX\Data\ReaderResult.
 	 * The import method of each record can be used to insert insert the
 	 * results.
 	 *
@@ -52,6 +52,28 @@ interface ReaderInterface
 	 * @return PSX\Data\ReaderResult
 	 */
 	public function read(HttpMessage $message);
+
+	/**
+	 * Returns whether the content type is supported by this reader
+	 *
+	 * @param string $contentType
+	 * @return boolean
+	 */
+	public function isContentTypeSupported($contentType);
+
+	/**
+	 * Returns the default importe of this reader is used to read and import an
+	 * record
+	 *
+	 * @return PSX\Data\Record\ImporterInterface
+	 */
+	public function getDefaultImporter();
+
+	/**
+	 * Imports the data from the http message into the record using the default
+	 * importer
+	 *
+	 * @return void
+	 */
+	public function import(RecordInterface $record, HttpMessage $message);
 }
-
-

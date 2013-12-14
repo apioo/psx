@@ -24,6 +24,7 @@
 namespace PSX\Payment\Paypal\Data;
 
 use PSX\Data\RecordAbstract;
+use PSX\Data\RecordInfo;
 use PSX\Url;
 
 /**
@@ -39,18 +40,13 @@ class Link extends RecordAbstract
 	protected $rel;
 	protected $method;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'link';
-	}
-
-	public function getFields()
-	{
-		return array(
+		return new RecordInfo('link', array(
 			'href'   => $this->href,
 			'rel'    => $this->rel,
 			'method' => $this->method,
-		);
+		));
 	}
 
 	public function getHref()

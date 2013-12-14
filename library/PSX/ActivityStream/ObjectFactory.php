@@ -24,8 +24,6 @@
 namespace PSX\ActivityStream;
 
 use PSX\Data\FactoryInterface;
-use PSX\Data\ReaderResult;
-use PSX\Exception;
 
 /**
  * ObjectFactory
@@ -36,13 +34,11 @@ use PSX\Exception;
  */
 class ObjectFactory implements FactoryInterface
 {
-	public function factory(ReaderResult $result)
+	public function factory($data)
 	{
-		$data = $result->getData();
-
-		if(isset($data['objectType']))
+		if(isset($data['objectType']) && !empty($data['objectType']))
 		{
-			$class = 'PSX\ActivityStream\Type\\' . ucfirst(strtolower($data['objectType']));
+			$class = 'PSX\ActivityStream\Type\\' . ucfirst($data['objectType']);
 
 			if(class_exists($class))
 			{

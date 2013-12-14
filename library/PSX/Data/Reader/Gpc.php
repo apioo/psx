@@ -23,8 +23,9 @@
 
 namespace PSX\Data\Reader;
 
-use PSX\Data\ReaderInterface;
+use PSX\Data\ReaderAbstract;
 use PSX\Data\ReaderResult;
+use PSX\Data\Record\DefaultImporter;
 use PSX\Http\Message;
 
 /**
@@ -34,13 +35,21 @@ use PSX\Http\Message;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Gpc implements ReaderInterface
+class Gpc extends ReaderAbstract
 {
-	public static $mime = 'text/html';
-
 	public function read(Message $message)
 	{
-		return new ReaderResult(ReaderInterface::GPC, $_REQUEST);
+		return $_REQUEST;
+	}
+
+	public function isContentTypeSupported($contentType)
+	{
+		return false;
+	}
+
+	public function getDefaultImporter()
+	{
+		return new DefaultImporter();
 	}
 }
 

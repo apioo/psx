@@ -51,14 +51,15 @@ INPUT;
 
 		$reader  = new Form();
 		$message = new Message(array(), $body);
+		$form    = $reader->read($message);
 
-		$result = $reader->read($message);
-		$form   = $result->getData();
+		$expect = array(
+			'foo' => 'bar', 
+			'bar' => array('blub', 'bla'), 
+			'test' => array('foo' => 'bar')
+		);
 
-		$e = array('foo' => 'bar', 'bar' => array('blub', 'bla'), 'test' => array('foo' => 'bar'));
-
-		$this->assertEquals(ReaderInterface::FORM, $result->getType());
 		$this->assertEquals(true, is_array($form));
-		$this->assertEquals($e, $form);
+		$this->assertEquals($expect, $form);
 	}
 }

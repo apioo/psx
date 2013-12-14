@@ -34,6 +34,11 @@ use PSX\Session;
 use PSX\Sql;
 use PSX\Template;
 use PSX\Validate;
+use PSX\Data\ReaderFactory;
+use PSX\Data\WriterFactory;
+use PSX\Handler\Manager\DatabaseManager;
+use PSX\Domain\DomainManager;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
  * Container
@@ -44,51 +49,81 @@ use PSX\Validate;
  */
 class Container extends DependencyAbstract
 {
+	/**
+	 * @return PSX\Base
+	 */
 	public function getBase()
 	{
 		return new Base($this->get('config'));
 	}
 
+	/**
+	 * @return PSX\Config
+	 */
 	public function getConfig()
 	{
 		return new Config($this->getParameter('config.file'));
 	}
 
+	/**
+	 * @return PSX\Dispatch
+	 */
 	public function getDispatch()
 	{
 		return new Dispatch($this->get('config'), $this->get('loader'));
 	}
 
+	/**
+	 * @return PSX\Http
+	 */
 	public function getHttp()
 	{
 		return new Http();
 	}
 
+	/**
+	 * @return PSX\Input\ContainerInterface
+	 */
 	public function getInputCookie()
 	{
 		return new Input\Cookie($this->get('validate'));
 	}
 
+	/**
+	 * @return PSX\Input\ContainerInterface
+	 */
 	public function getInputFiles()
 	{
 		return new Input\Files($this->get('validate'));
 	}
 
+	/**
+	 * @return PSX\Input\ContainerInterface
+	 */
 	public function getInputGet()
 	{
 		return new Input\Get($this->get('validate'));
 	}
 
+	/**
+	 * @return PSX\Input\ContainerInterface
+	 */
 	public function getInputPost()
 	{
 		return new Input\Post($this->get('validate'));
 	}
 
+	/**
+	 * @return PSX\Input\ContainerInterface
+	 */
 	public function getInputRequest()
 	{
 		return new Input\Request($this->get('validate'));
 	}
 
+	/**
+	 * @return PSX\Loader
+	 */
 	public function getLoader()
 	{
 		$loader = new Loader($this);
@@ -99,6 +134,9 @@ class Container extends DependencyAbstract
 		return $loader;
 	}
 
+	/**
+	 * @return PSX\Session
+	 */
 	public function getSession()
 	{
 		$session = new Session($this->getParameter('session.name'));
@@ -107,6 +145,9 @@ class Container extends DependencyAbstract
 		return $session;
 	}
 
+	/**
+	 * @return PSX\Sql
+	 */
 	public function getSql()
 	{
 		return new Sql($this->get('config')->get('psx_sql_host'),
@@ -115,14 +156,75 @@ class Container extends DependencyAbstract
 			$this->get('config')->get('psx_sql_db'));
 	}
 
+	/**
+	 * @return PSX\Template
+	 */
 	public function getTemplate()
 	{
 		return new Template();
 	}
 
+	/**
+	 * @return PSX\Validate
+	 */
 	public function getValidate()
 	{
 		return new Validate();
+	}
+
+	/**
+	 * @return PSX\Data\ReaderFactory
+	 */
+	public function getReaderFactory()
+	{
+		$reader = new ReaderFactory();
+		$reader->addReader(new Reader\Json());
+		$reader->addReader(new Reader\Form());
+		$reader->addReader(new Reader\Gpc());
+		$reader->addReader(new Reader\Multipart());
+		$reader->addReader(new Reader\Raw());
+		$reader->addReader(new Reader\Xml());
+
+		return $reader;
+	}
+
+	/**
+	 * @return PSX\Data\WriterFactory
+	 */
+	public function getWriterFactory()
+	{
+		$writer = new WriterFactory();
+		$writer->addWriter(new Writer\Json());
+		$writer->addWriter(new Writer\Atom());
+		$writer->addWriter(new Writer\Jsonp());
+		$writer->addWriter(new Writer\Rss());
+		$writer->addWriter(new Writer\Xml());
+
+		return $writer;
+	}
+
+	/**
+	 * @return PSX\Data\HandlerManagerInterface
+	 */
+	public function getDatabaseManager()
+	{
+		return new DatabaseManager($this->get('sql'));
+	}
+
+	/**
+	 * @return PSX\Data\DomainManagerInterface
+	 */
+	public function getDomainManager()
+	{
+		return new DomainManager($this);
+	}
+
+	/**
+	 * @return Symfony\Component\EventDispatcher\EventDispatcherInterface
+	 */
+	public function getEventDispatcher()
+	{
+		return new EventDispatcher();
 	}
 }
 

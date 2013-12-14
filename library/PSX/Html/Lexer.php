@@ -24,6 +24,7 @@
 namespace PSX\Html;
 
 use PSX\Html\Lexer\Dom;
+use PSX\Html\Lexer\Token\Comment;
 use PSX\Html\Lexer\Token\Text;
 use PSX\Html\Lexer\Token\Element;
 
@@ -54,8 +55,8 @@ use PSX\Html\Lexer\Token\Element;
  */
 class Lexer
 {
-	const STATE_LT  = 0x1; // lower then
-	const STATE_GT  = 0x2; // greater then
+	const INSIDE_TAG  = 0x1; // lower then
+	const OUTSIDE_TAG = 0x2; // greater then
 
 	const STATE_KEY = 0x3;
 	const STATE_VAL = 0x4;
@@ -64,11 +65,16 @@ class Lexer
 	const MODE_IGNORE = 0x2;
 
 	/**
+	 * @var array
+	 */
+	public static $spaceCharacters = array(0x20, 0x9, 0xA, 0xC, 0xD);
+
+	/**
 	 * Tags wich will be automatically closed if an new token is found
 	 *
 	 * @var array
 	 */
-	private static $shortTags = array('area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'menuitem', 'meta', 'param', 'source', 'track', 'wbr');
+	public static $voidTags = array('area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'menuitem', 'meta', 'param', 'source', 'track', 'wbr');
 
 	/**
 	 * Tags where the content will not be parsed until an explicit ending token
@@ -99,11 +105,12 @@ class Lexer
 
 		$ignoreToken = null;
 		$inQuote     = false;
+		$inComment   = false;
 		$quoteSign   = null;
 
 		for($i = 0; $i < $len; $i++)
 		{
-			if($inQuote === true)
+			if($inQuote === true || $inComment === true)
 			{
 				// we capture all data in an attribute value i.e. title="foo > bar"
 				// so that the > is ignored on parsing
@@ -132,11 +139,19 @@ class Lexer
 						}
 					}
 
-					$text  = null;
-					$tag   = null;
-					$state = self::STATE_LT;
+					$text = null;
+					$tag  = null;
 
-					continue;
+					if(substr($html, $i, 4) == '<!--')
+					{
+						$mode      = self::MODE_IGNORE;
+						$inComment = true;
+					}
+					else
+					{
+						$state     = self::INSIDE_TAG;
+						continue;
+					}
 				}
 			}
 			else if($html[$i] == '>')
@@ -149,38 +164,11 @@ class Lexer
 
 						if($token !== null)
 						{
-							// close tag automatically if top token is a short tag
-							$topToken = $dom->getTopToken();
-
-							if($topToken !== false)
-							{
-								if($token->type === Element::TYPE_START)
-								{
-									if(in_array($topToken->name, self::$shortTags))
-									{
-										$dom->push(Element::parse('/' . $topToken->name));
-									}
-								}
-								else if($token->type === Element::TYPE_END)
-								{
-									if(in_array($topToken->name, self::$shortTags) && $token->name != $topToken->name)
-									{
-										$dom->push(Element::parse('/' . $topToken->name));
-									}
-								}
-							}
-
 							// push token to the dom
 							$dom->push($token);
 
-							// if we have an short token autmoatically close tag
-							if($token->type === Element::TYPE_START && $token->isShort())
-							{
-								$dom->push(Element::parse('/' . $token->name));
-							}
-							// enter ignore mode if we have found an no parse
-							// start tag
-							else if($token->type === Element::TYPE_START)
+							// if we have an no parse element enter ignore mode
+							if($token->type === Element::TYPE_START)
 							{
 								if(in_array($token->name, self::$npTags))
 								{
@@ -194,15 +182,14 @@ class Lexer
 
 					$tag   = null;
 					$text  = null;
-					$state = self::STATE_GT;
-
+					$state = self::OUTSIDE_TAG;
 					continue;
 				}
 			}
 
 			if($mode === self::MODE_PARSE)
 			{
-				if($state == self::STATE_LT)
+				if($state == self::INSIDE_TAG)
 				{
 					$tag.= $html[$i];
 
@@ -220,7 +207,7 @@ class Lexer
 						}
 					}
 				}
-				else if($state == self::STATE_GT)
+				else if($state == self::OUTSIDE_TAG)
 				{
 					$text.= $html[$i];
 				}
@@ -228,6 +215,21 @@ class Lexer
 			else if($mode === self::MODE_IGNORE)
 			{
 				$text.= $html[$i];
+
+				if($inComment && ($html[$i - 2] == '-' && $html[$i - 1] == '-' && $html[$i] == '>'))
+				{
+					$inComment = false;
+					$token     = Comment::parse($text);
+
+					if($token !== null)
+					{
+						$dom->push($token);
+					}
+
+					$tag  = null;
+					$text = null;
+					$mode = self::MODE_PARSE;
+				}
 			}
 		}
 

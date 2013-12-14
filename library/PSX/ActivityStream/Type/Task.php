@@ -24,6 +24,7 @@
 namespace PSX\ActivityStream\Type;
 
 use PSX\ActivityStream\Object;
+use PSX\Data\RecordInfo;
 
 /**
  * Task
@@ -42,15 +43,9 @@ class Task extends Object
 	protected $supersedes;
 	protected $verb;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'task';
-	}
-
-	public function getFields()
-	{
-		return array_merge(parent::getFields(), array(
-
+		return new RecordInfo('task', array(
 			'actor'         => $this->actor,
 			'by'            => $this->by,
 			'object'        => $this->object,
@@ -58,8 +53,7 @@ class Task extends Object
 			'required'      => $this->required,
 			'supersedes'    => $this->supersedes,
 			'verb'          => $this->verb,
-
-		));
+		), parent::getRecordInfo());
 	}
 
 	/**

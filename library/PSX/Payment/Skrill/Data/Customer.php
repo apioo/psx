@@ -24,6 +24,7 @@
 namespace PSX\Payment\Skrill\Data;
 
 use PSX\Data\RecordAbstract;
+use PSX\Data\RecordInfo;
 
 /**
  * Customer
@@ -47,14 +48,9 @@ class Customer extends RecordAbstract
 	protected $state;
 	protected $country;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'customer';
-	}
-
-	public function getFields()
-	{
-		return array(
+		return new RecordInfo('customer', array(
 			'pay_from_email' => $this->payFromEmail,
 			'title'          => $this->title,
 			'firstname'      => $this->firstname,
@@ -67,7 +63,7 @@ class Customer extends RecordAbstract
 			'city'           => $this->city,
 			'state'          => $this->state,
 			'country'        => $this->country,
-		);
+		));
 	}
 
 	public function setPayFromEmail($payFromEmail)

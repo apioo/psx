@@ -46,14 +46,22 @@ class Jsonp extends Json
 
 		if(!empty($callbackName))
 		{
-			echo $callbackName . '(';
-			parent::write($record);
-			echo ')';
+			return $callbackName . '(' . parent::write($record) . ')';
 		}
 		else
 		{
-			parent::write($record);
+			return parent::write($record);
 		}
+	}
+
+	public function isContentTypeSupported($contentType)
+	{
+		return stripos($contentType, self::$mime) !== false;
+	}
+
+	public function getContentType()
+	{
+		return self::$mime;
 	}
 
 	public function getCallbackName()

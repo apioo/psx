@@ -24,6 +24,7 @@
 namespace PSX\ActivityStream;
 
 use DateTime;
+use PSX\Data\RecordInfo;
 use PSX\Data\RecordAbstract;
 
 /**
@@ -49,15 +50,9 @@ class Object extends RecordAbstract
 	protected $upstreamDuplicates;
 	protected $url;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'object';
-	}
-
-	public function getFields()
-	{
-		return array(
-
+		return new RecordInfo('object', array(
 			'attachments' => $this->attachments,
 			'author'      => $this->author,
 			'content'     => $this->content,
@@ -71,8 +66,7 @@ class Object extends RecordAbstract
 			'updated'     => $this->updated !== null ? $this->updated->format(DateTime::RFC3339) : null,
 			'upstreamDuplicates' => $this->upstreamDuplicates,
 			'url'         => $this->url,
-
-		);
+		));
 	}
 
 	/**

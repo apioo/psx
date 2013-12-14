@@ -23,7 +23,8 @@
 
 namespace PSX\OpenSocial\Data;
 
-use PSX\OpenSocial\DataAbstract;
+use PSX\Data\RecordAbstract;
+use PSX\Data\RecordInfo;
 
 /**
  * Organization
@@ -32,7 +33,7 @@ use PSX\OpenSocial\DataAbstract;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Organization extends DataAbstract
+class Organization extends RecordAbstract
 {
 	protected $address;
 	protected $department;
@@ -48,15 +49,9 @@ class Organization extends DataAbstract
 	protected $type;
 	protected $webpage;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'organization';
-	}
-
-	public function getFields()
-	{
-		return array(
-
+		return new RecordInfo('organization', array(
 			'address'     => $this->address,
 			'department'  => $this->department,
 			'description' => $this->description,
@@ -70,8 +65,7 @@ class Organization extends DataAbstract
 			'title'       => $this->title,
 			'type'        => $this->type,
 			'webpage'     => $this->webpage,
-
-		);
+		));
 	}
 
 	/**

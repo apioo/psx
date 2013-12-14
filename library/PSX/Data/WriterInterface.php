@@ -32,13 +32,33 @@ namespace PSX\Data;
  */
 interface WriterInterface
 {
-	const ATOM  = 0x1;
-	const FORM  = 0x2;
-	const JSON  = 0x4;
-	const RSS   = 0x8;
-	const XML   = 0x10;
-	const JAS   = 0x20;
-	const JSONP = 0x40;
+	const ATOM  = 'PSX\Data\Writer\Atom';
+	const FORM  = 'PSX\Data\Writer\Form';
+	const JSON  = 'PSX\Data\Writer\Json';
+	const JSONP = 'PSX\Data\Writer\Jsonp';
+	const RSS   = 'PSX\Data\Writer\Rss';
+	const XML   = 'PSX\Data\Writer\Xml';
 
+	/**
+	 * Returns the string representation of this record from the writer
+	 *
+	 * @param PSX\Data\RecordInterface
+	 * @return string
+	 */
 	public function write(RecordInterface $record);
+
+	/**
+	 * Returns whether the content type is supported by this writer
+	 *
+	 * @param string $contentType
+	 * @return boolean
+	 */
+	public function isContentTypeSupported($contentType);
+
+	/**
+	 * Returns the content type of this writer
+	 *
+	 * @return string
+	 */
+	public function getContentType();
 }

@@ -24,6 +24,7 @@
 namespace PSX\PubSubHubBub;
 
 use PSX\Atom;
+use PSX\Atom\Importer as AtomImporter;
 use PSX\Base;
 use PSX\Data\ReaderInterface;
 use PSX\Exception;
@@ -31,6 +32,7 @@ use PSX\Filter;
 use PSX\Input\Get;
 use PSX\Module\ApiAbstract;
 use PSX\Rss;
+use PSX\Rss\Importer as RssImporter;
 use PSX\Url;
 use PSX\Validate;
 
@@ -81,15 +83,17 @@ abstract class CallbackAbstract extends ApiAbstract
 		switch($contentType)
 		{
 			case 'application/atom+xml':
-				$atom = new Atom();
-				$atom->import($this->getRequest(ReaderInterface::DOM));
+				$atom     = new Atom();
+				$importer = new AtomImporter();
+				$importer->import($atom, $this->getRequest(ReaderInterface::DOM));
 
 				$this->onAtom($atom);
 				break;
 
 			case 'application/rss+xml':
-				$rss = new Rss();
-				$rss->import($this->getRequest(ReaderInterface::DOM));
+				$rss      = new Rss();
+				$importer = new RssImporter();
+				$importer->import($rss, $this->getRequest(ReaderInterface::DOM));
 
 				$this->onRss($rss);
 				break;

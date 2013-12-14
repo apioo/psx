@@ -24,6 +24,7 @@
 namespace PSX\Payment\Paypal\Data;
 
 use PSX\Data\RecordAbstract;
+use PSX\Data\RecordInfo;
 
 /**
  * Amount
@@ -40,18 +41,13 @@ class Amount extends RecordAbstract
 	protected $total;
 	protected $details;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'amount';
-	}
-
-	public function getFields()
-	{
-		return array(
+		return new RecordInfo('amount', array(
 			'currency' => $this->currency,
 			'total'    => $this->total,
 			'details'  => $this->details,
-		);
+		));
 	}
 
 	public function getCurrency()

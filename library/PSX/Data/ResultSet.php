@@ -33,38 +33,29 @@ use Iterator;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class ResultSet extends RecordAbstract implements Iterator, Countable
+class ResultSet extends CollectionAbstract
 {
-	public $totalResults;
-	public $startIndex;
-	public $itemsPerPage;
-	public $entry;
+	protected $totalResults;
+	protected $startIndex;
+	protected $itemsPerPage;
 
-	private $pointer;
-
-	public function __construct($totalResults = null, $startIndex = null, $itemsPerPage = null, array $entry = array())
+	public function __construct($totalResults = null, $startIndex = null, $itemsPerPage = null, array $entries = array())
 	{
+		parent::__construct($entries);
+
 		$this->setTotalResults($totalResults);
 		$this->setStartIndex($startIndex);
 		$this->setItemsPerPage($itemsPerPage);
-		$this->setEntry($entry);
 	}
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'resultset';
-	}
-
-	public function getFields()
-	{
-		return array(
-
+		return new RecordInfo('resultset', array(
 			'totalResults' => $this->totalResults,
 			'startIndex'   => $this->startIndex,
 			'itemsPerPage' => $this->itemsPerPage,
-			'entry'        => $this->entry,
-
-		);
+			'entry'        => $this->collection,
+		));
 	}
 
 	public function getTotalResults()
@@ -95,73 +86,5 @@ class ResultSet extends RecordAbstract implements Iterator, Countable
 	public function setItemsPerPage($itemsPerPage)
 	{
 		$this->itemsPerPage = $itemsPerPage;
-	}
-
-	public function getEntry()
-	{
-		return $this->entry;
-	}
-
-	public function setEntry(array $entry)
-	{
-		$this->entry = $entry;
-	}
-
-	public function hasResults()
-	{
-		return count($this->entry) > 0;
-	}
-
-	public function getLength()
-	{
-		return count($this->entry);
-	}
-
-	public function add(RecordInterface $row)
-	{
-		$this->entry[] = $row;
-	}
-
-	public function addData(array $row)
-	{
-		$this->entry[] = $row;
-	}
-
-	public function clear()
-	{
-		$this->entry = array();
-		$this->rewind();
-	}
-
-	// Iterator
-	public function current()
-	{
-		return current($this->entry);
-	}
-
-	public function key()
-	{
-		return key($this->entry);
-	}
-
-	public function next()
-	{
-		return $this->pointer = next($this->entry);
-	}
-
-	public function rewind()
-	{
-		$this->pointer = reset($this->entry);
-	}
-
-	public function valid()
-	{
-		return $this->pointer;
-	}
-
-	// Countable
-	public function count()
-	{
-		return count($this->entry);
 	}
 }

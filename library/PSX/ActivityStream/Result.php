@@ -23,6 +23,7 @@
 
 namespace PSX\ActivityStream;
 
+use PSX\Data\RecordInfo;
 use PSX\Data\RecordAbstract;
 
 /**
@@ -37,19 +38,12 @@ class Result extends RecordAbstract
 	protected $score;
 	protected $duration;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'mood';
-	}
-
-	public function getFields()
-	{
-		return array(
-
+		return new RecordInfo('result', array(
 			'score'    => $this->score,
 			'duration' => $this->duration,
-
-		);
+		));
 	}
 
 	/**

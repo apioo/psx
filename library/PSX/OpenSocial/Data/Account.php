@@ -23,7 +23,8 @@
 
 namespace PSX\OpenSocial\Data;
 
-use PSX\OpenSocial\DataAbstract;
+use PSX\Data\RecordAbstract;
+use PSX\Data\RecordInfo;
 
 /**
  * Account
@@ -32,26 +33,19 @@ use PSX\OpenSocial\DataAbstract;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Account extends DataAbstract
+class Account extends RecordAbstract
 {
 	protected $domain;
 	protected $username;
 	protected $userId;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'account';
-	}
-
-	public function getFields()
-	{
-		return array(
-
+		return new RecordInfo('account', array(
 			'domain'   => $this->domain,
 			'username' => $this->username,
 			'userId'   => $this->userId,
-
-		);
+		));
 	}
 
 	/**

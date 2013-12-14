@@ -26,6 +26,7 @@ namespace PSX;
 use PSX\Data\Reader\Form;
 use PSX\Http\PostRequest;
 use PSX\Oauth\Provider\Data\Response;
+use PSX\Oauth\Provider\Data\ResponseImporter;
 use PSX\Oauth\Signature;
 
 /**
@@ -74,15 +75,12 @@ class Oauth
 	public function requestToken(Url $url, $consumerKey, $consumerSecret, $method = 'HMAC-SHA1', $callback = false)
 	{
 		$values = array(
-
 			'oauth_consumer_key'     => $consumerKey,
 			'oauth_signature_method' => $method,
 			'oauth_timestamp'        => self::getTimestamp(),
 			'oauth_nonce'            => self::getNonce(),
 			'oauth_version'          => self::getVersion(),
-
 		);
-
 
 		// if we have an callback add them to the request
 		if(!empty($callback))
@@ -94,7 +92,6 @@ class Oauth
 			$values['oauth_callback'] = 'oob';
 		}
 
-
 		// build the base string
 		$this->requestMethod = 'POST';
 		$this->url           = $url;
@@ -102,21 +99,16 @@ class Oauth
 
 		$this->baseString    = self::buildBasestring($this->requestMethod, $this->url, $this->params);
 
-
 		// get the signature object
 		$signature = self::getSignature($method);
-
 
 		// generate the signature
 		$values['oauth_signature'] = $signature->build($this->baseString, $consumerSecret);
 
-
 		// request unauthorized token
 		$request   = new PostRequest($url, array(
-
 			'Authorization' => 'OAuth realm="psx", ' . self::buildAuthString($values),
 			'User-Agent'    => __CLASS__ . ' ' . Base::VERSION,
-
 		));
 
 		$response  = $this->http->request($request);
@@ -128,12 +120,12 @@ class Oauth
 			$this->lastError = false;
 
 			// parse the response
-			$reader = new Form();
+			$reader   = new Form();
+			$record   = new Response();
+			$importer = new ResponseImporter();
+			$importer->import($record, $reader->read($response));
 
-			$dataResponse = new Response();
-			$dataResponse->import($reader->read($response));
-
-			return $dataResponse;
+			return $record;
 		}
 		else
 		{
@@ -186,7 +178,6 @@ class Oauth
 	public function accessToken(Url $url, $consumerKey, $consumerSecret, $token, $tokenSecret, $verifier, $method = 'HMAC-SHA1')
 	{
 		$values = array(
-
 			'oauth_consumer_key'     => $consumerKey,
 			'oauth_token'            => $token,
 			'oauth_signature_method' => $method,
@@ -194,9 +185,7 @@ class Oauth
 			'oauth_nonce'            => self::getNonce(),
 			'oauth_version'          => self::getVersion(),
 			'oauth_verifier'         => $verifier,
-
 		);
-
 
 		// build the base string
 		$this->requestMethod = 'POST';
@@ -205,21 +194,16 @@ class Oauth
 
 		$this->baseString    = self::buildBasestring($this->requestMethod, $this->url, $this->params);
 
-
 		// get the signature object
 		$signature = self::getSignature($method);
-
 
 		// generate the signature
 		$values['oauth_signature'] = $signature->build($this->baseString, $consumerSecret, $tokenSecret);
 
-
 		// request access token
 		$request   = new PostRequest($url, array(
-
 			'Authorization' => 'OAuth realm="psx", ' . self::buildAuthString($values),
 			'User-Agent'    => __CLASS__ . ' ' . Base::VERSION,
-
 		));
 
 		$response  = $this->http->request($request);
@@ -231,12 +215,12 @@ class Oauth
 			$this->lastError = false;
 
 			// parse the response
-			$reader = new Form();
+			$reader   = new Form();
+			$record   = new Response();
+			$importer = new ResponseImporter();
+			$importer->import($record, $reader->read($response));
 
-			$dataResponse = new Response();
-			$dataResponse->import($reader->read($response));
-
-			return $dataResponse;
+			return $record;
 		}
 		else
 		{
@@ -269,16 +253,13 @@ class Oauth
 	public function getAuthorizationHeader(Url $url, $consumerKey, $consumerSecret, $token, $tokenSecret, $method = 'HMAC-SHA1', $requestMethod = 'GET')
 	{
 		$values = array(
-
 			'oauth_consumer_key'     => $consumerKey,
 			'oauth_token'            => $token,
 			'oauth_signature_method' => $method,
 			'oauth_timestamp'        => self::getTimestamp(),
 			'oauth_nonce'            => self::getNonce(),
 			'oauth_version'          => self::getVersion(),
-
 		);
-
 
 		// build the base string
 		$this->requestMethod = $requestMethod;
@@ -287,14 +268,11 @@ class Oauth
 
 		$this->baseString    = self::buildBasestring($this->requestMethod, $this->url, $this->params);
 
-
 		// get the signature object
 		$signature = self::getSignature($method);
 
-
 		// generate the signature
 		$values['oauth_signature'] = $signature->build($this->baseString, $consumerSecret, $tokenSecret);
-
 
 		// build request
 		$authorizationHeader = 'OAuth realm="psx", ' . self::buildAuthString($values);
@@ -493,41 +471,6 @@ class Oauth
 	public static function getVersion()
 	{
 		return '1.0';
-	}
-
-	/**
-	 * The response has an format like "name=value&name=value" we use the
-	 * parse_str function to create an array with the appropriated key value
-	 * pairs. You should note that parse_str uses the url_decode function on the
-	 * data.
-	 *
-	 * @param string $response
-	 * @return PSX\Oauth\Provider\Data\Response
-	 */
-	public static function parseResponse($response)
-	{
-		$data = array();
-
-		parse_str($response, $data);
-
-
-		$token       = null;
-		$tokenSecret = null;
-
-		if(isset($data['oauth_token']))
-		{
-			$token = $data['oauth_token'];
-		}
-
-		if(isset($data['oauth_token_secret']))
-		{
-			$tokenSecret = $data['oauth_token_secret'];
-		}
-
-
-		$response = new Response($token, $tokenSecret);
-
-		return $response;
 	}
 
 	/**

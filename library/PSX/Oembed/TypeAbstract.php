@@ -24,10 +24,9 @@
 namespace PSX\Oembed;
 
 use PSX\Data\RecordAbstract;
-use PSX\Data\ReaderInterface;
-use PSX\Data\ReaderResult;
+use PSX\Data\Record\DefaultImporter;
+use PSX\Data\RecordInfo;
 use PSX\Data\InvalidDataException;
-use PSX\Data\NotSupportedException;
 
 /**
  * TypeAbstract
@@ -38,22 +37,21 @@ use PSX\Data\NotSupportedException;
  */
 abstract class TypeAbstract extends RecordAbstract
 {
-	public $type;
-	public $version;
-	public $title;
-	public $authorName;
-	public $authorUrl;
-	public $providerName;
-	public $providerUrl;
-	public $cacheAge;
-	public $thumbnailUrl;
-	public $thumbnailWidth;
-	public $thumbnailHeight;
+	protected $type;
+	protected $version;
+	protected $title;
+	protected $authorName;
+	protected $authorUrl;
+	protected $providerName;
+	protected $providerUrl;
+	protected $cacheAge;
+	protected $thumbnailUrl;
+	protected $thumbnailWidth;
+	protected $thumbnailHeight;
 
-	public function getFields()
+	public function getRecordInfo()
 	{
-		$fields = array(
-
+		return new RecordInfo('type', array(
 			'type'             => $this->type,
 			'version'          => $this->version,
 			'title'            => $this->title,
@@ -65,10 +63,7 @@ abstract class TypeAbstract extends RecordAbstract
 			'thumbnail_url'    => $this->thumbnailUrl,
 			'thumbnail_width'  => $this->thumbnailWidth,
 			'thumbnail_height' => $this->thumbnailHeight,
-
-		);
-
-		return $fields;
+		));
 	}
 
 	public function setType($type)
@@ -81,6 +76,11 @@ abstract class TypeAbstract extends RecordAbstract
 		$this->type = $type;
 	}
 
+	public function getType()
+	{
+		return $this->type;
+	}
+
 	public function setVersion($version)
 	{
 		if($version != '1.0')
@@ -91,9 +91,19 @@ abstract class TypeAbstract extends RecordAbstract
 		$this->version = $version;
 	}
 
+	public function getVersion()
+	{
+		return $this->version;
+	}
+
 	public function setTitle($title)
 	{
 		$this->title = $title;
+	}
+
+	public function getTitle()
+	{
+		return $this->title;
 	}
 
 	public function setAuthorName($authorName)
@@ -101,9 +111,19 @@ abstract class TypeAbstract extends RecordAbstract
 		$this->authorName = $authorName;
 	}
 
+	public function getAuthorName()
+	{
+		return $this->authorName;
+	}
+
 	public function setAuthorUrl($authorUrl)
 	{
 		$this->authorUrl = $authorUrl;
+	}
+
+	public function getAuthorUrl()
+	{
+		return $this->authorUrl;
 	}
 
 	public function setProviderName($providerName)
@@ -111,9 +131,19 @@ abstract class TypeAbstract extends RecordAbstract
 		$this->providerName = $providerName;
 	}
 
+	public function getProviderName()
+	{
+		return $this->providerName;
+	}
+
 	public function setProviderUrl($providerUrl)
 	{
 		$this->providerUrl = $providerUrl;
+	}
+
+	public function getProviderUrl()
+	{
+		return $this->providerUrl;
 	}
 
 	public function setCacheAge($cacheAge)
@@ -121,9 +151,19 @@ abstract class TypeAbstract extends RecordAbstract
 		$this->cacheAge = (integer) $cacheAge;
 	}
 
+	public function getCacheAge()
+	{
+		return $this->cacheAge;
+	}
+
 	public function setThumbnailUrl($thumbnailUrl)
 	{
 		$this->thumbnailUrl = $thumbnailUrl;
+	}
+
+	public function getThumbnailUrl()
+	{
+		return $this->thumbnailUrl;
 	}
 
 	public function setThumbnailWidth($thumbnailWidth)
@@ -131,46 +171,43 @@ abstract class TypeAbstract extends RecordAbstract
 		$this->thumbnailWidth = $thumbnailWidth;
 	}
 
+	public function getThumbnailWidth()
+	{
+		return $this->thumbnailWidth;
+	}
+
 	public function setThumbnailHeight($thumbnailHeight)
 	{
 		$this->thumbnailHeight = $thumbnailHeight;
 	}
 
-	public static function factory(ReaderResult $result)
+	public function getThumbnailHeight()
 	{
-		switch($result->getType())
+		return $this->thumbnailHeight;
+	}
+
+	public static function factory($data)
+	{
+		$type = isset($data['type']) ? strtolower($data['type']) : null;
+
+		if(!in_array($type, array('link', 'photo', 'rich', 'video')))
 		{
-			case ReaderInterface::JSON:
-			case ReaderInterface::XML:
+			throw new InvalidDataException('Invalid type');
+		}
 
-				$data  = $result->getData();
-				$type  = isset($data['type']) ? strtolower($data['type']) : null;
+		$class = '\PSX\Oembed\Type\\' . ucfirst($type);
 
-				if(!in_array($type, array('link', 'photo', 'rich', 'video')))
-				{
-					throw new InvalidDataException('Invalid type');
-				}
+		if(class_exists($class))
+		{
+			$record   = new $class();
+			$importer = new DefaultImporter();
+			$importer->import($record, $data);
 
-				$class = '\PSX\Oembed\Type\\' . ucfirst($type);
-
-				if(class_exists($class))
-				{
-					$type = new $class();
-					$type->import($result);
-
-					return $type;
-				}
-				else
-				{
-					throw new InvalidDataException('Type class not found');
-				}
-
-				break;
-
-			default:
-
-				throw new NotSupportedException('Invalid reader');
-				break;
+			return $record;
+		}
+		else
+		{
+			throw new InvalidDataException('Type class not found');
 		}
 	}
 }

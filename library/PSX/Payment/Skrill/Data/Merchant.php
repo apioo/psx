@@ -24,6 +24,7 @@
 namespace PSX\Payment\Skrill\Data;
 
 use PSX\Data\RecordAbstract;
+use PSX\Data\RecordInfo;
 
 /**
  * Merchant
@@ -54,14 +55,9 @@ class Merchant extends Customer
 	protected $extRefId;
 	protected $merchantFields;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'merchant';
-	}
-
-	public function getFields()
-	{
-		return array_merge(parent::getFields(), array(
+		return new RecordInfo('merchant', array(
 			'pay_to_email'          => $this->payToEmail,
 			'recipient_description' => $this->recipientDescription,
 			'transaction_id'        => $this->transactionId,
@@ -81,7 +77,7 @@ class Merchant extends Customer
 			'rid'                   => $this->rid,
 			'ext_ref_id'            => $this->extRefId,
 			'merchant_fields'       => $this->merchantFields,
-		));
+		), parent::getRecordInfo());
 	}
 
 	public function setPayToEmail($payToEmail)

@@ -24,6 +24,7 @@
 namespace PSX\Payment\Skrill\Data;
 
 use PSX\Data\RecordAbstract;
+use PSX\Data\RecordInfo;
 
 /**
  * Payment
@@ -55,14 +56,9 @@ class Payment extends Merchant
 	protected $detail5Description;
 	protected $detail5Text;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'payment';
-	}
-
-	public function getFields()
-	{
-		return array_merge(parent::getFields(), array(
+		return new RecordInfo('payment', array(
 			'amount'              => $this->amount,
 			'currency'            => $this->currency,
 			'amount2_description' => $this->amount2Description,
@@ -81,7 +77,7 @@ class Payment extends Merchant
 			'detail4_text'        => $this->detail4Text,
 			'detail5_description' => $this->detail5Description,
 			'detail5_text'        => $this->detail5Text,
-		));
+		), parent::getRecordInfo());
 	}
 
 	public function setAmount($amount)

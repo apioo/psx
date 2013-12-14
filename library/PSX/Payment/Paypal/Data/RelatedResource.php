@@ -23,13 +23,8 @@
 
 namespace PSX\Payment\Paypal\Data;
 
-use ReflectionClass;
-use PSX\Data\RecordAbstract;
-use PSX\Data\ReaderResult;
-use PSX\Data\ReaderInterface;
-use PSX\Url;
-use PSX\Payment\Paypal\Data\Sale;
-use PSX\Payment\Paypal\Data\Refund;
+use PSX\Data\CollectionAbstract;
+use PSX\Data\RecordInfo;
 
 /**
  * RelatedResource
@@ -38,79 +33,34 @@ use PSX\Payment\Paypal\Data\Refund;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class RelatedResource extends RecordAbstract
+class RelatedResource extends CollectionAbstract
 {
-	protected $resources = array();
-
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'related_resources';
-	}
-
-	public function getFields()
-	{
-		return array(
-			'resources' => $this->resources,
-		);
+		return new RecordInfo('related_resources', array(
+			'items' => $this->collection,
+		));
 	}
 
 	public function getSale()
 	{
-		foreach($this->resources as $resource)
+		foreach($this->collection as $record)
 		{
-			if($resource instanceof Sale)
+			if($record instanceof Sale)
 			{
-				return $resource;
+				return $record;
 			}
 		}
-		return null;
 	}
-
+	
 	public function getRefund()
 	{
-		foreach($this->resources as $resource)
+		foreach($this->collection as $record)
 		{
-			if($resource instanceof Refund)
+			if($record instanceof Refund)
 			{
-				return $resource;
+				return $record;
 			}
-		}
-		return null;
-	}
-
-	public function import(ReaderResult $result)
-	{
-		$class = new ReflectionClass($this);
-
-		switch($result->getType())
-		{
-			case ReaderInterface::JSON:
-
-				$data = (array) $result->getData();
-
-				foreach($data as $v)
-				{
-					if(isset($v))
-					{
-						$key   = key($v);
-						$value = current($v);
-						$class = 'PSX\\Payment\\Paypal\\Data\\' . ucfirst(strtolower($key));
-
-						if(class_exists($class))
-						{
-							$result   = new ReaderResult($result->getType(), $value);
-							$resource = new $class();
-							$resource->import($result);
-
-							$this->resources[] = $resource;
-						}
-					}
-				}
-				break;
-
-			default:
-				parent::import($result);
-				break;
 		}
 	}
 }

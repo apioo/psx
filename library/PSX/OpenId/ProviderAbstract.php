@@ -28,8 +28,11 @@ use PSX\Data\ReaderInterface;
 use PSX\Module\ApiAbstract;
 use PSX\OpenId;
 use PSX\OpenId\Provider\Association;
+use PSX\OpenId\Provider\Data\AssociationImporter;
 use PSX\OpenId\Provider\Data\AssociationRequest;
+use PSX\OpenId\Provider\Data\ResImporter;
 use PSX\OpenId\Provider\Data\ResRequest;
+use PSX\OpenId\Provider\Data\SetupImporter;
 use PSX\OpenId\Provider\Data\SetupRequest;
 use PSX\OpenSsl;
 use PSX\OpenSsl\PKey;
@@ -64,8 +67,9 @@ abstract class ProviderAbstract extends ApiAbstract
 
 				try
 				{
-					$request = new AssociationRequest();
-					$request->import($this->getRequest(ReaderInterface::GPC));
+					$request  = new AssociationRequest();
+					$importer = new AssociationImporter();
+					$importer->import($request, $this->getRequest(ReaderInterface::GPC));
 
 					$expiresIn = (integer) $this->onAsocciation($request->getAssociation());
 
@@ -75,20 +79,16 @@ abstract class ProviderAbstract extends ApiAbstract
 					}
 
 					echo OpenId::keyValueEncode(array_merge(array(
-
 						'ns'         => self::NS,
 						'expires_in' => $expiresIn,
-
 					), $request->getFields()));
 				}
 				catch(\Exception $e)
 				{
 					echo OpenId::keyValueEncode(array(
-
 						'ns'         => self::NS,
 						'error'      => $e->getMessage(),
 						'error_code' => 'unsupported-type',
-
 					));
 				}
 
@@ -99,8 +99,10 @@ abstract class ProviderAbstract extends ApiAbstract
 
 				try
 				{
-					$request = new SetupRequest();
-					$request->import($this->getRequest(ReaderInterface::GPC));
+					$request  = new SetupRequest();
+					$importer = new SetupImporter();
+					$importer->import($request, $this->getRequest(ReaderInterface::GPC));
+
 					$request->setImmediate($mode == 'checkid_immediate');
 
 					$this->onCheckidSetup($request);
@@ -139,16 +141,15 @@ abstract class ProviderAbstract extends ApiAbstract
 
 				try
 				{
-					$request = new ResRequest();
-					$request->import($this->getRequest(ReaderInterface::GPC));
+					$request  = new ResRequest();
+					$importer = new ResImporter();
+					$importer->import($request, $this->getRequest(ReaderInterface::GPC));
 
 					if($this->onCheckAuthentication($request) === true)
 					{
 						echo OpenId::keyValueEncode(array(
-
 							'ns'       => self::NS,
 							'is_valid' => 'true',
-
 						));
 					}
 					else

@@ -24,6 +24,7 @@
 namespace PSX\OpenId\Provider\Data;
 
 use PSX\Data\RecordAbstract;
+use PSX\Data\RecordInfo;
 use PSX\Data\InvalidDataException;
 use PSX\Data\NotSupportedException;
 use PSX\Data\ReaderResult;
@@ -54,7 +55,6 @@ class ResRequest extends RecordAbstract
 	protected $params;
 
 	private $map = array(
-
 		'opEndpoint'       => 'op_endpoint',
 		'claimedId'        => 'claimed_id',
 		'identity'         => 'identity',
@@ -64,15 +64,9 @@ class ResRequest extends RecordAbstract
 		'assocHandle'      => 'assoc_handle',
 		'signed'           => 'signed',
 		'sig'              => 'sig',
-
 	);
 
-	public function getName()
-	{
-		return 'request';
-	}
-
-	public function getFields()
+	public function getRecordInfo()
 	{
 		$fields = array();
 
@@ -86,7 +80,7 @@ class ResRequest extends RecordAbstract
 			}
 		}
 
-		return $fields;
+		return new RecordInfo('request', $fields);
 	}
 
 	public function setOpEndpoint($opEndpoint)
@@ -94,9 +88,19 @@ class ResRequest extends RecordAbstract
 		$this->opEndpoint = new Url($opEndpoint);
 	}
 
+	public function getOpEndpoint()
+	{
+		return $this->opEndpoint;
+	}
+
 	public function setClaimedId($claimedId)
 	{
 		$this->claimedId = $claimedId;
+	}
+
+	public function getClaimedId()
+	{
+		return $this->claimedId;
 	}
 
 	public function setIdentity($identity)
@@ -104,9 +108,19 @@ class ResRequest extends RecordAbstract
 		$this->identity = $identity;
 	}
 
+	public function getIdentity()
+	{
+		return $this->identity;
+	}
+
 	public function setReturnTo($returnTo)
 	{
 		$this->returnTo = new Url($returnTo);
+	}
+
+	public function getReturnTo()
+	{
+		return $this->returnTo;
 	}
 
 	public function setResponseNonce($responseNonce)
@@ -114,9 +128,19 @@ class ResRequest extends RecordAbstract
 		$this->responseNonce = $responseNonce;
 	}
 
+	public function getResponseNonce()
+	{
+		return $this->responseNonce;
+	}
+
 	public function setInvalidateHandle($invalidateHandle)
 	{
 		$this->invalidateHandle = $invalidateHandle;
+	}
+
+	public function getInvalidateHandle()
+	{
+		return $this->invalidateHandle;
 	}
 
 	public function setAssocHandle($assocHandle)
@@ -124,9 +148,19 @@ class ResRequest extends RecordAbstract
 		$this->assocHandle = $assocHandle;
 	}
 
+	public function getAssocHandle()
+	{
+		return $this->assocHandle;
+	}
+
 	public function setSigned($signed)
 	{
 		$this->signed = explode(',', $signed);
+	}
+
+	public function getSigned()
+	{
+		return $this->signed;
 	}
 
 	public function setSig($sig)
@@ -139,54 +173,14 @@ class ResRequest extends RecordAbstract
 		$this->sig = $sig;
 	}
 
-	public function setParams(array $params)
-	{
-		$this->params = $params;
-	}
-
-	public function getOpEndpoint()
-	{
-		return $this->opEndpoint;
-	}
-
-	public function getClaimedId()
-	{
-		return $this->claimedId;
-	}
-
-	public function getIdentity()
-	{
-		return $this->identity;
-	}
-
-	public function getReturnTo()
-	{
-		return $this->returnTo;
-	}
-
-	public function getResponseNonce()
-	{
-		return $this->responseNonce;
-	}
-
-	public function getInvalidateHandle()
-	{
-		return $this->invalidateHandle;
-	}
-
-	public function getAssocHandle()
-	{
-		return $this->assocHandle;
-	}
-
-	public function getSigned()
-	{
-		return $this->signed;
-	}
-
 	public function getSig()
 	{
 		return $this->sig;
+	}
+
+	public function setParams(array $params)
+	{
+		$this->params = $params;
 	}
 
 	public function getParams()
@@ -201,108 +195,5 @@ class ResRequest extends RecordAbstract
 		$foreignSig = $this->getSig();
 
 		return strcmp($foreignSig, $signature) === 0;
-	}
-
-	public function import(ReaderResult $result)
-	{
-		switch($result->getType())
-		{
-			case ReaderInterface::GPC:
-
-				$params = $result->getData();
-
-				$this->setParams($params);
-
-				if(isset($params['openid_op_endpoint']))
-				{
-					$this->setOpEndpoint($params['openid_op_endpoint']);
-				}
-				else
-				{
-					throw new InvalidDataException('OP endpoint not set');
-				}
-
-				if(isset($params['openid_claimed_id']))
-				{
-					$this->setClaimedId($params['openid_claimed_id']);
-				}
-
-				if(isset($params['openid_identity']))
-				{
-					$this->setIdentity($params['openid_identity']);
-				}
-
-				if(isset($params['openid_return_to']))
-				{
-					$this->setReturnTo($params['openid_return_to']);
-				}
-				else
-				{
-					throw new InvalidDataException('Return to not set');
-				}
-
-				if(isset($params['openid_response_nonce']))
-				{
-					$this->setResponseNonce($params['openid_response_nonce']);
-				}
-				else
-				{
-					throw new InvalidDataException('Response nonce not set');
-				}
-
-				if(isset($params['openid_invalidate_handle']))
-				{
-					$this->setInvalidateHandle($params['openid_invalidate_handle']);
-				}
-
-				if(isset($params['openid_assoc_handle']))
-				{
-					$this->setAssocHandle($params['openid_assoc_handle']);
-				}
-				else
-				{
-					throw new InvalidDataException('Assoc handle not set');
-				}
-
-				if(isset($params['openid_signed']))
-				{
-					$this->setSigned($params['openid_signed']);
-				}
-				else
-				{
-					throw new InvalidDataException('Signed not set');
-				}
-
-				if(isset($params['openid_sig']))
-				{
-					$this->setSig($params['openid_sig']);
-				}
-				else
-				{
-					throw new InvalidDataException('Sig not set');
-				}
-
-				break;
-
-			default:
-
-				throw new NotSupportedException('Can only import data from reader GPC');
-
-				break;
-		}
-	}
-
-	public function export(WriterResult $result)
-	{
-		switch($result->getType())
-		{
-			case WriterInterface::FORM:
-			case WriterInterface::JSON:
-			case WriterInterface::XML:
-
-				return $this->getData();
-
-				break;
-		}
 	}
 }

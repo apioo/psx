@@ -36,15 +36,8 @@ class JsonTest extends WriterTestCase
 {
 	public function testWrite()
 	{
-		ob_start();
-
 		$writer = new Json();
-		$writer->write($this->getRecord());
-
-		$actual = ob_get_contents();
-
-		ob_end_clean();
-
+		$actual = $writer->write($this->getRecord());
 
 		$expect = <<<TEXT
 {
@@ -52,7 +45,7 @@ class JsonTest extends WriterTestCase
 	"author":"foo",
 	"title":"bar",
 	"content":"foobar",
-	"date":"2012-03-11 13:37:21"
+	"date":"2012-03-11T13:37:21+00:00"
 }
 TEXT;
 
@@ -61,15 +54,8 @@ TEXT;
 
 	public function testWriteResultSet()
 	{
-		ob_start();
-
 		$writer = new Json();
-		$writer->write($this->getResultSet());
-
-		$actual = ob_get_contents();
-
-		ob_end_clean();
-
+		$actual = $writer->write($this->getResultSet());
 
 		$expect = <<<TEXT
 {
@@ -81,13 +67,13 @@ TEXT;
 		"author":"foo",
 		"title":"bar",
 		"content":"foobar",
-		"date":"2012-03-11 13:37:21"
+		"date":"2012-03-11T13:37:21+00:00"
 	},{
 		"id":2,
 		"author":"foo",
 		"title":"bar",
 		"content":"foobar",
-		"date":"2012-03-11 13:37:21"
+		"date":"2012-03-11T13:37:21+00:00"
 	}]
 }
 TEXT;
@@ -97,15 +83,8 @@ TEXT;
 
 	public function testWriteComplex()
 	{
-		ob_start();
-
 		$writer = new Json();
-		$writer->write($this->getComplexRecord());
-
-		$actual = ob_get_contents();
-
-		ob_end_clean();
-
+		$actual = $writer->write($this->getComplexRecord());
 
 		$expect = <<<TEXT
 {

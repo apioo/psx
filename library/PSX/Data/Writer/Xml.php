@@ -36,21 +36,25 @@ use XMLWriter;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Xml implements WriterInterface
+class Xml extends ArrayAbstract
 {
 	public static $mime = 'application/xml';
 
-	public $writerResult;
-
-	protected $writer;
-
 	public function write(RecordInterface $record)
 	{
-		$this->writerResult = new WriterResult(WriterInterface::XML, $this);
-
 		$this->writer = new Writer();
-		$this->writer->setRecord($record->getName(), $record->export($this->writerResult));
+		$this->writer->setRecord($record->getRecordInfo()->getName(), $this->export($record));
 
-		echo $this->writer->toString();
+		return $this->writer->toString();
+	}
+
+	public function isContentTypeSupported($contentType)
+	{
+		return stripos($contentType, self::$mime) !== false;
+	}
+
+	public function getContentType()
+	{
+		return self::$mime;
 	}
 }

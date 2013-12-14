@@ -23,20 +23,10 @@
 
 namespace PSX;
 
-use Countable;
-use DOMElement;
-use Iterator;
-use PSX\Data\InvalidDataException;
-use PSX\Data\NotSupportedException;
-use PSX\Data\ReaderInterface;
-use PSX\Data\ReaderResult;
-use PSX\Data\RecordAbstract;
-use PSX\Data\Reader;
-use PSX\Data\Writer;
-use PSX\Html\Parse;
-use PSX\Html\Parse\Element;
-use PSX\Http\GetRequest;
+use PSX\Data\CollectionAbstract;
 use PSX\Rss\Item;
+use PSX\Rss\Category;
+use PSX\Rss\Cloud;
 
 /**
  * Rss
@@ -44,272 +34,264 @@ use PSX\Rss\Item;
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
- * @see     http://www.ietf.org/rfc/rfc4287.txt
+ * @see     http://cyber.law.harvard.edu/rss/rss.html
  */
-class Rss extends RecordAbstract implements Iterator, Countable
+class Rss extends CollectionAbstract
 {
-	public $title;
-	public $link;
-	public $description;
-	public $language;
-	public $copyright;
-	public $managingeditor;
-	public $webmaster;
-	public $generator;
-	public $docs;
-	public $ttl;
-	public $image;
-	public $rating;
-	public $textinput;
-	public $skiphours;
-	public $skipdays;
-	public $category  = array();
-	public $pubdate;
-	public $lastbuilddate;
-	public $cloud;
-	public $item      = array();
+	protected $title;
+	protected $link;
+	protected $description;
+	protected $language;
+	protected $copyright;
+	protected $managingEditor;
+	protected $webMaster;
+	protected $generator;
+	protected $docs;
+	protected $ttl;
+	protected $image;
+	protected $rating;
+	protected $skipHours;
+	protected $skipDays;
+	protected $category = array();
+	protected $pubDate;
+	protected $lastBuildDate;
+	protected $cloud;
 
-	private $dom;
-	private $nextItem;
-
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'channel';
-	}
-
-	public function getFields()
-	{
-		return array(
-
+		return new RecordInfo('channel', array(
 			'title'          => $this->title,
 			'link'           => $this->link,
 			'description'    => $this->description,
 			'language'       => $this->language,
 			'copyright'      => $this->copyright,
-			'managingeditor' => $this->managingeditor,
-			'webmaster'      => $this->webmaster,
+			'managingEditor' => $this->managingEditor,
+			'webMaster'      => $this->webMaster,
 			'generator'      => $this->generator,
 			'docs'           => $this->docs,
+			'ttl'            => $this->ttl,
 			'image'          => $this->image,
 			'rating'         => $this->rating,
-			'textinput'      => $this->textinput,
-			'skiphours'      => $this->skiphours,
-			'skipdays'       => $this->skipdays,
+			'skipHours'      => $this->skipHours,
+			'skipDays'       => $this->skipDays,
 			'category'       => $this->category,
 			'pubDate'        => $this->pubDate,
-			'lastbuilddate'  => $this->lastbuilddate,
+			'lastBuildDate'  => $this->lastBuildDate,
 			'cloud'          => $this->cloud,
-			'item'           => $this->item,
-
-		);
+			'item'           => $this->collection,
+		));
 	}
 
+	public function setTitle($title)
+	{
+		$this->title = $title;
+	}
+	
+	public function getTitle()
+	{
+		return $this->title;
+	}
+
+	public function setLink($link)
+	{
+		$this->link = $link;
+	}
+	
+	public function getLink()
+	{
+		return $this->link;
+	}
+
+	public function setDescription($description)
+	{
+		$this->description = $description;
+	}
+	
+	public function getDescription()
+	{
+		return $this->description;
+	}
+
+	public function setLanguage($language)
+	{
+		$this->language = $language;
+	}
+	
+	public function getLanguage()
+	{
+		return $this->language;
+	}
+
+	public function setCopyright($copyright)
+	{
+		$this->copyright = $copyright;
+	}
+	
+	public function getCopyright()
+	{
+		return $this->copyright;
+	}
+
+	public function setManagingEditor($managingEditor)
+	{
+		$this->managingEditor = $managingEditor;
+	}
+	
+	public function getManagingEditor()
+	{
+		return $this->managingEditor;
+	}
+
+	public function setWebMaster($webMaster)
+	{
+		$this->webMaster = $webMaster;
+	}
+	
+	public function getWebMaster()
+	{
+		return $this->webMaster;
+	}
+
+	public function setGenerator($generator)
+	{
+		$this->generator = $generator;
+	}
+	
+	public function getGenerator()
+	{
+		return $this->generator;
+	}
+
+	public function setDocs($docs)
+	{
+		$this->docs = $docs;
+	}
+	
+	public function getDocs()
+	{
+		return $this->docs;
+	}
+
+	public function setTtl($ttl)
+	{
+		$this->ttl = $ttl;
+	}
+
+	public function getTtl()
+	{
+		return $this->ttl;
+	}
+
+	public function setImage($image)
+	{
+		$this->image = $image;
+	}
+	
+	public function getImage()
+	{
+		return $this->image;
+	}
+
+	public function setRating($rating)
+	{
+		$this->rating = $rating;
+	}
+	
+	public function getRating()
+	{
+		return $this->rating;
+	}
+
+	public function setSkipHours($skipHours)
+	{
+		$this->skipHours = $skipHours;
+	}
+
+	public function getSkipHours()
+	{
+		return $this->skipHours;
+	}
+
+	public function setSkipDays($skipDays)
+	{
+		$this->skipDays = $skipDays;
+	}
+	
+	public function getSkipDays()
+	{
+		return $this->skipDays;
+	}
+
+	/**
+	 * @param PSX\Rss\Category $category
+	 */
+	public function addCategory(Category $category)
+	{
+		$this->category[] = $category;
+	}
+
+	/**
+	 * @param array<PSX\Rss\Category> $category
+	 */
+	public function setCategory(array $category)
+	{
+		$this->category = $category;
+	}
+	
+	public function getCategory()
+	{
+		return $this->category;
+	}
+
+	/**
+	 * @param DateTime $pubDate
+	 */
+	public function setPubDate(\DateTime $pubDate)
+	{
+		$this->pubDate = $pubDate;
+	}
+	
+	public function getPubDate()
+	{
+		return $this->pubDate;
+	}
+
+	/**
+	 * @param DateTime $lastBuildDate
+	 */
+	public function setLastBuildDate(\DateTime $lastBuildDate)
+	{
+		$this->lastBuildDate = $lastBuildDate;
+	}
+	
+	public function getLastBuildDate()
+	{
+		return $this->lastBuildDate;
+	}
+
+	/**
+	 * @param PSX\Rss\Cloud $cloud
+	 */
+	public function setCloud(Cloud $cloud)
+	{
+		$this->cloud = $cloud;
+	}
+	
+	public function getCloud()
+	{
+		return $this->cloud;
+	}
+
+	/**
+	 * @param array<PSX\Rss\Item>
+	 */
+	public function setItem($item)
+	{
+		$this->collection = $item;
+	}
+	
 	public function getItem()
 	{
-		return $this->item;
-	}
-
-	public function getDom()
-	{
-		return $this->dom;
-	}
-
-	// Iterator
-	public function current()
-	{
-		return current($this->item);
-	}
-
-	public function key()
-	{
-		return key($this->item);
-	}
-
-	public function next()
-	{
-		$this->nextItem = next($this->item);
-	}
-
-	public function rewind()
-	{
-		reset($this->item);
-	}
-
-	public function valid()
-	{
-		return $this->nextItem !== false;
-	}
-
-	// Countable
-	public function count()
-	{
-		return count($this->item);
-	}
-
-	public function import(ReaderResult $result)
-	{
-		$this->dom = $result->getData();
-
-		switch($result->getType())
-		{
-			case ReaderInterface::DOM:
-
-				$elementList = $this->dom->getElementsByTagName('rss');
-
-				if($elementList->length == 0)
-				{
-					throw new InvalidDataException('Could not find rss element');
-				}
-
-				/*
-				$rss = $elementList->item(0);
-
-				if($rss->getAttribute('version') != '2.0')
-				{
-					throw new InvalidDataException('Invalid RSS version must be 2.0');
-				}
-				*/
-
-				$elementList = $this->dom->getElementsByTagName('channel');
-
-				if($elementList->length > 0)
-				{
-					$this->parseChannelElement($elementList->item(0));
-				}
-				else
-				{
-					throw new InvalidDataException('No channel element found');
-				}
-
-				break;
-
-			default:
-
-				throw new NotSupportedException('Can only import result of DOM reader');
-		}
-	}
-
-	private function parseChannelElement(DOMElement $channel)
-	{
-		$childNodes = $channel->childNodes;
-
-		for($i = 0; $i < $childNodes->length; $i++)
-		{
-			$item = $childNodes->item($i);
-
-			if($item->nodeType != XML_ELEMENT_NODE)
-			{
-				continue;
-			}
-
-
-			$name = strtolower($item->localName);
-
-			switch($name)
-			{
-				case 'title':
-				case 'link':
-				case 'description':
-				case 'language':
-				case 'copyright':
-				case 'managingeditor':
-				case 'webmaster':
-				case 'generator':
-				case 'docs':
-				case 'ttl':
-				case 'image':
-				case 'rating':
-				case 'textinput':
-				case 'skiphours':
-				case 'skipdays':
-
-					$this->$name = $item->nodeValue;
-
-					break;
-
-				case 'category':
-
-					$this->category[] = self::categoryConstruct($item);
-
-					break;
-
-				case 'pubdate':
-				case 'lastbuilddate':
-
-					$this->$name = new DateTime($item->nodeValue);
-
-					break;
-
-				case 'cloud':
-
-					$this->cloud = self::cloudConstruct($item);
-
-					break;
-
-				case 'item':
-
-					$result = new ReaderResult(ReaderInterface::DOM, $item);
-					$item   = new Item();
-
-					$item->import($result);
-
-					$this->item[] = $item;
-
-					break;
-			}
-		}
-	}
-
-	public static function categoryConstruct(DOMElement $category)
-	{
-		return array(
-
-			'text'   => $category->nodeValue,
-			'domain' => $category->getAttribute('domain'),
-
-		);
-	}
-
-	public static function cloudConstruct(DOMElement $cloud)
-	{
-		return array(
-
-			'domain'            => $cloud->getAttribute('domain'),
-			'port'              => $cloud->getAttribute('port'),
-			'path'              => $cloud->getAttribute('path'),
-			'registerProcedure' => $cloud->getAttribute('registerProcedure'),
-			'protocol'          => $cloud->getAttribute('protocol'),
-
-		);
-	}
-
-	public static function findTag($content)
-	{
-		$parse   = new Parse($content);
-		$element = new Element('link', array(
-
-			'rel'  => 'alternate',
-			'type' => Writer\Rss::$mime,
-
-		));
-
-		$href = $parse->fetchAttrFromHead($element, 'href');
-
-		return $href;
-	}
-
-	public static function request($url)
-	{
-		$http     = new Http();
-		$request  = new GetRequest($url, array(
-			'User-Agent' => __CLASS__ . ' ' . Base::VERSION
-		));
-		$response = $http->request($request);
-		$reader   = new Reader\Dom();
-
-		$rss = new self();
-		$rss->import($reader->read($response));
-
-		return $rss;
+		return $this->collection;
 	}
 }

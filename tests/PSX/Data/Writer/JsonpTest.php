@@ -36,19 +36,12 @@ class JsonpTest extends WriterTestCase
 {
 	public function testWrite()
 	{
-		ob_start();
-
 		$writer = new Jsonp();
 		$writer->setCallbackName('foo');
-		$writer->write($this->getRecord());
-
-		$actual = ob_get_contents();
-
-		ob_end_clean();
-
+		$actual = $writer->write($this->getRecord());
 
 		$expect = <<<TEXT
-foo({"id":1,"author":"foo","title":"bar","content":"foobar","date":"2012-03-11 13:37:21"})
+foo({"id":1,"author":"foo","title":"bar","content":"foobar","date":"2012-03-11T13:37:21+00:00"})
 TEXT;
 
 		$this->assertEquals($expect, $actual);
@@ -56,19 +49,12 @@ TEXT;
 
 	public function testWriteResultSet()
 	{
-		ob_start();
-
 		$writer = new Jsonp();
 		$writer->setCallbackName('foo');
-		$writer->write($this->getResultSet());
-
-		$actual = ob_get_contents();
-
-		ob_end_clean();
-
+		$actual = $writer->write($this->getResultSet());
 
 		$expect = <<<TEXT
-foo({"totalResults":2,"startIndex":0,"itemsPerPage":8,"entry":[{"id":1,"author":"foo","title":"bar","content":"foobar","date":"2012-03-11 13:37:21"},{"id":2,"author":"foo","title":"bar","content":"foobar","date":"2012-03-11 13:37:21"}]})
+foo({"totalResults":2,"startIndex":0,"itemsPerPage":8,"entry":[{"id":1,"author":"foo","title":"bar","content":"foobar","date":"2012-03-11T13:37:21+00:00"},{"id":2,"author":"foo","title":"bar","content":"foobar","date":"2012-03-11T13:37:21+00:00"}]})
 TEXT;
 
 		$this->assertEquals($expect, $actual);
@@ -76,19 +62,12 @@ TEXT;
 
 	public function testWriteComplex()
 	{
-		ob_start();
-
 		$writer = new Jsonp();
 		$writer->setCallbackName('foo');
-		$writer->write($this->getComplexRecord());
-
-		$actual = ob_get_contents();
-
-		ob_end_clean();
-
+		$actual = $writer->write($this->getComplexRecord());
 
 		$expect = <<<TEXT
-foo({"published":"2011-02-10T15:04:55+00:00","actor":{"displayName":"Martin Smith","id":"tag:example.org,2011:martin","objectType":"person","url":"http:\/\/example.org\/martin"},"object":{"id":"tag:example.org,2011:abc123\/xyz","url":"http:\/\/example.org\/blog\/2011\/02\/entry"},"target":{"displayName":"Martin's Blog","id":"tag:example.org,2011:abc123","objectType":"blog","url":"http:\/\/example.org\/blog\/"},"verb":"post"})
+foo({"actor":{"displayName":"Martin Smith","id":"tag:example.org,2011:martin","objectType":"person","url":"http:\/\/example.org\/martin"},"object":{"id":"tag:example.org,2011:abc123\/xyz","url":"http:\/\/example.org\/blog\/2011\/02\/entry"},"target":{"displayName":"Martin's Blog","id":"tag:example.org,2011:abc123","objectType":"blog","url":"http:\/\/example.org\/blog\/"},"verb":"post","published":"2011-02-10T15:04:55+00:00"})
 TEXT;
 
 		$this->assertEquals($expect, $actual);

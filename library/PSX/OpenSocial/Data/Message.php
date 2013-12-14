@@ -24,7 +24,8 @@
 namespace PSX\OpenSocial\Data;
 
 use DateTime;
-use PSX\OpenSocial\DataAbstract;
+use PSX\Data\RecordAbstract;
+use PSX\Data\RecordInfo;
 
 /**
  * Message
@@ -33,7 +34,7 @@ use PSX\OpenSocial\DataAbstract;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Message extends DataAbstract
+class Message extends RecordAbstract
 {
 	protected $appUrl;
 	protected $body;
@@ -50,15 +51,9 @@ class Message extends DataAbstract
 	protected $updated;
 	protected $urls;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'message';
-	}
-
-	public function getFields()
-	{
-		return array(
-
+		return new RecordInfo('message', array(
 			'appUrl'        => $this->appUrl,
 			'body'          => $this->body,
 			'bodyId'        => $this->bodyId,
@@ -73,8 +68,7 @@ class Message extends DataAbstract
 			'type'          => $this->type,
 			'updated'       => $this->updated,
 			'urls'          => $this->urls,
-
-		);
+		));
 	}
 
 	/**

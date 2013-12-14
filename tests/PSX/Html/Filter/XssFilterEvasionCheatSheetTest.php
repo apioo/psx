@@ -506,13 +506,7 @@ HTML;
  <![endif]-->
 HTML;
 
-		$expected = <<<HTML
-
- 
- 
-HTML;
-
-		$this->assertXss($expected, $actual);
+		$this->assertXssEmpty($actual);
 		
 		// BASE tag
 		$actual = <<<HTML

@@ -24,6 +24,7 @@
 namespace PSX\Payment\Skrill\Data;
 
 use PSX\Data\RecordAbstract;
+use PSX\Data\RecordInfo;
 
 /**
  * Status
@@ -50,14 +51,9 @@ class Status extends RecordAbstract
 	protected $currency;
 	protected $paymentType;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'status';
-	}
-
-	public function getFields()
-	{
-		return array(
+		return new RecordInfo('status', array(
 			'pay_to_email'       => $this->payToEmail,
 			'pay_from_email'     => $this->payFromEmail,
 			'merchant_id'        => $this->merchantId,
@@ -73,7 +69,7 @@ class Status extends RecordAbstract
 			'amount'             => $this->amount,
 			'currency'           => $this->currency,
 			'payment_type'       => $this->paymentType,
-		);
+		));
 	}
 
 	public function setPayToEmail($payToEmail)

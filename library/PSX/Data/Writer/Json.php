@@ -26,6 +26,7 @@ namespace PSX\Data\Writer;
 use PSX\Data\RecordInterface;
 use PSX\Data\WriterInterface;
 use PSX\Data\WriterResult;
+use PSX\Json as JsonParser;
 
 /**
  * Json
@@ -34,17 +35,23 @@ use PSX\Data\WriterResult;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Json implements WriterInterface
+class Json extends ArrayAbstract
 {
 	public static $mime = 'application/json';
 
-	public $writerResult;
-
 	public function write(RecordInterface $record)
 	{
-		$this->writerResult = new WriterResult(WriterInterface::JSON, $this);
+		return JsonParser::encode($this->export($record));
+	}
 
-		echo \PSX\Json::encode($record->export($this->writerResult));
+	public function isContentTypeSupported($contentType)
+	{
+		return stripos($contentType, self::$mime) !== false;
+	}
+	
+	public function getContentType()
+	{
+		return self::$mime;
 	}
 }
 

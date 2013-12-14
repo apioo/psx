@@ -24,6 +24,7 @@
 namespace PSX\Payment\Paypal\Data;
 
 use PSX\Data\RecordAbstract;
+use PSX\Data\RecordInfo;
 
 /**
  * Refund
@@ -42,14 +43,9 @@ class Refund extends RecordAbstract
 	protected $parentPayment;
 	protected $updateTime;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'refund';
-	}
-
-	public function getFields()
-	{
-		return array(
+		return new RecordInfo('refund', array(
 			'id'             => $this->id,
 			'amount'         => $this->amount,
 			'create_time'    => $this->createTime,
@@ -57,7 +53,7 @@ class Refund extends RecordAbstract
 			'sale_id'        => $this->saleId,
 			'parent_payment' => $this->parentPayment,
 			'update_time'    => $this->updateTime,
-		);
+		));
 	}
 
 	public function setId($id)

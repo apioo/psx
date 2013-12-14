@@ -24,7 +24,8 @@
 namespace PSX\OpenSocial\Data;
 
 use DateTime;
-use PSX\OpenSocial\DataAbstract;
+use PSX\Data\RecordAbstract;
+use PSX\Data\RecordInfo;
 use PSX\OpenSocial\Plural;
 
 /**
@@ -34,7 +35,7 @@ use PSX\OpenSocial\Plural;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Person extends DataAbstract
+class Person extends RecordAbstract
 {
 	protected $aboutMe;
 	protected $accounts;
@@ -68,15 +69,9 @@ class Person extends DataAbstract
 	protected $urls;
 	protected $utcOffset;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'person';
-	}
-
-	public function getFields()
-	{
-		return array(
-
+		return new RecordInfo('person', array(
 			'aboutMe'           => $this->aboutMe,
 			'accounts'          => $this->accounts,
 			'addresses'         => $this->addresses,
@@ -100,16 +95,15 @@ class Person extends DataAbstract
 			'preferredName'     => $this->preferredName,
 			'preferredUsername' => $this->preferredUsername,
 			'profileUrl'        => $this->profileUrl,
-			'published'         => $this->published !== null ? $this->published->format(DateTime::RFC3339) : null,
+			'published'         => $this->published,
 			'relationships'     => $this->relationships,
 			'status'            => $this->status,
 			'tags'              => $this->tags,
 			'thumbnailUrl'      => $this->thumbnailUrl,
-			'updated'           => $this->updated !== null ? $this->updated->format(DateTime::RFC3339) : null,
+			'updated'           => $this->updated,
 			'urls'              => $this->urls,
 			'utcOffset'         => $this->utcOffset,
-
-		);
+		));
 	}
 
 	/**

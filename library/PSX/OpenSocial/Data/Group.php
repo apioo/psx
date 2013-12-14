@@ -23,7 +23,8 @@
 
 namespace PSX\OpenSocial\Data;
 
-use PSX\OpenSocial\DataAbstract;
+use PSX\Data\RecordAbstract;
+use PSX\Data\RecordInfo;
 
 /**
  * Group
@@ -32,26 +33,19 @@ use PSX\OpenSocial\DataAbstract;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Group extends DataAbstract
+class Group extends RecordAbstract
 {
 	protected $id;
 	protected $title;
 	protected $description;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'group';
-	}
-
-	public function getFields()
-	{
-		return array(
-
+		return new RecordInfo('group', array(
 			'id'          => $this->id,
 			'title'       => $this->title,
 			'description' => $this->description,
-
-		);
+		));
 	}
 
 	/**

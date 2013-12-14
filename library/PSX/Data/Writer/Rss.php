@@ -26,6 +26,8 @@ namespace PSX\Data\Writer;
 use DateTime;
 use PSX\Data\RecordInterface;
 use PSX\Data\ResultSet;
+use PSX\Rss as RssRecord;
+use PSX\Rss\Item;
 use PSX\Rss\Writer;
 use PSX\Data\WriterInterface;
 use PSX\Data\WriterResult;
@@ -43,58 +45,200 @@ class Rss implements WriterInterface
 {
 	public static $mime = 'application/rss+xml';
 
-	public $writerResult;
-
-	protected $writer;
-
-	public function setConfig($title, $link, $description)
-	{
-		$this->writer = new Writer($title, $link, $description);
-	}
-
 	public function write(RecordInterface $record)
 	{
-		$this->writerResult = new WriterResult(WriterInterface::RSS, $this);
-
-		if($record instanceof ResultSet)
+		if($record instanceof RssRecord)
 		{
-			foreach($record->entry as $entry)
+			$writer = new Writer($record->getTitle(), $record->getLink(), $record->getDescription());
+
+			$this->buildChannel($record, $writer);
+
+			foreach($record as $row)
 			{
-				$entry = $entry->export($this->writerResult);
-				$entry->close();
+				$item = $writer->createItem();
+
+				$this->buildItem($row, $item);
+
+				$item->close();
 			}
 
-			echo $this->writer->toString();
+			return $writer->toString();
 		}
-		else
+		else if($record instanceof Item)
 		{
-			$entry = $record->export($this->writerResult);
+			$writer = new Writer\Item();
 
-			echo $entry->toString();
+			$this->buildItem($record, $writer);
+
+			return $writer->toString();
 		}
 	}
 
-	public function createItem()
+	public function isContentTypeSupported($contentType)
 	{
-		if($this->writer !== null)
+		return stripos($contentType, self::$mime) !== false;
+	}
+
+	public function getContentType()
+	{
+		return self::$mime;
+	}
+
+	protected function buildChannel(RssRecord $rss, Writer $writer)
+	{
+		$language = $rss->getLanguage();
+		if(!empty($language))
 		{
-			return $this->writer->createItem();
+			$writer->setLanguage($language);
 		}
-		else
+
+		$copyright = $rss->getCopyright();
+		if(!empty($copyright))
 		{
-			return new Writer\Item();
+			$writer->setCopyright($copyright);
+		}
+
+		$managingEditor = $rss->getManagingEditor();
+		if(!empty($managingEditor))
+		{
+			$writer->setManagingEditor($managingEditor);
+		}
+
+		$webMaster = $rss->getWebMaster();
+		if(!empty($webMaster))
+		{
+			$writer->setWebMaster($webMaster);
+		}
+
+		$pubDate = $rss->getPubDate();
+		if($pubDate instanceof DateTime)
+		{
+			$writer->setPubDate($pubDate);
+		}
+
+		$lastBuildDate = $rss->getLastBuildDate();
+		if($lastBuildDate instanceof DateTime)
+		{
+			$writer->setLastBuildDate($lastBuildDate);
+		}
+
+		foreach($rss->getCategory() as $category)
+		{
+			$writer->addCategory($category->getText(), $category->getDomain());
+		}
+
+		$generator = $rss->getGenerator();
+		if(!empty($generator))
+		{
+			$writer->setGenerator($generator);
+		}
+
+		$docs = $rss->getDocs();
+		if(!empty($docs))
+		{
+			$writer->setDocs($docs);
+		}
+
+		$cloud = $rss->getCloud();
+		if($cloud instanceof Cloud)
+		{
+			$writer->setCloud($cloud->getDomain(), 
+				$cloud->getPort(), 
+				$cloud->getPath(), 
+				$cloud->getRegisterProcedure(), 
+				$cloud->getProtocol());
+		}
+
+		$ttl = $rss->getTtl();
+		if(!empty($ttl))
+		{
+			$writer->setTtl($ttl);
+		}
+
+		$image = $rss->getImage();
+		if(!empty($image))
+		{
+			$writer->setImage($image);
+		}
+
+		$rating = $rss->getRating();
+		if(!empty($rating))
+		{
+			$writer->setRating($rating);
+		}
+
+		$skipHours = $rss->getSkipHours();
+		if(!empty($skipHours))
+		{
+			$writer->setSkipHours($skipHours);
+		}
+
+		$skipDays = $rss->getSkipDays();
+		if(!empty($skipDays))
+		{
+			$writer->setSkipDays($skipDays);
 		}
 	}
 
-	public function __call($name, $args)
+	protected function buildItem(Item $item, Writer\Item $writer)
 	{
-		if($this->writer !== null)
+		$title = $item->getTitle();
+		if(!empty($title))
 		{
-			return call_user_func_array(array($this->writer, $name), $args);
+			$writer->setTitle($title);
 		}
-		else
+
+		$link = $item->getLink();
+		if(!empty($link))
 		{
-			throw new Exception('Writer is not initialized');
+			$writer->setLink($link);
+		}
+
+		$description = $item->getDescription();
+		if(!empty($description))
+		{
+			$writer->setDescription($description);
+		}
+
+		$author = $item->getAuthor();
+		if(!empty($author))
+		{
+			$writer->setAuthor($author);
+		}
+
+		foreach($item->getCategory() as $category)
+		{
+			$writer->addCategory($category->getText(), $category->getDomain());
+		}
+
+		$comments = $item->getComments();
+		if(!empty($comments))
+		{
+			$writer->setComments($comments);
+		}
+
+		$enclosure = $item->getEnclosure();
+		if($enclosure instanceof Enclosure)
+		{
+			$writer->setEnclosure($enclosure->getUrl(), $enclosure->getLength(), $enclosure->getType());
+		}
+
+		$guid = $item->getGuid();
+		if(!empty($guid))
+		{
+			$writer->setGuid($guid);
+		}
+
+		$pubDate = $item->getPubDate();
+		if($pubDate instanceof DateTime)
+		{
+			$writer->setPubDate($pubDate);
+		}
+
+		$source = $item->getSource();
+		if(!empty($source))
+		{
+			$writer->setSource($source);
 		}
 	}
 }

@@ -24,6 +24,7 @@
 namespace PSX\Payment\Paypal\Data;
 
 use PSX\Data\RecordAbstract;
+use PSX\Data\RecordInfo;
 
 /**
  * Transaction
@@ -34,24 +35,19 @@ use PSX\Data\RecordAbstract;
  */
 class Transaction extends RecordAbstract
 {
-	public $amount;
-	public $description;
-	public $itemList;
-	public $relatedResources;
+	protected $amount;
+	protected $description;
+	protected $itemList;
+	protected $relatedResources;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'transaction';
-	}
-
-	public function getFields()
-	{
-		return array(
+		return new RecordInfo('transaction', array(
 			'amount'            => $this->amount,
 			'description'       => $this->description,
 			'item_list'         => $this->itemList,
 			'related_resources' => $this->relatedResources,
-		);
+		));
 	}
 
 	/**
@@ -91,7 +87,7 @@ class Transaction extends RecordAbstract
 	}
 
 	/**
-	 * @param PSX\Payment\Paypal\Data\RelatedResource $relatedResources
+	 * @param PSX\Payment\Paypal\Data\RelatedResourceBuilder $relatedResources
 	 */
 	public function setRelatedResources($relatedResources)
 	{

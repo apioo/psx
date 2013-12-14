@@ -34,8 +34,8 @@ use PSX\Url;
  */
 class Identity
 {
-	private $server;
-	private $localId;
+	protected $server;
+	protected $localId;
 
 	public function __construct($server, $localId = null)
 	{

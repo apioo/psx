@@ -67,16 +67,16 @@ class OembedTest extends \PHPUnit_Framework_TestCase
 		$type = $this->oembed->request($url);
 
 		$this->assertEquals(true, $type instanceof Type\Link);
-		$this->assertEquals('link', $type->type);
-		$this->assertEquals('1.0', $type->version);
-		$this->assertEquals('Beethoven - Rondo \'Die wut ueber den verlorenen groschen\'', $type->title);
-		$this->assertEquals('LukasSchuch', $type->authorName);
-		$this->assertEquals('http://www.youtube.com/user/LukasSchuch', $type->authorUrl);
-		$this->assertEquals('YouTube', $type->providerName);
-		$this->assertEquals('http://www.youtube.com/', $type->providerUrl);
-		$this->assertEquals('http://i2.ytimg.com/vi/AKjzEG1eItY/hqdefault.jpg', $type->thumbnailUrl);
-		$this->assertEquals('480', $type->thumbnailWidth);
-		$this->assertEquals('360', $type->thumbnailHeight);
+		$this->assertEquals('link', $type->getType());
+		$this->assertEquals('1.0', $type->getVersion());
+		$this->assertEquals('Beethoven - Rondo \'Die wut ueber den verlorenen groschen\'', $type->getTitle());
+		$this->assertEquals('LukasSchuch', $type->getAuthorName());
+		$this->assertEquals('http://www.youtube.com/user/LukasSchuch', $type->getAuthorUrl());
+		$this->assertEquals('YouTube', $type->getProviderName());
+		$this->assertEquals('http://www.youtube.com/', $type->getProviderUrl());
+		$this->assertEquals('http://i2.ytimg.com/vi/AKjzEG1eItY/hqdefault.jpg', $type->getThumbnailUrl());
+		$this->assertEquals('480', $type->getThumbnailWidth());
+		$this->assertEquals('360', $type->getThumbnailHeight());
 	}
 
 	public function testPhotoRequest()
@@ -86,19 +86,19 @@ class OembedTest extends \PHPUnit_Framework_TestCase
 		$type = $this->oembed->request($url);
 
 		$this->assertEquals(true, $type instanceof Type\Photo);
-		$this->assertEquals('photo', $type->type);
-		$this->assertEquals('1.0', $type->version);
-		$this->assertEquals('Beethoven - Rondo \'Die wut ueber den verlorenen groschen\'', $type->title);
-		$this->assertEquals('LukasSchuch', $type->authorName);
-		$this->assertEquals('http://www.youtube.com/user/LukasSchuch', $type->authorUrl);
-		$this->assertEquals('YouTube', $type->providerName);
-		$this->assertEquals('http://www.youtube.com/', $type->providerUrl);
-		$this->assertEquals('http://i2.ytimg.com/vi/AKjzEG1eItY/hqdefault.jpg', $type->thumbnailUrl);
-		$this->assertEquals('480', $type->thumbnailWidth);
-		$this->assertEquals('360', $type->thumbnailHeight);
-		$this->assertEquals('http://i2.ytimg.com/vi/AKjzEG1eItY/hqdefault.jpg', $type->url);
-		$this->assertEquals('240', $type->width);
-		$this->assertEquals('160', $type->height);
+		$this->assertEquals('photo', $type->getType());
+		$this->assertEquals('1.0', $type->getVersion());
+		$this->assertEquals('Beethoven - Rondo \'Die wut ueber den verlorenen groschen\'', $type->getTitle());
+		$this->assertEquals('LukasSchuch', $type->getAuthorName());
+		$this->assertEquals('http://www.youtube.com/user/LukasSchuch', $type->getAuthorUrl());
+		$this->assertEquals('YouTube', $type->getProviderName());
+		$this->assertEquals('http://www.youtube.com/', $type->getProviderUrl());
+		$this->assertEquals('http://i2.ytimg.com/vi/AKjzEG1eItY/hqdefault.jpg', $type->getThumbnailUrl());
+		$this->assertEquals('480', $type->getThumbnailWidth());
+		$this->assertEquals('360', $type->getThumbnailHeight());
+		$this->assertEquals('http://i2.ytimg.com/vi/AKjzEG1eItY/hqdefault.jpg', $type->getUrl());
+		$this->assertEquals('240', $type->getWidth());
+		$this->assertEquals('160', $type->getHeight());
 	}
 
 	public function testRichRequest()
@@ -108,19 +108,19 @@ class OembedTest extends \PHPUnit_Framework_TestCase
 		$type = $this->oembed->request($url);
 
 		$this->assertEquals(true, $type instanceof Type\Rich);
-		$this->assertEquals('rich', $type->type);
-		$this->assertEquals('1.0', $type->version);
-		$this->assertEquals('Beethoven - Rondo \'Die wut ueber den verlorenen groschen\'', $type->title);
-		$this->assertEquals('LukasSchuch', $type->authorName);
-		$this->assertEquals('http://www.youtube.com/user/LukasSchuch', $type->authorUrl);
-		$this->assertEquals('YouTube', $type->providerName);
-		$this->assertEquals('http://www.youtube.com/', $type->providerUrl);
-		$this->assertEquals('http://i2.ytimg.com/vi/AKjzEG1eItY/hqdefault.jpg', $type->thumbnailUrl);
-		$this->assertEquals('480', $type->thumbnailWidth);
-		$this->assertEquals('360', $type->thumbnailHeight);
-		$this->assertEquals('<iframe width="459" height="344" src="http://www.youtube.com/embed/AKjzEG1eItY?fs=1&feature=oembed" frameborder="0" allowfullscreen></iframe>', $type->html);
-		$this->assertEquals('240', $type->width);
-		$this->assertEquals('160', $type->height);
+		$this->assertEquals('rich', $type->getType());
+		$this->assertEquals('1.0', $type->getVersion());
+		$this->assertEquals('Beethoven - Rondo \'Die wut ueber den verlorenen groschen\'', $type->getTitle());
+		$this->assertEquals('LukasSchuch', $type->getAuthorName());
+		$this->assertEquals('http://www.youtube.com/user/LukasSchuch', $type->getAuthorUrl());
+		$this->assertEquals('YouTube', $type->getProviderName());
+		$this->assertEquals('http://www.youtube.com/', $type->getProviderUrl());
+		$this->assertEquals('http://i2.ytimg.com/vi/AKjzEG1eItY/hqdefault.jpg', $type->getThumbnailUrl());
+		$this->assertEquals('480', $type->getThumbnailWidth());
+		$this->assertEquals('360', $type->getThumbnailHeight());
+		$this->assertEquals('<iframe width="459" height="344" src="http://www.youtube.com/embed/AKjzEG1eItY?fs=1&feature=oembed" frameborder="0" allowfullscreen></iframe>', $type->getHtml());
+		$this->assertEquals('240', $type->getWidth());
+		$this->assertEquals('160', $type->getHeight());
 	}
 
 	public function testVideoRequest()
@@ -130,20 +130,19 @@ class OembedTest extends \PHPUnit_Framework_TestCase
 		$type = $this->oembed->request($url);
 
 		$this->assertEquals(true, $type instanceof Type\Video);
-		$this->assertEquals('video', $type->type);
-		$this->assertEquals('1.0', $type->version);
-		$this->assertEquals('Beethoven - Rondo \'Die wut ueber den verlorenen groschen\'', $type->title);
-		$this->assertEquals('LukasSchuch', $type->authorName);
-		$this->assertEquals('http://www.youtube.com/user/LukasSchuch', $type->authorUrl);
-		$this->assertEquals('YouTube', $type->providerName);
-		$this->assertEquals('http://www.youtube.com/', $type->providerUrl);
-		$this->assertEquals('http://i2.ytimg.com/vi/AKjzEG1eItY/hqdefault.jpg', $type->thumbnailUrl);
-		$this->assertEquals('480', $type->thumbnailWidth);
-		$this->assertEquals('360', $type->thumbnailHeight);
-		$this->assertEquals('<iframe width="459" height="344" src="http://www.youtube.com/embed/AKjzEG1eItY?fs=1&feature=oembed" frameborder="0" allowfullscreen></iframe>', $type->html);
-		$this->assertEquals('240', $type->width);
-		$this->assertEquals('160', $type->height);
+		$this->assertEquals('video', $type->getType());
+		$this->assertEquals('1.0', $type->getVersion());
+		$this->assertEquals('Beethoven - Rondo \'Die wut ueber den verlorenen groschen\'', $type->getTitle());
+		$this->assertEquals('LukasSchuch', $type->getAuthorName());
+		$this->assertEquals('http://www.youtube.com/user/LukasSchuch', $type->getAuthorUrl());
+		$this->assertEquals('YouTube', $type->getProviderName());
+		$this->assertEquals('http://www.youtube.com/', $type->getProviderUrl());
+		$this->assertEquals('http://i2.ytimg.com/vi/AKjzEG1eItY/hqdefault.jpg', $type->getThumbnailUrl());
+		$this->assertEquals('480', $type->getThumbnailWidth());
+		$this->assertEquals('360', $type->getThumbnailHeight());
+		$this->assertEquals('<iframe width="459" height="344" src="http://www.youtube.com/embed/AKjzEG1eItY?fs=1&feature=oembed" frameborder="0" allowfullscreen></iframe>', $type->getHtml());
+		$this->assertEquals('240', $type->getWidth());
+		$this->assertEquals('160', $type->getHeight());
 	}
 }
-
 

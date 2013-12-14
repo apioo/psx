@@ -24,6 +24,7 @@
 namespace PSX;
 
 use PDO;
+use PSX\DateTime;
 use PSX\Sql\Condition;
 use PSX\Sql\Connection;
 use stdClass;
@@ -96,6 +97,11 @@ class Sql extends PDO implements Connection
 
 			foreach($params as $k => $v)
 			{
+				if($v instanceof \DateTime)
+				{
+					$v = $v->format(DateTime::SQL);
+				}
+
 				$k   = $k + 1;
 				$key = 'k_' . $k;
 				$bindParams->$key = $v;
@@ -142,6 +148,11 @@ class Sql extends PDO implements Connection
 
 			foreach($params as $k => $v)
 			{
+				if($v instanceof \DateTime)
+				{
+					$v = $v->format(DateTime::SQL);
+				}
+
 				$k   = $k + 1;
 				$key = 'k_' . $k;
 				$bindParams->$key = $v;

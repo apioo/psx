@@ -52,15 +52,15 @@ use ArrayObject;
  * $validator = new Validate();
  *
  * // we use the length and email filter
- * $value = $validator->apply($input, 'string', array(new Filter\Length(3, 32), new Filter\Email()));
+ * $value = $validator->apply($input, Validate::TYPE_STRING, array(new Filter\Length(3, 32), new Filter\Email()));
  *
  * // we use the regular expression filter. The value must contain the string
  * // "php"
- * $value = $validator->apply($input, 'string', array(new Filter\Regexp('/php/')));
+ * $value = $validator->apply($input, Validate::TYPE_STRING, array(new Filter\Regexp('/php/')));
  *
  * // we us the length filter and the value must be an interger wich is min 10
  * // and max 100
- * $value = $validator->apply($input, 'integer', array(new Filter\Length(10, 100)));
+ * $value = $validator->apply($input, Validate::TYPE_INTEGER, array(new Filter\Length(10, 100)));
  * </code>
  *
  * If you have validate the values you can check whether their was an error.
@@ -82,6 +82,11 @@ use ArrayObject;
  */
 class Validate extends ArrayObject
 {
+	const TYPE_INTEGER = 0x1;
+	const TYPE_STRING  = 0x2;
+	const TYPE_FLOAT   = 0x3;
+	const TYPE_BOOLEAN = 0x4;
+
 	private $error;
 
 	public function __construct()
@@ -96,14 +101,14 @@ class Validate extends ArrayObject
 	 * an error will be added if $value is false.
 	 *
 	 * @param string $value
-	 * @param string $type
+	 * @param integer $type
 	 * @param array<PSX\FilterAbstract> $filter
 	 * @param string $key
 	 * @param string $title
 	 * @param string $required
 	 * @return false|$returnValue
 	 */
-	public function apply($value, $type = 'string', array $filter = array(), $key = null, $title = null, $required = true, $returnValue = false)
+	public function apply($value, $type = self::TYPE_STRING, array $filter = array(), $key = null, $title = null, $required = true, $returnValue = false)
 	{
 		$title = $title === null ? $key : $title;
 
@@ -116,21 +121,25 @@ class Validate extends ArrayObject
 
 		switch($type)
 		{
+			case self::TYPE_INTEGER:
 			case 'int':
 			case 'integer':
 				$value = (integer) $value;
 				break;
 
+			case self::TYPE_STRING:
 			case 'str':
 			case 'string':
 				$value = (string)  $value;
 				break;
 
+			case self::TYPE_FLOAT:
 			case 'double':
 			case 'float':
 				$value = (float)   $value;
 				break;
 
+			case self::TYPE_BOOLEAN:
 			case 'bool':
 			case 'boolean':
 				$value = (boolean) $value;

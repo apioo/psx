@@ -24,6 +24,7 @@
 namespace PSX\Payment\Paypal\Data;
 
 use PSX\Data\RecordAbstract;
+use PSX\Data\RecordInfo;
 
 /**
  * ShippingAddress
@@ -36,16 +37,11 @@ class ShippingAddress extends Address
 {
 	protected $recipientName;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'shippingAddress';
-	}
-
-	public function getFields()
-	{
-		return array_merge(parent::getFields(), array(
+		return new RecordInfo('shipping_address', array(
 			'recipient_name' => $this->recipientName,
-		));
+		), parent::getRecordInfo());
 	}
 
 	public function getRecipientName()

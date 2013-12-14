@@ -23,6 +23,7 @@
 
 namespace PSX\Payment;
 
+use PSX\Data\Writer;
 use PSX\Payment\Skrill\Data;
 use PSX\Exception;
 use PSX\Http;
@@ -70,8 +71,9 @@ class Skrill
 		$payment->setPrepareOnly(1);
 
 		// request
-		$body     = http_build_query($payment->getData(), '', '&');
-		$header   = array(
+		$writer = new Writer\Form();
+		$body   = $writer->write($payment);
+		$header = array(
 			'Content-Type' => 'application/x-www-form-urlencoded'
 		);
 		$request  = new PostRequest(new Url(self::ENDPOINT), $header, $body);

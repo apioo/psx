@@ -23,6 +23,7 @@
 
 namespace PSX\ActivityStream;
 
+use PSX\Data\RecordInfo;
 use PSX\Data\RecordAbstract;
 
 /**
@@ -41,23 +42,16 @@ class Address extends RecordAbstract
 	protected $postalCode;
 	protected $country;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'address';
-	}
-
-	public function getFields()
-	{
-		return array(
-
+		return new RecordInfo('address', array(
 			'formatted'     => $this->formatted,
 			'streetAddress' => $this->streetAddress,
 			'locality'      => $this->locality,
 			'region'        => $this->region,
 			'postalCode'    => $this->postalCode,
 			'country'       => $this->country,
-
-		);
+		));
 	}
 
 	/**

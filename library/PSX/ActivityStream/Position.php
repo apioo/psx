@@ -23,6 +23,7 @@
 
 namespace PSX\ActivityStream;
 
+use PSX\Data\RecordInfo;
 use PSX\Data\RecordAbstract;
 
 /**
@@ -38,20 +39,13 @@ class Position extends RecordAbstract
 	protected $latitude;
 	protected $longitude;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'position';
-	}
-
-	public function getFields()
-	{
-		return array(
-
+		return new RecordInfo('position', array(
 			'altitude'  => $this->altitude,
 			'latitude'  => $this->latitude,
 			'longitude' => $this->longitude,
-
-		);
+		));
 	}
 
 	/**

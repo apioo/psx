@@ -25,6 +25,7 @@ namespace PSX\ActivityStream\Type;
 
 use PSX\ActivityStream\Object;
 use PSX\ActivityStream\MediaLink;
+use PSX\Data\RecordInfo;
 
 /**
  * Audio
@@ -38,19 +39,12 @@ class Audio extends Object
 	protected $embedCode;
 	protected $stream;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'audio';
-	}
-
-	public function getFields()
-	{
-		return array_merge(parent::getFields(), array(
-
+		return new RecordInfo('audio', array(
 			'embedCode' => $this->embedCode,
 			'stream'    => $this->stream,
-
-		));
+		), parent::getRecordInfo());
 	}
 
 	/**

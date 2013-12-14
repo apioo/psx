@@ -24,6 +24,7 @@
 namespace PSX\Payment\Paypal\Data;
 
 use PSX\Data\RecordAbstract;
+use PSX\Data\RecordInfo;
 
 /**
  * CreditCardToken
@@ -36,16 +37,11 @@ class CreditCardToken extends RecordAbstract
 {
 	protected $creditCardId;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'creditCardToken';
-	}
-
-	public function getFields()
-	{
-		return array(
+		return new RecordInfo('credit_card_token', array(
 			'credit_card_id' => $this->creditCardId,
-		);
+		));
 	}
 
 	public function getCreditCardId()

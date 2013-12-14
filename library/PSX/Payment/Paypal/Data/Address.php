@@ -24,6 +24,7 @@
 namespace PSX\Payment\Paypal\Data;
 
 use PSX\Data\RecordAbstract;
+use PSX\Data\RecordInfo;
 
 /**
  * Address
@@ -43,23 +44,18 @@ class Address extends RecordAbstract
 	protected $state;
 	protected $phone;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'address';
-	}
-
-	public function getFields()
-	{
-		return array(
-			'type'           => $this->type,
-			'line1'          => $this->line1,
-			'line2'          => $this->line2,
-			'city'           => $this->city,
-			'country_code'   => $this->countryCode,
-			'postal_code'    => $this->postalCode,
-			'state'          => $this->state,
-			'phone'          => $this->phone,
-		);
+		return new RecordInfo('address', array(
+			'type'         => $this->type,
+			'line1'        => $this->line1,
+			'line2'        => $this->line2,
+			'city'         => $this->city,
+			'country_code' => $this->countryCode,
+			'postal_code'  => $this->postalCode,
+			'state'        => $this->state,
+			'phone'        => $this->phone,
+		));
 	}
 
 	public function getType()

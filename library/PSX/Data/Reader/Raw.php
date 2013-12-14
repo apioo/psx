@@ -23,7 +23,7 @@
 
 namespace PSX\Data\Reader;
 
-use PSX\Data\ReaderInterface;
+use PSX\Data\ReaderAbstract;
 use PSX\Data\ReaderResult;
 use PSX\Http\Message;
 
@@ -34,11 +34,21 @@ use PSX\Http\Message;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Raw implements ReaderInterface
+class Raw extends ReaderAbstract
 {
 	public function read(Message $message)
 	{
-		return new ReaderResult(ReaderInterface::RAW, $message);
+		return $message;
+	}
+
+	public function isContentTypeSupported($contentType)
+	{
+		return false;
+	}
+
+	public function getDefaultImporter()
+	{
+		return null;
 	}
 }
 

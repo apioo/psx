@@ -24,6 +24,7 @@
 namespace PSX\Payment\Paypal\Data;
 
 use PSX\Data\RecordAbstract;
+use PSX\Data\RecordInfo;
 
 /**
  * Payer
@@ -38,18 +39,13 @@ class Payer extends RecordAbstract
 	protected $fundingInstruments;
 	protected $payerInfo;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'payer';
-	}
-
-	public function getFields()
-	{
-		return array(
+		return new RecordInfo('payer', array(
 			'payment_method'      => $this->paymentMethod,
 			'funding_instruments' => $this->fundingInstruments,
 			'payer_info'          => $this->payerInfo,
-		);
+		));
 	}
 
 	public function getPaymentMethod()

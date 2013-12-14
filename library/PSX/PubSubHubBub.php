@@ -253,43 +253,27 @@ class PubSubHubBub
 			switch($type)
 			{
 				case self::RSS2:
-
-					$rss = new Rss();
-					$rss->import($reader->read($response));
-
-					$elementList = $rss->getDom()->getElementsByTagNameNS(Atom::$xmlns, 'link');
-
-					for($i = 0; $i < $elementList->length; $i++)
-					{
-						$link = $elementList->item($i);
-
-						if(strcasecmp($link->getAttribute('rel'), 'hub') == 0)
-						{
-							$href = new Url($link->getAttribute('href'));
-
-							return $this->lastHub = $href;
-						}
-					}
-
+					$dom      = $reader->read($response);
+					$elements = $dom->getElementsByTagNameNS(Atom::$xmlns, 'link');
 					break;
 
 				case self::ATOM:
 				default:
-
-					$atom = new Atom();
-					$atom->import($reader->read($response));
-
-					foreach($atom->link as $link)
-					{
-						if(strcasecmp($link['rel'], 'hub') == 0)
-						{
-							$href = new Url($link['href']);
-
-							return $this->lastHub = $href;
-						}
-					}
-
+					$dom      = $reader->read($response);
+					$elements = $dom->getElementsByTagName('link');
 					break;
+			}
+
+			for($i = 0; $i < $elements->length; $i++)
+			{
+				$link = $elements->item($i);
+
+				if(strcasecmp($link->getAttribute('rel'), 'hub') == 0)
+				{
+					$href = new Url($link->getAttribute('href'));
+
+					return $this->lastHub = $href;
+				}
 			}
 		}
 		else

@@ -24,6 +24,7 @@
 namespace PSX\Payment\Skrill;
 
 use PSX\Module\ApiAbstract;
+use PSX\Data\Record\DefaultImporter;
 use PSX\Payment\Skrill\Data;
 use PSX\Exception;
 
@@ -44,8 +45,9 @@ abstract class CallbackAbstract extends ApiAbstract
 	 */
 	public function doReturn()
 	{
-		$status = new Data\Status();
-		$status->import($this->getRequest(ReaderInterface::FORM));
+		$status   = new Data\Status();
+		$importer = new DefaultImporter();
+		$importer->import($status, $this->getRequest(ReaderInterface::FORM));
 
 		if($status->verifySignature() === true)
 		{

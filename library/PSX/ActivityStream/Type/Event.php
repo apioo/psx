@@ -25,6 +25,7 @@ namespace PSX\ActivityStream\Type;
 
 use PSX\ActivityStream\Object;
 use PSX\ActivityStream\Collection;
+use PSX\Data\RecordInfo;
 
 /**
  * Event
@@ -44,15 +45,9 @@ class Event extends Object
 	protected $notAttending;
 	protected $startTime;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'event';
-	}
-
-	public function getFields()
-	{
-		return array_merge(parent::getFields(), array(
-
+		return new RecordInfo('event', array(
 			'attendedBy'     => $this->attendedBy,
 			'attending'      => $this->attending,
 			'endTime'        => $this->endTime,
@@ -61,8 +56,7 @@ class Event extends Object
 			'notAttendedBy'  => $this->notAttendedBy,
 			'notAttending'   => $this->notAttending,
 			'startTime'      => $this->startTime,
-
-		));
+		), parent::getRecordInfo());
 	}
 
 	/**

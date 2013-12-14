@@ -51,14 +51,15 @@ INPUT;
 
 		$reader  = new Json();
 		$message = new Message(array(), $body);
+		$json    = $reader->read($message);
 
-		$result = $reader->read($message);
-		$json   = $result->getData();
+		$expect = array(
+			'foo' => 'bar', 
+			'bar' => array('blub', 'bla'), 
+			'test' => array('foo' => 'bar')
+		);
 
-		$e = array('foo' => 'bar', 'bar' => array('blub', 'bla'), 'test' => array('foo' => 'bar'));
-
-		$this->assertEquals(ReaderInterface::JSON, $result->getType());
 		$this->assertEquals(true, is_array($json));
-		$this->assertEquals($e, $json);
+		$this->assertEquals($expect, $json);
 	}
 }

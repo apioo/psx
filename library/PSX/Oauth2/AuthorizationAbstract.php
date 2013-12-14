@@ -26,6 +26,7 @@ namespace PSX\Oauth2;
 use PSX\Data\ReaderFactory;
 use PSX\Data\ReaderInterface;
 use PSX\Data\Reader;
+use PSX\Data\Record\DefaultImporter;
 use PSX\Exception;
 use PSX\Http;
 use PSX\Http\PostRequest;
@@ -124,9 +125,6 @@ abstract class AuthorizationAbstract
 
 		if($response->getCode() == 200)
 		{
-			$reader = new Reader\Json();
-			$result = $reader->read($response);
-
 			if($this->accessTokenClass != null && class_exists($this->accessTokenClass))
 			{
 				$accessToken = new $this->accessTokenClass();
@@ -136,7 +134,8 @@ abstract class AuthorizationAbstract
 				$accessToken = new AccessToken();
 			}
 
-			$accessToken->import($result);
+			$reader = new Reader\Json();
+			$result = $reader->import($accessToken, $response);
 
 			return $accessToken;
 		}
@@ -157,16 +156,12 @@ abstract class AuthorizationAbstract
 			// asume application/x-www-form-urlencoded 
 			if(strpos($response->getHeader('Content-Type'), 'application/json') !== false)
 			{
-				$type = ReaderInterface::JSON;
+				$reader = new Reader\Json();
 			}
 			else
 			{
-				$type = ReaderInterface::FORM;
+				$reader = new Reader\Form();
 			}
-
-			// parse response
-			$reader = ReaderFactory::getReader($type);
-			$result = $reader->read($response);
 
 			// import data
 			if($this->accessTokenClass != null && class_exists($this->accessTokenClass))
@@ -178,7 +173,7 @@ abstract class AuthorizationAbstract
 				$accessToken = new AccessToken();
 			}
 
-			$accessToken->import($result);
+			$reader->import($accessToken, $response);
 
 			return $accessToken;
 		}

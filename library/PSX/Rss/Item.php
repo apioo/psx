@@ -23,9 +23,9 @@
 
 namespace PSX\Rss;
 
+use DateTime;
 use DOMDocument;
 use DOMElement;
-use PSX\DateTime;
 use PSX\Data\InvalidDataException;
 use PSX\Data\NotSupportedException;
 use PSX\Data\ReaderInterface;
@@ -42,29 +42,20 @@ use PSX\Rss;
  */
 class Item extends RecordAbstract
 {
-	public $title;
-	public $link;
-	public $description;
-	public $author;
-	public $category  = array();
-	public $comments;
-	public $enclosure;
-	public $guid;
-	public $pubdate;
-	public $source;
+	protected $title;
+	protected $link;
+	protected $description;
+	protected $author;
+	protected $category = array();
+	protected $comments;
+	protected $enclosure;
+	protected $guid;
+	protected $pubDate;
+	protected $source;
 
-	private $dom;
-	private $element;
-
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'item';
-	}
-
-	public function getFields()
-	{
-		return array(
-
+		return new RecordInfo('item', array(
 			'title'       => $this->title,
 			'link'        => $this->link,
 			'description' => $this->description,
@@ -73,132 +64,126 @@ class Item extends RecordAbstract
 			'comments'    => $this->comments,
 			'enclosure'   => $this->enclosure,
 			'guid'        => $this->guid,
-			'pubdate'     => $this->pubdate,
+			'pubDate'     => $this->pubDate,
 			'source'      => $this->source,
-
-		);
+		));
 	}
 
-	public function import(ReaderResult $result)
+	public function setTitle($title)
 	{
-		switch($result->getType())
-		{
-			case ReaderInterface::DOM:
-
-				$item = $result->getData();
-
-				if($item instanceof DOMDocument)
-				{
-					$this->dom = $item;
-
-					$root = $item->documentElement;
-				}
-				else if($item instanceof DOMElement)
-				{
-					$this->dom = $item->ownerDocument;
-
-					$root = $item;
-				}
-				else
-				{
-					throw new InvalidDataException('Data must be an instance of DOMDocument or DOMElement');
-				}
-
-				if(strcasecmp($root->localName, 'item') == 0)
-				{
-					$this->parseItemElement($root);
-				}
-				else
-				{
-					throw new InvalidDataException('No item element found');
-				}
-
-				break;
-
-			default:
-
-				throw new NotSupportedException('Reader is not supported');
-		}
+		$this->title = $title;
+	}
+	
+	public function getTitle()
+	{
+		return $this->title;
 	}
 
-	private function parseItemElement(DOMElement $item)
+	public function setLink($link)
 	{
-		$this->element = $item;
-
-		$childNodes = $item->childNodes;
-
-		for($i = 0; $i < $childNodes->length; $i++)
-		{
-			$item = $childNodes->item($i);
-
-			if($item->nodeType != XML_ELEMENT_NODE)
-			{
-				continue;
-			}
-
-
-			$name = strtolower($item->localName);
-
-			switch($name)
-			{
-				case 'title':
-				case 'link':
-				case 'description':
-				case 'author':
-				case 'comments':
-				case 'guid':
-
-					$this->$name = $item->nodeValue;
-
-					break;
-
-				case 'category':
-
-					array_push($this->$name, Rss::categoryConstruct($item));
-
-					break;
-
-				case 'enclosure':
-
-					$this->enclosure = array(
-
-						'url'    => $item->getAttribute('url'),
-						'length' => $item->getAttribute('length'),
-						'type'   => $item->getAttribute('type'),
-
-					);
-
-					break;
-
-				case 'pubdate':
-
-					$this->pubdate = new DateTime($item->nodeValue);
-
-					break;
-
-				case 'source':
-
-					$this->source = array(
-
-						'text' => $item->nodeValues,
-						'url'  => $item->getAttribute('url'),
-
-					);
-
-					break;
-			}
-		}
+		$this->link = $link;
+	}
+	
+	public function getLink()
+	{
+		return $this->link;
 	}
 
-	public function getDom()
+	public function setDescription($description)
 	{
-		return $this->dom;
+		$this->description = $description;
+	}
+	
+	public function getDescription()
+	{
+		return $this->description;
 	}
 
-	public function getElement()
+	public function setAuthor($author)
 	{
-		return $this->element;
+		$this->author = $author;
+	}
+	
+	public function getAuthor()
+	{
+		return $this->author;
+	}
+
+	/**
+	 * @param PSX\Rss\Category $category
+	 */
+	public function addCategory(Category $category)
+	{
+		$this->category[] = $category;
+	}
+
+	/**
+	 * @param array<PSX\Rss\Category> $category
+	 */
+	public function setCategory(array $category)
+	{
+		$this->category = $category;
+	}
+	
+	public function getCategory()
+	{
+		return $this->category;
+	}
+
+	public function setComments($comments)
+	{
+		$this->comments = $comments;
+	}
+	
+	public function getComments()
+	{
+		return $this->comments;
+	}
+
+	/**
+	 * @param PSX\Rss\Enclosure $enclosure
+	 */
+	public function setEnclosure(Enclosure $enclosure)
+	{
+		$this->enclosure = $enclosure;
+	}
+	
+	public function getEnclosure()
+	{
+		return $this->enclosure;
+	}
+
+	public function setGuid($guid)
+	{
+		$this->guid = $guid;
+	}
+	
+	public function getGuid()
+	{
+		return $this->guid;
+	}
+
+	/**
+	 * @param DateTime $pubDate
+	 */
+	public function setPubDate(DateTime $pubDate)
+	{
+		$this->pubDate = $pubDate;
+	}
+	
+	public function getPubDate()
+	{
+		return $this->pubDate;
+	}
+
+	public function setSource($source)
+	{
+		$this->source = $source;
+	}
+	
+	public function getSource()
+	{
+		return $this->source;
 	}
 }
-
 

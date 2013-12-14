@@ -37,16 +37,16 @@ use PSX\OpenId\ProviderAbstract;
  */
 class Redirect
 {
-	private $opEndpoint;
-	private $claimedId;
-	private $identity;
-	private $returnTo;
-	private $responseNonce;
-	private $invalidateHandle;
-	private $assocHandle;
-	private $signed;
-	private $sig;
-	private $params;
+	protected $opEndpoint;
+	protected $claimedId;
+	protected $identity;
+	protected $returnTo;
+	protected $responseNonce;
+	protected $invalidateHandle;
+	protected $assocHandle;
+	protected $signed;
+	protected $sig;
+	protected $params;
 
 	public function setOpEndpoint($opEndpoint)
 	{
@@ -213,14 +213,12 @@ class Redirect
 	{
 		// build basic params
 		$params = array(
-
 			'openid.ns'             => ProviderAbstract::NS,
 			'openid.mode'           => 'id_res',
 			'openid.op_endpoint'    => strval($this->getOpEndpoint()),
 			'openid.return_to'      => strval($this->getReturnTo()),
 			'openid.response_nonce' => $this->getResponseNonce(),
 			'openid.assoc_handle'   => $this->getAssocHandle(),
-
 		);
 
 		$claimedId = $this->getClaimedId();

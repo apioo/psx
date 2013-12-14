@@ -23,6 +23,7 @@
 
 namespace PSX\Oembed\Type;
 
+use PSX\Data\RecordInfo;
 use PSX\Oembed\TypeAbstract;
 
 /**
@@ -34,24 +35,17 @@ use PSX\Oembed\TypeAbstract;
  */
 class Video extends TypeAbstract
 {
-	public $html;
-	public $width;
-	public $height;
+	protected $html;
+	protected $width;
+	protected $height;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'video';
-	}
-
-	public function getFields()
-	{
-		return array_merge(parent::getFields(), array(
-
+		return new RecordInfo('video', array(
 			'html'   => $this->html,
 			'width'  => $this->width,
 			'height' => $this->height,
-
-		));
+		), parent::getRecordInfo());
 	}
 
 	public function setHtml($html)
@@ -59,13 +53,28 @@ class Video extends TypeAbstract
 		$this->html = $html;
 	}
 
+	public function getHtml()
+	{
+		return $this->html;
+	}
+
 	public function setWidth($width)
 	{
 		$this->width = (integer) $width;
 	}
 
+	public function getWidth()
+	{
+		return $this->width;
+	}
+
 	public function setHeight($height)
 	{
 		$this->height = (integer) $height;
+	}
+
+	public function getHeight()
+	{
+		return $this->height;
 	}
 }

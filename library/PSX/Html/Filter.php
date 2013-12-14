@@ -29,6 +29,8 @@ use PSX\Html\Filter\CollectionAbstract;
 use PSX\Html\Filter\Collection\Html5Text;
 use PSX\Html\Filter\ElementListenerInterface;
 use PSX\Html\Filter\TextListenerInterface;
+use PSX\Html\Filter\CommentListenerInterface;
+use PSX\Html\Lexer\Token\Comment;
 use PSX\Html\Lexer\Token\Element;
 use PSX\Html\Lexer\Token\Text;
 
@@ -46,9 +48,11 @@ class Filter
 
 	private $content;
 	private $collection;
+	private $allowComments = false;
 
 	private $elementListener = array();
 	private $textListener    = array();
+	private $commentListener = array();
 
 	public function __construct($content, CollectionAbstract $collection = null)
 	{
@@ -71,6 +75,11 @@ class Filter
 		$this->collection = $collection;
 	}
 
+	public function setAllowComments($allowComments)
+	{
+		$this->allowComments = $allowComments;
+	}
+
 	public function addElementListener(ElementListenerInterface $elementListener)
 	{
 		$this->elementListener[] = $elementListener;
@@ -79,6 +88,11 @@ class Filter
 	public function addTextListener(TextListenerInterface $textListener)
 	{
 		$this->textListener[] = $textListener;
+	}
+
+	public function addCommentListener(CommentListenerInterface $commentListener)
+	{
+		$this->commentListener[] = $commentListener;
 	}
 
 	/**
@@ -137,6 +151,30 @@ class Filter
 						{
 							$root->childNodes[$key] = $result;
 						}
+					}
+				}
+				else if($el instanceof Comment)
+				{
+					if($this->allowComments)
+					{
+						// call comment listener
+						foreach($this->commentListener as $listener)
+						{
+							$result = $listener->onComment($el);
+
+							if($result === false)
+							{
+								unset($root->childNodes[$key]);
+							}
+							else if($result instanceof Comment)
+							{
+								$root->childNodes[$key] = $result;
+							}
+						}
+					}
+					else
+					{
+						unset($root->childNodes[$key]);
 					}
 				}
 			}
@@ -331,6 +369,30 @@ class Filter
 					{
 						$element->childNodes[$key] = $result;
 					}
+				}
+			}
+			else if($el instanceof Comment)
+			{
+				if($this->allowComments)
+				{
+					// call comment listener
+					foreach($this->commentListener as $listener)
+					{
+						$result = $listener->onComment($el);
+
+						if($result === false)
+						{
+							unset($root->childNodes[$key]);
+						}
+						else if($result instanceof Comment)
+						{
+							$root->childNodes[$key] = $result;
+						}
+					}
+				}
+				else
+				{
+					unset($root->childNodes[$key]);
 				}
 			}
 		}

@@ -24,6 +24,7 @@
 namespace PSX\ActivityStream\Type;
 
 use PSX\ActivityStream\Object;
+use PSX\Data\RecordInfo;
 
 /**
  * Place
@@ -37,19 +38,12 @@ class Place extends Object
 	protected $position;
 	protected $address;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'place';
-	}
-
-	public function getFields()
-	{
-		return array_merge(parent::getFields(), array(
-
+		return new RecordInfo('place', array(
 			'position' => $this->position,
 			'address'  => $this->address,
-
-		));
+		), parent::getRecordInfo());
 	}
 
 	/**

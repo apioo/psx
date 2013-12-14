@@ -81,7 +81,7 @@ class SchemaWriter implements WriterInterface
 	public function addEntityType(RecordInterface $record)
 	{
 		$this->writer->startElement('EntityType');
-		$this->writer->writeAttribute('Name', $record->getName());
+		$this->writer->writeAttribute('Name', $record->getRecordInfo()->getName());
 
 		$this->buildEntity(new ReflectionClass($record), true);
 
@@ -120,7 +120,7 @@ class SchemaWriter implements WriterInterface
 	protected function buildEntity(ReflectionClass $class, $key = false, $idField = 'id')
 	{
 		$record  = $class->newInstance();
-		$fields  = $record->getFields();
+		$fields  = $record->getRecordInfo()->getFields();
 		$methods = $class->getMethods();
 
 		// add key if needed and available
@@ -244,11 +244,12 @@ class SchemaWriter implements WriterInterface
 						if($class->implementsInterface('PSX\Data\RecordInterface'))
 						{
 							$record = $class->newInstance();
-							$type   = $this->namespace . '.' . $record->getName();
+							$info   = $record->getRecordInfo();
+							$type   = $this->namespace . '.' . $info->getName();
 
-							if(!isset($this->complexTypes[$record->getName()]))
+							if(!isset($this->complexTypes[$info->getName()]))
 							{
-								$this->complexTypes[$record->getName()] = $class;
+								$this->complexTypes[$info->getName()] = $class;
 							}
 						}
 					}

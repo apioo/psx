@@ -24,6 +24,7 @@
 namespace PSX\ActivityStream\Type;
 
 use PSX\ActivityStream\Object;
+use PSX\Data\RecordInfo;
 
 /**
  * Binary
@@ -41,23 +42,16 @@ class Binary extends Object
 	protected $md5;
 	protected $mimeType;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'binary';
-	}
-
-	public function getFields()
-	{
-		return array_merge(parent::getFields(), array(
-
+		return new RecordInfo('binary', array(
 			'compression' => $this->compression,
 			'data'        => $this->data,
 			'fileUrl'     => $this->fileUrl,
 			'length'      => $this->length,
 			'md5'         => $this->md5,
 			'mimeType'    => $this->mimeType,
-
-		));
+		), parent::getRecordInfo());
 	}
 
 	/**

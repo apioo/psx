@@ -37,28 +37,41 @@ class Record extends RecordAbstract
 
 	public function __construct($name = 'record', array $fields = array())
 	{
-		$this->setName($name);
-		$this->setFields($fields);
-	}
-
-	public function setName($name)
-	{
-		$this->name = $name;
-	}
-
-	public function getName()
-	{
-		return $this->name;
-	}
-
-	public function setFields(array $fields)
-	{
+		$this->name   = $name;
 		$this->fields = $fields;
 	}
 
-	public function getFields()
+	public function getRecordInfo()
 	{
-		return $this->fields;
+		return new RecordInfo($this->name, $this->fields);
+	}
+
+	public function __call($method, array $args)
+	{
+		$type = substr($method, 0, 3);
+
+		if($type == 'set')
+		{
+			$key = lcfirst(substr($method, 3));
+
+			if(isset($this->fields[$key]))
+			{
+				$this->fields[$key] = current($args);
+			}
+		}
+		elseif($type == 'get')
+		{
+			$key = lcfirst(substr($method, 3));
+
+			if(isset($this->fields[$key]))
+			{
+				return $this->fields[$key];
+			}
+		}
+		else
+		{
+			throw new BadMethodCallException('Invalid method call ' . $method);
+		}
 	}
 }
 

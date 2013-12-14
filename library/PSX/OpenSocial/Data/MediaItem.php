@@ -23,7 +23,8 @@
 
 namespace PSX\OpenSocial\Data;
 
-use PSX\OpenSocial\DataAbstract;
+use PSX\Data\RecordAbstract;
+use PSX\Data\RecordInfo;
 
 /**
  * MediaItem
@@ -32,7 +33,7 @@ use PSX\OpenSocial\DataAbstract;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class MediaItem extends DataAbstract
+class MediaItem extends RecordAbstract
 {
 	protected $albumId;
 	protected $created;
@@ -56,15 +57,9 @@ class MediaItem extends DataAbstract
 	protected $type;
 	protected $url;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'mediaItem';
-	}
-
-	public function getFields()
-	{
-		return array(
-
+		return new RecordInfo('mediaItem', array(
 			'album_id'      => $this->albumId,
 			'created'       => $this->created,
 			'description'   => $this->description,
@@ -86,8 +81,7 @@ class MediaItem extends DataAbstract
 			'title'         => $this->title,
 			'type'          => $this->type,
 			'url'           => $this->url,
-
-		);
+		));
 	}
 
 	/**

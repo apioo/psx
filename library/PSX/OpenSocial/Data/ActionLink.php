@@ -23,7 +23,8 @@
 
 namespace PSX\OpenSocial\Data;
 
-use PSX\OpenSocial\DataAbstract;
+use PSX\Data\RecordAbstract;
+use PSX\Data\RecordInfo;
 
 /**
  * ActionLink
@@ -32,26 +33,19 @@ use PSX\OpenSocial\DataAbstract;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class ActionLink extends DataAbstract
+class ActionLink extends RecordAbstract
 {
 	protected $caption;
 	protected $target;
 	protected $httpVerb;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'actionLink';
-	}
-
-	public function getFields()
-	{
-		return array(
-
+		return new RecordInfo('actionLink', array(
 			'caption'  => $this->caption,
 			'target'   => $this->target,
 			'httpVerb' => $this->httpVerb,
-
-		);
+		));
 	}
 
 	/**

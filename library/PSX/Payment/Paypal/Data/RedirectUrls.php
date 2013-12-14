@@ -24,6 +24,7 @@
 namespace PSX\Payment\Paypal\Data;
 
 use PSX\Data\RecordAbstract;
+use PSX\Data\RecordInfo;
 use PSX\Url;
 
 /**
@@ -38,17 +39,12 @@ class RedirectUrls extends RecordAbstract
 	protected $returnUrl;
 	protected $cancelUrl;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'redirectUrls';
-	}
-
-	public function getFields()
-	{
-		return array(
+		return new RecordInfo('redirect_urls', array(
 			'return_url' => $this->returnUrl,
 			'cancel_url' => $this->cancelUrl,
-		);
+		));
 	}
 
 	public function getReturnUrl()

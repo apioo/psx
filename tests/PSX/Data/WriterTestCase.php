@@ -23,8 +23,8 @@
 
 namespace PSX\Data;
 
+use DateTime;
 use PSX\ActivityStream;
-use PSX\DateTime;
 use PSX\Data\ResultSet;
 
 /**
@@ -38,12 +38,12 @@ abstract class WriterTestCase extends \PHPUnit_Framework_TestCase
 {
 	public function getRecord()
 	{
-		$record          = new WriterTestRecord();
-		$record->id      = 1;
-		$record->author  = 'foo';
-		$record->title   = 'bar';
-		$record->content = 'foobar';
-		$record->date    = '2012-03-11 13:37:21';
+		$record = new WriterTestRecord();
+		$record->setId(1);
+		$record->setAuthor('foo');
+		$record->setTitle('bar');
+		$record->setContent('foobar');
+		$record->setDate(new DateTime('2012-03-11 13:37:21'));
 
 		return $record;
 	}
@@ -52,21 +52,21 @@ abstract class WriterTestCase extends \PHPUnit_Framework_TestCase
 	{
 		$entries = array();
 
-		$record          = new WriterTestRecord();
-		$record->id      = 1;
-		$record->author  = 'foo';
-		$record->title   = 'bar';
-		$record->content = 'foobar';
-		$record->date    = '2012-03-11 13:37:21';
+		$record = new WriterTestRecord();
+		$record->setId(1);
+		$record->setAuthor('foo');
+		$record->setTitle('bar');
+		$record->setContent('foobar');
+		$record->setDate(new DateTime('2012-03-11 13:37:21'));
 
 		$entries[] = $record;
 
-		$record          = new WriterTestRecord();
-		$record->id      = 2;
-		$record->author  = 'foo';
-		$record->title   = 'bar';
-		$record->content = 'foobar';
-		$record->date    = '2012-03-11 13:37:21';
+		$record = new WriterTestRecord();
+		$record->setId(2);
+		$record->setAuthor('foo');
+		$record->setTitle('bar');
+		$record->setContent('foobar');
+		$record->setDate(new DateTime('2012-03-11 13:37:21'));
 
 		$entries[] = $record;
 

@@ -23,6 +23,7 @@
 
 namespace PSX\ActivityStream;
 
+use PSX\Data\RecordInfo;
 use PSX\Data\RecordAbstract;
 
 /**
@@ -38,20 +39,13 @@ class Source extends RecordAbstract
 	protected $displayName;
 	protected $url;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'source';
-	}
-
-	public function getFields()
-	{
-		return array(
-
+		return new RecordInfo('result', array(
 			'objectType'  => $this->objectType,
 			'displayName' => $this->displayName,
 			'url'         => $this->url,
-
-		);
+		));
 	}
 
 	/**

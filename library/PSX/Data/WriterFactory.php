@@ -34,115 +34,41 @@ use PSX\Data\Writer;
  */
 class WriterFactory
 {
-	public static function getWriterTypeByContentType($contentType)
+	protected $writers = array();
+
+	public function addWriter(WriterInterface $writer, $priority = 0)
 	{
-		$writerType = null;
-
-		switch(true)
-		{
-			case (stripos($contentType, Writer\Atom::$mime) !== false):
-
-				$writerType = WriterInterface::ATOM;
-				break;
-
-			case (stripos($contentType, Writer\Form::$mime) !== false):
-
-				$writerType = WriterInterface::FORM;
-				break;
-
-			case (stripos($contentType, Writer\Rss::$mime) !== false):
-
-				$writerType = WriterInterface::RSS;
-				break;
-
-			case (stripos($contentType, Writer\Xml::$mime) !== false):
-
-				$writerType = WriterInterface::XML;
-				break;
-
-			case (stripos($contentType, Writer\Jas::$mime) !== false):
-
-				$writerType = WriterInterface::JAS;
-				break;
-
-			case (stripos($contentType, Writer\Jsonp::$mime) !== false):
-
-				$writerType = WriterInterface::JSONP;
-				break;
-
-			default:
-			case (stripos($contentType, Writer\Json::$mime) !== false):
-
-				$writerType = WriterInterface::JSON;
-				break;
-		}
-
-		return $writerType;
+		$this->writers[] = $writer;
 	}
 
-	public static function getWriterByContentType($contentType, $fallbackWriterType = null)
+	public function getDefaultWriter()
 	{
-		$writer = self::getWriter(self::getWriterTypeByContentType($contentType));
-
-		return $writer !== null ? $writer : self::getWriter($fallbackWriterType);
+		return current($this->writers);
 	}
 
-	public static function getWriter($writerType)
+	public function getWriterByContentType($contentType)
 	{
-		$writer = null;
-
-		switch($writerType)
+		foreach($this->writers as $writer)
 		{
-			case WriterInterface::ATOM:
-
-				header('Content-type: ' . Writer\Atom::$mime);
-
-				$writer = new Writer\Atom();
-				break;
-
-			case WriterInterface::FORM:
-
-				header('Content-type: ' . Writer\Form::$mime);
-
-				$writer = new Writer\Form();
-				break;
-
-			case WriterInterface::JSON:
-
-				header('Content-type: ' . Writer\Json::$mime);
-
-				$writer = new Writer\Json();
-				break;
-
-			case WriterInterface::RSS:
-
-				header('Content-type: ' . Writer\Rss::$mime);
-
-				$writer = new Writer\Rss();
-				break;
-
-			case WriterInterface::XML:
-
-				header('Content-type: ' . Writer\Xml::$mime);
-
-				$writer = new Writer\Xml();
-				break;
-
-			case WriterInterface::JAS:
-
-				header('Content-type: ' . Writer\Jas::$mime);
-
-				$writer = new Writer\Jas();
-				break;
-
-			case WriterInterface::JSONP:
-
-				header('Content-type: ' . Writer\Jsonp::$mime);
-
-				$writer = new Writer\Jsonp();
-				break;
+			if($writer->isContentTypeSupported($contentType))
+			{
+				return $writer;
+			}
 		}
 
-		return $writer;
+		return null;
+	}
+
+	public function getWriteByInstance($className)
+	{
+		foreach($this->writers as $writer)
+		{
+			if($writer instanceof $className)
+			{
+				return $writer;
+			}
+		}
+
+		return null;
 	}
 }

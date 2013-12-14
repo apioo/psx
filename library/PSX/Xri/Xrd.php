@@ -171,7 +171,7 @@ class Xrd
 	}
 
 	/**
-	 * @return PSX\Xrd\Service
+	 * @return array<PSX\Xrd\Service>
 	 */
 	public function getService()
 	{

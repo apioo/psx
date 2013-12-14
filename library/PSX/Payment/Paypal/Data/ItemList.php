@@ -24,6 +24,7 @@
 namespace PSX\Payment\Paypal\Data;
 
 use PSX\Data\RecordAbstract;
+use PSX\Data\RecordInfo;
 
 /**
  * ItemList
@@ -37,17 +38,12 @@ class ItemList extends RecordAbstract
 	protected $items;
 	protected $shippingAddress;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'itemList';
-	}
-
-	public function getFields()
-	{
-		return array(
+		return new RecordInfo('item_list', array(
 			'items'            => $this->items,
 			'shipping_address' => $this->shippingAddress,
-		);
+		));
 	}
 
 	public function getItems()

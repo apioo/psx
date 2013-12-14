@@ -1,5 +1,5 @@
 
 # example routing file
 
-GET / Foobar\Application\Index
-GET|POST /detail Foobar\Application\Detail
+GET|POST / Foo\News\Application\Index
+GET /test Foo\News\Application\Foo

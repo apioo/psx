@@ -23,6 +23,8 @@
 
 namespace PSX\ActivityStream;
 
+use PSX\Data\CollectionAbstract;
+use PSX\Data\RecordInfo;
 use PSX\Data\RecordAbstract;
 
 /**
@@ -32,28 +34,20 @@ use PSX\Data\RecordAbstract;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Collection extends RecordAbstract
+class Collection extends CollectionAbstract
 {
 	protected $totalItems;
 	protected $itemsPerPage;
 	protected $startIndex;
-	protected $items;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'collection';
-	}
-
-	public function getFields()
-	{
-		return array(
-
+		return new RecordInfo('collection', array(
 			'totalItems'   => $this->totalItems,
 			'itemsPerPage' => $this->itemsPerPage,
 			'startIndex'   => $this->startIndex,
-			'items'        => $this->items,
-
-		);
+			'items'        => $this->collection,
+		));
 	}
 
 	public function setTotalItems($totalItems)
@@ -76,7 +70,7 @@ class Collection extends RecordAbstract
 	 */
 	public function setItems(array $items)
 	{
-		$this->items = $items;
+		$this->collection = $items;
 	}
 }
 

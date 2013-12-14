@@ -23,7 +23,8 @@
 
 namespace PSX\OpenSocial\Data;
 
-use PSX\OpenSocial\DataAbstract;
+use PSX\Data\RecordAbstract;
+use PSX\Data\RecordInfo;
 
 /**
  * Album
@@ -32,7 +33,7 @@ use PSX\OpenSocial\DataAbstract;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Album extends DataAbstract
+class Album extends RecordAbstract
 {
 	protected $description;
 	protected $id;
@@ -44,15 +45,9 @@ class Album extends DataAbstract
 	protected $thumbnailUrl;
 	protected $title;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'album';
-	}
-
-	public function getFields()
-	{
-		return array(
-
+		return new RecordInfo('album', array(
 			'description'    => $this->description,
 			'id'             => $this->id,
 			'location'       => $this->location,
@@ -62,8 +57,7 @@ class Album extends DataAbstract
 			'ownerId'        => $this->ownerId,
 			'thumbnailUrl'   => $this->thumbnailUrl,
 			'title'          => $this->title,
-
-		);
+		));
 	}
 
 	/**

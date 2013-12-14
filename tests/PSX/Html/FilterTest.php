@@ -77,4 +77,39 @@ HTML;
 
 		$this->assertEquals($expected, $filter->filter());
 	}
+
+	public function testFilterComments()
+	{
+		$html = <<<HTML
+<p>foobar</p>
+<!-- bar -->
+HTML;
+
+		$expected = <<<HTML
+<p>foobar</p>
+
+HTML;
+
+		$filter = new Filter($html);
+
+		$this->assertEquals($expected, $filter->filter());
+	}
+
+	public function testFilterAllowComments()
+	{
+		$html = <<<HTML
+<p>foobar</p>
+<!-- bar -->
+HTML;
+
+		$expected = <<<HTML
+<p>foobar</p>
+<!-- bar -->
+HTML;
+
+		$filter = new Filter($html);
+		$filter->setAllowComments(true);
+
+		$this->assertEquals($expected, $filter->filter());
+	}
 }

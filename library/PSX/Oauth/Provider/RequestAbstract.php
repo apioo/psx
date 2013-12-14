@@ -44,9 +44,9 @@ abstract class RequestAbstract extends ApiAbstract
 {
 	protected function handle()
 	{
-		$request = new Request();
-		$request->setRequiredFields(array(
-
+		$request  = new Request();
+		$importer = new Data\RequestImporter();
+		$importer->setRequiredFields(array(
 			'consumerKey',
 			'signatureMethod',
 			'signature',
@@ -54,11 +54,8 @@ abstract class RequestAbstract extends ApiAbstract
 			'nonce',
 			'version',
 			'callback',
-
 		));
-
-		$request->import($this->getRequest(ReaderInterface::RAW));
-
+		$importer->import($request, $this->getRequest(ReaderInterface::RAW));
 
 		$consumer = $this->getConsumer($request->getConsumerKey());
 

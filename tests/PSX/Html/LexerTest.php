@@ -91,8 +91,8 @@ HTML;
 	</head>
 	<body>
 		<h1>foobar
-	</h1>
-</body></html>
+	
+</h1></body></html>
 HTML;
 
 		$root = Lexer::parse($html);
@@ -223,7 +223,7 @@ HTML;
 <html>
 	<head>
 		<title>barfoo</title>
-		<script><h1>Oo</h1></script>
+		<script><h1>Oo</h1></h1></script>
 	</head>
 </html>
 HTML;
@@ -232,8 +232,39 @@ HTML;
 <html>
 	<head>
 		<title>barfoo</title>
-		<script><h1>Oo</h1></script>
+		<script><h1>Oo</h1></h1></script>
 	</head>
+</html>
+HTML;
+
+		$root = Lexer::parse($html);
+
+		$this->assertEquals($expect, $root->__toString());
+	}
+
+	public function testDoubleClosedTag()
+	{
+		$html = <<<HTML
+<html>
+	<head>
+		<title>barfoo</title>
+	</head>
+	</head>
+	<body>
+		<h1>foobar</h1>
+	</body>
+</html>
+HTML;
+
+		$expect = <<<HTML
+<html>
+	<head>
+		<title>barfoo</title>
+	</head>
+	
+	<body>
+		<h1>foobar</h1>
+	</body>
 </html>
 HTML;
 
@@ -354,7 +385,7 @@ HTML;
 		$this->assertEquals($expect, $root->__toString());
 	}
 
-	public function testAttributesContainsGreaterSign()
+	public function testAttributesContainsLowerSign()
 	{
 		$html = <<<HTML
 <html>
@@ -366,6 +397,27 @@ HTML;
 		$expect = <<<HTML
 <html>
 	<body style="foo &lt; bar">
+	</body>
+</html>
+HTML;
+
+		$root = Lexer::parse($html);
+
+		$this->assertEquals($expect, $root->__toString());
+	}
+
+	public function testAttributesContainsGreaterSign()
+	{
+		$html = <<<HTML
+<html>
+	<body style="foo > bar">
+	</body>
+</html>
+HTML;
+
+		$expect = <<<HTML
+<html>
+	<body style="foo &gt; bar">
 	</body>
 </html>
 HTML;
@@ -425,6 +477,31 @@ if (0 < 1 && 1 > 0) {
 	alert('Oo');
 }
 </script>
+HTML;
+
+		$root = Lexer::parse($html);
+
+		$this->assertEquals($expect, $root->__toString());
+	}
+
+	public function testHtmlComment()
+	{
+		$html = <<<HTML
+<html>
+	<body>
+		<p>some foo</p>
+		<!--<p> some bar </p>-->
+	</body>
+</html>
+HTML;
+
+		$expect = <<<HTML
+<html>
+	<body>
+		<p>some foo</p>
+		<!--<p> some bar </p>-->
+	</body>
+</html>
 HTML;
 
 		$root = Lexer::parse($html);

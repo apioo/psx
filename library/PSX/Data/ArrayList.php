@@ -23,6 +23,8 @@
 
 namespace PSX\Data;
 
+use ArrayObject;
+
 /**
  * ArrayList
  *
@@ -30,38 +32,10 @@ namespace PSX\Data;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class ArrayList extends RecordAbstract
+class ArrayList extends ArrayObject
 {
-	public $item;
-
-	public function __construct(array $item = array())
+	public function __construct($data)
 	{
-		$this->item = $item;
-	}
-
-	public function getName()
-	{
-		return 'array';
-	}
-
-	public function getFields()
-	{
-		return array('item' => $this->item);
-	}
-
-	public function import(ReaderResult $result)
-	{
-		$data = explode(',', $result->getData());
-
-		foreach($data as $v)
-		{
-			$v = trim($v);
-
-			if(!empty($v))
-			{
-				$this->item[] = $v;
-			}
-		}
+		parent::__construct(explode(',', $data));
 	}
 }
-

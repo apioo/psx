@@ -24,6 +24,7 @@
 namespace PSX\OpenSocial;
 
 use PSX\Data\RecordAbstract;
+use PSX\Data\RecordInfo;
 
 /**
  * Field
@@ -38,20 +39,13 @@ class Field extends RecordAbstract
 	protected $type;
 	protected $primary;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'field';
-	}
-
-	public function getFields()
-	{
-		return array(
-
+		return new RecordInfo('field', array(
 			'value'   => $this->value,
 			'type'    => $this->type,
 			'primary' => $this->primary,
-
-		);
+		));
 	}
 
 	/**

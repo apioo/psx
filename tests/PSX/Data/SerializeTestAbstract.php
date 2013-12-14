@@ -23,6 +23,7 @@
 
 namespace PSX\Data;
 
+use PSX\Data\Record\DefaultImporter;
 use PSX\Exception;
 use PSX\Http\Message;
 
@@ -60,12 +61,13 @@ abstract class SerializeTestAbstract extends \PHPUnit_Framework_TestCase
 
 		// create a new record of the same class and import the content
 		$message = new Message(array(), $content);
-		$reader = new Reader\Json();
-		$result = $reader->read($message);
+		$reader  = new Reader\Json();
+		$result  = $reader->read($message);
 
-		$class = get_class($record);
+		$class     = get_class($record);
 		$newRecord = new $class();
-		$newRecord->import($result);
+		$importer  = new DefaultImporter();
+		$importer->import($newRecord, $result);
 
 		$newResponse = $this->getWriterResponse($newRecord);
 
@@ -78,14 +80,8 @@ abstract class SerializeTestAbstract extends \PHPUnit_Framework_TestCase
 
 	protected function getWriterResponse(RecordInterface $record)
 	{
-		ob_start();
-
-		$writer = new Writer\Json();
-		$writer->write($record);
-
-		$content = ob_get_contents();
-
-		ob_end_clean();	
+		$writer  = new Writer\Json();
+		$content = $writer->write($record);
 
 		return $content;
 	}

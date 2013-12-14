@@ -23,6 +23,7 @@
 
 namespace PSX\Oembed\Type;
 
+use PSX\Data\RecordInfo;
 use PSX\Oembed\TypeAbstract;
 
 /**
@@ -34,24 +35,17 @@ use PSX\Oembed\TypeAbstract;
  */
 class Photo extends TypeAbstract
 {
-	public $url;
-	public $width;
-	public $height;
+	protected $url;
+	protected $width;
+	protected $height;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'photo';
-	}
-
-	public function getFields()
-	{
-		return array_merge(parent::getFields(), array(
-
+		return new RecordInfo('photo', array(
 			'url'    => $this->url,
 			'width'  => $this->width,
 			'height' => $this->height,
-
-		));
+		), parent::getRecordInfo());
 	}
 
 	public function setUrl($url)
@@ -59,13 +53,28 @@ class Photo extends TypeAbstract
 		$this->url = $url;
 	}
 
+	public function getUrl()
+	{
+		return $this->url;
+	}
+
 	public function setWidth($width)
 	{
 		$this->width = (integer) $width;
 	}
 
+	public function getWidth()
+	{
+		return $this->width;
+	}
+
 	public function setHeight($height)
 	{
 		$this->height = (integer) $height;
+	}
+
+	public function getHeight()
+	{
+		return $this->height;
 	}
 }

@@ -26,6 +26,7 @@ namespace PSX\OpenId\Provider\Data;
 use PSX\Data\InvalidDataException;
 use PSX\Data\NotSupportedException;
 use PSX\Data\RecordAbstract;
+use PSX\Data\RecordInfo;
 use PSX\Data\ReaderResult;
 use PSX\Data\ReaderInterface;
 use PSX\Data\WriterResult;
@@ -56,12 +57,7 @@ class AssociationRequest extends RecordAbstract
 
 	private $assoc;
 
-	public function getName()
-	{
-		return 'request';
-	}
-
-	public function getFields()
+	public function getRecordInfo()
 	{
 		$fields = array();
 		$fields['assoc_handle'] = $this->assocHandle;
@@ -71,24 +67,21 @@ class AssociationRequest extends RecordAbstract
 		switch($this->sessionType)
 		{
 			case 'no-encryption':
-
 				$fields['mac_key'] = $this->macKey;
 				break;
 
 			case 'DH-SHA1':
 			case 'DH-SHA256':
-
 				$fields['dh_server_public'] = $this->dhServerPublic;
 				$fields['enc_mac_key']      = $this->encMacKey;
 				break;
 
 			default:
-
 				throw new InvalidDataException('Invalid session type');
 				break;
 		}
 
-		return $fields;
+		return new RecordInfo('request', $fields);
 	}
 
 	public function setAssocType($assocType)
@@ -103,6 +96,11 @@ class AssociationRequest extends RecordAbstract
 		}
 	}
 
+	public function getAssocType()
+	{
+		return $this->assocType;
+	}
+
 	public function setSessionType($sessionType)
 	{
 		if(in_array($sessionType, OpenId::$supportedSessionTypes))
@@ -115,29 +113,14 @@ class AssociationRequest extends RecordAbstract
 		}
 	}
 
-	public function setDhModulus($modulus)
-	{
-		$this->dhModulus = $modulus;
-	}
-
-	public function setDhGen($gen)
-	{
-		$this->dhGen = $gen;
-	}
-
-	public function setDhConsumerPublic($consumerPublic)
-	{
-		$this->dhConsumerPublic = $consumerPublic;
-	}
-
-	public function getAssocType()
-	{
-		return $this->assocType;
-	}
-
 	public function getSessionType()
 	{
 		return $this->sessionType;
+	}
+
+	public function setDhModulus($modulus)
+	{
+		$this->dhModulus = $modulus;
 	}
 
 	public function getDhModulus()
@@ -145,9 +128,19 @@ class AssociationRequest extends RecordAbstract
 		return $this->dhModulus;
 	}
 
+	public function setDhGen($gen)
+	{
+		$this->dhGen = $gen;
+	}
+
 	public function getDhGen()
 	{
 		return $this->dhGen;
+	}
+
+	public function setDhConsumerPublic($consumerPublic)
+	{
+		$this->dhConsumerPublic = $consumerPublic;
 	}
 
 	public function getDhConsumerPublic()
@@ -155,89 +148,27 @@ class AssociationRequest extends RecordAbstract
 		return $this->dhConsumerPublic;
 	}
 
-	public function import(ReaderResult $result)
-	{
-		switch($result->getType())
-		{
-			case ReaderInterface::GPC:
-
-				$params = $result->getData();
-
-				if(isset($params['openid_assoc_type']))
-				{
-					$this->setAssocType($params['openid_assoc_type']);
-				}
-
-				if(isset($params['openid_session_type']))
-				{
-					$this->setSessionType($params['openid_session_type']);
-				}
-
-				if(isset($params['openid_dh_modulus']))
-				{
-					$this->setDhModulus($params['openid_dh_modulus']);
-				}
-
-				if(isset($params['openid_dh_gen']))
-				{
-					$this->setDhGen($params['openid_dh_gen']);
-				}
-
-				if(isset($params['openid_dh_consumer_public']))
-				{
-					$this->setDhConsumerPublic($params['openid_dh_consumer_public']);
-				}
-
-				$this->generateAssociation();
-
-				break;
-
-			default:
-
-				throw new NotSupportedException('Can only import data from reader Raw');
-
-				break;
-		}
-	}
-
-	public function export(WriterResult $result)
-	{
-		switch($result->getType())
-		{
-			case WriterInterface::FORM:
-			case WriterInterface::JSON:
-			case WriterInterface::XML:
-
-				return $this->getData();
-
-				break;
-		}
-	}
-
 	public function getAssociation()
 	{
 		return $this->assoc;
 	}
 
-	private function generateAssociation()
+	public function generateAssociation()
 	{
 		// generate secret
 		switch($this->assocType)
 		{
 			case 'HMAC-SHA1':
-
 				$secret  = ProviderAbstract::randomBytes(20);
 				$macFunc = 'SHA1';
 				break;
 
 			case 'HMAC-SHA256':
-
 				$secret  = ProviderAbstract::randomBytes(32);
 				$macFunc = 'SHA256';
 				break;
 
 			default:
-
 				throw new InvalidDataException('Invalid association type');
 				break;
 		}
@@ -246,14 +177,12 @@ class AssociationRequest extends RecordAbstract
 		switch($this->sessionType)
 		{
 			case 'no-encryption':
-
 				// $secret = base64_encode($secret);
 				// $this->macKey = $secret;
 				throw new InvalidDataException('no-encryption not supported');
 				break;
 
 			case 'DH-SHA1':
-
 				$dh = ProviderAbstract::generateDh($this->getDhGen(), $this->getDhModulus(), $this->getDhConsumerPublic(), $macFunc, $secret);
 
 				$this->dhServerPublic = $dh['pubKey'];
@@ -261,7 +190,6 @@ class AssociationRequest extends RecordAbstract
 				break;
 
 			case 'DH-SHA256':
-
 				$dh = ProviderAbstract::generateDh($this->getDhGen(), $this->getDhModulus(), $this->getDhConsumerPublic(), $macFunc, $secret);
 
 				$this->dhServerPublic = $dh['pubKey'];
@@ -269,7 +197,6 @@ class AssociationRequest extends RecordAbstract
 				break;
 
 			default:
-
 				throw new InvalidDataException('Invalid association type');
 				break;
 		}

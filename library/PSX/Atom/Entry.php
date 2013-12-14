@@ -23,18 +23,10 @@
 
 namespace PSX\Atom;
 
-use DOMDocument;
-use DOMElement;
-use PSX\Exception;
+use DateTime;
 use PSX\Atom;
-use PSX\Data\InvalidDataException;
-use PSX\Data\NotSupportedException;
-use PSX\Data\ReaderInterface;
-use PSX\Data\ReaderResult;
 use PSX\Data\RecordAbstract;
-use PSX\Http;
-use PSX\Http\GetRequest;
-use PSX\Url;
+use PSX\Data\RecordInfo;
 
 /**
  * Entry
@@ -45,42 +37,22 @@ use PSX\Url;
  */
 class Entry extends RecordAbstract
 {
-	public $author      = array();
-	public $category    = array();
-	public $content;
-	public $contributor = array();
-	public $id;
-	public $link        = array();
-	public $published;
-	public $rights;
-	public $source;
-	public $summary;
-	public $title;
-	public $updated;
+	protected $author = array();
+	protected $category = array();
+	protected $content;
+	protected $contributor = array();
+	protected $id;
+	protected $link = array();
+	protected $published;
+	protected $rights;
+	protected $source;
+	protected $summary;
+	protected $title;
+	protected $updated;
 
-	private $dom;
-	private $element;
-	private $fetchRemoteContent = false;
-	private $http;
-	private $xmlMediaTypes = array(
-
-		'text/xml',
-		'application/xml',
-		'text/xml-external-parsed-entity',
-		'application/xml-external-parsed-entity',
-		'application/xml-dtd'
-
-	);
-
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'entry';
-	}
-
-	public function getFields()
-	{
-		return array(
-
+		return new RecordInfo('entry', array(
 			'author'      => $this->author,
 			'category'    => $this->category,
 			'content'     => $this->content,
@@ -93,226 +65,163 @@ class Entry extends RecordAbstract
 			'summary'     => $this->summary,
 			'title'       => $this->title,
 			'updated'     => $this->updated,
-
-		);
+		));
 	}
 
-	public function import(ReaderResult $result)
+	/**
+	 * @param PSX\Atom\Person $author
+	 */
+	public function addAuthor(Person $author)
 	{
-		switch($result->getType())
-		{
-			case ReaderInterface::DOM:
-
-				$entry = $result->getData();
-
-				if($entry instanceof DOMDocument)
-				{
-					$this->dom = $entry;
-
-					$root = $entry->documentElement;
-				}
-				else if($entry instanceof DOMElement)
-				{
-					$this->dom = $entry->ownerDocument;
-
-					$root = $entry;
-				}
-				else
-				{
-					throw new InvalidDataException('Data must be an instance of DOMDocument or DOMElement');
-				}
-
-				if(strcasecmp($root->localName, 'entry') == 0)
-				{
-					$this->parseEntryElement($root);
-				}
-				else
-				{
-					throw new InvalidDataException('No entry element found');
-				}
-
-				break;
-
-			default:
-
-				throw new NotSupportedException('Reader is not supported');
-		}
+		$this->author[] = $author;
 	}
 
-	private function parseEntryElement(DOMElement $entry)
+	/**
+	 * @param array<PSX\Atom\Person> $author
+	 */
+	public function setAuthor(array $author)
 	{
-		$this->element = $entry;
-
-		$childNodes = $entry->childNodes;
-
-		for($i = 0; $i < $childNodes->length; $i++)
-		{
-			$item = $childNodes->item($i);
-
-			if($item->nodeType != XML_ELEMENT_NODE)
-			{
-				continue;
-			}
-
-
-			$name = strtolower($item->localName);
-
-			switch($name)
-			{
-				case 'author':
-				case 'contributor':
-
-					array_push($this->$name, Atom::personConstruct($item));
-
-					break;
-
-				case 'category':
-
-					$this->category[] = Atom::categoryConstruct($item);
-
-					break;
-
-				case 'content':
-
-					$content = null;
-					$type    = strtolower($item->getAttribute('type'));
-					$src     = $item->getAttribute('src');
-
-					if($this->fetchRemoteContent && !empty($src))
-					{
-						$this->fetchRemoteContent($item, new Url($src));
-					}
-
-					if(empty($type) || $type == 'text' || $type == 'html' || substr($type, 0, 5) == 'text/')
-					{
-						$content = $item->nodeValue;
-					}
-					else if($type == 'xhtml' || in_array($type, $this->xmlMediaTypes) || substr($type, -4) == '+xml' || substr($type, -4) == '/xml')
-					{
-						$child = $this->getFirstChild($item);
-
-						if($child !== false)
-						{
-							$content = $this->dom->saveXML($child);
-						}
-					}
-					else
-					{
-						$content = base64_decode($item->nodeValue);
-					}
-
-					$this->content = $content;
-
-					break;
-
-				case 'id':
-				case 'rights':
-				case 'title':
-
-					$this->$name = $item->nodeValue;
-
-					break;
-
-				case 'published':
-				case 'updated':
-
-					$this->$name = Atom::dateConstruct($item);
-
-					break;
-
-				case 'link':
-
-					array_push($this->$name, Atom::linkConstruct($item));
-
-					break;
-
-				case 'source':
-
-					$dom = new DOMDocument();
-
-					$feed = $dom->createElementNS(Atom::$xmlns, 'feed');
-
-					foreach($item->childNodes as $node)
-					{
-						// the source node must not contain entry elements
-						if($node->nodeType == XML_ELEMENT_NODE && $node->nodeName != 'entry')
-						{
-							$feed->appendChild($dom->importNode($node, true));
-						}
-					}
-
-					$dom->appendChild($feed);
-
-					$result = new ReaderResult(ReaderInterface::DOM, $dom);
-
-					$atom = new Atom();
-					$atom->import($result);
-
-					$this->source = $atom;
-
-					break;
-
-				case 'summary':
-
-					$this->summary = Atom::textConstruct($item);
-
-					break;
-			}
-		}
+		$this->author = $author;
 	}
 
-	public function getDom()
+	public function getAuthor()
 	{
-		return $this->dom;
+		return $this->author;
 	}
 
-	public function getElement()
+	/**
+	 * @param PSX\Atom\Category $author
+	 */
+	public function addCategory(Category $category)
 	{
-		return $this->element;
+		$this->category[] = $category;
 	}
 
-	public function setFetchRemoteContent($remoteContent)
+	/**
+	 * @param array<PSX\Atom\Category> $category
+	 */
+	public function setCategory(array $category)
 	{
-		$this->fetchRemoteContent = (boolean) $remoteContent;
-
-		if($this->fetchRemoteContent)
-		{
-			$this->http = new Http();
-		}
+		$this->category = $category;
 	}
 
-	public function fetchRemoteContent(DOMElement $parent, Url $url)
+	public function getCategory()
 	{
-		if($url->getScheme() == 'http' || $url->getScheme() == 'https')
-		{
-			$request  = new GetRequest($url);
-			$response = $this->http->request($request);
-
-			if($response->getCode() == 200)
-			{
-				$content = $this->dom->createDocumentFragment();
-				$content->appendXML($response->getBody());
-
-				$parent->append($content);
-			}
-		}
-		else
-		{
-			throw new Exception('Can only fetch http or https sources');
-		}
+		return $this->category;
 	}
 
-	private function getFirstChild(DOMElement $element)
+	/**
+	 * @param PSX\Atom\Text $content
+	 */
+	public function setContent(Text $content)
 	{
-		foreach($element->childNodes as $child)
-		{
-			if($child->nodeType == XML_ELEMENT_NODE)
-			{
-				return $child;
-			}
-		}
+		$this->content = $content;
+	}
+	
+	public function getContent()
+	{
+		return $this->content;
+	}
 
-		return false;
+	/**
+	 * @param PSX\Atom\Person $contributor
+	 */
+	public function addContributor(Person $contributor)
+	{
+		$this->contributor[] = $contributor;
+	}
+
+	/**
+	 * @param array<PSX\Atom\Person> $contributor
+	 */
+	public function setContributor($contributor)
+	{
+		$this->contributor = $contributor;
+	}
+
+	public function getContributor()
+	{
+		return $this->contributor;
+	}
+
+	public function setId($id)
+	{
+		$this->id = $id;
+	}
+	
+	public function getId()
+	{
+		return $this->id;
+	}
+
+	public function setRights($rights)
+	{
+		$this->rights = $rights;
+	}
+	
+	public function getRights()
+	{
+		return $this->rights;
+	}
+
+	public function setTitle($title)
+	{
+		$this->title = $title;
+	}
+	
+	public function getTitle()
+	{
+		return $this->title;
+	}
+
+	public function setPublished(DateTime $published)
+	{
+		$this->published = $published;
+	}
+	
+	public function getPublished()
+	{
+		return $this->published;
+	}
+
+	public function setUpdated(DateTime $updated)
+	{
+		$this->updated = $updated;
+	}
+	
+	public function getUpdated()
+	{
+		return $this->updated;
+	}
+
+	public function addLink(Link $link)
+	{
+		$this->link[] = $link;
+	}
+
+	public function getLink()
+	{
+		return $this->link;
+	}
+
+	public function setSource(Atom $source)
+	{
+		$this->source = $source;
+	}
+
+	public function getSource()
+	{
+		return $this->source;
+	}
+
+	public function setSummary(Text $summary)
+	{
+		$this->summary = $summary;
+	}
+	
+	public function getSummary()
+	{
+		return $this->summary;
 	}
 }
 

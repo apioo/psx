@@ -39,7 +39,7 @@ use ReflectionClass;
 class Table extends TableAbstract
 {
 	protected $name;
-	protected $columns;
+	protected $columns = array();
 	protected $connections = array();
 
 	public function __construct(Sql $sql, $name, array $columns, array $connections = array())

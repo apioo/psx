@@ -25,6 +25,7 @@ namespace PSX\Payment\Paypal\Data;
 
 use DateTime;
 use PSX\Data\RecordAbstract;
+use PSX\Data\RecordInfo;
 
 /**
  * Sale
@@ -44,14 +45,9 @@ class Sale extends RecordAbstract
 	protected $parentPayment;
 	protected $updateTime;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'sale';
-	}
-
-	public function getFields()
-	{
-		return array(
+		return new RecordInfo('sale', array(
 			'id'             => $this->id,
 			'amount'         => $this->amount,
 			'description'    => $this->description,
@@ -60,7 +56,7 @@ class Sale extends RecordAbstract
 			'sale_id'        => $this->saleId,
 			'parent_payment' => $this->parentPayment,
 			'update_time'    => $this->updateTime,
-		);
+		));
 	}
 
 	public function getId()

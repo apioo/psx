@@ -24,6 +24,7 @@
 namespace PSX\OpenId\Provider\Data;
 
 use PSX\Data\RecordAbstract;
+use PSX\Data\RecordInfo;
 use PSX\Data\NotSupportedException;
 use PSX\Data\ReaderResult;
 use PSX\Data\ReaderInterface;
@@ -50,21 +51,14 @@ class SetupRequest extends RecordAbstract
 	protected $params;
 
 	private $map = array(
-
 		'claimedId'   => 'claimed_id',
 		'identity'    => 'identity',
 		'assocHandle' => 'assoc_handle',
 		'returnTo'    => 'return_to',
 		'realm'       => 'realm',
-
 	);
 
-	public function getName()
-	{
-		return 'request';
-	}
-
-	public function getFields()
+	public function getRecordInfo()
 	{
 		$fields = array();
 
@@ -78,7 +72,7 @@ class SetupRequest extends RecordAbstract
 			}
 		}
 
-		return $fields;
+		return new RecordInfo('request', $fields);
 	}
 
 	public function setClaimedId($claimedId)
@@ -86,34 +80,14 @@ class SetupRequest extends RecordAbstract
 		$this->claimedId = $claimedId;
 	}
 
-	public function setIdentity($identity)
-	{
-		$this->identity = $identity;
-	}
-
-	public function setAssocHandle($assocHandle)
-	{
-		$this->assocHandle = $assocHandle;
-	}
-
-	public function setReturnTo($returnTo)
-	{
-		$this->returnTo = new Url($returnTo);
-	}
-
-	public function setRealm($realm)
-	{
-		$this->realm = $realm;
-	}
-
-	public function setImmediate($immediate)
-	{
-		$this->isImmediate = (boolean) $immediate;
-	}
-
 	public function getClaimedId()
 	{
 		return $this->claimedId;
+	}
+
+	public function setIdentity($identity)
+	{
+		$this->identity = $identity;
 	}
 
 	public function getIdentity()
@@ -121,9 +95,19 @@ class SetupRequest extends RecordAbstract
 		return $this->identity;
 	}
 
+	public function setAssocHandle($assocHandle)
+	{
+		$this->assocHandle = $assocHandle;
+	}
+
 	public function getAssocHandle()
 	{
 		return $this->assocHandle;
+	}
+
+	public function setReturnTo($returnTo)
+	{
+		$this->returnTo = new Url($returnTo);
 	}
 
 	public function getReturnTo()
@@ -131,19 +115,24 @@ class SetupRequest extends RecordAbstract
 		return $this->returnTo;
 	}
 
+	public function setRealm($realm)
+	{
+		$this->realm = $realm;
+	}
+
 	public function getRealm()
 	{
 		return $this->realm;
 	}
 
+	public function setImmediate($immediate)
+	{
+		$this->isImmediate = (boolean) $immediate;
+	}
+
 	public function isImmediate()
 	{
 		return $this->isImmediate;
-	}
-
-	public function getExtension($ns)
-	{
-		return ProviderAbstract::getExtension($this->params, $ns);
 	}
 
 	public function setParams(array $params)
@@ -156,62 +145,8 @@ class SetupRequest extends RecordAbstract
 		return $this->params;
 	}
 
-	public function import(ReaderResult $result)
+	public function getExtension($ns)
 	{
-		switch($result->getType())
-		{
-			case ReaderInterface::GPC:
-
-				$params = $result->getData();
-
-				$this->setParams($params);
-
-				if(isset($params['openid_claimed_id']))
-				{
-					$this->setClaimedId($params['openid_claimed_id']);
-				}
-
-				if(isset($params['openid_identity']))
-				{
-					$this->setIdentity($params['openid_identity']);
-				}
-
-				if(isset($params['openid_assoc_handle']))
-				{
-					$this->setAssocHandle($params['openid_assoc_handle']);
-				}
-
-				if(isset($params['openid_return_to']))
-				{
-					$this->setReturnTo($params['openid_return_to']);
-				}
-
-				if(isset($params['openid_realm']))
-				{
-					$this->setRealm($params['openid_realm']);
-				}
-
-				break;
-
-			default:
-
-				throw new NotSupportedException('Can only import data from reader Raw');
-
-				break;
-		}
-	}
-
-	public function export(WriterResult $result)
-	{
-		switch($result->getType())
-		{
-			case WriterInterface::FORM:
-			case WriterInterface::JSON:
-			case WriterInterface::XML:
-
-				return $this->getData();
-
-				break;
-		}
+		return ProviderAbstract::getExtension($this->params, $ns);
 	}
 }

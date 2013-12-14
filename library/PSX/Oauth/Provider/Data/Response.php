@@ -24,6 +24,7 @@
 namespace PSX\Oauth\Provider\Data;
 
 use PSX\Data\RecordAbstract;
+use PSX\Data\RecordInfo;
 use PSX\Data\ReaderResult;
 use PSX\Data\ReaderInterface;
 use PSX\Data\NotSupportedException;
@@ -37,23 +38,16 @@ use PSX\Data\NotSupportedException;
  */
 class Response extends RecordAbstract
 {
-	public $token;
-	public $tokenSecret;
-	public $params = array();
+	protected $token;
+	protected $tokenSecret;
+	protected $params = array();
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'response';
-	}
-
-	public function getFields()
-	{
-		return array(
-
+		return new RecordInfo('response', array(
 			'oauth_token'        => $this->token,
 			'oauth_token_secret' => $this->tokenSecret,
-
-		) + $this->params;
+		) + $this->params);
 	}
 
 	public function setToken($token)
@@ -61,24 +55,24 @@ class Response extends RecordAbstract
 		$this->token = $token;
 	}
 
-	public function setTokenSecret($tokenSecret)
-	{
-		$this->tokenSecret = $tokenSecret;
-	}
-
-	public function setParams(array $params)
-	{
-		$this->params = $params;
-	}
-
 	public function getToken()
 	{
 		return $this->token;
 	}
 
+	public function setTokenSecret($tokenSecret)
+	{
+		$this->tokenSecret = $tokenSecret;
+	}
+
 	public function getTokenSecret()
 	{
 		return $this->tokenSecret;
+	}
+
+	public function setParams(array $params)
+	{
+		$this->params = $params;
 	}
 
 	public function getParams()
@@ -89,42 +83,6 @@ class Response extends RecordAbstract
 	public function addParam($key, $value)
 	{
 		$this->params[$key] = $value;
-	}
-
-	public function import(ReaderResult $result)
-	{
-		switch($result->getType())
-		{
-			case ReaderInterface::FORM:
-
-				$data = $result->getData();
-
-				foreach($data as $k => $v)
-				{
-					switch($k)
-					{
-						case 'oauth_token':
-							$this->setToken($v);
-							break;
-
-						case 'oauth_token_secret':
-							$this->setTokenSecret($v);
-							break;
-
-						default:
-							$this->addParam($k, $v);
-							break;
-					}
-				}
-
-				break;
-
-			default:
-
-				throw new NotSupportedException('Can only import results from reader form');
-
-				break;
-		}
 	}
 }
 

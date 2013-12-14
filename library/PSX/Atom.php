@@ -23,83 +23,46 @@
 
 namespace PSX;
 
-use Countable;
 use DOMElement;
-use Iterator;
+use PSX\Atom\Category;
 use PSX\Atom\Entry;
-use PSX\Data\InvalidDataException;
-use PSX\Data\NotSupportedException;
-use PSX\Data\ReaderInterface;
-use PSX\Data\ReaderResult;
-use PSX\Data\Reader\Dom;
+use PSX\Atom\Generator;
+use PSX\Atom\Link;
+use PSX\Atom\Person;
+use PSX\Atom\Text;
+use PSX\Data\CollectionAbstract;
 use PSX\Data\RecordAbstract;
-use PSX\Data\Writer;
-use PSX\Html\Parse;
-use PSX\Html\Parse\Element;
-use PSX\Http\GetRequest;
 
 /**
- * This class is for converting an raw ATOM XML feed into an readable object.
- * Where you can access all values without parsing the XML. You can import an
- * existing feed with the Dom reader. Here an example howto read an
- * external atom feed.
- * <code>
- * $atom = Atom::request('http://test.phpsx.org/index.php/atom');
- *
- * echo $atom->title:
- * echo $atom->updated;
- *
- * foreach($atom as $entry)
- * {
- * 	echo $entry->title . "\n";
- * }
- * </code>
- *
- * If your module extends the ApiAbstract class you can parse an atom
- * feed wich is send to you via an HTTP request with the getRequest() method
- * <code>
- * $atom = new Atom();
- * $atom->import($this->getRequest(ReaderInterface::DOM));
- *
- * echo $atom->title:
- * echo $atom->updated;
- * </code>
+ * This record represents an atom feed. It is possible to import an existing 
+ * feed into the record through the AtomImporter. In the same way you can 
+ * produce a feed with the AtomExporter.
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  * @see     http://www.ietf.org/rfc/rfc4287.txt
  */
-class Atom extends RecordAbstract implements Iterator, Countable
+class Atom extends CollectionAbstract
 {
 	public static $xmlns = 'http://www.w3.org/2005/Atom';
 
-	public $author      = array();
-	public $category    = array();
-	public $contributor = array();
-	public $generator;
-	public $icon;
-	public $logo;
-	public $id;
-	public $link        = array();
-	public $rights;
-	public $subtitle;
-	public $title;
-	public $updated;
-	public $entry       = array();
+	protected $author = array();
+	protected $category = array();
+	protected $contributor = array();
+	protected $generator;
+	protected $icon;
+	protected $logo;
+	protected $id;
+	protected $link = array();
+	protected $rights;
+	protected $subtitle;
+	protected $title;
+	protected $updated;
 
-	private $dom;
-	private $nextEntry;
-
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'feed';
-	}
-
-	public function getFields()
-	{
-		return array(
-
+		return new RecordInfo('feed', array(
 			'author'      => $this->author,
 			'category'    => $this->category,
 			'contributor' => $this->contributor,
@@ -112,269 +75,180 @@ class Atom extends RecordAbstract implements Iterator, Countable
 			'subtitle'    => $this->subtitle,
 			'title'       => $this->title,
 			'updated'     => $this->updated,
-			'entry'       => $this->entry,
-
-		);
-	}
-
-	public function getEntry()
-	{
-		return $this->entry;
-	}
-
-	public function getDom()
-	{
-		return $this->dom;
-	}
-
-	// Iterator
-	public function current()
-	{
-		return current($this->entry);
-	}
-
-	public function key()
-	{
-		return key($this->entry);
-	}
-
-	public function next()
-	{
-		$this->nextEntry = next($this->entry);
-	}
-
-	public function rewind()
-	{
-		reset($this->entry);
-	}
-
-	public function valid()
-	{
-		return $this->nextEntry !== false;
-	}
-
-	// Countable
-	public function count()
-	{
-		return count($this->entry);
-	}
-
-	public function import(ReaderResult $result)
-	{
-		$this->dom = $result->getData();
-
-		switch($result->getType())
-		{
-			case ReaderInterface::DOM:
-
-				$elementList = $this->dom->getElementsByTagNameNS(self::$xmlns, 'feed');
-
-				if($elementList->length > 0)
-				{
-					$this->parseFeedElement($elementList->item(0));
-				}
-				else
-				{
-					throw new InvalidDataException('No feed element found');
-				}
-
-				break;
-
-			default:
-
-				throw new NotSupportedException('Can only import result of DOM reader');
-		}
-	}
-
-	private function parseFeedElement(DOMElement $feed)
-	{
-		$childNodes = $feed->childNodes;
-
-		for($i = 0; $i < $childNodes->length; $i++)
-		{
-			$item = $childNodes->item($i);
-
-			if($item->nodeType != XML_ELEMENT_NODE)
-			{
-				continue;
-			}
-
-
-			$name = strtolower($item->localName);
-
-			switch($name)
-			{
-				case 'author':
-				case 'contributor':
-
-					array_push($this->$name, self::personConstruct($item));
-
-					break;
-
-				case 'category':
-
-					$this->category[] = self::categoryConstruct($item);
-
-					break;
-
-				case 'generator':
-				case 'icon':
-				case 'logo':
-				case 'id':
-				case 'rights':
-				case 'title':
-
-					$this->$name = $item->nodeValue;
-
-					break;
-
-				case 'updated':
-
-					$this->updated = self::dateConstruct($item);
-
-					break;
-
-				case 'link':
-
-					$this->link[] = self::linkConstruct($item);
-
-					break;
-
-				case 'subtitle':
-
-					$this->subtitle = self::textConstruct($item);
-
-					break;
-
-				case 'entry':
-
-					$result = new ReaderResult(ReaderInterface::DOM, $item);
-					$entry  = new Entry();
-
-					$entry->import($result);
-
-					$this->entry[] = $entry;
-
-					break;
-			}
-		}
-	}
-
-	public static function textConstruct(DOMElement $text)
-	{
-		$content = null;
-		$type    = $text->getAttribute('type');
-
-		switch($type)
-		{
-			case 'xhtml':
-
-				$content = '';
-
-				break;
-
-			default:
-			case 'html':
-			case 'text':
-
-				$content = trim($text->nodeValue);
-		}
-
-		return $content;
-	}
-
-	public static function personConstruct(DOMElement $person)
-	{
-		$data   = $person->childNodes;
-		$result = array();
-
-		for($i = 0; $i < $data->length; $i++)
-		{
-			$item = $data->item($i);
-
-			if($item->nodeType != XML_ELEMENT_NODE)
-			{
-				continue;
-			}
-
-
-			$name = $item->nodeName;
-
-			switch($name)
-			{
-				case 'name':
-				case 'uri':
-				case 'email':
-
-					$result[$name] = $item->nodeValue;
-
-					break;
-			}
-		}
-
-		return $result;
-	}
-
-	public static function dateConstruct(DOMElement $date)
-	{
-		if($date->nodeType == XML_ELEMENT_NODE)
-		{
-			return new DateTime($date->nodeValue);
-		}
-	}
-
-	public static function categoryConstruct(DOMElement $category)
-	{
-		return array(
-
-			'term'   => $category->getAttribute('term'),
-			'scheme' => $category->getAttribute('scheme'),
-			'label'  => $category->getAttribute('label'),
-
-		);
-	}
-
-	public static function linkConstruct(DOMElement $link)
-	{
-		return array(
-
-			'href'     => $link->getAttribute('href'),
-			'rel'      => $link->getAttribute('rel'),
-			'type'     => $link->getAttribute('type'),
-			'hreflang' => $link->getAttribute('hreflang'),
-			'title'    => $link->getAttribute('title'),
-			'length'   => $link->getAttribute('length'),
-
-		);
-	}
-
-	public static function findTag($content)
-	{
-		$parse   = new Parse($content);
-		$element = new Element('link', array(
-
-			'rel'  => 'alternate',
-			'type' => Writer\Atom::$mime,
-
+			'entry'       => $this->collection,
 		));
-
-		$href = $parse->fetchAttrFromHead($element, 'href');
-
-		return $href;
 	}
 
-	public static function request($url)
+	/**
+	 * @param PSX\Atom\Person $author
+	 */
+	public function addAuthor(Person $author)
 	{
-		$http     = new Http();
-		$request  = new GetRequest($url, array(
-			'User-Agent' => __CLASS__ . ' ' . Base::VERSION
-		));
-		$response = $http->request($request);
-		$reader   = new Dom();
+		$this->author[] = $author;
+	}
 
-		$atom = new self();
-		$atom->import($reader->read($response));
+	/**
+	 * @param array<PSX\Atom\Person> $author
+	 */
+	public function setAuthor(array $author)
+	{
+		$this->author = $author;
+	}
 
-		return $atom;
+	public function getAuthor()
+	{
+		return $this->author;
+	}
+
+	/**
+	 * @param PSX\Atom\Category $category
+	 */
+	public function addCategory(Category $category)
+	{
+		$this->category[] = $category;
+	}
+
+	/**
+	 * @param array<PSX\Atom\Category> $category
+	 */
+	public function setCategory(array $category)
+	{
+		$this->category = $category;
+	}
+
+	public function getCategory()
+	{
+		return $this->category;
+	}
+
+	/**
+	 * @param PSX\Atom\Person $contributor
+	 */
+	public function addContributor(Person $contributor)
+	{
+		$this->contributor[] = $contributor;
+	}
+
+	/**
+	 * @param array<PSX\Atom\Person> $contributor
+	 */
+	public function setContributor(array $contributor)
+	{
+		$this->contributor = $contributor;
+	}
+
+	public function getContributor()
+	{
+		return $this->contributor;
+	}
+
+	/**
+	 * @param PSX\Atom\Generator $generator
+	 */
+	public function setGenerator(Generator $generator)
+	{
+		$this->generator = $generator;
+	}
+	
+	public function getGenerator()
+	{
+		return $this->generator;
+	}
+
+	public function setIcon($icon)
+	{
+		$this->icon = $icon;
+	}
+	
+	public function getIcon()
+	{
+		return $this->icon;
+	}
+
+	public function setLogo($logo)
+	{
+		$this->logo = $logo;
+	}
+	
+	public function getLogo()
+	{
+		return $this->logo;
+	}
+
+	public function setId($id)
+	{
+		$this->id = $id;
+	}
+	
+	public function getId()
+	{
+		return $this->id;
+	}
+
+	public function setRights($rights)
+	{
+		$this->rights = $rights;
+	}
+	
+	public function getRights()
+	{
+		return $this->rights;
+	}
+
+	public function setTitle($title)
+	{
+		$this->title = $title;
+	}
+	
+	public function getTitle()
+	{
+		return $this->title;
+	}
+
+	/**
+	 * @param DateTime $updated
+	 */
+	public function setUpdated(\DateTime $updated)
+	{
+		$this->updated = $updated;
+	}
+	
+	public function getUpdated()
+	{
+		return $this->updated;
+	}
+
+	/**
+	 * @param PSX\Atom\Link $link
+	 */
+	public function addLink(Link $link)
+	{
+		$this->link[] = $link;
+	}
+
+	/**
+	 * @param array<PSX\Atom\Link> $link
+	 */
+	public function setLink(array $link)
+	{
+		$this->link = $link;
+	}
+
+	public function getLink()
+	{
+		return $this->link;
+	}
+
+	/**
+	 * @param PSX\Atom\Text $subTitle
+	 */
+	public function setSubTitle(Text $subTitle)
+	{
+		$this->subTitle = $subTitle;
+	}
+	
+	public function getSubTitle()
+	{
+		return $this->subTitle;
 	}
 }

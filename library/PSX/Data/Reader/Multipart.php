@@ -23,8 +23,9 @@
 
 namespace PSX\Data\Reader;
 
-use PSX\Data\ReaderInterface;
+use PSX\Data\ReaderAbstract;
 use PSX\Data\ReaderResult;
+use PSX\Data\Record\DefaultImporter;
 use PSX\Http\Message;
 
 /**
@@ -34,7 +35,7 @@ use PSX\Http\Message;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Multipart implements ReaderInterface
+class Multipart extends ReaderAbstract
 {
 	public static $mime = 'multipart/form-data';
 
@@ -52,7 +53,17 @@ class Multipart implements ReaderInterface
 			}
 		}
 
-		return new ReaderResult(ReaderInterface::MULTIPART, $data);
+		return $data;
+	}
+
+	public function isContentTypeSupported($contentType)
+	{
+		return stripos($contentType, self::$mime) !== false;
+	}
+
+	public function getDefaultImporter()
+	{
+		return new DefaultImporter();
 	}
 }
 

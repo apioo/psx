@@ -24,6 +24,7 @@
 namespace PSX\OpenSocial;
 
 use PSX\Data\RecordAbstract;
+use PSX\Data\RecordInfo;
 
 /**
  * Plural
@@ -36,18 +37,11 @@ class Plural extends RecordAbstract
 {
 	protected $fields = array();
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'plural';
-	}
-
-	public function getFields()
-	{
-		return array(
-
+		return new RecordInfo('plural', array(
 			'fields' => $this->fields,
-
-		);
+		));
 	}
 
 	/**

@@ -24,6 +24,7 @@
 namespace PSX\Payment\Paypal\Data;
 
 use PSX\Data\RecordAbstract;
+use PSX\Data\RecordInfo;
 
 /**
  * PayerInfo
@@ -41,21 +42,16 @@ class PayerInfo extends RecordAbstract
 	protected $phone;
 	protected $shippingAddress;
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'payerInfo';
-	}
-
-	public function getFields()
-	{
-		return array(
+		return new RecordInfo('payer_info', array(
 			'email'            => $this->email,
 			'first_name'       => $this->firstName,
 			'last_name'        => $this->lastName,
 			'payer_id'         => $this->payerId,
 			'phone'            => $this->phone,
 			'shipping_address' => $this->shippingAddress,
-		);
+		));
 	}
 
 	public function getEmail()

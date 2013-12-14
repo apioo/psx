@@ -11,11 +11,13 @@
     }
   ],
   "require": {
-    "php": ">=5.3"
+    "php": ">=5.3",
+    "symfony/event-dispatcher": "2.5.*@dev"
   },
   "autoload": {
     "psr-0": {
-      "PSX": "library/"
+      "PSX": "library/",
+      "Foo": "library/"
     }
   }
 }

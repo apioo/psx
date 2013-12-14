@@ -33,53 +33,11 @@ namespace PSX\Data;
 interface RecordInterface
 {
 	/**
-	 * Returns the name of the record or null
+	 * Returns an RecordInfo object wich contains the name and all files of the 
+	 * record
 	 *
-	 * @return string|null
+	 * @return PSX\Data\RecordInfo
 	 */
-	public function getName();
-
-	/**
-	 * Returns an array representation of all record fields
-	 *
-	 * @return array
-	 */
-	public function getFields();
-
-	/**
-	 * This methods accept any number of parameters and checks whether each
-	 * field exists in the current record
-	 *
-	 * @param string $field_1
-	 * @param string ...
-	 * @param string $field_n
-	 * @return boolean
-	 */
-	public function hasFields();
-
-	/**
-	 * Returns all record fields wich are not null. If an value of the field is
-	 * an RecordInterface the getData method is called on this object
-	 *
-	 * @return array
-	 */
-	public function getData();
-
-	/**
-	 * This method imports the data of an ReaderResult objekt into this object
-	 *
-	 * @param PSX\Data\ReaderResult $result
-	 * @return void
-	 */
-	public function import(ReaderResult $result);
-
-	/**
-	 * This method returns arbitiary data wich is proccesed by an
-	 * WriterInterface
-	 *
-	 * @param PSX\Data\ReaderResult $result
-	 * @return mixed
-	 */
-	public function export(WriterResult $result);
+	public function getRecordInfo();
 }
 

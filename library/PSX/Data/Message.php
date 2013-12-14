@@ -35,8 +35,8 @@ use PSX\Util\Uuid;
  */
 class Message extends RecordAbstract
 {
-	public $text;
-	public $success;
+	protected $text;
+	protected $success;
 
 	public function __construct($text = null, $success = null)
 	{
@@ -44,19 +44,17 @@ class Message extends RecordAbstract
 		$this->setSuccess($success);
 	}
 
-	public function getName()
+	public function getRecordInfo()
 	{
-		return 'message';
-	}
-
-	public function getFields()
-	{
-		return array(
-
+		return new RecordInfo('message', array(
 			'text'    => $this->text,
 			'success' => $this->success,
+		));
+	}
 
-		);
+	public function getText()
+	{
+		return $this->text;
 	}
 
 	public function setText($text)
@@ -64,29 +62,13 @@ class Message extends RecordAbstract
 		$this->text = $text;
 	}
 
+	public function hasSuccess()
+	{
+		return $this->success;
+	}
+
 	public function setSuccess($success)
 	{
 		$this->success = (boolean) $success;
-	}
-
-	public function export(WriterResult $result)
-	{
-		switch($result->getType())
-		{
-			case WriterInterface::ATOM:
-				$entry = $result->getWriter()->createEntry();
-				$entry->setTitle('Message');
-				$entry->setId('urn:uuid:' . Uuid::nameBased($this->text));
-				$entry->setUpdated(new DateTime());
-				$entry->addAuthor('System');
-				$entry->setContent($this, 'application/xml');
-
-				return $entry;
-				break;
-
-			default:
-				return parent::export($result);
-				break;
-		}
 	}
 }

@@ -55,6 +55,11 @@ class Element extends TokenAbstract
 		$this->short = $short;
 	}
 
+	public function getType()
+	{
+		return $this->type;
+	}
+
 	public function getName()
 	{
 		return $this->name;
@@ -197,7 +202,10 @@ class Element extends TokenAbstract
 		}
 		else if($token instanceof Text)
 		{
-			//$str.= $token->data;
+			$str.= $token->data;
+		}
+		else if($token instanceof Comment)
+		{
 			$str.= $token->data;
 		}
 
@@ -264,7 +272,7 @@ class Element extends TokenAbstract
 
 		for($i = 0; $i < $len; $i++)
 		{
-			if(trim($html[$i]) != '')
+			if(!in_array(ord($html[$i]), Lexer::$spaceCharacters))
 			{
 				$name.= $html[$i];
 			}

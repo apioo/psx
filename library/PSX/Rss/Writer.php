@@ -122,7 +122,7 @@ class Writer implements WriterInterface
 		$this->writer->writeElement('docs', $docs);
 	}
 
-	public function addCloud($domain, $port, $path, $registerProcedure, $protocol)
+	public function setCloud($domain, $port, $path, $registerProcedure, $protocol)
 	{
 		$this->writer->startElement('cloud');
 		$this->writer->writeAttribute('domain', $domain);

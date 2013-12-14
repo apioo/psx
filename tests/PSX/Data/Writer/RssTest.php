@@ -23,7 +23,10 @@
 
 namespace PSX\Data\Writer;
 
+use DateTime;
 use PSX\Data\WriterTestCase;
+use PSX\Rss as RssRecord;
+use PSX\Rss\Item;
 
 /**
  * RssTest
@@ -32,72 +35,87 @@ use PSX\Data\WriterTestCase;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class RssTest extends WriterTestCase
+class RssTest extends \PHPUnit_Framework_TestCase
 {
-	public function testWrite()
+	public function testWriteFeed()
 	{
-		ob_start();
-
 		$writer = new Rss();
-		$writer->write($this->getRecord());
+		$actual = $writer->write($this->getRssRecord());
 
-		$actual = ob_get_contents();
+		$expect = <<<TEXT
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+ <channel>
+  <title>Liftoff News</title>
+  <link>http://liftoff.msfc.nasa.gov/</link>
+  <description>Liftoff to Space Exploration.</description>
+  <language>en-us</language>
+  <managingEditor>editor@example.com</managingEditor>
+  <webMaster>webmaster@example.com</webMaster>
+  <pubDate>Tue, 10 Jun 2003 04:00:00 +0000</pubDate>
+  <lastBuildDate>Tue, 10 Jun 2003 09:41:01 +0000</lastBuildDate>
+  <generator>Weblog Editor 2.0</generator>
+  <docs>http://blogs.law.harvard.edu/tech/rss</docs>
+  <item>
+   <title>Star City</title>
+   <link>http://liftoff.msfc.nasa.gov/news/2003/news-starcity.asp</link>
+   <description>How do Americans get ready to work with Russians aboard the International Space Station? They take a crash course in culture, language and protocol at Russia's &lt;a href=&quot;http://howe.iki.rssi.ru/GCTC/gctc_e.htm&quot;&gt;Star City&lt;/a&gt;.</description>
+   <guid>http://liftoff.msfc.nasa.gov/2003/06/03.html#item573</guid>
+   <pubDate>Tue, 03 Jun 2003 09:39:21 +0000</pubDate>
+  </item>
+ </channel>
+</rss>
+TEXT;
 
-		ob_end_clean();
+		$this->assertXmlStringEqualsXmlString($expect, $actual);
+	}
 
+	public function testWriteItem()
+	{
+		$writer = new Rss();
+		$actual = $writer->write($this->getItemRecord());
 
 		$expect = <<<TEXT
 <?xml version="1.0" encoding="UTF-8"?>
 <item>
-  <title>bar</title>
-  <guid>1</guid>
-  <pubDate>Sun, 11 Mar 2012 13:37:21 +0000</pubDate>
-  <author>foo</author>
-  <description>foobar</description>
+ <title>Star City</title>
+ <link>http://liftoff.msfc.nasa.gov/news/2003/news-starcity.asp</link>
+ <description>How do Americans get ready to work with Russians aboard the International Space Station? They take a crash course in culture, language and protocol at Russia's &lt;a href=&quot;http://howe.iki.rssi.ru/GCTC/gctc_e.htm&quot;&gt;Star City&lt;/a&gt;.</description>
+ <guid>http://liftoff.msfc.nasa.gov/2003/06/03.html#item573</guid>
+ <pubDate>Tue, 03 Jun 2003 09:39:21 +0000</pubDate>
 </item>
 TEXT;
 
 		$this->assertXmlStringEqualsXmlString($expect, $actual);
 	}
 
-	public function testWriteResultSet()
+	public function getRssRecord()
 	{
-		ob_start();
+		$rss = new RssRecord();
+		$rss->setTitle('Liftoff News');
+		$rss->setLink('http://liftoff.msfc.nasa.gov/');
+		$rss->setDescription('Liftoff to Space Exploration.');
+		$rss->setLanguage('en-us');
+		$rss->setPubDate(new DateTime('Tue, 10 Jun 2003 04:00:00 GMT'));
+		$rss->setLastBuildDate(new DateTime('Tue, 10 Jun 2003 09:41:01 GMT'));
+		$rss->setDocs('http://blogs.law.harvard.edu/tech/rss');
+		$rss->setGenerator('Weblog Editor 2.0');
+		$rss->setManagingEditor('editor@example.com');
+		$rss->setWebMaster('webmaster@example.com');
+		$rss->add($this->getItemRecord());
 
-		$writer = new Rss();
-		$writer->setConfig('foo', '#', 'bar');
-		$writer->write($this->getResultSet());
+		return $rss;
+	}
 
-		$actual = ob_get_contents();
+	public function getItemRecord()
+	{
+		$item = new Item();
+		$item->setTitle('Star City');
+		$item->setLink('http://liftoff.msfc.nasa.gov/news/2003/news-starcity.asp');
+		$item->setDescription('How do Americans get ready to work with Russians aboard the International Space Station? They take a crash course in culture, language and protocol at Russia\'s <a href="http://howe.iki.rssi.ru/GCTC/gctc_e.htm">Star City</a>.');
+		$item->setPubDate(new DateTime('Tue, 03 Jun 2003 09:39:21 GMT'));
+		$item->setGuid('http://liftoff.msfc.nasa.gov/2003/06/03.html#item573');
 
-		ob_end_clean();
-
-
-		$expect = <<<TEXT
-<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0">
-  <channel>
-    <title>foo</title>
-    <link>#</link>
-    <description>bar</description>
-    <item>
-      <title>bar</title>
-      <guid>1</guid>
-      <pubDate>Sun, 11 Mar 2012 13:37:21 +0000</pubDate>
-      <author>foo</author>
-      <description>foobar</description>
-    </item>
-    <item>
-      <title>bar</title>
-      <guid>2</guid>
-      <pubDate>Sun, 11 Mar 2012 13:37:21 +0000</pubDate>
-      <author>foo</author>
-      <description>foobar</description>
-    </item>
-  </channel>
-</rss>
-TEXT;
-
-		$this->assertXmlStringEqualsXmlString($expect, $actual);
+		return $item;
 	}
 }

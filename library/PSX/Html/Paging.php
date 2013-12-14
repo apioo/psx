@@ -37,26 +37,26 @@ use Iterator;
  */
 class Paging implements Countable, Iterator
 {
-	private $url;
-	private $resultSet;
-	private $range;
+	protected $url;
+	protected $resultSet;
+	protected $range;
 
-	private $totalResults;
-	private $itemsPerPage;
-	private $startIndex;
-	private $count;
+	protected $totalResults;
+	protected $itemsPerPage;
+	protected $startIndex;
+	protected $count;
+
+	protected $page;
+	protected $pages;
+	protected $first;
+	protected $prev;
+	protected $min;
+	protected $max;
+	protected $next;
+	protected $last;
 
 	private $nav   = array();
 	private $itPos = -1;
-
-	public $page;
-	public $pages;
-	public $first;
-	public $prev;
-	public $min;
-	public $max;
-	public $next;
-	public $last;
 
 	public function __construct(Url $url, ResultSet $resultSet, $range = 2)
 	{
@@ -65,10 +65,10 @@ class Paging implements Countable, Iterator
 		$this->range     = $range;
 
 		// resultset values
-		$this->totalResults = (integer) $resultSet->totalResults;
-		$this->itemsPerPage = (integer) $resultSet->itemsPerPage;
-		$this->startIndex   = (integer) $resultSet->startIndex;
-		$this->count        = $resultSet->getLength();
+		$this->totalResults = (integer) $resultSet->getTotalResults();
+		$this->itemsPerPage = (integer) $resultSet->getItemsPerPage();
+		$this->startIndex   = (integer) $resultSet->getStartIndex();
+		$this->count        = $resultSet->count();
 
 		// do the math
 		$this->calcPages();

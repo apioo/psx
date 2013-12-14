@@ -1,4 +1,28 @@
 
+0.8
+* Introduced importer concept and remove import/export methods from the record
+  interface
+* Every record has now a single method getRecordInfo() wich returns all
+  available fields
+* It is possible to add reader and writer implementations to the reader or 
+  writer factory
+* Added filter definition class wich can validate fields of an record
+* A new handler package was added wich contains all handler related classes
+* Added type constants to Validation class
+* Added filter definition class to validate a record based on a set of rues
+
+0.7.3
+* Added openid connect basic client
+* Fixed routing mechanism
+* Improved sql select and tests
+* Update webfinger library to rfc7033
+* Added hostmeta library
+* Improved XRD library
+* Created XRI package wich contains now the XRD and XRDS libraries
+* Added jsonp data writer
+* Added http fixture for skrill test
+* Improved loader and dispatch test
+
 0.7.2
 * Fix use correct request method
 * Improved oauth test

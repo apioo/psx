@@ -199,7 +199,7 @@ abstract class TableAbstract implements TableInterface
 		}
 		else if($params instanceof RecordInterface)
 		{
-			$params = $params->getData();
+			$params = $params->getRecordInfo()->getData();
 		}
 		else
 		{
@@ -223,7 +223,7 @@ abstract class TableAbstract implements TableInterface
 		}
 		else if($params instanceof RecordInterface)
 		{
-			$params = $params->getData();
+			$params = $params->getRecordInfo()->getData();
 		}
 		else
 		{
@@ -263,7 +263,7 @@ abstract class TableAbstract implements TableInterface
 		}
 		else if($params instanceof RecordInterface)
 		{
-			$params = $params->getData();
+			$params = $params->getRecordInfo()->getData();
 		}
 		else
 		{
@@ -289,7 +289,7 @@ abstract class TableAbstract implements TableInterface
 		}
 		else if($params instanceof RecordInterface)
 		{
-			$params = $params->getData();
+			$params = $params->getRecordInfo()->getData();
 		}
 		else if($params instanceof Condition)
 		{

@@ -41,7 +41,7 @@ class Writer implements WriterInterface
 
 	protected $writer;
 
-	public function __construct($title, $id, DateTime $updated, XMLWriter $writer = null)
+	public function __construct($title, $id, DateTime $updated, XMLWriter $writer = null, $root = 'feed', $xmlns = null)
 	{
 		$this->writer = $writer === null ? new XMLWriter() : $writer;
 
@@ -52,15 +52,19 @@ class Writer implements WriterInterface
 			$this->writer->startDocument('1.0', 'UTF-8');
 		}
 
-		$this->writer->startElement('feed');
-		$this->writer->writeAttribute('xmlns', self::$xmlns);
+		$this->writer->startElement($root);
+
+		if($xmlns === null)
+		{
+			$this->writer->writeAttribute('xmlns', self::$xmlns);
+		}
 
 		$this->setTitle($title);
 		$this->setId($id);
 		$this->setUpdated($updated);
 	}
 
-	public function addAuthor($name, $uri = false, $email = false)
+	public function addAuthor($name, $uri = null, $email = null)
 	{
 		$this->writer->startElement('author');
 
@@ -69,12 +73,12 @@ class Writer implements WriterInterface
 		$this->writer->endElement();
 	}
 
-	public function addCategory($term, $scheme = false, $label = false)
+	public function addCategory($term, $scheme = null, $label = null)
 	{
 		self::categoryConstruct($term, $scheme, $label);
 	}
 
-	public function addContributor($name, $uri = false, $email = false)
+	public function addContributor($name, $uri = null, $email = null)
 	{
 		$this->writer->startElement('contributor');
 
@@ -83,7 +87,7 @@ class Writer implements WriterInterface
 		$this->writer->endElement();
 	}
 
-	public function setGenerator($generator, $uri = false, $version = false)
+	public function setGenerator($generator, $uri = null, $version = null)
 	{
 		$this->writer->startElement('generator');
 
@@ -116,7 +120,7 @@ class Writer implements WriterInterface
 		$this->writer->writeElement('id', $id);
 	}
 
-	public function addLink($href, $rel = false, $type = false, $hreflang = false, $title = false, $length = false)
+	public function addLink($href, $rel = null, $type = null, $hreflang = null, $title = null, $length = null)
 	{
 		self::linkConstruct($this->writer, $href, $rel, $type, $hreflang, $title, $length);
 	}
@@ -174,7 +178,7 @@ class Writer implements WriterInterface
 		return $this->writer;
 	}
 
-	public static function personConstruct(XMLWriter $writer, $name, $uri = false, $email = false)
+	public static function personConstruct(XMLWriter $writer, $name, $uri = null, $email = null)
 	{
 		$writer->writeElement('name', $name);
 
@@ -207,7 +211,7 @@ class Writer implements WriterInterface
 		$writer->endElement();
 	}
 
-	public static function linkConstruct(XMLWriter $writer, $href, $rel = false, $type = false, $hreflang = false, $title = false, $length = false)
+	public static function linkConstruct(XMLWriter $writer, $href, $rel = null, $type = null, $hreflang = null, $title = null, $length = null)
 	{
 		$writer->startElement('link');
 		$writer->writeAttribute('href', $href);

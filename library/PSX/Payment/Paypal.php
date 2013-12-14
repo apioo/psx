@@ -24,6 +24,7 @@
 namespace PSX\Payment;
 
 use PSX\Data\Reader;
+use PSX\Data\Writer;
 use PSX\Data\RecordStoreInterface;
 use PSX\Payment\Paypal\Data;
 use PSX\Oauth2;
@@ -112,7 +113,8 @@ class Paypal
 
 	public function createPayment(Data\Payment $payment)
 	{
-		$body     = Json::encode($payment->getData());
+		$writer   = new Writer\Json();
+		$body     = $writer->write($payment);
 		$header   = array(
 			'Authorization' => $this->oauth2->getAuthorizationHeader($this->getAccessToken()),
 			'Content-Type'  => 'application/json',
@@ -123,10 +125,9 @@ class Paypal
 
 		if($response->getCode() == 201)
 		{
-			$reader  = new Reader\Json();
-			$result  = $reader->read($response);
 			$payment = new Data\Payment();
-			$payment->import($result);
+			$reader  = new Reader\Json();
+			$reader->import($payment, $response);
 
 			// save approval uri
 			$link = $payment->getLinkByRel('approval_url');
@@ -169,10 +170,9 @@ class Paypal
 
 		if($response->getCode() == 200)
 		{
-			$reader  = new Reader\Json();
-			$result  = $reader->read($response);
 			$payment = new Data\Payment();
-			$payment->import($result);
+			$reader  = new Reader\Json();
+			$reader->import($payment, $response);
 
 			return $payment;
 		}
@@ -197,10 +197,9 @@ class Paypal
 
 		if($response->getCode() == 200)
 		{
-			$reader  = new Reader\Json();
-			$result  = $reader->read($response);
 			$payment = new Data\Payment();
-			$payment->import($result);
+			$reader  = new Reader\Json();
+			$reader->import($result, $response);
 
 			return $payment;
 		}
@@ -260,10 +259,9 @@ class Paypal
 
 		if($response->getCode() == 200)
 		{
-			$reader   = new Reader\Json();
-			$result   = $reader->read($response);
 			$payments = new Data\Payments();
-			$payments->import($result);
+			$reader   = new Reader\Json();
+			$reader->import($payments, $response);
 
 			return $payments;
 		}
