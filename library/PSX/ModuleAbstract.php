@@ -55,6 +55,7 @@ abstract class ModuleAbstract
 
 	protected $parameter;
 	protected $body;
+	protected $requestReader;
 
 	public function __construct($container, Location $location, $basePath, array $uriFragments)
 	{
@@ -239,64 +240,71 @@ abstract class ModuleAbstract
 	}
 
 	/**
-	 * Returns the result data from the reader wich is in most cases an array or 
-	 * an SimpleXMLElement if the Content-Type is application/xml
+	 * Uses the request reader to import the data from the given request into
+	 * the record
 	 *
-	 * @param integer $readerType
-	 * @param boolean $returnResult
-	 * @return mixed
+	 * @param PSX\Data\RecordInterface $record
+	 * @param string $readerType
 	 */
-	protected function getBody($readerType = null)
+	protected function getBody($record, $readerType = null)
 	{
 		if($this->body === null)
 		{
-			try
-			{
-				$this->body = $this->getRequest($readerType)->getData();
-			}
-			catch(NotFoundException $e)
-			{
-			}
+			$reader = $this->getRequestReader($readerType);
+			$body   = $reader->getDefaultImporter($record, $reader->read($this->base->getRequest()));
+
+			$this->body = $body;
 		}
 
 		return $this->body;
 	}
 
 	/**
-	 * Returns an PSX\Data\ReaderResult object depending of the $readerType.
-	 * If the reader type is not set the content-type of the request is used to 
-	 * get the best fitting reader. You can import the reader result into an 
-	 * record with the import method
+	 * Returns the result of the reader 
 	 *
-	 * @param integer $readerType
-	 * @return PSX\Data\ReaderResult
+	 * @param string $readerType
+	 * @return mixed
 	 */
 	protected function getRequest($readerType = null)
 	{
-		// find best reader type
-		if($readerType === null)
-		{
-			$contentType = Base::getRequestHeader('Content-Type');
+		return $this->getRequestReader($readerType)->read($this->base->getRequest());
+	}
 
-			$reader = $this->container->get('readerFactory')->getReaderByContentType($contentType);
-		}
-		else
+	/**
+	 * Returns the best reader for the given content type or the default reader
+	 * from the factory
+	 *
+	 * @param string $readerType
+	 * @return PSX\Data\ReaderInterface
+	 */
+	protected function getRequestReader($readerType = null)
+	{
+		if($this->requestReader === null)
 		{
-			$reader = $this->container->get('readerFactory')->getReaderByInstance($readerType);
+			// find best reader type
+			if($readerType === null)
+			{
+				$reader = $this->container->get('readerFactory')->getReaderByContentType(Base::getRequestHeader('Content-Type'));
+			}
+			else
+			{
+				$reader = $this->container->get('readerFactory')->getReaderByInstance($readerType);
+			}
+
+			if($reader === null)
+			{
+				$reader = $this->container->get('readerFactory')->getDefaultReader();
+			}
+
+			if($reader === null)
+			{
+				throw new NotFoundException('Could not find fitting data reader');
+			}
+
+			$this->requestReader = $reader;
 		}
 
-		if($reader === null)
-		{
-			$this->container->get('readerFactory')->getDefaultReader();
-		}
-
-		if($reader === null)
-		{
-			throw new NotFoundException('Could not find fitting data reader');
-		}
-
-		// try to read request
-		return $reader->read($this->base->getRequest());
+		return $this->requestReader;
 	}
 }
 
