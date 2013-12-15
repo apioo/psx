@@ -54,7 +54,7 @@ class Record extends RecordAbstract
 		{
 			$key = lcfirst(substr($method, 3));
 
-			if(isset($this->fields[$key]))
+			if(array_key_exists($key, $this->fields))
 			{
 				$this->fields[$key] = current($args);
 			}

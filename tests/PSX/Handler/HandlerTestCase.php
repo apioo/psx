@@ -24,6 +24,7 @@
 namespace PSX\Handler;
 
 use PSX\Data\ResultSet;
+use PSX\Data\Record;
 use PSX\DateTime;
 use PSX\Sql;
 use PSX\Sql\Condition;
@@ -309,5 +310,57 @@ trait HandlerTestCase
 		$this->assertEquals(1, $obj->getUserId());
 		$this->assertEquals('foo', $obj->getTitle());
 		$this->assertInstanceOf('DateTime', $obj->getDate());
+	}
+
+	public function testCreate()
+	{
+		$handler = $this->getHandler();
+
+		$record = $handler->getRecord();
+		$record->setUserId(2);
+		$record->setTitle('foobar');
+		$record->setDate(new DateTime());
+
+		$handler->create($record);
+
+		$record = $handler->get(5);
+
+		$this->assertEquals(2, $record->getUserId());
+		$this->assertEquals('foobar', $record->getTitle());
+		$this->assertInstanceOf('DateTime', $record->getDate());
+	}
+
+	public function testUpdate()
+	{
+		$handler = $this->getHandler();
+
+		$record = $handler->getRecord(1);
+		$record->setUserId(2);
+		$record->setTitle('foobar');
+		$record->setDate(new DateTime());
+
+		$handler->update($record);
+
+		$record = $handler->get(1);
+
+		$this->assertEquals(2, $record->getUserId());
+		$this->assertEquals('foobar', $record->getTitle());
+		$this->assertInstanceOf('DateTime', $record->getDate());
+	}
+
+	public function testDelete()
+	{
+		$handler = $this->getHandler();
+
+		$record = $handler->getRecord(1);
+		$record->setUserId(2);
+		$record->setTitle('foobar');
+		$record->setDate(new DateTime());
+
+		$handler->delete($record);
+
+		$record = $handler->get(1);
+
+		$this->assertEmpty($record);
 	}
 }
