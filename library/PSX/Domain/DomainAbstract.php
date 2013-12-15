@@ -23,29 +23,54 @@
 
 namespace PSX\Domain;
 
-use PSX\DependencyInterface;
+use InvalidArgumentException;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
+ * DomainAbstract
+ *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-abstract class DomainAbstract
+abstract class DomainAbstract implements ContainerAwareInterface
 {
 	protected $container;
 
-	public function __construct(DependencyInterface $container)
+	public function setContainer(ContainerInterface $container = null)
 	{
 		$this->container = $container;
 	}
 
 	public function addListener($eventName, $listener, $priority = 0)
 	{
-		$this->container->get('eventDispatcher')->addListener($eventName, $listener, $priority);
+		$this->container->get('event_dispatcher')->addListener($eventName, $listener, $priority);
 	}
 
 	public function dispatch($eventName, $event = null)
 	{
-		$this->container->get('eventDispatcher')->dispatch($eventName, $event);
+		$this->container->get('event_dispatcher')->dispatch($eventName, $event);
+	}
+
+	/**
+	 * If the called method starts with "get" the matching service from the di 
+	 * container is returned else null
+	 *
+	 * @return object
+	 */
+	public function __call($name, $args)
+	{
+		if(substr($name, 0, 3) == 'get')
+		{
+			$service = lcfirst(substr($name, 3));
+
+			if($this->container->has($service))
+			{
+				return $this->container->get($service);
+			}
+
+			throw new InvalidArgumentException('Service ' . $service . ' not available');
+		}
 	}
 }

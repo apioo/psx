@@ -23,7 +23,8 @@
 
 namespace PSX\Domain;
 
-use PSX\DependencyInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * DomainManager
@@ -35,13 +36,13 @@ use PSX\DependencyInterface;
 class DomainManager implements DomainManagerInterface
 {
 	/**
-	 * @var PSX\DependencyInterface
+	 * @var Symfony\Component\DependencyInjection\ContainerInterface
 	 */
 	protected $container;
 
 	protected $_container;
 
-	public function __construct(DependencyInterface $container)
+	public function __construct(ContainerInterface $container)
 	{
 		$this->container = $container;
 	}
@@ -50,7 +51,12 @@ class DomainManager implements DomainManagerInterface
 	{
 		if(!isset($this->_container[$className]))
 		{
-			$this->_container[$className] = new $className($this->container);
+			$this->_container[$className] = new $className();
+
+			if($this->_container[$className] instanceof ContainerAwareInterface)
+			{
+				$this->_container[$className]->setContainer($this->container);
+			}
 		}
 
 		return $this->_container[$className];
