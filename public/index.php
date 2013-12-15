@@ -23,7 +23,7 @@
 
 require_once('../vendor/autoload.php');
 
-$container = new PSX\Dependency\Container();
+$container = new PSX\Dependency\DefaultContainer();
 $container->setParameter('config.file', '../configuration.php');
 
 PSX\Bootstrap::setupEnvironment($container->get('config'));

@@ -13,7 +13,7 @@ function getContainer()
 
 	if($container === null)
 	{
-		$container = new PSX\Dependency\Container();
+		$container = new PSX\Dependency\DefaultContainer();
 		$container->setParameter('config.file', 'configuration.php');
 
 		$config = $container->get('config');

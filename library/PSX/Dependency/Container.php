@@ -23,210 +23,141 @@
 
 namespace PSX\Dependency;
 
-use PSX\Base;
-use PSX\Config;
-use PSX\DependencyAbstract;
-use PSX\Dispatch;
-use PSX\Http;
-use PSX\Input;
-use PSX\Loader;
-use PSX\Session;
-use PSX\Sql;
-use PSX\Template;
-use PSX\Validate;
-use PSX\Data\Reader;
-use PSX\Data\ReaderFactory;
-use PSX\Data\Writer;
-use PSX\Data\WriterFactory;
-use PSX\Handler\Manager\DatabaseManager;
-use PSX\Domain\DomainManager;
-use Symfony\Component\EventDispatcher\EventDispatcher;
+use InvalidArgumentException;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ScopeInterface;
+use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 
 /**
- * Container
+ * A simple and fast implementation of an dependency container. Note this 
+ * implementation does not support nested scopes. You can enter a scope and when 
+ * you leave the scope you are at the root scope
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Container extends DependencyAbstract
+class Container implements ContainerInterface
 {
-	/**
-	 * @return PSX\Base
-	 */
-	public function getBase()
+	protected $services   = array();
+	protected $parameters = array();
+	protected $scope      = 'container';
+	protected $scopes     = array('container');
+
+	public function __construct()
 	{
-		return new Base($this->get('config'));
+		$this->services[$this->scope]   = array();
+		$this->parameters[$this->scope] = array();
 	}
 
-	/**
-	 * @return PSX\Config
-	 */
-	public function getConfig()
+	public function set($name, $obj, $scope = 'container')
 	{
-		return new Config($this->getParameter('config.file'));
+		if(!in_array($scope, $this->scopes))
+		{
+			throw new InvalidArgumentException('Invalid scope');
+		}
+
+		$name = self::normalizeName($name);
+
+		return $this->services[$scope][$name] = $obj;
 	}
 
-	/**
-	 * @return PSX\Dispatch
-	 */
-	public function getDispatch()
+	public function get($name, $invalidBehavior = self::EXCEPTION_ON_INVALID_REFERENCE)
 	{
-		return new Dispatch($this->get('config'), $this->get('loader'));
+		$name = self::normalizeName($name);
+
+		if(!isset($this->services[$this->scope][$name]))
+		{
+			if(method_exists($this, $method = 'get' . $name))
+			{
+				$this->services[$this->scope][$name] = $this->$method();
+			}
+			else
+			{
+				if($invalidBehavior == self::EXCEPTION_ON_INVALID_REFERENCE)
+				{
+					throw new ServiceNotFoundException('Service ' . $name . ' not defined');
+				}
+				else if($invalidBehavior == self::NULL_ON_INVALID_REFERENCE)
+				{
+					return null;
+				}
+			}
+		}
+
+		return $this->services[$this->scope][$name];
 	}
 
-	/**
-	 * @return PSX\Http
-	 */
-	public function getHttp()
+	public function has($name)
 	{
-		return new Http();
+		$name = self::normalizeName($name);
+
+		return isset($this->services[$this->scope][$name]) || method_exists($this, 'get' . $name);
 	}
 
-	/**
-	 * @return PSX\Input\ContainerInterface
-	 */
-	public function getInputCookie()
+	public function setParameter($name, $value)
 	{
-		return new Input\Cookie($this->get('validate'));
+		$name = strtolower($name);
+
+		$this->parameters[$this->scope][$name] = $value;
 	}
 
-	/**
-	 * @return PSX\Input\ContainerInterface
-	 */
-	public function getInputFiles()
+	public function getParameter($name)
 	{
-		return new Input\Files($this->get('validate'));
+		$name = strtolower($name);
+
+		if($this->hasParameter($name))
+		{
+			return $this->parameters[$this->scope][$name];
+		}
+		else
+		{
+			throw new InvalidArgumentException('Parameter not set');
+		}
 	}
 
-	/**
-	 * @return PSX\Input\ContainerInterface
-	 */
-	public function getInputGet()
+	public function hasParameter($name)
 	{
-		return new Input\Get($this->get('validate'));
+		$name = strtolower($name);
+
+		return isset($this->parameters[$this->scope][$name]);
 	}
 
-	/**
-	 * @return PSX\Input\ContainerInterface
-	 */
-	public function getInputPost()
+	public function enterScope($name)
 	{
-		return new Input\Post($this->get('validate'));
+		if(!$this->hasScope($name))
+		{
+			throw new InvalidArgumentException('Scope does not exist');
+		}
+
+		$this->scope = $name;
 	}
 
-	/**
-	 * @return PSX\Input\ContainerInterface
-	 */
-	public function getInputRequest()
+	public function leaveScope($name)
 	{
-		return new Input\Request($this->get('validate'));
+		$this->scope = 'container';
 	}
 
-	/**
-	 * @return PSX\Loader
-	 */
-	public function getLoader()
+	public function addScope(ScopeInterface $scope)
 	{
-		$loader = new Loader($this);
+		$this->scopes[] = $scope->getName();
 
-		// configure loader
-		//$loader->addRoute('.well-known/host-meta', 'foo');
-
-		return $loader;
+		$this->services[$scope->getName()]   = array();
+		$this->parameters[$scope->getName()] = array();
 	}
 
-	/**
-	 * @return PSX\Session
-	 */
-	public function getSession()
+	public function hasScope($name)
 	{
-		$session = new Session($this->getParameter('session.name'));
-		$session->start();
-
-		return $session;
+		return in_array($name, $this->scopes);
 	}
 
-	/**
-	 * @return PSX\Sql
-	 */
-	public function getSql()
+	public function isScopeActive($name)
 	{
-		return new Sql($this->get('config')->get('psx_sql_host'),
-			$this->get('config')->get('psx_sql_user'),
-			$this->get('config')->get('psx_sql_pw'),
-			$this->get('config')->get('psx_sql_db'));
+		return $this->scope == $name;
 	}
 
-	/**
-	 * @return PSX\Template
-	 */
-	public function getTemplate()
+	public static function normalizeName($name)
 	{
-		return new Template();
-	}
-
-	/**
-	 * @return PSX\Validate
-	 */
-	public function getValidate()
-	{
-		return new Validate();
-	}
-
-	/**
-	 * @return PSX\Data\ReaderFactory
-	 */
-	public function getReaderFactory()
-	{
-		$reader = new ReaderFactory();
-		$reader->addReader(new Reader\Json());
-		$reader->addReader(new Reader\Form());
-		$reader->addReader(new Reader\Gpc());
-		$reader->addReader(new Reader\Multipart());
-		$reader->addReader(new Reader\Raw());
-		$reader->addReader(new Reader\Xml());
-
-		return $reader;
-	}
-
-	/**
-	 * @return PSX\Data\WriterFactory
-	 */
-	public function getWriterFactory()
-	{
-		$writer = new WriterFactory();
-		$writer->addWriter(new Writer\Json());
-		$writer->addWriter(new Writer\Atom());
-		$writer->addWriter(new Writer\Jsonp());
-		$writer->addWriter(new Writer\Rss());
-		$writer->addWriter(new Writer\Xml());
-
-		return $writer;
-	}
-
-	/**
-	 * @return PSX\Data\HandlerManagerInterface
-	 */
-	public function getDatabaseManager()
-	{
-		return new DatabaseManager($this->get('sql'));
-	}
-
-	/**
-	 * @return PSX\Data\DomainManagerInterface
-	 */
-	public function getDomainManager()
-	{
-		return new DomainManager($this);
-	}
-
-	/**
-	 * @return Symfony\Component\EventDispatcher\EventDispatcherInterface
-	 */
-	public function getEventDispatcher()
-	{
-		return new EventDispatcher();
+		return str_replace(' ', '', ucwords(str_replace('_', ' ', $name)));
 	}
 }
-
