@@ -23,11 +23,8 @@
 
 namespace PSX\Dependency;
 
-use Doctrine\ORM\Tools\Setup;
-use Doctrine\ORM\EntityManager;
 use PSX\Base;
 use PSX\Config;
-use PSX\DependencyAbstract;
 use PSX\Dispatch;
 use PSX\Http;
 use PSX\Input;
@@ -41,7 +38,6 @@ use PSX\Data\ReaderFactory;
 use PSX\Data\Writer;
 use PSX\Data\WriterFactory;
 use PSX\Handler\Manager\DatabaseManager;
-use PSX\Handler\Manager\DoctrineManager;
 use PSX\Domain\DomainManager;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
