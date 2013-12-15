@@ -24,7 +24,6 @@
 namespace PSX\Data\Reader;
 
 use PSX\Data\ReaderAbstract;
-use PSX\Data\ReaderResult;
 use PSX\Data\Record\DefaultImporter;
 use PSX\Http\Message;
 

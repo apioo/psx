@@ -26,7 +26,6 @@ namespace PSX\OpenId\Provider\Data;
 use PSX\Data\RecordAbstract;
 use PSX\Data\RecordInfo;
 use PSX\Data\NotSupportedException;
-use PSX\Data\ReaderResult;
 use PSX\Data\ReaderInterface;
 use PSX\Data\WriterInterface;
 use PSX\OpenId\ProviderAbstract;

@@ -44,12 +44,10 @@ interface ReaderInterface
 
 	/**
 	 * Transforms the $request into an parseable form this can be an array
-	 * or DOMDocument etc. This method returns an PSX\Data\ReaderResult.
-	 * The import method of each record can be used to insert insert the
-	 * results.
+	 * or DOMDocument etc.
 	 *
 	 * @param PSX\Http\Request $request
-	 * @return PSX\Data\ReaderResult
+	 * @return mixed
 	 */
 	public function read(HttpMessage $message);
 

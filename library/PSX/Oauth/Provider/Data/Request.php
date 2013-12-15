@@ -24,7 +24,6 @@
 namespace PSX\Oauth\Provider\Data;
 
 use PSX\Data\RecordAbstract;
-use PSX\Data\ReaderResult;
 use PSX\Data\RecordInfo;
 use PSX\Data\ReaderInterface;
 use PSX\Data\InvalidDataException;

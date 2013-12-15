@@ -29,7 +29,6 @@ use DOMElement;
 use PSX\Data\InvalidDataException;
 use PSX\Data\NotSupportedException;
 use PSX\Data\ReaderInterface;
-use PSX\Data\ReaderResult;
 use PSX\Data\RecordAbstract;
 use PSX\Rss;
 

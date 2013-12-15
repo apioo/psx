@@ -25,7 +25,6 @@ namespace PSX\Data\Reader;
 
 use DOMDocument;
 use PSX\Data\ReaderAbstract;
-use PSX\Data\ReaderResult;
 use PSX\Http\Message;
 
 /**

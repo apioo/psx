@@ -24,7 +24,6 @@
 namespace PSX\Data\Record;
 
 use InvalidArgumentException;
-use PSX\Data\ReaderResult;
 use PSX\Data\ReaderInterface;
 use PSX\Data\RecordInterface;
 use PSX\Util\Annotation;
