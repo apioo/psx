@@ -31,6 +31,7 @@ use PSX\Sql\DbTestCase;
 use PSX\Sql\Join;
 use PSX\Sql\Table;
 use PSX\Sql\TableAbstract;
+use PSX\Sql\TableInterface;
 use PSX\Test\TableDataSet;
 
 /**
@@ -42,236 +43,11 @@ use PSX\Test\TableDataSet;
  */
 class DatabaseHandlerTest extends DbTestCase
 {
+	use HandlerTestCase;
+
 	public function getDataSet()
 	{
-		$dataSet = new TableDataSet();
-		$dataSet->addTable(new CommentTable($this->sql), array(
-			array('id' => null, 'userId' => 1, 'title' => 'foo', 'date' => date(DateTime::SQL, 1367247392)),
-			array('id' => null, 'userId' => 1, 'title' => 'bar', 'date' => date(DateTime::SQL, 1367247392)),
-			array('id' => null, 'userId' => 2, 'title' => 'test', 'date' => date(DateTime::SQL, 1367247392)),
-			array('id' => null, 'userId' => 3, 'title' => 'blub', 'date' => date(DateTime::SQL, 1367247392)),
-		));
-
-		return $dataSet;
-	}
-
-	public function testGetAll()
-	{
-		$handler = $this->getHandler();
-
-		// test simple query
-		$result = $handler->getAll(array('id', 'title'));
-
-		$this->assertEquals(true, is_array($result));
-		$this->assertEquals(4, count($result));
-
-		foreach($result as $row)
-		{
-			$this->assertInstanceOf('PSX\Data\Record', $row);
-			$this->assertEquals(true, $row->getId() != null);
-			$this->assertEquals(true, $row->getTitle() != null);
-		}
-	}
-
-	public function testGetAllLimit()
-	{
-		$handler = $this->getHandler();
-
-		// test start index
-		$result = $handler->getAll(array('id', 'title'), 3);
-
-		$this->assertEquals(true, is_array($result));
-		$this->assertEquals(1, count($result));
-
-		foreach($result as $row)
-		{
-			$this->assertInstanceOf('PSX\Data\Record', $row);
-			$this->assertEquals(true, $row->getId() != null);
-			$this->assertEquals(true, $row->getTitle() != null);
-		}
-
-		// test count
-		$result = $handler->getAll(array('id', 'title'), 0, 2);
-
-		$this->assertEquals(true, is_array($result));
-		$this->assertEquals(2, count($result));
-
-		foreach($result as $row)
-		{
-			$this->assertInstanceOf('PSX\Data\Record', $row);
-			$this->assertEquals(true, $row->getId() != null);
-			$this->assertEquals(true, $row->getTitle() != null);
-		}
-	}
-
-	public function testGetAllSort()
-	{
-		$handler = $this->getHandler();
-
-		// test sort by
-		$result = $handler->getAll(array('id', 'title'), 0, 2, 'id', Sql::SORT_DESC);
-
-		$this->assertEquals(true, is_array($result));
-		$this->assertEquals(2, count($result));
-
-		foreach($result as $row)
-		{
-			$this->assertInstanceOf('PSX\Data\Record', $row);
-			$this->assertEquals(true, $row->getId() != null);
-			$this->assertEquals(true, $row->getTitle() != null);
-		}
-
-		// check order
-		$this->assertEquals(4, $result[0]->getId());
-		$this->assertEquals(3, $result[1]->getId());
-	}
-
-	public function testGetAllCondition()
-	{
-		$handler = $this->getHandler();
-
-		// test condition
-		$con    = new Condition(array('userId', '=', 1));
-		$result = $handler->getAll(array('id', 'title'), 0, 16, 'id', Sql::SORT_DESC, $con);
-
-		$this->assertEquals(true, is_array($result));
-		$this->assertEquals(2, count($result));
-
-		foreach($result as $row)
-		{
-			$this->assertInstanceOf('PSX\Data\Record', $row);
-			$this->assertEquals(true, $row->getId() != null);
-			$this->assertEquals(true, $row->getTitle() != null);
-		}
-
-		// check order
-		$this->assertEquals(2, $result[0]->getId());
-		$this->assertEquals(1, $result[1]->getId());
-
-		// test and condition
-		$con    = new Condition();
-		$con->add('userId', '=', 1, 'AND');
-		$con->add('userId', '=', 3);
-		$result = $handler->getAll(array('id', 'title'), 0, 16, 'id', Sql::SORT_DESC, $con);
-
-		$this->assertEquals(true, is_array($result));
-		$this->assertEquals(0, count($result));
-
-		// test or condition
-		$con    = new Condition();
-		$con->add('userId', '=', 1, 'OR');
-		$con->add('userId', '=', 3);
-		$result = $handler->getAll(array('id', 'title'), 0, 16, 'id', Sql::SORT_DESC, $con);
-
-		$this->assertEquals(true, is_array($result));
-		$this->assertEquals(3, count($result));
-
-		foreach($result as $row)
-		{
-			$this->assertInstanceOf('PSX\Data\Record', $row);
-			$this->assertEquals(true, $row->getId() != null);
-			$this->assertEquals(true, $row->getTitle() != null);
-		}
-
-		// check order
-		$this->assertEquals(4, $result[0]->getId());
-		$this->assertEquals(2, $result[1]->getId());
-		$this->assertEquals(1, $result[2]->getId());
-	}
-
-	public function testGetBy()
-	{
-		$handler = $this->getHandler();
-
-		$result = $handler->getByUserId(1, array('id', 'title'));
-
-		foreach($result as $row)
-		{
-			$this->assertInstanceOf('PSX\Data\Record', $row);
-			$this->assertEquals(true, $row->getId() != null);
-			$this->assertEquals(false, $row->getUserId() != null);
-			$this->assertEquals(true, $row->getTitle() != null);
-			$this->assertEquals(false, $row->getDate() != null);
-		}
-	}
-
-	public function testGetOneBy()
-	{
-		$handler = $this->getHandler();
-
-		$row = $handler->getOneById(1, array('id', 'title'));
-
-		$this->assertInstanceOf('PSX\Data\Record', $row);
-		$this->assertEquals(true, $row->getId() != null);
-		$this->assertEquals(false, $row->getUserId() != null);
-		$this->assertEquals(true, $row->getTitle() != null);
-		$this->assertEquals(false, $row->getDate() != null);
-	}
-
-	public function testGet()
-	{
-		$handler = $this->getHandler();
-
-		$row = $handler->get(1, array('id', 'title'));
-
-		$this->assertInstanceOf('PSX\Data\Record', $row);
-		$this->assertEquals(true, $row->getId() != null);
-		$this->assertEquals(false, $row->getUserId() != null);
-		$this->assertEquals(true, $row->getTitle() != null);
-		$this->assertEquals(false, $row->getDate() != null);
-	}
-
-	public function testGetResultSet()
-	{
-		$handler = $this->getHandler();
-
-		$result = $handler->getResultSet(array('id', 'title'), 0, 2, 'id', Sql::SORT_DESC);
-
-		$this->assertInstanceOf('\PSX\Data\ResultSet', $result);
-		$this->assertEquals(2, count($result));
-		$this->assertEquals(4, $result->getTotalResults());
-
-		foreach($result as $row)
-		{
-			$this->assertInstanceOf('PSX\Data\Record', $row);
-			$this->assertEquals(true, $row->getId() != null);
-			$this->assertEquals(true, $row->getTitle() != null);
-		}
-	}
-
-	public function testGetSupportedFields()
-	{
-		$handler = $this->getHandler();
-		$fields  = $handler->getSupportedFields();
-
-		$this->assertEquals(array('id', 'userId', 'title', 'date'), $fields);
-	}
-
-	public function testGetCount()
-	{
-		$handler = $this->getHandler();
-
-		$this->assertEquals(4, $handler->getCount());
-		$this->assertEquals(2, $handler->getCount(new Condition(array('userId', '=', 1))));
-	}
-
-	public function testGetRecord()
-	{
-		$handler = $this->getHandler();
-
-		// new record
-		$obj = $handler->getRecord();
-
-		$this->assertInstanceOf('PSX\Data\Record', $obj);
-
-		// existing record
-		$obj = $handler->getRecord(1);
-
-		$this->assertInstanceOf('PSX\Data\Record', $obj);
-		$this->assertEquals(1, $obj->getId());
-		$this->assertEquals(1, $obj->getUserId());
-		$this->assertEquals('foo', $obj->getTitle());
-		$this->assertEquals(date(DateTime::SQL, 1367247392), $obj->getDate());
+		return $this->createFlatXMLDataSet(dirname(__FILE__) . '/handler_fixture.xml');
 	}
 
 	protected function getHandler()
@@ -284,30 +60,11 @@ class DatabaseTestHandler extends DatabaseHandlerAbstract
 {
 	public function getTable()
 	{
-		return new CommentTable($this->sql);
+		return new Table($this->sql, 'psx_handler_comment', array(
+			'id'     => TableInterface::TYPE_INT | 10 | TableInterface::PRIMARY_KEY | TableInterface::AUTO_INCREMENT,
+			'userId' => TableInterface::TYPE_INT | 10,
+			'title'  => TableInterface::TYPE_VARCHAR | 32,
+			'date'   => TableInterface::TYPE_DATETIME,
+		));
 	}
 }
-
-class CommentTable extends TableAbstract
-{
-	public function getConnections()
-	{
-		return array();
-	}
-
-	public function getName()
-	{
-		return 'psx_handler_comment';
-	}
-
-	public function getColumns()
-	{
-		return array(
-			'id'     => self::TYPE_INT | 10 | self::PRIMARY_KEY | self::AUTO_INCREMENT,
-			'userId' => self::TYPE_INT | 10,
-			'title'  => self::TYPE_VARCHAR | 32,
-			'date'   => self::TYPE_DATETIME,
-		);
-	}
-}
-
