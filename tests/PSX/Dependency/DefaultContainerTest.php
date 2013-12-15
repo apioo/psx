@@ -45,20 +45,24 @@ class DefaultContainerTest extends \PHPUnit_Framework_TestCase
 	{
 		$container = getContainer();
 
-		$this->assertInstanceOf('\PSX\Base', $container->get('base'));
-		$this->assertInstanceOf('\PSX\Config', $container->get('config'));
-		$this->assertInstanceOf('\PSX\Dispatch', $container->get('dispatch'));
-		$this->assertInstanceOf('\PSX\Http', $container->get('http'));
-		$this->assertInstanceOf('\PSX\Input\Cookie', $container->get('inputCookie'));
-		$this->assertInstanceOf('\PSX\Input\Files', $container->get('inputFiles'));
-		$this->assertInstanceOf('\PSX\Input\Get', $container->get('inputGet'));
-		$this->assertInstanceOf('\PSX\Input\Post', $container->get('inputPost'));
-		$this->assertInstanceOf('\PSX\Input\Request', $container->get('inputRequest'));
-		$this->assertInstanceOf('\PSX\Loader', $container->get('loader'));
-		//$this->assertInstanceOf('\PSX\Session', $container->get('session'));
-		//$this->assertInstanceOf('\PSX\Sql', $container->get('sql'));
-		$this->assertInstanceOf('\PSX\Template', $container->get('template'));
-		$this->assertInstanceOf('\PSX\Validate', $container->get('validate'));
-		$this->assertInstanceOf('\PSX\Validate', $container->get('eventDispatcher'));
+		$this->assertInstanceOf('PSX\Base', $container->get('base'));
+		$this->assertInstanceOf('PSX\Config', $container->get('config'));
+		$this->assertInstanceOf('PSX\Dispatch', $container->get('dispatch'));
+		$this->assertInstanceOf('PSX\Http', $container->get('http'));
+		$this->assertInstanceOf('PSX\Input\Cookie', $container->get('input_cookie'));
+		$this->assertInstanceOf('PSX\Input\Files', $container->get('input_files'));
+		$this->assertInstanceOf('PSX\Input\Get', $container->get('input_get'));
+		$this->assertInstanceOf('PSX\Input\Post', $container->get('input_post'));
+		$this->assertInstanceOf('PSX\Input\Request', $container->get('input_request'));
+		$this->assertInstanceOf('PSX\Loader', $container->get('loader'));
+		//$this->assertInstanceOf('PSX\Session', $container->get('session'));
+		//$this->assertInstanceOf('PSX\Sql', $container->get('sql'));
+		$this->assertInstanceOf('PSX\TemplateInterface', $container->get('template'));
+		$this->assertInstanceOf('PSX\Validate', $container->get('validate'));
+		$this->assertInstanceOf('PSX\Data\ReaderFactory', $container->get('reader_factory'));
+		$this->assertInstanceOf('PSX\Data\WriterFactory', $container->get('writer_factory'));
+		$this->assertInstanceOf('PSX\Handler\HandlerManagerInterface', $container->get('database_manager'));
+		$this->assertInstanceOf('PSX\Domain\DomainManagerInterface', $container->get('domain_manager'));
+		$this->assertInstanceOf('Symfony\Component\EventDispatcher\EventDispatcherInterface', $container->get('event_dispatcher'));
 	}
 }
