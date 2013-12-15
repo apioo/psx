@@ -1,15 +1,17 @@
 
 0.8
-* Introduced importer concept and remove import/export methods from the record
-  interface
+* Added domain package. The package helps you to create your application in a 
+  domain driven design manner
+* Fully support symfony di container
+* Introduced importer concept. An importer is a class wich can fill a record 
+  with data
 * Every record has now a single method getRecordInfo() wich returns all
-  available fields
+  available fields. Removed all other methods from the record interface
 * It is possible to add reader and writer implementations to the reader or 
   writer factory
-* Added filter definition class wich can validate fields of an record
+* Added symfony event dispatcher
 * A new handler package was added wich contains all handler related classes
-* Added type constants to Validation class
-* Added filter definition class to validate a record based on a set of rues
+* Added filter definition class to validate a record based on a set of rules
 
 0.7.3
 * Added openid connect basic client
