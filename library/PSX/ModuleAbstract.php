@@ -225,7 +225,7 @@ abstract class ModuleAbstract
 	{
 		if(!filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED))
 		{
-			$url = $this->config['psx_url'] . '/' . $this->config['psx_dispatch'] . ltrim($path, '/');
+			$url = $this->config['psx_url'] . '/' . $this->config['psx_dispatch'] . ltrim($url, '/');
 		}
 
 		Base::setResponseCode($code);
