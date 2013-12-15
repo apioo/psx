@@ -23,6 +23,7 @@
 
 namespace PSX;
 
+use InvalidArgumentException;
 use PSX\Data\NotFoundException;
 use PSX\Data\ReaderFactory;
 use PSX\Dependency;
@@ -118,7 +119,7 @@ abstract class ModuleAbstract
 				return $this->container->get($service);
 			}
 
-			return null;
+			throw new InvalidArgumentException('Service ' . $service . ' not available');
 		}
 	}
 
