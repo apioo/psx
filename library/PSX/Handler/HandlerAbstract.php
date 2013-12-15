@@ -25,12 +25,12 @@ namespace PSX\Handler;
 
 use BadMethodCallException;
 use InvalidArgumentException;
+use PSX\Data\ResultSet;
+use PSX\Sql;
 use PSX\Sql\Condition;
 
 /**
- * Default abstract class wich implements all necessary methods using an 
- * TableInterface. The TableInterface only simplyfies creating sql queries you
- * could also write an handler wich uses simple sql queries.
+ * HandlerAbstract
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
@@ -38,6 +38,31 @@ use PSX\Sql\Condition;
  */
 abstract class HandlerAbstract implements HandlerInterface
 {
+	public function getBy(Condition $con, array $fields = array())
+	{
+		return $this->getAll($fields, null, null, null, null, $con);
+	}
+
+	public function getOneBy(Condition $con, array $fields = array())
+	{
+		$result = $this->getAll($fields, 0, 1, null, null, $con);
+
+		return current($result);
+	}
+
+	public function getResultSet(array $fields, $startIndex = 0, $count = 16, $sortBy = null, $sortOrder = null, Condition $con = null)
+	{
+		$startIndex = $startIndex !== null ? (integer) $startIndex : 0;
+		$count      = !empty($count)       ? (integer) $count      : 16;
+		$sortOrder  = $sortOrder  !== null ? (strcasecmp($sortOrder, 'ascending') == 0 ? Sql::SORT_ASC : Sql::SORT_DESC) : null;
+
+		$totalResults = $this->getCount($con);
+		$entries      = $this->getAll($fields, $startIndex, $count, $sortBy, $sortOrder, $con);
+		$resultSet    = new ResultSet($totalResults, $startIndex, $count, $entries);
+
+		return $resultSet;
+	}
+
 	/**
 	 * Magic method to make conditional selection
 	 *
@@ -89,7 +114,7 @@ abstract class HandlerAbstract implements HandlerInterface
 		}
 		else
 		{
-			throw new BadMethodCallException('Undefined method');
+			throw new BadMethodCallException('Undefined method ' . $method);
 		}
 	}
 }

@@ -23,6 +23,7 @@
 
 namespace PSX\Handler;
 
+use DateTime;
 use BadMethodCallException;
 use InvalidArgumentException;
 use PSX\Data\ResultSet;
@@ -92,70 +93,17 @@ abstract class DatabaseHandlerAbstract extends HandlerAbstract
 
 		foreach($result as $row)
 		{
-			$return[] = new Record($this->table->getDisplayName(), $row);
+			$return[] = new Record($this->table->getDisplayName(), $this->convertColumnTypes($row));
 		}
 
 		return $return;
 	}
 
-	public function getBy(Condition $con, array $fields = array())
-	{
-		return $this->getAll($fields, null, null, null, null, $con);
-	}
-
-	public function getOneBy(Condition $con, array $fields = array())
-	{
-		$select = $this->getSelect();
-		$fields = array_intersect($fields, $select->getSupportedFields());
-
-		if(!empty($fields))
-		{
-			$select->setColumns($fields);
-		}
-
-		if($con->hasCondition())
-		{
-			$values = $con->toArray();
-
-			foreach($values as $row)
-			{
-				$select->where($row[Condition::COLUMN], 
-					$row[Condition::OPERATOR], 
-					$row[Condition::VALUE], 
-					$row[Condition::CONJUNCTION], 
-					$row[Condition::TYPE]);
-			}
-		}
-
-		return new Record($this->table->getDisplayName(), $select->getRow());
-	}
-
 	public function get($id, array $fields = array())
 	{
-		$select = $this->getSelect();
-		$fields = array_intersect($fields, $select->getSupportedFields());
+		$con = new Condition(array($this->table->getPrimaryKey(), '=', $id));
 
-		if(!empty($fields))
-		{
-			$select->setColumns($fields);
-		}
-
-		$select->where($select->getTable()->getPrimaryKey(), '=', $id);
-
-		return new Record($this->table->getDisplayName(), $select->getRow());
-	}
-
-	public function getResultSet(array $fields, $startIndex = 0, $count = 16, $sortBy = null, $sortOrder = null, Condition $con = null)
-	{
-		$startIndex = $startIndex !== null ? (integer) $startIndex : 0;
-		$count      = !empty($count)       ? (integer) $count      : 16;
-		$sortOrder  = $sortOrder  !== null ? (strcasecmp($sortOrder, 'ascending') == 0 ? Sql::SORT_ASC : Sql::SORT_DESC) : null;
-
-		$totalResults = $this->getCount($con);
-		$entries      = $this->getAll($fields, $startIndex, $count, $sortBy, $sortOrder, $con);
-		$resultSet    = new ResultSet($totalResults, $startIndex, $count, $entries);
-
-		return $resultSet;
+		return $this->getOneBy($con, $fields);
 	}
 
 	public function getSupportedFields()
@@ -197,9 +145,8 @@ abstract class DatabaseHandlerAbstract extends HandlerAbstract
 		else
 		{
 			$columns = array_keys($this->table->getColumns());
-			$row     = $this->table->getRow($columns, new Condition(array($this->table->getPrimaryKey(), '=', $id)));
 
-			return new Record($this->table->getDisplayName(), $row);
+			return $this->get($id, $columns);
 		}
 	}
 
@@ -244,5 +191,58 @@ abstract class DatabaseHandlerAbstract extends HandlerAbstract
 	{
 		return $this->table
 			->select(array('*'));
+	}
+
+	protected function convertColumnTypes(array $row)
+	{
+		$columns = $this->table->getColumns();
+		$result  = array();
+
+		foreach($row as $key => $value)
+		{
+			if(isset($columns[$key]))
+			{
+				$type = (($columns[$key] >> 20) & 0xFF) << 20;
+
+				switch($type)
+				{
+					case TableInterface::TYPE_TINYINT:
+					case TableInterface::TYPE_SMALLINT:
+					case TableInterface::TYPE_MEDIUMINT:
+					case TableInterface::TYPE_INT:
+					case TableInterface::TYPE_BIGINT:
+					case TableInterface::TYPE_BIT:
+					case TableInterface::TYPE_SERIAL:
+						$result[$key] = (integer) $value;
+						break;
+
+					case TableInterface::TYPE_DECIMAL:
+					case TableInterface::TYPE_FLOAT:
+					case TableInterface::TYPE_DOUBLE:
+					case TableInterface::TYPE_REAL:
+						$result[$key] = (float) $value;
+						break;
+
+					case TableInterface::TYPE_BOOLEAN:
+						$result[$key] = (boolean) $value;
+						break;
+
+					case TableInterface::TYPE_DATE:
+					case TableInterface::TYPE_DATETIME:
+						$result[$key] = new DateTime($value);
+						break;
+
+					default:
+						$result[$key] = $value;
+						break;
+				}
+			}
+			else
+			{
+				$result[$key] = $value;
+			}
+		}
+
+		return $result;
 	}
 }
