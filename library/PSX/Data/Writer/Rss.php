@@ -24,6 +24,7 @@
 namespace PSX\Data\Writer;
 
 use DateTime;
+use InvalidArgumentException;
 use PSX\Data\RecordInterface;
 use PSX\Data\ResultSet;
 use PSX\Rss as RssRecord;
@@ -71,6 +72,10 @@ class Rss implements WriterInterface
 			$this->buildItem($record, $writer);
 
 			return $writer->toString();
+		}
+		else
+		{
+			throw new InvalidArgumentException('Record must be an PSX\Rss or PSX\Rss\Item record');
 		}
 	}
 

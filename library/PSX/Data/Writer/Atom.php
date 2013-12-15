@@ -24,6 +24,7 @@
 namespace PSX\Data\Writer;
 
 use DateTime;
+use InvalidArgumentException;
 use PSX\Atom as AtomRecord;
 use PSX\Atom\Entry;
 use PSX\Atom\Text;
@@ -72,6 +73,10 @@ class Atom implements WriterInterface
 			$this->buildEntry($record, $writer);
 
 			return $writer->toString();
+		}
+		else
+		{
+			throw new InvalidArgumentException('Record must be an PSX\Atom or PSX\Atom\Entry record');
 		}
 	}
 
