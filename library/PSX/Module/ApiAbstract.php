@@ -104,7 +104,6 @@ abstract class ApiAbstract extends ModuleAbstract
 		switch($format)
 		{
 			case 'atom':
-			case 'jas':
 			case 'rss':
 				return Sql::FETCH_OBJECT;
 				break;
