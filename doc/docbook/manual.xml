@@ -12,22 +12,25 @@
 	<chapter id="introduction">
 		<title>Introduction</title>
 		<para>PSX is a framework written in PHP to create RESTful APIs. It helps you building clean URLs serving web 
-		standard formats like JSON, XML, Atom and RSS. At the core PSX is build of three parts. A handler system 
-		(similar to repositories in doctrine) wich abstracts away the actual SQL queries from the domain logic. An 
-		routing system wich executes the fitting controller method depending on	the location of the controller and the 
-		annotation of the method. And an flexible data system to convert data records from the database into different 
-		formats like JSON, XML, Atom and RSS. PSX uses a lightweight DI container to handle dependencies (but is also 
-		compatible with the symfony DI container). The controller can return request or response filter wich can react 
-		or modify the HTTP request or response. PSX offers some basic request filter to handle i.e. Basic or Oauth 
-		authentication. In addition PSX offers some cool components to use and implement OAuth, OpenID, Opengraph, 
-		Opensocial, Opensearch, PubSubHubbub, WebFinger, Atom, and RSS. At the <ulink url="http://example.phpsx.org/">
-		example</ulink> page you can see sample implementations using various PSX classes.</para>
+		standard formats like JSON, XML, Atom and RSS. PSX helps you to create you application following a domain
+		driven design approach. An PSX application is build of four parts. A handler system wich abstracts away the 
+		actual SQL queries from the domain logic. Because of this system it makes no difference whether you get your
+		data from an mysql database an api or an nosql system. An routing system wich executes the fitting controller method 
+		depending on the location of the controller and the annotation of the method. A flexible data system to 
+		import and export records into different formats like JSON, XML, Atom and RSS. And finally a domain system
+		wich contains the domain problem of your application.</para>
+		<para>PSX uses a lightweight DI container to handle dependencies wich implements the symfony DI container 
+		interface. The controller can return request or response filter wich can react or modify the HTTP request or 
+		response. PSX offers some basic request filter to handle i.e. Basic or Oauth authentication. In addition PSX 
+		offers some cool components to use and implement OAuth, OpenID, Opengraph, Opensocial, Opensearch, PubSubHubbub, 
+		WebFinger, Atom, and RSS. At the <ulink url="http://example.phpsx.org/">example</ulink> page you can see sample 
+		implementations using various PSX classes.</para>
 	</chapter>
 
 	<chapter id="installation">
 		<title>Installation</title>
 		<para>The preferred way of installing PSX is to use composer and install the sample package. With this
-		way you get an ready to use instance of PSX.</para>
+		way you get an ready to use instance of PSX including some example to bootstrap your project.</para>
 		<programlisting>php composer.phar create-project psx/sample .</programlisting>
 		<para>If you only want use specific classes of PSX you can also require it via Composer. The package name is 
 		psx/psx. More informations at <ulink url="http://packagist.org/packages/psx/psx">packagist.org</ulink></para>
@@ -126,7 +129,7 @@ GET /foo Foo\Application\Foo</programlisting>
 		<tgroup cols="2">
 		<thead>
 			<row>
-				<entry>Paht</entry>
+				<entry>Path</entry>
 				<entry>Controller</entry>
 			</row>
 		</thead>
@@ -184,7 +187,7 @@ class News extends ModuleAbstract
 	 * @httpMethod POST
 	 * @path /
 	 */
-	public function doNew()
+	public function insertNews()
 	{
 	}
 }
@@ -192,6 +195,11 @@ class News extends ModuleAbstract
 ]]></programlisting>
 		<para>Another advantage of such a routing file from a security perspective is that you get simply an overview
 		wich endpoints can be requested by your application</para>
+	</chapter>
+
+	<chapter id="domain">
+		<title>Domain</title>
+		<para></para>
 	</chapter>
 
 	<chapter id="developing-restful-api">
@@ -218,90 +226,11 @@ CREATE TABLE IF NOT EXISTS `news` (
 			</example>
 		</sect1>
 		<sect1>
-			<title>Creating the record</title>
-			<para>The record represents an row from an database. If we post a news to the api endpoint this record is 
-			created and the setter methods are called. This is the place where you have to validate the user 
-			data.</para>
-			<example>
-				<title>library/Sample/News/Record.php</title>
-				<programlisting role="php"><![CDATA[
-<?php
-
-namespace Sample\News;
-
-use DateTime;
-use PSX\Data\Record\TableAbstract;
-
-class Record extends TableAbstract
-{
-	protected $id;
-	protected $userId;
-	protected $title;
-	protected $text;
-	protected $date;
-
-	protected $_date;
-
-	/**
-	 * @param integer $id
-	 */
-	public function setId($id)
-	{
-		$this->id = $id;
-	}
-
-	/**
-	 * @param integer $userId
-	 */
-	public function setUserId($userId)
-	{
-		$this->userId = $userId;
-	}
-
-	/**
-	 * @param string $title
-	 */
-	public function setTitle($title)
-	{
-		$this->title = $title;
-	}
-
-	/**
-	 * @param string $text
-	 */
-	public function setText($text)
-	{
-		$this->text = $text;
-	}
-
-	/**
-	 * @param DateTime $date
-	 */
-	public function setDate(DateTime $date)
-	{
-		$this->date = $date->format('Y-m-d H:i:s');
-	}
-
-	public function getDate()
-	{
-		if($this->_date === null)
-		{
-			$this->_date = new DateTime($this->date);
-		}
-
-		return $this->_date;
-	}
-}
-				]]></programlisting>
-			</example>
-		</sect1>
-		<sect1>
 			<title>Creating the handler</title>
 			<para>The handler is a concept similar to a repository in doctrine wich abstracts the sql queries away from 
-			the controller. Instead of creating sql queries you should add <methodname>getByFoo</methodname> methods to
-			the handler. The Handler is also responsible to create, update and delete an record. In our case the default
-			select methods wich are provided by the HandlerAbstract are sufficient for our api so we dont have to add 
-			additional methods.</para>
+			the domain logic. Instead of creating sql queries you should add <methodname>getByFoo</methodname> methods to
+			the handler. The Handler is also responsible to create, update and delete an record. In our case we tell
+			the handler how the tabe looks and return an default select query.</para>
 			<example>
 				<title>library/Sample/News/Handler.php</title>
 				<programlisting role="php"><![CDATA[
@@ -309,58 +238,90 @@ class Record extends TableAbstract
 
 namespace Sample\News;
 
-use PSX\Data\HandlerAbstract;
+use PSX\Handler\DatabaseHandlerAbstract;
+use PSX\Sql\Table;
+use PSX\Sql\TableInterface;
 
-class Handler extends HandlerAbstract
+class Handler extends DatabaseHandlerAbstract
 {
+	public function getTable()
+	{
+		return new Table($this->sql, 'news', array(
+			'id' => TableInterface::TYPE_INT | 10 | TableInterface::PRIMARY_KEY,
+			'userId' => TableInterface::TYPE_INT | 10,
+			'title' => TableInterface::TYPE_VARCHAR | 128,
+			'text' => TableInterface::TYPE_LONGTEXT,
+			'date' => TableInterface::TYPE_DATETIME,
+		));
+	}
+
+	protected function getDefaultSelect()
+	{
+		return $this->table
+			->select(array('id', 'userId', 'title', 'text', 'date'));
+	}
 }
 				]]></programlisting>
 			</example>
 		</sect1>
 		<sect1>
-			<title>Creating the table</title>
-			<para>Note the key parts of PSX are the records and handler the table class wich we now create is only a 
-			helper class for the handler in order to retrieve records from an mysql table via PDO. You are free to 
-			implement your own HandlerInterface and use an ORM like doctrine, simple SQL queries or any other system to 
-			CRUD records.</para>
-			<para>The table represents an database table. It contains the table name wich columns are available and the 
-			relations to other tables. In this example we have no relation to another table but to give an example the
-			<methodname>getConnection</methodname> method is implemented</para>
+			<title>Creating the domain</title>
+			<para>The domain contains the core problem of your application. Your controller should not
+			contain any complex logic it should call methods from your domain. In our case we have
+			methods to get news entries and to create a new news entry. We also fire an event through
+			the integrated symfony event dispatcher system if a record was successful created. Through
+			the <classname>DomainAbstract</classname> class we can access all services from the di
+			cotainer with <methodname>getXXX()</methodname>.</para>
 			<example>
-				<title>library/Sample/News/Table.php</title>
+				<title>library/Sample/News/Domain.php</title>
 				<programlisting role="php"><![CDATA[
 <?php
 
 namespace Test\News;
 
-use PSX\Sql\TableAbstract;
+use DateTime;
+use PSX\Data\RecordInterface;
+use PSX\Domain\DomainAbstract;
+use PSX\Filter;
+use PSX\Filter\Definition\Property;
+use PSX\Filter\FilterDefinition;
+use PSX\Validate;
 
-class Table extends TableAbstract
+class Domain extends DomainAbstract
 {
-	public function getName()
+	public function getAllNews($startIndex = null, $count = null, $sortBy = null, $sortOrder = null, Condition $con = null)
 	{
-		return 'news';
+		$news = $this->getDatabaseManager()->getHandler('Sample\News\Handler');
+
+		return $news->getResultSet(array(),
+			$startIndex, 
+			$count, 
+			$sortBy, 
+			$sortOrder, 
+			$con);
 	}
 
-	public function getColumns()
+	public function insertNews(RecordInterface $record)
 	{
-		return array(
-			'id' => self::TYPE_INT | 10 | self::PRIMARY_KEY | self::AUTO_INCREMENT,
-			'userId' => self::TYPE_INT | 10,
-			'title' => self::TYPE_VARCHAR | 64,
-			'text' => self::TYPE_TEXT,
-			'date' => self::TYPE_DATETIME,
-		);
+		$news = $this->getDatabaseManager()->getHandler('Foo\News\MysqlHandler');
+
+		$this->getFilterDefinition()->validate($record);
+
+		$record->setDate(new DateTime());
+
+		$news->create($record);
+
+		$this->dispatch('inserted', new RecordEvent($record));
 	}
 
-	/*
-	public function getConnection()
+	protected function getFilterDefinition()
 	{
-		return array(
-			'userId' => 'users'
-		);
+		return new FilterDefinition($this->container->get('validate'), array(
+			new Property('userId', Validate::TYPE_INTEGER)),
+			new Property('title', Validate::TYPE_STRING, array(new Filter\Length(4, 32))),
+			new Property('text', Validate::TYPE_STRING, array(new Filter\Length(4, 256))),
+		));
 	}
-	*/
 }
 
 				]]></programlisting>
@@ -373,9 +334,8 @@ class Table extends TableAbstract
 			<programlisting>GET|POST /news Sample\News\Api\Index</programlisting>
 			<para>This API can be accessed via http://localhost/index.php/news. We define the <methodname>onLoad</methodname> 
 			method wich is called when the module was loaded.</para>
-			<para>This is now our REST API endpoint where we can make <property>GET</property> and <property>POST
-			</property> requests. You can versioning your API by creating a folder structure i.e. put the news.php in 
-			the folder "v1" and the endpoint url would be http://localhost/index.php/api/v1/news</para>
+			<para>This is now our REST API endpoint where we can make <property>GET</property> and <property>POST</property>
+			requests.</para>
 			<example>
 				<title>library/Sample/News/Api/Index.php</title>
 				<programlisting role="php"><![CDATA[
@@ -383,21 +343,38 @@ class Table extends TableAbstract
 
 namespace Sample\News\Api;
 
-use DateTime;
-use PSX\Base;
-use PSX\Data\ArrayList;
-use PSX\Data\Message;
-use PSX\Data\WriterResult;
-use PSX\Data\WriterInterface;
 use PSX\Module\ApiAbstract;
-use Sample\News\Table;
-use Sample\News\Handler;
 
 class Index extends ApiAbstract
 {
-	public function onLoad()
+	/**
+	 * @httpMethod GET
+	 * @path /
+	 */
+	public function doIndex()
 	{
-		$this->handler = new Handler(new Table($this->getSql()));
+		try
+		{
+			$params = $this->getRequestParams();
+			$fields = (array) $params['fields'];
+
+			$news = $this->getDomainManager()
+				->getDomain('Sample\News\Domain')
+				->getAllNews($fields, 
+					$params['startIndex'], 
+					$params['count'], 
+					$params['sortBy'], 
+					$params['sortOrder'], 
+					$this->getRequestCondition());
+
+			$this->setResponse($news);
+		}
+		catch(\Exception $e)
+		{
+			$msg = new Message($e->getMessage(), false);
+
+			$this->setResponse($msg);
+		}
 	}
 }
 				]]></programlisting>
@@ -405,65 +382,15 @@ class Index extends ApiAbstract
 			<sect2>
 				<title>Receiving</title>
 				<para>If someone makes an <property>GET</property> request to the endpoint we want return the latest 
-				news. This method creates in general an <classname>PSX\Data\ResultSet</classname> object containing 
+				news. Our domain class returns an <classname>PSX\Data\ResultSet</classname> object containing 
 				multiple <classname>Sample\News\Record</classname> objects. If we call the <methodname>setResponse
 				</methodname> method with the <classname>PSX\Data\ResultSet</classname> object the object is transformed 
 				into the preferred format (wich was set either by the <property>GET</property> parameter "format" or by 
 				the "Accept" header field).</para>
-				<example>
-					<title>library/Sample/News/Api/Index.php (implement <methodname>getNews</methodname> method)</title>
-					<programlisting role="php"><![CDATA[
-/**
- * @httpMethod GET
- * @path /
- */
-public function getNews()
-{
-	try
-	{
-		$params    = $this->getRequestParams();
-		$fields    = (array) $params['fields'];
-		$resultSet = $this->handler->getResultSet($fields, 
-			$params['startIndex'], 
-			$params['count'], 
-			$params['sortBy'], 
-			$params['sortOrder'], 
-			$this->getRequestCondition(),
-			$this->getMode());
 
-		$this->setResponse($resultSet);
-	}
-	catch(\Exception $e)
-	{
-		$msg = new Message($e->getMessage(), false);
-
-		$this->setResponse($msg);
-	}
-}
-
-/**
- * @httpMethod GET
- * @path /@supportedFields
- */
-public function getSupportedFields()
-{
-	try
-	{
-		$array = new ArrayList($this->handler->getSupportedFields());
-
-		$this->setResponse($array);
-	}
-	catch(\Exception $e)
-	{
-		$msg = new Message($e->getMessage(), false);
-
-		$this->setResponse($msg);
-	}
-}
-					]]></programlisting>
-				</example>
-				<para>Because we want create <property>Atom</property> and <property>Rss</property> feeds we have to set 
-				the writer config by overriding the method <methodname>setWriterConfig</methodname>.</para>
+				<para>Because we want create <property>Atom</property> and <property>Rss</property> feeds we have to create
+				an Atom and Rss record and pass it to the <methodname>setResponse</methodname> method. We can map our
+				existing records in the resultset to the entries:
 				<example>
 					<title>library/Sample/News/Api/Index.php (implement <methodname>setWriterConfig</methodname> method)</title>
 					<programlisting role="php"><![CDATA[
