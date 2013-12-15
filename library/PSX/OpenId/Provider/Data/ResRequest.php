@@ -29,7 +29,6 @@ use PSX\Data\InvalidDataException;
 use PSX\Data\NotSupportedException;
 use PSX\Data\ReaderResult;
 use PSX\Data\ReaderInterface;
-use PSX\Data\WriterResult;
 use PSX\Data\WriterInterface;
 use PSX\Url;
 use PSX\OpenId;

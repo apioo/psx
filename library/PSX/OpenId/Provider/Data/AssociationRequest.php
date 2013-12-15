@@ -29,7 +29,6 @@ use PSX\Data\RecordAbstract;
 use PSX\Data\RecordInfo;
 use PSX\Data\ReaderResult;
 use PSX\Data\ReaderInterface;
-use PSX\Data\WriterResult;
 use PSX\Data\WriterInterface;
 use PSX\OpenId;
 use PSX\OpenId\ProviderAbstract;

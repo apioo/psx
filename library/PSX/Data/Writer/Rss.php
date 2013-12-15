@@ -31,7 +31,6 @@ use PSX\Rss as RssRecord;
 use PSX\Rss\Item;
 use PSX\Rss\Writer;
 use PSX\Data\WriterInterface;
-use PSX\Data\WriterResult;
 use PSX\Exception;
 use XMLWriter;
 

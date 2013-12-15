@@ -26,7 +26,6 @@ namespace PSX\Data\Writer;
 use DateTime;
 use PSX\Data\RecordInterface;
 use PSX\Data\WriterInterface;
-use PSX\Data\WriterResult;
 
 /**
  * ArrayAbstract

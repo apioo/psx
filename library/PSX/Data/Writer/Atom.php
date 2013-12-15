@@ -32,7 +32,6 @@ use PSX\Atom\Writer;
 use PSX\Data\RecordInterface;
 use PSX\Data\ResultSet;
 use PSX\Data\WriterInterface;
-use PSX\Data\WriterResult;
 use PSX\Exception;
 use XMLWriter;
 

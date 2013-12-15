@@ -28,7 +28,7 @@ use PSX\Data\NotFoundException;
 use PSX\Data\RecordInterface;
 use PSX\Data\Writer;
 use PSX\Data\WriterFactory;
-use PSX\Data\WriterResult;
+use PSX\Data\WriterInterface;
 use PSX\ModuleAbstract;
 use PSX\Sql;
 use PSX\Sql\Condition;
@@ -253,7 +253,7 @@ abstract class ApiAbstract extends ModuleAbstract
 			$writer = $this->container->get('writerFactory')->getDefaultWriter();
 		}
 
-		if($writer === null)
+		if(!$writer instanceof WriterInterface)
 		{
 			throw new NotFoundException('Could not find fitting data writer');
 		}

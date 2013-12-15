@@ -28,7 +28,6 @@ use PSX\Data\RecordInfo;
 use PSX\Data\NotSupportedException;
 use PSX\Data\ReaderResult;
 use PSX\Data\ReaderInterface;
-use PSX\Data\WriterResult;
 use PSX\Data\WriterInterface;
 use PSX\OpenId\ProviderAbstract;
 use PSX\Url;
