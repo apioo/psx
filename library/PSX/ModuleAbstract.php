@@ -28,6 +28,7 @@ use PSX\Data\NotFoundException;
 use PSX\Data\ReaderFactory;
 use PSX\Dependency;
 use PSX\Loader\Location;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * ModuleAbstract
@@ -58,7 +59,7 @@ abstract class ModuleAbstract
 	protected $body;
 	protected $requestReader;
 
-	public function __construct($container, Location $location, $basePath, array $uriFragments)
+	public function __construct(ContainerInterface $container, Location $location, $basePath, array $uriFragments)
 	{
 		$this->container    = $container;
 		$this->location     = $location;

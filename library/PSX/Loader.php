@@ -31,6 +31,7 @@ use PSX\Loader\LocationFinder\RoutingFile;
 use PSX\Util\Annotation;
 use ReflectionClass;
 use ReflectionMethod;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Class to load modules of psx.
@@ -50,7 +51,7 @@ class Loader
 
 	protected $locationFinder;
 
-	public function __construct($container)
+	public function __construct(ContainerInterface $container)
 	{
 		$this->config    = $container->get('config');
 		$this->container = $container;
