@@ -25,6 +25,7 @@ namespace PSX\Data\Record;
 
 use InvalidArgumentException;
 use PSX\Data\RecordInterface;
+use PSX\Data\Record\Mapper\Rule;
 
 /**
  * Class wich can map all fields of an record to an arbitary class by calling
@@ -36,6 +37,13 @@ use PSX\Data\RecordInterface;
  */
 class Mapper
 {
+	protected $rule;
+
+	public function setRule(array $rule)
+	{
+		$this->rule = $rule;
+	}
+
 	public function map(RecordInterface $source, $destination)
 	{
 		if(!is_object($destination))
@@ -53,7 +61,22 @@ class Mapper
 				$key = implode('', array_map('ucfirst', explode('_', $key)));
 			}
 
-			$method = 'set' . ucfirst($key);
+			if(isset($this->rule[$key]))
+			{
+				if(is_string($this->rule[$key]))
+				{
+					$method = 'set' . ucfirst($this->rule[$key]);
+				}
+				else if($this->rule[$key] instanceof Rule)
+				{
+					$method = 'set' . ucfirst($this->rule[$key]->getName());
+					$value  = $this->rule[$key]->getValue($value);
+				}
+			}
+			else
+			{
+				$method = 'set' . ucfirst($key);
+			}
 
 			if(is_callable(array($destination, $method)))
 			{
