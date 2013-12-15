@@ -184,13 +184,16 @@ HTML;
 
 		$accept  = Base::getRequestHeader('Accept');
 		$with    = Base::getRequestHeader('X-Requested-With');
-		$message = $e->getMessage();
-		$trace   = '';
 
 		if($this->config['psx_debug'] === true)
 		{
-			$message.= ' in ' . $e->getFile() . ' on line ' . $e->getLine();
+			$message = $e->getMessage() . ' in ' . $e->getFile() . ' on line ' . $e->getLine();
 			$trace   = $e->getTraceAsString();
+		}
+		else
+		{
+			$message = 'The server encountered an internal error and was unable to complete your request.';
+			$trace   = '';
 		}
 
 		// in the best case we have an clean exception where no output was
@@ -208,7 +211,7 @@ HTML;
 
 			$body = $message . "\n" . $trace;
 		}
-		else if($with == 'XMLHttpRequest' || (strpos($accept, 'text/json') !== false || strpos($accept, 'application/json') !== false))
+		else if($with == 'XMLHttpRequest' || (substr($accept, -5) == '+json' || substr($accept, -5) == '/json'))
 		{
 			Base::setResponseCode($code);
 			header('Content-type: application/json');
@@ -232,7 +235,7 @@ HTML;
 
 			$body = $this->getErrorTemplate($message, $trace);
 		}
-		else if(strpos($accept, 'text/xml') !== false || strpos($accept, 'application/xml') !== false)
+		else if(substr($accept, -4) == '+xml' || substr($accept, -4) == '/xml')
 		{
 			Base::setResponseCode($code);
 			header('Content-type: application/xml');
