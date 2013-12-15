@@ -56,7 +56,7 @@ class Atom extends CollectionAbstract
 	protected $id;
 	protected $link = array();
 	protected $rights;
-	protected $subtitle;
+	protected $subTitle;
 	protected $title;
 	protected $updated;
 
