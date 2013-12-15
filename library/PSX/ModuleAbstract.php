@@ -221,9 +221,9 @@ abstract class ModuleAbstract
 	 * @param string $path
 	 * @param integer $code
 	 */
-	protected function redirect($path, $code = 307)
+	protected function redirect($url, $code = 307)
 	{
-		if(!filter_var($path, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED))
+		if(!filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED))
 		{
 			$url = $this->config['psx_url'] . '/' . $this->config['psx_dispatch'] . ltrim($path, '/');
 		}
