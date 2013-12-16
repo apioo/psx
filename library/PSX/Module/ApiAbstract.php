@@ -194,12 +194,12 @@ abstract class ApiAbstract extends ModuleAbstract
 			{
 				case 'asc':
 				case 'ascending':
-					$params['sortOrder'] = 'ascending';
+					$params['sortOrder'] = Sql::SORT_ASC;
 					break;
 
 				case 'desc':
 				case 'descending':
-					$params['sortOrder'] = 'descending';
+					$params['sortOrder'] = Sql::SORT_DESC;
 					break;
 			}
 		}
