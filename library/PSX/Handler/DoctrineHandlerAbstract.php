@@ -25,6 +25,8 @@ namespace PSX\Handler;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query;
+use Doctrine\ORM\Query\Expr\From;
+use Doctrine\ORM\Query\Expr\Join;
 use PSX\Data\Record;
 use PSX\Data\Record\Mapper;
 use PSX\Data\RecordInterface;
@@ -32,7 +34,10 @@ use PSX\Sql;
 use PSX\Sql\Condition;
 
 /**
- * Handler wich can operate on an entity repository
+ * Handler wich can operate on an entity repository. You can extend this handler
+ * and implement the method getDefaultSelect() wich simply returns an query
+ * builder where the from and join fields are set. All other field selection is 
+ * made by the handler
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
@@ -42,13 +47,15 @@ abstract class DoctrineHandlerAbstract extends HandlerAbstract
 {
 	protected $manager;
 	protected $entityName;
-	protected $repository;
+
+	protected $_select;
+	protected $_partialFields;
+	protected $_idFields;
 
 	public function __construct(EntityManager $manager)
 	{
 		$this->manager    = $manager;
 		$this->entityName = $this->getEntityName();
-		$this->repository = $manager->getRepository($this->entityName);
 	}
 
 	public function getAll(array $fields = array(), $startIndex = 0, $count = 16, $sortBy = null, $sortOrder = null, Condition $con = null)
@@ -66,7 +73,9 @@ abstract class DoctrineHandlerAbstract extends HandlerAbstract
 		}
 
 		$qb = $this
-			->getDefaultSelect($fields, $sortBy, $sortOrder)
+			->getSelect()
+			->select($this->getQuerySelect($fields))
+			->orderBy($this->getQueryOrderBy($sortBy), $sortOrder == Sql::SORT_ASC ? 'ASC' : 'DESC')
 			->setFirstResult($startIndex)
 			->setMaxResults($count);
 
@@ -112,7 +121,27 @@ abstract class DoctrineHandlerAbstract extends HandlerAbstract
 
 	public function getSupportedFields()
 	{
-		return $this->manager->getClassMetadata($this->entityName)->getFieldNames();
+		$result = array();
+		$fields = $this->getPartialFields();
+		$i      = 0;
+
+		foreach($fields as $key => $field)
+		{
+			if($i > 0)
+			{
+				$func = function($k) use ($key){
+					return $key . ucfirst($k);
+				};
+
+				$field = array_map($func, $field);
+			}
+
+			$result = array_merge($result, $field);
+
+			$i++;
+		}
+
+		return $result;
 	}
 
 	public function getCount(Condition $con = null)
@@ -184,26 +213,26 @@ abstract class DoctrineHandlerAbstract extends HandlerAbstract
 	}
 
 	/**
+	 * Returns the default query builder. In most cases you only have to set
+	 * the from and join fields all other settings are made by the handler i.e.
+	 * <code>
+	 * return $this->manager->createQueryBuilder()
+	 *  ->from('Foo\Entity', 'foo')
+	 *  ->innerJoin('foo.bar', 'bar')
+	 * </code>
+	 *
+	 * @return Doctrine\ORM\QueryBuilder
+	 */
+	abstract protected function getDefaultSelect();
+
+	/**
 	 * Returns the entity on wich the handler operates
 	 *
 	 * @return string
 	 */
-	abstract public function getEntityName();
-
-	protected function getDefaultSelect(array $fields, $sortBy, $sortOrder)
+	protected function getEntityName()
 	{
-		$select = array();
-		foreach($fields as $field)
-		{
-			$select[] = 'r.' . $field;
-		}
-
-		$qb = $this->manager->createQueryBuilder();
-		$qb->select($select)
-			->from($this->entityName, 'r')
-			->orderBy('r.' . $sortBy, $sortOrder == Sql::SORT_ASC ? 'ASC' : 'DESC');
-
-		return $qb;
+		return current($this->getSelect()->getRootEntities());
 	}
 
 	protected function getPrettyEntityName()
@@ -213,8 +242,140 @@ abstract class DoctrineHandlerAbstract extends HandlerAbstract
 		return lcfirst(end($parts));
 	}
 
+	/**
+	 * Returns the partial fields as array based on the default select
+	 *
+	 * @return array
+	 */
+	protected function getPartialFields()
+	{
+		if($this->_partialFields === null)
+		{
+			$this->_idFields = array();
+
+			$map    = array();
+			$fields = array();
+			$select = $this->getSelect();
+
+			// from fields
+			$from = $select->getDQLPart('from');
+			foreach($from as &$fromClause)
+			{
+				if(is_string($fromClause))
+				{
+					$spacePos = strrpos($fromClause, ' ');
+					$from     = substr($fromClause, 0, $spacePos);
+					$alias    = substr($fromClause, $spacePos + 1);
+
+					$fromClause = new From($from, $alias);
+				}
+
+				$map[$fromClause->getAlias()] = $fromClause->getFrom();
+			}
+
+			// join fields
+			$joins = $select->getDQLPart('join');
+			if(is_array($joins))
+			{
+				foreach($joins as $joinList)
+				{
+					foreach($joinList as $join)
+					{
+						if($join instanceof Join)
+						{
+							list($alias, $property) = explode('.', $join->getJoin());
+
+							if(isset($map[$alias]))
+							{
+								$map[$join->getAlias()] = $this->manager->getClassMetadata($map[$alias])->getAssociationTargetClass($property);
+							}
+						}
+					}
+				}
+			}
+
+			foreach($map as $key => $className)
+			{
+				$this->_partialFields[$key] = $this->manager->getClassMetadata($className)->getFieldNames();
+				$this->_idFields[$key] = $this->manager->getClassMetadata($className)->getSingleIdentifierFieldName();
+			}
+		}
+
+		return $this->_partialFields;
+	}
+
+	protected function getSelect()
+	{
+		if($this->_select === null)
+		{
+			$this->_select = $this->getDefaultSelect();
+		}
+
+		$select = clone $this->_select;
+
+		return $select;
+	}
+
 	protected function getPrimaryIdField()
 	{
 		return $this->manager->getClassMetadata($this->entityName)->getSingleIdentifierFieldName();
+	}
+
+	protected function getQuerySelect(array $selectedFields)
+	{
+		$dql    = array();
+		$fields = $this->getPartialFields();
+		$i      = 0;
+
+		foreach($fields as $key => $field)
+		{
+			$values = array();
+
+			if($i > 0)
+			{
+				$func = function($k) use ($key){
+					return $key . ucfirst($k);
+				};
+
+				$values = array_map($func, $field);
+				$result = array();
+
+				foreach($values as $k => $v)
+				{
+					if(in_array($v, $selectedFields))
+					{
+						$result[] = $field[$k];
+					}
+				}
+
+				$values = $result;
+			}
+			else
+			{
+				$values = array_intersect($field, $selectedFields);
+			}
+
+			// partial selection must include the id field
+			if(isset($this->_idFields[$key]))
+			{
+				$values[] = $this->_idFields[$key];
+			}
+
+			if(!empty($values))
+			{
+				$dql[] = 'partial ' . $key . '.{' . implode(', ', $values) . '}';
+			}
+
+			$i++;
+		}
+
+		return implode(', ', $dql);
+	}
+
+	protected function getQueryOrderBy($sortBy)
+	{
+		$fields = $this->getPartialFields();
+
+		return key($fields) . '.' . $this->getPrimaryIdField();
 	}
 }

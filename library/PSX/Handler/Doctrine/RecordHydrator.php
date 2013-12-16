@@ -39,7 +39,17 @@ class RecordHydrator extends AbstractHydrator
 {
 	const HYDRATE_RECORD = 0x30;
 
-	private $_idTemplate = array();
+	private $_idTemplate;
+
+	public function prepare()
+	{
+		$this->_idTemplate = array();
+
+		foreach($this->_rsm->aliasMap as $dqlAlias => $className)
+		{
+			$this->_idTemplate[$dqlAlias] = '';
+		}
+	}
 
 	protected function hydrateAllData()
 	{
@@ -60,11 +70,34 @@ class RecordHydrator extends AbstractHydrator
 		$nonemptyComponents = array();
 		$rowData = $this->gatherRowData($row, $cache, $id, $nonemptyComponents);
 
-		if(!isset($rowData['scalars']))
+		if(isset($rowData['scalars']))
 		{
-			throw new RuntimeException('Can hydrate only scalar values');
+			$result[] = new Record('record', $rowData['scalars']);
 		}
+		else
+		{
+			$data = array();
+			$ids  = array_keys($id);
 
-		$result[] = new Record('record', $rowData['scalars']);
+			foreach($ids as $k => $key)
+			{
+				if($k == 0)
+				{
+					$data = $rowData[$key];
+				}
+				else
+				{
+					$func = function($k) use ($key){
+						return $key . ucfirst($k);
+					};
+
+					$keys   = array_map($func, array_keys($rowData[$key]));
+					$values = array_values($rowData[$key]);
+					$data   = array_merge($data, array_combine($keys, $values));
+				}
+			}
+
+			$result[] = new Record('record', $data);
+		}
 	}
 }
