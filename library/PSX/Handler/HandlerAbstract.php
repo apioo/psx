@@ -25,6 +25,7 @@ namespace PSX\Handler;
 
 use BadMethodCallException;
 use InvalidArgumentException;
+use PSX\Data\Collection;
 use PSX\Data\ResultSet;
 use PSX\Sql;
 use PSX\Sql\Condition;
@@ -50,15 +51,46 @@ abstract class HandlerAbstract implements HandlerInterface
 		return current($result);
 	}
 
+	/**
+	 * Returns an collection of records
+	 *
+	 * @param array $fields
+	 * @param integer $startIndex
+	 * @param integer $count
+	 * @param string $sortBy
+	 * @param string $sortOrder
+	 * @param PSX\Sql\Condition $con
+	 * @return PSX\Data\Collection
+	 */
+	public function getCollection(array $fields, $startIndex = 0, $count = 16, $sortBy = null, $sortOrder = null, Condition $con = null)
+	{
+		$entries    = $this->getAll($fields, $startIndex, $count, $sortBy, $sortOrder, $con);
+		$collection = new Collection($entries);
+
+		return $collection;
+	}
+
+	/**
+	 * Returns an collection of record including the start index and total 
+	 * result count wich is useful for building paginations
+	 *
+	 * @param array $fields
+	 * @param integer $startIndex
+	 * @param integer $count
+	 * @param string $sortBy
+	 * @param string $sortOrder
+	 * @param PSX\Sql\Condition $con
+	 * @return PSX\Data\ResultSet
+	 */
 	public function getResultSet(array $fields, $startIndex = 0, $count = 16, $sortBy = null, $sortOrder = null, Condition $con = null)
 	{
 		$startIndex = $startIndex !== null ? (integer) $startIndex : 0;
 		$count      = !empty($count)       ? (integer) $count      : 16;
 		$sortOrder  = $sortOrder  !== null ? (strcasecmp($sortOrder, 'ascending') == 0 ? Sql::SORT_ASC : Sql::SORT_DESC) : null;
 
-		$totalResults = $this->getCount($con);
-		$entries      = $this->getAll($fields, $startIndex, $count, $sortBy, $sortOrder, $con);
-		$resultSet    = new ResultSet($totalResults, $startIndex, $count, $entries);
+		$total      = $this->getCount($con);
+		$entries    = $this->getAll($fields, $startIndex, $count, $sortBy, $sortOrder, $con);
+		$resultSet  = new ResultSet($total, $startIndex, $count, $entries);
 
 		return $resultSet;
 	}
