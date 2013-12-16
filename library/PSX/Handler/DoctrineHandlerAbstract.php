@@ -58,7 +58,6 @@ abstract class DoctrineHandlerAbstract extends HandlerAbstract
 		$sortBy     = $sortBy     !== null ? $sortBy               : $this->getPrimaryIdField();
 		$sortOrder  = $sortOrder  !== null ? (integer) $sortOrder  : Sql::SORT_DESC;
 
-		$qb     = $this->manager->createQueryBuilder();
 		$fields = array_intersect($fields, $this->getSupportedFields());
 
 		if(empty($fields))
@@ -66,15 +65,8 @@ abstract class DoctrineHandlerAbstract extends HandlerAbstract
 			$fields = $this->getSupportedFields();
 		}
 
-		$select = array();
-		foreach($fields as $field)
-		{
-			$select[] = 'r.' . $field;
-		}
-
-		$qb->select($select)
-			->from($this->entityName, 'r')
-			->orderBy('r.' . $sortBy, Sql::SORT_ASC ? 'ASC' : 'DESC')
+		$qb = $this
+			->getDefaultSelect($fields, $sortBy, $sortOrder)
 			->setFirstResult($startIndex)
 			->setMaxResults($count);
 
@@ -89,18 +81,18 @@ abstract class DoctrineHandlerAbstract extends HandlerAbstract
 				{
 					if($conjunction == 'OR' || $conjunction == '||')
 					{
-						$qb->orWhere('r.' . $row[Condition::COLUMN] . ' = ?' . $key);
+						$qb->orWhere('r.' . $row[Condition::COLUMN] . ' ' . $row[Condition::OPERATOR] . ' ?' . $key);
 						$qb->setParameter($key, $row[Condition::VALUE]);
 					}
 					else
 					{
-						$qb->andWhere('r.' . $row[Condition::COLUMN] . ' = ?' . $key);
+						$qb->andWhere('r.' . $row[Condition::COLUMN] . ' ' . $row[Condition::OPERATOR] . ' ?' . $key);
 						$qb->setParameter($key, $row[Condition::VALUE]);
 					}
 				}
 				else
 				{
-					$qb->where('r.' . $row[Condition::COLUMN] . ' = ?' . $key);
+					$qb->where('r.' . $row[Condition::COLUMN] . ' ' . $row[Condition::OPERATOR] . ' ?' . $key);
 					$qb->setParameter($key, $row[Condition::VALUE]);
 				}
 
@@ -108,16 +100,7 @@ abstract class DoctrineHandlerAbstract extends HandlerAbstract
 			}
 		}
 
-		$result = $qb->getQuery()->getResult(Query::HYDRATE_ARRAY);
-		$name   = $this->getPrettyEntityName();
-		$return = array();
-
-		foreach($result as $row)
-		{
-			$return[] = new Record($name, $row);
-		}
-
-		return $return;
+		return $qb->getQuery()->getResult(Doctrine\RecordHydrator::HYDRATE_RECORD);
 	}
 
 	public function get($id, array $fields = array())
@@ -206,6 +189,22 @@ abstract class DoctrineHandlerAbstract extends HandlerAbstract
 	 * @return string
 	 */
 	abstract public function getEntityName();
+
+	protected function getDefaultSelect(array $fields, $sortBy, $sortOrder)
+	{
+		$select = array();
+		foreach($fields as $field)
+		{
+			$select[] = 'r.' . $field;
+		}
+
+		$qb = $this->manager->createQueryBuilder();
+		$qb->select($select)
+			->from($this->entityName, 'r')
+			->orderBy('r.' . $sortBy, $sortOrder == Sql::SORT_ASC ? 'ASC' : 'DESC');
+
+		return $qb;
+	}
 
 	protected function getPrettyEntityName()
 	{
