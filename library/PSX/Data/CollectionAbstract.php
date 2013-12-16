@@ -23,8 +23,6 @@
 
 namespace PSX\Data;
 
-use ArrayObject;
-
 /**
  * CollectionAbstract
  *
