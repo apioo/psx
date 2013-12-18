@@ -63,15 +63,6 @@ interface HandlerQueryInterface
 	public function get($id, array $fields = array());
 
 	/**
-	 * Returns all records matching the criteria and also gets the total amount
-	 * of records. Returns an resultset wich can easily displayed on an html 
-	 * page with a pagination or exported as XML or JSON for an API
-	 *
-	 * @return PSX\Data\ResultSet
-	 */
-	public function getResultSet(array $fields, $startIndex = 0, $count = 16, $sortBy = null, $sortOrder = null, Condition $con = null);
-
-	/**
 	 * Returns all available fields for this handler
 	 *
 	 * @return array
