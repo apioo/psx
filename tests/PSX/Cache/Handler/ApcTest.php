@@ -24,7 +24,6 @@
 namespace PSX\Cache\Handler;
 
 use PSX\CacheTest;
-use PSX\Exception;
 
 /**
  * ApcTest
@@ -35,23 +34,13 @@ use PSX\Exception;
  */
 class ApcTest extends CacheTest
 {
-	protected $table;
-	protected $sql;
-
 	protected function setUp()
 	{
 		parent::setUp();
 
-		try
+		if(!function_exists('apc_store'))
 		{
-			if(!function_exists('apc_store'))
-			{
-				throw new Exception('APC extension is not available');
-			}
-		}
-		catch(Exception $e)
-		{
-			$this->markTestSkipped($e->getMessage());
+			$this->markTestSkipped('APC extension is not available');
 		}
 	}
 

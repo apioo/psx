@@ -25,7 +25,6 @@ namespace PSX\Cache\Handler;
 
 use Memcache as Mem;
 use PSX\CacheTest;
-use PSX\Exception;
 
 /**
  * MemcacheTest
@@ -40,16 +39,9 @@ class MemcacheTest extends CacheTest
 	{
 		parent::setUp();
 
-		try
+		if(!function_exists('memcache_connect'))
 		{
-			if(!function_exists('memcache_connect'))
-			{
-				throw new Exception('Memcache extension is not available');
-			}
-		}
-		catch(Exception $e)
-		{
-			$this->markTestSkipped($e->getMessage());
+			$this->markTestSkipped('Memcache extension is not available');
 		}
 	}
 
