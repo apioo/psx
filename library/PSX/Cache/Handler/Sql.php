@@ -48,7 +48,7 @@ use UnexpectedValueException;
  */
 class Sql implements HandlerInterface
 {
-	private $table;
+	protected $table;
 
 	public function __construct(TableInterface $table)
 	{
@@ -108,11 +108,6 @@ class Sql implements HandlerInterface
 		$con = new Condition(array($this->table->getPrimaryKey(), '=', $key));
 
 		$this->table->delete($con);
-	}
-
-	public function getTable()
-	{
-		return $this->table;
 	}
 }
 
