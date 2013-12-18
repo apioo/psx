@@ -24,11 +24,9 @@
 namespace PSX\Cache\Handler;
 
 use PDOException;
-use PSX\Sql\DbTestCase;
-use PSX\Sql\TableAbstract;
+use PSX\Sql\Table;
 use PSX\Sql\TableInterface;
 use PSX\CacheTest;
-use PSX\Exception;
 
 /**
  * SqlTest
@@ -57,24 +55,10 @@ class SqlTest extends CacheTest
 
 	protected function getHandler()
 	{
-		return new Sql(new TableCacheTest($this->sql));
-	}
-}
-
-class TableCacheTest extends TableAbstract
-{
-	public function getName()
-	{
-		return 'psx_cache_handler_sql_test';
-	}
-
-	public function getColumns()
-	{
-		return array(
+		return new Sql(new Table($this->sql, $this->table, array(
 			'id'      => TableInterface::TYPE_VARCHAR | TableInterface::PRIMARY_KEY,
 			'content' => TableInterface::TYPE_BLOB,
 			'date'    => TableInterface::TYPE_DATETIME,
-		);
+		)));
 	}
 }
-
