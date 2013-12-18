@@ -23,10 +23,10 @@
 
 namespace PSX\Handler;
 
-use BadMethodCallException;
 use InvalidArgumentException;
-use RuntimeException;
 use PSX\Data\RecordInterface;
+use PSX\Cache\HandlerInterface as CacheHandlerInterface;
+use PSX\Sql\Condition;
 
 /**
  * Handler wich can be used to cache handler results. This can be useful if your
@@ -40,63 +40,115 @@ use PSX\Data\RecordInterface;
 class ProxyCacheHandler extends HandlerAbstract
 {
 	protected $handler;
+	protected $cache;
+	protected $expire;
 
-	protected $_cache = array();
-
-	public function __construct(HandlerQueryInterface $handler)
+	public function __construct(HandlerQueryInterface $handler, CacheHandlerInterface $cache, $expire = 0)
 	{
 		$this->handler = $handler;
+		$this->cache   = $cache;
+		$this->expire  = $expire;
 	}
 
-	public function __call($name, array $args)
+	public function setExpire($expire)
 	{
-		$isCacheable = false;
-		switch($name)
+		$this->expire = $expire;
+	}
+
+	public function getAll(array $fields = array(), $startIndex = 0, $count = 16, $sortBy = null, $sortOrder = null, Condition $con = null)
+	{
+		$key    = md5(json_encode(array(__METHOD__, $fields, $startIndex, $count, $sortBy, $sortOrder, (string) $con)));
+		$return = $this->cache->load($key);
+
+		if($return !== false)
 		{
-			case 'getAll':
-			case 'getBy':
-			case 'getOneBy':
-			//case 'get':
-			case 'getResultSet':
-			case 'getSupportedFields':
-			case 'getCount':
-				$isCacheable = true;
-				break;
+			return unserialize($return->getContent());
 		}
 
-		if($isCacheable)
-		{
-			$key    = md5(json_encode($args));
-			$return = $this->getFromCache($key);
+		$return = $this->handler->getAll($fields, $startIndex, $count, $sortBy, $sortOrder, $con);
 
-			if($return !== null)
-			{
-				return $return;
-			}
-		}
-
-		$return = call_user_func_array(array($this->handler, $name), $args);
-
-		if($isCacheable)
-		{
-			$this->setToCache($key, $return);
-		}
+		$this->cache->write($key, serialize($return), $this->expire);
 
 		return $return;
 	}
 
-	protected function getFromCache($key)
+	public function get($id, array $fields = array())
 	{
-		if(isset($this->_cache[$key]))
-		{
-			return $this->_cache[$key];
-		}
-
-		return null;
+		return $this->handler->get($id, $fields);
 	}
 
-	protected function setToCache($key, $return)
+	public function getSupportedFields()
 	{
-		$this->_cache[$key] = $return;
+		$key    = md5(json_encode(array(__METHOD__)));
+		$return = $this->cache->load($key);
+
+		if($return !== false)
+		{
+			return unserialize($return->getContent());
+		}
+
+		$return = $this->handler->getSupportedFields();
+
+		$this->cache->write($key, serialize($return), $this->expire);
+
+		return $return;
+	}
+
+	public function getCount(Condition $con = null)
+	{
+		$key    = md5(json_encode(array(__METHOD__, (string) $con)));
+		$return = $this->cache->load($key);
+
+		if($return !== false)
+		{
+			return unserialize($return->getContent());
+		}
+
+		$return = $this->handler->getCount($con);
+
+		$this->cache->write($key, serialize($return), $this->expire);
+
+		return $return;
+	}
+
+	public function getRecord($id = null)
+	{
+		return $this->handler->getRecord($id);
+	}
+
+	public function create(RecordInterface $record)
+	{
+		if($this->handler instanceof HandlerManipulationInterface)
+		{
+			$this->handler->create($record);
+		}
+		else
+		{
+			throw new InvalidArgumentException('Handler is not an manipulation instance');
+		}
+	}
+
+	public function update(RecordInterface $record)
+	{
+		if($this->handler instanceof HandlerManipulationInterface)
+		{
+			$this->handler->update($record);
+		}
+		else
+		{
+			throw new InvalidArgumentException('Handler is not an manipulation instance');
+		}
+	}
+
+	public function delete(RecordInterface $record)
+	{
+		if($this->handler instanceof HandlerManipulationInterface)
+		{
+			$this->handler->delete($record);
+		}
+		else
+		{
+			throw new InvalidArgumentException('Handler is not an manipulation instance');
+		}
 	}
 }
