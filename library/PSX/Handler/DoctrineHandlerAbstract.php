@@ -23,6 +23,7 @@
 
 namespace PSX\Handler;
 
+use InvalidArgumentException;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\Expr\From;
@@ -72,6 +73,11 @@ abstract class DoctrineHandlerAbstract extends HandlerAbstract
 			$fields = $this->getSupportedFields();
 		}
 
+		if(!in_array($sortBy, $this->getSupportedFields()))
+		{
+			$sortBy = $this->getPrimaryIdField();
+		}
+
 		$qb = $this
 			->getSelect()
 			->select($this->getQuerySelect($fields))
@@ -90,18 +96,18 @@ abstract class DoctrineHandlerAbstract extends HandlerAbstract
 				{
 					if($conjunction == 'OR' || $conjunction == '||')
 					{
-						$qb->orWhere('r.' . $row[Condition::COLUMN] . ' ' . $row[Condition::OPERATOR] . ' ?' . $key);
+						$qb->orWhere($this->getColumnNameByAlias($row[Condition::COLUMN]) . ' ' . $row[Condition::OPERATOR] . ' ?' . $key);
 						$qb->setParameter($key, $row[Condition::VALUE]);
 					}
 					else
 					{
-						$qb->andWhere('r.' . $row[Condition::COLUMN] . ' ' . $row[Condition::OPERATOR] . ' ?' . $key);
+						$qb->andWhere($this->getColumnNameByAlias($row[Condition::COLUMN]) . ' ' . $row[Condition::OPERATOR] . ' ?' . $key);
 						$qb->setParameter($key, $row[Condition::VALUE]);
 					}
 				}
 				else
 				{
-					$qb->where('r.' . $row[Condition::COLUMN] . ' ' . $row[Condition::OPERATOR] . ' ?' . $key);
+					$qb->where($this->getColumnNameByAlias($row[Condition::COLUMN]) . ' ' . $row[Condition::OPERATOR] . ' ?' . $key);
 					$qb->setParameter($key, $row[Condition::VALUE]);
 				}
 
@@ -146,9 +152,9 @@ abstract class DoctrineHandlerAbstract extends HandlerAbstract
 
 	public function getCount(Condition $con = null)
 	{
-		$qb = $this->manager->createQueryBuilder();
-		$qb->select('count(r.' . $this->getPrimaryIdField() . ')');
-		$qb->from($this->entityName, 'r');
+		$qb = $this
+			->getSelect()
+			->select('count(' . $this->getColumnNameByAlias($this->getPrimaryIdField()) . ')');
 
 		if($con !== null && $con->hasCondition())
 		{
@@ -156,7 +162,7 @@ abstract class DoctrineHandlerAbstract extends HandlerAbstract
 
 			foreach($values as $key => $row)
 			{
-				$qb->andWhere('r.' . $row[Condition::COLUMN] . ' = ?' . $key);
+				$qb->andWhere($this->getColumnNameByAlias($row[Condition::COLUMN]) . ' = ?' . $key);
 				$qb->setParameter($key, $row[Condition::VALUE]);
 			}
 		}
@@ -192,23 +198,25 @@ abstract class DoctrineHandlerAbstract extends HandlerAbstract
 
 	public function update(RecordInterface $record)
 	{
-		$entity = new $this->entityName();
+		$method = 'get' . ucfirst($this->getPrimaryIdField());
+		$entity = $this->manager->getRepository($this->entityName)->find($record->$method());
 
 		$mapper = new Mapper();
 		$mapper->map($record, $entity);
 
-		$this->manager->persist($record);
+		$this->manager->persist($entity);
 		$this->manager->flush();
 	}
 
 	public function delete(RecordInterface $record)
 	{
-		$entity = new $this->entityName();
+		$method = 'get' . ucfirst($this->getPrimaryIdField());
+		$entity = $this->manager->getRepository($this->entityName)->find($record->$method());
 
 		$mapper = new Mapper();
 		$mapper->map($record, $entity);
 
-		$this->manager->remove($record);
+		$this->manager->remove($entity);
 		$this->manager->flush();
 	}
 
@@ -254,7 +262,6 @@ abstract class DoctrineHandlerAbstract extends HandlerAbstract
 			$this->_idFields = array();
 
 			$map    = array();
-			$fields = array();
 			$select = $this->getSelect();
 
 			// from fields
@@ -374,8 +381,51 @@ abstract class DoctrineHandlerAbstract extends HandlerAbstract
 
 	protected function getQueryOrderBy($sortBy)
 	{
-		$fields = $this->getPartialFields();
+		return $this->getColumnNameByAlias($sortBy);
+	}
 
-		return key($fields) . '.' . $this->getPrimaryIdField();
+	/**
+	 * Returns the dql column name from an alias
+	 *
+	 * @return string
+	 */
+	protected function getColumnNameByAlias($column)
+	{
+		$fields = $this->getPartialFields();
+		$i      = 0;
+
+		foreach($fields as $key => $field)
+		{
+			if($i > 0)
+			{
+				$func = function($k) use ($key){
+					return $key . ucfirst($k);
+				};
+
+				$values = array_map($func, $field);
+
+				foreach($values as $k => $v)
+				{
+					if($v == $column)
+					{
+						return $key . '.' . $field[$k];
+					}
+				}
+			}
+			else
+			{
+				foreach($field as $v)
+				{
+					if($v == $column)
+					{
+						return $key . '.' . $v;
+					}
+				}
+			}
+
+			$i++;
+		}
+
+		throw new InvalidArgumentException('Invalid column');
 	}
 }
