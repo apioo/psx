@@ -23,16 +23,7 @@
 
 namespace PSX\Handler;
 
-use PSX\Data\ResultSet;
-use PSX\DateTime;
-use PSX\Sql;
-use PSX\Sql\Condition;
 use PSX\Sql\DbTestCase;
-use PSX\Sql\Join;
-use PSX\Sql\Table;
-use PSX\Sql\TableAbstract;
-use PSX\Sql\TableInterface;
-use PSX\Test\TableDataSet;
 
 /**
  * DatabaseHandlerTest
@@ -52,19 +43,6 @@ class DatabaseHandlerTest extends DbTestCase
 
 	protected function getHandler()
 	{
-		return new DatabaseTestHandler($this->sql);
-	}
-}
-
-class DatabaseTestHandler extends DatabaseHandlerAbstract
-{
-	public function getTable()
-	{
-		return new Table($this->sql, 'psx_handler_comment', array(
-			'id'     => TableInterface::TYPE_INT | 10 | TableInterface::PRIMARY_KEY | TableInterface::AUTO_INCREMENT,
-			'userId' => TableInterface::TYPE_INT | 10,
-			'title'  => TableInterface::TYPE_VARCHAR | 32,
-			'date'   => TableInterface::TYPE_DATETIME,
-		));
+		return new Database\TestHandler($this->sql);
 	}
 }

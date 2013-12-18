@@ -80,6 +80,11 @@ trait HandlerTestCase
 	{
 		$handler = $this->getHandler();
 
+		if(!$handler instanceof HandlerQueryInterface)
+		{
+			$this->markTestSkipped('Handler not an query interface');
+		}
+
 		// test select query
 		$result = $handler->getAll(array('id', 'title'));
 
@@ -115,6 +120,11 @@ trait HandlerTestCase
 	{
 		$handler = $this->getHandler();
 
+		if(!$handler instanceof HandlerQueryInterface)
+		{
+			$this->markTestSkipped('Handler not an query interface');
+		}
+
 		// test start index
 		$result = $handler->getAll(array('id', 'title'), 3);
 
@@ -146,6 +156,11 @@ trait HandlerTestCase
 	{
 		$handler = $this->getHandler();
 
+		if(!$handler instanceof HandlerQueryInterface)
+		{
+			$this->markTestSkipped('Handler not an query interface');
+		}
+
 		// test sort by
 		$result = $handler->getAll(array('id', 'title'), 0, 2, 'id', Sql::SORT_DESC);
 
@@ -167,6 +182,11 @@ trait HandlerTestCase
 	public function testGetAllCondition()
 	{
 		$handler = $this->getHandler();
+
+		if(!$handler instanceof HandlerQueryInterface)
+		{
+			$this->markTestSkipped('Handler not an query interface');
+		}
 
 		// test condition
 		$con    = new Condition(array('userId', '=', 1));
@@ -221,6 +241,11 @@ trait HandlerTestCase
 	{
 		$handler = $this->getHandler();
 
+		if(!$handler instanceof HandlerQueryInterface)
+		{
+			$this->markTestSkipped('Handler not an query interface');
+		}
+
 		$result = $handler->getByUserId(1, array('id', 'title'));
 
 		foreach($result as $row)
@@ -237,6 +262,11 @@ trait HandlerTestCase
 	{
 		$handler = $this->getHandler();
 
+		if(!$handler instanceof HandlerQueryInterface)
+		{
+			$this->markTestSkipped('Handler not an query interface');
+		}
+
 		$row = $handler->getOneById(1, array('id', 'title'));
 
 		$this->assertInstanceOf('PSX\Data\Record', $row);
@@ -250,6 +280,11 @@ trait HandlerTestCase
 	{
 		$handler = $this->getHandler();
 
+		if(!$handler instanceof HandlerQueryInterface)
+		{
+			$this->markTestSkipped('Handler not an query interface');
+		}
+
 		$row = $handler->get(1, array('id', 'title'));
 
 		$this->assertInstanceOf('PSX\Data\Record', $row);
@@ -262,6 +297,11 @@ trait HandlerTestCase
 	public function testGetResultSet()
 	{
 		$handler = $this->getHandler();
+
+		if(!$handler instanceof HandlerQueryInterface)
+		{
+			$this->markTestSkipped('Handler not an query interface');
+		}
 
 		$result = $handler->getResultSet(array('id', 'title'), 0, 2, 'id', Sql::SORT_DESC);
 
@@ -280,7 +320,13 @@ trait HandlerTestCase
 	public function testGetSupportedFields()
 	{
 		$handler = $this->getHandler();
-		$fields  = $handler->getSupportedFields();
+
+		if(!$handler instanceof HandlerQueryInterface)
+		{
+			$this->markTestSkipped('Handler not an query interface');
+		}
+
+		$fields = $handler->getSupportedFields();
 
 		$this->assertEquals(array('id', 'userId', 'title', 'date'), $fields);
 	}
@@ -289,6 +335,11 @@ trait HandlerTestCase
 	{
 		$handler = $this->getHandler();
 
+		if(!$handler instanceof HandlerQueryInterface)
+		{
+			$this->markTestSkipped('Handler not an query interface');
+		}
+
 		$this->assertEquals(4, $handler->getCount());
 		$this->assertEquals(2, $handler->getCount(new Condition(array('userId', '=', 1))));
 	}
@@ -296,6 +347,11 @@ trait HandlerTestCase
 	public function testGetRecord()
 	{
 		$handler = $this->getHandler();
+
+		if(!$handler instanceof HandlerQueryInterface)
+		{
+			$this->markTestSkipped('Handler not an query interface');
+		}
 
 		// new record
 		$obj = $handler->getRecord();
@@ -316,6 +372,11 @@ trait HandlerTestCase
 	{
 		$handler = $this->getHandler();
 
+		if(!$handler instanceof HandlerManipulationInterface)
+		{
+			$this->markTestSkipped('Handler not an manipulation interface');
+		}
+
 		$record = $handler->getRecord();
 		$record->setUserId(2);
 		$record->setTitle('foobar');
@@ -334,6 +395,11 @@ trait HandlerTestCase
 	{
 		$handler = $this->getHandler();
 
+		if(!$handler instanceof HandlerManipulationInterface)
+		{
+			$this->markTestSkipped('Handler not an manipulation interface');
+		}
+
 		$record = $handler->getRecord(1);
 		$record->setUserId(2);
 		$record->setTitle('foobar');
@@ -351,6 +417,11 @@ trait HandlerTestCase
 	public function testDelete()
 	{
 		$handler = $this->getHandler();
+
+		if(!$handler instanceof HandlerManipulationInterface)
+		{
+			$this->markTestSkipped('Handler not an manipulation interface');
+		}
 
 		$record = $handler->getRecord(1);
 		$record->setUserId(2);

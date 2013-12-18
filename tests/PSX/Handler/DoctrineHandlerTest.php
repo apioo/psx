@@ -23,15 +23,7 @@
 
 namespace PSX\Handler;
 
-use PSX\Data\ResultSet;
-use PSX\DateTime;
-use PSX\Sql;
-use PSX\Sql\Condition;
 use PSX\Sql\DbTestCase;
-use PSX\Sql\Join;
-use PSX\Sql\Table;
-use PSX\Sql\TableAbstract;
-use PSX\Test\TableDataSet;
 
 /**
  * DoctrineHandlerTest
@@ -61,84 +53,6 @@ class DoctrineHandlerTest extends DbTestCase
 
 	protected function getHandler()
 	{
-		return new DoctrineTestHandler(getContainer()->get('entityManager'));
+		return new Doctrine\TestHandler(getContainer()->get('entityManager'));
 	}
 }
-
-class DoctrineTestHandler extends DoctrineHandlerAbstract
-{
-	public function getEntityName()
-	{
-		return 'PSX\Handler\DoctrineTestEntity';
-	}
-}
-
-/**
- * @Entity
- * @Table(name="psx_handler_comment")
- */
-class DoctrineTestEntity
-{
-	/**
-	 * @Id
-	 * @Column(type="integer", nullable=false)
-	 * @GeneratedValue(strategy="IDENTITY")
-	 */
-	protected $id;
-
-	/**
-	 * @Column(type="integer", nullable=false)
-	 */
-	protected $userId;
-
-	/**
-	 * @Column(type="string", nullable=false)
-	 */
-	protected $title;
-
-	/**
-	 * @Column(type="datetime", nullable=false)
-	 */
-	protected $date;
-
-	public function setId($id)
-	{
-		$this->id = $id;
-	}
-
-	public function getId()
-	{
-		return $this->id;
-	}
-
-	public function setUserId($userId)
-	{
-		$this->userId = $userId;
-	}
-	
-	public function getUserId()
-	{
-		return $this->userId;
-	}
-
-	public function setTitle($title)
-	{
-		$this->title = $title;
-	}
-	
-	public function getTitle()
-	{
-		return $this->title;
-	}
-
-	public function setDate($date)
-	{
-		$this->date = $date;
-	}
-	
-	public function getDate()
-	{
-		return $this->date;
-	}
-}
-
