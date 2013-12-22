@@ -38,7 +38,8 @@ use PSX\Sql\Condition;
  * Handler wich can operate on an entity repository. You can extend this handler
  * and implement the method getDefaultSelect() wich simply returns an query
  * builder where the from and join fields are set. All other field selection is 
- * made by the handler
+ * made by the handler. This handler uses partial selection in order to select
+ * only specific fields
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
