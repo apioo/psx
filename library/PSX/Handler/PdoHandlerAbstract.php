@@ -58,9 +58,21 @@ abstract class PdoHandlerAbstract extends DataHandlerQueryAbstract
 		$sortBy     = $sortBy     !== null ? $sortBy               : $this->mapping->getIdProperty();
 		$sortOrder  = $sortOrder  !== null ? (integer) $sortOrder  : Sql::SORT_DESC;
 
+		if(empty($fields))
+		{
+			$fields = $this->getSupportedFields();
+		}
+
+		if(!in_array($sortBy, $this->getSupportedFields()))
+		{
+			$sortBy = $this->mapping->getIdProperty();
+		}
+
 		$statment = $this->getSelectStatment($fields, $startIndex, $count, $sortBy, $sortOrder, $con);
-		$result   = $statment->fetchAll(PDO::FETCH_ASSOC);
-		$return   = array();
+		$statment->execute();
+
+		$result = $statment->fetchAll(PDO::FETCH_ASSOC);
+		$return = array();
 
 		foreach($result as $entry)
 		{
@@ -98,9 +110,16 @@ abstract class PdoHandlerAbstract extends DataHandlerQueryAbstract
 	public function getCount(Condition $con = null)
 	{
 		$statment = $this->getCountStatment($con);
-		$result   = $statment->fetch(PDO::FETCH_NUM);
+		$statment->execute();
 
-		return (integer) $result[0];
+		$result = $statment->fetch(PDO::FETCH_NUM);
+
+		if(isset($result[0]))
+		{
+			return (integer) $result[0];
+		}
+
+		return 0;
 	}
 
 	public function getRecord($id = null)
@@ -133,12 +152,12 @@ abstract class PdoHandlerAbstract extends DataHandlerQueryAbstract
 	 *
 	 * @return PDOStatement
 	 */
-	abstract public function getSelectStatment(array $fields = array(), $startIndex = 0, $count = 16, $sortBy = null, $sortOrder = null, Condition $con = null);
+	abstract protected function getSelectStatment(array $fields, $startIndex = 0, $count = 16, $sortBy = null, $sortOrder = null, Condition $con = null);
 
 	/**
 	 * Returns the sql count query
 	 *
 	 * @return PDOStatement
 	 */
-	abstract public function getCountStatment(Condition $con = null);
+	abstract protected function getCountStatment(Condition $con = null);
 }
