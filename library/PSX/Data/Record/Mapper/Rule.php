@@ -46,7 +46,7 @@ class Rule
 		return $this->name;
 	}
 
-	public function getValue($value)
+	public function getValue($value, $row = null)
 	{
 		if($this->value === null)
 		{
@@ -54,7 +54,7 @@ class Rule
 		}
 		else if(is_callable($this->value))
 		{
-			return call_user_func($this->value, $value);
+			return call_user_func($this->value, $value, $row);
 		}
 		else
 		{

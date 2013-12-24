@@ -70,7 +70,7 @@ class Mapper
 				else if($this->rule[$key] instanceof Rule)
 				{
 					$method = 'set' . ucfirst($this->rule[$key]->getName());
-					$value  = $this->rule[$key]->getValue($value);
+					$value  = $this->rule[$key]->getValue($value, $data);
 				}
 			}
 			else
