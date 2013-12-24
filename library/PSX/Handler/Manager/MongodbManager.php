@@ -21,45 +21,39 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Handler\Dom;
+namespace PSX\Handler\Manager;
 
-use DOMDocument;
-use PSX\Handler\MappingAbstract;
+use MongoClient;
+use PSX\Handler\HandlerManagerInterface;
 
 /**
- * Mapping
+ * MongodbManager
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Mapping extends MappingAbstract
+class MongodbManager implements HandlerManagerInterface
 {
-	protected $dom;
-	protected $root;
-	protected $record;
+	/**
+	 * @var MongoClient
+	 */
+	protected $client;
 
-	public function __construct(DOMDocument $dom, $root, $record, array $fields)
+	protected $_container;
+
+	public function __construct(MongoClient $client)
 	{
-		parent::__construct($fields);
-
-		$this->dom    = $dom;
-		$this->root   = $root;
-		$this->record = $record;
+		$this->client = $client;
 	}
 
-	public function getDom()
+	public function getHandler($className)
 	{
-		return $this->dom;
-	}
+		if(!isset($this->_container[$className]))
+		{
+			$this->_container[$className] = new $className($this->client);
+		}
 
-	public function getRoot()
-	{
-		return $this->root;
-	}
-
-	public function getRecord()
-	{
-		return $this->record;
+		return $this->_container[$className];
 	}
 }

@@ -53,6 +53,8 @@ abstract class DomHandlerAbstract extends DataHandlerQueryAbstract
 		$sortBy     = $sortBy     !== null ? $sortBy               : $this->mapping->getIdProperty();
 		$sortOrder  = $sortOrder  !== null ? (integer) $sortOrder  : Sql::SORT_DESC;
 
+		$fields = array_intersect($fields, $this->getSupportedFields());
+
 		if(empty($fields))
 		{
 			$fields = $this->getSupportedFields();

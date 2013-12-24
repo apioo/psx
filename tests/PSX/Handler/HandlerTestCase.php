@@ -562,14 +562,16 @@ trait HandlerTestCase
 		}
 
 		$record = $handler->getRecord();
+		$record->setId(5);
 		$record->setUserId(2);
 		$record->setTitle('foobar');
 		$record->setDate(new DateTime());
 
 		$handler->create($record);
 
-		$record = $handler->get(5);
+		$record = $handler->getOneById(5);
 
+		$this->assertEquals(5, $record->getId());
 		$this->assertEquals(2, $record->getUserId());
 		$this->assertEquals('foobar', $record->getTitle());
 		$this->assertInstanceOf('DateTime', $record->getDate());
@@ -584,14 +586,14 @@ trait HandlerTestCase
 			$this->markTestSkipped('Handler not an manipulation interface');
 		}
 
-		$record = $handler->getRecord(1);
+		$record = $handler->getOneById(1);
 		$record->setUserId(2);
 		$record->setTitle('foobar');
 		$record->setDate(new DateTime());
 
 		$handler->update($record);
 
-		$record = $handler->get(1);
+		$record = $handler->getOneById(1);
 
 		$this->assertEquals(2, $record->getUserId());
 		$this->assertEquals('foobar', $record->getTitle());
@@ -607,14 +609,11 @@ trait HandlerTestCase
 			$this->markTestSkipped('Handler not an manipulation interface');
 		}
 
-		$record = $handler->getRecord(1);
-		$record->setUserId(2);
-		$record->setTitle('foobar');
-		$record->setDate(new DateTime());
+		$record = $handler->getOneById(1);
 
 		$handler->delete($record);
 
-		$record = $handler->get(1);
+		$record = $handler->getOneById(1);
 
 		$this->assertEmpty($record);
 	}

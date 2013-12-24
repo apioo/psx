@@ -21,9 +21,8 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Handler\Dom;
+namespace PSX\Handler\Pdo;
 
-use DOMDocument;
 use PSX\Handler\MappingAbstract;
 
 /**
@@ -35,31 +34,8 @@ use PSX\Handler\MappingAbstract;
  */
 class Mapping extends MappingAbstract
 {
-	protected $dom;
-	protected $root;
-	protected $record;
-
-	public function __construct(DOMDocument $dom, $root, $record, array $fields)
+	public function __construct(array $fields)
 	{
 		parent::__construct($fields);
-
-		$this->dom    = $dom;
-		$this->root   = $root;
-		$this->record = $record;
-	}
-
-	public function getDom()
-	{
-		return $this->dom;
-	}
-
-	public function getRoot()
-	{
-		return $this->root;
-	}
-
-	public function getRecord()
-	{
-		return $this->record;
 	}
 }

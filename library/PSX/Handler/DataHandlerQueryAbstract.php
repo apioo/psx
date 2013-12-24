@@ -27,8 +27,8 @@ use DateTime;
 use PSX\Sql\Condition;
 
 /**
- * Handler wich can be used to access internal data structures through the query
- * interface i.e. to use an DOMDocument or an simple array
+ * Abstract handler wich can be used to access internal data structures through 
+ * the query interface i.e. to use an DOMDocument or an simple array
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
@@ -36,14 +36,6 @@ use PSX\Sql\Condition;
  */
 abstract class DataHandlerQueryAbstract extends HandlerQueryAbstract
 {
-	const ID_PROPERTY   = 0x10000000;
-
-	const TYPE_INTEGER  = 0x100000;
-	const TYPE_FLOAT    = 0x200000;
-	const TYPE_STRING   = 0x300000;
-	const TYPE_BOOLEAN  = 0x400000;
-	const TYPE_DATETIME = 0x500000;
-
 	/**
 	 * Unserialize a string into the fitting php type
 	 *
@@ -57,24 +49,24 @@ abstract class DataHandlerQueryAbstract extends HandlerQueryAbstract
 
 		switch($type)
 		{
-			case self::TYPE_INTEGER:
+			case MappingAbstract::TYPE_INTEGER:
 				return (integer) $data;
 				break;
 
-			case self::TYPE_FLOAT:
+			case MappingAbstract::TYPE_FLOAT:
 				return (float) $data;
 				break;
 
-			case self::TYPE_BOOLEAN:
+			case MappingAbstract::TYPE_BOOLEAN:
 				return (boolean) $data;
 				break;
 
-			case self::TYPE_DATETIME:
+			case MappingAbstract::TYPE_DATETIME:
 				return new DateTime($data);
 				break;
 
 			default:
-			case self::TYPE_STRING:
+			case MappingAbstract::TYPE_STRING:
 				return (string) $data;
 				break;
 		}
@@ -92,18 +84,18 @@ abstract class DataHandlerQueryAbstract extends HandlerQueryAbstract
 	{
 		switch($type)
 		{
-			case self::TYPE_BOOLEAN:
+			case MappingAbstract::TYPE_BOOLEAN:
 				return $data ? 'true' : 'false';
 				break;
 
-			case self::TYPE_DATETIME:
+			case MappingAbstract::TYPE_DATETIME:
 				return $data instanceof DateTime ? $data->format(DateTime::RFC3339) : (string) $data;
 				break;
 
 			default:
-			case self::TYPE_INTEGER:
-			case self::TYPE_FLOAT:
-			case self::TYPE_STRING:
+			case MappingAbstract::TYPE_INTEGER:
+			case MappingAbstract::TYPE_FLOAT:
+			case MappingAbstract::TYPE_STRING:
 				return (string) $data;
 				break;
 		}

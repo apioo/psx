@@ -21,45 +21,39 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Handler\Dom;
+namespace PSX\Handler\Manager;
 
-use DOMDocument;
-use PSX\Handler\MappingAbstract;
+use PDO;
+use PSX\Handler\HandlerManagerInterface;
 
 /**
- * Mapping
+ * PdoManager
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Mapping extends MappingAbstract
+class PdoManager implements HandlerManagerInterface
 {
-	protected $dom;
-	protected $root;
-	protected $record;
+	/**
+	 * @var PDO
+	 */
+	protected $pdo;
 
-	public function __construct(DOMDocument $dom, $root, $record, array $fields)
+	protected $_container;
+
+	public function __construct(PDO $pdo)
 	{
-		parent::__construct($fields);
-
-		$this->dom    = $dom;
-		$this->root   = $root;
-		$this->record = $record;
+		$this->pdo = $pdo;
 	}
 
-	public function getDom()
+	public function getHandler($className)
 	{
-		return $this->dom;
-	}
+		if(!isset($this->_container[$className]))
+		{
+			$this->_container[$className] = new $className($this->pdo);
+		}
 
-	public function getRoot()
-	{
-		return $this->root;
-	}
-
-	public function getRecord()
-	{
-		return $this->record;
+		return $this->_container[$className];
 	}
 }

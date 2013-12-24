@@ -24,6 +24,7 @@
 namespace PSX\Handler\Map;
 
 use PSX\Handler\MapHandlerAbstract;
+use PSX\Handler\MappingAbstract;
 
 /**
  * TestHandler
@@ -37,10 +38,10 @@ class TestHandler extends MapHandlerAbstract
 	public function getMapping()
 	{
 		return new Mapping($this->getArray(), array(
-			'id'     => self::TYPE_INTEGER | 10 | self::ID_PROPERTY,
-			'userId' => self::TYPE_INTEGER | 10,
-			'title'  => self::TYPE_STRING | 32,
-			'date'   => self::TYPE_DATETIME,
+			'id'     => MappingAbstract::TYPE_INTEGER | 10 | MappingAbstract::ID_PROPERTY,
+			'userId' => MappingAbstract::TYPE_INTEGER | 10,
+			'title'  => MappingAbstract::TYPE_STRING | 32,
+			'date'   => MappingAbstract::TYPE_DATETIME,
 		));
 	}
 

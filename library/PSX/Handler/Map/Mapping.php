@@ -23,6 +23,8 @@
 
 namespace PSX\Handler\Map;
 
+use PSX\Handler\MappingAbstract;
+
 /**
  * Mapping
  *
@@ -30,36 +32,19 @@ namespace PSX\Handler\Map;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Mapping
+class Mapping extends MappingAbstract
 {
 	protected $array;
-	protected $fields;
-
-	protected $idProperty = 'id';
 
 	public function __construct(array $array, array $fields)
 	{
-		$this->array  = $array;
-		$this->fields = $fields;
+		parent::__construct($fields);
+
+		$this->array = $array;
 	}
 
 	public function getArray()
 	{
 		return $this->array;
-	}
-
-	public function getFields()
-	{
-		return $this->fields;
-	}
-
-	public function getIdProperty()
-	{
-		return $this->idProperty;
-	}
-
-	public function setIdProperty($idProperty)
-	{
-		$this->idProperty = $idProperty;
 	}
 }

@@ -21,45 +21,27 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Handler\Dom;
+namespace PSX\Handler\Mongodb;
 
-use DOMDocument;
+use PSX\Handler\MongodbHandlerAbstract;
 use PSX\Handler\MappingAbstract;
 
 /**
- * Mapping
+ * TestHandler
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Mapping extends MappingAbstract
+class TestHandler extends MongodbHandlerAbstract
 {
-	protected $dom;
-	protected $root;
-	protected $record;
-
-	public function __construct(DOMDocument $dom, $root, $record, array $fields)
+	public function getMapping()
 	{
-		parent::__construct($fields);
-
-		$this->dom    = $dom;
-		$this->root   = $root;
-		$this->record = $record;
-	}
-
-	public function getDom()
-	{
-		return $this->dom;
-	}
-
-	public function getRoot()
-	{
-		return $this->root;
-	}
-
-	public function getRecord()
-	{
-		return $this->record;
+		return new Mapping($this->client->selectCollection('psx', 'psx_handler_comment'), array(
+			'id'     => MappingAbstract::TYPE_INTEGER | 10 | MappingAbstract::ID_PROPERTY,
+			'userId' => MappingAbstract::TYPE_INTEGER | 10,
+			'title'  => MappingAbstract::TYPE_STRING | 32,
+			'date'   => MappingAbstract::TYPE_DATETIME,
+		));
 	}
 }

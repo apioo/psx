@@ -23,23 +23,31 @@
 
 namespace PSX\Handler;
 
+use DateTime;
+use PDO;
+use BadMethodCallException;
+use InvalidArgumentException;
+use PSX\Data\ResultSet;
 use PSX\Data\Record;
+use PSX\Data\RecordInterface;
 use PSX\Sql;
 use PSX\Sql\Condition;
+use PSX\Sql\TableInterface;
 
 /**
- * Handler wich can query an array to select fields
+ * Handler wich uses native sql queries to obtain the fields
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-abstract class MapHandlerAbstract extends DataHandlerQueryAbstract
+abstract class PdoHandlerAbstract extends DataHandlerQueryAbstract
 {
-	protected $mapping;
+	protected $pdo;
 
-	public function __construct()
+	public function __construct(PDO $pdo)
 	{
+		$this->pdo     = $pdo;
 		$this->mapping = $this->getMapping();
 	}
 
@@ -50,21 +58,13 @@ abstract class MapHandlerAbstract extends DataHandlerQueryAbstract
 		$sortBy     = $sortBy     !== null ? $sortBy               : $this->mapping->getIdProperty();
 		$sortOrder  = $sortOrder  !== null ? (integer) $sortOrder  : Sql::SORT_DESC;
 
-		$fields = array_intersect($fields, $this->getSupportedFields());
+		$statment = $this->getSelectStatment($fields, $startIndex, $count, $sortBy, $sortOrder, $con);
+		$result   = $statment->fetchAll(PDO::FETCH_ASSOC);
+		$return   = array();
 
-		if(empty($fields))
+		foreach($result as $entry)
 		{
-			$fields = $this->getSupportedFields();
-		}
-
-		$array   = $this->mapping->getArray();
-		$sort    = array();
-		$return  = array();
-
-		foreach($array as $entry)
-		{
-			$row       = array();
-			$sortValue = null;
+			$row = array();
 
 			foreach($entry as $key => $value)
 			{
@@ -73,46 +73,14 @@ abstract class MapHandlerAbstract extends DataHandlerQueryAbstract
 					if($key == $field)
 					{
 						$row[$field] = $this->unserializeType($value, $type);
-
-						if($sortBy == $field)
-						{
-							$sortValue = $row[$field];
-						}
 					}
 				}
 			}
 
-			if($con !== null && $con->hasCondition())
-			{
-				if(!$this->isConditionFulfilled($con, $row))
-				{
-					continue;
-				}
-			}
-
-			$return[] = $row;
-			$sort[]   = $sortValue;
+			$return[] = new Record('record', $row);
 		}
 
-		// sort
-		if($sortOrder == Sql::SORT_ASC)
-		{
-			asort($sort);
-		}
-		else
-		{
-			arsort($sort);
-		}
-
-		$result = array();
-		foreach($sort as $key => $value)
-		{
-			$row = array_intersect_key($return[$key], array_flip($fields));
-
-			$result[] = new Record('record', $row);
-		}
-
-		return array_slice($result, $startIndex, $count);
+		return $return;
 	}
 
 	public function get($id, array $fields = array())
@@ -129,36 +97,10 @@ abstract class MapHandlerAbstract extends DataHandlerQueryAbstract
 
 	public function getCount(Condition $con = null)
 	{
-		$count = 0;
-		$array = $this->mapping->getArray();
+		$statment = $this->getCountStatment($con);
+		$result   = $statment->fetch(PDO::FETCH_NUM);
 
-		foreach($array as $entry)
-		{
-			$row = array();
-
-			foreach($entry as $key => $value)
-			{
-				foreach($this->mapping->getFields() as $field => $type)
-				{
-					if($key == $field)
-					{
-						$row[$field] = $this->unserializeType($value, $type);
-					}
-				}
-			}
-
-			if($con !== null && $con->hasCondition())
-			{
-				if(!$this->isConditionFulfilled($con, $row))
-				{
-					continue;
-				}
-			}
-
-			$count++;
-		}
-
-		return $count;
+		return (integer) $result[0];
 	}
 
 	public function getRecord($id = null)
@@ -180,9 +122,23 @@ abstract class MapHandlerAbstract extends DataHandlerQueryAbstract
 	}
 
 	/**
-	 * Returns the mapping informations for this document
+	 * Returns the mapping informations about this query
 	 *
-	 * @return PSX\Handler\Map\Mapping
+	 * @return string
 	 */
 	abstract public function getMapping();
+
+	/**
+	 * Returns the sql select query
+	 *
+	 * @return PDOStatement
+	 */
+	abstract public function getSelectStatment(array $fields = array(), $startIndex = 0, $count = 16, $sortBy = null, $sortOrder = null, Condition $con = null);
+
+	/**
+	 * Returns the sql count query
+	 *
+	 * @return PDOStatement
+	 */
+	abstract public function getCountStatment(Condition $con = null);
 }

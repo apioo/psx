@@ -53,6 +53,6 @@ class DoctrineHandlerTest extends DbTestCase
 
 	protected function getHandler()
 	{
-		return new Doctrine\TestHandler(getContainer()->get('entityManager'));
+		return new Doctrine\TestHandler(getContainer()->get('entity_manager'));
 	}
 }

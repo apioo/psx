@@ -21,9 +21,9 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Handler\Dom;
+namespace PSX\Handler\Mongodb;
 
-use DOMDocument;
+use MongoCollection;
 use PSX\Handler\MappingAbstract;
 
 /**
@@ -35,31 +35,17 @@ use PSX\Handler\MappingAbstract;
  */
 class Mapping extends MappingAbstract
 {
-	protected $dom;
-	protected $root;
-	protected $record;
+	protected $collection;
 
-	public function __construct(DOMDocument $dom, $root, $record, array $fields)
+	public function __construct(MongoCollection $collection, array $fields)
 	{
 		parent::__construct($fields);
 
-		$this->dom    = $dom;
-		$this->root   = $root;
-		$this->record = $record;
+		$this->collection = $collection;
 	}
 
-	public function getDom()
+	public function getCollection()
 	{
-		return $this->dom;
-	}
-
-	public function getRoot()
-	{
-		return $this->root;
-	}
-
-	public function getRecord()
-	{
-		return $this->record;
+		return $this->collection;
 	}
 }

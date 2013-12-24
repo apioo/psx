@@ -39,11 +39,4 @@ use PSX\Sql\Condition;
  */
 interface HandlerInterface extends HandlerQueryInterface, HandlerManipulationInterface
 {
-	const ID_PROPERTY   = 0x1;
-
-	const TYPE_INTEGER  = 0x1;
-	const TYPE_FLOAT    = 0x1;
-	const TYPE_STRING   = 0x1;
-	const TYPE_BOOLEAN  = 0x1;
-	const TYPE_DATETIME = 0x1;
 }
