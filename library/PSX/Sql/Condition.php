@@ -278,9 +278,7 @@ class Condition implements Countable
 	}
 
 	/**
-	 * Returns the conditions as SQL wich can be appended to any query. If the
-	 * value is an string the mysql_real_escape_string function is used to
-	 * escape
+	 * Returns and identifier wich represents the values from this condition
 	 *
 	 * @return string
 	 */
@@ -288,48 +286,41 @@ class Condition implements Countable
 	{
 		if($this->str === null)
 		{
-			if(!empty($this->values))
+			$len        = count($this->values);
+			$conditions = '';
+
+			foreach($this->values as $i => $value)
 			{
-				$len        = count($this->values);
-				$conditions = '';
-
-				foreach($this->values as $i => $value)
+				switch($value[self::TYPE])
 				{
-					switch($value[self::TYPE])
-					{
-						case self::TYPE_RAW:
+					case self::TYPE_RAW:
 
-							$conditions.= $value[self::COLUMN] . ' ' . $value[self::OPERATOR] . ' ' . $value[self::VALUE];
-							break;
+						$conditions.= $value[self::COLUMN] . '-' . $value[self::OPERATOR] . '-' . $value[self::VALUE];
+						break;
 
-						case self::TYPE_IN:
+					case self::TYPE_IN:
 
-							$params = array();
+						$params = array();
 
-							foreach($value[self::VALUE] as $val)
-							{
-								$params[] = self::escape($val);
-							}
+						foreach($value[self::VALUE] as $val)
+						{
+							$params[] = $val;
+						}
 
-							$conditions.= $value[self::COLUMN] . ' IN (' . implode(',', $params) . ')';
-							break;
+						$conditions.= $value[self::COLUMN] . '-' . implode(',', $params);
+						break;
 
-						case self::TYPE_SCALAR:
-						default:
+					case self::TYPE_SCALAR:
+					default:
 
-							$conditions.= $value[self::COLUMN] . ' ' . $value[self::OPERATOR] . ' ' . self::escape($value[self::VALUE]);
-							break;
-					}
-
-					$conditions.= ($i < $len - 1) ? ' ' . $value[self::CONJUNCTION] . ' ' : '';
+						$conditions.= $value[self::COLUMN] . '-' . $value[self::OPERATOR] . '-' . $value[self::VALUE];
+						break;
 				}
 
-				return $this->str = 'WHERE ' . $conditions;
+				$conditions.= ($i < $len - 1) ? ' ' . $value[self::CONJUNCTION] . ' ' : '';
 			}
-			else
-			{
-				return $this->str = '';
-			}
+
+			return $this->str = md5($conditions);
 		}
 		else
 		{
@@ -340,22 +331,6 @@ class Condition implements Countable
 	public function __tostring()
 	{
 		return $this->toString();
-	}
-
-	public static function escape($value)
-	{
-		if(is_int($value) || is_float($value) || is_bool($value))
-		{
-			return $value;
-		}
-		else if(is_null($value))
-		{
-			return 'NULL';
-		}
-		else
-		{
-			return '"' . mysql_real_escape_string($value) . '"';
-		}
 	}
 
 	public static function fromCriteria(array $criteria)
