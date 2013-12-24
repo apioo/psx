@@ -23,35 +23,35 @@
 
 namespace PSX\Handler\Manager;
 
-use PDO;
 use PSX\Handler\HandlerManagerInterface;
+use PSX\Http;
 
 /**
- * PdoManager
+ * HttpManager
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class PdoManager implements HandlerManagerInterface
+class HttpManager implements HandlerManagerInterface
 {
 	/**
-	 * @var PDO
+	 * @var PSX\Http
 	 */
-	protected $pdo;
+	protected $http;
 
 	protected $_container;
 
-	public function __construct(PDO $pdo)
+	public function __construct(Http $http)
 	{
-		$this->pdo = $pdo;
+		$this->http = $http;
 	}
 
 	public function getHandler($className)
 	{
 		if(!isset($this->_container[$className]))
 		{
-			$this->_container[$className] = new $className($this->pdo);
+			$this->_container[$className] = new $className($this->http);
 		}
 
 		return $this->_container[$className];

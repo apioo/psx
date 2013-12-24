@@ -37,8 +37,10 @@ use PSX\Data\Reader;
 use PSX\Data\ReaderFactory;
 use PSX\Data\Writer;
 use PSX\Data\WriterFactory;
-use PSX\Handler\Manager\DatabaseManager;
 use PSX\Domain\DomainManager;
+use PSX\Handler\Manager\DefaultManager;
+use PSX\Handler\Manager\DatabaseManager;
+use PSX\Handler\Manager\HttpManager;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
@@ -147,7 +149,7 @@ class DefaultContainer extends Container
 	}
 
 	/**
-	 * @return PSX\Sql
+	 * @return PSX\Sql\Connection
 	 */
 	public function getSql()
 	{
@@ -158,7 +160,7 @@ class DefaultContainer extends Container
 	}
 
 	/**
-	 * @return PSX\Template
+	 * @return PSX\TemplateInterface
 	 */
 	public function getTemplate()
 	{
@@ -205,15 +207,7 @@ class DefaultContainer extends Container
 	}
 
 	/**
-	 * @return PSX\Data\HandlerManagerInterface
-	 */
-	public function getDatabaseManager()
-	{
-		return new DatabaseManager($this->get('sql'));
-	}
-
-	/**
-	 * @return PSX\Data\DomainManagerInterface
+	 * @return PSX\Domain\DomainManagerInterface
 	 */
 	public function getDomainManager()
 	{
@@ -227,5 +221,63 @@ class DefaultContainer extends Container
 	{
 		return new EventDispatcher();
 	}
+
+	/**
+	 * @return PSX\Handler\HandlerManagerInterface
+	 */
+	public function getDefaultManager()
+	{
+		return new DefaultManager();
+	}
+
+	/**
+	 * @return PSX\Handler\HandlerManagerInterface
+	 */
+	public function getDatabaseManager()
+	{
+		return new DatabaseManager($this->get('sql'));
+	}
+
+	/**
+	 * @return PSX\Handler\HandlerManagerInterface
+	 */
+	public function getHttpManager()
+	{
+		return new HttpManager($this->get('http'));
+	}
+
+	/**
+	 * @return PSX\Handler\DoctrineManagerInterface
+	 */
+	/*
+	public function getDoctrineManager()
+	{
+		return new DoctrineManager($this->get('entityManager'));
+	}
+	*/
+
+	/**
+	 * @return Doctrine\ORM\EntityManager
+	 */
+	/*
+	public function getEntityManager()
+	{
+		$paths     = array(PSX_PATH_LIBRARY);
+		$isDevMode = $this->get('config')->get('psx_debug');
+		$dbParams  = array(
+			'driver'   => 'pdo_mysql',
+			'user'     => $this->get('config')->get('psx_sql_user'),
+			'password' => $this->get('config')->get('psx_sql_pw'),
+			'dbname'   => $this->get('config')->get('psx_sql_db'),
+		);
+
+		$config = Setup::createAnnotationMetadataConfiguration($paths, $isDevMode);
+		$config->addCustomHydrationMode(RecordHydrator::HYDRATE_RECORD, 'PSX\Handler\Doctrine\RecordHydrator');
+
+		$entityManager = EntityManager::create($dbParams, $config);
+
+		return $entityManager;
+	}
+	*/
 }
 
