@@ -26,13 +26,13 @@ namespace PSX\Handler;
 use PSX\Sql\DbTestCase;
 
 /**
- * MapHandlerTest
+ * PdoHandlerTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class MapHandlerTest extends DbTestCase
+class PdoHandlerTest extends DbTestCase
 {
 	use HandlerTestCase;
 
