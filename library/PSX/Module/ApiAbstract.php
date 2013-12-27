@@ -91,33 +91,6 @@ abstract class ApiAbstract extends ModuleAbstract
 	}
 
 	/**
-	 * Returns wich fetch mode should be used. For json and xml we can use 
-	 * assoc because the writer can simply transform an array. For more complex
-	 * formats like atom we need objects
-	 *
-	 * @return integer
-	 */
-	protected function getMode()
-	{
-		$format = isset($_GET['format']) ? $_GET['format'] : null;
-
-		switch($format)
-		{
-			case 'atom':
-			case 'rss':
-				return Sql::FETCH_OBJECT;
-				break;
-
-			case 'json':
-			case 'jsonp':
-			case 'xml':
-			default:
-				return Sql::FETCH_ASSOC;
-				break;
-		}
-	}
-
-	/**
 	 * Returns an associative array containing all available request parameters
 	 *
 	 * @return array
@@ -224,24 +197,15 @@ abstract class ApiAbstract extends ModuleAbstract
 	protected function setResponse(RecordInterface $record, $writerType = null, $code = 200)
 	{
 		// set response code
-		Base::setResponseCode($code);
+		if($code !== null)
+		{
+			Base::setResponseCode($code);
+		}
 
 		// find best writer type if not set
 		if($writerType === null)
 		{
-			$formats = array(
-				'atom'  => Writer\Atom::$mime,
-				'form'  => Writer\Form::$mime,
-				'json'  => Writer\Json::$mime,
-				'rss'   => Writer\Rss::$mime,
-				'xml'   => Writer\Xml::$mime,
-				'jsonp' => Writer\Jsonp::$mime,
-			);
-
-			$format      = isset($_GET['format']) ? $_GET['format'] : null;
-			$contentType = isset($formats[$format]) ? $formats[$format] : Base::getRequestHeader('Accept');
-
-			$writer = $this->container->get('writerFactory')->getWriterByContentType($contentType);
+			$writer = $this->getPreferredWriter();
 		}
 		else
 		{
@@ -263,7 +227,12 @@ abstract class ApiAbstract extends ModuleAbstract
 		// send content type header if not sent
 		if(!Base::hasHeaderSent('Content-Type'))
 		{
-			header('Content-Type: ' . $writer->getContentType());
+			$contentType = $writer->getContentType();
+
+			if($contentType !== null)
+			{
+				header('Content-Type: ' . $contentType);
+			}
 		}
 
 		// for iframe file uploads we need an text/html content type header even 
@@ -277,5 +246,37 @@ abstract class ApiAbstract extends ModuleAbstract
 
 		echo $response;
 	}
-}
 
+	/**
+	 * Returns the write wich gets used if no writer was explicit selected
+	 *
+	 * @return PSX\Data\WriterInterface
+	 */
+	protected function getPreferredWriter()
+	{
+		$formats = array(
+			'atom'  => Writer\Atom::$mime,
+			'form'  => Writer\Form::$mime,
+			'json'  => Writer\Json::$mime,
+			'rss'   => Writer\Rss::$mime,
+			'xml'   => Writer\Xml::$mime,
+			'jsonp' => Writer\Jsonp::$mime,
+		);
+
+		$format      = isset($_GET['format']) ? $_GET['format'] : null;
+		$contentType = isset($formats[$format]) ? $formats[$format] : Base::getRequestHeader('Accept');
+
+		return $this->container->get('writerFactory')->getWriterByContentType($contentType);
+	}
+
+	/**
+	 * Checks whether the preferred writer is an instance of the writer class
+	 *
+	 * @param string $writerClass
+	 * @return boolean
+	 */
+	protected function isWriter($writerClass)
+	{
+		return $this->getPreferredWriter() instanceof $writerClass;
+	}
+}

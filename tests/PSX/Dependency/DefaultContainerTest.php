@@ -61,7 +61,7 @@ class DefaultContainerTest extends \PHPUnit_Framework_TestCase
 		$this->assertInstanceOf('PSX\Validate', $container->get('validate'));
 		$this->assertInstanceOf('PSX\Data\ReaderFactory', $container->get('reader_factory'));
 		$this->assertInstanceOf('PSX\Data\WriterFactory', $container->get('writer_factory'));
-		$this->assertInstanceOf('PSX\Handler\HandlerManagerInterface', $container->get('database_manager'));
+		//$this->assertInstanceOf('PSX\Handler\HandlerManagerInterface', $container->get('database_manager'));
 		$this->assertInstanceOf('PSX\Domain\DomainManagerInterface', $container->get('domain_manager'));
 		$this->assertInstanceOf('Symfony\Component\EventDispatcher\EventDispatcherInterface', $container->get('event_dispatcher'));
 	}

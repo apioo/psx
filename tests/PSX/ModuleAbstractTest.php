@@ -23,11 +23,16 @@
 
 namespace PSX;
 
+use PSX\Data\ReaderInterface;
+use PSX\Data\Record;
 use PSX\Loader\Location;
+use PSX\Module\TestModule;
 use ReflectionClass;
 
 /**
- * ModuleAbstractTest
+ * This test set the methods wich are available in an module fix. If we change a
+ * method this test will fails. This should make the api more solid since these
+ * are the methods wich are used in an application we can not easily change them
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
@@ -108,17 +113,111 @@ class ModuleAbstractTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('foo', $module->processResponse('foo'));
 	}
 
+	public function testGetContainer()
+	{
+		$module = $this->getModule();
+
+		$this->assertInstanceOf('Symfony\Component\DependencyInjection\ContainerInterface', $module->callMethod('getContainer'));
+	}
+
+	public function testGetLocation()
+	{
+		$module   = $this->getModule();
+		$location = $module->callMethod('getLocation');
+
+		$this->assertInstanceOf('PSX\Loader\Location', $location);
+		$this->assertEquals('foo', $location->getId());
+		$this->assertEquals('', $location->getPath());
+		$this->assertInstanceOf('ReflectionClass', $location->getClass());
+	}
+
+	public function testGetBase()
+	{
+		$module = $this->getModule();
+
+		$this->assertInstanceOf('PSX\Base', $module->callMethod('getBase'));
+	}
+
+	public function testGetBasePath()
+	{
+		$module = $this->getModule();
+
+		$this->assertEquals('', $module->callMethod('getBasePath'));
+	}
+
+	public function testGetUriFragments()
+	{
+		$module = $this->getModule();
+
+		$this->assertTrue(is_array($module->callMethod('getUriFragments')));
+	}
+
+	public function testGetConfig()
+	{
+		$module = $this->getModule();
+
+		$this->assertInstanceOf('PSX\Config', $module->callMethod('getConfig'));
+	}
+
+	public function testGetMethod()
+	{
+		$module = $this->getModule();
+
+		$this->assertEquals('GET', $module->callMethod('getMethod'));
+	}
+
+	public function testGetUrl()
+	{
+		$module = $this->getModule();
+
+		$this->assertInstanceOf('PSX\Url', $module->callMethod('getUrl'));
+	}
+
+	public function testGetHeader()
+	{
+		$module = $this->getModule();
+
+		$this->assertTrue(is_array($module->callMethod('getHeader')));
+	}
+
+	public function testGetParameter()
+	{
+		$module = $this->getModule();
+
+		$this->assertInstanceOf('PSX\Input', $module->callMethod('getParameter'));
+	}
+
+	public function testGetBody()
+	{
+		$module = $this->getModule();
+
+		$this->assertInstanceOf('PSX\Http\Message', $module->callMethod('getBody', array(ReaderInterface::RAW)));
+	}
+
+	public function testImport()
+	{
+		$record = new Record('foo', array('bar' => 'foo'));
+		$module = $this->getModule();
+
+		$module->callMethod('import', array($record, ReaderInterface::FORM));
+
+		$this->assertInstanceOf('PSX\Data\RecordInterface', $record);
+	}
+
+	public function testGetRequestReader()
+	{
+		$module = $this->getModule();
+
+		$this->assertInstanceOf('PSX\Data\Reader\Raw', $module->callMethod('getRequestReader', array(ReaderInterface::RAW)));
+	}
+
 	protected function getModule()
 	{
 		$container    = getContainer();
-		$location     = new Location('foo', '', new ReflectionClass('PSX\TestModule'));
+		$location     = new Location('foo', '', new ReflectionClass('PSX\Module\TestModule'));
 		$basePath     = '';
 		$uriFragments = array();
 
 		return new TestModule($container, $location, $basePath, $uriFragments);
 	}
-}
-
-class TestModule extends ModuleAbstract
-{
 }

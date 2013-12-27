@@ -26,9 +26,11 @@ namespace PSX;
 use InvalidArgumentException;
 use PSX\Data\NotFoundException;
 use PSX\Data\ReaderFactory;
+use PSX\Data\Record\ImporterInterface;
 use PSX\Dependency;
 use PSX\Loader\Location;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use RuntimeException;
 
 /**
  * ModuleAbstract
@@ -56,7 +58,6 @@ abstract class ModuleAbstract
 	protected $config;
 
 	protected $parameter;
-	protected $body;
 	protected $requestReader;
 
 	public function __construct(ContainerInterface $container, Location $location, $basePath, array $uriFragments)
@@ -261,34 +262,36 @@ abstract class ModuleAbstract
 	}
 
 	/**
+	 * Returns the result of the reader 
+	 *
+	 * @param string $readerType
+	 * @return mixed
+	 */
+	protected function getBody($readerType = null)
+	{
+		return $this->getRequestReader($readerType)->read($this->base->getRequest());
+	}
+
+	/**
 	 * Uses the request reader to import the data from the given request into
 	 * the record
 	 *
 	 * @param PSX\Data\RecordInterface $record
 	 * @param string $readerType
 	 */
-	protected function getBody($record, $readerType = null)
+	protected function import($record, $readerType = null)
 	{
-		if($this->body === null)
+		$reader   = $this->getRequestReader($readerType);
+		$importer = $reader->getDefaultImporter();
+
+		if($importer instanceof ImporterInterface)
 		{
-			$reader = $this->getRequestReader($readerType);
-			$body   = $reader->getDefaultImporter()->import($record, $reader->read($this->base->getRequest()));
-
-			$this->body = $body;
+			$importer->import($record, $reader->read($this->base->getRequest()));
 		}
-
-		return $this->body;
-	}
-
-	/**
-	 * Returns the result of the reader 
-	 *
-	 * @param string $readerType
-	 * @return mixed
-	 */
-	protected function getRequest($readerType = null)
-	{
-		return $this->getRequestReader($readerType)->read($this->base->getRequest());
+		else
+		{
+			throw new RuntimeException('Reader has no default importer');
+		}
 	}
 
 	/**
