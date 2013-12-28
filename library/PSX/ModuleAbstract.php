@@ -26,6 +26,7 @@ namespace PSX;
 use InvalidArgumentException;
 use PSX\Data\NotFoundException;
 use PSX\Data\ReaderFactory;
+use PSX\Data\RecordInterface;
 use PSX\Data\Record\ImporterInterface;
 use PSX\Dependency;
 use PSX\Loader\Location;
@@ -279,7 +280,7 @@ abstract class ModuleAbstract
 	 * @param PSX\Data\RecordInterface $record
 	 * @param string $readerType
 	 */
-	protected function import($record, $readerType = null)
+	protected function import(RecordInterface $record, $readerType = null)
 	{
 		$reader   = $this->getRequestReader($readerType);
 		$importer = $reader->getDefaultImporter();
