@@ -1,15 +1,19 @@
 
 0.8
 * Added domain package. The package helps you to create your application in a 
-  domain driven design manner
+  domain driven design
 * Fully support symfony di container
 * Introduced importer concept. An importer is a class wich can fill a record 
   with data
 * Every record has now a single method getRecordInfo() wich returns all
   available fields. Removed all other methods from the record interface
+* Added mapper class to map an record to another class by calling the fitting
+  setter methods
 * It is possible to add reader and writer implementations to the reader or 
   writer factory
-* Added symfony event dispatcher
+* Improved html parser. Add an option to allow html comments wich is false by
+  default
+* Added symfony event dispatcher for event handling in an domain
 * A new handler package was added wich contains all handler related classes
 * Added filter definition class to validate a record based on a set of rules
 
