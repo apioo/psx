@@ -197,10 +197,12 @@ class News extends ModuleAbstract
 		wich endpoints can be requested by your application</para>
 	</chapter>
 
+	<!--
 	<chapter id="domain">
 		<title>Domain</title>
 		<para></para>
 	</chapter>
+	-->
 
 	<chapter id="developing-restful-api">
 		<title>Developing a RESTful API</title>
@@ -277,10 +279,11 @@ class Handler extends DatabaseHandlerAbstract
 				<programlisting role="php"><![CDATA[
 <?php
 
-namespace Test\News;
+namespace Sample\News;
 
 use DateTime;
 use PSX\Data\RecordInterface;
+use PSX\Data\RecordEvent;
 use PSX\Domain\DomainAbstract;
 use PSX\Filter;
 use PSX\Filter\Definition\Property;
@@ -387,74 +390,90 @@ class Index extends ApiAbstract
 				</methodname> method with the <classname>PSX\Data\ResultSet</classname> object the object is transformed 
 				into the preferred format (wich was set either by the <property>GET</property> parameter "format" or by 
 				the "Accept" header field).</para>
-
-				<para>Because we want create <property>Atom</property> and <property>Rss</property> feeds we have to create
-				an Atom and Rss record and pass it to the <methodname>setResponse</methodname> method. We can map our
-				existing records in the resultset to the entries:
+				<para>Because we want create an <property>Atom</property> feed we have to create an Atom record and 
+				pass it to the <methodname>setResponse</methodname> method. We can map our existing records in the resultset 
+				to the entries:</para>
 				<example>
-					<title>library/Sample/News/Api/Index.php (implement <methodname>setWriterConfig</methodname> method)</title>
+					<title>library/Sample/News/Api/Index.php (implement <methodname>getAtomRecord</methodname> method)</title>
 					<programlisting role="php"><![CDATA[
-protected function setWriterConfig(WriterResult $writer)
+protected function getAtomRecord(RecordInterface $result)
 {
-	switch($writer->getType())
+	$atom = new Atom();
+	$atom->setTitle('News');
+	$atom->setId(Uuid::nameBased($this->config['psx_url']));
+	$atom->setUpdated($result->current()->getDate());
+
+	$mapper = new Mapper();
+	$mapper->setRule(array(
+		'id'    => 'id',
+		'title' => 'title',
+		'text'  => new Rule('summary', function($text, array $row){
+			return new Text($text, 'text');
+		}),
+		'date'  => 'updated',
+	));
+
+	foreach($result as $row)
 	{
-		case WriterInterface::RSS:
-			$title       = 'News';
-			$link        = $this->getConfig()->get('psx_url');
-			$description = 'Sample RESTful News API based on PSX ';
+		$entry = new Atom\Entry();
+		$mapper->map($row, $entry);
 
-			$writer = $writer->getWriter();
-			$writer->setConfig($title, $link, $description);
-			$writer->setGenerator('psx ' . Base::getVersion());
-			break;
-
-		case WriterInterface::ATOM:
-			$title   = 'News';
-			$id      = $this->getBase()->getUrn('news');
-			$updated = new DateTime($this->handler->getUpdated());
-
-			$writer = $writer->getWriter();
-			$writer->setConfig($title, $id, $updated);
-			$writer->setGenerator('psx ' . Base::getVersion());
-			break;
+		$atom->add($entry);
 	}
+
+	return $atom;
 }
 					]]></programlisting>
 				</example>
-				<para>Because we want that the record can be exported in <property>Atom</property> and <property>Rss
-				</property> we have to specific the method <methodname>export</methodname> in the <classname>
-				Sample\News\Record</classname>. By default JSON and XML is supported.</para>
+				<para>Now we have to convert our result set through the method <methodname>getAtomRecord</methodname>
+				wich we have created if we create an ATOM feed.</para>
 				<example>
-					<title>library/Sample/News/Record.php (implement <methodname>export</methodname> method)</title>
+					<title>library/Sample/News/Api/Index.php (update <methodname>doIndex</methodname> method)</title>
 					<programlisting role="php"><![CDATA[
-public function export(WriterResult $result)
+/**
+ * @httpMethod GET
+ * @path /
+ */
+public function doIndex()
 {
-	switch($result->getType())
+	try
 	{
-		case WriterInterface::RSS:
-			$item = $result->getWriter()->createItem();
+		$params = $this->getRequestParams();
+		$fields = (array) $params['fields'];
 
-			$item->setTitle($this->title);
-			$item->setGuid('urn:uuid:' . Uuid::nameBased('test:' . $this->id));
-			$item->setDescription($this->text);
+		$news = $this->getDomainManager()
+			->getDomain('Sample\News\Domain')
+			->getAllNews($fields, 
+				$params['startIndex'], 
+				$params['count'], 
+				$params['sortBy'], 
+				$params['sortOrder'], 
+				$this->getRequestCondition());
 
-			return $item;
-			break;
+		if($this->isWriter(WriterInterface::ATOM))
+		{
+			$this->setResponse($this->getAtomRecord($result));
+		}
+		else
+		{
+			$this->setResponse($result);
+		}
+	}
+	catch(\Exception $e)
+	{
+		if($this->isWriter(WriterInterface::ATOM))
+		{
+			$msg = new Entry();
+			$msg->setId(Uuid::nameBased($e->getMessage()));
+			$msg->setTitle($e->getMessage());
+			$msg->setUpdated(new DateTime());
+		}
+		else
+		{
+			$msg = new Message($e->getMessage(), false);
+		}
 
-		case WriterInterface::ATOM:
-			$entry = $result->getWriter()->createEntry();
-
-			$entry->setTitle($this->title);
-			$entry->setId('urn:uuid:' . Uuid::nameBased('test:' . $this->id));
-			$entry->setUpdated($this->getDate());
-			$entry->setContent($this->text, 'html');
-
-			return $entry;
-			break;
-
-		default:
-			return parent::export($result);
-			break;
+		$this->setResponse($msg);
 	}
 }
 					]]></programlisting>
@@ -504,8 +523,7 @@ Content-Type: application/xml
 			<sect2>
 				<title>Inserting</title>
 				<para>If someone makes a <property>POST</property> request we want insert the news in the table. We 
-				create a new <classname>Sample\News\Record</classname> object and import the request data into the 
-				record.</para>
+				get a new record through the handler and import the data through the <methodname>import</methodname> method.</para>
 				<example>
 					<title>library/Sample/News/Api/Index.php (implement <methodname>insertNews</methodname> method)</title>
 					<programlisting role="php"><![CDATA[
@@ -517,12 +535,16 @@ public function insertNews()
 {
 	try
 	{
-		$record = $this->handler->getRecord();
-		$record->import($this->getRequest());
+		$record = $this->getDatabaseManager()
+			->getHandler('Sample\News\Handler')
+			->getRecord();
+
+		$this->import($record);
 
 		// insert
-		$this->handler->create($record);
-
+		$news = $this->getDomainManager()
+			->getDomain('Sample\News\Domain')
+			->insertNews($record);
 
 		$msg = new Message('You have successful create a ' . $record->getName(), true);
 
@@ -582,7 +604,7 @@ Content-Type: application/xml
 		<sect1>
 			<title>Conclusion</title>
 			<para>This example has shown you howto build an API with PSX wich serves content in <property>Atom
-			</property>, <property>RSS</property>, <property>Json</property> and <property>XML</property> on an 
+			</property>, <property>Json</property> and <property>XML</property> on an 
 			<property>GET</property> request. Also it is possible to insert new records with a <property>POST</property> 
 			request. You can specify the fields wich are selected with the parameter fields i.e. "fields=id,title" to 
 			select only the id and title.</para>
