@@ -50,9 +50,24 @@ class Annotation
 			if($line[0] == '@')
 			{
 				$line = substr($line, 1);
+				$sp   = strpos($line, ' ');
+				$bp   = strpos($line, '(');
 
-				if(($pos = strpos($line, ' ')) !== false || ($pos = strpos($line, '(')) !== false)
+				if($sp !== false || $bp !== false)
 				{
+					if($sp !== false && $bp === false)
+					{
+						$pos = $sp;
+					}
+					else if($sp === false && $bp !== false)
+					{
+						$pos = $bp;
+					}
+					else
+					{
+						$pos = $sp < $bp ? $sp : $bp;
+					}
+
 					$key   = substr($line, 0, $pos);
 					$value = substr($line, $pos);
 				}

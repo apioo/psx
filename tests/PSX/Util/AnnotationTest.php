@@ -54,6 +54,9 @@ DOC;
 
 		$this->assertEquals('string $tableName', $doc->getFirstAnnotation('param'));
 		$this->assertEquals('PSX\Sql\TableInterface', $doc->getFirstAnnotation('return'));
+		$this->assertEquals(array('string $tableName'), $doc->getAnnotation('param'));
+		$this->assertTrue($doc->hasAnnotation('param'));
+		$this->assertEquals(array('param' => array('string $tableName'), 'return' => array('PSX\Sql\TableInterface')), $doc->getAnnotations());
 	}
 
 	public function testParseDoctrine()
@@ -72,6 +75,20 @@ DOC;
 		$this->assertEquals('string $tableName', $doc->getFirstAnnotation('param'));
 		$this->assertEquals('foo(bar)', $doc->getFirstAnnotation('author'));
 		$this->assertEquals('(type="string")', $doc->getFirstAnnotation('Column'));
+	}
+
+	public function testParseDoctrineMultipleParameters()
+	{
+		$comment = <<<'DOC'
+/**
+ * foobar
+ *
+ * @Column(name="foobar", type="string")
+ */
+DOC;
+		$doc = Annotation::parse($comment);
+
+		$this->assertEquals('(name="foobar", type="string")', $doc->getFirstAnnotation('Column'));
 	}
 
 	public function testParseMultiple()

@@ -69,7 +69,7 @@ class DocBlock
 		}
 	}
 
-	public function hasAnnotation()
+	public function hasAnnotation($key)
 	{
 		return isset($this->annotations[$key]);
 	}
