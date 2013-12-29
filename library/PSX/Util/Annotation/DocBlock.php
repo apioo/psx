@@ -32,8 +32,7 @@ namespace PSX\Util\Annotation;
  */
 class DocBlock
 {
-	private $annotations = array();
-	private $text;
+	protected $annotations = array();
 
 	/**
 	 * Adds an annotation
@@ -101,32 +100,5 @@ class DocBlock
 		$annotation = $this->getAnnotation($key);
 
 		return isset($annotation[0]) ? $annotation[0] : null;
-	}
-
-	/**
-	 * Sets the docblock body text that means all content wich is not an
-	 * annotation (starts with @..)
-	 *
-	 * @param string $text
-	 * @return void
-	 */
-	public function setText($text)
-	{
-		$this->text = $text;
-	}
-
-	/**
-	 * Returns the text
-	 *
-	 * @return string
-	 */
-	public function getText()
-	{
-		return $this->text;
-	}
-
-	public function __toString()
-	{
-		return $this->getText();
 	}
 }

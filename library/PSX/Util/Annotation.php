@@ -26,7 +26,7 @@ namespace PSX\Util;
 use PSX\Util\Annotation\DocBlock;
 
 /**
- * Util class to parse docblooks annotations
+ * Util class to parse annotations
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
@@ -38,7 +38,6 @@ class Annotation
 	{
 		$block = new DocBlock();
 		$lines = explode("\n", $doc);
-		$text  = '';
 
 		// remove first line
 		unset($lines[0]);
@@ -51,9 +50,8 @@ class Annotation
 			if($line[0] == '@')
 			{
 				$line = substr($line, 1);
-				$pos  = strpos($line, ' ');
 
-				if($pos !== false)
+				if(($pos = strpos($line, ' ')) !== false || ($pos = strpos($line, '(')) !== false)
 				{
 					$key   = substr($line, 0, $pos);
 					$value = substr($line, $pos);
@@ -72,13 +70,7 @@ class Annotation
 					$block->addAnnotation($key, $value);
 				}
 			}
-			else
-			{
-				$text.= trim($line) . "\n";
-			}
 		}
-
-		$block->setText($text);
 
 		return $block;
 	}
