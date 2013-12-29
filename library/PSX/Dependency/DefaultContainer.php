@@ -31,6 +31,7 @@ use PSX\Input;
 use PSX\Loader;
 use PSX\Session;
 use PSX\Sql;
+use PSX\Sql\TableManager;
 use PSX\Template;
 use PSX\Validate;
 use PSX\Data\Reader;
@@ -231,11 +232,19 @@ class DefaultContainer extends Container
 	}
 
 	/**
+	 * @return PSX\Sql\TableManager
+	 */
+	public function getTableManager()
+	{
+		return new TableManager($this->get('sql'));
+	}
+
+	/**
 	 * @return PSX\Handler\HandlerManagerInterface
 	 */
 	public function getDatabaseManager()
 	{
-		return new DatabaseManager($this->get('sql'));
+		return new DatabaseManager($this->get('tableManager'));
 	}
 
 	/**

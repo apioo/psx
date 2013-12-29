@@ -25,6 +25,7 @@ namespace PSX\Handler\Database;
 
 use PSX\Handler\DatabaseHandlerAbstract;
 use PSX\Sql\Table;
+use PSX\Sql\TableAbstract;
 use PSX\Sql\TableInterface;
 
 /**
@@ -38,11 +39,24 @@ class TestHandler extends DatabaseHandlerAbstract
 {
 	public function getTable()
 	{
-		return new Table($this->sql, 'psx_handler_comment', array(
+		return $this->manager->getTable('PSX\Handler\Database\TestTable');
+	}
+}
+
+class TestTable extends TableAbstract
+{
+	public function getName()
+	{
+		return 'psx_handler_comment';
+	}
+
+	public function getColumns()
+	{
+		return array(
 			'id'     => TableInterface::TYPE_INT | 10 | TableInterface::PRIMARY_KEY | TableInterface::AUTO_INCREMENT,
 			'userId' => TableInterface::TYPE_INT | 10,
 			'title'  => TableInterface::TYPE_VARCHAR | 32,
 			'date'   => TableInterface::TYPE_DATETIME,
-		));
+		);
 	}
 }

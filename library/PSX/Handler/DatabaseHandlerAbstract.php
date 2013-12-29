@@ -32,6 +32,7 @@ use PSX\Data\RecordInterface;
 use PSX\Sql;
 use PSX\Sql\Condition;
 use PSX\Sql\TableInterface;
+use PSX\Sql\TableManager;
 
 /**
  * Database handler wich implements all necessary methods using an
@@ -45,15 +46,15 @@ use PSX\Sql\TableInterface;
  */
 abstract class DatabaseHandlerAbstract extends HandlerAbstract
 {
-	protected $sql;
+	protected $manager;
 	protected $table;
 
 	protected $_select;
 
-	public function __construct(Sql $sql)
+	public function __construct(TableManager $tm)
 	{
-		$this->sql   = $sql;
-		$this->table = $this->getTable();
+		$this->manager = $tm;
+		$this->table   = $this->getTable();
 	}
 
 	public function getAll(array $fields = array(), $startIndex = 0, $count = 16, $sortBy = null, $sortOrder = null, Condition $con = null)

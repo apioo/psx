@@ -36,22 +36,22 @@ use PSX\Sql;
 class DatabaseManager implements HandlerManagerInterface
 {
 	/**
-	 * @var PSX\Sql
+	 * @var PSX\Sql\TableManager
 	 */
-	protected $sql;
+	protected $tm;
 
 	protected $_container;
 
-	public function __construct(Sql $sql)
+	public function __construct(TableManager $tm)
 	{
-		$this->sql = $sql;
+		$this->tm = $tm;
 	}
 
 	public function getHandler($className)
 	{
 		if(!isset($this->_container[$className]))
 		{
-			$this->_container[$className] = new $className($this->sql);
+			$this->_container[$className] = new $className($this->tm);
 		}
 
 		return $this->_container[$className];

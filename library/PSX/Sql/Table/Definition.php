@@ -21,29 +21,40 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Handler;
-
-use PSX\Sql\DbTestCase;
-use PSX\Sql\TableManager;
+namespace PSX\Sql\Table;
 
 /**
- * DatabaseHandlerTest
+ * Definition
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class DatabaseHandlerTest extends DbTestCase
+class Definition
 {
-	use HandlerTestCase;
+	protected $name;
+	protected $columns = array();
+	protected $connections = array();
 
-	public function getDataSet()
+	public function __construct($name, array $columns, array $connections = array())
 	{
-		return $this->createFlatXMLDataSet(dirname(__FILE__) . '/handler_fixture.xml');
+		$this->name        = $name;
+		$this->columns     = $columns;
+		$this->connections = $connections;
 	}
 
-	protected function getHandler()
+	public function getName()
 	{
-		return new Database\TestHandler(new TableManager($this->sql));
+		return $this->name;
+	}
+
+	public function getColumns()
+	{
+		return $this->columns;
+	}
+
+	public function getConnections()
+	{
+		return $this->connections;
 	}
 }

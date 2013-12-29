@@ -21,29 +21,24 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Handler;
-
-use PSX\Sql\DbTestCase;
-use PSX\Sql\TableManager;
+namespace PSX\Sql\Table;
 
 /**
- * DatabaseHandlerTest
+ * The meta information how an table is structured can be read from different
+ * sources. I.e. an doctrine entity, calling sql describe etc. An reader is a 
+ * class wich extracts such informations
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class DatabaseHandlerTest extends DbTestCase
+interface ReaderInterface
 {
-	use HandlerTestCase;
-
-	public function getDataSet()
-	{
-		return $this->createFlatXMLDataSet(dirname(__FILE__) . '/handler_fixture.xml');
-	}
-
-	protected function getHandler()
-	{
-		return new Database\TestHandler(new TableManager($this->sql));
-	}
+	/**
+	 * Returns the table definition
+	 *
+	 * @param string $value
+	 * @return PSX\Sql\Table\Definition
+	 */
+	public function getTableDefinition($value);
 }
