@@ -81,17 +81,6 @@ interface TableInterface
 	const TYPE_SET        = 0x1F00000;
 
 	/**
-	 * Returns the relation between the table and columns
-	 *
-	 * array(
-	 * 	'column' => 'table'
-	 * )
-	 *
-	 * @return array
-	 */
-	public function getConnections();
-
-	/**
 	 * Returns the name of the table
 	 *
 	 * @return string
@@ -101,20 +90,22 @@ interface TableInterface
 	/**
 	 * Returns the columns of the table where the key is the name of the column
 	 * and the value contains OR connected informations. I.e.:
-	 *
+	 * <code>
 	 * array(
 	 *  'id'    => self::TYPE_INT | 10 | self::AUTO_INCREMENT | self::PRIMARY_KEY,
 	 *  'title' => self::TYPE_VARCHAR | 256
 	 * )
+	 * </code>
 	 *
 	 * For better understanding here an 32 bit integer representation of the
 	 * example above:
-	 *
+	 * <code>
 	 *             UNAP     T                L
 	 * array(      |||| |-------| |----------------------|
 	 *  'id'    => 0011 0000 0100 0000 0000 0000 0000 1010
 	 *  'title' => 0000 1100 0000 0000 0000 0001 0000 0000
 	 * )
+	 * </code>
 	 *
 	 * L: Length of the column max value is 0xFFFFF (decimal: 1048575)
 	 * T: Type of the column one of TYPE_* constant
@@ -128,10 +119,20 @@ interface TableInterface
 	public function getColumns();
 
 	/**
-	 * Returns the name of the record wich should contain only alpha characters.
-	 * Table names are typically seperated with _ (underscore). This method
-	 * should return the last part of the table name i.e. "amun_system_request"
-	 * should return "request"
+	 * Returns the relation between the table and columns
+	 *
+	 * array(
+	 * 	'column' => 'table'
+	 * )
+	 *
+	 * @return array
+	 */
+	public function getConnections();
+
+	/**
+	 * Returns an pretty representation of the table name. If the table is 
+	 * seperated with underscores the last part could be the display name i.e. 
+	 * "foo_bar" should return "bar"
 	 *
 	 * @return string
 	 */
@@ -187,8 +188,7 @@ interface TableInterface
 	public function getLastSelect();
 
 	/**
-	 * Returns a new record for the table. The class name is build from this
-	 * class without the "_Table" suffix. If an $id is provided the record
+	 * Returns a new record for the table. If an $id is provided the record
 	 * contains all fields from the table. If the record does not exist an
 	 * exception is thrown
 	 *
