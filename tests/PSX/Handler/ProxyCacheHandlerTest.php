@@ -33,6 +33,7 @@ use PSX\Sql\Join;
 use PSX\Sql\Table;
 use PSX\Sql\TableAbstract;
 use PSX\Sql\TableInterface;
+use PSX\Sql\TableManager;
 use PSX\Test\TableDataSet;
 
 /**
@@ -53,6 +54,6 @@ class ProxyCacheHandlerTest extends DbTestCase
 
 	protected function getHandler()
 	{
-		return new ProxyCacheHandler(new Database\TestHandler($this->sql), new CacheHandler\Null());
+		return new ProxyCacheHandler(new Database\TestHandler(new TableManager($this->sql)), new CacheHandler\Null());
 	}
 }

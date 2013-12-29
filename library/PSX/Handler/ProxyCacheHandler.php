@@ -57,7 +57,7 @@ class ProxyCacheHandler extends HandlerAbstract
 
 	public function getAll(array $fields = array(), $startIndex = 0, $count = 16, $sortBy = null, $sortOrder = null, Condition $con = null)
 	{
-		$key    = md5(json_encode(array(__METHOD__, $fields, $startIndex, $count, $sortBy, $sortOrder, (string) $con)));
+		$key    = '__PC__' . md5(json_encode(array(__METHOD__, $fields, $startIndex, $count, $sortBy, $sortOrder, (string) $con)));
 		$return = $this->cache->load($key);
 
 		if($return !== false)
@@ -79,7 +79,7 @@ class ProxyCacheHandler extends HandlerAbstract
 
 	public function getSupportedFields()
 	{
-		$key    = md5(json_encode(array(__METHOD__)));
+		$key    = '__PC__' . md5(json_encode(array(__METHOD__)));
 		$return = $this->cache->load($key);
 
 		if($return !== false)
@@ -96,7 +96,7 @@ class ProxyCacheHandler extends HandlerAbstract
 
 	public function getCount(Condition $con = null)
 	{
-		$key    = md5(json_encode(array(__METHOD__, (string) $con)));
+		$key    = '__PC__' . md5(json_encode(array(__METHOD__, (string) $con)));
 		$return = $this->cache->load($key);
 
 		if($return !== false)
