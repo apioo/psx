@@ -37,9 +37,10 @@ use PSX\Sql\TableInterface;
  */
 class TestHandler extends DatabaseHandlerAbstract
 {
-	public function getTable()
+	public function getDefaultSelect()
 	{
-		return $this->manager->getTable('PSX\Handler\Database\TestTable');
+		return $this->manager->getTable('PSX\Handler\Database\TestTable')
+			->select(array('id', 'userId', 'title', 'date'));
 	}
 }
 

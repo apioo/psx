@@ -54,7 +54,7 @@ abstract class DatabaseHandlerAbstract extends HandlerAbstract
 	public function __construct(TableManager $tm)
 	{
 		$this->manager = $tm;
-		$this->table   = $this->getTable();
+		$this->table   = $this->getSelect()->getTable();
 	}
 
 	public function getAll(array $fields = array(), $startIndex = 0, $count = 16, $sortBy = null, $sortOrder = null, Condition $con = null)
@@ -167,14 +167,12 @@ abstract class DatabaseHandlerAbstract extends HandlerAbstract
 	}
 
 	/**
-	 * Returns the table interface on wich this handler operates. The only 
-	 * reason why this method is public is because we need the table instances 
-	 * of other handler in order to join. So do not use this method in your 
-	 * domain logic
+	 * Returns the default select interface. The handler should select the 
+	 * needed fields and join the fitting tables
 	 *
-	 * @return PSX\Sql\TableInterface
+	 * @return PSX\Sql\Table\SelectInterface
 	 */
-	abstract public function getTable();
+	abstract protected function getDefaultSelect();
 
 	protected function getSelect()
 	{
@@ -186,12 +184,6 @@ abstract class DatabaseHandlerAbstract extends HandlerAbstract
 		$select = clone $this->_select;
 
 		return $select;
-	}
-
-	protected function getDefaultSelect()
-	{
-		return $this->table
-			->select(array('*'));
 	}
 
 	protected function convertColumnTypes(array $row)
