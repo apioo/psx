@@ -43,149 +43,6 @@ use PSX\Sql\Condition;
 abstract class ApiAbstract extends ModuleAbstract
 {
 	/**
-	 * Returns an condition object depending on the filter param
-	 *
-	 * @param string $dateColumn
-	 * @return PSX\Sql\Condition
-	 */
-	protected function getRequestCondition($dateColumn = 'date')
-	{
-		$con          = new Condition();
-		$params       = $this->getRequestParams();
-		$filterBy     = $params['filterBy'];
-		$filterOp     = $params['filterOp'];
-		$filterValue  = $params['filterValue'];
-		$updatedSince = $params['updatedSince'];
-
-		if(!empty($filterBy) && !empty($filterOp) && !empty($filterValue))
-		{
-			switch($filterOp)
-			{
-				case 'contains':
-					$con->add($filterBy, 'LIKE', '%' . $filterValue . '%');
-					break;
-
-				case 'equals':
-					$con->add($filterBy, '=', $filterValue);
-					break;
-
-				case 'startsWith':
-					$con->add($filterBy, 'LIKE', $filterValue . '%');
-					break;
-
-				case 'present':
-					$con->add($filterBy, 'IS NOT', 'NULL', 'AND');
-					$con->add($filterBy, 'NOT LIKE', '');
-					break;
-			}
-		}
-
-		if(!empty($updatedSince))
-		{
-			$datetime = new DateTime($updatedSince);
-
-			$con->add($dateColumn, '>', $datetime->format(DateTime::SQL));
-		}
-
-		return $con;
-	}
-
-	/**
-	 * Returns an associative array containing all available request parameters
-	 *
-	 * @return array
-	 */
-	protected function getRequestParams()
-	{
-		$params = array();
-		$params['fields']       = null;
-		$params['updatedSince'] = null;
-		$params['count']        = null;
-		$params['filterBy']     = null;
-		$params['filterOp']     = null;
-		$params['filterValue']  = null;
-		$params['sortBy']       = null;
-		$params['sortOrder']    = null;
-		$params['startIndex']   = null;
-
-		if(isset($_GET['fields']))
-		{
-			$rawFields = explode(',', $_GET['fields']);
-			$fields    = array();
-
-			foreach($rawFields as $field)
-			{
-				$field = trim($field);
-
-				if(strlen($field) > 1 && strlen($field) < 32 && ctype_alnum($field))
-				{
-					$fields[] = $field;
-				}
-			}
-
-			if(!empty($fields))
-			{
-				$params['fields'] = $fields;
-			}
-		}
-
-		if(isset($_GET['updatedSince']) && strlen($_GET['updatedSince']) < 22)
-		{
-			$params['updatedSince'] = $_GET['updatedSince'];
-		}
-
-		if(isset($_GET['count']))
-		{
-			$params['count'] = intval($_GET['count']);
-		}
-
-		if(isset($_GET['filterBy']) && ctype_alnum($_GET['filterBy']) && strlen($_GET['filterBy']) < 32)
-		{
-			$params['filterBy'] = $_GET['filterBy'];
-		}
-
-		if(isset($_GET['filterOp']) && in_array($_GET['filterOp'], array('contains', 'equals', 'startsWith', 'present')))
-		{
-			$params['filterOp'] = $_GET['filterOp'];
-		}
-
-		if(isset($_GET['filterValue']) && strlen($_GET['filterValue']) < 128)
-		{
-			$params['filterValue'] = $_GET['filterValue'];
-		}
-
-		if(isset($_GET['sortBy']) && strlen($_GET['sortBy']) < 128)
-		{
-			$params['sortBy'] = $_GET['sortBy'];
-		}
-
-		if(isset($_GET['sortOrder']))
-		{
-			$sortOrder = strtolower($_GET['sortOrder']);
-
-			switch($sortOrder)
-			{
-				case 'asc':
-				case 'ascending':
-					$params['sortOrder'] = Sql::SORT_ASC;
-					break;
-
-				case 'desc':
-				case 'descending':
-					$params['sortOrder'] = Sql::SORT_DESC;
-					break;
-			}
-		}
-
-		if(isset($_GET['startIndex']))
-		{
-			$params['startIndex'] = intval($_GET['startIndex']);
-		}
-
-		return $params;
-	}
-
-	/**
 	 * Writes the $record with the writer $writerType or depending on the get 
 	 * parameter format or of the mime type of the Accept header
 	 *
@@ -278,5 +135,148 @@ abstract class ApiAbstract extends ModuleAbstract
 	protected function isWriter($writerClass)
 	{
 		return $this->getPreferredWriter() instanceof $writerClass;
+	}
+
+	/**
+	 * Returns an condition object depending on the filter param
+	 *
+	 * @param string $dateColumn
+	 * @return PSX\Sql\Condition
+	 */
+	protected function getRequestCondition($dateColumn = 'date')
+	{
+		$con          = new Condition();
+		$params       = $this->getRequestParams();
+		$filterBy     = $params['filterBy'];
+		$filterOp     = $params['filterOp'];
+		$filterValue  = $params['filterValue'];
+		$updatedSince = $params['updatedSince'];
+
+		if(!empty($filterBy) && !empty($filterOp) && !empty($filterValue))
+		{
+			switch($filterOp)
+			{
+				case 'contains':
+					$con->add($filterBy, 'LIKE', '%' . $filterValue . '%');
+					break;
+
+				case 'equals':
+					$con->add($filterBy, '=', $filterValue);
+					break;
+
+				case 'startsWith':
+					$con->add($filterBy, 'LIKE', $filterValue . '%');
+					break;
+
+				case 'present':
+					$con->add($filterBy, 'IS NOT', 'NULL', 'AND');
+					$con->add($filterBy, 'NOT LIKE', '');
+					break;
+			}
+		}
+
+		if(!empty($updatedSince))
+		{
+			$datetime = new DateTime($updatedSince);
+
+			$con->add($dateColumn, '>', $datetime->format(DateTime::SQL));
+		}
+
+		return $con;
+	}
+
+	/**
+	 * Returns an associative array containing all available request parameters
+	 *
+	 * @return array
+	 */
+	protected function getRequestParams()
+	{
+		$params = array();
+		$params['fields']       = array();
+		$params['updatedSince'] = null;
+		$params['count']        = null;
+		$params['filterBy']     = null;
+		$params['filterOp']     = null;
+		$params['filterValue']  = null;
+		$params['sortBy']       = null;
+		$params['sortOrder']    = null;
+		$params['startIndex']   = null;
+
+		if(isset($_GET['fields']))
+		{
+			$rawFields = explode(',', $_GET['fields']);
+			$fields    = array();
+
+			foreach($rawFields as $field)
+			{
+				$field = trim($field);
+
+				if(strlen($field) > 1 && strlen($field) < 32 && ctype_alnum($field))
+				{
+					$fields[] = $field;
+				}
+			}
+
+			if(!empty($fields))
+			{
+				$params['fields'] = $fields;
+			}
+		}
+
+		if(isset($_GET['updatedSince']) && strlen($_GET['updatedSince']) < 22)
+		{
+			$params['updatedSince'] = $_GET['updatedSince'];
+		}
+
+		if(isset($_GET['count']))
+		{
+			$params['count'] = intval($_GET['count']);
+		}
+
+		if(isset($_GET['filterBy']) && ctype_alnum($_GET['filterBy']) && strlen($_GET['filterBy']) < 32)
+		{
+			$params['filterBy'] = $_GET['filterBy'];
+		}
+
+		if(isset($_GET['filterOp']) && in_array($_GET['filterOp'], array('contains', 'equals', 'startsWith', 'present')))
+		{
+			$params['filterOp'] = $_GET['filterOp'];
+		}
+
+		if(isset($_GET['filterValue']) && strlen($_GET['filterValue']) < 128)
+		{
+			$params['filterValue'] = $_GET['filterValue'];
+		}
+
+		if(isset($_GET['sortBy']) && strlen($_GET['sortBy']) < 128)
+		{
+			$params['sortBy'] = $_GET['sortBy'];
+		}
+
+		if(isset($_GET['sortOrder']))
+		{
+			$sortOrder = strtolower($_GET['sortOrder']);
+
+			switch($sortOrder)
+			{
+				case 'asc':
+				case 'ascending':
+					$params['sortOrder'] = Sql::SORT_ASC;
+					break;
+
+				case 'desc':
+				case 'descending':
+					$params['sortOrder'] = Sql::SORT_DESC;
+					break;
+			}
+		}
+
+		if(isset($_GET['startIndex']))
+		{
+			$params['startIndex'] = intval($_GET['startIndex']);
+		}
+
+		return $params;
 	}
 }
