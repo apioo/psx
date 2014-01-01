@@ -44,15 +44,5 @@ class Dom extends ReaderAbstract
 
 		return $dom;
 	}
-
-	public function isContentTypeSupported($contentType)
-	{
-		return false;
-	}
-
-	public function getDefaultImporter()
-	{
-		return null;
-	}
 }
 

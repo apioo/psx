@@ -23,6 +23,7 @@
 
 namespace PSX\Data;
 
+use PSX\Data\Record\ImporterInterface;
 use PSX\Http\Message as HttpMessage;
 
 /**
@@ -60,18 +61,24 @@ interface ReaderInterface
 	public function isContentTypeSupported($contentType);
 
 	/**
-	 * Returns the default importe of this reader is used to read and import an
-	 * record
+	 * Returns the default importer of this reader
 	 *
-	 * @return PSX\Data\Record\ImporterInterface
+	 * @return PSX\Data\Record\ImporterInterface|null
 	 */
 	public function getDefaultImporter();
+
+	/**
+	 * Sets the default importer of this reader
+	 *
+	 * @param PSX\Data\Record\ImporterInterface
+	 */
+	public function setDefaultImporter(ImporterInterface $importer);
 
 	/**
 	 * Imports the data from the http message into the record using the default
 	 * importer
 	 *
-	 * @return void
+	 * @return PSX\Data\RecordInterface
 	 */
 	public function import(RecordInterface $record, HttpMessage $message);
 }

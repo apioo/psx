@@ -62,7 +62,9 @@ class Multipart extends ReaderAbstract
 
 	public function getDefaultImporter()
 	{
-		return new DefaultImporter();
+		$importer = parent::getDefaultImporter();
+
+		return $importer === null ? new DefaultImporter() : $importer;
 	}
 }
 

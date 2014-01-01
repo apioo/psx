@@ -41,14 +41,11 @@ class Gpc extends ReaderAbstract
 		return $_REQUEST;
 	}
 
-	public function isContentTypeSupported($contentType)
-	{
-		return false;
-	}
-
 	public function getDefaultImporter()
 	{
-		return new DefaultImporter();
+		$importer = parent::getDefaultImporter();
+
+		return $importer === null ? new DefaultImporter() : $importer;
 	}
 }
 

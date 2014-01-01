@@ -23,6 +23,7 @@
 
 namespace PSX\Data;
 
+use PSX\Data\Record\ImporterInterface;
 use PSX\Http\Message as HttpMessage;
 use RuntimeException;
 
@@ -35,6 +36,8 @@ use RuntimeException;
  */
 abstract class ReaderAbstract implements ReaderInterface
 {
+	protected $importer;
+
 	public function import(RecordInterface $record, HttpMessage $message)
 	{
 		$importer = $this->getDefaultImporter();
@@ -47,5 +50,20 @@ abstract class ReaderAbstract implements ReaderInterface
 		{
 			throw new RuntimeException('Default importer not available');
 		}
+	}
+
+	public function isContentTypeSupported($contentType)
+	{
+		return false;
+	}
+
+	public function getDefaultImporter()
+	{
+		return $this->importer;
+	}
+
+	public function setDefaultImporter(ImporterInterface $importer)
+	{
+		$this->importer = $importer;
 	}
 }
