@@ -58,6 +58,8 @@ class DefaultImporterTest extends \PHPUnit_Framework_TestCase
 	"active": 1,
 	"count": 12,
 	"rating": 12.45,
+	"date": "2014-01-01T12:34:47+01:00",
+	"foobar": "foo",
 	"person": {
 		"title": "Foo"
 	},
@@ -81,23 +83,24 @@ DATA;
 		$news     = new News();
 		$reader   = new Reader\Json();
 		$importer = new DefaultImporter();
-		$importer->import($news, $reader->read(new Message(array(), $body)));
+		$record   = $importer->import($news, $reader->read(new Message(array(), $body)));
 
-		$this->assertEquals(1, $news->getId());
-		$this->assertInternalType('integer', $news->getId());
-		$this->assertEquals('foobar', $news->getTitle());
-		$this->assertInternalType('string', $news->getTitle());
-		$this->assertEquals(true, $news->getActive());
-		$this->assertInternalType('boolean', $news->getActive());
-		$this->assertEquals(12, $news->getCount());
-		$this->assertInternalType('integer', $news->getCount());
-		$this->assertEquals(12.45, $news->getRating());
-		$this->assertInternalType('float', $news->getRating());
-		$this->assertInstanceOf('PSX\Data\Record\Person', $news->getPerson());
-		$this->assertEquals(true, is_array($news->getTags()));
-		$this->assertInstanceOf('PSX\Data\Record\Achievment', $news->getAchievment());
+		$this->assertEquals(1, $record->getId());
+		$this->assertInternalType('integer', $record->getId());
+		$this->assertEquals('foobar', $record->getTitle());
+		$this->assertInternalType('string', $record->getTitle());
+		$this->assertEquals(true, $record->getActive());
+		$this->assertInternalType('boolean', $record->getActive());
+		$this->assertEquals(12, $record->getCount());
+		$this->assertInternalType('integer', $record->getCount());
+		$this->assertEquals(12.45, $record->getRating());
+		$this->assertInternalType('float', $record->getRating());
+		$this->assertInstanceOf('DateTime', $record->getDate());
+		$this->assertInstanceOf('PSX\Data\Record\Person', $record->getPerson());
+		$this->assertEquals(true, is_array($record->getTags()));
+		$this->assertInstanceOf('PSX\Data\Record\Achievment', $record->getAchievment());
 
-		foreach($news->getTags() as $tag)
+		foreach($record->getTags() as $tag)
 		{
 			$this->assertInstanceOf('PSX\Data\Record\Tag', $tag);
 		}
@@ -112,6 +115,8 @@ DATA;
 	"active": 1,
 	"count": 12,
 	"rating": 12.45,
+	"date": "2014-01-01T12:34:47+01:00",
+	"foobar": "foo",
 	"person": {
 		"title": "Foo"
 	},
@@ -135,10 +140,13 @@ DATA;
 		$news     = new News();
 		$reader   = new Reader\Json();
 		$importer = new DefaultImporter();
-		$importer->import($news, $reader->read(new Message(array(), $body)));
+		$record   = $importer->import($news, $reader->read(new Message(array(), $body)));
 
 		$writer = new Writer\Json();
-		$resp   = $writer->write($news);
+		$resp   = $writer->write($record);
+
+		// remove unknown value
+		$body = str_replace('"foobar": "foo",', '', $body);
 
 		$this->assertJsonStringEqualsJsonString($body, $resp);
 	}
@@ -153,6 +161,8 @@ DATA;
 	<active>1</active>
 	<count>12</count>
 	<rating>12.45</rating>
+	<date>2014-01-01T12:34:47+01:00</date>
+	<foobar>foo</foobar>
 	<person>
 		<title>Foo</title>
 	</person>
@@ -178,18 +188,19 @@ DATA;
 		$news     = new News();
 		$reader   = new Reader\Xml();
 		$importer = new DefaultImporter();
-		$importer->import($news, $reader->read(new Message(array(), $body)));
+		$record   = $importer->import($news, $reader->read(new Message(array(), $body)));
 
-		$this->assertEquals(1, $news->getId());
-		$this->assertEquals('foobar', $news->getTitle());
-		$this->assertEquals(true, $news->getActive());
-		$this->assertEquals(12, $news->getCount());
-		$this->assertEquals(12.45, $news->getRating());
-		$this->assertInstanceOf('PSX\Data\Record\Person', $news->getPerson());
-		$this->assertEquals(true, is_array($news->getTags()));
-		$this->assertInstanceOf('PSX\Data\Record\Achievment', $news->getAchievment());
+		$this->assertEquals(1, $record->getId());
+		$this->assertEquals('foobar', $record->getTitle());
+		$this->assertEquals(true, $record->getActive());
+		$this->assertEquals(12, $record->getCount());
+		$this->assertEquals(12.45, $record->getRating());
+		$this->assertInstanceOf('DateTime', $record->getDate());
+		$this->assertInstanceOf('PSX\Data\Record\Person', $record->getPerson());
+		$this->assertEquals(true, is_array($record->getTags()));
+		$this->assertInstanceOf('PSX\Data\Record\Achievment', $record->getAchievment());
 
-		foreach($news->getTags() as $tag)
+		foreach($record->getTags() as $tag)
 		{
 			$this->assertInstanceOf('PSX\Data\Record\Tag', $tag);
 		}
@@ -205,6 +216,8 @@ DATA;
 	<active>true</active>
 	<count>12</count>
 	<rating>12.45</rating>
+	<date>2014-01-01T12:34:47+01:00</date>
+	<foobar>foo</foobar>
 	<person>
 		<title>Foo</title>
 	</person>
@@ -230,10 +243,13 @@ DATA;
 		$news     = new News();
 		$reader   = new Reader\Xml();
 		$importer = new DefaultImporter();
-		$importer->import($news, $reader->read(new Message(array(), $body)));
+		$record   = $importer->import($news, $reader->read(new Message(array(), $body)));
 
 		$writer = new Writer\Xml();
-		$resp   = $writer->write($news);
+		$resp   = $writer->write($record);
+
+		// remove unknown value
+		$body = str_replace('<foobar>foo</foobar>', '', $body);
 
 		$this->assertXmlStringEqualsXmlString($body, $resp);
 	}
@@ -246,6 +262,7 @@ class News extends RecordAbstract
 	protected $active;
 	protected $count;
 	protected $rating;
+	protected $date;
 	protected $person;
 	protected $tags;
 	protected $achievment;
@@ -311,6 +328,19 @@ class News extends RecordAbstract
 	public function getRating()
 	{
 		return $this->rating;
+	}
+
+	/**
+	 * @param DateTime $date
+	 */
+	public function setDate($date)
+	{
+		$this->date = $date;
+	}
+
+	public function getDate()
+	{
+		return $this->date;
 	}
 
 	/**
