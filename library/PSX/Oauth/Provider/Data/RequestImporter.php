@@ -51,7 +51,7 @@ class RequestImporter implements ImporterInterface
 		'verifier'        => 'verifier'
 	);
 
-	public function import(RecordInterface $record, $data)
+	public function import($record, $data)
 	{
 		if(!$data instanceof Message)
 		{

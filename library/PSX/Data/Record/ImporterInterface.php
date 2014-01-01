@@ -26,7 +26,8 @@ namespace PSX\Data\Record;
 use PSX\Data\RecordInterface;
 
 /**
- * The importer takes the result of an reader and imports it into an record
+ * The importer takes meta informations about an record with the actual data and
+ * returns an record containing the data
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
@@ -35,8 +36,9 @@ use PSX\Data\RecordInterface;
 interface ImporterInterface
 {
 	/**
-	 * @param PSX\Data\RecordInterface $record
+	 * @param mixed $record
 	 * @param mixed $data
+	 * @return PSX\Data\RecordInterface
 	 */
-	public function import(RecordInterface $record, $data);
+	public function import($record, $data);
 }

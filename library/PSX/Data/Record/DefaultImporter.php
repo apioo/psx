@@ -33,7 +33,8 @@ use ReflectionMethod;
 use Serializable;
 
 /**
- * DefaultImporter
+ * Default importer wich reads the annotations of the given RecordInterface and
+ * calls the fitting setter methods of the record
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
@@ -41,8 +42,13 @@ use Serializable;
  */
 class DefaultImporter implements ImporterInterface
 {
-	public function import(RecordInterface $record, $data)
+	public function import($record, $data)
 	{
+		if(!$record instanceof RecordInterface)
+		{
+			throw new InvalidArgumentException('Record must be an instanceof RecordInterface');
+		}
+
 		if(!is_array($data))
 		{
 			throw new InvalidArgumentException('Data must be an array');

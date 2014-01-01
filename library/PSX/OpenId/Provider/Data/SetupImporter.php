@@ -37,7 +37,7 @@ use PSX\Http\Message;
  */
 class ResImporter implements ImporterInterface
 {
-	public function import(RecordInterface $record, $data)
+	public function import($record, $data)
 	{
 		if(!is_array($data))
 		{

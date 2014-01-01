@@ -48,7 +48,7 @@ class EntryImporter implements ImporterInterface
 	protected $http;
 	protected $dom;
 
-	public function import(RecordInterface $record, $data)
+	public function import($record, $data)
 	{
 		if($data instanceof DOMDocument)
 		{
