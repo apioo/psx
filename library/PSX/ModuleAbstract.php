@@ -274,20 +274,21 @@ abstract class ModuleAbstract
 	}
 
 	/**
-	 * Uses the request reader to import the data from the given request into
-	 * the record
+	 * Uses the default importer from the request reader to import arbitrary 
+	 * data into an record
 	 *
-	 * @param PSX\Data\RecordInterface $record
+	 * @param mixed $record
 	 * @param string $readerType
+	 * @return PSX\Data\RecordInterface
 	 */
-	protected function import(RecordInterface $record, $readerType = null)
+	protected function import($record, $readerType = null)
 	{
 		$reader   = $this->getRequestReader($readerType);
 		$importer = $reader->getDefaultImporter();
 
 		if($importer instanceof ImporterInterface)
 		{
-			$importer->import($record, $reader->read($this->base->getRequest()));
+			return $importer->import($record, $reader->read($this->base->getRequest()));
 		}
 		else
 		{
