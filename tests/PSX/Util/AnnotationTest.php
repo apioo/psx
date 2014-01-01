@@ -123,4 +123,13 @@ DOC;
 		$this->assertEquals(null, $doc->getFirstAnnotation('Id'));
 		$this->assertEquals('PSX\Sql\TableInterface', $doc->getFirstAnnotation('return'));
 	}
+
+	public function testParseAttributes()
+	{
+		$attr = Annotation::parseAttributes('(type="string")');
+		$this->assertEquals(array('type' => 'string'), $attr);
+
+		$attr = Annotation::parseAttributes('(targetEntity="PSX\Data\Record\PersonEntity", inversedBy="news")');
+		$this->assertEquals(array('targetEntity' => 'PSX\Data\Record\PersonEntity', 'inversedBy' => 'news'), $attr);
+	}
 }

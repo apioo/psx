@@ -113,7 +113,7 @@ class Annotation
 			$kv    = explode('=', $part, 2);
 			$key   = trim($kv[0]);
 			$value = isset($kv[1]) ? $kv[1] : '';
-			$value = strtolower(trim($value, " \t\n\r\0\x0B\""));
+			$value = trim($value, " \t\n\r\0\x0B\"");
 
 			if(!empty($key))
 			{
