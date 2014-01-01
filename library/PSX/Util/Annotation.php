@@ -34,6 +34,12 @@ use PSX\Util\Annotation\DocBlock;
  */
 class Annotation
 {
+	/**
+	 * Parses the annotations from the given doc block
+	 *
+	 * @param string $doc
+	 * @return PSX\Util\Annotation\DocBlock
+	 */
 	public static function parse($doc)
 	{
 		$block = new DocBlock();
@@ -88,6 +94,34 @@ class Annotation
 		}
 
 		return $block;
+	}
+
+	/**
+	 * Parses the constructor values from an doctrine annotation
+	 *
+	 * @param string $values
+	 * @return array
+	 */
+	public static function parseAttributes($values)
+	{
+		$result = array();
+		$values = trim($values, " \t\n\r\0\x0B()");
+		$parts  = explode(',', $values);
+
+		foreach($parts as $part)
+		{
+			$kv    = explode('=', $part, 2);
+			$key   = trim($kv[0]);
+			$value = isset($kv[1]) ? $kv[1] : '';
+			$value = strtolower(trim($value, " \t\n\r\0\x0B\""));
+
+			if(!empty($key))
+			{
+				$result[$key] = $value;
+			}
+		}
+
+		return $result;
 	}
 }
 

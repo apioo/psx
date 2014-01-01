@@ -57,7 +57,7 @@ class EntityAnnotation implements ReaderInterface
 
 		if(!empty($table))
 		{
-			$attributes = $this->getAttributes($table);
+			$attributes = Annotation::parseAttributes($table);
 
 			if(isset($attributes['name']))
 			{
@@ -87,7 +87,7 @@ class EntityAnnotation implements ReaderInterface
 			{
 				$columnName  = null;
 				$columnValue = null;
-				$attributes  = $this->getAttributes($column);
+				$attributes  = Annotation::parseAttributes($column);
 
 				if(isset($attributes['type']))
 				{
@@ -165,27 +165,5 @@ class EntityAnnotation implements ReaderInterface
 		}
 
 		return null;
-	}
-
-	protected function getAttributes($values)
-	{
-		$result = array();
-		$values = trim($values, " \t\n\r\0\x0B()");
-		$parts  = explode(',', $values);
-
-		foreach($parts as $part)
-		{
-			$kv    = explode('=', $part, 2);
-			$key   = trim($kv[0]);
-			$value = isset($kv[1]) ? $kv[1] : '';
-			$value = strtolower(trim($value, " \t\n\r\0\x0B\""));
-
-			if(!empty($key))
-			{
-				$result[$key] = $value;
-			}
-		}
-
-		return $result;
 	}
 }
