@@ -2,8 +2,14 @@ language: php
 php:
   - "5.4"
   - "5.5"
+services: 
+  - mysql
+  - mongodb
+  - memcached
 before_script:
+  - phpenv config-add tests/config.ini
   - composer install
+  - composer require doctrine/orm 2.5.*@dev
   - mysql -e 'create database psx;'
   - mysql -u root psx < tests/psx.sql
   - pear channel-discover pear.phpunit.de
