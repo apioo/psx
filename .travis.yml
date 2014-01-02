@@ -9,7 +9,7 @@ services:
 before_script:
   - phpenv config-add tests/config.ini
   - composer install
-  - composer require doctrine/orm 2.5.*@dev
+  - composer require doctrine/orm 2.4.*@dev
   - mysql -e 'create database psx;'
   - mysql -u root psx < tests/psx.sql
   - pear channel-discover pear.phpunit.de
