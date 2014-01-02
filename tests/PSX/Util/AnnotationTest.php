@@ -124,6 +124,20 @@ DOC;
 		$this->assertEquals('PSX\Sql\TableInterface', $doc->getFirstAnnotation('return'));
 	}
 
+	public function testParseNamespaced()
+	{
+		$comment = <<<'DOC'
+/**
+ * foobar
+ *
+ * @ORM\Column(type="string")
+ */
+DOC;
+		$doc = Annotation::parse($comment);
+
+		$this->assertEquals('(type="string")', $doc->getFirstAnnotation('Column'));
+	}
+
 	public function testParseAttributes()
 	{
 		$attr = Annotation::parseAttributes('(type="string")');

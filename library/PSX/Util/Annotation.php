@@ -88,6 +88,14 @@ class Annotation
 
 				if(!empty($key))
 				{
+					// if key contains backslashes its a namespace use only the
+					// short name
+					$pos = strrpos($key, '\\');
+					if($pos !== false)
+					{
+						$key = substr($key, $pos + 1);
+					}
+
 					$block->addAnnotation($key, $value);
 				}
 			}
