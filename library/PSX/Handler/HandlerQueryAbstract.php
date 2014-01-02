@@ -39,6 +39,8 @@ use PSX\Sql\Condition;
  */
 abstract class HandlerQueryAbstract implements HandlerQueryInterface
 {
+	protected $restrictedFields = array();
+
 	public function getBy(Condition $con, array $fields = array())
 	{
 		return $this->getAll($fields, null, null, null, null, $con);
@@ -148,5 +150,27 @@ abstract class HandlerQueryAbstract implements HandlerQueryInterface
 		{
 			throw new BadMethodCallException('Undefined method ' . $method);
 		}
+	}
+
+	/**
+	 * Returns an array of fields wich can not be used from the handler even if 
+	 * the fields can be selected through the handler. This is useful for fields
+	 * with sensetive data i.e. passwords
+	 *
+	 * @return array
+	 */
+	public function getRestrictedFields()
+	{
+		return $this->restrictedFields;
+	}
+
+	/**
+	 * Sets the restricted fields
+	 *
+	 * @param array $restrictedFields
+	 */
+	public function setRestrictedFields(array $restrictedFields)
+	{
+		$this->restrictedFields = $restrictedFields;
 	}
 }

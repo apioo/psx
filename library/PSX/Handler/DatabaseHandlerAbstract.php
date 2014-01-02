@@ -65,14 +65,15 @@ abstract class DatabaseHandlerAbstract extends HandlerAbstract
 		$sortOrder  = $sortOrder  !== null ? (integer) $sortOrder  : Sql::SORT_DESC;
 
 		$select = $this->getSelect();
-		$fields = array_intersect($fields, $select->getSupportedFields());
+		$fields = array_intersect($fields, $this->getSupportedFields());
 
-		if(!empty($fields))
+		if(empty($fields))
 		{
-			$select->setColumns($fields);
+			$fields = $this->getSupportedFields();
 		}
 
-		$select->orderBy($sortBy, $sortOrder)
+		$select->setColumns($fields)
+			->orderBy($sortBy, $sortOrder)
 			->limit($startIndex, $count);
 
 		if($con !== null && $con->hasCondition())
@@ -109,7 +110,7 @@ abstract class DatabaseHandlerAbstract extends HandlerAbstract
 
 	public function getSupportedFields()
 	{
-		return $this->getSelect()->getSupportedFields();
+		return array_diff($this->getSelect()->getSupportedFields(), $this->getRestrictedFields());
 	}
 
 	public function getCount(Condition $con = null)

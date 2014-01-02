@@ -151,4 +151,14 @@ class ProxyCacheHandler extends HandlerAbstract
 			throw new InvalidArgumentException('Handler is not an manipulation instance');
 		}
 	}
+
+	public function getRestrictedFields()
+	{
+		return $this->handler->getRestrictedFields();
+	}
+
+	public function setRestrictedFields(array $restrictedFields)
+	{
+		$this->handler->setRestrictedFields($restrictedFields);
+	}
 }

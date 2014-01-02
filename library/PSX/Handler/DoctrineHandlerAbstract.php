@@ -148,7 +148,7 @@ abstract class DoctrineHandlerAbstract extends HandlerAbstract
 			$i++;
 		}
 
-		return $result;
+		return array_diff($result, $this->getRestrictedFields());
 	}
 
 	public function getCount(Condition $con = null)

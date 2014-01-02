@@ -58,6 +58,8 @@ abstract class PdoHandlerAbstract extends DataHandlerQueryAbstract
 		$sortBy     = $sortBy     !== null ? $sortBy               : $this->mapping->getIdProperty();
 		$sortOrder  = $sortOrder  !== null ? (integer) $sortOrder  : Sql::SORT_DESC;
 
+		$fields = array_intersect($fields, $this->getSupportedFields());
+
 		if(empty($fields))
 		{
 			$fields = $this->getSupportedFields();
@@ -104,7 +106,7 @@ abstract class PdoHandlerAbstract extends DataHandlerQueryAbstract
 
 	public function getSupportedFields()
 	{
-		return array_keys($this->mapping->getFields());
+		return array_diff(array_keys($this->mapping->getFields()), $this->getRestrictedFields());
 	}
 
 	public function getCount(Condition $con = null)

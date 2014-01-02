@@ -142,7 +142,7 @@ abstract class DomHandlerAbstract extends DataHandlerQueryAbstract
 
 	public function getSupportedFields()
 	{
-		return array_keys($this->mapping->getFields());
+		return array_diff(array_keys($this->mapping->getFields()), $this->getRestrictedFields());
 	}
 
 	public function getCount(Condition $con = null)
