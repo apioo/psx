@@ -184,10 +184,9 @@ class CacheTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(md5('[key]'), $cache->getKey());
 		$this->assertEquals(2, $cache->getExpire());
 		$this->assertEquals(true, $cache->isEnabled());
-		$this->assertEquals(true, $cache->exists());
+		$this->assertEquals(false, $cache->exists());
 		$this->assertEquals(true, $cache->isExpired());
-		$this->assertInstanceOf('\PSX\Cache\Item', $cache->get());
-		$this->assertEquals('foobar', $cache->get()->getContent());
+		$this->assertEquals(null, $cache->get());
 		$this->assertEquals(false, $content);
 	}
 
