@@ -26,6 +26,7 @@ namespace PSX\Handler;
 use DateTime;
 use DOMDocument;
 use DOMElement;
+use MongoClient;
 
 /**
  * MongodbHandlerTest
@@ -37,6 +38,8 @@ use DOMElement;
 class MongodbHandlerTest extends \PHPUnit_Framework_TestCase
 {
 	use HandlerTestCase;
+
+	private static $client;
 
 	public function setUp()
 	{
@@ -98,14 +101,20 @@ class MongodbHandlerTest extends \PHPUnit_Framework_TestCase
 		}
 	}
 
-	protected function getMongoClient()
-	{
-		return getContainer()->get('mongo_client');
-	}
-
 	protected function getHandler()
 	{
 		return new Mongodb\TestHandler($this->getMongoClient());
+	}
+
+	protected function getMongoClient()
+	{
+		if(self::$client === null)
+		{
+			// the default di container doesnt have the mongo client service
+			self::$client = new MongoClient();
+		}
+
+		return self::$client;
 	}
 
 	protected function unserializeType($data, $type)

@@ -58,6 +58,11 @@ class DoctrineHandlerTest extends DbTestCase
 
 	protected function getHandler()
 	{
+		return new Doctrine\TestHandler($this->getEntityManager());
+	}
+
+	protected function getEntityManager()
+	{
 		if(self::$em === null)
 		{
 			// the default di container doesnt have the entity manager service
@@ -76,6 +81,6 @@ class DoctrineHandlerTest extends DbTestCase
 			self::$em = EntityManager::create($dbParams, $config);
 		}
 
-		return new Doctrine\TestHandler(self::$em);
+		return self::$em;
 	}
 }
