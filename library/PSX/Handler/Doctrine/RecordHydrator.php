@@ -37,7 +37,7 @@ use RuntimeException;
  */
 class RecordHydrator extends AbstractHydrator
 {
-	const HYDRATE_RECORD = 0x30;
+	const HYDRATE_RECORD = 'RecordHydrator';
 
 	private $_idTemplate;
 
