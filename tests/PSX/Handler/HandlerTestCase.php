@@ -100,6 +100,32 @@ trait HandlerTestCase
 		}
 	}
 
+	public function testGetAllRestricted()
+	{
+		$handler = $this->getHandler();
+
+		if(!$handler instanceof HandlerQueryInterface)
+		{
+			$this->markTestSkipped('Handler not an query interface');
+		}
+
+		$handler->setRestrictedFields(array('userId'));
+
+		$result = $handler->getAll();
+
+		$this->assertEquals(true, is_array($result));
+		$this->assertEquals(4, count($result));
+
+		foreach($result as $row)
+		{
+			$this->assertInstanceOf('PSX\Data\Record', $row);
+			$this->assertEquals(true, $row->getId() != null);
+			$this->assertEquals(true, $row->getUserId() == null);
+			$this->assertEquals(true, $row->getTitle() != null);
+			$this->assertInstanceOf('DateTime', $row->getDate());
+		}
+	}
+
 	public function testGetAllSelectFields()
 	{
 		$handler = $this->getHandler();
@@ -120,6 +146,32 @@ trait HandlerTestCase
 			$this->assertEquals(true, $row->getId() != null);
 			$this->assertEquals(true, $row->getUserId() == null);
 			$this->assertEquals(true, $row->getTitle() != null);
+			$this->assertEquals(true, $row->getDate() == null);
+		}
+	}
+
+	public function testGetAllSelectFieldsRestricted()
+	{
+		$handler = $this->getHandler();
+
+		if(!$handler instanceof HandlerQueryInterface)
+		{
+			$this->markTestSkipped('Handler not an query interface');
+		}
+
+		$handler->setRestrictedFields(array('title'));
+
+		$result = $handler->getAll(array('id', 'title'));
+
+		$this->assertEquals(true, is_array($result));
+		$this->assertEquals(4, count($result));
+
+		foreach($result as $row)
+		{
+			$this->assertInstanceOf('PSX\Data\Record', $row);
+			$this->assertEquals(true, $row->getId() != null);
+			$this->assertEquals(true, $row->getUserId() == null);
+			$this->assertEquals(true, $row->getTitle() == null);
 			$this->assertEquals(true, $row->getDate() == null);
 		}
 	}
