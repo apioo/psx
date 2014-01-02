@@ -177,7 +177,7 @@ class CacheTest extends \PHPUnit_Framework_TestCase
 		// check whether multiple load calls return the same result
 		$this->assertEquals('foobar', $cache->load());
 
-		sleep(3); // wait 2 seconds
+		$cache->remove();
 
 		$content = $cache->load();
 
