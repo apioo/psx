@@ -23,7 +23,10 @@
 
 namespace PSX\Handler;
 
+use Doctrine\ORM\Tools\Setup;
+use Doctrine\ORM\EntityManager;
 use PSX\Sql\DbTestCase;
+use PSX\Handler\Doctrine\RecordHydrator;
 
 /**
  * DoctrineHandlerTest
@@ -35,6 +38,8 @@ use PSX\Sql\DbTestCase;
 class DoctrineHandlerTest extends DbTestCase
 {
 	use HandlerTestCase;
+
+	private static $em;
 
 	public function setUp()
 	{
@@ -53,6 +58,24 @@ class DoctrineHandlerTest extends DbTestCase
 
 	protected function getHandler()
 	{
-		return new Doctrine\TestHandler(getContainer()->get('entity_manager'));
+		if(self::$em === null)
+		{
+			// the default di container doesnt have the entity manager service
+			$paths     = array(PSX_PATH_LIBRARY);
+			$isDevMode = getContainer()->get('config')->get('psx_debug');
+			$dbParams  = array(
+				'driver'   => 'pdo_mysql',
+				'user'     => getContainer()->get('config')->get('psx_sql_user'),
+				'password' => getContainer()->get('config')->get('psx_sql_pw'),
+				'dbname'   => getContainer()->get('config')->get('psx_sql_db'),
+			);
+
+			$config = Setup::createAnnotationMetadataConfiguration($paths, $isDevMode);
+			$config->addCustomHydrationMode(RecordHydrator::HYDRATE_RECORD, 'PSX\Handler\Doctrine\RecordHydrator');
+
+			self::$em = EntityManager::create($dbParams, $config);
+		}
+
+		return new Doctrine\TestHandler(self::$em);
 	}
 }
