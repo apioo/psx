@@ -210,6 +210,11 @@ class Url extends Uri
 	{
 		$url = (string) $url;
 
+		if(substr($url, 0, 2) == '//')
+		{
+			$url = 'http:' . $url;
+		}
+
 		// validate url format
 		if(filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED) === false)
 		{

@@ -65,7 +65,6 @@ class UrlTest extends \PHPUnit_Framework_TestCase
 	public function testUrltoString()
 	{
 		$urls = array(
-
 			'http://www.yahoo.com',
 			'http://www.yahoo.com/',
 			'http://www.yahoo.com/foo/bar',
@@ -74,7 +73,6 @@ class UrlTest extends \PHPUnit_Framework_TestCase
 			'http://www.yahoo.com:8080/foo/bar',
 			'http://www.yahoo.com:8080?foo=bar&bar=foo',
 			'http://benutzername:passwort@hostname:8080/pfad?argument=wert#textanker',
-
 		);
 
 		foreach($urls as $u)
@@ -83,5 +81,12 @@ class UrlTest extends \PHPUnit_Framework_TestCase
 
 			$this->assertEquals($u, $url->__toString());
 		}
+	}
+
+	public function testShortUrls()
+	{
+		$url = new Url('//www.yahoo.com');
+
+		$this->assertEquals('http://www.yahoo.com', $url->__toString());
 	}
 }
