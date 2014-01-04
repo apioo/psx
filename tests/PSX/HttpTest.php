@@ -25,6 +25,8 @@ namespace PSX;
 
 use PSX\Http\CookieStore;
 use PSX\Http\Handler;
+use PSX\Http\Response;
+use PSX\Http\ResponseParser;
 use PSX\Http\DeleteRequest;
 use PSX\Http\GetRequest;
 use PSX\Http\HeadRequest;
@@ -196,17 +198,20 @@ TEXT;
 		// request
 		$testCase = $this;
 		$http  = new Http(new Handler\Callback(function($request) use ($testCase){
-			
+
 			$cookie = $request->getHeader('Cookie');
 			$testCase->assertEquals('webmaker.sid=s%3Aj%3A%7B%22_csrfSecret%22%3A%22uMs5W0M2tR2ewHNiJQye7lpe%22%7D.wSMQqQeiDgatt0Smv2Nbq5g92lX04%2FmOBiiRdPZIuro', $cookie);
 
-			return <<<TEXT
+			$response = <<<TEXT
 HTTP/1.1 200 OK
 Content-Type: text/html; charset=utf-8
 Date: Sat, 04 Jan 2014 18:19:45 GMT
 
 foobar
 TEXT;
+
+			return Response::convert($response, ResponseParser::MODE_LOOSE)->toString();
+
 		}));
 
 		$http->setCookieStore($store);
