@@ -111,7 +111,7 @@ TEXT;
 			return Response::convert($response, ResponseParser::MODE_LOOSE)->toString();
 
 		}));
-		$store  = new Store\File();
+		$store  = new Store\Memory();
 		$openid = new OpenId($http, 'http://localhost.com', $store);
 		$openid->initialize('http://foo.com/identity', 'http://localhost.com/callback');
 
@@ -121,7 +121,6 @@ TEXT;
 		$this->assertEquals('foobar', $assoc->getAssocHandle());
 		$this->assertEquals('HMAC-SHA256', $assoc->getAssocType());
 		$this->assertEquals('DH-SHA256', $assoc->getSessionType());
-		$this->assertEquals('spER2xeW/0SzAnzYFTlETtBGH2o=', $assoc->getSecret());
 		$this->assertEquals(3600, $assoc->getExpire());
 
 		// check redirect url
