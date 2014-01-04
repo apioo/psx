@@ -131,11 +131,13 @@ class Http
 
 				foreach($cookies as $cookie)
 				{
+					$path = ltrim($cookie->getPath(), '/');
+
 					if($cookie->getExpires() !== null && $cookie->getExpires()->getTimestamp() < time())
 					{
 						$this->cookieStore->remove($request->getUrl()->getHost(), $cookie);
 					}
-					else if($cookie->getPath() !== null && substr($request->getUrl()->getPath(), 0, strlen($cookie->getPath())) != $cookie->getPath())
+					else if($cookie->getPath() !== null && substr($request->getUrl()->getPath(), 0, strlen($path)) != $path)
 					{
 						// path does not fit
 					}
