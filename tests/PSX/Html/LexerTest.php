@@ -532,6 +532,36 @@ HTML;
 		$this->assertEquals($expect, $root->__toString());
 	}
 
+	public function testSingleQuoteInAttribute()
+	{
+		$html = <<<HTML
+<meta name="description" content="Wilson's Snipes poking into the mud of the lagoon on Horsepen Bayou">
+HTML;
+
+		$expect = <<<HTML
+<meta name="description" content="Wilson's Snipes poking into the mud of the lagoon on Horsepen Bayou" />
+HTML;
+
+		$root = Lexer::parse($html);
+
+		$this->assertEquals($expect, $root->__toString());
+	}
+
+	public function testDoubleQuoteInAttribute()
+	{
+		$html = <<<HTML
+<meta name="description" content='Wilson"s Snipes poking into the mud of the lagoon on Horsepen Bayou'>
+HTML;
+
+		$expect = <<<HTML
+<meta name="description" content="Wilson&quot;s Snipes poking into the mud of the lagoon on Horsepen Bayou" />
+HTML;
+
+		$root = Lexer::parse($html);
+
+		$this->assertEquals($expect, $root->__toString());
+	}
+
 	public function testParseAttributes()
 	{
 		$this->assertEquals(array('disabled' => null), Lexer::parseAttributes('disabled'));

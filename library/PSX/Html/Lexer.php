@@ -110,6 +110,24 @@ class Lexer
 
 		for($i = 0; $i < $len; $i++)
 		{
+			// set quote switches if we are inside an element
+			if($mode === self::MODE_PARSE && $state == self::INSIDE_TAG)
+			{
+				if($html[$i] == '"' || $html[$i] == '\'')
+				{
+					if($inQuote === false)
+					{
+						$inQuote   = true;
+						$quoteSign = $html[$i];
+					}
+					else if($quoteSign == $html[$i])
+					{
+						$inQuote   = false;
+						$quoteSign = null;
+					}
+				}
+			}
+
 			if($inQuote === true || $inComment === true)
 			{
 				// we capture all data in an attribute value i.e. title="foo > bar"
@@ -192,20 +210,6 @@ class Lexer
 				if($state == self::INSIDE_TAG)
 				{
 					$tag.= $html[$i];
-
-					if($html[$i] == '"' || $html[$i] == '\'')
-					{
-						if($inQuote === false)
-						{
-							$inQuote   = true;
-							$quoteSign = $html[$i];
-						}
-						else
-						{
-							$inQuote   = false;
-							$quoteSign = null;
-						}
-					}
 				}
 				else if($state == self::OUTSIDE_TAG)
 				{
@@ -216,7 +220,7 @@ class Lexer
 			{
 				$text.= $html[$i];
 
-				if($inComment && ($html[$i - 2] == '-' && $html[$i - 1] == '-' && $html[$i] == '>'))
+				if($inComment && $i > 2 && ($html[$i - 2] == '-' && $html[$i - 1] == '-' && $html[$i] == '>'))
 				{
 					$inComment = false;
 					$token     = Comment::parse($text);

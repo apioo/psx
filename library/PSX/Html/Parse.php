@@ -83,7 +83,6 @@ class Parse
 					if($val === false || strcasecmp($val, $value) != 0)
 					{
 						$found = false;
-
 						break;
 					}
 				}

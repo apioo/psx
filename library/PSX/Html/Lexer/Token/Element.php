@@ -120,12 +120,7 @@ class Element extends TokenAbstract
 		{
 			if($token instanceof Element)
 			{
-				$result = $token->getElementsByTagName($name);
-
-				foreach($result as $t)
-				{
-					$elements[] = $t;
-				}
+				$elements = array_merge($elements, $token->getElementsByTagName($name));
 			}
 		}
 
