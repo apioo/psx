@@ -48,7 +48,7 @@ class Oembed
 	/**
 	 * Requests the $url and tries to parse the response as oembed type. The url
 	 * must be pointing to an oembed provider i.e.:
-	 * http://flickr.com/services/oembed?url=http%3A//flickr.com/photos/bees/2362225867/
+	 * http://flickr.com/services/oembed?url=http://www.flickr.com/photos/neilio/20403964/
 	 *
 	 * @param PSX\Url $url
 	 * @return PSX\Oembed\TypeAbstract
