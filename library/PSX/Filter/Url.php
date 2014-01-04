@@ -43,7 +43,7 @@ class Url extends FilterAbstract
 	 */
 	public function apply($value)
 	{
-		return filter_var((string) $value, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED) === false ? false : true;
+		return filter_var((string) $value, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED);
 	}
 
 	public function getErrorMsg()

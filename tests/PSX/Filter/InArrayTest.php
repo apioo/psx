@@ -30,7 +30,7 @@ namespace PSX\Filter;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class InArrayTest extends \PHPUnit_Framework_TestCase
+class InArrayTest extends FilterTestCase
 {
 	protected function setUp()
 	{
@@ -40,14 +40,17 @@ class InArrayTest extends \PHPUnit_Framework_TestCase
 	{
 	}
 
-	public function testInArray()
+	public function testFilter()
 	{
-		$inArray = new InArray(range(1, 9));
+		$filter = new InArray(range(1, 9));
 
-		$this->assertEquals(true, $inArray->apply('2'));
-		$this->assertEquals(true, $inArray->apply(2));
-		$this->assertEquals(false, $inArray->apply('20'));
-		$this->assertEquals(false, $inArray->apply(20));
-		$this->assertEquals(false, $inArray->apply(''));
+		$this->assertEquals(true, $filter->apply('2'));
+		$this->assertEquals(true, $filter->apply(2));
+		$this->assertEquals(false, $filter->apply('20'));
+		$this->assertEquals(false, $filter->apply(20));
+		$this->assertEquals(false, $filter->apply(''));
+
+		// test error message
+		$this->assertErrorMessage($filter->getErrorMsg());
 	}
 }

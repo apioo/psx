@@ -30,7 +30,7 @@ namespace PSX\Filter;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class DateIntervalTest extends \PHPUnit_Framework_TestCase
+class DateIntervalTest extends FilterTestCase
 {
 	protected function setUp()
 	{
@@ -40,15 +40,18 @@ class DateIntervalTest extends \PHPUnit_Framework_TestCase
 	{
 	}
 
-	public function testDateInterval()
+	public function testFilter()
 	{
-		$dateInterval = new DateInterval();
+		$filter = new DateInterval();
 
-		$this->assertEquals(true, $dateInterval->apply('P1M'));
-		$this->assertEquals(true, $dateInterval->apply('P1Y4D'));
-		$this->assertEquals(true, $dateInterval->apply('PT5M'));
-		$this->assertEquals(false, $dateInterval->apply('P4D1Y'));
-		$this->assertEquals(false, $dateInterval->apply('PM'));
-		$this->assertEquals(false, $dateInterval->apply('foobar'));
+		$this->assertEquals(true, $filter->apply('P1M'));
+		$this->assertEquals(true, $filter->apply('P1Y4D'));
+		$this->assertEquals(true, $filter->apply('PT5M'));
+		$this->assertEquals(false, $filter->apply('P4D1Y'));
+		$this->assertEquals(false, $filter->apply('PM'));
+		$this->assertEquals(false, $filter->apply('foobar'));
+
+		// test error message
+		$this->assertErrorMessage($filter->getErrorMsg());
 	}
 }

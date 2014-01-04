@@ -30,7 +30,7 @@ namespace PSX\Filter;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class UrlTest extends \PHPUnit_Framework_TestCase
+class UrlTest extends FilterTestCase
 {
 	protected function setUp()
 	{
@@ -40,12 +40,15 @@ class UrlTest extends \PHPUnit_Framework_TestCase
 	{
 	}
 
-	public function testUrl()
+	public function testFilter()
 	{
-		$url = new Url();
+		$filter = new Url();
 
-		$this->assertEquals(true, $url->apply('http://google.de'));
-		$this->assertEquals(false, $url->apply('www.google.de'));
-		$this->assertEquals(false, $url->apply('foobar'));
+		$this->assertEquals('http://google.de', $filter->apply('http://google.de'));
+		$this->assertEquals(false, $filter->apply('www.google.de'));
+		$this->assertEquals(false, $filter->apply('foobar'));
+
+		// test error message
+		$this->assertErrorMessage($filter->getErrorMsg());
 	}
 }

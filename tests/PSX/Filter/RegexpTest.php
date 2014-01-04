@@ -30,7 +30,7 @@ namespace PSX\Filter;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class RegexpTest extends \PHPUnit_Framework_TestCase
+class RegexpTest extends FilterTestCase
 {
 	protected function setUp()
 	{
@@ -40,11 +40,14 @@ class RegexpTest extends \PHPUnit_Framework_TestCase
 	{
 	}
 
-	public function testRegexp()
+	public function testFilter()
 	{
-		$regexp = new Regexp('/php/');
+		$filter = new Regexp('/php/');
 
-		$this->assertEquals(false, $regexp->apply('foo bar'));
-		$this->assertEquals(true, $regexp->apply('foo php bar'));
+		$this->assertEquals(false, $filter->apply('foo bar'));
+		$this->assertEquals(true, $filter->apply('foo php bar'));
+
+		// test error message
+		$this->assertErrorMessage($filter->getErrorMsg());
 	}
 }

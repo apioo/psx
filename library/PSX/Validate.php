@@ -82,10 +82,10 @@ use ArrayObject;
  */
 class Validate extends ArrayObject
 {
-	const TYPE_INTEGER = 0x1;
-	const TYPE_STRING  = 0x2;
-	const TYPE_FLOAT   = 0x3;
-	const TYPE_BOOLEAN = 0x4;
+	const TYPE_INTEGER = 'integer';
+	const TYPE_STRING  = 'string';
+	const TYPE_FLOAT   = 'float';
+	const TYPE_BOOLEAN = 'boolean';
 
 	private $error;
 
@@ -102,16 +102,18 @@ class Validate extends ArrayObject
 	 *
 	 * @param string $value
 	 * @param integer $type
-	 * @param array<PSX\FilterAbstract> $filter
+	 * @param array<PSX\FilterAbstract> $filters
 	 * @param string $key
 	 * @param string $title
 	 * @param string $required
 	 * @return false|$returnValue
 	 */
-	public function apply($value, $type = self::TYPE_STRING, array $filter = array(), $key = null, $title = null, $required = true, $returnValue = false)
+	public function apply($value, $type = self::TYPE_STRING, array $filters = array(), $key = null, $title = null, $required = true, $returnValue = false)
 	{
-		$title = $title === null ? $key : $title;
+		$title = $title === null ? ucfirst($key) : $title;
 
+		// we check for $value === false because the input container returns 
+		// explicit false if the value is not set
 		if($required === true && $value === false)
 		{
 			$this->addError($key, $title . ' not set');
@@ -122,39 +124,31 @@ class Validate extends ArrayObject
 		switch($type)
 		{
 			case self::TYPE_INTEGER:
-			case 'int':
-			case 'integer':
 				$value = (integer) $value;
 				break;
 
 			case self::TYPE_STRING:
-			case 'str':
-			case 'string':
 				$value = (string)  $value;
 				break;
 
 			case self::TYPE_FLOAT:
-			case 'double':
-			case 'float':
 				$value = (float)   $value;
 				break;
 
 			case self::TYPE_BOOLEAN:
-			case 'bool':
-			case 'boolean':
 				$value = (boolean) $value;
 				break;
 		}
 
-		foreach($filter as $f)
+		foreach($filters as $filter)
 		{
-			$return = $f->apply($value);
+			$return = $filter->apply($value);
 
 			if($return === false)
 			{
 				if($required === true)
 				{
-					$this->addError($key, sprintf($f->getErrorMsg(), $title));
+					$this->addError($key, sprintf($filter->getErrorMsg(), $title));
 				}
 
 				return $returnValue;

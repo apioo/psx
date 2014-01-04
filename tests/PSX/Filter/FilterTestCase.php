@@ -23,30 +23,21 @@
 
 namespace PSX\Filter;
 
-use PSX\FilterAbstract;
-
 /**
- * Email
+ * FilterTestCase
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Email extends FilterAbstract
+class FilterTestCase extends \PHPUnit_Framework_TestCase
 {
-	/**
-	 * Returns true if $value is a valid email address else false
-	 *
-	 * @param mixed $value
-	 * @return boolean
-	 */
-	public function apply($value)
+	protected function assertErrorMessage($msg)
 	{
-		return filter_var((string) $value, FILTER_VALIDATE_EMAIL);
-	}
-
-	public function getErrorMsg()
-	{
-		return '%s must be a valid email format (user@domain.tld)';
+		if($msg !== null)
+		{
+			$this->assertTrue(is_string($msg), gettype($msg));
+			$this->assertTrue(substr_count($msg, '%s') <= 1);
+		}
 	}
 }

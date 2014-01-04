@@ -30,7 +30,7 @@ namespace PSX\Filter;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class XdigitTest extends \PHPUnit_Framework_TestCase
+class XdigitTest extends FilterTestCase
 {
 	protected function setUp()
 	{
@@ -40,15 +40,19 @@ class XdigitTest extends \PHPUnit_Framework_TestCase
 	{
 	}
 
-	public function testXdigit()
+	public function testFilter()
 	{
-		$xdigit = new Xdigit();
+		$filter = new Xdigit();
 
-		$this->assertEquals(false, $xdigit->apply('foo'));
-		$this->assertEquals(true, $xdigit->apply('abc123'));
-		$this->assertEquals(true, $xdigit->apply('123'));
-		$this->assertEquals(false, $xdigit->apply('12 3'));
-		$this->assertEquals(false, $xdigit->apply(''));
-		$this->assertEquals(false, $xdigit->apply('foo%&/'));
+		$this->assertEquals(false, $filter->apply('foo'));
+		$this->assertEquals(false, $filter->apply('abcz123'));
+		$this->assertEquals(true, $filter->apply('abc123'));
+		$this->assertEquals(true, $filter->apply('123'));
+		$this->assertEquals(false, $filter->apply('12 3'));
+		$this->assertEquals(false, $filter->apply(''));
+		$this->assertEquals(false, $filter->apply('foo%&/'));
+
+		// test error message
+		$this->assertErrorMessage($filter->getErrorMsg());
 	}
 }

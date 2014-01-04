@@ -30,7 +30,7 @@ namespace PSX\Filter;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class DigitTest extends \PHPUnit_Framework_TestCase
+class DigitTest extends FilterTestCase
 {
 	protected function setUp()
 	{
@@ -40,15 +40,18 @@ class DigitTest extends \PHPUnit_Framework_TestCase
 	{
 	}
 
-	public function testDigit()
+	public function testFilter()
 	{
-		$digit = new Digit();
+		$filter = new Digit();
 
-		$this->assertEquals(false, $digit->apply('foo'));
-		$this->assertEquals(false, $digit->apply('foo123'));
-		$this->assertEquals(true, $digit->apply('123'));
-		$this->assertEquals(false, $digit->apply('12 3'));
-		$this->assertEquals(false, $digit->apply(''));
-		$this->assertEquals(false, $digit->apply('foo%&/'));
+		$this->assertEquals(false, $filter->apply('foo'));
+		$this->assertEquals(false, $filter->apply('foo123'));
+		$this->assertEquals(true, $filter->apply('123'));
+		$this->assertEquals(false, $filter->apply('12 3'));
+		$this->assertEquals(false, $filter->apply(''));
+		$this->assertEquals(false, $filter->apply('foo%&/'));
+
+		// test error message
+		$this->assertErrorMessage($filter->getErrorMsg());
 	}
 }

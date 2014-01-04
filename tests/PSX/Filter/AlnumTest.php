@@ -30,7 +30,7 @@ namespace PSX\Filter;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class AlnumTest extends \PHPUnit_Framework_TestCase
+class AlnumTest extends FilterTestCase
 {
 	protected function setUp()
 	{
@@ -40,15 +40,18 @@ class AlnumTest extends \PHPUnit_Framework_TestCase
 	{
 	}
 
-	public function testAlnum()
+	public function testFilter()
 	{
-		$alnum = new Alnum();
+		$filter = new Alnum();
 
-		$this->assertEquals(true, $alnum->apply('foo'));
-		$this->assertEquals(true, $alnum->apply('foo123'));
-		$this->assertEquals(true, $alnum->apply('123'));
-		$this->assertEquals(false, $alnum->apply('12 3'));
-		$this->assertEquals(false, $alnum->apply(''));
-		$this->assertEquals(false, $alnum->apply('foo%&/'));
+		$this->assertEquals(true, $filter->apply('foo'));
+		$this->assertEquals(true, $filter->apply('foo123'));
+		$this->assertEquals(true, $filter->apply('123'));
+		$this->assertEquals(false, $filter->apply('12 3'));
+		$this->assertEquals(false, $filter->apply(''));
+		$this->assertEquals(false, $filter->apply('foo%&/'));
+
+		// test error message
+		$this->assertErrorMessage($filter->getErrorMsg());
 	}
 }

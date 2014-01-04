@@ -30,7 +30,7 @@ namespace PSX\Filter;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Md5Test extends \PHPUnit_Framework_TestCase
+class Md5Test extends FilterTestCase
 {
 	protected function setUp()
 	{
@@ -40,11 +40,14 @@ class Md5Test extends \PHPUnit_Framework_TestCase
 	{
 	}
 
-	public function testMd5()
+	public function testFilter()
 	{
-		$md5 = new Md5();
+		$filter = new Md5();
 
-		$this->assertEquals('d41d8cd98f00b204e9800998ecf8427e', $md5->apply(''));
-		$this->assertEquals('7e716d0e702df0505fc72e2b89467910', $md5->apply('Frank jagt im komplett verwahrlosten Taxi quer durch Bayern'));
+		$this->assertEquals('d41d8cd98f00b204e9800998ecf8427e', $filter->apply(''));
+		$this->assertEquals('7e716d0e702df0505fc72e2b89467910', $filter->apply('Frank jagt im komplett verwahrlosten Taxi quer durch Bayern'));
+
+		// test error message
+		$this->assertErrorMessage($filter->getErrorMsg());
 	}
 }

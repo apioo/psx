@@ -30,7 +30,7 @@ namespace PSX\Filter;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class EmailTest extends \PHPUnit_Framework_TestCase
+class EmailTest extends FilterTestCase
 {
 	protected function setUp()
 	{
@@ -40,11 +40,14 @@ class EmailTest extends \PHPUnit_Framework_TestCase
 	{
 	}
 
-	public function testEmail()
+	public function testFilter()
 	{
-		$email = new Email();
+		$filter = new Email();
 
-		$this->assertEquals(false, $email->apply('foo'));
-		$this->assertEquals(true, $email->apply('foo@bar.com'));
+		$this->assertEquals(false, $filter->apply('foo'));
+		$this->assertEquals('foo@bar.com', $filter->apply('foo@bar.com'));
+
+		// test error message
+		$this->assertErrorMessage($filter->getErrorMsg());
 	}
 }

@@ -30,7 +30,7 @@ namespace PSX\Filter;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class HtmlTest extends \PHPUnit_Framework_TestCase
+class HtmlTest extends FilterTestCase
 {
 	protected function setUp()
 	{
@@ -40,11 +40,14 @@ class HtmlTest extends \PHPUnit_Framework_TestCase
 	{
 	}
 
-	public function testHtml()
+	public function testFilter()
 	{
-		$html = new Html();
+		$filter = new Html();
 
-		$this->assertEquals('&lt;a&gt;test&lt;/a&gt;', $html->apply('<a>test</a>'));
-		$this->assertEquals('test', $html->apply('test'));
+		$this->assertEquals('&lt;a&gt;test&lt;/a&gt;', $filter->apply('<a>test</a>'));
+		$this->assertEquals('test', $filter->apply('test'));
+
+		// test error message
+		$this->assertErrorMessage($filter->getErrorMsg());
 	}
 }

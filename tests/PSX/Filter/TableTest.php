@@ -30,7 +30,7 @@ namespace PSX\Filter;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class TableTest extends \PHPUnit_Framework_TestCase
+class TableTest extends FilterTestCase
 {
 	protected function setUp()
 	{

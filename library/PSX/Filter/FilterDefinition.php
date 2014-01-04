@@ -85,7 +85,7 @@ class FilterDefinition
 
 			if($property instanceof Property)
 			{
-				$value = $this->validator->apply($data[$property->getName()], $property->getType(), $property->getFilters(), $key, ucfirst($key));
+				$value = $this->validator->apply($value, $property->getType(), $property->getFilters(), $key, ucfirst($key));
 
 				if(!$this->validator->hasError())
 				{

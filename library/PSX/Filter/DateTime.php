@@ -23,11 +23,11 @@
 
 namespace PSX\Filter;
 
-use Exception;
 use PSX\FilterAbstract;
 
 /**
- * DateTime
+ * Filter wich returns either an datetime object or if a format is specified 
+ * the date in the given format as string
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
@@ -35,10 +35,9 @@ use PSX\FilterAbstract;
  */
 class DateTime extends FilterAbstract
 {
-	private $format;
-	private $timezone;
+	protected $format;
 
-	public function __construct($format = 'Y-m-d H:i:s')
+	public function __construct($format = null)
 	{
 		$this->format = $format;
 	}
@@ -47,11 +46,18 @@ class DateTime extends FilterAbstract
 	{
 		try
 		{
-			$date = new \PSX\DateTime($value);
+			$date = $value instanceof \DateTime ? $value : new \DateTime((string) $value);
 
-			return $date->format($this->format);
+			if($this->format === null)
+			{
+				return $date;
+			}
+			else
+			{
+				return $date->format($this->format);
+			}
 		}
-		catch(Exception $e)
+		catch(\Exception $e)
 		{
 			return false;
 		}

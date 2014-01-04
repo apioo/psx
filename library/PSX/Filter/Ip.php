@@ -43,7 +43,7 @@ class Ip extends FilterAbstract
 	 */
 	public function apply($value)
 	{
-		return filter_var((string) $value, FILTER_VALIDATE_IP) === false ? false : true;
+		return filter_var((string) $value, FILTER_VALIDATE_IP);
 	}
 
 	public function getErrorMsg()

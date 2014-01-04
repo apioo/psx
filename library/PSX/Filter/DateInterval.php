@@ -39,9 +39,9 @@ class DateInterval extends FilterAbstract
 	{
 		try
 		{
-			if(!empty($value))
+			if(!empty($value) && !$value instanceof \DateInterval)
 			{
-				$interval = new \DateInterval($value);
+				new \DateInterval((string) $value);
 			}
 
 			return true;

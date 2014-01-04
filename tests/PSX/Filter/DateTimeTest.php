@@ -30,7 +30,7 @@ namespace PSX\Filter;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class DateTimeTest extends \PHPUnit_Framework_TestCase
+class DateTimeTest extends FilterTestCase
 {
 	protected function setUp()
 	{
@@ -40,11 +40,30 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
 	{
 	}
 
-	public function testDateTime()
+	public function testFilter()
 	{
-		$dateTime = new DateTime();
+		$filter = new DateTime();
+		$expect = new \DateTime('2010-10-10 00:00:00');
 
-		$this->assertEquals('2010-10-10 00:00:00', $dateTime->apply('10.10.2010'));
-		$this->assertEquals(false, $dateTime->apply('foobar'));
+		$this->assertInstanceOf('DateTime', $filter->apply($expect));
+		$this->assertEquals($expect, $filter->apply($expect));
+		$this->assertEquals($expect, $filter->apply('10.10.2010'));
+		$this->assertEquals(false, $filter->apply('foobar'));
+
+		// test error message
+		$this->assertErrorMessage($filter->getErrorMsg());
+	}
+
+	public function testFilterFormat()
+	{
+		$filter = new DateTime('Y-m-d H:i:s');
+		$expect = new \DateTime('2010-10-10 00:00:00');
+
+		$this->assertEquals('2010-10-10 00:00:00', $filter->apply($expect));
+		$this->assertEquals('2010-10-10 00:00:00', $filter->apply('10.10.2010'));
+		$this->assertEquals(false, $filter->apply('foobar'));
+
+		// test error message
+		$this->assertErrorMessage($filter->getErrorMsg());
 	}
 }

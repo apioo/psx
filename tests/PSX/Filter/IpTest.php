@@ -30,7 +30,7 @@ namespace PSX\Filter;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class IpTest extends \PHPUnit_Framework_TestCase
+class IpTest extends FilterTestCase
 {
 	protected function setUp()
 	{
@@ -40,11 +40,14 @@ class IpTest extends \PHPUnit_Framework_TestCase
 	{
 	}
 
-	public function testIp()
+	public function testFilter()
 	{
-		$ip = new Ip();
+		$filter = new Ip();
 
-		$this->assertEquals(true, $ip->apply('80.80.80.80'));
-		$this->assertEquals(false, $ip->apply('foo'));
+		$this->assertEquals('80.80.80.80', $filter->apply('80.80.80.80'));
+		$this->assertEquals(false, $filter->apply('foo'));
+
+		// test error message
+		$this->assertErrorMessage($filter->getErrorMsg());
 	}
 }

@@ -30,7 +30,7 @@ namespace PSX\Filter;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class UrldecodeTest extends \PHPUnit_Framework_TestCase
+class UrldecodeTest extends FilterTestCase
 {
 	protected function setUp()
 	{
@@ -40,11 +40,14 @@ class UrldecodeTest extends \PHPUnit_Framework_TestCase
 	{
 	}
 
-	public function testUrldecode()
+	public function testFilter()
 	{
-		$urldecode = new Urldecode();
+		$filter = new Urldecode();
 
-		$this->assertEquals('foobar', $urldecode->apply('foobar'));
-		$this->assertEquals('foo+!"§$%&/()=?bar', $urldecode->apply(urlencode('foo+!"§$%&/()=?bar')));
+		$this->assertEquals('foobar', $filter->apply('foobar'));
+		$this->assertEquals('foo+!"§$%&/()=?bar', $filter->apply(urlencode('foo+!"§$%&/()=?bar')));
+
+		// test error message
+		$this->assertErrorMessage($filter->getErrorMsg());
 	}
 }

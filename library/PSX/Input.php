@@ -75,7 +75,7 @@ class Input implements ContainerInterface
 	public function __call($key, $parameters)
 	{
 		$value    = $this->offsetGet($key);
-		$type     = isset($parameters[0]) ? $parameters[0] : 'string';
+		$type     = isset($parameters[0]) ? $parameters[0] : Validate::TYPE_STRING;
 		$filter   = isset($parameters[1]) ? $parameters[1] : array();
 		$key      = isset($parameters[2]) ? $parameters[2] : $key;
 		$title    = isset($parameters[3]) ? $parameters[3] : $key;

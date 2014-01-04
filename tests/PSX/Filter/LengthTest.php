@@ -30,7 +30,7 @@ namespace PSX\Filter;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class LengthTest extends \PHPUnit_Framework_TestCase
+class LengthTest extends FilterTestCase
 {
 	protected function setUp()
 	{
@@ -40,71 +40,95 @@ class LengthTest extends \PHPUnit_Framework_TestCase
 	{
 	}
 
-	public function testIntLength()
+	public function testFilterIntegerLength()
 	{
-		$length = new Length(3, 8);
+		$filter = new Length(3, 8);
 
-		$this->assertEquals(false, $length->apply(2));
-		$this->assertEquals(true, $length->apply(3));
-		$this->assertEquals(true, $length->apply(8));
-		$this->assertEquals(false, $length->apply(9));
+		$this->assertEquals(false, $filter->apply(2));
+		$this->assertEquals(true, $filter->apply(3));
+		$this->assertEquals(true, $filter->apply(8));
+		$this->assertEquals(false, $filter->apply(9));
 
-		$length = new Length(8);
+		// test error message
+		$this->assertErrorMessage($filter->getErrorMsg());
 
-		$this->assertEquals(true, $length->apply(2));
-		$this->assertEquals(true, $length->apply(3));
-		$this->assertEquals(true, $length->apply(8));
-		$this->assertEquals(false, $length->apply(9));
+		$filter = new Length(8);
+
+		$this->assertEquals(true, $filter->apply(2));
+		$this->assertEquals(true, $filter->apply(3));
+		$this->assertEquals(true, $filter->apply(8));
+		$this->assertEquals(false, $filter->apply(9));
+
+		// test error message
+		$this->assertErrorMessage($filter->getErrorMsg());
 	}
 
-	public function testFloatLength()
+	public function testFilterFloatLength()
 	{
-		$length = new Length(3.4, 8.4);
+		$filter = new Length(3.4, 8.4);
 
-		$this->assertEquals(false, $length->apply(3.3));
-		$this->assertEquals(true, $length->apply(3.4));
-		$this->assertEquals(true, $length->apply(8.4));
-		$this->assertEquals(false, $length->apply(8.5));
+		$this->assertEquals(false, $filter->apply(3.3));
+		$this->assertEquals(true, $filter->apply(3.4));
+		$this->assertEquals(true, $filter->apply(8.4));
+		$this->assertEquals(false, $filter->apply(8.5));
 
-		$length = new Length(8.4);
+		// test error message
+		$this->assertErrorMessage($filter->getErrorMsg());
 
-		$this->assertEquals(true, $length->apply(3.3));
-		$this->assertEquals(true, $length->apply(3.4));
-		$this->assertEquals(true, $length->apply(8.4));
-		$this->assertEquals(false, $length->apply(8.5));
+		$filter = new Length(8.4);
+
+		$this->assertEquals(true, $filter->apply(3.3));
+		$this->assertEquals(true, $filter->apply(3.4));
+		$this->assertEquals(true, $filter->apply(8.4));
+		$this->assertEquals(false, $filter->apply(8.5));
+
+		// test error message
+		$this->assertErrorMessage($filter->getErrorMsg());
 	}
 
-	public function testArrayLength()
+	public function testFilterArrayLength()
 	{
-		$length = new Length(3, 8);
+		$filter = new Length(3, 8);
 
-		$this->assertEquals(false, $length->apply(range(0, 1)));
-		$this->assertEquals(true, $length->apply(range(0, 2)));
-		$this->assertEquals(true, $length->apply(range(0, 7)));
-		$this->assertEquals(false, $length->apply(range(0, 8)));
+		$this->assertEquals(false, $filter->apply(range(0, 1)));
+		$this->assertEquals(true, $filter->apply(range(0, 2)));
+		$this->assertEquals(true, $filter->apply(range(0, 7)));
+		$this->assertEquals(false, $filter->apply(range(0, 8)));
 
-		$length = new Length(8);
+		// test error message
+		$this->assertErrorMessage($filter->getErrorMsg());
 
-		$this->assertEquals(true, $length->apply(range(0, 1)));
-		$this->assertEquals(true, $length->apply(range(0, 2)));
-		$this->assertEquals(true, $length->apply(range(0, 7)));
-		$this->assertEquals(false, $length->apply(range(0, 8)));
+		$filter = new Length(8);
+
+		$this->assertEquals(true, $filter->apply(range(0, 1)));
+		$this->assertEquals(true, $filter->apply(range(0, 2)));
+		$this->assertEquals(true, $filter->apply(range(0, 7)));
+		$this->assertEquals(false, $filter->apply(range(0, 8)));
+
+		// test error message
+		$this->assertErrorMessage($filter->getErrorMsg());
 	}
 
-	public function testStringLength()
+	public function testFilterStringLength()
 	{
-		$length = new Length(3, 8);
+		$filter = new Length(3, 8);
 
-		$this->assertEquals(false, $length->apply('fo'));
-		$this->assertEquals(true, $length->apply('foo'));
-		$this->assertEquals(true, $length->apply('foobarte'));
-		$this->assertEquals(false, $length->apply('foobartes'));
+		$this->assertEquals(false, $filter->apply('fo'));
+		$this->assertEquals(true, $filter->apply('foo'));
+		$this->assertEquals(true, $filter->apply('foobarte'));
+		$this->assertEquals(false, $filter->apply('foobartes'));
 
-		$length = new Length(8);
+		// test error message
+		$this->assertErrorMessage($filter->getErrorMsg());
 
-		$this->assertEquals(true, $length->apply('fo'));
-		$this->assertEquals(true, $length->apply('foo'));
-		$this->assertEquals(true, $length->apply('foobarte'));
-		$this->assertEquals(false, $length->apply('foobartes'));
+		$filter = new Length(8);
+
+		$this->assertEquals(true, $filter->apply('fo'));
+		$this->assertEquals(true, $filter->apply('foo'));
+		$this->assertEquals(true, $filter->apply('foobarte'));
+		$this->assertEquals(false, $filter->apply('foobartes'));
+
+		// test error message
+		$this->assertErrorMessage($filter->getErrorMsg());
 	}
 }

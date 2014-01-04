@@ -30,7 +30,7 @@ namespace PSX\Filter;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class AlphaTest extends \PHPUnit_Framework_TestCase
+class AlphaTest extends FilterTestCase
 {
 	protected function setUp()
 	{
@@ -40,15 +40,18 @@ class AlphaTest extends \PHPUnit_Framework_TestCase
 	{
 	}
 
-	public function testAlpha()
+	public function testFilter()
 	{
-		$alpha = new Alpha();
+		$filter = new Alpha();
 
-		$this->assertEquals(true, $alpha->apply('foo'));
-		$this->assertEquals(false, $alpha->apply('foo123'));
-		$this->assertEquals(false, $alpha->apply('123'));
-		$this->assertEquals(false, $alpha->apply('12 3'));
-		$this->assertEquals(false, $alpha->apply(''));
-		$this->assertEquals(false, $alpha->apply('foo%&/'));
+		$this->assertEquals(true, $filter->apply('foo'));
+		$this->assertEquals(false, $filter->apply('foo123'));
+		$this->assertEquals(false, $filter->apply('123'));
+		$this->assertEquals(false, $filter->apply('12 3'));
+		$this->assertEquals(false, $filter->apply(''));
+		$this->assertEquals(false, $filter->apply('foo%&/'));
+
+		// test error message
+		$this->assertErrorMessage($filter->getErrorMsg());
 	}
 }

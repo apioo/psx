@@ -30,7 +30,7 @@ namespace PSX\Filter;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class KeyExistsTest extends \PHPUnit_Framework_TestCase
+class KeyExistsTest extends FilterTestCase
 {
 	protected function setUp()
 	{
@@ -40,14 +40,17 @@ class KeyExistsTest extends \PHPUnit_Framework_TestCase
 	{
 	}
 
-	public function testKeyExists()
+	public function testFilter()
 	{
-		$keyExists = new KeyExists(range(0, 9));
+		$filter = new KeyExists(range(0, 9));
 
-		$this->assertEquals(true, $keyExists->apply('2'));
-		$this->assertEquals(true, $keyExists->apply(2));
-		$this->assertEquals(false, $keyExists->apply('20'));
-		$this->assertEquals(false, $keyExists->apply(20));
-		$this->assertEquals(false, $keyExists->apply(''));
+		$this->assertEquals(true, $filter->apply('2'));
+		$this->assertEquals(true, $filter->apply(2));
+		$this->assertEquals(false, $filter->apply('20'));
+		$this->assertEquals(false, $filter->apply(20));
+		$this->assertEquals(false, $filter->apply(''));
+
+		// test error message
+		$this->assertErrorMessage($filter->getErrorMsg());
 	}
 }
