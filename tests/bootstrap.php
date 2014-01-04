@@ -1,6 +1,6 @@
 <?php
 
-$loader = require_once('vendor/autoload.php');
+$loader = require('vendor/autoload.php');
 $loader->add('PSX', 'tests');
 
 $container = getContainer();
