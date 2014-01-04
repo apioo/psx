@@ -24,7 +24,10 @@
 namespace PSX;
 
 use PSX\Data\Writer;
+use PSX\Http\Response;
+use PSX\Http\ResponseParser;
 use PSX\Http\Request;
+use PSX\Http\Handler\Callback;
 use PSX\Http\Handler\Mock;
 use PSX\Http\Handler\MockCapture;
 
@@ -101,32 +104,28 @@ FEED;
 		$this->assertEquals('INSERT ATOM Heathcliff', $response->getBody());
 	}
 
-	/*
-	public function testInsertRss()
+	public function testRequest()
 	{
-		$header = array('Content-type' => Writer\Rss::$mime);
-		$body   = <<<FEED
-<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0">
-	<channel>
-		<pubDate>Sat, 07 Sep 2002 00:00:01 GMT</pubDate>
-		<item>
-			<title>Heathcliff</title>
-			<link>http://publisher.example.com/happycat25.xml</link>
-			<guid>http://publisher.example.com/happycat25.xml</guid>
-			<pubDate>Sat, 07 Sep 2002 00:00:01 GMT</pubDate>
-			<description>What a happy cat. Full content goes here.</description>
-		</item>
-	</channel>
-</rss>
-FEED;
+		$testCase = $this;
+		$http     = new Http(new Callback(function($request) use ($testCase){
 
-		$request  = new Request(new Url(self::URL_CALLBACK), 'POST', $header, $body);
-		$response = $this->http->request($request);
+			$testCase->assertEquals('hub.callback=http%3A%2F%2Ftest.phpsx.org%2Fpubsubhubbub%2Fcallback&hub.mode=subscribe&hub.topic=http%3A%2F%2Fyoutube.com&hub.verify=sync', $request->getBody());
 
-		$this->assertEquals(200, $response->getCode(), $response->getBody());
-		$this->assertEquals('INSERT RSS Heathcliff', $response->getBody());
+			$response = <<<TEXT
+HTTP/1.1 200 OK
+Content-Type: text/html; charset=utf-8
+Date: Sat, 04 Jan 2014 18:19:45 GMT
+
+foobar
+TEXT;
+
+			return Response::convert($response, ResponseParser::MODE_LOOSE)->toString();
+
+		}));
+		$pshb     = new PubSubHubBub($http);
+		$response = $pshb->request(new Url('http://localhost.com'), new Url(self::URL_CALLBACK), 'subscribe', new Url('http://youtube.com'), 'sync');
+
+		$this->assertTrue($response);
 	}
-	*/
 }
 
