@@ -63,6 +63,24 @@ class DispatchTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals('foo', $response->getBody());
 	}
+
+	public function testRouteException()
+	{
+		$loader = new Loader(getContainer());
+		$loader->setLocationFinder(new CallbackMethod(function($path){
+
+			return new Location(md5($path), $path, new ReflectionClass('PSX\ExceptionModule'));
+
+		}));
+
+		// set debug to false so we get only the message and not the trace
+		getContainer()->get('config')->set('psx_debug', false);
+
+		$dispatch = new Dispatch(getContainer()->get('config'), $loader);
+		$response = $dispatch->route(new Request(new Url('http://localhost.com'), 'GET'));
+
+		$this->assertEquals('The server encountered an internal error and was unable to complete your request.' . "\n", $response->getBody());
+	}
 }
 
 class DummyModule extends ModuleAbstract
@@ -70,5 +88,13 @@ class DummyModule extends ModuleAbstract
 	public function onLoad()
 	{
 		echo 'foo';
+	}
+}
+
+class ExceptionModule extends ModuleAbstract
+{
+	public function onLoad()
+	{
+		throw new \Exception('foobar');
 	}
 }
