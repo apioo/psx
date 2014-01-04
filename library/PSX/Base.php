@@ -36,7 +36,7 @@ use UnexpectedValueException;
  */
 class Base
 {
-	const VERSION = '0.8';
+	const VERSION = '0.8.1';
 
 	/**
 	 * The current request method
@@ -362,6 +362,32 @@ class Base
 		}
 
 		return false;
+	}
+
+	/**
+	 * Returns an array containing all headers wich are send
+	 *
+	 * @return array
+	 */
+	public static function getHeader()
+	{
+		$header = array();
+		$list   = headers_list();
+
+		foreach($list as $header)
+		{
+			$parts = explode(':', $line, 2);
+
+			if(isset($parts[0]) && isset($parts[1]))
+			{
+				$key   = strtolower(trim($parts[0]));
+				$value = trim($parts[1]);
+
+				$header[$key] = $value;
+			}
+		}
+
+		return $header;
 	}
 
 	/**

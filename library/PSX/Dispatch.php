@@ -108,7 +108,7 @@ class Dispatch extends \Exception
 	{
 		$code    = Base::getResponseCode();
 		$message = $code === null ? Http::$codes[200] : Http::$codes[$code];
-		$header  = Response::headerToArray(implode(Http::$newLine, headers_list()));
+		$header  = Base::getHeader();
 
 		return new Response(Base::getProtocol(), Base::getResponseCode(), $message, $header, $body);
 	}
