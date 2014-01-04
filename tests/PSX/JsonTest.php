@@ -53,4 +53,24 @@ class JsonTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals(array('foo' => 'bar'), Json::decode($val));
 	}
+
+	/**
+	 * @expectedException Exception
+	 */
+	public function testJsonDecodeMalformed()
+	{
+		$val = '{"foo":"bar"';
+
+		Json::decode($val);
+	}
+
+	/**
+	 * @expectedException Exception
+	 */
+	public function testJsonDecodeControlCharacter()
+	{
+		$val = '{"foo' . "\x02" . '":"bar"}';
+
+		Json::decode($val);
+	}
 }

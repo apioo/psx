@@ -40,7 +40,17 @@ class XmlTest extends \PHPUnit_Framework_TestCase
 	{
 	}
 
-	public function testNotImplemented()
+	public function testToJson()
 	{
+		$data = <<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<foo>
+	<bar>test</bar>
+	<foo>bar</foo>
+</foo>
+XML;
+		$xml = simplexml_load_string($data, 'PSX\Xml');
+
+		$this->assertJsonStringEqualsJsonString(json_encode(array('bar' => 'test', 'foo' => 'bar')), $xml->toJson());
 	}
 }

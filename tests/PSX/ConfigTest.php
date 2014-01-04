@@ -32,55 +32,93 @@ namespace PSX;
  */
 class ConfigTest extends \PHPUnit_Framework_TestCase
 {
-	protected $config;
-
 	protected function setUp()
 	{
-		$this->config = getContainer()->get('config');
 	}
 
 	protected function tearDown()
 	{
-		unset($this->config);
+	}
+
+	public function testConfigConstructorArray()
+	{
+		$config = new Config(array(
+			'foo' => 'bar'
+		));
+
+		$this->assertEquals('bar', $config['foo']);
+		$this->assertEquals('bar', $config->get('foo'));
+	}
+
+	public function testConfigConstructorFile()
+	{
+		$config = new Config('tests/PSX/Config/test_config.php');
+
+		$this->assertEquals('bar', $config['foo']);
+		$this->assertEquals('bar', $config->get('foo'));
+	}
+
+	/**
+	 * @expectedException PSX\Config\NotFoundException
+	 */
+	public function testConfigConstructorFileWrongVariableName()
+	{
+		$config = new Config('tests/PSX/Config/bar_config.php');
+	}
+
+	/**
+	 * @expectedException ErrorException
+	 */
+	public function testConfigConstructorFileNotExisting()
+	{
+		$config = new Config('tests/PSX/Config/foo_config.php');
 	}
 
 	public function testConfigOffsetSet()
 	{
-		$this->config['foo'] = 'bar';
+		$config = new Config(array());
 
-		$this->assertEquals('bar', $this->config['foo']);
+		$config['foo'] = 'bar';
 
-		$this->config->set('bar', 'foo');
+		$this->assertEquals('bar', $config['foo']);
 
-		$this->assertEquals('foo', $this->config['bar']);
+		$config->set('bar', 'foo');
+
+		$this->assertEquals('foo', $config['bar']);
 	}
 
 	public function testConfigOffsetExists()
 	{
-		$this->assertEquals(false, isset($this->config['foobar']));
-		$this->assertEquals(false, $this->config->has('foobar'));
+		$config = new Config(array());
 
-		$this->config['foobar'] = 'test';
+		$this->assertEquals(false, isset($config['foobar']));
+		$this->assertEquals(false, $config->has('foobar'));
 
-		$this->assertEquals(true, isset($this->config['foobar']));
-		$this->assertEquals(true, $this->config->has('foobar'));
+		$config['foobar'] = 'test';
+
+		$this->assertEquals(true, isset($config['foobar']));
+		$this->assertEquals(true, $config->has('foobar'));
 	}
 
 	public function testConfigOffsetUnset()
 	{
-		$this->config['bar'] = 'test';
+		$config = new Config(array());
 
-		unset($this->config['bar']);
+		$config['bar'] = 'test';
 
-		$this->assertEquals(true, !isset($this->config['bar']));
+		unset($config['bar']);
+
+		$this->assertEquals(true, !isset($config['bar']));
 	}
 
 	public function testConfigOffsetGet()
 	{
-		$this->config['bar'] = 'test';
+		$config = new Config(array());
 
-		$this->assertEquals('test', $this->config['bar']);
-		$this->assertEquals('test', $this->config->get('bar'));
+		$config['bar'] = 'test';
+
+		$this->assertEquals('test', $config['bar']);
+		$this->assertEquals('test', $config->get('bar'));
 	}
 }
 
