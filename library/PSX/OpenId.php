@@ -106,13 +106,24 @@ class OpenId
 
 	public function redirect(array $overrideParams = array())
 	{
-		$params = array(
+		$url = $this->getRedirectUrl($overrideParams);
 
+		header('Location: ' . strval($url));
+		exit;
+	}
+
+	/**
+	 * Returns the url where the user gest redirected
+	 *
+	 * @return PSX\Url
+	 */
+	public function getRedirectUrl(array $overrideParams = array())
+	{
+		$params = array(
 			'openid.ns'        => ProviderAbstract::NS,
 			'openid.mode'      => 'checkid_setup',
 			'openid.return_to' => $this->returnTo,
 			'openid.realm'     => $this->trustRoot,
-
 		) + $this->params;
 
 		// add identity and claimend id
@@ -148,8 +159,7 @@ class OpenId
 		$url = $this->identity->getServer();
 		$url->addParams($params);
 
-		header('Location: ' . strval($url));
-		exit;
+		return $url;
 	}
 
 	/**
@@ -160,9 +170,9 @@ class OpenId
 	 *
 	 * @return boolean
 	 */
-	public function verify()
+	public function verify(array $data = null)
 	{
-		$data = $_GET;
+		$data = $data === null ? $_GET : $data;
 		$mode = isset($data['openid_mode']) ? $data['openid_mode'] : false;
 
 		if($mode == 'cancel')

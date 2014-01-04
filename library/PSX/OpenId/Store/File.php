@@ -40,7 +40,7 @@ class File implements StoreInterface
 
 	public function __construct($file = null)
 	{
-		$this->file = PSX_PATH_CACHE . '/' . ($file === null ? strtolower(__CLASS__ . '.store') : $file);
+		$this->file = PSX_PATH_CACHE . '/' . ($file === null ? 'psx_openid.store' : $file);
 
 		if(!FileObject::exists($this->file))
 		{
