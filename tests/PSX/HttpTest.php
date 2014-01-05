@@ -44,7 +44,8 @@ class HttpTest extends \PHPUnit_Framework_TestCase
 	{
 		$store = new CookieStore\Memory();
 		$http  = new Http(new Handler\Callback(function($request){
-			return <<<TEXT
+
+			$response = <<<TEXT
 HTTP/1.1 200 OK
 Content-Encoding: gzip
 Content-Type: text/html; charset=utf-8
@@ -60,14 +61,16 @@ Connection: keep-alive
 
 foobar
 TEXT;
+
+			return Response::convert($response, ResponseParser::MODE_LOOSE)->toString();
+
 		}));
 
 		$http->setCookieStore($store);
 
 		$request  = new GetRequest(new Url('http://localhost.com'));
 		$response = $http->request($request);
-
-		$cookies = $store->load('localhost.com');
+		$cookies  = $store->load('localhost.com');
 
 		$this->assertTrue(isset($cookies['webmaker.sid']));
 		$this->assertEquals('webmaker.sid', $cookies['webmaker.sid']->getName());
@@ -81,7 +84,7 @@ TEXT;
 		// now we have stored the cookie we check whether we get it on the next 
 		// request
 		$testCase = $this;
-		$http  = new Http(new Handler\Callback(function($request) use ($testCase){
+		$http     = new Http(new Handler\Callback(function($request) use ($testCase){
 
 			$cookie = $request->getHeader('Cookie');
 			$testCase->assertEquals('webmaker.sid=s%3Aj%3A%7B%22_csrfSecret%22%3A%22uMs5W0M2tR2ewHNiJQye7lpe%22%7D.wSMQqQeiDgatt0Smv2Nbq5g92lX04%2FmOBiiRdPZIuro', $cookie);

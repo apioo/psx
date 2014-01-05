@@ -192,7 +192,17 @@ class Response extends Message
 
 		foreach($this->header as $k => $v)
 		{
-			$response.= $k . ': ' . $v . Http::$newLine;
+			if(is_array($v))
+			{
+				foreach($v as $line)
+				{
+					$response.= $k . ': ' . $line . Http::$newLine;
+				}
+			}
+			else
+			{
+				$response.= $k . ': ' . $v . Http::$newLine;
+			}
 		}
 
 		$response.= Http::$newLine;

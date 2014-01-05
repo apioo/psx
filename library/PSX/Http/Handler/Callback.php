@@ -58,7 +58,10 @@ class Callback implements HandlerInterface
 		}
 		catch(\PHPUnit_Framework_Exception $e)
 		{
-			// phpunit exceptions can pass
+			throw $e;
+		}
+		catch(\ErrorException $e)
+		{
 			throw $e;
 		}
 		catch(\Exception $e)
