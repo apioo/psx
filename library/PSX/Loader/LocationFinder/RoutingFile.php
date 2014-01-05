@@ -48,19 +48,19 @@ class RoutingFile implements LocationFinderInterface
 	public function resolve($pathInfo)
 	{
 		$method  = Base::getRequestMethod();
-		$lines   = file($this->file);
+		$lines   = file($this->file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 		$matches = array();
 
 		foreach($lines as $line)
 		{
-			$line = trim($line);
+			$line = trim(str_replace("\t", ' ', $line));
 
 			if(!empty($line) && $line[0] != '#')
 			{
 				$parts   = array_values(array_filter(explode(' ', $line)));
 				$allowed = isset($parts[0]) ? explode('|', $parts[0]) : array();
 				$path    = isset($parts[1]) ? trim($parts[1], '/') : null;
-				$class   = isset($parts[2]) ? $parts[2] : null;
+				$class   = isset($parts[2]) ? trim($parts[2]) : null;
 
 				if(in_array($method, $allowed) && substr($pathInfo, 0, strlen($path)) == $path)
 				{
