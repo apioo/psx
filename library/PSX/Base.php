@@ -36,7 +36,7 @@ use UnexpectedValueException;
  */
 class Base
 {
-	const VERSION = '0.8.1';
+	const VERSION = '0.8.2';
 
 	/**
 	 * The current request method
@@ -374,7 +374,7 @@ class Base
 		$header = array();
 		$list   = headers_list();
 
-		foreach($list as $header)
+		foreach($list as $line)
 		{
 			$parts = explode(':', $line, 2);
 
