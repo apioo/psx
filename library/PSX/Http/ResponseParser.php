@@ -67,6 +67,11 @@ class ResponseParser
 			throw new Exception('Empty response');
 		}
 
+		if($this->mode == self::MODE_LOOSE)
+		{
+			$content = str_replace(array("\r\n", "\n", "\r"), "\n", $content);
+		}
+
 		$response = new Response();
 
 		list($scheme, $code, $message) = $this->getStatus($content);
@@ -126,12 +131,13 @@ class ResponseParser
 		}
 		else if($this->mode == self::MODE_LOOSE)
 		{
-			$lines  = explode("\n", str_replace(array("\r\n", "\n", "\r"), "\n", $response));
+			$lines  = explode("\n", $response);
 			$header = '';
 			$body   = '';
 			$found  = false;
+			$count  = count($lines);
 
-			foreach($lines as $line)
+			foreach($lines as $i => $line)
 			{
 				$line = trim($line);
 
@@ -147,7 +153,7 @@ class ResponseParser
 				}
 				else
 				{
-					$body.= $line . "\n";
+					$body.= $line . ($i < $count - 1 ? "\n" : '');
 				}
 			}
 		}
@@ -202,15 +208,15 @@ class ResponseParser
 
 	protected function getStatusLine($response)
 	{
-		$pos = strpos($response, Http::$newLine);
+		if($this->mode == self::MODE_STRICT)
+		{
+			$pos = strpos($response, Http::$newLine);
+		}
+		else if($this->mode == self::MODE_LOOSE)
+		{
+			$pos = strpos($response, "\n");
+		}
 
-		if($pos !== false)
-		{
-			return substr($response, 0, $pos);
-		}
-		else
-		{
-			return false;
-		}
+		return $pos !== false ? substr($response, 0, $pos) : false;
 	}
 }

@@ -23,6 +23,8 @@
 
 namespace PSX\Http;
 
+use PSX\Http;
+
 /**
  * ResponseParserTest
  *
@@ -34,11 +36,24 @@ class ResponseParserTest extends \PHPUnit_Framework_TestCase
 {
 	public function testParseStrictMode()
 	{
-		$response = 'SFRUUC8xLjEgMjAwIE9LDQpWYXJ5OiBBY2NlcHQtRW5jb2RpbmcNCkNvbnRlbnQtVHlwZTogdGV4dC9wbGFpbg0KTGFzdC1Nb2RpZmllZDogTW9uLCAwMiBBcHIgMjAxMiAwMjoxMzozNyBHTVQNCkRhdGU6IFNhdCwgMDcgRGVjIDIwMTMgMTM6Mjc6MzMgR01UDQpFeHBpcmVzOiBTYXQsIDA3IERlYyAyMDEzIDEzOjI3OjMzIEdNVA0KQ2FjaGUtQ29udHJvbDogcHVibGljLCBtYXgtYWdlPTANClgtQ29udGVudC1UeXBlLU9wdGlvbnM6IG5vc25pZmYNClNlcnZlcjogc2ZmZQ0KWC1YU1MtUHJvdGVjdGlvbjogMTsgbW9kZT1ibG9jaw0KQWx0ZXJuYXRlLVByb3RvY29sOiA4MDpxdWljDQpUcmFuc2Zlci1FbmNvZGluZzogY2h1bmtlZA0KDQpHb29nbGUgaXMgYnVpbHQgYnkgYSBsYXJnZSB0ZWFtIG9mIGVuZ2luZWVycywgZGVzaWduZXJzLCByZXNlYXJjaGVycywgcm9ib3RzLCBhbmQgb3RoZXJzIGluIG1hbnkgZGlmZmVyZW50IHNpdGVzIGFjcm9zcyB0aGUgZ2xvYmUuIEl0IGlzIHVwZGF0ZWQgY29udGludW91c2x5LCBhbmQgYnVpbHQgd2l0aCBtb3JlIHRvb2xzIGFuZCB0ZWNobm9sb2dpZXMgdGhhbiB3ZSBjYW4gc2hha2UgYSBzdGljayBhdC4gSWYgeW91J2QgbGlrZSB0byBoZWxwIHVzIG91dCwgc2VlIGdvb2dsZS5jb20vam9icy4K';
+		$response = 'HTTP/1.1 200 OK' . Http::$newLine;
+		$response.= 'Vary: Accept-Encoding' . Http::$newLine;
+		$response.= 'Content-Type: text/plain' . Http::$newLine;
+		$response.= 'Last-Modified: Mon, 02 Apr 2012 02:13:37 GMT' . Http::$newLine;
+		$response.= 'Date: Sat, 07 Dec 2013 13:27:33 GMT' . Http::$newLine;
+		$response.= 'Expires: Sat, 07 Dec 2013 13:27:33 GMT' . Http::$newLine;
+		$response.= 'Cache-Control: public, max-age=0' . Http::$newLine;
+		$response.= 'X-Content-Type-Options: nosniff' . Http::$newLine;
+		$response.= 'Server: sffe' . Http::$newLine;
+		$response.= 'X-XSS-Protection: 1; mode=block' . Http::$newLine;
+		$response.= 'Alternate-Protocol: 80:quic' . Http::$newLine;
+		$response.= 'Transfer-Encoding: chunked' . Http::$newLine;
+		$response.= Http::$newLine;
+		$response.= 'Google is built by a large team of engineers, designers, researchers, robots, and others in many different sites across the globe. It is updated continuously, and built with more tools and technologies than we can shake a stick at. If you\'d like to help us out, see google.com/jobs.';
 
 		$parser = new ResponseParser(ResponseParser::MODE_STRICT);
 
-		$response = $parser->parse(base64_decode($response));
+		$response = $parser->parse($response);
 
 		$this->assertInstanceOf('PSX\Http\Response', $response);
 		$this->assertEquals('HTTP/1.1', $response->getScheme());
@@ -62,44 +77,46 @@ class ResponseParserTest extends \PHPUnit_Framework_TestCase
 
 	public function testParseLooseMode()
 	{
-		$response = <<<TEXT
-HTTP/1.1 200 OK
-Vary: Accept-Encoding
-Content-Type: text/plain
-Last-Modified: Mon, 02 Apr 2012 02:13:37 GMT
-Date: Sat, 07 Dec 2013 13:27:33 GMT
-Expires: Sat, 07 Dec 2013 13:27:33 GMT
-Cache-Control: public, max-age=0
-X-Content-Type-Options: nosniff
-Server: sffe
-X-XSS-Protection: 1; mode=block
-Alternate-Protocol: 80:quic
-Transfer-Encoding: chunked
-
-Google is built by a large team of engineers, designers, researchers, robots, and others in many different sites across the globe. It is updated continuously, and built with more tools and technologies than we can shake a stick at. If you'd like to help us out, see google.com/jobs.
-TEXT;
-
 		$parser = new ResponseParser(ResponseParser::MODE_LOOSE);
+		$seperators = array("\r\n", "\n", "\r");
 
-		$response = $parser->parse($response);
+		foreach($seperators as $newline)
+		{
+			$response = 'HTTP/1.1 200 OK' . $newline;
+			$response.= 'Vary: Accept-Encoding' . $newline;
+			$response.= 'Content-Type: text/plain' . $newline;
+			$response.= 'Last-Modified: Mon, 02 Apr 2012 02:13:37 GMT' . $newline;
+			$response.= 'Date: Sat, 07 Dec 2013 13:27:33 GMT' . $newline;
+			$response.= 'Expires: Sat, 07 Dec 2013 13:27:33 GMT' . $newline;
+			$response.= 'Cache-Control: public, max-age=0' . $newline;
+			$response.= 'X-Content-Type-Options: nosniff' . $newline;
+			$response.= 'Server: sffe' . $newline;
+			$response.= 'X-XSS-Protection: 1; mode=block' . $newline;
+			$response.= 'Alternate-Protocol: 80:quic' . $newline;
+			$response.= 'Transfer-Encoding: chunked' . $newline;
+			$response.= $newline;
+			$response.= 'Google is built by a large team of engineers, designers, researchers, robots, and others in many different sites across the globe. It is updated continuously, and built with more tools and technologies than we can shake a stick at. If you\'d like to help us out, see google.com/jobs.';
 
-		$this->assertInstanceOf('PSX\Http\Response', $response);
-		$this->assertEquals('HTTP/1.1', $response->getScheme());
-		$this->assertEquals(200, $response->getCode());
-		$this->assertEquals('OK', $response->getMessage());
-		$this->assertEquals(array(
-			'content-type'           => 'text/plain',
-			'date'                   => 'Sat, 07 Dec 2013 13:27:33 GMT',
-			'vary'                   => 'Accept-Encoding',
-			'last-modified'          => 'Mon, 02 Apr 2012 02:13:37 GMT',
-			'expires'                => 'Sat, 07 Dec 2013 13:27:33 GMT',
-			'cache-control'          => 'public, max-age=0',
-			'x-content-type-options' => 'nosniff',
-			'server'                 => 'sffe',
-			'x-xss-protection'       => '1; mode=block',
-			'alternate-protocol'     => '80:quic',
-			'transfer-encoding'      => 'chunked',
-		), $response->getHeader());
-		$this->assertEquals('Google is built by a large team of engineers, designers, researchers, robots, and others in many different sites across the globe. It is updated continuously, and built with more tools and technologies than we can shake a stick at. If you\'d like to help us out, see google.com/jobs.' . "\n", $response->getBody());
+			$response = $parser->parse($response);
+
+			$this->assertInstanceOf('PSX\Http\Response', $response);
+			$this->assertEquals('HTTP/1.1', $response->getScheme());
+			$this->assertEquals(200, $response->getCode());
+			$this->assertEquals('OK', $response->getMessage());
+			$this->assertEquals(array(
+				'content-type'           => 'text/plain',
+				'date'                   => 'Sat, 07 Dec 2013 13:27:33 GMT',
+				'vary'                   => 'Accept-Encoding',
+				'last-modified'          => 'Mon, 02 Apr 2012 02:13:37 GMT',
+				'expires'                => 'Sat, 07 Dec 2013 13:27:33 GMT',
+				'cache-control'          => 'public, max-age=0',
+				'x-content-type-options' => 'nosniff',
+				'server'                 => 'sffe',
+				'x-xss-protection'       => '1; mode=block',
+				'alternate-protocol'     => '80:quic',
+				'transfer-encoding'      => 'chunked',
+			), $response->getHeader());
+			$this->assertEquals('Google is built by a large team of engineers, designers, researchers, robots, and others in many different sites across the globe. It is updated continuously, and built with more tools and technologies than we can shake a stick at. If you\'d like to help us out, see google.com/jobs.', $response->getBody());
+		}
 	}
 }
