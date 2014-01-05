@@ -32,7 +32,7 @@ use PSX\HttpTest;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class CurlTest extends HttpTest
+class CurlTest extends HandlerTestCase
 {
 	protected function getHandler()
 	{

@@ -27,11 +27,7 @@ use PSX\Http\CookieStore;
 use PSX\Http\Handler;
 use PSX\Http\Response;
 use PSX\Http\ResponseParser;
-use PSX\Http\DeleteRequest;
 use PSX\Http\GetRequest;
-use PSX\Http\HeadRequest;
-use PSX\Http\PostRequest;
-use PSX\Http\PutRequest;
 
 /**
  * HttpTest
@@ -43,118 +39,6 @@ use PSX\Http\PutRequest;
 class HttpTest extends \PHPUnit_Framework_TestCase
 {
 	const URL = 'http://test.phpsx.org/http';
-
-	private $http;
-
-	protected function setUp()
-	{
-		$handler = $this->getHandler();
-
-		$this->http = new Http($handler);
-	}
-
-	protected function tearDown()
-	{
-	}
-
-	protected function getHandler()
-	{
-		return new Handler\Curl();
-	}
-
-	public function testDeleteRequest()
-	{
-		$request  = new DeleteRequest(new Url(self::URL . '/delete'));
-		$response = $this->http->request($request);
-
-		$this->assertEquals('HTTP/1.1', $response->getScheme());
-		$this->assertEquals(200, $response->getCode());
-		$this->assertEquals('OK', $response->getMessage());
-		$this->assertEquals('SUCCESS', $response->getBody());
-	}
-
-	public function testGetRequest()
-	{
-		$request  = new GetRequest(new Url(self::URL . '/get'));
-		$response = $this->http->request($request);
-
-		$this->assertEquals('HTTP/1.1', $response->getScheme());
-		$this->assertEquals(200, $response->getCode());
-		$this->assertEquals('OK', $response->getMessage());
-		$this->assertEquals('SUCCESS', $response->getBody());
-	}
-
-	public function testHeadRequest()
-	{
-		$request  = new HeadRequest(new Url(self::URL . '/head'));
-		$response = $this->http->request($request);
-
-		$this->assertEquals('HTTP/1.1', $response->getScheme());
-		$this->assertEquals(200, $response->getCode());
-		$this->assertEquals('OK', $response->getMessage());
-		$this->assertEquals('', $response->getBody()); // must be empty
-	}
-
-	public function testPostRequest()
-	{
-		$request  = new PostRequest(new Url(self::URL . '/post'));
-		$response = $this->http->request($request);
-
-		$this->assertEquals('HTTP/1.1', $response->getScheme());
-		$this->assertEquals(200, $response->getCode());
-		$this->assertEquals('OK', $response->getMessage());
-		$this->assertEquals('SUCCESS', $response->getBody());
-	}
-
-	public function testPutRequest()
-	{
-		$request  = new PutRequest(new Url(self::URL . '/put'));
-		$response = $this->http->request($request);
-
-		$this->assertEquals('HTTP/1.1', $response->getScheme());
-		$this->assertEquals(200, $response->getCode());
-		$this->assertEquals('OK', $response->getMessage());
-		$this->assertEquals('SUCCESS', $response->getBody());
-	}
-
-	public function testHttpsGetRequest()
-	{
-		$request  = new GetRequest(new Url('https://www.google.com/accounts/ServiceLogin'));
-		$request->setFollowLocation(true);
-		$response = $this->http->request($request);
-
-		$this->assertEquals('HTTP/1.1', $response->getScheme());
-		$this->assertEquals(200, $response->getCode());
-		$this->assertEquals('OK', $response->getMessage());
-		$this->assertEquals(true, strlen($response->getBody()) > 1024);
-	}
-
-	public function testHttpChunkedTransferEncoding()
-	{
-		/*
-		$request  = new GetRequest(new Url('http://yahoo.com'));
-		$request->setFollowLocation(true);
-		$response = $this->http->request($request);
-
-		$this->assertEquals('HTTP/1.1', $response->getScheme());
-		$this->assertEquals(200, $response->getCode());
-		$this->assertEquals('OK', $response->getMessage());
-		$this->assertEquals(true, strlen($response->getBody()) > 4096);
-		*/
-	}
-
-	public function testGetRedirect()
-	{
-		$request  = new GetRequest(new Url('http://test.phpsx.org/http/redirect'));
-		$request->setFollowLocation(true);
-
-		$response = $this->http->request($request);
-
-		$this->assertEquals('HTTP/1.1', $response->getScheme());
-		$this->assertEquals(200, $response->getCode());
-		$this->assertEquals('OK', $response->getMessage());
-		$this->assertEquals('SUCCESS', $response->getBody());
-	}
 
 	public function testCookieStore()
 	{

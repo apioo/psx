@@ -32,7 +32,7 @@ use PSX\HttpTest;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class SocksTest extends HttpTest
+class SocksTest extends HandlerTestCase
 {
 	protected function getHandler()
 	{
