@@ -1,4 +1,15 @@
 
+0.8.1
+* Add http callback handler and add response parser class
+* Fix html parser single and double quotes in attributes
+* Allow urls with protocol definition i.e. //phpsx.org
+* Improved filter tests and added date range filter
+* Added entity annotation importer
+* Improved tests
+* Removed apc cache handler
+* Added sql table manager wich can read table definitions from different sources
+* Add annotation test and improve parsing
+
 0.8
 * Added domain package. The package helps you to create your application in a 
   domain driven design
