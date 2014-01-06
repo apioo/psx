@@ -65,6 +65,8 @@ class Importer implements ImporterInterface
 		{
 			throw new InvalidDataException('No channel element found');
 		}
+
+		return $record;
 	}
 
 	protected function parseChannelElement(DOMElement $channel, RecordInterface $record)

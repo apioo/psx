@@ -56,6 +56,8 @@ class ItemImporter implements ImporterInterface
 		}
 
 		$this->parseItemElement($data, $record);
+
+		return $record;
 	}
 
 	protected function parseItemElement(DOMElement $element, RecordInterface $record)
