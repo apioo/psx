@@ -25,6 +25,7 @@ namespace PSX\Handler\Manager;
 
 use PSX\Handler\HandlerManagerInterface;
 use PSX\Sql;
+use PSX\Sql\TableManager;
 
 /**
  * DatabaseManager
