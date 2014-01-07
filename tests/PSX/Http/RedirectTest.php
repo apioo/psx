@@ -39,6 +39,7 @@ class RedirectTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
+		$this->markTestIncomplete('TODO test must not connect to a remote domain');
 	}
 
 	protected function tearDown()
