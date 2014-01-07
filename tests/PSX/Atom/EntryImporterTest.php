@@ -102,7 +102,7 @@ XML;
 		$reader   = new Reader\Dom();
 		$entry    = new Entry();
 		$importer = new EntryImporter();
-		$importer->setFetchRemoteContent(true);
+		$importer->setFetchRemoteContent($this->http);
 		$importer->import($entry, $reader->read(new Message(array(), $body)));
 
 		$expect = <<<XML
