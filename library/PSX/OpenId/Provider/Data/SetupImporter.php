@@ -29,13 +29,13 @@ use PSX\Data\Record\ImporterInterface;
 use PSX\Http\Message;
 
 /**
- * ResImporter
+ * SetupImporter
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class ResImporter implements ImporterInterface
+class SetupImporter implements ImporterInterface
 {
 	public function import($record, $data)
 	{
