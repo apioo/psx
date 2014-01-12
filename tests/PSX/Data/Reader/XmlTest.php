@@ -32,7 +32,7 @@ use SimpleXMLElement;
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
- * @link    http://phpsx.org
+ * @link	http://phpsx.org
  */
 class XmlTest extends \PHPUnit_Framework_TestCase
 {
@@ -54,17 +54,36 @@ class XmlTest extends \PHPUnit_Framework_TestCase
 	<test>
 		<foo>bar</foo>
 	</test>
+	<item>
+		<foo>
+			<bar>
+				<title>foo</title>
+			</bar>
+		</foo>
+	</item>
+	<items>
+		<item>
+			<title>foo</title>
+			<text>bar</text>
+		</item>
+		<item>
+			<title>foo</title>
+			<text>bar</text>
+		</item>
+	</items>
 </test>
 INPUT;
 
 		$reader  = new Xml();
 		$message = new Message(array(), $body);
-		$xml     = $reader->read($message);
+		$xml	 = $reader->read($message);
 
 		$expect = array(
 			'foo' => 'bar', 
 			'bar' => array('blub', 'bla'), 
-			'test' => array('foo' => 'bar')
+			'test' => array('foo' => 'bar'),
+			'item' => array('foo' => array('bar' => array('title' => 'foo'))),
+			'items' => array('item' => array(array('title' => 'foo', 'text' => 'bar'), array('title' => 'foo', 'text' => 'bar'))),
 		);
 
 		$this->assertEquals(true, is_array($xml));

@@ -46,7 +46,27 @@ class JsonTest extends \PHPUnit_Framework_TestCase
 	public function testRead()
 	{
 		$body = <<<INPUT
-{"foo":"bar","bar":["blub","bla"],"test":{"foo":"bar"}}
+{
+	"foo": "bar",
+	"bar": ["blub","bla"],
+	"test": {"foo": "bar"},
+	"item": {
+		"foo": {
+			"bar": {
+				"title":"foo"
+			}
+		}
+	},
+	"items": {
+		"item": [{
+			"title": "foo",
+			"text": "bar"
+		},{
+			"title": "foo",
+			"text": "bar"
+		}]
+	}
+}
 INPUT;
 
 		$reader  = new Json();
@@ -56,7 +76,9 @@ INPUT;
 		$expect = array(
 			'foo' => 'bar', 
 			'bar' => array('blub', 'bla'), 
-			'test' => array('foo' => 'bar')
+			'test' => array('foo' => 'bar'),
+			'item' => array('foo' => array('bar' => array('title' => 'foo'))),
+			'items' => array('item' => array(array('title' => 'foo', 'text' => 'bar'), array('title' => 'foo', 'text' => 'bar'))),
 		);
 
 		$this->assertEquals(true, is_array($json));
