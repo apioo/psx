@@ -44,7 +44,15 @@ in order to add basic authentication
 Oauth authentication
 --------------------
 
-Sample oauth authentication
+Sample oauth authentication. This is only to illustrate what to return. Normally 
+you have to check
+
+* is the consumerKey valid
+* does the token belongs to an valid request with a valid status
+* is the token not expired
+
+PSX calculates and compares the signature if you return an consumer. For more 
+informations see :rfc:`5849#anchor`
 
 .. code-block:: php
 
@@ -59,12 +67,6 @@ Sample oauth authentication
     {
     	$auth = new OauthAuthentication(function($consumerKey, $token){
     
-    		// this is only to illustrate what to return. Normally you have to check
-    		// - is it a valid consumerKey
-    		// - does the token belongs to an valid request with a valid status
-    		// - is the token not expired
-    		// PSX calculates and compares the signature if you return an consumer.
-    		// For more informations see http://tools.ietf.org/html/rfc5849
     		if($consumerKey == '[consumerKey]' && $token == '[token]')
     		{
     			return new Consumer('[consumerKey]', '[consumerSecret]', '[token]', '[tokenSecret]');

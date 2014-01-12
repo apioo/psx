@@ -1,6 +1,6 @@
 
 OAuth provider implementation
-===========================
+=============================
 
 If you want offer an Oauth endpoint for applications PSX offers some classes to 
 implement the Oauth 1.0 specification. In the following section we will 

@@ -2,15 +2,22 @@
 Tutorial
 ========
 
-This is the main chapter of the manual wich explains step by step howto develop 
-a RESTful API based on PSX. In this example we create a simple news API where 
-you can create and receive news
+In this chapter we develop step by step a simple RESTful API with PSX. This 
+should give you a basic overview how PSX works
 
-Setting up the table
---------------------
+Prolog
+------
 
-For our example we need a simple table called news where all records are 
-stored
+The core of every API in PSX is an handler system which knows howto CRUD data
+from an specific data source. In our example we want create an API from an mysql
+database therefor we use the database handler. PSX offers many handler to read 
+from different datasources like Mongodb, Doctrine, DOM, etc.
+
+Creating the table
+------------------
+
+Because we want create an API from an database we need to create the fitting
+table
 
 .. code-block:: sql
 
@@ -23,107 +30,12 @@ stored
       PRIMARY KEY (`id`)
     ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
-Creating the record
--------------------
-
-The record represents an row from an database. If we post a news to the api 
-endpoint this record is created and the setter methods are called. This is the 
-place where you have to validate the user data
-
-.. code-block:: php
-
-    <?php
-    
-    namespace Test\News;
-    
-    use PSX\Data\RecordAbstract;
-    
-    class Record extends RecordAbstract
-    {
-    	protected $id;
-    	protected $userId;
-    	protected $title;
-    	protected $text;
-    	protected $date;
-    
-    	protected $_date;
-    
-    	public function setId($id)
-    	{
-    		$this->id = $id;
-    	}
-    
-    	public function setUserId($userId)
-    	{
-    		$this->userId = $userId;
-    	}
-    
-    	public function setTitle($title)
-    	{
-    		$this->title = $title;
-    	}
-    
-    	public function setText($text)
-    	{
-    		$this->text = $text;
-    	}
-    
-    	public function setDate($date)
-    	{
-    		$this->date = $date;
-    	}
-    
-    	public function getDate()
-    	{
-    		if($this->_date === null)
-    		{
-    			$this->_date = new DateTime($this->date);
-    		}
-    
-    		return $this->_date;
-    	}
-    }
-
-Creating the handler
---------------------
-
-The handler is a concept similar to a repository in doctrine wich abstracts the 
-sql queries away from the controller. Instead of creating sql queries you should 
-add "getByFoo" methods to the handler. The Handler is also responsible to 
-create, update and delete an record. In our case the default select methods wich 
-are provided by the HandlerAbstract are sufficient for our api so we dont have 
-to add additional methods
-
-.. code-block:: php
-
-    <?php
-    
-    namespace Test\News;
-    
-    use PSX\Data\HandlerAbstract;
-    
-    class Handler extends HandlerAbstract
-    {
-    	public function getDefaultSelect()
-    	{
-    		$this->manager->getTable('Sample\News\Table')
-    			->select(array('id', 'userId', 'title', 'text', 'date'));
-    	}
-    }
-
-Creating the table
-------------------
-
-Note the key parts of PSX are the records and handler the table class wich we 
-now create is only a helper class for the handler in order to retrieve records 
-from an mysql table via PDO. You are free to implement your own HandlerInterface 
-and use an ORM like doctrine, simple SQL queries or any other system to CRUD 
-records.
-
-The table represents an database table. It contains the table name wich columns 
-are available and the relations to other tables. In this example we have no 
-relation to another table but to give an example the getConnection method is 
-implemented
+The database handler needs some meta informations about the table like the
+table name and what columns are available. We can write these meta informations
+in a Table class which can be used by the handler. PSX can obtains these meta
+informations also from other sources like an doctrine entity or an mysql 
+describe command or you can write your own reader which could get the 
+informations from an XML file or something else
 
 .. code-block:: php
 
@@ -135,39 +47,227 @@ implemented
     
     class Table extends TableAbstract
     {
-    	public function getName()
-    	{
-    		return 'news';
-    	}
+        public function getName()
+        {
+            return 'news';
+        }
     
-    	public function getColumns()
-    	{
-    		return array(
-    			'id' => self::TYPE_INT | 10 | self::PRIMARY_KEY | self::AUTO_INCREMENT,
-    			'userId' => self::TYPE_INT | 10,
-    			'title' => self::TYPE_VARCHAR | 64,
-    			'text' => self::TYPE_TEXT,
-    			'date' => self::TYPE_DATETIME,
-    		);
-    	}
+        public function getColumns()
+        {
+            return array(
+                'id' => self::TYPE_INT | 10 | self::PRIMARY_KEY | self::AUTO_INCREMENT,
+                'userId' => self::TYPE_INT | 10,
+                'title' => self::TYPE_VARCHAR | 64,
+                'text' => self::TYPE_TEXT,
+                'date' => self::TYPE_DATETIME,
+            );
+        }
     
-    	/*
-    	public function getConnection()
-    	{
-    		return array(
-    			'userId' => 'users'
-    		);
-    	}
-    	*/
+        /*
+        public function getConnection()
+        {
+            return array(
+                'userId' => 'users'
+            );
+        }
+        */
+    }
+
+Creating the handler
+--------------------
+
+The handler is a concept similar to a repository in doctrine which offers an
+interface to CRUD records on an given datasource. If a handler implements the
+PSX\\Handler\\HandlerQueryInterface you can query records from the datasource 
+and if the handler also implements the PSX\\Handler\\HandlerManipulationInterface
+you can create, update and delete records. In our case we use the database
+handler. We only have to define wich table we want to use for our API and wich
+fields should be selected by default. It is also possible to join on multiple 
+tables
+
+.. code-block:: php
+
+    <?php
+    
+    namespace Test\News;
+    
+    use PSX\Data\HandlerAbstract;
+    
+    class Handler extends DatabaseHandlerAbstract
+    {
+        protected function getDefaultSelect()
+        {
+            $this->manager->getTable('Sample\News\Table')
+                ->select(array('id', 'userId', 'title', 'text', 'date'));
+        }
+    }
+
+Creating the record
+-------------------
+
+If we want create, update or delete records we have to define a record class. 
+This record class is used if someone makes an POST, PUT or DELETE request. The
+body of the request gets imported into the record by calling the fitting setter
+methods. PSX parses the annotations and converts the parameter to the fitting 
+type. I.e. a DateTime object is automatically created from the value. See 
+:doc:`import_data` for more informations howto import complex data structures
+
+.. code-block:: php
+
+    <?php
+    
+    namespace Test\News;
+    
+    use DateTime;
+    use PSX\Data\RecordAbstract;
+    
+    class Record extends RecordAbstract
+    {
+        protected $id;
+        protected $userId;
+        protected $title;
+        protected $text;
+        protected $date;
+    
+        /**
+         * @param integer $id
+         */
+        public function setId($id)
+        {
+            $this->id = $id;
+        }
+                
+        public function getId()
+        {
+            return $this->id;
+        }
+
+        /**
+         * @param integer $userId
+         */
+        public function setUserId($userId)
+        {
+            $this->userId = $userId;
+        }
+            
+        public function getUserId()
+        {
+            return $this->userId;
+        }
+
+        /**
+         * @param string $title
+         */
+        public function setTitle($title)
+        {
+            $this->title = $title;
+        }
+        
+        public function getTitle()
+        {
+            return $this->title;
+        }
+
+        /**
+         * @param string $text
+         */
+        public function setText($text)
+        {
+            $this->text = $text;
+        }
+    
+        public function getText()
+        {
+            return $this->text;
+        }
+
+        /**
+         * @param DateTime $date
+         */
+        public function setDate(DateTime $date)
+        {
+            $this->date = $date;
+        }
+    
+        public function getDate()
+        {
+            return $this->date;
+        }
     }
 
 The API endpoint
 ----------------
 
-We create a file called news.php in the module/api folder. This file can be 
-accessed via http://localhost/index.php/api/news. We define the onLoad method 
-wich is called when the module was loaded.
+Now we have to create the controller wich routes the request to the handler. We
+have to add a route to the route file i.e.::
 
-This is now our REST API endpoint where we can make GET and POST requests. You 
-can versioning your API by creating a folder structure i.e. put the news.php in 
-the folder "v1" and the endpoint url would be http://localhost/index.php/api/v1/news
+    GET /api Test\News\Application\Api
+
+We extend the HandlerApiAbstract controller where we only have to return our 
+handler. In order to create an ATOM feed we have to overwrite the method
+getAtomRecord to convert out collection into an atom record
+
+.. code-block:: php
+
+    <?php
+    
+    namespace Test\News\Application;
+    
+    use DateTime;
+    use PSX\Atom;
+    use PSX\Atom\Entry;
+    use PSX\Atom\Text;
+    use PSX\Data\Record\Mapper;
+    use PSX\Data\Record\Mapper\Rule;
+    use PSX\Data\RecordInterface;
+    use PSX\Module\HandlerApiAbstract;
+    use PSX\Util\Uuid;
+    
+    class Api extends HandlerApiAbstract
+    {
+        /**
+         * Returns the handler on wich the API should operate
+         *
+         * @return PSX\Handler\HandlerInterface
+         */
+        protected function getDefaultHandler()
+        {
+            return $this->getDatabaseManager()
+                        ->getHandler('Test\News\Handler');
+        }
+    
+        /**
+         * If we want display an atom feed we need to convert our record to an 
+         * Atom\Record
+         *
+         * @param PSX\Data\RecordInterface $result
+         * @return PSX\Atom
+         */
+        protected function getAtomRecord(RecordInterface $result)
+        {
+            $atom = new Atom();
+            $atom->setTitle('Test news');
+            $atom->setId(Uuid::nameBased($this->config['psx_url']));
+            $atom->setUpdated($result->current()->getDate());
+    
+            $mapper = new Mapper();
+            $mapper->setRule(array(
+                'id'       => 'id',
+                'title'    => 'title',
+                'text'     => new Rule('summary', function($text){
+                    return new Text($text, 'text');
+                }),
+                'date'     => 'updated',
+            ));
+    
+            foreach($result as $row)
+            {
+                $entry = new Atom\Entry();
+                $mapper->map($row, $entry);
+    
+                $atom->add($entry);
+            }
+    
+            return $atom;
+        }
+    }

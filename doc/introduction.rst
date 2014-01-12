@@ -24,31 +24,23 @@ implementations using various PSX classes.
 Installation
 ------------
 
-If you want use PSX fully including the routing mechanism you have to download 
-the framework manually because the requests must go to the index.php. If you 
-only want use specific classes of PSX you can install it via Composer.
+If you want use PSX fully you can either download a current release at 
+https://github.com/k42b3/psx/releases or you can install the sample project 
+through composer::
 
-Manual
-^^^^^^
+    php composer.phar create-project psx/sample .
 
-You can download the current version of psx from the offical website phpsx.org. 
-Put the folder on your web or local server. Goto http://host/path/to/psx/public 
-and if you see a website with the title "Template sample" psx is running 
-successfully.
+In case you only want to use specific components you can easily require the
+PSX framework to your composer.json::
 
-Composer
-^^^^^^^^
-
-If you use classes of PSX in your application you can add PSX as dependency in 
-your composer.json file. The package name is psx/psx. More informations at 
-packagist.org.
+    "psx/psx": "0.8.*@dev"
 
 Configuration
 -------------
 
-The config is an php array with key value pairs. You must change the key 
-"psx_url" so that it points to the psx public root. All other entries are 
-optional. The following table describes each entry
+The configuration file is an simple php array with key value pairs. You must 
+change the key "psx_url" so that it points to the psx public root. All other 
+entries are optional. The following code describes each entry
 
 .. code-block:: php
 
@@ -98,7 +90,6 @@ Help
 ----
 
 Because PSX is in an early stage the manual is not complete. I appreciate every 
-help in making this documentation better. The documentation is writte in 
-reStructuredText and uses the Sphinx documentation generator. You can checkout 
-the current version of this manual via GIT. If you have made some changes that 
-you want commit please contact me.
+help in making this documentation better. The documentation is written in 
+reStructuredText and uses the sphinx documentation generator. If you have made 
+changes that you want commit please contact me.
