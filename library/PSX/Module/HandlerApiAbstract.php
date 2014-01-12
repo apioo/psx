@@ -45,7 +45,7 @@ use PSX\Module\HandlerQueryInterface;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link	http://phpsx.org
  */
-class HandlerApiAbstract extends ApiAbstract
+abstract class HandlerApiAbstract extends ApiAbstract
 {
 	/**
 	 * @httpMethod GET
