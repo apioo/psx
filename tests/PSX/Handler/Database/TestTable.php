@@ -23,20 +23,30 @@
 
 namespace PSX\Handler\Database;
 
-use PSX\Handler\DatabaseHandlerAbstract;
+use PSX\Sql\TableAbstract;
+use PSX\Sql\TableInterface;
 
 /**
- * TestHandler
+ * TestTable
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class TestHandler extends DatabaseHandlerAbstract
+class TestTable extends TableAbstract
 {
-	public function getDefaultSelect()
+	public function getName()
 	{
-		return $this->manager->getTable('PSX\Handler\Database\TestTable')
-			->select(array('id', 'userId', 'title', 'date'));
+		return 'psx_handler_comment';
+	}
+
+	public function getColumns()
+	{
+		return array(
+			'id'     => TableInterface::TYPE_INT | 10 | TableInterface::PRIMARY_KEY | TableInterface::AUTO_INCREMENT,
+			'userId' => TableInterface::TYPE_INT | 10,
+			'title'  => TableInterface::TYPE_VARCHAR | 32,
+			'date'   => TableInterface::TYPE_DATETIME,
+		);
 	}
 }
