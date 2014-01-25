@@ -61,11 +61,11 @@ SELECT
 	`COLUMN_NAME`,
 	`REFERENCED_TABLE_NAME`
 FROM
-	information_schema.KEY_COLUMN_USAGE
+	`information_schema`.`KEY_COLUMN_USAGE`
 WHERE
-	TABLE_NAME = ?
+	`TABLE_NAME` = ?
 AND
-	REFERENCED_TABLE_NAME IS NOT NULL;
+	`REFERENCED_TABLE_NAME` IS NOT NULL;
 SQL;
 
 		$result = $this->sql->getAll($query, array($tableName));
