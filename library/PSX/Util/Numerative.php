@@ -39,14 +39,25 @@ class Numerative
 	const DEC = 0x3;
 	const HEX = 0x4;
 
-	public static $systems = array(
-
+	protected static $systems = array(
 		self::BIN => array(0 => '0', 1 => '1'),
 		self::OCT => array(0 => '0', 1 => '1', 2 => '2', 3 => '3', 4 => '4', 5 => '5', 6 => '6', 7 => '7'),
 		self::DEC => array(0 => '0', 1 => '1', 2 => '2', 3 => '3', 4 => '4', 5 => '5', 6 => '6', 7 => '7', 8 => '8', 9 => '9'),
 		self::HEX => array(0 => '0', 1 => '1', 2 => '2', 3 => '3', 4 => '4', 5 => '5', 6 => '6', 7 => '7', 8 => '8', 9 => '9', 10 => 'A', 11 => 'B', 12 => 'C', 13 => 'D', 14 => 'E', 15 => 'F'),
-
 	);
+
+	public static function addAlphabet($key, array $alphabet)
+	{
+		self::$systems[$key] = $alphabet;
+	}
+
+	public static function removeAlphabet($key)
+	{
+		if(isset(self::$systems[$key]))
+		{
+			unset(self::$systems[$key]);
+		}
+	}
 
 	public static function bin2oct($bin)
 	{
