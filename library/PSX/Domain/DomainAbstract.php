@@ -26,6 +26,9 @@ namespace PSX\Domain;
 use InvalidArgumentException;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * DomainAbstract
@@ -34,7 +37,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-abstract class DomainAbstract implements ContainerAwareInterface
+abstract class DomainAbstract implements ContainerAwareInterface, EventDispatcherInterface
 {
 	protected $container;
 
@@ -43,14 +46,39 @@ abstract class DomainAbstract implements ContainerAwareInterface
 		$this->container = $container;
 	}
 
+	public function dispatch($eventName, Event $event = null)
+	{
+		$this->container->get('event_dispatcher')->dispatch($eventName, $event);
+	}
+
+	public function getListeners($eventName = null)
+	{
+		return $this->container->get('event_dispatcher')->getListeners($eventName);
+	}
+
+	public function hasListeners($eventName = null)
+	{
+		return $this->container->get('event_dispatcher')->hasListeners($eventName);
+	}
+
 	public function addListener($eventName, $listener, $priority = 0)
 	{
 		$this->container->get('event_dispatcher')->addListener($eventName, $listener, $priority);
 	}
 
-	public function dispatch($eventName, $event = null)
+	public function removeListener($eventName, $listener)
 	{
-		$this->container->get('event_dispatcher')->dispatch($eventName, $event);
+		$this->container->get('event_dispatcher')->removeListener($eventName, $listener);
+	}
+
+	public function addSubscriber(EventSubscriberInterface $subscriber)
+	{
+		$this->container->get('event_dispatcher')->addSubscriber($subscriber);
+	}
+
+	public function removeSubscriber(EventSubscriberInterface $subscriber)
+	{
+		$this->container->get('event_dispatcher')->removeSubscriber($subscriber);
 	}
 
 	/**
