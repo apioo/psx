@@ -155,6 +155,14 @@ abstract class DatabaseHandlerAbstract extends HandlerAbstract
 	public function create(RecordInterface $record)
 	{
 		$this->table->insert($record);
+
+		// set id to record
+		$method = 'set' . ucfirst($this->table->getPrimaryKey());
+
+		if(method_exists($record, $method))
+		{
+			$record->$method($this->table->getSql()->getLastInsertId());
+		}
 	}
 
 	public function update(RecordInterface $record)
