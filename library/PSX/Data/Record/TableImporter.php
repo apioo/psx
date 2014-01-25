@@ -33,7 +33,9 @@ use ReflectionException;
 use ReflectionMethod;
 
 /**
- * Importer wich imports data into an record based on an sql table class
+ * Importer wich imports data into an record based on an sql table class. Note 
+ * this importer does not handle relations it simply uses all available columns
+ * on the table
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
