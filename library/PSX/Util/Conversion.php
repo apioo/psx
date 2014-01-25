@@ -98,7 +98,7 @@ class Conversion
 		return self::si('s', $seconds);
 	}
 
-	public static function bi($byte, $decimal_place = 2)
+	public static function bi($byte, $decimalPlace = 2)
 	{
 		foreach(self::$bi as $u => $v)
 		{
@@ -106,14 +106,14 @@ class Conversion
 			{
 				$r = $byte / $v;
 
-				return round($r, $decimal_place) . ' ' . $u . 'bi';
+				return round($r, $decimalPlace) . ' ' . $u . 'bi';
 			}
 		}
 
 		return $byte . ' byte';
 	}
 
-	public static function si($unit, $value, $decimal_place = 2)
+	public static function si($unit, $value, $decimalPlace = 2)
 	{
 		foreach(self::$si as $u => $v)
 		{
@@ -121,13 +121,13 @@ class Conversion
 			{
 				$r = $value / $v;
 
-				return round($r, $decimal_place) . ' ' . $u . $unit;
+				return round($r, $decimalPlace) . ' ' . $u . $unit;
 			}
 		}
 
 		$r = $value / end($this->si);
 		$u = key($this->si);
 
-		return round($r, $decimal_place) . ' ' . $u . $unit;
+		return round($r, $decimalPlace) . ' ' . $u . $unit;
 	}
 }
