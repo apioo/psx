@@ -21,40 +21,25 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Handler\Manager;
+namespace PSX\Sql;
 
-use PSX\Handler\HandlerManagerInterface;
-use PSX\Sql;
-use PSX\Sql\TableManagerInterface;
+use PSX\Sql\Table\ReaderInterface;
 
 /**
- * DatabaseManager
+ * TableManagerInterface
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class DatabaseManager implements HandlerManagerInterface
+interface TableManagerInterface
 {
 	/**
-	 * @var PSX\Sql\TableManagerInterface
+	 * The table manager knows howto create an table instance from the given 
+	 * table name
+	 *
+	 * @param string $tableName
+	 * @return PSX\Sql\TableInterface
 	 */
-	protected $tm;
-
-	protected $_container;
-
-	public function __construct(TableManagerInterface $tm)
-	{
-		$this->tm = $tm;
-	}
-
-	public function getHandler($className)
-	{
-		if(!isset($this->_container[$className]))
-		{
-			$this->_container[$className] = new $className($this->tm);
-		}
-
-		return $this->_container[$className];
-	}
+	public function getTable($tableName);
 }

@@ -35,7 +35,7 @@ use PSX\Sql\Table\ReaderInterface;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class TableManager
+class TableManager implements TableManagerInterface
 {
 	/**
 	 * @var PSX\Sql
@@ -62,7 +62,7 @@ class TableManager
 	/**
 	 * Sets the default reader wich is used if no explicit reader was specified
 	 *
-	 * @param PSX\Sql\Table\ReaderInterface $reader
+	 * @param PSX\Sql\Table\ReaderInterface $defaultReader
 	 */
 	public function setDefaultReader(ReaderInterface $defaultReader)
 	{
@@ -72,7 +72,7 @@ class TableManager
 	/**
 	 * If set the table definition results are cached with the specific handler
 	 * Note the cache doesnt expire so you have to delete the cache manually
-	 * if the definition has changed.
+	 * if the definition has changed
 	 *
 	 * @param PSX\Cache\HandlerInterface $handler
 	 */
@@ -85,10 +85,9 @@ class TableManager
 	 * Returns an table instance from the given table name
 	 *
 	 * @param string $tableName
-	 * @param PSX\Sql\Table\ReaderInterface $reader
 	 * @return PSX\Sql\TableInterface
 	 */
-	public function getTable($tableName, ReaderInterface $reader = null)
+	public function getTable($tableName)
 	{
 		if(isset($this->_container[$tableName]))
 		{
@@ -116,22 +115,15 @@ class TableManager
 		{
 			$definition = null;
 
-			if($reader === null)
+			if($this->defaultReader === null)
 			{
-				if($this->defaultReader === null)
-				{
-					// we assume that $tableName is an class name of an 
-					// TableInterface implementation
-					$this->_container[$tableName] = new $tableName($this->sql);
-				}
-				else
-				{
-					$definition = $this->defaultReader->getTableDefinition($tableName);
-				}
+				// we assume that $tableName is an class name of an 
+				// TableInterface implementation
+				$this->_container[$tableName] = new $tableName($this->sql);
 			}
 			else
 			{
-				$definition = $reader->getTableDefinition($tableName);
+				$definition = $this->defaultReader->getTableDefinition($tableName);
 			}
 
 			if($definition instanceof Definition)
