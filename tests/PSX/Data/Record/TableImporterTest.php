@@ -23,6 +23,7 @@
 
 namespace PSX\Data\Record;
 
+use PDOException;
 use PSX\Data\Record;
 use PSX\Data\RecordAbstract;
 use PSX\Data\FactoryInterface;
@@ -43,9 +44,16 @@ use PSX\Sql\TableInterface;
  */
 class TableImporterTest extends \PHPUnit_Framework_TestCase
 {
-	public function setUp()
+	protected function setUp()
 	{
-		$this->sql = getContainer()->get('sql');
+		try
+		{
+			$this->sql = getContainer()->get('sql');
+		}
+		catch(PDOException $e)
+		{
+			$this->markTestSkipped($e->getMessage());
+		}
 	}
 
 	public function testImportJson()
