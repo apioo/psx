@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <response>
 	<foo><?php echo $foo; ?></foo>
 	<self><?php echo $self; ?></self>
