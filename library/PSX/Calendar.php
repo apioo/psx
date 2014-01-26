@@ -24,7 +24,6 @@
 namespace PSX;
 
 use DateInterval;
-use DateTime;
 use DateTimeZone;
 use Iterator;
 use Countable;
@@ -43,9 +42,9 @@ class Calendar implements Iterator, Countable
 	private $itDate;
 	private $pos;
 
-	public function __construct(DateTime $date = null, DateTimeZone $timezone = null)
+	public function __construct(\DateTime $date = null, DateTimeZone $timezone = null)
 	{
-		$this->setDate($date !== null ? $date : new DateTime());
+		$this->setDate($date !== null ? $date : new \DateTime());
 
 		if($timezone !== null)
 		{
@@ -59,7 +58,7 @@ class Calendar implements Iterator, Countable
 	 *
 	 * @return void
 	 */
-	public function setDate(DateTime $date)
+	public function setDate(\DateTime $date)
 	{
 		$this->date = $date->setTime(0, 0, 0);
 	}
@@ -96,7 +95,7 @@ class Calendar implements Iterator, Countable
 	 */
 	public function getEasterDate()
 	{
-		$easter = new DateTime($this->getYear() . '-03-21');
+		$easter = new \DateTime($this->getYear() . '-03-21');
 		$days   = easter_days($this->getYear());
 
 		return $easter->add(new DateInterval('P' . $days . 'D'));
@@ -195,7 +194,7 @@ class Calendar implements Iterator, Countable
 
 	public function rewind()
 	{
-		$this->itDate = new DateTime($this->getYear() . '-' . $this->getMonth() . '-01');
+		$this->itDate = new \DateTime($this->getYear() . '-' . $this->getMonth() . '-01');
 	}
 
 	public function valid()
