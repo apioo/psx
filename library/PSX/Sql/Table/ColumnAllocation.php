@@ -21,53 +21,44 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Session\Handler;
+namespace PSX\Sql\Table;
 
-use PDOException;
-use PSX\SessionTest;
-use PSX\Sql\Table;
-use PSX\Sql\TableInterface;
-use PSX\Sql\Table\ColumnAllocation;
+use UnexpectedValueException;
 
 /**
- * SqlTest
+ * Some implementations needs to know the name of specific columns i.e. the sql 
+ * cache handler needs to know the data or date column. This class contains
+ * such informations
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class SqlTest extends SessionTest
+class ColumnAllocation
 {
-	protected $table = 'psx_session_handler_sql_test';
+	protected $columns;
 
-	protected function setUp()
+	public function __construct(array $columns = array())
 	{
-		try
-		{
-			$this->sql = getContainer()->get('sql');
-		}
-		catch(PDOException $e)
-		{
-			$this->markTestSkipped($e->getMessage());
-		}
-
-		parent::setUp();
+		$this->columns = $columns;
 	}
 
-	protected function getHandler()
+	public function set($key, $name)
 	{
-		$table = new Table($this->sql, $this->table, array(
-			'id'      => TableInterface::TYPE_VARCHAR | TableInterface::PRIMARY_KEY,
-			'content' => TableInterface::TYPE_BLOB,
-			'date'    => TableInterface::TYPE_DATETIME,
-		));
+		$this->columns[$key] = $name;
+	}
 
-		$allocation = new ColumnAllocation(array(
-			Sql::COLUMN_ID      => 'id',
-			Sql::COLUMN_CONTENT => 'content',
-			Sql::COLUMN_DATE    => 'date',
-		));
+	public function get($key)
+	{
+		$name = isset($this->columns[$key]) ? $this->columns[$key] : null;
 
-		return new Sql($table, $allocation);
+		if(!empty($name))
+		{
+			return $name;
+		}
+		else
+		{
+			throw new UnexpectedValueException('Missing column allocation');
+		}
 	}
 }

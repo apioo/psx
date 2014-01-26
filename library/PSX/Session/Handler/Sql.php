@@ -24,9 +24,10 @@
 namespace PSX\Session\Handler;
 
 use PSX\DateTime;
-use PSX\Session\HandlerInterface;
-use PSX\Sql as SqlDriver;
 use PSX\Sql\Condition;
+use PSX\Sql\TableInterface;
+use PSX\Sql\Table\ColumnAllocation;
+use SessionHandlerInterface;
 
 /**
  * Sql
@@ -35,15 +36,19 @@ use PSX\Sql\Condition;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Sql implements HandlerInterface
+class Sql implements SessionHandlerInterface
 {
-	protected $sql;
-	protected $table;
+	const COLUMN_ID      = 0x1;
+	const COLUMN_CONTENT = 0x2;
+	const COLUMN_DATE    = 0x3;
 
-	public function __construct(SqlDriver $sql, $table)
+	protected $table;
+	protected $allocation;
+
+	public function __construct(TableInterface $table, ColumnAllocation $allocation)
 	{
-		$this->sql   = $sql;
-		$this->table = $table;
+		$this->table      = $table;
+		$this->allocation = $allocation;
 	}
 
 	public function open($path, $name)
@@ -58,25 +63,25 @@ class Sql implements HandlerInterface
 
 	public function read($id)
 	{
-		return $this->sql->getField('SELECT `content` FROM `' . $this->table . '` WHERE `id` = ?', array($id));
+		return $this->table->getField('content', new Condition(array($this->allocation->get(self::COLUMN_ID), '=', $id)));
 	}
 
 	public function write($id, $data)
 	{
-		$this->sql->insert($this->table, array(
+		$columnId      = $this->allocation->get(self::COLUMN_ID);
+		$columnContent = $this->allocation->get(self::COLUMN_CONTENT);
+		$columnDate    = $this->allocation->get(self::COLUMN_DATE);
 
-			'id'      => $id,
-			'content' => $data,
-			'date'    => date(DateTime::SQL),
-
+		$this->table->insert(array(
+			$columnId      => $id,
+			$columnContent => $data,
+			$columnDate    => date(DateTime::SQL),
 		));
 	}
 
-	public function delete($id)
+	public function destroy($id)
 	{
-		$con = new Condition(array('id', '=', $id));
-
-		$this->sql->delete($this->table, $con);
+		$this->table->delete(new Condition(array($this->allocation->get(self::COLUMN_ID), '=', $id)));
 	}
 
 	public function gc($maxTime)
@@ -84,9 +89,8 @@ class Sql implements HandlerInterface
 		$con = new Condition();
 		$con->add('DATE_ADD(`date`, "INTERVAL ' . $maxTime . ' SECOND")', '<', date(DateTime::SQL));
 
-		$this->sql->delete($this->table, $con);
+		$this->table->delete($con);
 
 		return true;
 	}
 }
-

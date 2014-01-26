@@ -23,11 +23,12 @@
 
 namespace PSX\Cache\Handler;
 
-use PSX\DateTime;
 use PSX\Cache\HandlerInterface;
 use PSX\Cache\Item;
-use PSX\Sql\TableInterface;
+use PSX\DateTime;
 use PSX\Sql\Condition;
+use PSX\Sql\TableInterface;
+use PSX\Sql\Table\ColumnAllocation;
 use UnexpectedValueException;
 
 /**
@@ -48,22 +49,31 @@ use UnexpectedValueException;
  */
 class Sql implements HandlerInterface
 {
-	protected $table;
+	const COLUMN_ID      = 0x1;
+	const COLUMN_CONTENT = 0x2;
+	const COLUMN_DATE    = 0x3;
 
-	public function __construct(TableInterface $table)
+	protected $table;
+	protected $allocation;
+
+	public function __construct(TableInterface $table, ColumnAllocation $allocation)
 	{
-		$this->table = $table;
+		$this->table      = $table;
+		$this->allocation = $allocation;
 	}
 
 	public function load($key)
 	{
-		$con = new Condition(array($this->table->getPrimaryKey(), '=', $key));
-		$row = $this->table->getRow(array('content', 'date'), $con);
+		$columnContent = $this->allocation->get(self::COLUMN_CONTENT);
+		$columnDate    = $this->allocation->get(self::COLUMN_DATE);
+		$condition     = new Condition(array($this->allocation->get(self::COLUMN_ID), '=', $key));
+
+		$row = $this->table->getRow(array($columnContent, $columnDate), $condition);
 
 		if(!empty($row))
 		{
-			$content = $row['content'];
-			$time    = strtotime($row['date']);
+			$content = $row[$columnContent];
+			$time    = strtotime($row[$columnDate]);
 
 			return new Item($content, $time);
 		}
@@ -75,39 +85,20 @@ class Sql implements HandlerInterface
 
 	public function write($key, $content, $expire)
 	{
-		$columnId      = $this->table->getPrimaryKey();
-		$columnContent = $this->table->getFirstColumnWithType(TableInterface::TYPE_BLOB);
-		$columnDate    = $this->table->getFirstColumnWithType(TableInterface::TYPE_DATETIME);
-
-		if(empty($columnId))
-		{
-			throw new UnexpectedValueException('Missing column "id" in table ' . $this->table->getName());
-		}
-
-		if(empty($columnContent))
-		{
-			throw new UnexpectedValueException('Missing column "content" in table ' . $this->table->getName());
-		}
-
-		if(empty($columnDate))
-		{
-			throw new UnexpectedValueException('Missing column "date" in table ' . $this->table->getName());
-		}
+		$columnId      = $this->allocation->get(self::COLUMN_ID);
+		$columnContent = $this->allocation->get(self::COLUMN_CONTENT);
+		$columnDate    = $this->allocation->get(self::COLUMN_DATE);
 
 		$this->table->insert(array(
-
 			$columnId      => $key,
 			$columnContent => $content,
 			$columnDate    => date(DateTime::SQL),
-
 		));
 	}
 
 	public function remove($key)
 	{
-		$con = new Condition(array($this->table->getPrimaryKey(), '=', $key));
-
-		$this->table->delete($con);
+		$this->table->delete(new Condition(array($this->table->getPrimaryKey(), '=', $key)));
 	}
 }
 
