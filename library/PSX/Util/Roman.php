@@ -35,7 +35,6 @@ use UnexpectedValueException;
 class Roman
 {
 	public static $rm = array(
-
 		1000 => 'M',
 		900  => 'CM',
 		500  => 'D',
@@ -49,7 +48,6 @@ class Roman
 		5    => 'V',
 		4    => 'IV',
 		1    => 'I',
-
 	);
 
 	public static function encode($decimal)
@@ -64,28 +62,19 @@ class Roman
 		}
 		else
 		{
-			while($result != $decimal)
+			while($result < $decimal)
 			{
-				if($result < $decimal)
+				foreach(self::$rm as $k => $v)
 				{
-					foreach(self::$rm as $k => $v)
+					if(($result + $k) <= $decimal)
 					{
-						if(($result + $k) <= $decimal)
-						{
-							$numbers[] = $k;
+						$numbers[] = $k;
 
-							$result+= $k;
+						$result+= $k;
 
-							continue(2);
-						}
+						continue(2);
 					}
 				}
-				else
-				{
-					break;
-				}
-
-				$result = array_sum($numbers);
 			}
 
 			$roman = '';

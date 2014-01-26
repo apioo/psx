@@ -40,17 +40,33 @@ class RomanTest extends \PHPUnit_Framework_TestCase
 	{
 	}
 
-	public function testRomanEncode()
+	public function testEncode()
 	{
 		$this->assertEquals('I', Roman::encode(1));
 		$this->assertEquals('XVI', Roman::encode(16));
 		$this->assertEquals('MCMXLXLVI', Roman::encode(1986));
 	}
 
-	public function testRomanDecode()
+	public function testDecode()
 	{
 		$this->assertEquals(1, Roman::decode('I'));
 		$this->assertEquals(16, Roman::decode('XVI'));
 		$this->assertEquals(1986, Roman::decode('MCMXLXLVI'));
+	}
+
+	/**
+	 * @expectedException UnexpectedValueException
+	 */
+	public function testEncodeNegativeNumber()
+	{
+		Roman::encode(-1);
+	}
+
+	/**
+	 * @expectedException UnexpectedValueException
+	 */
+	public function testDecodeInvalidInput()
+	{
+		Roman::decode('foo');
 	}
 }
