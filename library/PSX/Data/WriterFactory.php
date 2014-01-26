@@ -43,7 +43,7 @@ class WriterFactory
 
 	public function getDefaultWriter()
 	{
-		return current($this->writers);
+		return isset($this->writers[0]) ? $this->writers[0] : null;
 	}
 
 	public function getWriterByContentType($contentType)

@@ -44,7 +44,7 @@ class ReaderFactory
 
 	public function getDefaultReader()
 	{
-		return current($this->readers);
+		return isset($this->readers[0]) ? $this->readers[0] : null;
 	}
 
 	public function getReaderByContentType($contentType)
