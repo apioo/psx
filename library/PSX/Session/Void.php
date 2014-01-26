@@ -23,6 +23,8 @@
 
 namespace PSX\Session;
 
+use SessionHandlerInterface;
+
 /**
  * Session implementation wich actually doesnt start a session. Useful for cli
  * applications where it is not possible to start a session
@@ -35,7 +37,7 @@ class Void extends \PSX\Session
 {
 	protected $container = array();
 
-	public function __construct($name, HandlerInterface $handler = null)
+	public function __construct($name, SessionHandlerInterface $handler = null)
 	{
 		$this->setSessionTokenKey(__CLASS__);
 		$this->setName($name);
@@ -95,7 +97,7 @@ class Void extends \PSX\Session
 	{
 	}
 
-	public function setSaveHandler(HandlerInterface $handler)
+	public function setSaveHandler(SessionHandlerInterface $handler)
 	{
 	}
 
