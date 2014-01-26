@@ -23,7 +23,7 @@
 
 namespace PSX;
 
-use PSX\Session\HandlerInterface;
+use SessionHandlerInterface;
 
 /**
  * Session
@@ -39,7 +39,7 @@ class Session
 
 	protected $sessionTokenKey;
 
-	public function __construct($name, HandlerInterface $handler = null)
+	public function __construct($name, SessionHandlerInterface $handler = null)
 	{
 		$this->setSessionTokenKey(__CLASS__);
 		$this->setName($name);
@@ -117,18 +117,9 @@ class Session
 		return session_id();
 	}
 
-	public function setSaveHandler(HandlerInterface $handler)
+	public function setSaveHandler(SessionHandlerInterface $handler)
 	{
-		session_set_save_handler(
-
-			array($handler, 'open'),
-			array($handler, 'close'),
-			array($handler, 'read'),
-			array($handler, 'write'),
-			array($handler, 'delete'),
-			array($handler, 'gc')
-
-		);
+		session_set_save_handler($handler);
 	}
 
 	public function setSavePath($path)
