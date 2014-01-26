@@ -24,8 +24,10 @@
 namespace PSX;
 
 use DateInterval;
+use DateTime;
 use DateTimeZone;
 use Iterator;
+use Countable;
 
 /**
  * Calendar
@@ -34,16 +36,16 @@ use Iterator;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Calendar implements Iterator
+class Calendar implements Iterator, Countable
 {
 	protected $date;
 
 	private $itDate;
 	private $pos;
 
-	public function __construct($date = null, DateTimeZone $timezone = null)
+	public function __construct(DateTime $date = null, DateTimeZone $timezone = null)
 	{
-		$this->setDate(new DateTime($date !== null ? $date : 'now'));
+		$this->setDate($date !== null ? $date : new DateTime());
 
 		if($timezone !== null)
 		{
@@ -57,7 +59,7 @@ class Calendar implements Iterator
 	 *
 	 * @return void
 	 */
-	public function setDate(\DateTime $date)
+	public function setDate(DateTime $date)
 	{
 		$this->date = $date->setTime(0, 0, 0);
 	}
@@ -167,6 +169,12 @@ class Calendar implements Iterator
 	public function prevYear()
 	{
 		return $this->sub(new DateInterval('P1Y'));
+	}
+
+	// countable
+	public function count()
+	{
+		return $this->getDays();
 	}
 
 	// iterator
