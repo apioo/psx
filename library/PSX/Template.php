@@ -68,9 +68,11 @@ class Template implements TemplateInterface
 		extract($this->data, EXTR_SKIP);
 
 		// parse template
+		$path = $this->dir != null ? $this->dir . '/' . $this->file : $this->file;
+
 		ob_start();
 
-		require_once($this->dir . '/' . $this->file);
+		require_once($path);
 
 		$html = ob_get_clean();
 
