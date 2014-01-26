@@ -70,6 +70,14 @@ class ApiAbstractTest extends ModuleTestCase
 		$this->assertJsonStringEqualsJsonString($controller->processResponse(null), json_encode(array('title' => 'foo', 'user' => 'bar')));
 	}
 
+	public function testInnerApi()
+	{
+		$path    = '/api/inspect';
+		$request = new Request(new Url('http://127.0.0.1' . $path), 'GET');
+
+		$controller = $this->loadModule($path, $request);
+	}
+
 	protected function getPaths()
 	{
 		return array(

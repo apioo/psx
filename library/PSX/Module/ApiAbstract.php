@@ -24,6 +24,7 @@
 namespace PSX\Module;
 
 use PSX\Base;
+use PSX\DateTime;
 use PSX\Data\NotFoundException;
 use PSX\Data\RecordInterface;
 use PSX\Data\Writer;
@@ -197,7 +198,7 @@ abstract class ApiAbstract extends ModuleAbstract
 
 		if(!empty($updatedSince))
 		{
-			$datetime = new DateTime($updatedSince);
+			$datetime = new \DateTime($updatedSince);
 
 			$con->add($dateColumn, '>', $datetime->format(DateTime::SQL));
 		}
