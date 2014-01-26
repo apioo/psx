@@ -71,7 +71,7 @@ class Loader
 			if($class->isSubclassOf('\PSX\ModuleAbstract'))
 			{
 				// create controller
-				$handle = $class->newInstance($this->container, $location, $path, $uriFragments);
+				$handle = $class->newInstance($this->container, $location, $path, $uriFragments, $request);
 
 				// call request filter
 				if($handle->getStage() & ModuleAbstract::CALL_REQUEST_FILTER)
@@ -129,7 +129,7 @@ class Loader
 				{
 					if($method instanceof ReflectionMethod)
 					{
-						$method->invoke($handle, $request);
+						$method->invoke($handle);
 					}
 				}
 

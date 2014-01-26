@@ -29,6 +29,7 @@ use PSX\Data\ReaderFactory;
 use PSX\Data\RecordInterface;
 use PSX\Data\Record\ImporterInterface;
 use PSX\Dependency;
+use PSX\Http\Request;
 use PSX\Loader\Location;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use RuntimeException;
@@ -53,20 +54,22 @@ abstract class ModuleAbstract
 	protected $location;
 	protected $basePath;
 	protected $uriFragments = array();
+	protected $request;
 	protected $stage;
 
 	protected $base;
 	protected $config;
 
-	protected $parameter;
-	protected $requestReader;
+	protected $_parameter;
+	protected $_requestReader;
 
-	public function __construct(ContainerInterface $container, Location $location, $basePath, array $uriFragments)
+	public function __construct(ContainerInterface $container, Location $location, $basePath, array $uriFragments, Request $request)
 	{
 		$this->container    = $container;
 		$this->location     = $location;
 		$this->basePath     = $basePath;
 		$this->uriFragments = $uriFragments;
+		$this->request      = $request;
 		$this->stage        = 0x3F;
 
 		$this->base         = $container->get('base');
@@ -213,7 +216,7 @@ abstract class ModuleAbstract
 	 */
 	protected function forward($path)
 	{
-		$this->container->get('loader')->load($path, $this->base->getRequest());
+		$this->container->get('loader')->load($path, $this->request);
 	}
 
 	/**
@@ -237,12 +240,12 @@ abstract class ModuleAbstract
 
 	protected function getMethod()
 	{
-		return Base::getRequestMethod();
+		return $this->request->getMethod();
 	}
 
 	protected function getUrl()
 	{
-		return $this->base->getRequest()->getUrl();
+		return $this->request->getUrl();
 	}
 
 	protected function getHeader($key = null)
@@ -252,14 +255,14 @@ abstract class ModuleAbstract
 
 	protected function getParameter()
 	{
-		if($this->parameter === null)
+		if($this->_parameter === null)
 		{
 			$parameter = $this->getUrl()->getParams();
 
-			$this->parameter = new Input($parameter, $this->container->get('validate'));
+			$this->_parameter = new Input($parameter, $this->container->get('validate'));
 		}
 
-		return $this->parameter;
+		return $this->_parameter;
 	}
 
 	/**
@@ -270,7 +273,7 @@ abstract class ModuleAbstract
 	 */
 	protected function getBody($readerType = null)
 	{
-		return $this->getRequestReader($readerType)->read($this->base->getRequest());
+		return $this->getRequestReader($readerType)->read($this->request);
 	}
 
 	/**
@@ -288,7 +291,7 @@ abstract class ModuleAbstract
 
 		if($importer instanceof ImporterInterface)
 		{
-			return $importer->import($record, $reader->read($this->base->getRequest()));
+			return $importer->import($record, $reader->read($this->request));
 		}
 		else
 		{
@@ -305,12 +308,12 @@ abstract class ModuleAbstract
 	 */
 	protected function getRequestReader($readerType = null)
 	{
-		if($this->requestReader === null)
+		if($this->_requestReader === null)
 		{
 			// find best reader type
 			if($readerType === null)
 			{
-				$reader = $this->container->get('readerFactory')->getReaderByContentType(Base::getRequestHeader('Content-Type'));
+				$reader = $this->container->get('readerFactory')->getReaderByContentType($this->request->getHeader('Content-Type'));
 			}
 			else
 			{
@@ -327,10 +330,9 @@ abstract class ModuleAbstract
 				throw new NotFoundException('Could not find fitting data reader');
 			}
 
-			$this->requestReader = $reader;
+			$this->_requestReader = $reader;
 		}
 
-		return $this->requestReader;
+		return $this->_requestReader;
 	}
 }
-

@@ -24,6 +24,10 @@
 namespace PSX\Module;
 
 use PSX\Loader\Location;
+use PSX\Loader\LocationFinder\CallbackMethod;
+use PSX\Loader\InvalidPathException;
+use PSX\Http\Request;
+use PSX\Url;
 use ReflectionClass;
 
 /**
@@ -33,31 +37,72 @@ use ReflectionClass;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class ViewAbstractTest extends \PHPUnit_Framework_TestCase
+class ViewAbstractTest extends ModuleTestCase
 {
-	protected function setUp()
+	public function testAutomaticTemplateDetection()
 	{
+		$path    = '/view';
+		$request = new Request(new Url('http://127.0.0.1' . $path), 'GET');
+
+		$controller = $this->loadModule($path, $request);
+		$response   = simplexml_load_string($controller->processResponse(null));
+
+		$render = (float) $response->render;
+		$base   = getContainer()->get('base');
+		$config = getContainer()->get('config');
+
+		$this->assertEquals('bar', $response->foo);
+		$this->assertTrue(!empty($response->self));
+		$this->assertEquals($config['psx_url'] . '/' . $config['psx_dispatch'], $response->url);
+		$this->assertEquals($base->getPath(), $response->base);
+		$this->assertTrue($render > 0);
+		$this->assertEquals('tests/PSX/Module/Foo/Resource', $response->location);
 	}
 
-	protected function tearDown()
+	public function testImplicitTemplate()
 	{
+		$path    = '/view/detail';
+		$request = new Request(new Url('http://127.0.0.1' . $path), 'GET');
+
+		$controller = $this->loadModule($path, $request);
+		$response   = simplexml_load_string($controller->processResponse(null));
+
+		$render = (float) $response->render;
+		$base   = getContainer()->get('base');
+		$config = getContainer()->get('config');
+
+		$this->assertEquals('bar', $response->foo);
+		$this->assertTrue(!empty($response->self));
+		$this->assertEquals($config['psx_url'] . '/' . $config['psx_dispatch'], $response->url);
+		$this->assertEquals($base->getPath(), $response->base);
+		$this->assertTrue($render > 0);
+		$this->assertEquals('tests/PSX/Module/Foo/Resource', $response->location);
 	}
 
-	public function testProcessResponse()
+	public function testExplicitTemplate()
 	{
-		$module = $this->getModule();
+		$path    = '/view/explicit';
+		$request = new Request(new Url('http://127.0.0.1' . $path), 'GET');
 
-		$this->assertEquals('foobar', $module->callMethod('processResponse', array('foobar')));
+		$controller = $this->loadModule($path, $request);
+		$response   = simplexml_load_string($controller->processResponse(null));
+
+		$render = (float) $response->render;
+		$base   = getContainer()->get('base');
+		$config = getContainer()->get('config');
+
+		$this->assertEquals('bar', $response->foo);
+		$this->assertTrue(!empty($response->self));
+		$this->assertEquals($config['psx_url'] . '/' . $config['psx_dispatch'], $response->url);
+		$this->assertEquals($base->getPath(), $response->base);
+		$this->assertTrue($render > 0);
+		$this->assertEquals('tests/PSX/Module/Foo/Resource', $response->location);
 	}
 
-	protected function getModule()
+	protected function getPaths()
 	{
-		$container    = getContainer();
-		$location     = new Location('foo', '', new ReflectionClass('PSX\Module\TestViewModule'));
-		$basePath     = '';
-		$uriFragments = array();
-
-		return new TestViewModule($container, $location, $basePath, $uriFragments);
+		return array(
+			'/view' => 'PSX\Module\Foo\Application\TestViewModule',
+		);
 	}
 }
-

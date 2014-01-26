@@ -42,6 +42,8 @@ use PSX\Sql\Condition;
  */
 abstract class ApiAbstract extends ModuleAbstract
 {
+	protected $responseContent;
+
 	/**
 	 * Writes the $record with the writer $writerType or depending on the get 
 	 * parameter format or of the mime type of the Accept header
@@ -101,11 +103,29 @@ abstract class ApiAbstract extends ModuleAbstract
 			header('Content-Type: text/html');
 		}
 
-		echo $response;
+		$this->responseContent = $response;
 	}
 
 	/**
-	 * Returns the write wich gets used if no writer was explicit selected
+	 * If the module has not made any output we return the normal response 
+	 * content
+	 *
+	 * @return string
+	 */
+	public function processResponse($content)
+	{
+		if(empty($content))
+		{
+			return $this->responseContent;
+		}
+		else
+		{
+			return $content;
+		}
+	}
+
+	/**
+	 * Returns the writer wich gets used if no writer was explicit selected
 	 *
 	 * @return PSX\Data\WriterInterface
 	 */
@@ -121,7 +141,7 @@ abstract class ApiAbstract extends ModuleAbstract
 		);
 
 		$format      = isset($_GET['format']) ? $_GET['format'] : null;
-		$contentType = isset($formats[$format]) ? $formats[$format] : Base::getRequestHeader('Accept');
+		$contentType = isset($formats[$format]) ? $formats[$format] : $this->request->getHeader('Accept');
 
 		return $this->container->get('writerFactory')->getWriterByContentType($contentType);
 	}

@@ -24,6 +24,7 @@
 namespace PSX\Loader;
 
 use PSX\ModuleAbstract;
+use PSX\Http\Request;
 
 /**
  * ProbeModule
@@ -36,9 +37,9 @@ class ProbeModule extends ModuleAbstract
 {
 	protected $methodsCalled = array();
 
-	public function __construct($container, Location $location, $basePath, array $uriFragments)
+	public function __construct($container, Location $location, $basePath, array $uriFragments, Request $request)
 	{
-		parent::__construct($container, $location, $basePath, $uriFragments);
+		parent::__construct($container, $location, $basePath, $uriFragments, $request);
 
 		$this->methodsCalled[] = __METHOD__;
 	}

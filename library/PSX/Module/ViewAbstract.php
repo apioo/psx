@@ -24,10 +24,13 @@
 namespace PSX\Module;
 
 use PSX\Base;
-use PSX\Exception;
 use PSX\Dependency\View;
 use PSX\Dispatch\RequestFilter\GzipEncode;
+use PSX\Exception;
+use PSX\Loader\Location;
 use PSX\ModuleAbstract;
+use PSX\Http\Request;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * ViewAbstract
@@ -38,6 +41,15 @@ use PSX\ModuleAbstract;
  */
 abstract class ViewAbstract extends ModuleAbstract
 {
+	protected $templateLocation;
+
+	public function __construct(ContainerInterface $container, Location $location, $basePath, array $uriFragments, Request $request)
+	{
+		parent::__construct($container, $location, $basePath, $uriFragments, $request);
+
+		$this->templateLocation = PSX_PATH_LIBRARY;
+	}
+
 	public function getResponseFilter()
 	{
 		$filter = array();
@@ -55,23 +67,23 @@ abstract class ViewAbstract extends ModuleAbstract
 		$config   = $this->getConfig();
 		$template = $this->getTemplate();
 
-		// set template dir
-		$template->setDir(PSX_PATH_LIBRARY);
-
 		// set default template if no template is set
 		$class = str_replace('\\', '/', $this->location->getClass()->getName());
+		$path  = $this->templateLocation . '/' . strstr($class, 'Application', true) . 'Resource';
 
 		if(!$template->hasFile())
 		{
-			$file = strtolower(substr(strstr($class, 'Application'), 12)) . '.tpl';
-			$path = strstr($class, 'Application', true) . 'Resource';
+			$file = substr(strstr($class, 'Application'), 12);
+			$file = $this->underscore($file) . '.tpl';
 
-			$template->set($path . '/' . $file);
+			$template->setDir($path);
+			$template->set($file);
 		}
 		else
 		{
 			$file = $template->get();
-			$path = strstr($class, 'Application', true) . 'Resource';
+
+			$template->setDir(!is_file($file) ? $path : null);
 		}
 
 		// assign default values
@@ -80,12 +92,11 @@ abstract class ViewAbstract extends ModuleAbstract
 		$base   = parse_url($config['psx_url'], PHP_URL_PATH);
 		$render = round(microtime(true) - $GLOBALS['psx_benchmark'], 6);
 
-		$template->assign('config', $config);
 		$template->assign('self', htmlspecialchars($self));
 		$template->assign('url', $url);
 		$template->assign('base', $base);
 		$template->assign('render', $render);
-		$template->assign('location', PSX_PATH_LIBRARY . '/' . $path);
+		$template->assign('location', $path);
 
 		if(empty($content))
 		{
@@ -101,5 +112,9 @@ abstract class ViewAbstract extends ModuleAbstract
 			return $content;
 		}
 	}
-}
 
+	protected function underscore($word)
+	{
+		return strtolower(preg_replace('/(?<=\\w)([A-Z])/', '_\\1', $word));
+	}
+}

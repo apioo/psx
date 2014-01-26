@@ -21,7 +21,9 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Module;
+namespace PSX\Module\Foo\Application;
+
+use PSX\Module\ViewAbstract;
 
 /**
  * TestViewModule
@@ -32,15 +34,37 @@ namespace PSX\Module;
  */
 class TestViewModule extends ViewAbstract
 {
-	public function callMethod($method, array $args = null)
+	public function onLoad()
 	{
-		if($args !== null)
-		{
-			return call_user_func_array(array($this, $method), $args);
-		}
-		else
-		{
-			return call_user_func(array($this, $method));
-		}
+		$this->templateLocation = 'tests';
+	}
+
+	/**
+	 * @httpMethod GET
+	 * @path /
+	 */
+	public function doIndex()
+	{
+		$this->getTemplate()->assign('foo', 'bar');
+	}
+
+	/**
+	 * @httpMethod GET
+	 * @path /detail
+	 */
+	public function doDetail()
+	{
+		$this->getTemplate()->assign('foo', 'bar');
+		$this->getTemplate()->set('detail.tpl');
+	}
+
+	/**
+	 * @httpMethod GET
+	 * @path /explicit
+	 */
+	public function doExplicit()
+	{
+		$this->getTemplate()->assign('foo', 'bar');
+		$this->getTemplate()->set('tests/PSX/Module/Foo/Resource/explicit.tpl');
 	}
 }

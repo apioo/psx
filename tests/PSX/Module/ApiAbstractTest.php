@@ -28,6 +28,8 @@ use PSX\Data\WriterInterface;
 use PSX\Data\Record;
 use PSX\Loader\Location;
 use ReflectionClass;
+use PSX\Http\Request;
+use PSX\Url;
 
 /**
  * ApiAbstractTest
@@ -36,43 +38,43 @@ use ReflectionClass;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class ApiAbstractTest extends \PHPUnit_Framework_TestCase
+class ApiAbstractTest extends ModuleTestCase
 {
 	protected function setUp()
 	{
-	}
+		parent::setUp();
 
-	protected function tearDown()
-	{
+		// add sepcial writer wich has no content type so no header is sent in
+		// setResponse
+		getContainer()->get('writerFactory')->addWriter(new NoContentTypeJsonWriter());
 	}
 
 	public function testSetResponse()
 	{
-		// add sepcial writer wich has no content type so no header is sent in
-		// setResponse
-		getContainer()->get('writerFactory')->addWriter(new NoContentTypeJsonWriter());
+		$path    = '/api';
+		$request = new Request(new Url('http://127.0.0.1' . $path), 'GET');
 
-		$record = new Record('foo', array('bar' => 'foo'));
-		$module = $this->getModule();
+		$controller = $this->loadModule($path, $request);
 
-		ob_start();
-
-		$module->callMethod('setResponse', array($record, 'PSX\Module\NoContentTypeJsonWriter', null));
-
-		$contents = ob_get_contents();
-		ob_end_clean();
-
-		$this->assertJsonStringEqualsJsonString($contents, json_encode(array('bar' => 'foo')));
+		$this->assertJsonStringEqualsJsonString($controller->processResponse(null), json_encode(array('bar' => 'foo')));
 	}
 
-	protected function getModule()
+	public function testImport()
 	{
-		$container    = getContainer();
-		$location     = new Location('foo', '', new ReflectionClass('PSX\Module\TestApiModule'));
-		$basePath     = '';
-		$uriFragments = array();
+		$path    = '/api';
+		$body    = json_encode(array('title' => 'foo', 'user' => 'bar'));
+		$request = new Request(new Url('http://127.0.0.1' . $path), 'POST', array('Content-Type: application/json'), $body);
 
-		return new TestApiModule($container, $location, $basePath, $uriFragments);
+		$controller = $this->loadModule($path, $request);
+
+		$this->assertJsonStringEqualsJsonString($controller->processResponse(null), json_encode(array('title' => 'foo', 'user' => 'bar')));
+	}
+
+	protected function getPaths()
+	{
+		return array(
+			'/api' => 'PSX\Module\Foo\Application\TestApiModule',
+		);
 	}
 }
 

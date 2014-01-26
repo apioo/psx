@@ -21,7 +21,11 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Module;
+namespace PSX\Module\Foo\Application;
+
+use PSX\Data\Record;
+use PSX\Data\RecordAbstract;
+use PSX\Module\ApiAbstract;
 
 /**
  * TestApiModule
@@ -32,15 +36,58 @@ namespace PSX\Module;
  */
 class TestApiModule extends ApiAbstract
 {
-	public function callMethod($method, array $args = null)
+	/**
+	 * @httpMethod GET
+	 * @path /
+	 */
+	public function doIndex()
 	{
-		if($args !== null)
-		{
-			return call_user_func_array(array($this, $method), $args);
-		}
-		else
-		{
-			return call_user_func(array($this, $method));
-		}
+		$record = new Record('foo', array('bar' => 'foo'));
+
+		$this->setResponse($record, 'PSX\Module\NoContentTypeJsonWriter', null);
+	}
+
+	/**
+	 * @httpMethod POST
+	 * @path /
+	 */
+	public function doInsert()
+	{
+		$record = new NewsRecord();
+		$record = $this->import($record);
+
+		$this->setResponse($record, 'PSX\Module\NoContentTypeJsonWriter', null);
+	}
+}
+
+class NewsRecord extends RecordAbstract
+{
+	protected $title;
+	protected $user;
+
+	/**
+	 * @param string $title
+	 */
+	public function setTitle($title)
+	{
+		$this->title = $title;
+	}
+	
+	public function getTitle()
+	{
+		return $this->title;
+	}
+
+	/**
+	 * @param string $user
+	 */
+	public function setUser($user)
+	{
+		$this->user = $user;
+	}
+	
+	public function getUser()
+	{
+		return $this->user;
 	}
 }
