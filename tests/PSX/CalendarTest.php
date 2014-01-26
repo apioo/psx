@@ -109,10 +109,11 @@ class CalendarTest extends \PHPUnit_Framework_TestCase
 		$days = count($calendar);
 		$i = 0;
 
-		foreach($calendar as $day)
+		foreach($calendar as $key => $day)
 		{
 			$i++;
 			$this->assertEquals($i, $day->format('j'));
+			$this->assertEquals($i, $key);
 		}
 
 		$this->assertEquals($i, $days);
