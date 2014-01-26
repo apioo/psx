@@ -40,9 +40,23 @@ class UuidTest extends \PHPUnit_Framework_TestCase
 	{
 	}
 
+	public function testTimeBase()
+	{
+		$uuid = Uuid::timeBased();
+		sleep(1);
+		$this->assertTrue($uuid != Uuid::timeBased());
+	}
+
+	public function testPseudoRandom()
+	{
+		$uuid = Uuid::pseudoRandom();
+
+		$this->assertTrue($uuid != Uuid::pseudoRandom());
+	}
+
 	public function testNameBased()
 	{
-		// Test UUID parts
+		// test UUID parts
 		$uuid = explode('-', Uuid::nameBased('bar'));
 
 		$this->assertEquals(5, count($uuid));
@@ -60,16 +74,14 @@ class UuidTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(5, hexdec($uuid[2]) >> 12, 'Set the four most significant bits (bits 12 through 15) of the time_hi_and_version field to the appropriate 4-bit version number from Section 4.1.3.');
 		$this->assertEquals(2, hexdec($uuid[3]) >> 14, 'Set the two most significant bits (bits 6 and 7) of the clock_seq_hi_and_reserved to zero and one, respectively.');
 
-
-		// The UUIDs generated at different times from the same name in the same
+		// the UUIDs generated at different times from the same name in the same
 		// namespace MUST be equal.
 		$uuid = Uuid::nameBased('foobar');
-		sleep(2);
-		$this->assertEquals(true, $uuid == Uuid::nameBased('foobar'));
+		sleep(1);
+		$this->assertEquals($uuid, Uuid::nameBased('foobar'));
 
-
-		// The UUIDs generated from two different names in the same namespace
+		// the UUIDs generated from two different names in the same namespace
 		// should be different (with very high probability).
-		$this->assertEquals(true, Uuid::nameBased('foobar') != Uuid::nameBased('bar'));
+		$this->assertTrue(Uuid::nameBased('foobar') != Uuid::nameBased('bar'));
 	}
 }
