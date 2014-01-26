@@ -110,7 +110,7 @@ class Dispatch extends \Exception
 		$message = $code === null ? Http::$codes[200] : Http::$codes[$code];
 		$header  = Base::getHeader();
 
-		return new Response(Base::getProtocol(), Base::getResponseCode(), $message, $header, $body);
+		return new Response(Base::getProtocol(), $code, $message, $header, $body);
 	}
 
 	protected function getPath()
