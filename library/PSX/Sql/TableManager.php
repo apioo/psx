@@ -95,7 +95,8 @@ class TableManager implements TableManagerInterface
 		}
 
 		// if a cache handler is set try to read the definition from the cache
-		if($this->cacheHandler !== null)
+		// but only if we haven an reader
+		if($this->cacheHandler !== null && $this->defaultReader !== null)
 		{
 			$key  = '__TD__' . md5(__METHOD__ . '-' . $tableName);
 			$item = $this->cacheHandler->load($key);
