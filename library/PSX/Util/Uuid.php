@@ -46,7 +46,7 @@ class Uuid
 
 	public static function pseudoRandom()
 	{
-		return self::generate(self::V_4, sha1(uniqid()));
+		return self::generate(self::V_4, sha1(uniqid(rand(), true)));
 	}
 
 	public static function nameBased($name)
