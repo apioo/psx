@@ -102,6 +102,8 @@ class DomainAbstractTest extends \PHPUnit_Framework_TestCase
 
 		$domain->addSubscriber($subscriber);
 		$domain->dispatch('foo', $event);
+
+		$domain->removeSubscriber($subscriber);
 	}
 }
 
