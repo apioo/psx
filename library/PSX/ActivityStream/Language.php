@@ -21,35 +21,54 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\ActivityStream\Type;
+namespace PSX\ActivityStream;
 
-use PSX\ActivityStream\Object;
-use PSX\Data\RecordInfo;
+use PSX\Data\RecordAbstract;
 
 /**
- * Issue
+ * Language
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Issue extends Object
+class Language
 {
-	protected $types;
+	const PREFERRED_LANGUAGE = 'en';
 
-	public function getRecordInfo()
+	protected $value;
+
+	public function __construct($value)
 	{
-		return new RecordInfo('issue', array(
-			'types' => $this->types,
-		), parent::getRecordInfo());
+		$this->value = $value;
 	}
 
-	/**
-	 * @param array
-	 */
-	public function setTypes($types)
+	public function getValue()
 	{
-		$this->types = $types;
+		return $this->value;
+	}
+
+	public function getPreferred()
+	{
+		if(is_array($this->value))
+		{
+			$value = isset($this->value[self::PREFERRED_LANGUAGE]) ? $this->value[self::PREFERRED_LANGUAGE] : current($this->value);
+
+			if(!empty($value))
+			{
+				return (string) $value;
+			}
+
+			return null;
+		}
+		else
+		{
+			return (string) $this->value;
+		}
+	}
+
+	public function __toString()
+	{
+		return $this->getPreferred();
 	}
 }
-

@@ -23,43 +23,34 @@
 
 namespace PSX\ActivityStream;
 
-use PSX\Data\RecordInfo;
-use PSX\Data\RecordAbstract;
+use PSX\Data\BuilderInterface;
 
 /**
- * Mood
+ * ActionBuilder
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Mood extends RecordAbstract
+class ActionBuilder implements BuilderInterface
 {
-	protected $displayName;
-	protected $image;
-
-	public function getRecordInfo()
+	public function build($data)
 	{
-		return new RecordInfo('mood', array(
-			'displayName' => $this->displayName,
-			'image'       => $this->image,
-		));
-	}
+		if(is_array($data))
+		{
+			$builder = new LinkBuilder();
+			$result  = array();
 
-	/**
-	 * @param string
-	 */
-	public function setDisplayName($displayName)
-	{
-		$this->displayName = $displayName;
-	}
+			foreach($data as $key => $row)
+			{
+				$result[$key] = $builder->build($row);
+			}
 
-	/**
-	 * @param string
-	 */
-	public function setImage($image)
-	{
-		$this->image = $image;
+			return $result;
+		}
+		else
+		{
+			return null;
+		}
 	}
 }
-

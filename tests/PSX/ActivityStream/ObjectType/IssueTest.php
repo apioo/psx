@@ -21,56 +21,40 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\ActivityStream;
+namespace PSX\ActivityStream\ObjectType;
 
-use PSX\Data\CollectionAbstract;
-use PSX\Data\RecordInfo;
-use PSX\Data\RecordAbstract;
+use PSX\ActivityStream\LinkObject;
+use PSX\DateTime;
+use PSX\Data\SerializeTestAbstract;
 
 /**
- * Collection
+ * IssueTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Collection extends CollectionAbstract
+class IssueTest extends SerializeTestAbstract
 {
-	protected $totalItems;
-	protected $itemsPerPage;
-	protected $startIndex;
-
-	public function getRecordInfo()
+	public function testIssue()
 	{
-		return new RecordInfo('collection', array(
-			'totalItems'   => $this->totalItems,
-			'itemsPerPage' => $this->itemsPerPage,
-			'startIndex'   => $this->startIndex,
-			'items'        => $this->collection,
-		));
-	}
+		$issue = new Issue();
+		$issue->setDisplayName('Terms of Use Violation');
+		$issue->setUrl('http://.../terms-of-use');
+		$issue->setTypes(array('http://example.org/codes/inappropriateMaterial', 'http://example.org/codes/copyrightViolation'));
 
-	public function setTotalItems($totalItems)
-	{
-		$this->totalItems = $totalItems;
-	}
+		$content = <<<JSON
+  {
+    "objectType": "issue",
+    "displayName": "Terms of Use Violation",
+    "url": "http://.../terms-of-use",
+    "types": [
+      "http://example.org/codes/inappropriateMaterial",
+      "http://example.org/codes/copyrightViolation"
+    ]
+  }
+JSON;
 
-	public function setItemsPerPage($itemsPerPage)
-	{
-		$this->itemsPerPage = $itemsPerPage;
-	}
-
-	public function setStartIndex($startIndex)
-	{
-		$this->startIndex = $startIndex;
-	}
-
-	/**
-	 * @param array<PSX\ActivityStream\Activity>
-	 */
-	public function setItems(array $items)
-	{
-		$this->collection = $items;
+		$this->assertRecordEqualsContent($issue, $content);
 	}
 }
-

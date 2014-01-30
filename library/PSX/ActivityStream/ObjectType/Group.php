@@ -21,60 +21,36 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\ActivityStream;
+namespace PSX\ActivityStream\ObjectType;
 
-use PSX\Data\RecordAbstract;
+use PSX\ActivityStream\Object;
 
 /**
- * Position
+ * Group
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Position extends RecordAbstract
+class Group extends Object
 {
-	protected $altitude;
-	protected $latitude;
-	protected $longitude;
+	protected $members;
 
-	/**
-	 * @param float $altitude
-	 */
-	public function setAltitude($altitude)
+	public function __construct()
 	{
-		$this->altitude = $altitude;
-	}
-
-	public function getAltitude()
-	{
-		return $this->altitude;
+		$this->objectType = 'group';
 	}
 
 	/**
-	 * @param float $latitude
+	 * @param PSX\ActivityStream\ObjectType\Collection $members
 	 */
-	public function setLatitude($latitude)
+	public function setMembers(Collection $members)
 	{
-		$this->latitude = $latitude;
+		$this->members = $members;
 	}
-
-	public function getLatitude()
+	
+	public function getMembers()
 	{
-		return $this->latitude;
-	}
-
-	/**
-	 * @param float $longitude
-	 */
-	public function setLongitude($longitude)
-	{
-		$this->longitude = $longitude;
-	}
-
-	public function getLongitude()
-	{
-		return $this->longitude;
+		return $this->members;
 	}
 }
-

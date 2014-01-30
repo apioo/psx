@@ -21,10 +21,9 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\ActivityStream\Type;
+namespace PSX\ActivityStream\ObjectType;
 
 use PSX\ActivityStream\Object;
-use PSX\Data\RecordInfo;
 
 /**
  * Task
@@ -43,73 +42,90 @@ class Task extends Object
 	protected $supersedes;
 	protected $verb;
 
-	public function getRecordInfo()
+	public function __construct()
 	{
-		return new RecordInfo('task', array(
-			'actor'         => $this->actor,
-			'by'            => $this->by,
-			'object'        => $this->object,
-			'prerequisites' => $this->prerequisites,
-			'required'      => $this->required,
-			'supersedes'    => $this->supersedes,
-			'verb'          => $this->verb,
-		), parent::getRecordInfo());
+		$this->objectType = 'task';
 	}
 
 	/**
-	 * @param PSX\ActivityStream\ObjectFactory
+	 * @param PSX\ActivityStream\LinkBuilder $actor
 	 */
-	public function setActor(Object $actor)
+	public function setActor($actor)
 	{
 		$this->actor = $actor;
 	}
+	
+	public function getActor()
+	{
+		return $this->actor;
+	}
 
-	/**
-	 * @param string
-	 */
 	public function setBy($by)
 	{
 		$this->by = $by;
 	}
+	
+	public function getBy()
+	{
+		return $this->by;
+	}
 
 	/**
-	 * @param PSX\ActivityStream\ObjectFactory
+	 * @param PSX\ActivityStream\LinkBuilder $object
 	 */
-	public function setObject(Object $object)
+	public function setObject($object)
 	{
 		$this->object = $object;
 	}
-
-	/**
-	 * @param array<PSX\ActivityStream\Type\Task>
-	 */
-	public function setPrerequisites(array $prerequisites)
+	
+	public function getObject()
 	{
-		$this->prerequisites = $prerequisites;
+		return $this->object;
 	}
 
 	/**
-	 * @param boolean
+	 * @param PSX\ActivityStream\LinkBuilder $prerequisites
 	 */
+	public function setPrerequisites($prerequisites)
+	{
+		$this->prerequisites = $prerequisites;
+	}
+	
+	public function getPrerequisites()
+	{
+		return $this->prerequisites;
+	}
+
 	public function setRequired($required)
 	{
 		$this->required = $required;
 	}
-
-	/**
-	 * @param array<PSX\ActivityStream\Type\Task>
-	 */
-	public function setSupersedes(array $supersedes)
+	
+	public function getRequired()
 	{
-		$this->supersedes = $supersedes;
+		return $this->required;
 	}
 
 	/**
-	 * @param string
+	 * @param PSX\ActivityStream\LinkBuilder $supersedes
 	 */
+	public function setSupersedes($supersedes)
+	{
+		$this->supersedes = $supersedes;
+	}
+	
+	public function getSupersedes()
+	{
+		return $this->supersedes;
+	}
+
 	public function setVerb($verb)
 	{
 		$this->verb = $verb;
 	}
+	
+	public function getVerb()
+	{
+		return $this->verb;
+	}
 }
-

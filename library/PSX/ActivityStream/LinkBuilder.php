@@ -23,52 +23,69 @@
 
 namespace PSX\ActivityStream;
 
-use PSX\Data\RecordInfo;
-use PSX\Data\RecordAbstract;
+use PSX\Data\BuilderInterface;
+use PSX\Data\Record\DefaultImporter;
 
 /**
- * Source
+ * LinkBuilder
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Source extends RecordAbstract
+class LinkBuilder implements BuilderInterface
 {
-	protected $objectType;
-	protected $displayName;
-	protected $url;
-
-	public function getRecordInfo()
+	public function build($data)
 	{
-		return new RecordInfo('result', array(
-			'objectType'  => $this->objectType,
-			'displayName' => $this->displayName,
-			'url'         => $this->url,
-		));
-	}
+		if(is_array($data))
+		{
+			if(isset($data[0]))
+			{
+				$objects = array();
 
-	/**
-	 * @param string
-	 */
-	public function setObjectType($objectType)
-	{
-		$this->objectType = $objectType;
-	}
+				foreach($data as $row)
+				{
+					$objects[] = $this->build($row);
+				}
 
-	/**
-	 * @param string
-	 */
-	public function setDisplayName($displayName)
-	{
-		$this->displayName = $displayName;
-	}
+				return $objects;
+			}
+			else
+			{
+				$class = null;
 
-	/**
-	 * @param string
-	 */
-	public function setUrl($url)
-	{
-		$this->url = $url;
+				if(isset($data['objectType']) && !empty($data['objectType']))
+				{
+					if(is_array($data['objectType']))
+					{
+						$objectType = isset($data['objectType']['id']) ? $data['objectType']['id'] : null;
+					}
+					else
+					{
+						$objectType = (string) $data['objectType'];
+					}
+
+					$class = 'PSX\ActivityStream\ObjectType\\' . ucfirst(strtolower($objectType));
+				}
+
+				if($class !== null && class_exists($class))
+				{
+					$object = new $class();
+				}
+				else
+				{
+					$object = isset($data['url']) ? new LinkObject() : new Object();
+				}
+
+				$importer = new DefaultImporter();
+				$importer->import($object, $data);
+
+				return $object;
+			}
+		}
+		else
+		{
+			return $data;
+		}
 	}
 }

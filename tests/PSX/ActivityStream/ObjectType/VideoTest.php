@@ -21,60 +21,42 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\ActivityStream;
+namespace PSX\ActivityStream\ObjectType;
 
-use PSX\Data\RecordAbstract;
+use PSX\ActivityStream\LinkObject;
+use PSX\DateTime;
+use PSX\Data\SerializeTestAbstract;
 
 /**
- * Position
+ * VideoTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Position extends RecordAbstract
+class VideoTest extends SerializeTestAbstract
 {
-	protected $altitude;
-	protected $latitude;
-	protected $longitude;
-
-	/**
-	 * @param float $altitude
-	 */
-	public function setAltitude($altitude)
+	public function testVideo()
 	{
-		$this->altitude = $altitude;
-	}
+		$stream = new LinkObject();
+		$stream->setUrl('http://example.org/my_video.mpg');
 
-	public function getAltitude()
-	{
-		return $this->altitude;
-	}
+		$video = new Video();
+		$video->setDisplayName('Cute little kittens');
+		$video->setEmbedCode('<video width=\'320\' height=\'240\' controls=\'controls\'>...</video>');
+		$video->setStream($stream);
 
-	/**
-	 * @param float $latitude
-	 */
-	public function setLatitude($latitude)
-	{
-		$this->latitude = $latitude;
-	}
+		$content = <<<JSON
+  {
+    "objectType": "video",
+    "displayName": "Cute little kittens",
+    "embedCode": "<video width='320' height='240' controls='controls'>...</video>",
+    "stream": {
+      "url": "http://example.org/my_video.mpg"
+    }
+  }
+JSON;
 
-	public function getLatitude()
-	{
-		return $this->latitude;
-	}
-
-	/**
-	 * @param float $longitude
-	 */
-	public function setLongitude($longitude)
-	{
-		$this->longitude = $longitude;
-	}
-
-	public function getLongitude()
-	{
-		return $this->longitude;
+		$this->assertRecordEqualsContent($video, $content);
 	}
 }
-

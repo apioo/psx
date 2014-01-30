@@ -21,85 +21,50 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\ActivityStream\Type;
+namespace PSX\ActivityStream\ObjectType;
 
 use PSX\ActivityStream\Object;
-use PSX\Data\RecordInfo;
 
 /**
- * Binary
+ * Place
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Binary extends Object
+class Place extends Object
 {
-	protected $compression;
-	protected $data;
-	protected $fileUrl;
-	protected $length;
-	protected $md5;
-	protected $mimeType;
+	protected $position;
+	protected $address;
 
-	public function getRecordInfo()
+	public function __construct()
 	{
-		return new RecordInfo('binary', array(
-			'compression' => $this->compression,
-			'data'        => $this->data,
-			'fileUrl'     => $this->fileUrl,
-			'length'      => $this->length,
-			'md5'         => $this->md5,
-			'mimeType'    => $this->mimeType,
-		), parent::getRecordInfo());
+		$this->objectType = 'place';
 	}
 
 	/**
-	 * @param string
+	 * @param PSX\ActivityStream\Position $position
 	 */
-	public function setCompression($compression)
+	public function setPosition($position)
 	{
-		$this->compression = $compression;
+		$this->position = $position;
+	}
+	
+	public function getPosition()
+	{
+		return $this->position;
 	}
 
 	/**
-	 * @param string
+	 * @param PSX\ActivityStream\Address $address
 	 */
-	public function setData($data)
+	public function setAddress($address)
 	{
-		$this->data = $data;
+		$this->address = $address;
 	}
-
-	/**
-	 * @param string
-	 */
-	public function setFileUrl($fileUrl)
+	
+	public function getAddress()
 	{
-		$this->fileUrl = $fileUrl;
-	}
-
-	/**
-	 * @param integer
-	 */
-	public function setLength($length)
-	{
-		$this->length = $length;
-	}
-
-	/**
-	 * @param string
-	 */
-	public function setMd5($md5)
-	{
-		$this->md5 = $md5;
-	}
-
-	/**
-	 * @param string
-	 */
-	public function setMimeType($mimeType)
-	{
-		$this->mimeType = $mimeType;
+		return $this->address;
 	}
 }
-

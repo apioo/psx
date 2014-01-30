@@ -21,60 +21,59 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\ActivityStream;
+namespace PSX\ActivityStream\ObjectType;
 
-use PSX\Data\RecordAbstract;
+use PSX\ActivityStream\LinkObject;
+use PSX\ActivityStream\Object;
+use PSX\DateTime;
+use PSX\Data\SerializeTestAbstract;
 
 /**
- * Position
+ * RoleTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Position extends RecordAbstract
+class RoleTest extends SerializeTestAbstract
 {
-	protected $altitude;
-	protected $latitude;
-	protected $longitude;
-
-	/**
-	 * @param float $altitude
-	 */
-	public function setAltitude($altitude)
+	public function testRole()
 	{
-		$this->altitude = $altitude;
-	}
+		$laura = new Object();
+		$laura->setObjectType('person');
+		$laura->setDisplayName('Laura');
 
-	public function getAltitude()
-	{
-		return $this->altitude;
-	}
+		$mark = new Object();
+		$mark->setObjectType('person');
+		$mark->setDisplayName('Mark');
 
-	/**
-	 * @param float $latitude
-	 */
-	public function setLatitude($latitude)
-	{
-		$this->latitude = $latitude;
-	}
+		$members = new Collection();
+		$members->add($laura);
+		$members->add($mark);
 
-	public function getLatitude()
-	{
-		return $this->latitude;
-	}
+		$role = new Role();
+		$role->setDisplayName('My Work Group');
+		$role->setMembers($members);
 
-	/**
-	 * @param float $longitude
-	 */
-	public function setLongitude($longitude)
-	{
-		$this->longitude = $longitude;
-	}
+		$content = <<<JSON
+  {
+    "objectType": "role",
+    "displayName": "My Work Group",
+    "members": {
+      "items": [
+        {
+          "objectType": "person",
+          "displayName": "Laura"
+        },
+        {
+          "objectType": "person",
+          "displayName": "Mark"
+        }
+      ]
+    }
+  }
+JSON;
 
-	public function getLongitude()
-	{
-		return $this->longitude;
+		$this->assertRecordEqualsContent($role, $content);
 	}
 }
-

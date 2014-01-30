@@ -21,46 +21,36 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\ActivityStream\Type;
+namespace PSX\ActivityStream\ObjectType;
 
 use PSX\ActivityStream\Object;
-use PSX\ActivityStream\MediaLink;
-use PSX\Data\RecordInfo;
 
 /**
- * Audio
+ * Issue
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Audio extends Object
+class Issue extends Object
 {
-	protected $embedCode;
-	protected $stream;
+	protected $types;
 
-	public function getRecordInfo()
+	public function __construct()
 	{
-		return new RecordInfo('audio', array(
-			'embedCode' => $this->embedCode,
-			'stream'    => $this->stream,
-		), parent::getRecordInfo());
+		$this->objectType = 'issue';
 	}
 
 	/**
-	 * @param string
+	 * @param array<string> $types
 	 */
-	public function setEmbedCode($embedCode)
+	public function setTypes(array $types)
 	{
-		$this->embedCode = $embedCode;
+		$this->types = $types;
 	}
 
-	/**
-	 * @param PSX\ActivityStream\MediaLink
-	 */
-	public function setStream(MediaLink $stream)
+	public function getTypes()
 	{
-		$this->stream = $stream;
+		return $this->types;
 	}
 }
-

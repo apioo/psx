@@ -23,7 +23,6 @@
 
 namespace PSX\ActivityStream;
 
-use PSX\Data\RecordInfo;
 use PSX\Data\RecordAbstract;
 
 /**
@@ -38,16 +37,8 @@ class Location extends RecordAbstract
 	protected $displayName;
 	protected $position;
 
-	public function getRecordInfo()
-	{
-		return new RecordInfo('location', array(
-			'displayName' => $this->displayName,
-			'position'    => $this->position,
-		));
-	}
-
 	/**
-	 * @param string
+	 * @param string $displayName
 	 */
 	public function setDisplayName($displayName)
 	{

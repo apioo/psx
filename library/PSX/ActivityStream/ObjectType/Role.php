@@ -21,65 +21,36 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\ActivityStream;
+namespace PSX\ActivityStream\ObjectType;
 
-use PSX\Data\RecordInfo;
-use PSX\Data\RecordAbstract;
+use PSX\ActivityStream\Object;
 
 /**
- * MediaLink
+ * Role
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class MediaLink extends RecordAbstract
+class Role extends Object
 {
-	protected $duration;
-	protected $height;
-	protected $url;
-	protected $width;
+	protected $members;
 
-	public function getRecordInfo()
+	public function __construct()
 	{
-		return new RecordInfo('mediaLink', array(
-			'duration' => $this->duration,
-			'height'   => $this->height,
-			'url'      => $this->url,
-			'width'    => $this->width,
-		));
+		$this->objectType = 'role';
 	}
 
 	/**
-	 * @param integer
+	 * @param PSX\ActivityStream\ObjectType\Collection $members
 	 */
-	public function setDuration($duration)
+	public function setMembers(Collection $members)
 	{
-		$this->duration = $duration;
+		$this->members = $members;
 	}
-
-	/**
-	 * @param integer
-	 */
-	public function setHeight($height)
+	
+	public function getMembers()
 	{
-		$this->height = $height;
-	}
-
-	/**
-	 * @param string
-	 */
-	public function setUrl($url)
-	{
-		$this->url = $url;
-	}
-
-	/**
-	 * @param integer
-	 */
-	public function setWidth($width)
-	{
-		$this->width = $width;
+		return $this->members;
 	}
 }
-

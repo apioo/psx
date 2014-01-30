@@ -23,7 +23,6 @@
 
 namespace PSX\ActivityStream;
 
-use PSX\Data\RecordInfo;
 use PSX\Data\RecordAbstract;
 
 /**
@@ -42,64 +41,82 @@ class Address extends RecordAbstract
 	protected $postalCode;
 	protected $country;
 
-	public function getRecordInfo()
-	{
-		return new RecordInfo('address', array(
-			'formatted'     => $this->formatted,
-			'streetAddress' => $this->streetAddress,
-			'locality'      => $this->locality,
-			'region'        => $this->region,
-			'postalCode'    => $this->postalCode,
-			'country'       => $this->country,
-		));
-	}
-
 	/**
-	 * @param string
+	 * @param string $formatted
 	 */
 	public function setFormatted($formatted)
 	{
 		$this->formatted = $formatted;
 	}
 
+	public function getFormatted()
+	{
+		return $this->formatted;
+	}
+
 	/**
-	 * @param string
+	 * @param string $streetAddress
 	 */
 	public function setStreetAddress($streetAddress)
 	{
 		$this->streetAddress = $streetAddress;
 	}
 
+	public function getStreetAddress()
+	{
+		return $this->streetAddress;
+	}
+
 	/**
-	 * @param string
+	 * @param string $locality
 	 */
 	public function setLocality($locality)
 	{
 		$this->locality = $locality;
 	}
 
+	public function getLocality()
+	{
+		return $this->locality;
+	}
+
 	/**
-	 * @param string
+	 * @param string $region
 	 */
 	public function setRegion($region)
 	{
 		$this->region = $region;
 	}
 
+	public function getRegion()
+	{
+		return $this->region;
+	}
+
 	/**
-	 * @param string
+	 * @param string $postalCode
 	 */
 	public function setPostalCode($postalCode)
 	{
 		$this->postalCode = $postalCode;
 	}
 
+	public function getPostalCode()
+	{
+		return $this->postalCode;
+	}
+
 	/**
-	 * @param string
+	 * @param string $country
 	 */
 	public function setCountry($country)
 	{
 		$this->country = $country;
+	}
+
+	public function getCountry()
+	{
+		return $this->country;
 	}
 }
 

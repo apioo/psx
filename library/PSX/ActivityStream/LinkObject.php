@@ -21,45 +21,38 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\ActivityStream\Type;
-
-use PSX\ActivityStream\Object;
-use PSX\Data\RecordInfo;
+namespace PSX\ActivityStream;
 
 /**
- * Place
+ * LinkObject
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Place extends Object
+class LinkObject extends Object
 {
-	protected $position;
-	protected $address;
+	protected $rel;
+	protected $mediaType;
 
-	public function getRecordInfo()
+	public function setRel($rel)
 	{
-		return new RecordInfo('place', array(
-			'position' => $this->position,
-			'address'  => $this->address,
-		), parent::getRecordInfo());
+		$this->rel = $rel;
+	}
+	
+	public function getRel()
+	{
+		return $this->rel;
 	}
 
-	/**
-	 * @param PSX\ActivityStream\ObjectFactory
-	 */
-	public function setPosition(Object $position)
+	public function setMediaType($mediaType)
 	{
-		$this->position = $position;
+		$this->mediaType = $mediaType;
 	}
-
-	/**
-	 * @param PSX\ActivityStream\ObjectFactory
-	 */
-	public function setAddress(Object $address)
+	
+	public function getMediaType()
 	{
-		$this->address = $address;
+		return $this->mediaType;
 	}
 }
 

@@ -21,46 +21,37 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\ActivityStream\Type;
+namespace PSX\ActivityStream\ObjectType;
 
 use PSX\ActivityStream\Object;
-use PSX\ActivityStream\MediaLink;
-use PSX\Data\RecordInfo;
 
 /**
- * Video
+ * Permission
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Video extends Object
+class Permission extends Object
 {
-	protected $embedCode;
-	protected $stream;
+	protected $scope;
+	protected $actions;
 
-	public function getRecordInfo()
+	public function __construct()
 	{
-		return new RecordInfo('video', array(
-			'embedCode' => $this->embedCode,
-			'stream'    => $this->stream,
-		), parent::getRecordInfo());
+		$this->objectType = 'permission';
 	}
 
 	/**
-	 * @param string
+	 * @param PSX\ActivityStream\LinkBuilder $scope
 	 */
-	public function setEmbedCode($embedCode)
+	public function setScope($scope)
 	{
-		$this->embedCode = $embedCode;
+		$this->scope = $scope;
 	}
-
-	/**
-	 * @param PSX\ActivityStream\MediaLink
-	 */
-	public function setStream(MediaLink $stream)
+	
+	public function getScope()
 	{
-		$this->stream = $stream;
+		return $this->scope;
 	}
 }
-

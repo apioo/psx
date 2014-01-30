@@ -21,11 +21,10 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\ActivityStream\Type;
+namespace PSX\ActivityStream\ObjectType;
 
+use DateTime;
 use PSX\ActivityStream\Object;
-use PSX\ActivityStream\Collection;
-use PSX\Data\RecordInfo;
 
 /**
  * Event
@@ -45,82 +44,112 @@ class Event extends Object
 	protected $notAttending;
 	protected $startTime;
 
-	public function getRecordInfo()
+	public function __construct()
 	{
-		return new RecordInfo('event', array(
-			'attendedBy'     => $this->attendedBy,
-			'attending'      => $this->attending,
-			'endTime'        => $this->endTime,
-			'invited'        => $this->invited,
-			'maybeAttending' => $this->maybeAttending,
-			'notAttendedBy'  => $this->notAttendedBy,
-			'notAttending'   => $this->notAttending,
-			'startTime'      => $this->startTime,
-		), parent::getRecordInfo());
+		$this->objectType = 'event';
 	}
 
 	/**
-	 * @param PSX\ActivityStream\Collection
+	 * @param PSX\ActivityStream\ObjectType\Collection $attendedBy
 	 */
 	public function setAttendedBy(Collection $attendedBy)
 	{
 		$this->attendedBy = $attendedBy;
 	}
+	
+	public function getAttendedBy()
+	{
+		return $this->attendedBy;
+	}
 
 	/**
-	 * @param PSX\ActivityStream\Collection
+	 * @param PSX\ActivityStream\ObjectType\Collection $attending
 	 */
 	public function setAttending(Collection $attending)
 	{
 		$this->attending = $attending;
 	}
+	
+	public function getAttending()
+	{
+		return $this->attending;
+	}
 
 	/**
-	 * @param string
+	 * @param DateTime $endTime
 	 */
-	public function setEndTime($endTime)
+	public function setEndTime(DateTime $endTime)
 	{
 		$this->endTime = $endTime;
 	}
-
-	/**
-	 * @param PSX\ActivityStream\Collection
-	 */
-	public function setInvited(Collection $invited)
+	
+	public function getEndTime()
 	{
-		$this->invited = $invited;
+		return $this->endTime;
 	}
 
 	/**
-	 * @param PSX\ActivityStream\Collection
+	 * @param PSX\ActivityStream\ObjectType\Collection $invited
+	 */
+ 	public function setInvited(Collection $invited)
+	{
+		$this->invited = $invited;
+	}
+	
+	public function getInvited()
+	{
+		return $this->invited;
+	}
+
+	/**
+	 * @param PSX\ActivityStream\ObjectType\Collection $maybeAttending
 	 */
 	public function setMaybeAttending(Collection $maybeAttending)
 	{
 		$this->maybeAttending = $maybeAttending;
 	}
+	
+	public function getMaybeAttending()
+	{
+		return $this->maybeAttending;
+	}
 
 	/**
-	 * @param PSX\ActivityStream\Collection
+	 * @param PSX\ActivityStream\ObjectType\Collection $notAttendedBy
 	 */
 	public function setNotAttendedBy(Collection $notAttendedBy)
 	{
 		$this->notAttendedBy = $notAttendedBy;
 	}
+	
+	public function getNotAttendedBy()
+	{
+		return $this->notAttendedBy;
+	}
 
 	/**
-	 * @param PSX\ActivityStream\Collection
+	 * @param PSX\ActivityStream\ObjectType\Collection $notAttending
 	 */
 	public function setNotAttending(Collection $notAttending)
 	{
 		$this->notAttending = $notAttending;
 	}
+	
+	public function getNotAttending()
+	{
+		return $this->notAttending;
+	}
 
 	/**
-	 * @param string
+	 * @param DateTime $startTime
 	 */
-	public function setStartTime($startTime)
+	public function setStartTime(DateTime $startTime)
 	{
 		$this->startTime = $startTime;
 	}
+	
+	public function getStartTime()
+	{
+		return $this->startTime;
+	}
 }
-

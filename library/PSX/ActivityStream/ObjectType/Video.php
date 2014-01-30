@@ -21,60 +21,47 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\ActivityStream;
+namespace PSX\ActivityStream\ObjectType;
 
-use PSX\Data\RecordAbstract;
+use PSX\ActivityStream\Object;
 
 /**
- * Position
+ * Video
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Position extends RecordAbstract
+class Video extends Object
 {
-	protected $altitude;
-	protected $latitude;
-	protected $longitude;
+	protected $embedCode;
+	protected $stream;
 
-	/**
-	 * @param float $altitude
-	 */
-	public function setAltitude($altitude)
+	public function __construct()
 	{
-		$this->altitude = $altitude;
+		$this->objectType = 'video';
 	}
 
-	public function getAltitude()
+	public function setEmbedCode($embedCode)
 	{
-		return $this->altitude;
+		$this->embedCode = $embedCode;
 	}
-
-	/**
-	 * @param float $latitude
-	 */
-	public function setLatitude($latitude)
+	
+	public function getEmbedCode()
 	{
-		$this->latitude = $latitude;
-	}
-
-	public function getLatitude()
-	{
-		return $this->latitude;
+		return $this->embedCode;
 	}
 
 	/**
-	 * @param float $longitude
+	 * @param PSX\ActivityStream\LinkBuilder $stream
 	 */
-	public function setLongitude($longitude)
+	public function setStream($stream)
 	{
-		$this->longitude = $longitude;
+		$this->stream = $stream;
 	}
-
-	public function getLongitude()
+	
+	public function getStream()
 	{
-		return $this->longitude;
+		return $this->stream;
 	}
 }
-

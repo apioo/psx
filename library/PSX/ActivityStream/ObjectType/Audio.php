@@ -21,65 +21,47 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\ActivityStream;
+namespace PSX\ActivityStream\ObjectType;
 
-use PSX\Data\RecordInfo;
-use PSX\Data\RecordAbstract;
+use PSX\ActivityStream\Object;
 
 /**
- * Context
+ * Audio
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Context extends RecordAbstract
+class Audio extends Object
 {
-	protected $objectType;
-	protected $displayName;
-	protected $url;
-	protected $types;
+	protected $embedCode;
+	protected $stream;
 
-	public function getRecordInfo()
+	public function __construct()
 	{
-		return new RecordInfo('context', array(
-			'objectType'  => $this->objectType,
-			'displayName' => $this->displayName,
-			'url'         => $this->url,
-			'types'       => $this->types,
-		));
+		$this->objectType = 'audio';
+	}
+
+	public function setEmbedCode($embedCode)
+	{
+		$this->embedCode = $embedCode;
+	}
+	
+	public function getEmbedCode()
+	{
+		return $this->embedCode;
 	}
 
 	/**
-	 * @param string
+	 * @param PSX\ActivityStream\LinkBuilder $stream
 	 */
-	public function setObjectType($objectType)
+	public function setStream($stream)
 	{
-		$this->objectType = $objectType;
+		$this->stream = $stream;
 	}
-
-	/**
-	 * @param string
-	 */
-	public function setDisplayName($displayName)
+	
+	public function getStream()
 	{
-		$this->displayName = $displayName;
-	}
-
-	/**
-	 * @param string
-	 */
-	public function setUrl($url)
-	{
-		$this->url = $url;
-	}
-
-	/**
-	 * @param array
-	 */
-	public function setTypes(array $types)
-	{
-		$this->types = $types;
+		return $this->stream;
 	}
 }
-

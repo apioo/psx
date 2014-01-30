@@ -21,45 +21,42 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\ActivityStream;
+namespace PSX\ActivityStream\ObjectType;
 
-use PSX\Data\RecordInfo;
-use PSX\Data\RecordAbstract;
+use PSX\ActivityStream\LinkObject;
+use PSX\DateTime;
+use PSX\Data\SerializeTestAbstract;
 
 /**
- * Result
+ * AudioTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Result extends RecordAbstract
+class AudioTest extends SerializeTestAbstract
 {
-	protected $score;
-	protected $duration;
-
-	public function getRecordInfo()
+	public function testAudio()
 	{
-		return new RecordInfo('result', array(
-			'score'    => $this->score,
-			'duration' => $this->duration,
-		));
-	}
+		$stream = new LinkObject();
+		$stream->setUrl('http://example.org/my_audio.mp3');
 
-	/**
-	 * @param string
-	 */
-	public function setScore($score)
-	{
-		$this->score = $score;
-	}
+		$audio = new Audio();
+		$audio->setDisplayName('Cute little kittens');
+		$audio->setEmbedCode('<audio controls=\'controls\'>...</audio>');
+		$audio->setStream($stream);
 
-	/**
-	 * @param string
-	 */
-	public function setDuration($duration)
-	{
-		$this->duration = $duration;
+		$content = <<<JSON
+  {
+    "objectType": "audio",
+    "displayName": "Cute little kittens",
+    "embedCode": "<audio controls='controls'>...</audio>",
+    "stream": {
+      "url": "http://example.org/my_audio.mp3"
+    }
+  }
+JSON;
+
+		$this->assertRecordEqualsContent($audio, $content);
 	}
 }
-

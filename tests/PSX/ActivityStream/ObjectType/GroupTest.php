@@ -21,32 +21,59 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\ActivityStream;
+namespace PSX\ActivityStream\ObjectType;
 
-use PSX\Data\FactoryInterface;
+use PSX\ActivityStream\LinkObject;
+use PSX\ActivityStream\Object;
+use PSX\DateTime;
+use PSX\Data\SerializeTestAbstract;
 
 /**
- * ObjectFactory
+ * GroupTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class ObjectFactory implements FactoryInterface
+class GroupTest extends SerializeTestAbstract
 {
-	public function factory($data)
+	public function testGroup()
 	{
-		if(isset($data['objectType']) && !empty($data['objectType']))
-		{
-			$class = 'PSX\ActivityStream\Type\\' . ucfirst($data['objectType']);
+		$laura = new Object();
+		$laura->setObjectType('person');
+		$laura->setDisplayName('Laura');
 
-			if(class_exists($class))
-			{
-				return new $class();
-			}
-		}
+		$mark = new Object();
+		$mark->setObjectType('person');
+		$mark->setDisplayName('Mark');
 
-		return new Object();
+		$members = new Collection();
+		$members->add($laura);
+		$members->add($mark);
+
+		$group = new Group();
+		$group->setDisplayName('My Work Group');
+		$group->setMembers($members);
+
+		$content = <<<JSON
+  {
+    "objectType": "group",
+    "displayName": "My Work Group",
+    "members": {
+      "items": [
+        {
+          "objectType": "person",
+          "displayName": "Laura"
+        },
+        {
+          "objectType": "person",
+          "displayName": "Mark"
+        }
+      ]
+    }
+  }
+JSON;
+
+		$this->assertRecordEqualsContent($group, $content);
 	}
 }
-
