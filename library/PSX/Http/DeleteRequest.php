@@ -46,14 +46,6 @@ class DeleteRequest extends Request
 	{
 		$url    = $url instanceof Url ? $url : new Url((string) $url);
 		$method = $override ? 'POST' : 'DELETE';
-		$header = self::mergeHeader(array(
-
-			'Host'   => $url->getHost(),
-			'Accept' => '*/*',
-			'Expect' => '',
-
-		), $header);
-
 
 		$isFormUrlencoded = false;
 
@@ -64,32 +56,31 @@ class DeleteRequest extends Request
 			$body = http_build_query($body, '', '&');
 		}
 
-
 		parent::__construct($url, $method, $header, $body);
 
+		if(!$this->hasHeader('Host'))
+		{
+			$this->setHeader('Host', $url->getHost());
+		}
 
 		if($isFormUrlencoded)
 		{
-			$this->addHeader('Content-Type', 'application/x-www-form-urlencoded');
+			$this->setHeader('Content-Type', 'application/x-www-form-urlencoded');
 		}
-
 
 		if($override)
 		{
-			$this->addHeader('X-HTTP-Method-Override', 'DELETE');
+			$this->setHeader('X-HTTP-Method-Override', 'DELETE');
 		}
 	}
 
-	public function setBody($body)
+	public function setBody($body = null)
 	{
-		$body = (string) $body;
-		$len  = strlen($body);
+		parent::setBody($body);
 
-		if($len > 0)
+		if(is_string($body))
 		{
-			$this->addHeader('Content-Length', $len);
-
-			$this->body = $body;
+			$this->setHeader('Content-Length', strlen($body));
 		}
 	}
 }

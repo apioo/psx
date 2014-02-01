@@ -355,20 +355,19 @@ class OpenId
 		// its an url wich we must discover
 		else if($identity instanceof Url)
 		{
-			# YADIS discovery
+			// YADIS discovery
 			$discoveredIdentity = $this->fetchXrds($identity);
 
-			# HTML based discovery
+			// HTML based discovery
 			if($discoveredIdentity === false)
 			{
 				$request  = new GetRequest($identity, array(
 					'User-Agent' => __CLASS__ . ' ' . Base::VERSION
 				));
 				$request->setFollowLocation(true);
-
 				$response = $this->http->request($request);
 
-				return $this->htmlBasedDiscovery($response->getBody());
+				return $this->htmlBasedDiscovery((string) $response->getBody());
 			}
 			else
 			{
@@ -489,7 +488,7 @@ class OpenId
 		// get redirected we couldnt resolve the XRI
 		$header = $response->getHeader();
 
-		if($response->getCode() >= 300 && $response->getCode() < 400 && isset($header['location']))
+		if($response->getStatusCode() >= 300 && $response->getStatusCode() < 400 && isset($header['location']))
 		{
 			// we make an YADIS request to the resolved URI to get
 			// an XRDS document
@@ -580,7 +579,6 @@ class OpenId
 		$pkey    = new PKey(array('dh' => array('p' => $p, 'g' => $g)));
 		$details = $pkey->getDetails();
 		$params  = array(
-
 			'openid.ns'                 => ProviderAbstract::NS,
 			'openid.mode'               => 'associate',
 			'openid.assoc_type'         => $assocType,
@@ -588,7 +586,6 @@ class OpenId
 			'openid.dh_modulus'         => base64_encode(ProviderAbstract::btwoc($details['dh']['p'])),
 			'openid.dh_gen'             => base64_encode(ProviderAbstract::btwoc($details['dh']['g'])),
 			'openid.dh_consumer_public' => base64_encode(ProviderAbstract::btwoc($details['dh']['pub_key'])),
-
 		);
 
 		$request  = new PostRequest($this->identity->getServer(), array(
@@ -596,7 +593,7 @@ class OpenId
 		), $params);
 		$response = $this->http->request($request);
 
-		if($response->getCode() == 200)
+		if($response->getStatusCode() == 200)
 		{
 			$data = self::keyValueDecode($response->getBody());
 
@@ -665,7 +662,7 @@ class OpenId
 		}
 		else
 		{
-			throw new Exception('Could not establish associaton received ' . $response->getCode());
+			throw new Exception('Could not establish associaton received ' . $response->getStatusCode());
 		}
 	}
 
@@ -715,7 +712,7 @@ class OpenId
 		), $params);
 		$response = $this->http->request($request);
 
-		if($response->getCode() == 200)
+		if($response->getStatusCode() == 200)
 		{
 			$data = self::keyValueDecode($response->getBody());
 
@@ -735,7 +732,7 @@ class OpenId
 		}
 		else
 		{
-			throw new Exception('Invalid response code ' . $response->getCode());
+			throw new Exception('Invalid response code ' . $response->getStatusCode());
 		}
 	}
 
@@ -754,7 +751,7 @@ class OpenId
 	public static function keyValueDecode($data)
 	{
 		$params = array();
-		$lines  = explode("\n", $data);
+		$lines  = explode("\n", (string) $data);
 
 		foreach($lines as $line)
 		{

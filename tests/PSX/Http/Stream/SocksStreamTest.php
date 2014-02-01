@@ -21,49 +21,53 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Http;
-
-use PSX\Http;
-use PSX\HttpTest;
-use PSX\Url;
+namespace PSX\Http\Stream;
 
 /**
- * PostRequestTest
+ * SocksStreamTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class PostRequestTest extends \PHPUnit_Framework_TestCase
+class SocksStreamTest extends StreamTestCase
 {
-	protected function setUp()
+	protected function getStream()
 	{
-		$this->markTestIncomplete('TODO test must not connect to a remote domain');
+		$resource = fopen('php://memory', 'r+');
+		fwrite($resource, 'foobar');
+		rewind($resource);
 
-		$this->http = new Http();
+		return new SocksStream($resource, 6, false);
 	}
 
-	protected function tearDown()
+	public function testChunkedEncoding()
 	{
-	}
+		$data = '4' . "\r\n";
+		$data.= 'Wiki' . "\r\n";
+		$data.= '5' . "\r\n";
+		$data.= 'pedia' . "\r\n";
+		$data.= 'e' . "\r\n";
+		$data.= ' in' . "\r\n\r\n" . 'chunks.' . "\r\n";
+		$data.= '0' . "\r\n";
+		$data.= "\r\n";
 
-	public function testPostRequest()
-	{
-		$request  = new PostRequest(new Url(HttpTest::URL . '/post'));
-		$response = $this->http->request($request);
+		$resource = fopen('php://memory', 'r+');
+		fwrite($resource, $data);
+		rewind($resource);
 
-		$this->assertEquals('HTTP/1.1', $response->getScheme());
-		$this->assertEquals(200, $response->getCode());
-		$this->assertEquals('OK', $response->getMessage());
-		$this->assertEquals('SUCCESS', $response->getBody());
-	}
+		$stream  = new SocksStream($resource, 0, true);
+		$content = '';
 
-	/**
-	 * @expectedException \PSX\Exception
-	 */
-	public function testWrongUrl()
-	{
-		new PostRequest('foobar');
+		do
+		{
+			$size    = $stream->getChunkSize();
+			$content.= $stream->getContents($size);
+
+			$stream->readLine();
+		}
+		while($size > 0);
+
+		$this->assertEquals('Wikipedia in' . "\r\n\r\n" . 'chunks.', $content);
 	}
 }
-

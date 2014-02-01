@@ -56,9 +56,9 @@ class ResponseParserTest extends \PHPUnit_Framework_TestCase
 		$response = $parser->parse($response);
 
 		$this->assertInstanceOf('PSX\Http\Response', $response);
-		$this->assertEquals('HTTP/1.1', $response->getScheme());
-		$this->assertEquals(200, $response->getCode());
-		$this->assertEquals('OK', $response->getMessage());
+		$this->assertEquals('HTTP/1.1', $response->getProtocolVersion());
+		$this->assertEquals(200, $response->getStatusCode());
+		$this->assertEquals('OK', $response->getReasonPhrase());
 		$this->assertEquals(array(
 			'content-type'           => 'text/plain',
 			'date'                   => 'Sat, 07 Dec 2013 13:27:33 GMT',
@@ -71,7 +71,7 @@ class ResponseParserTest extends \PHPUnit_Framework_TestCase
 			'x-xss-protection'       => '1; mode=block',
 			'alternate-protocol'     => '80:quic',
 			'transfer-encoding'      => 'chunked',
-		), $response->getHeader());
+		), array_map('strval', $response->getHeaders()));
 		$this->assertEquals('Google is built by a large team of engineers, designers, researchers, robots, and others in many different sites across the globe. It is updated continuously, and built with more tools and technologies than we can shake a stick at. If you\'d like to help us out, see google.com/jobs.', $response->getBody());
 	}
 
@@ -100,9 +100,9 @@ class ResponseParserTest extends \PHPUnit_Framework_TestCase
 			$response = $parser->parse($response);
 
 			$this->assertInstanceOf('PSX\Http\Response', $response);
-			$this->assertEquals('HTTP/1.1', $response->getScheme());
-			$this->assertEquals(200, $response->getCode());
-			$this->assertEquals('OK', $response->getMessage());
+			$this->assertEquals('HTTP/1.1', $response->getProtocolVersion());
+			$this->assertEquals(200, $response->getStatusCode());
+			$this->assertEquals('OK', $response->getReasonPhrase());
 			$this->assertEquals(array(
 				'content-type'           => 'text/plain',
 				'date'                   => 'Sat, 07 Dec 2013 13:27:33 GMT',
@@ -115,7 +115,7 @@ class ResponseParserTest extends \PHPUnit_Framework_TestCase
 				'x-xss-protection'       => '1; mode=block',
 				'alternate-protocol'     => '80:quic',
 				'transfer-encoding'      => 'chunked',
-			), $response->getHeader());
+			), array_map('strval', $response->getHeaders()));
 			$this->assertEquals('Google is built by a large team of engineers, designers, researchers, robots, and others in many different sites across the globe. It is updated continuously, and built with more tools and technologies than we can shake a stick at. If you\'d like to help us out, see google.com/jobs.', $response->getBody());
 		}
 	}

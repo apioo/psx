@@ -37,6 +37,6 @@ class ContentMd5 implements ResponseFilterInterface
 {
 	public function handle(Response $response)
 	{
-		header('Content-MD5: ' . md5($response->getBody()));
+		header('Content-MD5: ' . md5((string) $response->getBody()));
 	}
 }

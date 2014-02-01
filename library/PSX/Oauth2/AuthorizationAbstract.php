@@ -123,7 +123,7 @@ abstract class AuthorizationAbstract
 		$request  = new PostRequest($this->url, $header, $data);
 		$response = $this->http->request($request);
 
-		if($response->getCode() == 200)
+		if($response->getStatusCode() == 200)
 		{
 			if($this->accessTokenClass != null && class_exists($this->accessTokenClass))
 			{
@@ -150,7 +150,7 @@ abstract class AuthorizationAbstract
 		$request  = new PostRequest($this->url, $header, $data);
 		$response = $this->http->request($request);
 
-		if($response->getCode() == 200)
+		if($response->getStatusCode() == 200)
 		{
 			// if the content type is application/json use json reader else
 			// asume application/x-www-form-urlencoded 

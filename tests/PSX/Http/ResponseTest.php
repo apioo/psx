@@ -51,15 +51,13 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
 
 		$response = Response::convert($httpResponse);
 
-		$this->assertEquals('HTTP/1.1', $response->getScheme());
-		$this->assertEquals(200, $response->getCode());
-		$this->assertEquals('OK', $response->getMessage());
+		$this->assertEquals('HTTP/1.1', $response->getProtocolVersion());
+		$this->assertEquals(200, $response->getStatusCode());
+		$this->assertEquals('OK', $response->getReasonPhrase());
 		$this->assertEquals('foobar', $response->getBody());
 		$this->assertEquals('UTF-8', $response->getCharset());
 
-		$header = $response->getHeader();
-
-		$this->assertEquals('text/html; charset=UTF-8', $header['content-type']);
+		$this->assertEquals('text/html; charset=UTF-8', (string) $response->getHeader('Content-Type'));
 	}
 
 	public function testGetCharset()

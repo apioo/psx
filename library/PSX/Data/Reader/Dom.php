@@ -40,7 +40,7 @@ class Dom extends ReaderAbstract
 	{
 		$dom = new DOMDocument();
 		$dom->encoding = 'UTF-8';
-		$dom->loadXML($message->getBody());
+		$dom->loadXML((string) $message->getBody());
 
 		return $dom;
 	}

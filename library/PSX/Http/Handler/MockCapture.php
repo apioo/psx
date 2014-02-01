@@ -83,12 +83,12 @@ class MockCapture extends Curl
 
 					if($element instanceof DOMElement)
 					{
-						$element->nodeValue = base64_encode($response);
+						$element->nodeValue = base64_encode((string) $response);
 					}
 					else
 					{
 						$element = $dom->createElement('response');
-						$element->appendChild($dom->createTextNode(base64_encode($response)));
+						$element->appendChild($dom->createTextNode(base64_encode((string) $response)));
 						$resource->appendChild($element);
 					}
 
@@ -110,7 +110,7 @@ class MockCapture extends Curl
 			$resource->appendChild($element);
 
 			$element = $dom->createElement('response');
-			$element->appendChild($dom->createTextNode(base64_encode($response)));
+			$element->appendChild($dom->createTextNode(base64_encode((string) $response)));
 			$resource->appendChild($element);
 
 			$rootElement->appendChild($resource);

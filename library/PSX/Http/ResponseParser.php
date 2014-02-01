@@ -25,6 +25,7 @@ namespace PSX\Http;
 
 use RuntimeException;
 use PSX\Http;
+use PSX\Http\Stream\StringStream;
 use PSX\Exception;
 
 /**
@@ -76,14 +77,15 @@ class ResponseParser
 
 		list($scheme, $code, $message) = $this->getStatus($content);
 
-		$response->setScheme($scheme);
-		$response->setCode($code);
-		$response->setMessage($message);
+		$response->setProtocolVersion($scheme);
+		$response->setStatusCode($code);
+		$response->setReasonPhrase($message);
 
 		list($header, $body) = $this->splitResponse($content);
 
-		$response->setHeader($this->headerToArray($header));
-		$response->setBody($body);
+		$this->headerToArray($response, $header);
+
+		$response->setBody(new StringStream($body));
 
 		return $response;
 	}
@@ -173,7 +175,7 @@ class ResponseParser
 	 * @param string $header
 	 * @return array<string, string>
 	 */
-	protected function headerToArray($header)
+	protected function headerToArray(Response $response, $header)
 	{
 		$lines  = explode(Http::$newLine, $header);
 		$header = array();
@@ -184,26 +186,12 @@ class ResponseParser
 
 			if(isset($parts[0]) && isset($parts[1]))
 			{
-				$key   = strtolower(trim($parts[0]));
-				$value = trim($parts[1]);
+				$key   = $parts[0];
+				$value = substr($parts[1], 1);
 
-				if($key == 'set-cookie')
-				{
-					if(!isset($header[$key]))
-					{
-						$header[$key] = array();
-					}
-
-					$header[$key][] = $value;
-				}
-				else
-				{
-					$header[$key] = $value;
-				}
+				$response->addHeader($key, $value);
 			}
 		}
-
-		return $header;
 	}
 
 	protected function getStatusLine($response)
@@ -218,5 +206,71 @@ class ResponseParser
 		}
 
 		return $pos !== false ? substr($response, 0, $pos) : false;
+	}
+
+	public static function buildResponseFromHeader(array $headers)
+	{
+		$line = current($headers);
+
+		if(!empty($line))
+		{
+			$parts = explode(' ', trim($line), 3);
+
+			if(isset($parts[0]) && isset($parts[1]) && isset($parts[2]))
+			{
+				$scheme  = strval($parts[0]);
+				$code    = intval($parts[1]);
+				$message = strval($parts[2]);
+
+				$response = new Response($scheme, $code, $message);
+
+				// append header
+				foreach($headers as $line)
+				{
+					$parts = explode(':', $line, 2);
+
+					if(isset($parts[0]) && isset($parts[1]))
+					{
+						$key   = $parts[0];
+						$value = trim($parts[1]);
+
+						$response->addHeader($key, $value);
+					}
+				}
+
+				return $response;
+			}
+			else
+			{
+				throw new ParseException('Invalid status line format');
+			}
+		}
+		else
+		{
+			throw new ParseException('Couldnt find status line');
+		}
+	}
+
+	public static function buildHeaderFromResponse(Response $response)
+	{
+		$headers = $response->getHeaders();
+		$result  = array();
+
+		foreach($headers as $key => $value)
+		{
+			if($key == 'set-cookie')
+			{
+				foreach($value as $cookie)
+				{
+					$result[] = $key . ': ' . $cookie;
+				}
+			}
+			else
+			{
+				$result[] = $key . ': ' . $value;
+			}
+		}
+
+		return $result;
 	}
 }

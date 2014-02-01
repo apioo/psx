@@ -40,14 +40,12 @@ use PSX\Oauth\Signature;
  */
 class Oauth
 {
-	private $requestMethod;
-	private $url;
-	private $params;
-	private $baseString;
+	protected $http;
 
-	private $code;
-	private $lastError;
-	private $http;
+	protected $requestMethod;
+	protected $url;
+	protected $params;
+	protected $baseString;
 
 	public function __construct(Http $http)
 	{
@@ -106,34 +104,19 @@ class Oauth
 		$values['oauth_signature'] = $signature->build($this->baseString, $consumerSecret);
 
 		// request unauthorized token
-		$request   = new PostRequest($url, array(
+		$request  = new PostRequest($url, array(
 			'Authorization' => 'OAuth realm="psx", ' . self::buildAuthString($values),
 			'User-Agent'    => __CLASS__ . ' ' . Base::VERSION,
 		));
+		$response = $this->http->request($request);
 
-		$response  = $this->http->request($request);
-		$lastError = $this->http->getLastError();
+		// parse the response
+		$reader   = new Form();
+		$record   = new Response();
+		$importer = new ResponseImporter();
+		$importer->import($record, $reader->read($response));
 
-		if(empty($lastError))
-		{
-			$this->code      = $response->getCode();
-			$this->lastError = false;
-
-			// parse the response
-			$reader   = new Form();
-			$record   = new Response();
-			$importer = new ResponseImporter();
-			$importer->import($record, $reader->read($response));
-
-			return $record;
-		}
-		else
-		{
-			$this->code      = false;
-			$this->lastError = $lastError;
-
-			return false;
-		}
+		return $record;
 	}
 
 	/**
@@ -201,34 +184,19 @@ class Oauth
 		$values['oauth_signature'] = $signature->build($this->baseString, $consumerSecret, $tokenSecret);
 
 		// request access token
-		$request   = new PostRequest($url, array(
+		$request  = new PostRequest($url, array(
 			'Authorization' => 'OAuth realm="psx", ' . self::buildAuthString($values),
 			'User-Agent'    => __CLASS__ . ' ' . Base::VERSION,
 		));
+		$response = $this->http->request($request);
 
-		$response  = $this->http->request($request);
-		$lastError = $this->http->getLastError();
+		// parse the response
+		$reader   = new Form();
+		$record   = new Response();
+		$importer = new ResponseImporter();
+		$importer->import($record, $reader->read($response));
 
-		if(empty($lastError))
-		{
-			$this->code      = $response->getCode();
-			$this->lastError = false;
-
-			// parse the response
-			$reader   = new Form();
-			$record   = new Response();
-			$importer = new ResponseImporter();
-			$importer->import($record, $reader->read($response));
-
-			return $record;
-		}
-		else
-		{
-			$this->code      = false;
-			$this->lastError = $lastError;
-
-			return false;
-		}
+		return $record;
 	}
 
 	/**
@@ -501,16 +469,6 @@ class Oauth
 	public function getBaseString()
 	{
 		return $this->baseString;
-	}
-
-	public function getHttpCode()
-	{
-		return $this->code;
-	}
-
-	public function getLastError()
-	{
-		return $this->lastError;
 	}
 }
 

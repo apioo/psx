@@ -38,8 +38,6 @@ use PSX\Http\GetRequest;
  */
 class HttpTest extends \PHPUnit_Framework_TestCase
 {
-	const URL = 'http://test.phpsx.org/http';
-
 	public function testCookieStore()
 	{
 		$store = new CookieStore\Memory();

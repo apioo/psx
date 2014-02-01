@@ -112,41 +112,30 @@ class PubSubHubBub
 	public function notification(Url $endpoint, $topic)
 	{
 		$data = array(
-
 			'hub.mode' => 'publish',
 			'hub.url'  => $topic,
-
 		);
 
-		$header  = array(
+		$header   = array(
 			'User-Agent' => __CLASS__ . ' ' . Base::VERSION
 		);
-		$request = new PostRequest($endpoint, $header, $data);
+		$request  = new PostRequest($endpoint, $header, $data);
+		$response = $this->http->request($request);
 
-		$response  = $this->http->request($request);
-		$lastError = $this->http->getLastError();
-
-		if(empty($lastError))
+		if($response->getStatusCode() >= 200 && $response->getStatusCode() < 300)
 		{
-			if($response->getCode() >= 200 && $response->getCode() < 300)
-			{
-				return true;
-			}
-			else if($response->getCode() >= 400 && $response->getCode() < 600)
-			{
-				$body = $response->getBody();
-				$msg  = !empty($body) ? $body : 'The hub returned an error status code';
+			return true;
+		}
+		else if($response->getStatusCode() >= 400 && $response->getStatusCode() < 600)
+		{
+			$body = (string) $response->getBody();
+			$msg  = !empty($body) ? $body : 'The hub returned an error status code';
 
-				throw new Exception($msg);
-			}
-			else
-			{
-				throw new Exception('Unknown response code');
-			}
+			throw new Exception($msg);
 		}
 		else
 		{
-			throw new Exception($lastError);
+			throw new Exception('Unknown response code');
 		}
 	}
 
@@ -177,14 +166,11 @@ class PubSubHubBub
 			throw new Exception('Invalid verfication mode accept only "sync" or "async"');
 		}
 
-
 		$data = array(
-
 			'hub.callback' => (string) $callback,
 			'hub.mode'     => $mode,
 			'hub.topic'    => (string) $topic,
 			'hub.verify'   => $verify,
-
 		);
 
 		if(!empty($leaseSeconds))
@@ -202,32 +188,23 @@ class PubSubHubBub
 			$data['hub.verify_token'] = $verifyToken;
 		}
 
-		$request   = new PostRequest($endpoint, array(), $data);
+		$request  = new PostRequest($endpoint, array(), $data);
+		$response = $this->http->request($request);
 
-		$response  = $this->http->request($request);
-		$lastError = $this->http->getLastError();
-
-		if(empty($lastError))
+		if($response->getStatusCode() >= 200 && $response->getStatusCode() < 300)
 		{
-			if($response->getCode() >= 200 && $response->getCode() < 300)
-			{
-				return true;
-			}
-			else if($response->getCode() >= 400 && $response->getCode() < 600)
-			{
-				$body = $response->getBody();
-				$msg  = !empty($body) ? $body : 'The hub returned an error status code';
+			return true;
+		}
+		else if($response->getStatusCode() >= 400 && $response->getStatusCode() < 600)
+		{
+			$body = (string) $response->getBody();
+			$msg  = !empty($body) ? $body : 'The hub returned an error status code';
 
-				throw new Exception($msg);
-			}
-			else
-			{
-				throw new Exception('Unknown response code');
-			}
+			throw new Exception($msg);
 		}
 		else
 		{
-			throw new Exception($lastError);
+			throw new Exception('Unknown response code');
 		}
 	}
 
@@ -240,45 +217,35 @@ class PubSubHubBub
 	 */
 	public function discover(Url $url, $type = 0)
 	{
-		$request   = new GetRequest($url);
+		$reader   = new Dom();
+		$request  = new GetRequest($url);
 		$request->setFollowLocation(true);
+		$response = $this->http->request($request);
 
-		$response  = $this->http->request($request);
-		$lastError = $this->http->getLastError();
-
-		if(empty($lastError))
+		switch($type)
 		{
-			$reader = new Dom();
+			case self::RSS2:
+				$dom      = $reader->read($response);
+				$elements = $dom->getElementsByTagNameNS(Atom::$xmlns, 'link');
+				break;
 
-			switch($type)
-			{
-				case self::RSS2:
-					$dom      = $reader->read($response);
-					$elements = $dom->getElementsByTagNameNS(Atom::$xmlns, 'link');
-					break;
-
-				case self::ATOM:
-				default:
-					$dom      = $reader->read($response);
-					$elements = $dom->getElementsByTagName('link');
-					break;
-			}
-
-			for($i = 0; $i < $elements->length; $i++)
-			{
-				$link = $elements->item($i);
-
-				if(strcasecmp($link->getAttribute('rel'), 'hub') == 0)
-				{
-					$href = new Url($link->getAttribute('href'));
-
-					return $this->lastHub = $href;
-				}
-			}
+			case self::ATOM:
+			default:
+				$dom      = $reader->read($response);
+				$elements = $dom->getElementsByTagName('link');
+				break;
 		}
-		else
+
+		for($i = 0; $i < $elements->length; $i++)
 		{
-			throw new Exception($lastError);
+			$link = $elements->item($i);
+
+			if(strcasecmp($link->getAttribute('rel'), 'hub') == 0)
+			{
+				$href = new Url($link->getAttribute('href'));
+
+				return $this->lastHub = $href;
+			}
 		}
 
 		return false;

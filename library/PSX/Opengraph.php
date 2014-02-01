@@ -67,8 +67,7 @@ class Opengraph
 	const COUNTRY_NAME   = 0x1000;
 	const ALL            = 0x2000;
 
-	private $metadata = array(
-
+	protected $metadata = array(
 		'title'         => 'og:title',
 		'type'          => 'og:type',
 		'url'           => 'og:url',
@@ -82,10 +81,9 @@ class Opengraph
 		'region'        => 'og:region',
 		'postalCode'    => 'og:postal-code',
 		'countryName'   => 'og:country-name'
-
 	);
 
-	private $http;
+	protected $http;
 
 	public function __construct(Http $http)
 	{
@@ -94,49 +92,40 @@ class Opengraph
 
 	public function discover(Url $url, $type = Opengraph::ALL)
 	{
-		$request   = new GetRequest($url);
+		$request  = new GetRequest($url);
+		$response = $this->http->request($request);
 
-		$response  = $this->http->request($request);
-		$lastError = $this->http->getLastError();
+		$data   = array();
+		$fields = array();
+		$parser = new Parse((string) $response->getBody());
 
-		if(empty($lastError))
+		if($type & self::TITLE)          { $fields['title']         = $this->metadata['title']; }
+		if($type & self::TYPE)           { $fields['type']          = $this->metadata['type']; }
+		if($type & self::URL)            { $fields['url']           = $this->metadata['url']; }
+		if($type & self::IMAGE)          { $fields['image']         = $this->metadata['image']; }
+		if($type & self::DESCRIPTION)    { $fields['description']   = $this->metadata['description']; }
+		if($type & self::SITE_NAME)      { $fields['siteName']      = $this->metadata['siteName']; }
+		if($type & self::LATITUDE)       { $fields['latitude']      = $this->metadata['latitude']; }
+		if($type & self::LONGITUDE)      { $fields['longitude']     = $this->metadata['longitude']; }
+		if($type & self::STREET_ADDRESS) { $fields['streetAddress'] = $this->metadata['streetAddress']; }
+		if($type & self::LOCALITY)       { $fields['locality']      = $this->metadata['locality']; }
+		if($type & self::REGION)         { $fields['region']        = $this->metadata['region']; }
+		if($type & self::POSTAL_CODE)    { $fields['postalCode']    = $this->metadata['postalCode']; }
+		if($type & self::COUNTRY_NAME)   { $fields['countryName']   = $this->metadata['countryName']; }
+		if($type & self::ALL)            { $fields                  = $this->metadata; }
+
+		$element = new Element('meta');
+
+		foreach($fields as $key => $meta)
 		{
-			$data   = array();
-			$fields = array();
-			$parser = new Parse($response->getBody());
+			$element->setAttributes(array('property' => $meta));
 
-			if($type & self::TITLE)          { $fields['title']         = $this->metadata['title']; }
-			if($type & self::TYPE)           { $fields['type']          = $this->metadata['type']; }
-			if($type & self::URL)            { $fields['url']           = $this->metadata['url']; }
-			if($type & self::IMAGE)          { $fields['image']         = $this->metadata['image']; }
-			if($type & self::DESCRIPTION)    { $fields['description']   = $this->metadata['description']; }
-			if($type & self::SITE_NAME)      { $fields['siteName']      = $this->metadata['siteName']; }
-			if($type & self::LATITUDE)       { $fields['latitude']      = $this->metadata['latitude']; }
-			if($type & self::LONGITUDE)      { $fields['longitude']     = $this->metadata['longitude']; }
-			if($type & self::STREET_ADDRESS) { $fields['streetAddress'] = $this->metadata['streetAddress']; }
-			if($type & self::LOCALITY)       { $fields['locality']      = $this->metadata['locality']; }
-			if($type & self::REGION)         { $fields['region']        = $this->metadata['region']; }
-			if($type & self::POSTAL_CODE)    { $fields['postalCode']    = $this->metadata['postalCode']; }
-			if($type & self::COUNTRY_NAME)   { $fields['countryName']   = $this->metadata['countryName']; }
-			if($type & self::ALL)            { $fields                  = $this->metadata; }
+			$value = $parser->fetchAttrFromHead($element, 'content');
 
-			$element = new Element('meta');
-
-			foreach($fields as $key => $meta)
-			{
-				$element->setAttributes(array('property' => $meta));
-
-				$value = $parser->fetchAttrFromHead($element, 'content');
-
-				$data[$key] = $value;
-			}
-
-			return $data;
+			$data[$key] = $value;
 		}
-		else
-		{
-			throw new Exception($lastError);
-		}
+
+		return $data;
 	}
 }
 

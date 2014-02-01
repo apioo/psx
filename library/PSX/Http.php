@@ -34,16 +34,16 @@ use PSX\Http\Response;
 
 /**
  * This class offers a simple way to make http requests. It can use either curl
- * (recommended) or fsockopen handler to send the request. Here an example of
- * an basic GET request
+ * or fsockopen handler to send the request. Here an example of an basic GET 
+ * request
  * <code>
  * $http     = new Http();
  * $request  = new GetRequest('http://google.com');
  * $response = $http->request($request);
  *
- * if($response->getCode() == 200)
+ * if($response->getStatusCode() == 200)
  * {
- *   echo $response->getBody();
+ *   echo (string) $response->getBody();
  * }
  * </code>
  *
@@ -55,7 +55,6 @@ class Http
 {
 	public static $newLine = "\r\n";
 	public static $codes   = array(
-
 		200 => 'OK',
 		201 => 'Created',
 		202 => 'Accepted',
@@ -94,13 +93,9 @@ class Http
 		503 => 'Service Unavailable',
 		504 => 'Gateway Timeout',
 		505 => 'HTTP Version Not Supported'
-
 	);
 
-	private $lastError;
-	private $request;
-	private $response;
-	private $cookieStore;
+	protected $cookieStore;
 
 	/**
 	 * If no handler is defined the curl handler is used as fallback
@@ -152,19 +147,14 @@ class Http
 		}
 
 		// make request
-		$response = Response::convert($this->handler->request($request));
-
-		// store request infos
-		$this->lastError = $this->handler->getLastError();
-		$this->request   = $this->handler->getRequest();
-		$this->response  = $this->handler->getResponse();
+		$response = $this->handler->request($request);
 
 		// store cookies
 		if($this->cookieStore !== null)
 		{
 			$cookies = $response->getHeader('Set-Cookie');
 
-			if(!empty($cookies))
+			if($cookies instanceof \Traversable)
 			{
 				foreach($cookies as $rawCookie)
 				{
@@ -181,9 +171,9 @@ class Http
 		}
 
 		// check follow location
-		if($request->getFollowLocation() && ($response->getCode() >= 300 && $response->getCode() < 400))
+		if($request->getFollowLocation() && ($response->getStatusCode() >= 300 && $response->getStatusCode() < 400))
 		{
-			$location = $response->getHeader('Location');
+			$location = (string) $response->getHeader('Location');
 
 			if(!empty($location) && $location != $request->getUrl()->__toString())
 			{
@@ -191,7 +181,20 @@ class Http
 				{
 					if(strpos($location, '://') === false)
 					{
-						$location = $request->getUrl()->getScheme() . '://' . $request->getUrl()->getHost() . '/' . $location;
+						$port = $request->getUrl()->getPort();
+
+						if(empty($port) || 
+							($request->getUrl()->getScheme() == 'http' && $port == 80) || 
+							($request->getUrl()->getScheme() == 'https' && $port == 443))
+						{
+							$port = '';
+						}
+						else
+						{
+							$port = ':' . $port;
+						}
+
+						$location = $request->getUrl()->getScheme() . '://' . $request->getUrl()->getHost() . $port . '/' . ltrim($location, '/');
 					}
 
 					$locationRequest = new GetRequest($location);
@@ -248,36 +251,6 @@ class Http
 	public function getCookieStore()
 	{
 		return $this->cookieStore;
-	}
-
-	/**
-	 * Returns the error from the last request or false if no error has occured
-	 *
-	 * @return string
-	 */
-	public function getLastError()
-	{
-		return $this->lastError;
-	}
-
-	/**
-	 * Returns the raw http request string
-	 *
-	 * @return string
-	 */
-	public function getRequest()
-	{
-		return $this->request;
-	}
-
-	/**
-	 * Returns the raw http response string
-	 *
-	 * @return string
-	 */
-	public function getResponse()
-	{
-		return $this->response;
 	}
 }
 

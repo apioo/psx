@@ -191,7 +191,7 @@ class EntryImporter implements ImporterInterface
 			$request  = new GetRequest($url);
 			$response = $this->http->request($request);
 
-			if($response->getCode() == 200)
+			if($response->getStatusCode() == 200)
 			{
 				if($type == 'xhtml' || in_array($type, Importer::$xmlMediaTypes) || substr($type, -4) == '+xml' || substr($type, -4) == '/xml')
 				{
@@ -203,7 +203,7 @@ class EntryImporter implements ImporterInterface
 				}
 				else
 				{
-					$parent->appendChild(new DOMCdataSection($response->getBody()));
+					$parent->appendChild(new DOMCdataSection((string) $response->getBody()));
 				}
 			}
 		}

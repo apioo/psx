@@ -123,7 +123,7 @@ class Paypal
 		$request  = new PostRequest(new Url(self::ENDPOINT . self::PAYMENT), $header, $body);
 		$response = $this->http->request($request);
 
-		if($response->getCode() == 201)
+		if($response->getStatusCode() == 201)
 		{
 			$payment = new Data\Payment();
 			$reader  = new Reader\Json();
@@ -168,7 +168,7 @@ class Paypal
 		$request  = new GetRequest(new Url(self::ENDPOINT . self::PAYMENT . '/' . $paymentId), $header);
 		$response = $this->http->request($request);
 
-		if($response->getCode() == 200)
+		if($response->getStatusCode() == 200)
 		{
 			$payment = new Data\Payment();
 			$reader  = new Reader\Json();
@@ -195,7 +195,7 @@ class Paypal
 		$request  = new PostRequest(new Url(self::ENDPOINT . self::PAYMENT . '/' . $paymentId . '/execute/'), $header, $body);
 		$response = $this->http->request($request);
 
-		if($response->getCode() == 200)
+		if($response->getStatusCode() == 200)
 		{
 			$payment = new Data\Payment();
 			$reader  = new Reader\Json();
@@ -257,7 +257,7 @@ class Paypal
 		$request  = new GetRequest($url, $header);
 		$response = $this->http->request($request);
 
-		if($response->getCode() == 200)
+		if($response->getStatusCode() == 200)
 		{
 			$payments = new Data\Payments();
 			$reader   = new Reader\Json();

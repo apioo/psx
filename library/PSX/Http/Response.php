@@ -35,9 +35,9 @@ use PSX\Exception;
  */
 class Response extends Message
 {
-	private $scheme;
-	private $code;
-	private $message;
+	protected $scheme;
+	protected $code;
+	protected $message;
 
 	/**
 	 * __construct
@@ -52,9 +52,9 @@ class Response extends Message
 	{
 		parent::__construct($header, $body);
 
-		$this->setScheme($scheme);
-		$this->setCode($code);
-		$this->setMessage($message);
+		$this->setProtocolVersion($scheme);
+		$this->setStatusCode($code);
+		$this->setReasonPhrase($message);
 	}
 
 	/**
@@ -63,9 +63,19 @@ class Response extends Message
 	 * @param string $scheme
 	 * @return void
 	 */
-	public function setScheme($scheme)
+	public function setProtocolVersion($scheme)
 	{
 		$this->scheme = $scheme;
+	}
+
+	/**
+	 * Returns the http scheme
+	 *
+	 * @return string
+	 */
+	public function getProtocolVersion()
+	{
+		return $this->scheme;
 	}
 
 	/**
@@ -74,35 +84,25 @@ class Response extends Message
 	 * @param integer $code
 	 * @return void
 	 */
-	public function setCode($code)
+	public function setStatusCode($code)
 	{
 		$this->code = (integer) $code;
 	}
 
 	/**
-	 * Sets the response message
-	 *
-	 * @param string $message
-	 * @return void
-	 */
-	public function setMessage($message)
-	{
-		$this->message = $message;
-	}
-
-	/**
-	 * Returns the http scheme
-	 *
-	 * @return string
-	 */
-	public function getScheme()
-	{
-		return $this->scheme;
-	}
-
-	/**
 	 * Returns the http response code
 	 *
+	 * @return integer
+	 */
+	public function getStatusCode()
+	{
+		return $this->code;
+	}
+
+	/**
+	 * Deprecated infavor of getStatusCode
+	 *
+	 * @deprecated
 	 * @return integer
 	 */
 	public function getCode()
@@ -111,12 +111,23 @@ class Response extends Message
 	}
 
 	/**
+	 * Sets the response message
+	 *
+	 * @param string $message
+	 * @return void
+	 */
+	public function setReasonPhrase($message)
+	{
+		$this->message = $message;
+	}
+
+	/**
 	 * Returns the http response message. That means the last part of the status
 	 * line i.e. "OK" from an 200 response
 	 *
 	 * @return string
 	 */
-	public function getMessage()
+	public function getReasonPhrase()
 	{
 		return $this->message;
 	}
@@ -128,7 +139,7 @@ class Response extends Message
 	 */
 	public function getLine()
 	{
-		return $this->getScheme() . ' ' . $this->getCode() . ' ' . $this->getMessage();
+		return $this->getProtocolVersion() . ' ' . $this->getStatusCode() . ' ' . $this->getReasonPhrase();
 	}
 
 	/**
@@ -190,18 +201,18 @@ class Response extends Message
 	{
 		$response = $this->getLine() . Http::$newLine;
 
-		foreach($this->header as $k => $v)
+		foreach($this->headers as $key => $value)
 		{
-			if(is_array($v))
+			if($key == 'set-cookie')
 			{
-				foreach($v as $line)
+				foreach($value as $cookie)
 				{
-					$response.= $k . ': ' . $line . Http::$newLine;
+					$response.= $key . ': ' . $cookie . Http::$newLine;
 				}
 			}
 			else
 			{
-				$response.= $k . ': ' . $v . Http::$newLine;
+				$response.= $key . ': ' . $value . Http::$newLine;
 			}
 		}
 
@@ -209,6 +220,11 @@ class Response extends Message
 		$response.= $this->getBody();
 
 		return $response;
+	}
+
+	public function __toString()
+	{
+		return $this->toString();
 	}
 
 	/**

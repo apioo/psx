@@ -66,7 +66,7 @@ class Oembed
 		));
 		$response = $this->http->request($request);
 
-		if($response->getCode() >= 200 && $response->getCode() < 300)
+		if($response->getStatusCode() >= 200 && $response->getStatusCode() < 300)
 		{
 			switch($url->getParam('format'))
 			{
@@ -90,7 +90,7 @@ class Oembed
 		}
 		else
 		{
-			throw new Exception('Invalid response code ' . $response->getCode());
+			throw new Exception('Invalid response code ' . $response->getStatusCode());
 		}
 	}
 
@@ -108,13 +108,13 @@ class Oembed
 		));
 		$response = $this->http->request($request);
 
-		if($response->getCode() >= 200 && $response->getCode() < 300)
+		if($response->getStatusCode() >= 200 && $response->getStatusCode() < 300)
 		{
-			return $this->request(new Url(self::findTag($response->getBody())));
+			return $this->request(new Url(self::findTag((string) $response->getBody())));
 		}
 		else
 		{
-			throw new Exception('Invalid response code ' . $response->getCode());
+			throw new Exception('Invalid response code ' . $response->getStatusCode());
 		}
 	}
 

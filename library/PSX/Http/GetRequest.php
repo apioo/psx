@@ -44,14 +44,13 @@ class GetRequest extends Request
 	{
 		$url    = $url instanceof Url ? $url : new Url((string) $url);
 		$method = 'GET';
-		$header = self::mergeHeader(array(
-
-			'Host'   => $url->getHost(),
-			'Expect' => '',
-
-		), $header);
 
 		parent::__construct($url, $method, $header);
+
+		if(!$this->hasHeader('Host'))
+		{
+			$this->setHeader('Host', $url->getHost());
+		}
 	}
 }
 

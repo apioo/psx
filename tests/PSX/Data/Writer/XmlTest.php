@@ -92,10 +92,11 @@ TEXT;
 		$expect = <<<TEXT
 <?xml version="1.0" encoding="UTF-8"?>
 <activity>
+  <verb>post</verb>
   <actor>
-    <displayName>Martin Smith</displayName>
     <id>tag:example.org,2011:martin</id>
     <objectType>person</objectType>
+    <displayName>Martin Smith</displayName>
     <url>http://example.org/martin</url>
   </actor>
   <object>
@@ -103,12 +104,11 @@ TEXT;
     <url>http://example.org/blog/2011/02/entry</url>
   </object>
   <target>
-    <displayName>Martin's Blog</displayName>
     <id>tag:example.org,2011:abc123</id>
     <objectType>blog</objectType>
+    <displayName>Martin's Blog</displayName>
     <url>http://example.org/blog/</url>
   </target>
-  <verb>post</verb>
   <published>2011-02-10T15:04:55+00:00</published>
 </activity>
 TEXT;

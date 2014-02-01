@@ -100,7 +100,7 @@ FEED;
 		$request  = new Request(new Url(self::URL_CALLBACK), 'POST', $header, $body);
 		$response = $this->http->request($request);
 
-		$this->assertEquals(200, $response->getCode(), $response->getBody());
+		$this->assertEquals(200, $response->getStatusCode(), $response->getBody());
 		$this->assertEquals('INSERT ATOM Heathcliff', $response->getBody());
 	}
 

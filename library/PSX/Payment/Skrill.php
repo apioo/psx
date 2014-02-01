@@ -79,12 +79,12 @@ class Skrill
 		$request  = new PostRequest(new Url(self::ENDPOINT), $header, $body);
 		$response = $this->http->request($request);
 
-		if($response->getCode() == 200)
+		if($response->getStatusCode() == 200)
 		{
 			$cookies   = $response->getHeader('Set-Cookie');
 			$sessionId = null;
 
-			if(is_array($cookies))
+			if($cookies instanceof \Traversable)
 			{
 				foreach($cookies as $cookie)
 				{

@@ -24,13 +24,13 @@
 namespace PSX\Http\Handler;
 
 use PSX\Http;
-use PSX\HttpTest;
 use PSX\Http\DeleteRequest;
 use PSX\Http\GetRequest;
 use PSX\Http\HeadRequest;
 use PSX\Http\PostRequest;
 use PSX\Http\PutRequest;
 use PSX\Url;
+use PSX\Json;
 
 /**
  * HandlerTestCase
@@ -41,114 +41,205 @@ use PSX\Url;
  */
 abstract class HandlerTestCase extends \PHPUnit_Framework_TestCase
 {
+	const URL = 'http://127.0.0.1:8000';
+
+	protected static $isConnected;
+
 	protected $http;
 
 	protected function setUp()
 	{
-		$this->markTestIncomplete('TODO test must not connect to a remote domain');
+		if(self::$isConnected === null)
+		{
+			$handle = @fsockopen('127.0.0.1', 8000, $errno, $errstr, 3);
 
-		$handler = $this->getHandler();
+			if($handle)
+			{
+				fwrite($handle, 'HEAD / HTTP/1.1' . "\r\n\r\n");
+				fclose($handle);
 
-		$this->http = new Http($handler);
+				self::$isConnected = true;
+			}
+			else
+			{
+				self::$isConnected = false;
+			}
+		}
+
+		if(!self::$isConnected)
+		{
+			$this->markTestSkipped('Local test webserver is not started');
+		}
+
+		$this->http = new Http($this->getHandler());
 	}
 
 	protected function tearDown()
 	{
 	}
 
+	/**
+	 * Returns the handler which gets tested
+	 *
+	 * @return PSX\Http\HandlerInterface
+	 */
 	abstract protected function getHandler();
 
-	public function testDeleteRequest()
+	public function testHeadRequest()
 	{
-		$request  = new DeleteRequest(new Url(HttpTest::URL . '/delete'));
+		$request  = new HeadRequest(new Url(self::URL . '/head'));
 		$response = $this->http->request($request);
 
-		$this->assertEquals('HTTP/1.1', $response->getScheme());
-		$this->assertEquals(200, $response->getCode());
-		$this->assertEquals('OK', $response->getMessage());
-		$this->assertEquals('SUCCESS', $response->getBody());
+		$this->assertEquals('HTTP/1.1', $response->getProtocolVersion());
+		$this->assertEquals(200, $response->getStatusCode());
+		$this->assertEquals('OK', $response->getReasonPhrase());
+		$this->assertEquals(null, $response->getBody());
 	}
 
 	public function testGetRequest()
 	{
-		$request  = new GetRequest(new Url(HttpTest::URL . '/get'));
+		$request  = new GetRequest(new Url(self::URL . '/get'));
 		$response = $this->http->request($request);
 
-		$this->assertEquals('HTTP/1.1', $response->getScheme());
-		$this->assertEquals(200, $response->getCode());
-		$this->assertEquals('OK', $response->getMessage());
-		$this->assertEquals('SUCCESS', $response->getBody());
-	}
+		$this->assertEquals('HTTP/1.1', $response->getProtocolVersion());
+		$this->assertEquals(200, $response->getStatusCode());
+		$this->assertEquals('OK', $response->getReasonPhrase());
 
-	public function testHeadRequest()
-	{
-		$request  = new HeadRequest(new Url(HttpTest::URL . '/head'));
-		$response = $this->http->request($request);
+		$body = Json::decode((string) $response->getBody());
 
-		$this->assertEquals('HTTP/1.1', $response->getScheme());
-		$this->assertEquals(200, $response->getCode());
-		$this->assertEquals('OK', $response->getMessage());
-		$this->assertEquals('', $response->getBody()); // must be empty
+		$this->assertEquals(array('success' => true, 'method' => 'GET'), $body);
 	}
 
 	public function testPostRequest()
 	{
-		$request  = new PostRequest(new Url(HttpTest::URL . '/post'));
+		$request  = new PostRequest(new Url(self::URL . '/post'), array('Content-Type' => 'text/plain'), 'foobar');
 		$response = $this->http->request($request);
 
-		$this->assertEquals('HTTP/1.1', $response->getScheme());
-		$this->assertEquals(200, $response->getCode());
-		$this->assertEquals('OK', $response->getMessage());
-		$this->assertEquals('SUCCESS', $response->getBody());
+		$this->assertEquals('HTTP/1.1', $response->getProtocolVersion());
+		$this->assertEquals(200, $response->getStatusCode());
+		$this->assertEquals('OK', $response->getReasonPhrase());
+
+		$body = Json::decode((string) $response->getBody());
+
+		$this->assertEquals(array('success' => true, 'method' => 'POST', 'request' => 'foobar'), $body);
+	}
+
+	public function testPostRequestStream()
+	{
+		$file     = 'tests/PSX/Template/files/foo.tpl';
+		$request  = new PostRequest(new Url(self::URL . '/post'), array('Content-Type' => 'text/plain', 'Content-Length' => filesize($file)), fopen($file, 'r+'));
+		$response = $this->http->request($request);
+
+		$this->assertEquals('HTTP/1.1', $response->getProtocolVersion());
+		$this->assertEquals(200, $response->getStatusCode());
+		$this->assertEquals('OK', $response->getReasonPhrase());
+
+		$body = Json::decode((string) $response->getBody());
+
+		$this->assertEquals(array('success' => true, 'method' => 'POST', 'request' => 'Hello <?php echo $foo; ?>'), $body);
 	}
 
 	public function testPutRequest()
 	{
-		$request  = new PutRequest(new Url(HttpTest::URL . '/put'));
+		$request  = new PutRequest(new Url(self::URL . '/put'), array('Content-Type' => 'text/plain'), 'foobar');
 		$response = $this->http->request($request);
 
-		$this->assertEquals('HTTP/1.1', $response->getScheme());
-		$this->assertEquals(200, $response->getCode());
-		$this->assertEquals('OK', $response->getMessage());
-		$this->assertEquals('SUCCESS', $response->getBody());
+		$this->assertEquals('HTTP/1.1', $response->getProtocolVersion());
+		$this->assertEquals(200, $response->getStatusCode());
+		$this->assertEquals('OK', $response->getReasonPhrase());
+
+		$body = Json::decode((string) $response->getBody());
+
+		$this->assertEquals(array('success' => true, 'method' => 'PUT', 'request' => 'foobar'), $body);
 	}
 
-	public function testHttpsGetRequest()
+	public function testPutRequestStream()
 	{
-		$request  = new GetRequest(new Url('https://www.google.com/accounts/ServiceLogin'));
+		$file     = 'tests/PSX/Template/files/foo.tpl';
+		$request  = new PutRequest(new Url(self::URL . '/put'), array('Content-Type' => 'text/plain', 'Content-Length' => filesize($file)), fopen($file, 'r+'));
+		$response = $this->http->request($request);
+
+		$this->assertEquals('HTTP/1.1', $response->getProtocolVersion());
+		$this->assertEquals(200, $response->getStatusCode());
+		$this->assertEquals('OK', $response->getReasonPhrase());
+
+		$body = Json::decode((string) $response->getBody());
+
+		$this->assertEquals(array('success' => true, 'method' => 'PUT', 'request' => 'Hello <?php echo $foo; ?>'), $body);
+	}
+
+	public function testDeleteRequest()
+	{
+		$request  = new DeleteRequest(new Url(self::URL . '/delete'), array('Content-Type' => 'text/plain'), 'foobar');
+		$response = $this->http->request($request);
+
+		$this->assertEquals('HTTP/1.1', $response->getProtocolVersion());
+		$this->assertEquals(200, $response->getStatusCode());
+		$this->assertEquals('OK', $response->getReasonPhrase());
+
+		$body = Json::decode((string) $response->getBody());
+
+		$this->assertEquals(array('success' => true, 'method' => 'DELETE', 'request' => 'foobar'), $body);
+	}
+
+	public function testDeleteRequestStream()
+	{
+		$file     = 'tests/PSX/Template/files/foo.tpl';
+		$request  = new DeleteRequest(new Url(self::URL . '/delete'), array('Content-Type' => 'text/plain', 'Content-Length' => filesize($file)), fopen($file, 'r+'));
+		$response = $this->http->request($request);
+
+		$this->assertEquals('HTTP/1.1', $response->getProtocolVersion());
+		$this->assertEquals(200, $response->getStatusCode());
+		$this->assertEquals('OK', $response->getReasonPhrase());
+
+		$body = Json::decode((string) $response->getBody());
+
+		$this->assertEquals(array('success' => true, 'method' => 'DELETE', 'request' => 'Hello <?php echo $foo; ?>'), $body);
+	}
+
+	public function testFollowRedirects()
+	{
+		$request  = new GetRequest(new Url(self::URL . '/redirect'));
 		$request->setFollowLocation(true);
 		$response = $this->http->request($request);
 
-		$this->assertEquals('HTTP/1.1', $response->getScheme());
-		$this->assertEquals(200, $response->getCode());
-		$this->assertEquals('OK', $response->getMessage());
-		$this->assertEquals(true, strlen($response->getBody()) > 1024);
+		$this->assertEquals('HTTP/1.1', $response->getProtocolVersion());
+		$this->assertEquals(200, $response->getStatusCode());
+		$this->assertEquals('OK', $response->getReasonPhrase());
+
+		$body = Json::decode((string) $response->getBody());
+
+		$this->assertEquals(array('success' => true, 'method' => 'GET'), $body);
 	}
 
-	public function testHttpChunkedTransferEncoding()
+	/**
+	 * @expectedException \PSX\Http\RedirectException
+	 */
+	public function testMaxRedirect()
 	{
-		/*
-		$request  = new GetRequest(new Url('http://yahoo.com'));
-		$request->setFollowLocation(true);
-		$response = $this->http->request($request);
+		$request = new GetRequest(new Url(self::URL . '/redirect'));
+		$request->setFollowLocation(true, 1);
 
-		$this->assertEquals('HTTP/1.1', $response->getScheme());
-		$this->assertEquals(200, $response->getCode());
-		$this->assertEquals('OK', $response->getMessage());
-		$this->assertEquals(true, strlen($response->getBody()) > 4096);
-		*/
+		$response = $this->http->request($request);
 	}
 
-	public function testGetRedirect()
+	/**
+	 * The bigdata endpoint returns an 4mb response of full stops. We take 
+	 * advantage of streaming and read only the first 8 bytes of the response
+	 */
+	public function testReadBigData()
 	{
-		$request  = new GetRequest(new Url('http://test.phpsx.org/http/redirect'));
-		$request->setFollowLocation(true);
-
+		$request  = new GetRequest(new Url(self::URL . '/bigdata'));
 		$response = $this->http->request($request);
 
-		$this->assertEquals('HTTP/1.1', $response->getScheme());
-		$this->assertEquals(200, $response->getCode());
-		$this->assertEquals('OK', $response->getMessage());
-		$this->assertEquals('SUCCESS', $response->getBody());
+		$this->assertEquals('HTTP/1.1', $response->getProtocolVersion());
+		$this->assertEquals(200, $response->getStatusCode());
+		$this->assertEquals('OK', $response->getReasonPhrase());
+
+		$body = $response->getBody()->read(8);
+
+		$response->getBody()->close();
+
+		$this->assertEquals('........', $body);
 	}
 }

@@ -32,7 +32,7 @@ namespace PSX\Http;
  */
 class Message
 {
-	protected $header;
+	protected $headers;
 	protected $body;
 
 	/**
@@ -43,61 +43,88 @@ class Message
 	 */
 	public function __construct(array $header = array(), $body = null)
 	{
-		$this->setHeader($header);
+		$this->setHeaders($header);
 		$this->setBody($body);
 	}
 
-	/**
-	 * Sets the message header
-	 *
-	 * @param array $header
-	 * @return void
-	 */
-	public function setHeader(array $header)
+	public function getHeaders()
 	{
-		$this->header = array_change_key_case($header);
+		return $this->headers;
 	}
 
-	/**
-	 * Sets the message body
-	 *
-	 * @param string $body
-	 * @return void
-	 */
-	public function setBody($body)
+	public function hasHeader($name)
 	{
-		$this->body = (string) $body;
+		return isset($this->headers[strtolower($name)]);
 	}
 
-	/**
-	 * Returns the complete header array if key is null or the specific header
-	 * value if available
-	 *
-	 * @param string $key
-	 * @return array|string
-	 */
-	public function getHeader($key = null)
+	public function getHeader($name)
 	{
-		if($key !== null)
+		return $this->hasHeader($name) ? $this->headers[strtolower($name)] : null;
+	}
+
+	public function setHeader($name, $value)
+	{
+		if(!$value instanceof HeaderFieldValues)
 		{
-			$key = strtolower($key);
+			$value = new HeaderFieldValues($value);
+		}
 
-			return isset($this->header[$key]) ? $this->header[$key] : null;
+		$this->headers[strtolower($name)] = $value;
+	}
+
+	public function setHeaders(array $headers)
+	{
+		$this->headers = array();
+		$this->addHeaders($headers);
+	}
+
+	public function addHeader($name, $value)
+	{
+		if($this->hasHeader($name))
+		{
+			$this->getHeader($name)->append($value);
 		}
 		else
 		{
-			return $this->header;
+			$this->setHeader($name, $value);
+		}
+	}
+
+	public function addHeaders(array $headers)
+	{
+		foreach($headers as $name => $value)
+		{
+			$this->addHeader($name, $value);
+		}
+	}
+
+	public function removeHeader($name)
+	{
+		if(isset($this->headers[$name]))
+		{
+			unset($this->headers[$name]);
 		}
 	}
 
 	/**
 	 * Returns the message body
 	 *
-	 * @return string
+	 * @return Psr\Http\StreamInterface
 	 */
 	public function getBody()
 	{
 		return $this->body;
+	}
+
+	/**
+	 * Sets the message body
+	 *
+	 * @param Psr\Http\StreamInterface $body
+	 * @return void
+	 */
+	public function setBody($body = null)
+	{
+		$this->body = $body;
 	}
 }
 

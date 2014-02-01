@@ -48,7 +48,7 @@ use PSX\Oauth2\TokenAbstract;
  * $request  = new GetRequest('[api_url]', $header);
  * $response = $http->request($request);
  *
- * if($response->getCode() == 200)
+ * if($response->getStatusCode() == 200)
  * {
  * 	// request worked
  * }

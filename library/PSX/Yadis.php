@@ -58,12 +58,12 @@ class Yadis
 		if($this->maxRecursion >= $deep)
 		{
 			$response = $this->request($url);
-			$header   = $response->getHeader();
+			$location = (string) $response->getHeader('X-XRDS-Location');
 
 			// x-xrds-location
-			if(isset($header['x-xrds-location']))
+			if(!empty($location))
 			{
-				$location = new Url($header['x-xrds-location']);
+				$location = new Url($location);
 
 				if(strcasecmp($url, $location) != 0)
 				{
@@ -76,20 +76,21 @@ class Yadis
 			// text/xml or application/xrds+xml ... after the specification we
 			// only must check for the content-type application/xrds+xml but
 			// some websites serve the xrds document as text/xml
-			if(isset($header['content-type']) && strpos($header['content-type'], 'xml') !== false)
+			$contentType = (string) $response->getHeader('Content-Type');
+			if(!empty($contentType) && strpos($contentType, 'xml') !== false)
 			{
 				if($raw === true)
 				{
-					return $response->getBody();
+					return (string) $response->getBody();
 				}
 				else
 				{
-					return $this->parse($response->getBody());
+					return $this->parse((string) $response->getBody());
 				}
 			}
 
 			// search for <meta /> tag
-			$parse    = new Parse($response->getBody());
+			$parse    = new Parse((string) $response->getBody());
 			$element  = new Element('meta', array('http-equiv' => 'X-XRDS-Location'));
 
 			$location = $parse->fetchAttrFromHead($element, 'content');
@@ -129,17 +130,8 @@ class Yadis
 			'User-Agent' => __CLASS__ . ' ' . Base::VERSION,
 		));
 		$request->setFollowLocation(true);
+		$response = $this->http->request($request);
 
-		$response  = $this->http->request($request);
-		$lastError = $this->http->getLastError();
-
-		if(empty($lastError))
-		{
-			return $response;
-		}
-		else
-		{
-			throw new Exception($lastError);
-		}
+		return $response;
 	}
 }

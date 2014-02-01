@@ -21,49 +21,23 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Http;
-
-use PSX\Http;
-use PSX\HttpTest;
-use PSX\Url;
+namespace PSX\Http\Stream;
 
 /**
- * HeadRequestTest
+ * TempStreamTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class HeadRequestTest extends \PHPUnit_Framework_TestCase
+class TempStreamTest extends StreamTestCase
 {
-	protected function setUp()
+	protected function getStream()
 	{
-		$this->markTestIncomplete('TODO test must not connect to a remote domain');
+		$resource = fopen('php://memory', 'r+');
+		fwrite($resource, 'foobar');
+		rewind($resource);
 
-		$this->http = new Http();
-	}
-
-	protected function tearDown()
-	{
-	}
-
-	public function testHeadRequest()
-	{
-		$request  = new HeadRequest(new Url(HttpTest::URL . '/head'));
-		$response = $this->http->request($request);
-
-		$this->assertEquals('HTTP/1.1', $response->getScheme());
-		$this->assertEquals(200, $response->getCode());
-		$this->assertEquals('OK', $response->getMessage());
-		$this->assertEquals('', $response->getBody()); // must be empty
-	}
-
-	/**
-	 * @expectedException \PSX\Exception
-	 */
-	public function testWrongUrl()
-	{
-		new HeadRequest('foobar');
+		return new TempStream($resource);
 	}
 }
-

@@ -42,7 +42,7 @@ class Form extends ReaderAbstract
 	{
 		$form = array();
 
-		parse_str($message->getBody(), $form);
+		parse_str((string) $message->getBody(), $form);
 
 		return $form;
 	}

@@ -33,33 +33,10 @@ namespace PSX\Http;
 interface HandlerInterface
 {
 	/**
-	 * Makes an http request and returns the raw response string including the
-	 * header
+	 * Makes an http request and returns an http response object
 	 *
-	 * @param PSX\Http\Request $request
-	 * @return string
+	 * @param Psr\Http\RequestInterface $request
+	 * @return Psr\Http\ResponseInterface
 	 */
 	public function request(Request $request);
-
-	/**
-	 * Must return the error message of the last request or false if no error
-	 * occured
-	 *
-	 * @return string|false
-	 */
-	public function getLastError();
-
-	/**
-	 * Must return the raw http request string of the last request
-	 *
-	 * @return string
-	 */
-	public function getRequest();
-
-	/**
-	 * Must return the raw http response string of the last request
-	 *
-	 * @return string
-	 */
-	public function getResponse();
 }

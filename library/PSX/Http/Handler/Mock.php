@@ -85,30 +85,11 @@ class Mock implements HandlerInterface
 			{
 				$response = $resource['handler']($request);
 
-				$this->lastError = false;
-				$this->request   = $request->toString();
-				$this->response  = $response;
-
-				return $response;
+				return Response::convert($response);
 			}
 		}
 
 		throw new Exception('Resource not available ' . $request->getMethod() . ' ' . $url);
-	}
-
-	public function getLastError()
-	{
-		return $this->lastError;
-	}
-
-	public function getRequest()
-	{
-		return $this->request;
-	}
-
-	public function getResponse()
-	{
-		return $this->response;
 	}
 
 	public static function getByXmlDefinition($file)

@@ -28,6 +28,9 @@ use PSX\Http\HandlerException;
 use PSX\Http\HandlerInterface;
 use PSX\Http\NotSupportedException;
 use PSX\Http\Request;
+use PSX\Http\Response;
+use PSX\Http\ResponseParser;
+use PSX\Http\Stream\SocksStream;
 
 /**
  * Socks
@@ -38,12 +41,9 @@ use PSX\Http\Request;
  */
 class Socks implements HandlerInterface
 {
-	private $lastError;
-	private $request;
-	private $response;
-
 	public function request(Request $request, $count = 0)
 	{
+		// ssl
 		$scheme = null;
 
 		if(!$request->isSSL())
@@ -64,11 +64,11 @@ class Socks implements HandlerInterface
 			}
 			else
 			{
-				throw new NotSupportedException('https is not supported by the system');
+				throw new NotSupportedException('https is not supported');
 			}
 		}
 
-
+		// port
 		$port = $request->getUrl()->getPort();
 
 		if(empty($port))
@@ -76,11 +76,12 @@ class Socks implements HandlerInterface
 			$port = getservbyname($request->getUrl()->getScheme(), 'tcp');
 		}
 
-
-		$handle = fsockopen($scheme . '://' . $request->getUrl()->getHost(), $port, $errno, $errstr);
+		// open socket
+		$handle = @fsockopen($scheme . '://' . $request->getUrl()->getHost(), $port, $errno, $errstr);
 
 		if($handle !== false)
 		{
+			// timeout
 			$timeout = $request->getTimeout();
 
 			if(!empty($timeout))
@@ -88,7 +89,7 @@ class Socks implements HandlerInterface
 				stream_set_timeout($handle, $timeout);
 			}
 
-
+			// callback
 			$callback = $request->getCallback();
 
 			if(!empty($callback))
@@ -96,19 +97,31 @@ class Socks implements HandlerInterface
 				call_user_func_array($callback, array($handle, $request));
 			}
 
+			// write header
+			$headers = $request->getHeaders();
 
-			// writer request
-			if(!fwrite($handle, $request->toString()))
+			fwrite($handle, $request->getLine() . Http::$newLine);
+
+			foreach($headers as $key => $value)
 			{
-				throw new HandlerException('Couldnt write to stream');
+				fwrite($handle, $key . ': ' . $value . Http::$newLine);
+			}
+
+			fwrite($handle, Http::$newLine);
+
+			// write body
+			$body = $request->getBody();
+
+			if(is_resource($body))
+			{
+				stream_copy_to_stream($body, $handle);
+			}
+			else if(!empty($body))
+			{
+				fwrite($handle, (string) $body);
 			}
 
 			fflush($handle);
-
-
-			// read response
-			$response = '';
-
 
 			// read header
 			$headers = array();
@@ -116,100 +129,38 @@ class Socks implements HandlerInterface
 			do
 			{
 				$header = trim(fgets($handle));
-				$pos    = strpos($header, ':');
 
-				if($pos !== false)
+				if(!empty($header))
 				{
-					$key   = substr($header, 0, $pos);
-					$value = substr($header, $pos + 2);
-
-					$headers[strtolower($key)] = $value;
+					$headers[] = $header;
 				}
-
-				$response.= $header . Http::$newLine;
 			}
 			while(!empty($header));
 
-			$response.= Http::$newLine;
+			// build response
+			$response = ResponseParser::buildResponseFromHeader($headers);
 
+			// create stream
+			$contentLength   = (integer) (string) $response->getHeader('Content-Length');
+			$chunkedEncoding = $response->getHeader('Transfer-Encoding') == 'chunked';
 
-			// read body
-			$contentLength    = isset($headers['content-length']) ? (integer) $headers['content-length'] : 0;
-			$transferEncoding = isset($headers['transfer-encoding']) ? $headers['transfer-encoding'] : null;
-			$body             = '';
-
-			// content-length
-			if($contentLength > 0)
+			if($request->getMethod() != 'HEAD')
 			{
-				$body = $this->readContent($handle, $contentLength);
+				$response->setBody(new SocksStream($handle, $contentLength, $chunkedEncoding));
 			}
-
-			// transfer encoding chunked
-			if($transferEncoding == 'chunked')
+			else
 			{
-				do
-				{
-					$size = hexdec(trim(fgets($handle)));
-					$body.= $this->readContent($handle, $size);
+				fclose($handle);
 
-					fgets($handle);
-				}
-				while($size > 0);
+				$response->setBody(null);
 			}
-
-			$response.= $body;
-
-
-			// close stream
-			fclose($handle);
-
-
-			$this->lastError = false;
-			$this->request   = $request;
-			$this->response  = $response;
 
 			return $response;
 		}
 		else
 		{
-			$this->lastError = $errstr;
-			$this->request   = false;
-			$this->response  = false;
-
-			return false;
+			throw new HandlerException(!empty($errstr) ? $errstr : 'Could not open socket');
 		}
-	}
-
-	public function getLastError()
-	{
-		return $this->lastError;
-	}
-
-	public function getRequest()
-	{
-		return $this->request;
-	}
-
-	public function getResponse()
-	{
-		return $this->response;
-	}
-
-	private function readContent($handle, $size)
-	{
-		$content = '';
-		$read    = 0;
-		$buffer  = $size;
-
-		do
-		{
-			$content.= stream_get_contents($handle, $buffer);
-			$read   += strlen($content);
-			$buffer  = $buffer - $read;
-		}
-		while($read < $size);
-
-		return $content;
 	}
 }
 

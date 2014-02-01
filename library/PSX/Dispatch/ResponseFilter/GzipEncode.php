@@ -26,6 +26,7 @@ namespace PSX\Dispatch\ResponseFilter;
 use PSX\Base;
 use PSX\Dispatch\ResponseFilterInterface;
 use PSX\Http\Response;
+use PSX\Http\Stream\StringStream;
 
 /**
  * GzipEncode
@@ -44,7 +45,7 @@ class GzipEncode implements ResponseFilterInterface
 		{
 			header('Content-Encoding: gzip');
 
-			$response->setBody(gzencode($response->getBody(), 9));
+			$response->setBody(new StringStream(gzencode((string) $response->getBody(), 9)));
 		}
 	}
 }

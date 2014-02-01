@@ -57,7 +57,7 @@ class Json
 	 */
 	public static function decode($value)
 	{
-		$data = json_decode($value, true);
+		$data = json_decode((string) $value, true);
 
 		switch(json_last_error())
 		{

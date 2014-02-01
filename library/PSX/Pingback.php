@@ -72,7 +72,7 @@ class Pingback
 		));
 		$response = $this->http->request($request);
 
-		if($response->getCode() >= 200 && $response->getCode() < 300)
+		if($response->getStatusCode() >= 200 && $response->getStatusCode() < 300)
 		{
 			$pingback = $response->getHeader('X-Pingback');
 
@@ -80,7 +80,7 @@ class Pingback
 			{
 				if(strpos($response->getHeader('Content-Type'), 'text/html') !== false)
 				{
-					$pingback = self::findTag($response->getBody());
+					$pingback = self::findTag((string) $response->getBody());
 				}
 			}
 
@@ -95,7 +95,7 @@ class Pingback
 		}
 		else
 		{
-			throw new Exception('Invalid response code ' . $response->getCode());
+			throw new Exception('Invalid response code ' . $response->getStatusCode());
 		}
 	}
 
@@ -107,9 +107,9 @@ class Pingback
 		), $body);
 		$response = $this->http->request($request);
 
-		if($response->getCode() >= 200 && $response->getCode() < 300)
+		if($response->getStatusCode() >= 200 && $response->getStatusCode() < 300)
 		{
-			$resp = $this->parseResponseBody($response->getBody());
+			$resp = $this->parseResponseBody((string) $response->getBody());
 
 			if(isset($resp['faultCode']))
 			{
@@ -131,7 +131,7 @@ class Pingback
 		}
 		else
 		{
-			throw new Exception('Invalid response code ' . $response->getCode());
+			throw new Exception('Invalid response code ' . $response->getStatusCode());
 		}
 	}
 

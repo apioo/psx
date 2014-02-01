@@ -23,9 +23,11 @@
 
 namespace PSX\Http\Handler;
 
+use Closure;
 use PSX\Http;
 use PSX\Http\HandlerInterface;
 use PSX\Http\Request;
+use PSX\Http\Response;
 
 /**
  * Callback
@@ -36,13 +38,9 @@ use PSX\Http\Request;
  */
 class Callback implements HandlerInterface
 {
-	private $callback;
+	protected $callback;
 
-	private $lastError;
-	private $request;
-	private $response;
-
-	public function __construct($callback)
+	public function __construct(Closure $callback)
 	{
 		$this->callback = $callback;
 	}
@@ -51,10 +49,16 @@ class Callback implements HandlerInterface
 	{
 		try
 		{
-			$this->request  = $request;
-			$this->response = call_user_func($this->callback, $this->request);
+			$response = call_user_func($this->callback, $request);
 
-			return $this->response;
+			if($response instanceof Response)
+			{
+				return $response;
+			}
+			else
+			{
+				return Response::convert((string) $response);
+			}
 		}
 		catch(\PHPUnit_Framework_Exception $e)
 		{
@@ -64,25 +68,5 @@ class Callback implements HandlerInterface
 		{
 			throw $e;
 		}
-		catch(\Exception $e)
-		{
-			$this->lastError = $e->getMessage();
-		}
-	}
-
-	public function getLastError()
-	{
-		return $this->lastError;
-	}
-
-	public function getRequest()
-	{
-		return $this->request;
-	}
-
-	public function getResponse()
-	{
-		return $this->response;
 	}
 }
-

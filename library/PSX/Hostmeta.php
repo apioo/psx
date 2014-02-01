@@ -74,7 +74,7 @@ class Hostmeta
 		$request->setFollowLocation(true);
 		$response = $http->request($request);
 
-		if($response->getCode() == 200)
+		if($response->getStatusCode() == 200)
 		{
 			$contentType = $response->getHeader('Content-Type');
 
@@ -90,7 +90,7 @@ class Hostmeta
 				strpos($contentType, 'application/xml') !== false)
 			{
 				$xrd = new Xrd();
-				$xrd->import(simplexml_load_string($response->getBody()));
+				$xrd->import(simplexml_load_string((string) $response->getBody()));
 
 				return $xrd;
 			}
@@ -101,7 +101,7 @@ class Hostmeta
 		}
 		else
 		{
-			throw new Exception('Invalid response code ' . $response->getCode() . ' from ' . strval($url));
+			throw new Exception('Invalid response code ' . $response->getStatusCode() . ' from ' . strval($url));
 		}
 	}
 }

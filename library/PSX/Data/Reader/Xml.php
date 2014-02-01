@@ -42,7 +42,7 @@ class Xml extends ReaderAbstract
 
 	public function read(Message $message)
 	{
-		$xml = new XmlParser($message->getBody());
+		$xml = new XmlParser((string) $message->getBody());
 
 		return $this->recToXml((array) $xml);
 	}

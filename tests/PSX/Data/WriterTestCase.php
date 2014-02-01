@@ -91,7 +91,7 @@ abstract class WriterTestCase extends \PHPUnit_Framework_TestCase
 		$target->setId('tag:example.org,2011:abc123');
 		$target->setDisplayName('Martin\'s Blog');
 
-		$activity = new ActivityStream\Activity();
+		$activity = new ActivityStream\ObjectType\Activity();
 		$activity->setPublished(new DateTime('2011-02-10T15:04:55Z'));
 		$activity->setActor($actor);
 		$activity->setVerb('post');

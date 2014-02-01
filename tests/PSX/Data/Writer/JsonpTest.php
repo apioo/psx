@@ -67,7 +67,7 @@ TEXT;
 		$actual = $writer->write($this->getComplexRecord());
 
 		$expect = <<<TEXT
-foo({"actor":{"displayName":"Martin Smith","id":"tag:example.org,2011:martin","objectType":"person","url":"http:\/\/example.org\/martin"},"object":{"id":"tag:example.org,2011:abc123\/xyz","url":"http:\/\/example.org\/blog\/2011\/02\/entry"},"target":{"displayName":"Martin's Blog","id":"tag:example.org,2011:abc123","objectType":"blog","url":"http:\/\/example.org\/blog\/"},"verb":"post","published":"2011-02-10T15:04:55+00:00"})
+foo({"verb":"post","actor":{"id":"tag:example.org,2011:martin","objectType":"person","displayName":"Martin Smith","url":"http:\/\/example.org\/martin"},"object":{"id":"tag:example.org,2011:abc123\/xyz","url":"http:\/\/example.org\/blog\/2011\/02\/entry"},"target":{"id":"tag:example.org,2011:abc123","objectType":"blog","displayName":"Martin's Blog","url":"http:\/\/example.org\/blog\/"},"published":"2011-02-10T15:04:55+00:00"})
 TEXT;
 
 		$this->assertEquals($expect, $actual);

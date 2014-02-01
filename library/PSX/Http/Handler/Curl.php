@@ -23,10 +23,15 @@
 
 namespace PSX\Http\Handler;
 
+use InvalidArgumentException;
 use PSX\Http;
 use PSX\Http\HandlerInterface;
+use PSX\Http\HandlerException;
 use PSX\Http\RedirectException;
 use PSX\Http\Request;
+use PSX\Http\Response;
+use PSX\Http\ResponseParser;
+use PSX\Http\Stream\TempStream;
 
 /**
  * The logic of following redirects is handeled in the PSX\Http class to avoid
@@ -43,13 +48,12 @@ use PSX\Http\Request;
  */
 class Curl implements HandlerInterface
 {
-	private $lastError;
-	private $request;
-	private $response;
+	protected $hasFollowLocation;
+	protected $caInfo;
+	protected $proxy;
 
-	private $hasFollowLocation;
-	private $caInfo;
-	private $proxy;
+	protected $header;
+	protected $body;
 
 	public function __construct()
 	{
@@ -80,51 +84,80 @@ class Curl implements HandlerInterface
 
 	public function request(Request $request, $count = 0)
 	{
+		$this->header = array();
+		$this->body   = fopen('php://temp', 'r+');
+
 		$handle = curl_init($request->getUrl()->__toString());
 
-		curl_setopt($handle, CURLOPT_HEADER, true);
-		curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($handle, CURLOPT_HEADER, false);
+		curl_setopt($handle, CURLOPT_RETURNTRANSFER, false);
+		curl_setopt($handle, CURLOPT_HEADERFUNCTION, array($this, 'header'));
+		curl_setopt($handle, CURLOPT_WRITEFUNCTION, array($this, 'write'));
 		curl_setopt($handle, CURLOPT_CUSTOMREQUEST, $request->getMethod());
-		curl_setopt($handle, CURLINFO_HEADER_OUT, true);
 
 		if(!empty($this->proxy))
 		{
 			curl_setopt($handle, CURLOPT_PROXY, $this->proxy);
 		}
 
-		$header = $request->getHeader();
+		// set header
+		$headers = $request->getHeaders();
 
-		if(!empty($header))
+		if(!empty($headers))
 		{
-			$rawHeader = array();
+			$rawHeaders = array();
+			$hasExpect  = false;
 
-			foreach($header as $k => $v)
+			foreach($headers as $key => $value)
 			{
-				$rawHeader[] = $k . ': ' . $v;
+				$rawHeaders[] = $key . ': ' . $value;
+
+				if(!$hasExpect && $key == 'expect')
+				{
+					$hasExpect = true;
+				}
 			}
 
-			curl_setopt($handle, CURLOPT_HTTPHEADER, $rawHeader);
-		}
-
-
-		$body = $request->getBody();
-
-		if(!empty($body))
-		{
-			curl_setopt($handle, CURLOPT_POSTFIELDS, $body);
-		}
-
-
-		if($request->getFollowLocation())
-		{
-			if($this->hasFollowLocation)
+			if(!$hasExpect)
 			{
-				curl_setopt($handle, CURLOPT_FOLLOWLOCATION, true);
-				curl_setopt($handle, CURLOPT_MAXREDIRS, $request->getMaxRedirects());
+				$rawHeaders[] = 'Expect:';
+			}
+
+			curl_setopt($handle, CURLOPT_HTTPHEADER, $rawHeaders);
+		}
+
+		// set body
+		if(in_array($request->getMethod(), ['POST', 'PUT', 'DELETE']))
+		{
+			$body = $request->getBody();
+
+			if(is_resource($body))
+			{
+				$length = (integer) (string) $request->getHeader('Content-Length');
+
+				if(empty($length))
+				{
+					throw new InvalidArgumentException('You need to specify a Content-Length header when sending content through a stream');
+				}
+
+				curl_setopt($handle, CURLOPT_PUT, true);
+				curl_setopt($handle, CURLOPT_INFILE, $body);
+				curl_setopt($handle, CURLOPT_INFILESIZE, $length);
+			}
+			else if(!empty($body))
+			{
+				curl_setopt($handle, CURLOPT_POSTFIELDS, (string) $body);
 			}
 		}
 
+		// set follow location
+		if($request->getFollowLocation() && $this->hasFollowLocation)
+		{
+			curl_setopt($handle, CURLOPT_FOLLOWLOCATION, true);
+			curl_setopt($handle, CURLOPT_MAXREDIRS, $request->getMaxRedirects());
+		}
 
+		// set ssl
 		if($request->isSSL())
 		{
 			if(!empty($this->caInfo))
@@ -139,7 +172,7 @@ class Curl implements HandlerInterface
 			}
 		}
 
-
+		// set timeout
 		$timeout = $request->getTimeout();
 
 		if(!empty($timeout))
@@ -147,7 +180,7 @@ class Curl implements HandlerInterface
 			curl_setopt($handle, CURLOPT_CONNECTTIMEOUT, $timeout);
 		}
 
-
+		// callback
 		$callback = $request->getCallback();
 
 		if(!empty($callback))
@@ -156,62 +189,62 @@ class Curl implements HandlerInterface
 		}
 
 
-		$response = curl_exec($handle);
+		curl_exec($handle);
 
 
-		if(!curl_errno($handle))
+		// if follow location is active modify the header since all headers from
+		// each redirection are included
+		if($request->getFollowLocation() && $this->hasFollowLocation)
 		{
-			$this->lastError = false;
-			$this->request   = curl_getinfo($handle, CURLINFO_HEADER_OUT);
-			$this->response  = $response;
+			$positions = array();
+			foreach($this->header as $key => $header)
+			{
+				if(substr($header, 0, 5) == 'HTTP/')
+				{
+					$positions[] = $key;
+				}
+			}
+
+			if(count($positions) > 1)
+			{
+				$this->header = array_slice($this->header, end($positions) - 1);
+			}
 		}
-		else
+
+
+		if(curl_errno($handle))
 		{
-			$this->lastError = curl_error($handle);
-			$this->request   = false;
-			$this->response  = false;
+			throw new HandlerException('Curl error: ' . curl_error($handle));
 		}
 
 		curl_close($handle);
 
+		// build response
+		rewind($this->body);
 
-		if($request->getFollowLocation() && $this->hasFollowLocation)
+		$response = ResponseParser::buildResponseFromHeader($this->header);
+
+		if($request->getMethod() != 'HEAD')
 		{
-			if($response === false)
-			{
-				// if the response is false max redirection is reached
-				throw new RedirectException('Max redirection reached');
-			}
-			else
-			{
-				// if follow location is true all headers from each request are
-				// included in the response but we only want return the last
-				// headers
-				$pos = strrpos($response, Http::$newLine . 'HTTP/');
-
-				if($pos !== false)
-				{
-					$response = substr($response, $pos + strlen(Http::$newLine));
-				}
-			}
+			$response->setBody(new TempStream($this->body));
 		}
-
+		else
+		{
+			$response->setBody(null);
+		}
 
 		return $response;
 	}
 
-	public function getLastError()
+	protected function header($curl, $data)
 	{
-		return $this->lastError;
+		$this->header[] = $data;
+
+		return strlen($data);
 	}
 
-	public function getRequest()
+	protected function write($curl, $data)
 	{
-		return $this->request;
-	}
-
-	public function getResponse()
-	{
-		return $this->response;
+		return fwrite($this->body, $data);
 	}
 }

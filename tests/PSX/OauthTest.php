@@ -70,24 +70,19 @@ class OauthTest extends \PHPUnit_Framework_TestCase
 
 	public function testRequestToken()
 	{
-		$url = new Url(self::URL_REQUEST_TOKEN);
-
+		$url      = new Url(self::URL_REQUEST_TOKEN);
 		$response = $this->oauth->requestToken($url, self::CONSUMER_KEY, self::CONSUMER_SECRET);
 
 		// if we have requested too much tokens we get an error that we
 		// only request 5 valid tokens but the request was correct
 		if($response !== false)
 		{
-			$this->assertEquals(self::TMP_TOKEN, $response->getToken(), $this->http->getResponse());
-
-			$this->assertEquals(self::TMP_TOKEN_SECRET, $response->getTokenSecret(), $this->http->getResponse());
+			$this->assertEquals(self::TMP_TOKEN, $response->getToken());
+			$this->assertEquals(self::TMP_TOKEN_SECRET, $response->getTokenSecret());
 		}
 		else
 		{
-			$lastError = $this->oauth->getLastError();
-			$lastError = !empty($lastError) ? $lastError : 'Couldnt get request token';
-
-			throw new Exception($lastError);
+			throw new Exception('Couldnt get request token');
 		}
 	}
 
@@ -96,24 +91,19 @@ class OauthTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testAccessToken()
 	{
-		$url = new Url(self::URL_ACCESS_TOKEN);
-
+		$url      = new Url(self::URL_ACCESS_TOKEN);
 		$response = $this->oauth->accessToken($url, self::CONSUMER_KEY, self::CONSUMER_SECRET, self::TMP_TOKEN, self::TMP_TOKEN_SECRET, self::VERIFIER);
 
 		// if we have requested too much tokens we get an error that we
 		// only request 5 valid tokens but the request was correct
 		if($response !== false)
 		{
-			$this->assertEquals(self::TOKEN, $response->getToken(), $this->http->getResponse());
-
-			$this->assertEquals(self::TOKEN_SECRET, $response->getTokenSecret(), $this->http->getResponse());
+			$this->assertEquals(self::TOKEN, $response->getToken());
+			$this->assertEquals(self::TOKEN_SECRET, $response->getTokenSecret());
 		}
 		else
 		{
-			$lastError = $this->oauth->getLastError();
-			$lastError = !empty($lastError) ? $lastError : 'Couldnt get access token';
-
-			throw new Exception($lastError);
+			throw new Exception('Couldnt get access token');
 		}
 	}
 
@@ -122,12 +112,9 @@ class OauthTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testApiRequest()
 	{
-		$url = new Url(self::URL_API);
-
+		$url     = new Url(self::URL_API);
 		$request = new GetRequest($url, array(
-
 			'Authorization' => $this->oauth->getAuthorizationHeader($url, self::CONSUMER_KEY, self::CONSUMER_SECRET, self::TOKEN, self::TOKEN_SECRET, 'HMAC-SHA1', 'GET'),
-
 		));
 
 		$response = $this->http->request($request);

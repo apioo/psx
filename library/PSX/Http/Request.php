@@ -61,7 +61,7 @@ class Request extends Message
 
 		$this->setUrl($url);
 		$this->setMethod($method);
-		$this->setScheme($scheme);
+		$this->setProtocolVersion($scheme);
 
 		if($url->getScheme() == 'https')
 		{
@@ -76,11 +76,21 @@ class Request extends Message
 	 * @param PSX\Url $url
 	 * @return void
 	 */
-	public function setUrl(Url $url)
+	public function setUrl($url)
 	{
-		$this->url = $url;
+		$this->url = $url instanceof Url ? $url : new Url($url);
 
-		$this->addHeader('Host', $url->getHost());
+		$this->setHeader('Host', $this->url->getHost());
+	}
+
+	/**
+	 * Returns the request url
+	 *
+	 * @return PSX\Url
+	 */
+	public function getUrl()
+	{
+		return $this->url;
 	}
 
 	/**
@@ -95,14 +105,34 @@ class Request extends Message
 	}
 
 	/**
+	 * Returns the request method
+	 *
+	 * @return string
+	 */
+	public function getMethod()
+	{
+		return $this->method;
+	}
+
+	/**
 	 * Sets the request scheme
 	 *
 	 * @param string $scheme
 	 * @return void
 	 */
-	public function setScheme($scheme)
+	public function setProtocolVersion($scheme)
 	{
 		$this->scheme = $scheme;
+	}
+
+	/**
+	 * Returns the http scheme
+	 *
+	 * @return string
+	 */
+	public function getProtocolVersion()
+	{
+		return $this->scheme;
 	}
 
 	/**
@@ -117,6 +147,16 @@ class Request extends Message
 	}
 
 	/**
+	 * Returns whether the request is made through ssl
+	 *
+	 * @return boolean
+	 */
+	public function isSSL()
+	{
+		return $this->ssl;
+	}
+
+	/**
 	 * Sets the timeout in seconds
 	 *
 	 * @param integer $timeout
@@ -125,6 +165,16 @@ class Request extends Message
 	public function setTimeout($timeout)
 	{
 		$this->timeout = (integer) $timeout;
+	}
+
+	/**
+	 * Returns the timeout in seconds
+	 *
+	 * @return integer
+	 */
+	public function getTimeout()
+	{
+		return $this->timeout;
 	}
 
 	/**
@@ -138,56 +188,6 @@ class Request extends Message
 	public function setCallback($callback)
 	{
 		$this->callback = $callback;
-	}
-
-	/**
-	 * Returns the request url
-	 *
-	 * @return PSX\Url
-	 */
-	public function getUrl()
-	{
-		return $this->url;
-	}
-
-	/**
-	 * Returns the request method
-	 *
-	 * @return string
-	 */
-	public function getMethod()
-	{
-		return $this->method;
-	}
-
-	/**
-	 * Returns the http scheme
-	 *
-	 * @return string
-	 */
-	public function getScheme()
-	{
-		return $this->scheme;
-	}
-
-	/**
-	 * Returns whether the request is made through ssl
-	 *
-	 * @return boolean
-	 */
-	public function isSSL()
-	{
-		return $this->ssl;
-	}
-
-	/**
-	 * Returns the timeout in seconds
-	 *
-	 * @return integer
-	 */
-	public function getTimeout()
-	{
-		return $this->timeout;
 	}
 
 	/**
@@ -210,19 +210,7 @@ class Request extends Message
 		$path = $this->getUrl()->getPath();
 		$path = empty($path) ? '/' : $path;
 
-		return $this->getMethod() . ' ' . $path . ' ' . $this->getScheme();
-	}
-
-	/**
-	 * Adds an http header to the request. Overwrites existing header
-	 *
-	 * @param string $key
-	 * @param string $value
-	 * @return void
-	 */
-	public function addHeader($key, $value)
-	{
-		$this->header[strtolower($key)] = $value;
+		return $this->getMethod() . ' ' . $path . ' ' . $this->getProtocolVersion();
 	}
 
 	/**
@@ -267,9 +255,9 @@ class Request extends Message
 	{
 		$request = $this->getLine() . Http::$newLine;
 
-		foreach($this->header as $k => $v)
+		foreach($this->headers as $key => $value)
 		{
-			$request.= $k . ': ' . $v . Http::$newLine;
+			$request.= $key . ': ' . $value . Http::$newLine;
 		}
 
 		$request.= Http::$newLine;
@@ -281,21 +269,6 @@ class Request extends Message
 	public function __toString()
 	{
 		return $this->toString();
-	}
-
-	/**
-	 * Merges two header arrays
-	 *
-	 * @param array $defaultHeader
-	 * @param array $customHeader
-	 * @return array
-	 */
-	public static function mergeHeader(array $defaultHeader, array $customHeader)
-	{
-		$customHeader  = array_change_key_case($customHeader);
-		$defaultHeader = array_change_key_case($defaultHeader);
-
-		return array_merge($defaultHeader, $customHeader);
 	}
 }
 

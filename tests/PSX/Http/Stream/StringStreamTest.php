@@ -21,49 +21,19 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Http;
-
-use PSX\Http;
-use PSX\HttpTest;
-use PSX\Url;
+namespace PSX\Http\Stream;
 
 /**
- * GetRequestTest
+ * StringStreamTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class GetRequestTest extends \PHPUnit_Framework_TestCase
+class StringStreamTest extends StreamTestCase
 {
-	protected function setUp()
+	protected function getStream()
 	{
-		$this->markTestIncomplete('TODO test must not connect to a remote domain');
-
-		$this->http = new Http();
-	}
-
-	protected function tearDown()
-	{
-	}
-
-	public function testGetRequest()
-	{
-		$request  = new GetRequest(new Url(HttpTest::URL . '/get'));
-		$response = $this->http->request($request);
-
-		$this->assertEquals('HTTP/1.1', $response->getScheme());
-		$this->assertEquals(200, $response->getCode());
-		$this->assertEquals('OK', $response->getMessage());
-		$this->assertEquals('SUCCESS', $response->getBody());
-	}
-
-	/**
-	 * @expectedException \PSX\Exception
-	 */
-	public function testWrongUrl()
-	{
-		new GetRequest('foobar');
+		return new StringStream('foobar');
 	}
 }
-

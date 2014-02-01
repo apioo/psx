@@ -45,13 +45,6 @@ class PostRequest extends Request
 	{
 		$url    = $url instanceof Url ? $url : new Url((string) $url);
 		$method = 'POST';
-		$header = self::mergeHeader(array(
-
-			'Host'   => $url->getHost(),
-			'Expect' => '',
-
-		), $header);
-
 
 		$isFormUrlencoded = false;
 
@@ -62,26 +55,26 @@ class PostRequest extends Request
 			$body = http_build_query($body, '', '&');
 		}
 
-
 		parent::__construct($url, $method, $header, $body);
 
+		if(!$this->hasHeader('Host'))
+		{
+			$this->setHeader('Host', $url->getHost());
+		}
 
 		if($isFormUrlencoded)
 		{
-			$this->addHeader('Content-Type', 'application/x-www-form-urlencoded');
+			$this->setHeader('Content-Type', 'application/x-www-form-urlencoded');
 		}
 	}
 
-	public function setBody($body)
+	public function setBody($body = null)
 	{
-		$body = (string) $body;
-		$len  = strlen($body);
+		parent::setBody($body);
 
-		if($len > 0)
+		if(is_string($body))
 		{
-			$this->addHeader('Content-Length', $len);
-
-			$this->body = $body;
+			$this->setHeader('Content-Length', strlen($body));
 		}
 	}
 }
