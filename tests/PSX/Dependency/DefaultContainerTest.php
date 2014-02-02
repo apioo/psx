@@ -47,6 +47,7 @@ class DefaultContainerTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertInstanceOf('PSX\Base', $container->get('base'));
 		$this->assertInstanceOf('PSX\Config', $container->get('config'));
+		$this->assertInstanceOf('PSX\Dispatch\SenderInterface', $container->get('dispatch_sender'));
 		$this->assertInstanceOf('PSX\Dispatch', $container->get('dispatch'));
 		$this->assertInstanceOf('PSX\Http', $container->get('http'));
 		$this->assertInstanceOf('PSX\Input\Cookie', $container->get('input_cookie'));
@@ -54,11 +55,15 @@ class DefaultContainerTest extends \PHPUnit_Framework_TestCase
 		$this->assertInstanceOf('PSX\Input\Get', $container->get('input_get'));
 		$this->assertInstanceOf('PSX\Input\Post', $container->get('input_post'));
 		$this->assertInstanceOf('PSX\Input\Request', $container->get('input_request'));
+		$this->assertInstanceOf('PSX\Loader\LocationFinderInterface', $container->get('loader_location_finder'));
+		$this->assertInstanceOf('PSX\Loader\CallbackResolverInterface', $container->get('loader_callback_resolver'));
 		$this->assertInstanceOf('PSX\Loader', $container->get('loader'));
 		//$this->assertInstanceOf('PSX\Session', $container->get('session'));
 		//$this->assertInstanceOf('PSX\Sql', $container->get('sql'));
 		$this->assertInstanceOf('PSX\TemplateInterface', $container->get('template'));
 		$this->assertInstanceOf('PSX\Validate', $container->get('validate'));
+		$this->assertInstanceOf('PSX\Dispatch\RequestFactoryInterface', $container->get('request_factory'));
+		$this->assertInstanceOf('PSX\Dispatch\ResponseFactoryInterface', $container->get('response_factory'));
 		$this->assertInstanceOf('PSX\Data\ReaderFactory', $container->get('reader_factory'));
 		$this->assertInstanceOf('PSX\Data\WriterFactory', $container->get('writer_factory'));
 		//$this->assertInstanceOf('PSX\Handler\HandlerManagerInterface', $container->get('database_manager'));
