@@ -25,7 +25,7 @@ namespace PSX\Payment\Paypal;
 
 use PSX\Payment\Paypal;
 use PSX\Payment\Paypal\Data\Payment;
-use PSX\ModuleAbstract;
+use PSX\ControllerAbstract;
 use PSX\Http;
 use PSX\Exception;
 use PSX\Data\RecordStore;
@@ -37,7 +37,7 @@ use PSX\Data\RecordStore;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-abstract class CallbackAbstract extends ModuleAbstract
+abstract class CallbackAbstract extends ControllerAbstract
 {
 	protected $paypal;
 

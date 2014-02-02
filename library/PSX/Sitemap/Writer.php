@@ -25,7 +25,6 @@ namespace PSX\Sitemap;
 
 use DateTime;
 use PSX\Exception;
-use PSX\ModuleAbstract;
 use PSX\Url;
 use PSX\Xml\WriterInterface;
 use XMLWriter;

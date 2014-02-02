@@ -24,7 +24,6 @@
 namespace PSX\Opensearch;
 
 use PSX\Exception;
-use PSX\ModuleAbstract;
 use PSX\Xml\WriterInterface;
 use XMLWriter;
 

@@ -63,7 +63,7 @@ class Loader implements LoaderInterface
 	 *
 	 * @param PSX\Http\Request $request
 	 * @param PSX\Http\Response $response
-	 * @return PSX\ModuleAbstract
+	 * @return PSX\ControllerAbstract
 	 */
 	public function load(Request $request, Response $response)
 	{
