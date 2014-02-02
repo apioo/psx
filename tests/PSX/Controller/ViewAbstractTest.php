@@ -52,13 +52,12 @@ class ViewAbstractTest extends ControllerTestCase
 		$response   = simplexml_load_string((string) $body);
 
 		$render = (float) $response->render;
-		$base   = getContainer()->get('base');
 		$config = getContainer()->get('config');
 
 		$this->assertEquals('bar', $response->foo);
 		$this->assertTrue(!empty($response->self));
 		$this->assertEquals($config['psx_url'] . '/' . $config['psx_dispatch'], $response->url);
-		$this->assertEquals($base->getPath(), $response->base);
+		$this->assertEquals(parse_url($config['psx_url'], PHP_URL_PATH), $response->base);
 		$this->assertTrue($render > 0);
 		$this->assertEquals('tests/PSX/Controller/Foo/Resource', $response->location);
 	}
@@ -74,13 +73,12 @@ class ViewAbstractTest extends ControllerTestCase
 		$response   = simplexml_load_string((string) $body);
 
 		$render = (float) $response->render;
-		$base   = getContainer()->get('base');
 		$config = getContainer()->get('config');
 
 		$this->assertEquals('bar', $response->foo);
 		$this->assertTrue(!empty($response->self));
 		$this->assertEquals($config['psx_url'] . '/' . $config['psx_dispatch'], $response->url);
-		$this->assertEquals($base->getPath(), $response->base);
+		$this->assertEquals(parse_url($config['psx_url'], PHP_URL_PATH), $response->base);
 		$this->assertTrue($render > 0);
 		$this->assertEquals('tests/PSX/Controller/Foo/Resource', $response->location);
 	}
@@ -96,13 +94,12 @@ class ViewAbstractTest extends ControllerTestCase
 		$response   = simplexml_load_string((string) $body);
 
 		$render = (float) $response->render;
-		$base   = getContainer()->get('base');
 		$config = getContainer()->get('config');
 
 		$this->assertEquals('bar', $response->foo);
 		$this->assertTrue(!empty($response->self));
 		$this->assertEquals($config['psx_url'] . '/' . $config['psx_dispatch'], $response->url);
-		$this->assertEquals($base->getPath(), $response->base);
+		$this->assertEquals(parse_url($config['psx_url'], PHP_URL_PATH), $response->base);
 		$this->assertTrue($render > 0);
 		$this->assertEquals('tests/PSX/Controller/Foo/Resource', $response->location);
 	}
