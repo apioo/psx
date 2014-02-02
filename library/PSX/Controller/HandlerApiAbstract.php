@@ -32,11 +32,10 @@ use PSX\Data\Record\Mapper;
 use PSX\Data\Record\Mapper\Rule;
 use PSX\Data\RecordInterface;
 use PSX\Data\WriterInterface;
-use PSX\Module\ApiAbstract;
 use PSX\Util\Uuid;
 use PSX\Filter\FilterDefinition;
-use PSX\Module\HandlerManipulationInterface;
-use PSX\Module\HandlerQueryInterface;
+use PSX\Handler\HandlerManipulationInterface;
+use PSX\Handler\HandlerQueryInterface;
 
 /**
  * This module simplifies creating an API from an handler
