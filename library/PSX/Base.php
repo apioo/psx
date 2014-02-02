@@ -39,108 +39,13 @@ class Base
 {
 	const VERSION = '0.8.3';
 
-	/**
-	 * The current request method
-	 *
-	 * @var string
-	 */
-	private static $requestMethod;
-
-	/**
-	 * Indicates whether the method was overwritten or not
-	 *
-	 * @var boolean
-	 */
-	private static $methodOverride = false;
-
-	/**
-	 * Caches the request header if the getRequestHeader method is called
-	 *
-	 * @var array
-	 */
-	private static $headers;
-
-	/**
-	 * Contains the raw request
-	 *
-	 * @var string
-	 */
-	private static $rawInput;
-
-	/**
-	 * Contains the response code
-	 *
-	 * @var string
-	 */
-	private static $responseCode = null;
-
-	/**
-	 * Contains the absolute url to the script using the psx_url from the
-	 * configuration
-	 *
-	 * @var string
-	 */
-	protected $self;
-
-	/**
-	 * The host of the value of psx_url
-	 *
-	 * @var string
-	 */
 	protected $host;
-
-	/**
-	 * The path of the value of psx_url
-	 *
-	 * @var string
-	 */
-	protected $path;
-
-	/**
-	 * Contains the current http request object
-	 *
-	 * @var PSX\Http\Request
-	 */
-	protected $request;
-
 	protected $config;
 
 	public function __construct(Config $config)
 	{
-		// set config
 		$this->config = $config;
-
-		// assign the host
-		$parts = parse_url($this->config['psx_url']);
-
-		if($parts !== false && isset($parts['scheme']) && isset($parts['host']))
-		{
-			$port = !empty($parts['port']) ? ':' . $parts['port'] : '';
-			$path = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
-
-			$this->self = $parts['scheme'] . '://' . $parts['host'] . $port . $path;
-			$this->host = $parts['host'];
-			$this->path = isset($parts['path']) ? $parts['path'] : '';
-		}
-		else
-		{
-			throw new UnexpectedValueException('Invalid PSX url');
-		}
-	}
-
-	public function getConfig()
-	{
-		return $this->config;
-	}
-
-	/**
-	 * Returns the absolute url of the current requested url
-	 *
-	 * @return string
-	 */
-	public function getSelf()
-	{
-		return $this->self;
+		$this->host   = parse_url($this->config['psx_url'], PHP_URL_HOST);
 	}
 
 	/**
@@ -151,16 +56,6 @@ class Base
 	public function getHost()
 	{
 		return $this->host;
-	}
-
-	/**
-	 * Returns the path of the url
-	 *
-	 * @return string
-	 */
-	public function getPath()
-	{
-		return $this->path;
 	}
 
 	/**
