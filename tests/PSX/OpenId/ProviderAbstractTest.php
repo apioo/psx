@@ -47,7 +47,6 @@ class ProviderAbstractTest extends \PHPUnit_Framework_TestCase
 	public function testGetExtension()
 	{
 		$data = array(
-
 			'openid_op_endpoint'    => 'http://localhost',
 			'openid_ns_ax'          => 'http://openid.net/srv/ax/1.0',
 			'openid_ax_mode'        => 'fetch_response',
@@ -59,25 +58,20 @@ class ProviderAbstractTest extends \PHPUnit_Framework_TestCase
 			'openid_ay_value_fname' => 'Foo Bar',
 			'foo'                   => 'bar',
 			'test'                  => 'test',
-
 		);
 
 		// ns http://openid.net/srv/ax/1.0
 		$this->assertEquals(array(
-
 			'mode'        => 'fetch_response',
 			'type_fname'  => 'http://example.com/schema/fullname',
 			'value_fname' => 'John Smith',
-
 		), ProviderAbstract::getExtension($data, 'http://openid.net/srv/ax/1.0'));
 
 		// ns http://openid.net/srv/ax/1.1
 		$this->assertEquals(array(
-
 			'mode'        => 'fetch_response',
 			'type_fname'  => 'http://example.com/schema/fullname',
 			'value_fname' => 'Foo Bar',
-
 		), ProviderAbstract::getExtension($data, 'http://openid.net/srv/ax/1.1'));
 	}
 

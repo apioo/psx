@@ -97,6 +97,7 @@ class SocksStream
 
 	public function write($string)
 	{
+		return false;
 	}
 
 	public function isReadable()

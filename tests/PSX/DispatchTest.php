@@ -24,7 +24,10 @@
 namespace PSX;
 
 use PSX\Dispatch;
+use PSX\Dispatch\VoidSender;
 use PSX\Http\Request;
+use PSX\Http\Response;
+use PSX\Http\Stream\StringStream;
 use PSX\Loader;
 use PSX\Loader\Location;
 use PSX\Loader\LocationFinder\CallbackMethod;
@@ -51,50 +54,42 @@ class DispatchTest extends \PHPUnit_Framework_TestCase
 
 	public function testRoute()
 	{
-		$loader = new Loader(getContainer());
-		$loader->setLocationFinder(new CallbackMethod(function($path){
+		$locationFinder = new CallbackMethod(function($method, $path){
 
-			return new Location(md5($path), $path, new ReflectionClass('PSX\DummyModule'));
+			return new Location(md5($path), $path, 'PSX\Dispatch\DummyController');
 
-		}));
+		});
 
-		$dispatch = new Dispatch(getContainer()->get('config'), $loader);
-		$response = $dispatch->route(new Request(new Url('http://localhost.com'), 'GET'));
+		$loader   = new Loader($locationFinder, getContainer()->get('loader_callback_resolver'));
+		$dispatch = new Dispatch(getContainer()->get('config'), $loader, new VoidSender());
+		$request  = new Request(new Url('http://localhost.com'), 'GET');
+		$response = new Response();
+		$response->setBody(new StringStream());
 
-		$this->assertEquals('foo', $response->getBody());
+		$dispatch->route($request, $response);
+
+		$this->assertEquals('foo', (string) $response->getBody());
 	}
 
 	public function testRouteException()
 	{
-		$loader = new Loader(getContainer());
-		$loader->setLocationFinder(new CallbackMethod(function($path){
+		$locationFinder = new CallbackMethod(function($method, $path){
 
-			return new Location(md5($path), $path, new ReflectionClass('PSX\ExceptionModule'));
+			return new Location(md5($path), $path, 'PSX\Dispatch\ExceptionController');
 
-		}));
+		});
 
 		// set debug to false so we get only the message and not the trace
 		getContainer()->get('config')->set('psx_debug', false);
 
-		$dispatch = new Dispatch(getContainer()->get('config'), $loader);
-		$response = $dispatch->route(new Request(new Url('http://localhost.com'), 'GET'));
+		$loader   = new Loader($locationFinder, getContainer()->get('loader_callback_resolver'));
+		$dispatch = new Dispatch(getContainer()->get('config'), $loader, new VoidSender());
+		$request  = new Request(new Url('http://localhost.com'), 'GET');
+		$response = new Response();
+		$response->setBody(new StringStream());
 
-		$this->assertEquals('The server encountered an internal error and was unable to complete your request.' . "\n", $response->getBody());
-	}
-}
+		$dispatch->route($request, $response);
 
-class DummyModule extends ModuleAbstract
-{
-	public function onLoad()
-	{
-		echo 'foo';
-	}
-}
-
-class ExceptionModule extends ModuleAbstract
-{
-	public function onLoad()
-	{
-		throw new \Exception('foobar');
+		$this->assertEquals('The server encountered an internal error and was unable to complete your request.' . "\n", (string) $response->getBody());
 	}
 }

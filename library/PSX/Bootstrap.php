@@ -43,13 +43,6 @@ class Bootstrap
 			// define benchmark
 			$GLOBALS['psx_benchmark'] = microtime(true);
 
-			// setting default headers
-			header('X-Powered-By: psx');
-			header('Expires: Thu, 09 Oct 1986 01:00:00 GMT');
-			header('Last-Modified: Thu, 09 Oct 1986 01:00:00 GMT');
-			header('Cache-Control: no-store, no-cache, must-revalidate');
-			header('Pragma: no-cache');
-
 			// define paths
 			define('PSX_PATH_CACHE', $config['psx_path_cache']);
 			define('PSX_PATH_LIBRARY', $config['psx_path_library']);

@@ -25,9 +25,10 @@ namespace PSX;
 
 use ReflectionClass;
 use PSX\Http\Request;
-use PSX\Url;
+use PSX\Http\Response;
 use PSX\Loader\Location;
 use PSX\Loader\LocationFinder\CallbackMethod;
+use PSX\Url;
 
 /**
  * LoaderTest
@@ -40,31 +41,33 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 {
 	public function testLoadIndexCall()
 	{
-		$testCase = $this;
+		$testCase       = $this;
+		$locationFinder = new CallbackMethod(function($method, $path) use ($testCase){
 
-		$loader = new Loader(getContainer());
-		$loader->setLocationFinder(new CallbackMethod(function($path) use ($testCase){
+			$testCase->assertEquals('/foobar', $path);
 
-			$testCase->assertEquals('foobar', $path);
+			return new Location(md5($path), '/', 'PSX\Loader\ProbeController');
 
-			return new Location(md5($path), '/', new ReflectionClass('PSX\Loader\ProbeModule'));
+		});
 
-		}));
-
-		$path    = '/foobar';
-		$request = new Request(new Url('http://127.0.0.1' . $path), 'GET');
-		$module  = $loader->load($path, $request);
+		$loader   = new Loader($locationFinder, getContainer()->get('loader_callback_resolver'));
+		$request  = new Request(new Url('http://127.0.0.1/foobar'), 'GET');
+		$response = new Response();
+		$module   = $loader->load($request, $response);
 
 		$expect = array(
-			'PSX\Loader\ProbeModule::__construct',
-			'PSX\Loader\ProbeModule::getStage',
-			'PSX\Loader\ProbeModule::getRequestFilter',
-			'PSX\Loader\ProbeModule::getStage',
-			'PSX\Loader\ProbeModule::onLoad',
-			'PSX\Loader\ProbeModule::getStage',
-			'PSX\Loader\ProbeModule::onGet',
-			'PSX\Loader\ProbeModule::getStage',
-			'PSX\Loader\ProbeModule::doIndex',
+			'PSX\Loader\ProbeController::__construct',
+			'PSX\Loader\ProbeController::getStage',
+			'PSX\Loader\ProbeController::getRequestFilter',
+			'PSX\Loader\ProbeController::getStage',
+			'PSX\Loader\ProbeController::onLoad',
+			'PSX\Loader\ProbeController::getStage',
+			'PSX\Loader\ProbeController::onGet',
+			'PSX\Loader\ProbeController::getStage',
+			'PSX\Loader\ProbeController::doIndex',
+			'PSX\Loader\ProbeController::processResponse',
+			'PSX\Loader\ProbeController::getStage',
+			'PSX\Loader\ProbeController::getResponseFilter',
 		);
 
 		$this->assertEquals($expect, $module->getMethodsCalled());
@@ -72,31 +75,33 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 
 	public function testLoadDetailCall()
 	{
-		$testCase = $this;
+		$testCase       = $this;
+		$locationFinder = new CallbackMethod(function($method, $path) use ($testCase){
 
-		$loader = new Loader(getContainer());
-		$loader->setLocationFinder(new CallbackMethod(function($path) use ($testCase){
+			$testCase->assertEquals('/foobar/detail/12', $path);
 
-			$testCase->assertEquals('foobar/detail/12', $path);
+			return new Location(md5($path), '/detail/12', 'PSX\Loader\ProbeController');
 
-			return new Location(md5($path), '/detail/12', new ReflectionClass('PSX\Loader\ProbeModule'));
+		});
 
-		}));
-
-		$path    = '/foobar/detail/12';
-		$request = new Request(new Url('http://127.0.0.1' . $path), 'GET');
-		$module  = $loader->load($path, $request);
+		$loader   = new Loader($locationFinder, getContainer()->get('loader_callback_resolver'));
+		$request  = new Request(new Url('http://127.0.0.1/foobar/detail/12'), 'GET');
+		$response = new Response();
+		$module   = $loader->load($request, $response);
 
 		$expect = array(
-			'PSX\Loader\ProbeModule::__construct',
-			'PSX\Loader\ProbeModule::getStage',
-			'PSX\Loader\ProbeModule::getRequestFilter',
-			'PSX\Loader\ProbeModule::getStage',
-			'PSX\Loader\ProbeModule::onLoad',
-			'PSX\Loader\ProbeModule::getStage',
-			'PSX\Loader\ProbeModule::onGet',
-			'PSX\Loader\ProbeModule::getStage',
-			'PSX\Loader\ProbeModule::doShowDetails',
+			'PSX\Loader\ProbeController::__construct',
+			'PSX\Loader\ProbeController::getStage',
+			'PSX\Loader\ProbeController::getRequestFilter',
+			'PSX\Loader\ProbeController::getStage',
+			'PSX\Loader\ProbeController::onLoad',
+			'PSX\Loader\ProbeController::getStage',
+			'PSX\Loader\ProbeController::onGet',
+			'PSX\Loader\ProbeController::getStage',
+			'PSX\Loader\ProbeController::doShowDetails',
+			'PSX\Loader\ProbeController::processResponse',
+			'PSX\Loader\ProbeController::getStage',
+			'PSX\Loader\ProbeController::getResponseFilter',
 		);
 
 		$this->assertEquals($expect, $module->getMethodsCalled());
@@ -105,31 +110,33 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 
 	public function testLoadInsertCall()
 	{
-		$testCase = $this;
+		$testCase       = $this;
+		$locationFinder = new CallbackMethod(function($method, $path) use ($testCase){
 
-		$loader = new Loader(getContainer());
-		$loader->setLocationFinder(new CallbackMethod(function($path) use ($testCase){
+			$testCase->assertEquals('/foobar', $path);
 
-			$testCase->assertEquals('foobar', $path);
+			return new Location(md5($path), '/', 'PSX\Loader\ProbeController');
 
-			return new Location(md5($path), '/', new ReflectionClass('PSX\Loader\ProbeModule'));
+		});
 
-		}));
-
-		$path    = '/foobar';
-		$request = new Request(new Url('http://127.0.0.1' . $path), 'POST');
-		$module  = $loader->load($path, $request);
+		$loader   = new Loader($locationFinder, getContainer()->get('loader_callback_resolver'));
+		$request  = new Request(new Url('http://127.0.0.1/foobar'), 'POST');
+		$response = new Response();
+		$module   = $loader->load($request, $response);
 
 		$expect = array(
-			'PSX\Loader\ProbeModule::__construct',
-			'PSX\Loader\ProbeModule::getStage',
-			'PSX\Loader\ProbeModule::getRequestFilter',
-			'PSX\Loader\ProbeModule::getStage',
-			'PSX\Loader\ProbeModule::onLoad',
-			'PSX\Loader\ProbeModule::getStage',
-			'PSX\Loader\ProbeModule::onGet',
-			'PSX\Loader\ProbeModule::getStage',
-			'PSX\Loader\ProbeModule::doInsert',
+			'PSX\Loader\ProbeController::__construct',
+			'PSX\Loader\ProbeController::getStage',
+			'PSX\Loader\ProbeController::getRequestFilter',
+			'PSX\Loader\ProbeController::getStage',
+			'PSX\Loader\ProbeController::onLoad',
+			'PSX\Loader\ProbeController::getStage',
+			'PSX\Loader\ProbeController::onPost',
+			'PSX\Loader\ProbeController::getStage',
+			'PSX\Loader\ProbeController::doInsert',
+			'PSX\Loader\ProbeController::processResponse',
+			'PSX\Loader\ProbeController::getStage',
+			'PSX\Loader\ProbeController::getResponseFilter',
 		);
 
 		$this->assertEquals($expect, $module->getMethodsCalled());
@@ -137,31 +144,33 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 
 	public function testLoadInsertNestedCall()
 	{
-		$testCase = $this;
+		$testCase       = $this;
+		$locationFinder = new CallbackMethod(function($method, $path) use ($testCase){
 
-		$loader = new Loader(getContainer());
-		$loader->setLocationFinder(new CallbackMethod(function($path) use ($testCase){
+			$testCase->assertEquals('/foobar/foo', $path);
 
-			$testCase->assertEquals('foobar/foo', $path);
+			return new Location(md5($path), '/foo', 'PSX\Loader\ProbeController');
 
-			return new Location(md5($path), '/foo', new ReflectionClass('PSX\Loader\ProbeModule'));
+		});
 
-		}));
-
-		$path    = '/foobar/foo';
-		$request = new Request(new Url('http://127.0.0.1' . $path), 'POST');
-		$module  = $loader->load($path, $request);
+		$loader   = new Loader($locationFinder, getContainer()->get('loader_callback_resolver'));
+		$request  = new Request(new Url('http://127.0.0.1/foobar/foo'), 'POST');
+		$response = new Response();
+		$module   = $loader->load($request, $response);
 
 		$expect = array(
-			'PSX\Loader\ProbeModule::__construct',
-			'PSX\Loader\ProbeModule::getStage',
-			'PSX\Loader\ProbeModule::getRequestFilter',
-			'PSX\Loader\ProbeModule::getStage',
-			'PSX\Loader\ProbeModule::onLoad',
-			'PSX\Loader\ProbeModule::getStage',
-			'PSX\Loader\ProbeModule::onGet',
-			'PSX\Loader\ProbeModule::getStage',
-			'PSX\Loader\ProbeModule::doInsertNested',
+			'PSX\Loader\ProbeController::__construct',
+			'PSX\Loader\ProbeController::getStage',
+			'PSX\Loader\ProbeController::getRequestFilter',
+			'PSX\Loader\ProbeController::getStage',
+			'PSX\Loader\ProbeController::onLoad',
+			'PSX\Loader\ProbeController::getStage',
+			'PSX\Loader\ProbeController::onPost',
+			'PSX\Loader\ProbeController::getStage',
+			'PSX\Loader\ProbeController::doInsertNested',
+			'PSX\Loader\ProbeController::processResponse',
+			'PSX\Loader\ProbeController::getStage',
+			'PSX\Loader\ProbeController::getResponseFilter',
 		);
 
 		$this->assertEquals($expect, $module->getMethodsCalled());
@@ -169,31 +178,33 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 
 	public function testLoadUpdateCall()
 	{
-		$testCase = $this;
+		$testCase       = $this;
+		$locationFinder = new CallbackMethod(function($method, $path) use ($testCase){
 
-		$loader = new Loader(getContainer());
-		$loader->setLocationFinder(new CallbackMethod(function($path) use ($testCase){
+			$testCase->assertEquals('/foobar', $path);
 
-			$testCase->assertEquals('foobar', $path);
+			return new Location(md5($path), '/', 'PSX\Loader\ProbeController');
 
-			return new Location(md5($path), '/', new ReflectionClass('PSX\Loader\ProbeModule'));
+		});
 
-		}));
-
-		$path    = '/foobar';
-		$request = new Request(new Url('http://127.0.0.1' . $path), 'PUT');
-		$module  = $loader->load($path, $request);
+		$loader   = new Loader($locationFinder, getContainer()->get('loader_callback_resolver'));
+		$request  = new Request(new Url('http://127.0.0.1/foobar'), 'PUT');
+		$response = new Response();
+		$module   = $loader->load($request, $response);
 
 		$expect = array(
-			'PSX\Loader\ProbeModule::__construct',
-			'PSX\Loader\ProbeModule::getStage',
-			'PSX\Loader\ProbeModule::getRequestFilter',
-			'PSX\Loader\ProbeModule::getStage',
-			'PSX\Loader\ProbeModule::onLoad',
-			'PSX\Loader\ProbeModule::getStage',
-			'PSX\Loader\ProbeModule::onGet',
-			'PSX\Loader\ProbeModule::getStage',
-			'PSX\Loader\ProbeModule::doUpdate',
+			'PSX\Loader\ProbeController::__construct',
+			'PSX\Loader\ProbeController::getStage',
+			'PSX\Loader\ProbeController::getRequestFilter',
+			'PSX\Loader\ProbeController::getStage',
+			'PSX\Loader\ProbeController::onLoad',
+			'PSX\Loader\ProbeController::getStage',
+			'PSX\Loader\ProbeController::onPut',
+			'PSX\Loader\ProbeController::getStage',
+			'PSX\Loader\ProbeController::doUpdate',
+			'PSX\Loader\ProbeController::processResponse',
+			'PSX\Loader\ProbeController::getStage',
+			'PSX\Loader\ProbeController::getResponseFilter',
 		);
 
 		$this->assertEquals($expect, $module->getMethodsCalled());
@@ -201,31 +212,33 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 
 	public function testLoadUpdateNestedCall()
 	{
-		$testCase = $this;
+		$testCase       = $this;
+		$locationFinder = new CallbackMethod(function($method, $path) use ($testCase){
 
-		$loader = new Loader(getContainer());
-		$loader->setLocationFinder(new CallbackMethod(function($path) use ($testCase){
+			$testCase->assertEquals('/foobar/foo', $path);
 
-			$testCase->assertEquals('foobar/foo', $path);
+			return new Location(md5($path), '/foo', 'PSX\Loader\ProbeController');
 
-			return new Location(md5($path), '/foo', new ReflectionClass('PSX\Loader\ProbeModule'));
+		});
 
-		}));
-
-		$path    = '/foobar/foo';
-		$request = new Request(new Url('http://127.0.0.1' . $path), 'PUT');
-		$module  = $loader->load($path, $request);
+		$loader   = new Loader($locationFinder, getContainer()->get('loader_callback_resolver'));
+		$request  = new Request(new Url('http://127.0.0.1/foobar/foo'), 'PUT');
+		$response = new Response();
+		$module   = $loader->load($request, $response);
 
 		$expect = array(
-			'PSX\Loader\ProbeModule::__construct',
-			'PSX\Loader\ProbeModule::getStage',
-			'PSX\Loader\ProbeModule::getRequestFilter',
-			'PSX\Loader\ProbeModule::getStage',
-			'PSX\Loader\ProbeModule::onLoad',
-			'PSX\Loader\ProbeModule::getStage',
-			'PSX\Loader\ProbeModule::onGet',
-			'PSX\Loader\ProbeModule::getStage',
-			'PSX\Loader\ProbeModule::doUpdateNested',
+			'PSX\Loader\ProbeController::__construct',
+			'PSX\Loader\ProbeController::getStage',
+			'PSX\Loader\ProbeController::getRequestFilter',
+			'PSX\Loader\ProbeController::getStage',
+			'PSX\Loader\ProbeController::onLoad',
+			'PSX\Loader\ProbeController::getStage',
+			'PSX\Loader\ProbeController::onPut',
+			'PSX\Loader\ProbeController::getStage',
+			'PSX\Loader\ProbeController::doUpdateNested',
+			'PSX\Loader\ProbeController::processResponse',
+			'PSX\Loader\ProbeController::getStage',
+			'PSX\Loader\ProbeController::getResponseFilter',
 		);
 
 		$this->assertEquals($expect, $module->getMethodsCalled());
@@ -233,31 +246,33 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 
 	public function testLoadDeleteCall()
 	{
-		$testCase = $this;
+		$testCase       = $this;
+		$locationFinder = new CallbackMethod(function($method, $path) use ($testCase){
 
-		$loader = new Loader(getContainer());
-		$loader->setLocationFinder(new CallbackMethod(function($path) use ($testCase){
+			$testCase->assertEquals('/foobar', $path);
 
-			$testCase->assertEquals('foobar', $path);
+			return new Location(md5($path), '/', 'PSX\Loader\ProbeController');
 
-			return new Location(md5($path), '/', new ReflectionClass('PSX\Loader\ProbeModule'));
+		});
 
-		}));
-
-		$path    = '/foobar';
-		$request = new Request(new Url('http://127.0.0.1' . $path), 'DELETE');
-		$module  = $loader->load($path, $request);
+		$loader   = new Loader($locationFinder, getContainer()->get('loader_callback_resolver'));
+		$request  = new Request(new Url('http://127.0.0.1/foobar'), 'DELETE');
+		$response = new Response();
+		$module   = $loader->load($request, $response);
 
 		$expect = array(
-			'PSX\Loader\ProbeModule::__construct',
-			'PSX\Loader\ProbeModule::getStage',
-			'PSX\Loader\ProbeModule::getRequestFilter',
-			'PSX\Loader\ProbeModule::getStage',
-			'PSX\Loader\ProbeModule::onLoad',
-			'PSX\Loader\ProbeModule::getStage',
-			'PSX\Loader\ProbeModule::onGet',
-			'PSX\Loader\ProbeModule::getStage',
-			'PSX\Loader\ProbeModule::doDelete',
+			'PSX\Loader\ProbeController::__construct',
+			'PSX\Loader\ProbeController::getStage',
+			'PSX\Loader\ProbeController::getRequestFilter',
+			'PSX\Loader\ProbeController::getStage',
+			'PSX\Loader\ProbeController::onLoad',
+			'PSX\Loader\ProbeController::getStage',
+			'PSX\Loader\ProbeController::onDelete',
+			'PSX\Loader\ProbeController::getStage',
+			'PSX\Loader\ProbeController::doDelete',
+			'PSX\Loader\ProbeController::processResponse',
+			'PSX\Loader\ProbeController::getStage',
+			'PSX\Loader\ProbeController::getResponseFilter',
 		);
 
 		$this->assertEquals($expect, $module->getMethodsCalled());
@@ -265,31 +280,33 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 
 	public function testLoadDeleteNestedCall()
 	{
-		$testCase = $this;
+		$testCase       = $this;
+		$locationFinder = new CallbackMethod(function($method, $path) use ($testCase){
 
-		$loader = new Loader(getContainer());
-		$loader->setLocationFinder(new CallbackMethod(function($path) use ($testCase){
+			$testCase->assertEquals('/foobar/foo', $path);
 
-			$testCase->assertEquals('foobar/foo', $path);
+			return new Location(md5($path), '/foo', 'PSX\Loader\ProbeController');
 
-			return new Location(md5($path), '/foo', new ReflectionClass('PSX\Loader\ProbeModule'));
+		});
 
-		}));
-
-		$path    = '/foobar/foo';
-		$request = new Request(new Url('http://127.0.0.1' . $path), 'DELETE');
-		$module  = $loader->load($path, $request);
+		$loader   = new Loader($locationFinder, getContainer()->get('loader_callback_resolver'));
+		$request  = new Request(new Url('http://127.0.0.1/foobar/foo'), 'DELETE');
+		$response = new Response();
+		$module   = $loader->load($request, $response);
 
 		$expect = array(
-			'PSX\Loader\ProbeModule::__construct',
-			'PSX\Loader\ProbeModule::getStage',
-			'PSX\Loader\ProbeModule::getRequestFilter',
-			'PSX\Loader\ProbeModule::getStage',
-			'PSX\Loader\ProbeModule::onLoad',
-			'PSX\Loader\ProbeModule::getStage',
-			'PSX\Loader\ProbeModule::onGet',
-			'PSX\Loader\ProbeModule::getStage',
-			'PSX\Loader\ProbeModule::doDeleteNested',
+			'PSX\Loader\ProbeController::__construct',
+			'PSX\Loader\ProbeController::getStage',
+			'PSX\Loader\ProbeController::getRequestFilter',
+			'PSX\Loader\ProbeController::getStage',
+			'PSX\Loader\ProbeController::onLoad',
+			'PSX\Loader\ProbeController::getStage',
+			'PSX\Loader\ProbeController::onDelete',
+			'PSX\Loader\ProbeController::getStage',
+			'PSX\Loader\ProbeController::doDeleteNested',
+			'PSX\Loader\ProbeController::processResponse',
+			'PSX\Loader\ProbeController::getStage',
+			'PSX\Loader\ProbeController::getResponseFilter',
 		);
 
 		$this->assertEquals($expect, $module->getMethodsCalled());

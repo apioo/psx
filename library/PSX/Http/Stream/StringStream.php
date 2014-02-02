@@ -37,7 +37,7 @@ class StringStream
 
 	protected $_pointer = 0;
 
-	public function __construct($data)
+	public function __construct($data = '')
 	{
 		$this->data = $data;
 		$this->len  = strlen($data);
@@ -89,11 +89,20 @@ class StringStream
 
 	public function isWriteable()
 	{
-		return false;
+		return true;
 	}
 
 	public function write($string)
 	{
+		$len  = strlen($string);
+		$pre  = substr($this->data, 0, $this->_pointer);
+		$post = substr($this->data, $this->_pointer + $len);
+
+		$this->data = $pre . $string . $post;
+
+		$this->_pointer+= $len;
+
+		return $len;
 	}
 
 	public function isReadable()

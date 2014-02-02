@@ -26,9 +26,14 @@ namespace PSX\Dependency;
 use PSX\Base;
 use PSX\Config;
 use PSX\Dispatch;
+use PSX\Dispatch\RequestFactory;
+use PSX\Dispatch\ResponseFactory;
+use PSX\Dispatch\Sender;
 use PSX\Http;
 use PSX\Input;
 use PSX\Loader;
+use PSX\Loader\CallbackResolver\Annotation;
+use PSX\Loader\LocationFinder\RoutingFile;
 use PSX\Session;
 use PSX\Sql;
 use PSX\Sql\TableManager;
@@ -70,11 +75,19 @@ class DefaultContainer extends Container
 	}
 
 	/**
+	 * @return PSX\Dispatch\SenderInterface
+	 */
+	public function getDispatchSender()
+	{
+		return new Sender();
+	}
+
+	/**
 	 * @return PSX\Dispatch
 	 */
 	public function getDispatch()
 	{
-		return new Dispatch($this->get('config'), $this->get('loader'));
+		return new Dispatch($this->get('config'), $this->get('loader'), $this->get('dispatch_sender'));
 	}
 
 	/**
@@ -126,11 +139,27 @@ class DefaultContainer extends Container
 	}
 
 	/**
+	 * @return PSX\Loader\LocationFinderInterface
+	 */
+	public function getLoaderLocationFinder()
+	{
+		return new RoutingFile($this->get('config')->get('psx_routing'));
+	}
+
+	/**
+	 * @return PSX\Loader\CallbackResolverInterface
+	 */
+	public function getLoaderCallbackResolver()
+	{
+		return new Annotation($this);
+	}
+
+	/**
 	 * @return PSX\Loader
 	 */
 	public function getLoader()
 	{
-		$loader = new Loader($this);
+		$loader = new Loader($this->get('loader_location_finder'), $this->get('loader_callback_resolver'));
 
 		// configure loader
 		//$loader->addRoute('.well-known/host-meta', 'foo');
@@ -174,6 +203,22 @@ class DefaultContainer extends Container
 	public function getValidate()
 	{
 		return new Validate();
+	}
+
+	/**
+	 * @return PSX\Dispatch\RequestFactoryInterface
+	 */
+	public function getRequestFactory()
+	{
+		return new RequestFactory($this->get('config'));
+	}
+
+	/**
+	 * @return PSX\Dispatch\ResponseFactoryInterface
+	 */
+	public function getResponseFactory()
+	{
+		return new ResponseFactory();
 	}
 
 	/**
@@ -244,7 +289,7 @@ class DefaultContainer extends Container
 	 */
 	public function getDatabaseManager()
 	{
-		return new DatabaseManager($this->get('tableManager'));
+		return new DatabaseManager($this->get('table_manager'));
 	}
 
 	/**
@@ -261,7 +306,7 @@ class DefaultContainer extends Container
 	/*
 	public function getDoctrineManager()
 	{
-		return new DoctrineManager($this->get('entityManager'));
+		return new DoctrineManager($this->get('entity_manager'));
 	}
 	*/
 

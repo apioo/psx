@@ -56,72 +56,92 @@ abstract class StreamTestCase extends \PHPUnit_Framework_TestCase
 
 	public function testTell()
 	{
-		$this->assertEquals(0, $this->stream->tell());
-		$this->stream->seek(2);
-		$this->assertEquals(2, $this->stream->tell());
+		if($this->stream->isSeekable())
+		{
+			$this->assertEquals(0, $this->stream->tell());
+			$this->stream->seek(2);
+			$this->assertEquals(2, $this->stream->tell());
+		}
 	}
 
 	public function testEof()
 	{
-		$content = '';
-
-		while(!$this->stream->eof())
+		if($this->stream->isReadable())
 		{
-			$content.= $this->stream->read(5);
-		}
+			$content = '';
 
-		$this->assertEquals('foobar', $content);
+			while(!$this->stream->eof())
+			{
+				$content.= $this->stream->read(5);
+			}
+
+			$this->assertEquals('foobar', $content);
+		}
 	}
 
 	public function testIsSeekable()
 	{
-		$this->assertTrue($this->stream->isSeekable());
+		$this->stream->isSeekable();
 	}
 
 	public function testSeek()
 	{
-		$this->assertEquals(0, $this->stream->tell());
-		$this->stream->seek(2);
-		$this->assertEquals(2, $this->stream->tell());
-		$this->stream->seek(2, SEEK_CUR);
-		$this->assertEquals(4, $this->stream->tell());
-		$this->stream->seek(0, SEEK_END);
-		$this->assertEquals(6, $this->stream->tell());
-		$this->stream->seek(0);
-		$this->assertEquals(0, $this->stream->tell());
+		if($this->stream->isSeekable())
+		{
+			$this->assertEquals(0, $this->stream->tell());
+			$this->stream->seek(2);
+			$this->assertEquals(2, $this->stream->tell());
+			$this->stream->seek(2, SEEK_CUR);
+			$this->assertEquals(4, $this->stream->tell());
+			$this->stream->seek(0, SEEK_END);
+			$this->assertEquals(6, $this->stream->tell());
+			$this->stream->seek(0);
+			$this->assertEquals(0, $this->stream->tell());
+		}
 	}
 
 	public function testIsWriteable()
 	{
-		$this->assertEquals(false, $this->stream->isWriteable());
+		$this->stream->isWriteable();
 	}
 
 	public function testWrite()
 	{
-		$this->stream->write('foo');
+		if($this->stream->isWriteable())
+		{
+			$this->stream->seek(0, SEEK_END);
+			$this->stream->write('bar');
+			$this->stream->write('fooooooo');
+			$this->stream->seek(12);
+			$this->stream->write('bar');
 
-		$this->assertEquals('foobar', (string) $this->stream);
+			$this->assertEquals('foobarbarfoobaroo', (string) $this->stream);
+		}
 	}
 
 	public function testIsReadable()
 	{
-		$this->assertTrue($this->stream->isReadable());
+		$this->stream->isReadable();
 	}
 
 	public function testRead()
 	{
-		$this->stream->seek(2);
-
-		$this->assertEquals('ob', $this->stream->read(2));
+		if($this->stream->isReadable())
+		{
+			$this->assertEquals('fo', $this->stream->read(2));
+		}
 	}
 
 	public function testGetContents()
 	{
-		$this->assertEquals('foobar', $this->stream->getContents());
+		if($this->stream->isReadable() && $this->stream->isSeekable())
+		{
+			$this->assertEquals('foobar', $this->stream->getContents());
 
-		$this->stream->seek(2);
+			$this->stream->seek(2);
 
-		$this->assertEquals('obar', $this->stream->getContents());
+			$this->assertEquals('obar', $this->stream->getContents());
+		}
 	}
 
 	public function testToString()

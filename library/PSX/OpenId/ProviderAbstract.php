@@ -25,7 +25,7 @@ namespace PSX\OpenId;
 
 use PSX\Exception;
 use PSX\Data\ReaderInterface;
-use PSX\Module\ApiAbstract;
+use PSX\Controller\ApiAbstract;
 use PSX\OpenId;
 use PSX\OpenId\Provider\Association;
 use PSX\OpenId\Provider\Data\AssociationImporter;

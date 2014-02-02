@@ -28,6 +28,7 @@ $container->setParameter('config.file', '../configuration.php');
 
 PSX\Bootstrap::setupEnvironment($container->get('config'));
 
-$response  = $container->get('dispatch')->route($container->get('base')->getRequest());
+$request  = $container->get('request_factory')->createRequest();
+$response = $container->get('response_factory')->createResponse();
 
-echo $response->getBody();
+$container->get('dispatch')->route($request, $response);

@@ -23,7 +23,6 @@
 
 namespace PSX\Loader\LocationFinder;
 
-use PSX\Base;
 use PSX\Loader\InvalidPathException;
 use PSX\Loader\Location;
 use PSX\Loader\LocationFinderInterface;
@@ -45,11 +44,11 @@ class RoutingFile implements LocationFinderInterface
 		$this->file = $file;
 	}
 
-	public function resolve($pathInfo)
+	public function resolve($method, $pathInfo)
 	{
-		$method  = Base::getRequestMethod();
-		$lines   = file($this->file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-		$matches = array();
+		$pathInfo = trim($pathInfo, '/');
+		$lines    = file($this->file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+		$matches  = array();
 
 		foreach($lines as $line)
 		{
@@ -76,7 +75,7 @@ class RoutingFile implements LocationFinderInterface
 
 		if(!empty($class))
 		{
-			return new Location(md5($class), substr($pathInfo, key($matches)), new ReflectionClass($class));
+			return new Location(md5($class), substr($pathInfo, key($matches)), $class);
 		}
 		else
 		{

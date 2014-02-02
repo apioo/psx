@@ -43,8 +43,8 @@ class CallbackMethod implements LocationFinderInterface
 		$this->callback = $callback;
 	}
 
-	public function resolve($pathInfo)
+	public function resolve($method, $pathInfo)
 	{
-		return call_user_func($this->callback, $pathInfo);
+		return call_user_func_array($this->callback, array($method, $pathInfo));
 	}
 }

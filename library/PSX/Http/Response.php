@@ -200,24 +200,15 @@ class Response extends Message
 	public function toString()
 	{
 		$response = $this->getLine() . Http::$newLine;
+		$headers  = ResponseParser::buildHeaderFromResponse($this);
 
-		foreach($this->headers as $key => $value)
+		foreach($headers as $header)
 		{
-			if($key == 'set-cookie')
-			{
-				foreach($value as $cookie)
-				{
-					$response.= $key . ': ' . $cookie . Http::$newLine;
-				}
-			}
-			else
-			{
-				$response.= $key . ': ' . $value . Http::$newLine;
-			}
+			$response.= $header . Http::$newLine;
 		}
 
 		$response.= Http::$newLine;
-		$response.= $this->getBody();
+		$response.= (string) $this->getBody();
 
 		return $response;
 	}

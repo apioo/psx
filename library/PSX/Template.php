@@ -76,6 +76,11 @@ class Template implements TemplateInterface
 
 		$html = ob_get_clean();
 
+		if($html === false)
+		{
+			throw new Exception('Ouput buffering is not active');
+		}
+
 		return $html;
 	}
 }

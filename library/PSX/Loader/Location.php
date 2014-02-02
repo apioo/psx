@@ -34,15 +34,15 @@ use ReflectionClass;
  */
 class Location
 {
-	private $id;
-	private $path;
-	private $class;
+	protected $id;
+	protected $path;
+	protected $source;
 
-	public function __construct($id, $path, ReflectionClass $class)
+	public function __construct($id, $path, $source)
 	{
-		$this->id    = $id;
-		$this->path  = $path;
-		$this->class = $class;
+		$this->id     = $id;
+		$this->path   = $path;
+		$this->source = $source;
 	}
 
 	/**
@@ -58,7 +58,7 @@ class Location
 	/**
 	 * Returns the path. The loader will try to find the method wich should be
 	 * called depending on this path and the @path parameter in the docblock
-	 * comments of the module
+	 * comments of the controller
 	 *
 	 * @return string
 	 */
@@ -68,12 +68,13 @@ class Location
 	}
 
 	/**
-	 * Returns the class of the module. The loader creates a new instance of it
+	 * Returns an string containing all informations for an callback resolver
+	 * to resolve it to an callback
 	 *
-	 * @return ReflectionClass
+	 * @return string
 	 */
-	public function getClass()
+	public function getSource()
 	{
-		return $this->class;
+		return $this->source;
 	}
 }

@@ -26,6 +26,7 @@ namespace PSX\Loader\LocationFinder;
 use PSX\Loader;
 use PSX\Loader\LocationFinder\RoutingFile;
 use PSX\Http\Request;
+use PSX\Http\Response;
 use PSX\Url;
 
 /**
@@ -41,19 +42,19 @@ class RoutingFileTest extends \PHPUnit_Framework_TestCase
 	{
 		$module = $this->load('tests/PSX/Loader/routes', '/foo/bar', 'GET');
 
-		$this->assertInstanceOf('PSX\Loader\FooModule', $module);
+		$this->assertInstanceOf('PSX\Loader\FooController', $module);
 
 		$module = $this->load('tests/PSX/Loader/routes', '/bar/foo', 'GET');
 
-		$this->assertInstanceOf('PSX\Loader\FooModule', $module);
+		$this->assertInstanceOf('PSX\Loader\FooController', $module);
 
 		$module = $this->load('tests/PSX/Loader/routes', '/bar', 'GET');
 
-		$this->assertInstanceOf('PSX\Loader\BarModule', $module);
+		$this->assertInstanceOf('PSX\Loader\BarController', $module);
 
 		$module = $this->load('tests/PSX/Loader/routes', '/bar', 'POST');
 
-		$this->assertInstanceOf('PSX\Loader\BarModule', $module);
+		$this->assertInstanceOf('PSX\Loader\BarController', $module);
 	}
 
 	/**
@@ -84,39 +85,38 @@ class RoutingFileTest extends \PHPUnit_Framework_TestCase
 	{
 		$module = $this->load('tests/PSX/Loader/routes', '/whitespace', 'GET');
 
-		$this->assertInstanceOf('PSX\Loader\BarModule', $module);
+		$this->assertInstanceOf('PSX\Loader\BarController', $module);
 	}
 
 	public function testFallbackRoute()
 	{
 		$module = $this->load('tests/PSX/Loader/routes_fallback', '/foo/bar', 'GET');
 
-		$this->assertInstanceOf('PSX\Loader\BarModule', $module);
+		$this->assertInstanceOf('PSX\Loader\BarController', $module);
 
 		$module = $this->load('tests/PSX/Loader/routes_fallback', '/foo/foo', 'GET');
 
-		$this->assertInstanceOf('PSX\Loader\FooModule', $module);
+		$this->assertInstanceOf('PSX\Loader\FooController', $module);
 
 		$module = $this->load('tests/PSX/Loader/routes_fallback', '/foo', 'GET');
 
-		$this->assertInstanceOf('PSX\Loader\BarModule', $module);
+		$this->assertInstanceOf('PSX\Loader\BarController', $module);
 
 		$module = $this->load('tests/PSX/Loader/routes_fallback', '/', 'GET');
 
-		$this->assertInstanceOf('PSX\Loader\FooModule', $module);
+		$this->assertInstanceOf('PSX\Loader\FooController', $module);
 
 		$module = $this->load('tests/PSX/Loader/routes_fallback', '', 'GET');
 
-		$this->assertInstanceOf('PSX\Loader\FooModule', $module);
+		$this->assertInstanceOf('PSX\Loader\FooController', $module);
 	}
 
 	protected function load($routingFile, $path, $method, $header = array(), $body = null)
 	{
-		$loader = new Loader(getContainer());
-		$loader->setLocationFinder(new RoutingFile($routingFile));
-
-		$request = new Request(new Url('http://127.0.0.1' . $path), $method, $header, $body);
-		$module  = $loader->load($path, $request);
+		$loader   = new Loader(new RoutingFile($routingFile), getContainer()->get('loader_callback_resolver'));
+		$request  = new Request(new Url('http://127.0.0.1' . $path), $method, $header, $body);
+		$response = new Response();
+		$module   = $loader->load($request, $response);
 
 		return $module;
 	}

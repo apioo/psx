@@ -33,10 +33,13 @@ namespace PSX\Loader;
 interface LocationFinderInterface
 {
 	/**
-	 * Resolves the given path to an module
+	 * Resolves the given method and path to an location. The location contains
+	 * all informations for an callback resolver to resolve it to an actually
+	 * callback
 	 *
+	 * @param string $method
 	 * @param string $pathInfo
 	 * @return PSX\Loader\Location
 	 */
-	public function resolve($pathInfo);
+	public function resolve($method, $pathInfo);
 }

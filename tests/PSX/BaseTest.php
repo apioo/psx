@@ -69,44 +69,6 @@ class BaseTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('31a897ea-a0f4-53c3-922a-a72d8bf9b7e1', $this->base->getUUID('foo'));
 	}
 
-	public function testGetRequest()
-	{
-		$this->assertInstanceOf('\PSX\Http\Request', $this->base->getRequest());
-	}
-
-	public function testGetRequestHeader()
-	{
-		$this->assertEquals(false, Base::getRequestHeader('Foo'));
-	}
-
-	public function testGetRawInput()
-	{
-		$this->assertEquals(false, Base::getRawInput());
-	}
-
-	public function testHeaderSent()
-	{
-		$this->assertEquals(false, Base::hasHeaderSent('foo'));
-	}
-
-	/**
-	 * @expectedException UnexpectedValueException
-	 */
-	public function testSetResponseCodeWrong()
-	{
-		Base::setResponseCode(12);
-	}
-
-	public function testSetResponseCode()
-	{
-		$this->assertEquals(null, Base::getResponseCode());
-
-		// supress error because sending an header does not work
-		@Base::setResponseCode(200);
-
-		$this->assertEquals(200, Base::getResponseCode());
-	}
-
 	public function testGetVersion()
 	{
 		// test whether the version is an "PHP-standardized" version

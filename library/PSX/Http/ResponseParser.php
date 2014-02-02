@@ -251,7 +251,7 @@ class ResponseParser
 		}
 	}
 
-	public static function buildHeaderFromResponse(Response $response)
+	public static function buildHeaderFromResponse(Message $response)
 	{
 		$headers = $response->getHeaders();
 		$result  = array();

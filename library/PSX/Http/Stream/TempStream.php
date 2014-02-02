@@ -91,11 +91,12 @@ class TempStream
 
 	public function isWriteable()
 	{
-		return false;
+		return true;
 	}
 
 	public function write($string)
 	{
+		return fwrite($this->resource, $string);
 	}
 
 	public function isReadable()

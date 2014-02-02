@@ -50,7 +50,7 @@ class DateTime extends \DateTime
 
 	public function __toString()
 	{
-		return parent::format(self::SQL);
+		return parent::format(self::RFC3339);
 	}
 
 	/**
