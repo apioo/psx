@@ -23,6 +23,8 @@
 
 namespace PSX\OpenId\Connect;
 
+use PSX\Data\RecordInfo;
+
 /**
  * AccessToken
  *
