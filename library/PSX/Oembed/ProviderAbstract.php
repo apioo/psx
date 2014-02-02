@@ -26,7 +26,7 @@ namespace PSX\Oembed;
 use PSX\Exception;
 use PSX\Filter;
 use PSX\Input\Get;
-use PSX\Module\ApiAbstract;
+use PSX\Controller\ApiAbstract;
 use PSX\Url;
 use PSX\Validate;
 

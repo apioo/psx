@@ -23,7 +23,7 @@
 
 namespace PSX\Payment\Skrill;
 
-use PSX\Module\ApiAbstract;
+use PSX\Controller\ApiAbstract;
 use PSX\Data\Record\DefaultImporter;
 use PSX\Payment\Skrill\Data;
 use PSX\Exception;

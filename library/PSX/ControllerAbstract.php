@@ -197,8 +197,7 @@ abstract class ControllerAbstract implements ControllerInterface
 			$url = $this->config['psx_url'] . '/' . $this->config['psx_dispatch'] . ltrim($url, '/');
 		}
 
-		Base::setResponseCode($code);
-		header('Location: ' . $url);
+		header('Location: ' . $url, true, $code);
 		exit;
 	}
 

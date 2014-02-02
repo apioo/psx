@@ -78,8 +78,7 @@ class BasicClient
 			$url->setScheme('https');
 			$url->addParams($params->getData());
 
-			Base::setResponseCode(302);
-			header('Location: ' . $url->getUrl());
+			header('Location: ' . $url->getUrl(), true, 302);
 			exit;
 		}
 		else

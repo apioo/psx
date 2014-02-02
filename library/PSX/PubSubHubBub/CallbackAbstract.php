@@ -30,7 +30,7 @@ use PSX\Data\ReaderInterface;
 use PSX\Exception;
 use PSX\Filter;
 use PSX\Input\Get;
-use PSX\Module\ApiAbstract;
+use PSX\Controller\ApiAbstract;
 use PSX\Rss;
 use PSX\Rss\Importer as RssImporter;
 use PSX\Url;
@@ -55,13 +55,13 @@ abstract class CallbackAbstract extends ApiAbstract
 	 */
 	protected function handle()
 	{
-		switch(Base::getRequestMethod())
+		switch($this->request->getMethod())
 		{
 			case 'POST':
 				$this->callback();
 
-				Base::setResponseCode(200);
-				//header('X-Hub-On-Behalf-Of: 0');
+				$this->response->setStatusCode(200);
+				//$this->response->setHeader('X-Hub-On-Behalf-Of', 0);
 
 				exit;
 				break;
@@ -78,7 +78,7 @@ abstract class CallbackAbstract extends ApiAbstract
 
 	protected function callback()
 	{
-		$contentType = Base::getRequestHeader('content-type');
+		$contentType = (string) $this->request->getHeader('Content-Type');
 
 		switch($contentType)
 		{
@@ -122,7 +122,7 @@ abstract class CallbackAbstract extends ApiAbstract
 
 			if($this->onVerify($mode, $topic, $leaseSeconds, $verifyToken) === true)
 			{
-				Base::setResponseCode(200);
+				$this->response->setStatusCode(200);
 
 				echo $challenge;
 				exit;

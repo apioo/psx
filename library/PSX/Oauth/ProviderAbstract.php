@@ -25,7 +25,7 @@ namespace PSX\Oauth;
 
 use PSX\Data\ReaderInterface;
 use PSX\Exception;
-use PSX\Module\ApiAbstract;
+use PSX\Controller\ApiAbstract;
 use PSX\Oauth;
 use PSX\Oauth\Provider\Data\Request;
 use PSX\Oauth\Provider\Data\Consumer;
@@ -63,9 +63,9 @@ abstract class ProviderAbstract extends ApiAbstract
 		{
 			$signature = Oauth::getSignature($request->getSignatureMethod());
 
-			$method = $_SERVER['REQUEST_METHOD'];
-			$url    = new Url($this->base->getSelf());
-			$params = array_merge($request->getData(), $_GET);
+			$method = $this->request->getMethod();
+			$url    = $this->request->getUrl();
+			$params = array_merge($request->getData(), $this->request->getUrl()->getParams());
 
 			$baseString = Oauth::buildBasestring($method, $url, $params);
 

@@ -23,7 +23,6 @@
 
 namespace PSX\Upload;
 
-use PSX\Base;
 use PSX\File as FileObject;
 
 /**
@@ -120,54 +119,47 @@ class File
 		return $this->getTmpContent();
 	}
 
-	private function isValidUpload(array $file)
+	protected function isValidUpload(array $file)
 	{
-		$headers = Base::getRequestHeader();
+		$error = isset($file['error']) ? $file['error'] : UPLOAD_ERR_NO_FILE;
 
-		if(strpos($headers['content-type'], 'multipart/form-data') !== false)
+		switch($error)
 		{
-			switch($file['error'])
-			{
-				case UPLOAD_ERR_OK:
-					return is_uploaded_file($file['tmp_name']);
-					break;
+			case UPLOAD_ERR_OK:
+				return is_uploaded_file($file['tmp_name']);
+				break;
 
-				case UPLOAD_ERR_INI_SIZE:
-					throw new Exception('The uploaded file exceeds the upload_max_filesize directive in php.ini');
-					break;
+			case UPLOAD_ERR_INI_SIZE:
+				throw new Exception('The uploaded file exceeds the upload_max_filesize directive in php.ini');
+				break;
 
-				case UPLOAD_ERR_FORM_SIZE:
-					throw new Exception('The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form');
-					break;
+			case UPLOAD_ERR_FORM_SIZE:
+				throw new Exception('The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form');
+				break;
 
-				case UPLOAD_ERR_PARTIAL:
-					throw new Exception('The uploaded file was only partially uploaded');
-					break;
+			case UPLOAD_ERR_PARTIAL:
+				throw new Exception('The uploaded file was only partially uploaded');
+				break;
 
-				case UPLOAD_ERR_NO_FILE:
-					throw new Exception('No file was uploaded');
-					break;
+			case UPLOAD_ERR_NO_FILE:
+				throw new Exception('No file was uploaded');
+				break;
 
-				case UPLOAD_ERR_NO_TMP_DIR:
-					throw new Exception('Missing a temporary folder');
-					break;
+			case UPLOAD_ERR_NO_TMP_DIR:
+				throw new Exception('Missing a temporary folder');
+				break;
 
-				case UPLOAD_ERR_CANT_WRITE:
-					throw new Exception('Failed to write file to disk');
-					break;
+			case UPLOAD_ERR_CANT_WRITE:
+				throw new Exception('Failed to write file to disk');
+				break;
 
-				case UPLOAD_ERR_EXTENSION:
-					throw new Exception('A PHP extension stopped the file upload');
-					break;
+			case UPLOAD_ERR_EXTENSION:
+				throw new Exception('A PHP extension stopped the file upload');
+				break;
 
-				default:
-					throw new Exception('Invalid error code');
-					break;
-			}
-		}
-		else
-		{
-			throw new Exception('Invalid content type');
+			default:
+				throw new Exception('Invalid error code');
+				break;
 		}
 	}
 }
