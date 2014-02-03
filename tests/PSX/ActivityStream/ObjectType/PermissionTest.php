@@ -86,5 +86,7 @@ class PermissionTest extends SerializeTestAbstract
 JSON;
 
 		$this->assertRecordEqualsContent($permission, $content);
+
+    $this->assertEquals($file, $permission->getScope());
 	}
 }

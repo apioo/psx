@@ -23,34 +23,33 @@
 
 namespace PSX\ActivityStream;
 
-use PSX\Data\RecordAbstract;
+use PSX\Data\SerializeTestAbstract;
 
 /**
- * Location
+ * LinkObjectTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Location extends RecordAbstract
+class LinkObjectTest extends SerializeTestAbstract
 {
-	protected $displayName;
-	protected $position;
-
-	/**
-	 * @param string $displayName
-	 */
-	public function setDisplayName($displayName)
+	public function testLinkObject()
 	{
-		$this->displayName = $displayName;
-	}
+		$object = new LinkObject();
+		$object->setRel('self');
+		$object->setMediaType('text/plain');
 
-	/**
-	 * @param PSX\ActivityStream\Position
-	 */
-	public function setPosition($position)
-	{
-		$this->position = $position;
+		$content = <<<JSON
+{
+  "rel": "self",
+  "mediaType": "text/plain"
+}
+JSON;
+
+		$this->assertRecordEqualsContent($object, $content);
+
+		$this->assertEquals('self', $object->getRel());
+		$this->assertEquals('text/plain', $object->getMediaType());
 	}
 }
-

@@ -62,6 +62,8 @@ class PlaceTest extends SerializeTestAbstract
 JSON;
 
 		$this->assertRecordEqualsContent($place, $content);
+
+		$this->assertEquals($position, $place->getPosition());
 	}
 
 	public function testPlaceAddress()
@@ -94,5 +96,7 @@ JSON;
 JSON;
 
 		$this->assertRecordEqualsContent($place, $content);
+
+		$this->assertEquals($address, $place->getAddress());
 	}
 }

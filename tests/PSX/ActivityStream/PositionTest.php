@@ -21,45 +21,38 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\ActivityStream\ObjectType;
+namespace PSX\ActivityStream;
 
-use PSX\ActivityStream\LinkObject;
-use PSX\DateTime;
 use PSX\Data\SerializeTestAbstract;
 
 /**
- * AudioTest
+ * PositionTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class AudioTest extends SerializeTestAbstract
+class PositionTest extends SerializeTestAbstract
 {
-	public function testAudio()
+	public function testPosition()
 	{
-		$stream = new LinkObject();
-		$stream->setUrl('http://example.org/my_audio.mp3');
-
-		$audio = new Audio();
-		$audio->setDisplayName('Cute little kittens');
-		$audio->setEmbedCode('<audio controls=\'controls\'>...</audio>');
-		$audio->setStream($stream);
+		$position = new Position();
+		$position->setLatitude(34.34);
+		$position->setLongitude(-127.23);
+		$position->setAltitude(100.05);
 
 		$content = <<<JSON
-  {
-    "objectType": "audio",
-    "displayName": "Cute little kittens",
-    "embedCode": "<audio controls='controls'>...</audio>",
-    "stream": {
-      "url": "http://example.org/my_audio.mp3"
-    }
-  }
+{
+  "latitude": 34.34,
+  "longitude": -127.23,
+  "altitude": 100.05
+}
 JSON;
 
-		$this->assertRecordEqualsContent($audio, $content);
+		$this->assertRecordEqualsContent($position, $content);
 
-		$this->assertEquals('<audio controls=\'controls\'>...</audio>', $audio->getEmbedCode());
-		$this->assertEquals($stream, $audio->getStream());
+		$this->assertEquals(34.34, $position->getLatitude());
+		$this->assertEquals(-127.23, $position->getLongitude());
+		$this->assertEquals(100.05, $position->getAltitude());
 	}
 }

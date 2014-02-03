@@ -43,40 +43,57 @@ class EventTest extends SerializeTestAbstract
 		$person->setObjectType('person');
 		$person->setDisplayName('Joe');
 
-		$invited = new Collection();
-		$invited->add($person);
-
-		$attending = new Collection();
-		$attending->add($person);
+		$persons = new Collection();
+		$persons->add($person);
 
 		$event = new Event();
 		$event->setDisplayName('Meeting with Joe');
 		$event->setStartTime(new DateTime('2012-12-12T12:00:00Z'));
 		$event->setEndTime(new DateTime('2012-12-12T13:00:00Z'));
-		$event->setInvited($invited);
-		$event->setAttending($attending);
+		$event->setAttendedBy($persons);
+		$event->setAttending($persons);
+		$event->setInvited($persons);
+		$event->setMaybeAttending($persons);
+		$event->setNotAttendedBy($persons);
 
 		$content = <<<JSON
-  {
-    "objectType": "event",
-    "displayName": "Meeting with Joe",
-    "startTime": "2012-12-12T12:00:00+00:00",
-    "endTime": "2012-12-12T13:00:00+00:00",
-    "invited": {
-      "items": [
-        {"objectType": "person", 
-         "displayName": "Joe"}
-      ]
-    },
-    "attending": {
-      "items": [
-        {"objectType": "person", 
-         "displayName": "Joe"}
-      ]
-    }
-  }
+{
+  "attendedBy": {"items": [{
+        "objectType": "person",
+        "displayName": "Joe"
+      }]},
+  "attending": {"items": [{
+        "objectType": "person",
+        "displayName": "Joe"
+      }]},
+  "endTime": "2012-12-12T13:00:00+00:00",
+  "invited": {"items": [{
+        "objectType": "person",
+        "displayName": "Joe"
+      }]},
+  "maybeAttending": {"items": [{
+        "objectType": "person",
+        "displayName": "Joe"
+      }]},
+  "notAttendedBy": {"items": [{
+        "objectType": "person",
+        "displayName": "Joe"
+      }]},
+  "startTime": "2012-12-12T12:00:00+00:00",
+  "objectType": "event",
+  "displayName": "Meeting with Joe"
+}
 JSON;
 
 		$this->assertRecordEqualsContent($event, $content);
+
+		$this->assertEquals('Meeting with Joe', $event->getDisplayName());
+		$this->assertEquals(new DateTime('2012-12-12T12:00:00Z'), $event->getStartTime());
+		$this->assertEquals(new DateTime('2012-12-12T13:00:00Z'), $event->getEndTime());
+		$this->assertEquals($persons, $event->getAttendedBy());
+		$this->assertEquals($persons, $event->getAttending());
+		$this->assertEquals($persons, $event->getInvited());
+		$this->assertEquals($persons, $event->getMaybeAttending());
+		$this->assertEquals($persons, $event->getNotAttendedBy());
 	}
 }

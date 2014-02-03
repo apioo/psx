@@ -75,5 +75,7 @@ class GroupTest extends SerializeTestAbstract
 JSON;
 
 		$this->assertRecordEqualsContent($group, $content);
+
+		$this->assertEquals($members, $group->getMembers());
 	}
 }

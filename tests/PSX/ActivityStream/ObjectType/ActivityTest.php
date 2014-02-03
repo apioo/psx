@@ -71,40 +71,114 @@ class ActivityTest extends SerializeTestAbstract
 		$activity->setActor($actor);
 		$activity->setObject($object);
 		$activity->setTarget($target);
+		$activity->setResult($image);
+		$activity->setPriority(0.5);
+		$activity->setTo($actor);
+		$activity->setCc($actor);
+		$activity->setBto($actor);
+		$activity->setBcc($actor);
 
 		$content = <<<JSON
 {
   "verb": "post",
-  "published": "2011-02-10T15:04:55+00:00",
-  "language": "en",
   "actor": {
-    "objectType": "person",
     "id": "urn:example:person:martin",
+    "objectType": "person",
     "displayName": "Martin Smith",
     "url": "http://example.org/martin",
     "image": {
-      "url": "http://example.org/martin/image.jpg",
       "mediaType": "image/jpeg",
-      "width": 250,
-      "height": 250
+      "url": "http://example.org/martin/image.jpg",
+      "height": 250,
+      "width": 250
     }
   },
   "object": {
-    "objectType": "article",
     "id": "urn:example:blog:abc123/xyz",
-    "url": "http://example.org/blog/2011/02/entry",
-    "displayName": "Why I love Activity Streams"
+    "objectType": "article",
+    "displayName": "Why I love Activity Streams",
+    "url": "http://example.org/blog/2011/02/entry"
   },
   "target": {
-    "objectType": "blog",
     "id": "urn:example:blog:abc123",
+    "objectType": "blog",
     "displayName": "Martin's Blog",
     "url": "http://example.org/blog/"
-  }
+  },
+  "result": {
+    "mediaType": "image/jpeg",
+    "url": "http://example.org/martin/image.jpg",
+    "height": 250,
+    "width": 250
+  },
+  "priority": 0.5,
+  "to": {
+    "id": "urn:example:person:martin",
+    "objectType": "person",
+    "displayName": "Martin Smith",
+    "url": "http://example.org/martin",
+    "image": {
+      "mediaType": "image/jpeg",
+      "url": "http://example.org/martin/image.jpg",
+      "height": 250,
+      "width": 250
+    }
+  },
+  "cc": {
+    "id": "urn:example:person:martin",
+    "objectType": "person",
+    "displayName": "Martin Smith",
+    "url": "http://example.org/martin",
+    "image": {
+      "mediaType": "image/jpeg",
+      "url": "http://example.org/martin/image.jpg",
+      "height": 250,
+      "width": 250
+    }
+  },
+  "bto": {
+    "id": "urn:example:person:martin",
+    "objectType": "person",
+    "displayName": "Martin Smith",
+    "url": "http://example.org/martin",
+    "image": {
+      "mediaType": "image/jpeg",
+      "url": "http://example.org/martin/image.jpg",
+      "height": 250,
+      "width": 250
+    }
+  },
+  "bcc": {
+    "id": "urn:example:person:martin",
+    "objectType": "person",
+    "displayName": "Martin Smith",
+    "url": "http://example.org/martin",
+    "image": {
+      "mediaType": "image/jpeg",
+      "url": "http://example.org/martin/image.jpg",
+      "height": 250,
+      "width": 250
+    }
+  },
+  "language": "en",
+  "published": "2011-02-10T15:04:55+00:00"
 }
 JSON;
 
 		$this->assertRecordEqualsContent($activity, $content);
+
+		$this->assertEquals('post', $activity->getVerb());
+		$this->assertEquals(new DateTime('2011-02-10T15:04:55Z'), $activity->getPublished());
+		$this->assertEquals('en', $activity->getLanguage());
+		$this->assertEquals($actor, $activity->getActor());
+		$this->assertEquals($object, $activity->getObject());
+		$this->assertEquals($target, $activity->getTarget());
+		$this->assertEquals($image, $activity->getResult());
+		$this->assertEquals(0.5, $activity->getPriority());
+		$this->assertEquals($actor, $activity->getTo());
+		$this->assertEquals($actor, $activity->getCc());
+		$this->assertEquals($actor, $activity->getBto());
+		$this->assertEquals($actor, $activity->getBcc());
 	}
 
 	public function testComplexActivity()

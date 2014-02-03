@@ -21,45 +21,47 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\ActivityStream\ObjectType;
+namespace PSX\ActivityStream;
 
-use PSX\ActivityStream\LinkObject;
-use PSX\DateTime;
 use PSX\Data\SerializeTestAbstract;
 
 /**
- * AudioTest
+ * AddressTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class AudioTest extends SerializeTestAbstract
+class AddressTest extends SerializeTestAbstract
 {
-	public function testAudio()
+	public function testAddress()
 	{
-		$stream = new LinkObject();
-		$stream->setUrl('http://example.org/my_audio.mp3');
-
-		$audio = new Audio();
-		$audio->setDisplayName('Cute little kittens');
-		$audio->setEmbedCode('<audio controls=\'controls\'>...</audio>');
-		$audio->setStream($stream);
+		$address = new Address();
+		$address->setFormatted('111 North First Street, New York, NY 11111');
+		$address->setStreetAddress('111 North First Street');
+		$address->setLocality('New York');
+		$address->setRegion('NY');
+		$address->setPostalCode('11111');
+		$address->setCountry('US');
 
 		$content = <<<JSON
-  {
-    "objectType": "audio",
-    "displayName": "Cute little kittens",
-    "embedCode": "<audio controls='controls'>...</audio>",
-    "stream": {
-      "url": "http://example.org/my_audio.mp3"
-    }
-  }
+{
+  "formatted": "111 North First Street, New York, NY 11111",
+  "streetAddress": "111 North First Street",
+  "locality": "New York",
+  "region": "NY",
+  "postalCode": "11111",
+  "country": "US"
+}
 JSON;
 
-		$this->assertRecordEqualsContent($audio, $content);
+		$this->assertRecordEqualsContent($address, $content);
 
-		$this->assertEquals('<audio controls=\'controls\'>...</audio>', $audio->getEmbedCode());
-		$this->assertEquals($stream, $audio->getStream());
+		$this->assertEquals('111 North First Street, New York, NY 11111', $address->getFormatted());
+		$this->assertEquals('111 North First Street', $address->getStreetAddress());
+		$this->assertEquals('New York', $address->getLocality());
+		$this->assertEquals('NY', $address->getRegion());
+		$this->assertEquals('11111', $address->getPostalCode());
+		$this->assertEquals('US', $address->getCountry());
 	}
 }

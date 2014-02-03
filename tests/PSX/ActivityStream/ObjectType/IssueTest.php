@@ -56,5 +56,7 @@ class IssueTest extends SerializeTestAbstract
 JSON;
 
 		$this->assertRecordEqualsContent($issue, $content);
+
+		$this->assertEquals(array('http://example.org/codes/inappropriateMaterial', 'http://example.org/codes/copyrightViolation'), $issue->getTypes());
 	}
 }

@@ -75,5 +75,7 @@ class RoleTest extends SerializeTestAbstract
 JSON;
 
 		$this->assertRecordEqualsContent($role, $content);
+
+		$this->assertEquals($members, $role->getMembers());
 	}
 }

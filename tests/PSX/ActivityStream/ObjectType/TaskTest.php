@@ -48,6 +48,9 @@ class TaskTest extends SerializeTestAbstract
 		$object->setDisplayName('A specification');
 		$object->setUrl('http://example.org/spec.html');
 
+		$subTask = new Task();
+		$subTask->setDisplayName('Foo task');
+
 		$task = new Task();
 		$task->setDisplayName('James needs to read the spec');
 		$task->setBy(new DateTime('2012-12-12T12:12:12Z'));
@@ -55,26 +58,44 @@ class TaskTest extends SerializeTestAbstract
 		$task->setActor($actor);
 		$task->setObject($object);
 		$task->setRequired(true);
+		$task->setPrerequisites(array($subTask));
+		$task->setSupersedes(array($subTask));
 
 		$content = <<<JSON
-  {
-    "objectType": "task",
-    "displayName": "James needs to read the spec",
-    "by": "2012-12-12T12:12:12+00:00",
-    "verb": "read",
-    "actor": {
-      "objectType": "person",
-      "displayName": "James"
-    },
-    "object": {
-      "objectType": "file",
-      "displayName": "A specification",
-      "url": "http://example.org/spec.html"
-    },
-    "required": true
-  }
+{
+  "actor": {
+    "objectType": "person",
+    "displayName": "James"
+  },
+  "by": "2012-12-12T12:12:12+00:00",
+  "object": {
+    "objectType": "file",
+    "displayName": "A specification",
+    "url": "http://example.org/spec.html"
+  },
+  "prerequisites": [{
+      "objectType": "task",
+      "displayName": "Foo task"
+    }],
+  "required": true,
+  "supersedes": [{
+      "objectType": "task",
+      "displayName": "Foo task"
+    }],
+  "verb": "read",
+  "objectType": "task",
+  "displayName": "James needs to read the spec"
+}
 JSON;
 
 		$this->assertRecordEqualsContent($task, $content);
+
+		$this->assertEquals($actor, $task->getActor());
+		$this->assertEquals(new DateTime('2012-12-12T12:12:12Z'), $task->getBy());
+		$this->assertEquals($object, $task->getObject());
+		$this->assertEquals(array($subTask), $task->getPrerequisites());
+		$this->assertEquals(true, $task->getRequired());
+		$this->assertEquals(array($subTask), $task->getSupersedes());
+		$this->assertEquals('read', $task->getVerb());
 	}
 }

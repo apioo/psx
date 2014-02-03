@@ -74,5 +74,12 @@ class BinaryTest extends SerializeTestAbstract
 JSON;
 
 		$this->assertRecordEqualsContent($object, $content);
+
+		$this->assertEquals('deflate', $binary->getCompression());
+		$this->assertEquals('dGhpcyBpcyB1bmNvbXByZXNzZWQgZGF0YQo=', $binary->getData());
+		$this->assertEquals('foo.txt', $binary->getFileUrl());
+		$this->assertEquals(25, $binary->getLength());
+		$this->assertEquals('827ae7e1ab45e4dd591d087c741e5770', $binary->getMd5());
+		$this->assertEquals('text/plain', $binary->getMimeType());
 	}
 }
