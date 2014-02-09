@@ -570,7 +570,7 @@ trait HandlerTestCase
 		$this->assertEquals(1, $handler->getCount(new Condition(array('userId', '=', 3))));
 	}
 
-	public function testGetRecordNew()
+	public function testGetRecord()
 	{
 		$handler = $this->getHandler();
 
@@ -581,27 +581,8 @@ trait HandlerTestCase
 
 		$obj = $handler->getRecord();
 
-		$this->assertInstanceOf('PSX\Data\Record', $obj);
+		$this->assertInstanceOf('PSX\Data\RecordInterface', $obj);
 		$this->assertEquals(array('id', 'userId', 'title', 'date'), array_keys($obj->getRecordInfo()->getFields()));
-	}
-
-	public function testGetRecordExisting()
-	{
-		$handler = $this->getHandler();
-
-		if(!$handler instanceof HandlerQueryInterface)
-		{
-			$this->markTestSkipped('Handler not an query interface');
-		}
-
-		$obj = $handler->getRecord(1);
-
-		$this->assertInstanceOf('PSX\Data\Record', $obj);
-		$this->assertEquals(array('id', 'userId', 'title', 'date'), array_keys($obj->getRecordInfo()->getFields()));
-		$this->assertEquals(1, $obj->getId());
-		$this->assertEquals(1, $obj->getUserId());
-		$this->assertEquals('foo', $obj->getTitle());
-		$this->assertInstanceOf('DateTime', $obj->getDate());
 	}
 
 	public function testCreate()
