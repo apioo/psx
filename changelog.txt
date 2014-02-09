@@ -1,4 +1,18 @@
 
+0.8.3
+* Changed getRecord of HandlerQueryInterface its only possible to get a new 
+  record containing all supported fields
+* Implemented http request and response through the complete framework lifecycle
+* Added callback resolver which builds an php callback from an location
+* Removed output buffering for more transparent debugging
+* Make http library compatible to the upcomming psr-7
+* Updated activity streams according to RFC draft
+* Removed docbook documentation infavor of reStructuredText files
+
+0.8.2
+* Improve parsing of routing file
+* Fix bug that the sended headers are not correctly parsed
+
 0.8.1
 * Add http callback handler and add response parser class
 * Fix html parser single and double quotes in attributes
