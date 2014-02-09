@@ -38,7 +38,7 @@ use PSX\Handler\HandlerManipulationInterface;
 use PSX\Handler\HandlerQueryInterface;
 
 /**
- * This module simplifies creating an API from an handler
+ * This controller simplifies creating an API from an handler
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
@@ -46,6 +46,8 @@ use PSX\Handler\HandlerQueryInterface;
  */
 abstract class HandlerApiAbstract extends ApiAbstract
 {
+	protected $_handler;
+
 	/**
 	 * @httpMethod GET
 	 * @path /
@@ -107,8 +109,7 @@ abstract class HandlerApiAbstract extends ApiAbstract
 				throw new Exception('Method not allowed', 405);
 			}
 
-			$record = $this->getHandler()->getRecord();
-			$record = $this->import($record);
+			$record = $this->import($this->getHandler()->getRecord());
 
 			$this->beforeValidate($record);
 
@@ -126,7 +127,7 @@ abstract class HandlerApiAbstract extends ApiAbstract
 			$this->getHandler()->create($record);
 
 			// message
-			$msg = new Message('You have successful create a ' . $record->getName(), true);
+			$msg = new Message('You have successful create a ' . $record->getRecordInfo()->getName(), true);
 
 			$this->setResponse($msg);
 		}
@@ -170,7 +171,7 @@ abstract class HandlerApiAbstract extends ApiAbstract
 			$this->getHandler()->update($record);
 
 			// message
-			$msg = new Message('You have successful update a ' . $record->getName(), true);
+			$msg = new Message('You have successful update a ' . $record->getRecordInfo()->getName(), true);
 
 			$this->setResponse($msg);
 		}
@@ -214,7 +215,7 @@ abstract class HandlerApiAbstract extends ApiAbstract
 			$this->getHandler()->delete($record);
 
 			// message
-			$msg = new Message('You have successful delete a ' . $record->getName(), true);
+			$msg = new Message('You have successful delete a ' . $record->getRecordInfo()->getName(), true);
 
 			$this->setResponse($msg);
 		}
@@ -237,8 +238,7 @@ abstract class HandlerApiAbstract extends ApiAbstract
 	}
 
 	/**
-	 * Method wich is called before the record gets validated if a filter 
-	 * definition is available
+	 * Method wich is called before the record gets validated
 	 *
 	 * @param PSX\Data\RecordInterface $record
 	 */
@@ -247,8 +247,7 @@ abstract class HandlerApiAbstract extends ApiAbstract
 	}
 
 	/**
-	 * Method wich is called after the record was validated if a filter 
-	 * definition is available
+	 * Method wich is called after the record was validated
 	 *
 	 * @param PSX\Data\RecordInterface $record
 	 */
