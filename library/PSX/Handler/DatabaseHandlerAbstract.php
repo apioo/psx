@@ -33,6 +33,7 @@ use PSX\Sql;
 use PSX\Sql\Condition;
 use PSX\Sql\TableInterface;
 use PSX\Sql\TableManager;
+use RuntimeException;
 
 /**
  * Database handler wich implements all necessary methods using an
@@ -134,24 +135,6 @@ abstract class DatabaseHandlerAbstract extends HandlerAbstract
 		return $select->getTotalResults();
 	}
 
-	public function getRecord($id = null)
-	{
-		if(empty($id))
-		{
-			$columns = $this->table->getColumns();
-			$keys    = array_keys($columns);
-			$values  = array_fill(0, count($columns), null);
-
-			return new Record($this->table->getDisplayName(), array_combine($keys, $values));
-		}
-		else
-		{
-			$columns = array_keys($this->table->getColumns());
-
-			return $this->get($id, $columns);
-		}
-	}
-
 	public function create(RecordInterface $record)
 	{
 		$this->table->insert($record);
@@ -241,6 +224,9 @@ abstract class DatabaseHandlerAbstract extends HandlerAbstract
 			}
 			else
 			{
+				// @TODO how to handle columns from an join which are not listed 
+				// in the table ... probably we can look at the table
+				// connections to determine the field type but this is expensive
 				$result[$key] = $value;
 			}
 		}

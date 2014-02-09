@@ -171,21 +171,6 @@ abstract class DoctrineHandlerAbstract extends HandlerAbstract
 		return $qb->getQuery()->getSingleScalarResult();
 	}
 
-	public function getRecord($id = null)
-	{
-		if(empty($id))
-		{
-			$keys    = $this->getSupportedFields();
-			$values  = array_fill(0, count($keys), null);
-
-			return new Record($this->getPrettyEntityName(), array_combine($keys, $values));
-		}
-		else
-		{
-			return $this->get($id, $this->getSupportedFields());
-		}
-	}
-
 	public function create(RecordInterface $record)
 	{
 		$entity = new $this->entityName();

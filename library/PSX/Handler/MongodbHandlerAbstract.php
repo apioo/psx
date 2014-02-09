@@ -128,21 +128,6 @@ abstract class MongodbHandlerAbstract extends DataHandlerQueryAbstract implement
 		return $this->mapping->getCollection()->find($query)->count();
 	}
 
-	public function getRecord($id = null)
-	{
-		if(empty($id))
-		{
-			$keys   = $this->getSupportedFields();
-			$values = array_fill(0, count($keys), null);
-
-			return new Record($this->mapping->getCollection()->getName(), array_combine($keys, $values));
-		}
-		else
-		{
-			return $this->get($id, $this->getSupportedFields());
-		}
-	}
-
 	public function create(RecordInterface $record)
 	{
 		$fields = $this->normalizeData($record);

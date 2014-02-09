@@ -161,24 +161,6 @@ abstract class MapHandlerAbstract extends DataHandlerQueryAbstract
 		return $count;
 	}
 
-	public function getRecord($id = null)
-	{
-		if(empty($id))
-		{
-			$fields  = $this->mapping->getFields();
-			$keys    = array_keys($fields);
-			$values  = array_fill(0, count($fields), null);
-
-			return new Record('record', array_combine($keys, $values));
-		}
-		else
-		{
-			$fields  = array_keys($this->mapping->getFields());
-
-			return $this->get($id, $fields);
-		}
-	}
-
 	/**
 	 * Returns the mapping informations for this document
 	 *

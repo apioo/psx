@@ -26,6 +26,7 @@ namespace PSX\Handler;
 use BadMethodCallException;
 use InvalidArgumentException;
 use PSX\Data\Collection;
+use PSX\Data\Record;
 use PSX\Data\ResultSet;
 use PSX\Sql;
 use PSX\Sql\Condition;
@@ -51,6 +52,14 @@ abstract class HandlerQueryAbstract implements HandlerQueryInterface
 		$result = $this->getAll($fields, 0, 1, null, null, $con);
 
 		return current($result);
+	}
+
+	public function getRecord()
+	{
+		$name   = lcfirst(substr(strrchr(__CLASS__, '\\'), 1));
+		$fields = array_combine($this->getSupportedFields(), array_fill(0, count($this->getSupportedFields()), null));
+
+		return new Record($name, $fields);
 	}
 
 	/**

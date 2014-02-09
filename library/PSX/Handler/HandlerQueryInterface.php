@@ -77,11 +77,11 @@ interface HandlerQueryInterface
 	public function getCount(Condition $con = null);
 
 	/**
-	 * Returns a new record if the $id is not defined else an existing record
+	 * Returns the record which can be used for import
 	 *
 	 * @param integer $id
 	 * @return PSX\Data\RecordInterface
 	 */
-	public function getRecord($id = null);
+	public function getRecord();
 }
 
