@@ -23,25 +23,68 @@
 
 namespace PSX\Handler\Database;
 
-use PSX\Handler\DatabaseHandlerAbstract;
+use PSX\Data\RecordAbstract;
 
 /**
- * TestHandler
+ * TestRecord
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class TestHandler extends DatabaseHandlerAbstract
+class TestRecord extends RecordAbstract
 {
-	public function getDefaultSelect()
+	protected $id;
+	protected $userId;
+	protected $title;
+	protected $date;
+
+	/**
+	 * @param integer $id
+	 */
+	public function setId($id)
 	{
-		return $this->manager->getTable('PSX\Handler\Database\TestTable')
-			->select(array('id', 'userId', 'title', 'date'));
+		$this->id = $id;
 	}
 
-	public function getRecord()
+	public function getId()
 	{
-		return new TestRecord();
+		return $this->id;
+	}
+
+	/**
+	 * @param integer $userId
+	 */
+	public function setUserId($userId)
+	{
+		$this->userId = $userId;
+	}
+
+	public function getUserId()
+	{
+		return $this->userId;
+	}
+
+	public function setTitle($title)
+	{
+		$this->title = $title;
+	}
+
+	public function getTitle()
+	{
+		return $this->title;
+	}
+
+	/**
+	 * @param string $date
+	 */
+	public function setDate($date)
+	{
+		$this->date = $date;
+	}
+
+	public function getDate()
+	{
+		return $this->date;
 	}
 }

@@ -23,6 +23,7 @@
 
 namespace PSX\Controller;
 
+use PDOException;
 use PSX\Http\Request;
 use PSX\Http\Response;
 use PSX\Http\Stream\TempStream;
@@ -40,17 +41,50 @@ use ReflectionClass;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-abstract class ControllerTestCase extends \PHPUnit_Framework_TestCase
+abstract class ControllerTestCase extends \PHPUnit_Extensions_Database_TestCase
 {
+	protected static $con;
+
 	protected $paths;
+	protected $sql;
+
+	public function getConnection()
+	{
+		if(self::$con === null)
+		{
+			try
+			{
+				self::$con = getContainer()->get('sql');
+			}
+			catch(PDOException $e)
+			{
+				$this->markTestSkipped($e->getMessage());
+			}
+		}
+
+		if($this->sql === null)
+		{
+			$this->sql = self::$con;
+		}
+
+		return $this->createDefaultDBConnection($this->sql, getContainer()->get('config')->get('psx_sql_db'));
+	}
+
+	public function getDataSet()
+	{
+		return $this->createFlatXMLDataSet(dirname(__FILE__) . '/../Handler/handler_fixture.xml');
+	}
 
 	protected function setUp()
 	{
+		parent::setUp();
+
 		$this->paths = $this->getPaths();
 	}
 
 	protected function tearDown()
 	{
+		parent::tearDown();
 	}
 
 	public function testGetStage()
