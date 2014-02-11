@@ -23,6 +23,7 @@
 
 namespace PSX\Dispatch;
 
+use PSX\Http;
 use PSX\Http\Response;
 use PSX\Http\ResponseParser;
 
@@ -39,6 +40,24 @@ class Sender implements SenderInterface
 	{
 		if(PHP_SAPI != 'cli')
 		{
+			// send response code
+			$code = $response->getCode();
+			if(!isset(Http::$codes[$code]))
+			{
+				$code = 200;
+			}
+
+			header($response->getProtocolVersion() . ' ' . $code . ' ' . Http::$codes[$code]);
+
+			// if we have an locaion header
+			$location = (string) $response->getHeader('Location');
+
+			if(!empty($location))
+			{
+				header('Location: ' . $location);
+				exit;
+			}
+
 			// send header
 			$headers = ResponseParser::buildHeaderFromResponse($response);
 
