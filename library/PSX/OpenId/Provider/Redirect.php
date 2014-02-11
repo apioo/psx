@@ -164,7 +164,12 @@ class Redirect
 		return $this->params;
 	}
 
-	public function redirect($secret, $assocType)
+	/**
+	 * Builds the url to redirect the user back to the relying party
+	 *
+	 * @return PSX\Url
+	 */
+	public function getUrl($secret, $assocType)
 	{
 		// build signature
 		$params    = OpenId::extractParams($this->buildParams());
@@ -188,9 +193,7 @@ class Redirect
 			$url->addParam($k, $v);
 		}
 
-		// redirect
-		header('Location: ' . strval($url));
-		exit;
+		return $url;
 	}
 
 	/**
@@ -199,7 +202,7 @@ class Redirect
 	 *
 	 * @return array
 	 */
-	private function getParamsToSign(array $params)
+	protected function getParamsToSign(array $params)
 	{
 		if(isset($params['mode']))
 		{
@@ -209,7 +212,7 @@ class Redirect
 		return array_keys($params);
 	}
 
-	private function buildParams()
+	protected function buildParams()
 	{
 		// build basic params
 		$params = array(
@@ -232,7 +235,7 @@ class Redirect
 
 		// merge extensions we use + to combine the array because with
 		// array_merge we would overwrite existing values
-		$params = $params + $this->getParams();
+		$params = $params + (array) $this->getParams();
 
 		return $params;
 	}

@@ -23,9 +23,14 @@
 
 namespace PSX\OpenId;
 
+use PSX\Controller\ControllerTestCase;
+use PSX\Http\Request;
+use PSX\Http\Response;
+use PSX\Http\Stream\TempStream;
 use PSX\OpenId;
 use PSX\OpenSsl;
 use PSX\OpenSsl\PKey;
+use PSX\Url;
 
 /**
  * ProviderAbstractTest
@@ -34,14 +39,40 @@ use PSX\OpenSsl\PKey;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class ProviderAbstractTest extends \PHPUnit_Framework_TestCase
+class ProviderAbstractTest extends ControllerTestCase
 {
-	protected function setUp()
+	public function testFlow()
 	{
-	}
+		$consumerRequest = $this->generateConsumerRequest();
 
-	protected function tearDown()
-	{
+		// association request
+		$data = $this->doAssociation($consumerRequest['modulus'], $consumerRequest['gen'], $consumerRequest['consumer_public']);
+
+		// we received the encrypted secret over the wire. The client can now
+		// decrypt the secret
+		$assocHandle     = $data['assoc_handle'];
+		$assocType       = $data['assoc_type'];
+		$serverPublicKey = $data['dh_server_public'];
+		$encMacKey       = $data['enc_mac_key'];
+
+		$this->assertTrue(!empty($assocHandle));
+		$this->assertTrue(!empty($assocType));
+		$this->assertTrue(!empty($serverPublicKey));
+		$this->assertTrue(!empty($encMacKey));
+
+		$serverPub    = base64_decode($serverPublicKey);
+		$dhSec        = OpenSsl::dhComputeKey($serverPub, $consumerRequest['pkey']);
+		$sec          = OpenSsl::digest(ProviderAbstract::btwoc($dhSec), 'SHA1', true);
+		$serverSecret = base64_encode($sec ^ base64_decode($data['enc_mac_key']));
+
+		// the client has established the association we can make now an
+		// checkid setup request. If the user is authenticated he gets 
+		// redirected back to the relying party
+		$url = $this->doCheckidSetupRequest($assocHandle);
+
+		// later the relying party calls check authentication to verify the 
+		// callback
+		$this->doCheckAuthentication($url);
 	}
 
 	public function testGetExtension()
@@ -75,64 +106,83 @@ class ProviderAbstractTest extends \PHPUnit_Framework_TestCase
 		), ProviderAbstract::getExtension($data, 'http://openid.net/srv/ax/1.1'));
 	}
 
-	public function testDhSha1Round1()
+	protected function getPaths()
 	{
-		$this->testDhSha1();
+		return array(
+			'/openid' => 'PSX\OpenId\TestProviderAbstract',
+		);
 	}
 
-	public function testDhSha1Round2()
+	protected function doAssociation($modulus, $gen, $consumerPublic)
 	{
-		$this->testDhSha1();
+		$data     = http_build_query(array(
+			'openid.ns'                 => 'http://specs.openid.net/auth/2.0', 
+			'openid.mode'               => 'associate', 
+			'openid.assoc_type'         => 'HMAC-SHA1', 
+			'openid.session_type'       => 'DH-SHA1',
+			'openid.dh_modulus'         => $modulus,
+			'openid.dh_gen'             => $gen,
+			'openid.dh_consumer_public' => $consumerPublic,
+		), '', '&');
+		$body     = new TempStream(fopen('php://memory', 'r+'));
+		$request  = new Request(new Url('http://127.0.0.1/openid'), 'POST', array('Content-Type' => 'application/x-www-urlencoded'), $data);
+		$response = new Response();
+		$response->setBody($body);
+
+		$controller = $this->loadController($request, $response);
+		$body       = (string) $response->getBody();
+
+		$data = OpenId::keyValueDecode($body);
+
+		$this->assertEquals('http://specs.openid.net/auth/2.0', $data['ns']);
+		$this->assertEquals('46800', $data['expires_in']);
+		$this->assertEquals('DH-SHA1', $data['session_type']);
+		$this->assertEquals('HMAC-SHA1', $data['assoc_type']);
+
+		return $data;
 	}
 
-	public function testDhSha1Round3()
+	protected function doCheckidSetupRequest($assocHandle)
 	{
-		$this->testDhSha1();
+		$url = new Url('http://127.0.0.1/openid');
+		$url->addParam('openid_ns', 'http://specs.openid.net/auth/2.0');
+		$url->addParam('openid_mode', 'checkid_setup');
+		$url->addParam('openid_claimed_id', 'http://k42b3.com');
+		$url->addParam('openid_identity', 'http://k42b3.com');
+		$url->addParam('openid_assoc_handle', $assocHandle);
+		$url->addParam('openid_return_to', 'http://127.0.0.1/callback');
+
+		$body     = new TempStream(fopen('php://memory', 'r+'));
+		$request  = new Request($url, 'GET');
+		$response = new Response();
+		$response->setBody($body);
+
+		$controller = $this->loadController($request, $response);
+
+		return new Url((string) $response->getHeader('Location'));
 	}
 
-	public function testDhSha1Round4()
+	protected function doCheckAuthentication(Url $url)
 	{
-		$this->testDhSha1();
+		$params = $url->getParams();
+		$params['openid.mode'] = 'check_authentication';
+
+		$data     = http_build_query($params, '', '&');
+		$body     = new TempStream(fopen('php://memory', 'r+'));
+		$request  = new Request(new Url('http://127.0.0.1/openid'), 'POST', array('Content-Type' => 'application/x-www-urlencoded'), $data);
+		$response = new Response();
+		$response->setBody($body);
+
+		$controller = $this->loadController($request, $response);
+		$body       = (string) $response->getBody();
+
+		$data = OpenId::keyValueDecode($body);
+
+		$this->assertEquals('http://specs.openid.net/auth/2.0', $data['ns']);
+		$this->assertEquals('true', $data['is_valid']);
 	}
 
-	public function testDhSha1Round5()
-	{
-		$this->testDhSha1();
-	}
-
-	public function testDhSha1Round6()
-	{
-		$this->testDhSha1();
-	}
-
-	public function testDhSha1()
-	{
-		// generate consumer
-		$request = $this->generateConsumerRequest();
-
-		// generate server
-		$dhGen         = $request['gen'];
-		$dhModulus     = $request['modulus'];
-		$dhConsumerPub = $request['consumer_public'];
-		$dhFunc        = 'SHA1';
-		$secret        = ProviderAbstract::randomBytes(20);
-
-		$res = ProviderAbstract::generateDh($dhGen, $dhModulus, $dhConsumerPub, $dhFunc, $secret);
-
-		$this->assertEquals(true, isset($res['pubKey']));
-		$this->assertEquals(true, isset($res['macKey']));
-
-		// calculate consumer
-		$serverPub    = base64_decode($res['pubKey']);
-		$dhSec        = OpenSsl::dhComputeKey($serverPub, $request['pkey']);
-		$sec          = OpenSsl::digest(ProviderAbstract::btwoc($dhSec), $dhFunc, true);
-		$serverSecret = $sec ^ base64_decode($res['macKey']);
-
-		// compare with server
-		$this->assertEquals(true, $secret === $serverSecret);
-	}
-
-	private function generateConsumerRequest()
+	protected function generateConsumerRequest()
 	{
 		$g = pack('H*', ProviderAbstract::DH_G);
 		$p = pack('H*', ProviderAbstract::DH_P);

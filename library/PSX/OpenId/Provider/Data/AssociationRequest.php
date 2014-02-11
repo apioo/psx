@@ -48,40 +48,6 @@ class AssociationRequest extends RecordAbstract
 	protected $dhGen;
 	protected $dhConsumerPublic;
 
-	protected $assocHandle;
-	protected $macKey;
-	protected $dhServerPublic;
-	protected $encMacKey;
-
-	private $assoc;
-
-	public function getRecordInfo()
-	{
-		$fields = array();
-		$fields['assoc_handle'] = $this->assocHandle;
-		$fields['session_type'] = $this->sessionType;
-		$fields['assoc_type']   = $this->assocType;
-
-		switch($this->sessionType)
-		{
-			case 'no-encryption':
-				$fields['mac_key'] = $this->macKey;
-				break;
-
-			case 'DH-SHA1':
-			case 'DH-SHA256':
-				$fields['dh_server_public'] = $this->dhServerPublic;
-				$fields['enc_mac_key']      = $this->encMacKey;
-				break;
-
-			default:
-				throw new InvalidDataException('Invalid session type');
-				break;
-		}
-
-		return new RecordInfo('request', $fields);
-	}
-
 	public function setAssocType($assocType)
 	{
 		if(in_array($assocType, OpenId::$supportedAssocTypes))
@@ -144,67 +110,5 @@ class AssociationRequest extends RecordAbstract
 	public function getDhConsumerPublic()
 	{
 		return $this->dhConsumerPublic;
-	}
-
-	public function getAssociation()
-	{
-		return $this->assoc;
-	}
-
-	public function generateAssociation()
-	{
-		// generate secret
-		switch($this->assocType)
-		{
-			case 'HMAC-SHA1':
-				$secret  = ProviderAbstract::randomBytes(20);
-				$macFunc = 'SHA1';
-				break;
-
-			case 'HMAC-SHA256':
-				$secret  = ProviderAbstract::randomBytes(32);
-				$macFunc = 'SHA256';
-				break;
-
-			default:
-				throw new InvalidDataException('Invalid association type');
-				break;
-		}
-
-		// generate dh
-		switch($this->sessionType)
-		{
-			case 'no-encryption':
-				// $secret = base64_encode($secret);
-				// $this->macKey = $secret;
-				throw new InvalidDataException('no-encryption not supported');
-				break;
-
-			case 'DH-SHA1':
-				$dh = ProviderAbstract::generateDh($this->getDhGen(), $this->getDhModulus(), $this->getDhConsumerPublic(), $macFunc, $secret);
-
-				$this->dhServerPublic = $dh['pubKey'];
-				$this->encMacKey      = $dh['macKey'];
-				break;
-
-			case 'DH-SHA256':
-				$dh = ProviderAbstract::generateDh($this->getDhGen(), $this->getDhModulus(), $this->getDhConsumerPublic(), $macFunc, $secret);
-
-				$this->dhServerPublic = $dh['pubKey'];
-				$this->encMacKey      = $dh['macKey'];
-				break;
-
-			default:
-				throw new InvalidDataException('Invalid association type');
-				break;
-		}
-
-		$this->assocHandle = ProviderAbstract::generateHandle();
-
-		$this->assoc = new Association();
-		$this->assoc->setAssocHandle($this->assocHandle);
-		$this->assoc->setAssocType($this->assocType);
-		$this->assoc->setSessionType($this->sessionType);
-		$this->assoc->setSecret(base64_encode($secret));
 	}
 }
