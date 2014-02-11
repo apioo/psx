@@ -37,7 +37,8 @@ class ResponseFactory implements ResponseFactoryInterface
 {
 	public function createResponse()
 	{
-		$response = new Response();
+		$scheme   = isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.1';
+		$response = new Response($scheme);
 		$response->addHeader('X-Powered-By', 'psx');
 		/*
 		$response->addHeader('Expires', 'Thu, 09 Oct 1986 01:00:00 GMT');
