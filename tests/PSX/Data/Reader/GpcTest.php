@@ -25,6 +25,8 @@ namespace PSX\Data\Reader;
 
 use PSX\Data\ReaderInterface;
 use PSX\Http\Message;
+use PSX\Http\Request;
+use PSX\Url;
 
 /**
  * GpcTest
@@ -45,15 +47,26 @@ class GpcTest extends \PHPUnit_Framework_TestCase
 
 	public function testRead()
 	{
-		$_REQUEST['foo'] = 'bar';
-		$_REQUEST['bar'] = 'foo';
-
 		$reader  = new Gpc();
-		$message = new Message(array(), '');
+		$message = new Request(new Url('http://127.0.0.1?foo=bar'), 'GET', array(), 'bar=foo');
 		$gpc     = $reader->read($message);
 
 		$expect = array(
 			'foo' => 'bar', 
+			'bar' => 'foo'
+		);
+
+		$this->assertEquals(true, is_array($gpc));
+		$this->assertEquals($expect, $gpc);
+	}
+
+	public function testReadOnlyPost()
+	{
+		$reader  = new Gpc();
+		$message = new Message(array(), 'bar=foo');
+		$gpc     = $reader->read($message);
+
+		$expect = array(
 			'bar' => 'foo'
 		);
 
