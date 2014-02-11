@@ -26,6 +26,7 @@ namespace PSX\Data\Reader;
 use PSX\Data\ReaderAbstract;
 use PSX\Data\Record\DefaultImporter;
 use PSX\Http\Message;
+use PSX\Http\Request;
 
 /**
  * Gpc
@@ -38,7 +39,20 @@ class Gpc extends ReaderAbstract
 {
 	public function read(Message $message)
 	{
-		return $_REQUEST;
+		if($message instanceof Request)
+		{
+			$get = $message->getUrl()->getParams();
+		}
+		else
+		{
+			$get = array();
+		}
+
+		$body = (string) $message->getBody();
+
+		parse_str($body, $post);
+
+		return array_merge($get, $post);
 	}
 
 	public function getDefaultImporter()
