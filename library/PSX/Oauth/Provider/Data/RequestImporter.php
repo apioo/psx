@@ -28,6 +28,7 @@ use PSX\Data\InvalidDataException;
 use PSX\Data\RecordInterface;
 use PSX\Data\Record\ImporterInterface;
 use PSX\Http\Message;
+use PSX\Oauth;
 
 /**
  * RequestImporter
@@ -58,12 +59,10 @@ class RequestImporter implements ImporterInterface
 			throw new InvalidArgumentException('Data must be an Message object');
 		}
 
-		$header = $data->getHeader();
+		$auth = (string) $data->getHeader('Authorization');
 
-		if(isset($header['authorization']))
+		if(!empty($auth))
 		{
-			$auth = $header['authorization'];
-
 			if(strpos($auth, 'OAuth') !== false)
 			{
 				// get oauth data
@@ -95,7 +94,7 @@ class RequestImporter implements ImporterInterface
 					{
 						$method = 'set' . ucfirst($k);
 
-						if(is_callable(array($this, $method)))
+						if(method_exists($record, $method))
 						{
 							$record->$method($data[$v]);
 						}

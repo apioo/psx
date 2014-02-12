@@ -21,67 +21,44 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Oauth\Provider\Data;
+namespace PSX\Oauth\Provider;
 
-use PSX\Data\RecordAbstract;
-use PSX\Data\RecordInfo;
-use PSX\Data\ReaderInterface;
-use PSX\Data\NotSupportedException;
+use PSX\ControllerAbstract;
+use PSX\Dispatch\Filter\OauthAuthentication;
+use PSX\OauthTest;
+use PSX\Oauth\Provider\Data\Response;
+use PSX\Oauth\Provider\Data\Consumer;
 
 /**
- * Response
+ * TestOauth
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Response extends RecordAbstract
+class TestOauth extends ControllerAbstract
 {
-	protected $token;
-	protected $tokenSecret;
-	protected $params = array();
-
-	public function getRecordInfo()
+	public function getRequestFilter()
 	{
-		return new RecordInfo('response', array_merge(array(
-			'oauth_token'        => $this->token,
-			'oauth_token_secret' => $this->tokenSecret,
-		), $this->params));
+		$handle = new OauthAuthentication(function($consumerKey, $token){
+
+			if($consumerKey == OauthTest::CONSUMER_KEY && $token == OauthTest::TOKEN)
+			{
+				return new Consumer(OauthTest::CONSUMER_KEY, OauthTest::CONSUMER_SECRET, OauthTest::TOKEN, OauthTest::TOKEN_SECRET);
+			}
+
+		});
+
+		return array($handle);
 	}
 
-	public function setToken($token)
+	/**
+	 * @httpMethod GET
+	 * @path /
+	 */
+	public function doIndex()
 	{
-		$this->token = $token;
-	}
-
-	public function getToken()
-	{
-		return $this->token;
-	}
-
-	public function setTokenSecret($tokenSecret)
-	{
-		$this->tokenSecret = $tokenSecret;
-	}
-
-	public function getTokenSecret()
-	{
-		return $this->tokenSecret;
-	}
-
-	public function setParams(array $params)
-	{
-		$this->params = $params;
-	}
-
-	public function getParams()
-	{
-		return $this->params;
-	}
-
-	public function addParam($key, $value)
-	{
-		$this->params[$key] = $value;
+		$this->response->setStatusCode(200);
+		$this->response->getBody()->write('SUCCESS');
 	}
 }
-

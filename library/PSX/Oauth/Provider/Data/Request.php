@@ -56,15 +56,15 @@ class Request extends RecordAbstract
 	public function getRecordInfo()
 	{
 		return new RecordInfo('request', array(
-			'consumer_key'     => $this->consumerKey,
-			'token'            => $this->token,
-			'signature_method' => $this->signatureMethod,
-			'signature'        => $this->signature,
-			'timestamp'        => $this->timestamp,
-			'nonce'            => $this->nonce,
-			'callback'         => $this->callback,
-			'version'          => $this->version,
-			'verifier'         => $this->verifier
+			'oauth_consumer_key'     => $this->consumerKey,
+			'oauth_token'            => $this->token,
+			'oauth_signature_method' => $this->signatureMethod,
+			'oauth_signature'        => $this->signature,
+			'oauth_timestamp'        => $this->timestamp,
+			'oauth_nonce'            => $this->nonce,
+			'oauth_callback'         => $this->callback,
+			'oauth_version'          => $this->version,
+			'oauth_verifier'         => $this->verifier
 		));
 	}
 

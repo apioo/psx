@@ -42,7 +42,25 @@ use PSX\Url;
  */
 abstract class RequestAbstract extends ApiAbstract
 {
-	protected function handle()
+	/**
+	 * @httpMethod GET
+	 * @path /
+	 */
+	public function doGet()
+	{
+		throw new Exception('Invalid request method', 405);
+	}
+
+	/**
+	 * @httpMethod POST
+	 * @path /
+	 */
+	public function doPost()
+	{
+		$this->doHandle();
+	}
+
+	protected function doHandle()
 	{
 		$request  = new Request();
 		$importer = new Data\RequestImporter();
@@ -55,7 +73,7 @@ abstract class RequestAbstract extends ApiAbstract
 			'version',
 			'callback',
 		));
-		$importer->import($request, $this->getRequest(ReaderInterface::RAW));
+		$importer->import($request, $this->getBody(ReaderInterface::RAW));
 
 		$consumer = $this->getConsumer($request->getConsumerKey());
 
@@ -65,7 +83,7 @@ abstract class RequestAbstract extends ApiAbstract
 
 			$method = $this->request->getMethod();
 			$url    = $this->request->getUrl();
-			$params = array_merge($request->getData(), $this->request->getUrl()->getParams());
+			$params = array_merge($request->getRecordInfo()->getData(), $this->request->getUrl()->getParams());
 
 			$baseString = Oauth::buildBasestring($method, $url, $params);
 

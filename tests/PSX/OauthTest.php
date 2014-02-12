@@ -23,9 +23,11 @@
 
 namespace PSX;
 
+use PSX\Http\Authentication;
 use PSX\Http\GetRequest;
-use PSX\Http\Handler\Mock;
-use PSX\Http\Handler\MockCapture;
+use PSX\Http\Handler\Callback;
+use PSX\Http\Response;
+use PSX\Http\ResponseParser;
 
 /**
  * OauthTest
@@ -36,11 +38,6 @@ use PSX\Http\Handler\MockCapture;
  */
 class OauthTest extends \PHPUnit_Framework_TestCase
 {
-	const URL_REQUEST_TOKEN = 'http://test.phpsx.org/oauth/requestToken';
-	const URL_AUTH          = 'http://test.phpsx.org/oauth/auth';
-	const URL_ACCESS_TOKEN  = 'http://test.phpsx.org/oauth/accessToken';
-	const URL_API           = 'http://test.phpsx.org/oauth/api';
-
 	const CONSUMER_KEY      = 'dpf43f3p2l4k3l03';
 	const CONSUMER_SECRET   = 'kd94hf93k423kf44';
 
@@ -50,76 +47,118 @@ class OauthTest extends \PHPUnit_Framework_TestCase
 	const TOKEN             = 'nnch734d00sl2jdk';
 	const TOKEN_SECRET      = 'pfkkdhi9sl3r4s00';
 
-	private $http;
-	private $oauth;
-
-	protected function setUp()
+	public function testFlow()
 	{
-		//$mockCapture = new MockCapture('tests/PSX/Oauth/oauth_http_fixture.xml');
-		$mock = Mock::getByXmlDefinition('tests/PSX/Oauth/oauth_http_fixture.xml');
+		$testCase = $this;
+		$http = new Http(new Callback(function($request) use ($testCase){
 
-		$this->http  = new Http($mock);
-		$this->oauth = new Oauth($this->http);
-	}
+			// request token
+			if($request->getUrl()->getPath() == '/requestToken')
+			{
+				$auth = Authentication::decodeParameters((string) $request->getHeader('Authorization'));
 
-	protected function tearDown()
-	{
-		unset($this->oauth);
-		unset($this->http);
-	}
+				$testCase->assertEquals(self::CONSUMER_KEY, $auth['oauth_consumer_key']);
+				$testCase->assertEquals('HMAC-SHA1', $auth['oauth_signature_method']);
+				$testCase->assertTrue(isset($auth['oauth_timestamp']));
+				$testCase->assertTrue(isset($auth['oauth_nonce']));
+				$testCase->assertEquals('1.0', $auth['oauth_version']);
+				$testCase->assertEquals('oob', $auth['oauth_callback']);
+				$testCase->assertTrue(isset($auth['oauth_signature']));
 
-	public function testRequestToken()
-	{
-		$url      = new Url(self::URL_REQUEST_TOKEN);
-		$response = $this->oauth->requestToken($url, self::CONSUMER_KEY, self::CONSUMER_SECRET);
+				$tmpToken       = self::TMP_TOKEN;
+				$tmpTokenSecret = self::TMP_TOKEN_SECRET;
 
-		// if we have requested too much tokens we get an error that we
-		// only request 5 valid tokens but the request was correct
-		if($response !== false)
-		{
-			$this->assertEquals(self::TMP_TOKEN, $response->getToken());
-			$this->assertEquals(self::TMP_TOKEN_SECRET, $response->getTokenSecret());
-		}
-		else
-		{
-			throw new Exception('Couldnt get request token');
-		}
-	}
+				$response = <<<TEXT
+HTTP/1.1 200 OK
+Date: Thu, 26 Sep 2013 16:36:25 GMT
+Content-Type: application/x-www-form-urlencoded
 
-	/**
-	 * @depends testRequestToken
-	 */
-	public function testAccessToken()
-	{
-		$url      = new Url(self::URL_ACCESS_TOKEN);
-		$response = $this->oauth->accessToken($url, self::CONSUMER_KEY, self::CONSUMER_SECRET, self::TMP_TOKEN, self::TMP_TOKEN_SECRET, self::VERIFIER);
+oauth_token={$tmpToken}&oauth_token_secret={$tmpTokenSecret}&oauth_callback_confirmed=1
+TEXT;
+			}
+			// access token
+			else if($request->getUrl()->getPath() == '/accessToken')
+			{
+				$auth = Authentication::decodeParameters((string) $request->getHeader('Authorization'));
 
-		// if we have requested too much tokens we get an error that we
-		// only request 5 valid tokens but the request was correct
-		if($response !== false)
-		{
-			$this->assertEquals(self::TOKEN, $response->getToken());
-			$this->assertEquals(self::TOKEN_SECRET, $response->getTokenSecret());
-		}
-		else
-		{
-			throw new Exception('Couldnt get access token');
-		}
-	}
+				$testCase->assertEquals(self::CONSUMER_KEY, $auth['oauth_consumer_key']);
+				$testCase->assertEquals(self::TMP_TOKEN, $auth['oauth_token']);
+				$testCase->assertEquals('HMAC-SHA1', $auth['oauth_signature_method']);
+				$testCase->assertTrue(isset($auth['oauth_timestamp']));
+				$testCase->assertTrue(isset($auth['oauth_nonce']));
+				$testCase->assertEquals('1.0', $auth['oauth_version']);
+				$testCase->assertEquals(self::VERIFIER, $auth['oauth_verifier']);
+				$testCase->assertTrue(isset($auth['oauth_signature']));
 
-	/**
-	 * @depends testAccessToken
-	 */
-	public function testApiRequest()
-	{
-		$url     = new Url(self::URL_API);
-		$request = new GetRequest($url, array(
-			'Authorization' => $this->oauth->getAuthorizationHeader($url, self::CONSUMER_KEY, self::CONSUMER_SECRET, self::TOKEN, self::TOKEN_SECRET, 'HMAC-SHA1', 'GET'),
-		));
+				$token       = self::TOKEN;
+				$tokenSecret = self::TOKEN_SECRET;
 
-		$response = $this->http->request($request);
+				$response = <<<TEXT
+HTTP/1.1 200 OK
+Date: Thu, 26 Sep 2013 16:36:26 GMT
+Content-Type: application/x-www-form-urlencoded
 
-		$this->assertEquals('SUCCESS', $response->getBody());
+oauth_token={$token}&oauth_token_secret={$tokenSecret}
+TEXT;
+			}
+			// api request
+			else if($request->getUrl()->getPath() == '/api')
+			{
+				$auth = Authentication::decodeParameters((string) $request->getHeader('Authorization'));
+
+				$testCase->assertEquals(self::CONSUMER_KEY, $auth['oauth_consumer_key']);
+				$testCase->assertEquals(self::TOKEN, $auth['oauth_token']);
+				$testCase->assertEquals('HMAC-SHA1', $auth['oauth_signature_method']);
+				$testCase->assertTrue(isset($auth['oauth_timestamp']));
+				$testCase->assertTrue(isset($auth['oauth_nonce']));
+				$testCase->assertEquals('1.0', $auth['oauth_version']);
+				$testCase->assertTrue(isset($auth['oauth_signature']));
+
+				$response = <<<TEXT
+HTTP/1.1 200 OK
+Date: Thu, 26 Sep 2013 16:36:26 GMT
+Content-Type: text/html; charset=UTF-8
+
+SUCCESS
+TEXT;
+			}
+
+			return Response::convert($response, ResponseParser::MODE_LOOSE)->toString();
+
+		}));
+
+		$oauth = new Oauth($http);
+
+		// request token
+		$url      = new Url('http://127.0.0.1/requestToken');
+		$response = $oauth->requestToken($url, self::CONSUMER_KEY, self::CONSUMER_SECRET);
+
+		$this->assertInstanceOf('PSX\Oauth\Provider\Data\Response', $response);
+		$this->assertEquals(self::TMP_TOKEN, $response->getToken());
+		$this->assertEquals(self::TMP_TOKEN_SECRET, $response->getTokenSecret());
+
+		// if we have optained temporary credentials we can redirect the user
+		// to grant access to the credentials
+		// $oauth->userAuthorization($url, array('oauth_token' => $response->getToken()))
+
+		// if the user gets redirected back we can exchange the temporary 
+		// credentials to an access token we also get an verifier as GET 
+		// parameter
+		$url      = new Url('http://127.0.0.1/accessToken');
+		$response = $oauth->accessToken($url, self::CONSUMER_KEY, self::CONSUMER_SECRET, self::TMP_TOKEN, self::TMP_TOKEN, self::VERIFIER);
+
+		$this->assertInstanceOf('PSX\Oauth\Provider\Data\Response', $response);
+		$this->assertEquals(self::TOKEN, $response->getToken());
+		$this->assertEquals(self::TOKEN_SECRET, $response->getTokenSecret());
+
+		// now we can make an request to the protected api
+		$url      = new Url('http://127.0.0.1/api');
+		$auth     = $oauth->getAuthorizationHeader($url, self::CONSUMER_KEY, self::CONSUMER_SECRET, self::TOKEN, self::TOKEN_SECRET, 'HMAC-SHA1', 'GET');
+		$request  = new GetRequest($url, array('Authorization' => $auth));
+		$response = $http->request($request);
+
+		$this->assertEquals(200, $response->getCode());
+		$this->assertEquals('SUCCESS', (string) $response->getBody());
 	}
 
 	public function testOAuthBuildAuthString()
@@ -139,7 +178,6 @@ class OauthTest extends \PHPUnit_Framework_TestCase
 		$url = new Url('http://localhost:8888/amun/public/index.php/api/auth/request');
 
 		$this->assertEquals('http://localhost:8888/amun/public/index.php/api/auth/request', Oauth::getNormalizedUrl($url));
-
 	}
 
 	/**
@@ -175,13 +213,11 @@ class OauthTest extends \PHPUnit_Framework_TestCase
 
 
 		$params = array(
-
 			'name='       => array('name' => ''),
 			'a=b'         => array('a' => 'b'),
 			'a=b&c=d'     => array('a' => 'b', 'c' => 'd'),
 			'a=x%2By'     => array('a' => 'x+y'),
 			'x=a&x%21y=a' => array('x!y' => 'a', 'x' => 'a'),
-
 		);
 
 		foreach($params as $expect => $param)
@@ -198,7 +234,6 @@ class OauthTest extends \PHPUnit_Framework_TestCase
 	public function testParameterEncoding()
 	{
 		$values = array(
-
 			'abcABC123' => 'abcABC123',
 			'-._~'      => '-._~',
 			'%'         => '%25',
@@ -207,7 +242,6 @@ class OauthTest extends \PHPUnit_Framework_TestCase
 			"\x0A"      => '%0A',
 			"\x20"      => '%20',
 			//"\x80"      => '%C2%80',
-
 		);
 
 		foreach($values as $k => $v)

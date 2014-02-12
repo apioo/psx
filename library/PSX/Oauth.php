@@ -42,11 +42,6 @@ class Oauth
 {
 	protected $http;
 
-	protected $requestMethod;
-	protected $url;
-	protected $params;
-	protected $baseString;
-
 	public function __construct(Http $http)
 	{
 		$this->http = $http;
@@ -70,7 +65,7 @@ class Oauth
 	 * @param string $method
 	 * @return PSX\Oauth\Provider\Data\Response
 	 */
-	public function requestToken(Url $url, $consumerKey, $consumerSecret, $method = 'HMAC-SHA1', $callback = false)
+	public function requestToken(Url $url, $consumerKey, $consumerSecret, $method = 'HMAC-SHA1', $callback = null)
 	{
 		$values = array(
 			'oauth_consumer_key'     => $consumerKey,
@@ -91,17 +86,15 @@ class Oauth
 		}
 
 		// build the base string
-		$this->requestMethod = 'POST';
-		$this->url           = $url;
-		$this->params        = array_merge($values, $url->getParams());
-
-		$this->baseString    = self::buildBasestring($this->requestMethod, $this->url, $this->params);
+		$requestMethod = 'POST';
+		$params        = array_merge($values, $url->getParams());
+		$baseString    = self::buildBasestring($requestMethod, $url, $params);
 
 		// get the signature object
 		$signature = self::getSignature($method);
 
 		// generate the signature
-		$values['oauth_signature'] = $signature->build($this->baseString, $consumerSecret);
+		$values['oauth_signature'] = $signature->build($baseString, $consumerSecret);
 
 		// request unauthorized token
 		$request  = new PostRequest($url, array(
@@ -171,17 +164,15 @@ class Oauth
 		);
 
 		// build the base string
-		$this->requestMethod = 'POST';
-		$this->url           = $url;
-		$this->params        = array_merge($values, $url->getParams());
-
-		$this->baseString    = self::buildBasestring($this->requestMethod, $this->url, $this->params);
+		$requestMethod = 'POST';
+		$params        = array_merge($values, $url->getParams());
+		$baseString    = self::buildBasestring($requestMethod, $url, $params);
 
 		// get the signature object
 		$signature = self::getSignature($method);
 
 		// generate the signature
-		$values['oauth_signature'] = $signature->build($this->baseString, $consumerSecret, $tokenSecret);
+		$values['oauth_signature'] = $signature->build($baseString, $consumerSecret, $tokenSecret);
 
 		// request access token
 		$request  = new PostRequest($url, array(
@@ -216,9 +207,10 @@ class Oauth
 	 * @param string $tokenSecret
 	 * @param string $method
 	 * @param string $requestMethod
+	 * @param array $post
 	 * @return string
 	 */
-	public function getAuthorizationHeader(Url $url, $consumerKey, $consumerSecret, $token, $tokenSecret, $method = 'HMAC-SHA1', $requestMethod = 'GET')
+	public function getAuthorizationHeader(Url $url, $consumerKey, $consumerSecret, $token, $tokenSecret, $method = 'HMAC-SHA1', $requestMethod = 'GET', array $post = array())
 	{
 		$values = array(
 			'oauth_consumer_key'     => $consumerKey,
@@ -230,17 +222,20 @@ class Oauth
 		);
 
 		// build the base string
-		$this->requestMethod = $requestMethod;
-		$this->url           = $url;
-		$this->params        = array_merge($values, $url->getParams());
+		$params = array_merge($values, $url->getParams());
 
-		$this->baseString    = self::buildBasestring($this->requestMethod, $this->url, $this->params);
+		if($requestMethod == 'POST' && !empty($post))
+		{
+			$params = array_merge($params, $post);
+		}
+
+		$baseString = self::buildBasestring($requestMethod, $url, $params);
 
 		// get the signature object
 		$signature = self::getSignature($method);
 
 		// generate the signature
-		$values['oauth_signature'] = $signature->build($this->baseString, $consumerSecret, $tokenSecret);
+		$values['oauth_signature'] = $signature->build($baseString, $consumerSecret, $tokenSecret);
 
 		// build request
 		$authorizationHeader = 'OAuth realm="psx", ' . self::buildAuthString($values);
@@ -449,26 +444,6 @@ class Oauth
 	public static function getSupportedMethods()
 	{
 		return array('HMAC-SHA1', 'PLAINTEXT');
-	}
-
-	public function getRequestMethod()
-	{
-		return $this->requestMethod;
-	}
-
-	public function getUrl()
-	{
-		return $this->url;
-	}
-
-	public function getParams()
-	{
-		return $this->params;
-	}
-
-	public function getBaseString()
-	{
-		return $this->baseString;
 	}
 }
 

@@ -21,67 +21,33 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Oauth\Provider\Data;
+namespace PSX\Oauth\Provider;
 
-use PSX\Data\RecordAbstract;
-use PSX\Data\RecordInfo;
-use PSX\Data\ReaderInterface;
-use PSX\Data\NotSupportedException;
+use PSX\OauthTest;
+use PSX\Oauth\Provider\Data\Request;
+use PSX\Oauth\Provider\Data\Response;
+use PSX\Oauth\Provider\Data\Consumer;
 
 /**
- * Response
+ * TestRequestAbstract
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Response extends RecordAbstract
+class TestRequestAbstract extends RequestAbstract
 {
-	protected $token;
-	protected $tokenSecret;
-	protected $params = array();
-
-	public function getRecordInfo()
+	protected function getConsumer($consumerKey)
 	{
-		return new RecordInfo('response', array_merge(array(
-			'oauth_token'        => $this->token,
-			'oauth_token_secret' => $this->tokenSecret,
-		), $this->params));
+		return new Consumer(OauthTest::CONSUMER_KEY, OauthTest::CONSUMER_SECRET);
 	}
 
-	public function setToken($token)
+	protected function getResponse(Consumer $consumer, Request $request)
 	{
-		$this->token = $token;
-	}
+		$response = new Response();
+		$response->setToken(OauthTest::TMP_TOKEN);
+		$response->setTokenSecret(OauthTest::TMP_TOKEN_SECRET);
 
-	public function getToken()
-	{
-		return $this->token;
-	}
-
-	public function setTokenSecret($tokenSecret)
-	{
-		$this->tokenSecret = $tokenSecret;
-	}
-
-	public function getTokenSecret()
-	{
-		return $this->tokenSecret;
-	}
-
-	public function setParams(array $params)
-	{
-		$this->params = $params;
-	}
-
-	public function getParams()
-	{
-		return $this->params;
-	}
-
-	public function addParam($key, $value)
-	{
-		$this->params[$key] = $value;
+		return $response;
 	}
 }
-
