@@ -24,6 +24,7 @@
 namespace PSX;
 
 use PSX\Data\Reader;
+use PSX\Exception;
 use PSX\Html\Parse;
 use PSX\Html\Parse\Element;
 use PSX\Http\GetRequest;
@@ -38,7 +39,7 @@ use PSX\Oembed\TypeAbstract;
  */
 class Oembed
 {
-	private $http;
+	protected $http;
 
 	public function __construct(Http $http)
 	{

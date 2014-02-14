@@ -23,8 +23,11 @@
 
 namespace PSX;
 
-use PSX\Http\Handler\Mock;
-use PSX\Http\Handler\MockCapture;
+use PSX\Http\Authentication;
+use PSX\Http\GetRequest;
+use PSX\Http\Handler\Callback;
+use PSX\Http\Response;
+use PSX\Http\ResponseParser;
 use PSX\Oembed\Type;
 
 /**
@@ -36,35 +39,37 @@ use PSX\Oembed\Type;
  */
 class OembedTest extends \PHPUnit_Framework_TestCase
 {
-	const URL        = 'http://test.phpsx.org/oembed/server';
-	const TYPE_LINK  = 'http://test.phpsx.org/oembed/link';
-	const TYPE_PHOTO = 'http://test.phpsx.org/oembed/photo';
-	const TYPE_RICH  = 'http://test.phpsx.org/oembed/rich';
-	const TYPE_VIDEO = 'http://test.phpsx.org/oembed/video';
-
-	private $http;
-	private $oembed;
-
-	protected function setUp()
-	{
-		//$mockCapture = new MockCapture('tests/PSX/Oembed/oembed_http_fixture.xml');
-		$mock = Mock::getByXmlDefinition('tests/PSX/Oembed/oembed_http_fixture.xml');
-
-		$this->http   = new Http($mock);
-		$this->oembed = new Oembed($this->http);
-	}
-
-	protected function tearDown()
-	{
-		unset($this->oembed);
-		unset($this->http);
-	}
-
 	public function testLinkRequest()
 	{
-		$url  = new Url(self::URL);
-		$url->addParam('url', self::TYPE_LINK);
-		$type = $this->oembed->request($url);
+		$testCase = $this;
+		$http = new Http(new Callback(function($request) use ($testCase){
+
+			$response = <<<TEXT
+HTTP/1.1 200 OK
+Date: Thu, 26 Sep 2013 16:36:26 GMT
+Content-Type: application/json; charset=UTF-8
+
+{
+  "type":"link",
+  "version":"1.0",
+  "title":"Beethoven - Rondo 'Die wut ueber den verlorenen groschen'",
+  "author_name":"LukasSchuch",
+  "author_url":"http:\/\/www.youtube.com\/user\/LukasSchuch",
+  "provider_name":"YouTube",
+  "provider_url":"http:\/\/www.youtube.com\/",
+  "thumbnail_url":"http:\/\/i2.ytimg.com\/vi\/AKjzEG1eItY\/hqdefault.jpg",
+  "thumbnail_width":480,
+  "thumbnail_height":360
+}
+TEXT;
+
+			return Response::convert($response, ResponseParser::MODE_LOOSE)->toString();
+
+		}));
+
+		$oembed = new Oembed($http);
+		$url    = new Url('http://127.0.0.1/oembed/link?url=http%3A%2F%2Flocalhost.com%2Fresource');
+		$type   = $oembed->request($url);
 
 		$this->assertInstanceof('PSX\Oembed\Type\Link', $type);
 		$this->assertEquals('link', $type->getType());
@@ -81,9 +86,38 @@ class OembedTest extends \PHPUnit_Framework_TestCase
 
 	public function testPhotoRequest()
 	{
-		$url  = new Url(self::URL);
-		$url->addParam('url', self::TYPE_PHOTO);
-		$type = $this->oembed->request($url);
+		$testCase = $this;
+		$http = new Http(new Callback(function($request) use ($testCase){
+
+			$response = <<<TEXT
+HTTP/1.1 200 OK
+Date: Thu, 26 Sep 2013 16:36:26 GMT
+Content-Type: application/json; charset=UTF-8
+
+{
+  "type":"photo",
+  "version":"1.0",
+  "title":"Beethoven - Rondo 'Die wut ueber den verlorenen groschen'",
+  "author_name":"LukasSchuch",
+  "author_url":"http:\/\/www.youtube.com\/user\/LukasSchuch",
+  "provider_name":"YouTube",
+  "provider_url":"http:\/\/www.youtube.com\/",
+  "thumbnail_url":"http:\/\/i2.ytimg.com\/vi\/AKjzEG1eItY\/hqdefault.jpg",
+  "thumbnail_width":480,
+  "thumbnail_height":360,
+  "url":"http:\/\/i2.ytimg.com\/vi\/AKjzEG1eItY\/hqdefault.jpg",
+  "width":240,
+  "height":160
+}
+TEXT;
+
+			return Response::convert($response, ResponseParser::MODE_LOOSE)->toString();
+
+		}));
+
+		$oembed = new Oembed($http);
+		$url    = new Url('http://127.0.0.1/oembed/photo?url=http%3A%2F%2Flocalhost.com%2Fresource');
+		$type   = $oembed->request($url);
 
 		$this->assertInstanceof('PSX\Oembed\Type\Photo', $type);
 		$this->assertEquals('photo', $type->getType());
@@ -103,9 +137,38 @@ class OembedTest extends \PHPUnit_Framework_TestCase
 
 	public function testRichRequest()
 	{
-		$url  = new Url(self::URL);
-		$url->addParam('url', self::TYPE_RICH);
-		$type = $this->oembed->request($url);
+		$testCase = $this;
+		$http = new Http(new Callback(function($request) use ($testCase){
+
+			$response = <<<TEXT
+HTTP/1.1 200 OK
+Date: Thu, 26 Sep 2013 16:36:26 GMT
+Content-Type: application/json; charset=UTF-8
+
+{
+  "type":"rich",
+  "version":"1.0",
+  "title":"Beethoven - Rondo 'Die wut ueber den verlorenen groschen'",
+  "author_name":"LukasSchuch",
+  "author_url":"http:\/\/www.youtube.com\/user\/LukasSchuch",
+  "provider_name":"YouTube",
+  "provider_url":"http:\/\/www.youtube.com\/",
+  "thumbnail_url":"http:\/\/i2.ytimg.com\/vi\/AKjzEG1eItY\/hqdefault.jpg",
+  "thumbnail_width":480,
+  "thumbnail_height":360,
+  "html":"<iframe width=\"459\" height=\"344\" src=\"http:\/\/www.youtube.com\/embed\/AKjzEG1eItY?fs=1&feature=oembed\" frameborder=\"0\" allowfullscreen><\/iframe>",
+  "width":240,
+  "height":160
+}
+TEXT;
+
+			return Response::convert($response, ResponseParser::MODE_LOOSE)->toString();
+
+		}));
+
+		$oembed = new Oembed($http);
+		$url    = new Url('http://127.0.0.1/oembed/rich?url=http%3A%2F%2Flocalhost.com%2Fresource');
+		$type   = $oembed->request($url);
 
 		$this->assertInstanceof('PSX\Oembed\Type\Rich', $type);
 		$this->assertEquals('rich', $type->getType());
@@ -125,9 +188,38 @@ class OembedTest extends \PHPUnit_Framework_TestCase
 
 	public function testVideoRequest()
 	{
-		$url  = new Url(self::URL);
-		$url->addParam('url', self::TYPE_VIDEO);
-		$type = $this->oembed->request($url);
+		$testCase = $this;
+		$http = new Http(new Callback(function($request) use ($testCase){
+
+			$response = <<<TEXT
+HTTP/1.1 200 OK
+Date: Thu, 26 Sep 2013 16:36:26 GMT
+Content-Type: application/json; charset=UTF-8
+
+{
+  "type":"video",
+  "version":"1.0",
+  "title":"Beethoven - Rondo 'Die wut ueber den verlorenen groschen'",
+  "author_name":"LukasSchuch",
+  "author_url":"http:\/\/www.youtube.com\/user\/LukasSchuch",
+  "provider_name":"YouTube",
+  "provider_url":"http:\/\/www.youtube.com\/",
+  "thumbnail_url":"http:\/\/i2.ytimg.com\/vi\/AKjzEG1eItY\/hqdefault.jpg",
+  "thumbnail_width":480,
+  "thumbnail_height":360,
+  "html":"<iframe width=\"459\" height=\"344\" src=\"http:\/\/www.youtube.com\/embed\/AKjzEG1eItY?fs=1&feature=oembed\" frameborder=\"0\" allowfullscreen><\/iframe>",
+  "width":240,
+  "height":160
+}
+TEXT;
+
+			return Response::convert($response, ResponseParser::MODE_LOOSE)->toString();
+
+		}));
+
+		$oembed = new Oembed($http);
+		$url    = new Url('http://127.0.0.1/oembed/video?url=http%3A%2F%2Flocalhost.com%2Fresource');
+		$type   = $oembed->request($url);
 
 		$this->assertInstanceof('PSX\Oembed\Type\Video', $type);
 		$this->assertEquals('video', $type->getType());
@@ -151,13 +243,6 @@ class OembedTest extends \PHPUnit_Framework_TestCase
 	public function testRequestWithoutUrlParameter()
 	{
 		$this->oembed->request(new Url(self::URL));
-	}
-
-	public function testDiscover()
-	{
-		$type = $this->oembed->discover(new Url('http://www.flickr.com/photos/gseloff/11737652275/in/explore-2014-01-03'));
-
-		$this->assertInstanceof('PSX\Oembed\Type\Photo', $type);
 	}
 
 	public function testFindTag()
