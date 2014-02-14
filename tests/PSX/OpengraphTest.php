@@ -23,8 +23,11 @@
 
 namespace PSX;
 
-use PSX\Http\Handler\Mock;
-use PSX\Http\Handler\MockCapture;
+use PSX\Http\Authentication;
+use PSX\Http\GetRequest;
+use PSX\Http\Handler\Callback;
+use PSX\Http\Response;
+use PSX\Http\ResponseParser;
 
 /**
  * OpengraphTest
@@ -35,33 +38,40 @@ use PSX\Http\Handler\MockCapture;
  */
 class OpengraphTest extends \PHPUnit_Framework_TestCase
 {
-	const URL = 'http://test.phpsx.org/opengraph/graph';
-
-	private $http;
-	private $og;
-
-	protected function setUp()
-	{
-		//$mockCapture = new MockCapture('tests/PSX/Opengraph/opengraph_http_fixture.xml');
-		$mock = Mock::getByXmlDefinition('tests/PSX/Opengraph/opengraph_http_fixture.xml');
-
-		$this->http = new Http($mock);
-		$this->og   = new Opengraph($this->http);
-	}
-
-	protected function tearDown()
-	{
-		unset($this->og);
-		unset($this->http);
-	}
-
 	public function testDiscover()
 	{
-		$data = $this->og->discover(new Url(self::URL), Opengraph::TITLE | Opengraph::URL);
+		$testCase = $this;
+		$http = new Http(new Callback(function($request) use ($testCase){
 
-		$this->assertEquals($data['title'], 'The Rock');
-		$this->assertEquals($data['url'], 'http://www.imdb.com/title/tt0117500/');
-		$this->assertEquals(2, count($data));
+			$response = <<<TEXT
+HTTP/1.1 200 OK
+Date: Thu, 26 Sep 2013 16:36:26 GMT
+Content-Type: application/json; charset=UTF-8
+
+<html xmlns:og="http://ogp.me/ns#">
+<head>
+	<title>The Rock (1996)</title>
+	<meta property="og:title" content="The Rock" />
+	<meta property="og:type" content="movie" />
+	<meta property="og:url" content="http://www.imdb.com/title/tt0117500/" />
+	<meta property="og:image" content="http://ia.media-imdb.com/images/rock.jpg" />
+</head>
+<body>
+	<h1>Open Graph protocol</h1>
+	<p>The Open Graph protocol enables any web page to become a rich object in a social graph.</p>
+</body>
+</html>
+TEXT;
+
+			return Response::convert($response, ResponseParser::MODE_LOOSE)->toString();
+
+		}));
+
+		$og   = new Opengraph($http);
+		$data = $og->discover(new Url('http://127.0.0.1/opengraph'));
+
+		$this->assertEquals($data->get('og:title'), 'The Rock');
+		$this->assertEquals($data->get('og:url'), 'http://www.imdb.com/title/tt0117500/');
 	}
 }
 

@@ -21,55 +21,26 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX;
-
-use PSX\Html\Lexer;
-use PSX\Html\Lexer\Token;
-use PSX\Http\GetRequest;
-use PSX\Opengraph\Attribute;
+namespace PSX\Opengraph;
 
 /**
- * Discovers opengraph tags on an specific url. The discovery method make an GET
- * request to the specified url and tries to fetch all opengraph tags from the
- * response body
+ * Attribute
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
- * @see     http://opengraphprotocol.org
  */
-class Opengraph
+class Attribute
 {
-	protected $http;
+	protected $container;
 
-	public function __construct(Http $http)
+	public function __construct(array $container)
 	{
-		$this->http = $http;
+		$this->container = $container;
 	}
 
-	public function discover(Url $url)
+	public function get($key)
 	{
-		$request  = new GetRequest($url);
-		$response = $this->http->request($request);
-
-		$root = Lexer::parse((string) $response->getBody());
-		$data = array();
-
-		if($root instanceof Token\Element)
-		{
-			$elements = $root->getElementsByTagName('meta');
-
-			foreach($elements as $element)
-			{
-				$attributes = $element->getAttributes();
-
-				if(isset($attributes['property']))
-				{
-					$data[$attributes['property']] = $attributes['content'];
-				}
-			}
-		}
-
-		return new Attribute($data);
+		return isset($this->container[$key]) ? $this->container[$key] : null;
 	}
 }
