@@ -23,8 +23,11 @@
 
 namespace PSX;
 
-use PSX\Http\Handler\Mock;
-use PSX\Http\Handler\MockCapture;
+use PSX\Http\Authentication;
+use PSX\Http\GetRequest;
+use PSX\Http\Handler\Callback;
+use PSX\Http\Response;
+use PSX\Http\ResponseParser;
 
 /**
  * PingbackTest
@@ -35,28 +38,64 @@ use PSX\Http\Handler\MockCapture;
  */
 class PingbackTest extends \PHPUnit_Framework_TestCase
 {
-	const SERVER_URL   = 'http://test.phpsx.org/pingback/server';
-	const RESOURCE_URL = 'http://test.phpsx.org/pingback/resource';
-
-	private $http;
-	private $pingback;
-
-	protected function setUp()
+	public function testSend()
 	{
-		//$mockCapture = new MockCapture('tests/PSX/Pingback/pingback_http_fixture.xml');
-		$mock = Mock::getByXmlDefinition('tests/PSX/Pingback/pingback_http_fixture.xml');
+		$testCase = $this;
+		$http = new Http(new Callback(function($request) use ($testCase){
 
-		$this->http     = new Http($mock);
-		$this->pingback = new Pingback($this->http);
-	}
+			if($request->getUrl()->getPath() == '/server')
+			{
+				$response = <<<TEXT
+HTTP/1.1 200 OK
+Date: Thu, 26 Sep 2013 16:36:26 GMT
+Content-Type: application/xml; charset=UTF-8
 
-	protected function tearDown()
-	{
-	}
+<?xml version="1.0" encoding="UTF-8"?>
+<methodResponse>
+  <params>
+    <param>
+      <value>
+        <string>Successful</string>
+      </value>
+    </param>
+  </params>
+</methodResponse>
+TEXT;
+			}
+			else if($request->getUrl()->getPath() == '/resource')
+			{
+				$response = <<<TEXT
+HTTP/1.1 200 OK
+Date: Thu, 26 Sep 2013 16:36:26 GMT
+Content-Type: text/html; charset=UTF-8
+X-Pingback: http://127.0.0.1/server
 
-	public function testDiscovery()
-	{
-		$response = $this->pingback->send('http://foobar.com', self::RESOURCE_URL);
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>PSX Testarea</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta http-equiv="X-XRDS-Location" content="http://test.phpsx.org/yadis/xrds" />
+	<meta http-equiv="Content-Style-Type" content="text/css" />
+	<meta name="generator" content="psx" />
+	<link rel="pingback" href="http://test.phpsx.org/pingback/server" />
+</head>
+<body>
+
+<h1>Pingback-enabled resources</h1>
+
+</body>
+</html>
+TEXT;
+			}
+
+			return Response::convert($response, ResponseParser::MODE_LOOSE)->toString();
+
+		}));
+
+		$pingback = new Pingback($http);
+		$response = $pingback->send('http://foobar.com', 'http://127.0.0.1/resource');
 
 		$this->assertEquals(true, $response);
 	}

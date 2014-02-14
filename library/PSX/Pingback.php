@@ -23,6 +23,7 @@
 
 namespace PSX;
 
+use PSX\Exception;
 use PSX\Html\Parse;
 use PSX\Html\Parse\Element;
 use PSX\Http\GetRequest;
@@ -39,7 +40,6 @@ use SimpleXMLElement;
 class Pingback
 {
 	public static $errorCodes = array(
-
 		16 => 'The source URI does not exist',
 		17 => 'The source URI does not contain a link to the target URI',
 		32 => 'The specified target URI does not exist',
@@ -47,10 +47,9 @@ class Pingback
 		48 => 'The pingback has already been registered',
 		49 => 'Access denied',
 		50 => 'The server could not communicate with an upstream server',
-
 	);
 
-	private $http;
+	protected $http;
 
 	public function __construct(Http $http)
 	{
@@ -135,7 +134,7 @@ class Pingback
 		}
 	}
 
-	private function getRequestBody($sourceUri, $targetUri)
+	protected function getRequestBody($sourceUri, $targetUri)
 	{
 		$sourceUri = htmlspecialchars($sourceUri, ENT_NOQUOTES);
 		$targetUri = htmlspecialchars($targetUri, ENT_NOQUOTES);
@@ -162,7 +161,7 @@ XML;
 		return $body;
 	}
 
-	private function parseResponseBody($response)
+	protected function parseResponseBody($response)
 	{
 		$resp = simplexml_load_string($response);
 		$data = array();
@@ -186,7 +185,7 @@ XML;
 		return $data;
 	}
 
-	private function getDataType(SimpleXMLElement $value)
+	protected function getDataType(SimpleXMLElement $value)
 	{
 		foreach($value->children() as $el)
 		{
