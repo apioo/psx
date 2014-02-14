@@ -38,12 +38,6 @@ class AuthorizationCode extends AuthorizationAbstract
 {
 	public function getAccessToken($code, $redirectUri = null)
 	{
-		// error detection
-		if(isset($_GET['error']))
-		{
-			self::throwErrorException($_GET);
-		}
-
 		// request data
 		$data = array(
 			'grant_type' => 'authorization_code',
@@ -76,6 +70,17 @@ class AuthorizationCode extends AuthorizationAbstract
 		return $this->request($header, $data);
 	}
 
+	/**
+	 * Helper method to start the flow by redirecting the user to the 
+	 * authentication server. The getAccessToken method must be used when the 
+	 * server redirects the user back to the redirect uri
+	 *
+	 * @param PSX\Url $url
+	 * @param string $clientId
+	 * @param string $redirectUri
+	 * @param string $scope
+	 * @param string $state
+	 */
 	public static function redirect(Url $url, $clientId, $redirectUri = null, $scope = null, $state = null)
 	{
 		$url->setScheme('https');

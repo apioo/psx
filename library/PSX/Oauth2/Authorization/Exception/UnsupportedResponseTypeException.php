@@ -26,12 +26,12 @@ namespace PSX\Oauth2\Authorization\Exception;
 use PSX\Exception;
 
 /**
- * InvalidClientException
+ * UnsupportedResponseTypeException
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class InvalidClientException extends Exception
+class UnsupportedResponseTypeException extends Exception
 {
 }

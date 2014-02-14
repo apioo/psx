@@ -225,7 +225,7 @@ abstract class AuthorizationAbstract
 		$desc  = isset($data['error_description']) ? htmlspecialchars($data['error_description']) : null;
 		$uri   = isset($data['error_uri']) ? $data['error_uri'] : null;
 
-		if(in_array($error, array('invalid_request', 'invalid_client', 'invalid_grant', 'unauthorized_client', 'unsupported_grant_type', 'invalid_scope')))
+		if(in_array($error, array('invalid_request', 'unauthorized_client', 'access_denied', 'unsupported_response_type', 'invalid_scope', 'server_error', 'temporarily_unavailable')))
 		{
 			$exceptionClass = '\PSX\Oauth2\Authorization\Exception\\' . implode('', array_map('ucfirst', explode('_', $error))) . 'Exception';
 			$message        = '';

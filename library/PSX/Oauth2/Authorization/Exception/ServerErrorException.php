@@ -26,12 +26,12 @@ namespace PSX\Oauth2\Authorization\Exception;
 use PSX\Exception;
 
 /**
- * UnsupportedGrantTypeException
+ * ServerErrorException
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class UnsupportedGrantTypeException extends Exception
+class ServerErrorException extends Exception
 {
 }

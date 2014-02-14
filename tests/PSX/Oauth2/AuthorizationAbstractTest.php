@@ -87,28 +87,5 @@ class AuthorizationAbstractTest extends \PHPUnit_Framework_TestCase
 			)
 		));
 	}
-
-	public function testTypeErrorException()
-	{
-		$errors = array('invalid_request', 'invalid_client', 'invalid_grant', 'unauthorized_client', 'unsupported_grant_type', 'invalid_scope');
-
-		foreach($errors as $error)
-		{
-			try
-			{
-				AuthorizationAbstract::throwErrorException(array(
-					'error' => $error,
-					'error_description' => 'Foobar'
-				));
-			}
-			catch(Exception $e)
-			{
-				$exceptionClass = '\PSX\Oauth2\Authorization\Exception\\' . implode('', array_map('ucfirst', explode('_', $error))) . 'Exception';
-
-				$this->assertInstanceOf($exceptionClass, $e);
-				$this->assertEquals('Foobar', $e->getMessage());
-			}
-		}
-	}
 }
 
