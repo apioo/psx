@@ -228,6 +228,7 @@ class DefaultContainer extends Container
 	{
 		$reader = new ReaderFactory();
 		$reader->addReader(new Reader\Json());
+		$reader->addReader(new Reader\Dom());
 		$reader->addReader(new Reader\Form());
 		$reader->addReader(new Reader\Gpc());
 		$reader->addReader(new Reader\Multipart());
