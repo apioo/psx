@@ -23,6 +23,7 @@
 
 namespace PSX;
 
+use PSX\Exception;
 use PSX\Data\Reader\Dom;
 use PSX\Http\GetRequest;
 use PSX\Http\PostRequest;
@@ -87,15 +88,14 @@ class PubSubHubBub
 	const RSS2 = 0x2;
 
 	/**
-	 * This contains the url of the discovered hub on null if nothing was
+	 * This contains the url of the discovered hub or null if nothing was
 	 * discovered.
 	 *
 	 * @var string
 	 */
-	private $lastHub;
+	protected $lastHub;
 
-	private $filter;
-	private $http;
+	protected $http;
 
 	public function __construct(Http $http)
 	{
@@ -109,11 +109,11 @@ class PubSubHubBub
 	 * @param PSX\Url $endpoint
 	 * @param string $topic
 	 */
-	public function notification(Url $endpoint, $topic)
+	public function notification(Url $endpoint, Url $topic)
 	{
 		$data = array(
 			'hub.mode' => 'publish',
-			'hub.url'  => $topic,
+			'hub.url'  => (string) $topic,
 		);
 
 		$header   = array(

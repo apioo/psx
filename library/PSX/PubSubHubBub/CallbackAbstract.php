@@ -26,11 +26,10 @@ namespace PSX\PubSubHubBub;
 use PSX\Atom;
 use PSX\Atom\Importer as AtomImporter;
 use PSX\Base;
+use PSX\ControllerAbstract;
 use PSX\Data\ReaderInterface;
 use PSX\Exception;
 use PSX\Filter;
-use PSX\Input\Get;
-use PSX\Controller\ApiAbstract;
 use PSX\Rss;
 use PSX\Rss\Importer as RssImporter;
 use PSX\Url;
@@ -43,40 +42,27 @@ use PSX\Validate;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-abstract class CallbackAbstract extends ApiAbstract
+abstract class CallbackAbstract extends ControllerAbstract
 {
 	/**
-	 * This method is called by the module wich extends this class. If the
-	 * method is called we handle all operations that means we look wich request
-	 * method we have on an GET some hub tries to verify a subscription on an
-	 * POST we get new ATOM feeds.
-	 *
-	 * @return void
+	 * @httpMethod GET
+	 * @path /
 	 */
-	protected function handle()
+	public function doGet()
 	{
-		switch($this->request->getMethod())
-		{
-			case 'POST':
-				$this->callback();
-
-				$this->response->setStatusCode(200);
-				//$this->response->setHeader('X-Hub-On-Behalf-Of', 0);
-
-				exit;
-				break;
-
-			case 'GET':
-				$this->verify();
-				break;
-
-			default:
-				throw new Exception('PubSubHubBub subscriber endpoint');
-				break;
-		}
+		$this->doVerify();
 	}
 
-	protected function callback()
+	/**
+	 * @httpMethod POST
+	 * @path /
+	 */
+	public function doPost()
+	{
+		$this->doCallback();
+	}
+
+	protected function doCallback()
 	{
 		$contentType = (string) $this->request->getHeader('Content-Type');
 
@@ -85,7 +71,7 @@ abstract class CallbackAbstract extends ApiAbstract
 			case 'application/atom+xml':
 				$atom     = new Atom();
 				$importer = new AtomImporter();
-				$importer->import($atom, $this->getRequest(ReaderInterface::DOM));
+				$importer->import($atom, $this->getBody(ReaderInterface::DOM));
 
 				$this->onAtom($atom);
 				break;
@@ -93,7 +79,7 @@ abstract class CallbackAbstract extends ApiAbstract
 			case 'application/rss+xml':
 				$rss      = new Rss();
 				$importer = new RssImporter();
-				$importer->import($rss, $this->getRequest(ReaderInterface::DOM));
+				$importer->import($rss, $this->getBody(ReaderInterface::DOM));
 
 				$this->onRss($rss);
 				break;
@@ -102,34 +88,35 @@ abstract class CallbackAbstract extends ApiAbstract
 				throw new Exception('Invalid content type allowed is only application/atom+xml or application/rss+xml');
 				break;
 		}
+
+		$this->response->setStatusCode(200);
 	}
 
-	protected function verify()
+	protected function doVerify()
 	{
-		$validate = new Validate();
-		$get      = new Get($validate);
+		$mode         = $this->request->getUrl()->getParam('hub_mode');
+		$topic        = $this->request->getUrl()->getParam('hub_topic');
+		$challenge    = $this->request->getUrl()->getParam('hub_challenge');
+		$leaseSeconds = $this->request->getUrl()->getParam('hub_lease_seconds');
 
-		$mode         = $get->hub_mode('string', array(new Filter\InArray(array('subscribe', 'unsubscribe'))), 'hub.mode', 'Mode');
-		$topic        = $get->hub_topic('string', array(new Filter\Length(3, 512), new Filter\Url()), 'hub.topic', 'Topic');
-		$challenge    = $get->hub_challenge('string', array(new Filter\Length(1, 512), 'hub.challenge', 'Challenge'));
-		$leaseSeconds = $get->hub_lease_seconds('integer', null, 'hub.lease_seconds', 'Lease seconds', false);
-		$verifyToken  = $get->hub_verify_token('string', null, 'hub.verify_token', 'Verify token', false);
-
+		$validate     = new Validate();
+		$mode         = $validate->apply($mode, Validate::TYPE_STRING, array(new Filter\InArray(array('subscribe', 'unsubscribe'))), 'hub.mode', 'Mode');
+		$topic        = $validate->apply($topic, Validate::TYPE_STRING, array(new Filter\Length(3, 512), new Filter\Url()), 'hub.topic', 'Topic');
+		$challenge    = $validate->apply($challenge, Validate::TYPE_STRING, array(new Filter\Length(1, 512)), 'hub.challenge', 'Challenge');
+		$leaseSeconds = $validate->apply($leaseSeconds, Validate::TYPE_INTEGER, array(), 'hub.lease_seconds', 'Lease seconds', false);
 
 		if(!$validate->hasError())
 		{
 			$topic = new Url($topic);
 
-			if($this->onVerify($mode, $topic, $leaseSeconds, $verifyToken) === true)
+			if($this->onVerify($mode, $topic, $leaseSeconds) === true)
 			{
 				$this->response->setStatusCode(200);
-
-				echo $challenge;
-				exit;
+				$this->response->getBody()->write($challenge);
 			}
 			else
 			{
-				throw new Exception('Invalid token');
+				throw new Exception('Invalid request');
 			}
 		}
 		else
@@ -158,8 +145,11 @@ abstract class CallbackAbstract extends ApiAbstract
 	 * whether the subscription was verified. If the method returns false the
 	 * hub will probably try to verify the request later
 	 *
+	 * @param string $mode
+	 * @param PSX\Url $topic
+	 * @param integer $leaseSeconds
 	 * @return boolean
 	 */
-	abstract protected function onVerify($mode, Url $topic, $leaseSeconds, $verifyToken);
+	abstract protected function onVerify($mode, Url $topic, $leaseSeconds);
 }
 

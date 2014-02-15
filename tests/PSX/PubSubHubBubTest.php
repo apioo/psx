@@ -40,52 +40,122 @@ use PSX\Http\Handler\MockCapture;
  */
 class PubSubHubBubTest extends \PHPUnit_Framework_TestCase
 {
-	const URL_TOPIC    = 'http://test.phpsx.org/pubsubhubbub/topic';
-	const URL_HUB      = 'http://test.phpsx.org/pubsubhubbub/hub';
-	const URL_CALLBACK = 'http://test.phpsx.org/pubsubhubbub/callback';
-
-	private $http;
-	private $pshb;
-
-	protected function setUp()
+	public function testNotification()
 	{
-		//$mockCapture = new MockCapture('tests/PSX/PubSubHubBub/pubsubhubbub_http_fixture.xml');
-		$mock = Mock::getByXmlDefinition('tests/PSX/PubSubHubBub/pubsubhubbub_http_fixture.xml');
+		$testCase = $this;
+		$http     = new Http(new Callback(function($request) use ($testCase){
 
-		$this->http = new Http($mock);
-		$this->pshb = new PubSubHubBub($this->http);
+			$testCase->assertEquals('application/x-www-form-urlencoded', (string) $request->getHeader('Content-Type'));
+			$testCase->assertEquals('hub.mode=publish&hub.url=http%3A%2F%2Fyoutube.com', (string) $request->getBody());
+
+			$response = <<<TEXT
+HTTP/1.1 200 OK
+Content-Type: text/html; charset=utf-8
+Date: Sat, 04 Jan 2014 18:19:45 GMT
+
+SUCCESS
+TEXT;
+
+			return Response::convert($response, ResponseParser::MODE_LOOSE)->toString();
+
+		}));
+		$pshb     = new PubSubHubBub($http);
+		$response = $pshb->notification(new Url('http://127.0.0.1/pshb'), new Url('http://youtube.com'));
+
+		$this->assertTrue($response);
 	}
 
-	protected function tearDown()
+	/**
+	 * @expectedException PSX\Exception
+	 */
+	public function testNotificationError()
 	{
-		unset($this->pshb);
-		unset($this->http);
+		$testCase = $this;
+		$http     = new Http(new Callback(function($request) use ($testCase){
+
+			$testCase->assertEquals('application/x-www-form-urlencoded', (string) $request->getHeader('Content-Type'));
+			$testCase->assertEquals('hub.mode=publish&hub.url=http%3A%2F%2Fyoutube.com', (string) $request->getBody());
+
+			$response = <<<TEXT
+HTTP/1.1 500 Internal Server Error
+Content-Type: text/html; charset=utf-8
+Date: Sat, 04 Jan 2014 18:19:45 GMT
+
+ERROR
+TEXT;
+
+			return Response::convert($response, ResponseParser::MODE_LOOSE)->toString();
+
+		}));
+		$pshb     = new PubSubHubBub($http);
+		$response = $pshb->notification(new Url('http://127.0.0.1/pshb'), new Url('http://youtube.com'));
 	}
 
-	public function testAtomDiscover()
+	public function testRequest()
 	{
-		$url = new Url(self::URL_TOPIC . '/atom');
-		$url = $this->pshb->discover($url, PubSubHubBub::ATOM);
+		$testCase = $this;
+		$http     = new Http(new Callback(function($request) use ($testCase){
 
-		$this->assertEquals(true, $url instanceof Url);
-		$this->assertEquals(self::URL_HUB, (string) $url);
+			$testCase->assertEquals('application/x-www-form-urlencoded', (string) $request->getHeader('Content-Type'));
+			$testCase->assertEquals('hub.callback=http%3A%2F%2F127.0.0.1%2Fcallback&hub.mode=subscribe&hub.topic=http%3A%2F%2Fyoutube.com&hub.verify=sync', (string) $request->getBody());
+
+			$response = <<<TEXT
+HTTP/1.1 200 OK
+Content-Type: text/html; charset=utf-8
+Date: Sat, 04 Jan 2014 18:19:45 GMT
+
+SUCCESS
+TEXT;
+
+			return Response::convert($response, ResponseParser::MODE_LOOSE)->toString();
+
+		}));
+		$pshb     = new PubSubHubBub($http);
+		$response = $pshb->request(new Url('http://127.0.0.1/pshb'), new Url('http://127.0.0.1/callback'), 'subscribe', new Url('http://youtube.com'), 'sync');
+
+		$this->assertTrue($response);
 	}
 
-	public function testRssDiscover()
+	/**
+	 * @expectedException PSX\Exception
+	 */
+	public function testRequestError()
 	{
-		$url = new Url(self::URL_TOPIC . '/rss');
-		$url = $this->pshb->discover($url, PubSubHubBub::RSS2);
+		$testCase = $this;
+		$http     = new Http(new Callback(function($request) use ($testCase){
 
-		$this->assertEquals(true, $url instanceof Url);
-		$this->assertEquals(self::URL_HUB, (string) $url);
+			$testCase->assertEquals('application/x-www-form-urlencoded', (string) $request->getHeader('Content-Type'));
+			$testCase->assertEquals('hub.callback=http%3A%2F%2F127.0.0.1%2Fcallback&hub.mode=subscribe&hub.topic=http%3A%2F%2Fyoutube.com&hub.verify=sync', (string) $request->getBody());
+
+			$response = <<<TEXT
+HTTP/1.1 500 Internal Server Error
+Content-Type: text/html; charset=utf-8
+Date: Sat, 04 Jan 2014 18:19:45 GMT
+
+ERROR
+TEXT;
+
+			return Response::convert($response, ResponseParser::MODE_LOOSE)->toString();
+
+		}));
+		$pshb     = new PubSubHubBub($http);
+		$response = $pshb->request(new Url('http://127.0.0.1/pshb'), new Url('http://127.0.0.1/callback'), 'subscribe', new Url('http://youtube.com'), 'sync');
 	}
 
-	public function testInsertAtom()
+	public function testDiscoverAtom()
 	{
-		$header = array('Content-type' => Writer\Atom::$mime);
-		$body   = <<<FEED
+		$testCase = $this;
+		$http     = new Http(new Callback(function($request) use ($testCase){
+
+			$response = <<<TEXT
+HTTP/1.1 200 OK
+Content-Type: application/atom+xml; charset=utf-8
+Date: Sat, 04 Jan 2014 18:19:45 GMT
+
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
+	<link rel="hub" href="http://127.0.0.1/pshb/hub" />
+	<link rel="self" href="http://127.0.0.1/atom" />
 	<updated>2008-08-11T02:15:01Z</updated>
 	<entry>
 		<title>Heathcliff</title>
@@ -95,37 +165,52 @@ class PubSubHubBubTest extends \PHPUnit_Framework_TestCase
 		<content>What a happy cat. Full content goes here.</content>
 	</entry>
 </feed>
-FEED;
-
-		$request  = new Request(new Url(self::URL_CALLBACK), 'POST', $header, $body);
-		$response = $this->http->request($request);
-
-		$this->assertEquals(200, $response->getStatusCode(), $response->getBody());
-		$this->assertEquals('INSERT ATOM Heathcliff', $response->getBody());
-	}
-
-	public function testRequest()
-	{
-		$testCase = $this;
-		$http     = new Http(new Callback(function($request) use ($testCase){
-
-			$testCase->assertEquals('hub.callback=http%3A%2F%2Ftest.phpsx.org%2Fpubsubhubbub%2Fcallback&hub.mode=subscribe&hub.topic=http%3A%2F%2Fyoutube.com&hub.verify=sync', $request->getBody());
-
-			$response = <<<TEXT
-HTTP/1.1 200 OK
-Content-Type: text/html; charset=utf-8
-Date: Sat, 04 Jan 2014 18:19:45 GMT
-
-foobar
 TEXT;
 
 			return Response::convert($response, ResponseParser::MODE_LOOSE)->toString();
 
 		}));
-		$pshb     = new PubSubHubBub($http);
-		$response = $pshb->request(new Url('http://localhost.com'), new Url(self::URL_CALLBACK), 'subscribe', new Url('http://youtube.com'), 'sync');
+		$pshb = new PubSubHubBub($http);
+		$url  = $pshb->discover(new Url('http://127.0.0.1/atom', PubSubHubBub::ATOM));
 
-		$this->assertTrue($response);
+		$this->assertInstanceOf('PSX\Url', $url);
+		$this->assertEquals('http://127.0.0.1/pshb/hub', (string) $url);
+	}
+
+	public function testDiscoverRss()
+	{
+		$testCase = $this;
+		$http     = new Http(new Callback(function($request) use ($testCase){
+
+			$response = <<<TEXT
+HTTP/1.1 200 OK
+Content-Type: application/rss+xml; charset=utf-8
+Date: Sat, 04 Jan 2014 18:19:45 GMT
+
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<atom:link rel="hub" href="http://127.0.0.1/pshb/hub" />
+		<atom:link rel="self" type="application/rss+xml" href="http://127.0.0.1/rss" />
+		<lastBuildDate>Fri, 25 Mar 2011 03:45:43 +0000</lastBuildDate>
+		<item>
+			<title>Heathcliff</title>
+			<link>http://publisher.example.com/happycat25.xml</link>
+			<guid>http://publisher.example.com/happycat25.xml</guid>
+			<pubDate>Fri, 25 Mar 2011 03:45:43 +0000</pubDate>
+			<description>What a happy cat. Full content goes here.</description>
+		</item>
+	</channel>
+</rss>
+TEXT;
+
+			return Response::convert($response, ResponseParser::MODE_LOOSE)->toString();
+
+		}));
+		$pshb = new PubSubHubBub($http);
+		$url  = $pshb->discover(new Url('http://127.0.0.1/rss', PubSubHubBub::RSS2));
+
+		$this->assertInstanceOf('PSX\Url', $url);
+		$this->assertEquals('http://127.0.0.1/pshb/hub', (string) $url);
 	}
 }
 
