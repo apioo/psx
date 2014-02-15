@@ -55,15 +55,32 @@ class Importer implements ImporterInterface
 			throw new InvalidArgumentException('Data must be an instanceof DOMDocument or DOMElement');
 		}
 
-		$channel = $data->getElementsByTagName('channel');
+		$name = strtolower($data->localName);
 
-		if($channel->length > 0)
+		if($name == 'rss')
 		{
-			$this->parseChannelElement($channel->item(0), $record);
+			$channel = $data->getElementsByTagName('channel');
+
+			if($channel->length > 0)
+			{
+				$this->parseChannelElement($channel->item(0), $record);
+			}
+			else
+			{
+				throw new InvalidDataException('No channel element found');
+			}
+		}
+		else if($name == 'item')
+		{
+			$item     = new Item();
+			$importer = new ItemImporter();
+			$importer->import($item, $data);
+
+			$record->add($item);
 		}
 		else
 		{
-			throw new InvalidDataException('No channel element found');
+			throw new InvalidArgumentException('Found no rss or item element');
 		}
 
 		return $record;

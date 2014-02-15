@@ -66,7 +66,24 @@ class Importer implements ImporterInterface
 			throw new InvalidArgumentException('Data must be an instanceof DOMDocument or DOMElement');
 		}
 
-		$this->parseFeedElement($data, $record);
+		$name = strtolower($data->localName);
+
+		if($name == 'feed')
+		{
+			$this->parseFeedElement($data, $record);
+		}
+		else if($name == 'entry')
+		{
+			$entry    = new Entry();
+			$importer = new EntryImporter();
+			$importer->import($entry, $data);
+
+			$record->add($entry);
+		}
+		else
+		{
+			throw new InvalidArgumentException('Found no feed or entry element');
+		}
 
 		return $record;
 	}
