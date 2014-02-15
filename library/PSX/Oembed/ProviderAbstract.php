@@ -23,6 +23,7 @@
 
 namespace PSX\Oembed;
 
+use PSX\Data\WriterInterface;
 use PSX\Exception;
 use PSX\Filter;
 use PSX\Input\Get;
@@ -41,15 +42,34 @@ abstract class ProviderAbstract extends ApiAbstract
 {
 	public static $mime = 'application/json+oembed';
 
-	public function onGet()
+	/**
+	 * @httpMethod GET
+	 * @path /
+	 */
+	public function doGet()
 	{
-		$validate = new Validate();
-		$get      = new Get($validate);
+		$this->doDiscover();
+	}
 
-		$url       = $get->url('string', array(new Filter\Length(3, 512), new Filter\Url()), 'url', 'Url');
-		$maxWidth  = $get->maxwidth('integer', array(new Filter\Length(8, 4096)), 'maxwidth', 'Max width');
-		$maxHeight = $get->maxheight('integer', array(new Filter\Length(8, 4096)), 'maxheight', 'Max height');
-		//$format    = $get->format('string', array(new Filter\InArray(array('json', 'xml'))), 'format', 'Format', false);
+	/**
+	 * @httpMethod POST
+	 * @path /
+	 */
+	public function doPost()
+	{
+		throw new Exception('Method not allowed', 405);
+	}
+
+	protected function doDiscover()
+	{
+		$url       = $this->request->getUrl()->getParam('url');
+		$maxWidth  = $this->request->getUrl()->getParam('maxwidth');
+		$maxHeight = $this->request->getUrl()->getParam('maxheight');
+
+		$validate  = new Validate();
+		$url       = $validate->apply($url, Validate::TYPE_STRING, array(new Filter\Length(3, 512), new Filter\Url()), 'url', 'Url');
+		$maxWidth  = $validate->apply($maxWidth, Validate::TYPE_INTEGER, array(), 'maxwidth', 'Max width');
+		$maxHeight = $validate->apply($maxHeight, Validate::TYPE_INTEGER, array(), 'maxheight', 'Max height');
 
 		if(!$validate->hasError())
 		{
@@ -58,9 +78,14 @@ abstract class ProviderAbstract extends ApiAbstract
 
 			if($type instanceof TypeAbstract)
 			{
-				// @todo send correct content type
-				// header('Content-type: application/json+oembed');
-				// header('Content-type: text/xml+oembed');
+				if($this->isWriter(WriterInterface::XML))
+				{
+					$this->response->setHeader('Content-Type', 'text/xml+oembed');
+				}
+				else if($this->isWriter(WriterInterface::JSON))
+				{
+					$this->response->setHeader('Content-Type', 'application/json+oembed');
+				}
 
 				$this->setResponse($type);
 			}
@@ -75,11 +100,6 @@ abstract class ProviderAbstract extends ApiAbstract
 		}
 	}
 
-	public function onPost()
-	{
-		throw new Exception('Method not allowed', 405);
-	}
-
 	/**
 	 * Is called if an oembed request was made must return an
 	 * PSX\Oembed\TypeAbstract object. If no PSX\Oembed\TypeAbstract object is
@@ -90,7 +110,7 @@ abstract class ProviderAbstract extends ApiAbstract
 	 * @param integer $maxHeight
 	 * @return PSX\Oembed\TypeAbstract
 	 */
-	abstract public function onRequest(Url $url, $maxWidth, $maxHeight);
+	abstract protected function onRequest(Url $url, $maxWidth, $maxHeight);
 
 	/**
 	 * Returns the html link tag wich can be used to discover the oembed source
