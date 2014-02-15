@@ -40,23 +40,6 @@ use PSX\Http\Message;
  */
 class EntryImporterTest extends \PHPUnit_Framework_TestCase
 {
-	const URL = 'http://test.phpsx.org/atom/feed';
-
-	private $http;
-
-	protected function setUp()
-	{
-		//$mockCapture = new MockCapture('tests/PSX/Atom/atom_http_fixture.xml');
-		$mock = Mock::getByXmlDefinition('tests/PSX/Atom/atom_http_fixture.xml');
-
-		$this->http = new Http($mock);
-	}
-
-	protected function tearDown()
-	{
-		unset($this->http);
-	}
-
 	public function testItem()
 	{
 		$body = <<<XML

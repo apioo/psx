@@ -27,9 +27,12 @@ use DateTime;
 use PSX\Data\Reader;
 use PSX\Http;
 use PSX\Http\GetRequest;
+use PSX\Http\Handler\Callback;
 use PSX\Http\Handler\Mock;
 use PSX\Http\Handler\MockCapture;
 use PSX\Http\Message;
+use PSX\Http\Response;
+use PSX\Http\ResponseParser;
 
 /**
  * EntryImporterTest
@@ -40,23 +43,6 @@ use PSX\Http\Message;
  */
 class EntryImporterTest extends \PHPUnit_Framework_TestCase
 {
-	const URL = 'http://test.phpsx.org/atom/feed';
-
-	private $http;
-
-	protected function setUp()
-	{
-		//$mockCapture = new MockCapture('tests/PSX/Atom/atom_http_fixture.xml');
-		$mock = Mock::getByXmlDefinition('tests/PSX/Atom/atom_http_fixture.xml');
-
-		$this->http = new Http($mock);
-	}
-
-	protected function tearDown()
-	{
-		unset($this->http);
-	}
-
 	public function testEntry()
 	{
 		$body = <<<XML
@@ -86,7 +72,57 @@ XML;
 
 	public function testRemoteXmlContent()
 	{
-		$url  = ImporterTest::URL;
+		$testCase = $this;
+		$http = new Http(new Callback(function($request) use ($testCase){
+
+			$testCase->assertEquals('http://127.0.0.1/atom/remote', $request->getUrl());
+
+			$response = <<<TEXT
+HTTP/1.1 200 OK
+Date: Thu, 26 Sep 2013 16:36:26 GMT
+Content-Type: application/xml; charset=UTF-8
+
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<title type="text">dive into mark</title>
+	<subtitle type="html">A &lt;em&gt;lot&lt;/em&gt; of effort went into making this effortless</subtitle>
+	<updated>2005-07-31T12:29:29Z</updated>
+	<id>tag:example.org,2003:3</id>
+	<link rel="alternate" type="text/html" hreflang="en" href="http://example.org/"/>
+	<link rel="self" type="application/atom+xml" href="http://example.org/feed.atom"/>
+	<rights>Copyright (c) 2003, Mark Pilgrim</rights>
+	<generator uri="http://www.example.com/" version="1.0">Example Toolkit</generator>
+	<entry>
+		<title>Atom draft-07 snapshot</title>
+		<link rel="alternate" type="text/html" href="http://example.org/2005/04/02/atom"/>
+		<link rel="enclosure" type="audio/mpeg" length="1337" href="http://example.org/audio/ph34r_my_podcast.mp3"/>
+		<id>tag:example.org,2003:3.2397</id>
+		<updated>2005-07-31T12:29:29Z</updated>
+		<published>2003-12-13T08:29:29-04:00</published>
+		<author>
+			<name>Mark Pilgrim</name>
+			<uri>http://example.org/</uri>
+			<email>f8dy@example.com</email>
+		</author>
+		<contributor>
+			<name>Sam Ruby</name>
+		</contributor>
+		<contributor>
+			<name>Joe Gregorio</name>
+		</contributor>
+		<content type="xhtml" xml:lang="en" xml:base="http://diveintomark.org/">
+			<div xmlns="http://www.w3.org/1999/xhtml">
+				<p><i>[Update: The Atom draft is finished.]</i></p>
+			</div>
+		</content>
+	</entry>
+</feed>
+TEXT;
+
+			return Response::convert($response, ResponseParser::MODE_LOOSE)->toString();
+
+		}));
+
 		$body = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <entry>
@@ -95,14 +131,14 @@ XML;
 	<id>urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id>
 	<updated>2003-12-13T18:30:02Z</updated>
 	<summary>Some text.</summary>
-	<content type="application/xml" src="{$url}"></content>
+	<content type="application/xml" src="http://127.0.0.1/atom/remote"></content>
 </entry>
 XML;
 
 		$reader   = new Reader\Dom();
 		$entry    = new Entry();
 		$importer = new EntryImporter();
-		$importer->setFetchRemoteContent($this->http);
+		$importer->setFetchRemoteContent($http);
 		$importer->import($entry, $reader->read(new Message(array(), $body)));
 
 		$expect = <<<XML
@@ -147,6 +183,23 @@ XML;
 
 	public function testRemoteTextContent()
 	{
+		$testCase = $this;
+		$http = new Http(new Callback(function($request) use ($testCase){
+
+			$testCase->assertEquals('http://www.google.de/humans.txt', $request->getUrl());
+
+			$response = <<<TEXT
+HTTP/1.1 200 OK
+Date: Thu, 26 Sep 2013 16:36:26 GMT
+Content-Type: text/plain; charset=UTF-8
+
+Google is built by a large team of engineers, designers, researchers, robots, and others in many different sites across the globe. It is updated continuously, and built with more tools and technologies than we can shake a stick at. If you'd like to help us out, see google.com/jobs.
+TEXT;
+
+			return Response::convert($response, ResponseParser::MODE_LOOSE)->toString();
+
+		}));
+
 		$body = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <entry>
@@ -162,7 +215,7 @@ XML;
 		$reader   = new Reader\Dom();
 		$entry    = new Entry();
 		$importer = new EntryImporter();
-		$importer->setFetchRemoteContent($this->http);
+		$importer->setFetchRemoteContent($http);
 		$importer->import($entry, $reader->read(new Message(array(), $body)));
 
 		$expect = <<<XML
