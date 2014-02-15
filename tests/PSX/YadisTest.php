@@ -23,8 +23,13 @@
 
 namespace PSX;
 
+use PSX\Http\Authentication;
+use PSX\Http\GetRequest;
+use PSX\Http\Handler\Callback;
 use PSX\Http\Handler\Mock;
 use PSX\Http\Handler\MockCapture;
+use PSX\Http\Response;
+use PSX\Http\ResponseParser;
 
 /**
  * YadisTest
@@ -35,29 +40,51 @@ use PSX\Http\Handler\MockCapture;
  */
 class YadisTest extends \PHPUnit_Framework_TestCase
 {
-	const URL = 'http://test.phpsx.org';
-
-	private $http;
-	private $yadis;
-
-	protected function setUp()
-	{
-		//$mockCapture = new MockCapture('tests/PSX/Yadis/yadis_http_fixture.xml');
-		$mock = Mock::getByXmlDefinition('tests/PSX/Yadis/yadis_http_fixture.xml');
-
-		$this->http  = new Http($mock);
-		$this->yadis = new Yadis($this->http);
-	}
-
-	protected function tearDown()
-	{
-		unset($this->yadis);
-		unset($this->http);
-	}
-
 	public function testDiscovery()
 	{
-		$xrd = $this->yadis->discover(new Url(self::URL));
+		$testCase = $this;
+		$http = new Http(new Callback(function($request) use ($testCase){
+
+			if($request->getUrl()->getPath() == '/xrds')
+			{
+				$response = <<<'TEXT'
+HTTP/1.1 200 OK
+Date: Thu, 26 Sep 2013 16:36:26 GMT
+Content-Type: application/xrds+xml; charset=UTF-8
+
+<?xml version="1.0" encoding="UTF-8"?>
+<xrds:XRDS xmlns="xri://$xrd*($v*2.0)" xmlns:xrds="xri://$xrds">
+	<XRD>
+		<Service>
+			<URI>http://test.phpsx.org</URI>
+			<Type>http://ns.test.phpsx.org/2011/test</Type>
+		</Service>
+	</XRD>
+</xrds:XRDS>
+TEXT;
+			}
+			else
+			{
+				$response = <<<TEXT
+HTTP/1.1 200 OK
+Date: Thu, 26 Sep 2013 16:36:26 GMT
+Content-Type: text/html; charset=UTF-8
+X-XRDS-Location: http://127.0.0.1/xrds
+
+<html>
+<body>
+	<h1>Oo</h1>
+</body>
+</html>
+TEXT;
+			}
+
+			return Response::convert($response, ResponseParser::MODE_LOOSE)->toString();
+
+		}));
+
+		$yadis = new Yadis($http);
+		$xrd   = $yadis->discover(new Url('http://127.0.0.1'));
 
 		$this->assertInstanceOf('PSX\Xri\Xrd', $xrd);
 
