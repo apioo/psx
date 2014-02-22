@@ -23,6 +23,11 @@
 
 namespace PSX\Loader\CallbackResolver;
 
+use PSX\Loader\Location;
+use PSX\Http\Request;
+use PSX\Http\Response;
+use PSX\Url;
+
 /**
  * AnnotationTest
  *
@@ -32,8 +37,107 @@ namespace PSX\Loader\CallbackResolver;
  */
 class AnnotationTest extends \PHPUnit_Framework_TestCase
 {
-	public function testResolve()
+	public function testResolveRootMethod()
 	{
-		// @todo implement test
+		$location = new Location('id', '/', 'PSX\Loader\BarController');
+		$request  = new Request(new Url('http://127.0.0.1'), 'GET');
+		$response = new Response();
+
+		$annotation = new Annotation(getContainer());
+		$controller = $annotation->resolve($location, $request, $response);
+
+		$this->assertInstanceOf('PSX\Loader\BarController', $controller[0]);
+		$this->assertEquals('doIndex', $controller[1]);
+	}
+
+	public function testResolveMethodPath()
+	{
+		$location = new Location('id', '/detail/12', 'PSX\Loader\BarController');
+		$request  = new Request(new Url('http://127.0.0.1'), 'GET');
+		$response = new Response();
+
+		$annotation = new Annotation(getContainer());
+		$controller = $annotation->resolve($location, $request, $response);
+
+		$this->assertInstanceOf('PSX\Loader\BarController', $controller[0]);
+		$this->assertEquals('doShowDetails', $controller[1]);
+	}
+
+	public function testResolveUnknownMethod()
+	{
+		$location = new Location('id', '/foo', 'PSX\Loader\BarController');
+		$request  = new Request(new Url('http://127.0.0.1'), 'GET');
+		$response = new Response();
+
+		$annotation = new Annotation(getContainer());
+		$controller = $annotation->resolve($location, $request, $response);
+
+		$this->assertInstanceOf('PSX\Loader\BarController', $controller[0]);
+		$this->assertEquals('doIndex', $controller[1]);
+	}
+
+	public function testResolvePostRequestMethod()
+	{
+		$location = new Location('id', '/new', 'PSX\Loader\BarController');
+		$request  = new Request(new Url('http://127.0.0.1'), 'POST');
+		$response = new Response();
+
+		$annotation = new Annotation(getContainer());
+		$controller = $annotation->resolve($location, $request, $response);
+
+		$this->assertInstanceOf('PSX\Loader\BarController', $controller[0]);
+		$this->assertEquals('doInsert', $controller[1]);
+	}
+
+	public function testResolvePostUnknownMethod()
+	{
+		$location = new Location('id', '/', 'PSX\Loader\BarController');
+		$request  = new Request(new Url('http://127.0.0.1'), 'POST');
+		$response = new Response();
+
+		$annotation = new Annotation(getContainer());
+		$controller = $annotation->resolve($location, $request, $response);
+
+		$this->assertInstanceOf('PSX\Loader\BarController', $controller[0]);
+		$this->assertEquals(null, $controller[1]);
+	}
+
+	public function testResolveMethodExplicit()
+	{
+		$location = new Location('id', '/', 'PSX\Loader\BarController::doShowDetails');
+		$request  = new Request(new Url('http://127.0.0.1'), 'GET');
+		$response = new Response();
+
+		$annotation = new Annotation(getContainer());
+		$controller = $annotation->resolve($location, $request, $response);
+
+		$this->assertInstanceOf('PSX\Loader\BarController', $controller[0]);
+		$this->assertEquals('doShowDetails', $controller[1]);
+	}
+
+	/**
+	 * @expectedException ReflectionException
+	 */
+	public function testResolveUnknownClass()
+	{
+		$location = new Location('id', '/', 'PSX\Loader\UnknownController');
+		$request  = new Request(new Url('http://127.0.0.1'), 'GET');
+		$response = new Response();
+
+		$annotation = new Annotation(getContainer());
+		$controller = $annotation->resolve($location, $request, $response);
+	}
+
+	/**
+	 * @expectedException UnexpectedValueException
+	 */
+	public function testResolveUnknownClassExplicit()
+	{
+		$location = new Location('id', '/', 'PSX\Loader\UnknownController::foo');
+		$request  = new Request(new Url('http://127.0.0.1'), 'GET');
+		$response = new Response();
+
+		$annotation = new Annotation(getContainer());
+		$controller = $annotation->resolve($location, $request, $response);
 	}
 }

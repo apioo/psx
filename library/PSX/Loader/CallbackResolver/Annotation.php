@@ -85,7 +85,7 @@ class Annotation implements CallbackResolverInterface
 			}
 			else
 			{
-				throw new UnexpectedValueException('Controller method "' . $method->getName() . '" must be public');
+				throw new UnexpectedValueException('Class "' . $className . '" does not exists');
 			}
 		}
 	}
@@ -101,7 +101,7 @@ class Annotation implements CallbackResolverInterface
 	 * @param string $requestMethod
 	 * @param string $requestPath
 	 * @param array $uriFragments
-	 * @return array
+	 * @return ReflectionMethod
 	 */
 	protected function getMethodToCall(ReflectionClass $class, $requestMethod, $requestPath, &$uriFragments)
 	{
