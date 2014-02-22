@@ -32,7 +32,7 @@ use PSX\Data\RecordInterface;
 use PSX\Sql;
 use PSX\Sql\Condition;
 use PSX\Sql\TableInterface;
-use PSX\Sql\TableManager;
+use PSX\Sql\TableManagerInterface;
 use RuntimeException;
 
 /**
@@ -52,7 +52,7 @@ abstract class DatabaseHandlerAbstract extends HandlerAbstract
 
 	protected $_select;
 
-	public function __construct(TableManager $tm)
+	public function __construct(TableManagerInterface $tm)
 	{
 		$this->manager = $tm;
 		$this->table   = $this->getSelect()->getTable();
