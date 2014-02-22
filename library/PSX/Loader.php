@@ -96,7 +96,7 @@ class Loader implements LoaderInterface
 
 	public function addRoute($sourcePath, $destPath)
 	{
-		$key = md5($path);
+		$key = md5($destPath);
 
 		$this->routes[$sourcePath] = $destPath;
 	}
