@@ -311,4 +311,41 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals($expect, $module->getMethodsCalled());
 	}
+
+	public function testCustomRoutes()
+	{
+		$testCase       = $this;
+		$locationFinder = new CallbackMethod(function($method, $path) use ($testCase){
+
+			$testCase->assertEquals('/bar', $path);
+
+			return new Location(md5($path), '/', 'PSX\Loader\ProbeController');
+
+		});
+
+		$loader   = new Loader($locationFinder, getContainer()->get('loader_callback_resolver'));
+		$loader->addRoute('/foobar/foo', '/bar');
+
+		$request  = new Request(new Url('http://127.0.0.1/foobar/foo'), 'GET');
+		$response = new Response();
+		$module   = $loader->load($request, $response);
+
+		$expect = array(
+			'PSX\Loader\ProbeController::__construct',
+			'PSX\Loader\ProbeController::getStage',
+			'PSX\Loader\ProbeController::getRequestFilter',
+			'PSX\Loader\ProbeController::getStage',
+			'PSX\Loader\ProbeController::onLoad',
+			'PSX\Loader\ProbeController::getStage',
+			'PSX\Loader\ProbeController::onGet',
+			'PSX\Loader\ProbeController::getStage',
+			'PSX\Loader\ProbeController::doIndex',
+			'PSX\Loader\ProbeController::processResponse',
+			'PSX\Loader\ProbeController::getStage',
+			'PSX\Loader\ProbeController::getResponseFilter',
+		);
+
+		$this->assertEquals($expect, $module->getMethodsCalled());
+		$this->assertEquals('/bar', $loader->getRoute('/foobar/foo'));
+	}
 }

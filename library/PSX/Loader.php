@@ -57,9 +57,7 @@ class Loader implements LoaderInterface
 
 	/**
 	 * Loads the location of the controller through the defined location finder. 
-	 * Then calls the executor to create a new instance of the controller and
-	 * call the fitting methods. Locations which gets resolved by the location 
-	 * finder can only be loaded once
+	 * Then uses the callback resolver to obtain an callback from the location
 	 *
 	 * @param PSX\Http\Request $request
 	 * @param PSX\Http\Response $response
@@ -96,16 +94,16 @@ class Loader implements LoaderInterface
 
 	public function addRoute($sourcePath, $destPath)
 	{
-		$key = md5($destPath);
+		$key = md5($sourcePath);
 
-		$this->routes[$sourcePath] = $destPath;
+		$this->routes[$key] = $destPath;
 	}
 
 	public function getRoute($path)
 	{
 		$key = md5($path);
 
-		return isset($this->routes[$key]) ? $this->routes[$key] : false;
+		return isset($this->routes[$key]) ? $this->routes[$key] : null;
 	}
 
 	protected function runControllerLifecycle($callback, Request $request, Response $response)
