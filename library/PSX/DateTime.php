@@ -40,11 +40,6 @@ class DateTime extends \DateTime
 
 	public function __construct($time = 'now', DateTimeZone $timezone = null)
 	{
-		if($timezone === null)
-		{
-			$timezone = new DateTimeZone(date_default_timezone_get());
-		}
-
 		parent::__construct($time, $timezone);
 	}
 
