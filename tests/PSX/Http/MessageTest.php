@@ -23,6 +23,7 @@
 
 namespace PSX\Http;
 
+use DateTime;
 use PSX\Http;
 use PSX\Http\Stream\StringStream;
 
@@ -43,18 +44,27 @@ class MessageTest extends \PHPUnit_Framework_TestCase
 			'bar' => array('foo', 'bar'),
 			'oof' => new HeaderFieldValues('foo'),
 			'rab' => new HeaderFieldValues(array('bar', 'foo')),
+			// datetime values are automatically formatted to RFC1123
+			'dat' => new DateTime('2014-02-24'),
 		));
 
 		$headers = $message->getHeaders();
 
-		$this->assertInstanceOf('PSX\Http\HeaderFieldValues', $headers['foo']);
-		$this->assertEquals('bar', (string) $headers['foo']);
-		$this->assertInstanceOf('PSX\Http\HeaderFieldValues', $headers['bar']);
-		$this->assertEquals('foo, bar', (string) $headers['bar']);
-		$this->assertInstanceOf('PSX\Http\HeaderFieldValues', $headers['oof']);
-		$this->assertEquals('foo', (string) $headers['oof']);
-		$this->assertInstanceOf('PSX\Http\HeaderFieldValues', $headers['rab']);
-		$this->assertEquals('bar, foo', (string) $headers['rab']);
+		$this->assertTrue(is_array($headers['foo']));
+		$this->assertEquals(array('bar'), $headers['foo']);
+		$this->assertTrue(is_array($headers['bar']));
+		$this->assertEquals(array('foo', 'bar'), $headers['bar']);
+		$this->assertTrue(is_array($headers['oof']));
+		$this->assertEquals(array('foo'), $headers['oof']);
+		$this->assertTrue(is_array($headers['rab']));
+		$this->assertEquals(array('bar', 'foo'), $headers['rab']);
+		$this->assertTrue(is_array($headers['dat']));
+		$this->assertEquals(array('Mon, 24 Feb 2014 00:00:00 GMT'), $headers['dat']);
+
+		foreach($headers as $name => $value)
+		{
+			$this->assertTrue(is_array($value));
+		}
 
 		// set headers must overwrite all existing headers
 		$message->setHeaders(array(
@@ -104,17 +114,17 @@ class MessageTest extends \PHPUnit_Framework_TestCase
 
 		$message->addHeader('foo', 'bar');
 
-		$this->assertInstanceOf('PSX\Http\HeaderFieldValues', $message->getHeader('foo'));
-		$this->assertEquals('bar', (string) $message->getHeader('foo'));
+		$this->assertEquals('bar', $message->getHeader('foo'));
+		$this->assertEquals(array('bar'), $message->getHeader('foo', true));
 
 		// now we add the same header again which must be added to the existing 
 		// header
 		$message->addHeader('foo', 'foo');
 
-		$this->assertInstanceOf('PSX\Http\HeaderFieldValues', $message->getHeader('foo'));
-		$this->assertEquals('bar, foo', (string) $message->getHeader('foo'));
-		$this->assertEquals('bar', $message->getHeader('foo')[0]);
-		$this->assertEquals('foo', $message->getHeader('foo')[1]);
+		$this->assertEquals('bar, foo', $message->getHeader('foo'));
+		$this->assertEquals(array('bar', 'foo'), $message->getHeader('foo', true));
+		$this->assertEquals('bar', $message->getHeader('foo', true)[0]);
+		$this->assertEquals('foo', $message->getHeader('foo', true)[1]);
 	}
 
 	public function testAddHeaders()
@@ -125,17 +135,17 @@ class MessageTest extends \PHPUnit_Framework_TestCase
 			'foo' => 'bar'
 		));
 
-		$this->assertInstanceOf('PSX\Http\HeaderFieldValues', $message->getHeader('foo'));
-		$this->assertEquals('bar', (string) $message->getHeader('foo'));
+		$this->assertEquals('bar', $message->getHeader('foo'));
+		$this->assertEquals(array('bar'), $message->getHeader('foo', true));
 
 		$message->addHeaders(array(
 			'foo' => 'foo'
 		));
 
-		$this->assertInstanceOf('PSX\Http\HeaderFieldValues', $message->getHeader('foo'));
-		$this->assertEquals('bar, foo', (string) $message->getHeader('foo'));
-		$this->assertEquals('bar', $message->getHeader('foo')[0]);
-		$this->assertEquals('foo', $message->getHeader('foo')[1]);
+		$this->assertEquals('bar, foo', $message->getHeader('foo'));
+		$this->assertEquals(array('bar', 'foo'), $message->getHeader('foo', true));
+		$this->assertEquals('bar', $message->getHeader('foo', true)[0]);
+		$this->assertEquals('foo', $message->getHeader('foo', true)[1]);
 	}
 
 	public function testRemoveHeader()
@@ -165,12 +175,12 @@ class MessageTest extends \PHPUnit_Framework_TestCase
 		$message = new Message(array('foo' => 'bar'), new StringStream('foobar'));
 
 		$this->assertEquals('foobar', (string) $message->getBody());
-		$this->assertInstanceOf('PSX\Http\HeaderFieldValues', $message->getHeader('foo'));
-		$this->assertEquals('bar', (string) $message->getHeader('foo'));
+		$this->assertEquals('bar', $message->getHeader('foo'));
+		$this->assertEquals(array('bar'), $message->getHeader('foo', true));
 
 		$message = new Message(array('foo' => 'bar'));
 
-		$this->assertInstanceOf('PSX\Http\HeaderFieldValues', $message->getHeader('foo'));
-		$this->assertEquals('bar', (string) $message->getHeader('foo'));
+		$this->assertEquals('bar', $message->getHeader('foo'));
+		$this->assertEquals(array('bar'), $message->getHeader('foo', true));
 	}
 }

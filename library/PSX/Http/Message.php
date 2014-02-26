@@ -49,7 +49,14 @@ class Message
 
 	public function getHeaders()
 	{
-		return $this->headers;
+		$result = array();
+
+		foreach($this->headers as $name => $value)
+		{
+			$result[$name] = $value->getValue(true);
+		}
+
+		return $result;
 	}
 
 	public function hasHeader($name)
@@ -57,9 +64,9 @@ class Message
 		return isset($this->headers[strtolower($name)]);
 	}
 
-	public function getHeader($name)
+	public function getHeader($name, $asArray = false)
 	{
-		return $this->hasHeader($name) ? $this->headers[strtolower($name)] : null;
+		return $this->hasHeader($name) ? $this->headers[strtolower($name)]->getValue($asArray) : null;
 	}
 
 	public function setHeader($name, $value)
@@ -82,7 +89,7 @@ class Message
 	{
 		if($this->hasHeader($name))
 		{
-			$this->getHeader($name)->append($value);
+			$this->headers[strtolower($name)]->append($value);
 		}
 		else
 		{

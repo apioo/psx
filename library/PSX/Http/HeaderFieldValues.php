@@ -23,6 +23,8 @@
 
 namespace PSX\Http;
 
+use DateTime;
+
 /**
  * HeaderFieldValues
  *
@@ -38,35 +40,30 @@ class HeaderFieldValues implements \Countable, \Iterator, \ArrayAccess
 
 	public function __construct($value)
 	{
-		if(is_array($value))
-		{
-			$this->value = array_map('strval', $value);
-		}
-		else
-		{
-			$this->value = array($value);
-		}
+		$this->value = array();
+
+		$this->append($value);
 	}
 
-	public function getValue()
+	public function getValue($asArray = false)
 	{
-		return $this->value;
+		return $asArray ? $this->value : implode(', ', $this->value);
 	}
 
 	public function append($value)
 	{
 		if($value instanceof HeaderFieldValues)
 		{
-			$value = $value->getValue();
+			$value = $value->getValue(true);
+		}
 
-			if(is_array($value))
-			{
-				$this->value = array_merge($this->value, $value);
-			}
-			else
-			{
-				$this->value[] = (string) $value;
-			}
+		if(is_array($value))
+		{
+			$this->value = array_merge($this->value, array_map('strval', $value));
+		}
+		else if($value instanceof DateTime)
+		{
+			$this->value[] = $value->format(\PSX\DateTime::HTTP);
 		}
 		else
 		{
