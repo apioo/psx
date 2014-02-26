@@ -254,7 +254,7 @@ class Request extends Message
 	public function toString()
 	{
 		$request = $this->getLine() . Http::$newLine;
-		$headers = ResponseParser::buildHeaderFromResponse($this);
+		$headers = ResponseParser::buildHeaderFromMessage($this);
 
 		foreach($headers as $header)
 		{

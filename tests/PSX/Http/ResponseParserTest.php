@@ -60,18 +60,18 @@ class ResponseParserTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(200, $response->getStatusCode());
 		$this->assertEquals('OK', $response->getReasonPhrase());
 		$this->assertEquals(array(
-			'content-type'           => 'text/plain',
-			'date'                   => 'Sat, 07 Dec 2013 13:27:33 GMT',
-			'vary'                   => 'Accept-Encoding',
-			'last-modified'          => 'Mon, 02 Apr 2012 02:13:37 GMT',
-			'expires'                => 'Sat, 07 Dec 2013 13:27:33 GMT',
-			'cache-control'          => 'public, max-age=0',
-			'x-content-type-options' => 'nosniff',
-			'server'                 => 'sffe',
-			'x-xss-protection'       => '1; mode=block',
-			'alternate-protocol'     => '80:quic',
-			'transfer-encoding'      => 'chunked',
-		), array_map('strval', $response->getHeaders()));
+			'content-type'           => ['text/plain'],
+			'date'                   => ['Sat, 07 Dec 2013 13:27:33 GMT'],
+			'vary'                   => ['Accept-Encoding'],
+			'last-modified'          => ['Mon, 02 Apr 2012 02:13:37 GMT'],
+			'expires'                => ['Sat, 07 Dec 2013 13:27:33 GMT'],
+			'cache-control'          => ['public, max-age=0'],
+			'x-content-type-options' => ['nosniff'],
+			'server'                 => ['sffe'],
+			'x-xss-protection'       => ['1; mode=block'],
+			'alternate-protocol'     => ['80:quic'],
+			'transfer-encoding'      => ['chunked'],
+		), $response->getHeaders());
 		$this->assertEquals('Google is built by a large team of engineers, designers, researchers, robots, and others in many different sites across the globe. It is updated continuously, and built with more tools and technologies than we can shake a stick at. If you\'d like to help us out, see google.com/jobs.', $response->getBody());
 	}
 
@@ -104,18 +104,18 @@ class ResponseParserTest extends \PHPUnit_Framework_TestCase
 			$this->assertEquals(200, $response->getStatusCode());
 			$this->assertEquals('OK', $response->getReasonPhrase());
 			$this->assertEquals(array(
-				'content-type'           => 'text/plain',
-				'date'                   => 'Sat, 07 Dec 2013 13:27:33 GMT',
-				'vary'                   => 'Accept-Encoding',
-				'last-modified'          => 'Mon, 02 Apr 2012 02:13:37 GMT',
-				'expires'                => 'Sat, 07 Dec 2013 13:27:33 GMT',
-				'cache-control'          => 'public, max-age=0',
-				'x-content-type-options' => 'nosniff',
-				'server'                 => 'sffe',
-				'x-xss-protection'       => '1; mode=block',
-				'alternate-protocol'     => '80:quic',
-				'transfer-encoding'      => 'chunked',
-			), array_map('strval', $response->getHeaders()));
+				'content-type'           => ['text/plain'],
+				'date'                   => ['Sat, 07 Dec 2013 13:27:33 GMT'],
+				'vary'                   => ['Accept-Encoding'],
+				'last-modified'          => ['Mon, 02 Apr 2012 02:13:37 GMT'],
+				'expires'                => ['Sat, 07 Dec 2013 13:27:33 GMT'],
+				'cache-control'          => ['public, max-age=0'],
+				'x-content-type-options' => ['nosniff'],
+				'server'                 => ['sffe'],
+				'x-xss-protection'       => ['1; mode=block'],
+				'alternate-protocol'     => ['80:quic'],
+				'transfer-encoding'      => ['chunked'],
+			), $response->getHeaders());
 			$this->assertEquals('Google is built by a large team of engineers, designers, researchers, robots, and others in many different sites across the globe. It is updated continuously, and built with more tools and technologies than we can shake a stick at. If you\'d like to help us out, see google.com/jobs.', $response->getBody());
 		}
 	}

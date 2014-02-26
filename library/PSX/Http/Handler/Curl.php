@@ -101,29 +101,16 @@ class Curl implements HandlerInterface
 		}
 
 		// set header
-		$headers = $request->getHeaders();
+		$headers = ResponseParser::buildHeaderFromMessage($request);
 
 		if(!empty($headers))
 		{
-			$rawHeaders = array();
-			$hasExpect  = false;
-
-			foreach($headers as $key => $value)
+			if(!$request->hasHeader('Expect'))
 			{
-				$rawHeaders[] = $key . ': ' . $value;
-
-				if(!$hasExpect && $key == 'expect')
-				{
-					$hasExpect = true;
-				}
+				$headers[] = 'Expect:';
 			}
 
-			if(!$hasExpect)
-			{
-				$rawHeaders[] = 'Expect:';
-			}
-
-			curl_setopt($handle, CURLOPT_HTTPHEADER, $rawHeaders);
+			curl_setopt($handle, CURLOPT_HTTPHEADER, $headers);
 		}
 
 		// set body

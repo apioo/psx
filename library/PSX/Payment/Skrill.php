@@ -81,20 +81,17 @@ class Skrill
 
 		if($response->getStatusCode() == 200)
 		{
-			$cookies   = $response->getHeader('Set-Cookie');
+			$cookies   = $response->getHeader('Set-Cookie', true);
 			$sessionId = null;
 
-			if($cookies instanceof \Traversable)
+			foreach($cookies as $cookie)
 			{
-				foreach($cookies as $cookie)
-				{
-					$cookie = Cookie::convert($cookie);
+				$cookie = Cookie::convert($cookie);
 
-					if($cookie->getName() == 'SESSION_ID')
-					{
-						$sessionId = $cookie->getValue();
-						break;
-					}
+				if($cookie->getName() == 'SESSION_ID')
+				{
+					$sessionId = $cookie->getValue();
+					break;
 				}
 			}
 

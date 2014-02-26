@@ -251,9 +251,9 @@ class ResponseParser
 		}
 	}
 
-	public static function buildHeaderFromResponse(Message $response)
+	public static function buildHeaderFromMessage(Message $message)
 	{
-		$headers = $response->getHeaders();
+		$headers = $message->getHeaders();
 		$result  = array();
 
 		foreach($headers as $key => $value)
@@ -267,7 +267,7 @@ class ResponseParser
 			}
 			else
 			{
-				$result[] = $key . ': ' . $value;
+				$result[] = $key . ': ' . implode(', ', $value);
 			}
 		}
 

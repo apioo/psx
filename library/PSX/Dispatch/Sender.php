@@ -59,7 +59,7 @@ class Sender implements SenderInterface
 			}
 
 			// send header
-			$headers = ResponseParser::buildHeaderFromResponse($response);
+			$headers = ResponseParser::buildHeaderFromMessage($response);
 
 			foreach($headers as $header)
 			{

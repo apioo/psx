@@ -200,7 +200,7 @@ class Response extends Message
 	public function toString()
 	{
 		$response = $this->getLine() . Http::$newLine;
-		$headers  = ResponseParser::buildHeaderFromResponse($this);
+		$headers  = ResponseParser::buildHeaderFromMessage($this);
 
 		foreach($headers as $header)
 		{
