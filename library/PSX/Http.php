@@ -152,20 +152,17 @@ class Http
 		// store cookies
 		if($this->cookieStore !== null)
 		{
-			$cookies = $response->getHeader('Set-Cookie');
+			$cookies = $response->getHeader('Set-Cookie', true);
 
-			if($cookies instanceof \Traversable)
+			foreach($cookies as $rawCookie)
 			{
-				foreach($cookies as $rawCookie)
+				$cookie = Cookie::convert($rawCookie);
+
+				if($cookie instanceof Cookie)
 				{
-					$cookie = Cookie::convert($rawCookie);
+					$domain = $cookie->getDomain() !== null ? $cookie->getDomain() : $request->getUrl()->getHost();
 
-					if($cookie instanceof Cookie)
-					{
-						$domain = $cookie->getDomain() !== null ? $cookie->getDomain() : $request->getUrl()->getHost();
-
-						$this->cookieStore->store($domain, $cookie);
-					}
+					$this->cookieStore->store($domain, $cookie);
 				}
 			}
 		}

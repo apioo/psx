@@ -66,7 +66,7 @@ class Message
 
 	public function getHeader($name, $asArray = false)
 	{
-		return $this->hasHeader($name) ? $this->headers[strtolower($name)]->getValue($asArray) : null;
+		return $this->hasHeader($name) ? $this->headers[strtolower($name)]->getValue($asArray) : ($asArray ? array() : null);
 	}
 
 	public function setHeader($name, $value)

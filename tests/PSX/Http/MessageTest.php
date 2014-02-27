@@ -94,7 +94,10 @@ class MessageTest extends \PHPUnit_Framework_TestCase
 		));
 
 		$this->assertEquals('bar', (string) $message->getHeader('foo'));
+		$this->assertEquals('bar', $message->getHeader('foo'));
+		$this->assertEquals(array('bar'), $message->getHeader('foo', true));
 		$this->assertEquals(null, $message->getHeader('bar'));
+		$this->assertEquals(array(), $message->getHeader('bar', true));
 	}
 
 	public function testSetHeader()

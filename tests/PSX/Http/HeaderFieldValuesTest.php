@@ -41,7 +41,8 @@ class HeaderFieldValuesTest extends \PHPUnit_Framework_TestCase
 		$value = new HeaderFieldValues('foo');
 
 		$this->assertEquals('foo', (string) $value);
-		$this->assertEquals(array('foo'), $value->getValue());
+		$this->assertEquals('foo', $value->getValue());
+		$this->assertEquals(array('foo'), $value->getValue(true));
 		$this->assertEquals(1, count($value));
 		$this->assertEquals('foo', $value[0]);
 		$this->assertEquals(null, $value[1]);
@@ -49,17 +50,20 @@ class HeaderFieldValuesTest extends \PHPUnit_Framework_TestCase
 		$value->append('bar');
 
 		$this->assertEquals('foo, bar', (string) $value);
-		$this->assertEquals(array('foo', 'bar'), $value->getValue());
+		$this->assertEquals('foo, bar', $value->getValue());
+		$this->assertEquals(array('foo', 'bar'), $value->getValue(true));
 
 		$value->append(new HeaderFieldValues('bar'));
 
 		$this->assertEquals('foo, bar, bar', (string) $value);
-		$this->assertEquals(array('foo', 'bar', 'bar'), $value->getValue());
+		$this->assertEquals('foo, bar, bar', $value->getValue());
+		$this->assertEquals(array('foo', 'bar', 'bar'), $value->getValue(true));
 
 		$value->append(new HeaderFieldValues(array('foo', 'bar')));
 
 		$this->assertEquals('foo, bar, bar, foo, bar', (string) $value);
-		$this->assertEquals(array('foo', 'bar', 'bar', 'foo', 'bar'), $value->getValue());
+		$this->assertEquals('foo, bar, bar, foo, bar', $value->getValue());
+		$this->assertEquals(array('foo', 'bar', 'bar', 'foo', 'bar'), $value->getValue(true));
 	}
 
 	public function testCountable()
