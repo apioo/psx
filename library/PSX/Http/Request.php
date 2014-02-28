@@ -258,7 +258,7 @@ class Request extends Message
 
 		foreach($headers as $header)
 		{
-			$response.= $header . Http::$newLine;
+			$request.= $header . Http::$newLine;
 		}
 
 		$request.= Http::$newLine;

@@ -177,8 +177,7 @@ class ResponseParser
 	 */
 	protected function headerToArray(Response $response, $header)
 	{
-		$lines  = explode(Http::$newLine, $header);
-		$header = array();
+		$lines = explode(Http::$newLine, $header);
 
 		foreach($lines as $line)
 		{

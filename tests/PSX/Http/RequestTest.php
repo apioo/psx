@@ -23,6 +23,10 @@
 
 namespace PSX\Http;
 
+use PSX\Http;
+use PSX\Http\Stream\StringStream;
+use PSX\Url;
+
 /**
  * RequestTest
  *
@@ -32,15 +36,21 @@ namespace PSX\Http;
  */
 class RequestTest extends \PHPUnit_Framework_TestCase
 {
-	protected function setUp()
+	public function testToString()
 	{
-	}
+		$body = new StringStream();
+		$body->write('foobar');
 
-	protected function tearDown()
-	{
-	}
+		$request = new Request(new Url('http://127.0.0.1'), 'POST');
+		$request->setHeader('Content-Type', 'text/html; charset=UTF-8');
+		$request->setBody($body);
 
-	public function testNotImplemented()
-	{
+		$httpRequest = 'POST / HTTP/1.1' . Http::$newLine;
+		$httpRequest.= 'host: 127.0.0.1' . Http::$newLine;
+		$httpRequest.= 'content-type: text/html; charset=UTF-8' . Http::$newLine;
+		$httpRequest.= Http::$newLine;
+		$httpRequest.= 'foobar';
+
+		$this->assertEquals($httpRequest, (string) $request);
 	}
 }

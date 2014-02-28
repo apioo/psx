@@ -163,11 +163,12 @@ class Response extends Message
 			}
 		}
 
-		// meta
-		// @todo check for meta http-equiv content-type tag
-
-		// detect
-		// @todo try to guess encoding with mb_detect_encoding
+		// @todo check the content type and determine based on this which 
+		// charset detection method we use if we have text/html we can search 
+		// for an meta tag if we have application/xml we can check the xml 
+		// declaration etc. this can be probably outsourced in a seperate  
+		// charset detection class ... as fallback we could try to guess the 
+		// encoding maybe with mb_detect_encoding
 
 		return false;
 	}
@@ -182,7 +183,7 @@ class Response extends Message
 	public function getBodyAsString($outCharset = 'UTF-8//IGNORE')
 	{
 		$inCharset = $this->getCharset();
-		$body      = $this->getBody();
+		$body      = (string) $this->getBody();
 
 		if($inCharset !== false)
 		{

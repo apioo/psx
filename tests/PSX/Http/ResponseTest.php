@@ -24,6 +24,7 @@
 namespace PSX\Http;
 
 use PSX\Http;
+use PSX\Http\Stream\StringStream;
 
 /**
  * ResponseTest
@@ -42,7 +43,7 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
 	{
 	}
 
-	public function testResponse()
+	public function testConvert()
 	{
 		$httpResponse = 'HTTP/1.1 200 OK' . Http::$newLine;
 		$httpResponse.= 'Content-type: text/html; charset=UTF-8' . Http::$newLine;
@@ -110,5 +111,22 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals('€', $response->getBodyAsString());
 		$this->assertEquals('EUR', $response->getBodyAsString('ISO-8859-1//TRANSLIT'));
+	}
+
+	public function testToString()
+	{
+		$body = new StringStream();
+		$body->write('foobar');
+
+		$response = new Response('HTTP/1.1', 200, 'OK');
+		$response->setHeader('Content-Type', 'text/html; charset=UTF-8');
+		$response->setBody($body);
+
+		$httpResponse = 'HTTP/1.1 200 OK' . Http::$newLine;
+		$httpResponse.= 'content-type: text/html; charset=UTF-8' . Http::$newLine;
+		$httpResponse.= Http::$newLine;
+		$httpResponse.= 'foobar';
+
+		$this->assertEquals($httpResponse, (string) $response);
 	}
 }
