@@ -54,18 +54,18 @@ class ProbeController extends ControllerAbstract
 		return parent::getStage();
 	}
 
-	public function getRequestFilter()
+	public function getPreFilter()
 	{
 		$this->methodsCalled[] = __METHOD__;
 
-		return parent::getRequestFilter();
+		return parent::getPreFilter();
 	}
 
-	public function getResponseFilter()
+	public function getPostFilter()
 	{
 		$this->methodsCalled[] = __METHOD__;
 
-		return parent::getResponseFilter();
+		return parent::getPostFilter();
 	}
 
 	public function onLoad()

@@ -71,12 +71,12 @@ abstract class ControllerAbstract implements ControllerInterface
 		return $this->stage;
 	}
 
-	public function getRequestFilter()
+	public function getPreFilter()
 	{
 		return array();
 	}
 
-	public function getResponseFilter()
+	public function getPostFilter()
 	{
 		return array();
 	}

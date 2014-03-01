@@ -32,12 +32,12 @@ namespace PSX;
  */
 interface ControllerInterface
 {
-	const CALL_REQUEST_FILTER   = 0x1;
+	const CALL_PRE_FILTER       = 0x1;
 	const CALL_ONLOAD           = 0x2;
 	const CALL_REQUEST_METHOD   = 0x4;
 	const CALL_METHOD           = 0x8;
 	const CALL_PROCESS_RESPONSE = 0x10;
-	const CALL_RESPONSE_FILTER  = 0x20;
+	const CALL_POST_FILTER      = 0x20;
 
 	/**
 	 * The controller can control the behaviour wich method should be called by 
@@ -49,19 +49,18 @@ interface ControllerInterface
 	public function getStage();
 
 	/**
-	 * Returns an array of request filters wich are applied on the current 
-	 * request
+	 * Returns an array of filters wich are applied before
 	 *
-	 * @return array<PSX\Dispatch\RequestFilterInterface>
+	 * @return array<PSX\Dispatch\FilterInterface>
 	 */
-	public function getRequestFilter();
+	public function getPreFilter();
 
 	/**
-	 * Returns an array of response filters wich are applied on the response
+	 * Returns an array of filters wich are applied after
 	 *
-	 * @return array<PSX\Dispatch\ResponseFilterInterface>
+	 * @return array<PSX\Dispatch\FilterInterface>
 	 */
-	public function getResponseFilter();
+	public function getPostFilter();
 
 	/**
 	 * Method which gets always called before the on* methods are called

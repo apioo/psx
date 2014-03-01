@@ -97,4 +97,28 @@ class TestController extends ControllerAbstract
 		$testCase->assertEquals(0x3F, $this->stage);
 		$testCase->assertInstanceOf('PSX\Config', $this->config);
 	}
+
+	public function getPreFilter()
+	{
+		$testCase = $this->getTestCase();
+
+		return array(function($request, $response) use ($testCase){
+
+			$testCase->assertInstanceOf('PSX\Http\Request', $request);
+			$testCase->assertInstanceOf('PSX\Http\Response', $response);
+
+		});
+	}
+
+	public function getPostFilter()
+	{
+		$testCase = $this->getTestCase();
+
+		return array(function($request, $response) use ($testCase){
+
+			$testCase->assertInstanceOf('PSX\Http\Request', $request);
+			$testCase->assertInstanceOf('PSX\Http\Response', $response);
+
+		});
+	}
 }

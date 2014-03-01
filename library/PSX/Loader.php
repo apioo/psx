@@ -115,10 +115,10 @@ class Loader implements LoaderInterface
 
 			if($controller instanceof ControllerInterface)
 			{
-				// call request filter
-				if($controller->getStage() & ControllerInterface::CALL_REQUEST_FILTER)
+				// call pre filter
+				if($controller->getStage() & ControllerInterface::CALL_PRE_FILTER)
 				{
-					$filters = $controller->getRequestFilter();
+					$filters = $controller->getPreFilter();
 
 					foreach($filters as $filter)
 					{
@@ -178,10 +178,10 @@ class Loader implements LoaderInterface
 				// process response
 				$controller->processResponse(null);
 
-				// call response filter
-				if($controller->getStage() & ControllerInterface::CALL_RESPONSE_FILTER)
+				// call post filter
+				if($controller->getStage() & ControllerInterface::CALL_POST_FILTER)
 				{
-					$filters = $controller->getResponseFilter();
+					$filters = $controller->getPostFilter();
 
 					foreach($filters as $filter)
 					{

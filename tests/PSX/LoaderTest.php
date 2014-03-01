@@ -58,7 +58,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 		$expect = array(
 			'PSX\Loader\ProbeController::__construct',
 			'PSX\Loader\ProbeController::getStage',
-			'PSX\Loader\ProbeController::getRequestFilter',
+			'PSX\Loader\ProbeController::getPreFilter',
 			'PSX\Loader\ProbeController::getStage',
 			'PSX\Loader\ProbeController::onLoad',
 			'PSX\Loader\ProbeController::getStage',
@@ -67,7 +67,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 			'PSX\Loader\ProbeController::doIndex',
 			'PSX\Loader\ProbeController::processResponse',
 			'PSX\Loader\ProbeController::getStage',
-			'PSX\Loader\ProbeController::getResponseFilter',
+			'PSX\Loader\ProbeController::getPostFilter',
 		);
 
 		$this->assertEquals($expect, $module->getMethodsCalled());
@@ -92,7 +92,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 		$expect = array(
 			'PSX\Loader\ProbeController::__construct',
 			'PSX\Loader\ProbeController::getStage',
-			'PSX\Loader\ProbeController::getRequestFilter',
+			'PSX\Loader\ProbeController::getPreFilter',
 			'PSX\Loader\ProbeController::getStage',
 			'PSX\Loader\ProbeController::onLoad',
 			'PSX\Loader\ProbeController::getStage',
@@ -101,7 +101,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 			'PSX\Loader\ProbeController::doShowDetails',
 			'PSX\Loader\ProbeController::processResponse',
 			'PSX\Loader\ProbeController::getStage',
-			'PSX\Loader\ProbeController::getResponseFilter',
+			'PSX\Loader\ProbeController::getPostFilter',
 		);
 
 		$this->assertEquals($expect, $module->getMethodsCalled());
@@ -127,7 +127,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 		$expect = array(
 			'PSX\Loader\ProbeController::__construct',
 			'PSX\Loader\ProbeController::getStage',
-			'PSX\Loader\ProbeController::getRequestFilter',
+			'PSX\Loader\ProbeController::getPreFilter',
 			'PSX\Loader\ProbeController::getStage',
 			'PSX\Loader\ProbeController::onLoad',
 			'PSX\Loader\ProbeController::getStage',
@@ -136,7 +136,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 			'PSX\Loader\ProbeController::doInsert',
 			'PSX\Loader\ProbeController::processResponse',
 			'PSX\Loader\ProbeController::getStage',
-			'PSX\Loader\ProbeController::getResponseFilter',
+			'PSX\Loader\ProbeController::getPostFilter',
 		);
 
 		$this->assertEquals($expect, $module->getMethodsCalled());
@@ -161,7 +161,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 		$expect = array(
 			'PSX\Loader\ProbeController::__construct',
 			'PSX\Loader\ProbeController::getStage',
-			'PSX\Loader\ProbeController::getRequestFilter',
+			'PSX\Loader\ProbeController::getPreFilter',
 			'PSX\Loader\ProbeController::getStage',
 			'PSX\Loader\ProbeController::onLoad',
 			'PSX\Loader\ProbeController::getStage',
@@ -170,7 +170,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 			'PSX\Loader\ProbeController::doInsertNested',
 			'PSX\Loader\ProbeController::processResponse',
 			'PSX\Loader\ProbeController::getStage',
-			'PSX\Loader\ProbeController::getResponseFilter',
+			'PSX\Loader\ProbeController::getPostFilter',
 		);
 
 		$this->assertEquals($expect, $module->getMethodsCalled());
@@ -195,7 +195,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 		$expect = array(
 			'PSX\Loader\ProbeController::__construct',
 			'PSX\Loader\ProbeController::getStage',
-			'PSX\Loader\ProbeController::getRequestFilter',
+			'PSX\Loader\ProbeController::getPreFilter',
 			'PSX\Loader\ProbeController::getStage',
 			'PSX\Loader\ProbeController::onLoad',
 			'PSX\Loader\ProbeController::getStage',
@@ -204,7 +204,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 			'PSX\Loader\ProbeController::doUpdate',
 			'PSX\Loader\ProbeController::processResponse',
 			'PSX\Loader\ProbeController::getStage',
-			'PSX\Loader\ProbeController::getResponseFilter',
+			'PSX\Loader\ProbeController::getPostFilter',
 		);
 
 		$this->assertEquals($expect, $module->getMethodsCalled());
@@ -229,7 +229,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 		$expect = array(
 			'PSX\Loader\ProbeController::__construct',
 			'PSX\Loader\ProbeController::getStage',
-			'PSX\Loader\ProbeController::getRequestFilter',
+			'PSX\Loader\ProbeController::getPreFilter',
 			'PSX\Loader\ProbeController::getStage',
 			'PSX\Loader\ProbeController::onLoad',
 			'PSX\Loader\ProbeController::getStage',
@@ -238,7 +238,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 			'PSX\Loader\ProbeController::doUpdateNested',
 			'PSX\Loader\ProbeController::processResponse',
 			'PSX\Loader\ProbeController::getStage',
-			'PSX\Loader\ProbeController::getResponseFilter',
+			'PSX\Loader\ProbeController::getPostFilter',
 		);
 
 		$this->assertEquals($expect, $module->getMethodsCalled());
@@ -263,7 +263,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 		$expect = array(
 			'PSX\Loader\ProbeController::__construct',
 			'PSX\Loader\ProbeController::getStage',
-			'PSX\Loader\ProbeController::getRequestFilter',
+			'PSX\Loader\ProbeController::getPreFilter',
 			'PSX\Loader\ProbeController::getStage',
 			'PSX\Loader\ProbeController::onLoad',
 			'PSX\Loader\ProbeController::getStage',
@@ -272,7 +272,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 			'PSX\Loader\ProbeController::doDelete',
 			'PSX\Loader\ProbeController::processResponse',
 			'PSX\Loader\ProbeController::getStage',
-			'PSX\Loader\ProbeController::getResponseFilter',
+			'PSX\Loader\ProbeController::getPostFilter',
 		);
 
 		$this->assertEquals($expect, $module->getMethodsCalled());
@@ -297,7 +297,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 		$expect = array(
 			'PSX\Loader\ProbeController::__construct',
 			'PSX\Loader\ProbeController::getStage',
-			'PSX\Loader\ProbeController::getRequestFilter',
+			'PSX\Loader\ProbeController::getPreFilter',
 			'PSX\Loader\ProbeController::getStage',
 			'PSX\Loader\ProbeController::onLoad',
 			'PSX\Loader\ProbeController::getStage',
@@ -306,7 +306,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 			'PSX\Loader\ProbeController::doDeleteNested',
 			'PSX\Loader\ProbeController::processResponse',
 			'PSX\Loader\ProbeController::getStage',
-			'PSX\Loader\ProbeController::getResponseFilter',
+			'PSX\Loader\ProbeController::getPostFilter',
 		);
 
 		$this->assertEquals($expect, $module->getMethodsCalled());
@@ -333,7 +333,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 		$expect = array(
 			'PSX\Loader\ProbeController::__construct',
 			'PSX\Loader\ProbeController::getStage',
-			'PSX\Loader\ProbeController::getRequestFilter',
+			'PSX\Loader\ProbeController::getPreFilter',
 			'PSX\Loader\ProbeController::getStage',
 			'PSX\Loader\ProbeController::onLoad',
 			'PSX\Loader\ProbeController::getStage',
@@ -342,7 +342,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 			'PSX\Loader\ProbeController::doIndex',
 			'PSX\Loader\ProbeController::processResponse',
 			'PSX\Loader\ProbeController::getStage',
-			'PSX\Loader\ProbeController::getResponseFilter',
+			'PSX\Loader\ProbeController::getPostFilter',
 		);
 
 		$this->assertEquals($expect, $module->getMethodsCalled());
