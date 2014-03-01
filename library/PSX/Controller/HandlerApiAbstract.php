@@ -100,7 +100,7 @@ abstract class HandlerApiAbstract extends ApiAbstract
 	 * @httpMethod POST
 	 * @path /
 	 */
-	public function doInsert()
+	public function doCreate()
 	{
 		try
 		{
@@ -124,7 +124,11 @@ abstract class HandlerApiAbstract extends ApiAbstract
 			$this->afterValidate($record);
 
 			// insert
+			$this->beforeCreate($record);
+
 			$this->getHandler()->create($record);
+
+			$this->afterCreate($record);
 
 			// message
 			$msg = new Message('You have successful create a ' . $record->getRecordInfo()->getName(), true);
@@ -168,7 +172,11 @@ abstract class HandlerApiAbstract extends ApiAbstract
 			$this->afterValidate($record);
 
 			// update
+			$this->beforeUpdate($record);
+
 			$this->getHandler()->update($record);
+
+			$this->afterUpdate($record);
 
 			// message
 			$msg = new Message('You have successful update a ' . $record->getRecordInfo()->getName(), true);
@@ -212,7 +220,11 @@ abstract class HandlerApiAbstract extends ApiAbstract
 			$this->afterValidate($record);
 
 			// delete
+			$this->beforeDelete($record);
+
 			$this->getHandler()->delete($record);
+
+			$this->afterDelete($record);
 
 			// message
 			$msg = new Message('You have successful delete a ' . $record->getRecordInfo()->getName(), true);
@@ -238,7 +250,61 @@ abstract class HandlerApiAbstract extends ApiAbstract
 	}
 
 	/**
-	 * Method wich is called before the record gets validated
+	 * Method which is called before the record gets created
+	 *
+	 * @param PSX\Data\RecordInterface $record
+	 */
+	protected function beforeCreate(RecordInterface $record)
+	{
+	}
+
+	/**
+	 * Method which is called after the record was created
+	 *
+	 * @param PSX\Data\RecordInterface $record
+	 */
+	protected function afterCreate(RecordInterface $record)
+	{
+	}
+
+	/**
+	 * Method which is called before the record gets updated
+	 *
+	 * @param PSX\Data\RecordInterface $record
+	 */
+	protected function beforeUpdate(RecordInterface $record)
+	{
+	}
+
+	/**
+	 * Method which is called after the record was updated
+	 *
+	 * @param PSX\Data\RecordInterface $record
+	 */
+	protected function afterUpdate(RecordInterface $record)
+	{
+	}
+
+	/**
+	 * Method which is called before the record gets deleted
+	 *
+	 * @param PSX\Data\RecordInterface $record
+	 */
+	protected function beforeDelete(RecordInterface $record)
+	{
+	}
+
+	/**
+	 * Method which is called after the record was deleted
+	 *
+	 * @param PSX\Data\RecordInterface $record
+	 */
+	protected function afterDelete(RecordInterface $record)
+	{
+	}
+
+	/**
+	 * Method which is called before the record gets validated
 	 *
 	 * @param PSX\Data\RecordInterface $record
 	 */
@@ -247,7 +313,7 @@ abstract class HandlerApiAbstract extends ApiAbstract
 	}
 
 	/**
-	 * Method wich is called after the record was validated
+	 * Method which is called after the record was validated
 	 *
 	 * @param PSX\Data\RecordInterface $record
 	 */
@@ -275,7 +341,7 @@ abstract class HandlerApiAbstract extends ApiAbstract
 	}
 
 	/**
-	 * Returns the filter definition wich validates values
+	 * Returns the filter definition which validates values
 	 *
 	 * @return PSX\Filter\FilterDefinition
 	 */
@@ -285,7 +351,7 @@ abstract class HandlerApiAbstract extends ApiAbstract
 	}
 
 	/**
-	 * Returns the handler on wich the API should operate
+	 * Returns the handler on which the API should operate
 	 *
 	 * @return PSX\Handler\HandlerInterface
 	 */
