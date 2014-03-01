@@ -23,6 +23,7 @@
 
 namespace PSX;
 
+use BadMethodCallException;
 use InvalidArgumentException;
 use PSX\Data\NotFoundException;
 use PSX\Data\ReaderFactory;
@@ -124,6 +125,8 @@ abstract class ControllerAbstract implements ControllerInterface
 
 			throw new InvalidArgumentException('Service ' . $service . ' not available');
 		}
+
+		throw new BadMethodCallException('Call to undefined method ' . $name);
 	}
 
 	protected function getContainer()
