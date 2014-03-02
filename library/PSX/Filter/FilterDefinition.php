@@ -79,6 +79,11 @@ class FilterDefinition
 	{
 		$data = $record->getRecordInfo()->getData();
 
+		if(empty($data))
+		{
+			throw new NotDefinedException('No valid data defined');
+		}
+
 		foreach($data as $key => $value)
 		{
 			$property = $this->getProperty($key);
