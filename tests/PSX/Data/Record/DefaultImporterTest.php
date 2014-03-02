@@ -27,10 +27,6 @@ use PSX\Data\Record;
 use PSX\Data\RecordAbstract;
 use PSX\Data\FactoryInterface;
 use PSX\Data\BuilderInterface;
-use PSX\Data\Reader;
-use PSX\Data\Writer;
-use PSX\Exception;
-use PSX\Http\Message;
 
 /**
  * DefaultImporterTest
@@ -39,219 +35,16 @@ use PSX\Http\Message;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class DefaultImporterTest extends \PHPUnit_Framework_TestCase
+class DefaultImporterTest extends ImporterTestCase
 {
-	protected function setUp()
+	protected function getImporter()
 	{
+		return new DefaultImporter();
 	}
 
-	protected function tearDown()
+	protected function getRecord()
 	{
-	}
-
-	public function testImportJson()
-	{
-		$body = <<<DATA
-{
-	"id": 1,
-	"title": "foobar",
-	"active": 1,
-	"count": 12,
-	"rating": 12.45,
-	"date": "2014-01-01T12:34:47+01:00",
-	"foobar": "foo",
-	"person": {
-		"title": "Foo"
-	},
-	"tags": [{
-		"title": "bar"
-	},{
-		"title": "foo"
-	},{
-		"title": "test"
-	}],
-	"achievment": {
-		"type": "foo"
-	},
-	"payment": {
-		"type": "paypal"
-	}
-}
-DATA;
-
-		// read json
-		$news     = new News();
-		$reader   = new Reader\Json();
-		$importer = new DefaultImporter();
-		$record   = $importer->import($news, $reader->read(new Message(array(), $body)));
-
-		$this->assertEquals(1, $record->getId());
-		$this->assertInternalType('integer', $record->getId());
-		$this->assertEquals('foobar', $record->getTitle());
-		$this->assertInternalType('string', $record->getTitle());
-		$this->assertEquals(true, $record->getActive());
-		$this->assertInternalType('boolean', $record->getActive());
-		$this->assertEquals(12, $record->getCount());
-		$this->assertInternalType('integer', $record->getCount());
-		$this->assertEquals(12.45, $record->getRating());
-		$this->assertInternalType('float', $record->getRating());
-		$this->assertInstanceOf('DateTime', $record->getDate());
-		$this->assertInstanceOf('PSX\Data\Record\Person', $record->getPerson());
-		$this->assertEquals(true, is_array($record->getTags()));
-		$this->assertInstanceOf('PSX\Data\Record\Achievment', $record->getAchievment());
-
-		foreach($record->getTags() as $tag)
-		{
-			$this->assertInstanceOf('PSX\Data\Record\Tag', $tag);
-		}
-	}
-
-	public function testExportJson()
-	{
-		$body = <<<DATA
-{
-	"id": 1,
-	"title": "foobar",
-	"active": 1,
-	"count": 12,
-	"rating": 12.45,
-	"date": "2014-01-01T12:34:47+01:00",
-	"foobar": "foo",
-	"person": {
-		"title": "Foo"
-	},
-	"tags": [{
-		"title": "bar"
-	},{
-		"title": "foo"
-	},{
-		"title": "test"
-	}],
-	"achievment": {
-		"type": "foo"
-	},
-	"payment": {
-		"type": "paypal"
-	}
-}
-DATA;
-
-		// read json
-		$news     = new News();
-		$reader   = new Reader\Json();
-		$importer = new DefaultImporter();
-		$record   = $importer->import($news, $reader->read(new Message(array(), $body)));
-
-		$writer = new Writer\Json();
-		$resp   = $writer->write($record);
-
-		// remove unknown value
-		$body = str_replace('"foobar": "foo",', '', $body);
-
-		$this->assertJsonStringEqualsJsonString($body, $resp);
-	}
-
-	public function testImportXml()
-	{
-		$body = <<<DATA
-<?xml version="1.0" encoding="UTF-8"?>
-<news>
-	<id>1</id>
-	<title>foobar</title>
-	<active>1</active>
-	<count>12</count>
-	<rating>12.45</rating>
-	<date>2014-01-01T12:34:47+01:00</date>
-	<foobar>foo</foobar>
-	<person>
-		<title>Foo</title>
-	</person>
-	<tags>
-		<title>bar</title>
-	</tags>
-	<tags>
-		<title>foo</title>
-	</tags>
-	<tags>
-		<title>test</title>
-	</tags>
-	<achievment>
-		<type>foo</type>
-	</achievment>
-	<payment>
-		<type>paypal</type>
-	</payment>
-</news>
-DATA;
-
-		// read xml
-		$news     = new News();
-		$reader   = new Reader\Xml();
-		$importer = new DefaultImporter();
-		$record   = $importer->import($news, $reader->read(new Message(array(), $body)));
-
-		$this->assertEquals(1, $record->getId());
-		$this->assertEquals('foobar', $record->getTitle());
-		$this->assertEquals(true, $record->getActive());
-		$this->assertEquals(12, $record->getCount());
-		$this->assertEquals(12.45, $record->getRating());
-		$this->assertInstanceOf('DateTime', $record->getDate());
-		$this->assertInstanceOf('PSX\Data\Record\Person', $record->getPerson());
-		$this->assertEquals(true, is_array($record->getTags()));
-		$this->assertInstanceOf('PSX\Data\Record\Achievment', $record->getAchievment());
-
-		foreach($record->getTags() as $tag)
-		{
-			$this->assertInstanceOf('PSX\Data\Record\Tag', $tag);
-		}
-	}
-
-	public function testExportXml()
-	{
-		$body = <<<DATA
-<?xml version="1.0" encoding="UTF-8"?>
-<news>
-	<id>1</id>
-	<title>foobar</title>
-	<active>true</active>
-	<count>12</count>
-	<rating>12.45</rating>
-	<date>2014-01-01T12:34:47+01:00</date>
-	<foobar>foo</foobar>
-	<person>
-		<title>Foo</title>
-	</person>
-	<tags>
-		<title>bar</title>
-	</tags>
-	<tags>
-		<title>foo</title>
-	</tags>
-	<tags>
-		<title>test</title>
-	</tags>
-	<achievment>
-		<type>foo</type>
-	</achievment>
-	<payment>
-		<type>paypal</type>
-	</payment>
-</news>
-DATA;
-
-		// read json
-		$news     = new News();
-		$reader   = new Reader\Xml();
-		$importer = new DefaultImporter();
-		$record   = $importer->import($news, $reader->read(new Message(array(), $body)));
-
-		$writer = new Writer\Xml();
-		$resp   = $writer->write($record);
-
-		// remove unknown value
-		$body = str_replace('<foobar>foo</foobar>', '', $body);
-
-		$this->assertXmlStringEqualsXmlString($body, $resp);
+		return new News();
 	}
 }
 
@@ -260,6 +53,7 @@ class News extends RecordAbstract
 	protected $id;
 	protected $title;
 	protected $active;
+	protected $disabled;
 	protected $count;
 	protected $rating;
 	protected $date;
@@ -268,6 +62,9 @@ class News extends RecordAbstract
 	protected $achievment;
 	protected $payment;
 
+	/**
+	 * @param integer $id
+	 */
 	public function setId($id)
 	{
 		$this->id = $id;
@@ -302,6 +99,19 @@ class News extends RecordAbstract
 	public function getActive()
 	{
 		return $this->active;
+	}
+
+	/**
+	 * @param boolean $disabled
+	 */
+	public function setDisabled($disabled)
+	{
+		$this->disabled = $disabled;
+	}
+
+	public function getDisabled()
+	{
+		return $this->disabled;
 	}
 
 	/**
@@ -370,9 +180,9 @@ class News extends RecordAbstract
 	}
 
 	/**
-	 * @param PSX\Data\Record\AchievmentFactory $achievment
+	 * @param array<PSX\Data\Record\AchievmentFactory> $achievment
 	 */
-	public function setAchievment(Achievment $achievment)
+	public function setAchievment(array $achievment)
 	{
 		$this->achievment = $achievment;
 	}
@@ -444,13 +254,10 @@ class AchievmentFactory implements FactoryInterface
 	}
 }
 
-interface Achievment
-{
-}
-
-class AchievmentFoo extends RecordAbstract implements Achievment
+class AchievmentFoo extends RecordAbstract
 {
 	protected $type;
+	protected $foo;
 
 	public function setType($type)
 	{
@@ -460,6 +267,42 @@ class AchievmentFoo extends RecordAbstract implements Achievment
 	public function getType()
 	{
 		return $this->type;
+	}
+
+	public function setFoo($foo)
+	{
+		$this->foo = $foo;
+	}
+	
+	public function getFoo()
+	{
+		return $this->foo;
+	}
+}
+
+class AchievmentBar extends RecordAbstract
+{
+	protected $type;
+	protected $bar;
+
+	public function setType($type)
+	{
+		$this->type = $type;
+	}
+	
+	public function getType()
+	{
+		return $this->type;
+	}
+
+	public function setBar($bar)
+	{
+		$this->bar = $bar;
+	}
+	
+	public function getBar()
+	{
+		return $this->bar;
 	}
 }
 
@@ -471,7 +314,8 @@ class PaymentBuilder implements BuilderInterface
 		// if the default importer fits not your need
 
 		return new Record('payment', array(
-			'type' => 'paypal',
+			'type'   => 'paypal',
+			'custom' => 'foobar'
 		));
 	}
 }

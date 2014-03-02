@@ -27,10 +27,6 @@ use PSX\Data\Record;
 use PSX\Data\RecordAbstract;
 use PSX\Data\FactoryInterface;
 use PSX\Data\BuilderInterface;
-use PSX\Data\Reader;
-use PSX\Data\Writer;
-use PSX\Exception;
-use PSX\Http\Message;
 
 /**
  * EntityAnnotationImporterTest
@@ -39,217 +35,16 @@ use PSX\Http\Message;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class EntityAnnotationImporterTest extends \PHPUnit_Framework_TestCase
+class EntityAnnotationImporterTest extends ImporterTestCase
 {
-	protected function setUp()
+	protected function getImporter()
 	{
+		return new EntityAnnotationImporter();
 	}
 
-	protected function tearDown()
+	protected function getRecord()
 	{
-	}
-
-	public function testImportJson()
-	{
-		$body = <<<DATA
-{
-	"id": 1,
-	"title": "foobar",
-	"active": 1,
-	"count": 12,
-	"rating": 12.45,
-	"date": "2014-01-01T12:34:47+01:00",
-	"foobar": "foo",
-	"person": {
-		"title": "Foo"
-	},
-	"tags": [{
-		"title": "bar"
-	},{
-		"title": "foo"
-	},{
-		"title": "test"
-	}],
-	"achievment": {
-		"type": "foo"
-	},
-	"payment": {
-		"type": "paypal"
-	}
-}
-DATA;
-
-		// read json
-		$news     = new NewsEntity();
-		$reader   = new Reader\Json();
-		$importer = new EntityAnnotationImporter();
-		$record   = $importer->import($news, $reader->read(new Message(array(), $body)));
-
-		$this->assertEquals(1, $record->getId());
-		$this->assertInternalType('integer', $record->getId());
-		$this->assertEquals('foobar', $record->getTitle());
-		$this->assertInternalType('string', $record->getTitle());
-		$this->assertEquals(true, $record->getActive());
-		$this->assertInternalType('boolean', $record->getActive());
-		$this->assertEquals(12, $record->getCount());
-		$this->assertInternalType('integer', $record->getCount());
-		$this->assertEquals(12.45, $record->getRating());
-		$this->assertInternalType('float', $record->getRating());
-		$this->assertInstanceOf('PSX\Data\RecordInterface', $record->getPerson());
-		$this->assertEquals(true, is_array($record->getTags()));
-		$this->assertInstanceOf('PSX\Data\RecordInterface', $record->getAchievment());
-
-		foreach($record->getTags() as $tag)
-		{
-			$this->assertInstanceOf('PSX\Data\RecordInterface', $tag);
-		}
-	}
-
-	public function testExportJson()
-	{
-		$body = <<<DATA
-{
-	"id": 1,
-	"title": "foobar",
-	"active": 1,
-	"count": 12,
-	"rating": 12.45,
-	"date": "2014-01-01T12:34:47+01:00",
-	"foobar": "foo",
-	"person": {
-		"title": "Foo"
-	},
-	"tags": [{
-		"title": "bar"
-	},{
-		"title": "foo"
-	},{
-		"title": "test"
-	}],
-	"achievment": {
-		"type": "foo"
-	},
-	"payment": {
-		"type": "paypal"
-	}
-}
-DATA;
-
-		// read json
-		$news     = new NewsEntity();
-		$reader   = new Reader\Json();
-		$importer = new EntityAnnotationImporter();
-		$record   = $importer->import($news, $reader->read(new Message(array(), $body)));
-
-		$writer = new Writer\Json();
-		$resp   = $writer->write($record);
-
-		// remove unknown value
-		$body = str_replace('"foobar": "foo",', '', $body);
-
-		$this->assertJsonStringEqualsJsonString($body, $resp);
-	}
-
-	public function testImportXml()
-	{
-		$body = <<<DATA
-<?xml version="1.0" encoding="UTF-8"?>
-<newsEntity>
-	<id>1</id>
-	<title>foobar</title>
-	<active>1</active>
-	<count>12</count>
-	<rating>12.45</rating>
-	<date>2014-01-01T12:34:47+01:00</date>
-	<foobar>foo</foobar>
-	<person>
-		<title>Foo</title>
-	</person>
-	<tags>
-		<title>bar</title>
-	</tags>
-	<tags>
-		<title>foo</title>
-	</tags>
-	<tags>
-		<title>test</title>
-	</tags>
-	<achievment>
-		<type>foo</type>
-	</achievment>
-	<payment>
-		<type>paypal</type>
-	</payment>
-</newsEntity>
-DATA;
-
-		// read xml
-		$news     = new NewsEntity();
-		$reader   = new Reader\Xml();
-		$importer = new EntityAnnotationImporter();
-		$record   = $importer->import($news, $reader->read(new Message(array(), $body)));
-
-		$this->assertEquals(1, $record->getId());
-		$this->assertEquals('foobar', $record->getTitle());
-		$this->assertEquals(true, $record->getActive());
-		$this->assertEquals(12, $record->getCount());
-		$this->assertEquals(12.45, $record->getRating());
-		$this->assertInstanceOf('PSX\Data\RecordInterface', $record->getPerson());
-		$this->assertEquals(true, is_array($record->getTags()));
-		$this->assertInstanceOf('PSX\Data\RecordInterface', $record->getAchievment());
-
-		foreach($record->getTags() as $tag)
-		{
-			$this->assertInstanceOf('PSX\Data\RecordInterface', $tag);
-		}
-	}
-
-	public function testExportXml()
-	{
-		$body = <<<DATA
-<?xml version="1.0" encoding="UTF-8"?>
-<newsEntity>
-	<id>1</id>
-	<title>foobar</title>
-	<active>true</active>
-	<count>12</count>
-	<rating>12.45</rating>
-	<date>2014-01-01T12:34:47+01:00</date>
-	<foobar>foo</foobar>
-	<person>
-		<title>Foo</title>
-	</person>
-	<tags>
-		<title>bar</title>
-	</tags>
-	<tags>
-		<title>foo</title>
-	</tags>
-	<tags>
-		<title>test</title>
-	</tags>
-	<achievment>
-		<type>foo</type>
-	</achievment>
-	<payment>
-		<type>paypal</type>
-	</payment>
-</newsEntity>
-DATA;
-
-		// read json
-		$news     = new NewsEntity();
-		$reader   = new Reader\Xml();
-		$importer = new EntityAnnotationImporter();
-		$record   = $importer->import($news, $reader->read(new Message(array(), $body)));
-
-		$writer = new Writer\Xml();
-		$resp   = $writer->write($record);
-
-		// remove unknown value
-		$body = str_replace('<foobar>foo</foobar>', '', $body);
-
-		$this->assertXmlStringEqualsXmlString($body, $resp);
+		return new NewsEntity();
 	}
 }
 
@@ -273,6 +68,11 @@ class NewsEntity
 	 * @Column(type="boolean")
 	 */
 	protected $active;
+
+	/**
+	 * @Column(type="boolean")
+	 */
+	protected $disabled;
 
 	/**
 	 * @Column(type="integer")
@@ -301,8 +101,7 @@ class NewsEntity
 	protected $tags;
 
 	/**
-	 * @ManyToOne(targetEntity="PSX\Data\Record\AchievmentEntity", inversedBy="news")
-	 * @JoinColumn(name="achievment_id", referencedColumnName="id")
+	 * @OneToMany(targetEntity="PSX\Data\Record\AchievmentEntity", mappedBy="news")
 	 * @DataFactory PSX\Data\Record\AchievmentEntityFactory
 	 */
 	protected $achievment;
@@ -357,20 +156,38 @@ class AchievmentEntityFactory implements FactoryInterface
 	}
 }
 
-interface AchievmentEntity
+/**
+ * @Entity
+ * @Table(name="achievment")
+ */
+class AchievmentEntityFoo
 {
+	/**
+	 * @Column(type="string")
+	 */
+	protected $type;
+
+	/**
+	 * @Column(type="string")
+	 */
+	protected $foo;
 }
 
 /**
  * @Entity
  * @Table(name="achievment")
  */
-class AchievmentEntityFoo implements AchievmentEntity
+class AchievmentEntityBar
 {
 	/**
 	 * @Column(type="string")
 	 */
 	protected $type;
+
+	/**
+	 * @Column(type="string")
+	 */
+	protected $bar;
 }
 
 class PaymentEntityBuilder implements BuilderInterface
@@ -381,7 +198,8 @@ class PaymentEntityBuilder implements BuilderInterface
 		// if the default importer fits not your need
 
 		return new Record('payment', array(
-			'type' => 'paypal',
+			'type'   => 'paypal',
+			'custom' => 'foobar',
 		));
 	}
 }

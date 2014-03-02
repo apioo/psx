@@ -97,7 +97,7 @@ class TableImporter implements ImporterInterface
 				break;
 
 			case TableInterface::TYPE_BOOLEAN:
-				return (boolean) $data;
+				return $data === 'false' ? false : (boolean) $data;
 				break;
 
 			case TableInterface::TYPE_DATE:

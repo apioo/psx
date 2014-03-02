@@ -25,6 +25,7 @@ namespace PSX\Data\Record;
 
 use InvalidArgumentException;
 use PSX\Data\ReaderInterface;
+use PSX\Data\Record;
 use PSX\Data\RecordInterface;
 use PSX\Util\Annotation;
 use ReflectionClass;
@@ -54,8 +55,7 @@ class DefaultImporter implements ImporterInterface
 			throw new InvalidArgumentException('Data must be an array');
 		}
 
-		$class = new ReflectionClass($record);
-		$data  = array_intersect_key($data, $record->getRecordInfo()->getFields());
+		$data = array_intersect_key($data, $record->getRecordInfo()->getFields());
 
 		foreach($data as $k => $v)
 		{
@@ -67,19 +67,31 @@ class DefaultImporter implements ImporterInterface
 					$k = implode('', array_map('ucfirst', explode('_', $k)));
 				}
 
-				try
-				{
-					$methodName = 'set' . ucfirst($k);
-					$method = $class->getMethod($methodName);
+				$methodName = 'set' . ucfirst($k);
 
-					if($method instanceof ReflectionMethod)
-					{
-						$record->$methodName($this->getMethodValue($method, $v));
-					}
-				}
-				catch(ReflectionException $e)
+				// if we have an PSX\Data\Record instance and no concrete 
+				// RecordAbstract implementation we have an magic __call method 
+				// therefore we can not look at the annotation of the methods
+				if($record instanceof Record)
 				{
-					// method does not exist
+					$record->$methodName($v);
+				}
+				else
+				{
+					try
+					{
+						$class  = new ReflectionClass($record);
+						$method = $class->getMethod($methodName);
+
+						if($method instanceof ReflectionMethod)
+						{
+							$record->$methodName($this->getMethodValue($method, $v));
+						}
+					}
+					catch(ReflectionException $e)
+					{
+						// method does not exist
+					}
 				}
 			}
 		}
@@ -135,7 +147,7 @@ class DefaultImporter implements ImporterInterface
 				break;
 
 			case 'boolean':
-				$value = (boolean) $value;
+				$value = $value === 'false' ? false : (boolean) $value;
 				break;
 
 			case 'string':
@@ -148,27 +160,25 @@ class DefaultImporter implements ImporterInterface
 
 			default:
 				$class = new ReflectionClass($type);
+
 				if($class->implementsInterface('PSX\Data\RecordInterface'))
 				{
 					$record = $class->newInstance();
 
-					$this->import($record, $value);
-
-					return $record;
+					return $this->import($record, $value);
 				}
 				else if($class->implementsInterface('PSX\Data\FactoryInterface'))
 				{
 					$record = $class->newInstance()->factory($value);
 
-					$this->import($record, $value);
-
-					return $record;
+					if($record !== null)
+					{
+						return $this->import($record, $value);
+					}
 				}
 				else if($class->implementsInterface('PSX\Data\BuilderInterface'))
 				{
-					$record = $class->newInstance()->build($value);
-
-					return $record;
+					return $class->newInstance()->build($value);
 				}
 				else
 				{

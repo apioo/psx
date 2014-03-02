@@ -145,17 +145,21 @@ class EntityAnnotationImporter implements ImporterInterface
 		if($factoryClass != null)
 		{
 			$class = new ReflectionClass($factoryClass);
+
 			if($class->implementsInterface('PSX\Data\FactoryInterface'))
 			{
 				$entity = $class->newInstance()->factory($value);
-				$record = $this->import($entity, $value);
 
-				return $record;
+				if($entity !== null)
+				{
+					return $this->import($entity, $value);
+				}
 			}
 		}
 		else if($builderClass != null)
 		{
 			$class = new ReflectionClass($builderClass);
+
 			if($class->implementsInterface('PSX\Data\BuilderInterface'))
 			{
 				return $class->newInstance()->build($value);
@@ -195,7 +199,7 @@ class EntityAnnotationImporter implements ImporterInterface
 				return (float) $value;
 
 			case 'boolean':
-				return (boolean) $value;
+				return $value === 'false' ? false : (boolean) $value;
 
 			case 'datetime':
 			case 'date':

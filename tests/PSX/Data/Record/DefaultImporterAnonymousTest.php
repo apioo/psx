@@ -23,73 +23,42 @@
 
 namespace PSX\Data\Record;
 
-use PDOException;
 use PSX\Data\Record;
-use PSX\Data\RecordAbstract;
-use PSX\Data\FactoryInterface;
-use PSX\Data\BuilderInterface;
-use PSX\Data\Reader;
-use PSX\Data\Writer;
-use PSX\Exception;
-use PSX\Http\Message;
-use PSX\Sql\TableAbstract;
-use PSX\Sql\TableInterface;
 
 /**
- * TableImporterTest
+ * DefaultImporterAnonymousTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class TableImporterTest extends ImporterTestCase
+class DefaultImporterAnonymousTest extends ImporterTestCase
 {
-	protected function setUp()
-	{
-		try
-		{
-			$this->sql = getContainer()->get('sql');
-		}
-		catch(PDOException $e)
-		{
-			$this->markTestSkipped($e->getMessage());
-		}
-	}
-
 	protected function getImporter()
 	{
-		return new TableImporter();
+		return new DefaultImporter();
 	}
 
 	protected function getRecord()
 	{
-		return new TestTable($this->sql);
+		return new Record('news', array(
+			'id'       => null,
+			'title'    => null,
+			'active'   => null,
+			'disabled' => null,
+			'count'    => null,
+			'rating'   => null,
+			'date'     => null,
+		));
 	}
 
 	protected function canImportComplexRecord()
 	{
 		return false;
 	}
-}
 
-class TestTable extends TableAbstract
-{
-	public function getName()
+	protected function canDetermineType()
 	{
-		return 'news';
-	}
-
-	public function getColumns()
-	{
-		return array(
-			'id'       => TableInterface::TYPE_INT | 10 | TableInterface::PRIMARY_KEY | TableInterface::AUTO_INCREMENT,
-			'title'    => TableInterface::TYPE_VARCHAR | 16,
-			'active'   => TableInterface::TYPE_BOOLEAN,
-			'disabled' => TableInterface::TYPE_BOOLEAN,
-			'count'    => TableInterface::TYPE_INT,
-			'rating'   => TableInterface::TYPE_FLOAT,
-			'date'     => TableInterface::TYPE_DATETIME,
-		);
+		return false;
 	}
 }
-
