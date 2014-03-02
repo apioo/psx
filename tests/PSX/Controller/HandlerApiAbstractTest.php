@@ -107,6 +107,48 @@ JSON;
 		// @todo check database
 	}
 
+	public function testPostInvalidTitleLength()
+	{
+		$data     = json_encode(array('userId' => 3, 'title' => 'foobarfoobarfoobarfoobar', 'date' => '2013-05-29T16:56:32+00:00'));
+		$body     = new TempStream(fopen('php://memory', 'r+'));
+		$request  = new Request(new Url('http://127.0.0.1/api'), 'POST', array('Content-Type' => 'application/json'), $data);
+		$response = new Response();
+		$response->setBody($body);
+
+		$controller = $this->loadController($request, $response);
+		$body       = (string) $response->getBody();
+
+		$expect = <<<JSON
+{
+	"text": "Title has an invalid length min 3 and max 16 signs",
+	"success": false
+}
+JSON;
+
+		$this->assertJsonStringEqualsJsonString($expect, $body);
+	}
+
+	public function testPostInvalidFields()
+	{
+		$data     = json_encode(array('foobar' => 'title'));
+		$body     = new TempStream(fopen('php://memory', 'r+'));
+		$request  = new Request(new Url('http://127.0.0.1/api'), 'POST', array('Content-Type' => 'application/json'), $data);
+		$response = new Response();
+		$response->setBody($body);
+
+		$controller = $this->loadController($request, $response);
+		$body       = (string) $response->getBody();
+
+		$expect = <<<JSON
+{
+	"text": "No valid data defined",
+	"success": false
+}
+JSON;
+
+		$this->assertJsonStringEqualsJsonString($expect, $body);
+	}
+
 	public function testPut()
 	{
 		$data     = json_encode(array('id' => 1, 'userId' => 3, 'title' => 'foobar'));
