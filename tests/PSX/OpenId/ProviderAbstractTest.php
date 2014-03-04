@@ -165,7 +165,7 @@ class ProviderAbstractTest extends ControllerTestCase
 	protected function doCheckAuthentication(Url $url)
 	{
 		$params = $url->getParams();
-		$params['openid.mode'] = 'check_authentication';
+		$params['openid_mode'] = 'check_authentication';
 
 		$data     = http_build_query($params, '', '&');
 		$body     = new TempStream(fopen('php://memory', 'r+'));
