@@ -51,7 +51,7 @@ class ApiAbstractTest extends ControllerTestCase
 
 		$controller = $this->loadController($request, $response);
 
-		$this->assertJsonStringEqualsJsonString((string) $response->getBody(), json_encode(array('bar' => 'foo')));
+		$this->assertJsonStringEqualsJsonString(json_encode(array('bar' => 'foo')), (string) $response->getBody());
 	}
 
 	public function testImport()
@@ -63,7 +63,7 @@ class ApiAbstractTest extends ControllerTestCase
 
 		$controller = $this->loadController($request, $response);
 
-		$this->assertJsonStringEqualsJsonString((string) $response->getBody(), json_encode(array('title' => 'foo', 'user' => 'bar')));
+		$this->assertJsonStringEqualsJsonString(json_encode(array('title' => 'foo', 'user' => 'bar')), (string) $response->getBody());
 	}
 
 	public function testInnerApi()
