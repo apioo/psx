@@ -79,7 +79,32 @@ abstract class ControllerTestCase extends \PHPUnit_Extensions_Database_TestCase
 	{
 		parent::setUp();
 
-		$this->paths = $this->getPaths();
+		$availablePaths = $this->getPaths();
+
+		// we replace the loader in the DI container
+		$locationFinder = new CallbackMethod(function($method, $path) use ($availablePaths){
+
+			$parts    = explode('/', trim($path, '/'));
+			$restPath = implode('/', array_slice($parts, 1));
+
+			foreach($availablePaths as $availablePath => $class)
+			{
+				$availablePath = trim($availablePath, '/');
+
+				if($availablePath == $parts[0])
+				{
+					return new Location(uniqid(), $restPath, $class);
+				}
+			}
+
+			throw new InvalidPathException('Unknown location');
+
+		});
+
+		$loader = new Loader($locationFinder, getContainer()->get('loader_callback_resolver'));
+
+		getContainer()->set('loader', $loader);
+		getContainer()->set('testCase', $this);
 	}
 
 	protected function tearDown()
@@ -95,34 +120,7 @@ abstract class ControllerTestCase extends \PHPUnit_Extensions_Database_TestCase
 	 */
 	protected function loadController(Request $request, Response $response)
 	{
-		$availablePaths = $this->paths;
-
-		// set test case for use in the controller
-		getContainer()->set('testCase', $this);
-
-		$locationFinder = new CallbackMethod(function($method, $path) use ($availablePaths, $request){
-
-			$parts    = explode('/', trim($path, '/'));
-			$restPath = implode('/', array_slice($parts, 1));
-
-			foreach($availablePaths as $availablePath => $class)
-			{
-				$availablePath = trim($availablePath, '/');
-
-				if($availablePath == $parts[0])
-				{
-					return new Location(md5($request->getMethod() . $path), $restPath, $class);
-				}
-			}
-
-			throw new InvalidPathException('Unknown location');
-
-		});
-
-		$loader     = new Loader($locationFinder, getContainer()->get('loader_callback_resolver'));
-		$controller = $loader->load($request, $response);
-
-		return $controller;
+		return getContainer()->get('loader')->load($request, $response);
 	}
 
 	/**
