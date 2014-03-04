@@ -27,6 +27,7 @@ use DOMDocument;
 use PSX\Base;
 use PSX\ControllerInterface;
 use PSX\Dispatch\SenderInterface;
+use PSX\Dispatch\RedirectException;
 use PSX\Http\Request;
 use PSX\Http\Response;
 
@@ -57,6 +58,11 @@ class Dispatch extends \Exception
 		try
 		{
 			$this->loader->load($request, $response);
+		}
+		catch(RedirectException $e)
+		{
+			$response->setStatusCode($e->getStatusCode());
+			$response->setHeader('Location', $e->getUrl());
 		}
 		catch(\Exception $e)
 		{
@@ -92,18 +98,25 @@ class Dispatch extends \Exception
 		else
 		{
 			$message = 'The server encountered an internal error and was unable to complete your request.';
-			$trace   = '';
+			$trace   = null;
 		}
 
 		// build response
-		$accept  = (string) $request->getHeader('Accept');
-		$with    = (string) $request->getHeader('X-Requested-With');
+		$accept  = $request->getHeader('Accept');
+		$with    = $request->getHeader('X-Requested-With');
 
 		if($with == 'XMLHttpRequest' || (substr($accept, -5) == '+json' || substr($accept, -5) == '/json'))
 		{
 			$response->setHeader('Content-Type', 'application/json');
 
-			$body = json_encode(array('success' => false, 'message' => $message, 'trace' => $trace));
+			$data = array('success' => false, 'message' => $message);
+
+			if($trace !== null)
+			{
+				$data['trace'] = $trace;
+			}
+
+			$body = json_encode($data);
 		}
 		else if(strpos($accept, 'text/html') !== false)
 		{
@@ -115,14 +128,17 @@ class Dispatch extends \Exception
 		{
 			$response->setHeader('Content-Type', 'application/xml');
 
-			$dom = new DOMDocument();
+			$dom     = new DOMDocument();
+			$element = $dom->createElement('response');
+			$element->appendChild($dom->createElement('success', 'false'));
+			$element->appendChild($dom->createElement('message', $message));
 
-			$response = $dom->createElement('response');
-			$response->appendChild($dom->createElement('success', 'false'));
-			$response->appendChild($dom->createElement('message', $message));
-			$response->appendChild($dom->createElement('trace', $trace));
+			if($trace !== null)
+			{
+				$element->appendChild($dom->createElement('trace', $trace));
+			}
 
-			$dom->appendChild($response);
+			$dom->appendChild($element);
 
 			$body = $dom->saveXML();
 		}
