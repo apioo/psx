@@ -41,6 +41,7 @@ class TestController extends ControllerAbstract
 	 */
 	public function doIndex()
 	{
+		$this->response->getBody()->write('foobar');
 	}
 
 	/**
@@ -96,6 +97,24 @@ class TestController extends ControllerAbstract
 		$testCase->assertTrue(is_array($this->uriFragments));
 		$testCase->assertEquals(0x3F, $this->stage);
 		$testCase->assertInstanceOf('PSX\Config', $this->config);
+	}
+
+	/**
+	 * @httpMethod GET
+	 * @path /forward
+	 */
+	public function doForward()
+	{
+		$this->forward('/api');
+	}
+
+	/**
+	 * @httpMethod GET
+	 * @path /redirect
+	 */
+	public function doRedirect()
+	{
+		$this->redirect('http://localhost.com/foobar', 302);
 	}
 
 	public function getPreFilter()

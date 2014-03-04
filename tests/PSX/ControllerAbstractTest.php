@@ -25,7 +25,9 @@ namespace PSX;
 
 use PSX\Http\Request;
 use PSX\Http\Response;
+use PSX\Http\Stream\TempStream;
 use PSX\Controller\ControllerTestCase;
+use PSX\Dispatch\RedirectException;
 use PSX\Url;
 
 /**
@@ -42,8 +44,11 @@ class ControllerAbstractTest extends ControllerTestCase
 		$path     = '/controller';
 		$request  = new Request(new Url('http://127.0.0.1' . $path), 'GET');
 		$response = new Response();
+		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
 
 		$controller = $this->loadController($request, $response);
+
+		$this->assertEquals('foobar', (string) $response->getBody());
 	}
 
 	public function testInnerApi()
@@ -51,14 +56,48 @@ class ControllerAbstractTest extends ControllerTestCase
 		$path     = '/controller/inspect';
 		$request  = new Request(new Url('http://127.0.0.1' . $path), 'GET');
 		$response = new Response();
+		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
 
 		$controller = $this->loadController($request, $response);
+	}
+
+	public function testForward()
+	{
+		$path     = '/controller/forward';
+		$request  = new Request(new Url('http://127.0.0.1' . $path), 'GET');
+		$response = new Response();
+		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
+
+		$controller = $this->loadController($request, $response);
+
+		$this->assertJsonStringEqualsJsonString(json_encode(array('bar' => 'foo')), (string) $response->getBody());
+	}
+
+	public function testRedirect()
+	{
+		$path     = '/controller/redirect';
+		$request  = new Request(new Url('http://127.0.0.1' . $path), 'GET');
+		$response = new Response();
+		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
+
+		try
+		{
+			$controller = $this->loadController($request, $response);
+
+			$this->fail('Must throw an redirect exception');
+		}
+		catch(RedirectException $e)
+		{
+			$this->assertEquals(302, $e->getStatusCode());
+			$this->assertEquals('http://localhost.com/foobar', $e->getUrl());
+		}
 	}
 
 	protected function getPaths()
 	{
 		return array(
 			'/controller' => 'PSX\Controller\Foo\Application\TestController',
+			'/api'        => 'PSX\Controller\Foo\Application\TestApiController',
 		);
 	}
 }
