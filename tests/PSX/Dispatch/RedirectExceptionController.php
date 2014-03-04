@@ -26,16 +26,16 @@ namespace PSX\Dispatch;
 use PSX\ControllerAbstract;
 
 /**
- * ExceptionController
+ * RedirectExceptionController
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class ExceptionController extends ControllerAbstract
+class RedirectExceptionController extends ControllerAbstract
 {
 	public function onLoad()
 	{
-		throw new \Exception('foo');
+		$this->redirect('http://localhost.com/foobar', 302);
 	}
 }

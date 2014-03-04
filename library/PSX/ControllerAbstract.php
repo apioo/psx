@@ -30,6 +30,7 @@ use PSX\Data\ReaderFactory;
 use PSX\Data\RecordInterface;
 use PSX\Data\Record\ImporterInterface;
 use PSX\Dependency;
+use PSX\Dispatch\RedirectException;
 use PSX\Http\Request;
 use PSX\Http\Response;
 use PSX\Loader\Location;
@@ -187,8 +188,8 @@ abstract class ControllerAbstract implements ControllerInterface
 	}
 
 	/**
-	 * Sends an location header and exits the application. If path is not an url
-	 * the complete url will be created with the base url from the config
+	 * Throws an redirect exception. If path is not an url the complete url will 
+	 * be created with the base url from the config
 	 *
 	 * @param string $path
 	 * @param integer $code
@@ -200,8 +201,7 @@ abstract class ControllerAbstract implements ControllerInterface
 			$url = $this->config['psx_url'] . '/' . $this->config['psx_dispatch'] . ltrim($url, '/');
 		}
 
-		header('Location: ' . $url, true, $code);
-		exit;
+		throw new RedirectException($url, $code);
 	}
 
 	/**

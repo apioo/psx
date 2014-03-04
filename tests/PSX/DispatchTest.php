@@ -79,7 +79,6 @@ class DispatchTest extends \PHPUnit_Framework_TestCase
 
 		});
 
-		// set debug to false so we get only the message and not the trace
 		getContainer()->get('config')->set('psx_debug', false);
 
 		$loader   = new Loader($locationFinder, getContainer()->get('loader_callback_resolver'));
@@ -91,5 +90,112 @@ class DispatchTest extends \PHPUnit_Framework_TestCase
 		$dispatch->route($request, $response);
 
 		$this->assertEquals('The server encountered an internal error and was unable to complete your request.' . "\n", (string) $response->getBody());
+	}
+
+	public function testRouteExceptionXml()
+	{
+		$locationFinder = new CallbackMethod(function($method, $path){
+
+			return new Location(md5($path), $path, 'PSX\Dispatch\ExceptionController');
+
+		});
+
+		getContainer()->get('config')->set('psx_debug', false);
+
+		$loader   = new Loader($locationFinder, getContainer()->get('loader_callback_resolver'));
+		$dispatch = new Dispatch(getContainer()->get('config'), $loader, new VoidSender());
+		$request  = new Request(new Url('http://localhost.com'), 'GET', array('Accept' => 'application/xml'));
+		$response = new Response();
+		$response->setBody(new StringStream());
+
+		$dispatch->route($request, $response);
+
+		$expect = <<<XML
+<?xml version="1.0"?>
+<response>
+	<success>false</success>
+	<message>The server encountered an internal error and was unable to complete your request.</message>
+</response>
+XML;
+
+		$this->assertXmlStringEqualsXmlString($expect, (string) $response->getBody());
+	}
+
+	public function testRouteExceptionJson()
+	{
+		$locationFinder = new CallbackMethod(function($method, $path){
+
+			return new Location(md5($path), $path, 'PSX\Dispatch\ExceptionController');
+
+		});
+
+		getContainer()->get('config')->set('psx_debug', false);
+
+		$loader   = new Loader($locationFinder, getContainer()->get('loader_callback_resolver'));
+		$dispatch = new Dispatch(getContainer()->get('config'), $loader, new VoidSender());
+		$request  = new Request(new Url('http://localhost.com'), 'GET', array('Accept' => 'application/json'));
+		$response = new Response();
+		$response->setBody(new StringStream());
+
+		$dispatch->route($request, $response);
+
+		$expect = <<<JSON
+{
+	"success": false,
+	"message": "The server encountered an internal error and was unable to complete your request."
+}
+JSON;
+
+		$this->assertJsonStringEqualsJsonString($expect, (string) $response->getBody());
+	}
+
+	public function testRouteExceptionXhr()
+	{
+		$locationFinder = new CallbackMethod(function($method, $path){
+
+			return new Location(md5($path), $path, 'PSX\Dispatch\ExceptionController');
+
+		});
+
+		getContainer()->get('config')->set('psx_debug', false);
+
+		$loader   = new Loader($locationFinder, getContainer()->get('loader_callback_resolver'));
+		$dispatch = new Dispatch(getContainer()->get('config'), $loader, new VoidSender());
+		$request  = new Request(new Url('http://localhost.com'), 'GET', array('X-Requested-With' => 'XMLHttpRequest'));
+		$response = new Response();
+		$response->setBody(new StringStream());
+
+		$dispatch->route($request, $response);
+
+		$expect = <<<JSON
+{
+	"success": false,
+	"message": "The server encountered an internal error and was unable to complete your request."
+}
+JSON;
+
+		$this->assertJsonStringEqualsJsonString($expect, (string) $response->getBody());
+	}
+
+	public function testRouteRedirectException()
+	{
+		$locationFinder = new CallbackMethod(function($method, $path){
+
+			return new Location(md5($path), $path, 'PSX\Dispatch\RedirectExceptionController');
+
+		});
+
+		getContainer()->get('config')->set('psx_debug', false);
+
+		$loader   = new Loader($locationFinder, getContainer()->get('loader_callback_resolver'));
+		$dispatch = new Dispatch(getContainer()->get('config'), $loader, new VoidSender());
+		$request  = new Request(new Url('http://localhost.com'), 'GET');
+		$response = new Response();
+		$response->setBody(new StringStream());
+
+		$dispatch->route($request, $response);
+
+		$this->assertEquals(302, $response->getStatusCode());
+		$this->assertEquals('http://localhost.com/foobar', $response->getHeader('Location'));
 	}
 }

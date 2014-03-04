@@ -23,19 +23,43 @@
 
 namespace PSX\Dispatch;
 
-use PSX\ControllerAbstract;
+use PSX\Exception;
 
 /**
- * ExceptionController
+ * RedirectException
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class ExceptionController extends ControllerAbstract
+class RedirectException extends Exception
 {
-	public function onLoad()
+	protected $url;
+	protected $statusCode;
+
+	public function __construct($url, $statusCode = 307)
 	{
-		throw new \Exception('foo');
+		$this->url        = $url;
+		$this->statusCode = $statusCode;
+	}
+
+	public function setUrl($url)
+	{
+		$this->url = $url;
+	}
+	
+	public function getUrl()
+	{
+		return $this->url;
+	}
+
+	public function setStatusCode($statusCode)
+	{
+		$this->statusCode = $statusCode;
+	}
+	
+	public function getStatusCode()
+	{
+		return $this->statusCode;
 	}
 }
