@@ -60,7 +60,12 @@ class RequestFactory implements RequestFactoryInterface
 		{
 			$port = !empty($parts['port']) ? ':' . $parts['port'] : '';
 			$path = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
-			$path = substr($path, strlen($parts['path']) + strlen($this->config['psx_dispatch']));
+
+			if(isset($parts['path']))
+			{
+				$path = substr($path, strlen($parts['path']) + strlen($this->config['psx_dispatch']));
+			}
+
 			$self = $parts['scheme'] . '://' . $parts['host'] . $port . $path;
 
 			// create request
