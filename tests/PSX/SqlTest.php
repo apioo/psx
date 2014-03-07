@@ -58,7 +58,30 @@ class SqlTest extends DbTestCase
 
 	public function testAssoc()
 	{
+		$actual = $this->sql->assoc('SELECT id, title FROM ' . $this->table . ' ORDER BY id ASC');
+		$expect = array(
+			array('id' => 1, 'title' => 'foo'),
+			array('id' => 2, 'title' => 'bar'),
+			array('id' => 3, 'title' => 'test'),
+		);
+
+		$this->assertEquals($expect, $actual);
+	}
+
+	public function testAssocParams()
+	{
 		$actual = $this->sql->assoc('SELECT id, title FROM ' . $this->table . ' WHERE id < ? ORDER BY id ASC', array(3));
+		$expect = array(
+			array('id' => 1, 'title' => 'foo'),
+			array('id' => 2, 'title' => 'bar'),
+		);
+
+		$this->assertEquals($expect, $actual);
+	}
+
+	public function testAssocNamedParams()
+	{
+		$actual = $this->sql->assoc('SELECT id, title FROM ' . $this->table . ' WHERE id < :id ORDER BY id ASC', array('id' => 3));
 		$expect = array(
 			array('id' => 1, 'title' => 'foo'),
 			array('id' => 2, 'title' => 'bar'),
@@ -69,7 +92,45 @@ class SqlTest extends DbTestCase
 
 	public function testAssocObject()
 	{
+		$actual = $this->sql->assoc('SELECT id, title FROM ' . $this->table . ' ORDER BY id ASC', array(), 'stdClass');
+
+		$row_1 = new stdClass();
+		$row_1->id = 1;
+		$row_1->title = 'foo';
+
+		$row_2 = new stdClass();
+		$row_2->id = 2;
+		$row_2->title = 'bar';
+
+		$row_3 = new stdClass();
+		$row_3->id = 3;
+		$row_3->title = 'test';
+
+		$expect = array($row_1, $row_2, $row_3);
+
+		$this->assertEquals($expect, $actual);
+	}
+
+	public function testAssocObjectParams()
+	{
 		$actual = $this->sql->assoc('SELECT id, title FROM ' . $this->table . ' WHERE id < ? ORDER BY id ASC', array(3), 'stdClass');
+
+		$row_1 = new stdClass();
+		$row_1->id = 1;
+		$row_1->title = 'foo';
+
+		$row_2 = new stdClass();
+		$row_2->id = 2;
+		$row_2->title = 'bar';
+
+		$expect = array($row_1, $row_2);
+
+		$this->assertEquals($expect, $actual);
+	}
+
+	public function testAssocObjectNamedParams()
+	{
+		$actual = $this->sql->assoc('SELECT id, title FROM ' . $this->table . ' WHERE id < :id ORDER BY id ASC', array('id' => 3), 'stdClass');
 
 		$row_1 = new stdClass();
 		$row_1->id = 1;
@@ -104,6 +165,28 @@ class SqlTest extends DbTestCase
 		$actual = $this->sql->count($this->table);
 
 		$this->assertEquals(0, $actual);
+	}
+
+	public function testExecuteParams()
+	{
+		$actual = $this->sql->execute('DELETE FROM ' . $this->table . ' WHERE id < ?', array(3));
+
+		$this->assertEquals(true, $actual);
+
+		$actual = $this->sql->count($this->table);
+
+		$this->assertEquals(1, $actual);
+	}
+
+	public function testExecuteNamedParams()
+	{
+		$actual = $this->sql->execute('DELETE FROM ' . $this->table . ' WHERE id < :id', array('id' => 3));
+
+		$this->assertEquals(true, $actual);
+
+		$actual = $this->sql->count($this->table);
+
+		$this->assertEquals(1, $actual);
 	}
 
 	public function testGetAll()

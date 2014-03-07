@@ -32,30 +32,138 @@ namespace PSX\Sql;
  */
 interface Connection
 {
-	// Doctrine DBAL / PDO interface
-    function prepare($prepareString);
-    function query();
-    function quote($input, $type = \PDO::PARAM_STR);
-    function exec($statement);
-    function lastInsertId($name = null);
-    function beginTransaction();
-    function commit();
-    function rollBack();
-    function errorCode();
-    function errorInfo();
+	/**
+	 * Main method for data selection. It returns either an associative array
+	 * with the data or false. It uses prepared statments so you can write
+	 * questionmarks in your query and provide the values in the $params array.
+	 * If the $class parameter is not null instances of the specific class will
+	 * be returned in the array
+	 *
+	 * @param string $sql
+	 * @param array $params
+	 * @param string $class
+	 * @param array $args
+	 * @return array
+	 */
+	public function assoc($sql, array $params = array(), $class = 'stdClass', array $args = array());
 
-    // PSX methods
-    public function assoc($sql, array $params = array(), $class = 'stdClass', array $args = array());
+	/**
+	 * Executes a query as prepared statment without returning any kind of 
+	 * result 
+	 *
+	 * @param string $sql
+	 * @param array $params
+	 * @return boolean
+	 */
+	public function execute($sql, array $params = array());
 
-    public function getAll($sql, array $params = array(), $mode = 0, $class = 'stdClass', array $args = array());
-    public function getRow($sql, array $params = array(), $mode = 0, $class = 'stdClass', array $args = array());
-    public function getCol($sql, array $params = array());
-    public function getField($sql, array $params = array());
+	/**
+	 * Returns the result of the query as an array where each row is an
+	 * associative array where array([column] => [value])
+	 *
+	 * @param string $sql
+	 * @param array $params
+	 * @param integer $mode
+	 * @param string $class
+	 * @param array $args
+	 * @return array
+	 */
+	public function getAll($sql, array $params = array(), $mode = 0, $class = 'stdClass', array $args = array());
 
-    public function select($table, array $fields, Condition $condition = null, $select = 0, $sortBy = null, $sortOrder = 0, $startIndex = null, $count = 32);
-    public function insert($table, array $params, $modifier = 0);
-    public function update($table, array $params, Condition $condition = null, $modifier = 0);
-    public function replace($table, array $params, $modifier = 0);
-    public function delete($table, Condition $condition = null, $modifier = 0);
-    public function count($table, Condition $condition = null);
+	/**
+	 * Returns a single row as associative array where
+	 * array([column] => [value])
+	 *
+	 * @param string $sql
+	 * @param array $params
+	 * @param integer $mode
+	 * @param string $class
+	 * @param array $args
+	 * @return array
+	 */
+	public function getRow($sql, array $params = array(), $mode = 0, $class = 'stdClass', array $args = array());
+
+	/**
+	 * Returns all values from one column as array
+	 *
+	 * @param string $sql
+	 * @param array $params
+	 * @return array
+	 */
+	public function getCol($sql, array $params = array());
+
+	/**
+	 * Returns the value of the first row and colum from the result
+	 *
+	 * @param string $sql
+	 * @param array $params
+	 * @return array
+	 */
+	public function getField($sql, array $params = array());
+
+	/**
+	 * Selects all $fields from the $table with the $condition. Calls depending
+	 * on the $select value the getAll, getRow, getCol or getField method
+	 *
+	 * @param string $table
+	 * @param array $fields
+	 * @param PSX\Sql\Condition $condition
+	 * @param integer $select
+	 * @param string $sortBy
+	 * @param integer $sortOrder
+	 * @param integer $startIndex
+	 * @param integer $count
+	 * @return array
+	 */
+	public function select($table, array $fields, Condition $condition = null, $select = 0, $sortBy = null, $sortOrder = 0, $startIndex = null, $count = 32);
+
+	/**
+	 * Inserts into the $table the values $params
+	 *
+	 * @param string $table
+	 * @param array $params
+	 * @param integer $modifier
+	 * @return boolean
+	 */
+	public function insert($table, array $params, $modifier = 0);
+
+	/**
+	 * Update the $params on the $table with the $condition
+	 *
+	 * @param string $table
+	 * @param array $params
+	 * @param PSX\Sql\Condition $condition
+	 * @param integer $modifier
+	 * @return integer
+	 */
+	public function update($table, array $params, Condition $condition = null, $modifier = 0);
+
+	/**
+	 * Replace the $params on the $table with the $condition
+	 *
+	 * @param string $table
+	 * @param array $params
+	 * @param integer $modifier
+	 * @return integer
+	 */
+	public function replace($table, array $params, $modifier = 0);
+
+	/**
+	 * Deletes the record on the $table with the $condition
+	 *
+	 * @param string $table
+	 * @param PSX\Sql\Condition $condition
+	 * @param integer $modifier
+	 * @return integer
+	 */
+	public function delete($table, Condition $condition = null, $modifier = 0);
+
+	/**
+	 * Returns the count of rows from the $table with the $condition
+	 *
+	 * @param string $table
+	 * @param PSX\Sql\Condition $condition
+	 * @return integer
+	 */
+	public function count($table, Condition $condition = null);
 }

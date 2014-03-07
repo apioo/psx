@@ -70,43 +70,24 @@ class Sql extends PDO implements Connection
 		$this->exec('SET NAMES "utf8"');
 	}
 
-	/**
-	 * Main method for data selection. It returns either an associative array
-	 * with the data or false. It uses prepared statments so you can write
-	 * questionmarks in your query and provide the values in the $params array.
-	 * If the $class parameter is not null instances of the specific class will
-	 * returned in the array
-	 *
-	 * @param string $sql
-	 * @param array $params
-	 * @param string $class
-	 * @param array $args
-	 * @return array
-	 */
 	public function assoc($sql, array $params = array(), $class = null, array $args = array())
 	{
 		// prepare statment
 		$stmt = $this->prepare($sql);
 
 		// bind params
-		$bindParams = new stdClass();
-
 		if(count($params) > 0)
 		{
-			$params = array_values($params);
-
-			foreach($params as $k => $v)
+			foreach($params as $key => $value)
 			{
-				if($v instanceof \DateTime)
+				if($value instanceof \DateTime)
 				{
-					$v = $v->format(DateTime::SQL);
+					$value = $value->format(DateTime::SQL);
 				}
 
-				$k   = $k + 1;
-				$key = 'k_' . $k;
-				$bindParams->$key = $v;
+				$key = is_numeric($key) ? $key + 1 : ':' . $key;
 
-				$stmt->bindParam($k, $bindParams->$key, self::getType($v));
+				$stmt->bindValue($key, $value, self::getType($value));
 			}
 		}
 
@@ -140,24 +121,21 @@ class Sql extends PDO implements Connection
 		$stmt = $this->prepare($sql);
 
 		// bind params
-		$bindParams = new stdClass();
-
 		if(count($params) > 0)
 		{
-			$params = array_values($params);
-
-			foreach($params as $k => $v)
+			foreach($params as $key => $value)
 			{
-				if($v instanceof \DateTime)
+				if($value instanceof \DateTime)
 				{
-					$v = $v->format(DateTime::SQL);
+					$value = $value->format(DateTime::SQL);
 				}
 
-				$k   = $k + 1;
-				$key = 'k_' . $k;
-				$bindParams->$key = $v;
+				if(is_numeric($key))
+				{
+					$key = $key + 1;
+				}
 
-				$stmt->bindParam($k, $bindParams->$key, self::getType($v));
+				$stmt->bindValue($key, $value, self::getType($value));
 			}
 		}
 
@@ -169,17 +147,6 @@ class Sql extends PDO implements Connection
 		return $result;
 	}
 
-	/**
-	 * Returns the result of the query as an array where each row is an
-	 * associative where array([column] => [value])
-	 *
-	 * @param string $sql
-	 * @param array $params
-	 * @param integer $mode
-	 * @param string $class
-	 * @param array $args
-	 * @return array
-	 */
 	public function getAll($sql, array $params = array(), $mode = 0, $class = 'stdClass', array $args = array())
 	{
 		$result = $this->getResult($sql, $params, $mode, $class, $args);
@@ -192,17 +159,6 @@ class Sql extends PDO implements Connection
 		return array();
 	}
 
-	/**
-	 * Returns a single row as associative array where
-	 * array([column] => [value])
-	 *
-	 * @param string $sql
-	 * @param array $params
-	 * @param integer $mode
-	 * @param string $class
-	 * @param array $args
-	 * @return array
-	 */
 	public function getRow($sql, array $params = array(), $mode = 0, $class = 'stdClass', array $args = array())
 	{
 		$content = array();
@@ -218,13 +174,6 @@ class Sql extends PDO implements Connection
 		return $content;
 	}
 
-	/**
-	 * Returns all values from one column as array
-	 *
-	 * @param string $sql
-	 * @param array $params
-	 * @return array
-	 */
 	public function getCol($sql, array $params = array())
 	{
 		$content = array();
@@ -243,13 +192,6 @@ class Sql extends PDO implements Connection
 		return $content;
 	}
 
-	/**
-	 * Returns the value of the first row and colum from the result
-	 *
-	 * @param string $sql
-	 * @param array $params
-	 * @return array
-	 */
 	public function getField($sql, array $params = array())
 	{
 		$content = false;
@@ -267,20 +209,6 @@ class Sql extends PDO implements Connection
 		return $content;
 	}
 
-	/**
-	 * Selects all $fields from the $table with the $condition. Calls depending
-	 * on the $select value the getAll, getRow, getCol or getField method
-	 *
-	 * @param string $table
-	 * @param array $fields
-	 * @param PSX\Sql\Condition $condition
-	 * @param integer $select
-	 * @param string $sortBy
-	 * @param integer $sortOrder
-	 * @param integer $startIndex
-	 * @param integer $count
-	 * @return array
-	 */
 	public function select($table, array $fields, Condition $condition = null, $select = 0, $sortBy = null, $sortOrder = 0, $startIndex = null, $count = 32)
 	{
 		if(!empty($fields))
@@ -344,14 +272,6 @@ class Sql extends PDO implements Connection
 		}
 	}
 
-	/**
-	 * Inserts into the $table the values $params
-	 *
-	 * @param string $table
-	 * @param array $params
-	 * @param integer $modifier
-	 * @return boolean
-	 */
 	public function insert($table, array $params, $modifier = 0)
 	{
 		if(!empty($params))
@@ -376,8 +296,9 @@ class Sql extends PDO implements Connection
 				$keywords.= ' IGNORE ';
 			}
 
-			$keys = array_keys($params);
-			$sql  = 'INSERT ' . $keywords . ' `' . $table . '` SET ' . implode(', ', array_map(__CLASS__ . '::helpPrepare', $keys));
+			$keys   = array_keys($params);
+			$params = array_values($params);
+			$sql    = 'INSERT ' . $keywords . ' `' . $table . '` SET ' . implode(', ', array_map(__CLASS__ . '::helpPrepare', $keys));
 
 			return $this->execute($sql, $params);
 		}
@@ -387,15 +308,6 @@ class Sql extends PDO implements Connection
 		}
 	}
 
-	/**
-	 * Update the $params on the $table with the $condition
-	 *
-	 * @param string $table
-	 * @param array $params
-	 * @param PSX\Sql\Condition $condition
-	 * @param integer $modifier
-	 * @return integer
-	 */
 	public function update($table, array $params, Condition $condition = null, $modifier = 0)
 	{
 		if(!empty($params))
@@ -433,14 +345,6 @@ class Sql extends PDO implements Connection
 		}
 	}
 
-	/**
-	 * Replace the $params on the $table with the $condition
-	 *
-	 * @param string $table
-	 * @param array $params
-	 * @param integer $modifier
-	 * @return integer
-	 */
 	public function replace($table, array $params, $modifier = 0)
 	{
 		if(!empty($params))
@@ -456,8 +360,9 @@ class Sql extends PDO implements Connection
 				$keywords.= ' DELAYED ';
 			}
 
-			$keys = array_keys($params);
-			$sql  = 'REPLACE ' . $keywords . ' `' . $table . '` SET ' . implode(', ', array_map(__CLASS__ . '::helpPrepare', $keys));
+			$keys   = array_keys($params);
+			$params = array_values($params);
+			$sql    = 'REPLACE ' . $keywords . ' `' . $table . '` SET ' . implode(', ', array_map(__CLASS__ . '::helpPrepare', $keys));
 
 			return $this->execute($sql, $params);
 		}
@@ -467,14 +372,6 @@ class Sql extends PDO implements Connection
 		}
 	}
 
-	/**
-	 * Deletes the record on the $table with the $condition
-	 *
-	 * @param string $table
-	 * @param PSX\Sql\Condition $condition
-	 * @param integer $modifier
-	 * @return integer
-	 */
 	public function delete($table, Condition $condition = null, $modifier = 0)
 	{
 		$keywords = '';
@@ -508,13 +405,6 @@ class Sql extends PDO implements Connection
 		return $this->execute($sql, $params);
 	}
 
-	/**
-	 * Returns the count of rows from the $table with the $condition
-	 *
-	 * @param string $table
-	 * @param PSX\Sql\Condition $condition
-	 * @return integer
-	 */
 	public function count($table, Condition $condition = null)
 	{
 		if($condition !== null)
