@@ -1,8 +1,9 @@
 language: php
 php:
-  - "5.4"
-  - "5.5"
-services: 
+  - 5.4
+  - 5.5
+  - hhvm
+services:
   - mysql
   - mongodb
   - memcached
