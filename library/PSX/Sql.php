@@ -107,14 +107,6 @@ class Sql extends PDO implements Connection
 		}
 	}
 
-	/**
-	 * Executes a query as prepared statment without returning any kind of 
-	 * result 
-	 *
-	 * @param string $sql
-	 * @param array $params
-	 * @return boolean
-	 */
 	public function execute($sql, array $params = array())
 	{
 		// prepare statment
