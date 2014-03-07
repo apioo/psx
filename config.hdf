@@ -1,0 +1,30 @@
+Server {
+  Port = 80
+  SourceRoot = /var/www/psx/public/
+}
+
+StaticFile {
+  Extensions {
+    css = text/css
+    js = text/javascript
+    html = text/html
+    jpe = image/jpeg
+    jpeg = image/jpeg
+    jpg = image/jpeg
+    png = image/png
+    txt = text/plain
+  }
+}
+
+VirtualHost {
+  * {
+    Pattern = .*
+    RewriteRules {
+      dirindex {
+        pattern = (.*)
+        to = /index.php/$1
+        qsa = true
+      }
+    }
+  }
+}
