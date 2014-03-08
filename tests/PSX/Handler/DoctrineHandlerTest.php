@@ -43,6 +43,12 @@ class DoctrineHandlerTest extends DbTestCase
 
 	public function setUp()
 	{
+		// we cant work with doctrine under hhvm
+		if(getenv('TRAVIS_PHP_VERSION') == 'hhvm')
+		{
+			$this->markTestSkipped('Doctrine is not compatible with hhvm');
+		}
+
 		if(!class_exists('Doctrine\ORM\EntityManager'))
 		{
 			$this->markTestSkipped('Doctrine not installed');
