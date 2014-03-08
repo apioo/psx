@@ -47,9 +47,6 @@ class CalendarTest extends \PHPUnit_Framework_TestCase
 		$calendar->setTimezone($tz);
 
 		$this->assertEquals($tz, $calendar->getTimezone());
-		$this->assertEquals(31, $calendar->getDays());
-		$this->assertEquals(31, count($calendar));
-
 		$this->assertEquals('01', $calendar->getWeekNumber());
 		$this->assertEquals(4, $calendar->getDay());
 		$this->assertEquals(1, $calendar->getMonth());
@@ -57,8 +54,26 @@ class CalendarTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('January', $calendar->getMonthName());
 	}
 
+	public function testGetDays()
+	{
+		if(!function_exists('cal_days_in_month'))
+		{
+			$this->markTestSkipped('cal_days_in_month function not available');
+		}
+
+		$calendar = new Calendar(new \DateTime('2014-01-01 12:14:00'), new \DateTimeZone('UTC'));
+
+		$this->assertEquals(31, $calendar->getDays());
+		$this->assertEquals(31, count($calendar));
+	}
+
 	public function testGetEasterDate()
 	{
+		if(!function_exists('easter_days'))
+		{
+			$this->markTestSkipped('easter_days function not available');
+		}
+
 		$calendar = new Calendar(new \DateTime('2014-01-04 12:14:00'));
 
 		$this->assertEquals('2014-04-20', $calendar->getEasterDate()->format('Y-m-d'));
@@ -106,7 +121,6 @@ class CalendarTest extends \PHPUnit_Framework_TestCase
 	public function testDateIterator()
 	{
 		$calendar = new Calendar(new \DateTime('2014-01-04 12:14:00'));
-		$days = count($calendar);
 		$i = 0;
 
 		foreach($calendar as $key => $day)
@@ -115,7 +129,5 @@ class CalendarTest extends \PHPUnit_Framework_TestCase
 			$this->assertEquals($i, $day->format('j'));
 			$this->assertEquals($i, $key);
 		}
-
-		$this->assertEquals($i, $days);
 	}
 }
