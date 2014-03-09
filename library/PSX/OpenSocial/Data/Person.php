@@ -26,7 +26,6 @@ namespace PSX\OpenSocial\Data;
 use DateTime;
 use PSX\Data\RecordAbstract;
 use PSX\Data\RecordInfo;
-use PSX\OpenSocial\Plural;
 
 /**
  * Person
@@ -69,43 +68,6 @@ class Person extends RecordAbstract
 	protected $urls;
 	protected $utcOffset;
 
-	public function getRecordInfo()
-	{
-		return new RecordInfo('person', array(
-			'aboutMe'           => $this->aboutMe,
-			'accounts'          => $this->accounts,
-			'addresses'         => $this->addresses,
-			'alternateNames'    => $this->alternateNames,
-			'appData'           => $this->appData,
-			'connected'         => $this->connected,
-			'contactPreference' => $this->contactPreference,
-			'dn'                => $this->dn,
-			'displayName'       => $this->displayName,
-			'emails'            => $this->emails,
-			'hasApp'            => $this->hasApp,
-			'id'                => $this->id,
-			'ims'               => $this->ims,
-			'location'          => $this->location,
-			'name'              => $this->name,
-			'nativeName'        => $this->nativeName,
-			'networkPresence'   => $this->networkPresence,
-			'organizations'     => $this->organizations,
-			'phoneNumbers'      => $this->phoneNumbers,
-			'photos'            => $this->photos,
-			'preferredName'     => $this->preferredName,
-			'preferredUsername' => $this->preferredUsername,
-			'profileUrl'        => $this->profileUrl,
-			'published'         => $this->published,
-			'relationships'     => $this->relationships,
-			'status'            => $this->status,
-			'tags'              => $this->tags,
-			'thumbnailUrl'      => $this->thumbnailUrl,
-			'updated'           => $this->updated,
-			'urls'              => $this->urls,
-			'utcOffset'         => $this->utcOffset,
-		));
-	}
-
 	/**
 	 * @param string
 	 */
@@ -120,9 +82,9 @@ class Person extends RecordAbstract
 	}
 
 	/**
-	 * @param PSX\OpenSocial\Plural
+	 * @param array<PSX\OpenSocial\PluralField>
 	 */
-	public function setAccounts(Plural $accounts)
+	public function setAccounts(array $accounts)
 	{
 		$this->accounts = $accounts;
 	}
@@ -133,9 +95,9 @@ class Person extends RecordAbstract
 	}
 
 	/**
-	 * @param PSX\OpenSocial\Plural
+	 * @param array<PSX\OpenSocial\PluralField>
 	 */
-	public function setAddresses(Plural $addresses)
+	public function setAddresses(array $addresses)
 	{
 		$this->addresses = $addresses;
 	}
@@ -146,9 +108,9 @@ class Person extends RecordAbstract
 	}
 
 	/**
-	 * @param PSX\OpenSocial\Plural
+	 * @param array<PSX\OpenSocial\PluralField>
 	 */
-	public function setAlternateNames(Plural $alternateNames)
+	public function setAlternateNames(array $alternateNames)
 	{
 		$this->alternateNames = $alternateNames;
 	}
@@ -159,9 +121,9 @@ class Person extends RecordAbstract
 	}
 
 	/**
-	 * @param PSX\OpenSocial\Plural
+	 * @param array<PSX\OpenSocial\PluralField>
 	 */
-	public function setAppData(Plural $appData)
+	public function setAppData(array $appData)
 	{
 		$this->appData = $appData;
 	}
@@ -224,9 +186,9 @@ class Person extends RecordAbstract
 	}
 
 	/**
-	 * @param PSX\OpenSocial\Plural
+	 * @param array<PSX\OpenSocial\PluralField>
 	 */
-	public function setEmails(Plural $emails)
+	public function setEmails(array $emails)
 	{
 		$this->emails = $emails;
 	}
@@ -263,9 +225,9 @@ class Person extends RecordAbstract
 	}
 
 	/**
-	 * @param PSX\OpenSocial\Plural
+	 * @param array<PSX\OpenSocial\PluralField>
 	 */
-	public function setIms(Plural $ims)
+	public function setIms(array $ims)
 	{
 		$this->ims = $ims;
 	}
@@ -315,9 +277,9 @@ class Person extends RecordAbstract
 	}
 
 	/**
-	 * @param PSX\OpenSocial\Plural
+	 * @param array<PSX\OpenSocial\PluralField>
 	 */
-	public function setNetworkPresence(Plural $networkPresence)
+	public function setNetworkPresence(array $networkPresence)
 	{
 		$this->networkPresence = $networkPresence;
 	}
@@ -328,9 +290,9 @@ class Person extends RecordAbstract
 	}
 
 	/**
-	 * @param PSX\OpenSocial\Plural
+	 * @param array<PSX\OpenSocial\PluralField>
 	 */
-	public function setOrganizations(Plural $organizations)
+	public function setOrganizations(array $organizations)
 	{
 		$this->organizations = $organizations;
 	}
@@ -341,9 +303,9 @@ class Person extends RecordAbstract
 	}
 
 	/**
-	 * @param PSX\OpenSocial\Plural
+	 * @param array<PSX\OpenSocial\PluralField>
 	 */
-	public function setPhoneNumbers(Plural $phoneNumbers)
+	public function setPhoneNumbers(array $phoneNumbers)
 	{
 		$this->phoneNumbers = $phoneNumbers;
 	}
@@ -354,9 +316,9 @@ class Person extends RecordAbstract
 	}
 
 	/**
-	 * @param PSX\OpenSocial\Plural
+	 * @param array<PSX\OpenSocial\PluralField>
 	 */
-	public function setPhotos(Plural $photos)
+	public function setPhotos(array $photos)
 	{
 		$this->photos = $photos;
 	}
@@ -419,9 +381,9 @@ class Person extends RecordAbstract
 	}
 
 	/**
-	 * @param PSX\OpenSocial\Plural
+	 * @param array<PSX\OpenSocial\PluralField>
 	 */
-	public function setRelationships(Plural $relationships)
+	public function setRelationships(array $relationships)
 	{
 		$this->relationships = $relationships;
 	}
@@ -445,9 +407,9 @@ class Person extends RecordAbstract
 	}
 
 	/**
-	 * @param PSX\OpenSocial\Plural
+	 * @param array<PSX\OpenSocial\PluralField>
 	 */
-	public function setTags(Plural $tags)
+	public function setTags(array $tags)
 	{
 		$this->tags = $tags;
 	}
@@ -484,9 +446,9 @@ class Person extends RecordAbstract
 	}
 
 	/**
-	 * @param PSX\OpenSocial\Plural
+	 * @param array<PSX\OpenSocial\PluralField>
 	 */
-	public function setUrls(Plural $urls)
+	public function setUrls(array $urls)
 	{
 		$this->urls = $urls;
 	}

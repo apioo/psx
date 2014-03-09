@@ -23,33 +23,20 @@
 
 namespace PSX\OpenSocial;
 
-use PSX\Data\Writer;
-use PSX\Data\SerializeTestAbstract;
-
 /**
- * MessageTest
+ * GlobalIdTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class ActionLinkTest extends SerializeTestAbstract
+class GlobalIdTest extends \PHPUnit_Framework_TestCase
 {
-	public function testActionLink()
+	public function testGlobalId()
 	{
-		$link = new Data\ActionLink();
-		$link->setCaption('Add Friend');
-		$link->setTarget('http://example.org/friends/jane.doe');
-		$link->setHttpVerb('POST');
+		$globalId = new GlobalId('foo.com', 'bar');
 
-		$content = <<<JSON
-{
-  "caption": "Add Friend",
-  "target": "http://example.org/friends/jane.doe",
-  "httpVerb": "POST"
-}
-JSON;
-
-		$this->assertRecordEqualsContent($link, $content);
+		$this->assertInstanceOf('PSX\OpenSocial\ObjectId', $globalId);
+		$this->assertEquals('foo.com:bar', (string) $globalId);
 	}
 }

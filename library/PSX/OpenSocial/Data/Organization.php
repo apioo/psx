@@ -49,25 +49,6 @@ class Organization extends RecordAbstract
 	protected $type;
 	protected $webpage;
 
-	public function getRecordInfo()
-	{
-		return new RecordInfo('organization', array(
-			'address'     => $this->address,
-			'department'  => $this->department,
-			'description' => $this->description,
-			'endDate'     => $this->endDate,
-			'field'       => $this->field,
-			'location'    => $this->location,
-			'name'        => $this->name,
-			'salary'      => $this->salary,
-			'startDate'   => $this->startDate,
-			'subfield'    => $this->subfield,
-			'title'       => $this->title,
-			'type'        => $this->type,
-			'webpage'     => $this->webpage,
-		));
-	}
-
 	/**
 	 * @param PSX\OpenSocial\Data\Address
 	 */

@@ -23,59 +23,36 @@
 
 namespace PSX\OpenSocial\Data;
 
-use PSX\Data\RecordAbstract;
-use PSX\Data\RecordInfo;
+use PSX\Data\Writer;
+use PSX\Data\SerializeTestAbstract;
 
 /**
- * Account
+ * MessageTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Account extends RecordAbstract
+class PersonTest extends SerializeTestAbstract
 {
-	protected $domain;
-	protected $username;
-	protected $userId;
+	public function testPerson()
+	{
+		$name = new Name();
+		$name->setFormatted('Jane Doe');
 
-	/**
-	 * @param string
-	 */
-	public function setDomain($domain)
-	{
-		$this->domain = $domain;
-	}
-	
-	public function getDomain()
-	{
-		return $this->domain;
-	}
+		$person = new Person();
+		$person->setId('example.org:34KJDCSKJN2HHF0DW20394');
+		$person->setDisplayName('Janey');
+		$person->setName($name);
 
-	/**
-	 * @param string
-	 */
-	public function setUsername($username)
-	{
-		$this->username = $username;
-	}
-	
-	public function getUsername()
-	{
-		return $this->username;
-	}
+		$content = <<<JSON
+{
+  "id": "example.org:34KJDCSKJN2HHF0DW20394",
+  "displayName": "Janey",
+  "name": {"formatted": "Jane Doe"}
+} 
+JSON;
 
-	/**
-	 * @param string
-	 */
-	public function setUserId($userId)
-	{
-		$this->userId = $userId;
-	}
-	
-	public function getUserId()
-	{
-		return $this->userId;
+		$this->assertRecordEqualsContent($person, $content);
 	}
 }
-

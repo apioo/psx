@@ -21,70 +21,38 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\OpenSocial;
+namespace PSX\OpenSocial\Data;
 
-use PSX\Data\RecordAbstract;
-use PSX\Data\RecordInfo;
+use PSX\Data\Writer;
+use PSX\Data\SerializeTestAbstract;
 
 /**
- * Field
+ * NameTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Field extends RecordAbstract
+class NameTest extends SerializeTestAbstract
 {
-	protected $value;
-	protected $type;
-	protected $primary;
+	public function testName()
+	{
+		$name = new Name();
+		$name->setFormatted('Jane Doe');
 
-	public function getRecordInfo()
-	{
-		return new RecordInfo('field', array(
-			'value'   => $this->value,
-			'type'    => $this->type,
-			'primary' => $this->primary,
-		));
-	}
+		$person = new Person();
+		$person->setId('example.org:34KJDCSKJN2HHF0DW20394');
+		$person->setDisplayName('Janey');
+		$person->setName($name);
 
-	/**
-	 * @param string
-	 */
-	public function setValue($value)
-	{
-		$this->value = $value;
-	}
-	
-	public function getValue()
-	{
-		return $this->value;
-	}
+		$content = <<<JSON
+{
+  "id": "example.org:34KJDCSKJN2HHF0DW20394",
+  "displayName": "Janey",
+  "name": {"formatted": "Jane Doe"}
+} 
+JSON;
 
-	/**
-	 * @param string
-	 */
-	public function setType($type)
-	{
-		$this->type = $type;
-	}
-	
-	public function getType()
-	{
-		return $this->type;
-	}
-
-	/**
-	 * @param boolean
-	 */
-	public function setPrimary($primary)
-	{
-		$this->primary = $primary;
-	}
-	
-	public function getPrimary()
-	{
-		return $this->primary;
+		$this->assertRecordEqualsContent($person, $content);
 	}
 }
-

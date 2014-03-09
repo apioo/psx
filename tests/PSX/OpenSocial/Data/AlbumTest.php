@@ -21,41 +21,45 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\OpenSocial;
+namespace PSX\OpenSocial\Data;
 
 use PSX\Data\Writer;
 use PSX\Data\SerializeTestAbstract;
 
 /**
- * MediaItemTest
+ * AlbumTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class MediaItemTest extends SerializeTestAbstract
+class AlbumTest extends SerializeTestAbstract
 {
-	public function testMediaItem()
+	public function testAlbum()
 	{
-		$mediaItem = new Data\MediaItem();
-		$mediaItem->setId('11223344');
-		$mediaItem->setThumbnailUrl('http://pages.example.org/images/11223344-tn.png');
-		$mediaItem->setMimeType('image/png');
-		$mediaItem->setType('image');
-		$mediaItem->setUrl('http://pages.example.org/images/11223344.png');
-		$mediaItem->setAlbumId('44332211');
+		$address = new Address();
+		$address->setLatitude(0);
+		$address->setLongitude(0);
+
+		$album = new Album();
+		$album->setId('44332211');
+		$album->setThumbnailUrl('http://pages.example.org/albums/4433221-tn.png');
+		$album->setTitle('Example Album');
+		$album->setDescription('This is an example album, and this text is an example description');
+		$album->setLocation($address);
+		$album->setOwnerId('example.org:55443322');
 
 		$content = <<<JSON
 {
-  "id": "11223344",
-  "thumbnail_url": "http://pages.example.org/images/11223344-tn.png",
-  "mime_type": "image/png",
-  "type": "image",
-  "url": "http://pages.example.org/images/11223344.png",
-  "album_id": "44332211"
-}
+  "id": "44332211",
+  "thumbnailUrl": "http://pages.example.org/albums/4433221-tn.png",
+  "title": "Example Album",
+  "description": "This is an example album, and this text is an example description",
+  "location": { "latitude": 0, "longitude": 0 },
+  "ownerId": "example.org:55443322"
+} 
 JSON;
 
-		$this->assertRecordEqualsContent($mediaItem, $content);
+		$this->assertRecordEqualsContent($album, $content);
 	}
 }

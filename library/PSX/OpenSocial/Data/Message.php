@@ -51,26 +51,6 @@ class Message extends RecordAbstract
 	protected $updated;
 	protected $urls;
 
-	public function getRecordInfo()
-	{
-		return new RecordInfo('message', array(
-			'appUrl'        => $this->appUrl,
-			'body'          => $this->body,
-			'bodyId'        => $this->bodyId,
-			'collectionIds' => $this->collectionIds,
-			'id'            => $this->id,
-			'recipients'    => $this->recipients,
-			'senderId'      => $this->senderId,
-			'status'        => $this->status,
-			'timeSent'      => $this->timeSent,
-			'title'         => $this->title,
-			'titleId'       => $this->titleId,
-			'type'          => $this->type,
-			'updated'       => $this->updated,
-			'urls'          => $this->urls,
-		));
-	}
-
 	/**
 	 * @param string
 	 */

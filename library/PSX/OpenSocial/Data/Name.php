@@ -44,20 +44,6 @@ class Name extends RecordAbstract
 	protected $pronunciation;
 	protected $pronunciationUrl;
 
-	public function getRecordInfo()
-	{
-		return new RecordInfo('name', array(
-			'familyName'       => $this->familyName,
-			'formatted'        => $this->formatted,
-			'givenName'        => $this->givenName,
-			'honorificPrefix'  => $this->honorificPrefix,
-			'honorificSuffix'  => $this->honorificSuffix,
-			'middleName'       => $this->middleName,
-			'pronunciation'    => $this->pronunciation,
-			'pronunciationUrl' => $this->pronunciationUrl,
-		));
-	}
-
 	/**
 	 * @param string
 	 */

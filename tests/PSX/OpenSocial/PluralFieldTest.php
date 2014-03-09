@@ -21,61 +21,35 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\OpenSocial\Data;
+namespace PSX\OpenSocial;
 
-use PSX\Data\RecordAbstract;
-use PSX\Data\RecordInfo;
+use PSX\Data\Writer;
+use PSX\Data\SerializeTestAbstract;
 
 /**
- * Account
+ * PluralFieldTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Account extends RecordAbstract
+class PluralFieldTest extends SerializeTestAbstract
 {
-	protected $domain;
-	protected $username;
-	protected $userId;
+	public function testPerson()
+	{
+		$field = new PluralField();
+		$field->setValue('bar');
+		$field->setType('foo');
+		$field->setPrimary(true);
 
-	/**
-	 * @param string
-	 */
-	public function setDomain($domain)
-	{
-		$this->domain = $domain;
-	}
-	
-	public function getDomain()
-	{
-		return $this->domain;
-	}
+		$content = <<<JSON
+{
+  "value": "bar",
+  "type": "foo",
+  "primary": true
+} 
+JSON;
 
-	/**
-	 * @param string
-	 */
-	public function setUsername($username)
-	{
-		$this->username = $username;
-	}
-	
-	public function getUsername()
-	{
-		return $this->username;
-	}
-
-	/**
-	 * @param string
-	 */
-	public function setUserId($userId)
-	{
-		$this->userId = $userId;
-	}
-	
-	public function getUserId()
-	{
-		return $this->userId;
+		$this->assertRecordEqualsContent($field, $content);
 	}
 }
-

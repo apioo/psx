@@ -23,59 +23,45 @@
 
 namespace PSX\OpenSocial\Data;
 
-use PSX\Data\RecordAbstract;
-use PSX\Data\RecordInfo;
+use PSX\Data\Writer;
+use PSX\Data\SerializeTestAbstract;
 
 /**
- * Account
+ * AddressTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Account extends RecordAbstract
+class AddressTest extends SerializeTestAbstract
 {
-	protected $domain;
-	protected $username;
-	protected $userId;
+	public function testAddress()
+	{
+		$address = new Address();
+		$address->setCountry('US');
+		$address->setFormatted('111 North First Street, New York, NY 11111');
+		$address->setLatitude(1);
+		$address->setLocality('New York');
+		$address->setLongitude(1);
+		$address->setPostalCode('11111');
+		$address->setRegion('NY');
+		$address->setStreetAddress('111 North First Street');
+		$address->setType('work');
 
-	/**
-	 * @param string
-	 */
-	public function setDomain($domain)
-	{
-		$this->domain = $domain;
-	}
-	
-	public function getDomain()
-	{
-		return $this->domain;
-	}
+		$content = <<<JSON
+{
+  "country": "US",
+  "formatted": "111 North First Street, New York, NY 11111",
+  "latitude": 1,
+  "locality": "New York",
+  "longitude": 1,
+  "postalCode": "11111",
+  "region": "NY",
+  "streetAddress": "111 North First Street",
+  "type": "work"
+} 
+JSON;
 
-	/**
-	 * @param string
-	 */
-	public function setUsername($username)
-	{
-		$this->username = $username;
-	}
-	
-	public function getUsername()
-	{
-		return $this->username;
-	}
-
-	/**
-	 * @param string
-	 */
-	public function setUserId($userId)
-	{
-		$this->userId = $userId;
-	}
-	
-	public function getUserId()
-	{
-		return $this->userId;
+		$this->assertRecordEqualsContent($address, $content);
 	}
 }
-

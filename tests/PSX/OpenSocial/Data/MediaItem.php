@@ -23,59 +23,39 @@
 
 namespace PSX\OpenSocial\Data;
 
-use PSX\Data\RecordAbstract;
-use PSX\Data\RecordInfo;
+use PSX\Data\Writer;
+use PSX\Data\SerializeTestAbstract;
 
 /**
- * Account
+ * MediaItemTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Account extends RecordAbstract
+class MediaItemTest extends SerializeTestAbstract
 {
-	protected $domain;
-	protected $username;
-	protected $userId;
+	public function testMediaItem()
+	{
+		$mediaItem = new MediaItem();
+		$mediaItem->setId('11223344');
+		$mediaItem->setThumbnailUrl('http://pages.example.org/images/11223344-tn.png');
+		$mediaItem->setMimeType('image/png');
+		$mediaItem->setType('image');
+		$mediaItem->setUrl('http://pages.example.org/images/11223344.png');
+		$mediaItem->setAlbumId('44332211');
 
-	/**
-	 * @param string
-	 */
-	public function setDomain($domain)
-	{
-		$this->domain = $domain;
-	}
-	
-	public function getDomain()
-	{
-		return $this->domain;
-	}
+		$content = <<<JSON
+{
+  "id": "11223344",
+  "thumbnail_url": "http://pages.example.org/images/11223344-tn.png",
+  "mime_type": "image/png",
+  "type": "image",
+  "url": "http://pages.example.org/images/11223344.png",
+  "album_id": "44332211"
+}
+JSON;
 
-	/**
-	 * @param string
-	 */
-	public function setUsername($username)
-	{
-		$this->username = $username;
-	}
-	
-	public function getUsername()
-	{
-		return $this->username;
-	}
-
-	/**
-	 * @param string
-	 */
-	public function setUserId($userId)
-	{
-		$this->userId = $userId;
-	}
-	
-	public function getUserId()
-	{
-		return $this->userId;
+		$this->assertRecordEqualsContent($mediaItem, $content);
 	}
 }
-

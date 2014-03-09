@@ -45,21 +45,6 @@ class Address extends RecordAbstract
 	protected $streetAddress;
 	protected $type;
 
-	public function getRecordInfo()
-	{
-		return new RecordInfo('address', array(
-			'country'       => $this->country,
-			'formatted'     => $this->formatted,
-			'latitude'      => $this->latitude,
-			'locality'      => $this->locality,
-			'longitude'     => $this->longitude,
-			'postalCode'    => $this->postalCode,
-			'region'        => $this->region,
-			'streetAddress' => $this->streetAddress,
-			'type'          => $this->type,
-		));
-	}
-
 	/**
 	 * @param string
 	 */

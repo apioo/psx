@@ -45,21 +45,6 @@ class Album extends RecordAbstract
 	protected $thumbnailUrl;
 	protected $title;
 
-	public function getRecordInfo()
-	{
-		return new RecordInfo('album', array(
-			'description'    => $this->description,
-			'id'             => $this->id,
-			'location'       => $this->location,
-			'mediaItemCount' => $this->mediaItemCount,
-			'mediaMimeType'  => $this->mediaMimeType,
-			'mediaType'      => $this->mediaType,
-			'ownerId'        => $this->ownerId,
-			'thumbnailUrl'   => $this->thumbnailUrl,
-			'title'          => $this->title,
-		));
-	}
-
 	/**
 	 * @param string
 	 */
@@ -113,7 +98,7 @@ class Album extends RecordAbstract
 	}
 
 	/**
-	 * @param array
+	 * @param array<string>
 	 */
 	public function setMediaMimeType(array $mediaMimeType)
 	{
@@ -126,7 +111,7 @@ class Album extends RecordAbstract
 	}
 
 	/**
-	 * @param array
+	 * @param array<string>
 	 */
 	public function setMediaType(array $mediaType)
 	{

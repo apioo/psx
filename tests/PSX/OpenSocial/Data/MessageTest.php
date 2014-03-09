@@ -23,59 +23,43 @@
 
 namespace PSX\OpenSocial\Data;
 
-use PSX\Data\RecordAbstract;
-use PSX\Data\RecordInfo;
+use PSX\Data\Writer;
+use PSX\Data\SerializeTestAbstract;
 
 /**
- * Account
+ * MessageTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Account extends RecordAbstract
+class MessageTest extends SerializeTestAbstract
 {
-	protected $domain;
-	protected $username;
-	protected $userId;
+	public function testMessage()
+	{
+		$message = new Message();
+		$message->setId('http://example.org/inbox/message/{msgid}');
+		$message->setRecipients(array('example.org:AD38B3886625AAF', 'example.org:997638BAA6F25AD'));
+		$message->setTitle('You have a new messge from Joe');
+		$message->setTitleId('541141091700');
+		$message->setBody('Short message from Joe to some friends');
+		$message->setBodyId('5491155811231');
+		$message->setType('privateMessage');
+		$message->setStatus('unread');
 
-	/**
-	 * @param string
-	 */
-	public function setDomain($domain)
-	{
-		$this->domain = $domain;
-	}
-	
-	public function getDomain()
-	{
-		return $this->domain;
-	}
+		$content = <<<JSON
+{
+  "id": "http://example.org/inbox/message/{msgid}",
+  "recipients": ["example.org:AD38B3886625AAF", "example.org:997638BAA6F25AD"],
+  "title": "You have a new messge from Joe",
+  "titleId": "541141091700",
+  "body": "Short message from Joe to some friends",
+  "bodyId": "5491155811231",  
+  "type": "privateMessage",
+  "status": "unread"
+}
+JSON;
 
-	/**
-	 * @param string
-	 */
-	public function setUsername($username)
-	{
-		$this->username = $username;
-	}
-	
-	public function getUsername()
-	{
-		return $this->username;
-	}
-
-	/**
-	 * @param string
-	 */
-	public function setUserId($userId)
-	{
-		$this->userId = $userId;
-	}
-	
-	public function getUserId()
-	{
-		return $this->userId;
+		$this->assertRecordEqualsContent($message, $content);
 	}
 }
-

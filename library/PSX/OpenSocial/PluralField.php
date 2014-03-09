@@ -21,61 +21,61 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\OpenSocial\Data;
+namespace PSX\OpenSocial;
 
 use PSX\Data\RecordAbstract;
 use PSX\Data\RecordInfo;
 
 /**
- * Account
+ * PluralField
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Account extends RecordAbstract
+class PluralField extends RecordAbstract
 {
-	protected $domain;
-	protected $username;
-	protected $userId;
+	protected $value;
+	protected $type;
+	protected $primary;
 
 	/**
 	 * @param string
 	 */
-	public function setDomain($domain)
+	public function setValue($value)
 	{
-		$this->domain = $domain;
+		$this->value = $value;
 	}
 	
-	public function getDomain()
+	public function getValue()
 	{
-		return $this->domain;
-	}
-
-	/**
-	 * @param string
-	 */
-	public function setUsername($username)
-	{
-		$this->username = $username;
-	}
-	
-	public function getUsername()
-	{
-		return $this->username;
+		return $this->value;
 	}
 
 	/**
 	 * @param string
 	 */
-	public function setUserId($userId)
+	public function setType($type)
 	{
-		$this->userId = $userId;
+		$this->type = $type;
 	}
 	
-	public function getUserId()
+	public function getType()
 	{
-		return $this->userId;
+		return $this->type;
+	}
+
+	/**
+	 * @param boolean
+	 */
+	public function setPrimary($primary)
+	{
+		$this->primary = $primary;
+	}
+	
+	public function getPrimary()
+	{
+		return $this->primary;
 	}
 }
 

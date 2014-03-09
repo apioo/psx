@@ -23,43 +23,20 @@
 
 namespace PSX\OpenSocial;
 
-use PSX\Data\Writer;
-use PSX\Data\SerializeTestAbstract;
-
 /**
- * MessageTest
+ * LocalIdTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class MessageTest extends SerializeTestAbstract
+class LocalIdTest extends \PHPUnit_Framework_TestCase
 {
-	public function testMessage()
+	public function testGlobalId()
 	{
-		$message = new Data\Message();
-		$message->setId('http://example.org/inbox/message/{msgid}');
-		$message->setRecipients(array('example.org:AD38B3886625AAF', 'example.org:997638BAA6F25AD'));
-		$message->setTitle('You have a new messge from Joe');
-		$message->setTitleId('541141091700');
-		$message->setBody('Short message from Joe to some friends');
-		$message->setBodyId('5491155811231');
-		$message->setType('privateMessage');
-		$message->setStatus('unread');
+		$localId = new LocalId('bar');
 
-		$content = <<<JSON
-{
-  "id": "http://example.org/inbox/message/{msgid}",
-  "recipients": ["example.org:AD38B3886625AAF", "example.org:997638BAA6F25AD"],
-  "title": "You have a new messge from Joe",
-  "titleId": "541141091700",
-  "body": "Short message from Joe to some friends",
-  "bodyId": "5491155811231",  
-  "type": "privateMessage",
-  "status": "unread"
-}
-JSON;
-
-		$this->assertRecordEqualsContent($message, $content);
+		$this->assertInstanceOf('PSX\OpenSocial\ObjectId', $localId);
+		$this->assertEquals('bar', (string) $localId);
 	}
 }

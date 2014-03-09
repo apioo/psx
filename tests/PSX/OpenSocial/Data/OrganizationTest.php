@@ -21,33 +21,44 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\OpenSocial;
+namespace PSX\OpenSocial\Data;
 
 use PSX\Data\Writer;
 use PSX\Data\SerializeTestAbstract;
 
 /**
- * GroupTest
+ * OrganizationTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class GroupTest extends SerializeTestAbstract
+class OrganizationTest extends SerializeTestAbstract
 {
-	public function testGroup()
+	public function testOrganization()
 	{
-		$group = new Data\Group();
-		$group->setId('example.org:34KJDCSKJN2HHF0DW20394/friends');
-		$group->setTitle('Peeps');
+		$address = new Address();
+		$address->setLatitude(0);
+		$address->setLongitude(0);
+
+		$organization = new Organization();
+		$organization->setAddress($address);
+		$organization->setDepartment('Development');
+		$organization->setDescription('Google');
+		$organization->setWebpage('http://google.com');
 
 		$content = <<<JSON
 {
-  "id": "example.org:34KJDCSKJN2HHF0DW20394/friends",
-  "title": "Peeps"
-}
+  "address": {
+  	"latitude": 0,
+  	"longitude": 0
+  },
+  "department": "Development",
+  "description": "Google",
+  "webpage": "http://google.com"
+} 
 JSON;
 
-		$this->assertRecordEqualsContent($group, $content);
+		$this->assertRecordEqualsContent($organization, $content);
 	}
 }

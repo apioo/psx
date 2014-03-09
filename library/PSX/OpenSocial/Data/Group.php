@@ -39,15 +39,6 @@ class Group extends RecordAbstract
 	protected $title;
 	protected $description;
 
-	public function getRecordInfo()
-	{
-		return new RecordInfo('group', array(
-			'id'          => $this->id,
-			'title'       => $this->title,
-			'description' => $this->description,
-		));
-	}
-
 	/**
 	 * @param string
 	 */

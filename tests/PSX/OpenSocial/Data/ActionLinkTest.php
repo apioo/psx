@@ -21,45 +21,35 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\OpenSocial;
+namespace PSX\OpenSocial\Data;
 
 use PSX\Data\Writer;
 use PSX\Data\SerializeTestAbstract;
 
 /**
- * MessageTest
+ * ActionLinkTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class AlbumTest extends SerializeTestAbstract
+class ActionLinkTest extends SerializeTestAbstract
 {
-	public function testAlbum()
+	public function testActionLink()
 	{
-		$address = new Data\Address();
-		$address->setLatitude(0);
-		$address->setLongitude(0);
-
-		$album = new Data\Album();
-		$album->setId('44332211');
-		$album->setThumbnailUrl('http://pages.example.org/albums/4433221-tn.png');
-		$album->setTitle('Example Album');
-		$album->setDescription('This is an example album, and this text is an example description');
-		$album->setLocation($address);
-		$album->setOwnerId('example.org:55443322');
+		$link = new ActionLink();
+		$link->setCaption('Add Friend');
+		$link->setTarget('http://example.org/friends/jane.doe');
+		$link->setHttpVerb('POST');
 
 		$content = <<<JSON
 {
-  "id": "44332211",
-  "thumbnailUrl": "http://pages.example.org/albums/4433221-tn.png",
-  "title": "Example Album",
-  "description": "This is an example album, and this text is an example description",
-  "location": { "latitude": 0, "longitude": 0 },
-  "ownerId": "example.org:55443322"
-} 
+  "caption": "Add Friend",
+  "target": "http://example.org/friends/jane.doe",
+  "httpVerb": "POST"
+}
 JSON;
 
-		$this->assertRecordEqualsContent($album, $content);
+		$this->assertRecordEqualsContent($link, $content);
 	}
 }

@@ -39,15 +39,6 @@ class ActionLink extends RecordAbstract
 	protected $target;
 	protected $httpVerb;
 
-	public function getRecordInfo()
-	{
-		return new RecordInfo('actionLink', array(
-			'caption'  => $this->caption,
-			'target'   => $this->target,
-			'httpVerb' => $this->httpVerb,
-		));
-	}
-
 	/**
 	 * @param string
 	 */
