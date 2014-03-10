@@ -30,6 +30,7 @@ use PSX\Data\InvalidDataException;
 use PSX\Data\NotSupportedException;
 use PSX\Data\ReaderInterface;
 use PSX\Data\RecordAbstract;
+use PSX\Data\RecordInfo;
 use PSX\Rss;
 
 /**
@@ -45,7 +46,7 @@ class Item extends RecordAbstract
 	protected $link;
 	protected $description;
 	protected $author;
-	protected $category = array();
+	protected $category;
 	protected $comments;
 	protected $enclosure;
 	protected $guid;
@@ -113,6 +114,11 @@ class Item extends RecordAbstract
 	 */
 	public function addCategory(Category $category)
 	{
+		if($this->category === null)
+		{
+			$this->category = array();
+		}
+
 		$this->category[] = $category;
 	}
 

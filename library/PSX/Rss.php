@@ -24,6 +24,7 @@
 namespace PSX;
 
 use PSX\Data\CollectionAbstract;
+use PSX\Data\RecordInfo;
 use PSX\Rss\Item;
 use PSX\Rss\Category;
 use PSX\Rss\Cloud;
@@ -52,7 +53,7 @@ class Rss extends CollectionAbstract
 	protected $rating;
 	protected $skipHours;
 	protected $skipDays;
-	protected $category = array();
+	protected $category;
 	protected $pubDate;
 	protected $lastBuildDate;
 	protected $cloud;
@@ -227,6 +228,11 @@ class Rss extends CollectionAbstract
 	 */
 	public function addCategory(Category $category)
 	{
+		if($this->category === null)
+		{
+			$this->category = array();
+		}
+
 		$this->category[] = $category;
 	}
 
