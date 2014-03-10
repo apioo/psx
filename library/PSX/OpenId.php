@@ -576,7 +576,11 @@ class OpenId
 		$g = pack('H*', ProviderAbstract::DH_G);
 		$p = pack('H*', ProviderAbstract::DH_P);
 
-		$pkey    = new PKey(array('dh' => array('p' => $p, 'g' => $g)));
+		$pkey = new PKey(array(
+			'private_key_type' => OPENSSL_KEYTYPE_DH,
+			'dh' => array('p' => $p, 'g' => $g))
+		);
+
 		$details = $pkey->getDetails();
 		$params  = array(
 			'openid.ns'                 => ProviderAbstract::NS,

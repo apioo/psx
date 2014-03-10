@@ -98,7 +98,11 @@ class GenerateDhTest extends \PHPUnit_Framework_TestCase
 		$g = pack('H*', ProviderAbstract::DH_G);
 		$p = pack('H*', ProviderAbstract::DH_P);
 
-		$pkey    = new PKey(array('dh' => array('p' => $p, 'g' => $g)));
+		$pkey = new PKey(array(
+			'private_key_type' => OPENSSL_KEYTYPE_DH,
+			'dh' => array('p' => $p, 'g' => $g
+		)));
+
 		$details = $pkey->getDetails();
 
 		return array(

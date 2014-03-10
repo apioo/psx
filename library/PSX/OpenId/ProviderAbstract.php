@@ -356,7 +356,10 @@ abstract class ProviderAbstract extends ApiAbstract
 			$dhOptions['priv_key'] = $privKey;
 		}
 
-		return new PKey(array('dh' => $dhOptions));
+		return new PKey(array(
+			'private_key_type' => OPENSSL_KEYTYPE_DH,
+			'dh' => $dhOptions
+		));
 	}
 
 	public static function btwoc($str)
