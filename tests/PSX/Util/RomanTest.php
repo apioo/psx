@@ -57,6 +57,14 @@ class RomanTest extends \PHPUnit_Framework_TestCase
 	/**
 	 * @expectedException UnexpectedValueException
 	 */
+	public function testEncodeZero()
+	{
+		$this->assertEquals('', Roman::encode(0));
+	}
+
+	/**
+	 * @expectedException UnexpectedValueException
+	 */
 	public function testEncodeNegativeNumber()
 	{
 		Roman::encode(-1);
