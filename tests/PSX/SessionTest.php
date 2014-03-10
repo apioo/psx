@@ -36,11 +36,6 @@ class SessionTest extends \PHPUnit_Framework_TestCase
 
 	protected function setUp()
 	{
-		ini_set('session.use_cookies', 0);
-		ini_set('session.use_only_cookies', 0);
-		ini_set('session.use_trans_sid', 1);
-		ini_set('session.cache_limiter', ''); // prevent sending header
-
 		$this->sess = new Session('psx_session', $this->getHandler());
 		$this->sess->start();
 	}
