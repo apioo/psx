@@ -34,7 +34,7 @@ use UnexpectedValueException;
  */
 class Roman
 {
-	public static $rm = array(
+	protected static $rm = array(
 		1000 => 'M',
 		900  => 'CM',
 		500  => 'D',
