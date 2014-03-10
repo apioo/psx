@@ -70,7 +70,7 @@ class Sql extends PDO implements Connection
 		$this->exec('SET NAMES "utf8"');
 	}
 
-	public function assoc($sql, array $params = array(), $class = null, array $args = array())
+	public function assoc($sql, array $params = array(), $class = null, array $args = null)
 	{
 		// prepare statment
 		$stmt = $this->prepare($sql);
