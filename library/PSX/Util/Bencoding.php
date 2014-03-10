@@ -102,7 +102,6 @@ class Bencoding
 		{
 			# list
 			case 'l':
-
 				$value = substr($value, 1, -1);
 				$out   = array();
 
@@ -119,12 +118,10 @@ class Bencoding
 				}
 
 				return array($out, false);
-
 				break;
 
 			# dictonary
 			case 'd':
-
 				$value = substr($value, 1, -1);
 				$out   = array();
 
@@ -145,14 +142,11 @@ class Bencoding
 				}
 
 				return array($out, false);
-
 				break;
 
 			# integer
 			case 'i':
-
 				return self::decodeInt($value);
-
 				break;
 
 			# string
@@ -166,14 +160,12 @@ class Bencoding
 			case '7':
 			case '8':
 			case '9':
-
 				return self::decodeStr($value);
-
 				break;
 
 			default:
-
-				return false;
+				return array(false, false);
+				break;
 		}
 	}
 

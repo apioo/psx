@@ -43,6 +43,7 @@ class BencodingTest extends \PHPUnit_Framework_TestCase
 	public function testBencodingEncode()
 	{
 		$this->assertEquals('3:foo', Bencoding::encode('foo'));
+		$this->assertEquals('21:foofoofoofoofoofoofoo', Bencoding::encode('foofoofoofoofoofoofoo'));
 		$this->assertEquals('i6e', Bencoding::encode(6));
 		$this->assertEquals('l3:foo3:bare', Bencoding::encode(array('foo', 'bar')));
 		$this->assertEquals('d3:foo3:bare', Bencoding::encode(array('foo' => 'bar')));
@@ -56,5 +57,18 @@ class BencodingTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(array('foo', 'bar'), Bencoding::decode('l3:foo3:bare'));
 		$this->assertEquals(array('foo' => 'bar'), Bencoding::decode('d3:foo3:bare'));
 		$this->assertEquals(array('foo' => array('bar', 'test')), Bencoding::decode('d3:fool3:bar4:testee'));
+	}
+
+	public function testBencodingDecodeInvalid()
+	{
+		$this->assertFalse(Bencoding::decode('foobar'));
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testBencodingEncodeInvalidType()
+	{
+		Bencoding::encode(new \stdClass);
 	}
 }
