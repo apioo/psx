@@ -126,9 +126,13 @@ class Rss implements WriterInterface
 			$writer->setLastBuildDate($lastBuildDate);
 		}
 
-		foreach($rss->getCategory() as $category)
+		$categories = $rss->getCategory();
+		if(is_array($categories))
 		{
-			$writer->addCategory($category->getText(), $category->getDomain());
+			foreach($categories as $category)
+			{
+				$writer->addCategory($category->getText(), $category->getDomain());
+			}
 		}
 
 		$generator = $rss->getGenerator();
@@ -210,9 +214,13 @@ class Rss implements WriterInterface
 			$writer->setAuthor($author);
 		}
 
-		foreach($item->getCategory() as $category)
+		$categories = $item->getCategory();
+		if(is_array($categories))
 		{
-			$writer->addCategory($category->getText(), $category->getDomain());
+			foreach($categories as $category)
+			{
+				$writer->addCategory($category->getText(), $category->getDomain());
+			}
 		}
 
 		$comments = $item->getComments();

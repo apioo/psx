@@ -97,9 +97,13 @@ class Atom implements WriterInterface
 			$writer->setSubTitle($subTitle->getType(), $subTitle->getContent());
 		}
 
-		foreach($atom->getLink() as $link)
+		$links = $atom->getLink();
+		if(is_array($links))
 		{
-			$writer->addLink($link->getHref(), $link->getRel(), $link->getType(), $link->getHrefLang(), $link->getTitle(), $link->getLength());
+			foreach($links as $link)
+			{
+				$writer->addLink($link->getHref(), $link->getRel(), $link->getType(), $link->getHrefLang(), $link->getTitle(), $link->getLength());
+			}
 		}
 
 		$rights = $atom->getRights();
@@ -114,19 +118,31 @@ class Atom implements WriterInterface
 			$writer->setGenerator($generator->getText(), $generator->getUri(), $generator->getVersion());
 		}
 
-		foreach($atom->getAuthor() as $author)
+		$authors = $atom->getAuthor();
+		if(is_array($authors))
 		{
-			$writer->addAuthor($author->getName(), $author->getUri(), $author->getEmail());
+			foreach($authors as $author)
+			{
+				$writer->addAuthor($author->getName(), $author->getUri(), $author->getEmail());
+			}
 		}
 
-		foreach($atom->getCategory() as $category)
+		$categories = $atom->getCategory();
+		if(is_array($categories))
 		{
-			$writer->addCategory($category->getTerm(), $category->getScheme(), $category->getLabel());
+			foreach($categories as $category)
+			{
+				$writer->addCategory($category->getTerm(), $category->getScheme(), $category->getLabel());
+			}
 		}
 
-		foreach($atom->getContributor() as $contributor)
+		$contributors = $atom->getContributor();
+		if(is_array($contributors))
 		{
-			$writer->addContributor($contributor->getName(), $contributor->getUri(), $contributor->getEmail());
+			foreach($contributors as $contributor)
+			{
+				$writer->addContributor($contributor->getName(), $contributor->getUri(), $contributor->getEmail());
+			}
 		}
 
 		$icon = $atom->getIcon();
@@ -168,9 +184,13 @@ class Atom implements WriterInterface
 			$writer->setPublished($published);
 		}
 
-		foreach($entry->getLink() as $link)
+		$links = $entry->getLink();
+		if(is_array($links))
 		{
-			$writer->addLink($link->getHref(), $link->getRel(), $link->getType(), $link->getHrefLang(), $link->getTitle(), $link->getLength());
+			foreach($links as $link)
+			{
+				$writer->addLink($link->getHref(), $link->getRel(), $link->getType(), $link->getHrefLang(), $link->getTitle(), $link->getLength());
+			}
 		}
 
 		$rights = $entry->getRights();
@@ -179,19 +199,31 @@ class Atom implements WriterInterface
 			$entry->setRights($rights);
 		}
 
-		foreach($entry->getAuthor() as $author)
+		$authors = $entry->getAuthor();
+		if(is_array($authors))
 		{
-			$writer->addAuthor($author->getName(), $author->getUri(), $author->getEmail());
+			foreach($authors as $author)
+			{
+				$writer->addAuthor($author->getName(), $author->getUri(), $author->getEmail());
+			}
 		}
 
-		foreach($entry->getCategory() as $category)
+		$categories = $entry->getCategory();
+		if(is_array($categories))
 		{
-			$writer->addCategory($category->getTerm(), $category->getScheme(), $category->getLabel());
+			foreach($categories as $category)
+			{
+				$writer->addCategory($category->getTerm(), $category->getScheme(), $category->getLabel());
+			}
 		}
 
-		foreach($entry->getContributor() as $contributor)
+		$contributors = $entry->getContributor();
+		if(is_array($contributors))
 		{
-			$writer->addContributor($contributor->getName(), $contributor->getUri(), $contributor->getEmail());
+			foreach($contributors as $contributor)
+			{
+				$writer->addContributor($contributor->getName(), $contributor->getUri(), $contributor->getEmail());
+			}
 		}
 
 		$content = $entry->getContent();
