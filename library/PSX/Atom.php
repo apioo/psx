@@ -32,6 +32,7 @@ use PSX\Atom\Person;
 use PSX\Atom\Text;
 use PSX\Data\CollectionAbstract;
 use PSX\Data\RecordAbstract;
+use PSX\Data\RecordInfo;
 
 /**
  * This record represents an atom feed. It is possible to import an existing 
@@ -47,14 +48,14 @@ class Atom extends CollectionAbstract
 {
 	public static $xmlns = 'http://www.w3.org/2005/Atom';
 
-	protected $author = array();
-	protected $category = array();
-	protected $contributor = array();
+	protected $author;
+	protected $category;
+	protected $contributor;
 	protected $generator;
 	protected $icon;
 	protected $logo;
 	protected $id;
-	protected $link = array();
+	protected $link;
 	protected $rights;
 	protected $subTitle;
 	protected $title;
@@ -72,7 +73,7 @@ class Atom extends CollectionAbstract
 			'id'          => $this->id,
 			'link'        => $this->link,
 			'rights'      => $this->rights,
-			'subtitle'    => $this->subtitle,
+			'subtitle'    => $this->subTitle,
 			'title'       => $this->title,
 			'updated'     => $this->updated,
 			'entry'       => $this->collection,
@@ -84,6 +85,11 @@ class Atom extends CollectionAbstract
 	 */
 	public function addAuthor(Person $author)
 	{
+		if($this->author === null)
+		{
+			$this->author = array();
+		}
+
 		$this->author[] = $author;
 	}
 
@@ -105,6 +111,11 @@ class Atom extends CollectionAbstract
 	 */
 	public function addCategory(Category $category)
 	{
+		if($this->category === null)
+		{
+			$this->category = array();
+		}
+
 		$this->category[] = $category;
 	}
 
@@ -126,6 +137,11 @@ class Atom extends CollectionAbstract
 	 */
 	public function addContributor(Person $contributor)
 	{
+		if($this->contributor === null)
+		{
+			$this->contributor = array();
+		}
+
 		$this->contributor[] = $contributor;
 	}
 
@@ -223,6 +239,11 @@ class Atom extends CollectionAbstract
 	 */
 	public function addLink(Link $link)
 	{
+		if($this->link === null)
+		{
+			$this->link = array();
+		}
+
 		$this->link[] = $link;
 	}
 
@@ -250,5 +271,18 @@ class Atom extends CollectionAbstract
 	public function getSubTitle()
 	{
 		return $this->subTitle;
+	}
+
+	/**
+	 * @param array<PSX\Atom\Entry>
+	 */
+	public function setEntry($entry)
+	{
+		$this->collection = $entry;
+	}
+
+	public function getEntry()
+	{
+		return $this->collection;
 	}
 }

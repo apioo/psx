@@ -37,12 +37,12 @@ use PSX\Data\RecordInfo;
  */
 class Entry extends RecordAbstract
 {
-	protected $author = array();
-	protected $category = array();
+	protected $author;
+	protected $category;
 	protected $content;
-	protected $contributor = array();
+	protected $contributor;
 	protected $id;
-	protected $link = array();
+	protected $link;
 	protected $published;
 	protected $rights;
 	protected $source;
@@ -73,6 +73,11 @@ class Entry extends RecordAbstract
 	 */
 	public function addAuthor(Person $author)
 	{
+		if($this->author === null)
+		{
+			$this->author = array();
+		}
+
 		$this->author[] = $author;
 	}
 
@@ -94,6 +99,11 @@ class Entry extends RecordAbstract
 	 */
 	public function addCategory(Category $category)
 	{
+		if($this->category === null)
+		{
+			$this->category = array();
+		}
+
 		$this->category[] = $category;
 	}
 
@@ -128,6 +138,11 @@ class Entry extends RecordAbstract
 	 */
 	public function addContributor(Person $contributor)
 	{
+		if($this->contributor === null)
+		{
+			$this->contributor = array();
+		}
+
 		$this->contributor[] = $contributor;
 	}
 
@@ -174,6 +189,9 @@ class Entry extends RecordAbstract
 		return $this->title;
 	}
 
+	/**
+	 * @param DateTime $published
+	 */
 	public function setPublished(DateTime $published)
 	{
 		$this->published = $published;
@@ -184,6 +202,9 @@ class Entry extends RecordAbstract
 		return $this->published;
 	}
 
+	/**
+	 * @param DateTime $updated
+	 */
 	public function setUpdated(DateTime $updated)
 	{
 		$this->updated = $updated;
@@ -196,7 +217,20 @@ class Entry extends RecordAbstract
 
 	public function addLink(Link $link)
 	{
+		if($this->link === null)
+		{
+			$this->link = array();
+		}
+
 		$this->link[] = $link;
+	}
+
+	/**
+	 * @param array<PSX\Atom\Link> $link
+	 */
+	public function setLink(array $link)
+	{
+		$this->link = $link;
 	}
 
 	public function getLink()
@@ -204,6 +238,9 @@ class Entry extends RecordAbstract
 		return $this->link;
 	}
 
+	/**
+	 * @param PSX\Atom $source
+	 */
 	public function setSource(Atom $source)
 	{
 		$this->source = $source;
@@ -214,6 +251,9 @@ class Entry extends RecordAbstract
 		return $this->source;
 	}
 
+	/**
+	 * @param PSX\Atom\Text $summary
+	 */
 	public function setSummary(Text $summary)
 	{
 		$this->summary = $summary;
