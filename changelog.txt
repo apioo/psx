@@ -1,4 +1,16 @@
 
+0.8.5
+* Added hhvm compatibility
+* Added redirect exception
+* Importer add possibility to import anonymous record classes and improved tests
+* Renamed controller method getRequestFilter and getResponseFilter to 
+  getPreFilter and getPostFilter
+* Improved tests
+
+0.8.4
+* Update http library to current psr-7
+* Improved tests
+
 0.8.3
 * Changed getRecord of HandlerQueryInterface its only possible to get a new 
   record containing all supported fields
