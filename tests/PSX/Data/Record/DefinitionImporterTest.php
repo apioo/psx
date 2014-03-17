@@ -69,9 +69,9 @@ class DefinitionImporterTest extends ImporterTestCase
 			<property type="object" reference="tag" />
 		</property>
 		<property name="achievment" type="array">
-			<property type="object" class="PSX\Data\Record\AchievmentFactory" />
+			<property type="object" class="PSX\Data\Record\AchievmentDefinitionFactory" />
 		</property>
-		<property name="payment" type="object" class="PSX\Data\Record\PaymentBuilder" />
+		<property name="payment" type="object" class="PSX\Data\Record\PaymentDefinitionBuilder" />
 	</record>
 	<record name="person">
 		<property name="title" type="string" />
@@ -92,7 +92,7 @@ XML;
 	}
 }
 
-class AchievmentFactory implements FactoryInterface
+class AchievmentDefinitionFactory implements FactoryInterface
 {
 	public function factory($data)
 	{
@@ -105,7 +105,7 @@ class AchievmentFactory implements FactoryInterface
 	}
 }
 
-class PaymentBuilder implements BuilderInterface
+class PaymentDefinitionBuilder implements BuilderInterface
 {
 	public function build($data)
 	{
