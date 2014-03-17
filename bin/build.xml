@@ -67,22 +67,25 @@
 
 	<target name="clean-doc">
 		<delete>
-			<fileset file="${build}/doc/manual.html" />
+			<fileset dir="${build}/doc/manual" includes="**/*.html" erroronmissingdir="false" />
 			<fileset dir="${build}/doc/api" includes="**/*.html" erroronmissingdir="false" />
 		</delete>
 	</target>
 
 	<target name="manual-doc">
-		<xslt basedir="${build}/doc/docbook" destdir="${build}/doc" includes="**/*.xml" extension=".html" style="${build}/doc/psx.xsl">
-			<factory name="net.sf.saxon.TransformerFactoryImpl" />
-		</xslt>
-		<delete dir="${build}/doc/docbook" />
-		<delete dir="${build}/doc/img" />
-		<delete dir="${build}/doc/xsl" />
-		<delete file="${build}/doc/psx.xsl" />
+		<mkdir dir="${build}/doc/manual" />
+		<exec dir="${bin}" executable="sphinx-build" failonerror="true">
+			<arg line="${build}/doc ${build}/doc/manual" />
+		</exec>
+		<delete>
+			<fileset dir="${build}/doc" includes="**/*.rst" erroronmissingdir="false" />
+			<fileset file="${build}/doc/conf.py" />
+		</delete>
+		<delete dir="${build}/doc/_static" />
 	</target>
 
 	<target name="api-doc">
+		<mkdir dir="${build}/doc/api" />
 		<exec dir="${build}" executable="apigen.bat" failonerror="true">
 			<arg line="-s ${build}/library -d ${build}/doc/api" />
 		</exec>
