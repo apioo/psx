@@ -35,10 +35,47 @@ use Iterator;
  */
 interface CollectionInterface extends RecordInterface, Iterator, Countable
 {
+	/**
+	 * Adds an record to the collection
+	 *
+	 * @param PSX\Data\RecordInterface $record
+	 */
 	public function add(RecordInterface $record);
+
+	/**
+	 * Clears all entries from the collection
+	 *
+	 * @return void
+	 */
 	public function clear();
+
+	/**
+	 * Returns whether the collection is empty
+	 *
+	 * @return boolean
+	 */
 	public function isEmpty();
+
+	/**
+	 * Returns the record with the specific key or null
+	 *
+	 * @param string $key
+	 * @return PSX\Data\RecordInterface
+	 */
 	public function get($key);
+
+	/**
+	 * Sets the record for the specific field
+	 *
+	 * @param string $key
+	 * @param PSX\Data\RecordInterface $record
+	 */
 	public function set($key, RecordInterface $record);
+
+	/**
+	 * Returns an array containing all record of the collection
+	 *
+	 * @return array<PSX\Data\RecordInterface>
+	 */
 	public function toArray();
 }
