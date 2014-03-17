@@ -36,8 +36,6 @@ class Collection implements CollectionInterface
 {
 	protected $definitions;
 
-	private $_pointer;
-
 	public function __construct()
 	{
 		$this->definitions = array();
@@ -66,37 +64,5 @@ class Collection implements CollectionInterface
 	public function merge(CollectionInterface $collection)
 	{
 		$this->definitions = array_merge($this->definitions, $collection->getAll());
-	}
-
-	// Iterator
-	public function current()
-	{
-		return current($this->definitions);
-	}
-
-	public function key()
-	{
-		return key($this->definitions);
-	}
-
-	public function next()
-	{
-		return $this->_pointer = next($this->definitions);
-	}
-
-	public function rewind()
-	{
-		$this->_pointer = reset($this->definitions);
-	}
-
-	public function valid()
-	{
-		return $this->_pointer;
-	}
-
-	// Countable
-	public function count()
-	{
-		return count($this->definitions);
 	}
 }

@@ -34,7 +34,7 @@ use PSX\Data\Record\DefinitionInterface;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-interface CollectionInterface extends Iterator, Countable
+interface CollectionInterface
 {
 	/**
 	 * Returns all record definitions
