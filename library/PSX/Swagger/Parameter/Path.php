@@ -23,7 +23,7 @@
 
 namespace PSX\Swagger\Parameter;
 
-use PSX\Swagger\ParameterAbstract;
+use PSX\Swagger\Parameter;
 
 /**
  * Path
@@ -32,10 +32,10 @@ use PSX\Swagger\ParameterAbstract;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Path extends ParameterAbstract
+class Path extends Parameter
 {
-	public function __construct($name, $description, $dataType, $required = true)
+	public function __construct($name = null, $description = null, $required = null, $allowMultiple = null)
 	{
-		parent::__construct('path', $name, $description, $dataType, $required);
+		parent::__construct(self::TYPE_PATH, $name, $description, $required, $allowMultiple);
 	}
 }

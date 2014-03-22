@@ -26,16 +26,16 @@ namespace PSX\Swagger\Parameter;
 use PSX\Swagger\Parameter;
 
 /**
- * Query
+ * Form
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Query extends Parameter
+class Form extends Parameter
 {
 	public function __construct($name = null, $description = null, $required = null, $allowMultiple = null)
 	{
-		parent::__construct(self::TYPE_QUERY, $name, $description, $required, $allowMultiple);
+		parent::__construct(self::TYPE_FORM, $name, $description, $required, $allowMultiple);
 	}
 }

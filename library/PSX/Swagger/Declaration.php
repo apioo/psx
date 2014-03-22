@@ -23,11 +23,7 @@
 
 namespace PSX\Swagger;
 
-use ReflectionClass;
 use PSX\Data\RecordAbstract;
-use PSX\Data\RecordInterface;
-use PSX\Data\Record;
-use PSX\Util\Annotation;
 
 /**
  * Declaration
@@ -38,25 +34,66 @@ use PSX\Util\Annotation;
  */
 class Declaration extends RecordAbstract
 {
-	const VERSION = '1.1';
-
+	protected $swaggerVersion;
 	protected $apiVersion;
 	protected $basePath;
 	protected $resourcePath;
-
 	protected $apis = array();
 	protected $models = array();
 
-	public function __construct($apiVersion, $basePath, $resourcePath)
+	public function __construct($apiVersion = null, $basePath = null, $resourcePath = null)
 	{
-		$this->apiVersion   = $apiVersion;
-		$this->basePath     = $basePath;
-		$this->resourcePath = $resourcePath;
+		$this->swaggerVersion = Swagger::VERSION;
+		$this->apiVersion     = $apiVersion;
+		$this->basePath       = $basePath;
+
+		if($resourcePath !== null)
+		{
+			$this->setResourcePath($resourcePath);
+		}
+	}
+
+	public function setApiVersion($apiVersion)
+	{
+		$this->apiVersion = $apiVersion;
+	}
+	
+	public function getApiVersion()
+	{
+		return $this->apiVersion;
+	}
+
+	public function setBasePath($basePath)
+	{
+		$this->basePath = $basePath;
+	}
+	
+	public function getBasePath()
+	{
+		return $this->basePath;
 	}
 
 	public function setResourcePath($resourcePath)
 	{
-		$this->resourcePath = $resourcePath;
+		$this->resourcePath = '/' . ltrim($resourcePath, '/');
+	}
+
+	public function getResourcePath()
+	{
+		return $this->resourcePath;
+	}
+
+	/**
+	 * @param array<PSX\Swagger\Api> $api
+	 */
+	public function setApis(array $api)
+	{
+		$this->apis = $api;
+	}
+
+	public function getApis()
+	{
+		return $this->apis;
 	}
 
 	public function addApi(Api $api)
@@ -64,113 +101,21 @@ class Declaration extends RecordAbstract
 		$this->apis[] = $api;
 	}
 
-	public function addModel(RecordInterface $record)
-	{
-		$this->models[] = self::getComplexDatatypeByRecord($record);
-	}
-
-	public function getName()
-	{
-		return 'declaration';
-	}
-
-	public function getFields()
-	{
-		return array(
-			'apiVersion'     => $this->apiVersion,
-			'swaggerVersion' => self::VERSION,
-			'basePath'       => $this->basePath,
-			'resourcePath'   => $this->resourcePath,
-			'apis'           => $this->apis,
-			'models'         => $this->models,
-		);
-	}
-
 	/**
-	 * Generates an complex swagger datatype record from the given $record class 
-	 *
-	 * @param PSX\Data\RecordInterface $record
-	 * @return PSX\Data\RecordInterface
+	 * @param PSX\Swagger\ModelBuilder $models
 	 */
-	public static function getComplexDatatypeByRecord(RecordInterface $record)
+	public function setModels(array $models)
 	{
-		$class = new ReflectionClass($record);
-		$props = array();
+		$this->models = $models;
+	}
 
-		// now we have the fields we check wich setter method exists for each 
-		// field. If a setter method exists we have an value wich can be set
-		// from outside. We get the doc comment from the reflection class wich 
-		// will be used as description etc.
-		$fields  = $record->getFields();
-		$methods = $class->getMethods();
+	public function getModels()
+	{
+		return $this->models;
+	}
 
-		foreach($fields as $k => $v)
-		{
-			// convert to camelcase if underscore is in name
-			if(strpos($k, '_') !== false)
-			{
-				$k = implode('', array_map('ucfirst', explode('_', $k)));
-			}
-
-			$methodName = 'set' . ucfirst($k);
-
-			foreach($methods as $method)
-			{
-				if($method->getName() == $methodName)
-				{
-					$doc    = Annotation::parse($method->getDocComment());
-					$params = $doc->getAnnotation('param');
-
-					foreach($params as $param)
-					{
-						$parts = explode(' ', $param, 2);
-						$type  = strtolower($parts[0]);
-						$desc  = $doc->getText();
-
-						switch($type)
-						{
-							case 'byte':
-							case 'boolean':
-							case 'int':
-							case 'long':
-							case 'float':
-							case 'double':
-							case 'string':
-								// we have an valid data type
-								break;
-
-							case 'bool':
-								$type = 'boolean';
-								break;
-
-							case 'integer':
-								$type = 'int';
-								break;
-
-							case 'datetime':
-								$type = 'Date';
-								break;
-
-							default:
-								$type = null;
-								break;
-						}
-
-						if($type !== null)
-						{
-							$props[$k] = array(
-								'type'        => $type,
-								'description' => $desc,
-							);
-						}
-					}
-				}
-			}
-		}
-
-		return new Record($record->getName(), array(
-			'id'         => $record->getName(),
-			'properties' => $props,
-		));
+	public function addModel(Model $model)
+	{
+		$this->models[$model->getId()] = $model;
 	}
 }

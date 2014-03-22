@@ -21,21 +21,41 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Swagger\Parameter;
+namespace PSX\Swagger;
 
-use PSX\Swagger\Parameter;
+use PSX\Data\SerializeTestAbstract;
 
 /**
- * Query
+ * PropertyTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Query extends Parameter
+class PropertyTest extends SerializeTestAbstract
 {
-	public function __construct($name = null, $description = null, $required = null, $allowMultiple = null)
+	public function testSerialize()
 	{
-		parent::__construct(self::TYPE_QUERY, $name, $description, $required, $allowMultiple);
+		$property = new Property('id', Property::TYPE_INTEGER, 'Foobar');
+		$property->setFormat(Property::FORMAT_INT64);
+		$property->setDefaultValue(12);
+		$property->setEnum(array(12, 24, 48));
+		$property->setMinimum(8);
+		$property->setMaximum(20);
+
+		$content = <<<JSON
+{
+  "id": "id",
+  "type": "integer",
+  "format": "int64",
+  "description": "Foobar",
+  "defaultValue": 12,
+  "enum": [12, 24, 48],
+  "minimum": 8,
+  "maximum": 20
+}
+JSON;
+
+		$this->assertRecordEqualsContent($property, $content);
 	}
 }

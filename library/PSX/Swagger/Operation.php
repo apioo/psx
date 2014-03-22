@@ -23,6 +23,7 @@
 
 namespace PSX\Swagger;
 
+use InvalidArgumentException;
 use PSX\Data\RecordAbstract;
 
 /**
@@ -34,68 +35,104 @@ use PSX\Data\RecordAbstract;
  */
 class Operation extends RecordAbstract
 {
-	protected $httpMethod;
+	protected $method;
 	protected $nickname;
-	protected $responseClass;
 	protected $summary;
 	protected $notes;
 
-	protected $errorResponses;
-	protected $parameters = array();
+	protected $parameters       = array();
+	protected $responseMessages = array();
 
-	public function __construct($httpMethod, $nickname, $responseClass, $summary)
+	public function __construct($method = null, $nickname = null, $summary = null, $notes = null)
 	{
-		$this->httpMethod    = $httpMethod;
-		$this->nickname      = $nickname;
-		$this->responseClass = $responseClass;
-		$this->summary       = $summary;
+		$this->nickname = $nickname;
+		$this->summary  = $summary;
+		$this->notes    = $notes;
+
+		if($method !== null)
+		{
+			$this->setMethod($method);
+		}
+	}
+
+	public function setMethod($method)
+	{
+		if(!in_array($method, array('GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS')))
+		{
+			throw new InvalidArgumentException('Invalid method');
+		}
+
+		$this->method = $method;
+	}
+	
+	public function getMethod()
+	{
+		return $this->method;
 	}
 
 	public function setNickname($nickname)
 	{
 		$this->nickname = $nickname;
 	}
-
-	public function setResponseClass($responseClass)
+	
+	public function getNickname()
 	{
-		$this->responseClass = $responseClass;
+		return $this->nickname;
 	}
 
 	public function setSummary($summary)
 	{
 		$this->summary = $summary;
 	}
+	
+	public function getSummary()
+	{
+		return $this->summary;
+	}
 
 	public function setNotes($notes)
 	{
 		$this->notes = $notes;
 	}
-
-	public function addErrorResponse(Error $error)
+	
+	public function getNotes()
 	{
-		$this->errorResponses[] = $errorResponses;
+		return $this->notes;
 	}
 
-	public function addParameter(ParameterAbstract $parameter)
+	/**
+	 * @param array<PSX\Swagger\ResponseMessage> $responseMessages
+	 */
+	public function setResponseMessages($responseMessages)
+	{
+		$this->responseMessages = $responseMessages;
+	}
+	
+	public function getResponseMessages()
+	{
+		return $this->responseMessages;
+	}
+
+	public function addResponseMessage(ResponseMessage $responseMessage)
+	{
+		$this->responseMessages[] = $responseMessage;
+	}
+
+	/**
+	 * @param array<PSX\Swagger\Parameter> $parameters
+	 */
+	public function setParameters($parameters)
+	{
+		$this->parameters = $parameters;
+	}
+	
+	public function getParameters()
+	{
+		return $this->parameters;
+	}
+
+	public function addParameter(Parameter $parameter)
 	{
 		$this->parameters[] = $parameter;
-	}
-
-	public function getName()
-	{
-		return 'operation';
-	}
-
-	public function getFields()
-	{
-		return array(
-			'httpMethod'     => $this->httpMethod,
-			'nickname'       => $this->nickname,
-			'responseClass'  => $this->responseClass,
-			'summary'        => $this->summary,
-			'notes'          => $this->notes,
-			'errorResponses' => $this->errorResponses,
-			'parameters'     => $this->parameters,
-		);;
 	}
 }

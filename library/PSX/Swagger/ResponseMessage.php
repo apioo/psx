@@ -21,21 +21,57 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Swagger\Parameter;
+namespace PSX\Swagger;
 
-use PSX\Swagger\Parameter;
+use PSX\Data\RecordAbstract;
 
 /**
- * Query
+ * ResponseMessage
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Query extends Parameter
+class ResponseMessage extends RecordAbstract
 {
-	public function __construct($name = null, $description = null, $required = null, $allowMultiple = null)
+	protected $code;
+	protected $message;
+	protected $responseModel;
+
+	public function __construct($code = null, $message = null, $responseModel = null)
 	{
-		parent::__construct(self::TYPE_QUERY, $name, $description, $required, $allowMultiple);
+		$this->code          = $code;
+		$this->message       = $message;
+		$this->responseModel = $responseModel;
+	}
+
+	public function setCode($code)
+	{
+		$this->code = $code;
+	}
+	
+	public function getCode()
+	{
+		return $this->code;
+	}
+
+	public function setMessage($message)
+	{
+		$this->message = $message;
+	}
+	
+	public function getMessage()
+	{
+		return $this->message;
+	}
+
+	public function setResponseModel($responseModel)
+	{
+		$this->responseModel = $responseModel;
+	}
+	
+	public function getResponseModel()
+	{
+		return $this->responseModel;
 	}
 }

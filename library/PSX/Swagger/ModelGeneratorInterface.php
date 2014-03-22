@@ -21,21 +21,28 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Swagger\Parameter;
+namespace PSX\Swagger;
 
-use PSX\Swagger\Parameter;
+use ReflectionClass;
+use PSX\Data\RecordAbstract;
+use PSX\Data\RecordInterface;
+use PSX\Data\Record;
+use PSX\Data\RecordInfo;
+use PSX\Util\Annotation;
 
 /**
- * Query
+ * ModelGeneratorInterface
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Query extends Parameter
+interface ModelGeneratorInterface
 {
-	public function __construct($name = null, $description = null, $required = null, $allowMultiple = null)
-	{
-		parent::__construct(self::TYPE_QUERY, $name, $description, $required, $allowMultiple);
-	}
+	/**
+	 * Creates an swagger model from the source
+	 *
+	 * @return PSX\Swagger\Model
+	 */
+	public function getComplexType($source);
 }

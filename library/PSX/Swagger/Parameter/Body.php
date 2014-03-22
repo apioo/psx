@@ -23,7 +23,7 @@
 
 namespace PSX\Swagger\Parameter;
 
-use PSX\Swagger\ParameterAbstract;
+use PSX\Swagger\Parameter;
 
 /**
  * Body
@@ -32,10 +32,10 @@ use PSX\Swagger\ParameterAbstract;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Body extends ParameterAbstract
+class Body extends Parameter
 {
-	public function __construct($name, $description, $dataType, $required = true)
+	public function __construct($name = null, $description = null, $required = null, $allowMultiple = null)
 	{
-		parent::__construct('body', $name, $description, $dataType, $required);
+		parent::__construct(self::TYPE_BODY, $name, $description, $required, $allowMultiple);
 	}
 }

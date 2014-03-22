@@ -24,34 +24,55 @@
 namespace PSX\Swagger;
 
 use PSX\Data\RecordAbstract;
+use InvalidArgumentException;
 
 /**
- * Api
+ * Parameter
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Api extends RecordAbstract
+class Parameter extends RecordAbstract
 {
-	protected $path;
+	const TYPE_PATH   = 'path';
+	const TYPE_QUERY  = 'query';
+	const TYPE_BODY   = 'body';
+	const TYPE_HEADER = 'header';
+	const TYPE_FORM   = 'form';
+
+	protected $paramType;
+	protected $name;
 	protected $description;
-	protected $operations = array();
+	protected $required;
+	protected $allowMultiple;
 
-	public function __construct($path = null, $description = null)
+	public function __construct($paramType = null, $name = null, $description = null, $required = null, $allowMultiple = null)
 	{
-		$this->path        = $path;
-		$this->description = $description;
+		$this->name          = $name;
+		$this->description   = $description;
+		$this->required      = $required;
+		$this->allowMultiple = $allowMultiple;
+
+		if($paramType !== null)
+		{
+			$this->setParamType($paramType);
+		}
 	}
 
-	public function setPath($path)
+	public function setParamType($paramType)
 	{
-		$this->path = $path;
+		if(!in_array($paramType, array(self::TYPE_PATH, self::TYPE_QUERY, self::TYPE_BODY, self::TYPE_HEADER, self::TYPE_FORM)))
+		{
+			throw new InvalidArgumentException('Invalid param type must be one of path, query, body, header, form');
+		}
+
+		$this->paramType = $paramType;
 	}
 
-	public function getPath()
+	public function setName($name)
 	{
-		return $this->path;
+		$this->name = $name;
 	}
 
 	public function setDescription($description)
@@ -59,26 +80,13 @@ class Api extends RecordAbstract
 		$this->description = $description;
 	}
 
-	public function getDescription()
+	public function setRequired($required)
 	{
-		return $this->description;
+		$this->required = $required;
 	}
 
-	/**
-	 * @param array<PSX\Swagger\Operation> $operations
-	 */
-	public function setOperations(array $operations)
+	public function setAllowMultiple($allowMultiple)
 	{
-		$this->operations = $operations;
-	}
-
-	public function getOperations()
-	{
-		return $this->operations;
-	}
-
-	public function addOperation(Operation $operation)
-	{
-		$this->operations[] = $operation;
+		$this->allowMultiple = $allowMultiple;
 	}
 }

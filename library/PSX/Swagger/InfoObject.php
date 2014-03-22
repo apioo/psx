@@ -26,59 +26,84 @@ namespace PSX\Swagger;
 use PSX\Data\RecordAbstract;
 
 /**
- * Api
+ * InfoObject
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Api extends RecordAbstract
+class InfoObject extends RecordAbstract
 {
-	protected $path;
+	protected $title;
 	protected $description;
-	protected $operations = array();
+	protected $termsOfServiceUrl;
+	protected $contact;
+	protected $license;
+	protected $licenseUrl;
 
-	public function __construct($path = null, $description = null)
+	public function __construct($title = null, $description = null)
 	{
-		$this->path        = $path;
+		$this->title       = $title;
 		$this->description = $description;
 	}
 
-	public function setPath($path)
+	public function setTitle($title)
 	{
-		$this->path = $path;
+		$this->title = $title;
 	}
-
-	public function getPath()
+	
+	public function getTitle()
 	{
-		return $this->path;
+		return $this->title;
 	}
 
 	public function setDescription($description)
 	{
 		$this->description = $description;
 	}
-
+	
 	public function getDescription()
 	{
 		return $this->description;
 	}
 
-	/**
-	 * @param array<PSX\Swagger\Operation> $operations
-	 */
-	public function setOperations(array $operations)
+	public function setTermsOfServiceUrl($termsOfServiceUrl)
 	{
-		$this->operations = $operations;
+		$this->termsOfServiceUrl = $termsOfServiceUrl;
+	}
+	
+	public function getTermsOfServiceUrl()
+	{
+		return $this->termsOfServiceUrl;
 	}
 
-	public function getOperations()
+	public function setContact($contact)
 	{
-		return $this->operations;
+		$this->contact = $contact;
+	}
+	
+	public function getContact()
+	{
+		return $this->contact;
 	}
 
-	public function addOperation(Operation $operation)
+	public function setLicense($license)
 	{
-		$this->operations[] = $operation;
+		$this->license = $license;
+	}
+	
+	public function getLicense()
+	{
+		return $this->license;
+	}
+
+	public function setLicenseUrl($licenseUrl)
+	{
+		$this->licenseUrl = $licenseUrl;
+	}
+	
+	public function getLicenseUrl()
+	{
+		return $this->licenseUrl;
 	}
 }

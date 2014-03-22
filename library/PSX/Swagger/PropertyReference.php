@@ -21,21 +21,44 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Swagger\Parameter;
+namespace PSX\Swagger;
 
-use PSX\Swagger\Parameter;
+use PSX\Data\RecordAbstract;
+use PSX\Data\RecordInfo;
 
 /**
- * Query
+ * PropertyReference
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Query extends Parameter
+class PropertyReference extends Property
 {
-	public function __construct($name = null, $description = null, $required = null, $allowMultiple = null)
+	protected $ref;
+
+	public function __construct($id = null, $ref = null)
 	{
-		parent::__construct(self::TYPE_QUERY, $name, $description, $required, $allowMultiple);
+		$this->id  = $id;
+		$this->ref = $ref;
+	}
+
+	public function setRef($ref)
+	{
+		$this->ref = $ref;
+	}
+	
+	public function getRef()
+	{
+		return $this->ref;
+	}
+
+	public function getRecordInfo()
+	{
+		return new RecordInfo('property', array(
+			'id'          => $this->id,
+			'description' => $this->description,
+			'$ref'        => $this->ref,
+		));
 	}
 }

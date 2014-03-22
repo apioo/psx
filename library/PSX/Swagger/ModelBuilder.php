@@ -23,36 +23,38 @@
 
 namespace PSX\Swagger;
 
-use PSX\Data\RecordAbstract;
+use PSX\Data\BuilderInterface;
+use PSX\Data\Record\DefaultImporter;
+use RuntimeException;
 
 /**
- * Error
+ * ModelBuilder
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Error extends RecordAbstract
+class ModelBuilder implements BuilderInterface
 {
-	protected $code;
-	protected $reason;
-
-	public function __construct($code, $reason)
+	public function build($data)
 	{
-		$this->code   = $code;
-		$this->reason = $reason;
-	}
+		if(!is_array($data))
+		{
+			throw new RuntimeException('Models must be an array');
+		}
 
-	public function getName()
-	{
-		return 'error';
-	}
+		$importer = new DefaultImporter();
+		$models   = array();
 
-	public function getFields()
-	{
-		return array(
-			'code'   => $this->code,
-			'reason' => $this->reason,
-		);
+		foreach($data as $name => $value)
+		{
+			$model = new Model();
+			$model = $importer->import($model, $value);
+			$model->setId($name);
+
+			$models[$name] = $model;
+		}
+
+		return $models;
 	}
 }

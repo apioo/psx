@@ -26,33 +26,36 @@ namespace PSX\Swagger;
 use PSX\Data\RecordAbstract;
 
 /**
- * ParameterAbstract
+ * Model
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-abstract class ParameterAbstract extends RecordAbstract
+class Model extends RecordAbstract
 {
-	protected $paramType;
-	protected $name;
+	protected $id;
 	protected $description;
-	protected $dataType;
 	protected $required;
-	protected $allowMultiple;
+	protected $discriminator;
+	protected $properties = array();
+	protected $subTypes;
 
-	public function __construct($paramType, $name, $description, $dataType, $required = true)
+	public function __construct($id = null, $description = null, array $required = null)
 	{
-		$this->paramType   = $paramType;
-		$this->name        = $name;
+		$this->id          = $id;
 		$this->description = $description;
-		$this->dataType    = $dataType;
 		$this->required    = $required;
 	}
 
-	public function setName($name)
+	public function setId($id)
 	{
-		$this->name = $name;
+		$this->id = $id;
+	}
+
+	public function getId()
+	{
+		return $this->id;
 	}
 
 	public function setDescription($description)
@@ -60,9 +63,9 @@ abstract class ParameterAbstract extends RecordAbstract
 		$this->description = $description;
 	}
 
-	public function setDataType($dataType)
+	public function getDescription()
 	{
-		$this->dataType = $dataType;
+		return $this->description;
 	}
 
 	public function setRequired($required)
@@ -70,47 +73,48 @@ abstract class ParameterAbstract extends RecordAbstract
 		$this->required = $required;
 	}
 
-	public function setAllowMultiple($allowMultiple)
+	public function getRequired()
 	{
-		$this->allowMultiple = $allowMultiple;
+		return $this->required;
 	}
 
-	public function getName()
+	public function setDiscriminator($discriminator)
 	{
-		return $this->paramType;
+		$this->discriminator = $discriminator;
+	}
+	
+	public function getDiscriminator()
+	{
+		return $this->discriminator;
 	}
 
-	public function getFields()
+	public function setProperties($properties)
 	{
-		return array(
-			'paramType'   => $this->paramType,
-			'name'        => $this->name,
-			'description' => $this->description,
-			'dataType'    => $this->dataType,
-			'required'    => $this->required,
-		);
+		$this->properties = $properties;
+	}
+	
+	public function getProperties()
+	{
+		return $this->properties;
 	}
 
-	public static function isScalar($type)
+	public function addProperty(Property $property)
 	{
-		switch($type)
-		{
-			case 'byte':
-			case 'boolean':
-			case 'int':
-			case 'long':
-			case 'float':
-			case 'double':
-			case 'string':
-			case 'bool':
-			case 'integer':
-			case 'DateTime':
-				return true;
-				break;
+		$this->properties[$property->getId()] = $property;
+	}
 
-			default:
-				return false;
-				break;
-		}
+	public function setSubTypes($subTypes)
+	{
+		$this->subTypes = $subTypes;
+	}
+	
+	public function getSubTypes()
+	{
+		return $this->subTypes;
+	}
+
+	public function addSubType($subType)
+	{
+		$this->subTypes[] = $subType;
 	}
 }

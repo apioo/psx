@@ -21,21 +21,69 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Swagger\Parameter;
+namespace PSX\Swagger;
 
-use PSX\Swagger\Parameter;
+use PSX\Data\RecordAbstract;
 
 /**
- * Query
+ * ResourceListing
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Query extends Parameter
+class ResourceListing extends RecordAbstract
 {
-	public function __construct($name = null, $description = null, $required = null, $allowMultiple = null)
+	protected $swaggerVersion;
+	protected $apiVersion;
+	protected $info;
+	protected $authorizations;
+	protected $apis = array();
+
+	public function __construct($apiVersion = null)
 	{
-		parent::__construct(self::TYPE_QUERY, $name, $description, $required, $allowMultiple);
+		$this->swaggerVersion = Swagger::VERSION;
+		$this->apiVersion     = $apiVersion;
+	}
+
+	public function setApiVersion($apiVersion)
+	{
+		$this->apiVersion = $apiVersion;
+	}
+	
+	public function getApiVersion()
+	{
+		return $this->apiVersion;
+	}
+
+	/**
+	 * @param PSX\Swagger\InfoObject $info
+	 */
+	public function setInfo(InfoObject $info)
+	{
+		$this->info = $info;
+	}
+
+	public function getInfo()
+	{
+		return $this->info;
+	}
+
+	/**
+	 * @param array<PSX\Swagger\ResourceObject> $apis
+	 */
+	public function setApis(array $apis)
+	{
+		$this->apis = $apis;
+	}
+	
+	public function getApis()
+	{
+		return $this->apis;
+	}
+
+	public function addResource(ResourceObject $resourceObject)
+	{
+		$this->apis[] = $resourceObject;
 	}
 }

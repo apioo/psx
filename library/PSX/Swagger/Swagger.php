@@ -21,21 +21,18 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Swagger\Parameter;
+namespace PSX\Swagger;
 
-use PSX\Swagger\Parameter;
+use PSX\Data\RecordAbstract;
 
 /**
- * Query
+ * Swagger
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Query extends Parameter
+class Swagger extends RecordAbstract
 {
-	public function __construct($name = null, $description = null, $required = null, $allowMultiple = null)
-	{
-		parent::__construct(self::TYPE_QUERY, $name, $description, $required, $allowMultiple);
-	}
+	const VERSION = '1.2';
 }

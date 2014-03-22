@@ -21,21 +21,45 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Swagger\Parameter;
+namespace PSX\Swagger;
 
-use PSX\Swagger\Parameter;
+use PSX\Data\RecordAbstract;
 
 /**
- * Query
+ * ResourceObject
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Query extends Parameter
+class ResourceObject extends RecordAbstract
 {
-	public function __construct($name = null, $description = null, $required = null, $allowMultiple = null)
+	protected $path;
+	protected $description;
+
+	public function __construct($path = null, $description = null)
 	{
-		parent::__construct(self::TYPE_QUERY, $name, $description, $required, $allowMultiple);
+		$this->path        = $path;
+		$this->description = $description;
+	}
+
+	public function setPath($path)
+	{
+		$this->path = $path;
+	}
+
+	public function getPath()
+	{
+		return $this->path;
+	}
+
+	public function setDescription($description)
+	{
+		$this->description = $description;
+	}
+
+	public function getDescription()
+	{
+		return $this->description;
 	}
 }

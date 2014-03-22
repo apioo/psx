@@ -21,21 +21,40 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Swagger\Parameter;
+namespace PSX\Swagger;
 
-use PSX\Swagger\Parameter;
+use PSX\Data\SerializeTestAbstract;
 
 /**
- * Query
+ * ApiTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Query extends Parameter
+class ApiTest extends SerializeTestAbstract
 {
-	public function __construct($name = null, $description = null, $required = null, $allowMultiple = null)
+	public function testSerialize()
 	{
-		parent::__construct(self::TYPE_QUERY, $name, $description, $required, $allowMultiple);
+		$operation = new Operation('PUT', 'updatePet', 'Update an existing pet');
+
+		$api = new Api('/foo', 'Foobar');
+		$api->addOperation($operation);
+
+		$content = <<<JSON
+{
+  "path": "/foo",
+  "description": "Foobar",
+  "operations": [{
+    "method": "PUT",
+    "nickname": "updatePet",
+    "summary": "Update an existing pet",
+    "parameters": [],
+    "responseMessages": []
+  }]
+}
+JSON;
+
+		$this->assertRecordEqualsContent($api, $content);
 	}
 }

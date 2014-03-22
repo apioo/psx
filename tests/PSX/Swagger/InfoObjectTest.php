@@ -21,21 +21,40 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Swagger\Parameter;
+namespace PSX\Swagger;
 
-use PSX\Swagger\Parameter;
+use PSX\Data\SerializeTestAbstract;
 
 /**
- * Query
+ * InfoObjectTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Query extends Parameter
+class InfoObjectTest extends SerializeTestAbstract
 {
-	public function __construct($name = null, $description = null, $required = null, $allowMultiple = null)
+	public function testSerialize()
 	{
-		parent::__construct(self::TYPE_QUERY, $name, $description, $required, $allowMultiple);
+		$info = new InfoObject();
+		$info->setTitle('Swagger Sample App');
+		$info->setDescription('This is a sample server Petstore server');
+		$info->setTermsOfServiceUrl('http://helloreverb.com/terms/');
+		$info->setContact('apiteam@wordnik.com');
+		$info->setLicense('Apache 2.0');
+		$info->setLicenseUrl('http://www.apache.org/licenses/LICENSE-2.0.html');
+
+		$content = <<<JSON
+{
+  "title": "Swagger Sample App",
+  "description": "This is a sample server Petstore server",
+  "termsOfServiceUrl": "http://helloreverb.com/terms/",
+  "contact": "apiteam@wordnik.com",
+  "license": "Apache 2.0",
+  "licenseUrl": "http://www.apache.org/licenses/LICENSE-2.0.html"
+}
+JSON;
+
+		$this->assertRecordEqualsContent($info, $content);
 	}
 }

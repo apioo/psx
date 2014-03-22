@@ -21,21 +21,43 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Swagger\Parameter;
+namespace PSX\Swagger;
 
-use PSX\Swagger\Parameter;
+use PSX\Data\SerializeTestAbstract;
 
 /**
- * Query
+ * OperationTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Query extends Parameter
+class OperationTest extends SerializeTestAbstract
 {
-	public function __construct($name = null, $description = null, $required = null, $allowMultiple = null)
+	public function testSerialize()
 	{
-		parent::__construct(self::TYPE_QUERY, $name, $description, $required, $allowMultiple);
+		$operation = new Operation('PUT', 'updatePet', 'Update an existing pet');
+		$operation->addResponseMessage(new ResponseMessage(200, 'Return', 'News'));
+		$operation->addParameter(new Parameter\Query('count', 'Count parameter'));
+
+		$content = <<<JSON
+{
+  "method": "PUT",
+  "nickname": "updatePet",
+  "summary": "Update an existing pet",
+  "parameters": [{
+    "paramType": "query",
+    "name": "count",
+    "description": "Count parameter"
+  }],
+  "responseMessages": [{
+    "code": 200,
+    "message": "Return",
+    "responseModel": "News"
+  }]
+}
+JSON;
+
+		$this->assertRecordEqualsContent($operation, $content);
 	}
 }
