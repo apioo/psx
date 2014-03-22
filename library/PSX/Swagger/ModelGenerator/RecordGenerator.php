@@ -28,11 +28,13 @@ use PSX\Data\Record;
 use PSX\Data\RecordAbstract;
 use PSX\Data\RecordInterface;
 use PSX\Swagger\Model;
+use PSX\Swagger\ModelGeneratorInterface;
 use PSX\Swagger\Property;
 use PSX\Swagger\PropertyReference;
 use PSX\Util\Annotation;
 use ReflectionClass;
 use ReflectionException;
+use ReflectionMethod;
 
 /**
  * RecordGenerator
@@ -86,6 +88,8 @@ class RecordGenerator implements ModelGeneratorInterface
 				// method does not exist
 			}
 		}
+
+		return $model;
 	}
 
 	protected function getPropertyByMethod($name, ReflectionMethod $method)
