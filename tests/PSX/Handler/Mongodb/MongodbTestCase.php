@@ -111,6 +111,9 @@ abstract class MongodbTestCase extends \PHPUnit_Framework_TestCase
 		return self::$client;
 	}
 
+	/**
+	 * @return string
+	 */
 	abstract public function getDataSetFlatXmlFile();
 
 	protected function unserializeType($data, $type)

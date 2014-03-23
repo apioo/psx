@@ -59,4 +59,9 @@ class ManagerTest extends MongodbTestCase
 
 		$this->assertInstanceOf('PSX\Handler\Mongodb\CallbackHandler', $handler);
 	}
+
+	protected function getHandler()
+	{
+		return new TestHandler($this->getMongoClient());
+	}
 }
