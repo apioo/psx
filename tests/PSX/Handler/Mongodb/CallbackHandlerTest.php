@@ -28,6 +28,7 @@ use DOMDocument;
 use DOMElement;
 use MongoClient;
 use PSX\Handler\HandlerTestCase;
+use PSX\Handler\MappingAbstract;
 
 /**
  * MongodbHandlerTest
