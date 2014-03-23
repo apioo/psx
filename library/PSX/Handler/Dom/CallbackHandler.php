@@ -21,28 +21,31 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Handler;
+namespace PSX\Handler\Dom;
 
-use PSX\Handler\Mongodb\MongodbTestCase;
+use Closure;
+use PSX\Handler\DomHandlerAbstract;
 
 /**
- * MongodbHandlerTest
+ * CallbackHandler
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class MongodbHandlerTest extends MongodbTestCase
+class CallbackHandler extends DomHandlerAbstract
 {
-	use HandlerTestCase;
+	protected $callback;
 
-	public function getDataSetFlatXmlFile()
+	public function __construct(Closure $callback)
 	{
-		return dirname(__FILE__) . '/handler_fixture.xml';
+		$this->callback = $callback;
+
+		parent::__construct();
 	}
 
-	protected function getHandler()
+	public function getMapping()
 	{
-		return new Mongodb\TestHandler($this->getMongoClient());
+		return call_user_func($this->callback);
 	}
 }

@@ -21,19 +21,20 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Handler\Manager;
+namespace PSX\Handler\Mongodb;
 
+use Closure;
 use MongoClient;
 use PSX\Handler\HandlerManagerInterface;
 
 /**
- * MongodbManager
+ * Manager
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class MongodbManager implements HandlerManagerInterface
+class Manager implements HandlerManagerInterface
 {
 	/**
 	 * @var MongoClient
@@ -49,11 +50,18 @@ class MongodbManager implements HandlerManagerInterface
 
 	public function getHandler($className)
 	{
-		if(!isset($this->_container[$className]))
+		if($className instanceof Closure)
 		{
-			$this->_container[$className] = new $className($this->client);
+			return new CallbackHandler($this->client, $className);
 		}
+		else
+		{
+			if(!isset($this->_container[$className]))
+			{
+				$this->_container[$className] = new $className($this->client);
+			}
 
-		return $this->_container[$className];
+			return $this->_container[$className];
+		}
 	}
 }

@@ -34,8 +34,17 @@ use PSX\Handler\MappingAbstract;
  */
 class Mapping extends MappingAbstract
 {
-	public function __construct(array $fields)
+	protected $sql;
+
+	public function __construct($sql, array $fields)
 	{
 		parent::__construct($fields);
+
+		$this->sql = $sql;
+	}
+
+	public function getSql()
+	{
+		return $this->sql;
 	}
 }

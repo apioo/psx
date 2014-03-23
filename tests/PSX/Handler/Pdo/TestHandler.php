@@ -39,7 +39,7 @@ class TestHandler extends PdoHandlerAbstract
 {
 	public function getMapping()
 	{
-		return new Mapping(array(
+		return new Mapping($this->getQuery(), array(
 			'id'     => MappingAbstract::TYPE_INTEGER | 10 | MappingAbstract::ID_PROPERTY,
 			'userId' => MappingAbstract::TYPE_INTEGER | 10,
 			'title'  => MappingAbstract::TYPE_STRING | 32,
@@ -47,64 +47,8 @@ class TestHandler extends PdoHandlerAbstract
 		));
 	}
 
-	protected function getSelectStatment(array $fields, $startIndex = 0, $count = 16, $sortBy = null, $sortOrder = null, Condition $con = null)
+	protected function getQuery()
 	{
-		if(empty($fields))
-		{
-			throw new InvalidArgumentException('Field must not be empty');
-		}
-
-		if($con !== null)
-		{
-			$sql    = 'SELECT ' . implode(', ', array_map('PSX\Sql::helpQuote', $fields)) . ' FROM `psx_handler_comment` ' . $con->getStatment() . ' ';
-			$params = $con->getValues();
-		}
-		else
-		{
-			$sql    = 'SELECT ' . implode(', ', array_map('PSX\Sql::helpQuote', $fields)) . ' FROM `psx_handler_comment` ';
-			$params = array();
-		}
-
-		if($sortBy !== null)
-		{
-			$sql.= 'ORDER BY `' . $sortBy . '` ' . ($sortOrder == Sql::SORT_ASC ? 'ASC' : 'DESC') . ' ';
-		}
-
-		if($startIndex !== null)
-		{
-			$sql.= 'LIMIT ' . intval($startIndex) . ', ' . intval($count);
-		}
-
-		$statment = $this->pdo->prepare($sql);
-
-		foreach($params as $i => $value)
-		{
-			$statment->bindValue($i + 1, $value, Sql::getType($value));
-		}
-
-		return $statment;
-	}
-
-	protected function getCountStatment(Condition $con = null)
-	{
-		if($con !== null)
-		{
-			$sql    = 'SELECT COUNT(`id`) FROM `psx_handler_comment` ' . $con->getStatment() . ' ';
-			$params = $con->getValues();
-		}
-		else
-		{
-			$sql    = 'SELECT COUNT(`id`) FROM `psx_handler_comment` ';
-			$params = array();
-		}
-
-		$statment = $this->pdo->prepare($sql);
-
-		foreach($params as $i => $value)
-		{
-			$statment->bindParam($i + 1, $value, Sql::getType($value));
-		}
-
-		return $statment;
+		return 'SELECT {fields} FROM `psx_handler_comment` {condition} {orderBy} {limit}';
 	}
 }

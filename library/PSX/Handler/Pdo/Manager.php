@@ -21,28 +21,47 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Handler;
+namespace PSX\Handler\Pdo;
 
-use PSX\Handler\Mongodb\MongodbTestCase;
+use Closure;
+use PDO;
+use PSX\Handler\HandlerManagerInterface;
 
 /**
- * MongodbHandlerTest
+ * Manager
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class MongodbHandlerTest extends MongodbTestCase
+class Manager implements HandlerManagerInterface
 {
-	use HandlerTestCase;
+	/**
+	 * @var PDO
+	 */
+	protected $pdo;
 
-	public function getDataSetFlatXmlFile()
+	protected $_container;
+
+	public function __construct(PDO $pdo)
 	{
-		return dirname(__FILE__) . '/handler_fixture.xml';
+		$this->pdo = $pdo;
 	}
 
-	protected function getHandler()
+	public function getHandler($className)
 	{
-		return new Mongodb\TestHandler($this->getMongoClient());
+		if($className instanceof Closure)
+		{
+			return new CallbackHandler($this->pdo, $className);
+		}
+		else
+		{
+			if(!isset($this->_container[$className]))
+			{
+				$this->_container[$className] = new $className($this->pdo);
+			}
+
+			return $this->_container[$className];
+		}
 	}
 }

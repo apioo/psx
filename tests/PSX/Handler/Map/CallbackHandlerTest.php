@@ -21,28 +21,61 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Handler;
+namespace PSX\Handler\Map;
 
-use PSX\Handler\Mongodb\MongodbTestCase;
+use PSX\Handler\MappingAbstract;
+use PSX\Handler\HandlerTestCase;
 
 /**
- * MongodbHandlerTest
+ * CallbackHandlerTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class MongodbHandlerTest extends MongodbTestCase
+class CallbackHandlerTest extends \PHPUnit_Framework_TestCase
 {
 	use HandlerTestCase;
 
-	public function getDataSetFlatXmlFile()
-	{
-		return dirname(__FILE__) . '/handler_fixture.xml';
-	}
-
 	protected function getHandler()
 	{
-		return new Mongodb\TestHandler($this->getMongoClient());
+		return new CallbackHandler(function(){
+			return new Mapping($this->getArray(), array(
+				'id'     => MappingAbstract::TYPE_INTEGER | 10 | MappingAbstract::ID_PROPERTY,
+				'userId' => MappingAbstract::TYPE_INTEGER | 10,
+				'title'  => MappingAbstract::TYPE_STRING | 32,
+				'date'   => MappingAbstract::TYPE_DATETIME,
+			));
+		});
+	}
+
+	protected function getArray()
+	{
+		return array(
+			array(
+				'id'     => 1,
+				'userId' => 1,
+				'title'  => 'foo',
+				'date'   => '2013-04-29 16:56:32',
+			),
+			array(
+				'id'     => 2,
+				'userId' => 1,
+				'title'  => 'bar',
+				'date'   => '2013-04-29 16:56:32',
+			),
+			array(
+				'id'     => 3,
+				'userId' => 2,
+				'title'  => 'test',
+				'date'   => '2013-04-29 16:56:32',
+			),
+			array(
+				'id'     => 4,
+				'userId' => 3,
+				'title'  => 'blub',
+				'date'   => '2013-04-29 16:56:32',
+			),
+		);
 	}
 }

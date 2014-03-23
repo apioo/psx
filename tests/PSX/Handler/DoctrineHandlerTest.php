@@ -23,9 +23,7 @@
 
 namespace PSX\Handler;
 
-use Doctrine\ORM\Tools\Setup;
-use Doctrine\ORM\EntityManager;
-use PSX\Sql\DbTestCase;
+use PSX\Handler\Doctrine\DoctrineTestCase;
 use PSX\Handler\Doctrine\RecordHydrator;
 
 /**
@@ -35,27 +33,9 @@ use PSX\Handler\Doctrine\RecordHydrator;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class DoctrineHandlerTest extends DbTestCase
+class DoctrineHandlerTest extends DoctrineTestCase
 {
 	use HandlerTestCase;
-
-	private static $em;
-
-	public function setUp()
-	{
-		// we cant work with doctrine under hhvm
-		if(getenv('TRAVIS_PHP_VERSION') == 'hhvm')
-		{
-			$this->markTestSkipped('Doctrine is not compatible with hhvm');
-		}
-
-		if(!class_exists('Doctrine\ORM\EntityManager'))
-		{
-			$this->markTestSkipped('Doctrine not installed');
-		}
-
-		parent::setUp();
-	}
 
 	public function getDataSet()
 	{
@@ -65,28 +45,5 @@ class DoctrineHandlerTest extends DbTestCase
 	protected function getHandler()
 	{
 		return new Doctrine\TestHandler($this->getEntityManager());
-	}
-
-	protected function getEntityManager()
-	{
-		if(self::$em === null)
-		{
-			// the default di container doesnt have the entity manager service
-			$paths     = array(PSX_PATH_LIBRARY);
-			$isDevMode = getContainer()->get('config')->get('psx_debug');
-			$dbParams  = array(
-				'driver'   => 'pdo_mysql',
-				'user'     => getContainer()->get('config')->get('psx_sql_user'),
-				'password' => getContainer()->get('config')->get('psx_sql_pw'),
-				'dbname'   => getContainer()->get('config')->get('psx_sql_db'),
-			);
-
-			$config = Setup::createAnnotationMetadataConfiguration($paths, $isDevMode);
-			$config->addCustomHydrationMode(RecordHydrator::HYDRATE_RECORD, 'PSX\Handler\Doctrine\RecordHydrator');
-
-			self::$em = EntityManager::create($dbParams, $config);
-		}
-
-		return self::$em;
 	}
 }

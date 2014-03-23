@@ -124,24 +124,89 @@ abstract class PdoHandlerAbstract extends DataHandlerQueryAbstract
 		return 0;
 	}
 
+	protected function getSelectStatment(array $fields, $startIndex = 0, $count = 16, $sortBy = null, $sortOrder = null, Condition $con = null)
+	{
+		if(empty($fields))
+		{
+			throw new InvalidArgumentException('Field must not be empty');
+		}
+
+		$sql = $this->mapping->getSql();
+		$sql = str_replace('{fields}', implode(', ', array_map('PSX\Sql::helpQuote', $fields)), $sql);
+
+		if($con !== null)
+		{
+			$sql    = str_replace('{condition}', $con->getStatment(), $sql);
+			$params = $con->getValues();
+		}
+		else
+		{
+			$sql    = str_replace('{condition}', 'WHERE 1', $sql);
+			$params = array();
+		}
+
+		if($sortBy !== null && in_array($sortBy, $fields))
+		{
+			$sql = str_replace('{orderBy}', 'ORDER BY `' . $sortBy . '` ' . ($sortOrder == Sql::SORT_ASC ? 'ASC' : 'DESC'), $sql);
+		}
+		else
+		{
+			$sql = str_replace('{orderBy}', '', $sql);
+		}
+
+		if($startIndex !== null)
+		{
+			$sql = str_replace('{limit}', 'LIMIT ' . intval($startIndex) . ', ' . intval($count), $sql);
+		}
+		else
+		{
+			$sql = str_replace('{limit}', '', $sql);
+		}
+
+		$statment = $this->pdo->prepare($sql);
+
+		foreach($params as $i => $value)
+		{
+			$statment->bindValue($i + 1, $value, Sql::getType($value));
+		}
+
+		return $statment;
+	}
+
+	protected function getCountStatment(Condition $con = null)
+	{
+		$sql = $this->mapping->getSql();
+		$sql = str_replace('{fields}', 'COUNT(*)', $sql);
+		$sql = str_replace('{orderBy}', '', $sql);
+		$sql = str_replace('{limit}', '', $sql);
+
+		if($con !== null)
+		{
+			$sql    = str_replace('{condition}', $con->getStatment(), $sql);
+			$params = $con->getValues();
+		}
+		else
+		{
+			$sql    = str_replace('{condition}', 'WHERE 1', $sql);
+			$params = array();
+		}
+
+		$statment = $this->pdo->prepare($sql);
+
+		foreach($params as $i => $value)
+		{
+			$statment->bindParam($i + 1, $value, Sql::getType($value));
+		}
+
+		return $statment;
+	}
+
 	/**
-	 * Returns the mapping informations about this query
+	 * Returns the mapping informations about this query. The mapping contains
+	 * sql select query. The query can contain the following fields which get 
+	 * replaced {fields}, {condition}, {orderBy}, {limit}
 	 *
 	 * @return string
 	 */
 	abstract public function getMapping();
-
-	/**
-	 * Returns the sql select query
-	 *
-	 * @return PDOStatement
-	 */
-	abstract protected function getSelectStatment(array $fields, $startIndex = 0, $count = 16, $sortBy = null, $sortOrder = null, Condition $con = null);
-
-	/**
-	 * Returns the sql count query
-	 *
-	 * @return PDOStatement
-	 */
-	abstract protected function getCountStatment(Condition $con = null);
 }

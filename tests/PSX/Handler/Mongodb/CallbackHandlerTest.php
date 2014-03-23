@@ -21,9 +21,13 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Handler;
+namespace PSX\Handler\Mongodb;
 
-use PSX\Handler\Mongodb\MongodbTestCase;
+use DateTime;
+use DOMDocument;
+use DOMElement;
+use MongoClient;
+use PSX\Handler\HandlerTestCase;
 
 /**
  * MongodbHandlerTest
@@ -38,11 +42,18 @@ class MongodbHandlerTest extends MongodbTestCase
 
 	public function getDataSetFlatXmlFile()
 	{
-		return dirname(__FILE__) . '/handler_fixture.xml';
+		return dirname(__FILE__) . '/../handler_fixture.xml';
 	}
 
 	protected function getHandler()
 	{
-		return new Mongodb\TestHandler($this->getMongoClient());
+		return new CallbackHandler($this->getMongoClient(), function($client){
+			return new Mapping($client->selectCollection('psx', 'psx_handler_comment'), array(
+				'id'     => MappingAbstract::TYPE_INTEGER | 10 | MappingAbstract::ID_PROPERTY,
+				'userId' => MappingAbstract::TYPE_INTEGER | 10,
+				'title'  => MappingAbstract::TYPE_STRING | 32,
+				'date'   => MappingAbstract::TYPE_DATETIME,
+			));
+		});
 	}
 }

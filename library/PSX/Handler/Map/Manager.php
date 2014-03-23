@@ -21,39 +21,36 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Handler\Manager;
+namespace PSX\Handler\Map;
 
+use Closure;
 use PSX\Handler\HandlerManagerInterface;
-use Doctrine\ORM\EntityManager;
 
 /**
- * DoctrineManager
+ * Default manager wich can create handler with an empty contructor
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class DoctrineManager implements HandlerManagerInterface
+class DefaultManager implements HandlerManagerInterface
 {
-	/**
-	 * @var Doctrine\ORM\EntityManager
-	 */
-	protected $entityManager;
-
 	protected $_container;
-
-	public function __construct(EntityManager $entityManager)
-	{
-		$this->entityManager = $entityManager;
-	}
 
 	public function getHandler($className)
 	{
-		if(!isset($this->_container[$className]))
+		if($className instanceof Closure)
 		{
-			$this->_container[$className] = new $className($this->entityManager);
+			return new CallbackHandler($this->entityManager, $className);
 		}
+		else
+		{
+			if(!isset($this->_container[$className]))
+			{
+				$this->_container[$className] = new $className();
+			}
 
-		return $this->_container[$className];
+			return $this->_container[$className];
+		}
 	}
 }

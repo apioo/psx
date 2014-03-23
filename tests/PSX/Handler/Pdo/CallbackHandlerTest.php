@@ -21,40 +21,42 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Handler\Manager;
+namespace PSX\Handler\Pdo;
 
-use PSX\Handler\HandlerManagerInterface;
-use PSX\Sql;
-use PSX\Sql\TableManagerInterface;
+use PSX\Handler\MappingAbstract;
+use PSX\Handler\HandlerTestCase;
+use PSX\Sql\DbTestCase;
 
 /**
- * DatabaseManager
+ * CallbackHandlerTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class DatabaseManager implements HandlerManagerInterface
+class CallbackHandlerTest extends DbTestCase
 {
-	/**
-	 * @var PSX\Sql\TableManagerInterface
-	 */
-	protected $tm;
+	use HandlerTestCase;
 
-	protected $_container;
-
-	public function __construct(TableManagerInterface $tm)
+	public function getDataSet()
 	{
-		$this->tm = $tm;
+		return $this->createFlatXMLDataSet(dirname(__FILE__) . '/../handler_fixture.xml');
 	}
 
-	public function getHandler($className)
+	protected function getHandler()
 	{
-		if(!isset($this->_container[$className]))
-		{
-			$this->_container[$className] = new $className($this->tm);
-		}
+		return new CallbackHandler($this->sql, function(){
+			return new Mapping($this->getQuery(), array(
+				'id'     => MappingAbstract::TYPE_INTEGER | 10 | MappingAbstract::ID_PROPERTY,
+				'userId' => MappingAbstract::TYPE_INTEGER | 10,
+				'title'  => MappingAbstract::TYPE_STRING | 32,
+				'date'   => MappingAbstract::TYPE_DATETIME,
+			));
+		});
+	}
 
-		return $this->_container[$className];
+	protected function getQuery()
+	{
+		return 'SELECT {fields} FROM `psx_handler_comment` {condition} {orderBy} {limit}';
 	}
 }

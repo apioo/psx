@@ -21,28 +21,32 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Handler\Manager;
+namespace PSX\Handler\Doctrine;
 
-use PSX\Handler\HandlerManagerInterface;
+use Closure;
+use Doctrine\ORM\EntityManager;
+use PSX\Handler\DoctrineHandlerAbstract;
 
 /**
- * Default manager wich can create handler with an empty contructor
+ * CallbackHandler
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class DefaultManager implements HandlerManagerInterface
+class CallbackHandler extends DoctrineHandlerAbstract
 {
-	protected $_container;
+	protected $callback;
 
-	public function getHandler($className)
+	public function __construct(EntityManager $manager, Closure $callback)
 	{
-		if(!isset($this->_container[$className]))
-		{
-			$this->_container[$className] = new $className();
-		}
+		$this->callback = $callback;
 
-		return $this->_container[$className];
+		parent::__construct($manager);
+	}
+
+	public function getDefaultSelect()
+	{
+		return call_user_func($this->callback, $this->manager);
 	}
 }

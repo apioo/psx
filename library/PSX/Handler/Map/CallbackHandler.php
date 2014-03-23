@@ -21,39 +21,31 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Handler\Manager;
+namespace PSX\Handler\Map;
 
-use PSX\Handler\HandlerManagerInterface;
-use PSX\Http;
+use Closure;
+use PSX\Handler\MapHandlerAbstract;
 
 /**
- * HttpManager
+ * CallbackHandler
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class HttpManager implements HandlerManagerInterface
+class CallbackHandler extends MapHandlerAbstract
 {
-	/**
-	 * @var PSX\Http
-	 */
-	protected $http;
+	protected $callback;
 
-	protected $_container;
-
-	public function __construct(Http $http)
+	public function __construct(Closure $callback)
 	{
-		$this->http = $http;
+		$this->callback = $callback;
+
+		parent::__construct();
 	}
 
-	public function getHandler($className)
+	public function getMapping()
 	{
-		if(!isset($this->_container[$className]))
-		{
-			$this->_container[$className] = new $className($this->http);
-		}
-
-		return $this->_container[$className];
+		return call_user_func($this->callback);
 	}
 }

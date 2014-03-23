@@ -21,28 +21,36 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Handler;
+namespace PSX\Handler\Manager;
 
-use PSX\Handler\Mongodb\MongodbTestCase;
+use Closure;
+use PSX\Handler\HandlerManagerInterface;
 
 /**
- * MongodbHandlerTest
+ * Default manager wich can create handler with an empty contructor
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class MongodbHandlerTest extends MongodbTestCase
+class Manager implements HandlerManagerInterface
 {
-	use HandlerTestCase;
+	protected $_container;
 
-	public function getDataSetFlatXmlFile()
+	public function getHandler($className)
 	{
-		return dirname(__FILE__) . '/handler_fixture.xml';
-	}
+		if($className instanceof Closure)
+		{
+			return new CallbackHandler($this->entityManager, $className);
+		}
+		else
+		{
+			if(!isset($this->_container[$className]))
+			{
+				$this->_container[$className] = new $className();
+			}
 
-	protected function getHandler()
-	{
-		return new Mongodb\TestHandler($this->getMongoClient());
+			return $this->_container[$className];
+		}
 	}
 }

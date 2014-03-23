@@ -21,28 +21,47 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Handler;
+namespace PSX\Handler\Doctrine;
 
-use PSX\Handler\Mongodb\MongodbTestCase;
+use Closure;
+use Doctrine\ORM\EntityManager;
+use PSX\Handler\HandlerManagerInterface;
 
 /**
- * MongodbHandlerTest
+ * DoctrineManager
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class MongodbHandlerTest extends MongodbTestCase
+class DoctrineManager implements HandlerManagerInterface
 {
-	use HandlerTestCase;
+	/**
+	 * @var Doctrine\ORM\EntityManager
+	 */
+	protected $entityManager;
 
-	public function getDataSetFlatXmlFile()
+	protected $_container;
+
+	public function __construct(EntityManager $entityManager)
 	{
-		return dirname(__FILE__) . '/handler_fixture.xml';
+		$this->entityManager = $entityManager;
 	}
 
-	protected function getHandler()
+	public function getHandler($className)
 	{
-		return new Mongodb\TestHandler($this->getMongoClient());
+		if($className instanceof Closure)
+		{
+			return new CallbackHandler($this->entityManager, $className);
+		}
+		else
+		{
+			if(!isset($this->_container[$className]))
+			{
+				$this->_container[$className] = new $className($this->entityManager);
+			}
+
+			return $this->_container[$className];
+		}
 	}
 }

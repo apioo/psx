@@ -21,28 +21,35 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Handler;
+namespace PSX\Handler\Doctrine;
 
-use PSX\Handler\Mongodb\MongodbTestCase;
+use Doctrine\ORM\Tools\Setup;
+use Doctrine\ORM\EntityManager;
+use PSX\Handler\Doctrine\RecordHydrator;
+use PSX\Handler\HandlerTestCase;
+use PSX\Sql\DbTestCase;
 
 /**
- * MongodbHandlerTest
+ * CallbackHandlerTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class MongodbHandlerTest extends MongodbTestCase
+class CallbackHandlerTest extends DoctrineTestCase
 {
 	use HandlerTestCase;
 
-	public function getDataSetFlatXmlFile()
+	public function getDataSet()
 	{
-		return dirname(__FILE__) . '/handler_fixture.xml';
+		return $this->createFlatXMLDataSet(dirname(__FILE__) . '/../handler_fixture.xml');
 	}
 
 	protected function getHandler()
 	{
-		return new Mongodb\TestHandler($this->getMongoClient());
+		return new CallbackHandler($this->getEntityManager(), function($manager){
+			return $manager->createQueryBuilder()
+				->from('PSX\Handler\Doctrine\TestEntity', 'comment');
+		});
 	}
 }

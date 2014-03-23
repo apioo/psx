@@ -52,9 +52,9 @@ abstract class DatabaseHandlerAbstract extends HandlerAbstract
 
 	protected $_select;
 
-	public function __construct(TableManagerInterface $tm)
+	public function __construct(TableManagerInterface $manager)
 	{
-		$this->manager = $tm;
+		$this->manager = $manager;
 		$this->table   = $this->getSelect()->getTable();
 	}
 
