@@ -42,7 +42,7 @@ class ManagerTest extends MongodbTestCase
 
 	public function testManager()
 	{
-		$manager = new Manager();
+		$manager = new Manager($this->getMongoClient());
 
 		$handler = $manager->getHandler('PSX\Handler\Mongodb\TestHandler');
 
