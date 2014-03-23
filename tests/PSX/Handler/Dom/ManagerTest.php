@@ -21,36 +21,29 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Handler\Map;
-
-use Closure;
-use PSX\Handler\HandlerManagerInterface;
+namespace PSX\Handler\Dom;
 
 /**
- * Manager
+ * ManagerTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Manager implements HandlerManagerInterface
+class ManagerTest extends \PHPUnit_Framework_TestCase
 {
-	protected $_container;
-
-	public function getHandler($className)
+	public function testManager()
 	{
-		if($className instanceof Closure)
-		{
-			return new CallbackHandler($className);
-		}
-		else
-		{
-			if(!isset($this->_container[$className]))
-			{
-				$this->_container[$className] = new $className();
-			}
+		$manager = new Manager();
 
-			return $this->_container[$className];
-		}
+		$handler = $manager->getHandler('PSX\Handler\Dom\TestHandler');
+
+		$this->assertInstanceOf('PSX\Handler\Dom\TestHandler', $handler);
+
+		$handler = $manager->getHandler(function(){
+			return null;
+		});
+
+		$this->assertInstanceOf('PSX\Handler\Dom\CallbackHandler', $handler);
 	}
 }

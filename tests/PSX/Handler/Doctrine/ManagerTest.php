@@ -21,36 +21,35 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Handler\Map;
-
-use Closure;
-use PSX\Handler\HandlerManagerInterface;
+namespace PSX\Handler\Doctrine;
 
 /**
- * Manager
+ * ManagerTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Manager implements HandlerManagerInterface
+class ManagerTest extends DoctrineTestCase
 {
-	protected $_container;
-
-	public function getHandler($className)
+	public function getDataSet()
 	{
-		if($className instanceof Closure)
-		{
-			return new CallbackHandler($className);
-		}
-		else
-		{
-			if(!isset($this->_container[$className]))
-			{
-				$this->_container[$className] = new $className();
-			}
+		return $this->createFlatXMLDataSet(dirname(__FILE__) . '/../handler_fixture.xml');
+	}
 
-			return $this->_container[$className];
-		}
+	public function testManager()
+	{
+		$manager = new Manager($this->getEntityManager());
+
+		$handler = $manager->getHandler('PSX\Handler\Doctrine\TestHandler');
+
+		$this->assertInstanceOf('PSX\Handler\Doctrine\TestHandler', $handler);
+
+		$handler = $manager->getHandler(function($manager){
+			return $manager->createQueryBuilder()
+				->from('PSX\Handler\Doctrine\TestEntity', 'comment');
+		});
+
+		$this->assertInstanceOf('PSX\Handler\Doctrine\CallbackHandler', $handler);
 	}
 }

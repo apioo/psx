@@ -28,13 +28,13 @@ use Doctrine\ORM\EntityManager;
 use PSX\Handler\HandlerManagerInterface;
 
 /**
- * DoctrineManager
+ * Manager
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class DoctrineManager implements HandlerManagerInterface
+class Manager implements HandlerManagerInterface
 {
 	/**
 	 * @var Doctrine\ORM\EntityManager

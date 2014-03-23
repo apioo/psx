@@ -21,36 +21,38 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Handler\Map;
+namespace PSX\Handler\Database;
 
-use Closure;
-use PSX\Handler\HandlerManagerInterface;
+use PSX\Sql\DbTestCase;
+use PSX\Sql\TableManager;
 
 /**
- * Manager
+ * ManagerTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Manager implements HandlerManagerInterface
+class ManagerTest extends DbTestCase
 {
-	protected $_container;
-
-	public function getHandler($className)
+	public function getDataSet()
 	{
-		if($className instanceof Closure)
-		{
-			return new CallbackHandler($className);
-		}
-		else
-		{
-			if(!isset($this->_container[$className]))
-			{
-				$this->_container[$className] = new $className();
-			}
+		return $this->createFlatXMLDataSet(dirname(__FILE__) . '/../handler_fixture.xml');
+	}
 
-			return $this->_container[$className];
-		}
+	public function testManager()
+	{
+		$manager = new Manager(new TableManager($this->sql));
+
+		$handler = $manager->getHandler('PSX\Handler\Database\TestHandler');
+
+		$this->assertInstanceOf('PSX\Handler\Database\TestHandler', $handler);
+
+		$handler = $manager->getHandler(function($manager){
+			return $manager->getTable('PSX\Handler\Database\TestTable')
+				->select(array('id', 'userId', 'title', 'date'));
+		});
+
+		$this->assertInstanceOf('PSX\Handler\Database\CallbackHandler', $handler);
 	}
 }

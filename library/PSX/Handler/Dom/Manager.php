@@ -41,7 +41,7 @@ class Manager implements HandlerManagerInterface
 	{
 		if($className instanceof Closure)
 		{
-			return new CallbackHandler($this->entityManager, $className);
+			return new CallbackHandler($className);
 		}
 		else
 		{

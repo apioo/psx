@@ -21,36 +21,42 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Handler\Map;
+namespace PSX\Handler\Mongodb;
 
-use Closure;
-use PSX\Handler\HandlerManagerInterface;
+use PSX\Handler\MappingAbstract;
+use PSX\Handler\Mongodb\MongodbTestCase;
 
 /**
- * Manager
+ * ManagerTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Manager implements HandlerManagerInterface
+class ManagerTest extends MongodbTestCase
 {
-	protected $_container;
-
-	public function getHandler($className)
+	public function getDataSetFlatXmlFile()
 	{
-		if($className instanceof Closure)
-		{
-			return new CallbackHandler($className);
-		}
-		else
-		{
-			if(!isset($this->_container[$className]))
-			{
-				$this->_container[$className] = new $className();
-			}
+		return dirname(__FILE__) . '/../handler_fixture.xml';
+	}
 
-			return $this->_container[$className];
-		}
+	public function testManager()
+	{
+		$manager = new Manager();
+
+		$handler = $manager->getHandler('PSX\Handler\Mongodb\TestHandler');
+
+		$this->assertInstanceOf('PSX\Handler\Mongodb\TestHandler', $handler);
+
+		$handler = $manager->getHandler(function($client){
+			return new Mapping($client->selectCollection('psx', 'psx_handler_comment'), array(
+				'id'     => MappingAbstract::TYPE_INTEGER | 10 | MappingAbstract::ID_PROPERTY,
+				'userId' => MappingAbstract::TYPE_INTEGER | 10,
+				'title'  => MappingAbstract::TYPE_STRING | 32,
+				'date'   => MappingAbstract::TYPE_DATETIME,
+			));
+		});
+
+		$this->assertInstanceOf('PSX\Handler\Mongodb\CallbackHandler', $handler);
 	}
 }

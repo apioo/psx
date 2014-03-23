@@ -27,6 +27,7 @@ use DateTime;
 use DOMDocument;
 use DOMElement;
 use MongoClient;
+use PSX\Handler\MappingAbstract;
 
 /**
  * MongodbTestCase
