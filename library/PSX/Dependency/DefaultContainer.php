@@ -25,10 +25,16 @@ namespace PSX\Dependency;
 
 use PSX\Base;
 use PSX\Config;
+use PSX\Data\Reader;
+use PSX\Data\ReaderFactory;
+use PSX\Data\Writer;
+use PSX\Data\WriterFactory;
 use PSX\Dispatch;
 use PSX\Dispatch\RequestFactory;
 use PSX\Dispatch\ResponseFactory;
 use PSX\Dispatch\Sender;
+use PSX\Domain\DomainManager;
+use PSX\Handler;
 use PSX\Http;
 use PSX\Input;
 use PSX\Loader;
@@ -39,14 +45,6 @@ use PSX\Sql;
 use PSX\Sql\TableManager;
 use PSX\Template;
 use PSX\Validate;
-use PSX\Data\Reader;
-use PSX\Data\ReaderFactory;
-use PSX\Data\Writer;
-use PSX\Data\WriterFactory;
-use PSX\Domain\DomainManager;
-use PSX\Handler\Manager\DefaultManager;
-use PSX\Handler\Manager\DatabaseManager;
-use PSX\Handler\Manager\HttpManager;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
@@ -271,14 +269,6 @@ class DefaultContainer extends Container
 	}
 
 	/**
-	 * @return PSX\Handler\HandlerManagerInterface
-	 */
-	public function getDefaultManager()
-	{
-		return new DefaultManager();
-	}
-
-	/**
 	 * @return PSX\Sql\TableManager
 	 */
 	public function getTableManager()
@@ -291,24 +281,50 @@ class DefaultContainer extends Container
 	 */
 	public function getDatabaseManager()
 	{
-		return new DatabaseManager($this->get('table_manager'));
+		return new Handler\Database\Manager($this->get('table_manager'));
 	}
 
 	/**
 	 * @return PSX\Handler\HandlerManagerInterface
 	 */
-	public function getHttpManager()
+	public function getDomManager()
 	{
-		return new HttpManager($this->get('http'));
+		return new Handler\Dom\Manager();
 	}
 
 	/**
-	 * @return PSX\Handler\DoctrineManagerInterface
+	 * @return PSX\Handler\HandlerManagerInterface
+	 */
+	public function getMapManager()
+	{
+		return new Handler\Map\Manager();
+	}
+
+	/**
+	 * @return PSX\Handler\HandlerManagerInterface
+	 */
+	public function getPdoManager()
+	{
+		return new Handler\Pdo\Manager($this->get('sql'));
+	}
+
+	/**
+	 * @return PSX\Handler\HandlerManagerInterface
 	 */
 	/*
 	public function getDoctrineManager()
 	{
-		return new DoctrineManager($this->get('entity_manager'));
+		return new Handler\Doctrine\Manager($this->get('entity_manager'));
+	}
+	*/
+
+	/**
+	 * @return PSX\Handler\HandlerManagerInterface
+	 */
+	/*
+	public function getMongodbManager()
+	{
+		return new Handler\Mongodb\Manager($this->get('mongo_client'));
 	}
 	*/
 
@@ -335,5 +351,14 @@ class DefaultContainer extends Container
 		return $entityManager;
 	}
 	*/
-}
 
+	/**
+	 * @return MongoClient
+	 */
+	/*
+	public function getMongoClient()
+	{
+		return new MongoClient();
+	}
+	*/
+}
