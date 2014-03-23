@@ -27,13 +27,13 @@ use Closure;
 use PSX\Handler\HandlerManagerInterface;
 
 /**
- * Default manager wich can create handler with an empty contructor
+ * Manager
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class DefaultManager implements HandlerManagerInterface
+class Manager implements HandlerManagerInterface
 {
 	protected $_container;
 

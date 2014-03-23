@@ -21,13 +21,13 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Handler\Manager;
+namespace PSX\Handler\Dom;
 
 use Closure;
 use PSX\Handler\HandlerManagerInterface;
 
 /**
- * Default manager wich can create handler with an empty contructor
+ * Manager
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
