@@ -91,7 +91,7 @@ class FlowAbstractTest extends ControllerTestCase
 		return array(
 			'/request' => 'PSX\Oauth\Provider\TestRequestAbstract',
 			'/access'  => 'PSX\Oauth\Provider\TestAccessAbstract',
-			'/api'     => 'PSX\Oauth\Provider\TestOauth',
+			'/api'     => 'PSX\Oauth\Provider\TestOauth::doIndex',
 		);
 	}
 }

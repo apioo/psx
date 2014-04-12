@@ -57,7 +57,7 @@ class ApiAbstractTest extends ControllerTestCase
 	public function testImport()
 	{
 		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'POST', array('Content-Type: application/json'), json_encode(array('title' => 'foo', 'user' => 'bar')));
+		$request  = new Request(new Url('http://127.0.0.1/api/insert'), 'POST', array('Content-Type: application/json'), json_encode(array('title' => 'foo', 'user' => 'bar')));
 		$response = new Response();
 		$response->setBody($body);
 
@@ -79,7 +79,9 @@ class ApiAbstractTest extends ControllerTestCase
 	protected function getPaths()
 	{
 		return array(
-			'/api' => 'PSX\Controller\Foo\Application\TestApiController',
+			'/api'         => 'PSX\Controller\Foo\Application\TestApiController::doIndex',
+			'/api/insert'  => 'PSX\Controller\Foo\Application\TestApiController::doInsert',
+			'/api/inspect' => 'PSX\Controller\Foo\Application\TestApiController::doInspect',
 		);
 	}
 }

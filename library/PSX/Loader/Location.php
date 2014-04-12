@@ -35,14 +35,14 @@ use ReflectionClass;
 class Location
 {
 	protected $id;
-	protected $path;
+	protected $parameters;
 	protected $source;
 
-	public function __construct($id, $path, $source)
+	public function __construct($id, $parameters, $source)
 	{
-		$this->id     = $id;
-		$this->path   = $path;
-		$this->source = $source;
+		$this->id         = $id;
+		$this->parameters = $parameters;
+		$this->source     = $source;
 	}
 
 	/**
@@ -62,9 +62,9 @@ class Location
 	 *
 	 * @return string
 	 */
-	public function getPath()
+	public function getParameters()
 	{
-		return $this->path;
+		return $this->parameters;
 	}
 
 	/**

@@ -52,10 +52,6 @@ class TestOauth extends ControllerAbstract
 		return array($handle);
 	}
 
-	/**
-	 * @httpMethod GET
-	 * @path /
-	 */
 	public function doIndex()
 	{
 		$this->response->setStatusCode(200);

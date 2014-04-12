@@ -100,73 +100,41 @@ class ProbeController extends ControllerAbstract
 		return parent::processResponse();
 	}
 
-	/**
-	 * @httpMethod GET
-	 * @path /
-	 */
 	public function doIndex()
 	{
 		$this->methodsCalled[] = __METHOD__;
 	}
 
-	/**
-	 * @httpMethod GET
-	 * @path /detail/{id}
-	 */
 	public function doShowDetails()
 	{
 		$this->methodsCalled[] = __METHOD__;
 	}
 
-	/**
-	 * @httpMethod POST
-	 * @path /
-	 */
 	public function doInsert()
 	{
 		$this->methodsCalled[] = __METHOD__;
 	}
 
-	/**
-	 * @httpMethod POST
-	 * @path /foo
-	 */
 	public function doInsertNested()
 	{
 		$this->methodsCalled[] = __METHOD__;
 	}
 
-	/**
-	 * @httpMethod PUT
-	 * @path /
-	 */
 	public function doUpdate()
 	{
 		$this->methodsCalled[] = __METHOD__;
 	}
 
-	/**
-	 * @httpMethod PUT
-	 * @path /foo
-	 */
 	public function doUpdateNested()
 	{
 		$this->methodsCalled[] = __METHOD__;
 	}
 
-	/**
-	 * @httpMethod DELETE
-	 * @path /
-	 */
 	public function doDelete()
 	{
 		$this->methodsCalled[] = __METHOD__;
 	}
 
-	/**
-	 * @httpMethod DELETE
-	 * @path /foo
-	 */
 	public function doDeleteNested()
 	{
 		$this->methodsCalled[] = __METHOD__;

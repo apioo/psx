@@ -38,8 +38,6 @@ use PSX\Handler;
 use PSX\Http;
 use PSX\Input;
 use PSX\Loader;
-use PSX\Loader\CallbackResolver\Annotation;
-use PSX\Loader\LocationFinder\RoutingFile;
 use PSX\Session;
 use PSX\Sql;
 use PSX\Sql\TableManager;
@@ -137,11 +135,19 @@ class DefaultContainer extends Container
 	}
 
 	/**
+	 * @return PSX\Loader\RoutingParserInterface
+	 */
+	public function getRoutingParser()
+	{
+		return new Loader\RoutingParser\RoutingFile($this->get('config')->get('psx_routing'));
+	}
+
+	/**
 	 * @return PSX\Loader\LocationFinderInterface
 	 */
 	public function getLoaderLocationFinder()
 	{
-		return new RoutingFile($this->get('config')->get('psx_routing'));
+		return new Loader\LocationFinder\RoutingParser($this->get('routing_parser'));
 	}
 
 	/**
@@ -149,7 +155,15 @@ class DefaultContainer extends Container
 	 */
 	public function getLoaderCallbackResolver()
 	{
-		return new Annotation($this);
+		return new Loader\CallbackResolver\Simple($this);
+	}
+
+	/**
+	 * @return Loader\ReverseRouter
+	 */
+	public function getReverseRouter()
+	{
+		return new Loader\ReverseRouter($this->get('routing_parser'), $this->get('config')->get('psx_url'), $this->get('config')->get('psx_dispatch'));
 	}
 
 	/**
@@ -243,6 +257,7 @@ class DefaultContainer extends Container
 	{
 		$writer = new WriterFactory();
 		$writer->addWriter(new Writer\Json());
+		$writer->addWriter(new Writer\Html($this->get('template'), $this->get('reverse_router')));
 		$writer->addWriter(new Writer\Atom());
 		$writer->addWriter(new Writer\Form());
 		$writer->addWriter(new Writer\Jsonp());

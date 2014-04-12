@@ -96,8 +96,13 @@ class ControllerAbstractTest extends ControllerTestCase
 	protected function getPaths()
 	{
 		return array(
-			'/controller' => 'PSX\Controller\Foo\Application\TestController',
-			'/api'        => 'PSX\Controller\Foo\Application\TestApiController',
+			'/controller'          => 'PSX\Controller\Foo\Application\TestController::doIndex',
+			'/controller/inspect'  => 'PSX\Controller\Foo\Application\TestController::doInspect',
+			'/controller/forward'  => 'PSX\Controller\Foo\Application\TestController::doForward',
+			'/controller/redirect' => 'PSX\Controller\Foo\Application\TestController::doRedirect',
+			'/api'                 => 'PSX\Controller\Foo\Application\TestApiController::doIndex',
+			'/api/insert'          => 'PSX\Controller\Foo\Application\TestApiController::doInsert',
+			'/api/inspect'         => 'PSX\Controller\Foo\Application\TestApiController::doInspect',
 		);
 	}
 }

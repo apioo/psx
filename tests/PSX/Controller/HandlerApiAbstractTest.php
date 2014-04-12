@@ -81,7 +81,7 @@ class HandlerApiAbstractTest extends ControllerTestCase
   ]}
 JSON;
 
-		$this->assertJsonStringEqualsJsonString($expect, $body);
+		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
 	}
 
 	public function testPost()
@@ -102,7 +102,7 @@ JSON;
 }
 JSON;
 
-		$this->assertJsonStringEqualsJsonString($expect, $body);
+		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
 
 		// @todo check database
 	}
@@ -125,7 +125,7 @@ JSON;
 }
 JSON;
 
-		$this->assertJsonStringEqualsJsonString($expect, $body);
+		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
 	}
 
 	public function testPostInvalidFields()
@@ -146,7 +146,7 @@ JSON;
 }
 JSON;
 
-		$this->assertJsonStringEqualsJsonString($expect, $body);
+		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
 	}
 
 	public function testPut()
@@ -167,7 +167,7 @@ JSON;
 }
 JSON;
 
-		$this->assertJsonStringEqualsJsonString($expect, $body);
+		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
 
 		// @todo check database
 	}
@@ -190,7 +190,7 @@ JSON;
 }
 JSON;
 
-		$this->assertJsonStringEqualsJsonString($expect, $body);
+		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
 
 		// @todo check database
 	}

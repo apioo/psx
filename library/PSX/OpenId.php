@@ -578,8 +578,8 @@ class OpenId
 
 		$pkey = new PKey(array(
 			'private_key_type' => OPENSSL_KEYTYPE_DH,
-			'dh' => array('p' => $p, 'g' => $g))
-		);
+			'dh' => array('p' => $p, 'g' => $g)
+		));
 
 		$details = $pkey->getDetails();
 		$params  = array(

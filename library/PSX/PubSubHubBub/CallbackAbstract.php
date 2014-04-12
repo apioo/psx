@@ -44,20 +44,12 @@ use PSX\Validate;
  */
 abstract class CallbackAbstract extends ControllerAbstract
 {
-	/**
-	 * @httpMethod GET
-	 * @path /
-	 */
-	public function doGet()
+	public function onGet()
 	{
 		$this->doVerify();
 	}
 
-	/**
-	 * @httpMethod POST
-	 * @path /
-	 */
-	public function doPost()
+	public function onPost()
 	{
 		$this->doCallback();
 	}

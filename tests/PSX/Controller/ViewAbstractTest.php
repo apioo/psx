@@ -45,6 +45,7 @@ class ViewAbstractTest extends ControllerTestCase
 	{
 		$body     = new TempStream(fopen('php://memory', 'r+'));
 		$request  = new Request(new Url('http://127.0.0.1/view'), 'GET');
+		$request->addHeader('Accept', 'text/html');
 		$response = new Response();
 		$response->setBody($body);
 
@@ -53,11 +54,12 @@ class ViewAbstractTest extends ControllerTestCase
 
 		$render = (float) $response->render;
 		$config = getContainer()->get('config');
+		$base   = (string) parse_url($config['psx_url'], PHP_URL_PATH);
 
 		$this->assertEquals('bar', $response->foo);
 		$this->assertTrue(!empty($response->self));
 		$this->assertEquals($config['psx_url'] . '/' . $config['psx_dispatch'], $response->url);
-		$this->assertEquals(parse_url($config['psx_url'], PHP_URL_PATH), $response->base);
+		$this->assertEquals($base, $response->base);
 		$this->assertTrue($render > 0);
 		$this->assertEquals('tests/PSX/Controller/Foo/Resource', $response->location);
 	}
@@ -66,6 +68,7 @@ class ViewAbstractTest extends ControllerTestCase
 	{
 		$body     = new TempStream(fopen('php://memory', 'r+'));
 		$request  = new Request(new Url('http://127.0.0.1/view/detail'), 'GET');
+		$request->addHeader('Accept', 'text/html');
 		$response = new Response();
 		$response->setBody($body);
 
@@ -74,11 +77,12 @@ class ViewAbstractTest extends ControllerTestCase
 
 		$render = (float) $response->render;
 		$config = getContainer()->get('config');
+		$base   = (string) parse_url($config['psx_url'], PHP_URL_PATH);
 
 		$this->assertEquals('bar', $response->foo);
 		$this->assertTrue(!empty($response->self));
 		$this->assertEquals($config['psx_url'] . '/' . $config['psx_dispatch'], $response->url);
-		$this->assertEquals(parse_url($config['psx_url'], PHP_URL_PATH), $response->base);
+		$this->assertEquals($base, $response->base);
 		$this->assertTrue($render > 0);
 		$this->assertEquals('tests/PSX/Controller/Foo/Resource', $response->location);
 	}
@@ -87,6 +91,7 @@ class ViewAbstractTest extends ControllerTestCase
 	{
 		$body     = new TempStream(fopen('php://memory', 'r+'));
 		$request  = new Request(new Url('http://127.0.0.1/view/explicit'), 'GET');
+		$request->addHeader('Accept', 'text/html');
 		$response = new Response();
 		$response->setBody($body);
 
@@ -95,11 +100,12 @@ class ViewAbstractTest extends ControllerTestCase
 
 		$render = (float) $response->render;
 		$config = getContainer()->get('config');
+		$base   = (string) parse_url($config['psx_url'], PHP_URL_PATH);
 
 		$this->assertEquals('bar', $response->foo);
 		$this->assertTrue(!empty($response->self));
 		$this->assertEquals($config['psx_url'] . '/' . $config['psx_dispatch'], $response->url);
-		$this->assertEquals(parse_url($config['psx_url'], PHP_URL_PATH), $response->base);
+		$this->assertEquals($base, $response->base);
 		$this->assertTrue($render > 0);
 		$this->assertEquals('tests/PSX/Controller/Foo/Resource', $response->location);
 	}
@@ -107,7 +113,9 @@ class ViewAbstractTest extends ControllerTestCase
 	protected function getPaths()
 	{
 		return array(
-			'/view' => 'PSX\Controller\Foo\Application\TestViewController',
+			'/view' => 'PSX\Controller\Foo\Application\TestViewController::doIndex',
+			'/view/detail' => 'PSX\Controller\Foo\Application\TestViewController::doDetail',
+			'/view/explicit' => 'PSX\Controller\Foo\Application\TestViewController::doExplicit',
 		);
 	}
 }

@@ -127,7 +127,7 @@ class Paypal
 		{
 			$payment = new Data\Payment();
 			$reader  = new Reader\Json();
-			$reader->import($payment, $response);
+			$payment = $reader->import($payment, $response);
 
 			// save approval uri
 			$link = $payment->getLinkByRel('approval_url');
@@ -172,9 +172,8 @@ class Paypal
 		{
 			$payment = new Data\Payment();
 			$reader  = new Reader\Json();
-			$reader->import($payment, $response);
 
-			return $payment;
+			return $reader->import($payment, $response);
 		}
 		else
 		{
@@ -199,9 +198,8 @@ class Paypal
 		{
 			$payment = new Data\Payment();
 			$reader  = new Reader\Json();
-			$reader->import($result, $response);
 
-			return $payment;
+			return $reader->import($payment, $response);
 		}
 		else
 		{
@@ -261,9 +259,8 @@ class Paypal
 		{
 			$payments = new Data\Payments();
 			$reader   = new Reader\Json();
-			$reader->import($payments, $response);
 
-			return $payments;
+			return $reader->import($payments, $response);
 		}
 		else
 		{

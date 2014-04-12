@@ -44,7 +44,7 @@ abstract class ReaderAbstract implements ReaderInterface
 
 		if($importer instanceof Record\ImporterInterface)
 		{
-			$importer->import($record, $this->read($message));
+			return $importer->import($record, $this->read($message));
 		}
 		else
 		{

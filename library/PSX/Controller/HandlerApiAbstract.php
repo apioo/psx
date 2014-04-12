@@ -49,11 +49,7 @@ abstract class HandlerApiAbstract extends ApiAbstract
 {
 	protected $_handler;
 
-	/**
-	 * @httpMethod GET
-	 * @path /
-	 */
-	public function doIndex()
+	public function onGet()
 	{
 		try
 		{
@@ -97,11 +93,7 @@ abstract class HandlerApiAbstract extends ApiAbstract
 		}
 	}
 
-	/**
-	 * @httpMethod POST
-	 * @path /
-	 */
-	public function doCreate()
+	public function onPost()
 	{
 		try
 		{
@@ -144,11 +136,7 @@ abstract class HandlerApiAbstract extends ApiAbstract
 		}
 	}
 
-	/**
-	 * @httpMethod PUT
-	 * @path /
-	 */
-	public function doUpdate()
+	public function onPut()
 	{
 		try
 		{
@@ -192,11 +180,7 @@ abstract class HandlerApiAbstract extends ApiAbstract
 		}
 	}
 
-	/**
-	 * @httpMethod DELETE
-	 * @path /
-	 */
-	public function doDelete()
+	public function onDelete()
 	{
 		try
 		{

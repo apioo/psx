@@ -27,6 +27,7 @@ use InvalidArgumentException;
 use PSX\Dispatch\FilterInterface;
 use PSX\Http\Request;
 use PSX\Http\Response;
+use PSX\Loader\Callback;
 use PSX\Loader\CallbackResolverInterface;
 use PSX\Loader\Location;
 use PSX\Loader\LocationFinderInterface;
@@ -45,6 +46,7 @@ class Loader implements LoaderInterface
 {
 	protected $locationFinder;
 	protected $callbackResolver;
+	protected $recursiveLoading;
 
 	protected $loaded = array();
 	protected $routes = array();
@@ -53,6 +55,12 @@ class Loader implements LoaderInterface
 	{
 		$this->locationFinder   = $locationFinder;
 		$this->callbackResolver = $callbackResolver;
+		$this->recursiveLoading = false;
+	}
+
+	public function setRecursiveLoading($recursiveLoading)
+	{
+		$this->recursiveLoading = $recursiveLoading;
 	}
 
 	/**
@@ -76,7 +84,7 @@ class Loader implements LoaderInterface
 
 		if($location instanceof Location)
 		{
-			if(!in_array($location->getId(), $this->loaded))
+			if($this->recursiveLoading || !in_array($location->getId(), $this->loaded))
 			{
 				$callback   = $this->callbackResolver->resolve($location, $request, $response);
 				$controller = $this->runControllerLifecycle($callback, $request, $response);
@@ -106,110 +114,101 @@ class Loader implements LoaderInterface
 		return isset($this->routes[$key]) ? $this->routes[$key] : null;
 	}
 
-	protected function runControllerLifecycle($callback, Request $request, Response $response)
+	protected function runControllerLifecycle(Callback $callback, Request $request, Response $response)
 	{
-		if(is_array($callback))
+		$controller = $callback->getClass();
+		$method     = $callback->getMethod();
+
+		if($controller instanceof ControllerInterface)
 		{
-			$controller = isset($callback[0]) ? $callback[0] : null;
-			$method     = isset($callback[1]) ? $callback[1] : null;
-
-			if($controller instanceof ControllerInterface)
+			// call pre filter
+			if($controller->getStage() & ControllerInterface::CALL_PRE_FILTER)
 			{
-				// call pre filter
-				if($controller->getStage() & ControllerInterface::CALL_PRE_FILTER)
-				{
-					$filters = $controller->getPreFilter();
+				$filters = $controller->getPreFilter();
 
-					foreach($filters as $filter)
+				foreach($filters as $filter)
+				{
+					if($filter instanceof FilterInterface)
 					{
-						if($filter instanceof FilterInterface)
-						{
-							$filter->handle($request, $response);
-						}
-						else if(is_callable($filter))
-						{
-							call_user_func_array($filter, array($request, $response));
-						}
-						else
-						{
-							throw new Exception('Invalid request filter');
-						}
+						$filter->handle($request, $response);
+					}
+					else if(is_callable($filter))
+					{
+						call_user_func_array($filter, array($request, $response));
+					}
+					else
+					{
+						throw new Exception('Invalid request filter');
 					}
 				}
-
-				// call onload method
-				if($controller->getStage() & ControllerInterface::CALL_ONLOAD)
-				{
-					$controller->onLoad();
-				}
-
-				// call request method
-				if($controller->getStage() & ControllerInterface::CALL_REQUEST_METHOD)
-				{
-					switch($request->getMethod())
-					{
-						case 'GET':
-							$controller->onGet();
-							break;
-
-						case 'POST':
-							$controller->onPost();
-							break;
-
-						case 'PUT':
-							$controller->onPut();
-							break;
-
-						case 'DELETE':
-							$controller->onDelete();
-							break;
-					}
-				}
-
-				// call method if available
-				if($controller->getStage() & ControllerInterface::CALL_METHOD)
-				{
-					if(!empty($method) && is_callable($callback))
-					{
-						call_user_func_array($callback, array($request, $response));
-					}
-				}
-
-				// process response
-				$controller->processResponse(null);
-
-				// call post filter
-				if($controller->getStage() & ControllerInterface::CALL_POST_FILTER)
-				{
-					$filters = $controller->getPostFilter();
-
-					foreach($filters as $filter)
-					{
-						if($filter instanceof FilterInterface)
-						{
-							$filter->handle($request, $response);
-						}
-						else if(is_callable($filter))
-						{
-							call_user_func_array($filter, array($request, $response));
-						}
-						else
-						{
-							throw new Exception('Invalid response filter');
-						}
-					}
-				}
-
-				return $controller;
 			}
-			else
+
+			// call onload method
+			if($controller->getStage() & ControllerInterface::CALL_ONLOAD)
 			{
-				throw new UnexpectedValueException('Invalid controller callback');
+				$controller->onLoad();
 			}
-		}
-		else if(is_callable($callback))
-		{
-			call_user_func_array($callback, array($request, $response));
+
+			// call request method
+			if($controller->getStage() & ControllerInterface::CALL_REQUEST_METHOD)
+			{
+				switch($request->getMethod())
+				{
+					case 'GET':
+						$controller->onGet();
+						break;
+
+					case 'POST':
+						$controller->onPost();
+						break;
+
+					case 'PUT':
+						$controller->onPut();
+						break;
+
+					case 'DELETE':
+						$controller->onDelete();
+						break;
+				}
+			}
+
+			// call method if available
+			if($controller->getStage() & ControllerInterface::CALL_METHOD)
+			{
+				$method = $callback->getMethod();
+
+				if(!empty($method))
+				{
+					call_user_func_array(array($controller, $method), $callback->getParameters());
+				}
+			}
+
+			// process response
+			$controller->processResponse(null);
+
+			// call post filter
+			if($controller->getStage() & ControllerInterface::CALL_POST_FILTER)
+			{
+				$filters = $controller->getPostFilter();
+
+				foreach($filters as $filter)
+				{
+					if($filter instanceof FilterInterface)
+					{
+						$filter->handle($request, $response);
+					}
+					else if(is_callable($filter))
+					{
+						call_user_func_array($filter, array($request, $response));
+					}
+					else
+					{
+						throw new Exception('Invalid response filter');
+					}
+				}
+			}
+
+			return $controller;
 		}
 		else
 		{

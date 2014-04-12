@@ -42,20 +42,12 @@ abstract class ProviderAbstract extends ApiAbstract
 {
 	public static $mime = 'application/json+oembed';
 
-	/**
-	 * @httpMethod GET
-	 * @path /
-	 */
-	public function doGet()
+	public function onGet()
 	{
 		$this->doDiscover();
 	}
 
-	/**
-	 * @httpMethod POST
-	 * @path /
-	 */
-	public function doPost()
+	public function onPost()
 	{
 		throw new Exception('Method not allowed', 405);
 	}

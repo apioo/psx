@@ -26,60 +26,46 @@ namespace PSX\Loader\LocationFinder;
 use PSX\Loader\InvalidPathException;
 use PSX\Loader\Location;
 use PSX\Loader\LocationFinderInterface;
+use PSX\Loader\PathMatcher;
+use PSX\Loader\RoutingCollection;
+use PSX\Loader\RoutingParserInterface;
 use ReflectionClass;
 
 /**
- * Basic implementation wich reads an routing file
+ * Location finder which gets a collection of routes from an routing parser. If
+ * an cache handler is given the collection gets cached with the handler
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class RoutingFile implements LocationFinderInterface
+class RoutingParser implements LocationFinderInterface
 {
-	protected $file;
+	protected $routingParser;
 
-	public function __construct($file)
+	public function __construct(RoutingParserInterface $routingParser)
 	{
-		$this->file = $file;
+		$this->routingParser = $routingParser;
 	}
 
 	public function resolve($method, $pathInfo)
 	{
-		$pathInfo = trim($pathInfo, '/');
-		$lines    = file($this->file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-		$matches  = array();
+		$routingCollection = $this->routingParser->getCollection();
+		$pathMatcher       = new PathMatcher($pathInfo);
 
-		foreach($lines as $line)
+		foreach($routingCollection as $routing)
 		{
-			$line = trim(str_replace("\t", ' ', $line));
+			$parameters = array();
 
-			if(!empty($line) && $line[0] != '#')
+			if(in_array($method, $routing[RoutingCollection::ROUTING_METHODS]) && 
+				$pathMatcher->match($routing[RoutingCollection::ROUTING_PATH], $parameters))
 			{
-				$parts   = array_values(array_filter(explode(' ', $line)));
-				$allowed = isset($parts[0]) ? explode('|', $parts[0]) : array();
-				$path    = isset($parts[1]) ? trim($parts[1], '/') : null;
-				$class   = isset($parts[2]) ? trim($parts[2]) : null;
+				$source = $routing[RoutingCollection::ROUTING_SOURCE];
 
-				if(in_array($method, $allowed) && substr($pathInfo, 0, strlen($path)) == $path)
-				{
-					$matches[strlen($path)] = $class;
-				}
+				return new Location(md5($source), $parameters, $source);
 			}
 		}
 
-		// sort matching paths
-		krsort($matches, SORT_NUMERIC);
-
-		$class = current($matches);
-
-		if(!empty($class))
-		{
-			return new Location(md5($class), substr($pathInfo, key($matches)), $class);
-		}
-		else
-		{
-			throw new InvalidPathException('Path not found', 404);
-		}
+		throw new InvalidPathException('Path not found', 404);
 	}
 }

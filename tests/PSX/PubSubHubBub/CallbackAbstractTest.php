@@ -21,7 +21,7 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Oauth\Provider;
+namespace PSX\PubSubHubBub;
 
 use PSX\Controller\ControllerTestCase;
 use PSX\Http;

@@ -37,10 +37,6 @@ use PSX\Sql;
  */
 class TestApiController extends ApiAbstract
 {
-	/**
-	 * @httpMethod GET
-	 * @path /
-	 */
 	public function doIndex()
 	{
 		$record = new Record('foo', array('bar' => 'foo'));
@@ -48,10 +44,6 @@ class TestApiController extends ApiAbstract
 		$this->setResponse($record);
 	}
 
-	/**
-	 * @httpMethod POST
-	 * @path /
-	 */
 	public function doInsert()
 	{
 		$record = new NewsRecord();
@@ -60,10 +52,6 @@ class TestApiController extends ApiAbstract
 		$this->setResponse($record);
 	}
 
-	/**
-	 * @httpMethod GET
-	 * @path /inspect
-	 */
 	public function doInspect()
 	{
 		// inspect inner module API

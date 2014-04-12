@@ -1,6 +1,0 @@
-
-# example routing file
-
-GET / PSX\Loader\FooController
-GET /foo PSX\Loader\BarController
-GET /foo/foo PSX\Loader\FooController

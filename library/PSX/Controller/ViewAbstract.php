@@ -24,6 +24,8 @@
 namespace PSX\Controller;
 
 use PSX\Base;
+use PSX\Data\Record;
+use PSX\Data\Writer;
 use PSX\Dependency\View;
 use PSX\Dispatch\RequestFilter\GzipEncode;
 use PSX\Exception;
@@ -42,70 +44,30 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 abstract class ViewAbstract extends ControllerAbstract
 {
-	protected $templateLocation;
-
 	public function __construct(ContainerInterface $container, Location $location, Request $request, Response $response, array $uriFragments)
 	{
 		parent::__construct($container, $location, $request, $response, $uriFragments);
 
-		$this->templateLocation = PSX_PATH_LIBRARY;
-	}
+		// set controller class to html writer for automatic template file 
+		// detection
+		$writer = $this->getWriterFactory()->getWriterByContentType('text/html');
 
-	public function getResponseFilter()
-	{
-		$filter = array();
-
-		if($this->config['psx_gzip'] === true)
+		if($writer instanceof Writer\Html)
 		{
-			$filter[] = new GzipEncode();
+			$writer->setBaseDir(PSX_PATH_LIBRARY);
+			$writer->setControllerClass(get_class($this));
 		}
-
-		return $filter;
 	}
 
+	/**
+	 * In case we have not written any response we write an empty response so
+	 * that the html write writes the template
+	 */
 	public function processResponse()
 	{
-		$config   = $this->getConfig();
-		$template = $this->getTemplate();
-
-		// set default template if no template is set
-		$class = str_replace('\\', '/', $this->location->getSource());
-		$path  = $this->templateLocation . '/' . strstr($class, 'Application', true) . 'Resource';
-
-		if(!$template->hasFile())
+		if($this->response->getBody()->tell() == 0)
 		{
-			$file = substr(strstr($class, 'Application'), 12);
-			$file = $this->underscore($file) . '.tpl';
-
-			$template->setDir($path);
-			$template->set($file);
+			$this->setResponse(new Record());
 		}
-		else
-		{
-			$file = $template->get();
-
-			$template->setDir(!is_file($file) ? $path : null);
-		}
-
-		// assign default values
-		$self   = isset($_SERVER['QUERY_STRING']) && !empty($_SERVER['QUERY_STRING']) ? $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING'] : $_SERVER['PHP_SELF'];
-		$url    = $config['psx_url'] . '/' . $config['psx_dispatch'];
-		$base   = parse_url($config['psx_url'], PHP_URL_PATH);
-		$render = round(microtime(true) - $GLOBALS['psx_benchmark'], 6);
-
-		$template->assign('self', htmlspecialchars($self));
-		$template->assign('url', $url);
-		$template->assign('base', $base);
-		$template->assign('render', $render);
-		$template->assign('location', $path);
-
-		$content = $template->transform();
-
-		$this->response->getBody()->write($content);
-	}
-
-	protected function underscore($word)
-	{
-		return strtolower(preg_replace('/(?<=\\w)([A-Z])/', '_\\1', $word));
 	}
 }

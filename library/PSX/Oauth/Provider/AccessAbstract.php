@@ -42,20 +42,12 @@ use PSX\Url;
  */
 abstract class AccessAbstract extends ApiAbstract
 {
-	/**
-	 * @httpMethod GET
-	 * @path /
-	 */
-	public function doGet()
+	public function onGet()
 	{
 		throw new Exception('Invalid request method', 405);
 	}
 
-	/**
-	 * @httpMethod POST
-	 * @path /
-	 */
-	public function doPost()
+	public function onPost()
 	{
 		$this->doHandle();
 	}

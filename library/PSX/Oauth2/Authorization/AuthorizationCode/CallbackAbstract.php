@@ -37,11 +37,7 @@ use PSX\Oauth2\AuthorizationAbstract;
  */
 abstract class CallbackAbstract extends ApiAbstract
 {
-	/**
-	 * @httpMethod GET
-	 * @path /
-	 */
-	public function doCallback()
+	public function onLoad()
 	{
 		try
 		{

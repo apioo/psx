@@ -24,6 +24,10 @@
 namespace PSX\Controller\Foo\Application;
 
 use PSX\Controller\ViewAbstract;
+use PSX\Loader\Location;
+use PSX\Http\Request;
+use PSX\Http\Response;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * TestViewController
@@ -34,34 +38,24 @@ use PSX\Controller\ViewAbstract;
  */
 class TestViewController extends ViewAbstract
 {
-	public function onLoad()
+	public function __construct(ContainerInterface $container, Location $location, Request $request, Response $response, array $uriFragments)
 	{
-		$this->templateLocation = 'tests';
+		parent::__construct($container, $location, $request, $response, $uriFragments);
+
+		$this->getWriterFactory()->getWriterByContentType('text/html')->setBaseDir('tests');
 	}
 
-	/**
-	 * @httpMethod GET
-	 * @path /
-	 */
 	public function doIndex()
 	{
 		$this->getTemplate()->assign('foo', 'bar');
 	}
 
-	/**
-	 * @httpMethod GET
-	 * @path /detail
-	 */
 	public function doDetail()
 	{
 		$this->getTemplate()->assign('foo', 'bar');
 		$this->getTemplate()->set('detail.tpl');
 	}
 
-	/**
-	 * @httpMethod GET
-	 * @path /explicit
-	 */
 	public function doExplicit()
 	{
 		$this->getTemplate()->assign('foo', 'bar');

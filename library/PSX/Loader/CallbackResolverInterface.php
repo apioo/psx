@@ -41,7 +41,7 @@ interface CallbackResolverInterface
 	 * @param PSX\Loader\Location $location
 	 * @param PSX\Http\Request $request
 	 * @param PSX\Http\Response $response
-	 * @return callback
+	 * @return PSX\Loader\Callback
 	 */
 	public function resolve(Location $location, Request $request, Response $response);
 }

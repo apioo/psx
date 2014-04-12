@@ -24,16 +24,21 @@
 namespace PSX;
 
 use BadMethodCallException;
+use DOMDocument;
 use InvalidArgumentException;
 use PSX\Data\NotFoundException;
 use PSX\Data\ReaderFactory;
 use PSX\Data\RecordInterface;
 use PSX\Data\Record\ImporterInterface;
+use PSX\Data\Writer;
+use PSX\Data\WriterInterface;
+use PSX\Data\Record;
 use PSX\Dependency;
 use PSX\Dispatch\RedirectException;
 use PSX\Http\Request;
 use PSX\Http\Response;
 use PSX\Loader\Location;
+use SimpleXMLElement;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use RuntimeException;
 
@@ -56,6 +61,7 @@ abstract class ControllerAbstract implements ControllerInterface
 
 	protected $_parameter;
 	protected $_requestReader;
+	protected $_responseWriter;
 
 	public function __construct(ContainerInterface $container, Location $location, Request $request, Response $response, array $uriFragments)
 	{
@@ -143,11 +149,6 @@ abstract class ControllerAbstract implements ControllerInterface
 	protected function getBase()
 	{
 		return $this->base;
-	}
-
-	protected function getBasePath()
-	{
-		return $this->location->getPath();
 	}
 
 	protected function getUriFragments($key = null)
@@ -318,4 +319,141 @@ abstract class ControllerAbstract implements ControllerInterface
 
 		return $this->_requestReader;
 	}
+
+	/**
+	 * Writes the $record with the writer $writerType or depending on the get 
+	 * parameter format or of the mime type of the Accept header
+	 *
+	 * @param PSX\Data\RecordInterface $record
+	 * @param string $writerType
+	 * @param integer $code
+	 * @return void
+	 */
+	protected function setResponse(RecordInterface $record, $writerType = null, $code = 200)
+	{
+		// set response code
+		if($code !== null)
+		{
+			$this->response->setStatusCode($code);
+		}
+
+		// find best writer type if not set
+		$writer   = $this->getResponseWriter($writerType);
+		$response = $writer->write($record);
+
+		// send content type header if not sent
+		if(!$this->response->hasHeader('Content-Type'))
+		{
+			$contentType = $writer->getContentType();
+
+			if($contentType !== null)
+			{
+				$this->response->setHeader('Content-Type', $contentType);
+			}
+		}
+
+		// for iframe file uploads we need an text/html content type header even 
+		// if we want serve json content. If all browsers support the FormData
+		// api we can send file uploads per ajax but for now we use this hack.
+		// Note do not rely on this param it will be removed as soon as possible
+		if(isset($_GET['htmlMime']))
+		{
+			$this->response->setHeader('Content-Type', 'text/html');
+		}
+
+		$this->response->getBody()->write($response);
+	}
+
+	/**
+	 * Convenient method to set an response body
+	 *
+	 * @param mixed $data
+	 */
+	public function setBody($data)
+	{
+		if(is_array($data))
+		{
+			$response = new Record('record', $data);
+		}
+		else if($data instanceof RecordInterface)
+		{
+			$response = $data;
+		}
+		else if($data instanceof DOMDocument)
+		{
+			$this->response->setHeader('Content-Type', 'application/xml');
+			$this->response->getBody()->write($data->saveXML());
+			return;
+		}
+		else if($data instanceof SimpleXMLElement)
+		{
+			$this->response->setHeader('Content-Type', 'application/xml');
+			$this->response->getBody()->write($data->asXML());
+			return;
+		}
+		else
+		{
+			throw new InvalidArgumentException('Invalid data type');
+		}
+
+		$this->setResponse($response);
+	}
+
+	/**
+	 * Returns the fitting response writer
+	 *
+	 * @return PSX\Data\WriterInterface
+	 */
+	protected function getResponseWriter($writerType = null)
+	{
+		if($this->_responseWriter === null)
+		{
+			if($writerType === null)
+			{
+				$writer = $this->getPreferredWriter();
+			}
+			else
+			{
+				$writer = $this->container->get('writerFactory')->getWriteByInstance($writerType);
+			}
+
+			if($writer === null)
+			{
+				$writer = $this->container->get('writerFactory')->getDefaultWriter();
+			}
+
+			if(!$writer instanceof WriterInterface)
+			{
+				throw new NotFoundException('Could not find fitting data writer');
+			}
+
+			$this->_responseWriter = $writer;
+		}
+
+		return $this->_responseWriter;
+	}
+
+	/**
+	 * Returns the writer wich gets used if no writer was explicit selected
+	 *
+	 * @return PSX\Data\WriterInterface
+	 */
+	protected function getPreferredWriter()
+	{
+		$formats = array(
+			'atom'  => Writer\Atom::$mime,
+			'form'  => Writer\Form::$mime,
+			'json'  => Writer\Json::$mime,
+			'rss'   => Writer\Rss::$mime,
+			'xml'   => Writer\Xml::$mime,
+			'jsonp' => Writer\Jsonp::$mime,
+			'html'  => Writer\Html::$mime,
+		);
+
+		$format      = $this->request->getUrl()->getParam('format');
+		$contentType = isset($formats[$format]) ? $formats[$format] : $this->request->getHeader('Accept');
+
+		return $this->container->get('writerFactory')->getWriterByContentType($contentType);
+	}
+
 }

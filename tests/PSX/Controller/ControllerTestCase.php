@@ -30,6 +30,7 @@ use PSX\Http\Stream\TempStream;
 use PSX\Loader;
 use PSX\Loader\Location;
 use PSX\Loader\LocationFinder\CallbackMethod;
+use PSX\Loader\RoutingParser;
 use PSX\Loader\InvalidPathException;
 use PSX\Url;
 use ReflectionClass;
@@ -79,32 +80,12 @@ abstract class ControllerTestCase extends \PHPUnit_Extensions_Database_TestCase
 	{
 		parent::setUp();
 
-		$availablePaths = $this->getPaths();
-
-		// we replace the loader in the DI container
-		$locationFinder = new CallbackMethod(function($method, $path) use ($availablePaths){
-
-			$parts    = explode('/', trim($path, '/'));
-			$restPath = implode('/', array_slice($parts, 1));
-
-			foreach($availablePaths as $availablePath => $class)
-			{
-				$availablePath = trim($availablePath, '/');
-
-				if($availablePath == $parts[0])
-				{
-					return new Location(uniqid(), $restPath, $class);
-				}
-			}
-
-			throw new InvalidPathException('Unknown location');
-
-		});
-
-		$loader = new Loader($locationFinder, getContainer()->get('loader_callback_resolver'));
-
-		getContainer()->set('loader', $loader);
+		// we replace the routing parser
+		getContainer()->set('routing_parser', new RoutingParser\ArrayCollection($this->getPaths()));
 		getContainer()->set('testCase', $this);
+
+		// enables us to load the same controller method multiple times
+		getContainer()->get('loader')->setRecursiveLoading(true);
 	}
 
 	protected function tearDown()

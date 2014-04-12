@@ -35,19 +35,11 @@ use PSX\Data\ReaderInterface;
  */
 class TestController extends ControllerAbstract
 {
-	/**
-	 * @httpMethod GET
-	 * @path /
-	 */
 	public function doIndex()
 	{
 		$this->response->getBody()->write('foobar');
 	}
 
-	/**
-	 * @httpMethod GET
-	 * @path /inspect
-	 */
 	public function doInspect()
 	{
 		// inspect inner module API
@@ -60,10 +52,7 @@ class TestController extends ControllerAbstract
 		$location = $this->getLocation();
 
 		$testCase->assertInstanceOf('PSX\Loader\Location', $location);
-		$testCase->assertEquals('PSX\Controller\Foo\Application\TestController', $location->getSource());
-
-		// get base path
-		$testCase->assertEquals('inspect', $this->getBasePath());
+		$testCase->assertEquals('PSX\Controller\Foo\Application\TestController::doInspect', $location->getSource());
 
 		// get uri fragments
 		$testCase->assertTrue(is_array($this->getUriFragments()));
@@ -99,19 +88,11 @@ class TestController extends ControllerAbstract
 		$testCase->assertInstanceOf('PSX\Config', $this->config);
 	}
 
-	/**
-	 * @httpMethod GET
-	 * @path /forward
-	 */
 	public function doForward()
 	{
 		$this->forward('/api');
 	}
 
-	/**
-	 * @httpMethod GET
-	 * @path /redirect
-	 */
 	public function doRedirect()
 	{
 		$this->redirect('http://localhost.com/foobar', 302);
