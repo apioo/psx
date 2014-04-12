@@ -82,6 +82,8 @@ abstract class ControllerTestCase extends \PHPUnit_Extensions_Database_TestCase
 
 		// we replace the routing parser
 		getContainer()->set('routing_parser', new RoutingParser\ArrayCollection($this->getPaths()));
+		getContainer()->set('loader_location_finder', null);
+		getContainer()->set('loader', null);
 		getContainer()->set('testCase', $this);
 
 		// enables us to load the same controller method multiple times
