@@ -163,6 +163,11 @@ class Url extends Uri
 		return isset($this->query[$key]) ? $this->query[$key] : null;
 	}
 
+	public function setParam($key, $value)
+	{
+		$this->query[$key] = $value;
+	}
+
 	public function addParam($key, $value, $replace = false)
 	{
 		if($replace === false)
