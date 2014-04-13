@@ -121,7 +121,7 @@ class AuthorizationAbstractTest extends ControllerTestCase
 		catch(RedirectException $e)
 		{
 			$this->assertEquals(302, $e->getStatusCode());
-			$this->assertEquals('http://foo.com#access_token=bar&token_type=bearer&state=random', (string) $e->getUrl());
+			$this->assertEquals('http://foo.com#access_token=2YotnFZFEjr1zCsicMWpAA&token_type=example&state=random', (string) $e->getUrl());
 		}
 	}
 
