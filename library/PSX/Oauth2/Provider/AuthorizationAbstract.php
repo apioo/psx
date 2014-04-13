@@ -21,11 +21,19 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Oauth2;
+namespace PSX\Oauth2\Provider;
 
 use PSX\Controller\ApiAbstract;
 use PSX\Data\RecordAbstract;
 use PSX\Data\RecordInfo;
+use PSX\Dispatch\RedirectException;
+use PSX\Oauth2\Authorization\Exception\UnauthorizedClientException;
+use PSX\Oauth2\Authorization\Exception\InvalidRequestException;
+use PSX\Oauth2\Authorization\Exception\AccessDeniedException;
+use PSX\Oauth2\Authorization\Exception\UnsupportedResponseTypeException;
+use PSX\Oauth2\Authorization\Exception\InvalidScopeException;
+use PSX\Oauth2\Authorization\Exception\TemporarilyEnavailableException;
+use PSX\Url;
 
 /**
  * AuthorizationAbstract
@@ -34,7 +42,7 @@ use PSX\Data\RecordInfo;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class AuthorizationAbstract extends ApiAbstract
+abstract class AuthorizationAbstract extends ApiAbstract
 {
 	/**
 	 * @httpMethod GET

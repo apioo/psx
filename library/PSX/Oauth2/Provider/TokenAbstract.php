@@ -21,7 +21,7 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Oauth2;
+namespace PSX\Oauth2\Provider;
 
 use PSX\Controller\ApiAbstract;
 use PSX\Data\RecordAbstract;
@@ -34,7 +34,7 @@ use PSX\Data\RecordInfo;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class TokenAbstract extends ApiAbstract
+abstract class TokenAbstract extends ApiAbstract
 {
 	/**
 	 * @httpMethod GET
