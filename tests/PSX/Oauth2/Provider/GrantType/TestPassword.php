@@ -23,35 +23,26 @@
 
 namespace PSX\Oauth2\Provider\GrantType;
 
+use PSX\Oauth2\AccessToken;
 use PSX\Oauth2\Provider\Credentials;
-use PSX\Oauth2\Provider\GrantTypeInterface;
-use PSX\Oauth2\Authorization\Exception\InvalidRequestException;
 
 /**
- * ClientCredentialsAbstract
+ * TestPassword
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-abstract class ClientCredentialsAbstract implements GrantTypeInterface
+class TestPassword extends PasswordAbstract
 {
-	public function getType()
+	protected function generate(Credentials $credentials, $username, $password, $scope)
 	{
-		return self::TYPE_CLIENT_CREDENTIALS;
+		$accessToken = new AccessToken();
+		$accessToken->setAccessToken('2YotnFZFEjr1zCsicMWpAA');
+		$accessToken->setTokenType('example');
+		$accessToken->setExpires(3600);
+		$accessToken->setRefreshToken('tGzv3JOkF0XG5Qx2TlKWIA');
+
+		return $accessToken;
 	}
-
-	public function generateAccessToken(Credentials $credentials = null, array $parameters)
-	{
-		if($credentials === null)
-		{
-			throw new InvalidRequestException('Credentials not available');
-		}
-
-		$scope = isset($parameters['scope']) ? $parameters['scope'] : null;
-
-		return $this->generate($credentials, $scope);
-	}
-
-	abstract protected function generate(Credentials $credentials, $scope);
 }

@@ -23,6 +23,8 @@
 
 namespace PSX\Oauth2\Provider;
 
+use RuntimeException;
+
 /**
  * GrantTypeFactory
  *
@@ -49,6 +51,6 @@ class GrantTypeFactory
 			}
 		}
 
-		throw new InvalidGrantException('Invalid grant type');
+		throw new RuntimeException('Invalid grant type');
 	}
 }

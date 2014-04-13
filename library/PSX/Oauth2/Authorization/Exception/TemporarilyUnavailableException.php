@@ -23,8 +23,6 @@
 
 namespace PSX\Oauth2\Authorization\Exception;
 
-use PSX\Exception;
-
 /**
  * TemporarilyUnavailableException
  *
@@ -32,6 +30,10 @@ use PSX\Exception;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class TemporarilyUnavailableException extends Exception
+class TemporarilyUnavailableException extends ErrorExceptionAbstract
 {
+	public function getType()
+	{
+		return 'temporarily_unavailable';
+	}
 }

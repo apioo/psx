@@ -21,37 +21,43 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Oauth2\Provider\GrantType;
-
-use PSX\Oauth2\Provider\Credentials;
-use PSX\Oauth2\Provider\GrantTypeInterface;
-use PSX\Oauth2\Authorization\Exception\InvalidRequestException;
+namespace PSX\Oauth2\Provider;
 
 /**
- * ClientCredentialsAbstract
+ * Credentials
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-abstract class ClientCredentialsAbstract implements GrantTypeInterface
+class Credentials
 {
-	public function getType()
+	protected $clientId;
+	protected $clientSecret;
+
+	public function __construct($clientId, $clientSecret)
 	{
-		return self::TYPE_CLIENT_CREDENTIALS;
+		$this->clientId     = $clientId;
+		$this->clientSecret = $clientSecret;
 	}
 
-	public function generateAccessToken(Credentials $credentials = null, array $parameters)
+	public function setClientId($clientId)
 	{
-		if($credentials === null)
-		{
-			throw new InvalidRequestException('Credentials not available');
-		}
-
-		$scope = isset($parameters['scope']) ? $parameters['scope'] : null;
-
-		return $this->generate($credentials, $scope);
+		$this->clientId = $clientId;
+	}
+	
+	public function getClientId()
+	{
+		return $this->clientId;
 	}
 
-	abstract protected function generate(Credentials $credentials, $scope);
+	public function setClientSecret($clientSecret)
+	{
+		$this->clientSecret = $clientSecret;
+	}
+	
+	public function getClientSecret()
+	{
+		return $this->clientSecret;
+	}
 }

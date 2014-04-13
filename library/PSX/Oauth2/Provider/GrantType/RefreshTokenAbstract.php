@@ -25,6 +25,7 @@ namespace PSX\Oauth2\Provider\GrantType;
 
 use PSX\Oauth2\Provider\Credentials;
 use PSX\Oauth2\Provider\GrantTypeInterface;
+use PSX\Oauth2\Authorization\Exception\InvalidRequestException;
 
 /**
  * RefreshTokenAbstract
@@ -42,6 +43,11 @@ abstract class RefreshTokenAbstract implements GrantTypeInterface
 
 	public function generateAccessToken(Credentials $credentials = null, array $parameters)
 	{
+		if($credentials === null)
+		{
+			throw new InvalidRequestException('Credentials not available');
+		}
+
 		$refreshToken = isset($parameters['refresh_token']) ? $parameters['refresh_token'] : null;
 		$scope        = isset($parameters['scope']) ? $parameters['scope'] : null;
 

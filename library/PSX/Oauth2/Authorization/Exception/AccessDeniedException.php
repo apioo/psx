@@ -23,8 +23,6 @@
 
 namespace PSX\Oauth2\Authorization\Exception;
 
-use PSX\Exception;
-
 /**
  * AccessDeniedException
  *
@@ -32,6 +30,10 @@ use PSX\Exception;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class AccessDeniedException extends Exception
+class AccessDeniedException extends ErrorExceptionAbstract
 {
+	public function getType()
+	{
+		return 'access_denied';
+	}
 }

@@ -21,37 +21,72 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Oauth2\Provider\GrantType;
+namespace PSX\Oauth2\Provider;
 
-use PSX\Oauth2\Provider\Credentials;
-use PSX\Oauth2\Provider\GrantTypeInterface;
-use PSX\Oauth2\Authorization\Exception\InvalidRequestException;
+use PSX\Data\RecordAbstract;
+use PSX\Data\RecordInfo;
 
 /**
- * ClientCredentialsAbstract
+ * Error
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-abstract class ClientCredentialsAbstract implements GrantTypeInterface
+class Error extends RecordAbstract
 {
-	public function getType()
+	protected $error;
+	protected $errorDescription;
+	protected $errorUri;
+	protected $state;
+
+	public function getRecordInfo()
 	{
-		return self::TYPE_CLIENT_CREDENTIALS;
+		return new RecordInfo('error', array(
+			'error' => $this->error,
+			'error_description' => $this->errorDescription,
+			'error_uri' => $this->errorUri,
+			'state' => $this->state,
+		));
 	}
 
-	public function generateAccessToken(Credentials $credentials = null, array $parameters)
+	public function setError($error)
 	{
-		if($credentials === null)
-		{
-			throw new InvalidRequestException('Credentials not available');
-		}
-
-		$scope = isset($parameters['scope']) ? $parameters['scope'] : null;
-
-		return $this->generate($credentials, $scope);
+		$this->error = $error;
+	}
+	
+	public function getError()
+	{
+		return $this->error;
 	}
 
-	abstract protected function generate(Credentials $credentials, $scope);
+	public function setErrorDescription($errorDescription)
+	{
+		$this->errorDescription = $errorDescription;
+	}
+	
+	public function getErrorDescription()
+	{
+		return $this->errorDescription;
+	}
+
+	public function setErrorUri($errorUri)
+	{
+		$this->errorUri = $errorUri;
+	}
+	
+	public function getErrorUri()
+	{
+		return $this->errorUri;
+	}
+
+	public function setState($state)
+	{
+		$this->state = $state;
+	}
+	
+	public function getState()
+	{
+		return $this->state;
+	}
 }

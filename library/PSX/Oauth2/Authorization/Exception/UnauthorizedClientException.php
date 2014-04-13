@@ -23,8 +23,6 @@
 
 namespace PSX\Oauth2\Authorization\Exception;
 
-use PSX\Exception;
-
 /**
  * UnauthorizedClientException
  *
@@ -32,6 +30,10 @@ use PSX\Exception;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class UnauthorizedClientException extends Exception
+class UnauthorizedClientException extends ErrorExceptionAbstract
 {
+	public function getType()
+	{
+		return 'unauthorized_client';
+	}
 }

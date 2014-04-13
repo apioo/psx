@@ -21,37 +21,33 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Oauth2\Provider\GrantType;
-
-use PSX\Oauth2\Provider\Credentials;
-use PSX\Oauth2\Provider\GrantTypeInterface;
-use PSX\Oauth2\Authorization\Exception\InvalidRequestException;
+namespace PSX\Oauth2\Provider;
 
 /**
- * ClientCredentialsAbstract
+ * TestAuthorizationAbstract
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-abstract class ClientCredentialsAbstract implements GrantTypeInterface
+class TestAuthorizationAbstract extends AuthorizationAbstract
 {
-	public function getType()
+	protected function hasGrant(AccessRequest $request)
 	{
-		return self::TYPE_CLIENT_CREDENTIALS;
+		// normally we must check whether the user is authenticated and if not
+		// we must redirect them to an login form which redirects the user back
+		// if the login was successful. In this case we use the get parameter
+		// for testing purpose
+
+		return $this->request->getUrl()->getParam('has_grant');
 	}
 
-	public function generateAccessToken(Credentials $credentials = null, array $parameters)
+	protected function generateCode(AccessRequest $request)
 	{
-		if($credentials === null)
-		{
-			throw new InvalidRequestException('Credentials not available');
-		}
+		// this code must be stored in an database so we can later check whether
+		// the code was generated. In this case we use the get parameter for 
+		// testing purpose
 
-		$scope = isset($parameters['scope']) ? $parameters['scope'] : null;
-
-		return $this->generate($credentials, $scope);
+		return $this->request->getUrl()->getParam('code');
 	}
-
-	abstract protected function generate(Credentials $credentials, $scope);
 }

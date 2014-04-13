@@ -26,6 +26,8 @@ namespace PSX\Oauth2\Provider;
 use PSX\Controller\ApiAbstract;
 use PSX\Data\RecordAbstract;
 use PSX\Data\RecordInfo;
+use PSX\Data\ReaderInterface;
+use PSX\Oauth2\Authorization\Exception\ErrorException;
 
 /**
  * TokenAbstract
@@ -36,28 +38,21 @@ use PSX\Data\RecordInfo;
  */
 abstract class TokenAbstract extends ApiAbstract
 {
-	/**
-	 * @httpMethod GET
-	 * @path /
-	 */
-	public function doGet()
+	public function onGet()
 	{
 		$this->doHandle();
 	}
 
-	/**
-	 * @httpMethod POST
-	 * @path /
-	 */
-	public function doPost()
+	public function onPost()
 	{
 		$this->doHandle();
 	}
 
 	protected function doHandle()
 	{
-		$grantType   = $this->request->getUrl()->getParam('grant_type');
-		$scope       = $this->request->getUrl()->getParam('scope');
+		$parameters  = $this->getBody(ReaderInterface::FORM);
+		$grantType   = isset($parameters['grant_type']) ? $parameters['grant_type'] : null;
+		$scope       = isset($parameters['scope']) ? $parameters['scope'] : null;
 		$credentials = null;
 
 		$auth  = $this->request->getHeader('Authorization');
@@ -81,11 +76,28 @@ abstract class TokenAbstract extends ApiAbstract
 			$grantTypeFactory = $this->getOauth2GrantTypeFactory();
 			$accessToken      = $grantTypeFactory->get($grantType)->generateAccessToken($credentials, $parameters);
 
+			$this->response->setStatusCode(200);
 			$this->setResponse($accessToken);
+		}
+		catch(ErrorException $e)
+		{
+			$error = new Error();
+			$error->setError($e->getType());
+			$error->setErrorDescription($e->getMessage());
+			$error->setState(null);
+
+			$this->response->setStatusCode(400);
+			$this->setResponse($error);
 		}
 		catch(\Exception $e)
 		{
+			$error = new Error();
+			$error->setError('server_error');
+			$error->setErrorDescription($e->getMessage());
+			$error->setState(null);
+
 			$this->response->setStatusCode(400);
+			$this->setResponse($error);
 		}
 	}
 }

@@ -23,8 +23,6 @@
 
 namespace PSX\Oauth2\Authorization\Exception;
 
-use PSX\Exception;
-
 /**
  * InvalidScopeException
  *
@@ -32,6 +30,10 @@ use PSX\Exception;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class InvalidScopeException extends Exception
+class InvalidScopeException extends ErrorExceptionAbstract
 {
+	public function getType()
+	{
+		return 'invalid_scope';
+	}
 }

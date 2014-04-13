@@ -25,6 +25,7 @@ namespace PSX\Oauth2\Provider\GrantType;
 
 use PSX\Oauth2\Provider\Credentials;
 use PSX\Oauth2\Provider\GrantTypeInterface;
+use PSX\Oauth2\Authorization\Exception\InvalidRequestException;
 
 /**
  * PasswordAbstract
@@ -42,6 +43,11 @@ abstract class PasswordAbstract implements GrantTypeInterface
 
 	public function generateAccessToken(Credentials $credentials = null, array $parameters)
 	{
+		if($credentials === null)
+		{
+			throw new InvalidRequestException('Credentials not available');
+		}
+
 		$username = isset($parameters['username']) ? $parameters['username'] : null;
 		$password = isset($parameters['password']) ? $parameters['password'] : null;
 		$scope    = isset($parameters['scope']) ? $parameters['scope'] : null;

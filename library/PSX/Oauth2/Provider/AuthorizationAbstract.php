@@ -27,12 +27,9 @@ use PSX\Controller\ApiAbstract;
 use PSX\Data\RecordAbstract;
 use PSX\Data\RecordInfo;
 use PSX\Dispatch\RedirectException;
-use PSX\Oauth2\Authorization\Exception\UnauthorizedClientException;
+use PSX\Oauth2\Authorization\Exception\ErrorExceptionAbstract;
 use PSX\Oauth2\Authorization\Exception\InvalidRequestException;
-use PSX\Oauth2\Authorization\Exception\AccessDeniedException;
-use PSX\Oauth2\Authorization\Exception\UnsupportedResponseTypeException;
-use PSX\Oauth2\Authorization\Exception\InvalidScopeException;
-use PSX\Oauth2\Authorization\Exception\TemporarilyEnavailableException;
+use PSX\Oauth2\Authorization\Exception\UnauthorizedClientException;
 use PSX\Url;
 
 /**
@@ -44,20 +41,12 @@ use PSX\Url;
  */
 abstract class AuthorizationAbstract extends ApiAbstract
 {
-	/**
-	 * @httpMethod GET
-	 * @path /
-	 */
-	public function doGet()
+	public function onGet()
 	{
 		$this->doHandle();
 	}
 
-	/**
-	 * @httpMethod POST
-	 * @path /
-	 */
-	public function doPost()
+	public function onPost()
 	{
 		$this->doHandle();
 	}
@@ -72,12 +61,21 @@ abstract class AuthorizationAbstract extends ApiAbstract
 
 		try
 		{
+			$request = new AccessRequest($clientId, $redirectUri, $scope, $state);
+
 			if(empty($responseType) || empty($clientId) || empty($state))
 			{
 				throw new InvalidRequestException('Missing parameters');
 			}
 
-			$request = new AccessRequest($clientId, $redirectUri, $scope, $state);
+			if(!empty($redirectUri))
+			{
+				$redirectUri = new Url($redirectUri);
+			}
+			else
+			{
+				$redirectUri = null;
+			}
 
 			if(!$this->hasGrant($request))
 			{
@@ -99,58 +97,25 @@ abstract class AuthorizationAbstract extends ApiAbstract
 					break;
 			}
 		}
-		catch(InvalidRequestException $e)
+		catch(ErrorExceptionAbstract $e)
 		{
-			$redirectUri->setParam('error', 'invalid_request');
-			$redirectUri->setParam('error_description', $e->getMessage());
+			$redirectUri = $this->getRedirectUri($request);
 
-			$this->redirect($redirectUri->getUrl(), 302);
-		}
-		catch(UnauthorizedClientException $e)
-		{
-			$redirectUri->setParam('error', 'unauthorized_client');
-			$redirectUri->setParam('error_description', $e->getMessage());
+			if($redirectUri instanceof Url)
+			{
+				$redirectUri->setParam('error', $e->getType());
+				$redirectUri->setParam('error_description', $e->getMessage());
 
-			$this->redirect($redirectUri->getUrl(), 302);
-		}
-		catch(AccessDeniedException $e)
-		{
-			$redirectUri->setParam('error', 'access_denied');
-			$redirectUri->setParam('error_description', $e->getMessage());
-
-			$this->redirect($redirectUri->getUrl(), 302);
-		}
-		catch(UnsupportedResponseTypeException $e)
-		{
-			$redirectUri->setParam('error', 'unsupported_response_type');
-			$redirectUri->setParam('error_description', $e->getMessage());
-
-			$this->redirect($redirectUri->getUrl(), 302);
-		}
-		catch(InvalidScopeException $e)
-		{
-			$redirectUri->setParam('error', 'invalid_scope');
-			$redirectUri->setParam('error_description', $e->getMessage());
-
-			$this->redirect($redirectUri->getUrl(), 302);
-		}
-		catch(TemporarilyEnavailableException $e)
-		{
-			$redirectUri->setParam('error', 'temporarily_unavailable');
-			$redirectUri->setParam('error_description', $e->getMessage());
-
-			$this->redirect($redirectUri->getUrl(), 302);
+				$this->redirect($redirectUri->getUrl(), 302);
+			}
+			else
+			{
+				throw $e;
+			}
 		}
 		catch(RedirectException $e)
 		{
 			throw $e;
-		}
-		catch(\Exception $e)
-		{
-			$redirectUri->setParam('error', 'server_error');
-			$redirectUri->setParam('error_description', $e->getMessage());
-
-			$this->redirect($redirectUri->getUrl(), 302);
 		}
 	}
 
