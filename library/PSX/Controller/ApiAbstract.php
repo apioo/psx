@@ -46,17 +46,6 @@ abstract class ApiAbstract extends ControllerAbstract
 	protected $_requestParams;
 
 	/**
-	 * Checks whether the preferred writer is an instance of the writer class
-	 *
-	 * @param string $writerClass
-	 * @return boolean
-	 */
-	protected function isWriter($writerClass)
-	{
-		return $this->getPreferredWriter() instanceof $writerClass;
-	}
-
-	/**
 	 * Returns an condition object depending on the filter params
 	 *
 	 * @param string $dateColumn

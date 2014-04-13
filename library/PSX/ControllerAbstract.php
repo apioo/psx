@@ -38,6 +38,7 @@ use PSX\Dispatch\RedirectException;
 use PSX\Http\Request;
 use PSX\Http\Response;
 use PSX\Loader\Location;
+use PSX\Url;
 use SimpleXMLElement;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use RuntimeException;
@@ -197,7 +198,11 @@ abstract class ControllerAbstract implements ControllerInterface
 	 */
 	protected function redirect($url, $code = 307)
 	{
-		if(!filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED))
+		if($url instanceof Url)
+		{
+			$url = $url->getUrl();
+		}
+		else if(!filter_var($url, FILTER_VALIDATE_URL))
 		{
 			$url = $this->config['psx_url'] . '/' . $this->config['psx_dispatch'] . ltrim($url, '/');
 		}
@@ -434,6 +439,17 @@ abstract class ControllerAbstract implements ControllerInterface
 	}
 
 	/**
+	 * Checks whether the preferred writer is an instance of the writer class
+	 *
+	 * @param string $writerClass
+	 * @return boolean
+	 */
+	protected function isWriter($writerClass)
+	{
+		return $this->getPreferredWriter() instanceof $writerClass;
+	}
+
+	/**
 	 * Returns the writer wich gets used if no writer was explicit selected
 	 *
 	 * @return PSX\Data\WriterInterface
@@ -455,5 +471,4 @@ abstract class ControllerAbstract implements ControllerInterface
 
 		return $this->container->get('writerFactory')->getWriterByContentType($contentType);
 	}
-
 }
