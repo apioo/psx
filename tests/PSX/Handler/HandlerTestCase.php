@@ -582,6 +582,7 @@ trait HandlerTestCase
 		$obj = $handler->getRecord();
 
 		$this->assertInstanceOf('PSX\Data\RecordInterface', $obj);
+		$this->assertEquals('record', $obj->getRecordInfo()->getName());
 		$this->assertEquals(array('id', 'userId', 'title', 'date'), array_keys($obj->getRecordInfo()->getFields()));
 	}
 

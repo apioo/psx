@@ -56,10 +56,9 @@ abstract class HandlerQueryAbstract implements HandlerQueryInterface
 
 	public function getRecord()
 	{
-		$name   = lcfirst(substr(strrchr(__CLASS__, '\\'), 1));
 		$fields = array_combine($this->getSupportedFields(), array_fill(0, count($this->getSupportedFields()), null));
 
-		return new Record($name, $fields);
+		return new Record('record', $fields);
 	}
 
 	/**
