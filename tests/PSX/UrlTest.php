@@ -89,4 +89,65 @@ class UrlTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals('http://www.yahoo.com', $url->__toString());
 	}
+
+	public function testGetParams()
+	{
+		$url = new Url('http://foo.com?bar=foo&foo=bar');
+
+		$this->assertEquals(array('bar' => 'foo', 'foo' => 'bar'), $url->getParams());
+	}
+
+	public function testAddParams()
+	{
+		$url = new Url('http://foo.com');
+		$url->addParams(array('bar' => 'foo', 'foo' => 'bar'));
+
+		$this->assertEquals(array('bar' => 'foo', 'foo' => 'bar'), $url->getParams());
+	}
+
+	public function testGetParam()
+	{
+		$url = new Url('http://foo.com?bar=foo&foo=bar');
+
+		$this->assertEquals('foo', $url->getParam('bar'));
+	}
+
+	public function testSetParam()
+	{
+		$url = new Url('http://foo.com?bar=foo&foo=bar');
+		$url->setParam('bar', 'test');
+
+		$this->assertEquals('test', $url->getParam('bar'));
+	}
+
+	public function testAddParam()
+	{
+		$url = new Url('http://foo.com?bar=foo&foo=bar');
+		$url->addParam('bar', 'test');
+
+		$this->assertEquals('foo', $url->getParam('bar'));
+	}
+
+	public function testAddParamReplace()
+	{
+		$url = new Url('http://foo.com?bar=foo&foo=bar');
+		$url->addParam('bar', 'test', true);
+
+		$this->assertEquals('test', $url->getParam('bar'));
+	}
+
+	public function testDeleteParam()
+	{
+		$url = new Url('http://foo.com?bar=foo&foo=bar');
+		$url->deleteParam('bar');
+
+		$this->assertEquals(null, $url->getParam('bar'));
+	}
+
+	public function testIssetParam()
+	{
+		$url = new Url('http://foo.com?bar=foo&foo=bar');
+
+		$this->assertTrue($url->issetParam('bar'));
+	}
 }
