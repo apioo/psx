@@ -39,11 +39,12 @@ abstract class CallbackAbstract extends ApiAbstract
 {
 	protected $skrill;
 
-	/**
-	 * @httpMethod POST
-	 * @path /return
-	 */
-	public function doReturn()
+	public function onGet()
+	{
+		$this->onCancel();
+	}
+
+	public function onPost()
 	{
 		$status   = new Data\Status();
 		$importer = new DefaultImporter();
@@ -57,15 +58,6 @@ abstract class CallbackAbstract extends ApiAbstract
 		{
 			throw new Exception('Invalid signature');
 		}
-	}
-
-	/**
-	 * @httpMethod GET
-	 * @path /cancel
-	 */
-	public function doCancel()
-	{
-		$this->onCancel();
 	}
 
 	abstract public function onPayment(Data\Status $status);

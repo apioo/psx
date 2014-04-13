@@ -41,11 +41,7 @@ abstract class CallbackAbstract extends ControllerAbstract
 {
 	protected $paypal;
 
-	/**
-	 * @httpMethod GET
-	 * @path /return
-	 */
-	public function doReturn()
+	public function onGet()
 	{
 		$paypal    = $this->getPaypal();
 		$paymentId = $this->getPaymentId();
@@ -66,35 +62,6 @@ abstract class CallbackAbstract extends ControllerAbstract
 				{
 					$this->onCancel($payment);
 				}
-			}
-			else
-			{
-				throw new Exception('Invalid response');
-			}
-		}
-		else
-		{
-			throw new Exception('Payment id not available');
-		}
-	}
-
-	/**
-	 * @httpMethod GET
-	 * @path /cancel
-	 */
-	public function doCancel()
-	{
-		$paypal    = $this->getPaypal();
-		$paymentId = $this->getPaymentId();
-
-		if(!empty($paymentId))
-		{
-			$token   = $this->parameter->token('string');
-			$payment = $paypal->getPayment($paymentId);
-
-			if($payment instanceof Payment)
-			{
-				$this->onCancel($payment);
 			}
 			else
 			{
