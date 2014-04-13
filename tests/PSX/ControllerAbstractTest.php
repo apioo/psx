@@ -93,16 +93,86 @@ class ControllerAbstractTest extends ControllerTestCase
 		}
 	}
 
+	public function testSetArrayBody()
+	{
+		$path     = '/controller/array';
+		$request  = new Request(new Url('http://127.0.0.1' . $path), 'GET');
+		$response = new Response();
+		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
+
+		$controller = $this->loadController($request, $response);
+
+		$expect = <<<JSON
+{"foo":["bar"]}
+JSON;
+
+		$this->assertJsonStringEqualsJsonString($expect, (string) $response->getBody());
+	}
+
+	public function testSetRecordBody()
+	{
+		$path     = '/controller/record';
+		$request  = new Request(new Url('http://127.0.0.1' . $path), 'GET');
+		$response = new Response();
+		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
+
+		$controller = $this->loadController($request, $response);
+
+		$expect = <<<JSON
+{"foo":["bar"]}
+JSON;
+
+		$this->assertJsonStringEqualsJsonString($expect, (string) $response->getBody());
+	}
+
+	public function testSetDomDocumentBody()
+	{
+		$path     = '/controller/dom';
+		$request  = new Request(new Url('http://127.0.0.1' . $path), 'GET');
+		$response = new Response();
+		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
+
+		$controller = $this->loadController($request, $response);
+
+		$expect = <<<XML
+<?xml version="1.0"?>
+<foo>bar</foo>
+XML;
+
+		$this->assertXmlStringEqualsXmlString($expect, (string) $response->getBody());
+	}
+
+	public function testSetSimpleXmlBody()
+	{
+		$path     = '/controller/simplexml';
+		$request  = new Request(new Url('http://127.0.0.1' . $path), 'GET');
+		$response = new Response();
+		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
+
+		$controller = $this->loadController($request, $response);
+
+		$expect = <<<XML
+<?xml version="1.0"?>
+<foo>bar</foo>
+XML;
+
+		$this->assertXmlStringEqualsXmlString($expect, (string) $response->getBody());
+	}
+
 	protected function getPaths()
 	{
 		return array(
-			'/controller'          => 'PSX\Controller\Foo\Application\TestController::doIndex',
-			'/controller/inspect'  => 'PSX\Controller\Foo\Application\TestController::doInspect',
-			'/controller/forward'  => 'PSX\Controller\Foo\Application\TestController::doForward',
-			'/controller/redirect' => 'PSX\Controller\Foo\Application\TestController::doRedirect',
-			'/api'                 => 'PSX\Controller\Foo\Application\TestApiController::doIndex',
-			'/api/insert'          => 'PSX\Controller\Foo\Application\TestApiController::doInsert',
-			'/api/inspect'         => 'PSX\Controller\Foo\Application\TestApiController::doInspect',
+			'/controller'           => 'PSX\Controller\Foo\Application\TestController::doIndex',
+			'/controller/inspect'   => 'PSX\Controller\Foo\Application\TestController::doInspect',
+			'/controller/forward'   => 'PSX\Controller\Foo\Application\TestController::doForward',
+			'/controller/redirect'  => 'PSX\Controller\Foo\Application\TestController::doRedirect',
+			'/controller/array'     => 'PSX\Controller\Foo\Application\TestController::doSetArrayBody',
+			'/controller/record'    => 'PSX\Controller\Foo\Application\TestController::doSetRecordBody',
+			'/controller/dom'       => 'PSX\Controller\Foo\Application\TestController::doSetDomDocumentBody',
+			'/controller/simplexml' => 'PSX\Controller\Foo\Application\TestController::doSetSimpleXmlBody',
+			'/api'                  => 'PSX\Controller\Foo\Application\TestApiController::doIndex',
+			'/api/insert'           => 'PSX\Controller\Foo\Application\TestApiController::doInsert',
+			'/api/inspect'          => 'PSX\Controller\Foo\Application\TestApiController::doInspect',
 		);
 	}
 }

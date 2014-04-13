@@ -23,8 +23,11 @@
 
 namespace PSX\Controller\Foo\Application;
 
+use DOMDocument;
 use PSX\ControllerAbstract;
 use PSX\Data\ReaderInterface;
+use PSX\Data\Record;
+use SimpleXMLElement;
 
 /**
  * TestController
@@ -96,6 +99,31 @@ class TestController extends ControllerAbstract
 	public function doRedirect()
 	{
 		$this->redirect('http://localhost.com/foobar', 302);
+	}
+
+	public function doSetArrayBody()
+	{
+		$this->setBody(array('foo' => array('bar')));
+	}
+
+	public function doSetRecordBody()
+	{
+		$this->setBody(new Record('record', array('foo' => array('bar'))));
+	}
+
+	public function doSetDomDocumentBody()
+	{
+		$dom = new DOMDocument();
+		$dom->appendChild($dom->createElement('foo', 'bar'));
+
+		$this->setBody($dom);
+	}
+
+	public function doSetSimpleXmlBody()
+	{
+		$simpleXml = new SimpleXMLElement('<foo>bar</foo>');
+
+		$this->setBody($simpleXml);
 	}
 
 	public function getPreFilter()
