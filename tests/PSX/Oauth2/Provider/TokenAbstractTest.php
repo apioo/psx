@@ -138,6 +138,23 @@ JSON;
 		$this->assertJsonStringEqualsJsonString($expect, (string) $response->getBody());
 	}
 
+	public function testInvalidGrant()
+	{
+		$response = $this->callEndpoint('foo', 'bar', array(
+			'grant_type' => 'foo',
+		));
+
+		$expect = <<<JSON
+{
+	"error":"server_error",
+	"error_description":"Invalid grant type"
+}
+JSON;
+
+		$this->assertEquals(200, $response->getStatusCode());
+		$this->assertJsonStringEqualsJsonString($expect, (string) $response->getBody());
+	}
+
 	protected function callEndpoint($clientId, $clientSecret, array $params)
 	{
 		$url      = new Url('http://127.0.0.1/token');
