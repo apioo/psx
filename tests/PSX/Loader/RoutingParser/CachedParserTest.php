@@ -21,40 +21,36 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Loader;
+namespace PSX\Loader\RoutingParser;
 
-use PSX\ControllerAbstract;
+use PSX\Loader\RoutingCollection;
 
 /**
- * FooController
+ * CachedParserTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class FooController extends ControllerAbstract
+class CachedParserTest extends \PHPUnit_Framework_TestCase
 {
-	/**
-	 * @httpMethod GET
-	 * @path /foo
-	 */
-	public function doIndex()
+	public function testGetCollection()
 	{
-	}
+		$routing = new RoutingFile('tests/PSX/Loader/routes');
+		$cache   = $this->getMock('PSX\Cache\HandlerInterface');
 
-	/**
-	 * @httpMethod GET
-	 * @path /foo/detail/$foo<[0-9]+>
-	 */
-	public function doShowDetails()
-	{
-	}
+		$cache->expects($this->once())
+			->method('load')
+			->with($this->equalTo('routing_file'))
+			->will($this->returnValue(false));
 
-	/**
-	 * @httpMethod GET|POST
-	 * @path /foo/new
-	 */
-	public function doInsert()
-	{
+		$cache->expects($this->once())
+			->method('write')
+			->with($this->equalTo('routing_file'), $this->equalTo(json_encode($routing->getCollection()->getAll())));
+
+		$routingParser = new CachedParser($routing, $cache);
+		$collection    = $routingParser->getCollection();
+
+		$this->assertInstanceOf('PSX\Loader\RoutingCollection', $collection);
 	}
 }

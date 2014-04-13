@@ -25,7 +25,7 @@ namespace PSX\Loader\RoutingParser;
 
 use PSX\Loader\RoutingCollection;
 use PSX\Loader\RoutingParserInterface;
-use PSX\Util\AnnotationParser;
+use PSX\Util\Annotation as AnnotationParser;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use ReflectionClass;
@@ -73,6 +73,7 @@ class Annotation implements RoutingParserInterface
 							}
 							catch(ReflectionException $e)
 							{
+								// class does not exist
 							}
 						}
 					}
@@ -120,7 +121,7 @@ class Annotation implements RoutingParserInterface
 	{
 		$existingClasses = get_declared_classes();
 
-		include($file);
+		include_once($file);
 
 		$newClasses = get_declared_classes();
 

@@ -44,7 +44,7 @@ class BarController extends ControllerAbstract
 
 	/**
 	 * @httpMethod GET
-	 * @path /detail/{id}
+	 * @path /detail/:id
 	 */
 	public function doShowDetails()
 	{
