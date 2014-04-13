@@ -57,13 +57,13 @@ class Annotation implements RoutingParserInterface
 
 			foreach($this->paths as $path)
 			{
-				$files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path));
+				$files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(realpath($path)));
 
 				foreach($files as $name => $file)
 				{
 					if(strpos($name, '.php') !== false)
 					{
-						$classes = $this->getDefinedClasses($file->getPathname());
+						$classes = $this->getDefinedClasses($file->getRealPath());
 
 						foreach($classes as $class)
 						{
@@ -119,10 +119,7 @@ class Annotation implements RoutingParserInterface
 	 */
 	protected function getDefinedClasses($file)
 	{
-		$files = get_included_files();
-		$file  = realpath($file);
-
-		if(in_array($file, $files))
+		if($this->isIncluded($file))
 		{
 			// if the file is already included we cant use include_once. Since
 			// we assume PSR-0/4 standard we simply loop through all declared
@@ -150,5 +147,20 @@ class Annotation implements RoutingParserInterface
 
 			return array_diff($newClasses, $existingClasses);
 		}
+	}
+
+	protected function isIncluded($file)
+	{
+		$files = get_included_files();
+
+		foreach($files as $includedFile)
+		{
+			if(realpath($includedFile) == $file)
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 }
