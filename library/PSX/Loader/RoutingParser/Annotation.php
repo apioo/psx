@@ -119,12 +119,36 @@ class Annotation implements RoutingParserInterface
 	 */
 	protected function getDefinedClasses($file)
 	{
-		$existingClasses = get_declared_classes();
+		$files = get_included_files();
+		$file  = realpath($file);
 
-		include_once($file);
+		if(in_array($file, $files))
+		{
+			// if the file is already included we cant use include_once. Since
+			// we assume PSR-0/4 standard we simply loop through all declared
+			// classes and add the class which is in the file path
+			$existingClasses = get_declared_classes();
+			$newClasses      = array();
 
-		$newClasses = get_declared_classes();
+			foreach($existingClasses as $class)
+			{
+				if(strpos($file, str_replace('\\', DIRECTORY_SEPARATOR, $class)) !== false)
+				{
+					$newClasses[] = $class;
+				}
+			}
 
-		return array_diff($newClasses, $existingClasses);
+			return $newClasses;
+		}
+		else
+		{
+			$existingClasses = get_declared_classes();
+
+			include_once($file);
+
+			$newClasses = get_declared_classes();
+
+			return array_diff($newClasses, $existingClasses);
+		}
 	}
 }

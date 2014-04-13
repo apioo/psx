@@ -39,14 +39,14 @@ class SimpleTest extends \PHPUnit_Framework_TestCase
 {
 	public function testResolve()
 	{
-		$location = new Location('id', array(), 'PSX\Loader\BarController::doIndex');
+		$location = new Location('id', array(), 'PSX\Loader\RoutingParser\Annotation\BarController::doIndex');
 		$request  = new Request(new Url('http://127.0.0.1'), 'GET');
 		$response = new Response();
 
 		$simple   = new Simple(getContainer());
 		$callback = $simple->resolve($location, $request, $response);
 
-		$this->assertInstanceOf('PSX\Loader\BarController', $callback->getClass());
+		$this->assertInstanceOf('PSX\Loader\RoutingParser\Annotation\BarController', $callback->getClass());
 		$this->assertEquals('doIndex', $callback->getMethod());
 	}
 
@@ -61,9 +61,6 @@ class SimpleTest extends \PHPUnit_Framework_TestCase
 
 		$simple   = new Simple(getContainer());
 		$callback = $simple->resolve($location, $request, $response);
-
-		$this->assertInstanceOf('PSX\Loader\BarController', $callback->getClass());
-		$this->assertEquals('doIndex', $callback->getMethod());
 	}
 
 	/**
@@ -77,8 +74,5 @@ class SimpleTest extends \PHPUnit_Framework_TestCase
 
 		$simple   = new Simple(getContainer());
 		$callback = $simple->resolve($location, $request, $response);
-
-		$this->assertInstanceOf('PSX\Loader\BarController', $callback->getClass());
-		$this->assertEquals('doIndex', $callback->getMethod());
 	}
 }

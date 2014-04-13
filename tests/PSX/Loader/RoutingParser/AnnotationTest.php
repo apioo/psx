@@ -36,7 +36,7 @@ class AnnotationTest extends \PHPUnit_Framework_TestCase
 {
 	public function testGetCollection()
 	{
-		$routingParser = new Annotation(array('tests/PSX/Loader'));
+		$routingParser = new Annotation(array('tests/PSX/Loader/RoutingParser/Annotation'));
 		$collection    = $routingParser->getCollection();
 
 		$this->assertInstanceOf('PSX\Loader\RoutingCollection', $collection);
@@ -45,36 +45,36 @@ class AnnotationTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals(array('GET'), $routing[RoutingCollection::ROUTING_METHODS]);
 		$this->assertEquals('/', $routing[RoutingCollection::ROUTING_PATH]);
-		$this->assertEquals('PSX\Loader\BarController::doIndex', $routing[RoutingCollection::ROUTING_SOURCE]);
+		$this->assertEquals('PSX\Loader\RoutingParser\Annotation\BarController::doIndex', $routing[RoutingCollection::ROUTING_SOURCE]);
 
 		$routing = $collection->next();
 
 		$this->assertEquals(array('GET'), $routing[RoutingCollection::ROUTING_METHODS]);
 		$this->assertEquals('/detail/:id', $routing[RoutingCollection::ROUTING_PATH]);
-		$this->assertEquals('PSX\Loader\BarController::doShowDetails', $routing[RoutingCollection::ROUTING_SOURCE]);
+		$this->assertEquals('PSX\Loader\RoutingParser\Annotation\BarController::doShowDetails', $routing[RoutingCollection::ROUTING_SOURCE]);
 
 		$routing = $collection->next();
 
 		$this->assertEquals(array('POST'), $routing[RoutingCollection::ROUTING_METHODS]);
 		$this->assertEquals('/new', $routing[RoutingCollection::ROUTING_PATH]);
-		$this->assertEquals('PSX\Loader\BarController::doInsert', $routing[RoutingCollection::ROUTING_SOURCE]);
+		$this->assertEquals('PSX\Loader\RoutingParser\Annotation\BarController::doInsert', $routing[RoutingCollection::ROUTING_SOURCE]);
 
 		$routing = $collection->next();
 
 		$this->assertEquals(array('GET'), $routing[RoutingCollection::ROUTING_METHODS]);
 		$this->assertEquals('/foo', $routing[RoutingCollection::ROUTING_PATH]);
-		$this->assertEquals('PSX\Loader\FooController::doIndex', $routing[RoutingCollection::ROUTING_SOURCE]);
+		$this->assertEquals('PSX\Loader\RoutingParser\Annotation\FooController::doIndex', $routing[RoutingCollection::ROUTING_SOURCE]);
 
 		$routing = $collection->next();
 
 		$this->assertEquals(array('GET'), $routing[RoutingCollection::ROUTING_METHODS]);
 		$this->assertEquals('/foo/detail/$foo<[0-9]+>', $routing[RoutingCollection::ROUTING_PATH]);
-		$this->assertEquals('PSX\Loader\FooController::doShowDetails', $routing[RoutingCollection::ROUTING_SOURCE]);
+		$this->assertEquals('PSX\Loader\RoutingParser\Annotation\FooController::doShowDetails', $routing[RoutingCollection::ROUTING_SOURCE]);
 
 		$routing = $collection->next();
 
 		$this->assertEquals(array('GET', 'POST'), $routing[RoutingCollection::ROUTING_METHODS]);
 		$this->assertEquals('/foo/new', $routing[RoutingCollection::ROUTING_PATH]);
-		$this->assertEquals('PSX\Loader\FooController::doInsert', $routing[RoutingCollection::ROUTING_SOURCE]);
+		$this->assertEquals('PSX\Loader\RoutingParser\Annotation\FooController::doInsert', $routing[RoutingCollection::ROUTING_SOURCE]);
 	}
 }

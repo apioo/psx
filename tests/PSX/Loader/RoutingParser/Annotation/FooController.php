@@ -21,22 +21,22 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Loader;
+namespace PSX\Loader\RoutingParser\Annotation;
 
 use PSX\ControllerAbstract;
 
 /**
- * BarController
+ * FooController
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class BarController extends ControllerAbstract
+class FooController extends ControllerAbstract
 {
 	/**
 	 * @httpMethod GET
-	 * @path /
+	 * @path /foo
 	 */
 	public function doIndex()
 	{
@@ -44,15 +44,15 @@ class BarController extends ControllerAbstract
 
 	/**
 	 * @httpMethod GET
-	 * @path /detail/:id
+	 * @path /foo/detail/$foo<[0-9]+>
 	 */
 	public function doShowDetails()
 	{
 	}
 
 	/**
-	 * @httpMethod POST
-	 * @path /new
+	 * @httpMethod GET|POST
+	 * @path /foo/new
 	 */
 	public function doInsert()
 	{
