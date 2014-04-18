@@ -27,6 +27,7 @@ use PSX\Data\Reader;
 use PSX\Data\Writer;
 use PSX\Data\RecordStoreInterface;
 use PSX\Payment\Paypal\Data;
+use PSX\Payment\Paypal\Credentials;
 use PSX\Oauth2;
 use PSX\Oauth2\Authorization\ClientCredentials;
 use PSX\Oauth2\AccessToken;
@@ -46,13 +47,6 @@ use PSX\Exception;
  */
 class Paypal
 {
-	//const ENDPOINT      = 'https://api.paypal.com';
-	const ENDPOINT      = 'https://api.sandbox.paypal.com';
-	const CLIENT_ID     = 'AbGnaxBKBZGDeEYdiF9K5S4PgCydA6vp_7F24PQOVNSDRv8PZ8XiCPXkS4HV';
-	const CLIENT_SECRET = 'EEjJJBCD6AIExdxj9a5_1hY8IpH-WpwuUHsp0HTWzrFQC66ycYuiPEwG6wr4';
-	//const CERTIFICATE   = 'api.paypal.com.pem';
-	const CERTIFICATE   = 'api.sandbox.paypal.com.pem';
-
 	const PAYMENT = '/v1/payments/payment';
 	const SALE    = '/v1/payments/sale';
 	const REFUND  = '/v1/payments/refund';
@@ -60,55 +54,68 @@ class Paypal
 	const TOKEN   = '/v1/oauth2/token';
 
 	protected $http;
+	protected $credentials;
 	protected $oauth2;
 	protected $store;
-	protected $accessToken;
 
+	protected $accessToken;
 	protected $approvalUrl;
 
-	public function __construct(Http $http, RecordStoreInterface $store = null)
+	public function __construct(Http $http, Credentials $credentials, RecordStoreInterface $store = null)
 	{
 		if($http->getHandler() instanceof Http\Handler\Curl)
 		{
-			$caInfo = realpath(__DIR__ . '/Paypal/' . self::CERTIFICATE);
+			$caInfo = realpath($credentials->getCertificate());
+
 			$http->getHandler()->setCaInfo($caInfo);
 		}
 
-		$this->http   = $http;
-		$this->oauth2 = new Oauth2();
-		$this->store  = $store;
+		$this->http        = $http;
+		$this->credentials = $credentials;
+		$this->oauth2      = new Oauth2();
+		$this->store       = $store;
 	}
 
 	public function getAccessToken()
 	{
-		$accessToken = null;
-
-		if($this->store !== null)
+		if($this->accessToken === null)
 		{
-			$accessToken = $this->store->load(__CLASS__);
-		}
+			$accessToken = null;
 
-		if(!$accessToken instanceof AccessToken)
-		{
-			$cred = new ClientCredentials($this->http, new Url(self::ENDPOINT . self::TOKEN));
-			$cred->setClientPassword(self::CLIENT_ID, self::CLIENT_SECRET);
-
-			$accessToken = $cred->getAccessToken();
-
-			if($accessToken instanceof AccessToken)
+			if($this->store !== null)
 			{
-				if($this->store !== null)
+				$accessToken = $this->store->load(__CLASS__);
+			}
+
+			if(!$accessToken instanceof AccessToken)
+			{
+				$cred = new ClientCredentials($this->http, new Url($this->credentials->getEndpoint() . self::TOKEN));
+				$cred->setClientPassword($this->credentials->getClientId(), $this->credentials->getClientSecret());
+
+				$accessToken = $cred->getAccessToken();
+
+				if($accessToken instanceof AccessToken)
 				{
-					$this->store->save(__CLASS__, $accessToken);
+					if($this->store !== null)
+					{
+						$this->store->save(__CLASS__, $accessToken);
+					}
+				}
+				else
+				{
+					throw new Exception('Could not get access token');
 				}
 			}
-			else
-			{
-				throw new Exception('Could not get access token');
-			}
+
+			$this->accessToken = $accessToken;
 		}
 
-		return $accessToken;
+		return $this->accessToken;
+	}
+
+	public function createPaymentBuilder()
+	{
+		return new PaymentBuilder();
 	}
 
 	public function createPayment(Data\Payment $payment)
@@ -120,7 +127,7 @@ class Paypal
 			'Content-Type'  => 'application/json',
 		);
 
-		$request  = new PostRequest(new Url(self::ENDPOINT . self::PAYMENT), $header, $body);
+		$request  = new PostRequest(new Url($this->credentials->getEndpoint() . self::PAYMENT), $header, $body);
 		$response = $this->http->request($request);
 
 		if($response->getStatusCode() == 201)
@@ -165,7 +172,7 @@ class Paypal
 			'Content-Type'  => 'application/json',
 		);
 
-		$request  = new GetRequest(new Url(self::ENDPOINT . self::PAYMENT . '/' . $paymentId), $header);
+		$request  = new GetRequest(new Url($this->credentials->getEndpoint() . self::PAYMENT . '/' . $paymentId), $header);
 		$response = $this->http->request($request);
 
 		if($response->getStatusCode() == 200)
@@ -191,7 +198,7 @@ class Paypal
 			'Content-Type'  => 'application/json',
 		);
 
-		$request  = new PostRequest(new Url(self::ENDPOINT . self::PAYMENT . '/' . $paymentId . '/execute/'), $header, $body);
+		$request  = new PostRequest(new Url($this->credentials->getEndpoint() . self::PAYMENT . '/' . $paymentId . '/execute/'), $header, $body);
 		$response = $this->http->request($request);
 
 		if($response->getStatusCode() == 200)
@@ -211,7 +218,7 @@ class Paypal
 
 	public function getPayments($count = null, $startIndex = null, $sortBy = null, $sortOrder = null, $startId = null, DateTime $startTime = null, DateTime $endTime = null)
 	{
-		$url    = new Url(self::ENDPOINT . self::PAYMENT);
+		$url    = new Url($this->credentials->getEndpoint() . self::PAYMENT);
 		$header = array(
 			'Authorization' => $this->oauth2->getAuthorizationHeader($this->getAccessToken()),
 			'Content-Type'  => 'application/json',

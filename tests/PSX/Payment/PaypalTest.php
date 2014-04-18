@@ -27,6 +27,7 @@ use PSX\Http;
 use PSX\Http\Handler\Mock;
 use PSX\Http\Handler\MockCapture;
 use PSX\Payment\Paypal;
+use PSX\Payment\Paypal\Credentials;
 use PSX\Payment\Paypal\Data;
 use PSX\Url;
 
@@ -47,8 +48,14 @@ class PaypalTest extends \PHPUnit_Framework_TestCase
 		//$mockCapture = new MockCapture('tests/PSX/Payment/paypal_http_fixture.xml');
 		$mock = Mock::getByXmlDefinition('tests/PSX/Payment/paypal_http_fixture.xml');
 
+		$endpoint     = 'https://api.sandbox.paypal.com';
+		$clientId     = 'foo';
+		$clientSecret = 'bar';
+		$certificate  = 'api.sandbox.paypal.com.pem';
+		$credentials  = new Credentials($endpoint, $clientId, $clientSecret, $certificate);
+
 		$this->http   = new Http($mock);
-		$this->paypal = new Paypal($this->http);
+		$this->paypal = new Paypal($this->http, $credentials);
 	}
 
 	public function testCreatePayment()
