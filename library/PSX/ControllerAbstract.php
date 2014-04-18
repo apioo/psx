@@ -73,6 +73,16 @@ abstract class ControllerAbstract implements ControllerInterface
 		$this->uriFragments = $uriFragments;
 		$this->stage        = 0x3F;
 		$this->config       = $container->get('config');
+
+		// set controller class to html writer for automatic template file 
+		// detection
+		$writer = $this->container->get('writer_factory')->getWriterByContentType('text/html');
+
+		if($writer instanceof Writer\Html)
+		{
+			$writer->setBaseDir(PSX_PATH_LIBRARY);
+			$writer->setControllerClass(get_class($this));
+		}
 	}
 
 	public function getStage()
@@ -110,8 +120,19 @@ abstract class ControllerAbstract implements ControllerInterface
 	{
 	}
 
+	/**
+	 * Method which gets called after the controller method was called. In case 
+	 * we have not written any response we write an empty response so that the 
+	 * write can set an response
+	 */
 	public function processResponse()
 	{
+		$body = $this->response->getBody();
+
+		if($body !== null && $body->tell() == 0)
+		{
+			$this->setResponse(new Record());
+		}
 	}
 
 	/**
@@ -419,7 +440,7 @@ abstract class ControllerAbstract implements ControllerInterface
 			}
 			else
 			{
-				$writer = $this->container->get('writerFactory')->getWriteByInstance($writerType);
+				$writer = $this->container->get('writerFactory')->getWriterByInstance($writerType);
 			}
 
 			if($writer === null)

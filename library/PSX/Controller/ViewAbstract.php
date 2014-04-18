@@ -44,30 +44,4 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 abstract class ViewAbstract extends ControllerAbstract
 {
-	public function __construct(ContainerInterface $container, Location $location, Request $request, Response $response, array $uriFragments)
-	{
-		parent::__construct($container, $location, $request, $response, $uriFragments);
-
-		// set controller class to html writer for automatic template file 
-		// detection
-		$writer = $this->getWriterFactory()->getWriterByContentType('text/html');
-
-		if($writer instanceof Writer\Html)
-		{
-			$writer->setBaseDir(PSX_PATH_LIBRARY);
-			$writer->setControllerClass(get_class($this));
-		}
-	}
-
-	/**
-	 * In case we have not written any response we write an empty response so
-	 * that the html write writes the template
-	 */
-	public function processResponse()
-	{
-		if($this->response->getBody()->tell() == 0)
-		{
-			$this->setResponse(new Record());
-		}
-	}
 }
