@@ -34,6 +34,10 @@ use PSX\Loader\RoutingCollection;
  */
 class AnnotationTest extends \PHPUnit_Framework_TestCase
 {
+	/**
+	 * Note the order in which the classes gets parsed is not predictable  
+	 * because of that we search in this test for each specific route
+	 */
 	public function testGetCollection()
 	{
 		$routingParser = new Annotation(array('tests/PSX/Loader/RoutingParser/Annotation'));
@@ -41,40 +45,53 @@ class AnnotationTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertInstanceOf('PSX\Loader\RoutingCollection', $collection);
 
-		$routing = $collection->current();
+		$routing = $this->findRoute($collection, '/');
 
 		$this->assertEquals(array('GET'), $routing[RoutingCollection::ROUTING_METHODS]);
 		$this->assertEquals('/', $routing[RoutingCollection::ROUTING_PATH]);
 		$this->assertEquals('PSX\Loader\RoutingParser\Annotation\BarController::doIndex', $routing[RoutingCollection::ROUTING_SOURCE]);
 
-		$routing = $collection->next();
+		$routing = $this->findRoute($collection, '/detail/:id');
 
 		$this->assertEquals(array('GET'), $routing[RoutingCollection::ROUTING_METHODS]);
 		$this->assertEquals('/detail/:id', $routing[RoutingCollection::ROUTING_PATH]);
 		$this->assertEquals('PSX\Loader\RoutingParser\Annotation\BarController::doShowDetails', $routing[RoutingCollection::ROUTING_SOURCE]);
 
-		$routing = $collection->next();
+		$routing = $this->findRoute($collection, '/new');
 
 		$this->assertEquals(array('POST'), $routing[RoutingCollection::ROUTING_METHODS]);
 		$this->assertEquals('/new', $routing[RoutingCollection::ROUTING_PATH]);
 		$this->assertEquals('PSX\Loader\RoutingParser\Annotation\BarController::doInsert', $routing[RoutingCollection::ROUTING_SOURCE]);
 
-		$routing = $collection->next();
+		$routing = $this->findRoute($collection, '/foo');
 
 		$this->assertEquals(array('GET'), $routing[RoutingCollection::ROUTING_METHODS]);
 		$this->assertEquals('/foo', $routing[RoutingCollection::ROUTING_PATH]);
 		$this->assertEquals('PSX\Loader\RoutingParser\Annotation\FooController::doIndex', $routing[RoutingCollection::ROUTING_SOURCE]);
 
-		$routing = $collection->next();
+		$routing = $this->findRoute($collection, '/foo/detail/$foo<[0-9]+>');
 
 		$this->assertEquals(array('GET'), $routing[RoutingCollection::ROUTING_METHODS]);
 		$this->assertEquals('/foo/detail/$foo<[0-9]+>', $routing[RoutingCollection::ROUTING_PATH]);
 		$this->assertEquals('PSX\Loader\RoutingParser\Annotation\FooController::doShowDetails', $routing[RoutingCollection::ROUTING_SOURCE]);
 
-		$routing = $collection->next();
+		$routing = $this->findRoute($collection, '/foo/new');
 
 		$this->assertEquals(array('GET', 'POST'), $routing[RoutingCollection::ROUTING_METHODS]);
 		$this->assertEquals('/foo/new', $routing[RoutingCollection::ROUTING_PATH]);
 		$this->assertEquals('PSX\Loader\RoutingParser\Annotation\FooController::doInsert', $routing[RoutingCollection::ROUTING_SOURCE]);
+	}
+
+	protected function findRoute(RoutingCollection $collection, $path)
+	{
+		foreach($collection as $route)
+		{
+			if($route[RoutingCollection::ROUTING_PATH] == $path)
+			{
+				return $route;
+			}
+		}
+
+		return null;
 	}
 }
