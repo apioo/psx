@@ -97,7 +97,7 @@ JSON;
 
 		$expect = <<<JSON
 {
-	"text": "You have successful create a testRecord",
+	"text": "You have successful create a record",
 	"success": true
 }
 JSON;
@@ -162,7 +162,7 @@ JSON;
 
 		$expect = <<<JSON
 {
-	"text": "You have successful update a testRecord",
+	"text": "You have successful update a record",
 	"success": true
 }
 JSON;
@@ -185,7 +185,7 @@ JSON;
 
 		$expect = <<<JSON
 {
-	"text": "You have successful delete a testRecord",
+	"text": "You have successful delete a record",
 	"success": true
 }
 JSON;
