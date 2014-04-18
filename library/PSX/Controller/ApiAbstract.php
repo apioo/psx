@@ -177,4 +177,15 @@ abstract class ApiAbstract extends ControllerAbstract
 
 		return $this->_requestParams;
 	}
+
+	protected function getSupportedWriter()
+	{
+		return array(
+			WriterInterface::JSON,
+			WriterInterface::ATOM,
+			WriterInterface::JSONP,
+			WriterInterface::RSS,
+			WriterInterface::XML,
+		);
+	}
 }
