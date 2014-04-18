@@ -46,11 +46,34 @@ class WriterFactory
 		return isset($this->writers[0]) ? $this->writers[0] : null;
 	}
 
-	public function getWriterByContentType($contentType)
+	public function getWriterByContentType($contentType, array $supportedWriter = null)
+	{
+		$contentTypes = explode(',', $contentType);
+
+		foreach($contentTypes as $contentType)
+		{
+			foreach($this->writers as $writer)
+			{
+				if($supportedWriter !== null && !in_array(get_class($writer), $supportedWriter))
+				{
+					continue;
+				}
+
+				if($writer->isContentTypeSupported($contentType))
+				{
+					return $writer;
+				}
+			}
+		}
+
+		return null;
+	}
+
+	public function getWriterByInstance($className)
 	{
 		foreach($this->writers as $writer)
 		{
-			if($writer->isContentTypeSupported($contentType))
+			if($writer instanceof $className)
 			{
 				return $writer;
 			}
@@ -59,13 +82,17 @@ class WriterFactory
 		return null;
 	}
 
-	public function getWriteByInstance($className)
+	public function getContentTypeByFormat($format)
 	{
 		foreach($this->writers as $writer)
 		{
-			if($writer instanceof $className)
+			$className = get_class($writer);
+			$pos       = strrpos($className, '\\');
+			$shortName = strtolower(substr($className, $pos === false ? 0 : $pos + 1));
+
+			if($shortName == $format)
 			{
-				return $writer;
+				return $writer->getContentType();
 			}
 		}
 

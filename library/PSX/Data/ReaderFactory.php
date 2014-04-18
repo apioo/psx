@@ -47,13 +47,23 @@ class ReaderFactory
 		return isset($this->readers[0]) ? $this->readers[0] : null;
 	}
 
-	public function getReaderByContentType($contentType)
+	public function getReaderByContentType($contentType, array $supportedReader = null)
 	{
-		foreach($this->readers as $reader)
+		$contentTypes = explode(',', $contentType);
+
+		foreach($contentTypes as $contentType)
 		{
-			if($reader->isContentTypeSupported($contentType))
+			foreach($this->readers as $reader)
 			{
-				return $reader;
+				if($supportedReader !== null && !in_array(get_class($reader), $supportedReader))
+				{
+					continue;
+				}
+
+				if($reader->isContentTypeSupported($contentType))
+				{
+					return $reader;
+				}
 			}
 		}
 
