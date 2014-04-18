@@ -39,9 +39,4 @@ class TestHandler extends DatabaseHandlerAbstract
 		return $this->manager->getTable('PSX\Handler\Database\TestTable')
 			->select(array('id', 'userId', 'title', 'date'));
 	}
-
-	public function getRecord()
-	{
-		return new TestRecord();
-	}
 }
