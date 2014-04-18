@@ -456,19 +456,29 @@ abstract class ControllerAbstract implements ControllerInterface
 	 */
 	protected function getPreferredWriter()
 	{
-		$formats = array(
-			'atom'  => Writer\Atom::$mime,
-			'form'  => Writer\Form::$mime,
-			'json'  => Writer\Json::$mime,
-			'rss'   => Writer\Rss::$mime,
-			'xml'   => Writer\Xml::$mime,
-			'jsonp' => Writer\Jsonp::$mime,
-			'html'  => Writer\Html::$mime,
-		);
+		$format = $this->request->getUrl()->getParam('format');
 
-		$format      = $this->request->getUrl()->getParam('format');
-		$contentType = isset($formats[$format]) ? $formats[$format] : $this->request->getHeader('Accept');
+		if(!empty($format))
+		{
+			$contentType = $this->container->get('writerFactory')->getContentTypeByFormat($format);
+		}
+		else
+		{
+			$contentType = $this->request->getHeader('Accept');
+		}
 
-		return $this->container->get('writerFactory')->getWriterByContentType($contentType);
+		return $this->container->get('writerFactory')->getWriterByContentType($contentType, $this->getSupportedWriter());
+	}
+
+	/**
+	 * Returns the formats which are supported by this controller. If null gets
+	 * returned every available format is supported otherwise it must return
+	 * an array containing writer class names
+	 *
+	 * @return array
+	 */
+	protected function getSupportedWriter()
+	{
+		return null;
 	}
 }
