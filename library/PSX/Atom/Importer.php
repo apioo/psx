@@ -27,13 +27,14 @@ use DateTime;
 use DOMDocument;
 use DOMElement;
 use InvalidArgumentException;
-use PSX\Data\RecordInterface;
-use PSX\Data\Record\ImporterInterface;
+use PSX\Atom;
 use PSX\Atom\Entry;
 use PSX\Atom\Text;
 use PSX\Atom\Person;
 use PSX\Atom\Category;
 use PSX\Atom\Link;
+use PSX\Data\RecordInterface;
+use PSX\Data\Record\ImporterInterface;
 
 /**
  * Importer
@@ -88,7 +89,7 @@ class Importer implements ImporterInterface
 		return $record;
 	}
 
-	protected function parseFeedElement(DOMElement $feed, RecordInterface $record)
+	protected function parseFeedElement(DOMElement $feed, Atom $record)
 	{
 		for($i = 0; $i < $feed->childNodes->length; $i++)
 		{

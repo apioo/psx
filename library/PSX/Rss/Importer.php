@@ -29,6 +29,7 @@ use DOMElement;
 use InvalidArgumentException;
 use PSX\Data\RecordInterface;
 use PSX\Data\Record\ImporterInterface;
+use PSX\Rss;
 use PSX\Rss\Category;
 use PSX\Rss\Cloud;
 
@@ -86,7 +87,7 @@ class Importer implements ImporterInterface
 		return $record;
 	}
 
-	protected function parseChannelElement(DOMElement $channel, RecordInterface $record)
+	protected function parseChannelElement(DOMElement $channel, Rss $record)
 	{
 		$childNodes = $channel->childNodes;
 

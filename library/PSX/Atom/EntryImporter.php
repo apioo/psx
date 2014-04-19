@@ -91,7 +91,7 @@ class EntryImporter implements ImporterInterface
 		}
 	}
 
-	protected function parseEntryElement(DOMElement $entry, RecordInterface $record)
+	protected function parseEntryElement(DOMElement $entry, Entry $record)
 	{
 		for($i = 0; $i < $entry->childNodes->length; $i++)
 		{

@@ -60,7 +60,7 @@ class ItemImporter implements ImporterInterface
 		return $record;
 	}
 
-	protected function parseItemElement(DOMElement $element, RecordInterface $record)
+	protected function parseItemElement(DOMElement $element, Item $record)
 	{
 		for($i = 0; $i < $element->childNodes->length; $i++)
 		{
