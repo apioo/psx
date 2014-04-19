@@ -23,6 +23,10 @@
 
 namespace PSX\Html;
 
+use PSX\Html\Lexer\Token\Comment;
+use PSX\Html\Lexer\Token\Element;
+use PSX\Html\Lexer\Token\Text;
+
 /**
  * FilterTest
  *
@@ -108,6 +112,54 @@ HTML;
 HTML;
 
 		$filter = new Filter($html);
+		$filter->setAllowComments(true);
+
+		$this->assertEquals($expected, $filter->filter());
+	}
+
+	public function testFilterListener()
+	{
+		$elementListener = $this->getMockBuilder('PSX\Html\Filter\ElementListenerInterface')
+			->getMock();
+
+		$textListener = $this->getMockBuilder('PSX\Html\Filter\TextListenerInterface')
+			->getMock();
+
+		$commentListener = $this->getMockBuilder('PSX\Html\Filter\CommentListenerInterface')
+			->getMock();
+
+		$elementListener->expects($this->once())
+			->method('onElement')
+			->with($this->callback(function($element){
+				return $element instanceof Element && $element->getName() == 'p';
+			}));
+
+		$textListener->expects($this->once())
+			->method('onText')
+			->with($this->callback(function($element){
+				return $element instanceof Text && $element->getData() == 'foobar';
+			}));
+
+		$commentListener->expects($this->once())
+			->method('onComment')
+			->with($this->callback(function($element){
+				return $element instanceof Comment && $element->getData() == '<!-- bar -->';
+			}));
+
+		$html = <<<HTML
+<p>foobar</p>
+<!-- bar -->
+HTML;
+
+		$expected = <<<HTML
+<p>foobar</p>
+<!-- bar -->
+HTML;
+
+		$filter = new Filter($html);
+		$filter->addElementListener($elementListener);
+		$filter->addTextListener($textListener);
+		$filter->addCommentListener($commentListener);
 		$filter->setAllowComments(true);
 
 		$this->assertEquals($expected, $filter->filter());

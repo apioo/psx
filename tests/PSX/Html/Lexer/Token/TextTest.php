@@ -23,6 +23,8 @@
 
 namespace PSX\Html\Lexer\Token;
 
+use PSX\Html\Lexer\TokenAbstract;
+
 /**
  * TextTest
  *
@@ -37,7 +39,8 @@ class TextTest extends \PHPUnit_Framework_TestCase
 		$text = Text::parse('foo');
 
 		$this->assertInstanceOf('PSX\Html\Lexer\Token\Text', $text);
-		$this->assertEquals('#PCDATA', $text->name);
-		$this->assertEquals('foo', $text->data);
+		$this->assertEquals(TokenAbstract::TYPE_TEXT, $text->getType());
+		$this->assertEquals('#PCDATA', $text->getName());
+		$this->assertEquals('foo', $text->getData());
 	}
 }

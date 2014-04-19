@@ -23,6 +23,8 @@
 
 namespace PSX\Html\Lexer\Token;
 
+use PSX\Html\Lexer\TokenAbstract;
+
 /**
  * CommentTest
  *
@@ -37,7 +39,8 @@ class CommentTest extends \PHPUnit_Framework_TestCase
 		$comment = Comment::parse('<!-- foo -->');
 
 		$this->assertInstanceOf('PSX\Html\Lexer\Token\Comment', $comment);
-		$this->assertEquals('#COMMENT', $comment->name);
-		$this->assertEquals('<!-- foo -->', $comment->data);
+		$this->assertEquals(TokenAbstract::TYPE_COMMENT, $comment->getType());
+		$this->assertEquals('#COMMENT', $comment->getName());
+		$this->assertEquals('<!-- foo -->', $comment->getData());
 	}
 }

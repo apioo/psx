@@ -23,6 +23,8 @@
 
 namespace PSX\Html\Lexer\Token;
 
+use PSX\Html\Lexer\TokenAbstract;
+
 /**
  * ElementTest
  *
@@ -36,45 +38,45 @@ class ElementTest extends \PHPUnit_Framework_TestCase
 	{
 		$element = Element::parse('div class="foo"');
 
-		$this->assertEquals('div', $element->name);
-		$this->assertEquals(array('class' => 'foo'), $element->attr);
-		$this->assertEquals(false, $element->short);
-		$this->assertEquals(Element::TYPE_START, $element->type);
+		$this->assertEquals('div', $element->getName());
+		$this->assertEquals(array('class' => 'foo'), $element->getAttributes());
+		$this->assertEquals(false, $element->isShort());
+		$this->assertEquals(TokenAbstract::TYPE_ELEMENT_START, $element->getType());
 
 		$element = Element::parse('img src="foo.png" alt="bar" /');
 
-		$this->assertEquals('img', $element->name);
-		$this->assertEquals(array('src' => 'foo.png', 'alt' => 'bar'), $element->attr);
-		$this->assertEquals(true, $element->short);
-		$this->assertEquals(Element::TYPE_START, $element->type);
+		$this->assertEquals('img', $element->getName());
+		$this->assertEquals(array('src' => 'foo.png', 'alt' => 'bar'), $element->getAttributes());
+		$this->assertEquals(true, $element->isShort());
+		$this->assertEquals(TokenAbstract::TYPE_ELEMENT_START, $element->getType());
 
 		$element = Element::parse('br');
 
-		$this->assertEquals('br', $element->name);
-		$this->assertEquals(array(), $element->attr);
-		$this->assertEquals(false, $element->short);
-		$this->assertEquals(Element::TYPE_START, $element->type);
+		$this->assertEquals('br', $element->getName());
+		$this->assertEquals(array(), $element->getAttributes());
+		$this->assertEquals(false, $element->isShort());
+		$this->assertEquals(TokenAbstract::TYPE_ELEMENT_START, $element->getType());
 
 		$element = Element::parse('br /');
 
-		$this->assertEquals('br', $element->name);
-		$this->assertEquals(array(), $element->attr);
-		$this->assertEquals(true, $element->short);
-		$this->assertEquals(Element::TYPE_START, $element->type);
+		$this->assertEquals('br', $element->getName());
+		$this->assertEquals(array(), $element->getAttributes());
+		$this->assertEquals(true, $element->isShort());
+		$this->assertEquals(TokenAbstract::TYPE_ELEMENT_START, $element->getType());
 
 		$element = Element::parse('  br  ');
 
-		$this->assertEquals('br', $element->name);
-		$this->assertEquals(array(), $element->attr);
-		$this->assertEquals(false, $element->short);
-		$this->assertEquals(Element::TYPE_START, $element->type);
+		$this->assertEquals('br', $element->getName());
+		$this->assertEquals(array(), $element->getAttributes());
+		$this->assertEquals(false, $element->isShort());
+		$this->assertEquals(TokenAbstract::TYPE_ELEMENT_START, $element->getType());
 
 		$element = Element::parse('/div');
 
-		$this->assertEquals('div', $element->name);
-		$this->assertEquals(array(), $element->attr);
-		$this->assertEquals(false, $element->short);
-		$this->assertEquals(Element::TYPE_END, $element->type);
+		$this->assertEquals('div', $element->getName());
+		$this->assertEquals(array(), $element->getAttributes());
+		$this->assertEquals(false, $element->isShort());
+		$this->assertEquals(TokenAbstract::TYPE_ELEMENT_END, $element->getType());
 
 	}
 }
