@@ -209,7 +209,7 @@ class Writer implements WriterInterface
 		return $this->writer;
 	}
 
-	public static function categoryConstruct(XMLWriter $write, $category, $domain = false)
+	public static function categoryConstruct(XMLWriter $writer, $category, $domain = false)
 	{
 		$writer->startElement('category');
 
