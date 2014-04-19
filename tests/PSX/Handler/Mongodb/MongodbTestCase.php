@@ -123,7 +123,7 @@ abstract class MongodbTestCase extends \PHPUnit_Framework_TestCase
 		switch($type)
 		{
 			case MappingAbstract::TYPE_INTEGER:
-				return (integer) $data;
+				return (int) $data;
 				break;
 
 			case MappingAbstract::TYPE_FLOAT:

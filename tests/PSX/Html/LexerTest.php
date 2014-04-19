@@ -282,7 +282,7 @@ HTML;
 		$root = Lexer::parse($html);
 
 		$this->assertEquals(true, $root instanceof Element);
-		$this->assertEquals('html', $root->name);
+		$this->assertEquals('html', $root->getName());
 		$this->assertEquals('test', $root->getAttribute('name'));
 		$this->assertEquals('bar', $root->getAttribute('foo'));
 	}
@@ -307,7 +307,7 @@ HTML;
 		$root = Lexer::parse($html);
 
 		$this->assertEquals(true, $root instanceof Element);
-		$this->assertEquals('ipsum', $root->name);
+		$this->assertEquals('ipsum', $root->getName());
 		$this->assertEquals(array(), $root->getAttributes());
 	}
 
