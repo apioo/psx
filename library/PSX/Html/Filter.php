@@ -109,78 +109,10 @@ class Filter
 		if($root !== null)
 		{
 			// filter root element
-			foreach($root->childNodes as $key => $el)
-			{
-				if($el instanceof Element)
-				{
-					// filter value
-					if($this->filterElement($el) === false)
-					{
-						unset($root->childNodes[$key]);
-
-						continue;
-					}
-
-					// call element listener
-					foreach($this->elementListener as $listener)
-					{
-						$result = $listener->onElement($el);
-
-						if($result === false)
-						{
-							unset($root->childNodes[$key]);
-						}
-						else if($result instanceof Element)
-						{
-							$root->childNodes[$key] = $result;
-						}
-					}
-				}
-				else if($el instanceof Text)
-				{
-					// call text listener
-					foreach($this->textListener as $listener)
-					{
-						$result = $listener->onText($el);
-
-						if($result === false)
-						{
-							unset($root->childNodes[$key]);
-						}
-						else if($result instanceof Text)
-						{
-							$root->childNodes[$key] = $result;
-						}
-					}
-				}
-				else if($el instanceof Comment)
-				{
-					if($this->allowComments)
-					{
-						// call comment listener
-						foreach($this->commentListener as $listener)
-						{
-							$result = $listener->onComment($el);
-
-							if($result === false)
-							{
-								unset($root->childNodes[$key]);
-							}
-							else if($result instanceof Comment)
-							{
-								$root->childNodes[$key] = $result;
-							}
-						}
-					}
-					else
-					{
-						unset($root->childNodes[$key]);
-					}
-				}
-			}
+			$this->filterElementChilds($root, false);
 
 			// generate output
-			foreach($root->childNodes as $el)
+			foreach($root->getChildNodes() as $el)
 			{
 				$str.= $el->__toString();
 			}
@@ -189,132 +121,147 @@ class Filter
 		return $str;
 	}
 
-	private function filterElement(Element $element)
+	protected function filterElement(Element $element)
 	{
-		if(!isset($this->collection[$element->name]))
+		if(!isset($this->collection[$element->getName()]))
 		{
 			return false;
 		}
 
-		// check attributes
-		if(!empty($element->attr))
+		// filter attributes
+		if($element->hasAttributes())
 		{
-			$allowedAttr = $this->collection[$element->name]->getAttributes();
-			$allowedData = isset($allowedAttr['data-*']);
+			$this->filterElementAttributes($element);
+		}
 
-			foreach($element->attr as $key => $val)
+		// filter childs
+		$this->filterElementChilds($element);
+
+		return $element;
+	}
+
+	protected function filterElementAttributes(Element $element)
+	{
+		$allowedAttr = $this->collection[$element->getName()]->getAttributes();
+		$allowedData = isset($allowedAttr['data-*']);
+
+		foreach($element->getAttributes() as $key => $val)
+		{
+			if($allowedData && substr($key, 0, 5) == 'data-')
 			{
-				if($allowedData && substr($key, 0, 5) == 'data-')
-				{
-					$dataKey = substr($key, 5);
+				$dataKey = substr($key, 5);
 
-					if(preg_match('/^[A-Za-z0-9-_.]{1,64}$/', $dataKey))
-					{
-						$key = 'data-*';
-					}
+				if(preg_match('/^[A-Za-z0-9-_.]{1,64}$/', $dataKey))
+				{
+					$key = 'data-*';
 				}
+			}
 
-				if(isset($allowedAttr[$key]))
+			if(isset($allowedAttr[$key]))
+			{
+				if($allowedAttr[$key] instanceof FilterAbstract)
 				{
-					if($allowedAttr[$key] instanceof FilterAbstract)
-					{
-						$val = $allowedAttr[$key]->apply($val);
+					$val = $allowedAttr[$key]->apply($val);
 
-						if($val === false)
-						{
-							unset($element->attr[$key]);
-						}
-						else if($val === true)
-						{
-							// keep value as it is
-						}
-						else
-						{
-							$element->attr[$key] = $val;
-						}
+					if($val === false)
+					{
+						$element->removeAttribute($key);
 					}
-					else if(is_string($allowedAttr[$key]))
+					else if($val === true)
 					{
-						$element->attr[$key] = $allowedAttr[$key];
-					}
-					else if(is_array($allowedAttr[$key]))
-					{
-						foreach($allowedAttr[$key] as $filter)
-						{
-							if($filter instanceof FilterAbstract)
-							{
-								$val = $filter->apply($val);
-
-								if($val === false)
-								{
-									unset($element->attr[$key]);
-
-									break;
-								}
-							}
-							else if((string) $filter === $element->attr[$key])
-							{
-								$val = true;
-							}
-						}
-
-						if($val === true)
-						{
-							// keep value as it is
-						}
-						else if($val !== false)
-						{
-							$element->attr[$key] = $val;
-						}
-					}
-					else if($allowedAttr[$key] === self::ANY_VALUE)
-					{
-						// the attribute can contain any content
+						// keep value as it is
 					}
 					else
 					{
-						unset($element->attr[$key]);
+						$element->setAttribute($key, $val);
 					}
 				}
+				else if(is_string($allowedAttr[$key]))
+				{
+					$element->setAttribute($key, $allowedAttr[$key]);
+				}
+				else if(is_array($allowedAttr[$key]))
+				{
+					foreach($allowedAttr[$key] as $filter)
+					{
+						if($filter instanceof FilterAbstract)
+						{
+							$val = $filter->apply($val);
+
+							if($val === false)
+							{
+								$element->removeAttribute($key);
+								break;
+							}
+						}
+						else if((string) $filter === $element->getAttribute($key))
+						{
+							$val = true;
+						}
+					}
+
+					if($val === true)
+					{
+						// keep value as it is
+					}
+					else if($val !== false)
+					{
+						$element->setAttribute($key, $val);
+					}
+				}
+				else if($allowedAttr[$key] === self::ANY_VALUE)
+				{
+					// the attribute can contain any content
+				}
 				else
 				{
-					unset($element->attr[$key]);
-				}
-			}
-		}
-
-		// get allowed childs. If the value is CONTENT_TRANSPARENT we look up 
-		// the parent elements and get the allowed childrens
-		$childs = $this->collection[$element->name]->getValues();
-
-		if(!is_array($childs))
-		{
-			if($childs === self::CONTENT_TRANSPARENT)
-			{
-				$parentNode = $element;
-
-				while($this->collection[$parentNode->name]->getValues() === self::CONTENT_TRANSPARENT)
-				{
-					$parentNode = $parentNode->parentNode;
-				}
-
-				if($parentNode instanceof Element)
-				{
-					$childs = $this->collection[$parentNode->name]->getValues();
-				}
-				else
-				{
-					$childs = array();
+					$element->removeAttribute($key);
 				}
 			}
 			else
 			{
-				throw new Exception('Child must be either an array or PSX\Html\Filter constant');
+				$element->removeAttribute($key);
+			}
+		}
+	}
+
+	protected function filterElementChilds(Element $element, $lookupChilds = true)
+	{
+		// get allowed childs. If the value is CONTENT_TRANSPARENT we look up 
+		// the parent elements and get the allowed childrens
+		if($lookupChilds)
+		{
+			$childs = $this->collection[$element->getName()]->getValues();
+
+			if(!is_array($childs))
+			{
+				if($childs === self::CONTENT_TRANSPARENT)
+				{
+					$parentNode = $element;
+
+					while($this->collection[$parentNode->getName()]->getValues() === self::CONTENT_TRANSPARENT)
+					{
+						$parentNode = $parentNode->getParentNode();
+					}
+
+					if($parentNode instanceof Element)
+					{
+						$childs = $this->collection[$parentNode->getName()]->getValues();
+					}
+					else
+					{
+						$childs = array();
+					}
+				}
+				else
+				{
+					throw new Exception('Child must be either an array or PSX\Html\Filter constant');
+				}
 			}
 		}
 
 		// check childs
-		foreach($element->childNodes as $key => $el)
+		foreach($element->getChildNodes() as $key => $el)
 		{
 			// allow every whitespace to keep format
 			if($el instanceof Text && $el->isWhitespace())
@@ -322,9 +269,9 @@ class Filter
 				continue;
 			}
 
-			if(!in_array($el->getName(), $childs))
+			if($lookupChilds === true && !in_array($el->getName(), $childs))
 			{
-				unset($element->childNodes[$key]);
+				$element->removeChild($key);
 
 				continue;
 			}
@@ -334,8 +281,7 @@ class Filter
 				// filter value
 				if($this->filterElement($el) === false)
 				{
-					unset($element->childNodes[$key]);
-
+					$element->removeChild($key);
 					continue;
 				}
 
@@ -346,11 +292,11 @@ class Filter
 
 					if($result === false)
 					{
-						unset($element->childNodes[$key]);
+						$element->removeChild($key);
 					}
 					else if($result instanceof Element)
 					{
-						$element->childNodes[$key] = $result;
+						$element->setChild($key, $result);
 					}
 				}
 			}
@@ -363,11 +309,11 @@ class Filter
 
 					if($result === false)
 					{
-						unset($element->childNodes[$key]);
+						$element->removeChild($key);
 					}
 					else if($result instanceof Text)
 					{
-						$element->childNodes[$key] = $result;
+						$element->setChild($key, $result);
 					}
 				}
 			}
@@ -382,22 +328,20 @@ class Filter
 
 						if($result === false)
 						{
-							unset($root->childNodes[$key]);
+							$element->removeChild($key);
 						}
 						else if($result instanceof Comment)
 						{
-							$root->childNodes[$key] = $result;
+							$element->setChild($key, $result);
 						}
 					}
 				}
 				else
 				{
-					unset($root->childNodes[$key]);
+					$element->removeChild($key);
 				}
 			}
 		}
-
-		return $element;
 	}
 }
 

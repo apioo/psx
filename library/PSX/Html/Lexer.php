@@ -24,6 +24,7 @@
 namespace PSX\Html;
 
 use PSX\Html\Lexer\Dom;
+use PSX\Html\Lexer\TokenAbstract;
 use PSX\Html\Lexer\Token\Comment;
 use PSX\Html\Lexer\Token\Text;
 use PSX\Html\Lexer\Token\Element;
@@ -137,7 +138,7 @@ class Lexer
 			{
 				if($mode === self::MODE_IGNORE)
 				{
-					if($ignoreToken !== null && strtolower(substr($html, $i + 1, strlen($ignoreToken->name) + 1)) == '/' . $ignoreToken->name)
+					if($ignoreToken !== null && strtolower(substr($html, $i + 1, strlen($ignoreToken->getName()) + 1)) == '/' . $ignoreToken->getName())
 					{
 						$ignoreToken = null;
 
@@ -186,9 +187,9 @@ class Lexer
 							$dom->push($token);
 
 							// if we have an no parse element enter ignore mode
-							if($token->type === Element::TYPE_START)
+							if($token->getType() === TokenAbstract::TYPE_ELEMENT_START)
 							{
-								if(in_array($token->name, self::$npTags))
+								if(in_array($token->getName(), self::$npTags))
 								{
 									$ignoreToken = $token;
 

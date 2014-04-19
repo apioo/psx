@@ -36,16 +36,8 @@ use PSX\Html\Lexer;
  */
 class Element extends TokenAbstract
 {
-	const TYPE_START = 0x1; // start tag <b>
-	const TYPE_END   = 0x2; // end tag </b>
-
-	public $type;
-	public $name;
-	public $attr  = array();
-	public $short = false; // whether its an <b /> tag or not
-
-	public $parentNode = null;
-	public $childNodes = array();
+	protected $attr  = array();
+	protected $short = false; // whether its an <b /> tag or not
 
 	public function __construct($type, $name, array $attr = array(), $short = false)
 	{
@@ -55,19 +47,14 @@ class Element extends TokenAbstract
 		$this->short = $short;
 	}
 
-	public function getType()
-	{
-		return $this->type;
-	}
-
-	public function getName()
-	{
-		return $this->name;
-	}
-
 	public function getAttributes()
 	{
 		return $this->attr;
+	}
+
+	public function hasAttributes()
+	{
+		return count($this->attr) > 0;
 	}
 
 	public function getAttribute($key)
@@ -86,25 +73,6 @@ class Element extends TokenAbstract
 		{
 			unset($this->attr[$key]);
 		}
-	}
-
-	public function appendChild(TokenAbstract $token)
-	{
-		if($token->parentNode !== null)
-		{
-			throw new DomException('Token is already appended to an element');
-		}
-		else
-		{
-			$token->parentNode = $this;
-		}
-
-		$this->childNodes[] = $token;
-	}
-
-	public function getChildNodes()
-	{
-		return $this->childNodes;
 	}
 
 	public function getElementsByTagName($name)
@@ -143,11 +111,11 @@ class Element extends TokenAbstract
 
 		if($token instanceof Element)
 		{
-			if(!empty($token->childNodes))
+			if($token->hasChildNodes())
 			{
-				$str.= '<' . $token->name;
+				$str.= '<' . $token->getName();
 
-				foreach($token->attr as $key => $val)
+				foreach($token->getAttributes() as $key => $val)
 				{
 					if($val !== null)
 					{
@@ -161,18 +129,18 @@ class Element extends TokenAbstract
 
 				$str.= '>';
 
-				foreach($token->childNodes as $t)
+				foreach($token->getChildNodes() as $t)
 				{
 					$str.= $this->toString($t, $deep + 1);
 				}
 
-				$str.= '</' . $token->name . '>';
+				$str.= '</' . $token->getName() . '>';
 			}
 			else
 			{
-				$str.= '<' . $token->name;
+				$str.= '<' . $token->getName();
 
-				foreach($token->attr as $key => $val)
+				foreach($token->getAttributes() as $key => $val)
 				{
 					if($val !== null)
 					{
@@ -185,9 +153,9 @@ class Element extends TokenAbstract
 				}
 
 				// specific elements can not be closed as short tag
-				if(in_array($token->name, array('script', 'iframe')))
+				if(in_array($token->getName(), array('script', 'iframe')))
 				{
-					$str.= '></' . $token->name . '>';
+					$str.= '></' . $token->getName() . '>';
 				}
 				else
 				{
@@ -197,11 +165,11 @@ class Element extends TokenAbstract
 		}
 		else if($token instanceof Text)
 		{
-			$str.= $token->data;
+			$str.= $token->getData();
 		}
 		else if($token instanceof Comment)
 		{
-			$str.= $token->data;
+			$str.= $token->getData();
 		}
 
 		return $str;
@@ -252,11 +220,11 @@ class Element extends TokenAbstract
 		{
 			$html = trim(substr($html, 1));
 
-			return self::TYPE_END;
+			return self::TYPE_ELEMENT_END;
 		}
 		else
 		{
-			return self::TYPE_START;
+			return self::TYPE_ELEMENT_START;
 		}
 	}
 

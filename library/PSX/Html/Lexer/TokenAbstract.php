@@ -32,7 +32,73 @@ namespace PSX\Html\Lexer;
  */
 abstract class TokenAbstract
 {
-	abstract public function getName();
+	const TYPE_ELEMENT_START = 0x1; // start tag <b>
+	const TYPE_ELEMENT_END   = 0x2; // end tag </b>
+	const TYPE_TEXT          = 0x3;
+	const TYPE_COMMENT       = 0x4;
+
+	protected $type;
+	protected $name;
+	protected $parentNode;
+	protected $childNodes = array();
+
+	public function getType()
+	{
+		return $this->type;
+	}
+
+	public function getName()
+	{
+		return $this->name;
+	}
+
+	public function setParentNode(TokenAbstract $parentNode)
+	{
+		$this->parentNode = $parentNode;
+	}
+
+	public function getParentNode()
+	{
+		return $this->parentNode;
+	}
+
+	public function appendChild(TokenAbstract $token)
+	{
+		if($token->getParentNode() !== null)
+		{
+			throw new DomException('Token is already appended to an element');
+		}
+		else
+		{
+			$token->setParentNode($this);
+		}
+
+		$this->childNodes[] = $token;
+	}
+
+	public function setChild($key, TokenAbstract $token)
+	{
+		$this->childNodes[$key] = $token;
+	}
+
+	public function removeChild($key)
+	{
+		if(isset($this->childNodes[$key]))
+		{
+			unset($this->childNodes[$key]);
+		}
+	}
+
+	public function getChildNodes()
+	{
+		return $this->childNodes;
+	}
+
+	public function hasChildNodes()
+	{
+		return count($this->childNodes) > 0;
+	}
+
 	abstract public function __toString();
 }
 

@@ -34,20 +34,18 @@ use PSX\Html\Lexer\TokenAbstract;
  */
 class Comment extends TokenAbstract
 {
-	public $name;
-	public $data;
-
-	public $parentNode = null;
+	protected $data;
 
 	public function __construct($data)
 	{
+		$this->type = self::TYPE_COMMENT;
 		$this->name = '#COMMENT';
 		$this->data = $data;
 	}
 
-	public function getName()
+	public function getData()
 	{
-		return $this->name;
+		return $this->data;
 	}
 
 	public function isWhitespace()

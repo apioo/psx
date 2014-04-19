@@ -34,20 +34,18 @@ use PSX\Html\Lexer\TokenAbstract;
  */
 class Text extends TokenAbstract
 {
-	public $name;
-	public $data;
-
-	public $parentNode = null;
+	protected $data;
 
 	public function __construct($data)
 	{
+		$this->type = self::TYPE_TEXT;
 		$this->name = '#PCDATA';
 		$this->data = $data;
 	}
 
-	public function getName()
+	public function getData()
 	{
-		return $this->name;
+		return $this->data;
 	}
 
 	public function isWhitespace()

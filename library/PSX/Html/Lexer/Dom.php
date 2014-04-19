@@ -24,6 +24,7 @@
 namespace PSX\Html\Lexer;
 
 use PSX\Html\Lexer;
+use PSX\Html\Lexer\TokenAbstract;
 use PSX\Html\Lexer\Token\Element;
 
 /**
@@ -46,23 +47,23 @@ class Dom
 		{
 			if($token instanceof Element)
 			{
-				if($token->type == Element::TYPE_START)
+				if($token->getType() == TokenAbstract::TYPE_ELEMENT_START)
 				{
-					if(!$token->isShort() && !in_array($token->name, Lexer::$voidTags))
+					if(!$token->isShort() && !in_array($token->getName(), Lexer::$voidTags))
 					{
 						array_push($this->stack, $token);
 					}
 
 					$topToken->appendChild($token);
 				}
-				else if($token->type == Element::TYPE_END)
+				else if($token->getType() == TokenAbstract::TYPE_ELEMENT_END)
 				{
-					if(in_array($token->name, Lexer::$voidTags))
+					if(in_array($token->getName(), Lexer::$voidTags))
 					{
 						// if we have an close tag from an void element ignore 
 						// it
 					}
-					else if($topToken->name == $token->name)
+					else if($topToken->getName() == $token->getName())
 					{
 						array_pop($this->stack);
 					}
