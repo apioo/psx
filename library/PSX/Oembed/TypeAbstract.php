@@ -148,7 +148,7 @@ abstract class TypeAbstract extends RecordAbstract
 
 	public function setCacheAge($cacheAge)
 	{
-		$this->cacheAge = (integer) $cacheAge;
+		$this->cacheAge = (int) $cacheAge;
 	}
 
 	public function getCacheAge()

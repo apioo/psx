@@ -138,12 +138,12 @@ class Select implements SelectInterface
 		if($count === null)
 		{
 			$this->start = 0;
-			$this->count = (integer) $start;
+			$this->count = (int) $start;
 		}
 		else
 		{
-			$this->start = (integer) $start;
-			$this->count = (integer) $count;
+			$this->start = (int) $start;
+			$this->count = (int) $count;
 		}
 
 		return $this;
@@ -185,7 +185,7 @@ class Select implements SelectInterface
 
 	public function getTotalResults()
 	{
-		return (integer) $this->sql->getField($this->buildCountQuery(), $this->condition->getValues());
+		return (int) $this->sql->getField($this->buildCountQuery(), $this->condition->getValues());
 	}
 
 	public function getSupportedFields()

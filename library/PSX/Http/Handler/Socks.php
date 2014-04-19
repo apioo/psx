@@ -141,7 +141,7 @@ class Socks implements HandlerInterface
 			$response = ResponseParser::buildResponseFromHeader($headers);
 
 			// create stream
-			$contentLength   = (integer) (string) $response->getHeader('Content-Length');
+			$contentLength   = (int) $response->getHeader('Content-Length');
 			$chunkedEncoding = $response->getHeader('Transfer-Encoding') == 'chunked';
 
 			if($request->getMethod() != 'HEAD')

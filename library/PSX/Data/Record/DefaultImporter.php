@@ -139,7 +139,7 @@ class DefaultImporter implements ImporterInterface
 		switch($type)
 		{
 			case 'integer':
-				$value = (integer) $value;
+				$value = (int) $value;
 				break;
 
 			case 'float':

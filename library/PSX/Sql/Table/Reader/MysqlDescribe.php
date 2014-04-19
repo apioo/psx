@@ -85,7 +85,7 @@ SQL;
 
 		if($pos !== false)
 		{
-			$len  = (integer) substr($row['Type'], $pos + 1);
+			$len  = (int) substr($row['Type'], $pos + 1);
 			$name = substr($row['Type'], 0, $pos);
 
 			$type+= $len;

@@ -226,12 +226,12 @@ class Paypal
 
 		if($count !== null && $count > 0 && $count <= 20)
 		{
-			$url->addParam('count', (integer) $count);
+			$url->addParam('count', (int) $count);
 		}
 
 		if($startIndex !== null && $startIndex > 0)
 		{
-			$url->addParam('start_index', (integer) $startIndex);
+			$url->addParam('start_index', (int) $startIndex);
 		}
 
 		if($sortBy !== null && in_array($sortBy, array('create_time', 'update_time')))

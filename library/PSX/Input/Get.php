@@ -31,7 +31,7 @@ use PSX\Validate;
  * <code>
  * $get = new Input\Get();
  *
- * // returns (integer) $_GET['foo'] or false if foo ist not set
+ * // returns (int) $_GET['foo'] or false if foo ist not set
  * $bar = $get->foo('integer');
  *
  * // foo must be an integer value >= 3 and <= 64

@@ -60,10 +60,10 @@ abstract class DatabaseHandlerAbstract extends HandlerAbstract
 
 	public function getAll(array $fields = array(), $startIndex = 0, $count = 16, $sortBy = null, $sortOrder = null, Condition $con = null)
 	{
-		$startIndex = $startIndex !== null ? (integer) $startIndex : 0;
-		$count      = !empty($count)       ? (integer) $count      : 16;
-		$sortBy     = $sortBy     !== null ? $sortBy               : $this->table->getPrimaryKey();
-		$sortOrder  = $sortOrder  !== null ? (integer) $sortOrder  : Sql::SORT_DESC;
+		$startIndex = $startIndex !== null ? (int) $startIndex : 0;
+		$count      = !empty($count)       ? (int) $count      : 16;
+		$sortBy     = $sortBy     !== null ? $sortBy           : $this->table->getPrimaryKey();
+		$sortOrder  = $sortOrder  !== null ? (int) $sortOrder  : Sql::SORT_DESC;
 
 		$select = $this->getSelect();
 		$fields = array_intersect($fields, $this->getSupportedFields());
@@ -198,7 +198,7 @@ abstract class DatabaseHandlerAbstract extends HandlerAbstract
 					case TableInterface::TYPE_BIGINT:
 					case TableInterface::TYPE_BIT:
 					case TableInterface::TYPE_SERIAL:
-						$result[$key] = (integer) $value;
+						$result[$key] = (int) $value;
 						break;
 
 					case TableInterface::TYPE_DECIMAL:

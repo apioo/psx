@@ -34,6 +34,9 @@ use PSX\FilterAbstract;
  */
 class Length extends FilterAbstract
 {
+	protected $min;
+	protected $max;
+
 	public function __construct($min = null, $max = null)
 	{
 		$this->min = $min;

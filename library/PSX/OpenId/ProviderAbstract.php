@@ -106,7 +106,7 @@ abstract class ProviderAbstract extends ApiAbstract
 
 			$generator = new AssociationGenerator();
 			$assoc     = $generator->generate($request);
-			$expiresIn = (integer) $this->onAsocciation($assoc);
+			$expiresIn = (int) $this->onAsocciation($assoc);
 
 			if($expiresIn <= 0)
 			{

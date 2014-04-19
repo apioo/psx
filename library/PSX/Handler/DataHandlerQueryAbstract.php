@@ -50,7 +50,7 @@ abstract class DataHandlerQueryAbstract extends HandlerQueryAbstract
 		switch($type)
 		{
 			case MappingAbstract::TYPE_INTEGER:
-				return (integer) $data;
+				return (int) $data;
 				break;
 
 			case MappingAbstract::TYPE_FLOAT:

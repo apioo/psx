@@ -80,7 +80,7 @@ class Association
 
 	public function setExpire($expire)
 	{
-		$this->expire = (integer) $expire;
+		$this->expire = (int) $expire;
 	}
 
 	public function getExpire()

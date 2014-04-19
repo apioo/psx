@@ -74,12 +74,12 @@ class AccessToken extends RecordAbstract
 
 	public function setExpires($expiresIn)
 	{
-		$this->expiresIn = (integer) $expiresIn;
+		$this->expiresIn = (int) $expiresIn;
 	}
 
 	public function setExpiresIn($expiresIn)
 	{
-		$this->expiresIn = (integer) $expiresIn;
+		$this->expiresIn = (int) $expiresIn;
 	}
 
 	public function getExpiresIn()

@@ -185,7 +185,7 @@ class EntityAnnotationImporter implements ImporterInterface
 			case 'integer':
 			case 'smallint':
 			case 'bigint':
-				return (integer) $value;
+				return (int) $value;
 
 			case 'string':
 			case 'text':

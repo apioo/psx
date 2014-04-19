@@ -102,7 +102,7 @@ class DefinitionImporter implements ImporterInterface
 		switch($property->getType())
 		{
 			case 'integer':
-				$value = (integer) $value;
+				$value = (int) $value;
 				break;
 
 			case 'float':

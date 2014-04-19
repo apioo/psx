@@ -164,7 +164,7 @@ class Request extends Message
 	 */
 	public function setTimeout($timeout)
 	{
-		$this->timeout = (integer) $timeout;
+		$this->timeout = (int) $timeout;
 	}
 
 	/**
@@ -223,7 +223,7 @@ class Request extends Message
 	public function setFollowLocation($location, $maxRedirects = 8)
 	{
 		$this->followLocation = (boolean) $location;
-		$this->maxRedirects   = (integer) $maxRedirects;
+		$this->maxRedirects   = (int) $maxRedirects;
 	}
 
 	/**

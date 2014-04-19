@@ -50,7 +50,7 @@ class Yadis
 
 	public function setMaxRecursion($recursion)
 	{
-		$this->maxRecursion = (integer) $recursion;
+		$this->maxRecursion = (int) $recursion;
 	}
 
 	public function discover(Url $url, $raw = false, $deep = 0)

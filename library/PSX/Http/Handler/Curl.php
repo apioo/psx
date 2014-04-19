@@ -120,7 +120,7 @@ class Curl implements HandlerInterface
 
 			if(is_resource($body))
 			{
-				$length = (integer) (string) $request->getHeader('Content-Length');
+				$length = (int) $request->getHeader('Content-Length');
 
 				if(empty($length))
 				{

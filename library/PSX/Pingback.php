@@ -112,7 +112,7 @@ class Pingback
 
 			if(isset($resp['faultCode']))
 			{
-				$faultCode = (integer) $resp['faultCode'];
+				$faultCode = (int) $resp['faultCode'];
 
 				if(isset(self::$errorCodes[$faultCode]))
 				{

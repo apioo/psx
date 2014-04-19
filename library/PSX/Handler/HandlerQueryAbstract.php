@@ -95,8 +95,8 @@ abstract class HandlerQueryAbstract implements HandlerQueryInterface
 	 */
 	public function getResultSet(array $fields, $startIndex = 0, $count = 16, $sortBy = null, $sortOrder = null, Condition $con = null)
 	{
-		$startIndex = $startIndex !== null ? (integer) $startIndex : 0;
-		$count      = !empty($count)       ? (integer) $count      : 16;
+		$startIndex = $startIndex !== null ? (int) $startIndex : 0;
+		$count      = !empty($count)       ? (int) $count      : 16;
 		$sortOrder  = $sortOrder  !== null ? (strcasecmp($sortOrder, 'ascending') == 0 ? Sql::SORT_ASC : Sql::SORT_DESC) : null;
 
 		$total      = $this->getCount($con);

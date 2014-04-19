@@ -48,10 +48,10 @@ abstract class DomHandlerAbstract extends DataHandlerQueryAbstract
 
 	public function getAll(array $fields = array(), $startIndex = 0, $count = 16, $sortBy = null, $sortOrder = null, Condition $con = null)
 	{
-		$startIndex = $startIndex !== null ? (integer) $startIndex : 0;
-		$count      = !empty($count)       ? (integer) $count      : 16;
-		$sortBy     = $sortBy     !== null ? $sortBy               : $this->mapping->getIdProperty();
-		$sortOrder  = $sortOrder  !== null ? (integer) $sortOrder  : Sql::SORT_DESC;
+		$startIndex = $startIndex !== null ? (int) $startIndex : 0;
+		$count      = !empty($count)       ? (int) $count      : 16;
+		$sortBy     = $sortBy     !== null ? $sortBy           : $this->mapping->getIdProperty();
+		$sortOrder  = $sortOrder  !== null ? (int) $sortOrder  : Sql::SORT_DESC;
 
 		$fields = array_intersect($fields, $this->getSupportedFields());
 

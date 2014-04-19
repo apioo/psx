@@ -86,7 +86,7 @@ class Response extends Message
 	 */
 	public function setStatusCode($code)
 	{
-		$this->code = (integer) $code;
+		$this->code = (int) $code;
 	}
 
 	/**

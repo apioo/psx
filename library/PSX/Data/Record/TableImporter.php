@@ -86,7 +86,7 @@ class TableImporter implements ImporterInterface
 			case TableInterface::TYPE_BIGINT:
 			case TableInterface::TYPE_BIT:
 			case TableInterface::TYPE_SERIAL:
-				return (integer) $data;
+				return (int) $data;
 				break;
 
 			case TableInterface::TYPE_DECIMAL:

@@ -410,7 +410,7 @@ class Sql extends PDO implements Connection
 			$params = array();
 		}
 
-		return (integer) $this->getField($sql, $params);
+		return (int) $this->getField($sql, $params);
 	}
 
 	/**

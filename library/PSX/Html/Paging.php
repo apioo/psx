@@ -65,9 +65,9 @@ class Paging implements Countable, Iterator
 		$this->range     = $range;
 
 		// resultset values
-		$this->totalResults = (integer) $resultSet->getTotalResults();
-		$this->itemsPerPage = (integer) $resultSet->getItemsPerPage();
-		$this->startIndex   = (integer) $resultSet->getStartIndex();
+		$this->totalResults = (int) $resultSet->getTotalResults();
+		$this->itemsPerPage = (int) $resultSet->getItemsPerPage();
+		$this->startIndex   = (int) $resultSet->getStartIndex();
 		$this->count        = $resultSet->count();
 
 		// do the math

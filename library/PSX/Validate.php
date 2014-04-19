@@ -124,7 +124,7 @@ class Validate extends ArrayObject
 		switch($type)
 		{
 			case self::TYPE_INTEGER:
-				$value = (integer) $value;
+				$value = (int) $value;
 				break;
 
 			case self::TYPE_STRING:

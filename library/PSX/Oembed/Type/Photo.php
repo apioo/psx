@@ -60,7 +60,7 @@ class Photo extends TypeAbstract
 
 	public function setWidth($width)
 	{
-		$this->width = (integer) $width;
+		$this->width = (int) $width;
 	}
 
 	public function getWidth()
@@ -70,7 +70,7 @@ class Photo extends TypeAbstract
 
 	public function setHeight($height)
 	{
-		$this->height = (integer) $height;
+		$this->height = (int) $height;
 	}
 
 	public function getHeight()
