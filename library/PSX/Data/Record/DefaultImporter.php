@@ -147,7 +147,7 @@ class DefaultImporter implements ImporterInterface
 				break;
 
 			case 'boolean':
-				$value = $value === 'false' ? false : (boolean) $value;
+				$value = $value === 'false' ? false : (bool) $value;
 				break;
 
 			case 'string':

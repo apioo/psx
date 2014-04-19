@@ -58,7 +58,7 @@ abstract class DataHandlerQueryAbstract extends HandlerQueryAbstract
 				break;
 
 			case MappingAbstract::TYPE_BOOLEAN:
-				return (boolean) $data;
+				return (bool) $data;
 				break;
 
 			case MappingAbstract::TYPE_DATETIME:

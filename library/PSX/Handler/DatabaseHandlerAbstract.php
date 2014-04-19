@@ -209,7 +209,7 @@ abstract class DatabaseHandlerAbstract extends HandlerAbstract
 						break;
 
 					case TableInterface::TYPE_BOOLEAN:
-						$result[$key] = (boolean) $value;
+						$result[$key] = (bool) $value;
 						break;
 
 					case TableInterface::TYPE_DATE:

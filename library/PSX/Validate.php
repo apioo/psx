@@ -136,7 +136,7 @@ class Validate extends ArrayObject
 				break;
 
 			case self::TYPE_BOOLEAN:
-				$value = (boolean) $value;
+				$value = (bool) $value;
 				break;
 		}
 

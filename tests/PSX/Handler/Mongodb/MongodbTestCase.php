@@ -131,7 +131,7 @@ abstract class MongodbTestCase extends \PHPUnit_Framework_TestCase
 				break;
 
 			case MappingAbstract::TYPE_BOOLEAN:
-				return (boolean) $data;
+				return (bool) $data;
 				break;
 
 			default:

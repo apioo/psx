@@ -137,7 +137,7 @@ class Cache
 
 	public function setEnabled($enabled)
 	{
-		$this->enabled = (boolean) $enabled;
+		$this->enabled = (bool) $enabled;
 	}
 
 	/**

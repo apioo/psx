@@ -49,7 +49,7 @@ class Webfinger
 
 	public function setHostmetaDiscovery($discovery)
 	{
-		$this->hostmetaDiscovery = (boolean) $discovery;
+		$this->hostmetaDiscovery = (bool) $discovery;
 	}
 
 	public function getLastError()

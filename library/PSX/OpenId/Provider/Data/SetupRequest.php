@@ -125,7 +125,7 @@ class SetupRequest extends RecordAbstract
 
 	public function setImmediate($immediate)
 	{
-		$this->isImmediate = (boolean) $immediate;
+		$this->isImmediate = (bool) $immediate;
 	}
 
 	public function isImmediate()

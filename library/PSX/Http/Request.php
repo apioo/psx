@@ -143,7 +143,7 @@ class Request extends Message
 	 */
 	public function setSSL($ssl)
 	{
-		$this->ssl = (boolean) $ssl;
+		$this->ssl = (bool) $ssl;
 	}
 
 	/**
@@ -222,7 +222,7 @@ class Request extends Message
 	 */
 	public function setFollowLocation($location, $maxRedirects = 8)
 	{
-		$this->followLocation = (boolean) $location;
+		$this->followLocation = (bool) $location;
 		$this->maxRedirects   = (int) $maxRedirects;
 	}
 

@@ -199,7 +199,7 @@ class EntityAnnotationImporter implements ImporterInterface
 				return (float) $value;
 
 			case 'boolean':
-				return $value === 'false' ? false : (boolean) $value;
+				return $value === 'false' ? false : (bool) $value;
 
 			case 'datetime':
 			case 'date':

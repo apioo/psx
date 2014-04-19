@@ -57,7 +57,7 @@ class Property
 		$this->type      = $type;
 		$this->reference = $reference;
 		$this->class     = $class;
-		$this->required  = (boolean) $required;
+		$this->required  = (bool) $required;
 		$this->default   = $default;
 		$this->title     = $title;
 		$this->child     = $child;

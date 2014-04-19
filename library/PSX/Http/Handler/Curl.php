@@ -62,7 +62,7 @@ class Curl implements HandlerInterface
 
 	public function setFollowLocation($followLocation)
 	{
-		$this->hasFollowLocation = (boolean) $followLocation;
+		$this->hasFollowLocation = (bool) $followLocation;
 	}
 
 	public function setProxy($proxy)

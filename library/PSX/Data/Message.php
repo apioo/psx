@@ -69,6 +69,6 @@ class Message extends RecordAbstract
 
 	public function setSuccess($success)
 	{
-		$this->success = (boolean) $success;
+		$this->success = (bool) $success;
 	}
 }
