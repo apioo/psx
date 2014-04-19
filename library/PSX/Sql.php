@@ -139,7 +139,7 @@ class Sql extends PDO implements Connection
 		return $result;
 	}
 
-	public function getAll($sql, array $params = array(), $mode = 0, $class = 'stdClass', array $args = array())
+	public function getAll($sql, array $params = array(), $mode = 0, $class = 'stdClass', array $args = null)
 	{
 		$result = $this->getResult($sql, $params, $mode, $class, $args);
 
@@ -151,7 +151,7 @@ class Sql extends PDO implements Connection
 		return array();
 	}
 
-	public function getRow($sql, array $params = array(), $mode = 0, $class = 'stdClass', array $args = array())
+	public function getRow($sql, array $params = array(), $mode = 0, $class = 'stdClass', array $args = null)
 	{
 		$content = array();
 		$result  = $this->getResult($sql, $params, $mode, $class, $args);
@@ -428,7 +428,7 @@ class Sql extends PDO implements Connection
 		return $this->lastInsertId();
 	}
 
-	protected function getResult($sql, array $params = array(), $mode = 0, $class = 'stdClass', array $args = array())
+	protected function getResult($sql, array $params = array(), $mode = 0, $class = 'stdClass', array $args = null)
 	{
 		switch($mode)
 		{
