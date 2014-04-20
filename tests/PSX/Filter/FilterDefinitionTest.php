@@ -119,6 +119,17 @@ class FilterDefinitionTest extends \PHPUnit_Framework_TestCase
 
 		$filterDefinition->validate($record);
 	}
+
+	public function testGetRecord()
+	{
+		$filterDefinition = new FilterDefinition(new Validate(), array(
+			new Property('id', Validate::TYPE_INTEGER),
+			new Property('title', Validate::TYPE_STRING, array(new Length(1, 2))),
+		));
+
+		$this->assertInstanceOf('PSX\Data\RecordInterface', $filterDefinition->getRecord());
+		$this->assertEquals(array('id' => null, 'title' => null), $filterDefinition->getRecord()->getRecordInfo()->getFields());
+	}
 }
 
 class ValidateTestRecord implements RecordInterface

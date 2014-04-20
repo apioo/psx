@@ -23,6 +23,7 @@
 
 namespace PSX\Filter;
 
+use PSX\Data\Record;
 use PSX\Data\RecordInterface;
 use PSX\Filter\Definition\NotDefinedException;
 use PSX\Filter\Definition\Property;
@@ -61,11 +62,28 @@ class FilterDefinition
 	}
 
 	/**
-	 * @param array<PSX\Filter\Definition\Property $fields
+	 * @param array<PSX\Filter\Definition\Property> $fields
 	 */
 	public function setFields(array $fields)
 	{
 		$this->fields = $fields;
+	}
+
+	/**
+	 * Returns an anonymous record based on the defined fields
+	 *
+	 * @return PSX\Data\RecordInterface
+	 */
+	public function getRecord()
+	{
+		$fields = array();
+
+		foreach($this->fields as $property)
+		{
+			$fields[$property->getName()] = null;
+		}
+
+		return new Record('record', $fields);
 	}
 
 	/**
@@ -83,6 +101,9 @@ class FilterDefinition
 		{
 			throw new NotDefinedException('No valid data defined');
 		}
+
+		// clear previous errors
+		$this->validator->clearError();
 
 		foreach($data as $key => $value)
 		{
