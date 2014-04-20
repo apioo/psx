@@ -26,28 +26,11 @@ namespace PSX;
 use ArrayObject;
 
 /**
- * This class offers methods to sanitize values that came from untrusted sources
- * The apply methods is the heart of this class here an example how you can
- * easily validate data.
- * <code>
- * $validator = new Validate();
- * $value     = $validator->apply($input, 'string', array(new Filter\Length(3, 8)));
- *
- * if($value === false)
- * {
- * 	// validation fails
- * }
- * else
- * {
- * 	// the variable $value is an string with min 3 and max 8 chars. The
- * 	// method validate cast the variable to a string
- * }
- * </code>
- *
- * The method validate returns the value if the validation was successful or
- * false if it fails. You can cast the variable to string, integer, float or
- * boolean. Optional you can pass an array of filters wich validates the value.
- * Here some examples:
+ * This class offers methods to sanitize values that came from untrusted 
+ * sources. The method validate returns the value if the validation was 
+ * successful or false if it fails. You can cast the variable to string, 
+ * integer, float or boolean. Optional you can pass an array of filters wich 
+ * validates the value. Here some examples:
  * <code>
  * $validator = new Validate();
  *
@@ -58,7 +41,7 @@ use ArrayObject;
  * // "php"
  * $value = $validator->apply($input, Validate::TYPE_STRING, array(new Filter\Regexp('/php/')));
  *
- * // we us the length filter and the value must be an interger wich is min 10
+ * // we use the length filter and the value must be an interger wich is min 10
  * // and max 100
  * $value = $validator->apply($input, Validate::TYPE_INTEGER, array(new Filter\Length(10, 100)));
  * </code>
@@ -80,18 +63,18 @@ use ArrayObject;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Validate extends ArrayObject
+class Validate
 {
 	const TYPE_INTEGER = 'integer';
 	const TYPE_STRING  = 'string';
 	const TYPE_FLOAT   = 'float';
 	const TYPE_BOOLEAN = 'boolean';
 
-	private $error;
+	protected $error;
 
 	public function __construct()
 	{
-		parent::__construct($this->error = array());
+		$this->error = array();
 	}
 
 	/**
@@ -110,13 +93,20 @@ class Validate extends ArrayObject
 	 */
 	public function apply($value, $type = self::TYPE_STRING, array $filters = array(), $key = null, $title = null, $required = true, $returnValue = false)
 	{
-		$title = $title === null ? ucfirst($key) : $title;
+		if($key !== null && $title === null)
+		{
+			$title = ucfirst($key);
+		}
+		else if($title === null)
+		{
+			$title = 'Unknown';
+		}
 
 		// we check for $value === false because the input container returns 
 		// explicit false if the value is not set
 		if($required === true && $value === false)
 		{
-			$this->addError($key, $title . ' not set');
+			$this->addError($key, sprintf('The field "%s" is not set', $title));
 
 			return $returnValue;
 		}
@@ -128,11 +118,11 @@ class Validate extends ArrayObject
 				break;
 
 			case self::TYPE_STRING:
-				$value = (string)  $value;
+				$value = (string) $value;
 				break;
 
 			case self::TYPE_FLOAT:
-				$value = (float)   $value;
+				$value = (float) $value;
 				break;
 
 			case self::TYPE_BOOLEAN:
@@ -148,7 +138,14 @@ class Validate extends ArrayObject
 			{
 				if($required === true)
 				{
-					$this->addError($key, sprintf($filter->getErrorMsg(), $title));
+					$errorMessage = $filter->getErrorMsg();
+
+					if($errorMessage === null)
+					{
+						$errorMessage = 'The field "%s" is not valid';
+					}
+
+					$this->addError($key, sprintf($errorMessage, $title));
 				}
 
 				return $returnValue;
@@ -168,28 +165,40 @@ class Validate extends ArrayObject
 
 	public function addError($key, $msg)
 	{
-		$this->offsetSet($key, $msg);
+		if($key === null)
+		{
+			$this->error[] = $msg;
+		}
+		else
+		{
+			$this->error[$key] = $msg;
+		}
 	}
 
 	public function hasError()
 	{
-		return $this->count() > 0;
+		return count($this->error) > 0;
 	}
 
-	public function getError()
+	public function getError($key = null)
 	{
-		return $this->getArrayCopy();
+		if($key === null)
+		{
+			return $this->error;
+		}
+		else
+		{
+			return isset($this->error[$key]) ? $this->error[$key] : null;
+		}
 	}
 
 	public function getLastError()
 	{
-		$error = $this->getError();
-
-		return end($error);
+		return end($this->error);
 	}
 
 	public function clearError()
 	{
-		$this->exchangeArray($this->error = array());
+		$this->error = array();
 	}
 }
