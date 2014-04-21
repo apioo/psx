@@ -82,9 +82,15 @@ abstract class ControllerTestCase extends \PHPUnit_Extensions_Database_TestCase
 
 		// we replace the routing parser
 		getContainer()->set('routing_parser', new RoutingParser\ArrayCollection($this->getPaths()));
+
+		// we must delete the cache of some services so that they take the new 
+		// routing parser
 		getContainer()->set('loader_location_finder', null);
 		getContainer()->set('loader', null);
-		getContainer()->set('testCase', $this);
+		getContainer()->set('reverse_router', null);
+
+		// assign the phpunit test case
+		getContainer()->set('test_case', $this);
 
 		// enables us to load the same controller method multiple times
 		getContainer()->get('loader')->setRecursiveLoading(true);
