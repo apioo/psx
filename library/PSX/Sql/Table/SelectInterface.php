@@ -85,14 +85,14 @@ interface SelectInterface
 	 *
 	 * @return array
 	 */
-	public function getAll($mode = 0, $class = null, array $args = array());
+	public function getAll($mode = 0, $class = null, array $args = null);
 
 	/**
 	 * Returns this first row from the given selection
 	 *
 	 * @return array
 	 */
-	public function getRow($mode = 0, $class = null, array $args = array());
+	public function getRow($mode = 0, $class = null, array $args = null);
 
 	/**
 	 * Returns an array wich contains the value of each the first column from 

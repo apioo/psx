@@ -149,7 +149,7 @@ class Select implements SelectInterface
 		return $this;
 	}
 
-	public function getAll($mode = 0, $class = null, array $args = array())
+	public function getAll($mode = 0, $class = null, array $args = null)
 	{
 		if($mode == Sql::FETCH_OBJECT && $class === null)
 		{
@@ -159,7 +159,7 @@ class Select implements SelectInterface
 		return $this->sql->getAll($this->buildQuery(), $this->condition->getValues(), $mode, $class, $args);
 	}
 
-	public function getRow($mode = 0, $class = null, array $args = array())
+	public function getRow($mode = 0, $class = null, array $args = null)
 	{
 		if($mode == Sql::FETCH_OBJECT && $class === null)
 		{
