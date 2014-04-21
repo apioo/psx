@@ -23,6 +23,8 @@ function getContainer()
 		$container->setParameter('config.file', 'configuration.php');
 
 		$config = $container->get('config');
+		$config['psx_url']          = 'http://127.0.0.1';
+		$config['psx_dispatch']     = '';
 		$config['psx_path_cache']   = 'cache';
 		$config['psx_path_library'] = 'library';
 	}

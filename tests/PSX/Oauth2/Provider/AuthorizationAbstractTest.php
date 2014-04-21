@@ -70,7 +70,7 @@ class AuthorizationAbstractTest extends ControllerTestCase
 		}
 		catch(RedirectException $e)
 		{
-			$this->assertEquals(302, $e->getStatusCode());
+			$this->assertEquals(307, $e->getStatusCode());
 			$this->assertEquals('http://foo.com?code=foobar&state=random', (string) $e->getUrl());
 		}
 	}
@@ -95,7 +95,7 @@ class AuthorizationAbstractTest extends ControllerTestCase
 		}
 		catch(RedirectException $e)
 		{
-			$this->assertEquals(302, $e->getStatusCode());
+			$this->assertEquals(307, $e->getStatusCode());
 			$this->assertEquals('http://foo.com?error=unauthorized_client&error_description=Client+is+not+authenticated', (string) $e->getUrl());
 		}
 	}
@@ -120,7 +120,7 @@ class AuthorizationAbstractTest extends ControllerTestCase
 		}
 		catch(RedirectException $e)
 		{
-			$this->assertEquals(302, $e->getStatusCode());
+			$this->assertEquals(307, $e->getStatusCode());
 			$this->assertEquals('http://foo.com#access_token=2YotnFZFEjr1zCsicMWpAA&token_type=example&state=random', (string) $e->getUrl());
 		}
 	}
@@ -145,7 +145,7 @@ class AuthorizationAbstractTest extends ControllerTestCase
 		}
 		catch(RedirectException $e)
 		{
-			$this->assertEquals(302, $e->getStatusCode());
+			$this->assertEquals(307, $e->getStatusCode());
 			$this->assertEquals('http://foo.com?error=unauthorized_client&error_description=Client+is+not+authenticated', (string) $e->getUrl());
 		}
 	}

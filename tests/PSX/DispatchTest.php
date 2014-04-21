@@ -195,7 +195,7 @@ JSON;
 
 		$dispatch->route($request, $response);
 
-		$this->assertEquals(302, $response->getStatusCode());
+		$this->assertEquals(307, $response->getStatusCode());
 		$this->assertEquals('http://localhost.com/foobar', $response->getHeader('Location'));
 	}
 }

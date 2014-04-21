@@ -36,6 +36,6 @@ class RedirectExceptionController extends ControllerAbstract
 {
 	public function onLoad()
 	{
-		$this->redirect('http://localhost.com/foobar', 302);
+		$this->redirect('http://localhost.com/foobar');
 	}
 }
