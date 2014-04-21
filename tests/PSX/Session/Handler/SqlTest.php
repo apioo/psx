@@ -24,8 +24,8 @@
 namespace PSX\Session\Handler;
 
 use PDOException;
-use PSX\SessionTest;
 use PSX\Sql\Table;
+use PSX\Sql\DbTestCase;
 use PSX\Sql\TableInterface;
 use PSX\Sql\Table\ColumnAllocation;
 
@@ -36,22 +36,67 @@ use PSX\Sql\Table\ColumnAllocation;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class SqlTest extends SessionTest
+class SqlTest extends DbTestCase
 {
 	protected $table = 'psx_session_handler_sql_test';
 
-	protected function setUp()
+	public function getDataSet()
 	{
-		try
-		{
-			$this->sql = getContainer()->get('sql');
-		}
-		catch(PDOException $e)
-		{
-			$this->markTestSkipped($e->getMessage());
-		}
+		return $this->createFlatXMLDataSet(dirname(__FILE__) . '/handler_fixture.xml');
+	}
 
-		parent::setUp();
+	public function testOpen()
+	{
+		$this->getHandler()->open('/', 'file');
+	}
+
+	public function testClose()
+	{
+		$this->getHandler()->close();		
+	}
+
+	public function testRead()
+	{
+		$data = $this->getHandler()->read('0bb3df120bff3c64e9ef553b61ffcd06');
+
+		$this->assertEquals('foobar', $data);
+
+		$data = $this->getHandler()->read('unknown');
+
+		$this->assertEquals(null, $data);
+	}
+
+	public function testWrite()
+	{
+		$this->getHandler()->write('eae84a980e3bcd9bb04cb866facc9385', 'foobar2');
+
+		$this->assertEquals('foobar2', $this->getHandler()->read('eae84a980e3bcd9bb04cb866facc9385'));
+	}
+
+	public function testDestroy()
+	{
+		$data = $this->getHandler()->read('0bb3df120bff3c64e9ef553b61ffcd06');
+
+		$this->assertEquals('foobar', $data);
+
+		$this->getHandler()->destroy('0bb3df120bff3c64e9ef553b61ffcd06');
+
+		$data = $this->getHandler()->read('0bb3df120bff3c64e9ef553b61ffcd06');
+
+		$this->assertEquals(null, $data);
+	}
+
+	public function testGc()
+	{
+		$data = $this->getHandler()->read('0bb3df120bff3c64e9ef553b61ffcd06');
+
+		$this->assertEquals('foobar', $data);
+
+		$this->getHandler()->gc(1);
+
+		$data = $this->getHandler()->read('0bb3df120bff3c64e9ef553b61ffcd06');
+
+		$this->assertEquals(null, $data);
 	}
 
 	protected function getHandler()

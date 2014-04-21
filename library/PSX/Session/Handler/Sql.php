@@ -86,8 +86,10 @@ class Sql implements SessionHandlerInterface
 
 	public function gc($maxTime)
 	{
+		$maxTime = (int) $maxTime;
+
 		$con = new Condition();
-		$con->add('DATE_ADD(`date`, "INTERVAL ' . $maxTime . ' SECOND")', '<', date(DateTime::SQL));
+		$con->add('DATE_ADD(`date`, INTERVAL ' . $maxTime . ' SECOND)', '<', date(DateTime::SQL));
 
 		$this->table->delete($con);
 

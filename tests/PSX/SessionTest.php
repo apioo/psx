@@ -36,7 +36,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase
 
 	protected function setUp()
 	{
-		$this->sess = new Session('psx_session', $this->getHandler());
+		$this->sess = new Session('psx_session');
 		$this->sess->start();
 	}
 
@@ -47,12 +47,6 @@ class SessionTest extends \PHPUnit_Framework_TestCase
 			$this->sess->destroy();
 			$this->sess->close();
 		}
-	}
-
-	protected function getHandler()
-	{
-		// use default session handler
-		return null;
 	}
 
 	public function testGetSet()
