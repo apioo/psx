@@ -88,10 +88,7 @@ interface ControllerInterface
 	public function onDelete();
 
 	/**
-	 * The controller should write any produced content to the response body
-	 *
-	 * @param string $content
-	 * @return string
+	 * Is called after the controller action was called
 	 */
 	public function processResponse();
 }
