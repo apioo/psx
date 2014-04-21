@@ -242,4 +242,67 @@ TEXT;
 
 		$this->assertEquals($expect, $actual);
 	}
+
+	public function testAlreadyEncoded()
+	{
+		$md = <<<TEXT
+<p>foo</p>
+TEXT;
+
+		$actual = Markdown::decode($md);
+		$expect = '<p>foo</p>';
+
+		$this->assertEquals($expect, $actual);
+	}
+
+	public function testCodeWithWhitespaceLine()
+	{
+		$md = <<<TEXT
+some code description
+
+	class Voila {
+  
+  
+	public:
+	  // Voila
+	  static const string VOILA = "Voila";
+	  // will not interfere with embedded tags.
+	}
+TEXT;
+
+		$actual = Markdown::decode($md);
+		$expect = '<p>some code description </p>' . "\n";
+		$expect.= '<pre class="prettyprint">class Voila {' . "\n";
+		$expect.= '  ' . "\n";
+		$expect.= '  ' . "\n";
+		$expect.= 'public:' . "\n";
+		$expect.= '  // Voila' . "\n";
+		$expect.= '  static const string VOILA = "Voila";' . "\n";
+		$expect.= '  // will not interfere with embedded tags.' . "\n";
+		$expect.= '}' . "\n";
+		$expect.= '</pre>' . "\n";
+
+		$this->assertEquals($expect, $actual);
+	}
+
+	public function testNestedQuote()
+	{
+		$md = <<<TEXT
+> this is a test quote
+> > ## some heading
+> > another text
+
+and an reply to this quote
+TEXT;
+
+		$actual = Markdown::decode($md);
+		$expect = '<blockquote>' . "\n";
+		$expect.= '<p>this is a test quote </p>' . "\n";
+		$expect.= '<h2>some heading</h2>' . "\n";
+		$expect.= '<p>another text </p>' . "\n";
+		$expect.= '</blockquote>' . "\n";
+		$expect.= '<p>and an reply to this quote </p>' . "\n";
+
+		$this->assertEquals($expect, $actual);
+	}
 }

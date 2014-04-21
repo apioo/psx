@@ -23,8 +23,6 @@
 
 namespace PSX\Util;
 
-use ArrayIterator;
-
 /**
  * This parser implements a subset of the markdown syntax. It is optimized for
  * speed and uses almost no regular expressions for parsing.
@@ -36,7 +34,7 @@ use ArrayIterator;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Markdown extends ArrayIterator
+class Markdown
 {
 	const NONE           = 0x0;
 	const PARAGRAPH      = 0x1;
@@ -46,20 +44,21 @@ class Markdown extends ArrayIterator
 
 	public static $blockElements = array('br', 'hr', 'p', 'ol', 'ul', 'div', 'pre', 'blockquote', 'dl', 'table');
 
-	private $inQuote = false;
-	private $quote   = 0;
-	private $tag     = 0;
+	protected $lines;
+	protected $inQuote = false;
+	protected $quote   = 0;
+	protected $tag     = 0;
 
 	public function __construct(array $lines)
 	{
-		parent::__construct($lines);
+		$this->lines = $lines;
 	}
 
 	public function parse()
 	{
 		$html = '';
 
-		foreach($this as $k => $v)
+		foreach($this->lines as $k => $v)
 		{
 			$html.= $this->parseLine($v);
 		}
@@ -67,7 +66,7 @@ class Markdown extends ArrayIterator
 		return $html;
 	}
 
-	private function parseLine($v, $inQuote = false)
+	protected function parseLine($v, $inQuote = false)
 	{
 		// blank line
 		if(strlen(trim($v)) === 0 && ($this->tag != self::CODE || $v == ''))
@@ -129,25 +128,7 @@ class Markdown extends ArrayIterator
 
 			case substr($v, 0, 2) == '  ':
 
-				switch($this->tag)
-				{
-					case self::PARAGRAPH:
-						return $this->paragraph($v, $inQuote);
-						break;
-
-					case self::UNORDERED_LIST:
-						return $this->unorderedList($v, $inQuote);
-						break;
-
-					case self::ORDERED_LIST:
-						return $this->orderedList($v, $inQuote);
-						break;
-
-					case self::CODE:
-						return $this->code($v, $inQuote);
-						break;
-				}
-
+				return $this->process($v, $inQuote);
 				break;
 
 			default:
@@ -157,7 +138,7 @@ class Markdown extends ArrayIterator
 		}
 	}
 
-	private function endTag($inQuote = false)
+	protected function endTag($inQuote)
 	{
 		$html = '';
 
@@ -191,7 +172,29 @@ class Markdown extends ArrayIterator
 		return $html;
 	}
 
-	private function heading($v, $inQuote = false)
+	protected function process($v, $inQuote)
+	{
+		switch($this->tag)
+		{
+			case self::PARAGRAPH:
+				return $this->paragraph($v, $inQuote);
+				break;
+
+			case self::UNORDERED_LIST:
+				return $this->unorderedList($v, $inQuote);
+				break;
+
+			case self::ORDERED_LIST:
+				return $this->orderedList($v, $inQuote);
+				break;
+
+			case self::CODE:
+				return $this->code($v, $inQuote);
+				break;
+		}
+	}
+
+	protected function heading($v, $inQuote = false)
 	{
 		$html = '';
 		$html.= $this->endTag($inQuote);
@@ -208,7 +211,7 @@ class Markdown extends ArrayIterator
 		return $html;
 	}
 
-	private function paragraph($v, $inQuote = false)
+	protected function paragraph($v, $inQuote = false)
 	{
 		$html = '';
 
@@ -230,7 +233,7 @@ class Markdown extends ArrayIterator
 		return $html;
 	}
 
-	private function unorderedList($v, $inQuote = false)
+	protected function unorderedList($v, $inQuote = false)
 	{
 		$html = '';
 
@@ -247,7 +250,7 @@ class Markdown extends ArrayIterator
 		return $html;
 	}
 
-	private function orderedList($v, $inQuote = false)
+	protected function orderedList($v, $inQuote = false)
 	{
 		$html = '';
 
@@ -264,7 +267,7 @@ class Markdown extends ArrayIterator
 		return $html;
 	}
 
-	private function code($v, $inQuote = false)
+	protected function code($v, $inQuote = false)
 	{
 		$html = '';
 
@@ -281,7 +284,7 @@ class Markdown extends ArrayIterator
 		return $html;
 	}
 
-	private function line($v, $inQuote = false)
+	protected function line($v, $inQuote = false)
 	{
 		$html = '';
 		$html.= $this->endTag($inQuote);
@@ -290,7 +293,7 @@ class Markdown extends ArrayIterator
 		return $html;
 	}
 
-	private function text($v)
+	protected function text($v)
 	{
 		return self::encodeEmphasis(trim($v));
 	}
@@ -318,7 +321,7 @@ class Markdown extends ArrayIterator
 	 *
 	 * @return boolean
 	 */
-	public static function shouldDecoded($content)
+	protected static function shouldDecoded($content)
 	{
 		foreach(self::$blockElements as $el)
 		{
@@ -331,7 +334,7 @@ class Markdown extends ArrayIterator
 		return true;
 	}
 
-	public static function encodeEmphasis($v)
+	protected static function encodeEmphasis($v)
 	{
 		// encode emphasis only if we are not in an url
 		$parts = preg_split('/(https?:\/\/\S*)/S', $v, -1, PREG_SPLIT_DELIM_CAPTURE);
@@ -351,7 +354,7 @@ class Markdown extends ArrayIterator
 		return $html;
 	}
 
-	public static function normalize($content)
+	protected static function normalize($content)
 	{
 		$content = preg_replace('{^\xEF\xBB\xBF|\x1A}', '', $content);
 		$content = str_replace(array("\r\n", "\n", "\r"), "\n", $content);
