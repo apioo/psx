@@ -106,7 +106,7 @@ abstract class AuthorizationAbstract extends ApiAbstract
 				$redirectUri->setParam('error', $e->getType());
 				$redirectUri->setParam('error_description', $e->getMessage());
 
-				$this->redirect($redirectUri->getUrl(), 302);
+				$this->redirect($redirectUri->getUrl());
 			}
 			else
 			{
@@ -132,7 +132,7 @@ abstract class AuthorizationAbstract extends ApiAbstract
 				$url->setParam('state', $request->getState());
 			}
 
-			$this->redirect($url->getUrl(), 302);
+			$this->redirect($url->getUrl());
 		}
 		else
 		{
@@ -165,7 +165,7 @@ abstract class AuthorizationAbstract extends ApiAbstract
 
 			$url->setFragment(http_build_query($fields, '', '&'));
 
-			$this->redirect($url->getUrl(), 302);
+			$this->redirect($url->getUrl());
 		}
 		else
 		{
