@@ -70,7 +70,7 @@ class ControllerAbstractTest extends ControllerTestCase
 
 		$controller = $this->loadController($request, $response);
 
-		$this->assertJsonStringEqualsJsonString(json_encode(array('bar' => 'foo')), (string) $response->getBody());
+		$this->assertJsonStringEqualsJsonString(json_encode(array('foo' => 'bar')), (string) $response->getBody());
 	}
 
 	public function testRedirect()
@@ -88,7 +88,27 @@ class ControllerAbstractTest extends ControllerTestCase
 		}
 		catch(RedirectException $e)
 		{
-			$this->assertEquals(302, $e->getStatusCode());
+			$this->assertEquals(307, $e->getStatusCode());
+			$this->assertEquals('/redirect/bar', substr($e->getUrl(), -13));
+		}
+	}
+
+	public function testRedirectAbsolute()
+	{
+		$path     = '/controller/absolute';
+		$request  = new Request(new Url('http://127.0.0.1' . $path), 'GET');
+		$response = new Response();
+		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
+
+		try
+		{
+			$controller = $this->loadController($request, $response);
+
+			$this->fail('Must throw an redirect exception');
+		}
+		catch(RedirectException $e)
+		{
+			$this->assertEquals(307, $e->getStatusCode());
 			$this->assertEquals('http://localhost.com/foobar', $e->getUrl());
 		}
 	}
@@ -166,10 +186,12 @@ XML;
 			'/controller/inspect'   => 'PSX\Controller\Foo\Application\TestController::doInspect',
 			'/controller/forward'   => 'PSX\Controller\Foo\Application\TestController::doForward',
 			'/controller/redirect'  => 'PSX\Controller\Foo\Application\TestController::doRedirect',
+			'/controller/absolute'  => 'PSX\Controller\Foo\Application\TestController::doRedirectAbsolute',
 			'/controller/array'     => 'PSX\Controller\Foo\Application\TestController::doSetArrayBody',
 			'/controller/record'    => 'PSX\Controller\Foo\Application\TestController::doSetRecordBody',
 			'/controller/dom'       => 'PSX\Controller\Foo\Application\TestController::doSetDomDocumentBody',
 			'/controller/simplexml' => 'PSX\Controller\Foo\Application\TestController::doSetSimpleXmlBody',
+			'/redirect/:foo'        => 'PSX\Controller\Foo\Application\TestController::doRedirectDestiniation',
 			'/api'                  => 'PSX\Controller\Foo\Application\TestApiController::doIndex',
 			'/api/insert'           => 'PSX\Controller\Foo\Application\TestApiController::doInsert',
 			'/api/inspect'          => 'PSX\Controller\Foo\Application\TestApiController::doInspect',

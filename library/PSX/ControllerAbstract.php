@@ -193,39 +193,40 @@ abstract class ControllerAbstract implements ControllerInterface
 	/**
 	 * Forwards the request to another controller
 	 *
-	 * @param string $path
+	 * @param string $source
+	 * @param array $parameters
 	 */
-	protected function forward($path)
+	protected function forward($source, array $parameters = array())
 	{
-		// sets the path of the url and loads the controller
-		if($this->request->getUrl()->getPath() != $path)
-		{
-			$this->request->getUrl()->setPath($path);
-		}
-		else
-		{
-			throw new InvalidArgumentException('Cant forward the request to the same path');
-		}
+		$path = $this->getReverseRouter()->getPath($source, $parameters);
+
+		$this->request->setMethod('GET');
+		$this->request->getUrl()->setPath($path);
 
 		$this->container->get('loader')->load($this->request, $this->response);
 	}
 
 	/**
-	 * Throws an redirect exception. If path is not an url the complete url will 
-	 * be created with the base url from the config
+	 * Throws an redirect exception which sends an Location header. If source is 
+	 * not an url the reverse router is used to determine the url
 	 *
-	 * @param string $path
+	 * @param string $source
+	 * @param array $parameters
 	 * @param integer $code
 	 */
-	protected function redirect($url, $code = 307)
+	protected function redirect($source, array $parameters = array(), $code = 307)
 	{
-		if($url instanceof Url)
+		if($source instanceof Url)
 		{
-			$url = $url->getUrl();
+			$url = $source->getUrl();
 		}
-		else if(!filter_var($url, FILTER_VALIDATE_URL))
+		else if(filter_var($source, FILTER_VALIDATE_URL))
 		{
-			$url = $this->config['psx_url'] . '/' . $this->config['psx_dispatch'] . ltrim($url, '/');
+			$url = $source;
+		}
+		else
+		{
+			$url = $this->getReverseRouter()->getUrl($source, $parameters);
 		}
 
 		throw new RedirectException($url, $code);

@@ -93,12 +93,17 @@ class TestController extends ControllerAbstract
 
 	public function doForward()
 	{
-		$this->forward('/api');
+		$this->forward('PSX\Controller\Foo\Application\TestController::doRedirectDestiniation', array('foo' => 'bar'));
 	}
 
 	public function doRedirect()
 	{
-		$this->redirect('http://localhost.com/foobar', 302);
+		$this->redirect('PSX\Controller\Foo\Application\TestController::doRedirectDestiniation', array('foo' => 'bar'));
+	}
+
+	public function doRedirectAbsolute()
+	{
+		$this->redirect('http://localhost.com/foobar');
 	}
 
 	public function doSetArrayBody()
@@ -124,6 +129,11 @@ class TestController extends ControllerAbstract
 		$simpleXml = new SimpleXMLElement('<foo>bar</foo>');
 
 		$this->setBody($simpleXml);
+	}
+
+	public function doRedirectDestiniation()
+	{
+		$this->response->getBody()->write(json_encode($this->getUriFragments()));
 	}
 
 	public function getPreFilter()
