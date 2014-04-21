@@ -212,7 +212,7 @@ class Loader implements LoaderInterface
 		}
 		else
 		{
-			throw new UnexpectedValueException('Invalid controller callback');
+			throw new UnexpectedValueException('Controller must be an instance of PSX\ControllerInterface');
 		}
 	}
 }
