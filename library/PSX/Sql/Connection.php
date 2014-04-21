@@ -45,7 +45,7 @@ interface Connection
 	 * @param array $args
 	 * @return array
 	 */
-	public function assoc($sql, array $params = array(), $class = 'stdClass', array $args = null);
+	public function assoc($sql, array $params = array(), $class = null, array $args = null);
 
 	/**
 	 * Executes a query as prepared statment without returning any kind of 
