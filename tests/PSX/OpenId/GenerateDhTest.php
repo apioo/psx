@@ -36,6 +36,17 @@ use PSX\OpenSsl\PKey;
  */
 class GenerateDhTest extends \PHPUnit_Framework_TestCase
 {
+	protected function setUp()
+	{
+		parent::setUp();
+
+		// key type OPENSSL_KEYTYPE_DH is not supported by hhvm
+		if(getenv('TRAVIS_PHP_VERSION') == 'hhvm')
+		{
+			$this->markTestSkipped('Key type OPENSSL_KEYTYPE_DH is not supported by hhvm');
+		}
+	}
+
 	public function testDhSha1Round1()
 	{
 		$this->testDhSha1();

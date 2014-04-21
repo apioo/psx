@@ -41,6 +41,17 @@ use PSX\Url;
  */
 class ProviderAbstractTest extends ControllerTestCase
 {
+	protected function setUp()
+	{
+		parent::setUp();
+
+		// key type OPENSSL_KEYTYPE_DH is not supported by hhvm
+		if(getenv('TRAVIS_PHP_VERSION') == 'hhvm')
+		{
+			$this->markTestSkipped('Key type OPENSSL_KEYTYPE_DH is not supported by hhvm');
+		}
+	}
+
 	public function testFlow()
 	{
 		$consumerRequest = $this->generateConsumerRequest();
