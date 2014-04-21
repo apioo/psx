@@ -45,7 +45,7 @@ interface Connection
 	 * @param array $args
 	 * @return array
 	 */
-	public function assoc($sql, array $params = array(), $class = 'stdClass', array $args = array());
+	public function assoc($sql, array $params = array(), $class = 'stdClass', array $args = null);
 
 	/**
 	 * Executes a query as prepared statment without returning any kind of 
@@ -68,7 +68,7 @@ interface Connection
 	 * @param array $args
 	 * @return array
 	 */
-	public function getAll($sql, array $params = array(), $mode = 0, $class = 'stdClass', array $args = array());
+	public function getAll($sql, array $params = array(), $mode = 0, $class = 'stdClass', array $args = null);
 
 	/**
 	 * Returns a single row as associative array where
@@ -81,7 +81,7 @@ interface Connection
 	 * @param array $args
 	 * @return array
 	 */
-	public function getRow($sql, array $params = array(), $mode = 0, $class = 'stdClass', array $args = array());
+	public function getRow($sql, array $params = array(), $mode = 0, $class = 'stdClass', array $args = null);
 
 	/**
 	 * Returns all values from one column as array
