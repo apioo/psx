@@ -83,6 +83,10 @@ class RoutingParserTest extends \PHPUnit_Framework_TestCase
 		$location = $this->resolve('GET', '/whitespace');
 		$this->assertEquals('PSX\Loader\Foo10Controller', $location->getSource());
 		$this->assertEquals(array(), $location->getParameters());
+
+		$location = $this->resolve('GET', '/alias');
+		$this->assertEquals('PSX\Loader\Foo2Controller', $location->getSource());
+		$this->assertEquals(array(), $location->getParameters());
 	}
 
 	/**
