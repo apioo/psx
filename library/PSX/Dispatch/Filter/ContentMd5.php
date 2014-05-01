@@ -40,7 +40,16 @@ class ContentMd5 implements FilterInterface
 	{
 		if(!$response->hasHeader('Content-MD5'))
 		{
-			$response->setHeader('Content-MD5', md5((string) $response->getBody()));
+			$body = $response->getBody();
+			$pos  = $body->tell();
+
+			$body->seek(0);
+
+			$content = $body->getContents();
+
+			$body->seek($pos);
+
+			$response->setHeader('Content-MD5', md5($content));
 		}
 	}
 }

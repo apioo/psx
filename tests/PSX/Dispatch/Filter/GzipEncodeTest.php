@@ -23,36 +23,32 @@
 
 namespace PSX\Dispatch\Filter;
 
-use PSX\Base;
-use PSX\Dispatch\FilterInterface;
 use PSX\Http\Request;
 use PSX\Http\Response;
-use PSX\Http\Stream\StringStream;
+use PSX\Http\Stream\TempStream;
+use PSX\Url;
 
 /**
- * GzipEncode
+ * GzipEncodeTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class GzipEncode implements FilterInterface
+class GzipEncodeTest extends \PHPUnit_Framework_TestCase
 {
-	public function handle(Request $request, Response $response)
+	public function testHandle()
 	{
-		if($request->hasHeader('Accept-Encoding'))
-		{
-			$acceptEncoding = $request->getHeader('Accept-Encoding');
+		$body = new TempStream(fopen('php://memory', 'r+'));
+		$body->write('foobar');
 
-			if(strpos($acceptEncoding, 'gzip') !== false)
-			{
-				// we close the current stream and create a new string stream
-				// containing the gzip encoded content
-				$content = (string) $response->getBody();
+		$request  = new Request(new Url('http://localhost'), 'GET', array('Accept-Encoding' => 'gzip'));
+		$response = new Response();
+		$response->setBody($body);
 
-				$response->setHeader('Content-Encoding', 'gzip');
-				$response->setBody(new StringStream(gzencode($content)));
-			}
-		}
+		$filter = new GzipEncode();
+		$filter->handle($request, $response);
+
+		$this->assertEquals(gzencode('foobar'), (string) $response->getBody());
 	}
 }
