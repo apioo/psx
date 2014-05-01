@@ -11,4 +11,5 @@ GET /bar/$foo<[0-9]+>              PSX\Loader\Foo7Controller
 GET /bar/$foo<[0-9]+>/$bar<[0-9]+> PSX\Loader\Foo8Controller
 POST /bar                          PSX\Loader\Foo9Controller
 GET    	    /whitespace    	       PSX\Loader\Foo10Controller
-GET|POST /test               PSX\Loader\Foo11Controller
+GET|POST /test                     PSX\Loader\Foo11Controller
+GET /alias                         ~/foo/bar
