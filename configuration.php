@@ -26,7 +26,6 @@ $config = array(
 	'psx_url'                 => 'http://127.0.0.1/projects/psx/public',
 	'psx_dispatch'            => 'index.php/',
 	'psx_timezone'            => 'UTC',
-	'psx_gzip'                => false,
 	'psx_debug'               => true,
 
 	'psx_sql_host'            => 'localhost',
