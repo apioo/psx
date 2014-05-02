@@ -27,6 +27,8 @@ use DOMDocument;
 use PSX\ControllerAbstract;
 use PSX\Data\ReaderInterface;
 use PSX\Data\Record;
+use PSX\Filter;
+use PSX\Validate;
 use SimpleXMLElement;
 
 /**
@@ -57,29 +59,63 @@ class TestController extends ControllerAbstract
 		$testCase->assertInstanceOf('PSX\Loader\Location', $location);
 		$testCase->assertEquals('PSX\Controller\Foo\Application\TestController::doInspect', $location->getSource());
 
-		// get uri fragments
-		$testCase->assertTrue(is_array($this->getUriFragments()));
-
 		// get config
 		$testCase->assertInstanceOf('PSX\Config', $this->getConfig());
 
+		// get uri fragments
+		$testCase->assertTrue(is_array($this->getUriFragments()));
+		$testCase->assertEquals(null, $this->getUriFragments('foo'));
+
+		// set response code
+		$this->setResponseCode(200);
+
 		// get method
-		$testCase->assertEquals('GET', $this->getMethod());
+		$testCase->assertEquals('POST', $this->getMethod());
 
 		// get url
 		$testCase->assertInstanceOf('PSX\Url', $this->getUrl());
 
 		// get header
 		$testCase->assertTrue(is_array($this->getHeader()));
+		$testCase->assertEquals(null, $this->getHeader('foo'));
 
 		// get parameter
-		$testCase->assertInstanceOf('PSX\Input', $this->getParameter());
+		$testCase->assertEquals('bar', $this->getParameter('foo'));
+		$testCase->assertEquals('bar', $this->getParameter('foo', Validate::TYPE_STRING));
+		$testCase->assertEquals('bar', $this->getParameter('foo', Validate::TYPE_STRING, array(new Filter\Alnum())));
+		$testCase->assertEquals('bar', $this->getParameter('foo', Validate::TYPE_STRING, array(), 'Foo'));
+		$testCase->assertEquals('bar', $this->getParameter('foo', Validate::TYPE_STRING, array(), 'Foo', true));
 
 		// get body
-		$testCase->assertInstanceOf('PSX\Http\Message', $this->getBody(ReaderInterface::RAW));
+		$testCase->assertEquals(array('foo' => 'bar'), $this->getBody());
+		$testCase->assertEquals(array('foo' => 'bar'), $this->getBody(ReaderInterface::JSON));
+
+		// import
+		$record = new Record('foo', array('foo' => null));
+
+		$testCase->assertInstanceOf('PSX\Data\Record', $this->import($record));
+		$testCase->assertEquals('bar', $record->getFoo());
 
 		// get request reader
-		$testCase->assertInstanceOf('PSX\Data\Reader\Raw', $this->getRequestReader(ReaderInterface::RAW));
+		$testCase->assertInstanceOf('PSX\Data\Reader\Json', $this->getRequestReader());
+		$testCase->assertInstanceOf('PSX\Data\Reader\Json', $this->getRequestReader(ReaderInterface::JSON));
+
+		// set response
+		$record = new Record('foo', array('bar' => 'foo'));
+
+		$this->setResponse($record);
+
+		// get response writer
+		$testCase->assertInstanceOf('PSX\Data\Writer\Json', $this->getResponseWriter());
+
+		// is writer
+		$testCase->assertTrue($this->isWriter('PSX\Data\Writer\Json'));
+
+		// get preferred writer
+		$testCase->assertInstanceOf('PSX\Data\Writer\Json', $this->getPreferredWriter());
+
+		// get preferred writer
+		$testCase->assertEquals(null, $this->getSupportedWriter());
 
 		// test properties
 		$testCase->assertInstanceOf('Symfony\Component\DependencyInjection\ContainerInterface', $this->container);

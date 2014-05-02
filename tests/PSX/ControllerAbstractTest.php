@@ -26,6 +26,7 @@ namespace PSX;
 use PSX\Http\Request;
 use PSX\Http\Response;
 use PSX\Http\Stream\TempStream;
+use PSX\Http\Stream\StringStream;
 use PSX\Controller\ControllerTestCase;
 use PSX\Dispatch\RedirectException;
 use PSX\Url;
@@ -54,7 +55,8 @@ class ControllerAbstractTest extends ControllerTestCase
 	public function testInnerApi()
 	{
 		$path     = '/controller/inspect';
-		$request  = new Request(new Url('http://127.0.0.1' . $path), 'GET');
+		$request  = new Request(new Url('http://127.0.0.1' . $path . '?foo=bar'), 'POST', array('Content-Type' => 'application/json', 'Accept' => 'application/json'));
+		$request->setBody(new StringStream('{"foo": "bar"}'));
 		$response = new Response();
 		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
 

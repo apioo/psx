@@ -39,6 +39,7 @@ use PSX\Http\Request;
 use PSX\Http\Response;
 use PSX\Loader\Location;
 use PSX\Url;
+use PSX\Validate;
 use SimpleXMLElement;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use RuntimeException;
@@ -60,7 +61,6 @@ abstract class ControllerAbstract implements ControllerInterface
 	protected $stage;
 	protected $config;
 
-	protected $_parameter;
 	protected $_requestReader;
 	protected $_responseWriter;
 
@@ -104,7 +104,15 @@ abstract class ControllerAbstract implements ControllerInterface
 	{
 	}
 
+	public function onDelete()
+	{
+	}
+
 	public function onGet()
+	{
+	}
+
+	public function onHead()
 	{
 	}
 
@@ -113,10 +121,6 @@ abstract class ControllerAbstract implements ControllerInterface
 	}
 
 	public function onPut()
-	{
-	}
-
-	public function onDelete()
 	{
 	}
 
@@ -158,21 +162,37 @@ abstract class ControllerAbstract implements ControllerInterface
 		throw new BadMethodCallException('Call to undefined method ' . $name);
 	}
 
+	/**
+	 * @return Symfony\Component\DependencyInjection\ContainerInterface
+	 */
 	protected function getContainer()
 	{
 		return $this->container;
 	}
 
+	/**
+	 * @return PSX\Loader\Location
+	 */
 	protected function getLocation()
 	{
 		return $this->location;
 	}
 
-	protected function getBase()
+	/**
+	 * @return PSX\Config
+	 */
+	protected function getConfig()
 	{
-		return $this->base;
+		return $this->config;
 	}
 
+	/**
+	 * Returns an specific uri fragment if key isset otherwise all available 
+	 * fragments
+	 *
+	 * @param string $key
+	 * @return string
+	 */
 	protected function getUriFragments($key = null)
 	{
 		if($key !== null)
@@ -183,11 +203,6 @@ abstract class ControllerAbstract implements ControllerInterface
 		{
 			return $this->uriFragments;
 		}
-	}
-
-	protected function getConfig()
-	{
-		return $this->config;
 	}
 
 	/**
@@ -233,7 +248,7 @@ abstract class ControllerAbstract implements ControllerInterface
 	}
 
 	/**
-	 * Sets the http response code
+	 * Sets the http response status code
 	 *
 	 * @param integer $code
 	 */
@@ -242,16 +257,34 @@ abstract class ControllerAbstract implements ControllerInterface
 		$this->response->setStatusCode($code);
 	}
 
+	/**
+	 * Returns the request method. Note the X-HTTP-Method-Override header 
+	 * replaces the actually request method if available
+	 *
+	 * @return string
+	 */
 	protected function getMethod()
 	{
 		return $this->request->getMethod();
 	}
 
+	/**
+	 * Returns the request url
+	 *
+	 * @return PSX\Url
+	 */
 	protected function getUrl()
 	{
 		return $this->request->getUrl();
 	}
 
+	/**
+	 * Returns an specific request header if key isset otherwise all available 
+	 * headers
+	 *
+	 * @param string $key
+	 * @return string
+	 */
 	protected function getHeader($key = null)
 	{
 		if($key === null)
@@ -264,16 +297,26 @@ abstract class ControllerAbstract implements ControllerInterface
 		}
 	}
 
-	protected function getParameter()
+	/**
+	 * Returns an parameter from the query fragment of the request url
+	 *
+	 * @param string $key
+	 * @param string $type
+	 * @param array $filter
+	 * @param string $title
+	 * @param boolean $required
+	 * @return mixed
+	 */
+	protected function getParameter($key, $type = Validate::TYPE_STRING, array $filter = array(), $title = null, $required = true)
 	{
-		if($this->_parameter === null)
+		if($this->getUrl()->issetParam($key))
 		{
-			$parameter = $this->getUrl()->getParams();
-
-			$this->_parameter = new Input($parameter, $this->container->get('validate'));
+			return $this->getValidate()->apply($this->getUrl()->getParam($key), $type, $filter, $key, $title, $required);
 		}
-
-		return $this->_parameter;
+		else
+		{
+			return null;
+		}
 	}
 
 	/**
