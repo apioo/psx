@@ -1,6 +1,0 @@
-
-Domain problem
-==============
-
-foobar
-

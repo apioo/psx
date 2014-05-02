@@ -1,6 +1,6 @@
 
-Tutorial
-========
+Building an REST API
+====================
 
 In this chapter we develop step by step a simple RESTful API with PSX. This 
 should give you a basic overview how PSX works
@@ -10,8 +10,9 @@ Prolog
 
 The core of every API in PSX is an handler system which knows howto CRUD data
 from an specific data source. In our example we want create an API from an mysql
-database therefor we use the database handler. PSX offers many handler to read 
-from different datasources like Mongodb, Doctrine, DOM, etc.
+database therefore we use the database handler. PSX offers many handler to read 
+from different datasources like Mongodb, Doctrine, DOM, etc. more informations
+at :doc:`handler_concept`.
 
 Creating the table
 ------------------
@@ -102,98 +103,6 @@ tables
         }
     }
 
-Creating the record
--------------------
-
-If we want create, update or delete records we have to define a record class. 
-This record class is used if someone makes an POST, PUT or DELETE request. The
-body of the request gets imported into the record by calling the fitting setter
-methods. PSX parses the annotations and converts the parameter to the fitting 
-type. I.e. a DateTime object is automatically created from the value. See 
-:doc:`import_data` for more informations howto import complex data structures
-
-.. code-block:: php
-
-    <?php
-    
-    namespace Test\News;
-    
-    use DateTime;
-    use PSX\Data\RecordAbstract;
-    
-    class Record extends RecordAbstract
-    {
-        protected $id;
-        protected $userId;
-        protected $title;
-        protected $text;
-        protected $date;
-    
-        /**
-         * @param integer $id
-         */
-        public function setId($id)
-        {
-            $this->id = $id;
-        }
-                
-        public function getId()
-        {
-            return $this->id;
-        }
-
-        /**
-         * @param integer $userId
-         */
-        public function setUserId($userId)
-        {
-            $this->userId = $userId;
-        }
-            
-        public function getUserId()
-        {
-            return $this->userId;
-        }
-
-        /**
-         * @param string $title
-         */
-        public function setTitle($title)
-        {
-            $this->title = $title;
-        }
-        
-        public function getTitle()
-        {
-            return $this->title;
-        }
-
-        /**
-         * @param string $text
-         */
-        public function setText($text)
-        {
-            $this->text = $text;
-        }
-    
-        public function getText()
-        {
-            return $this->text;
-        }
-
-        /**
-         * @param DateTime $date
-         */
-        public function setDate(DateTime $date)
-        {
-            $this->date = $date;
-        }
-    
-        public function getDate()
-        {
-            return $this->date;
-        }
-    }
 
 The API endpoint
 ----------------

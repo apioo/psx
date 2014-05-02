@@ -14,8 +14,8 @@ Basic authentication
 Basic authentication is the most simple authentication method where a user 
 provides an username and password in the header. Note if you use basic 
 authentication you should use https since the username and password is 
-transported in plaintext over the wire. Add the following method to the news API 
-in order to add basic authentication
+transported in plaintext over the wire. Add the following method to the 
+controller in order to add basic authentication
 
 .. code-block:: php
 
@@ -25,7 +25,7 @@ in order to add basic authentication
     
     ...
     
-    public function getRequestFilter()
+    public function getPostFilter()
     {
     	$auth = new BasicAuthentication(function($username, $password){
     
@@ -63,7 +63,7 @@ informations see :rfc:`5849#anchor`
     
     ...
     
-    public function getRequestFilter()
+    public function getPostFilter()
     {
     	$auth = new OauthAuthentication(function($consumerKey, $token){
     

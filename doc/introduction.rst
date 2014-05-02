@@ -9,10 +9,9 @@ PSX is a framework written in PHP to create RESTful APIs. It helps you building
 clean URLs serving web standard formats like JSON, XML, Atom and RSS. At the 
 core PSX is build of three parts. A handler system (similar to repositories in 
 doctrine) wich abstracts away the actual SQL queries from the domain logic. An 
-routing system wich executes the fitting controller method depending on	the 
-location of the controller and the annotation of the method. And an flexible 
-data system to convert data records from the database into different formats 
-like JSON, XML, Atom and RSS. PSX uses a lightweight DI container to handle 
+routing system wich executes the fitting controller method. And an flexible data 
+system to convert data records from the database into different formats like 
+JSON, XML, Atom and RSS. PSX uses a lightweight DI container to handle 
 dependencies (but is also compatible with the symfony DI container). The 
 controller can return request or response filter wich can react or modify the 
 HTTP request or response. PSX offers some basic request filter to handle i.e. 
@@ -57,10 +56,6 @@ entries are optional. The following code describes each entry
 
     	// The default timezone
     	'psx_timezone'            => 'UTC',
-
-    	// Whether to gzip the output of psx. The content gets only compressed 
-    	// if the browser support gzip
-    	'psx_gzip'                => false,
 
     	// Whether PSX runs in debug mode or not. If not the error reporting is 
     	// set to 0.
