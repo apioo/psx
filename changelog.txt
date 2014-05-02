@@ -1,6 +1,18 @@
 
+0.8.6
+* Added missing http event method onHead
+* Possibiliy to set an alias path in an routing file
+* Improved hhvm/hack compatibility (all tests pass on hhvm 3.0.1)
+* Added data html writer
+* Improved routing mechanism method which should be called must now be declared
+  in the routing file
+* Added an callback handler to each handler type
+* Updated swagger library to current version 1.2
+* Added record xml definition schema
+* Default manager was removed and concrete Dom/Map manager was introduced
+
 0.8.5
-* Added hhvm compatibility
+* Improved hhvm compatibility
 * Added redirect exception
 * Importer add possibility to import anonymous record classes and improved tests
 * Renamed controller method getRequestFilter and getResponseFilter to 
