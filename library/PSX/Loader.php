@@ -154,8 +154,16 @@ class Loader implements LoaderInterface
 			{
 				switch($request->getMethod())
 				{
+					case 'DELETE':
+						$controller->onDelete();
+						break;
+
 					case 'GET':
 						$controller->onGet();
+						break;
+
+					case 'HEAD':
+						$controller->onHead();
 						break;
 
 					case 'POST':
@@ -164,10 +172,6 @@ class Loader implements LoaderInterface
 
 					case 'PUT':
 						$controller->onPut();
-						break;
-
-					case 'DELETE':
-						$controller->onDelete();
 						break;
 				}
 			}
