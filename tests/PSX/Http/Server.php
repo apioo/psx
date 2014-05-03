@@ -71,7 +71,6 @@ class Server
 				'method'  => $_SERVER['REQUEST_METHOD'],
 				'request' => file_get_contents('php://input'),
 			));
-		
 		}
 		else if($path == '/delete')
 		{
