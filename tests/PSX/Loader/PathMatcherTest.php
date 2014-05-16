@@ -49,6 +49,11 @@ class PathMatcherTest extends \PHPUnit_Framework_TestCase
 		$this->assertMatchFalse('/foo/', '/foo/:bar');
 		$this->assertMatchTrue('/foo/12', '/foo/$foo<[0-9]+>');
 		$this->assertMatchFalse('/foo/test', '/foo/$foo<[0-9]+>');
+		$this->assertMatchTrue('/file', '/file/*files');
+		$this->assertMatchTrue('/file/', '/file/*files');
+		$this->assertMatchTrue('/file/foo', '/file/*files');
+		$this->assertMatchTrue('/file/foo/bar', '/file/*files');
+		$this->assertMatchTrue('/file/foo/bar/foo.html', '/file/*files');
 	}
 
 	protected function assertMatchTrue($srcPath, $destPath)

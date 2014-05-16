@@ -41,9 +41,10 @@ class PathMatcher
 
 	public function match($destPath, array &$parameters = array())
 	{
-		$destPath = explode('/', trim($destPath, '/'));
+		$hasWildcard = strpos($destPath, '*') !== false;
+		$destPath    = explode('/', trim($destPath, '/'));
 
-		if(count($this->srcPath) == count($destPath))
+		if(count($this->srcPath) == count($destPath) || $hasWildcard)
 		{
 			foreach($destPath as $key => $part)
 			{
@@ -67,6 +68,14 @@ class PathMatcher
 					{
 						return false;
 					}
+				}
+				else if(isset($part[0]) && $part[0] == '*')
+				{
+					$name = substr($part, 1);
+
+					$parameters[$name] = implode('/', array_slice($this->srcPath, $key));
+
+					return true;
 				}
 				else if($this->srcPath[$key] == $part)
 				{
