@@ -47,8 +47,8 @@ class RequestFactory implements RequestFactoryInterface
 
 	/**
 	 * If the psx_url from the config contains an path in the url this path gets
-	 * removed from the REQUEST_URI. Because of this you can have an psx project 
-	 * also in an sub folder on the web server
+	 * removed from the request url. Because of this you can have an psx project
+	 * also in an sub folder
 	 *
 	 * @return PSX\Http\Request
 	 */
@@ -59,11 +59,27 @@ class RequestFactory implements RequestFactoryInterface
 		if($parts !== false && isset($parts['scheme']) && isset($parts['host']))
 		{
 			$port = !empty($parts['port']) ? ':' . $parts['port'] : '';
-			$path = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
 
-			if(isset($parts['path']))
+			if(!$this->isCli())
 			{
-				$path = substr($path, strlen($parts['path']) + strlen($this->config['psx_dispatch']));
+				$script = isset($_SERVER['SCRIPT_NAME'])  ? $_SERVER['SCRIPT_NAME']  : null;
+				$info   = isset($_SERVER['PATH_INFO'])    ? $_SERVER['PATH_INFO']    : null;
+				$query  = isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : null;
+				$path   = $script . $info;
+
+				if(!empty($query))
+				{
+					$path.= '?' . $query;
+				}
+
+				if(isset($parts['path']))
+				{
+					$path = substr($path, strlen($parts['path']) + strlen($this->config['psx_dispatch']));
+				}
+			}
+			else
+			{
+				$path = isset($_SERVER['argv'][1]) ? $_SERVER['argv'][1] : '/';
 			}
 
 			$self = $parts['scheme'] . '://' . $parts['host'] . $port . $path;
@@ -88,7 +104,7 @@ class RequestFactory implements RequestFactoryInterface
 	 *
 	 * @return string
 	 */
-	public function getRequestMethod()
+	protected function getRequestMethod()
 	{
 		if(isset($_SERVER['REQUEST_METHOD']))
 		{
@@ -114,27 +130,49 @@ class RequestFactory implements RequestFactoryInterface
 	 *
 	 * @return array
 	 */
-	public function getRequestHeaders()
+	protected function getRequestHeaders()
 	{
-		if(function_exists('apache_request_headers'))
-		{
-			return apache_request_headers();
-		}
-		else
-		{
-			$headers = array();
+		$contentKeys = array('CONTENT_LENGTH' => true, 'CONTENT_MD5' => true, 'CONTENT_TYPE' => true);
+		$headers     = array();
 
-			foreach($_SERVER as $key => $value)
+		foreach($_SERVER as $key => $value)
+		{
+			if(strpos($key, 'HTTP_') === 0)
 			{
-				if(substr($key, 0, 5) == 'HTTP_')
-				{
-					$key = str_replace('_', '-', substr($key, 5));
-
-					$headers[$key] = $value;
-				}
+				$headers[str_replace('_', '-', substr($key, 5))] = $value;
 			}
-
-			return $headers;
+			else if(isset($contentKeys[$key]))
+			{
+				$headers[str_replace('_', '-', $key)] = $value;
+			}
 		}
+
+		if(!isset($headers['AUTHORIZATION']))
+		{
+			if(isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION']))
+			{
+				$headers['AUTHORIZATION'] = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
+			}
+			else if(isset($_SERVER['PHP_AUTH_USER']))
+			{
+				$headers['AUTHORIZATION'] = 'Basic ' . base64_encode($_SERVER['PHP_AUTH_USER'] . ':' . (isset($_SERVER['PHP_AUTH_PW']) ? $_SERVER['PHP_AUTH_PW'] : ''));
+			}
+			else if(isset($_SERVER['PHP_AUTH_DIGEST']))
+			{
+				$headers['AUTHORIZATION'] = $_SERVER['PHP_AUTH_DIGEST'];
+			}
+		}
+
+		return $headers;
+	}
+
+	/**
+	 * Returns whether we are in CLI mode or not
+	 *
+	 * @return boolean
+	 */
+	protected function isCli()
+	{
+		return PHP_SAPI == 'cli';
 	}
 }
