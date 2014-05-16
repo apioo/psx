@@ -37,7 +37,7 @@ use UnexpectedValueException;
  */
 class Base
 {
-	const VERSION = '0.8.6';
+	const VERSION = '0.8.7';
 
 	protected $host;
 	protected $config;
