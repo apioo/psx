@@ -25,11 +25,11 @@ namespace PSX\Handler;
 
 use InvalidArgumentException;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\Expr\From;
 use Doctrine\ORM\Query\Expr\Join;
 use PSX\Data\Record;
-use PSX\Data\Record\Mapper;
 use PSX\Data\RecordInterface;
 use PSX\Sql;
 use PSX\Sql\Condition;
@@ -173,10 +173,7 @@ abstract class DoctrineHandlerAbstract extends HandlerAbstract
 
 	public function create(RecordInterface $record)
 	{
-		$entity = new $this->entityName();
-
-		$mapper = new Mapper();
-		$mapper->map($record, $entity);
+		$entity = $this->createEntity($record);
 
 		$this->manager->persist($entity);
 		$this->manager->flush();
@@ -186,9 +183,7 @@ abstract class DoctrineHandlerAbstract extends HandlerAbstract
 	{
 		$method = 'get' . ucfirst($this->getPrimaryIdField());
 		$entity = $this->manager->getRepository($this->entityName)->find($record->$method());
-
-		$mapper = new Mapper();
-		$mapper->map($record, $entity);
+		$entity = $this->createEntity($record, $entity);
 
 		$this->manager->persist($entity);
 		$this->manager->flush();
@@ -198,9 +193,7 @@ abstract class DoctrineHandlerAbstract extends HandlerAbstract
 	{
 		$method = 'get' . ucfirst($this->getPrimaryIdField());
 		$entity = $this->manager->getRepository($this->entityName)->find($record->$method());
-
-		$mapper = new Mapper();
-		$mapper->map($record, $entity);
+		$entity = $this->createEntity($record, $entity);
 
 		$this->manager->remove($entity);
 		$this->manager->flush();
@@ -289,8 +282,11 @@ abstract class DoctrineHandlerAbstract extends HandlerAbstract
 
 			foreach($map as $key => $className)
 			{
-				$this->_partialFields[$key] = $this->manager->getClassMetadata($className)->getFieldNames();
-				$this->_idFields[$key] = $this->manager->getClassMetadata($className)->getSingleIdentifierFieldName();
+				$fields       = $this->manager->getClassMetadata($className)->getFieldNames();
+				$associations = $this->manager->getClassMetadata($className)->getAssociationNames();
+
+				$this->_partialFields[$key] = array_merge($fields, $associations);
+				$this->_idFields[$key]      = $this->manager->getClassMetadata($className)->getSingleIdentifierFieldName();
 			}
 		}
 
@@ -413,5 +409,67 @@ abstract class DoctrineHandlerAbstract extends HandlerAbstract
 		}
 
 		throw new InvalidArgumentException('Invalid column');
+	}
+
+	protected function createEntity(RecordInterface $record, $entity = null)
+	{
+		if($entity === null)
+		{
+			$entity = new $this->entityName();
+		}
+
+		// we map simple value fields but make a check for references
+		$classMeta    = $this->manager->getClassMetadata($this->entityName);
+		$fields       = $classMeta->getFieldNames();
+		$associations = $classMeta->getAssociationNames();
+		$data         = $record->getRecordInfo()->getData();
+
+		foreach($data as $key => $value)
+		{
+			$method = 'set' . ucfirst($key);
+
+			if(in_array($key, $fields))
+			{
+				if(is_callable(array($entity, $method)))
+				{
+					$entity->$method($value);
+				}
+			}
+			else if(in_array($key, $associations))
+			{
+				$association = $classMeta->getAssociationMapping($key);
+
+				if($association['type'] & ClassMetadataInfo::TO_ONE)
+				{
+					if(is_numeric($value))
+					{
+						// if its in integer look for the connection
+						$target    = $classMeta->getAssociationTargetClass($key);
+						$reference = $this->manager->getRepository($target)->find($value);
+
+						if(is_callable(array($entity, $method)))
+						{
+							$entity->$method($reference);
+						}
+					}
+					else if(is_array($value))
+					{
+						// @TOOD if its an array we probably want to create the 
+						// entity
+					}
+				}
+				else if($association['type'] & ClassMetadataInfo::TO_MANY)
+				{
+					// @TODO probably we want make an option to create multiple
+					// entities from one request
+				}
+			}
+			else
+			{
+				// unknown field
+			}
+		}
+
+		return $entity;
 	}
 }
