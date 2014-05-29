@@ -282,11 +282,22 @@ abstract class DoctrineHandlerAbstract extends HandlerAbstract
 
 			foreach($map as $key => $className)
 			{
-				$fields       = $this->manager->getClassMetadata($className)->getFieldNames();
-				$associations = $this->manager->getClassMetadata($className)->getAssociationNames();
+				$classMeta    = $this->manager->getClassMetadata($className);
+				$fields       = $classMeta->getFieldNames();
+				$associations = $classMeta->getAssociationNames();
 
-				$this->_partialFields[$key] = array_merge($fields, $associations);
-				$this->_idFields[$key]      = $this->manager->getClassMetadata($className)->getSingleIdentifierFieldName();
+				foreach($associations as $associationName)
+				{
+					$association = $classMeta->getAssociationMapping($associationName);
+
+					if($association['type'] & ClassMetadataInfo::TO_ONE)
+					{
+						$fields[] = $associationName;
+					}
+				}
+
+				$this->_partialFields[$key] = $fields;
+				$this->_idFields[$key]      = $classMeta->getSingleIdentifierFieldName();
 			}
 		}
 
