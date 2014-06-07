@@ -64,7 +64,7 @@ abstract class ControllerAbstract implements ControllerInterface
 	protected $_requestReader;
 	protected $_responseWriter;
 
-	public function __construct(ContainerInterface $container, Location $location, Request $request, Response $response, array $uriFragments)
+	public function __construct(ContainerInterface $container, Location $location, Request $request, Response $response, array $uriFragments = null)
 	{
 		$this->container    = $container;
 		$this->location     = $location;
@@ -451,14 +451,27 @@ abstract class ControllerAbstract implements ControllerInterface
 		}
 		else if($data instanceof DOMDocument)
 		{
-			$this->response->setHeader('Content-Type', 'application/xml');
+			if(!$this->response->hasHeader('Content-Type'))
+			{
+				$this->response->setHeader('Content-Type', 'application/xml');
+			}
+
 			$this->response->getBody()->write($data->saveXML());
 			return;
 		}
 		else if($data instanceof SimpleXMLElement)
 		{
-			$this->response->setHeader('Content-Type', 'application/xml');
+			if(!$this->response->hasHeader('Content-Type'))
+			{
+				$this->response->setHeader('Content-Type', 'application/xml');
+			}
+
 			$this->response->getBody()->write($data->asXML());
+			return;
+		}
+		else if(is_string($data))
+		{
+			$this->response->getBody()->write($data);
 			return;
 		}
 		else
