@@ -64,7 +64,7 @@ class Html implements WriterInterface
 	{
 		// set default template if no template is set
 		$class = str_replace('\\', '/', $this->className);
-		$path  = $this->baseDir . '/' . strstr($class, 'Application', true) . 'Resource';
+		$path  = $this->baseDir . '/' . strstr($class, '/Application/', true) . '/Resource';
 
 		if(!$this->template->hasFile())
 		{
@@ -76,9 +76,7 @@ class Html implements WriterInterface
 		}
 		else
 		{
-			$file = $this->template->get();
-
-			$this->template->setDir(!is_file($file) ? $path : null);
+			$this->template->setDir(!$this->template->fileExists() ? $path : null);
 		}
 
 		// assign default values

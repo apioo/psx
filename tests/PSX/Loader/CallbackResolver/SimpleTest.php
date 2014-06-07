@@ -23,6 +23,7 @@
 
 namespace PSX\Loader\CallbackResolver;
 
+use PSX\Dispatch\ControllerFactory;
 use PSX\Loader\Location;
 use PSX\Http\Request;
 use PSX\Http\Response;
@@ -43,7 +44,7 @@ class SimpleTest extends \PHPUnit_Framework_TestCase
 		$request  = new Request(new Url('http://127.0.0.1'), 'GET');
 		$response = new Response();
 
-		$simple   = new Simple(getContainer());
+		$simple   = new Simple(new ControllerFactory(getContainer()));
 		$callback = $simple->resolve($location, $request, $response);
 
 		$this->assertInstanceOf('PSX\Loader\RoutingParser\Annotation\BarController', $callback->getClass());
@@ -59,7 +60,7 @@ class SimpleTest extends \PHPUnit_Framework_TestCase
 		$request  = new Request(new Url('http://127.0.0.1'), 'GET');
 		$response = new Response();
 
-		$simple   = new Simple(getContainer());
+		$simple   = new Simple(new ControllerFactory(getContainer()));
 		$callback = $simple->resolve($location, $request, $response);
 	}
 
@@ -72,7 +73,7 @@ class SimpleTest extends \PHPUnit_Framework_TestCase
 		$request  = new Request(new Url('http://127.0.0.1'), 'GET');
 		$response = new Response();
 
-		$simple   = new Simple(getContainer());
+		$simple   = new Simple(new ControllerFactory(getContainer()));
 		$callback = $simple->resolve($location, $request, $response);
 	}
 }

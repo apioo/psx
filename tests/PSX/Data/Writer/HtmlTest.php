@@ -207,8 +207,8 @@ TEXT;
 				->will($this->returnValue(true));
 
 		$template->expects($this->at(1))
-				->method('get')
-				->will($this->returnValue('news/detail_description.tpl'));
+				->method('fileExists')
+				->will($this->returnValue(false));
 
 		$template->expects($this->at(2))
 				->method('setDir')
@@ -236,8 +236,8 @@ TEXT;
 				->will($this->returnValue(true));
 
 		$template->expects($this->at(1))
-				->method('get')
-				->will($this->returnValue('tests/PSX/Controller/Foo/Resource/detail.tpl'));
+				->method('fileExists')
+				->will($this->returnValue(true));
 
 		$template->expects($this->at(2))
 				->method('setDir')

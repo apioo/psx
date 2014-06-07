@@ -34,7 +34,6 @@ $config = array(
 	'psx_sql_db'              => 'psx',
 
 	'psx_routing'             => '../routes',
-	'psx_error_template'      => null,
 	'psx_path_cache'          => '../cache',
 	'psx_path_library'        => '../library',
 

@@ -21,68 +21,30 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX;
+namespace PSX\Dispatch;
+
+use PSX\Http\Request;
+use PSX\Http\Response;
+use PSX\Loader\Location;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Interface wich describes an template engine. If your code uses these methods 
- * you can simply switch between template engines without changing the buisness 
- * logic
+ * ControllerFactoryInterface
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-interface TemplateInterface
+interface ControllerFactoryInterface
 {
 	/**
-	 * Sets the dir from where to load the template file
+	 * Creates an instance of the given class name
 	 *
-	 * @param string $dir
-	 * @return void
+	 * @param string $className
+	 * @param PSX\Loader\Location $location
+	 * @param PSX\Http\Request $request
+	 * @param PSX\Http\Response $response
+	 * @return PSX\ControllerInterface
 	 */
-	public function setDir($dir);
-
-	/**
-	 * Sets the current template file
-	 *
-	 * @param string $file
-	 * @return void
-	 */
-	public function set($file);
-
-	/**
-	 * Returns the template file wich was set
-	 *
-	 * @return string
-	 */
-	public function get();
-
-	/**
-	 * Returns whether an template file was set or not
-	 *
-	 * @return boolean
-	 */
-	public function hasFile();
-
-	/**
-	 * Returns whether the template file exists
-	 *
-	 * @return boolean
-	 */
-	public function fileExists();
-
-	/**
-	 * Assigns an variable to the template
-	 *
-	 * @param string $name
-	 * @return void
-	 */
-	public function assign($key, $value);
-
-	/**
-	 * Transforms the template file
-	 *
-	 * @return string
-	 */
-	public function transform();
+	public function getController($className, Location $location, Request $request, Response $response);
 }

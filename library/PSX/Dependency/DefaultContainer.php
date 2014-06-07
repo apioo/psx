@@ -30,6 +30,7 @@ use PSX\Data\ReaderFactory;
 use PSX\Data\Writer;
 use PSX\Data\WriterFactory;
 use PSX\Dispatch;
+use PSX\Dispatch\ControllerFactory;
 use PSX\Dispatch\RequestFactory;
 use PSX\Dispatch\ResponseFactory;
 use PSX\Dispatch\Sender;
@@ -83,7 +84,7 @@ class DefaultContainer extends Container
 	 */
 	public function getDispatch()
 	{
-		return new Dispatch($this->get('config'), $this->get('loader'), $this->get('dispatch_sender'));
+		return new Dispatch($this->get('config'), $this->get('loader'), $this->get('controller_factory'), $this->get('dispatch_sender'));
 	}
 
 	/**
@@ -151,11 +152,19 @@ class DefaultContainer extends Container
 	}
 
 	/**
+	 * @return PSX\Dispatch\ControllerFactoryInterface
+	 */
+	public function getControllerFactory()
+	{
+		return new ControllerFactory($this);
+	}
+
+	/**
 	 * @return PSX\Loader\CallbackResolverInterface
 	 */
 	public function getLoaderCallbackResolver()
 	{
-		return new Loader\CallbackResolver\Simple($this);
+		return new Loader\CallbackResolver\Simple($this->get('controller_factory'));
 	}
 
 	/**

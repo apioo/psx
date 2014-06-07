@@ -21,78 +21,39 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX;
+namespace PSX\Dispatch;
+
+use PSX\Http\Request;
+use PSX\Http\Response;
+use PSX\Loader\Location;
+use RuntimeException;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Template
+ * ControllerFactory
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Template implements TemplateInterface
+class ControllerFactory implements ControllerFactoryInterface
 {
-	protected $dir;
-	protected $file;
+	protected $container;
 
-	protected $data = array();
-
-	public function setDir($dir)
+	public function __construct(ContainerInterface $container)
 	{
-		$this->dir = $dir;
+		$this->container = $container;
 	}
 
-	public function set($file)
+	public function getController($className, Location $location, Request $request, Response $response)
 	{
-		$this->file = $file;
-	}
-
-	public function get()
-	{
-		return $this->file;
-	}
-
-	public function hasFile()
-	{
-		return !empty($this->file);
-	}
-
-	public function fileExists()
-	{
-		return $this->file instanceof \Closure || is_file($this->file);
-	}
-
-	public function assign($key, $value)
-	{
-		$this->data[$key] = $value;
-	}
-
-	public function transform()
-	{
-		if($this->file instanceof \Closure)
+		if(class_exists($className))
 		{
-			$html = call_user_func($this->file, $this->data);
+			return new $className($this->container, $location, $request, $response, $location->getParameters());
 		}
 		else
 		{
-			// populate the data vars in the scope of the template
-			extract($this->data, EXTR_SKIP);
-
-			// parse template
-			$path = $this->dir != null ? $this->dir . '/' . $this->file : $this->file;
-
-			ob_start();
-
-			require_once($path);
-
-			$html = ob_get_clean();
-
-			if($html === false)
-			{
-				throw new Exception('Ouput buffering is not active');
-			}
+			throw new RuntimeException('Class "' . $className . '" does not exists');
 		}
-
-		return $html;
 	}
 }

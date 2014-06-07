@@ -21,78 +21,41 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX;
+namespace PSX\Dispatch;
+
+use PSX\Http\Request;
+use PSX\Http\Response;
+use PSX\Loader\Location;
+use PSX\Url;
 
 /**
- * Template
+ * ControllerFactoryTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Template implements TemplateInterface
+class ControllerFactoryTest extends \PHPUnit_Framework_TestCase
 {
-	protected $dir;
-	protected $file;
-
-	protected $data = array();
-
-	public function setDir($dir)
+	public function testGetController()
 	{
-		$this->dir = $dir;
+		$controller = $this->getController('PSX\Dispatch\DummyController');
+
+		$this->assertInstanceOf('PSX\Dispatch\DummyController', $controller);
 	}
 
-	public function set($file)
+	/**
+	 * @expectedException RuntimeException
+	 */
+	public function testGetControllerInvalid()
 	{
-		$this->file = $file;
+		$this->getController('Foo\Bar');
 	}
 
-	public function get()
+	protected function getController($className)
 	{
-		return $this->file;
-	}
+		$factory = new ControllerFactory(getContainer());
 
-	public function hasFile()
-	{
-		return !empty($this->file);
-	}
-
-	public function fileExists()
-	{
-		return $this->file instanceof \Closure || is_file($this->file);
-	}
-
-	public function assign($key, $value)
-	{
-		$this->data[$key] = $value;
-	}
-
-	public function transform()
-	{
-		if($this->file instanceof \Closure)
-		{
-			$html = call_user_func($this->file, $this->data);
-		}
-		else
-		{
-			// populate the data vars in the scope of the template
-			extract($this->data, EXTR_SKIP);
-
-			// parse template
-			$path = $this->dir != null ? $this->dir . '/' . $this->file : $this->file;
-
-			ob_start();
-
-			require_once($path);
-
-			$html = ob_get_clean();
-
-			if($html === false)
-			{
-				throw new Exception('Ouput buffering is not active');
-			}
-		}
-
-		return $html;
+		return $factory->getController($className, new Location(), new Request(new Url('http://127.0.0.1'), 'GET'), new Response());
 	}
 }

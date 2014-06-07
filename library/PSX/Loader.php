@@ -84,20 +84,39 @@ class Loader implements LoaderInterface
 
 		if($location instanceof Location)
 		{
-			if($this->recursiveLoading || !in_array($location->getId(), $this->loaded))
+			$callback = $this->callbackResolver->resolve($location, $request, $response);
+			$id       = spl_object_hash($callback->getClass());
+
+			if($this->recursiveLoading || !in_array($id, $this->loaded))
 			{
-				$callback   = $this->callbackResolver->resolve($location, $request, $response);
 				$controller = $this->runControllerLifecycle($callback, $request, $response);
 
-				$this->loaded[] = $location->getId();
-
-				return $controller;
+				$this->loaded[] = $id;
 			}
+			else
+			{
+				$controller = $callback->getClass();
+			}
+
+			return $controller;
 		}
 		else
 		{
 			throw new InvalidPathException('Unkown module "' . $path . '"', 404);
 		}
+	}
+
+	/**
+	 * Loads an specific controller direct without any routing
+	 *
+	 * @param PSX\Loader\Callback $callback
+	 * @param PSX\Http\Request $request
+	 * @param PSX\Http\Response $response
+	 * @return PSX\ControllerAbstract
+	 */
+	public function loadClass(Callback $callback, Request $request, Response $response)
+	{
+		return $this->runControllerLifecycle($callback, $request, $response);
 	}
 
 	public function addRoute($sourcePath, $destPath)

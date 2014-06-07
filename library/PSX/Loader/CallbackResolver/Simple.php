@@ -24,6 +24,7 @@
 namespace PSX\Loader\CallbackResolver;
 
 use RuntimeException;
+use PSX\Dispatch\ControllerFactoryInterface;
 use PSX\Exception;
 use PSX\Http\Request;
 use PSX\Http\Response;
@@ -41,11 +42,11 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class Simple implements CallbackResolverInterface
 {
-	protected $container;
+	protected $factory;
 
-	public function __construct(ContainerInterface $container)
+	public function __construct(ControllerFactoryInterface $factory)
 	{
-		$this->container = $container;
+		$this->factory = $factory;
 	}
 
 	public function resolve(Location $location, Request $request, Response $response)
@@ -62,15 +63,8 @@ class Simple implements CallbackResolverInterface
 			$method    = null;
 		}
 
-		if(class_exists($className))
-		{
-			$class = new $className($this->container, $location, $request, $response, $location->getParameters());
+		$controller = $this->factory->getController($className, $location, $request, $response);
 
-			return new Callback($class, $method, array($request, $response));
-		}
-		else
-		{
-			throw new RuntimeException('Class "' . $className . '" does not exists');
-		}
+		return new Callback($controller, $method, array($request, $response));
 	}
 }
