@@ -23,12 +23,7 @@
 
 namespace PSX\Controller;
 
-use PSX\Base;
 use PSX\DateTime;
-use PSX\Data\NotFoundException;
-use PSX\Data\RecordInterface;
-use PSX\Data\Writer;
-use PSX\Data\WriterFactory;
 use PSX\Data\WriterInterface;
 use PSX\ControllerAbstract;
 use PSX\Sql;
