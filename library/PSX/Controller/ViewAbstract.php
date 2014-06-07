@@ -23,17 +23,7 @@
 
 namespace PSX\Controller;
 
-use PSX\Base;
-use PSX\Data\Record;
-use PSX\Data\Writer;
-use PSX\Dependency\View;
-use PSX\Dispatch\RequestFilter\GzipEncode;
-use PSX\Exception;
-use PSX\Loader\Location;
 use PSX\ControllerAbstract;
-use PSX\Http\Request;
-use PSX\Http\Response;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * ViewAbstract
