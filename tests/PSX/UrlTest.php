@@ -150,4 +150,18 @@ class UrlTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertTrue($url->issetParam('bar'));
 	}
+
+	public function testUrlWithoutFile()
+	{
+		$url = new Url('http://127.0.0.1/projects/foo/bar/?project=symfony%2Fsymfony&source=1&destination=2');
+
+		$this->assertEquals('http', $url->getScheme());
+		$this->assertEquals(null, $url->getUser());
+		$this->assertEquals(null, $url->getPass());
+		$this->assertEquals('127.0.0.1', $url->getHost());
+		$this->assertEquals(null, $url->getPort());
+		$this->assertEquals('/projects/foo/bar/', $url->getPath());
+		$this->assertEquals(array('project' => 'symfony/symfony', 'source' => '1', 'destination' => '2'), $url->getParams());
+		$this->assertEquals(null, $url->getFragment());
+	}
 }
