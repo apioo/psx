@@ -181,6 +181,41 @@ XML;
 		$this->assertXmlStringEqualsXmlString($expect, (string) $response->getBody());
 	}
 
+	public function testSetStringBody()
+	{
+		$path     = '/controller/string';
+		$request  = new Request(new Url('http://127.0.0.1' . $path), 'GET');
+		$response = new Response();
+		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
+
+		$controller = $this->loadController($request, $response);
+
+		$expect = <<<XML
+foobar
+XML;
+
+		$this->assertEquals($expect, (string) $response->getBody());
+	}
+
+	public function testSetFileEntityBody()
+	{
+		$path     = '/controller/file';
+		$request  = new Request(new Url('http://127.0.0.1' . $path), 'GET');
+		$response = new Response();
+
+		$controller = $this->loadController($request, $response);
+
+		$this->assertEquals('application/octet-stream', $response->getHeader('Content-Type'));
+		$this->assertEquals('attachment; filename="foo.txt"', $response->getHeader('Content-Disposition'));
+		$this->assertEquals('chunked', $response->getHeader('Transfer-Encoding'));
+
+		$expect = <<<XML
+foobar
+XML;
+
+		$this->assertEquals($expect, (string) $response->getBody());
+	}
+
 	protected function getPaths()
 	{
 		return array(
@@ -193,6 +228,8 @@ XML;
 			'/controller/record'    => 'PSX\Controller\Foo\Application\TestController::doSetRecordBody',
 			'/controller/dom'       => 'PSX\Controller\Foo\Application\TestController::doSetDomDocumentBody',
 			'/controller/simplexml' => 'PSX\Controller\Foo\Application\TestController::doSetSimpleXmlBody',
+			'/controller/string'    => 'PSX\Controller\Foo\Application\TestController::doSetStringBody',
+			'/controller/file'      => 'PSX\Controller\Foo\Application\TestController::doSetFileEntityBody',
 			'/redirect/:foo'        => 'PSX\Controller\Foo\Application\TestController::doRedirectDestiniation',
 			'/api'                  => 'PSX\Controller\Foo\Application\TestApiController::doIndex',
 			'/api/insert'           => 'PSX\Controller\Foo\Application\TestApiController::doInsert',

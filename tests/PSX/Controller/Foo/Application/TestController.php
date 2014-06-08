@@ -28,6 +28,7 @@ use PSX\ControllerAbstract;
 use PSX\Data\ReaderInterface;
 use PSX\Data\Record;
 use PSX\Filter;
+use PSX\Http\FileEntity;
 use PSX\Validate;
 use SimpleXMLElement;
 
@@ -165,6 +166,16 @@ class TestController extends ControllerAbstract
 		$simpleXml = new SimpleXMLElement('<foo>bar</foo>');
 
 		$this->setBody($simpleXml);
+	}
+
+	public function doSetStringBody()
+	{
+		$this->setBody('foobar');
+	}
+
+	public function doSetFileEntityBody()
+	{
+		$this->setBody(new FileEntity(fopen(__DIR__ . '/../Resource/test_file', 'r'), 'foo.txt'));
 	}
 
 	public function doRedirectDestiniation()

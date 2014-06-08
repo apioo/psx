@@ -35,8 +35,10 @@ use PSX\Data\WriterInterface;
 use PSX\Data\Record;
 use PSX\Dependency;
 use PSX\Dispatch\RedirectException;
+use PSX\Http\FileEntity;
 use PSX\Http\Request;
 use PSX\Http\Response;
+use PSX\Http\Stream\TempStream;
 use PSX\Loader\Location;
 use PSX\Url;
 use PSX\Validate;
@@ -472,6 +474,15 @@ abstract class ControllerAbstract implements ControllerInterface
 		else if(is_string($data))
 		{
 			$this->response->getBody()->write($data);
+			return;
+		}
+		else if($data instanceof FileEntity)
+		{
+			$this->response->setHeader('Content-Type', 'application/octet-stream');
+			$this->response->setHeader('Content-Disposition', 'attachment; filename="' . addcslashes($data->getFileName(), '"') . '"');
+			$this->response->setHeader('Transfer-Encoding', 'chunked');
+
+			$this->response->setBody(new TempStream($data->getResource()));
 			return;
 		}
 		else
