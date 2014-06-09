@@ -34,12 +34,16 @@ class Template implements TemplateInterface
 {
 	protected $dir;
 	protected $file;
-
 	protected $data = array();
 
 	public function setDir($dir)
 	{
 		$this->dir = $dir;
+	}
+
+	public function getDir()
+	{
+		return $this->dir;
 	}
 
 	public function set($file)
@@ -59,7 +63,12 @@ class Template implements TemplateInterface
 
 	public function fileExists()
 	{
-		return $this->file instanceof \Closure || is_file($this->file);
+		return $this->file instanceof \Closure || is_file($this->getFile());
+	}
+
+	public function getFile()
+	{
+		return $this->dir != null ? $this->dir . '/' . $this->file : $this->file;
 	}
 
 	public function assign($key, $value)
@@ -79,11 +88,9 @@ class Template implements TemplateInterface
 			extract($this->data, EXTR_SKIP);
 
 			// parse template
-			$path = $this->dir != null ? $this->dir . '/' . $this->file : $this->file;
-
 			ob_start();
 
-			require_once($path);
+			require_once($this->getFile());
 
 			$html = ob_get_clean();
 

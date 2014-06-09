@@ -23,6 +23,7 @@
 
 namespace PSX\Template;
 
+use PSX\Config;
 use PSX\TemplateInterface;
 
 /**
@@ -35,18 +36,25 @@ use PSX\TemplateInterface;
 class Smarty implements TemplateInterface
 {
 	protected $smarty;
+	protected $dir;
 	protected $file;
 
-	protected $data = array();
-
-	public function __construct()
+	public function __construct(Config $config)
 	{
 		$this->smarty = new \Smarty();
+		$this->smarty->setTemplateDir($config['psx_path_cache'] . '/templates');
+		$this->smarty->setCompileDir($config['psx_path_cache'] . '/templates_c');
+		$this->smarty->setCacheDir($config['psx_path_cache'] . '/cache');
 	}
 
 	public function setDir($dir)
 	{
-		$this->smarty->setTemplateDir($dir);
+		$this->dir = $dir;
+	}
+
+	public function getDir()
+	{
+		return $this->dir;
 	}
 
 	public function set($file)
@@ -64,6 +72,16 @@ class Smarty implements TemplateInterface
 		return !empty($this->file);
 	}
 
+	public function fileExists()
+	{
+		return is_file($this->getFile());
+	}
+
+	public function getFile()
+	{
+		return $this->dir != null ? $this->dir . '/' . $this->file : $this->file;
+	}
+
 	public function assign($key, $value)
 	{
 		$this->smarty->assign($key, $value);
@@ -71,6 +89,11 @@ class Smarty implements TemplateInterface
 
 	public function transform()
 	{
+		if($this->dir != null)
+		{
+			$this->smarty->setTemplateDir($this->dir);
+		}
+
 		return $this->smarty->fetch($this->file);
 	}
 }

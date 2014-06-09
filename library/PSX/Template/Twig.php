@@ -25,6 +25,7 @@ namespace PSX\Template;
 
 use Twig_Environment;
 use Twig_Loader_Filesystem;
+use PSX\Config;
 use PSX\TemplateInterface;
 
 /**
@@ -36,14 +37,24 @@ use PSX\TemplateInterface;
  */
 class Twig implements TemplateInterface
 {
+	protected $config;
 	protected $dir;
 	protected $file;
-
 	protected $data = array();
+
+	public function __construct(Config $config)
+	{
+		$this->config = $config;
+	}
 
 	public function setDir($dir)
 	{
 		$this->dir = $dir;
+	}
+
+	public function getDir()
+	{
+		return $this->dir;
 	}
 
 	public function set($file)
@@ -61,6 +72,16 @@ class Twig implements TemplateInterface
 		return !empty($this->file);
 	}
 
+	public function fileExists()
+	{
+		return is_file($this->getFile());
+	}
+
+	public function getFile()
+	{
+		return $this->dir != null ? $this->dir . '/' . $this->file : $this->file;
+	}
+
 	public function assign($key, $value)
 	{
 		$this->data[$key] = $value;
@@ -69,7 +90,10 @@ class Twig implements TemplateInterface
 	public function transform()
 	{
 		$loader = new Twig_Loader_Filesystem($this->dir);
-		$twig   = new Twig_Environment($loader);
+		$twig   = new Twig_Environment($loader, array(
+			'cache' => $this->config['psx_path_cache'],
+			'debug' => $this->config['psx_debug'],
+		));
 
 		return $twig->render($this->file, $this->data);
 	}

@@ -38,9 +38,15 @@ interface TemplateInterface
 	 * Sets the dir from where to load the template file
 	 *
 	 * @param string $dir
-	 * @return void
 	 */
 	public function setDir($dir);
+
+	/**
+	 * Returns the dir
+	 *
+	 * @return string
+	 */
+	public function getDir();
 
 	/**
 	 * Sets the current template file
@@ -70,6 +76,13 @@ interface TemplateInterface
 	 * @return boolean
 	 */
 	public function fileExists();
+
+	/**
+	 * Returns the path of the template dir and file
+	 *
+	 * @return string
+	 */
+	public function getFile();
 
 	/**
 	 * Assigns an variable to the template
