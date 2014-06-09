@@ -74,7 +74,7 @@ class Twig implements TemplateInterface
 
 	public function fileExists()
 	{
-		return is_file($this->getFile());
+		return is_file($this->file);
 	}
 
 	public function getFile()

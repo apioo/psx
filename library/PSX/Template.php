@@ -63,7 +63,7 @@ class Template implements TemplateInterface
 
 	public function fileExists()
 	{
-		return $this->file instanceof \Closure || is_file($this->getFile());
+		return $this->file instanceof \Closure || is_file($this->file);
 	}
 
 	public function getFile()
