@@ -25,25 +25,13 @@ namespace PSX\Dependency;
 
 use PSX\Base;
 use PSX\Config;
-use PSX\Data\Reader;
-use PSX\Data\ReaderFactory;
-use PSX\Data\Writer;
-use PSX\Data\WriterFactory;
-use PSX\Dispatch;
-use PSX\Dispatch\ControllerFactory;
-use PSX\Dispatch\RequestFactory;
-use PSX\Dispatch\ResponseFactory;
-use PSX\Dispatch\Sender;
-use PSX\Domain\DomainManager;
-use PSX\Handler;
 use PSX\Http;
-use PSX\Input;
-use PSX\Loader;
 use PSX\Session;
 use PSX\Sql;
 use PSX\Sql\TableManager;
 use PSX\Template;
 use PSX\Validate;
+use PSX\Domain\DomainManager;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
@@ -55,6 +43,12 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
  */
 class DefaultContainer extends Container
 {
+	use Console;
+	use Controller;
+	use Data;
+	use Handler;
+	use Input;
+
 	/**
 	 * @return PSX\Base
 	 */
@@ -72,120 +66,11 @@ class DefaultContainer extends Container
 	}
 
 	/**
-	 * @return PSX\Dispatch\SenderInterface
-	 */
-	public function getDispatchSender()
-	{
-		return new Sender();
-	}
-
-	/**
-	 * @return PSX\Dispatch
-	 */
-	public function getDispatch()
-	{
-		return new Dispatch($this->get('config'), $this->get('loader'), $this->get('controller_factory'), $this->get('dispatch_sender'));
-	}
-
-	/**
 	 * @return PSX\Http
 	 */
 	public function getHttp()
 	{
 		return new Http();
-	}
-
-	/**
-	 * @return PSX\Input\ContainerInterface
-	 */
-	public function getInputCookie()
-	{
-		return new Input\Cookie($this->get('validate'));
-	}
-
-	/**
-	 * @return PSX\Input\ContainerInterface
-	 */
-	public function getInputFiles()
-	{
-		return new Input\Files($this->get('validate'));
-	}
-
-	/**
-	 * @return PSX\Input\ContainerInterface
-	 */
-	public function getInputGet()
-	{
-		return new Input\Get($this->get('validate'));
-	}
-
-	/**
-	 * @return PSX\Input\ContainerInterface
-	 */
-	public function getInputPost()
-	{
-		return new Input\Post($this->get('validate'));
-	}
-
-	/**
-	 * @return PSX\Input\ContainerInterface
-	 */
-	public function getInputRequest()
-	{
-		return new Input\Request($this->get('validate'));
-	}
-
-	/**
-	 * @return PSX\Loader\RoutingParserInterface
-	 */
-	public function getRoutingParser()
-	{
-		return new Loader\RoutingParser\RoutingFile($this->get('config')->get('psx_routing'));
-	}
-
-	/**
-	 * @return PSX\Loader\LocationFinderInterface
-	 */
-	public function getLoaderLocationFinder()
-	{
-		return new Loader\LocationFinder\RoutingParser($this->get('routing_parser'));
-	}
-
-	/**
-	 * @return PSX\Dispatch\ControllerFactoryInterface
-	 */
-	public function getControllerFactory()
-	{
-		return new ControllerFactory($this);
-	}
-
-	/**
-	 * @return PSX\Loader\CallbackResolverInterface
-	 */
-	public function getLoaderCallbackResolver()
-	{
-		return new Loader\CallbackResolver\Simple($this->get('controller_factory'));
-	}
-
-	/**
-	 * @return Loader\ReverseRouter
-	 */
-	public function getReverseRouter()
-	{
-		return new Loader\ReverseRouter($this->get('routing_parser'), $this->get('config')->get('psx_url'), $this->get('config')->get('psx_dispatch'));
-	}
-
-	/**
-	 * @return PSX\Loader
-	 */
-	public function getLoader()
-	{
-		$loader = new Loader($this->get('loader_location_finder'), $this->get('loader_callback_resolver'));
-
-		// configure loader
-		//$loader->addRoute('.well-known/host-meta', 'foo');
-
-		return $loader;
 	}
 
 	/**
@@ -211,6 +96,14 @@ class DefaultContainer extends Container
 	}
 
 	/**
+	 * @return PSX\Sql\TableManager
+	 */
+	public function getTableManager()
+	{
+		return new TableManager($this->get('sql'));
+	}
+
+	/**
 	 * @return PSX\TemplateInterface
 	 */
 	public function getTemplate()
@@ -224,56 +117,6 @@ class DefaultContainer extends Container
 	public function getValidate()
 	{
 		return new Validate();
-	}
-
-	/**
-	 * @return PSX\Dispatch\RequestFactoryInterface
-	 */
-	public function getRequestFactory()
-	{
-		return new RequestFactory($this->get('config'));
-	}
-
-	/**
-	 * @return PSX\Dispatch\ResponseFactoryInterface
-	 */
-	public function getResponseFactory()
-	{
-		return new ResponseFactory();
-	}
-
-	/**
-	 * @return PSX\Data\ReaderFactory
-	 */
-	public function getReaderFactory()
-	{
-		$reader = new ReaderFactory();
-		$reader->addReader(new Reader\Json());
-		$reader->addReader(new Reader\Dom());
-		$reader->addReader(new Reader\Form());
-		$reader->addReader(new Reader\Gpc());
-		$reader->addReader(new Reader\Multipart());
-		$reader->addReader(new Reader\Raw());
-		$reader->addReader(new Reader\Xml());
-
-		return $reader;
-	}
-
-	/**
-	 * @return PSX\Data\WriterFactory
-	 */
-	public function getWriterFactory()
-	{
-		$writer = new WriterFactory();
-		$writer->addWriter(new Writer\Json());
-		$writer->addWriter(new Writer\Html($this->get('template'), $this->get('reverse_router')));
-		$writer->addWriter(new Writer\Atom());
-		$writer->addWriter(new Writer\Form());
-		$writer->addWriter(new Writer\Jsonp());
-		$writer->addWriter(new Writer\Rss());
-		$writer->addWriter(new Writer\Xml());
-
-		return $writer;
 	}
 
 	/**
@@ -291,66 +134,6 @@ class DefaultContainer extends Container
 	{
 		return new EventDispatcher();
 	}
-
-	/**
-	 * @return PSX\Sql\TableManager
-	 */
-	public function getTableManager()
-	{
-		return new TableManager($this->get('sql'));
-	}
-
-	/**
-	 * @return PSX\Handler\HandlerManagerInterface
-	 */
-	public function getDatabaseManager()
-	{
-		return new Handler\Database\Manager($this->get('table_manager'));
-	}
-
-	/**
-	 * @return PSX\Handler\HandlerManagerInterface
-	 */
-	public function getDomManager()
-	{
-		return new Handler\Dom\Manager();
-	}
-
-	/**
-	 * @return PSX\Handler\HandlerManagerInterface
-	 */
-	public function getMapManager()
-	{
-		return new Handler\Map\Manager();
-	}
-
-	/**
-	 * @return PSX\Handler\HandlerManagerInterface
-	 */
-	public function getPdoManager()
-	{
-		return new Handler\Pdo\Manager($this->get('sql'));
-	}
-
-	/**
-	 * @return PSX\Handler\HandlerManagerInterface
-	 */
-	/*
-	public function getDoctrineManager()
-	{
-		return new Handler\Doctrine\Manager($this->get('entity_manager'));
-	}
-	*/
-
-	/**
-	 * @return PSX\Handler\HandlerManagerInterface
-	 */
-	/*
-	public function getMongodbManager()
-	{
-		return new Handler\Mongodb\Manager($this->get('mongo_client'));
-	}
-	*/
 
 	/**
 	 * @return Doctrine\ORM\EntityManager
