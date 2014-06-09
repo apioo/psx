@@ -104,8 +104,9 @@ abstract class ControllerTestCase extends \PHPUnit_Extensions_Database_TestCase
 	/**
 	 * Loads an specific controller
 	 *
-	 * @param string path
-	 * @return PSX\ModuleAbstract
+	 * @param PSX\Http\Request $request
+	 * @param PSX\Http\Response $response
+	 * @return PSX\ControllerAbstract
 	 */
 	protected function loadController(Request $request, Response $response)
 	{
