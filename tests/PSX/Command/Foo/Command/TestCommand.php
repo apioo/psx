@@ -21,55 +21,38 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Command;
+namespace PSX\Command\Foo\Command;
 
-use InvalidArgumentException;
-use PSX\CommandInterface;
-use PSX\Dispatch\CommandFactoryInterface;
-use PSX\Loader\Location;
+use PSX\CommandAbstract;
+use PSX\Command\Parameters;
+use PSX\Command\OutputInterface;
 
 /**
- * Executor
+ * TestCommand
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Executor
+class TestCommand extends CommandAbstract
 {
-	protected $factory;
-	protected $output;
-
-	protected $aliases = array();
-
-	public function __construct(CommandFactoryInterface $factory, OutputInterface $output)
+	public function onExecute(Parameters $parameters, OutputInterface $output)
 	{
-		$this->factory = $factory;
-		$this->output  = $output;
-	}
+		// inspect inner module API
+		$testCase = $this->getTestCase();
 
-	public function addAlias($className, $alias)
-	{
-		$this->aliases[$alias] = $className;
-	}
+		// get container
+		$testCase->assertInstanceOf('Symfony\Component\DependencyInjection\ContainerInterface', $this->getContainer());
 
-	public function run(ParameterParserInterface $parser, Location $location = null)
-	{
-		$location  = $location === null ? new Location() : $location;
-		$className = $parser->getClassName();
+		// get location
+		$testCase->assertInstanceOf('PSX\Loader\Location', $this->getLocation());
 
-		if(isset($this->aliases[$className]))
-		{
-			$className = $this->aliases[$className];
-		}
+		// get config
+		$testCase->assertInstanceOf('PSX\Config', $this->getConfig());
 
-		$command    = $this->factory->getCommand($className, $location);
-		$parameters = $command->getParameters();
-
-		$parser->fillParameters($parameters);
-
-		$command->onExecute($parameters, $this->output);
-
-		return $command;
+		// test properties
+		$testCase->assertInstanceOf('Symfony\Component\DependencyInjection\ContainerInterface', $this->container);
+		$testCase->assertInstanceOf('PSX\Loader\Location', $this->location);
+		$testCase->assertInstanceOf('PSX\Config', $this->config);
 	}
 }

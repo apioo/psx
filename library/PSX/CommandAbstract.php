@@ -39,16 +39,65 @@ abstract class CommandAbstract implements CommandInterface
 {
 	protected $container;
 	protected $location;
+	protected $config;
 
 	public function __construct(ContainerInterface $container, Location $location)
 	{
 		$this->container = $container;
 		$this->location  = $location;
+		$this->config    = $container->get('config');
+	}
+
+	/**
+	 * If the called method starts with "get" the matching service from the di 
+	 * container is returned else null
+	 *
+	 * @return object
+	 */
+	public function __call($name, $args)
+	{
+		if(substr($name, 0, 3) == 'get')
+		{
+			$service = lcfirst(substr($name, 3));
+
+			if($this->container->has($service))
+			{
+				return $this->container->get($service);
+			}
+
+			throw new InvalidArgumentException('Service ' . $service . ' not available');
+		}
+
+		throw new BadMethodCallException('Call to undefined method ' . $name);
 	}
 
 	public function getParameters()
 	{
 		return new Parameters();
+	}
+
+	/**
+	 * @return Symfony\Component\DependencyInjection\ContainerInterface
+	 */
+	protected function getContainer()
+	{
+		return $this->container;
+	}
+
+	/**
+	 * @return PSX\Loader\Location
+	 */
+	protected function getLocation()
+	{
+		return $this->location;
+	}
+
+	/**
+	 * @return PSX\Config
+	 */
+	protected function getConfig()
+	{
+		return $this->config;
 	}
 
 	protected function getParameterBuilder()

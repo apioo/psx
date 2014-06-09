@@ -21,55 +21,21 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Command;
+namespace PSX;
 
-use InvalidArgumentException;
-use PSX\CommandInterface;
-use PSX\Dispatch\CommandFactoryInterface;
-use PSX\Loader\Location;
+use PSX\Command\CommandTestCase;
 
 /**
- * Executor
+ * CommandAbstractTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Executor
+class CommandAbstractTest extends CommandTestCase
 {
-	protected $factory;
-	protected $output;
-
-	protected $aliases = array();
-
-	public function __construct(CommandFactoryInterface $factory, OutputInterface $output)
+	public function testInnerApi()
 	{
-		$this->factory = $factory;
-		$this->output  = $output;
-	}
-
-	public function addAlias($className, $alias)
-	{
-		$this->aliases[$alias] = $className;
-	}
-
-	public function run(ParameterParserInterface $parser, Location $location = null)
-	{
-		$location  = $location === null ? new Location() : $location;
-		$className = $parser->getClassName();
-
-		if(isset($this->aliases[$className]))
-		{
-			$className = $this->aliases[$className];
-		}
-
-		$command    = $this->factory->getCommand($className, $location);
-		$parameters = $command->getParameters();
-
-		$parser->fillParameters($parameters);
-
-		$command->onExecute($parameters, $this->output);
-
-		return $command;
+		$command = $this->loadCommand('PSX\Command\Foo\Command\TestCommand', array());
 	}
 }

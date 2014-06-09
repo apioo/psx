@@ -23,53 +23,43 @@
 
 namespace PSX\Command;
 
-use InvalidArgumentException;
-use PSX\CommandInterface;
-use PSX\Dispatch\CommandFactoryInterface;
-use PSX\Loader\Location;
+use PSX\Command\Executor;
+use PSX\Command\ParameterParser\Map;
+use PSX\Command\Output\Void;
 
 /**
- * Executor
+ * CommandTestCase
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Executor
+abstract class CommandTestCase extends \PHPUnit_Framework_TestCase
 {
-	protected $factory;
-	protected $output;
-
-	protected $aliases = array();
-
-	public function __construct(CommandFactoryInterface $factory, OutputInterface $output)
+	protected function setUp()
 	{
-		$this->factory = $factory;
-		$this->output  = $output;
+		parent::setUp();
+
+		// we replace the executor
+		getContainer()->set('executor', new Executor(getContainer()->get('command_factory'), new Void()));
+
+		// assign the phpunit test case
+		getContainer()->set('test_case', $this);
 	}
 
-	public function addAlias($className, $alias)
+	protected function tearDown()
 	{
-		$this->aliases[$alias] = $className;
+		parent::tearDown();
 	}
 
-	public function run(ParameterParserInterface $parser, Location $location = null)
+	/**
+	 * Loads an specific command
+	 *
+	 * @param array parameters
+	 * @return PSX\CommandAbstract
+	 */
+	protected function loadCommand($className, array $parameters)
 	{
-		$location  = $location === null ? new Location() : $location;
-		$className = $parser->getClassName();
-
-		if(isset($this->aliases[$className]))
-		{
-			$className = $this->aliases[$className];
-		}
-
-		$command    = $this->factory->getCommand($className, $location);
-		$parameters = $command->getParameters();
-
-		$parser->fillParameters($parameters);
-
-		$command->onExecute($parameters, $this->output);
-
-		return $command;
+		return getContainer()->get('executor')->run(new Map($className, $parameters));
 	}
 }
