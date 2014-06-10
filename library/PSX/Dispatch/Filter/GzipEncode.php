@@ -46,12 +46,9 @@ class GzipEncode implements FilterInterface
 
 			if(strpos($acceptEncoding, 'gzip') !== false)
 			{
-				// we close the current stream and create a new string stream
-				// containing the gzip encoded content
-				$content = (string) $response->getBody();
-
+				// the sender will compress the response if the content encoding
+				// header is available
 				$response->setHeader('Content-Encoding', 'gzip');
-				$response->setBody(new StringStream(gzencode($content)));
 			}
 		}
 	}

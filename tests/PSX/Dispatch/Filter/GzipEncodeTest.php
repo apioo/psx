@@ -39,16 +39,12 @@ class GzipEncodeTest extends \PHPUnit_Framework_TestCase
 {
 	public function testHandle()
 	{
-		$body = new TempStream(fopen('php://memory', 'r+'));
-		$body->write('foobar');
-
 		$request  = new Request(new Url('http://localhost'), 'GET', array('Accept-Encoding' => 'gzip'));
 		$response = new Response();
-		$response->setBody($body);
 
 		$filter = new GzipEncode();
 		$filter->handle($request, $response);
 
-		$this->assertEquals(gzencode('foobar'), (string) $response->getBody());
+		$this->assertEquals('gzip', $response->getHeader('Content-Encoding'));
 	}
 }
