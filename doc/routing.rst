@@ -21,6 +21,7 @@ following example routing file
     GET|POST /api Foo\News\Application\Api::doIndex
     GET /news/:news_id Foo\News\Application\News::doDetail
     GET /news/archive/$year<[0-9]+> Foo\News\Application\News::doArchive
+    GET /file/*path Foo\News\Application\File::downloadFile
 
 in case we make the following HTTP request the class Foo\\News\\Application\\Api 
 gets created and the doIndex method gets called
@@ -46,6 +47,9 @@ The dynamic part contains all content to the next slash. You can also specifiy
 an regular expression to define which chars are allowed in the dynamic part. In
 our example the path /news/archive/$year<[0-9]+> is only matched if the last 
 part contains numeric signs i.e. /news/archive/2014.
+
+Also you can specifiy an wildcard * which matches all content i.e. 
+/file/foo/bar/test.txt would invoke Foo\News\Application\File::downloadFile
 
 Reverse routing
 ---------------
@@ -84,4 +88,4 @@ RoutingCollection which contains all available routes.
    :prepend: <?php
 
 Your routing class has to implement this interface. Then you can overwrite the 
-method getRoutingParser() in the PSX\\Dependency\\DefaultContainer.
+method getRoutingParser() in the PSX\\Dependency\\Controller.

@@ -11,7 +11,8 @@ Lifecycle
 
 At the start of the PSX lifecycle an http request and response object gets
 created. Each object gets created in its own factory so you can change the
-behavior. This can be useful if you want i.e. use another body stream.
+behavior. This can be useful if you want i.e. use another body stream or get 
+values from different environment sources.
 
 .. literalinclude:: ../library/PSX/Dispatch/RequestFactoryInterface.php
    :language: php
@@ -26,9 +27,8 @@ behavior. This can be useful if you want i.e. use another body stream.
 After the request and response objects are created the loader searches the 
 fitting controller based on the routing file. Then the controller can read from
 the request object and add data to the response object. Finally the response 
-must be send to the client. This is done through an sender class which simply
-sends the header through the "header" function and outputs the response body
-with "echo"
+must be send to the client. This is done through an sender class which sends the 
+header through the "header" function and outputs the response body.
 
 .. literalinclude:: ../library/PSX/Dispatch/SenderInterface.php
    :language: php

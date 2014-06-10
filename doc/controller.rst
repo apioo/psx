@@ -10,7 +10,9 @@ code
 
     <?php
     
-    class Controller extends \PSX\Controller\ViewAbstract
+    use PSX\ControllerAbstract;
+
+    class Controller extends ControllerAbstract;
     {
         public function doIndex()
         {

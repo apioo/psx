@@ -8,3 +8,4 @@ Getting started
    http_stream
    routing
    controller
+   command

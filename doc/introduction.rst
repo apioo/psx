@@ -70,8 +70,8 @@ entries are optional. The following code describes each entry
     	// Path to the routing file
     	'psx_routing'             => '../routes',
 
-    	// Path to a custom error template file
-    	'psx_error_template'      => null,
+    	// Class name of the error controller
+    	'psx_error_controller'    => null,
 
     	// Path to the cache folder
     	'psx_path_cache'          => '../cache',
