@@ -35,7 +35,7 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
 	public function testWrite()
 	{
 		$logHandler = $this->getMockBuilder('Psr\Log\LoggerInterface')
-			->setMethods(array('info'))
+			->setMethods(array('emergency', 'alert', 'critical', 'error', 'warning', 'notice', 'info', 'debug', 'log'))
 			->getMock();
 
 		$logHandler->expects($this->once())
@@ -49,7 +49,7 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
 	public function testWriteln()
 	{
 		$logHandler = $this->getMockBuilder('Psr\Log\LoggerInterface')
-			->setMethods(array('info'))
+			->setMethods(array('emergency', 'alert', 'critical', 'error', 'warning', 'notice', 'info', 'debug', 'log'))
 			->getMock();
 
 		$logHandler->expects($this->once())
