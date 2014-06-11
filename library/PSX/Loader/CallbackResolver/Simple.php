@@ -24,10 +24,10 @@
 namespace PSX\Loader\CallbackResolver;
 
 use RuntimeException;
+use Psr\HttpMessage\RequestInterface;
+use Psr\HttpMessage\ResponseInterface;
 use PSX\Dispatch\ControllerFactoryInterface;
 use PSX\Exception;
-use PSX\Http\Request;
-use PSX\Http\Response;
 use PSX\Loader\Callback;
 use PSX\Loader\CallbackResolverInterface;
 use PSX\Loader\Location;
@@ -49,7 +49,7 @@ class Simple implements CallbackResolverInterface
 		$this->factory = $factory;
 	}
 
-	public function resolve(Location $location, Request $request, Response $response)
+	public function resolve(Location $location, RequestInterface $request, ResponseInterface $response)
 	{
 		$source = $location->getSource();
 

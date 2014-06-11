@@ -24,9 +24,9 @@
 namespace PSX;
 
 use InvalidArgumentException;
+use Psr\HttpMessage\RequestInterface;
+use Psr\HttpMessage\ResponseInterface;
 use PSX\Dispatch\FilterInterface;
-use PSX\Http\Request;
-use PSX\Http\Response;
 use PSX\Loader\Callback;
 use PSX\Loader\CallbackResolverInterface;
 use PSX\Loader\Location;
@@ -67,11 +67,11 @@ class Loader implements LoaderInterface
 	 * Loads the location of the controller through the defined location finder. 
 	 * Then uses the callback resolver to obtain an callback from the location
 	 *
-	 * @param PSX\Http\Request $request
-	 * @param PSX\Http\Response $response
+	 * @param Psr\HttpMessage\RequestInterface $request
+	 * @param Psr\HttpMessage\ResponseInterface $response
 	 * @return PSX\ControllerAbstract
 	 */
-	public function load(Request $request, Response $response)
+	public function load(RequestInterface $request, ResponseInterface $response)
 	{
 		$path = $request->getUrl()->getPath();
 
@@ -110,11 +110,11 @@ class Loader implements LoaderInterface
 	 * Loads an specific controller direct without any routing
 	 *
 	 * @param PSX\Loader\Callback $callback
-	 * @param PSX\Http\Request $request
-	 * @param PSX\Http\Response $response
+	 * @param Psr\HttpMessage\RequestInterface $request
+	 * @param Psr\HttpMessage\ResponseInterface $response
 	 * @return PSX\ControllerAbstract
 	 */
-	public function loadClass(Callback $callback, Request $request, Response $response)
+	public function loadClass(Callback $callback, RequestInterface $request, ResponseInterface $response)
 	{
 		return $this->runControllerLifecycle($callback, $request, $response);
 	}
@@ -133,7 +133,7 @@ class Loader implements LoaderInterface
 		return isset($this->routes[$key]) ? $this->routes[$key] : null;
 	}
 
-	protected function runControllerLifecycle(Callback $callback, Request $request, Response $response)
+	protected function runControllerLifecycle(Callback $callback, RequestInterface $request, ResponseInterface $response)
 	{
 		$controller = $callback->getClass();
 		$method     = $callback->getMethod();

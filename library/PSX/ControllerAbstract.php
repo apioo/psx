@@ -26,6 +26,8 @@ namespace PSX;
 use BadMethodCallException;
 use DOMDocument;
 use InvalidArgumentException;
+use Psr\HttpMessage\RequestInterface;
+use Psr\HttpMessage\ResponseInterface;
 use PSX\Data\NotFoundException;
 use PSX\Data\ReaderFactory;
 use PSX\Data\RecordInterface;
@@ -36,8 +38,6 @@ use PSX\Data\Record;
 use PSX\Dependency;
 use PSX\Dispatch\RedirectException;
 use PSX\Http\FileEntity;
-use PSX\Http\Request;
-use PSX\Http\Response;
 use PSX\Http\Stream\TempStream;
 use PSX\Loader\Location;
 use PSX\Url;
@@ -66,7 +66,7 @@ abstract class ControllerAbstract implements ControllerInterface
 	protected $_requestReader;
 	protected $_responseWriter;
 
-	public function __construct(ContainerInterface $container, Location $location, Request $request, Response $response, array $uriFragments = null)
+	public function __construct(ContainerInterface $container, Location $location, RequestInterface $request, ResponseInterface $response, array $uriFragments = null)
 	{
 		$this->container    = $container;
 		$this->location     = $location;

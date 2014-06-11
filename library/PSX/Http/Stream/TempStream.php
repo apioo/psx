@@ -23,6 +23,9 @@
 
 namespace PSX\Http\Stream;
 
+use InvalidArgumentException;
+use Psr\HttpMessage\StreamInterface;
+
 /**
  * The curl handler writes the http body response into an php://temp stream 
  * which means that it will use a temporary file once the amount of data stored 
@@ -33,7 +36,7 @@ namespace PSX\Http\Stream;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class TempStream
+class TempStream implements StreamInterface
 {
 	protected $resource;
 
@@ -89,7 +92,7 @@ class TempStream
 		fseek($this->resource, $offset, $whence);
 	}
 
-	public function isWriteable()
+	public function isWritable()
 	{
 		return true;
 	}

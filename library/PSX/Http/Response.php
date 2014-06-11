@@ -23,6 +23,8 @@
 
 namespace PSX\Http;
 
+use Psr\HttpMessage\ResponseInterface;
+use Psr\HttpMessage\StreamInterface;
 use PSX\Http;
 use PSX\Exception;
 
@@ -33,7 +35,7 @@ use PSX\Exception;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Response extends Message
+class Response extends Message implements ResponseInterface
 {
 	protected $scheme;
 	protected $code;
@@ -50,7 +52,7 @@ class Response extends Message
 	 */
 	public function __construct($scheme = null, $code = null, $message = null, array $header = array(), $body = null)
 	{
-		parent::__construct($header, $body);
+		parent::__construct($header, $body, $scheme);
 
 		$this->setProtocolVersion($scheme);
 		$this->setStatusCode($code);

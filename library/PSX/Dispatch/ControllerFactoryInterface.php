@@ -23,8 +23,8 @@
 
 namespace PSX\Dispatch;
 
-use PSX\Http\Request;
-use PSX\Http\Response;
+use Psr\HttpMessage\RequestInterface;
+use Psr\HttpMessage\ResponseInterface;
 use PSX\Loader\Location;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -42,9 +42,9 @@ interface ControllerFactoryInterface
 	 *
 	 * @param string $className
 	 * @param PSX\Loader\Location $location
-	 * @param PSX\Http\Request $request
-	 * @param PSX\Http\Response $response
+	 * @param Psr\HttpMessage\RequestInterface $request
+	 * @param Psr\HttpMessage\ResponseInterface $response
 	 * @return PSX\ControllerInterface
 	 */
-	public function getController($className, Location $location, Request $request, Response $response);
+	public function getController($className, Location $location, RequestInterface $request, ResponseInterface $response);
 }

@@ -23,9 +23,9 @@
 
 namespace PSX\Dispatch\Filter;
 
+use Psr\HttpMessage\RequestInterface;
+use Psr\HttpMessage\ResponseInterface;
 use PSX\Dispatch\FilterInterface;
-use PSX\Http\Request;
-use PSX\Http\Response;
 
 /**
  * ContentMd5
@@ -36,7 +36,7 @@ use PSX\Http\Response;
  */
 class ContentMd5 implements FilterInterface
 {
-	public function handle(Request $request, Response $response)
+	public function handle(RequestInterface $request, ResponseInterface $response)
 	{
 		if(!$response->hasHeader('Content-MD5'))
 		{

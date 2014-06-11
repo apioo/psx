@@ -23,8 +23,8 @@
 
 namespace PSX\Loader;
 
-use PSX\Http\Request;
-use PSX\Http\response;
+use Psr\HttpMessage\RequestInterface;
+use Psr\HttpMessage\ResponseInterface;
 
 /**
  * CallbackResolverInterface
@@ -39,9 +39,9 @@ interface CallbackResolverInterface
 	 * The resolver returns an callback
 	 *
 	 * @param PSX\Loader\Location $location
-	 * @param PSX\Http\Request $request
-	 * @param PSX\Http\Response $response
+	 * @param Psr\HttpMessage\RequestInterface $request
+	 * @param Psr\HttpMessage\ResponseInterface $response
 	 * @return PSX\Loader\Callback
 	 */
-	public function resolve(Location $location, Request $request, Response $response);
+	public function resolve(Location $location, RequestInterface $request, ResponseInterface $response);
 }

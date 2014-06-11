@@ -23,6 +23,9 @@
 
 namespace PSX\Http\Stream;
 
+use InvalidArgumentException;
+use Psr\HttpMessage\StreamInterface;
+
 /**
  * In contrast to the temp stream the socks stream is actually a real stream.
  * That means only when you read data from the stream data is transfered over 
@@ -32,7 +35,7 @@ namespace PSX\Http\Stream;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class SocksStream
+class SocksStream implements StreamInterface
 {
 	protected $resource;
 	protected $contentLength;
@@ -90,7 +93,7 @@ class SocksStream
 		fseek($this->resource, $offset, $whence);
 	}
 
-	public function isWriteable()
+	public function isWritable()
 	{
 		return false;
 	}

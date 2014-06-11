@@ -23,6 +23,8 @@
 
 namespace PSX\Http\Stream;
 
+use Psr\HttpMessage\StreamInterface;
+
 /**
  * Stream wich works on an string therefore the size of the stream is limited to
  * the available memory
@@ -31,7 +33,7 @@ namespace PSX\Http\Stream;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class StringStream
+class StringStream implements StreamInterface
 {
 	protected $data;
 
@@ -87,7 +89,7 @@ class StringStream
 		}
 	}
 
-	public function isWriteable()
+	public function isWritable()
 	{
 		return true;
 	}

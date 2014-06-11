@@ -24,8 +24,8 @@
 namespace PSX\Data\Reader;
 
 use DOMDocument;
+use Psr\HttpMessage\MessageInterface;
 use PSX\Data\ReaderAbstract;
-use PSX\Http\Message;
 
 /**
  * Dom
@@ -36,7 +36,7 @@ use PSX\Http\Message;
  */
 class Dom extends ReaderAbstract
 {
-	public function read(Message $message)
+	public function read(MessageInterface $message)
 	{
 		$dom = new DOMDocument();
 		$dom->encoding = 'UTF-8';

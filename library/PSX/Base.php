@@ -23,8 +23,6 @@
 
 namespace PSX;
 
-use PSX\Http\Request;
-use PSX\Http\Stream\TempStream;
 use PSX\Util\Uuid;
 use UnexpectedValueException;
 

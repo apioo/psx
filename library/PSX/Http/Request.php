@@ -23,6 +23,8 @@
 
 namespace PSX\Http;
 
+use Psr\HttpMessage\RequestInterface;
+use Psr\HttpMessage\StreamInterface;
 use PSX\Http;
 use PSX\Url;
 
@@ -33,7 +35,7 @@ use PSX\Url;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Request extends Message
+class Request extends Message implements RequestInterface
 {
 	protected $url;
 	protected $method;
@@ -57,7 +59,7 @@ class Request extends Message
 	 */
 	public function __construct(Url $url, $method, array $header = array(), $body = null, $scheme = 'HTTP/1.1')
 	{
-		parent::__construct($header, $body);
+		parent::__construct($header, $body, $scheme);
 
 		$this->setUrl($url);
 		$this->setMethod($method);

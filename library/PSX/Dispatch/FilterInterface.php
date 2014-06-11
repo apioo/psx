@@ -23,8 +23,8 @@
 
 namespace PSX\Dispatch;
 
-use PSX\Http\Request;
-use PSX\Http\Response;
+use Psr\HttpMessage\RequestInterface;
+use Psr\HttpMessage\ResponseInterface;
 
 /**
  * FilterInterface
@@ -35,5 +35,5 @@ use PSX\Http\Response;
  */
 interface FilterInterface
 {
-	public function handle(Request $request, Response $response);
+	public function handle(RequestInterface $request, ResponseInterface $response);
 }

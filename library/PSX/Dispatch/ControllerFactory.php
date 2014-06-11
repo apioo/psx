@@ -23,8 +23,8 @@
 
 namespace PSX\Dispatch;
 
-use PSX\Http\Request;
-use PSX\Http\Response;
+use Psr\HttpMessage\RequestInterface;
+use Psr\HttpMessage\ResponseInterface;
 use PSX\Loader\Location;
 use RuntimeException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -45,7 +45,7 @@ class ControllerFactory implements ControllerFactoryInterface
 		$this->container = $container;
 	}
 
-	public function getController($className, Location $location, Request $request, Response $response)
+	public function getController($className, Location $location, RequestInterface $request, ResponseInterface $response)
 	{
 		if(class_exists($className))
 		{

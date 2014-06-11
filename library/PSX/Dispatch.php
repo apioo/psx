@@ -24,12 +24,12 @@
 namespace PSX;
 
 use DOMDocument;
+use Psr\HttpMessage\RequestInterface;
+use Psr\HttpMessage\ResponseInterface;
 use PSX\Base;
 use PSX\Dispatch\ControllerFactoryInterface;
 use PSX\Dispatch\SenderInterface;
 use PSX\Dispatch\RedirectException;
-use PSX\Http\Request;
-use PSX\Http\Response;
 use PSX\Loader\Callback;
 use PSX\Loader\Location;
 
@@ -56,7 +56,7 @@ class Dispatch extends \Exception
 		$this->factory = $factory;
 	}
 
-	public function route(Request $request, Response $response)
+	public function route(RequestInterface $request, ResponseInterface $response)
 	{
 		// load controller
 		try

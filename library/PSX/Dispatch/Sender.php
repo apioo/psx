@@ -23,8 +23,8 @@
 
 namespace PSX\Dispatch;
 
+use Psr\HttpMessage\ResponseInterface;
 use PSX\Http;
-use PSX\Http\Response;
 use PSX\Http\ResponseParser;
 use PSX\Http\Stream\FileStream;
 
@@ -44,7 +44,7 @@ class Sender implements SenderInterface
 		$this->chunkSize = $chunkSize;
 	}
 
-	public function send(Response $response)
+	public function send(ResponseInterface $response)
 	{
 		if(!$this->isCli())
 		{
@@ -107,7 +107,7 @@ class Sender implements SenderInterface
 		header($header);
 	}
 
-	protected function sendContentEncoded($contentEncoding, Response $response)
+	protected function sendContentEncoded($contentEncoding, ResponseInterface $response)
 	{
 		switch($contentEncoding)
 		{
@@ -130,7 +130,7 @@ class Sender implements SenderInterface
 		}
 	}
 
-	protected function sendContentChunked(Response $response)
+	protected function sendContentChunked(ResponseInterface $response)
 	{
 		$body = $response->getBody();
 		$body->seek(0);

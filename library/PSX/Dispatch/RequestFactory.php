@@ -50,7 +50,7 @@ class RequestFactory implements RequestFactoryInterface
 	 * removed from the request url. Because of this you can have an psx project
 	 * also in an sub folder
 	 *
-	 * @return PSX\Http\Request
+	 * @return Psr\HttpMessage\RequestInterface
 	 */
 	public function createRequest()
 	{

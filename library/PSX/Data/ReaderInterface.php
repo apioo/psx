@@ -23,8 +23,8 @@
 
 namespace PSX\Data;
 
+use Psr\HttpMessage\MessageInterface;
 use PSX\Data\Record\ImporterInterface;
-use PSX\Http\Message as HttpMessage;
 
 /**
  * ReaderInterface
@@ -47,10 +47,10 @@ interface ReaderInterface
 	 * Transforms the $request into an parseable form this can be an array
 	 * or DOMDocument etc.
 	 *
-	 * @param PSX\Http\Request $request
+	 * @param Psr\HttpMessage\MessageInterface $message
 	 * @return mixed
 	 */
-	public function read(HttpMessage $message);
+	public function read(MessageInterface $message);
 
 	/**
 	 * Returns whether the content type is supported by this reader
@@ -78,7 +78,9 @@ interface ReaderInterface
 	 * Imports the data from the http message into the record using the default
 	 * importer
 	 *
+	 * @param PSX\Data\RecordInterface $record
+	 * @param Psr\HttpMessage\MessageInterface $message
 	 * @return PSX\Data\RecordInterface
 	 */
-	public function import(RecordInterface $record, HttpMessage $message);
+	public function import(RecordInterface $record, MessageInterface $message);
 }

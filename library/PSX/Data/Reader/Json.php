@@ -23,9 +23,9 @@
 
 namespace PSX\Data\Reader;
 
+use Psr\HttpMessage\MessageInterface;
 use PSX\Data\ReaderAbstract;
 use PSX\Data\Record\DefaultImporter;
-use PSX\Http\Message;
 use PSX\Json as JsonParser;
 
 /**
@@ -39,7 +39,7 @@ class Json extends ReaderAbstract
 {
 	public static $mime = 'application/json';
 
-	public function read(Message $message)
+	public function read(MessageInterface $message)
 	{
 		$json = JsonParser::decode((string) $message->getBody());
 

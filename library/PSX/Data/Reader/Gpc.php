@@ -23,9 +23,9 @@
 
 namespace PSX\Data\Reader;
 
+use Psr\HttpMessage\MessageInterface;
 use PSX\Data\ReaderAbstract;
 use PSX\Data\Record\DefaultImporter;
-use PSX\Http\Message;
 use PSX\Http\Request;
 
 /**
@@ -37,7 +37,7 @@ use PSX\Http\Request;
  */
 class Gpc extends ReaderAbstract
 {
-	public function read(Message $message)
+	public function read(MessageInterface $message)
 	{
 		if($message instanceof Request)
 		{

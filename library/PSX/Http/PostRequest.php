@@ -23,7 +23,9 @@
 
 namespace PSX\Http;
 
+use Psr\HttpMessage\StreamInterface;
 use PSX\Url;
+use PSX\Http\Stream\StringStream;
 
 /**
  * PostRequest
@@ -52,7 +54,7 @@ class PostRequest extends Request
 		{
 			$isFormUrlencoded = true;
 
-			$body = http_build_query($body, '', '&');
+			$body = new StringStream(http_build_query($body, '', '&'));
 		}
 
 		parent::__construct($url, $method, $header, $body);
@@ -68,13 +70,13 @@ class PostRequest extends Request
 		}
 	}
 
-	public function setBody($body = null)
+	public function setBody(StreamInterface $body = null)
 	{
 		parent::setBody($body);
 
-		if(is_string($body))
+		if($body !== null)
 		{
-			$this->setHeader('Content-Length', strlen($body));
+			$this->setHeader('Content-Length', $body->getSize());
 		}
 	}
 }

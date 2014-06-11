@@ -23,9 +23,9 @@
 
 namespace PSX\Data\Reader;
 
+use Psr\HttpMessage\MessageInterface;
 use PSX\Data\ReaderAbstract;
 use PSX\Data\Record\DefaultImporter;
-use PSX\Http\Message;
 
 /**
  * Multipart
@@ -38,7 +38,7 @@ class Multipart extends ReaderAbstract
 {
 	public static $mime = 'multipart/form-data';
 
-	public function read(Message $message)
+	public function read(MessageInterface $message)
 	{
 		// post params
 		$data = $_POST;

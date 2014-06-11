@@ -24,6 +24,7 @@
 namespace PSX\Http;
 
 use PSX\Url;
+use PSX\Http\Stream\StringStream;
 
 /**
  * PutRequest
@@ -53,7 +54,7 @@ class PutRequest extends Request
 		{
 			$isFormUrlencoded = true;
 
-			$body = http_build_query($body, '', '&');
+			$body = new StringStream(http_build_query($body, '', '&'));
 		}
 
 		parent::__construct($url, $method, $header, $body);

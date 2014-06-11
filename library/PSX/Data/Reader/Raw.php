@@ -23,8 +23,8 @@
 
 namespace PSX\Data\Reader;
 
+use Psr\HttpMessage\MessageInterface;
 use PSX\Data\ReaderAbstract;
-use PSX\Http\Message;
 
 /**
  * Raw
@@ -35,7 +35,7 @@ use PSX\Http\Message;
  */
 class Raw extends ReaderAbstract
 {
-	public function read(Message $message)
+	public function read(MessageInterface $message)
 	{
 		return $message;
 	}

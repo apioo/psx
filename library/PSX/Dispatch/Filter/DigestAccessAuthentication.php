@@ -24,12 +24,12 @@
 namespace PSX\Dispatch\Filter;
 
 use Closure;
+use Psr\HttpMessage\RequestInterface;
+use Psr\HttpMessage\ResponseInterface;
 use PSX\Data\RecordStoreInterface;
 use PSX\Dispatch\FilterInterface;
 use PSX\Dispatch\Filter\DigestAccessAuthentication\Digest;
 use PSX\Exception;
-use PSX\Http\Request;
-use PSX\Http\Response;
 use PSX\Http\Authentication;
 
 /**
@@ -82,7 +82,7 @@ class DigestAccessAuthentication implements FilterInterface
 			throw new Exception('Invalid username or password');
 		});
 
-		$this->onMissing(function(Response $response) use ($digestStore) {
+		$this->onMissing(function(ResponseInterface $response) use ($digestStore) {
 			$digest = new Digest();
 			$digest->setNonce(sha1(time() + uniqid()));
 			$digest->setOpaque(sha1(session_id()));
@@ -111,7 +111,7 @@ class DigestAccessAuthentication implements FilterInterface
 		$this->digest = $this->digestStore->load('digest');
 	}
 
-	public function handle(Request $request, Response $response)
+	public function handle(RequestInterface $request, ResponseInterface $response)
 	{
 		$authorization = $request->getHeader('Authorization');
 
@@ -200,17 +200,17 @@ class DigestAccessAuthentication implements FilterInterface
 		$this->missingCallback = $missingCallback;
 	}
 
-	protected function callSuccess(Response $response)
+	protected function callSuccess(ResponseInterface $response)
 	{
 		call_user_func_array($this->successCallback, array($response));
 	}
 
-	protected function callFailure(Response $response)
+	protected function callFailure(ResponseInterface $response)
 	{
 		call_user_func_array($this->failureCallback, array($response));
 	}
 
-	protected function callMissing(Response $response)
+	protected function callMissing(ResponseInterface $response)
 	{
 		call_user_func_array($this->missingCallback, array($response));
 	}

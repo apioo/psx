@@ -81,7 +81,7 @@ class Skrill
 
 		if($response->getStatusCode() == 200)
 		{
-			$cookies   = $response->getHeader('Set-Cookie', true);
+			$cookies   = $response->getHeaderAsArray('Set-Cookie');
 			$sessionId = null;
 
 			foreach($cookies as $cookie)

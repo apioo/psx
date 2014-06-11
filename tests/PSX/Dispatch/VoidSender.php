@@ -23,7 +23,7 @@
 
 namespace PSX\Dispatch;
 
-use PSX\Http\Response;
+use Psr\HttpMessage\ResponseInterface;
 
 /**
  * VoidSender
@@ -34,7 +34,7 @@ use PSX\Http\Response;
  */
 class VoidSender implements SenderInterface
 {
-	public function send(Response $response)
+	public function send(ResponseInterface $response)
 	{
 	}
 }

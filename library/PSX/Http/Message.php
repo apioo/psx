@@ -23,6 +23,11 @@
 
 namespace PSX\Http;
 
+use InvalidArgumentException;
+use Psr\HttpMessage\MessageInterface;
+use Psr\HttpMessage\StreamInterface;
+use PSX\Http\Stream\StringStream;
+
 /**
  * Message
  *
@@ -30,21 +35,28 @@ namespace PSX\Http;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Message
+class Message implements MessageInterface
 {
 	protected $headers;
 	protected $body;
+	protected $scheme;
 
 	/**
-	 * __construct
-	 *
 	 * @param array $header
-	 * @param string $body
+	 * @param Psr\HttpMessage\StreamInterface|string $body
+	 * @param string $scheme
 	 */
-	public function __construct(array $header = array(), $body = null)
+	public function __construct(array $header = array(), $body = null, $scheme = null)
 	{
 		$this->setHeaders($header);
-		$this->setBody($body);
+		$this->setBody($this->prepareBody($body));
+
+		$this->scheme = $scheme;
+	}
+
+	public function getProtocolVersion()
+	{
+		return $this->scheme;
 	}
 
 	public function getHeaders()
@@ -64,9 +76,14 @@ class Message
 		return isset($this->headers[strtolower($name)]);
 	}
 
-	public function getHeader($name, $asArray = false)
+	public function getHeader($name)
 	{
-		return $this->hasHeader($name) ? $this->headers[strtolower($name)]->getValue($asArray) : ($asArray ? array() : null);
+		return $this->hasHeader($name) ? $this->headers[strtolower($name)]->getValue(false) : null;
+	}
+
+	public function getHeaderAsArray($name)
+	{
+		return $this->hasHeader($name) ? $this->headers[strtolower($name)]->getValue(true) : array();
 	}
 
 	public function setHeader($name, $value)
@@ -129,9 +146,25 @@ class Message
 	 * @param Psr\Http\StreamInterface $body
 	 * @return void
 	 */
-	public function setBody($body = null)
+	public function setBody(StreamInterface $body = null)
 	{
 		$this->body = $body;
+	}
+
+	protected function prepareBody($body)
+	{
+		if($body === null || $body instanceof StreamInterface)
+		{
+			return $body;
+		}
+		else if(is_string($body))
+		{
+			return new StringStream($body);
+		}
+		else
+		{
+			throw new InvalidArgumentException('Body must be either an Psr\HttpMessage\StreamInterface or string');
+		}
 	}
 }
 

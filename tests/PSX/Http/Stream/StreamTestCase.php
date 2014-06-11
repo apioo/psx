@@ -102,12 +102,12 @@ abstract class StreamTestCase extends \PHPUnit_Framework_TestCase
 
 	public function testIsWriteable()
 	{
-		$this->stream->isWriteable();
+		$this->stream->isWritable();
 	}
 
 	public function testWrite()
 	{
-		if($this->stream->isWriteable())
+		if($this->stream->isWritable())
 		{
 			$this->stream->seek(0, SEEK_END);
 			$this->stream->write('bar');

@@ -23,11 +23,10 @@
 
 namespace PSX\Dispatch\Filter;
 
+use Psr\HttpMessage\RequestInterface;
+use Psr\HttpMessage\ResponseInterface;
 use PSX\Base;
 use PSX\Dispatch\FilterInterface;
-use PSX\Http\Request;
-use PSX\Http\Response;
-use PSX\Http\Stream\StringStream;
 
 /**
  * GzipEncode
@@ -38,7 +37,7 @@ use PSX\Http\Stream\StringStream;
  */
 class GzipEncode implements FilterInterface
 {
-	public function handle(Request $request, Response $response)
+	public function handle(RequestInterface $request, ResponseInterface $response)
 	{
 		if($request->hasHeader('Accept-Encoding'))
 		{

@@ -23,9 +23,9 @@
 
 namespace PSX\Data\Reader;
 
+use Psr\HttpMessage\MessageInterface;
 use PSX\Data\ReaderAbstract;
 use PSX\Data\Record\DefaultImporter;
-use PSX\Http\Message;
 
 /**
  * Form
@@ -38,7 +38,7 @@ class Form extends ReaderAbstract
 {
 	public static $mime = 'application/x-www-form-urlencoded';
 
-	public function read(Message $message)
+	public function read(MessageInterface $message)
 	{
 		$form = array();
 

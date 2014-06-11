@@ -23,7 +23,7 @@
 
 namespace PSX\Dispatch;
 
-use PSX\Http\Response;
+use Psr\HttpMessage\ResponseInterface;
 
 /**
  * SenderInterface
@@ -39,5 +39,5 @@ interface SenderInterface
 	 *
 	 * @param PSX\Http\Response $response
 	 */
-	public function send(Response $response);
+	public function send(ResponseInterface $response);
 }

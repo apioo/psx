@@ -23,8 +23,6 @@
 
 namespace PSX\Dispatch;
 
-use PSX\Http\Request;
-
 /**
  * ResponseFactoryInterface
  *
@@ -37,7 +35,7 @@ interface ResponseFactoryInterface
 	/**
 	 * Returns the http response containing default values and the body stream
 	 *
-	 * @return PSX\Http\Response
+	 * @return Psr\HttpMessage\ResponseInterface
 	 */
 	public function createResponse();
 }

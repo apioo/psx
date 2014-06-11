@@ -152,7 +152,7 @@ class Http
 		// store cookies
 		if($this->cookieStore !== null)
 		{
-			$cookies = $response->getHeader('Set-Cookie', true);
+			$cookies = $response->getHeaderAsArray('Set-Cookie');
 
 			foreach($cookies as $rawCookie)
 			{
