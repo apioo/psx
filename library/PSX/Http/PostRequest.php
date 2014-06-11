@@ -25,7 +25,6 @@ namespace PSX\Http;
 
 use Psr\HttpMessage\StreamInterface;
 use PSX\Url;
-use PSX\Http\Stream\StringStream;
 
 /**
  * PostRequest
@@ -54,7 +53,7 @@ class PostRequest extends Request
 		{
 			$isFormUrlencoded = true;
 
-			$body = new StringStream(http_build_query($body, '', '&'));
+			$body = http_build_query($body, '', '&');
 		}
 
 		parent::__construct($url, $method, $header, $body);

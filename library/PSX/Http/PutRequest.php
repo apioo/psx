@@ -23,8 +23,8 @@
 
 namespace PSX\Http;
 
+use Psr\HttpMessage\StreamInterface;
 use PSX\Url;
-use PSX\Http\Stream\StringStream;
 
 /**
  * PutRequest
@@ -40,7 +40,7 @@ class PutRequest extends Request
 	 *
 	 * @param PSX\Url|string $url
 	 * @param array $header
-	 * @param string $body
+	 * @param Psr\HttpMessage\StreamInterface|string|array $body
 	 * @param boolean $override
 	 */
 	public function __construct($url, array $header = array(), $body = null, $override = false)
@@ -54,7 +54,7 @@ class PutRequest extends Request
 		{
 			$isFormUrlencoded = true;
 
-			$body = new StringStream(http_build_query($body, '', '&'));
+			$body = http_build_query($body, '', '&');
 		}
 
 		parent::__construct($url, $method, $header, $body);
@@ -75,13 +75,13 @@ class PutRequest extends Request
 		}
 	}
 
-	public function setBody($body = null)
+	public function setBody(StreamInterface $body = null)
 	{
 		parent::setBody($body);
 
-		if(is_string($body))
+		if($body !== null)
 		{
-			$this->setHeader('Content-Length', strlen($body));
+			$this->setHeader('Content-Length', $body->getSize());
 		}
 	}
 }
