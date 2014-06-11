@@ -29,6 +29,7 @@ use PSX\Http\GetRequest;
 use PSX\Http\HeadRequest;
 use PSX\Http\PostRequest;
 use PSX\Http\PutRequest;
+use PSX\Http\Stream\TempStream;
 use PSX\Url;
 use PSX\Json;
 
@@ -127,7 +128,7 @@ abstract class HandlerTestCase extends \PHPUnit_Framework_TestCase
 	public function testPostRequestStream()
 	{
 		$file     = 'tests/PSX/Template/files/foo.tpl';
-		$request  = new PostRequest(new Url(self::URL . '/post'), array('Content-Type' => 'text/plain', 'Content-Length' => filesize($file)), fopen($file, 'r+'));
+		$request  = new PostRequest(new Url(self::URL . '/post'), array('Content-Type' => 'text/plain', 'Content-Length' => filesize($file)), new TempStream(fopen($file, 'r+')));
 		$response = $this->http->request($request);
 
 		$this->assertEquals('HTTP/1.1', $response->getProtocolVersion());
@@ -156,7 +157,7 @@ abstract class HandlerTestCase extends \PHPUnit_Framework_TestCase
 	public function testPutRequestStream()
 	{
 		$file     = 'tests/PSX/Template/files/foo.tpl';
-		$request  = new PutRequest(new Url(self::URL . '/put'), array('Content-Type' => 'text/plain', 'Content-Length' => filesize($file)), fopen($file, 'r+'));
+		$request  = new PutRequest(new Url(self::URL . '/put'), array('Content-Type' => 'text/plain', 'Content-Length' => filesize($file)), new TempStream(fopen($file, 'r+')));
 		$response = $this->http->request($request);
 
 		$this->assertEquals('HTTP/1.1', $response->getProtocolVersion());
@@ -185,7 +186,7 @@ abstract class HandlerTestCase extends \PHPUnit_Framework_TestCase
 	public function testDeleteRequestStream()
 	{
 		$file     = 'tests/PSX/Template/files/foo.tpl';
-		$request  = new DeleteRequest(new Url(self::URL . '/delete'), array('Content-Type' => 'text/plain', 'Content-Length' => filesize($file)), fopen($file, 'r+'));
+		$request  = new DeleteRequest(new Url(self::URL . '/delete'), array('Content-Type' => 'text/plain', 'Content-Length' => filesize($file)), new TempStream(fopen($file, 'r+')));
 		$response = $this->http->request($request);
 
 		$this->assertEquals('HTTP/1.1', $response->getProtocolVersion());
