@@ -142,4 +142,14 @@ class BrowserCache implements FilterInterface
 	{
 		return new self($flags, $maxAge, $sMaxAge);
 	}
+
+	public static function preventCache()
+	{
+		return new self(
+			self::NO_STORE | self::NO_CACHE | self::MUST_REVALIDATE,
+			null,
+			null,
+			new \DateTime('1986-10-09')
+		);
+	}
 }
