@@ -34,20 +34,20 @@ use PSX\Command\ParameterParserTestCase;
  */
 class CliArgumentTest extends ParameterParserTestCase
 {
-	/**
-	 * @expectedException InvalidArgumentException
-	 */
 	public function testParseArguments1()
 	{
 		$cliArgument = new CliArgument(array('foo.php'));
+
+		$this->assertEquals('PSX\Command\ListCommand', $cliArgument->getClassName());
+		$this->assertEquals(array(), $cliArgument->getArgv());
 	}
 
-	/**
-	 * @expectedException InvalidArgumentException
-	 */
 	public function testParseArguments2()
 	{
 		$cliArgument = new CliArgument(array('foo.php', ''));
+
+		$this->assertEquals('PSX\Command\ListCommand', $cliArgument->getClassName());
+		$this->assertEquals(array(), $cliArgument->getArgv());
 	}
 
 	public function testParseArguments3()

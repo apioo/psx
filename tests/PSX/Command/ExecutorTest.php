@@ -139,6 +139,29 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
 		$executor = new Executor($factory, new Void());
 		$executor->run(new Map('Foo\Bar', array('r' => 'foo', 'o' => 'bar')));
 	}
+
+	public function testAlias()
+	{
+		$command = new TestCommand(function(Parameters $parameters){
+		});
+
+		$factory = $this->getMockBuilder('PSX\Dispatch\CommandFactoryInterface')
+			->setMethods(array('getCommand'))
+			->getMock();
+
+		$factory->expects($this->once())
+			->method('getCommand')
+			->with($this->identicalTo('Foo\Bar'))
+			->will($this->returnValue($command));
+
+		$executor = new Executor($factory, new Void());
+		$executor->addAlias('foo', 'Foo\Bar');
+		$executor->run(new Map('foo', array('r' => 'foo')));
+
+		$this->assertEquals('bar', $executor->getClassName('bar'));
+		$this->assertEquals('Foo\Bar', $executor->getClassName('foo'));
+		$this->assertEquals(array('foo' => 'Foo\Bar'), $executor->getAliases());
+	}
 }
 
 class TestCommand extends CommandAbstract
