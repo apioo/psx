@@ -37,39 +37,10 @@ use PSX\Data\Record\DefinitionInterface;
 interface CollectionInterface
 {
 	/**
-	 * Returns all record definitions
-	 *
-	 * @return array<PSX\Data\Record\DefinitionInterface>
-	 */
-	public function getAll();
-
-	/**
 	 * Returns the record definition for the specific name
 	 *
 	 * @param string $name
 	 * @return PSX\Data\Record\DefinitionInterface
 	 */
 	public function get($name);
-
-	/**
-	 * Adds an record definition to the collection
-	 *
-	 * @param PSX\Data\Record\DefinitionInterface $definition
-	 */
-	public function add(DefinitionInterface $definition);
-
-	/**
-	 * Returns whether the record definition is available on this collection
-	 *
-	 * @param string $name
-	 * @return boolean
-	 */
-	public function has($name);
-
-	/**
-	 * Merges another collection into this
-	 *
-	 * @param PSX\Data\Record\Definition\CollectionInterface $collection
-	 */
-	public function merge(CollectionInterface $collection);
 }

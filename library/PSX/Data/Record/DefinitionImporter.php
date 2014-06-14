@@ -121,8 +121,8 @@ class DefinitionImporter implements ImporterInterface
 				$reference = $property->getReference();
 				if(!empty($reference) && !empty($value) && is_array($value))
 				{
-					$dfn   = $this->collection->get($reference);
-					$value = $this->getRecordByDefinition($dfn, $value);
+					$definition = $this->collection->get($reference);
+					$value      = $this->getRecordByDefinition($definition, $value);
 
 					return $value;
 				}

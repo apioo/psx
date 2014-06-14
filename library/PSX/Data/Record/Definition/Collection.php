@@ -61,7 +61,7 @@ class Collection implements CollectionInterface
 		return isset($this->definitions[$name]);
 	}
 
-	public function merge(CollectionInterface $collection)
+	public function merge(Collection $collection)
 	{
 		$this->definitions = array_merge($this->definitions, $collection->getAll());
 	}

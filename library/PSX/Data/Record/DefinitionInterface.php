@@ -42,13 +42,7 @@ interface DefinitionInterface
 	public function getName();
 
 	/**
-	 *
-	 * @param PSX\Data\Record\Definition\Property $property
-	 */
-	public function addProperty(Property $property);
-
-	/**
-	 * Returns all propeties of this definition
+	 * Returns all properties of this definition
 	 *
 	 * @return array<PSX\Data\Record\Definition\Property>
 	 */
