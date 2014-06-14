@@ -40,7 +40,7 @@ class SimpleTest extends \PHPUnit_Framework_TestCase
 {
 	public function testResolve()
 	{
-		$location = new Location('id', array(), 'PSX\Loader\RoutingParser\Annotation\BarController::doIndex');
+		$location = new Location(array(Location::KEY_SOURCE => 'PSX\Loader\RoutingParser\Annotation\BarController::doIndex'));
 		$request  = new Request(new Url('http://127.0.0.1'), 'GET');
 		$response = new Response();
 
@@ -56,7 +56,7 @@ class SimpleTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testInvalidSource()
 	{
-		$location = new Location('id', array(), 'foobar');
+		$location = new Location(array(Location::KEY_SOURCE => 'foobar'));
 		$request  = new Request(new Url('http://127.0.0.1'), 'GET');
 		$response = new Response();
 
@@ -69,7 +69,7 @@ class SimpleTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testClassNotExist()
 	{
-		$location = new Location('id', array(), 'Foo::bar');
+		$location = new Location(array(Location::KEY_SOURCE => 'Foo::bar'));
 		$request  = new Request(new Url('http://127.0.0.1'), 'GET');
 		$response = new Response();
 

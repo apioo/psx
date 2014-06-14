@@ -67,7 +67,11 @@ class RoutingParser implements LocationFinderInterface
 					return $this->resolve($method, substr($source, 1));
 				}
 
-				return new Location(md5($source), $parameters, $source);
+				$location = new Location();
+				$location->setParameter(Location::KEY_FRAGMENT, $parameters);
+				$location->setParameter(Location::KEY_SOURCE, $source);
+
+				return $location;
 			}
 		}
 

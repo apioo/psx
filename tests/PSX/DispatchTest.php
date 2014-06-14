@@ -56,7 +56,7 @@ class DispatchTest extends \PHPUnit_Framework_TestCase
 	{
 		$locationFinder = new CallbackMethod(function($method, $path){
 
-			return new Location(md5($path), array(), 'PSX\Dispatch\DummyController');
+			return new Location(array(Location::KEY_SOURCE => 'PSX\Dispatch\DummyController'));
 
 		});
 
@@ -75,7 +75,7 @@ class DispatchTest extends \PHPUnit_Framework_TestCase
 	{
 		$locationFinder = new CallbackMethod(function($method, $path){
 
-			return new Location(md5($path), array(), 'PSX\Dispatch\ExceptionController');
+			return new Location(array(Location::KEY_SOURCE => 'PSX\Dispatch\ExceptionController'));
 
 		});
 
@@ -103,7 +103,7 @@ JSON;
 	{
 		$locationFinder = new CallbackMethod(function($method, $path){
 
-			return new Location(md5($path), array(), 'PSX\Dispatch\ExceptionController');
+			return new Location(array(Location::KEY_SOURCE => 'PSX\Dispatch\ExceptionController'));
 
 		});
 
@@ -152,7 +152,7 @@ HTML;
 	{
 		$locationFinder = new CallbackMethod(function($method, $path){
 
-			return new Location(md5($path), array(), 'PSX\Dispatch\ExceptionController');
+			return new Location(array(Location::KEY_SOURCE => 'PSX\Dispatch\ExceptionController'));
 
 		});
 
@@ -181,7 +181,7 @@ XML;
 	{
 		$locationFinder = new CallbackMethod(function($method, $path){
 
-			return new Location(md5($path), array(), 'PSX\Dispatch\ExceptionController');
+			return new Location(array(Location::KEY_SOURCE => 'PSX\Dispatch\ExceptionController'));
 
 		});
 
@@ -209,7 +209,7 @@ JSON;
 	{
 		$locationFinder = new CallbackMethod(function($method, $path){
 
-			return new Location(md5($path), array(), 'PSX\Dispatch\ExceptionController');
+			return new Location(array(Location::KEY_SOURCE => 'PSX\Dispatch\ExceptionController'));
 
 		});
 
@@ -237,7 +237,7 @@ JSON;
 	{
 		$locationFinder = new CallbackMethod(function($method, $path){
 
-			return new Location(md5($path), array(), 'PSX\Dispatch\RedirectExceptionController');
+			return new Location(array(Location::KEY_SOURCE => 'PSX\Dispatch\RedirectExceptionController'));
 
 		});
 

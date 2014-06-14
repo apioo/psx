@@ -51,7 +51,7 @@ class Simple implements CallbackResolverInterface
 
 	public function resolve(Location $location, RequestInterface $request, ResponseInterface $response)
 	{
-		$source = $location->getSource();
+		$source = $location->getParameter(Location::KEY_SOURCE);
 
 		if(strpos($source, '::') !== false)
 		{

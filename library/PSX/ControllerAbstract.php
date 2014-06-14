@@ -66,13 +66,13 @@ abstract class ControllerAbstract implements ControllerInterface
 	protected $_requestReader;
 	protected $_responseWriter;
 
-	public function __construct(ContainerInterface $container, Location $location, RequestInterface $request, ResponseInterface $response, array $uriFragments = null)
+	public function __construct(ContainerInterface $container, Location $location, RequestInterface $request, ResponseInterface $response)
 	{
 		$this->container    = $container;
 		$this->location     = $location;
 		$this->request      = $request;
 		$this->response     = $response;
-		$this->uriFragments = $uriFragments;
+		$this->uriFragments = $location->getParameter(Location::KEY_FRAGMENT);
 		$this->stage        = 0x3F;
 		$this->config       = $container->get('config');
 

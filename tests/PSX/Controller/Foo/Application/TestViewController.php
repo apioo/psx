@@ -38,9 +38,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class TestViewController extends ViewAbstract
 {
-	public function __construct(ContainerInterface $container, Location $location, Request $request, Response $response, array $uriFragments)
+	public function __construct(ContainerInterface $container, Location $location, Request $request, Response $response)
 	{
-		parent::__construct($container, $location, $request, $response, $uriFragments);
+		parent::__construct($container, $location, $request, $response);
 
 		$this->getWriterFactory()->getWriterByContentType('text/html')->setBaseDir('tests');
 	}

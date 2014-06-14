@@ -29,6 +29,7 @@ use PSX\Data\ReaderInterface;
 use PSX\Data\Record;
 use PSX\Filter;
 use PSX\Http\FileEntity;
+use PSX\Loader\Location;
 use PSX\Validate;
 use SimpleXMLElement;
 
@@ -58,7 +59,7 @@ class TestController extends ControllerAbstract
 		$location = $this->getLocation();
 
 		$testCase->assertInstanceOf('PSX\Loader\Location', $location);
-		$testCase->assertEquals('PSX\Controller\Foo\Application\TestController::doInspect', $location->getSource());
+		$testCase->assertEquals('PSX\Controller\Foo\Application\TestController::doInspect', $location->getParameter(Location::KEY_SOURCE));
 
 		// get config
 		$testCase->assertInstanceOf('PSX\Config', $this->getConfig());

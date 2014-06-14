@@ -46,7 +46,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 
 			$testCase->assertEquals('/foobar', $path);
 
-			return new Location(md5($path), array(), 'PSX\Loader\ProbeController::doIndex');
+			return new Location(array(Location::KEY_SOURCE => 'PSX\Loader\ProbeController::doIndex'));
 
 		});
 
@@ -80,7 +80,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 
 			$testCase->assertEquals('/foobar/detail/12', $path);
 
-			return new Location(md5($path), array('id' => 12), 'PSX\Loader\ProbeController::doShowDetails');
+			return new Location(array(Location::KEY_SOURCE => 'PSX\Loader\ProbeController::doShowDetails', Location::KEY_FRAGMENT => array('id' => 12)));
 
 		});
 

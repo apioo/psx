@@ -49,7 +49,7 @@ class ControllerFactory implements ControllerFactoryInterface
 	{
 		if(class_exists($className))
 		{
-			return new $className($this->container, $location, $request, $response, $location->getParameters());
+			return new $className($this->container, $location, $request, $response);
 		}
 		else
 		{
