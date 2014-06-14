@@ -25,7 +25,7 @@ namespace PSX\Dependency;
 
 use PSX\Command\Executor;
 use PSX\Command\Output\Stdout;
-use PSX\Console as CliConsole;
+use PSX\Console;
 use PSX\Dispatch\CommandFactory;
 
 /**
@@ -70,6 +70,6 @@ trait Command
 	 */
 	public function getConsole()
 	{
-		return new CliConsole($this->get('executor'), $this->get('config'));
+		return new Console($this->get('executor'), $this->get('config'));
 	}
 }
