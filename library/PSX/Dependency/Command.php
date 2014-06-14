@@ -29,13 +29,13 @@ use PSX\Console as CliConsole;
 use PSX\Dispatch\CommandFactory;
 
 /**
- * Console
+ * Command
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-trait Console
+trait Command
 {
 	/**
 	 * @return PSX\Dispatch\CommandFactoryInterface
@@ -58,7 +58,11 @@ trait Console
 	 */
 	public function getExecutor()
 	{
-		return new Executor($this->get('command_factory'), $this->get('command_output'));
+		$executor = new Executor($this->get('command_factory'), $this->get('command_output'));
+		$executor->addAlias('help', 'PSX\Command\HelpCommand');
+		$executor->addAlias('list', 'PSX\Command\ListCommand');
+
+		return $executor;
 	}
 
 	/**

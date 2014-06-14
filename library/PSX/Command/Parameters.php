@@ -34,6 +34,18 @@ use ArrayObject;
  */
 class Parameters extends ArrayObject
 {
+	protected $description;
+
+	public function setDescription($description)
+	{
+		$this->description = $description;
+	}
+
+	public function getDescription()
+	{
+		return $this->description;
+	}
+
 	public function add(Parameter $parameter)
 	{
 		$this->append($parameter);

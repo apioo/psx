@@ -43,7 +43,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
  */
 class DefaultContainer extends Container
 {
-	use Console;
+	use Command;
 	use Controller;
 	use Data;
 	use Handler;

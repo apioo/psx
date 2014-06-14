@@ -43,7 +43,7 @@ class CliArgument extends Map
 
 		if(empty($className))
 		{
-			throw new InvalidArgumentException('First parameter must be an class name of an command');
+			$className = 'PSX\Command\ListCommand';
 		}
 
 		parent::__construct($className, $this->getArray($argv));

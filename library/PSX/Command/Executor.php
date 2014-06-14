@@ -48,20 +48,25 @@ class Executor
 		$this->output  = $output;
 	}
 
-	public function addAlias($className, $alias)
+	public function addAlias($alias, $className)
 	{
 		$this->aliases[$alias] = $className;
 	}
 
+	public function getClassName($className)
+	{
+		return isset($this->aliases[$className]) ? $this->aliases[$className] : $className;
+	}
+
+	public function getAliases()
+	{
+		return $this->aliases;
+	}
+
 	public function run(ParameterParserInterface $parser, Location $location = null)
 	{
-		$location  = $location === null ? new Location() : $location;
-		$className = $parser->getClassName();
-
-		if(isset($this->aliases[$className]))
-		{
-			$className = $this->aliases[$className];
-		}
+		$location   = $location === null ? new Location() : $location;
+		$className  = $this->getClassName($parser->getClassName());
 
 		$command    = $this->factory->getCommand($className, $location);
 		$parameters = $command->getParameters();

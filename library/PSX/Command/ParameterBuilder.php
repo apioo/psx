@@ -39,6 +39,13 @@ class ParameterBuilder
 		$this->parameters = new Parameters();
 	}
 
+	public function setDescription($description)
+	{
+		$this->parameters->setDescription($description);
+
+		return $this;
+	}
+
 	public function addOption($name, $type, $description = null)
 	{
 		$this->parameters->add(new Parameter($name, $type, $description));
