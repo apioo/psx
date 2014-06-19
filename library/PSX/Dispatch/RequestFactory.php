@@ -65,7 +65,7 @@ class RequestFactory implements RequestFactoryInterface
 				$script = isset($_SERVER['SCRIPT_NAME'])  ? $_SERVER['SCRIPT_NAME']  : null;
 				$info   = isset($_SERVER['PATH_INFO'])    ? $_SERVER['PATH_INFO']    : null;
 				$query  = isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : null;
-				$path   = $script . $info;
+				$path   = $info;
 
 				if(!empty($query))
 				{

@@ -44,12 +44,12 @@ class RequestFactoryTest extends \PHPUnit_Framework_TestCase
 		));
 
 		$matrix = array(
-			'http://foo.com' => array('SCRIPT_NAME' => null, 'PATH_INFO' => null, 'QUERY_STRING' => null),
-			'http://foo.com/foo.php' => array('SCRIPT_NAME' => '/foo.php', 'PATH_INFO' => null, 'QUERY_STRING' => null),
-			'http://foo.com/foo.php/' => array('SCRIPT_NAME' => '/foo.php', 'PATH_INFO' => '/', 'QUERY_STRING' => null),
-			'http://foo.com/foo.php/bar' => array('SCRIPT_NAME' => '/foo.php', 'PATH_INFO' => '/bar', 'QUERY_STRING' => null),
-			'http://foo.com/foo.php/bar?bar=test' => array('SCRIPT_NAME' => '/foo.php', 'PATH_INFO' => '/bar', 'QUERY_STRING' => 'bar=test'),
-			'http://foo.com/foo.php?bar=test' => array('SCRIPT_NAME' => '/foo.php', 'PATH_INFO' => null, 'QUERY_STRING' => 'bar=test'),
+			'http://foo.com' => array('PATH_INFO' => null, 'QUERY_STRING' => null),
+			'http://foo.com/' => array('PATH_INFO' => null, 'QUERY_STRING' => null),
+			'http://foo.com/' => array('PATH_INFO' => '/', 'QUERY_STRING' => null),
+			'http://foo.com/bar' => array('PATH_INFO' => '/bar', 'QUERY_STRING' => null),
+			'http://foo.com/bar?bar=test' => array('PATH_INFO' => '/bar', 'QUERY_STRING' => 'bar=test'),
+			'http://foo.com?bar=test' => array('PATH_INFO' => null, 'QUERY_STRING' => 'bar=test'),
 		);
 
 		foreach($matrix as $uri => $env)
@@ -68,12 +68,13 @@ class RequestFactoryTest extends \PHPUnit_Framework_TestCase
 		));
 
 		$matrix = array(
-			'http://foo.com' => array('SCRIPT_NAME' => null, 'PATH_INFO' => null, 'QUERY_STRING' => null),
-			'http://foo.com/foo.php' => array('SCRIPT_NAME' => '/project/path/foo.php', 'PATH_INFO' => null, 'QUERY_STRING' => null),
-			'http://foo.com/foo.php/' => array('SCRIPT_NAME' => '/project/path/foo.php', 'PATH_INFO' => '/', 'QUERY_STRING' => null),
-			'http://foo.com/foo.php/bar' => array('SCRIPT_NAME' => '/project/path/foo.php', 'PATH_INFO' => '/bar', 'QUERY_STRING' => null),
-			'http://foo.com/foo.php/bar?bar=test' => array('SCRIPT_NAME' => '/project/path/foo.php', 'PATH_INFO' => '/bar', 'QUERY_STRING' => 'bar=test'),
-			'http://foo.com/foo.php?bar=test' => array('SCRIPT_NAME' => '/project/path/foo.php', 'PATH_INFO' => null, 'QUERY_STRING' => 'bar=test'),
+			'http://foo.com' => array('PATH_INFO' => null, 'QUERY_STRING' => null),
+			'http://foo.com/' => array('PATH_INFO' => null, 'QUERY_STRING' => null),
+			'http://foo.com/' => array('PATH_INFO' => '/project/path', 'QUERY_STRING' => null),
+			'http://foo.com/' => array('PATH_INFO' => '/project/path/', 'QUERY_STRING' => null),
+			'http://foo.com/bar' => array('PATH_INFO' => '/project/path/bar', 'QUERY_STRING' => null),
+			'http://foo.com/bar?bar=test' => array('PATH_INFO' => '/project/path/bar', 'QUERY_STRING' => 'bar=test'),
+			'http://foo.com?bar=test' => array('PATH_INFO' => '/project/path', 'QUERY_STRING' => 'bar=test'),
 		);
 
 		foreach($matrix as $uri => $env)
