@@ -27,6 +27,7 @@ use DOMDocument;
 use PSX\ControllerAbstract;
 use PSX\Http;
 use PSX\Loader\Location;
+use PSX\Template\ErrorException;
 
 /**
  * GenericErrorController
@@ -37,6 +38,8 @@ use PSX\Loader\Location;
  */
 class GenericErrorController extends ControllerAbstract
 {
+	const CONTEXT_SIZE = 4;
+
 	public function processResponse()
 	{
 		$exception = $this->location->getParameter(Location::KEY_EXCEPTION);
@@ -47,14 +50,14 @@ class GenericErrorController extends ControllerAbstract
 		}
 	}
 
-	protected function handleException(\Exception $e)
+	protected function handleException(\Exception $exception)
 	{
 		// set status code
 		$code = $this->response->getStatusCode();
 
-		if($code === null && isset(Http::$codes[$e->getCode()]))
+		if($code === null && isset(Http::$codes[$exception->getCode()]))
 		{
-			$code = $e->getCode();
+			$code = $exception->getCode();
 		}
 		else if($code === null)
 		{
@@ -64,7 +67,20 @@ class GenericErrorController extends ControllerAbstract
 		$this->response->setStatusCode($code);
 
 		// set error template
-		if(!$this->getTemplate()->hasFile() && strpos(get_class($this), '\\Application\\') === false)
+		$class = str_replace('\\', '/', get_class($this));
+
+		if(strpos($class, '/Application/') !== false)
+		{
+			$path = PSX_PATH_LIBRARY . '/' . strstr($class, '/Application/', true) . '/Resource';
+			$file = substr(strstr($class, 'Application'), 12);
+			$file = $this->underscore($file) . '.tpl';
+
+			if(!is_file($path . '/' . $file))
+			{
+				$this->getTemplate()->set($this->getFallbackTemplate());
+			}
+		}
+		else
 		{
 			$this->getTemplate()->set($this->getFallbackTemplate());
 		}
@@ -72,19 +88,55 @@ class GenericErrorController extends ControllerAbstract
 		// build message
 		if($this->config['psx_debug'] === true)
 		{
-			$message = $e->getMessage() . ' in ' . $e->getFile() . ' on line ' . $e->getLine();
-			$trace   = $e->getTraceAsString();
+			if($exception instanceof ErrorException)
+			{
+				$exception = $exception->getOriginException();
+			}
+
+			$title   = get_class($exception);
+			$message = $exception->getMessage() . ' in ' . $exception->getFile() . ' on line ' . $exception->getLine();
+			$trace   = $exception->getTraceAsString();
+			$context = '';
+
+			if(is_file($exception->getFile()))
+			{
+				$offset = $exception->getLine() - (self::CONTEXT_SIZE + 1);
+				$length = (self::CONTEXT_SIZE * 2) + 1;
+				$length = $offset < 0 ? $length + $offset : $length;
+				$offset = $offset < 0 ? 0 : $offset;
+
+				$lines  = file($exception->getFile());
+				$lines  = array_slice($lines, $offset, $length);
+
+				foreach($lines as $number => $line)
+				{
+					$lineNo = $offset + $number + 1;
+
+					if($lineNo == $exception->getLine())
+					{
+						$context.= '<b>' . str_pad($lineNo, 4) . htmlspecialchars($line) . '</b>';
+					}
+					else
+					{
+						$context.= str_pad($lineNo, 4) . htmlspecialchars($line);
+					}
+				}
+			}
 		}
 		else
 		{
+			$title   = 'Internal Server Error';
 			$message = 'The server encountered an internal error and was unable to complete your request.';
 			$trace   = null;
+			$context = null;
 		}
 
 		$data = array(
 			'success' => false,
+			'title'   => $title,
 			'message' => $message,
 			'trace'   => $trace,
+			'context' => $context,
 		);
 
 		$this->setBody($data);
@@ -104,34 +156,12 @@ class GenericErrorController extends ControllerAbstract
 		}
 		else
 		{
-			return function($params){
-
-				return <<<HTML
-<!DOCTYPE>
-<html>
-<head>
-	<title>Internal Server Error</title>
-	<style type="text/css"><!--
-		body { color: #000000; background-color: #FFFFFF; }
-		a:link { color: #0000CC; }
-		p, address, pre {margin-left: 3em;}
-		span {font-size: smaller;}
-	--></style>
-</head>
-
-<body>
-<h1>Internal Server Error</h1>
-<p>
-	{$params['message']}
-</p>
-<p>
-	<pre>{$params['trace']}</pre>
-</p>
-</body>
-</html>
-HTML;
-
-			};
+			return __DIR__ . '/default_error.tpl';
 		}
+	}
+
+	protected function underscore($word)
+	{
+		return strtolower(preg_replace('/(?<=\\w)([A-Z])/', '_\\1', $word));
 	}
 }
