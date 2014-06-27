@@ -23,41 +23,12 @@
 
 namespace PSX;
 
-use ArrayObject;
+use PSX\Validate\Result;
+use PSX\Validate\ValidationException;
 
 /**
- * This class offers methods to sanitize values that came from untrusted 
- * sources. The method validate returns the value if the validation was 
- * successful or false if it fails. You can cast the variable to string, 
- * integer, float or boolean. Optional you can pass an array of filters wich 
- * validates the value. Here some examples:
- * <code>
- * $validator = new Validate();
- *
- * // we use the length and email filter
- * $value = $validator->apply($input, Validate::TYPE_STRING, array(new Filter\Length(3, 32), new Filter\Email()));
- *
- * // we use the regular expression filter. The value must contain the string
- * // "php"
- * $value = $validator->apply($input, Validate::TYPE_STRING, array(new Filter\Regexp('/php/')));
- *
- * // we use the length filter and the value must be an interger wich is min 10
- * // and max 100
- * $value = $validator->apply($input, Validate::TYPE_INTEGER, array(new Filter\Length(10, 100)));
- * </code>
- *
- * If you have validate the values you can check whether their was an error.
- * <code>
- * if($validator->hasError())
- * {
- * 	echo 'The following errors occured:' . "\n";
- * 	echo implode("\n", $validator->getError());
- * }
- * else
- * {
- * 	echo 'No validation error occured';
- * }
- * </code>
+ * This class offers methods to sanitize values that came from untrusted
+ * sources
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
@@ -69,46 +40,62 @@ class Validate
 	const TYPE_STRING  = 'string';
 	const TYPE_FLOAT   = 'float';
 	const TYPE_BOOLEAN = 'boolean';
-
-	protected $error;
-
-	public function __construct()
-	{
-		$this->error = array();
-	}
+	const TYPE_ARRAY   = 'array';
+	const TYPE_OBJECT  = 'object';
 
 	/**
-	 * Applies the $filter array containing PSX\FilterAbstract on the $value. If
-	 * an error occurs $returnValue is returned else the $value is returned.
-	 * Note each filter can manipulate the $value. If $required is set to true
-	 * an error will be added if $value is false.
+	 * Applies filter on the given value and returns the value on success or 
+	 * throws an exception if an error occured
 	 *
 	 * @param string $value
 	 * @param integer $type
 	 * @param array<PSX\FilterAbstract> $filters
-	 * @param string $key
 	 * @param string $title
 	 * @param string $required
-	 * @return false|$returnValue
+	 * @return mixed
 	 */
-	public function apply($value, $type = self::TYPE_STRING, array $filters = array(), $key = null, $title = null, $required = true, $returnValue = false)
+	public function apply($value, $type = self::TYPE_STRING, array $filters = array(), $title = null, $required = true)
 	{
-		if($key !== null && $title === null)
+		$result = $this->validate($value, $type, $filters, $title, $required);
+
+		if($result->hasError())
 		{
-			$title = ucfirst($key);
+			throw new ValidationException($result->getFirstError(), $title, $result);
 		}
-		else if($title === null)
+		else if($result->isSuccessful())
+		{
+			return $result->getValue();
+		}
+	}
+
+	/**
+	 * Applies the $filter array containing PSX\FilterAbstract on the $value. 
+	 * Returns an result object which contains the value and error messages from 
+	 * the filter. If $required is set to true an error will be added if $value 
+	 * is false
+	 *
+	 * @param string $value
+	 * @param integer $type
+	 * @param array<PSX\FilterAbstract> $filters
+	 * @param string $title
+	 * @param string $required
+	 * @return PSX\Validate\Result
+	 */
+	public function validate($value, $type = self::TYPE_STRING, array $filters = array(), $title = null, $required = true)
+	{
+		$result = new Result();
+
+		if($title === null)
 		{
 			$title = 'Unknown';
 		}
 
-		// we check for $value === false because the input container returns 
-		// explicit false if the value is not set
-		if($required === true && $value === false)
+		// we check whether the value is not null
+		if($required === true && $value === null)
 		{
-			$this->addError($key, sprintf('The field "%s" is not set', $title));
+			$result->addError(sprintf('The field "%s" is not set', $title));
 
-			return $returnValue;
+			return $result;
 		}
 
 		switch($type)
@@ -128,6 +115,17 @@ class Validate
 			case self::TYPE_BOOLEAN:
 				$value = (bool) $value;
 				break;
+
+			case self::TYPE_ARRAY:
+				$value = (array) $value;
+				break;
+
+			case self::TYPE_OBJECT:
+				if($value !== null && !is_object($value))
+				{
+					throw new InvalidArgumentException('Value must be an object');
+				}
+				break;
 		}
 
 		foreach($filters as $filter)
@@ -138,17 +136,17 @@ class Validate
 			{
 				if($required === true)
 				{
-					$errorMessage = $filter->getErrorMsg();
+					$errorMessage = $filter->getErrorMessage();
 
 					if($errorMessage === null)
 					{
 						$errorMessage = 'The field "%s" is not valid';
 					}
 
-					$this->addError($key, sprintf($errorMessage, $title));
+					$result->addError(sprintf($errorMessage, $title));
 				}
 
-				return $returnValue;
+				return $result;
 			}
 			else if($return === true)
 			{
@@ -160,45 +158,8 @@ class Validate
 			}
 		}
 
-		return $value;
-	}
+		$result->setValue($value);
 
-	public function addError($key, $msg)
-	{
-		if($key === null)
-		{
-			$this->error[] = $msg;
-		}
-		else
-		{
-			$this->error[$key] = $msg;
-		}
-	}
-
-	public function hasError()
-	{
-		return count($this->error) > 0;
-	}
-
-	public function getError($key = null)
-	{
-		if($key === null)
-		{
-			return $this->error;
-		}
-		else
-		{
-			return isset($this->error[$key]) ? $this->error[$key] : null;
-		}
-	}
-
-	public function getLastError()
-	{
-		return end($this->error);
-	}
-
-	public function clearError()
-	{
-		$this->error = array();
+		return $result;
 	}
 }

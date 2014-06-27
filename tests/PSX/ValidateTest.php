@@ -63,10 +63,6 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
 			->method('apply')
 			->will($this->returnValue(true));
 
-		$this->failureFilter->expects($this->once())
-			->method('apply')
-			->will($this->returnValue(false));
-
 		$this->responseFilter->expects($this->once())
 			->method('apply')
 			->will($this->returnValue('bar'));
@@ -74,8 +70,19 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('foo', $this->validate->apply('foo', Validate::TYPE_STRING));
 		$this->assertEquals('foo', $this->validate->apply('foo', Validate::TYPE_STRING, array()));
 		$this->assertEquals('foo', $this->validate->apply('foo', Validate::TYPE_STRING, array($this->successFilter)));
-		$this->assertEquals(false, $this->validate->apply('foo', Validate::TYPE_STRING, array($this->failureFilter)));
 		$this->assertEquals('bar', $this->validate->apply('foo', Validate::TYPE_STRING, array($this->responseFilter)));
+	}
+
+	/**
+	 * @expectedException PSX\Validate\ValidationException
+	 */
+	public function testApplyFailure()
+	{
+		$this->failureFilter->expects($this->once())
+			->method('apply')
+			->will($this->returnValue(false));
+
+		$this->assertEquals(false, $this->validate->apply('foo', Validate::TYPE_STRING, array($this->failureFilter)));
 	}
 
 	public function testApplyScalar()
@@ -93,143 +100,39 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
 		$this->assertInternalType(Validate::TYPE_BOOLEAN, $this->validate->apply('foo', Validate::TYPE_BOOLEAN));
 	}
 
+	/**
+	 * @expectedException PSX\Validate\ValidationException
+	 */
 	public function testApplyRequired()
 	{
-		$this->failureFilter->expects($this->any())
-			->method('apply')
-			->will($this->returnValue(false));
-
-		$this->assertEquals(false, $this->validate->apply('foo', Validate::TYPE_STRING, array($this->failureFilter), 'bar', 'Bar', false));
-		$this->assertFalse($this->validate->hasError());
-
-		$this->assertEquals(false, $this->validate->apply('foo', Validate::TYPE_STRING, array($this->failureFilter), 'bar', 'Bar', true));
-		$this->assertTrue($this->validate->hasError());
-	}
-
-	public function testApplyReturnValue()
-	{
-		$this->successFilter->expects($this->once())
-			->method('apply')
-			->will($this->returnValue(true));
-
 		$this->failureFilter->expects($this->once())
 			->method('apply')
 			->will($this->returnValue(false));
 
-		$this->assertEquals('foo', $this->validate->apply('foo', Validate::TYPE_STRING, array($this->successFilter), 'bar', 'Bar', true, 'test'));
-		$this->assertEquals('test', $this->validate->apply('foo', Validate::TYPE_STRING, array($this->failureFilter), 'bar', 'Bar', true, 'test'));
+		$this->assertEquals(false, $this->validate->apply('foo', Validate::TYPE_STRING, array($this->failureFilter), 'bar', true));
+
 	}
 
-	public function testApplyAddError()
+	public function testApplyOptional()
 	{
 		$this->failureFilter->expects($this->once())
 			->method('apply')
 			->will($this->returnValue(false));
 
-		$this->failureFilter->expects($this->once())
-			->method('getErrorMsg')
-			->will($this->returnValue('%s error occured'));
-
-		$this->assertEquals(false, $this->validate->apply('foo', Validate::TYPE_STRING, array($this->failureFilter)));
-
-		$this->assertTrue($this->validate->hasError());
-		$this->assertEquals(array(0 => 'Unknown error occured'), $this->validate->getError());
+		$this->assertEquals(null, $this->validate->apply('foo', Validate::TYPE_STRING, array($this->failureFilter), 'bar', false));
 	}
 
-	public function testApplyAddErrorKey()
+	public function testValidateTitleNotSet()
 	{
-		$this->failureFilter->expects($this->once())
-			->method('apply')
-			->will($this->returnValue(false));
+		$result = $this->validate->validate(null);
 
-		$this->failureFilter->expects($this->once())
-			->method('getErrorMsg')
-			->will($this->returnValue('%s error occured'));
+		$this->assertEquals(null, $result->getValue());
+		$this->assertEquals('The field "Unknown" is not set', $result->getFirstError());
 
-		$this->assertEquals(false, $this->validate->apply('foo', Validate::TYPE_STRING, array($this->failureFilter), 'bar'));
+		$result = $this->validate->validate(null, Validate::TYPE_STRING, array(), 'foo');
 
-		$this->assertTrue($this->validate->hasError());
-		$this->assertEquals(array('bar' => 'Bar error occured'), $this->validate->getError());
-	}
+		$this->assertEquals(null, $result->getValue());
+		$this->assertEquals('The field "foo" is not set', $result->getFirstError());
 
-	public function testApplyAddErrorTitle()
-	{
-		$this->failureFilter->expects($this->once())
-			->method('apply')
-			->will($this->returnValue(false));
-
-		$this->failureFilter->expects($this->once())
-			->method('getErrorMsg')
-			->will($this->returnValue('%s error occured'));
-
-		$this->assertEquals(false, $this->validate->apply('foo', Validate::TYPE_STRING, array($this->failureFilter), 'bar', 'Foo'));
-
-		$this->assertTrue($this->validate->hasError());
-		$this->assertEquals(array('bar' => 'Foo error occured'), $this->validate->getError());
-	}
-
-	public function testErrorKeys()
-	{
-		$this->failureFilter->expects($this->any())
-			->method('apply')
-			->will($this->returnValue(false));
-
-		$this->failureFilter->expects($this->any())
-			->method('getErrorMsg')
-			->will($this->returnValue('%s error occured'));
-
-		$this->assertEquals(false, $this->validate->apply('foo', Validate::TYPE_STRING, array($this->failureFilter), 'foo'));
-		$this->assertEquals('Foo error occured', $this->validate->getLastError());
-
-		$this->assertEquals(false, $this->validate->apply('foo', Validate::TYPE_STRING, array($this->failureFilter), 'foo', 'Bar'));	
-		$this->assertEquals('Bar error occured', $this->validate->getLastError());
-	}
-
-	public function testAddError()
-	{
-		$this->assertFalse($this->validate->hasError());
-
-		$this->validate->addError('foo', 'bar');
-
-		$this->assertTrue($this->validate->hasError());
-		$this->assertEquals(array('foo' => 'bar'), $this->validate->getError());
-	}
-
-	public function testHasError()
-	{
-		$this->assertFalse($this->validate->hasError());
-
-		$this->validate->addError('foo', 'bar');
-
-		$this->assertTrue($this->validate->hasError());
-	}
-
-	public function testGetError()
-	{
-		$this->validate->addError('foo', 'bar');
-		$this->validate->addError('foo', 'bar');
-		$this->validate->addError(null, 'bar');
-		$this->validate->addError(null, 'bar');
-
-		$this->assertEquals(array('foo' => 'bar', 0 => 'bar', 1 => 'bar'), $this->validate->getError());
-	}
-
-	public function testGetLastError()
-	{
-		$this->validate->addError('foo', 'bar');
-		$this->validate->addError('bar', 'foo');
-
-		$this->assertEquals('foo', $this->validate->getLastError());
-	}
-
-	public function testClearError()
-	{
-		$this->validate->addError('foo', 'bar');
-
-		$this->assertEquals(true, $this->validate->hasError());
-
-		$this->validate->clearError();
-
-		$this->assertEquals(false, $this->validate->hasError());
 	}
 }
