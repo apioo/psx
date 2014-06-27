@@ -21,82 +21,42 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX;
-
-use PSX\Template\ErrorException;
+namespace PSX\Template;
 
 /**
- * Template
+ * ErrorException
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Template implements TemplateInterface
+class ErrorException extends \Exception
 {
-	protected $dir;
-	protected $file;
-	protected $data = array();
+	protected $originException;
+	protected $templateFile;
+	protected $renderedHtml;
 
-	public function setDir($dir)
+	public function __construct($message, \Exception $originException, $templateFile, $renderedHtml)
 	{
-		$this->dir = $dir;
+		parent::__construct($message);
+
+		$this->originException = $originException;
+		$this->templateFile = $templateFile;
+		$this->renderedHtml = $renderedHtml;
 	}
 
-	public function getDir()
+	public function getOriginException()
 	{
-		return $this->dir;
+		return $this->originException;
 	}
 
-	public function set($file)
+	public function getTemplateFile()
 	{
-		$this->file = $file;
+		return $this->templateFile;
 	}
 
-	public function get()
+	public function getRenderedHtml()
 	{
-		return $this->file;
-	}
-
-	public function hasFile()
-	{
-		return !empty($this->file);
-	}
-
-	public function fileExists()
-	{
-		return is_file($this->file);
-	}
-
-	public function getFile()
-	{
-		return $this->dir != null ? $this->dir . '/' . $this->file : $this->file;
-	}
-
-	public function assign($key, $value)
-	{
-		$this->data[$key] = $value;
-	}
-
-	public function transform()
-	{
-		// populate the data vars in the scope of the template
-		extract($this->data, EXTR_SKIP);
-
-		// parse template
-		try
-		{
-			ob_start();
-
-			require_once($this->getFile());
-
-			$html = ob_get_clean();
-		}
-		catch(\Exception $e)
-		{
-			throw new ErrorException($e->getMessage(), $e, $this->getFile(), ob_get_clean());
-		}
-
-		return $html;
+		return $this->renderedHtml;
 	}
 }
