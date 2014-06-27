@@ -23,6 +23,7 @@
 
 namespace PSX\Dependency;
 
+use Monolog\Logger;
 use PSX\Base;
 use PSX\Config;
 use PSX\Http;
@@ -47,7 +48,6 @@ class DefaultContainer extends Container
 	use Controller;
 	use Data;
 	use Handler;
-	use Input;
 
 	/**
 	 * @return PSX\Base
@@ -133,6 +133,17 @@ class DefaultContainer extends Container
 	public function getEventDispatcher()
 	{
 		return new EventDispatcher();
+	}
+
+	/**
+	 * @return Psr\Log\LoggerInterface
+	 */
+	public function getLogger()
+	{
+		$logger = new Logger('psx');
+		//$logger->pushHandler(new StreamHandler('path/to/your.log', Logger::WARNING));
+
+		return $logger;
 	}
 
 	/**
