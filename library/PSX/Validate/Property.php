@@ -21,7 +21,7 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Filter\Definition;
+namespace PSX\Validate;
 
 /**
  * Property
@@ -35,12 +35,14 @@ class Property
 	protected $name;
 	protected $type;
 	protected $filters;
+	protected $required;
 
-	public function __construct($name, $type, array $filters = array())
+	public function __construct($name, $type, array $filters = array(), $required = true)
 	{
-		$this->name    = $name;
-		$this->type    = $type;
-		$this->filters = $filters;
+		$this->name     = $name;
+		$this->type     = $type;
+		$this->filters  = $filters;
+		$this->required = $required;
 	}
 
 	public function getName()
@@ -56,5 +58,10 @@ class Property
 	public function getFilters()
 	{
 		return $this->filters;
+	}
+
+	public function isRequired()
+	{
+		return $this->required;
 	}
 }

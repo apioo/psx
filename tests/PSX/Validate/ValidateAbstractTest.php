@@ -21,17 +21,31 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Filter\Definition;
+namespace PSX\Validate;
 
-use Exception;
+use PSX\Data\Record;
+use PSX\Data\RecordAbstract;
+use PSX\Filter;
+use PSX\Validate;
+use PSX\Validate\Property;
 
 /**
- * ValidationException
+ * ValidateAbstractTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class ValidationException extends Exception
+class ValidateAbstractTest extends \PHPUnit_Framework_TestCase
 {
+	public function testGetRecord()
+	{
+		$validator = new ArrayValidator(new Validate(), array(
+			new Property('id', Validate::TYPE_INTEGER),
+			new Property('title', Validate::TYPE_STRING, array(new Filter\Length(1, 2))),
+		));
+
+		$this->assertInstanceOf('PSX\Data\RecordInterface', $validator->getRecord());
+		$this->assertEquals(array('id' => null, 'title' => null), $validator->getRecord()->getRecordInfo()->getFields());
+	}
 }

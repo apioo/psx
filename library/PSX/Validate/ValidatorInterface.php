@@ -21,17 +21,26 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Filter\Definition;
-
-use Exception;
+namespace PSX\Validate;
 
 /**
- * NotDefinedException
+ * ValidatorInterface
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class NotDefinedException extends Exception
+interface ValidatorInterface
 {
+	const THROW_ERRORS   = 1;
+	const COLLECT_ERRORS = 2;
+
+	/**
+	 * Validates the given data against the defined field rules. Returns either
+	 * the clean data or throws an exception
+	 *
+	 * @param mixed $data
+	 * @return mixed
+	 */
+	public function validate($data);
 }
