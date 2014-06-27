@@ -52,6 +52,6 @@ class DigitTest extends FilterTestCase
 		$this->assertEquals(false, $filter->apply('foo%&/'));
 
 		// test error message
-		$this->assertErrorMessage($filter->getErrorMsg());
+		$this->assertErrorMessage($filter->getErrorMessage());
 	}
 }

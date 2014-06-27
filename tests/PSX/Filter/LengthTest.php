@@ -50,7 +50,7 @@ class LengthTest extends FilterTestCase
 		$this->assertEquals(false, $filter->apply(9));
 
 		// test error message
-		$this->assertErrorMessage($filter->getErrorMsg());
+		$this->assertErrorMessage($filter->getErrorMessage());
 
 		$filter = new Length(8);
 
@@ -60,7 +60,7 @@ class LengthTest extends FilterTestCase
 		$this->assertEquals(false, $filter->apply(9));
 
 		// test error message
-		$this->assertErrorMessage($filter->getErrorMsg());
+		$this->assertErrorMessage($filter->getErrorMessage());
 	}
 
 	public function testFilterFloatLength()
@@ -73,7 +73,7 @@ class LengthTest extends FilterTestCase
 		$this->assertEquals(false, $filter->apply(8.5));
 
 		// test error message
-		$this->assertErrorMessage($filter->getErrorMsg());
+		$this->assertErrorMessage($filter->getErrorMessage());
 
 		$filter = new Length(8.4);
 
@@ -83,7 +83,7 @@ class LengthTest extends FilterTestCase
 		$this->assertEquals(false, $filter->apply(8.5));
 
 		// test error message
-		$this->assertErrorMessage($filter->getErrorMsg());
+		$this->assertErrorMessage($filter->getErrorMessage());
 	}
 
 	public function testFilterArrayLength()
@@ -96,7 +96,7 @@ class LengthTest extends FilterTestCase
 		$this->assertEquals(false, $filter->apply(range(0, 8)));
 
 		// test error message
-		$this->assertErrorMessage($filter->getErrorMsg());
+		$this->assertErrorMessage($filter->getErrorMessage());
 
 		$filter = new Length(8);
 
@@ -106,7 +106,7 @@ class LengthTest extends FilterTestCase
 		$this->assertEquals(false, $filter->apply(range(0, 8)));
 
 		// test error message
-		$this->assertErrorMessage($filter->getErrorMsg());
+		$this->assertErrorMessage($filter->getErrorMessage());
 	}
 
 	public function testFilterStringLength()
@@ -119,7 +119,7 @@ class LengthTest extends FilterTestCase
 		$this->assertEquals(false, $filter->apply('foobartes'));
 
 		// test error message
-		$this->assertErrorMessage($filter->getErrorMsg());
+		$this->assertErrorMessage($filter->getErrorMessage());
 
 		$filter = new Length(8);
 
@@ -129,6 +129,6 @@ class LengthTest extends FilterTestCase
 		$this->assertEquals(false, $filter->apply('foobartes'));
 
 		// test error message
-		$this->assertErrorMessage($filter->getErrorMsg());
+		$this->assertErrorMessage($filter->getErrorMessage());
 	}
 }

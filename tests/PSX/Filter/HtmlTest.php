@@ -48,6 +48,6 @@ class HtmlTest extends FilterTestCase
 		$this->assertEquals('test', $filter->apply('test'));
 
 		// test error message
-		$this->assertErrorMessage($filter->getErrorMsg());
+		$this->assertErrorMessage($filter->getErrorMessage());
 	}
 }

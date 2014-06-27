@@ -48,6 +48,6 @@ class EmailTest extends FilterTestCase
 		$this->assertEquals('foo@bar.com', $filter->apply('foo@bar.com'));
 
 		// test error message
-		$this->assertErrorMessage($filter->getErrorMsg());
+		$this->assertErrorMessage($filter->getErrorMessage());
 	}
 }

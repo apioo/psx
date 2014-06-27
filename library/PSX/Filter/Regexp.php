@@ -53,7 +53,7 @@ class Regexp extends FilterAbstract
 		return preg_match($this->regexp, (string) $value) == 0 ? false : true;
 	}
 
-	public function getErrorMsg()
+	public function getErrorMessage()
 	{
 		return '%s is not a valid value';
 	}

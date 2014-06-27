@@ -51,6 +51,6 @@ class KeyExistsTest extends FilterTestCase
 		$this->assertEquals(false, $filter->apply(''));
 
 		// test error message
-		$this->assertErrorMessage($filter->getErrorMsg());
+		$this->assertErrorMessage($filter->getErrorMessage());
 	}
 }

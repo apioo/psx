@@ -21,33 +21,26 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Filter;
+namespace PSX;
 
 /**
- * UrldecodeTest
+ * A filter is an class which validates an value. If the filter returns true
+ * the value is valid. If it returns false it is invalid. In every other case
+ * the filter overwrites the value
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class UrldecodeTest extends FilterTestCase
+interface FilterInterface
 {
-	protected function setUp()
-	{
-	}
-
-	protected function tearDown()
-	{
-	}
-
-	public function testFilter()
-	{
-		$filter = new Urldecode();
-
-		$this->assertEquals('foobar', $filter->apply('foobar'));
-		$this->assertEquals('foo+!"§$%&/()=?bar', $filter->apply(urlencode('foo+!"§$%&/()=?bar')));
-
-		// test error message
-		$this->assertErrorMessage($filter->getErrorMessage());
-	}
+	/**
+	 * Applies the filter to the $value
+	 *
+	 * @param mixed $value
+	 * @return mixed
+	 */
+	public function apply($value);
 }
+
+

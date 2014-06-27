@@ -60,7 +60,7 @@ class DateRangeTest extends FilterTestCase
 		$this->assertEquals(false, $filter->apply('2010-10-12 08:30:01'));
 
 		// test error message
-		$this->assertErrorMessage($filter->getErrorMsg());
+		$this->assertErrorMessage($filter->getErrorMessage());
 	}
 
 	public function testFilterFrom()
@@ -77,7 +77,7 @@ class DateRangeTest extends FilterTestCase
 		$this->assertEquals(new \DateTime('2010-10-11 06:00:00'), $filter->apply('2010-10-11 06:00:00'));
 
 		// test error message
-		$this->assertErrorMessage($filter->getErrorMsg());
+		$this->assertErrorMessage($filter->getErrorMessage());
 	}
 
 	public function testFilterTo()
@@ -94,6 +94,6 @@ class DateRangeTest extends FilterTestCase
 		$this->assertEquals(false, $filter->apply('2010-10-12 08:30:01'));
 
 		// test error message
-		$this->assertErrorMessage($filter->getErrorMsg());
+		$this->assertErrorMessage($filter->getErrorMessage());
 	}
 }

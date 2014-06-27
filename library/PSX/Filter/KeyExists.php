@@ -54,7 +54,7 @@ class KeyExists extends FilterAbstract
 		return isset($this->container[$key]);
 	}
 
-	public function getErrorMsg()
+	public function getErrorMessage()
 	{
 		return '%s is not valid value';
 	}

@@ -52,7 +52,7 @@ class InArray extends FilterAbstract
 		return in_array((string) $value, $this->container);
 	}
 
-	public function getErrorMsg()
+	public function getErrorMessage()
 	{
 		return '%s is not a valid value';
 	}

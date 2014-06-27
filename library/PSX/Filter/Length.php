@@ -71,7 +71,7 @@ class Length extends FilterAbstract
 		return false;
 	}
 
-	public function getErrorMsg()
+	public function getErrorMessage()
 	{
 		return '%s has an invalid length min ' . $this->min . ' and max ' . $this->max . ' signs';
 	}

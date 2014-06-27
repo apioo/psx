@@ -48,6 +48,6 @@ class RegexpTest extends FilterTestCase
 		$this->assertEquals(true, $filter->apply('foo php bar'));
 
 		// test error message
-		$this->assertErrorMessage($filter->getErrorMsg());
+		$this->assertErrorMessage($filter->getErrorMessage());
 	}
 }

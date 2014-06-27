@@ -45,7 +45,7 @@ class Email extends FilterAbstract
 		return filter_var((string) $value, FILTER_VALIDATE_EMAIL);
 	}
 
-	public function getErrorMsg()
+	public function getErrorMessage()
 	{
 		return '%s must be a valid email format (user@domain.tld)';
 	}

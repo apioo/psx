@@ -45,7 +45,7 @@ class Alnum extends FilterAbstract
 		return ctype_alnum((string) $value);
 	}
 
-	public function getErrorMsg()
+	public function getErrorMessage()
 	{
 		return '%s must contain only alphabetic (A-Z) or numeric (0-9) signs';
 	}

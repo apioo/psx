@@ -63,7 +63,7 @@ class DateTime extends FilterAbstract
 		}
 	}
 
-	public function getErrorMsg()
+	public function getErrorMessage()
 	{
 		return '%s has not a valid date format';
 	}

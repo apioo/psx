@@ -45,7 +45,7 @@ class Alpha extends FilterAbstract
 		return ctype_alpha((string) $value);
 	}
 
-	public function getErrorMsg()
+	public function getErrorMessage()
 	{
 		return '%s must contain only alphabetic (A-Z) signs';
 	}

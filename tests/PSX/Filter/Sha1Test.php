@@ -48,6 +48,6 @@ class Sha1Test extends FilterTestCase
 		$this->assertEquals('d8e8ece39c437e515aa8997c1a1e94f1ed2a0e62', $filter->apply('Frank jagt im komplett verwahrlosten Taxi quer durch Bayern'));
 
 		// test error message
-		$this->assertErrorMessage($filter->getErrorMsg());
+		$this->assertErrorMessage($filter->getErrorMessage());
 	}
 }

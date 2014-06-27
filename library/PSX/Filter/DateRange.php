@@ -80,7 +80,7 @@ class DateRange extends DateTime
 		}
 	}
 
-	public function getErrorMsg()
+	public function getErrorMessage()
 	{
 		if($this->from !== null && $this->to !== null)
 		{

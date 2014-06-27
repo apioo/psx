@@ -52,6 +52,6 @@ class DateIntervalTest extends FilterTestCase
 		$this->assertEquals(false, $filter->apply('foobar'));
 
 		// test error message
-		$this->assertErrorMessage($filter->getErrorMsg());
+		$this->assertErrorMessage($filter->getErrorMessage());
 	}
 }

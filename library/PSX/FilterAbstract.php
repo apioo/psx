@@ -24,34 +24,23 @@
 namespace PSX;
 
 /**
- * The abstract class wich each filter class must extend. If the method apply
- * returns false the validation fails if it returns true the validation is
- * successful else the response value of the filter is returned
+ * FilterAbstract
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-abstract class FilterAbstract
+abstract class FilterAbstract implements FilterInterface
 {
 	/**
-	 * Applies the current filter to the $value
-	 *
-	 * @param string $value
-	 * @return boolean
-	 */
-	abstract public function apply($value);
-
-	/**
-	 * A filter can overwrite this method so if the validation class applies
-	 * the filter and it returns false it gets an error message string
+	 * A filter can overwrite this method to provide an custom error message. 
+	 * The error message can contain one %s which gets replaced with the name
+	 * of the field
 	 *
 	 * @return string
 	 */
-	public function getErrorMsg()
+	public function getErrorMessage()
 	{
 		return null;
 	}
 }
-
-

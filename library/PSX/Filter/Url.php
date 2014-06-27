@@ -46,7 +46,7 @@ class Url extends FilterAbstract
 		return filter_var((string) $value, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED);
 	}
 
-	public function getErrorMsg()
+	public function getErrorMessage()
 	{
 		return '%s must be a valid url format (http://domain.tld)';
 	}

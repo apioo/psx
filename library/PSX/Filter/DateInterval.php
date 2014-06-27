@@ -52,7 +52,7 @@ class DateInterval extends FilterAbstract
 		}
 	}
 
-	public function getErrorMsg()
+	public function getErrorMessage()
 	{
 		return '%s is not valid date interval';
 	}

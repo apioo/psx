@@ -23,31 +23,69 @@
 
 namespace PSX\Filter;
 
+use PSX\FilterAbstract;
+use PSX\FilterInterface;
+
 /**
- * UrldecodeTest
+ * ArrayFilter
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class UrldecodeTest extends FilterTestCase
+class ArrayFilter extends FilterAbstract
 {
-	protected function setUp()
+	protected $filter;
+
+	public function __construct(FilterInterface $filter)
 	{
+		$this->filter = $filter;
 	}
 
-	protected function tearDown()
+	/**
+	 * Returns true if all values in $value apply to the filter. If the parent
+	 * filter has changed an value the modified array gets returned
+	 *
+	 * @param mixed $value
+	 * @return boolean
+	 */
+	public function apply($value)
 	{
+		$data     = array();
+		$modified = false;
+
+		if(is_array($value))
+		{
+			foreach($value as $key => $val)
+			{
+				$result = $this->filter->apply($val);
+
+				if($result === false)
+				{
+					return false;
+				}
+				else if($result === true)
+				{
+					$data[$key] = $val;
+				}
+				else
+				{
+					$modified = true;
+
+					$data[$key] = $result;
+				}
+			}
+		}
+		else
+		{
+			return false;
+		}
+
+		return $modified ? $data : true;
 	}
 
-	public function testFilter()
+	public function getErrorMessage()
 	{
-		$filter = new Urldecode();
-
-		$this->assertEquals('foobar', $filter->apply('foobar'));
-		$this->assertEquals('foo+!"§$%&/()=?bar', $filter->apply(urlencode('foo+!"§$%&/()=?bar')));
-
-		// test error message
-		$this->assertErrorMessage($filter->getErrorMessage());
+		return '%s contains invalid values';
 	}
 }

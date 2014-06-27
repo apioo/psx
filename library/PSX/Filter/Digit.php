@@ -45,7 +45,7 @@ class Digit extends FilterAbstract
 		return ctype_digit((string) $value);
 	}
 
-	public function getErrorMsg()
+	public function getErrorMessage()
 	{
 		return '%s must contain only numeric (0-9) signs';
 	}

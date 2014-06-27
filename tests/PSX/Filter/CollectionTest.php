@@ -24,13 +24,13 @@
 namespace PSX\Filter;
 
 /**
- * UrldecodeTest
+ * CollectionTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class UrldecodeTest extends FilterTestCase
+class CollectionTest extends FilterTestCase
 {
 	protected function setUp()
 	{
@@ -42,10 +42,15 @@ class UrldecodeTest extends FilterTestCase
 
 	public function testFilter()
 	{
-		$filter = new Urldecode();
+		$filter = new Collection(array(new Alnum(), new Alpha()));
 
-		$this->assertEquals('foobar', $filter->apply('foobar'));
-		$this->assertEquals('foo+!"§$%&/()=?bar', $filter->apply(urlencode('foo+!"§$%&/()=?bar')));
+		$this->assertEquals(true, $filter->apply('foo'));
+		$this->assertEquals(false, $filter->apply('foo123'));
+
+		$filter = new Collection(array(new Alnum(), new Alpha(), new Sha1()));
+
+		$this->assertEquals('0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33', $filter->apply('foo'));
+		$this->assertEquals(false, $filter->apply('foo123'));
 
 		// test error message
 		$this->assertErrorMessage($filter->getErrorMessage());

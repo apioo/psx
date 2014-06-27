@@ -45,7 +45,7 @@ class Xdigit extends FilterAbstract
 		return ctype_xdigit((string) $value);
 	}
 
-	public function getErrorMsg()
+	public function getErrorMessage()
 	{
 		return '%s must contain only hex values (0-9, A-F)';
 	}

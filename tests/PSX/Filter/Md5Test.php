@@ -48,6 +48,6 @@ class Md5Test extends FilterTestCase
 		$this->assertEquals('7e716d0e702df0505fc72e2b89467910', $filter->apply('Frank jagt im komplett verwahrlosten Taxi quer durch Bayern'));
 
 		// test error message
-		$this->assertErrorMessage($filter->getErrorMsg());
+		$this->assertErrorMessage($filter->getErrorMessage());
 	}
 }

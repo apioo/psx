@@ -46,7 +46,7 @@ class Ip extends FilterAbstract
 		return filter_var((string) $value, FILTER_VALIDATE_IP);
 	}
 
-	public function getErrorMsg()
+	public function getErrorMessage()
 	{
 		return '%s must be a valid ip format (80.132.95.75)';
 	}
