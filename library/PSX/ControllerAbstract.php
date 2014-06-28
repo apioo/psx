@@ -129,7 +129,7 @@ abstract class ControllerAbstract implements ControllerInterface
 	/**
 	 * Method which gets called after the controller method was called. In case 
 	 * we have not written any response we write an empty response so that the 
-	 * write can set an response
+	 * writer can set an response
 	 */
 	public function processResponse()
 	{
@@ -189,22 +189,14 @@ abstract class ControllerAbstract implements ControllerInterface
 	}
 
 	/**
-	 * Returns an specific uri fragment if key isset otherwise all available 
-	 * fragments
+	 * Returns an specific uri fragment
 	 *
 	 * @param string $key
 	 * @return string
 	 */
-	protected function getUriFragments($key = null)
+	protected function getUriFragment($key)
 	{
-		if($key !== null)
-		{
-			return isset($this->uriFragments[$key]) ? $this->uriFragments[$key] : null;
-		}
-		else
-		{
-			return $this->uriFragments;
-		}
+		return isset($this->uriFragments[$key]) ? $this->uriFragments[$key] : null;
 	}
 
 	/**
@@ -281,22 +273,14 @@ abstract class ControllerAbstract implements ControllerInterface
 	}
 
 	/**
-	 * Returns an specific request header if key isset otherwise all available 
-	 * headers
+	 * Returns an specific request header
 	 *
 	 * @param string $key
 	 * @return string
 	 */
-	protected function getHeader($key = null)
+	protected function getHeader($key)
 	{
-		if($key === null)
-		{
-			return $this->request->getHeaders();
-		}
-		else
-		{
-			return $this->request->getHeader($key);
-		}
+		return $this->request->getHeader($key);
 	}
 
 	/**
@@ -313,7 +297,7 @@ abstract class ControllerAbstract implements ControllerInterface
 	{
 		if($this->getUrl()->issetParam($key))
 		{
-			return $this->getValidate()->apply($this->getUrl()->getParam($key), $type, $filter, $key, $title, $required);
+			return $this->getValidate()->apply($this->getUrl()->getParam($key), $type, $filter, $title, $required);
 		}
 		else
 		{
