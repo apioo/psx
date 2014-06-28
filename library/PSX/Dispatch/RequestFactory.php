@@ -71,11 +71,6 @@ class RequestFactory implements RequestFactoryInterface
 				{
 					$path.= '?' . $query;
 				}
-
-				if(isset($parts['path']))
-				{
-					$path = substr($path, strlen($parts['path']) + strlen($this->config['psx_dispatch']));
-				}
 			}
 			else
 			{
