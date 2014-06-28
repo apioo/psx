@@ -60,31 +60,6 @@ class RequestFactoryTest extends \PHPUnit_Framework_TestCase
 		}
 	}
 
-	public function testCreateRequestTruncateBasePath()
-	{
-		$config = new Config(array(
-			'psx_url' => 'http://foo.com/project/path',
-			'psx_dispatch' => null,
-		));
-
-		$matrix = array(
-			'http://foo.com' => array('PATH_INFO' => null, 'QUERY_STRING' => null),
-			'http://foo.com/' => array('PATH_INFO' => null, 'QUERY_STRING' => null),
-			'http://foo.com/' => array('PATH_INFO' => '/project/path', 'QUERY_STRING' => null),
-			'http://foo.com/' => array('PATH_INFO' => '/project/path/', 'QUERY_STRING' => null),
-			'http://foo.com/bar' => array('PATH_INFO' => '/project/path/bar', 'QUERY_STRING' => null),
-			'http://foo.com/bar?bar=test' => array('PATH_INFO' => '/project/path/bar', 'QUERY_STRING' => 'bar=test'),
-			'http://foo.com?bar=test' => array('PATH_INFO' => '/project/path', 'QUERY_STRING' => 'bar=test'),
-		);
-
-		foreach($matrix as $uri => $env)
-		{
-			$request = $this->getRequest($env, $config);
-
-			$this->assertEquals($uri, (string) $request->getUrl());
-		}
-	}
-
 	public function testCreateRequestInCli()
 	{
 		$config = new Config(array(
