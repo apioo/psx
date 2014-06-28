@@ -140,6 +140,21 @@ abstract class HandlerTestCase extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(array('success' => true, 'method' => 'POST', 'request' => 'Hello <?php echo $foo; ?>'), $body);
 	}
 
+	public function testPostRequestStreamChunkedTransfer()
+	{
+		$file     = 'tests/PSX/Template/files/foo.tpl';
+		$request  = new PostRequest(new Url(self::URL . '/post'), array('Content-Type' => 'text/plain', 'Transfer-Encoding' => 'chunked'), new TempStream(fopen($file, 'r+')));
+		$response = $this->http->request($request);
+
+		$this->assertEquals('HTTP/1.1', $response->getProtocolVersion());
+		$this->assertEquals(200, $response->getStatusCode());
+		$this->assertEquals('OK', $response->getReasonPhrase());
+
+		$body = Json::decode((string) $response->getBody());
+
+		$this->assertEquals(array('success' => true, 'method' => 'POST', 'request' => 'Hello <?php echo $foo; ?>'), $body);
+	}
+
 	public function testPutRequest()
 	{
 		$request  = new PutRequest(new Url(self::URL . '/put'), array('Content-Type' => 'text/plain'), 'foobar');

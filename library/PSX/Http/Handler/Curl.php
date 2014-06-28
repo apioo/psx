@@ -114,24 +114,18 @@ class Curl implements HandlerInterface
 		}
 
 		// set body
-		if(in_array($request->getMethod(), ['POST', 'PUT', 'DELETE']))
+		$body = $request->getBody();
+
+		if($body !== null && !in_array($request->getMethod(), array('HEAD', 'GET')))
 		{
-			$body = $request->getBody();
-
-			if(is_resource($body))
+			if($request->getHeader('Transfer-Encoding') == 'chunked')
 			{
-				$length = (int) $request->getHeader('Content-Length');
-
-				if(empty($length))
-				{
-					throw new InvalidArgumentException('You need to specify a Content-Length header when sending content through a stream');
-				}
-
-				curl_setopt($handle, CURLOPT_PUT, true);
-				curl_setopt($handle, CURLOPT_INFILE, $body);
-				curl_setopt($handle, CURLOPT_INFILESIZE, $length);
+				curl_setopt($handle, CURLOPT_UPLOAD, true);
+				curl_setopt($handle, CURLOPT_READFUNCTION, function($handle, $fd, $length) use ($body) {
+					return $body->read($length);
+				});
 			}
-			else if(!empty($body))
+			else
 			{
 				curl_setopt($handle, CURLOPT_POSTFIELDS, (string) $body);
 			}

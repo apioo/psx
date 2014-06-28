@@ -41,6 +41,18 @@ use PSX\Http\Stream\SocksStream;
  */
 class Socks implements HandlerInterface
 {
+	protected $chunkSize = 8192;
+
+	/**
+	 * The chunk size which is used if the transfer encoding is "chunked"
+	 *
+	 * @param integer $chunkSize
+	 */
+	public function setChunkSize($chunkSize)
+	{
+		$this->chunkSize = $chunkSize;
+	}
+
 	public function request(Request $request, $count = 0)
 	{
 		// ssl
@@ -108,20 +120,32 @@ class Socks implements HandlerInterface
 			}
 
 			fwrite($handle, Http::$newLine);
+			fflush($handle);
 
 			// write body
 			$body = $request->getBody();
 
-			if(is_resource($body))
+			if($body !== null && !in_array($request->getMethod(), array('HEAD', 'GET')))
 			{
-				stream_copy_to_stream($body, $handle);
-			}
-			else if(!empty($body))
-			{
-				fwrite($handle, (string) $body);
-			}
+				if($request->getHeader('Transfer-Encoding') == 'chunked')
+				{
+					while(!$body->eof())
+					{
+						$chunk = $body->read($this->chunkSize);
 
-			fflush($handle);
+						fwrite($handle, dechex(strlen($chunk)) . Http::$newLine . $chunk . Http::$newLine);
+						fflush($handle);
+					}
+
+					fwrite($handle, '0' . Http::$newLine . Http::$newLine);
+					fflush($handle);
+				}
+				else
+				{
+					fwrite($handle, (string) $body);
+					fflush($handle);
+				}
+			}
 
 			// read header
 			$headers = array();
