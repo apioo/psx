@@ -92,7 +92,8 @@ class DispatchTest extends \PHPUnit_Framework_TestCase
 		$expect = <<<JSON
 {
 	"success": false,
-	"message": "The server encountered an internal error and was unable to complete your request."
+	"message": "The server encountered an internal error and was unable to complete your request.",
+	"title": "Internal Server Error"
 }
 JSON;
 
@@ -118,31 +119,82 @@ JSON;
 
 		$dispatch->route($request, $response);
 
-		// in order to prevent different new line encodings we store the html 
-		// base64 encoded
 		$expect = <<<HTML
 <!DOCTYPE>
 <html>
 <head>
 	<title>Internal Server Error</title>
-	<style type="text/css"><!--
-		body { color: #000000; background-color: #FFFFFF; }
-		a:link { color: #0000CC; }
-		p, address, pre {margin-left: 3em;}
-		span {font-size: smaller;}
-	--></style>
+	<style type="text/css">
+	body
+	{
+		margin:0px;
+		font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+		font-size:14px;
+		line-height:1.42857143;
+	}
+
+	.title
+	{
+		background-color:#f2dede;
+		color:#a94442;
+		padding:8px;
+		padding-left:32px;
+	}
+
+	.title h1
+	{
+		margin:0px;
+	}
+
+	.message
+	{
+		background-color:#333;
+		color:#fff;
+		padding:8px;
+		padding-left:32px;
+	}
+
+	.trace
+	{
+		background-color:#ececec;
+		padding:8px;
+		padding-left:32px;
+		margin-bottom:8px;
+	}
+
+	.trace pre
+	{
+		margin:0px;
+	}
+
+	.context
+	{
+		background-color:#ececec;
+		padding:8px;
+		padding-left:32px;
+	}
+
+	.context pre
+	{
+		margin:0px;
+	}
+	</style>
 </head>
 
 <body>
-<h1>Internal Server Error</h1>
-<p>
-	The server encountered an internal error and was unable to complete your request.
-</p>
-<p>
-	<pre></pre>
-</p>
+
+<div class="title">
+	<h1>Internal Server Error</h1>
+</div>
+
+<div class="message">
+	The server encountered an internal error and was unable to complete your request.</div>
+
+
+
 </body>
 </html>
+
 HTML;
 
 		$this->assertEquals($expect, (string) $response->getBody());
@@ -170,6 +222,7 @@ HTML;
 <?xml version="1.0"?>
 <record>
 	<success>false</success>
+	<title>Internal Server Error</title>
 	<message>The server encountered an internal error and was unable to complete your request.</message>
 </record>
 XML;
@@ -198,7 +251,8 @@ XML;
 		$expect = <<<JSON
 {
 	"success": false,
-	"message": "The server encountered an internal error and was unable to complete your request."
+	"message": "The server encountered an internal error and was unable to complete your request.",
+	"title": "Internal Server Error"
 }
 JSON;
 
@@ -226,7 +280,8 @@ JSON;
 		$expect = <<<JSON
 {
 	"success": false,
-	"message": "The server encountered an internal error and was unable to complete your request."
+	"message": "The server encountered an internal error and was unable to complete your request.",
+	"title": "Internal Server Error"
 }
 JSON;
 
