@@ -28,17 +28,13 @@ use PSX\Config\NotFoundException;
 
 /**
  * The class is the common config in psx. It includes the file provided in the
- * first argument of the constructor. This file must define an array $config
- * wich is assigned to the private property $container. Here an example how to
- * create an access the config.
+ * first argument of the constructor. This file must return an array. Here an 
+ * example how to create an access the config.
  * <code>
  * $config = new Config('configuration.php');
  *
  * echo $config['psx_url'];
  * </code>
- *
- * The config class also provides methods to get useful informations of the
- * current request. For more informations see the methods.
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
@@ -55,16 +51,23 @@ class Config extends ArrayIterator
 
 	public function __construct($file)
 	{
+		$config = null;
+
 		if(is_array($file))
 		{
 			$config = $file;
 		}
 		else
 		{
-			include($file);
+			$return = include($file);
+
+			if(is_array($return))
+			{
+				$config = $return;
+			}
 		}
 
-		if(isset($config) && is_array($config))
+		if(is_array($config))
 		{
 			// assign container
 			parent::__construct($config);

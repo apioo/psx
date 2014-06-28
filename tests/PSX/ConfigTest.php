@@ -40,7 +40,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 	{
 	}
 
-	public function testConfigConstructorArray()
+	public function testConstructorArray()
 	{
 		$config = new Config(array(
 			'foo' => 'bar'
@@ -50,9 +50,9 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('bar', $config->get('foo'));
 	}
 
-	public function testConfigConstructorFile()
+	public function testDefinitionConfig()
 	{
-		$config = new Config('tests/PSX/Config/test_config.php');
+		$config = new Config('tests/PSX/Config/definition_config.php');
 
 		$this->assertEquals('bar', $config['foo']);
 		$this->assertEquals('bar', $config->get('foo'));
@@ -61,15 +61,39 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 	/**
 	 * @expectedException PSX\Config\NotFoundException
 	 */
-	public function testConfigConstructorFileWrongVariableName()
+	public function testDefinitionConfigInvalidType()
 	{
-		$config = new Config('tests/PSX/Config/bar_config.php');
+		$config = new Config('tests/PSX/Config/definition_invalid_config_type.php');
+	}
+
+	public function testReturnConfig()
+	{
+		$config = new Config('tests/PSX/Config/return_config.php');
+
+		$this->assertEquals('bar', $config['foo']);
+		$this->assertEquals('bar', $config->get('foo'));
+	}
+
+	/**
+	 * @expectedException PSX\Config\NotFoundException
+	 */
+	public function testReturnConfigInvalidType()
+	{
+		$config = new Config('tests/PSX/Config/return_invalid_config_type.php');
+	}
+
+	/**
+	 * @expectedException PSX\Config\NotFoundException
+	 */
+	public function testNoConfig()
+	{
+		$config = new Config('tests/PSX/Config/no_config.php');
 	}
 
 	/**
 	 * @expectedException ErrorException
 	 */
-	public function testConfigConstructorFileNotExisting()
+	public function testConfigCFileNotExisting()
 	{
 		$config = new Config('tests/PSX/Config/foo_config.php');
 	}

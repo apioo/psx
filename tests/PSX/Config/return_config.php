@@ -1,6 +1,6 @@
 <?php
 
-$foo = array(
+return array(
 	'foo' => 'bar'
 );
 
