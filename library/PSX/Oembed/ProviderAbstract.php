@@ -58,37 +58,29 @@ abstract class ProviderAbstract extends ApiAbstract
 		$maxWidth  = $this->request->getUrl()->getParam('maxwidth');
 		$maxHeight = $this->request->getUrl()->getParam('maxheight');
 
-		$validate  = new Validate();
-		$url       = $validate->apply($url, Validate::TYPE_STRING, array(new Filter\Length(3, 512), new Filter\Url()), 'url', 'Url');
-		$maxWidth  = $validate->apply($maxWidth, Validate::TYPE_INTEGER, array(), 'maxwidth', 'Max width');
-		$maxHeight = $validate->apply($maxHeight, Validate::TYPE_INTEGER, array(), 'maxheight', 'Max height');
+		$url       = $this->getValidate()->apply($url, Validate::TYPE_STRING, array(new Filter\Length(3, 512), new Filter\Url()), 'url', 'Url');
+		$maxWidth  = $this->getValidate()->apply($maxWidth, Validate::TYPE_INTEGER, array(), 'maxwidth', 'Max width');
+		$maxHeight = $this->getValidate()->apply($maxHeight, Validate::TYPE_INTEGER, array(), 'maxheight', 'Max height');
 
-		if(!$validate->hasError())
+		$url  = new Url($url);
+		$type = $this->onRequest($url, $maxWidth, $maxHeight);
+
+		if($type instanceof TypeAbstract)
 		{
-			$url  = new Url($url);
-			$type = $this->onRequest($url, $maxWidth, $maxHeight);
-
-			if($type instanceof TypeAbstract)
+			if($this->isWriter(WriterInterface::XML))
 			{
-				if($this->isWriter(WriterInterface::XML))
-				{
-					$this->response->setHeader('Content-Type', 'text/xml+oembed');
-				}
-				else if($this->isWriter(WriterInterface::JSON))
-				{
-					$this->response->setHeader('Content-Type', 'application/json+oembed');
-				}
-
-				$this->setResponse($type);
+				$this->response->setHeader('Content-Type', 'text/xml+oembed');
 			}
-			else
+			else if($this->isWriter(WriterInterface::JSON))
 			{
-				throw new Exception('Url not found', 404);
+				$this->response->setHeader('Content-Type', 'application/json+oembed');
 			}
+
+			$this->setResponse($type);
 		}
 		else
 		{
-			throw new Exception($validate->getLastError());
+			throw new Exception('Url not found', 404);
 		}
 	}
 

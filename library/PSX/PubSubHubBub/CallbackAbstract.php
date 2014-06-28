@@ -91,29 +91,21 @@ abstract class CallbackAbstract extends ControllerAbstract
 		$challenge    = $this->request->getUrl()->getParam('hub_challenge');
 		$leaseSeconds = $this->request->getUrl()->getParam('hub_lease_seconds');
 
-		$validate     = new Validate();
-		$mode         = $validate->apply($mode, Validate::TYPE_STRING, array(new Filter\InArray(array('subscribe', 'unsubscribe'))), 'hub.mode', 'Mode');
-		$topic        = $validate->apply($topic, Validate::TYPE_STRING, array(new Filter\Length(3, 512), new Filter\Url()), 'hub.topic', 'Topic');
-		$challenge    = $validate->apply($challenge, Validate::TYPE_STRING, array(new Filter\Length(1, 512)), 'hub.challenge', 'Challenge');
-		$leaseSeconds = $validate->apply($leaseSeconds, Validate::TYPE_INTEGER, array(), 'hub.lease_seconds', 'Lease seconds', false);
+		$mode         = $this->getValidate()->apply($mode, Validate::TYPE_STRING, array(new Filter\InArray(array('subscribe', 'unsubscribe'))), 'hub.mode', 'Mode');
+		$topic        = $this->getValidate()->apply($topic, Validate::TYPE_STRING, array(new Filter\Length(3, 512), new Filter\Url()), 'hub.topic', 'Topic');
+		$challenge    = $this->getValidate()->apply($challenge, Validate::TYPE_STRING, array(new Filter\Length(1, 512)), 'hub.challenge', 'Challenge');
+		$leaseSeconds = $this->getValidate()->apply($leaseSeconds, Validate::TYPE_INTEGER, array(), 'hub.lease_seconds', 'Lease seconds', false);
 
-		if(!$validate->hasError())
+		$topic = new Url($topic);
+
+		if($this->onVerify($mode, $topic, $leaseSeconds) === true)
 		{
-			$topic = new Url($topic);
-
-			if($this->onVerify($mode, $topic, $leaseSeconds) === true)
-			{
-				$this->response->setStatusCode(200);
-				$this->response->getBody()->write($challenge);
-			}
-			else
-			{
-				throw new Exception('Invalid request');
-			}
+			$this->response->setStatusCode(200);
+			$this->response->getBody()->write($challenge);
 		}
 		else
 		{
-			throw new Exception($validate->getLastError());
+			throw new Exception('Invalid request');
 		}
 	}
 
