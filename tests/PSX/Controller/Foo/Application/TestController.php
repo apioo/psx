@@ -65,8 +65,7 @@ class TestController extends ControllerAbstract
 		$testCase->assertInstanceOf('PSX\Config', $this->getConfig());
 
 		// get uri fragments
-		$testCase->assertTrue(is_array($this->getUriFragments()));
-		$testCase->assertEquals(null, $this->getUriFragments('foo'));
+		$testCase->assertEquals(null, $this->getUriFragment('foo'));
 
 		// set response code
 		$this->setResponseCode(200);
@@ -78,7 +77,6 @@ class TestController extends ControllerAbstract
 		$testCase->assertInstanceOf('PSX\Url', $this->getUrl());
 
 		// get header
-		$testCase->assertTrue(is_array($this->getHeader()));
 		$testCase->assertEquals(null, $this->getHeader('foo'));
 
 		// get parameter
@@ -181,7 +179,7 @@ class TestController extends ControllerAbstract
 
 	public function doRedirectDestiniation()
 	{
-		$this->response->getBody()->write(json_encode($this->getUriFragments()));
+		$this->response->getBody()->write(json_encode($this->uriFragments));
 	}
 
 	public function getPreFilter()
