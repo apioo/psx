@@ -24,6 +24,7 @@
 namespace PSX\Dependency;
 
 use PSX\Command\Executor;
+use PSX\Command\Output\Logger;
 use PSX\Command\Output\Stdout;
 use PSX\Console;
 use PSX\Dispatch\CommandFactory;
@@ -50,7 +51,7 @@ trait Command
 	 */
 	public function getCommandOutput()
 	{
-		return new Stdout();
+		return PHP_SAPI == 'cli' ? new Stdout() : new Logger($this->get('logger'));
 	}
 
 	/**
