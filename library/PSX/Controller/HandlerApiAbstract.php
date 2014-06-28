@@ -33,10 +33,10 @@ use PSX\Data\Record\Mapper\Rule;
 use PSX\Data\RecordInterface;
 use PSX\Data\WriterInterface;
 use PSX\Exception;
-use PSX\Filter\FilterDefinition;
 use PSX\Handler\HandlerManipulationInterface;
 use PSX\Handler\HandlerQueryInterface;
 use PSX\Util\Uuid;
+use PSX\Validate\ValidatorInterface;
 
 /**
  * This controller simplifies creating an API from an handler
@@ -107,11 +107,11 @@ abstract class HandlerApiAbstract extends ApiAbstract
 			$this->beforeValidate($record);
 
 			// validate
-			$filterDefinition = $this->getFilterDefinition();
+			$validator = $this->getValidator();
 
-			if($filterDefinition instanceof FilterDefinition)
+			if($validator instanceof ValidatorInterface)
 			{
-				$filterDefinition->validate($record);
+				$validator->validate($record);
 			}
 
 			$this->afterValidate($record);
@@ -151,11 +151,11 @@ abstract class HandlerApiAbstract extends ApiAbstract
 			$this->beforeValidate($record);
 
 			// validate
-			$filterDefinition = $this->getFilterDefinition();
+			$validator = $this->getValidator();
 
-			if($filterDefinition instanceof FilterDefinition)
+			if($validator instanceof ValidatorInterface)
 			{
-				$filterDefinition->validate($record);
+				$validator->validate($record);
 			}
 
 			$this->afterValidate($record);
@@ -195,11 +195,11 @@ abstract class HandlerApiAbstract extends ApiAbstract
 			$this->beforeValidate($record);
 
 			// validate
-			$filterDefinition = $this->getFilterDefinition();
+			$validator = $this->getValidator();
 
-			if($filterDefinition instanceof FilterDefinition)
+			if($validator instanceof ValidatorInterface)
 			{
-				$filterDefinition->validate($record);
+				$validator->validate($record);
 			}
 
 			$this->afterValidate($record);
@@ -328,9 +328,9 @@ abstract class HandlerApiAbstract extends ApiAbstract
 	/**
 	 * Returns the filter definition which validates values
 	 *
-	 * @return PSX\Filter\FilterDefinition
+	 * @return PSX\Validate\ValidatorInterface
 	 */
-	protected function getFilterDefinition()
+	protected function getValidator()
 	{
 		return null;
 	}
