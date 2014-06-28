@@ -39,6 +39,11 @@ class Sender implements SenderInterface
 {
 	protected $chunkSize = 8192;
 
+	/**
+	 * The chunk size which is used if the transfer encoding is "chunked"
+	 *
+	 * @param integer $chunkSize
+	 */
 	public function setChunkSize($chunkSize)
 	{
 		$this->chunkSize = $chunkSize;
