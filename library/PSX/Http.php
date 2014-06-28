@@ -146,6 +146,19 @@ class Http
 			}
 		}
 
+		// set content length
+		$body = $request->getBody();
+
+		if($body !== null && $request->hasHeader('Transfer-Encoding') != 'chunked' && !in_array($request->getMethod(), array('HEAD', 'GET')))
+		{
+			$size = $body->getSize();
+
+			if($size !== false)
+			{
+				$request->setHeader('Content-Length', $size);
+			}
+		}
+
 		// make request
 		$response = $this->handler->request($request);
 

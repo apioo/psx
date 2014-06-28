@@ -44,39 +44,20 @@ class PostRequest extends Request
 	 */
 	public function __construct($url, array $header = array(), $body = null)
 	{
-		$url    = $url instanceof Url ? $url : new Url((string) $url);
-		$method = 'POST';
-
-		$isFormUrlencoded = false;
+		$url = $url instanceof Url ? $url : new Url((string) $url);
 
 		if(is_array($body))
 		{
-			$isFormUrlencoded = true;
+			$header['Content-Type'] = 'application/x-www-form-urlencoded';
 
 			$body = http_build_query($body, '', '&');
 		}
 
-		parent::__construct($url, $method, $header, $body);
+		parent::__construct($url, 'POST', $header, $body);
 
 		if(!$this->hasHeader('Host'))
 		{
 			$this->setHeader('Host', $url->getHost());
 		}
-
-		if($isFormUrlencoded)
-		{
-			$this->setHeader('Content-Type', 'application/x-www-form-urlencoded');
-		}
-	}
-
-	public function setBody(StreamInterface $body = null)
-	{
-		parent::setBody($body);
-
-		if($body !== null)
-		{
-			$this->setHeader('Content-Length', $body->getSize());
-		}
 	}
 }
-

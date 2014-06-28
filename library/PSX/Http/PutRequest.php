@@ -41,49 +41,23 @@ class PutRequest extends Request
 	 * @param PSX\Url|string $url
 	 * @param array $header
 	 * @param Psr\HttpMessage\StreamInterface|string|array $body
-	 * @param boolean $override
 	 */
-	public function __construct($url, array $header = array(), $body = null, $override = false)
+	public function __construct($url, array $header = array(), $body = null)
 	{
-		$url    = $url instanceof Url ? $url : new Url((string) $url);
-		$method = $override ? 'POST' : 'PUT';
-
-		$isFormUrlencoded = false;
+		$url = $url instanceof Url ? $url : new Url((string) $url);
 
 		if(is_array($body))
 		{
-			$isFormUrlencoded = true;
+			$header['Content-Type'] = 'application/x-www-form-urlencoded';
 
 			$body = http_build_query($body, '', '&');
 		}
 
-		parent::__construct($url, $method, $header, $body);
+		parent::__construct($url, 'PUT', $header, $body);
 
 		if(!$this->hasHeader('Host'))
 		{
 			$this->setHeader('Host', $url->getHost());
 		}
-
-		if($isFormUrlencoded)
-		{
-			$this->setHeader('Content-Type', 'application/x-www-form-urlencoded');
-		}
-
-		if($override)
-		{
-			$this->setHeader('X-HTTP-Method-Override', 'PUT');
-		}
-	}
-
-	public function setBody(StreamInterface $body = null)
-	{
-		parent::setBody($body);
-
-		if($body !== null)
-		{
-			$this->setHeader('Content-Length', $body->getSize());
-		}
 	}
 }
-
-
