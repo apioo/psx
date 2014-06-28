@@ -120,7 +120,7 @@ JSON;
 
 		$expect = <<<JSON
 {
-	"text": "Title has an invalid length min 3 and max 16 signs",
+	"text": "title has an invalid length min 3 and max 16 signs",
 	"success": false
 }
 JSON;
