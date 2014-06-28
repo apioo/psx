@@ -26,12 +26,12 @@ namespace PSX\Controller\Foo\Application;
 use PSX\Controller\HandlerApiAbstract;
 use PSX\Data\RecordAbstract;
 use PSX\Filter;
-use PSX\Filter\FilterDefinition;
-use PSX\Filter\Definition\Property;
 use PSX\Handler\Database\TestHandler;
 use PSX\Sql;
 use PSX\Sql\TableManager;
 use PSX\Validate;
+use PSX\Validate\RecordValidator;
+use PSX\Validate\Property;
 
 /**
  * TestHandlerApiController
@@ -42,9 +42,9 @@ use PSX\Validate;
  */
 class TestHandlerApiController extends HandlerApiAbstract
 {
-	protected function getFilterDefinition()
+	protected function getValidator()
 	{
-		return new FilterDefinition(new Validate(), array(
+		return new RecordValidator($this->getValidate(), array(
 			new Property('id', Validate::TYPE_INTEGER),
 			new Property('userId', Validate::TYPE_INTEGER),
 			new Property('title', Validate::TYPE_STRING, array(new Filter\Length(3, 16))),
