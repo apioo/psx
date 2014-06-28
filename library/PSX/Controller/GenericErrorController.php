@@ -40,6 +40,16 @@ class GenericErrorController extends ControllerAbstract
 {
 	const CONTEXT_SIZE = 4;
 
+	public function onLoad()
+	{
+		$exception = $this->location->getParameter(Location::KEY_EXCEPTION);
+
+		if($exception instanceof \Exception)
+		{
+			$this->getLogger()->error($exception->getMessage());
+		}
+	}
+
 	public function processResponse()
 	{
 		$exception = $this->location->getParameter(Location::KEY_EXCEPTION);
