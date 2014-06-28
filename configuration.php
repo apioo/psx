@@ -21,7 +21,7 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-$config = array(
+return array(
 
 	'psx_url'                 => 'http://127.0.0.1/projects/psx/public',
 	'psx_dispatch'            => 'index.php/',
@@ -33,8 +33,8 @@ $config = array(
 	'psx_sql_pw'              => '',
 	'psx_sql_db'              => 'psx',
 
-	'psx_routing'             => '../routes',
-	'psx_path_cache'          => '../cache',
-	'psx_path_library'        => '../library',
+	'psx_routing'             => __DIR__ . '/routes',
+	'psx_path_cache'          => __DIR__ . '/cache',
+	'psx_path_library'        => __DIR__ . '/library',
 
 );
