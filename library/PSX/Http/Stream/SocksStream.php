@@ -27,9 +27,9 @@ use InvalidArgumentException;
 use Psr\HttpMessage\StreamInterface;
 
 /**
- * In contrast to the temp stream the socks stream is actually a real stream.
- * That means only when you read data from the stream data is transfered over 
- * the wire it gets not buffered into any memory or file
+ * The socks stream is used by the socks http handler. When you read data from 
+ * the stream data is transfered over the wire it gets not buffered into any 
+ * memory or file
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
