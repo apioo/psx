@@ -45,7 +45,7 @@ class CommandFactoryTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException RuntimeException
+	 * @expectedException ReflectionException
 	 */
 	public function testGetCommandInvalid()
 	{
@@ -54,7 +54,7 @@ class CommandFactoryTest extends \PHPUnit_Framework_TestCase
 
 	protected function getCommand($className)
 	{
-		$factory = new CommandFactory(getContainer());
+		$factory = getContainer()->get('command_factory');
 
 		return $factory->getCommand($className, new Location());
 	}

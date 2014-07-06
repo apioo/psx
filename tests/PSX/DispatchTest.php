@@ -24,7 +24,6 @@
 namespace PSX;
 
 use PSX\Dispatch;
-use PSX\Dispatch\ControllerFactory;
 use PSX\Dispatch\VoidSender;
 use PSX\Http\Request;
 use PSX\Http\Response;
@@ -61,7 +60,7 @@ class DispatchTest extends \PHPUnit_Framework_TestCase
 		});
 
 		$loader   = new Loader($locationFinder, getContainer()->get('loader_callback_resolver'));
-		$dispatch = new Dispatch(getContainer()->get('config'), $loader, new ControllerFactory(getContainer()), new VoidSender());
+		$dispatch = new Dispatch(getContainer()->get('config'), $loader, getContainer()->get('controller_factory'), new VoidSender());
 		$request  = new Request(new Url('http://localhost.com'), 'GET');
 		$response = new Response();
 		$response->setBody(new StringStream());
@@ -82,7 +81,7 @@ class DispatchTest extends \PHPUnit_Framework_TestCase
 		getContainer()->get('config')->set('psx_debug', false);
 
 		$loader   = new Loader($locationFinder, getContainer()->get('loader_callback_resolver'));
-		$dispatch = new Dispatch(getContainer()->get('config'), $loader, new ControllerFactory(getContainer()), new VoidSender());
+		$dispatch = new Dispatch(getContainer()->get('config'), $loader, getContainer()->get('controller_factory'), new VoidSender());
 		$request  = new Request(new Url('http://localhost.com'), 'GET');
 		$response = new Response();
 		$response->setBody(new StringStream());
@@ -112,7 +111,7 @@ JSON;
 		getContainer()->get('template')->set(null);
 
 		$loader   = new Loader($locationFinder, getContainer()->get('loader_callback_resolver'));
-		$dispatch = new Dispatch(getContainer()->get('config'), $loader, new ControllerFactory(getContainer()), new VoidSender());
+		$dispatch = new Dispatch(getContainer()->get('config'), $loader, getContainer()->get('controller_factory'), new VoidSender());
 		$request  = new Request(new Url('http://localhost.com'), 'GET', array('Accept' => 'text/html'));
 		$response = new Response();
 		$response->setBody(new StringStream());
@@ -211,7 +210,7 @@ HTML;
 		getContainer()->get('config')->set('psx_debug', false);
 
 		$loader   = new Loader($locationFinder, getContainer()->get('loader_callback_resolver'));
-		$dispatch = new Dispatch(getContainer()->get('config'), $loader, new ControllerFactory(getContainer()), new VoidSender());
+		$dispatch = new Dispatch(getContainer()->get('config'), $loader, getContainer()->get('controller_factory'), new VoidSender());
 		$request  = new Request(new Url('http://localhost.com'), 'GET', array('Accept' => 'application/xml'));
 		$response = new Response();
 		$response->setBody(new StringStream());
@@ -241,7 +240,7 @@ XML;
 		getContainer()->get('config')->set('psx_debug', false);
 
 		$loader   = new Loader($locationFinder, getContainer()->get('loader_callback_resolver'));
-		$dispatch = new Dispatch(getContainer()->get('config'), $loader, new ControllerFactory(getContainer()), new VoidSender());
+		$dispatch = new Dispatch(getContainer()->get('config'), $loader, getContainer()->get('controller_factory'), new VoidSender());
 		$request  = new Request(new Url('http://localhost.com'), 'GET', array('Accept' => 'application/json'));
 		$response = new Response();
 		$response->setBody(new StringStream());
@@ -270,7 +269,7 @@ JSON;
 		getContainer()->get('config')->set('psx_debug', false);
 
 		$loader   = new Loader($locationFinder, getContainer()->get('loader_callback_resolver'));
-		$dispatch = new Dispatch(getContainer()->get('config'), $loader, new ControllerFactory(getContainer()), new VoidSender());
+		$dispatch = new Dispatch(getContainer()->get('config'), $loader, getContainer()->get('controller_factory'), new VoidSender());
 		$request  = new Request(new Url('http://localhost.com'), 'GET', array('X-Requested-With' => 'XMLHttpRequest'));
 		$response = new Response();
 		$response->setBody(new StringStream());
@@ -299,7 +298,7 @@ JSON;
 		getContainer()->get('config')->set('psx_debug', false);
 
 		$loader   = new Loader($locationFinder, getContainer()->get('loader_callback_resolver'));
-		$dispatch = new Dispatch(getContainer()->get('config'), $loader, new ControllerFactory(getContainer()), new VoidSender());
+		$dispatch = new Dispatch(getContainer()->get('config'), $loader, getContainer()->get('controller_factory'), new VoidSender());
 		$request  = new Request(new Url('http://localhost.com'), 'GET');
 		$response = new Response();
 		$response->setBody(new StringStream());

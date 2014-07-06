@@ -42,6 +42,12 @@ use SimpleXMLElement;
  */
 class TestController extends ControllerAbstract
 {
+	/**
+	 * @Inject
+	 * @var PHPUnit_Framework_TestCase
+	 */
+	protected $testCase;
+
 	public function doIndex()
 	{
 		$this->response->getBody()->write('foobar');
@@ -49,56 +55,41 @@ class TestController extends ControllerAbstract
 
 	public function doInspect()
 	{
-		// inspect inner module API
-		$testCase = $this->getTestCase();
-
-		// get container
-		$testCase->assertInstanceOf('Symfony\Component\DependencyInjection\ContainerInterface', $this->getContainer());
-
-		// get location
-		$location = $this->getLocation();
-
-		$testCase->assertInstanceOf('PSX\Loader\Location', $location);
-		$testCase->assertEquals('PSX\Controller\Foo\Application\TestController::doInspect', $location->getParameter(Location::KEY_SOURCE));
-
-		// get config
-		$testCase->assertInstanceOf('PSX\Config', $this->getConfig());
-
 		// get uri fragments
-		$testCase->assertEquals(null, $this->getUriFragment('foo'));
+		$this->testCase->assertEquals(null, $this->getUriFragment('foo'));
 
 		// set response code
 		$this->setResponseCode(200);
 
 		// get method
-		$testCase->assertEquals('POST', $this->getMethod());
+		$this->testCase->assertEquals('POST', $this->getMethod());
 
 		// get url
-		$testCase->assertInstanceOf('PSX\Url', $this->getUrl());
+		$this->testCase->assertInstanceOf('PSX\Url', $this->getUrl());
 
 		// get header
-		$testCase->assertEquals(null, $this->getHeader('foo'));
+		$this->testCase->assertEquals(null, $this->getHeader('foo'));
 
 		// get parameter
-		$testCase->assertEquals('bar', $this->getParameter('foo'));
-		$testCase->assertEquals('bar', $this->getParameter('foo', Validate::TYPE_STRING));
-		$testCase->assertEquals('bar', $this->getParameter('foo', Validate::TYPE_STRING, array(new Filter\Alnum())));
-		$testCase->assertEquals('bar', $this->getParameter('foo', Validate::TYPE_STRING, array(), 'Foo'));
-		$testCase->assertEquals('bar', $this->getParameter('foo', Validate::TYPE_STRING, array(), 'Foo', true));
+		$this->testCase->assertEquals('bar', $this->getParameter('foo'));
+		$this->testCase->assertEquals('bar', $this->getParameter('foo', Validate::TYPE_STRING));
+		$this->testCase->assertEquals('bar', $this->getParameter('foo', Validate::TYPE_STRING, array(new Filter\Alnum())));
+		$this->testCase->assertEquals('bar', $this->getParameter('foo', Validate::TYPE_STRING, array(), 'Foo'));
+		$this->testCase->assertEquals('bar', $this->getParameter('foo', Validate::TYPE_STRING, array(), 'Foo', true));
 
 		// get body
-		$testCase->assertEquals(array('foo' => 'bar'), $this->getBody());
-		$testCase->assertEquals(array('foo' => 'bar'), $this->getBody(ReaderInterface::JSON));
+		$this->testCase->assertEquals(array('foo' => 'bar'), $this->getBody());
+		$this->testCase->assertEquals(array('foo' => 'bar'), $this->getBody(ReaderInterface::JSON));
 
 		// import
 		$record = new Record('foo', array('foo' => null));
 
-		$testCase->assertInstanceOf('PSX\Data\Record', $this->import($record));
-		$testCase->assertEquals('bar', $record->getFoo());
+		$this->testCase->assertInstanceOf('PSX\Data\Record', $this->import($record));
+		$this->testCase->assertEquals('bar', $record->getFoo());
 
 		// get request reader
-		$testCase->assertInstanceOf('PSX\Data\Reader\Json', $this->getRequestReader());
-		$testCase->assertInstanceOf('PSX\Data\Reader\Json', $this->getRequestReader(ReaderInterface::JSON));
+		$this->testCase->assertInstanceOf('PSX\Data\Reader\Json', $this->getRequestReader());
+		$this->testCase->assertInstanceOf('PSX\Data\Reader\Json', $this->getRequestReader(ReaderInterface::JSON));
 
 		// set response
 		$record = new Record('foo', array('bar' => 'foo'));
@@ -106,25 +97,30 @@ class TestController extends ControllerAbstract
 		$this->setResponse($record);
 
 		// get response writer
-		$testCase->assertInstanceOf('PSX\Data\Writer\Json', $this->getResponseWriter());
+		$this->testCase->assertInstanceOf('PSX\Data\Writer\Json', $this->getResponseWriter());
 
 		// is writer
-		$testCase->assertTrue($this->isWriter('PSX\Data\Writer\Json'));
+		$this->testCase->assertTrue($this->isWriter('PSX\Data\Writer\Json'));
 
 		// get preferred writer
-		$testCase->assertInstanceOf('PSX\Data\Writer\Json', $this->getPreferredWriter());
+		$this->testCase->assertInstanceOf('PSX\Data\Writer\Json', $this->getPreferredWriter());
 
 		// get preferred writer
-		$testCase->assertEquals(null, $this->getSupportedWriter());
+		$this->testCase->assertEquals(null, $this->getSupportedWriter());
 
 		// test properties
-		$testCase->assertInstanceOf('Symfony\Component\DependencyInjection\ContainerInterface', $this->container);
-		$testCase->assertInstanceOf('PSX\Loader\Location', $this->location);
-		$testCase->assertInstanceOf('PSX\Http\Request', $this->request);
-		$testCase->assertInstanceOf('PSX\Http\Response', $this->response);
-		$testCase->assertTrue(is_array($this->uriFragments));
-		$testCase->assertEquals(0x3F, $this->stage);
-		$testCase->assertInstanceOf('PSX\Config', $this->config);
+		$this->testCase->assertInstanceOf('PSX\Loader\Location', $this->location);
+		$this->testCase->assertEquals('PSX\Controller\Foo\Application\TestController::doInspect', $this->location->getParameter(Location::KEY_SOURCE));
+		$this->testCase->assertInstanceOf('PSX\Http\Request', $this->request);
+		$this->testCase->assertInstanceOf('PSX\Http\Response', $this->response);
+		$this->testCase->assertTrue(is_array($this->uriFragments));
+		$this->testCase->assertEquals(0x3F, $this->stage);
+		$this->testCase->assertInstanceOf('PSX\Config', $this->config);
+		$this->testCase->assertInstanceOf('PSX\Validate', $this->validate);
+		$this->testCase->assertInstanceOf('PSX\Loader', $this->loader);
+		$this->testCase->assertInstanceOf('PSX\Loader\ReverseRouter', $this->reverseRouter);
+		$this->testCase->assertInstanceOf('PSX\Data\ReaderFactory', $this->readerFactory);
+		$this->testCase->assertInstanceOf('PSX\Data\WriterFactory', $this->writerFactory);
 	}
 
 	public function doForward()
@@ -184,7 +180,7 @@ class TestController extends ControllerAbstract
 
 	public function getPreFilter()
 	{
-		$testCase = $this->getTestCase();
+		$testCase = $this->testCase;
 
 		return array(function($request, $response) use ($testCase){
 
@@ -196,7 +192,7 @@ class TestController extends ControllerAbstract
 
 	public function getPostFilter()
 	{
-		$testCase = $this->getTestCase();
+		$testCase = $this->testCase;
 
 		return array(function($request, $response) use ($testCase){
 

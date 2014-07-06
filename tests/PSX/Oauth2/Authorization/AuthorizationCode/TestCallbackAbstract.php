@@ -43,9 +43,15 @@ use PSX\Url;
  */
 class TestCallbackAbstract extends CallbackAbstract
 {
+	/**
+	 * @Inject
+	 * @var PHPUnit_Framework_TestCase
+	 */
+	protected $testCase;
+
 	protected function getAuthorizationCode($code, $state)
 	{
-		$testCase = $this->getTestCase();
+		$testCase = $this->testCase;
 		$http = new Http(new Callback(function($request) use ($testCase){
 
 			// api request
@@ -81,10 +87,10 @@ TEXT;
 
 	protected function onAccessToken(AccessToken $accessToken)
 	{
-		$this->getTestCase()->assertEquals('2YotnFZFEjr1zCsicMWpAA', $accessToken->getAccessToken());
-		$this->getTestCase()->assertEquals('example', $accessToken->getTokenType());
-		$this->getTestCase()->assertEquals(3600, $accessToken->getExpiresIn());
-		$this->getTestCase()->assertEquals('tGzv3JOkF0XG5Qx2TlKWIA', $accessToken->getRefreshToken());
+		$this->testCase->assertEquals('2YotnFZFEjr1zCsicMWpAA', $accessToken->getAccessToken());
+		$this->testCase->assertEquals('example', $accessToken->getTokenType());
+		$this->testCase->assertEquals(3600, $accessToken->getExpiresIn());
+		$this->testCase->assertEquals('tGzv3JOkF0XG5Qx2TlKWIA', $accessToken->getRefreshToken());
 
 		$this->response->setStatusCode(200);
 		$this->response->getBody()->write('SUCCESS');

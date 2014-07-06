@@ -36,23 +36,16 @@ use PSX\Command\OutputInterface;
  */
 class TestCommand extends CommandAbstract
 {
+	/**
+	 * @Inject
+	 * @var PHPUnit_Framework_TestCase
+	 */
+	protected $testCase;
+
 	public function onExecute(Parameters $parameters, OutputInterface $output)
 	{
-		// inspect inner module API
-		$testCase = $this->getTestCase();
-
-		// get container
-		$testCase->assertInstanceOf('Symfony\Component\DependencyInjection\ContainerInterface', $this->getContainer());
-
-		// get location
-		$testCase->assertInstanceOf('PSX\Loader\Location', $this->getLocation());
-
-		// get config
-		$testCase->assertInstanceOf('PSX\Config', $this->getConfig());
-
 		// test properties
-		$testCase->assertInstanceOf('Symfony\Component\DependencyInjection\ContainerInterface', $this->container);
-		$testCase->assertInstanceOf('PSX\Loader\Location', $this->location);
-		$testCase->assertInstanceOf('PSX\Config', $this->config);
+		$this->testCase->assertInstanceOf('PSX\Loader\Location', $this->location);
+		$this->testCase->assertInstanceOf('PSX\Config', $this->config);
 	}
 }

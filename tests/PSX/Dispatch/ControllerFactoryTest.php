@@ -45,7 +45,7 @@ class ControllerFactoryTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException RuntimeException
+	 * @expectedException ReflectionException
 	 */
 	public function testGetControllerInvalid()
 	{
@@ -54,7 +54,7 @@ class ControllerFactoryTest extends \PHPUnit_Framework_TestCase
 
 	protected function getController($className)
 	{
-		$factory = new ControllerFactory(getContainer());
+		$factory = getContainer()->get('controller_factory');
 
 		return $factory->getController($className, new Location(), new Request(new Url('http://127.0.0.1'), 'GET'), new Response());
 	}

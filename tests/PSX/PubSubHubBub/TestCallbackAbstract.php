@@ -36,30 +36,36 @@ use PSX\Url;
  */
 class TestCallbackAbstract extends CallbackAbstract
 {
+	/**
+	 * @Inject
+	 * @var PHPUnit_Framework_TestCase
+	 */
+	protected $testCase;
+
 	protected function onAtom(Atom $atom)
 	{
 		$entry = $atom->current();
 
-		$this->getTestCase()->assertEquals('Atom draft-07 snapshot', $entry->getTitle());
-		$this->getTestCase()->assertEquals('tag:example.org,2003:3.2397', $entry->getId());
-		$this->getTestCase()->assertEquals('2003-12-13 08:29:29', $entry->getPublished()->format('Y-m-d H:i:s'));
-		$this->getTestCase()->assertEquals('foobar', $entry->getContent());
+		$this->testCase->assertEquals('Atom draft-07 snapshot', $entry->getTitle());
+		$this->testCase->assertEquals('tag:example.org,2003:3.2397', $entry->getId());
+		$this->testCase->assertEquals('2003-12-13 08:29:29', $entry->getPublished()->format('Y-m-d H:i:s'));
+		$this->testCase->assertEquals('foobar', $entry->getContent());
 	}
 
 	protected function onRss(Rss $rss)
 	{
 		$item = $rss->current();
 
-		$this->getTestCase()->assertEquals('Star City', $item->getTitle());
-		$this->getTestCase()->assertEquals('http://liftoff.msfc.nasa.gov/2003/06/03.html#item573', $item->getGuid());
-		$this->getTestCase()->assertEquals('2003-06-03 09:39:21', $item->getPubDate()->format('Y-m-d H:i:s'));
-		$this->getTestCase()->assertEquals('foobar', $item->getDescription());
+		$this->testCase->assertEquals('Star City', $item->getTitle());
+		$this->testCase->assertEquals('http://liftoff.msfc.nasa.gov/2003/06/03.html#item573', $item->getGuid());
+		$this->testCase->assertEquals('2003-06-03 09:39:21', $item->getPubDate()->format('Y-m-d H:i:s'));
+		$this->testCase->assertEquals('foobar', $item->getDescription());
 	}
 
 	protected function onVerify($mode, Url $topic, $leaseSeconds)
 	{
-		$this->getTestCase()->assertEquals('subscribe', $mode);
-		$this->getTestCase()->assertEquals('http://127.0.0.1/topic', (string) $topic);
+		$this->testCase->assertEquals('subscribe', $mode);
+		$this->testCase->assertEquals('http://127.0.0.1/topic', (string) $topic);
 
 		return true;
 	}

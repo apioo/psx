@@ -38,27 +38,27 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class TestViewController extends ViewAbstract
 {
-	public function __construct(ContainerInterface $container, Location $location, Request $request, Response $response)
+	public function onLoad()
 	{
-		parent::__construct($container, $location, $request, $response);
+		parent::onLoad();
 
-		$this->getWriterFactory()->getWriterByContentType('text/html')->setBaseDir('tests');
+		$this->writerFactory->getWriterByContentType('text/html')->setBaseDir('tests');
 	}
 
 	public function doIndex()
 	{
-		$this->getTemplate()->assign('foo', 'bar');
+		$this->template->assign('foo', 'bar');
 	}
 
 	public function doDetail()
 	{
-		$this->getTemplate()->assign('foo', 'bar');
-		$this->getTemplate()->set('detail.tpl');
+		$this->template->assign('foo', 'bar');
+		$this->template->set('detail.tpl');
 	}
 
 	public function doExplicit()
 	{
-		$this->getTemplate()->assign('foo', 'bar');
-		$this->getTemplate()->set('tests/PSX/Controller/Foo/Resource/explicit.tpl');
+		$this->template->assign('foo', 'bar');
+		$this->template->set('tests/PSX/Controller/Foo/Resource/explicit.tpl');
 	}
 }

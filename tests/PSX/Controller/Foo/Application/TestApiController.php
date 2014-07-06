@@ -37,6 +37,12 @@ use PSX\Sql;
  */
 class TestApiController extends ApiAbstract
 {
+	/**
+	 * @Inject
+	 * @var PHPUnit_Framework_TestCase
+	 */
+	protected $testCase;
+
 	public function doIndex()
 	{
 		$record = new Record('foo', array('bar' => 'foo'));
@@ -54,29 +60,27 @@ class TestApiController extends ApiAbstract
 
 	public function doInspect()
 	{
-		// inspect inner module API
-		$testCase = $this->getTestCase();
-		$params   = $this->getRequestParams();
+		$params = $this->getRequestParams();
 
-		$testCase->assertEquals(array('foo', 'bar'), $params['fields']);
-		$testCase->assertEquals('2014-01-26', $params['updatedSince']->format('Y-m-d'));
-		$testCase->assertEquals(8, $params['count']);
-		$testCase->assertEquals('id', $params['filterBy']);
-		$testCase->assertEquals('equals', $params['filterOp']);
-		$testCase->assertEquals('12', $params['filterValue']);
-		$testCase->assertEquals('id', $params['sortBy']);
-		$testCase->assertEquals(Sql::SORT_DESC, $params['sortOrder']);
-		$testCase->assertEquals(4, $params['startIndex']);
+		$this->testCase->assertEquals(array('foo', 'bar'), $params['fields']);
+		$this->testCase->assertEquals('2014-01-26', $params['updatedSince']->format('Y-m-d'));
+		$this->testCase->assertEquals(8, $params['count']);
+		$this->testCase->assertEquals('id', $params['filterBy']);
+		$this->testCase->assertEquals('equals', $params['filterOp']);
+		$this->testCase->assertEquals('12', $params['filterValue']);
+		$this->testCase->assertEquals('id', $params['sortBy']);
+		$this->testCase->assertEquals(Sql::SORT_DESC, $params['sortOrder']);
+		$this->testCase->assertEquals(4, $params['startIndex']);
 
 		$condition = $this->getRequestCondition();
 
-		$testCase->assertEquals(array(array('id', '=', '12', 'AND', 1), array('date', '>', '2014-01-26 00:00:00', 'AND', 1)), $condition->toArray());
+		$this->testCase->assertEquals(array(array('id', '=', '12', 'AND', 1), array('date', '>', '2014-01-26 00:00:00', 'AND', 1)), $condition->toArray());
 
 		// get preferred writer
 		$writer = $this->getPreferredWriter();
 
-		$testCase->assertInstanceOf('PSX\Data\Writer\Json', $writer);
-		$testCase->assertTrue($this->isWriter('PSX\Data\Writer\Json'));
+		$this->testCase->assertInstanceOf('PSX\Data\Writer\Json', $writer);
+		$this->testCase->assertTrue($this->isWriter('PSX\Data\Writer\Json'));
 	}
 }
 

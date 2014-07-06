@@ -32,7 +32,7 @@ use PSX\ControllerAbstract;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class TestController extends ControllerAbstract
+class TestControllerBar extends ControllerAbstract
 {
 	public function callMethod($method, array $args = null)
 	{

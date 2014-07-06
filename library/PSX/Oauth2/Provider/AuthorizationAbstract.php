@@ -41,6 +41,12 @@ use PSX\Url;
  */
 abstract class AuthorizationAbstract extends ApiAbstract
 {
+	/**
+	 * @Inject oauth2_grant_type_factory
+	 * @var PSX\Oauth2\Provider\GrantTypeFactory
+	 */
+	protected $grantTypeFactory;
+
 	public function onGet()
 	{
 		$this->doHandle();
@@ -148,8 +154,7 @@ abstract class AuthorizationAbstract extends ApiAbstract
 		{
 			// we must create an access token and append it to the redirect_uri
 			// fragment or display an redirect form
-			$grantTypeFactory = $this->getOauth2GrantTypeFactory();
-			$accessToken      = $grantTypeFactory->get(GrantTypeInterface::TYPE_IMPLICIT)->generateAccessToken(null, array(
+			$accessToken = $this->grantTypeFactory->get(GrantTypeInterface::TYPE_IMPLICIT)->generateAccessToken(null, array(
 				'scope' => $request->getScope()
 			));
 

@@ -27,7 +27,6 @@ use PSX\ControllerAbstract;
 use PSX\Http\Request;
 use PSX\Http\Response;
 use PSX\Loader\Location;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * ProbeController
@@ -40,9 +39,9 @@ class ProbeController extends ControllerAbstract
 {
 	protected $methodsCalled = array();
 
-	public function __construct(ContainerInterface $container, Location $location, Request $request, Response $response)
+	public function __construct(Location $location, Request $request, Response $response)
 	{
-		parent::__construct($container, $location, $request, $response);
+		parent::__construct($location, $request, $response);
 
 		$this->methodsCalled[] = __METHOD__;
 	}

@@ -38,6 +38,12 @@ use PSX\Oauth2\Authorization\Exception\ErrorException;
  */
 abstract class TokenAbstract extends ApiAbstract
 {
+	/**
+	 * @Inject oauth2_grant_type_factory
+	 * @var PSX\Oauth2\Provider\GrantTypeFactory
+	 */
+	protected $grantTypeFactory;
+
 	public function onGet()
 	{
 		$this->doHandle();
@@ -71,10 +77,8 @@ abstract class TokenAbstract extends ApiAbstract
 		try
 		{
 			// we get the grant type factory from the DI container the factory
-			// contains the available grant types. If the service does not exist
-			// an exception gets thrown
-			$grantTypeFactory = $this->getOauth2GrantTypeFactory();
-			$accessToken      = $grantTypeFactory->get($grantType)->generateAccessToken($credentials, $parameters);
+			// contains the available grant types
+			$accessToken = $this->grantTypeFactory->get($grantType)->generateAccessToken($credentials, $parameters);
 
 			$this->response->setStatusCode(200);
 			$this->setResponse($accessToken);

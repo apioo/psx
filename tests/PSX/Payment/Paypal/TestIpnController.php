@@ -34,18 +34,23 @@ use PSX\Data\RecordInterface;
  */
 class TestIpnController extends IpnAbstract
 {
+	/**
+	 * @Inject
+	 * @var PHPUnit_Framework_TestCase
+	 */
+	protected $testCase;
+
 	protected function onVerified(RecordInterface $record)
 	{
-		$this->getTestCase()->assertEquals('Completed', $record->getPaymentStatus());
-		$this->getTestCase()->assertEquals(19.95, $record->getMcGross());
-		$this->getTestCase()->assertEquals('USD', $record->getMcCurrency());
-		$this->getTestCase()->assertEquals('61E67681CH3238416', $record->getTxnId());
-		$this->getTestCase()->assertEquals('gpmac_1231902686_biz@paypal.com', $record->getReceiverEmail());
-		$this->getTestCase()->assertEquals('gpmac_1231902590_per@paypal.com', $record->getPayerEmail());
+		$this->testCase->assertEquals('Completed', $record->getPaymentStatus());
+		$this->testCase->assertEquals(19.95, $record->getMcGross());
+		$this->testCase->assertEquals('USD', $record->getMcCurrency());
+		$this->testCase->assertEquals('61E67681CH3238416', $record->getTxnId());
+		$this->testCase->assertEquals('gpmac_1231902686_biz@paypal.com', $record->getReceiverEmail());
+		$this->testCase->assertEquals('gpmac_1231902590_per@paypal.com', $record->getPayerEmail());
 	}
 
 	protected function onInvalid(RecordInterface $record)
 	{
-
 	}
 }

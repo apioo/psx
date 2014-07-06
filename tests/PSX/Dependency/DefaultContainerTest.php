@@ -76,7 +76,6 @@ class DefaultContainerTest extends \PHPUnit_Framework_TestCase
 		//$this->assertInstanceOf('PSX\Sql\TableManager', $container->get('table_manager'));
 		$this->assertInstanceOf('PSX\TemplateInterface', $container->get('template'));
 		$this->assertInstanceOf('PSX\Validate', $container->get('validate'));
-		$this->assertInstanceOf('PSX\Domain\DomainManagerInterface', $container->get('domain_manager'));
 		$this->assertInstanceOf('Symfony\Component\EventDispatcher\EventDispatcherInterface', $container->get('event_dispatcher'));
 		$this->assertInstanceOf('Psr\Log\LoggerInterface', $container->get('logger'));
 	}

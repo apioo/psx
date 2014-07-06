@@ -44,6 +44,12 @@ abstract class IpnAbstract extends ControllerAbstract
 {
 	const IPN_ENDPOINT = 'https://www.paypal.com/cgi-bin/webscr';
 
+	/**
+	 * @Inject
+	 * @var PSX\Http
+	 */
+	protected $http;
+
 	public function onPost()
 	{
 		// read request
@@ -57,9 +63,8 @@ abstract class IpnAbstract extends ControllerAbstract
 
 		// verify request
 		$url      = new Url(self::IPN_ENDPOINT);
-		$http     = $this->getHttp();
 		$request  = new PostRequest($url, array(), 'cmd=_notify-validate&' . $body);
-		$response = $http->request($request);
+		$response = $this->http->request($request);
 
 		if($response->getStatusCode() == 200)
 		{

@@ -58,9 +58,9 @@ abstract class ProviderAbstract extends ApiAbstract
 		$maxWidth  = $this->request->getUrl()->getParam('maxwidth');
 		$maxHeight = $this->request->getUrl()->getParam('maxheight');
 
-		$url       = $this->getValidate()->apply($url, Validate::TYPE_STRING, array(new Filter\Length(3, 512), new Filter\Url()), 'url', 'Url');
-		$maxWidth  = $this->getValidate()->apply($maxWidth, Validate::TYPE_INTEGER, array(), 'maxwidth', 'Max width');
-		$maxHeight = $this->getValidate()->apply($maxHeight, Validate::TYPE_INTEGER, array(), 'maxheight', 'Max height');
+		$url       = $this->validate->apply($url, Validate::TYPE_STRING, array(new Filter\Length(3, 512), new Filter\Url()), 'url', 'Url');
+		$maxWidth  = $this->validate->apply($maxWidth, Validate::TYPE_INTEGER, array(), 'maxwidth', 'Max width');
+		$maxHeight = $this->validate->apply($maxHeight, Validate::TYPE_INTEGER, array(), 'maxheight', 'Max height');
 
 		$url  = new Url($url);
 		$type = $this->onRequest($url, $maxWidth, $maxHeight);

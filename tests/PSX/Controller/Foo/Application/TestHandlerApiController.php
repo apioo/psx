@@ -42,9 +42,15 @@ use PSX\Validate\Property;
  */
 class TestHandlerApiController extends HandlerApiAbstract
 {
+	/**
+	 * @Inject
+	 * @var PSX\Sql
+	 */
+	protected $sql;
+
 	protected function getValidator()
 	{
-		return new RecordValidator($this->getValidate(), array(
+		return new RecordValidator($this->validate, array(
 			new Property('id', Validate::TYPE_INTEGER),
 			new Property('userId', Validate::TYPE_INTEGER),
 			new Property('title', Validate::TYPE_STRING, array(new Filter\Length(3, 16))),
@@ -54,6 +60,6 @@ class TestHandlerApiController extends HandlerApiAbstract
 
 	protected function getDefaultHandler()
 	{
-		return new TestHandler(new TableManager($this->getSql()));
+		return new TestHandler(new TableManager($this->sql));
 	}
 }

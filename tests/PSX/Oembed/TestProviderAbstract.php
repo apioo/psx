@@ -34,9 +34,15 @@ use PSX\Url;
  */
 class TestProviderAbstract extends ProviderAbstract
 {
+	/**
+	 * @Inject
+	 * @var PHPUnit_Framework_TestCase
+	 */
+	protected $testCase;
+
 	protected function onRequest(Url $url, $maxWidth, $maxHeight)
 	{
-		$this->getTestCase()->assertEquals('http://127.0.0.1/resource', (string) $url);
+		$this->testCase->assertEquals('http://127.0.0.1/resource', (string) $url);
 
 		$photo = new Type\Photo();
 		$photo->setUrl('http://127.0.0.1/resource.png');
