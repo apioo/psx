@@ -21,44 +21,50 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX;
+namespace PSX\Loader\CallbackResolver;
 
-use PSX\Command\ParameterBuilder;
-use PSX\Command\Parameters;
+use RuntimeException;
+use Psr\HttpMessage\RequestInterface;
+use Psr\HttpMessage\ResponseInterface;
+use PSX\Dispatch\ControllerFactoryInterface;
+use PSX\Exception;
+use PSX\Loader\Callback;
+use PSX\Loader\CallbackResolverInterface;
 use PSX\Loader\Location;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * CommandAbstract
+ * DependencyInjector
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-abstract class CommandAbstract implements CommandInterface
+class DependencyInjector implements CallbackResolverInterface
 {
-	/**
-	 * @var PSX\Loader\Location
-	 */
-	protected $location;
+	protected $factory;
 
-	/**
-	 * @Inject
-	 * @var PSX\Config
-	 */
-	protected $config;
-
-	public function __construct(Location $location)
+	public function __construct(ControllerFactoryInterface $factory)
 	{
-		$this->location = $location;
+		$this->factory = $factory;
 	}
 
-	public function getParameters()
+	public function resolve(Location $location, RequestInterface $request, ResponseInterface $response)
 	{
-		return new Parameters();
-	}
+		$source = $location->getParameter(Location::KEY_SOURCE);
 
-	protected function getParameterBuilder()
-	{
-		return new ParameterBuilder();
+		if(strpos($source, '::') !== false)
+		{
+			list($className, $method) = explode('::', $source, 2);
+		}
+		else
+		{
+			$className = $source;
+			$method    = null;
+		}
+
+		$controller = $this->factory->getController($className, $location, $request, $response);
+
+		return new Callback($controller, $method, array($request, $response));
 	}
 }

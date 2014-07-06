@@ -32,7 +32,6 @@ use PSX\Sql;
 use PSX\Sql\TableManager;
 use PSX\Template;
 use PSX\Validate;
-use PSX\Domain\DomainManager;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
@@ -120,11 +119,11 @@ class DefaultContainer extends Container
 	}
 
 	/**
-	 * @return PSX\Domain\DomainManagerInterface
+	 * @return PSX\Dependency\ObjectBuilderInterface
 	 */
-	public function getDomainManager()
+	public function getObjectBuilder()
 	{
-		return new DomainManager($this);
+		return new ObjectBuilder($this);
 	}
 
 	/**

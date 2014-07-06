@@ -38,15 +38,27 @@ use PSX\Loader\Location;
  */
 class ListCommand extends CommandAbstract
 {
+	/**
+	 * @Inject
+	 * @var PSX\Command\Executor
+	 */
+	protected $executor;
+
+	/**
+	 * @Inject
+	 * @var PSX\Dispatch\CommandFactoryInterface
+	 */
+	protected $commandFactory;
+
 	public function onExecute(Parameters $parameters, OutputInterface $output)
 	{
-		$aliases    = $this->getExecutor()->getAliases();
+		$aliases    = $this->executor->getAliases();
 		$maxLength  = 0;
 		$values     = array();
 
 		foreach($aliases as $alias => $className)
 		{
-			$command     = $this->getCommandFactory()->getCommand($className, new Location());
+			$command     = $this->commandFactory->getCommand($className, new Location());
 			$parameters  = $command->getParameters();
 			$description = $parameters->getDescription();
 			$length      = strlen($alias);

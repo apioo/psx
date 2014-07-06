@@ -23,6 +23,7 @@
 
 namespace PSX\Dispatch;
 
+use PSX\Dependency\ObjectBuilderInterface;
 use Psr\HttpMessage\RequestInterface;
 use Psr\HttpMessage\ResponseInterface;
 use PSX\Loader\Location;
@@ -38,22 +39,15 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class ControllerFactory implements ControllerFactoryInterface
 {
-	protected $container;
+	protected $objectBuilder;
 
-	public function __construct(ContainerInterface $container)
+	public function __construct(ObjectBuilderInterface $objectBuilder)
 	{
-		$this->container = $container;
+		$this->objectBuilder = $objectBuilder;
 	}
 
 	public function getController($className, Location $location, RequestInterface $request, ResponseInterface $response)
 	{
-		if(class_exists($className))
-		{
-			return new $className($this->container, $location, $request, $response);
-		}
-		else
-		{
-			throw new RuntimeException('Class "' . $className . '" does not exists');
-		}
+		return $this->objectBuilder->getObject($className, array($location, $request, $response), 'PSX\ControllerInterface');
 	}
 }

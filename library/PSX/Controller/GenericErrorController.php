@@ -24,7 +24,7 @@
 namespace PSX\Controller;
 
 use DOMDocument;
-use PSX\ControllerAbstract;
+use PSX\Controller\ViewAbstract;
 use PSX\Http;
 use PSX\Loader\Location;
 use PSX\Template\ErrorException;
@@ -36,9 +36,15 @@ use PSX\Template\ErrorException;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class GenericErrorController extends ControllerAbstract
+class GenericErrorController extends ViewAbstract
 {
 	const CONTEXT_SIZE = 4;
+
+	/**
+	 * @Inject
+	 * @var Psr\Log\LoggerInterface
+	 */
+	protected $logger;
 
 	public function onLoad()
 	{
@@ -46,7 +52,7 @@ class GenericErrorController extends ControllerAbstract
 
 		if($exception instanceof \Exception)
 		{
-			$this->getLogger()->error($exception->getMessage());
+			$this->logger->error($exception->getMessage());
 		}
 	}
 
@@ -87,12 +93,12 @@ class GenericErrorController extends ControllerAbstract
 
 			if(!is_file($path . '/' . $file))
 			{
-				$this->getTemplate()->set($this->getFallbackTemplate());
+				$this->template->set($this->getFallbackTemplate());
 			}
 		}
 		else
 		{
-			$this->getTemplate()->set($this->getFallbackTemplate());
+			$this->template->set($this->getFallbackTemplate());
 		}
 
 		// build message

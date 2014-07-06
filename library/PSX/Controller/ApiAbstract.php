@@ -38,7 +38,7 @@ use PSX\Sql\Condition;
  */
 abstract class ApiAbstract extends ControllerAbstract
 {
-	protected $_requestParams;
+	private $_requestParams;
 
 	/**
 	 * Returns an condition object depending on the filter params

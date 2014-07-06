@@ -30,13 +30,13 @@ use PSX\Http\Response;
 use PSX\Url;
 
 /**
- * SimpleTest
+ * DependencyInjectorTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class SimpleTest extends \PHPUnit_Framework_TestCase
+class DependencyInjectorTest extends \PHPUnit_Framework_TestCase
 {
 	public function testResolve()
 	{
@@ -44,7 +44,7 @@ class SimpleTest extends \PHPUnit_Framework_TestCase
 		$request  = new Request(new Url('http://127.0.0.1'), 'GET');
 		$response = new Response();
 
-		$simple   = new Simple(new ControllerFactory(getContainer()));
+		$simple   = new DependencyInjector(getContainer()->get('controller_factory'));
 		$callback = $simple->resolve($location, $request, $response);
 
 		$this->assertInstanceOf('PSX\Loader\RoutingParser\Annotation\BarController', $callback->getClass());
@@ -52,7 +52,7 @@ class SimpleTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException RuntimeException
+	 * @expectedException ReflectionException
 	 */
 	public function testInvalidSource()
 	{
@@ -60,12 +60,12 @@ class SimpleTest extends \PHPUnit_Framework_TestCase
 		$request  = new Request(new Url('http://127.0.0.1'), 'GET');
 		$response = new Response();
 
-		$simple   = new Simple(new ControllerFactory(getContainer()));
+		$simple   = new DependencyInjector(getContainer()->get('controller_factory'));
 		$callback = $simple->resolve($location, $request, $response);
 	}
 
 	/**
-	 * @expectedException RuntimeException
+	 * @expectedException ReflectionException
 	 */
 	public function testClassNotExist()
 	{
@@ -73,7 +73,7 @@ class SimpleTest extends \PHPUnit_Framework_TestCase
 		$request  = new Request(new Url('http://127.0.0.1'), 'GET');
 		$response = new Response();
 
-		$simple   = new Simple(new ControllerFactory(getContainer()));
+		$simple   = new DependencyInjector(getContainer()->get('controller_factory'));
 		$callback = $simple->resolve($location, $request, $response);
 	}
 }

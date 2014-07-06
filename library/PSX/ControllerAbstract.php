@@ -43,7 +43,6 @@ use PSX\Loader\Location;
 use PSX\Url;
 use PSX\Validate;
 use SimpleXMLElement;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use RuntimeException;
 
 /**
@@ -55,36 +54,77 @@ use RuntimeException;
  */
 abstract class ControllerAbstract implements ControllerInterface
 {
-	protected $container;
+	/**
+	 * @var PSX\Loader\Location
+	 */
 	protected $location;
+
+	/**
+	 * @var Psr\HttpMessage\RequestInterface
+	 */
 	protected $request;
+
+	/**
+	 * @var Psr\HttpMessage\ResponseInterface
+	 */
 	protected $response;
+
+	/**
+	 * @var array
+	 */
 	protected $uriFragments;
+
+	/**
+	 * @var integer
+	 */
 	protected $stage;
+
+	/**
+	 * @Inject
+	 * @var PSX\Config
+	 */
 	protected $config;
 
-	protected $_requestReader;
-	protected $_responseWriter;
+	/**
+	 * @Inject
+	 * @var PSX\Validate
+	 */
+	protected $validate;
 
-	public function __construct(ContainerInterface $container, Location $location, RequestInterface $request, ResponseInterface $response)
+	/**
+	 * @Inject
+	 * @var PSX\Loader
+	 */
+	protected $loader;
+
+	/**
+	 * @Inject
+	 * @var PSX\Loader\ReverseRouter
+	 */
+	protected $reverseRouter;
+
+	/**
+	 * @Inject
+	 * @var PSX\Data\ReaderFactory
+	 */
+	protected $readerFactory;
+
+	/**
+	 * @Inject
+	 * @var PSX\Data\WriterFactory
+	 */
+	protected $writerFactory;
+
+	private $_requestReader;
+	private $_responseWriter;
+
+	public function __construct(Location $location, RequestInterface $request, ResponseInterface $response)
 	{
-		$this->container    = $container;
 		$this->location     = $location;
 		$this->request      = $request;
 		$this->response     = $response;
 		$this->uriFragments = $location->getParameter(Location::KEY_FRAGMENT);
 		$this->stage        = 0x3F;
-		$this->config       = $container->get('config');
-
-		// set controller class to html writer for automatic template file 
-		// detection
-		$writer = $this->container->get('writer_factory')->getWriterByContentType('text/html');
-
-		if($writer instanceof Writer\Html)
-		{
-			$writer->setBaseDir(PSX_PATH_LIBRARY);
-			$writer->setControllerClass(get_class($this));
-		}
 	}
 
 	public function getStage()
@@ -142,53 +182,6 @@ abstract class ControllerAbstract implements ControllerInterface
 	}
 
 	/**
-	 * If the called method starts with "get" the matching service from the di 
-	 * container is returned else null
-	 *
-	 * @return object
-	 */
-	public function __call($name, $args)
-	{
-		if(substr($name, 0, 3) == 'get')
-		{
-			$service = lcfirst(substr($name, 3));
-
-			if($this->container->has($service))
-			{
-				return $this->container->get($service);
-			}
-
-			throw new InvalidArgumentException('Service ' . $service . ' not available');
-		}
-
-		throw new BadMethodCallException('Call to undefined method ' . $name);
-	}
-
-	/**
-	 * @return Symfony\Component\DependencyInjection\ContainerInterface
-	 */
-	protected function getContainer()
-	{
-		return $this->container;
-	}
-
-	/**
-	 * @return PSX\Loader\Location
-	 */
-	protected function getLocation()
-	{
-		return $this->location;
-	}
-
-	/**
-	 * @return PSX\Config
-	 */
-	protected function getConfig()
-	{
-		return $this->config;
-	}
-
-	/**
 	 * Returns an specific uri fragment
 	 *
 	 * @param string $key
@@ -207,12 +200,12 @@ abstract class ControllerAbstract implements ControllerInterface
 	 */
 	protected function forward($source, array $parameters = array())
 	{
-		$path = $this->getReverseRouter()->getPath($source, $parameters);
+		$path = $this->reverseRouter->getPath($source, $parameters);
 
 		$this->request->setMethod('GET');
 		$this->request->getUrl()->setPath($path);
 
-		$this->container->get('loader')->load($this->request, $this->response);
+		$this->loader->load($this->request, $this->response);
 	}
 
 	/**
@@ -235,7 +228,7 @@ abstract class ControllerAbstract implements ControllerInterface
 		}
 		else
 		{
-			$url = $this->getReverseRouter()->getUrl($source, $parameters);
+			$url = $this->reverseRouter->getUrl($source, $parameters);
 		}
 
 		throw new RedirectException($url, $code);
@@ -297,7 +290,7 @@ abstract class ControllerAbstract implements ControllerInterface
 	{
 		if($this->getUrl()->issetParam($key))
 		{
-			return $this->getValidate()->apply($this->getUrl()->getParam($key), $type, $filter, $title, $required);
+			return $this->validate->apply($this->getUrl()->getParam($key), $type, $filter, $title, $required);
 		}
 		else
 		{
@@ -353,16 +346,16 @@ abstract class ControllerAbstract implements ControllerInterface
 			// find best reader type
 			if($readerType === null)
 			{
-				$reader = $this->container->get('readerFactory')->getReaderByContentType($this->request->getHeader('Content-Type'));
+				$reader = $this->readerFactory->getReaderByContentType($this->request->getHeader('Content-Type'));
 			}
 			else
 			{
-				$reader = $this->container->get('readerFactory')->getReaderByInstance($readerType);
+				$reader = $this->readerFactory->getReaderByInstance($readerType);
 			}
 
 			if($reader === null)
 			{
-				$reader = $this->container->get('readerFactory')->getDefaultReader();
+				$reader = $this->readerFactory->getDefaultReader();
 			}
 
 			if($reader === null)
@@ -492,12 +485,12 @@ abstract class ControllerAbstract implements ControllerInterface
 			}
 			else
 			{
-				$writer = $this->container->get('writerFactory')->getWriterByInstance($writerType);
+				$writer = $this->writerFactory->getWriterByInstance($writerType);
 			}
 
 			if($writer === null)
 			{
-				$writer = $this->container->get('writerFactory')->getDefaultWriter();
+				$writer = $this->writerFactory->getDefaultWriter();
 			}
 
 			if(!$writer instanceof WriterInterface)
@@ -533,14 +526,14 @@ abstract class ControllerAbstract implements ControllerInterface
 
 		if(!empty($format))
 		{
-			$contentType = $this->container->get('writerFactory')->getContentTypeByFormat($format);
+			$contentType = $this->writerFactory->getContentTypeByFormat($format);
 		}
 		else
 		{
 			$contentType = $this->request->getHeader('Accept');
 		}
 
-		return $this->container->get('writerFactory')->getWriterByContentType($contentType, $this->getSupportedWriter());
+		return $this->writerFactory->getWriterByContentType($contentType, $this->getSupportedWriter());
 	}
 
 	/**

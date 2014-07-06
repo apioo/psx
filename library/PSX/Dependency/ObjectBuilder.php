@@ -21,33 +21,59 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Dispatch;
+namespace PSX\Dependency;
 
-use PSX\Dependency\ObjectBuilderInterface;
-use PSX\Loader\Location;
-use PSX\Util\Annotation;
+use InvalidArgumentException;
 use ReflectionClass;
-use RuntimeException;
+use PSX\Util\Annotation;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * CommandFactory
+ * ObjectBuilder
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class CommandFactory implements CommandFactoryInterface
+class ObjectBuilder implements ObjectBuilderInterface
 {
-	protected $objectBuilder;
+	protected $container;
 
-	public function __construct(ObjectBuilderInterface $objectBuilder)
+	public function __construct(ContainerInterface $container)
 	{
-		$this->objectBuilder = $objectBuilder;
+		$this->container = $container;
 	}
 
-	public function getCommand($className, Location $location)
+	public function getObject($className, array $constructorArguments = array(), $instanceOf = null)
 	{
-		return $this->objectBuilder->getObject($className, array($location), 'PSX\CommandInterface');
+		$class  = new ReflectionClass($className);
+		$object = $class->newInstanceArgs($constructorArguments);
+
+		if($instanceOf !== null && !$object instanceof $instanceOf)
+		{
+			throw new InvalidArgumentException('Class ' . $className . ' must be an instanceof ' . $instanceOf);
+		}
+
+		foreach($class->getProperties() as $property)
+		{
+			if(strpos($property->getDocComment(), '@Inject') !== false)
+			{
+				$doc = Annotation::parse($property->getDocComment());
+
+				if($doc->hasAnnotation('Inject'))
+				{
+					$name = $doc->getFirstAnnotation('Inject');
+					if(empty($name))
+					{
+						$name = $property->getName();
+					}
+
+					$property->setAccessible(true);
+					$property->setValue($object, $this->container->get($name));
+				}
+			}
+		}
+
+		return $object;
 	}
 }

@@ -21,50 +21,22 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Loader\CallbackResolver;
-
-use RuntimeException;
-use Psr\HttpMessage\RequestInterface;
-use Psr\HttpMessage\ResponseInterface;
-use PSX\Dispatch\ControllerFactoryInterface;
-use PSX\Exception;
-use PSX\Loader\Callback;
-use PSX\Loader\CallbackResolverInterface;
-use PSX\Loader\Location;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+namespace PSX\Dependency;
 
 /**
- * Simple
+ * ObjectBuilderInterface
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Simple implements CallbackResolverInterface
+interface ObjectBuilderInterface
 {
-	protected $factory;
-
-	public function __construct(ControllerFactoryInterface $factory)
-	{
-		$this->factory = $factory;
-	}
-
-	public function resolve(Location $location, RequestInterface $request, ResponseInterface $response)
-	{
-		$source = $location->getParameter(Location::KEY_SOURCE);
-
-		if(strpos($source, '::') !== false)
-		{
-			list($className, $method) = explode('::', $source, 2);
-		}
-		else
-		{
-			$className = $source;
-			$method    = null;
-		}
-
-		$controller = $this->factory->getController($className, $location, $request, $response);
-
-		return new Callback($controller, $method, array($request, $response));
-	}
+	/**
+	 * @param string $className
+	 * @param array $constructorArguments
+	 * @param string $instanceOf
+	 * @return object
+	 */
+	public function getObject($className, array $constructorArguments = array(), $instanceOf = null);
 }

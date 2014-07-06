@@ -23,7 +23,11 @@
 
 namespace PSX\Controller;
 
+use Psr\HttpMessage\RequestInterface;
+use Psr\HttpMessage\ResponseInterface;
 use PSX\ControllerAbstract;
+use PSX\Data\Writer;
+use PSX\Loader\Location;
 
 /**
  * ViewAbstract
@@ -34,4 +38,22 @@ use PSX\ControllerAbstract;
  */
 abstract class ViewAbstract extends ControllerAbstract
 {
+	/**
+	 * @Inject
+	 * @var PSX\TemplateInterface
+	 */
+	protected $template;
+
+	public function onLoad()
+	{
+		// set controller class to html writer for automatic template file 
+		// detection
+		$writer = $this->writerFactory->getWriterByContentType('text/html');
+
+		if($writer instanceof Writer\Html)
+		{
+			$writer->setBaseDir(PSX_PATH_LIBRARY);
+			$writer->setControllerClass(get_class($this));
+		}
+	}
 }

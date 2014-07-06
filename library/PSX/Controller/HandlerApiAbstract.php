@@ -36,6 +36,7 @@ use PSX\Exception;
 use PSX\Handler\HandlerManipulationInterface;
 use PSX\Handler\HandlerQueryInterface;
 use PSX\Util\Uuid;
+use PSX\Sql\Condition;
 use PSX\Validate\ValidatorInterface;
 
 /**
@@ -47,7 +48,7 @@ use PSX\Validate\ValidatorInterface;
  */
 abstract class HandlerApiAbstract extends ApiAbstract
 {
-	protected $_handler;
+	private $_handler;
 
 	public function onGet()
 	{
@@ -59,7 +60,7 @@ abstract class HandlerApiAbstract extends ApiAbstract
 			}
 
 			$params = $this->getRequestParams();
-			$result = $this->getHandler()->getCollection($params['fields'], 
+			$result = $this->getCollection($params['fields'], 
 					$params['startIndex'], 
 					$params['count'], 
 					$params['sortBy'], 
@@ -119,7 +120,7 @@ abstract class HandlerApiAbstract extends ApiAbstract
 			// insert
 			$this->beforeCreate($record);
 
-			$this->getHandler()->create($record);
+			$this->doCreate($record);
 
 			$this->afterCreate($record);
 
@@ -163,7 +164,7 @@ abstract class HandlerApiAbstract extends ApiAbstract
 			// update
 			$this->beforeUpdate($record);
 
-			$this->getHandler()->update($record);
+			$this->doUpdate($record);
 
 			$this->afterUpdate($record);
 
@@ -207,7 +208,7 @@ abstract class HandlerApiAbstract extends ApiAbstract
 			// delete
 			$this->beforeDelete($record);
 
-			$this->getHandler()->delete($record);
+			$this->doDelete($record);
 
 			$this->afterDelete($record);
 
@@ -232,6 +233,31 @@ abstract class HandlerApiAbstract extends ApiAbstract
 		}
 
 		return $this->_handler;
+	}
+
+	protected function getCollection(array $fields, $startIndex, $count, $sortBy, $sortOrder, Condition $condition)
+	{
+		return $this->getHandler()->getCollection($fields, 
+					$startIndex, 
+					$count, 
+					$sortBy, 
+					$sortOrder, 
+					$condition);
+	}
+
+	protected function doCreate(RecordInterface $record)
+	{
+		$this->getHandler()->create($record);
+	}
+
+	protected function doUpdate(RecordInterface $record)
+	{
+		$this->getHandler()->update($record);
+	}
+
+	protected function doDelete(RecordInterface $record)
+	{
+		$this->getHandler()->delete($record);
 	}
 
 	/**

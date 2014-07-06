@@ -44,7 +44,7 @@ trait Controller
 	 */
 	public function getControllerFactory()
 	{
-		return new ControllerFactory($this);
+		return new ControllerFactory($this->get('object_builder'));
 	}
 
 	/**
@@ -68,7 +68,7 @@ trait Controller
 	 */
 	public function getLoaderCallbackResolver()
 	{
-		return new Loader\CallbackResolver\Simple($this->get('controller_factory'));
+		return new Loader\CallbackResolver\DependencyInjector($this->get('controller_factory'));
 	}
 
 	/**

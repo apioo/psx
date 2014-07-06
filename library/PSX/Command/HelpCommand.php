@@ -38,6 +38,18 @@ use PSX\Loader\Location;
  */
 class HelpCommand extends CommandAbstract
 {
+	/**
+	 * @Inject
+	 * @var PSX\Command\Executor
+	 */
+	protected $executor;
+
+	/**
+	 * @Inject
+	 * @var PSX\Dispatch\CommandFactoryInterface
+	 */
+	protected $commandFactory;
+
 	public function onExecute(Parameters $parameters, OutputInterface $output)
 	{
 		$className = $parameters->get('c');
@@ -62,8 +74,8 @@ class HelpCommand extends CommandAbstract
 
 	protected function printHelp($className, OutputInterface $output)
 	{
-		$className  = $this->getExecutor()->getClassName($className);
-		$command    = $this->getCommandFactory()->getCommand($className, new Location());
+		$className  = $this->executor->getClassName($className);
+		$command    = $this->commandFactory->getCommand($className, new Location());
 		$parameters = $command->getParameters();
 
 		$maxLength  = 0;

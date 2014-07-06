@@ -43,7 +43,7 @@ trait Command
 	 */
 	public function getCommandFactory()
 	{
-		return new CommandFactory($this);
+		return new CommandFactory($this->get('object_builder'));
 	}
 
 	/**
