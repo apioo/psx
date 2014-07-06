@@ -1,0 +1,279 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Handler concept &mdash; PSX 0.9 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.9',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="PSX 0.9 documentation" href="index.html" />
+    <link rel="up" title="Advanced topics" href="advanced_topics.html" />
+    <link rel="next" title="Import data" href="import_data.html" />
+    <link rel="prev" title="Advanced topics" href="advanced_topics.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="import_data.html" title="Import data"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="advanced_topics.html" title="Advanced topics"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">PSX 0.9 documentation</a> &raquo;</li>
+          <li><a href="advanced_topics.html" accesskey="U">Advanced topics</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="handler-concept">
+<h1>Handler concept<a class="headerlink" href="#handler-concept" title="Permalink to this headline">¶</a></h1>
+<p>As stated in the tutorial the core of every PSX api is the handler system. This
+chapter will explain how different handler work and howto write your own handler</p>
+<div class="section" id="database-handler">
+<h2>Database handler<a class="headerlink" href="#database-handler" title="Permalink to this headline">¶</a></h2>
+<p>The database handler returns an PSX\Table\Select object which gives the
+handler all informations about the table and all available fields</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+
+<span class="k">class</span> <span class="nc">Handler</span> <span class="k">extends</span> <span class="nx">DatabaseHandlerAbstract</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">getDefaultSelect</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">manager</span><span class="o">-&gt;</span><span class="na">getTable</span><span class="p">(</span><span class="s1">&#39;Test\Table&#39;</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="na">select</span><span class="p">(</span><span class="k">array</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;userId&#39;</span><span class="p">,</span> <span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">));</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="doctrine-handler">
+<h2>Doctrine handler<a class="headerlink" href="#doctrine-handler" title="Permalink to this headline">¶</a></h2>
+<p>The doctrine handler uses the entity manager to create a query builder. The
+handler gets all available fields from this query</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+
+<span class="k">class</span> <span class="nc">Handler</span> <span class="k">extends</span> <span class="nx">DoctrineHandlerAbstract</span>
+<span class="p">{</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="nf">getDefaultSelect</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">manager</span><span class="o">-&gt;</span><span class="na">createQueryBuilder</span><span class="p">()</span>
+            <span class="o">-&gt;</span><span class="na">from</span><span class="p">(</span><span class="s1">&#39;Test\Entity&#39;</span><span class="p">,</span> <span class="s1">&#39;entity&#39;</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="dom-handler">
+<h2>Dom handler<a class="headerlink" href="#dom-handler" title="Permalink to this headline">¶</a></h2>
+<p>The DOM handler uses the DOMDocument to query the records. As mapping you define
+the source document, the root key of the entries element, the name auf the entry
+element and also the available fields</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+
+<span class="k">class</span> <span class="nc">Handler</span> <span class="k">extends</span> <span class="nx">DomHandlerAbstract</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">getMapping</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$dom</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">DOMDocument</span><span class="p">();</span>
+        <span class="nv">$dom</span><span class="o">-&gt;</span><span class="na">loadXml</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">);</span>
+
+        <span class="k">return</span> <span class="k">new</span> <span class="nx">Mapping</span><span class="p">(</span><span class="nv">$dom</span><span class="p">,</span> <span class="s1">&#39;root&#39;</span><span class="p">,</span> <span class="s1">&#39;entry&#39;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span>
+            <span class="s1">&#39;id&#39;</span>     <span class="o">=&gt;</span> <span class="nx">MappingAbstract</span><span class="o">::</span><span class="na">TYPE_INTEGER</span> <span class="o">|</span> <span class="mi">10</span> <span class="o">|</span> <span class="nx">MappingAbstract</span><span class="o">::</span><span class="na">ID_PROPERTY</span><span class="p">,</span>
+            <span class="s1">&#39;userId&#39;</span> <span class="o">=&gt;</span> <span class="nx">MappingAbstract</span><span class="o">::</span><span class="na">TYPE_INTEGER</span> <span class="o">|</span> <span class="mi">10</span><span class="p">,</span>
+            <span class="s1">&#39;title&#39;</span>  <span class="o">=&gt;</span> <span class="nx">MappingAbstract</span><span class="o">::</span><span class="na">TYPE_STRING</span> <span class="o">|</span> <span class="mi">32</span><span class="p">,</span>
+            <span class="s1">&#39;date&#39;</span>   <span class="o">=&gt;</span> <span class="nx">MappingAbstract</span><span class="o">::</span><span class="na">TYPE_DATETIME</span><span class="p">,</span>
+        <span class="p">));</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="map-handler">
+<h2>Map handler<a class="headerlink" href="#map-handler" title="Permalink to this headline">¶</a></h2>
+<p>The map handler can be used to build an handler from an array. This is useful
+if you obtain the data i.e. from an API or other source where the data is
+available as array</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+
+<span class="k">class</span> <span class="nc">Handler</span> <span class="k">extends</span> <span class="nx">MapHandlerAbstract</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">getMapping</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$data</span> <span class="o">=</span> <span class="k">array</span><span class="p">();</span>
+
+        <span class="k">return</span> <span class="k">new</span> <span class="nx">Mapping</span><span class="p">(</span><span class="nv">$data</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span>
+            <span class="s1">&#39;id&#39;</span>     <span class="o">=&gt;</span> <span class="nx">MappingAbstract</span><span class="o">::</span><span class="na">TYPE_INTEGER</span> <span class="o">|</span> <span class="mi">10</span> <span class="o">|</span> <span class="nx">MappingAbstract</span><span class="o">::</span><span class="na">ID_PROPERTY</span><span class="p">,</span>
+            <span class="s1">&#39;userId&#39;</span> <span class="o">=&gt;</span> <span class="nx">MappingAbstract</span><span class="o">::</span><span class="na">TYPE_INTEGER</span> <span class="o">|</span> <span class="mi">10</span><span class="p">,</span>
+            <span class="s1">&#39;title&#39;</span>  <span class="o">=&gt;</span> <span class="nx">MappingAbstract</span><span class="o">::</span><span class="na">TYPE_STRING</span> <span class="o">|</span> <span class="mi">32</span><span class="p">,</span>
+            <span class="s1">&#39;date&#39;</span>   <span class="o">=&gt;</span> <span class="nx">MappingAbstract</span><span class="o">::</span><span class="na">TYPE_DATETIME</span><span class="p">,</span>
+        <span class="p">));</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="mongodb-handler">
+<h2>Mongodb handler<a class="headerlink" href="#mongodb-handler" title="Permalink to this headline">¶</a></h2>
+<p>The mongodb handler can select records from an mongo database. The mapping
+returns the MongoCollection and the mapping of the available fields</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+
+<span class="k">class</span> <span class="nc">Handler</span> <span class="k">extends</span> <span class="nx">MongodbHandlerAbstract</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">getMapping</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nx">Mapping</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">client</span><span class="o">-&gt;</span><span class="na">selectCollection</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="s1">&#39;collection&#39;</span><span class="p">),</span> <span class="k">array</span><span class="p">(</span>
+            <span class="s1">&#39;id&#39;</span>     <span class="o">=&gt;</span> <span class="nx">MappingAbstract</span><span class="o">::</span><span class="na">TYPE_INTEGER</span> <span class="o">|</span> <span class="mi">10</span> <span class="o">|</span> <span class="nx">MappingAbstract</span><span class="o">::</span><span class="na">ID_PROPERTY</span><span class="p">,</span>
+            <span class="s1">&#39;userId&#39;</span> <span class="o">=&gt;</span> <span class="nx">MappingAbstract</span><span class="o">::</span><span class="na">TYPE_INTEGER</span> <span class="o">|</span> <span class="mi">10</span><span class="p">,</span>
+            <span class="s1">&#39;title&#39;</span>  <span class="o">=&gt;</span> <span class="nx">MappingAbstract</span><span class="o">::</span><span class="na">TYPE_STRING</span> <span class="o">|</span> <span class="mi">32</span><span class="p">,</span>
+            <span class="s1">&#39;date&#39;</span>   <span class="o">=&gt;</span> <span class="nx">MappingAbstract</span><span class="o">::</span><span class="na">TYPE_DATETIME</span><span class="p">,</span>
+        <span class="p">));</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="pdo-handler">
+<h2>Pdo handler<a class="headerlink" href="#pdo-handler" title="Permalink to this headline">¶</a></h2>
+<p>The PDO handler uses native SQL queries through PDO in order to obtain the
+result. The getSelectStatment and getCountStatment method return an PDOStatement</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+
+<span class="k">class</span> <span class="nc">Handler</span> <span class="k">extends</span> <span class="nx">PdoHandlerAbstract</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">getMapping</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nx">Mapping</span><span class="p">(</span><span class="k">array</span><span class="p">(</span>
+            <span class="s1">&#39;id&#39;</span>     <span class="o">=&gt;</span> <span class="nx">MappingAbstract</span><span class="o">::</span><span class="na">TYPE_INTEGER</span> <span class="o">|</span> <span class="mi">10</span> <span class="o">|</span> <span class="nx">MappingAbstract</span><span class="o">::</span><span class="na">ID_PROPERTY</span><span class="p">,</span>
+            <span class="s1">&#39;userId&#39;</span> <span class="o">=&gt;</span> <span class="nx">MappingAbstract</span><span class="o">::</span><span class="na">TYPE_INTEGER</span> <span class="o">|</span> <span class="mi">10</span><span class="p">,</span>
+            <span class="s1">&#39;title&#39;</span>  <span class="o">=&gt;</span> <span class="nx">MappingAbstract</span><span class="o">::</span><span class="na">TYPE_STRING</span> <span class="o">|</span> <span class="mi">32</span><span class="p">,</span>
+            <span class="s1">&#39;date&#39;</span>   <span class="o">=&gt;</span> <span class="nx">MappingAbstract</span><span class="o">::</span><span class="na">TYPE_DATETIME</span><span class="p">,</span>
+        <span class="p">));</span>
+    <span class="p">}</span>
+
+    <span class="k">protected</span> <span class="k">function</span> <span class="nf">getSelectStatment</span><span class="p">(</span><span class="k">array</span> <span class="nv">$fields</span><span class="p">,</span> <span class="nv">$startIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nv">$count</span> <span class="o">=</span> <span class="mi">16</span><span class="p">,</span> <span class="nv">$sortBy</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="nv">$sortOrder</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="nx">Condition</span> <span class="nv">$con</span> <span class="o">=</span> <span class="k">null</span><span class="p">)</span>
+    <span class="p">{</span>
+    <span class="p">}</span>
+
+    <span class="k">protected</span> <span class="k">function</span> <span class="nf">getCountStatment</span><span class="p">(</span><span class="nx">Condition</span> <span class="nv">$con</span> <span class="o">=</span> <span class="k">null</span><span class="p">)</span>
+    <span class="p">{</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="proxycache-handler">
+<h2>ProxyCache handler<a class="headerlink" href="#proxycache-handler" title="Permalink to this headline">¶</a></h2>
+<p>The proxy cache handler is a handler which caches the result of an specific
+mapper. That means you can wrap the proxy cache handler around an database
+handler or any other handler to cache the results</p>
+</div>
+<div class="section" id="write-your-own-handler">
+<h2>Write your own handler<a class="headerlink" href="#write-your-own-handler" title="Permalink to this headline">¶</a></h2>
+<p>If you want write an handler you have to implement either the
+PSX\Handler\HandlerManipulationInterface, PSX\Handler\HandlerQueryInterface
+or both which means you implement the PSX\Handler\HandlerInterface. If you
+implement the HandlerManipulationInterface your handler must be able to create,
+update or delete records. If you implement the HandlerQueryInterface your
+handler must support retrieval of records please see the API documentation for
+detailed list of all required methods</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Handler concept</a><ul>
+<li><a class="reference internal" href="#database-handler">Database handler</a></li>
+<li><a class="reference internal" href="#doctrine-handler">Doctrine handler</a></li>
+<li><a class="reference internal" href="#dom-handler">Dom handler</a></li>
+<li><a class="reference internal" href="#map-handler">Map handler</a></li>
+<li><a class="reference internal" href="#mongodb-handler">Mongodb handler</a></li>
+<li><a class="reference internal" href="#pdo-handler">Pdo handler</a></li>
+<li><a class="reference internal" href="#proxycache-handler">ProxyCache handler</a></li>
+<li><a class="reference internal" href="#write-your-own-handler">Write your own handler</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="advanced_topics.html"
+                        title="previous chapter">Advanced topics</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="import_data.html"
+                        title="next chapter">Import data</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/handler_concept.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="import_data.html" title="Import data"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="advanced_topics.html" title="Advanced topics"
+             >previous</a> |</li>
+        <li><a href="index.html">PSX 0.9 documentation</a> &raquo;</li>
+          <li><a href="advanced_topics.html" >Advanced topics</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Christoph Kappestein.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>

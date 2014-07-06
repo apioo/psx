@@ -1,0 +1,412 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Import data &mdash; PSX 0.9 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.9',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="PSX 0.9 documentation" href="index.html" />
+    <link rel="up" title="Advanced topics" href="advanced_topics.html" />
+    <link rel="next" title="Data writer" href="data_writer.html" />
+    <link rel="prev" title="Handler concept" href="handler_concept.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="data_writer.html" title="Data writer"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="handler_concept.html" title="Handler concept"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">PSX 0.9 documentation</a> &raquo;</li>
+          <li><a href="advanced_topics.html" accesskey="U">Advanced topics</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="import-data">
+<h1>Import data<a class="headerlink" href="#import-data" title="Permalink to this headline">¶</a></h1>
+<p>Record classes are used in PSX to import data from an request. We use an reader
+class to read the request body and then the request gets imported into an record
+through an importer class. This chapter explains the default annotation importer
+and howto write your own importer</p>
+<div class="section" id="general">
+<h2>General<a class="headerlink" href="#general" title="Permalink to this headline">¶</a></h2>
+<p>A record is a simple object to store key value pairs. When we use an importer
+class the importer needs to know which fields are available and what type has
+each field. The default importer obtains theses meta informations from the
+annotation of each method. As example lets say we want import the following xml
+from an request</p>
+<div class="highlight-xml"><div class="highlight"><pre><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="nt">&lt;entry&gt;</span>
+    <span class="nt">&lt;id&gt;</span>1<span class="nt">&lt;/id&gt;</span>
+    <span class="nt">&lt;title&gt;</span>foobar<span class="nt">&lt;/title&gt;</span>
+    <span class="nt">&lt;user&gt;</span>
+        <span class="nt">&lt;id&gt;</span>1<span class="nt">&lt;/id&gt;</span>
+        <span class="nt">&lt;name&gt;</span>foo<span class="nt">&lt;/name&gt;</span>
+    <span class="nt">&lt;/user&gt;</span>
+    <span class="nt">&lt;date&gt;</span>2014-01-12 11:11:53<span class="nt">&lt;/date&gt;</span>
+<span class="nt">&lt;/entry&gt;</span>
+</pre></div>
+</div>
+<p>In this case we have to define the following records</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">Test\News</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">DateTime</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">PSX\Data\RecordAbstract</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">NewsRecord</span> <span class="k">extends</span> <span class="nx">RecordAbstract</span>
+<span class="p">{</span>
+    <span class="k">protected</span> <span class="nv">$id</span><span class="p">;</span>
+    <span class="k">protected</span> <span class="nv">$title</span><span class="p">;</span>
+    <span class="k">protected</span> <span class="nv">$user</span><span class="p">;</span>
+    <span class="k">protected</span> <span class="nv">$date</span><span class="p">;</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * @param integer $id</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">setId</span><span class="p">(</span><span class="nv">$id</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">id</span> <span class="o">=</span> <span class="nv">$id</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">getId</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">id</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * @param string $title</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">setTitle</span><span class="p">(</span><span class="nv">$title</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">title</span> <span class="o">=</span> <span class="nv">$title</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">getTitle</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">title</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * @param Test\News\UserRecord $user</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">setUser</span><span class="p">(</span><span class="nx">UserRecord</span> <span class="nv">$user</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">user</span> <span class="o">=</span> <span class="nv">$user</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">getUser</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">user</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * @param DateTime $date</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">setDate</span><span class="p">(</span><span class="nx">DateTime</span> <span class="nv">$date</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">date</span> <span class="o">=</span> <span class="nv">$date</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">getDate</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">date</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">Test\News</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">PSX\Data\RecordAbstract</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">UserRecord</span> <span class="k">extends</span> <span class="nx">RecordAbstract</span>
+<span class="p">{</span>
+    <span class="k">protected</span> <span class="nv">$id</span><span class="p">;</span>
+    <span class="k">protected</span> <span class="nv">$name</span><span class="p">;</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * @param integer $id</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">setId</span><span class="p">(</span><span class="nv">$id</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">id</span> <span class="o">=</span> <span class="nv">$id</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">getId</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">id</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * @param string $name</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">setName</span><span class="p">(</span><span class="nv">$name</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">name</span> <span class="o">=</span> <span class="nv">$name</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">getName</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">name</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>If the &#64;param annotation is defined the default importer will cast the variable
+to the specific type if it is a scalar type: string, float, integer or boolean.
+In every other case we check whether the given name is a valid class. If the
+class is an RecordInterface we import the data into this record else we pass the
+data as first argument to the constructor.</p>
+<p>Through the method getRecordInfo()-&gt;getFields() we get an array of all available
+key value pairs of the record. By default this includes every defined property
+of the class which doesnt start with &#8220;_&#8221;. You can override this method if the
+field names are not like your property names</p>
+</div>
+<div class="section" id="using-data-factories">
+<h2>Using data factories<a class="headerlink" href="#using-data-factories" title="Permalink to this headline">¶</a></h2>
+<p>If we have a collection of records and you want to create for each item a
+different record class you can use the FactoryInterface. Lets say we have the
+following request body</p>
+<div class="highlight-xml"><div class="highlight"><pre><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="nt">&lt;entry&gt;</span>
+    <span class="nt">&lt;id&gt;</span>1<span class="nt">&lt;/id&gt;</span>
+    <span class="nt">&lt;title&gt;</span>foobar<span class="nt">&lt;/title&gt;</span>
+    <span class="nt">&lt;items&gt;</span>
+        <span class="nt">&lt;item&gt;</span>
+            <span class="nt">&lt;id&gt;</span>1<span class="nt">&lt;/id&gt;</span>
+            <span class="nt">&lt;type&gt;</span>article<span class="nt">&lt;/type&gt;</span>
+            <span class="nt">&lt;content&gt;</span>foo<span class="nt">&lt;/content&gt;</span>
+        <span class="nt">&lt;/item&gt;</span>
+        <span class="nt">&lt;item&gt;</span>
+            <span class="nt">&lt;id&gt;</span>2<span class="nt">&lt;/id&gt;</span>
+            <span class="nt">&lt;type&gt;</span>page<span class="nt">&lt;/type&gt;</span>
+            <span class="nt">&lt;content&gt;</span>bar<span class="nt">&lt;/content&gt;</span>
+        <span class="nt">&lt;/item&gt;</span>
+    <span class="nt">&lt;/items&gt;</span>
+<span class="nt">&lt;/entry&gt;</span>
+</pre></div>
+</div>
+<p>In this case we want create for each item the fitting record class depending on
+the type value. Therefor we have to define as &#64;param annotation an class wich
+implements the PSX\Data\FactoryInterface i.e.</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">Test\News</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">PSX\Data\RecordAbstract</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">Entry</span> <span class="k">extends</span> <span class="nx">RecordAbstract</span>
+<span class="p">{</span>
+    <span class="c1">// ...</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * @param array&lt;Test\ItemFactory&gt; $items</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">setItems</span><span class="p">(</span><span class="k">array</span> <span class="nv">$items</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">items</span> <span class="o">=</span> <span class="nv">$items</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The $data wich is passed to the factory method is the complete item entry. In
+our case we check whether a class exists with the type and then return an
+instance of it else we use a default type</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">Test\News</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">PSX\Data\FactoryInterface</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">ItemFactory</span> <span class="k">implements</span> <span class="nx">FactoryInterface</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">factory</span><span class="p">(</span><span class="nv">$data</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$type</span>  <span class="o">=</span> <span class="nb">isset</span><span class="p">(</span><span class="nv">$data</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">])</span> <span class="o">?</span> <span class="nv">$data</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">:</span> <span class="s1">&#39;article&#39;</span><span class="p">;</span>
+        <span class="nv">$class</span> <span class="o">=</span> <span class="s1">&#39;Test\Item&#39;</span> <span class="o">.</span> <span class="nx">ucrifst</span><span class="p">(</span><span class="nv">$type</span><span class="p">)</span>
+
+        <span class="k">if</span><span class="p">(</span><span class="nb">class_exists</span><span class="p">(</span><span class="nv">$class</span><span class="p">))</span>
+        <span class="p">{</span>
+            <span class="k">return</span> <span class="k">new</span> <span class="nv">$class</span><span class="p">();</span>
+        <span class="p">}</span>
+        <span class="k">else</span>
+        <span class="p">{</span>
+            <span class="k">return</span> <span class="k">new</span> <span class="nx">ItemArticle</span><span class="p">();</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The importer will use the record object wich gets returned by the factory and
+imports the data into the record</p>
+</div>
+<div class="section" id="using-data-builder">
+<h2>Using data builder<a class="headerlink" href="#using-data-builder" title="Permalink to this headline">¶</a></h2>
+<p>If you want completely overwrite the import mechanism for a specific key you can
+use the BuilderInterface. The difference between a factory and the builder is
+that the factory returns only the record without any data (the data gets then
+imported through the standard import mechanism) and the builder returns the
+complete record containing any necessary data. Lets look at this example request
+body</p>
+<div class="highlight-xml"><div class="highlight"><pre><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="nt">&lt;entry&gt;</span>
+    <span class="nt">&lt;id&gt;</span>1<span class="nt">&lt;/id&gt;</span>
+    <span class="nt">&lt;title&gt;</span>foobar<span class="nt">&lt;/title&gt;</span>
+    <span class="nt">&lt;item&gt;</span>
+        <span class="nt">&lt;foo&gt;</span>
+            <span class="nt">&lt;bar&gt;</span>
+                <span class="nt">&lt;title&gt;</span>foo<span class="nt">&lt;/title&gt;</span>
+            <span class="nt">&lt;/bar&gt;</span>
+        <span class="nt">&lt;/foo&gt;</span>
+    <span class="nt">&lt;/item&gt;</span>
+<span class="nt">&lt;/entry&gt;</span>
+</pre></div>
+</div>
+<p>In this example we only want to create one item record containing the title. We
+use the following builder to read the title from the nested xml</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">Test\News</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">PSX\Data\BuilderInterface</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">ItemBuilder</span> <span class="k">implements</span> <span class="nx">BuilderInterface</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">build</span><span class="p">(</span><span class="nv">$data</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$title</span> <span class="o">=</span> <span class="nb">isset</span><span class="p">(</span><span class="nv">$data</span><span class="p">[</span><span class="s1">&#39;item&#39;</span><span class="p">][</span><span class="s1">&#39;foo&#39;</span><span class="p">][</span><span class="s1">&#39;bar&#39;</span><span class="p">][</span><span class="s1">&#39;title&#39;</span><span class="p">])</span> <span class="o">?</span> <span class="nv">$data</span><span class="p">[</span><span class="s1">&#39;item&#39;</span><span class="p">][</span><span class="s1">&#39;foo&#39;</span><span class="p">][</span><span class="s1">&#39;bar&#39;</span><span class="p">][</span><span class="s1">&#39;title&#39;</span><span class="p">]</span> <span class="o">:</span> <span class="k">null</span><span class="p">;</span>
+
+        <span class="k">return</span> <span class="k">new</span> <span class="nx">Record</span><span class="p">(</span><span class="s1">&#39;item&#39;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span>
+            <span class="s1">&#39;title&#39;</span> <span class="o">=&gt;</span> <span class="nv">$title</span><span class="p">,</span>
+        <span class="p">));</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="writing-a-custom-importer">
+<h2>Writing a custom importer<a class="headerlink" href="#writing-a-custom-importer" title="Permalink to this headline">¶</a></h2>
+<p>The meta informations how an record is structured can be obtained from different
+sources. By default we use the annotation importer but you can also write your
+own importer wich gets theses informations from other sources. PSX comes also
+with an entity annotation importer wich reads the annotations from an doctrine
+entity and creates the fitting record from it. The importer interface has only
+a single method</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+<span class="k">interface</span> <span class="nx">ImporterInterface</span>
+<span class="p">{</span>
+	<span class="sd">/**</span>
+<span class="sd">	 * @param mixed $record</span>
+<span class="sd">	 * @param mixed $data</span>
+<span class="sd">	 * @return PSX\Data\RecordInterface</span>
+<span class="sd">	 */</span>
+	<span class="k">public</span> <span class="k">function</span> <span class="nf">import</span><span class="p">(</span><span class="nv">$record</span><span class="p">,</span> <span class="nv">$data</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The first argument $record is not type hinted since this can be an
+RecordInterface or an entity or an path to an xml file containing the meta
+informations from the record. The $data argument is the result from the reader.
+The importer returns then the record containing the data from the reader result.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Import data</a><ul>
+<li><a class="reference internal" href="#general">General</a></li>
+<li><a class="reference internal" href="#using-data-factories">Using data factories</a></li>
+<li><a class="reference internal" href="#using-data-builder">Using data builder</a></li>
+<li><a class="reference internal" href="#writing-a-custom-importer">Writing a custom importer</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="handler_concept.html"
+                        title="previous chapter">Handler concept</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="data_writer.html"
+                        title="next chapter">Data writer</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/import_data.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="data_writer.html" title="Data writer"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="handler_concept.html" title="Handler concept"
+             >previous</a> |</li>
+        <li><a href="index.html">PSX 0.9 documentation</a> &raquo;</li>
+          <li><a href="advanced_topics.html" >Advanced topics</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Christoph Kappestein.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Introduction &mdash; PSX 0.9 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.9',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="PSX 0.9 documentation" href="index.html" />
+    <link rel="up" title="Getting started" href="getting_started.html" />
+    <link rel="next" title="Design" href="design.html" />
+    <link rel="prev" title="Getting started" href="getting_started.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="design.html" title="Design"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="getting_started.html" title="Getting started"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">PSX 0.9 documentation</a> &raquo;</li>
+          <li><a href="getting_started.html" accesskey="U">Getting started</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="introduction">
+<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="about">
+<h2>About<a class="headerlink" href="#about" title="Permalink to this headline">¶</a></h2>
+<p>PSX is a framework written in PHP to create RESTful APIs. It helps you building
+clean URLs serving web standard formats like JSON, XML, Atom and RSS. At the
+core PSX is build of three parts. A handler system (similar to repositories in
+doctrine) wich abstracts away the actual SQL queries from the domain logic. An
+routing system wich executes the fitting controller method. And an flexible data
+system to convert data records from the database into different formats like
+JSON, XML, Atom and RSS. PSX uses a lightweight DI container to handle
+dependencies (but is also compatible with the symfony DI container). The
+controller can return request or response filter wich can react or modify the
+HTTP request or response. PSX offers some basic request filter to handle i.e.
+Basic or Oauth authentication. In addition PSX offers some cool components to
+use and implement OAuth, OpenID, Opengraph, Opensocial, Opensearch,
+PubSubHubbub, WebFinger, Atom, and RSS.</p>
+</div>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>If you want use PSX fully you can either download a current release at
+<a class="reference external" href="https://github.com/k42b3/psx/releases">https://github.com/k42b3/psx/releases</a> or you can install the sample project
+through composer:</p>
+<div class="highlight-python"><pre>php composer.phar create-project psx/sample .</pre>
+</div>
+<p>In case you only want to use specific components you can easily require the
+PSX framework to your composer.json:</p>
+<div class="highlight-python"><pre>&quot;psx/psx&quot;: &quot;0.9.*@dev&quot;</pre>
+</div>
+</div>
+<div class="section" id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h2>
+<p>The configuration file is an simple php array with key value pairs. You must
+change the key &#8220;psx_url&#8221; so that it points to the psx public root. All other
+entries are optional. The following code describes each entry</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+
+<span class="k">return</span> <span class="k">array</span><span class="p">(</span>
+
+    <span class="c1">// The url to the psx public folder (i.e. http://127.0.0.1/psx/public)</span>
+    <span class="s1">&#39;psx_url&#39;</span>                 <span class="o">=&gt;</span> <span class="s1">&#39;http://127.0.0.1/projects/psx/public&#39;</span><span class="p">,</span>
+
+    <span class="c1">// The input path &#39;index.php/&#39; or &#39;&#39; if you use mod_rewrite</span>
+    <span class="s1">&#39;psx_dispatch&#39;</span>            <span class="o">=&gt;</span> <span class="s1">&#39;index.php/&#39;</span><span class="p">,</span>
+
+    <span class="c1">// The default timezone</span>
+    <span class="s1">&#39;psx_timezone&#39;</span>            <span class="o">=&gt;</span> <span class="s1">&#39;UTC&#39;</span><span class="p">,</span>
+
+    <span class="c1">// Whether PSX runs in debug mode or not. If not the error reporting is</span>
+    <span class="c1">// set to 0</span>
+    <span class="s1">&#39;psx_debug&#39;</span>               <span class="o">=&gt;</span> <span class="k">true</span><span class="p">,</span>
+
+    <span class="c1">// Your SQL connections</span>
+    <span class="s1">&#39;psx_sql_host&#39;</span>            <span class="o">=&gt;</span> <span class="s1">&#39;localhost&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;psx_sql_user&#39;</span>            <span class="o">=&gt;</span> <span class="s1">&#39;root&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;psx_sql_pw&#39;</span>              <span class="o">=&gt;</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;psx_sql_db&#39;</span>              <span class="o">=&gt;</span> <span class="s1">&#39;psx&#39;</span><span class="p">,</span>
+
+    <span class="c1">// Path to the routing file</span>
+    <span class="s1">&#39;psx_routing&#39;</span>             <span class="o">=&gt;</span> <span class="s1">&#39;../routes&#39;</span><span class="p">,</span>
+
+    <span class="c1">// Class name of the error controller</span>
+    <span class="s1">&#39;psx_error_controller&#39;</span>    <span class="o">=&gt;</span> <span class="k">null</span><span class="p">,</span>
+
+    <span class="c1">// If you only want to change the appearance of the error page you can</span>
+    <span class="c1">// specify a custom template</span>
+    <span class="s1">&#39;psx_error_template&#39;</span>      <span class="o">=&gt;</span> <span class="k">null</span><span class="p">,</span>
+
+    <span class="c1">// Path to the cache folder</span>
+    <span class="s1">&#39;psx_path_cache&#39;</span>          <span class="o">=&gt;</span> <span class="s1">&#39;../cache&#39;</span><span class="p">,</span>
+
+    <span class="c1">// Path to the library folder</span>
+    <span class="s1">&#39;psx_path_library&#39;</span>        <span class="o">=&gt;</span> <span class="s1">&#39;../library&#39;</span><span class="p">,</span>
+
+<span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="help">
+<h2>Help<a class="headerlink" href="#help" title="Permalink to this headline">¶</a></h2>
+<p>Because PSX is in an early stage the manual is not complete. I appreciate every
+help in making this documentation better. The documentation is written in
+reStructuredText and uses the sphinx documentation generator. If you have made
+changes that you want commit please contact me.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Introduction</a><ul>
+<li><a class="reference internal" href="#about">About</a></li>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#configuration">Configuration</a></li>
+<li><a class="reference internal" href="#help">Help</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="getting_started.html"
+                        title="previous chapter">Getting started</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="design.html"
+                        title="next chapter">Design</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/introduction.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="design.html" title="Design"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="getting_started.html" title="Getting started"
+             >previous</a> |</li>
+        <li><a href="index.html">PSX 0.9 documentation</a> &raquo;</li>
+          <li><a href="getting_started.html" >Getting started</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Christoph Kappestein.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>

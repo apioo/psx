@@ -1,0 +1,291 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Building an REST API &mdash; PSX 0.9 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.9',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="PSX 0.9 documentation" href="index.html" />
+    <link rel="up" title="Tutorials" href="tutorials.html" />
+    <link rel="next" title="Authentication" href="authentication.html" />
+    <link rel="prev" title="Tutorials" href="tutorials.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="authentication.html" title="Authentication"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="tutorials.html" title="Tutorials"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">PSX 0.9 documentation</a> &raquo;</li>
+          <li><a href="tutorials.html" accesskey="U">Tutorials</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="building-an-rest-api">
+<h1>Building an REST API<a class="headerlink" href="#building-an-rest-api" title="Permalink to this headline">¶</a></h1>
+<p>In this chapter we develop step by step a simple RESTful API with PSX. This
+should give you a basic overview how PSX works</p>
+<div class="section" id="prolog">
+<h2>Prolog<a class="headerlink" href="#prolog" title="Permalink to this headline">¶</a></h2>
+<p>The core of every API in PSX is an handler system which knows howto CRUD data
+from an specific data source. In our example we want create an API from an mysql
+database therefore we use the database handler. PSX offers many handler to read
+from different datasources like Mongodb, Doctrine, DOM, etc. more informations
+at <a class="reference internal" href="handler_concept.html"><em>Handler concept</em></a>.</p>
+</div>
+<div class="section" id="creating-the-table">
+<h2>Creating the table<a class="headerlink" href="#creating-the-table" title="Permalink to this headline">¶</a></h2>
+<p>Because we want create an API from an database we need to create the fitting
+table</p>
+<div class="highlight-sql"><div class="highlight"><pre><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">IF</span> <span class="k">NOT</span> <span class="k">EXISTS</span> <span class="o">`</span><span class="n">news</span><span class="o">`</span> <span class="p">(</span>
+  <span class="o">`</span><span class="n">id</span><span class="o">`</span> <span class="nb">int</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span> <span class="n">AUTO_INCREMENT</span><span class="p">,</span>
+  <span class="o">`</span><span class="n">userId</span><span class="o">`</span> <span class="nb">int</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="o">`</span><span class="n">title</span><span class="o">`</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">128</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="o">`</span><span class="nb">text</span><span class="o">`</span> <span class="nb">text</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="o">`</span><span class="nb">date</span><span class="o">`</span> <span class="n">datetime</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="o">`</span><span class="n">id</span><span class="o">`</span><span class="p">)</span>
+<span class="p">)</span> <span class="n">ENGINE</span><span class="o">=</span><span class="n">InnoDB</span>  <span class="k">DEFAULT</span> <span class="n">CHARSET</span><span class="o">=</span><span class="n">utf8</span> <span class="p">;</span>
+</pre></div>
+</div>
+<p>The database handler needs some meta informations about the table like the
+table name and what columns are available. We can write these meta informations
+in a Table class which can be used by the handler. PSX can obtains these meta
+informations also from other sources like an doctrine entity or an mysql
+describe command or you can write your own reader which could get the
+informations from an XML file or something else</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">Test\News</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">PSX\Sql\TableAbstract</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">Table</span> <span class="k">extends</span> <span class="nx">TableAbstract</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">getName</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="s1">&#39;news&#39;</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">getColumns</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="k">array</span><span class="p">(</span>
+            <span class="s1">&#39;id&#39;</span> <span class="o">=&gt;</span> <span class="nx">self</span><span class="o">::</span><span class="na">TYPE_INT</span> <span class="o">|</span> <span class="mi">10</span> <span class="o">|</span> <span class="nx">self</span><span class="o">::</span><span class="na">PRIMARY_KEY</span> <span class="o">|</span> <span class="nx">self</span><span class="o">::</span><span class="na">AUTO_INCREMENT</span><span class="p">,</span>
+            <span class="s1">&#39;userId&#39;</span> <span class="o">=&gt;</span> <span class="nx">self</span><span class="o">::</span><span class="na">TYPE_INT</span> <span class="o">|</span> <span class="mi">10</span><span class="p">,</span>
+            <span class="s1">&#39;title&#39;</span> <span class="o">=&gt;</span> <span class="nx">self</span><span class="o">::</span><span class="na">TYPE_VARCHAR</span> <span class="o">|</span> <span class="mi">64</span><span class="p">,</span>
+            <span class="s1">&#39;text&#39;</span> <span class="o">=&gt;</span> <span class="nx">self</span><span class="o">::</span><span class="na">TYPE_TEXT</span><span class="p">,</span>
+            <span class="s1">&#39;date&#39;</span> <span class="o">=&gt;</span> <span class="nx">self</span><span class="o">::</span><span class="na">TYPE_DATETIME</span><span class="p">,</span>
+        <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="cm">/*</span>
+<span class="cm">    public function getConnection()</span>
+<span class="cm">    {</span>
+<span class="cm">        return array(</span>
+<span class="cm">            &#39;userId&#39; =&gt; &#39;users&#39;</span>
+<span class="cm">        );</span>
+<span class="cm">    }</span>
+<span class="cm">    */</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="creating-the-handler">
+<h2>Creating the handler<a class="headerlink" href="#creating-the-handler" title="Permalink to this headline">¶</a></h2>
+<p>The handler is a concept similar to a repository in doctrine which offers an
+interface to CRUD records on an given datasource. If a handler implements the
+PSX\Handler\HandlerQueryInterface you can query records from the datasource
+and if the handler also implements the PSX\Handler\HandlerManipulationInterface
+you can create, update and delete records. In our case we use the database
+handler. We only have to define wich table we want to use for our API and wich
+fields should be selected by default. It is also possible to join on multiple
+tables</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">Test\News</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">PSX\Data\HandlerAbstract</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">Handler</span> <span class="k">extends</span> <span class="nx">DatabaseHandlerAbstract</span>
+<span class="p">{</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="nf">getDefaultSelect</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">manager</span><span class="o">-&gt;</span><span class="na">getTable</span><span class="p">(</span><span class="s1">&#39;Sample\News\Table&#39;</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="na">select</span><span class="p">(</span><span class="k">array</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;userId&#39;</span><span class="p">,</span> <span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">));</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="the-api-endpoint">
+<h2>The API endpoint<a class="headerlink" href="#the-api-endpoint" title="Permalink to this headline">¶</a></h2>
+<p>Now we have to create the controller wich routes the request to the handler. We
+have to add a route to the route file i.e.:</p>
+<div class="highlight-python"><pre>GET /api Test\News\Application\Api</pre>
+</div>
+<p>We extend the HandlerApiAbstract controller where we only have to return our
+handler. In order to create an ATOM feed we have to overwrite the method
+getAtomRecord to convert out collection into an atom record</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">Test\News\Application</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">DateTime</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">PSX\Atom</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">PSX\Atom\Entry</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">PSX\Atom\Text</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">PSX\Data\Record\Mapper</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">PSX\Data\Record\Mapper\Rule</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">PSX\Data\RecordInterface</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">PSX\Module\HandlerApiAbstract</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">PSX\Util\Uuid</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">Api</span> <span class="k">extends</span> <span class="nx">HandlerApiAbstract</span>
+<span class="p">{</span>
+    <span class="sd">/**</span>
+<span class="sd">     * Returns the handler on wich the API should operate</span>
+<span class="sd">     *</span>
+<span class="sd">     * @return PSX\Handler\HandlerInterface</span>
+<span class="sd">     */</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="nf">getDefaultHandler</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getDatabaseManager</span><span class="p">()</span>
+                    <span class="o">-&gt;</span><span class="na">getHandler</span><span class="p">(</span><span class="s1">&#39;Test\News\Handler&#39;</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * If we want display an atom feed we need to convert our record to an</span>
+<span class="sd">     * Atom\Record</span>
+<span class="sd">     *</span>
+<span class="sd">     * @param PSX\Data\RecordInterface $result</span>
+<span class="sd">     * @return PSX\Atom</span>
+<span class="sd">     */</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="nf">getAtomRecord</span><span class="p">(</span><span class="nx">RecordInterface</span> <span class="nv">$result</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$atom</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Atom</span><span class="p">();</span>
+        <span class="nv">$atom</span><span class="o">-&gt;</span><span class="na">setTitle</span><span class="p">(</span><span class="s1">&#39;Test news&#39;</span><span class="p">);</span>
+        <span class="nv">$atom</span><span class="o">-&gt;</span><span class="na">setId</span><span class="p">(</span><span class="nx">Uuid</span><span class="o">::</span><span class="na">nameBased</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">config</span><span class="p">[</span><span class="s1">&#39;psx_url&#39;</span><span class="p">]));</span>
+        <span class="nv">$atom</span><span class="o">-&gt;</span><span class="na">setUpdated</span><span class="p">(</span><span class="nv">$result</span><span class="o">-&gt;</span><span class="na">current</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getDate</span><span class="p">());</span>
+
+        <span class="nv">$mapper</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Mapper</span><span class="p">();</span>
+        <span class="nv">$mapper</span><span class="o">-&gt;</span><span class="na">setRule</span><span class="p">(</span><span class="k">array</span><span class="p">(</span>
+            <span class="s1">&#39;id&#39;</span>       <span class="o">=&gt;</span> <span class="s1">&#39;id&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;title&#39;</span>    <span class="o">=&gt;</span> <span class="s1">&#39;title&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;text&#39;</span>     <span class="o">=&gt;</span> <span class="k">new</span> <span class="nx">Rule</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">,</span> <span class="k">function</span><span class="p">(</span><span class="nv">$text</span><span class="p">){</span>
+                <span class="k">return</span> <span class="k">new</span> <span class="nx">Text</span><span class="p">(</span><span class="nv">$text</span><span class="p">,</span> <span class="s1">&#39;text&#39;</span><span class="p">);</span>
+            <span class="p">}),</span>
+            <span class="s1">&#39;date&#39;</span>     <span class="o">=&gt;</span> <span class="s1">&#39;updated&#39;</span><span class="p">,</span>
+        <span class="p">));</span>
+
+        <span class="k">foreach</span><span class="p">(</span><span class="nv">$result</span> <span class="k">as</span> <span class="nv">$row</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="nv">$entry</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Atom\Entry</span><span class="p">();</span>
+            <span class="nv">$mapper</span><span class="o">-&gt;</span><span class="na">map</span><span class="p">(</span><span class="nv">$row</span><span class="p">,</span> <span class="nv">$entry</span><span class="p">);</span>
+
+            <span class="nv">$atom</span><span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="nv">$entry</span><span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="nv">$atom</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Building an REST API</a><ul>
+<li><a class="reference internal" href="#prolog">Prolog</a></li>
+<li><a class="reference internal" href="#creating-the-table">Creating the table</a></li>
+<li><a class="reference internal" href="#creating-the-handler">Creating the handler</a></li>
+<li><a class="reference internal" href="#the-api-endpoint">The API endpoint</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="tutorials.html"
+                        title="previous chapter">Tutorials</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="authentication.html"
+                        title="next chapter">Authentication</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/build_api.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="authentication.html" title="Authentication"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="tutorials.html" title="Tutorials"
+             >previous</a> |</li>
+        <li><a href="index.html">PSX 0.9 documentation</a> &raquo;</li>
+          <li><a href="tutorials.html" >Tutorials</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Christoph Kappestein.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>

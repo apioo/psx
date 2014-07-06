@@ -1,0 +1,193 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Command &mdash; PSX 0.9 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.9',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="PSX 0.9 documentation" href="index.html" />
+    <link rel="up" title="Getting started" href="getting_started.html" />
+    <link rel="next" title="Advanced topics" href="advanced_topics.html" />
+    <link rel="prev" title="Controller" href="controller.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="advanced_topics.html" title="Advanced topics"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="controller.html" title="Controller"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">PSX 0.9 documentation</a> &raquo;</li>
+          <li><a href="getting_started.html" accesskey="U">Getting started</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="command">
+<h1>Command<a class="headerlink" href="#command" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="abstract">
+<h2>Abstract<a class="headerlink" href="#abstract" title="Permalink to this headline">¶</a></h2>
+<p>A command is a piece of code which takes some arguments and executes a specific
+task. By slitting up your code in commands you can execute specific tasks of
+your application later. A command can be executed from the command line or from
+an controller/command. I.e. if you have a command which sends an email if an
+payment process was successful you could execute this command directly from the
+controller and also from an cron in order to complete missing payments.</p>
+</div>
+<div class="section" id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p>This chapter gives a short overview of the most important methods which you need
+inside an command. To simplify things take a look at the following source code</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+
+<span class="k">use</span> <span class="nx">PSX\CommandAbstract</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">PSX\Command\OutputInterface</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">PSX\Command\Parameter</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">PSX\Command\Parameters</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">Command</span> <span class="k">extends</span> <span class="nx">CommandAbstract</span>
+<span class="p">{</span>
+    <span class="sd">/**</span>
+<span class="sd">     * @Inject</span>
+<span class="sd">     * @var PSX\Http</span>
+<span class="sd">     */</span>
+    <span class="k">protected</span> <span class="nv">$http</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">onExecute</span><span class="p">(</span><span class="nx">Parameters</span> <span class="nv">$parameters</span><span class="p">,</span> <span class="nx">OutputInterface</span> <span class="nv">$output</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="c1">// returns whether an parameter is available</span>
+        <span class="nv">$parameters</span><span class="o">-&gt;</span><span class="na">has</span><span class="p">(</span><span class="s1">&#39;bar&#39;</span><span class="p">)</span>
+
+        <span class="c1">// returns the value of an parameter or null</span>
+        <span class="nv">$bar</span> <span class="o">=</span> <span class="nv">$parameters</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;bar&#39;</span><span class="p">)</span>
+
+        <span class="c1">// inside the command you can use every injected service</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">http</span><span class="o">-&gt;</span><span class="na">request</span><span class="p">(</span><span class="o">...</span><span class="p">);</span>
+
+        <span class="c1">// the command can write informations about the process. By default</span>
+        <span class="c1">// this output gets written to stdout if we are in CLI mode else to</span>
+        <span class="c1">// the logger</span>
+        <span class="nv">$output</span><span class="o">-&gt;</span><span class="na">writeln</span><span class="p">(</span><span class="s1">&#39;Some processing informations&#39;</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * Returns all parameters which are required for this command</span>
+<span class="sd">     *</span>
+<span class="sd">     * @return PSX\Command\Parameters</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">getParameters</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getParameterBuilder</span><span class="p">()</span>
+            <span class="o">-&gt;</span><span class="na">addOption</span><span class="p">(</span><span class="s1">&#39;bar&#39;</span><span class="p">,</span> <span class="nx">Parameter</span><span class="o">::</span><span class="na">TYPE_REQUIRED</span><span class="p">,</span> <span class="s1">&#39;The magic foo parameter&#39;</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="na">getParameters</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The command can be executed from an controller or another command. If an
+required parameter is missing an exception gets thrown.</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getExecutor</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">run</span><span class="p">(</span><span class="k">new</span> <span class="nx">Map</span><span class="p">(</span><span class="s1">&#39;Foo\Bar\Command&#39;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;bar&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;foo&#39;</span><span class="p">)));</span>
+</pre></div>
+</div>
+<p>It is also possible to invoke the command through the console</p>
+<div class="highlight-none"><div class="highlight"><pre>vendor\bin\psx Foo\Bar\Command -bar foo
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Command</a><ul>
+<li><a class="reference internal" href="#abstract">Abstract</a></li>
+<li><a class="reference internal" href="#usage">Usage</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="controller.html"
+                        title="previous chapter">Controller</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="advanced_topics.html"
+                        title="next chapter">Advanced topics</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/command.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="advanced_topics.html" title="Advanced topics"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="controller.html" title="Controller"
+             >previous</a> |</li>
+        <li><a href="index.html">PSX 0.9 documentation</a> &raquo;</li>
+          <li><a href="getting_started.html" >Getting started</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Christoph Kappestein.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>

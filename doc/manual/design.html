@@ -1,0 +1,298 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Design &mdash; PSX 0.9 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.9',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="PSX 0.9 documentation" href="index.html" />
+    <link rel="up" title="Getting started" href="getting_started.html" />
+    <link rel="next" title="Routing" href="routing.html" />
+    <link rel="prev" title="Introduction" href="introduction.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="routing.html" title="Routing"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="introduction.html" title="Introduction"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">PSX 0.9 documentation</a> &raquo;</li>
+          <li><a href="getting_started.html" accesskey="U">Getting started</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="design">
+<h1>Design<a class="headerlink" href="#design" title="Permalink to this headline">¶</a></h1>
+<p>This chapter explains some important design concepts of PSX. If you develop a
+new application you should try to not bind any business logic to the framework
+which you are using. Instead you should create services which get their
+dependencies via constructor or setter injection. So you can use your code also
+in other environments. PSX helps you in building applications which are not tied
+to the framework.</p>
+<div class="section" id="dependency-injection">
+<h2>Dependency injection<a class="headerlink" href="#dependency-injection" title="Permalink to this headline">¶</a></h2>
+<p>The DI container of PSX is a simple class where each method represents an
+service definition. Because of that you have to specifiy in the index.php which
+container you are using.</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+
+<span class="k">require_once</span><span class="p">(</span><span class="s1">&#39;../vendor/autoload.php&#39;</span><span class="p">);</span>
+
+<span class="nv">$container</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">PSX\Dependency\DefaultContainer</span><span class="p">();</span>
+<span class="nv">$container</span><span class="o">-&gt;</span><span class="na">setParameter</span><span class="p">(</span><span class="s1">&#39;config.file&#39;</span><span class="p">,</span> <span class="s1">&#39;../configuration.php&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Normally you would create your own container which extends the PSX default
+container. To add a service to the container you have to simply specifiy a
+method in the container which returns an object instance.</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+
+<span class="k">class</span> <span class="nc">CustomContainer</span> <span class="k">extends</span> <span class="nx">DefaultContainer</span>
+<span class="p">{</span>
+    <span class="sd">/**</span>
+<span class="sd">     * @return Foo\Bar</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">getSomeBar</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nx">Bar</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;entity_manager&#39;</span><span class="p">));</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * @return Foo\EntityManager</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">getEntityManager</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nx">EntityManager</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The id of the service is &#8220;some_bar&#8221; which can be used in an inject annotation.
+Note when your object has an dependency to another service use the
+$this-&gt;get(&#8216;[service_id]&#8217;) method to get only one instance of the service. In
+PSX it is best practice to group services into traits. I.e. the default
+container uses several traits which contains service methods</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+<span class="k">class</span> <span class="nc">DefaultContainer</span> <span class="k">extends</span> <span class="nx">Container</span>
+<span class="p">{</span>
+	<span class="k">use</span> <span class="nx">Command</span><span class="p">;</span>
+	<span class="k">use</span> <span class="nx">Controller</span><span class="p">;</span>
+	<span class="k">use</span> <span class="nx">Data</span><span class="p">;</span>
+	<span class="k">use</span> <span class="nx">Handler</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>The container is also compatible with the symfony DI container in case you want
+use a service definition file you could also use the following code in your
+index.php</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+
+<span class="k">require_once</span><span class="p">(</span><span class="s1">&#39;../vendor/autoload.php&#39;</span><span class="p">);</span>
+
+<span class="nv">$container</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Symfony\Component\DependencyInjection\ContainerBuilder</span><span class="p">();</span>
+<span class="nv">$loader</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Symfony\Component\DependencyInjection\Loader\XmlFileLoader</span><span class="p">(</span><span class="nv">$container</span><span class="p">,</span> <span class="k">new</span> <span class="nx">Symfony\Component\Config\FileLocator</span><span class="p">(</span><span class="nx">__DIR__</span><span class="p">));</span>
+<span class="nv">$loader</span><span class="o">-&gt;</span><span class="na">load</span><span class="p">(</span><span class="s1">&#39;services.xml&#39;</span><span class="p">);</span>
+
+<span class="nx">PSX\Bootstrap</span><span class="o">::</span><span class="na">setupEnvironment</span><span class="p">(</span><span class="nv">$container</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;config&#39;</span><span class="p">));</span>
+
+<span class="nv">$request</span>  <span class="o">=</span> <span class="nv">$container</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;request_factory&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">createRequest</span><span class="p">();</span>
+<span class="nv">$response</span> <span class="o">=</span> <span class="nv">$container</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;response_factory&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">createResponse</span><span class="p">();</span>
+
+<span class="nv">$container</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;dispatch&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">route</span><span class="p">(</span><span class="nv">$request</span><span class="p">,</span> <span class="nv">$response</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="command-and-controller">
+<h2>Command and Controller<a class="headerlink" href="#command-and-controller" title="Permalink to this headline">¶</a></h2>
+<p>The command and controller are the points which connect the framework to your
+application. The DI container is not directly accessible instead you have to
+specify properties in your command and controller with an specific inject
+annotation to use a service.</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+
+<span class="k">class</span> <span class="nc">FooController</span> <span class="k">extends</span> <span class="nx">ViewAbstract</span>
+<span class="p">{</span>
+    <span class="sd">/**</span>
+<span class="sd">     * @Inject</span>
+<span class="sd">     * @var PSX\Http</span>
+<span class="sd">     */</span>
+    <span class="k">protected</span> <span class="nv">$http</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>When the controller or command gets created PSX searches for properties with
+the &#8220;&#64;Inject&#8221; annotation. If the inject annotation is available it takes the
+name from the property and searches in the DI container for a fitting service.
+You can also specify the id of the service which should be used i.e.
+&#8220;&#64;Inject entity_manager&#8221;. We need to have the following method in our DI
+container in order to access the &#8220;http&#8221; service from the code above.</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+
+<span class="k">class</span> <span class="nc">DefaultContainer</span> <span class="k">extends</span> <span class="nx">Container</span>
+<span class="p">{</span>
+    <span class="sd">/**</span>
+<span class="sd">     * @return PSX\Http</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">getHttp</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nx">Http</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>This has the advantage that the DI container is completely invisible for our
+application. We only need to explicit specify the services which we need in our
+controller or command. So it is by design not possible to pass the DI container
+to any service in our application which decouples the code from the framework.
+Also it has the nice advantage that you can use code completion in your IDE.</p>
+</div>
+<div class="section" id="http-stream">
+<h2>Http stream<a class="headerlink" href="#http-stream" title="Permalink to this headline">¶</a></h2>
+<p>PSX uses the proposed HTTP PSR standard through the application. More
+informations about the PSR at
+<a class="reference external" href="https://github.com/php-fig/fig-standards/blob/master/proposed/http-message.md">https://github.com/php-fig/fig-standards/blob/master/proposed/http-message.md</a>
+At the start of the PSX lifecycle an http request and response object gets
+created. Each object gets created in its own factory so you can change the
+behavior. This can be useful if you want i.e. use another body stream or get
+values from different environment sources.</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+<span class="k">interface</span> <span class="nx">RequestFactoryInterface</span>
+<span class="p">{</span>
+	<span class="sd">/**</span>
+<span class="sd">	 * Returns the http request containing all values from the environment</span>
+<span class="sd">	 *</span>
+<span class="sd">	 * @return Psr\HttpMessage\RequestInterface</span>
+<span class="sd">	 */</span>
+	<span class="k">public</span> <span class="k">function</span> <span class="nf">createRequest</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+<span class="k">interface</span> <span class="nx">ResponseFactoryInterface</span>
+<span class="p">{</span>
+	<span class="sd">/**</span>
+<span class="sd">	 * Returns the http response containing default values and the body stream</span>
+<span class="sd">	 *</span>
+<span class="sd">	 * @return Psr\HttpMessage\ResponseInterface</span>
+<span class="sd">	 */</span>
+	<span class="k">public</span> <span class="k">function</span> <span class="nf">createResponse</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>After the request and response objects are created the loader searches the
+fitting controller based on the routing file. Then the controller can read from
+the request object and add data to the response object. Finally the response
+must be send to the client. This is done through an sender class which sends the
+header through the &#8220;header&#8221; function and outputs the response body.</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+<span class="k">interface</span> <span class="nx">SenderInterface</span>
+<span class="p">{</span>
+	<span class="sd">/**</span>
+<span class="sd">	 * Method to send the response which was created to the browser</span>
+<span class="sd">	 *</span>
+<span class="sd">	 * @param PSX\Http\Response $response</span>
+<span class="sd">	 */</span>
+	<span class="k">public</span> <span class="k">function</span> <span class="nf">send</span><span class="p">(</span><span class="nx">ResponseInterface</span> <span class="nv">$response</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>If you want change this behavior i.e. you want to cache the response or make
+aditional security checks your class must only implement the SenderInterface.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Design</a><ul>
+<li><a class="reference internal" href="#dependency-injection">Dependency injection</a></li>
+<li><a class="reference internal" href="#command-and-controller">Command and Controller</a></li>
+<li><a class="reference internal" href="#http-stream">Http stream</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="introduction.html"
+                        title="previous chapter">Introduction</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="routing.html"
+                        title="next chapter">Routing</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/design.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="routing.html" title="Routing"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="introduction.html" title="Introduction"
+             >previous</a> |</li>
+        <li><a href="index.html">PSX 0.9 documentation</a> &raquo;</li>
+          <li><a href="getting_started.html" >Getting started</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Christoph Kappestein.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>

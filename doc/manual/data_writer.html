@@ -1,0 +1,212 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Data writer &mdash; PSX 0.9 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.9',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="PSX 0.9 documentation" href="index.html" />
+    <link rel="up" title="Advanced topics" href="advanced_topics.html" />
+    <link rel="next" title="Tutorials" href="tutorials.html" />
+    <link rel="prev" title="Import data" href="import_data.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="tutorials.html" title="Tutorials"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="import_data.html" title="Import data"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">PSX 0.9 documentation</a> &raquo;</li>
+          <li><a href="advanced_topics.html" accesskey="U">Advanced topics</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="data-writer">
+<h1>Data writer<a class="headerlink" href="#data-writer" title="Permalink to this headline">¶</a></h1>
+<p>PSX uses a datawriter conecpt to transform the data which was produced by the
+controller into an fitting format for the client. What content is served depends
+on the Accept header and the GET parameter format. This chapter should give you
+on overview which data writer exist and how they work.</p>
+<div class="section" id="available-data-writer">
+<h2>Available data writer<a class="headerlink" href="#available-data-writer" title="Permalink to this headline">¶</a></h2>
+<p>In PSX we distinct between two types of data writer. First an writer which
+produces an data form or an writer which produces an specification of an data
+format. An &#8220;data format&#8221; writer can produce content from arbitrary content where
+an &#8220;specification&#8221; data writer needs an specific model to produce the content.
+In the following an overview of available writer in PSX:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="27%" />
+<col width="24%" />
+<col width="18%" />
+<col width="15%" />
+<col width="15%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Class</th>
+<th class="head">Content-Type</th>
+<th class="head">Format-Parameter</th>
+<th class="head">Data-Format</th>
+<th class="head">Specification</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>PSX\Data\Writer\Html</td>
+<td>text/html</td>
+<td>html</td>
+<td>X</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>PSX\Data\Writer\Json</td>
+<td>application/json</td>
+<td>json</td>
+<td>X</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>PSX\Data\Writer\Jsonp</td>
+<td>application/javascript</td>
+<td>jsonp</td>
+<td>X</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>PSX\Data\Writer\Xml</td>
+<td>application/xml</td>
+<td>xml</td>
+<td>X</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>PSX\Data\Writer\Atom</td>
+<td>application/atom+xml</td>
+<td>atom</td>
+<td>&nbsp;</td>
+<td>X</td>
+</tr>
+<tr class="row-odd"><td>PSX\Data\Writer\Rss</td>
+<td>application/rss+xml</td>
+<td>rss</td>
+<td>&nbsp;</td>
+<td>X</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="use-case">
+<h2>Use case<a class="headerlink" href="#use-case" title="Permalink to this headline">¶</a></h2>
+<p>Lets take a look at the following controller.</p>
+<div class="highlight-php"><div class="highlight"><pre><span class="cp">&lt;?php</span>
+
+<span class="k">class</span> <span class="nc">FooController</span> <span class="k">extends</span> <span class="nx">ControllerAbstract</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">doIndex</span><span class="p">()</span>
+    <span class="p">{</span>
+            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">setBody</span><span class="p">(</span><span class="k">array</span><span class="p">(</span>
+                    <span class="s1">&#39;news&#39;</span> <span class="o">=&gt;</span> <span class="k">array</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+            <span class="p">));</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>If you would request this method with an normal browser PSX would try to display
+the data as HTML. Therefor it would use the html writer which assigns the data
+to the template. In your template you can then build the html representation of
+the news. If we would make the request containing an Accept header
+application/json or GET parameter &#8220;format&#8221; containing &#8220;json&#8221; the data would be
+returned in an json format.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Data writer</a><ul>
+<li><a class="reference internal" href="#available-data-writer">Available data writer</a></li>
+<li><a class="reference internal" href="#use-case">Use case</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="import_data.html"
+                        title="previous chapter">Import data</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="tutorials.html"
+                        title="next chapter">Tutorials</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/data_writer.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="tutorials.html" title="Tutorials"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="import_data.html" title="Import data"
+             >previous</a> |</li>
+        <li><a href="index.html">PSX 0.9 documentation</a> &raquo;</li>
+          <li><a href="advanced_topics.html" >Advanced topics</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Christoph Kappestein.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>

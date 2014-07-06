@@ -72,7 +72,7 @@ required parameter is missing an exception gets thrown.
 
     <?php
     
-    $this->executor->run(new Map('Foo\Bar\Command', array('bar' => 'foo')));
+    $this->getExecutor()->run(new Map('Foo\Bar\Command', array('bar' => 'foo')));
 
 It is also possible to invoke the command through the console
 
