@@ -21,26 +21,36 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Command\Output;
+namespace PSX\Command;
+
+use PSX\Command\Executor;
+use PSX\Command\ParameterParser\Map;
+use PSX\Command\Output\Memory;
 
 /**
- * VoidTest
+ * ListCommandTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class VoidTest extends \PHPUnit_Framework_TestCase
+class ListCommandTest extends CommandTestCase
 {
-	public function testWrite()
+	public function testExecute()
 	{
-		$output = new Void();
-		$output->write('foobar');
-	}
+		$output   = new Memory();
+		$executor = new Executor(getContainer()->get('command_factory'), $output);
+		$executor->run(new Map('PSX\Command\ListCommand', array()));
 
-	public function testWriteln()
-	{
-		$output = new Void();
-		$output->writeln('foobar');
+		$this->assertEquals(array(
+			"Usage:" . PHP_EOL,
+			"  psx <command> [<options>]" . PHP_EOL,
+			PHP_EOL,
+			"Commands:" . PHP_EOL,
+			"  No commands available" . PHP_EOL,
+			PHP_EOL,
+			"See 'psx help -c <command>' for more information on a specific command." . PHP_EOL,
+			PHP_EOL,
+		), $output->getMessages());
 	}
 }

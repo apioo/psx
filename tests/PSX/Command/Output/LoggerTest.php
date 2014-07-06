@@ -34,29 +34,29 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
 {
 	public function testWrite()
 	{
-		$logHandler = $this->getMockBuilder('Psr\Log\LoggerInterface')
+		$logger = $this->getMockBuilder('Psr\Log\LoggerInterface')
 			->setMethods(array('emergency', 'alert', 'critical', 'error', 'warning', 'notice', 'info', 'debug', 'log'))
 			->getMock();
 
-		$logHandler->expects($this->once())
+		$logger->expects($this->once())
 			->method('info')
 			->with($this->identicalTo('foobar'));
 
-		$logger = new Logger($logHandler);
-		$logger->write('foobar');
+		$output = new Logger($logger);
+		$output->write('foobar');
 	}
 
 	public function testWriteln()
 	{
-		$logHandler = $this->getMockBuilder('Psr\Log\LoggerInterface')
+		$logger = $this->getMockBuilder('Psr\Log\LoggerInterface')
 			->setMethods(array('emergency', 'alert', 'critical', 'error', 'warning', 'notice', 'info', 'debug', 'log'))
 			->getMock();
 
-		$logHandler->expects($this->once())
+		$logger->expects($this->once())
 			->method('info')
 			->with($this->identicalTo('foobar' . PHP_EOL));
 
-		$logger = new Logger($logHandler);
-		$logger->writeln('foobar');
+		$output = new Logger($logger);
+		$output->writeln('foobar');
 	}
 }

@@ -24,23 +24,27 @@
 namespace PSX\Command\Output;
 
 /**
- * VoidTest
+ * MemoryTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class VoidTest extends \PHPUnit_Framework_TestCase
+class MemoryTest extends \PHPUnit_Framework_TestCase
 {
 	public function testWrite()
 	{
-		$output = new Void();
+		$output = new Memory();
 		$output->write('foobar');
+
+		$this->assertEquals(array('foobar'), $output->getMessages());
 	}
 
 	public function testWriteln()
 	{
-		$output = new Void();
+		$output = new Memory();
 		$output->writeln('foobar');
+
+		$this->assertEquals(array('foobar' . PHP_EOL), $output->getMessages());
 	}
 }

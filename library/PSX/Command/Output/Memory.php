@@ -23,24 +23,31 @@
 
 namespace PSX\Command\Output;
 
+use PSX\Command\OutputAbstract;
+
 /**
- * VoidTest
+ * Memory
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class VoidTest extends \PHPUnit_Framework_TestCase
+class Memory extends OutputAbstract
 {
-	public function testWrite()
+	protected $messages;
+
+	public function __construct()
 	{
-		$output = new Void();
-		$output->write('foobar');
+		$this->messages = array();
 	}
 
-	public function testWriteln()
+	public function write($value)
 	{
-		$output = new Void();
-		$output->writeln('foobar');
+		$this->messages[] = $value;
+	}
+
+	public function getMessages()
+	{
+		return $this->messages;
 	}
 }

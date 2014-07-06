@@ -34,11 +34,11 @@ class StdoutTest extends \PHPUnit_Framework_TestCase
 {
 	public function testWrite()
 	{
-		$logger = new Stdout();
+		$output = new Stdout();
 
 		ob_start();
 
-		$logger->write('foobar');
+		$output->write('foobar');
 
 		$response = ob_get_clean();
 
@@ -47,11 +47,11 @@ class StdoutTest extends \PHPUnit_Framework_TestCase
 
 	public function testWriteln()
 	{
-		$logger = new Stdout();
+		$output = new Stdout();
 
 		ob_start();
 
-		$logger->writeln('foobar');
+		$output->writeln('foobar');
 
 		$response = ob_get_clean();
 
