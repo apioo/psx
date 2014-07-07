@@ -21,37 +21,15 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Validate;
-
-use PSX\DisplayException;
+namespace PSX;
 
 /**
- * ValidationException
+ * DisplayException
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class ValidationException extends DisplayException
+class DisplayException extends Exception
 {
-	protected $title;
-	protected $result;
-
-	public function __construct($message, $title, Result $result)
-	{
-		parent::__construct($message);
-
-		$this->title  = $title;
-		$this->result = $result;
-	}
-
-	public function getTitle()
-	{
-		return $this->title;
-	}
-
-	public function getResult()
-	{
-		return $this->result;
-	}
 }
