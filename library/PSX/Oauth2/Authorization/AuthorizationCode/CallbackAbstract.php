@@ -24,9 +24,9 @@
 namespace PSX\Oauth2\Authorization\AuthorizationCode;
 
 use PSX\Controller\ApiAbstract;
-use PSX\Exception;
 use PSX\Oauth2\AccessToken;
 use PSX\Oauth2\AuthorizationAbstract;
+use PSX\Oauth2\Authorization\Exception\ErrorExceptionAbstract;
 
 /**
  * CallbackAbstract
@@ -39,6 +39,8 @@ abstract class CallbackAbstract extends ApiAbstract
 {
 	public function onLoad()
 	{
+		parent::onLoad();
+
 		try
 		{
 			$error = $this->request->getUrl()->getParam('error');
@@ -64,7 +66,7 @@ abstract class CallbackAbstract extends ApiAbstract
 
 			$this->onAccessToken($accessToken);
 		}
-		catch(\Exception $e)
+		catch(ErrorExceptionAbstract $e)
 		{
 			$this->onError($e);
 		}
