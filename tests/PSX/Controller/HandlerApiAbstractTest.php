@@ -29,6 +29,7 @@ use PSX\Data\Record;
 use PSX\Http\Request;
 use PSX\Http\Response;
 use PSX\Http\Stream\TempStream;
+use PSX\Json;
 use PSX\Loader\Location;
 use PSX\Url;
 use ReflectionClass;
@@ -93,16 +94,14 @@ JSON;
 		$response->setBody($body);
 
 		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
+		$body       = Json::decode((string) $response->getBody());
 
-		$expect = <<<JSON
-{
-	"text": "You have successful create a record",
-	"success": true
-}
-JSON;
+		$expect = array(
+			'success' => true,
+			'message' => 'You have successful create a record',
+		);
 
-		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
+		$this->assertEquals($expect, $body);
 
 		// @todo check database
 	}
@@ -116,16 +115,19 @@ JSON;
 		$response->setBody($body);
 
 		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
+		$body       = Json::decode((string) $response->getBody());
 
-		$expect = <<<JSON
-{
-	"text": "title has an invalid length min 3 and max 16 signs",
-	"success": false
-}
-JSON;
+		unset($body['title']);
+		unset($body['trace']);
+		unset($body['context']);
+		$body['message'] = substr($body['message'], 0, 50);
 
-		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
+		$expect = array(
+			'success' => false,
+			'message' => 'title has an invalid length min 3 and max 16 signs',
+		);
+
+		$this->assertEquals($expect, $body);
 	}
 
 	public function testPostInvalidFields()
@@ -137,16 +139,19 @@ JSON;
 		$response->setBody($body);
 
 		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
+		$body       = Json::decode((string) $response->getBody());
 
-		$expect = <<<JSON
-{
-	"text": "No valid data defined",
-	"success": false
-}
-JSON;
+		unset($body['title']);
+		unset($body['trace']);
+		unset($body['context']);
+		$body['message'] = substr($body['message'], 0, 21);
 
-		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
+		$expect = array(
+			'success' => false,
+			'message' => 'No valid data defined',
+		);
+
+		$this->assertEquals($expect, $body);
 	}
 
 	public function testPut()
@@ -158,16 +163,14 @@ JSON;
 		$response->setBody($body);
 
 		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
+		$body       = Json::decode((string) $response->getBody());
 
-		$expect = <<<JSON
-{
-	"text": "You have successful update a record",
-	"success": true
-}
-JSON;
+		$expect = array(
+			'success' => true,
+			'message' => 'You have successful update a record',
+		);
 
-		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
+		$this->assertEquals($expect, $body);
 
 		// @todo check database
 	}
@@ -181,16 +184,14 @@ JSON;
 		$response->setBody($body);
 
 		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
+		$body       = Json::decode((string) $response->getBody());
 
-		$expect = <<<JSON
-{
-	"text": "You have successful delete a record",
-	"success": true
-}
-JSON;
+		$expect = array(
+			'success' => true,
+			'message' => 'You have successful delete a record',
+		);
 
-		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
+		$this->assertEquals($expect, $body);
 
 		// @todo check database
 	}

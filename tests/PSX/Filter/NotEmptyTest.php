@@ -21,58 +21,39 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX;
+namespace PSX\Filter;
 
 /**
- * SessionTest
+ * NotEmptyTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class SessionTest extends \PHPUnit_Framework_TestCase
+class NotEmptyTest extends FilterTestCase
 {
-	protected $sess;
-
 	protected function setUp()
 	{
-		$this->sess = new Session('psx_session');
 	}
 
 	protected function tearDown()
 	{
 	}
 
-	public function testGetSet()
+	public function testFilter()
 	{
-		$this->assertEquals(false, isset($_SESSION['foo']));
-		$this->assertEquals(false, $this->sess->get('foo'));
-		$this->assertEquals(false, $this->sess->has('foo'));
+		$filter = new NotEmpty();
 
-		$this->sess->set('foo', 'bar');
+		$this->assertEquals(false, $filter->apply(''));
+		$this->assertEquals(false, $filter->apply(0));
+		$this->assertEquals(false, $filter->apply(0.0));
+		$this->assertEquals(false, $filter->apply('0'));
+		$this->assertEquals(false, $filter->apply(null));
+		$this->assertEquals(false, $filter->apply(false));
+		$this->assertEquals(false, $filter->apply(array()));
+		$this->assertEquals(true, $filter->apply('foo'));
 
-		$this->assertEquals(true, isset($_SESSION['foo']));
-		$this->assertEquals('bar', $_SESSION['foo']);
-		$this->assertEquals('bar', $this->sess->get('foo'));
-		$this->assertEquals(true, $this->sess->has('foo'));
-	}
-
-	public function testPropertyGetSet()
-	{
-		$this->assertEquals(false, $this->sess->foo);
-
-		$this->sess->foo = 'bar';
-
-		$this->assertEquals('bar', $this->sess->foo);
-	}
-
-	public function testGetter()
-	{
-		$this->assertEquals('psx_session', $this->sess->getName());
-		$this->assertEquals('PSX\Session', $this->sess->getSessionTokenKey());
-
-		// token is always the same since we are on CLI and have no user agent
-		// or remote ip
-		$this->assertEquals('876d2e7b380ea3c9567ef09df11c7926', $this->sess->getToken());
+		// test error message
+		$this->assertErrorMessage($filter->getErrorMessage());
 	}
 }

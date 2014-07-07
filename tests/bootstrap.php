@@ -27,12 +27,6 @@ function getContainer()
 		$config['psx_dispatch']     = '';
 		$config['psx_path_cache']   = 'cache';
 		$config['psx_path_library'] = 'library';
-
-		// set void logger
-		$logger = new Monolog\Logger('psx');
-		$logger->pushHandler(new Monolog\Handler\NullHandler());
-
-		$container->set('logger', $logger);
 	}
 
 	return $container;

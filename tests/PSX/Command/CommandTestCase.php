@@ -23,6 +23,8 @@
 
 namespace PSX\Command;
 
+use Monolog\Logger;
+use Monolog\Handler\NullHandler;
 use PSX\Command\Executor;
 use PSX\Command\ParameterParser\Map;
 use PSX\Command\Output\Void;
@@ -40,16 +42,36 @@ abstract class CommandTestCase extends \PHPUnit_Framework_TestCase
 	{
 		parent::setUp();
 
+		// we remove all used services so that our test has no side effects
+		$serviceIds = getContainer()->getServiceIds();
+		foreach($serviceIds as $serviceId)
+		{
+			getContainer()->set($serviceId, null);
+		}
+
 		// we replace the executor
 		getContainer()->set('executor', new Executor(getContainer()->get('command_factory'), new Void()));
 
 		// assign the phpunit test case
 		getContainer()->set('test_case', $this);
+
+		// set void logger
+		$logger = new Logger('psx');
+		$logger->pushHandler(new NullHandler());
+
+		getContainer()->set('logger', $logger);
 	}
 
 	protected function tearDown()
 	{
 		parent::tearDown();
+
+		// we remove all used services so that our test has no side effects
+		$serviceIds = getContainer()->getServiceIds();
+		foreach($serviceIds as $serviceId)
+		{
+			getContainer()->set($serviceId, null);
+		}
 	}
 
 	/**

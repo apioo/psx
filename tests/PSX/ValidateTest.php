@@ -23,7 +23,7 @@
 
 namespace PSX;
 
-use PSX\Filter\InArray;
+use PSX\Filter;
 
 /**
  * ValidateTest
@@ -85,7 +85,7 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(false, $this->validate->apply('foo', Validate::TYPE_STRING, array($this->failureFilter)));
 	}
 
-	public function testApplyScalar()
+	public function testApplyType()
 	{
 		$this->assertEquals('foo', $this->validate->apply('foo', Validate::TYPE_STRING));
 		$this->assertInternalType(Validate::TYPE_STRING, $this->validate->apply('foo', Validate::TYPE_STRING));
@@ -98,6 +98,38 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals(true, $this->validate->apply('foo', Validate::TYPE_BOOLEAN));
 		$this->assertInternalType(Validate::TYPE_BOOLEAN, $this->validate->apply('foo', Validate::TYPE_BOOLEAN));
+
+		$this->assertEquals(array('foo'), $this->validate->apply('foo', Validate::TYPE_ARRAY));
+		$this->assertInternalType(Validate::TYPE_ARRAY, $this->validate->apply('foo', Validate::TYPE_ARRAY));
+	}
+
+	public function testApplyTypeObject()
+	{
+		$object = new \stdClass();
+
+		$this->assertEquals($object, $this->validate->apply($object, Validate::TYPE_OBJECT));
+		$this->assertInstanceOf('stdClass', $this->validate->apply($object, Validate::TYPE_OBJECT));
+	}
+
+	/**
+	 * @expectedException PSX\Validate\ValidationException
+	 */
+	public function testApplyTypeObjectNullRequired()
+	{
+		$this->assertEquals(null, $this->validate->apply(null, Validate::TYPE_OBJECT, array(), 'foo', true));
+	}
+
+	public function testApplyTypeObjectNullOptional()
+	{
+		$this->assertEquals(null, $this->validate->apply(null, Validate::TYPE_OBJECT, array(), 'foo', false));
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testApplyTypeObjectInvalid()
+	{
+		$this->assertEquals('foo', $this->validate->apply('foo', Validate::TYPE_OBJECT));
 	}
 
 	/**
@@ -122,6 +154,44 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(null, $this->validate->apply('foo', Validate::TYPE_STRING, array($this->failureFilter), 'bar', false));
 	}
 
+	public function testApplyFilter()
+	{
+		$this->assertEquals('foo', $this->validate->apply('foo', Validate::TYPE_STRING, array(new Filter\Alnum())));
+	}
+
+	/**
+	 * @expectedException PSX\Validate\ValidationException
+	 */
+	public function testApplyFilterInvalid()
+	{
+		$this->assertEquals('foo', $this->validate->apply('foo-', Validate::TYPE_STRING, array(new Filter\Alnum())));
+	}
+
+	public function testApplyFilterCallable()
+	{
+		$this->assertEquals('foo', $this->validate->apply('foo', Validate::TYPE_STRING, array(function($value){
+			return ctype_alnum($value);
+		})));
+	}
+
+	/**
+	 * @expectedException PSX\Validate\ValidationException
+	 */
+	public function testApplyFilterCallableInvalid()
+	{
+		$this->assertEquals('foo', $this->validate->apply('foo', Validate::TYPE_STRING, array(function($value){
+			return false;
+		})));
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testApplyInvalidFilterType()
+	{
+		$this->assertEquals('foo', $this->validate->apply('foo', Validate::TYPE_STRING, array('foo')));
+	}
+
 	public function testValidateTitleNotSet()
 	{
 		$result = $this->validate->validate(null);
@@ -133,6 +203,5 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals(null, $result->getValue());
 		$this->assertEquals('The field "foo" is not set', $result->getFirstError());
-
 	}
 }

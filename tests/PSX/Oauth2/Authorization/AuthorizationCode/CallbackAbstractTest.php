@@ -45,7 +45,7 @@ class CallbackAbstractTest extends ControllerTestCase
 {
 	public function testCallback()
 	{
-		$url      = new Url('http://127.0.0.1/cb?code=SplxlOBeZQQYbYS6WxSbIA&state=xyz');
+		$url      = new Url('http://foo.com/cb?code=SplxlOBeZQQYbYS6WxSbIA&state=xyz');
 		$body     = new TempStream(fopen('php://memory', 'r+'));
 		$request  = new GetRequest($url, array());
 		$response = new Response();
@@ -71,7 +71,7 @@ class CallbackAbstractTest extends ControllerTestCase
 
 		foreach($errors as $error => $exceptionType)
 		{
-			$url      = new Url('http://127.0.0.1/cb?error=' . $error . '&error_description=foobar');
+			$url      = new Url('http://foo.com/cb?error=' . $error . '&error_description=foobar');
 			$body     = new TempStream(fopen('php://memory', 'r+'));
 			$request  = new GetRequest($url, array());
 			$response = new Response();

@@ -23,7 +23,10 @@
 
 namespace PSX\Controller;
 
+use Monolog\Logger;
+use Monolog\Handler\NullHandler;
 use PDOException;
+use PSX\Dispatch\VoidSender;
 use PSX\Http\Request;
 use PSX\Http\Response;
 use PSX\Http\Stream\TempStream;
@@ -48,6 +51,8 @@ abstract class ControllerTestCase extends \PHPUnit_Extensions_Database_TestCase
 
 	protected $paths;
 	protected $sql;
+
+	protected $containerBackup;
 
 	public function getConnection()
 	{
@@ -80,25 +85,45 @@ abstract class ControllerTestCase extends \PHPUnit_Extensions_Database_TestCase
 	{
 		parent::setUp();
 
+		// we remove all used services so that our test has no side effects
+		$serviceIds = getContainer()->getServiceIds();
+		foreach($serviceIds as $serviceId)
+		{
+			getContainer()->set($serviceId, null);
+		}
+
 		// we replace the routing parser
 		getContainer()->set('routing_parser', new RoutingParser\ArrayCollection($this->getPaths()));
-
-		// we must delete the cache of some services so that they take the new 
-		// routing parser
-		getContainer()->set('loader_location_finder', null);
-		getContainer()->set('loader', null);
-		getContainer()->set('reverse_router', null);
 
 		// assign the phpunit test case
 		getContainer()->set('test_case', $this);
 
+		// use void sender
+		getContainer()->set('dispatch_sender', new VoidSender());
+
 		// enables us to load the same controller method multiple times
 		getContainer()->get('loader')->setRecursiveLoading(true);
+
+		// use void sender
+		getContainer()->set('dispatch_sender', new VoidSender());
+
+		// set void logger
+		$logger = new Logger('psx');
+		$logger->pushHandler(new NullHandler());
+
+		getContainer()->set('logger', $logger);
 	}
 
 	protected function tearDown()
 	{
 		parent::tearDown();
+
+		// we remove all used services so that our test has no side effects
+		$serviceIds = getContainer()->getServiceIds();
+		foreach($serviceIds as $serviceId)
+		{
+			getContainer()->set($serviceId, null);
+		}
 	}
 
 	/**
@@ -110,7 +135,7 @@ abstract class ControllerTestCase extends \PHPUnit_Extensions_Database_TestCase
 	 */
 	protected function loadController(Request $request, Response $response)
 	{
-		return getContainer()->get('loader')->load($request, $response);
+		return getContainer()->get('dispatch')->route($request, $response);
 	}
 
 	/**

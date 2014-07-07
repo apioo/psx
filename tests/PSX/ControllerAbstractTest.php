@@ -82,17 +82,10 @@ class ControllerAbstractTest extends ControllerTestCase
 		$response = new Response();
 		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
 
-		try
-		{
-			$controller = $this->loadController($request, $response);
+		$controller = $this->loadController($request, $response);
 
-			$this->fail('Must throw an redirect exception');
-		}
-		catch(RedirectException $e)
-		{
-			$this->assertEquals(307, $e->getStatusCode());
-			$this->assertEquals('/redirect/bar', substr($e->getUrl(), -13));
-		}
+		$this->assertEquals(307, $response->getStatusCode());
+		$this->assertEquals('/redirect/bar', substr($response->getHeader('Location'), -13));
 	}
 
 	public function testRedirectAbsolute()
@@ -102,17 +95,10 @@ class ControllerAbstractTest extends ControllerTestCase
 		$response = new Response();
 		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
 
-		try
-		{
-			$controller = $this->loadController($request, $response);
+		$controller = $this->loadController($request, $response);
 
-			$this->fail('Must throw an redirect exception');
-		}
-		catch(RedirectException $e)
-		{
-			$this->assertEquals(307, $e->getStatusCode());
-			$this->assertEquals('http://localhost.com/foobar', $e->getUrl());
-		}
+		$this->assertEquals(307, $response->getStatusCode());
+		$this->assertEquals('http://localhost.com/foobar', $response->getHeader('Location'));
 	}
 
 	public function testSetArrayBody()

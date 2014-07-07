@@ -28,8 +28,9 @@ use PSX\Dispatch\RedirectException;
 use PSX\Http\GetRequest;
 use PSX\Http\Response;
 use PSX\Http\Stream\TempStream;
-use PSX\Url;
+use PSX\Json;
 use PSX\Oauth2\Provider\GrantType\TestImplicit;
+use PSX\Url;
 
 /**
  * AuthorizationAbstractTest
@@ -52,110 +53,84 @@ class AuthorizationAbstractTest extends ControllerTestCase
 
 	public function testHandleCodeGrant()
 	{
-		try
-		{
-			$this->callEndpoint(array(
-				'response_type' => 'code',
-				'client_id' => 'foo',
-				'redirect_uri' => 'http://foo.com',
-				'scope' => '',
-				'state' => 'random',
+		$response = $this->callEndpoint(array(
+			'response_type' => 'code',
+			'client_id' => 'foo',
+			'redirect_uri' => 'http://foo.com',
+			'scope' => '',
+			'state' => 'random',
 
-				// test implementation specific parameters
-				'has_grant' => 1,
-				'code' => 'foobar',
-			));
+			// test implementation specific parameters
+			'has_grant' => 1,
+			'code' => 'foobar',
+		));
 
-			$this->fail('Must throw an redirect exception');
-		}
-		catch(RedirectException $e)
-		{
-			$this->assertEquals(307, $e->getStatusCode());
-			$this->assertEquals('http://foo.com?code=foobar&state=random', (string) $e->getUrl());
-		}
+		$this->assertEquals(307, $response->getStatusCode());
+		$this->assertEquals('http://foo.com?code=foobar&state=random', $response->getHeader('Location'));
 	}
 
 	public function testHandleCodeNoGrant()
 	{
-		try
-		{
-			$this->callEndpoint(array(
-				'response_type' => 'code',
-				'client_id' => 'foo',
-				'redirect_uri' => 'http://foo.com',
-				'scope' => '',
-				'state' => 'random',
+		$response = $this->callEndpoint(array(
+			'response_type' => 'code',
+			'client_id' => 'foo',
+			'redirect_uri' => 'http://foo.com',
+			'scope' => '',
+			'state' => 'random',
 
-				// test implementation specific parameters
-				'has_grant' => 0,
-				'code' => 'foobar',
-			));
+			// test implementation specific parameters
+			'has_grant' => 0,
+			'code' => 'foobar',
+		));
 
-			$this->fail('Must throw an redirect exception');
-		}
-		catch(RedirectException $e)
-		{
-			$this->assertEquals(307, $e->getStatusCode());
-			$this->assertEquals('http://foo.com?error=unauthorized_client&error_description=Client+is+not+authenticated', (string) $e->getUrl());
-		}
+		$this->assertEquals(307, $response->getStatusCode());
+		$this->assertEquals('http://foo.com?error=unauthorized_client&error_description=Client+is+not+authenticated', $response->getHeader('Location'));
 	}
 
 	public function testHandleTokenGrant()
 	{
-		try
-		{
-			$this->callEndpoint(array(
-				'response_type' => 'token',
-				'client_id' => 'foo',
-				'redirect_uri' => 'http://foo.com',
-				'scope' => '',
-				'state' => 'random',
+		$response = $this->callEndpoint(array(
+			'response_type' => 'token',
+			'client_id' => 'foo',
+			'redirect_uri' => 'http://foo.com',
+			'scope' => '',
+			'state' => 'random',
 
-				// test implementation specific parameters
-				'has_grant' => 1,
-				'code' => 'foobar',
-			));
+			// test implementation specific parameters
+			'has_grant' => 1,
+			'code' => 'foobar',
+		));
 
-			$this->fail('Must throw an redirect exception');
-		}
-		catch(RedirectException $e)
-		{
-			$this->assertEquals(307, $e->getStatusCode());
-			$this->assertEquals('http://foo.com#access_token=2YotnFZFEjr1zCsicMWpAA&token_type=example&state=random', (string) $e->getUrl());
-		}
+		$this->assertEquals(307, $response->getStatusCode());
+		$this->assertEquals('http://foo.com#access_token=2YotnFZFEjr1zCsicMWpAA&token_type=example&state=random', $response->getHeader('Location'));
 	}
 
 	public function testHandleTokenNoGrant()
 	{
-		try
-		{
-			$this->callEndpoint(array(
-				'response_type' => 'token',
-				'client_id' => 'foo',
-				'redirect_uri' => 'http://foo.com',
-				'scope' => '',
-				'state' => 'random',
+		$response = $this->callEndpoint(array(
+			'response_type' => 'token',
+			'client_id' => 'foo',
+			'redirect_uri' => 'http://foo.com',
+			'scope' => '',
+			'state' => 'random',
 
-				// test implementation specific parameters
-				'has_grant' => 0,
-				'code' => 'foobar',
-			));
+			// test implementation specific parameters
+			'has_grant' => 0,
+			'code' => 'foobar',
+		));
 
-			$this->fail('Must throw an redirect exception');
-		}
-		catch(RedirectException $e)
-		{
-			$this->assertEquals(307, $e->getStatusCode());
-			$this->assertEquals('http://foo.com?error=unauthorized_client&error_description=Client+is+not+authenticated', (string) $e->getUrl());
-		}
+		$this->assertEquals(307, $response->getStatusCode());
+		$this->assertEquals('http://foo.com?error=unauthorized_client&error_description=Client+is+not+authenticated', $response->getHeader('Location'));
 	}
 
-	/**
-	 * @expectedException PSX\Oauth2\Authorization\Exception\InvalidRequestException
-	 */
 	public function testHandleNoParameter()
 	{
-		$this->callEndpoint(array());
+		$response = $this->callEndpoint(array());
+		$data     = Json::decode((string) $response->getBody());
+
+		$this->assertEquals(200, $response->getStatusCode());
+		$this->assertEquals(false, $data['success']);
+		$this->assertEquals('PSX\Oauth2\Authorization\Exception\InvalidRequestException', $data['title']);
 	}
 
 	protected function callEndpoint(array $params)
