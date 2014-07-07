@@ -52,177 +52,131 @@ abstract class HandlerApiAbstract extends ApiAbstract
 
 	public function onGet()
 	{
-		try
+		if(!$this->getHandler() instanceof HandlerQueryInterface)
 		{
-			if(!$this->getHandler() instanceof HandlerQueryInterface)
-			{
-				throw new Exception('Method not allowed', 405);
-			}
-
-			$params = $this->getRequestParams();
-			$result = $this->getCollection($params['fields'], 
-					$params['startIndex'], 
-					$params['count'], 
-					$params['sortBy'], 
-					$params['sortOrder'], 
-					$this->getRequestCondition());
-
-			if($this->isWriter(WriterInterface::ATOM))
-			{
-				$this->setResponse($this->getAtomRecord($result));
-			}
-			else
-			{
-				$this->setResponse($result);
-			}
+			throw new Exception('Method not allowed', 405);
 		}
-		catch(\Exception $e)
-		{
-			if($this->isWriter(WriterInterface::ATOM))
-			{
-				$msg = new Entry();
-				$msg->setId(Uuid::nameBased($e->getMessage()));
-				$msg->setTitle($e->getMessage());
-				$msg->setUpdated(new DateTime());
-			}
-			else
-			{
-				$msg = new Message($e->getMessage(), false);
-			}
 
-			$this->setResponse($msg, null, $e->getCode());
+		$params = $this->getRequestParams();
+		$result = $this->getCollection($params['fields'], 
+				$params['startIndex'], 
+				$params['count'], 
+				$params['sortBy'], 
+				$params['sortOrder'], 
+				$this->getRequestCondition());
+
+		if($this->isWriter(WriterInterface::ATOM))
+		{
+			$this->setResponse($this->getAtomRecord($result));
+		}
+		else
+		{
+			$this->setResponse($result);
 		}
 	}
 
 	public function onPost()
 	{
-		try
+		if(!$this->getHandler() instanceof HandlerManipulationInterface)
 		{
-			if(!$this->getHandler() instanceof HandlerManipulationInterface)
-			{
-				throw new Exception('Method not allowed', 405);
-			}
-
-			$record = $this->import($this->getHandler()->getRecord());
-
-			$this->beforeValidate($record);
-
-			// validate
-			$validator = $this->getValidator();
-
-			if($validator instanceof ValidatorInterface)
-			{
-				$validator->validate($record);
-			}
-
-			$this->afterValidate($record);
-
-			// insert
-			$this->beforeCreate($record);
-
-			$this->doCreate($record);
-
-			$this->afterCreate($record);
-
-			// message
-			$msg = new Message('You have successful create a ' . $record->getRecordInfo()->getName(), true);
-
-			$this->setResponse($msg);
+			throw new Exception('Method not allowed', 405);
 		}
-		catch(\Exception $e)
+
+		$record = $this->import($this->getHandler()->getRecord());
+
+		$this->beforeValidate($record);
+
+		// validate
+		$validator = $this->getValidator();
+
+		if($validator instanceof ValidatorInterface)
 		{
-			$msg = new Message($e->getMessage(), false);
-
-			$this->setResponse($msg, null, $e->getCode());
+			$validator->validate($record);
 		}
+
+		$this->afterValidate($record);
+
+		// insert
+		$this->beforeCreate($record);
+
+		$this->doCreate($record);
+
+		$this->afterCreate($record);
+
+		// message
+		$msg = new Message('You have successful create a ' . $record->getRecordInfo()->getName(), true);
+
+		$this->setResponse($msg);
 	}
 
 	public function onPut()
 	{
-		try
+		if(!$this->getHandler() instanceof HandlerManipulationInterface)
 		{
-			if(!$this->getHandler() instanceof HandlerManipulationInterface)
-			{
-				throw new Exception('Method not allowed', 405);
-			}
-
-			$record = $this->getHandler()->getRecord();
-			$record = $this->import($record);
-
-			$this->beforeValidate($record);
-
-			// validate
-			$validator = $this->getValidator();
-
-			if($validator instanceof ValidatorInterface)
-			{
-				$validator->validate($record);
-			}
-
-			$this->afterValidate($record);
-
-			// update
-			$this->beforeUpdate($record);
-
-			$this->doUpdate($record);
-
-			$this->afterUpdate($record);
-
-			// message
-			$msg = new Message('You have successful update a ' . $record->getRecordInfo()->getName(), true);
-
-			$this->setResponse($msg);
+			throw new Exception('Method not allowed', 405);
 		}
-		catch(\Exception $e)
+
+		$record = $this->getHandler()->getRecord();
+		$record = $this->import($record);
+
+		$this->beforeValidate($record);
+
+		// validate
+		$validator = $this->getValidator();
+
+		if($validator instanceof ValidatorInterface)
 		{
-			$msg = new Message($e->getMessage(), false);
-
-			$this->setResponse($msg, null, $e->getCode());
+			$validator->validate($record);
 		}
+
+		$this->afterValidate($record);
+
+		// update
+		$this->beforeUpdate($record);
+
+		$this->doUpdate($record);
+
+		$this->afterUpdate($record);
+
+		// message
+		$msg = new Message('You have successful update a ' . $record->getRecordInfo()->getName(), true);
+
+		$this->setResponse($msg);
 	}
 
 	public function onDelete()
 	{
-		try
+		if(!$this->getHandler() instanceof HandlerManipulationInterface)
 		{
-			if(!$this->getHandler() instanceof HandlerManipulationInterface)
-			{
-				throw new Exception('Method not allowed', 405);
-			}
-
-			$record = $this->getHandler()->getRecord();
-			$record = $this->import($record);
-
-			$this->beforeValidate($record);
-
-			// validate
-			$validator = $this->getValidator();
-
-			if($validator instanceof ValidatorInterface)
-			{
-				$validator->validate($record);
-			}
-
-			$this->afterValidate($record);
-
-			// delete
-			$this->beforeDelete($record);
-
-			$this->doDelete($record);
-
-			$this->afterDelete($record);
-
-			// message
-			$msg = new Message('You have successful delete a ' . $record->getRecordInfo()->getName(), true);
-
-			$this->setResponse($msg);
+			throw new Exception('Method not allowed', 405);
 		}
-		catch(\Exception $e)
+
+		$record = $this->getHandler()->getRecord();
+		$record = $this->import($record);
+
+		$this->beforeValidate($record);
+
+		// validate
+		$validator = $this->getValidator();
+
+		if($validator instanceof ValidatorInterface)
 		{
-			$msg = new Message($e->getMessage(), false);
-
-			$this->setResponse($msg, null, $e->getCode());
+			$validator->validate($record);
 		}
+
+		$this->afterValidate($record);
+
+		// delete
+		$this->beforeDelete($record);
+
+		$this->doDelete($record);
+
+		$this->afterDelete($record);
+
+		// message
+		$msg = new Message('You have successful delete a ' . $record->getRecordInfo()->getName(), true);
+
+		$this->setResponse($msg);
 	}
 
 	protected function getHandler()
