@@ -25,18 +25,19 @@ namespace PSX\Controller;
 
 use DOMDocument;
 use PSX\Controller\ViewAbstract;
+use PSX\DisplayException;
 use PSX\Http;
 use PSX\Loader\Location;
 use PSX\Template\ErrorException;
 
 /**
- * GenericErrorController
+ * ErrorController
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class GenericErrorController extends ViewAbstract
+class ErrorController extends ViewAbstract
 {
 	const CONTEXT_SIZE = 4;
 
@@ -48,6 +49,8 @@ class GenericErrorController extends ViewAbstract
 
 	public function onLoad()
 	{
+		parent::onLoad();
+
 		$exception = $this->location->getParameter(Location::KEY_EXCEPTION);
 
 		if($exception instanceof \Exception)
@@ -141,8 +144,18 @@ class GenericErrorController extends ViewAbstract
 		}
 		else
 		{
+			// if we have an display exception we can use the error message else
+			// we hide the message with an general error message
+			if($exception instanceof DisplayException)
+			{
+				$message = $exception->getMessage();
+			}
+			else
+			{
+				$message = 'The server encountered an internal error and was unable to complete your request.';
+			}
+
 			$title   = 'Internal Server Error';
-			$message = 'The server encountered an internal error and was unable to complete your request.';
 			$trace   = null;
 			$context = null;
 		}
