@@ -23,6 +23,7 @@
 
 namespace PSX;
 
+use InvalidArgumentException;
 use PSX\Validate\Result;
 use PSX\Validate\ValidationException;
 
@@ -69,14 +70,14 @@ class Validate
 	}
 
 	/**
-	 * Applies the $filter array containing PSX\FilterAbstract on the $value. 
+	 * Applies the $filter array containing PSX\FilterInterface on the $value. 
 	 * Returns an result object which contains the value and error messages from 
 	 * the filter. If $required is set to true an error will be added if $value 
-	 * is false
+	 * is null
 	 *
 	 * @param string $value
 	 * @param integer $type
-	 * @param array<PSX\FilterAbstract> $filters
+	 * @param array<PSX\FilterInterface> $filters
 	 * @param string $title
 	 * @param string $required
 	 * @return PSX\Validate\Result
@@ -98,52 +99,67 @@ class Validate
 			return $result;
 		}
 
-		switch($type)
+		if($value !== null)
 		{
-			case self::TYPE_INTEGER:
-				$value = (int) $value;
-				break;
+			switch($type)
+			{
+				case self::TYPE_INTEGER:
+					$value = (int) $value;
+					break;
 
-			case self::TYPE_STRING:
-				$value = (string) $value;
-				break;
+				case self::TYPE_STRING:
+					$value = (string) $value;
+					break;
 
-			case self::TYPE_FLOAT:
-				$value = (float) $value;
-				break;
+				case self::TYPE_FLOAT:
+					$value = (float) $value;
+					break;
 
-			case self::TYPE_BOOLEAN:
-				$value = (bool) $value;
-				break;
+				case self::TYPE_BOOLEAN:
+					$value = (bool) $value;
+					break;
 
-			case self::TYPE_ARRAY:
-				$value = (array) $value;
-				break;
+				case self::TYPE_ARRAY:
+					$value = (array) $value;
+					break;
 
-			case self::TYPE_OBJECT:
-				if($value !== null && !is_object($value))
-				{
-					throw new InvalidArgumentException('Value must be an object');
-				}
-				break;
+				case self::TYPE_OBJECT:
+					if(!is_object($value))
+					{
+						throw new InvalidArgumentException('Value must be an object');
+					}
+					break;
+			}
 		}
 
 		foreach($filters as $filter)
 		{
-			$return = $filter->apply($value);
+			$error = null;
+
+			if($filter instanceof FilterInterface)
+			{
+				$return = $filter->apply($value);
+				$error  = $filter->getErrorMessage();
+			}
+			else if(is_callable($filter))
+			{
+				$return = call_user_func_array($filter, array($value));
+			}
+			else
+			{
+				throw new InvalidArgumentException('Filter must be either an callable or instanceof PSX\FilterInterface');
+			}
 
 			if($return === false)
 			{
 				if($required === true)
 				{
-					$errorMessage = $filter->getErrorMessage();
-
-					if($errorMessage === null)
+					if($error === null)
 					{
-						$errorMessage = 'The field "%s" is not valid';
+						$error = 'The field "%s" is not valid';
 					}
 
-					$result->addError(sprintf($errorMessage, $title));
+					$result->addError(sprintf($error, $title));
 				}
 
 				return $result;
