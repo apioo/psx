@@ -70,7 +70,7 @@ class Dispatch extends \Exception
 		}
 		catch(\Exception $e)
 		{
-			$class    = isset($this->config['psx_error_controller']) ? $this->config['psx_error_controller'] : 'PSX\Controller\GenericErrorController';
+			$class    = isset($this->config['psx_error_controller']) ? $this->config['psx_error_controller'] : 'PSX\Controller\ErrorController';
 			$location = new Location();
 			$location->setParameter(Location::KEY_EXCEPTION, $e);
 
