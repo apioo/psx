@@ -156,6 +156,13 @@ class Container implements ContainerInterface
 		return $this->scope == $name;
 	}
 
+	public function getServiceIds($scope = null)
+	{
+		$name = $scope === null ? $this->scope : $scope;
+
+		return isset($this->services[$name]) ? array_keys($this->services[$name]) : array();
+	}
+
 	public static function normalizeName($name)
 	{
 		return str_replace(' ', '', ucwords(str_replace('_', ' ', $name)));
