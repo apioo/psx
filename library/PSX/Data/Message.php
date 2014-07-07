@@ -35,31 +35,31 @@ use PSX\Util\Uuid;
  */
 class Message extends RecordAbstract
 {
-	protected $text;
+	protected $message;
 	protected $success;
 
-	public function __construct($text = null, $success = null)
+	public function __construct($message = null, $success = null)
 	{
-		$this->setText($text);
+		$this->setMessage($message);
 		$this->setSuccess($success);
 	}
 
 	public function getRecordInfo()
 	{
 		return new RecordInfo('message', array(
-			'text'    => $this->text,
+			'message' => $this->message,
 			'success' => $this->success,
 		));
 	}
 
-	public function getText()
+	public function getMessage()
 	{
-		return $this->text;
+		return $this->message;
 	}
 
-	public function setText($text)
+	public function setMessage($message)
 	{
-		$this->text = $text;
+		$this->message = $message;
 	}
 
 	public function hasSuccess()
