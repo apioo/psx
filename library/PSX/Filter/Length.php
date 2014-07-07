@@ -37,7 +37,7 @@ class Length extends FilterAbstract
 	protected $min;
 	protected $max;
 
-	public function __construct($min = null, $max = null)
+	public function __construct($min, $max = null)
 	{
 		$this->min = $min;
 		$this->max = $max;
@@ -73,20 +73,23 @@ class Length extends FilterAbstract
 
 	public function getErrorMessage()
 	{
-		return '%s has an invalid length min ' . $this->min . ' and max ' . $this->max . ' signs';
+		if($this->max === null)
+		{
+			return '%s has an invalid length max ' . $this->min . ' signs';
+		}
+		else
+		{
+			return '%s has an invalid length min ' . $this->min . ' and max ' . $this->max . ' signs';
+		}
 	}
 
 	private function compare($len)
 	{
-		if($this->min === null && $this->max === null)
-		{
-			return true;
-		}
-		else if($this->min !== null && $this->max === null)
+		if($this->max === null)
 		{
 			return $len <= $this->min;
 		}
-		else if($this->min !== null && $this->max !== null)
+		else if($this->max !== null)
 		{
 			return $len >= $this->min && $len <= $this->max;
 		}
