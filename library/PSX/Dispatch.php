@@ -41,7 +41,7 @@ use PSX\Loader\Location;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Dispatch extends \Exception
+class Dispatch
 {
 	protected $config;
 	protected $loader;
