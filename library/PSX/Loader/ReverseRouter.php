@@ -55,7 +55,7 @@ class ReverseRouter
 
 		foreach($path as $key => $part)
 		{
-			if(isset($part[0]) && $part[0] == ':')
+			if(isset($part[0]) && ($part[0] == ':' || $part[0] == '*'))
 			{
 				$name = substr($part, 1);
 
@@ -101,7 +101,14 @@ class ReverseRouter
 			}
 		}
 
-		return ($leadingPath ? '/' : '') . implode('/', $parts);
+		$path = implode('/', $parts);
+
+		if($this->isAbsoluteUrl($path))
+		{
+			return $path;
+		}
+
+		return ($leadingPath ? '/' : '') . $path;
 	}
 
 	public function getBasePath()
@@ -116,12 +123,30 @@ class ReverseRouter
 
 	public function getAbsolutePath($source, array $parameters = array())
 	{
-		return $this->basePath . '/' . $this->dispatch . $this->getPath($source, $parameters, false);
+		$path = $this->getPath($source, $parameters, false);
+
+		if($this->isAbsoluteUrl($path))
+		{
+			return $path;
+		}
+		else
+		{
+			return $this->basePath . '/' . $this->dispatch . $path;
+		}
 	}
 
 	public function getUrl($source, array $parameters = array())
 	{
-		return $this->getDispatchUrl() . $this->getPath($source, $parameters, false);
+		$path = $this->getPath($source, $parameters, false);
+
+		if($this->isAbsoluteUrl($path))
+		{
+			return $path;
+		}
+		else
+		{
+			return $this->getDispatchUrl() . $path;
+		}
 	}
 
 	protected function getPathBySource($source)
@@ -137,5 +162,10 @@ class ReverseRouter
 		}
 
 		return null;
+	}
+
+	protected function isAbsoluteUrl($path)
+	{
+		return substr($path, 0, 7) == 'http://' || substr($path, 0, 8) == 'https://';
 	}
 }
