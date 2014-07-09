@@ -36,16 +36,8 @@ use PSX\Command\Parameters;
  */
 class CliArgument extends Map
 {
-	public function __construct(array $argv)
+	public function __construct($className, array $argv)
 	{
-		$fileName  = array_shift($argv);
-		$className = array_shift($argv);
-
-		if(empty($className))
-		{
-			$className = 'PSX\Command\ListCommand';
-		}
-
 		parent::__construct($className, $this->getArray($argv));
 	}
 

@@ -24,7 +24,7 @@
 namespace PSX;
 
 use PSX\Command\Executor;
-use PSX\Command\ParameterParser\CliArgument;
+use PSX\Command\ParameterParser;
 use PSX\Config;
 
 /**
@@ -49,7 +49,35 @@ class Console
 	{
 		try
 		{
-			$this->executor->run(new CliArgument($_SERVER['argv']));
+			$fileName  = array_shift($_SERVER['argv']);
+			$className = array_shift($_SERVER['argv']);
+
+			if(in_array('--stdin', $_SERVER['argv']))
+			{
+				$body = '';
+				while(!feof(STDIN))
+				{
+					$line = fgets(STDIN);
+
+					if($line[0] == chr(4))
+					{
+						break;
+					}
+
+					$body.= $line;
+				}
+
+				$this->executor->run(new ParameterParser\Json($className, $body));
+			}
+			else
+			{
+				if(empty($className))
+				{
+					$className = 'PSX\Command\ListCommand';
+				}
+
+				$this->executor->run(new ParameterParser\CliArgument($className, $_SERVER['argv']));
+			}
 		}
 		catch(\Exception $e)
 		{
