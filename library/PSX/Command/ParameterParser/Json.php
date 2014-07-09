@@ -25,6 +25,7 @@ namespace PSX\Command\ParameterParser;
 
 use PSX\Command\ParameterParserInterface;
 use PSX\Command\Parameters;
+use PSX\Json as JsonParser;
 
 /**
  * Json
@@ -37,6 +38,6 @@ class Json extends Map
 {
 	public function __construct($className, $json)
 	{
-		parent::__construct($className, json_decode($json, true));
+		parent::__construct($className, JsonParser::decode($json));
 	}
 }
