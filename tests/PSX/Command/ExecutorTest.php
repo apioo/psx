@@ -27,6 +27,7 @@ use PSX\CommandAbstract;
 use PSX\Command\OutputInterface;
 use PSX\Command\Output\Void;
 use PSX\Command\ParameterParser\Map;
+use PSX\Loader\Location;
 
 /**
  * ExecutorTest
@@ -161,6 +162,30 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('bar', $executor->getClassName('bar'));
 		$this->assertEquals('Foo\Bar', $executor->getClassName('foo'));
 		$this->assertEquals(array('foo' => 'Foo\Bar'), $executor->getAliases());
+	}
+
+	public function testErrorCommand()
+	{
+		$command = new TestCommand(function(Parameters $parameters){
+			throw new \Exception('foo');
+		});
+
+		$factory = $this->getMockBuilder('PSX\Dispatch\CommandFactoryInterface')
+			->setMethods(array('getCommand'))
+			->getMock();
+
+		$factory->expects($this->at(0))
+			->method('getCommand')
+			->with($this->identicalTo('Foo\Bar'))
+			->will($this->returnValue($command));
+
+		$factory->expects($this->at(1))
+			->method('getCommand')
+			->with($this->identicalTo('PSX\Command\ErrorCommand'))
+			->will($this->returnValue(getContainer()->get('command_factory')->getCommand('PSX\Command\ErrorCommand', new Location())));
+
+		$executor = new Executor($factory, new Void());
+		$executor->run(new Map('Foo\Bar', array('r' => 'foo')));
 	}
 }
 

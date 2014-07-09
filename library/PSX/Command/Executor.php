@@ -73,7 +73,18 @@ class Executor
 
 		$parser->fillParameters($parameters);
 
-		$command->onExecute($parameters, $this->output);
+		try
+		{
+			$command->onExecute($parameters, $this->output);
+		}
+		catch(\Exception $e)
+		{
+			$class    = isset($this->config['psx_error_command']) ? $this->config['psx_error_command'] : 'PSX\Command\ErrorCommand';
+			$location = new Location();
+			$location->setParameter(Location::KEY_EXCEPTION, $e);
+
+			$this->factory->getCommand($class, $location)->onExecute(new Parameters(), $this->output);
+		}
 
 		return $command;
 	}

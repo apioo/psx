@@ -34,25 +34,9 @@ use PSX\Command\ParameterParserTestCase;
  */
 class CliArgumentTest extends ParameterParserTestCase
 {
-	public function testParseArguments1()
-	{
-		$cliArgument = new CliArgument(array('foo.php'));
-
-		$this->assertEquals('PSX\Command\ListCommand', $cliArgument->getClassName());
-		$this->assertEquals(array(), $cliArgument->getArgv());
-	}
-
-	public function testParseArguments2()
-	{
-		$cliArgument = new CliArgument(array('foo.php', ''));
-
-		$this->assertEquals('PSX\Command\ListCommand', $cliArgument->getClassName());
-		$this->assertEquals(array(), $cliArgument->getArgv());
-	}
-
 	public function testParseArguments3()
 	{
-		$cliArgument = new CliArgument(array('foo.php', 'Foo\Bar'));
+		$cliArgument = new CliArgument('Foo\Bar', array());
 
 		$this->assertEquals('Foo\Bar', $cliArgument->getClassName());
 		$this->assertEquals(array(), $cliArgument->getArgv());
@@ -60,7 +44,7 @@ class CliArgumentTest extends ParameterParserTestCase
 
 	public function testParseArguments4()
 	{
-		$cliArgument = new CliArgument(array('foo.php', 'Foo\Bar', 'foo'));
+		$cliArgument = new CliArgument('Foo\Bar', array('foo'));
 
 		$this->assertEquals('Foo\Bar', $cliArgument->getClassName());
 		$this->assertEquals(array(), $cliArgument->getArgv());
@@ -68,7 +52,7 @@ class CliArgumentTest extends ParameterParserTestCase
 
 	public function testParseArguments5()
 	{
-		$cliArgument = new CliArgument(array('foo.php', 'Foo\Bar', '-foo', 'bar'));
+		$cliArgument = new CliArgument('Foo\Bar', array('-foo', 'bar'));
 
 		$this->assertEquals('Foo\Bar', $cliArgument->getClassName());
 		$this->assertEquals(array('foo' => 'bar'), $cliArgument->getArgv());
@@ -76,7 +60,7 @@ class CliArgumentTest extends ParameterParserTestCase
 
 	public function testParseArguments6()
 	{
-		$cliArgument = new CliArgument(array('foo.php', 'Foo\Bar', '-foo', '-bar', 'bar'));
+		$cliArgument = new CliArgument('Foo\Bar', array('-foo', '-bar', 'bar'));
 
 		$this->assertEquals('Foo\Bar', $cliArgument->getClassName());
 		$this->assertEquals(array('foo' => true, 'bar' => 'bar'), $cliArgument->getArgv());
@@ -84,7 +68,7 @@ class CliArgumentTest extends ParameterParserTestCase
 
 	public function testParseArguments7()
 	{
-		$cliArgument = new CliArgument(array('foo.php', 'Foo\Bar', '-foo', '-bar', 'bar', 'bar', 'foo', '-test'));
+		$cliArgument = new CliArgument('Foo\Bar', array('-foo', '-bar', 'bar', 'bar', 'foo', '-test'));
 
 		$this->assertEquals('Foo\Bar', $cliArgument->getClassName());
 		$this->assertEquals(array('foo' => true, 'bar' => 'bar', 'test' => null), $cliArgument->getArgv());
@@ -92,7 +76,7 @@ class CliArgumentTest extends ParameterParserTestCase
 
 	public function testParseArguments8()
 	{
-		$cliArgument = new CliArgument(array('foo.php', 'Foo\Bar', '-', '-', '-'));
+		$cliArgument = new CliArgument('Foo\Bar', array('-', '-', '-'));
 
 		$this->assertEquals('Foo\Bar', $cliArgument->getClassName());
 		$this->assertEquals(array(), $cliArgument->getArgv());
@@ -100,7 +84,7 @@ class CliArgumentTest extends ParameterParserTestCase
 
 	public function testParseArguments9()
 	{
-		$cliArgument = new CliArgument(array('foo.php', 'Foo\Bar', '-foo'));
+		$cliArgument = new CliArgument('Foo\Bar', array('-foo'));
 
 		$this->assertEquals('Foo\Bar', $cliArgument->getClassName());
 		$this->assertEquals(array('foo' => null), $cliArgument->getArgv());
@@ -108,7 +92,7 @@ class CliArgumentTest extends ParameterParserTestCase
 
 	public function testParseArguments10()
 	{
-		$cliArgument = new CliArgument(array('foo.php', 'Foo\Bar', '-foo', ''));
+		$cliArgument = new CliArgument('Foo\Bar', array('-foo', ''));
 
 		$this->assertEquals('Foo\Bar', $cliArgument->getClassName());
 		$this->assertEquals(array('foo' => ''), $cliArgument->getArgv());
@@ -116,6 +100,6 @@ class CliArgumentTest extends ParameterParserTestCase
 
 	protected function getParameterParser()
 	{
-		return new CliArgument(array('test.php', 'Foo\Bar', '-foo', 'bar', '-bar', 'foo', '-flag'));
+		return new CliArgument('Foo\Bar', array('-foo', 'bar', '-bar', 'foo', '-flag'));
 	}
 }
