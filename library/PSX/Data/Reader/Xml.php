@@ -65,7 +65,14 @@ class Xml extends ReaderAbstract
 		{
 			if($value instanceof SimpleXMLElement)
 			{
-				$element[$key] = $this->recToXml((array) $value);
+				if(count($value) == 0)
+				{
+					$element[$key] = (string) $value;
+				}
+				else
+				{
+					$element[$key] = $this->recToXml((array) $value);
+				}
 			}
 			else if(is_array($value))
 			{

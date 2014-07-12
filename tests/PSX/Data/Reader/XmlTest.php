@@ -48,6 +48,7 @@ class XmlTest extends \PHPUnit_Framework_TestCase
 	{
 		$body = <<<INPUT
 <test>
+	<empty></empty>
 	<foo>bar</foo>
 	<bar>blub</bar>
 	<bar>bla</bar>
@@ -79,6 +80,7 @@ INPUT;
 		$xml	 = $reader->read($message);
 
 		$expect = array(
+			'empty' => '', 
 			'foo' => 'bar', 
 			'bar' => array('blub', 'bla'), 
 			'test' => array('foo' => 'bar'),
