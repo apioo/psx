@@ -25,6 +25,7 @@ namespace PSX\Dependency;
 
 use Monolog\Logger;
 use PSX\Base;
+use PSX\Cache;
 use PSX\Config;
 use PSX\Http;
 use PSX\Session;
@@ -124,6 +125,14 @@ class DefaultContainer extends Container
 	public function getObjectBuilder()
 	{
 		return new ObjectBuilder($this);
+	}
+
+	/**
+	 * @return Psr\Cache\CacheItemPoolInterface
+	 */
+	public function getCache()
+	{
+		return new Cache();
 	}
 
 	/**
