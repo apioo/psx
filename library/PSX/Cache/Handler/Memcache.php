@@ -58,7 +58,7 @@ class Memcache implements HandlerInterface
 		}
 	}
 
-	public function write(CacheItemInterface $item)
+	public function write(/*CacheItemInterface*/ $item)
 	{
 		$ttl = $item->getExpiration()->getTimestamp();
 
