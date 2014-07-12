@@ -23,6 +23,7 @@
 
 namespace PSX\Loader\RoutingParser;
 
+use PSX\Cache;
 use PSX\Loader\RoutingCollection;
 
 /**
@@ -36,21 +37,23 @@ class CachedParserTest extends \PHPUnit_Framework_TestCase
 {
 	public function testGetCollection()
 	{
-		$routing = new RoutingFile('tests/PSX/Loader/routes');
-		$cache   = $this->getMock('PSX\Cache\HandlerInterface');
-
-		$cache->expects($this->once())
-			->method('load')
-			->with($this->equalTo('routing_file'))
-			->will($this->returnValue(false));
-
-		$cache->expects($this->once())
-			->method('write')
-			->with($this->equalTo('routing_file'), $this->equalTo(json_encode($routing->getCollection()->getAll())));
-
+		$cache         = new Cache(new Cache\Handler\Memory());
+		$routing       = new RoutingFile('tests/PSX/Loader/routes');
 		$routingParser = new CachedParser($routing, $cache);
-		$collection    = $routingParser->getCollection();
+
+		// we remove previous cache
+		$cache->deleteItems([CachedParser::CACHE_KEY]);
+
+		// get collection from the parser
+		$collection = $routingParser->getCollection();
 
 		$this->assertInstanceOf('PSX\Loader\RoutingCollection', $collection);
+		$this->assertEquals(14, count($collection));
+
+		// get collection from the cache
+		$collection = $routingParser->getCollection();
+
+		$this->assertInstanceOf('PSX\Loader\RoutingCollection', $routingParser->getCollection());
+		$this->assertEquals(14, count($collection));
 	}
 }

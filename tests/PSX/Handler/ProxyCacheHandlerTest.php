@@ -23,7 +23,7 @@
 
 namespace PSX\Handler;
 
-use PSX\Cache\Handler as CacheHandler;
+use PSX\Cache;
 use PSX\Data\ResultSet;
 use PSX\DateTime;
 use PSX\Sql;
@@ -54,6 +54,6 @@ class ProxyCacheHandlerTest extends DbTestCase
 
 	protected function getHandler()
 	{
-		return new ProxyCacheHandler(new Database\TestHandler(new TableManager($this->sql)), new CacheHandler\Null());
+		return new ProxyCacheHandler(new Database\TestHandler(new TableManager($this->sql)), new Cache(new Cache\Handler\Memory()));
 	}
 }

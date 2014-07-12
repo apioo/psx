@@ -23,7 +23,7 @@
 
 namespace PSX\Sql;
 
-use PSX\Cache;
+use Psr\Cache\CacheItemPoolInterface;
 use PSX\Sql;
 use PSX\Sql\Table\Definition;
 use PSX\Sql\Table\ReaderInterface;
@@ -48,9 +48,14 @@ class TableManager implements TableManagerInterface
 	protected $defaultReader;
 
 	/**
-	 * @var PSX\Cache\HandlerInterface
+	 * @var Psr\Cache\CacheItemPoolInterface
 	 */
-	protected $cacheHandler;
+	protected $cache;
+
+	/**
+	 * @var integer
+	 */
+	protected $expire;
 
 	protected $_container;
 
@@ -74,11 +79,13 @@ class TableManager implements TableManagerInterface
 	 * Note the cache doesnt expire so you have to delete the cache manually
 	 * if the definition has changed
 	 *
-	 * @param PSX\Cache\HandlerInterface $handler
+	 * @param Psr\Cache\CacheItemPoolInterface $cache
+	 * @param integer $expire
 	 */
-	public function setCacheHandler(Cache\HandlerInterface $cacheHandler)
+	public function setCache(/*CacheItemPoolInterface*/ $cache, $expire = null)
 	{
-		$this->cacheHandler = $cacheHandler;
+		$this->cache  = $cache;
+		$this->expire = $expire;
 	}
 
 	/**
@@ -96,14 +103,14 @@ class TableManager implements TableManagerInterface
 
 		// if a cache handler is set try to read the definition from the cache
 		// but only if we haven an reader
-		if($this->cacheHandler !== null && $this->defaultReader !== null)
+		if($this->cache !== null && $this->defaultReader !== null)
 		{
 			$key  = '__TD__' . md5(__METHOD__ . '-' . $tableName);
-			$item = $this->cacheHandler->load($key);
+			$item = $this->cache->getItem($key);
 
-			if($item instanceof Cache\Item)
+			if($item->isHit())
 			{
-				$definition = unserialize($item->getContent());
+				$definition = $item->get();
 
 				$this->_container[$tableName] = new Table($this->sql,
 					$definition->getName(),
@@ -114,8 +121,6 @@ class TableManager implements TableManagerInterface
 
 		if(!isset($this->_container[$tableName]))
 		{
-			$definition = null;
-
 			if($this->defaultReader === null)
 			{
 				// we assume that $tableName is an class name of an 
@@ -125,19 +130,18 @@ class TableManager implements TableManagerInterface
 			else
 			{
 				$definition = $this->defaultReader->getTableDefinition($tableName);
-			}
 
-			if($definition instanceof Definition)
-			{
 				$this->_container[$tableName] = new Table($this->sql,
 					$definition->getName(),
 					$definition->getColumns(), 
 					$definition->getConnections());
 
-				// if a cache handler is set write definition to the cache
-				if($this->cacheHandler !== null)
+				// if a cache item is set write definition to the cache
+				if(isset($item))
 				{
-					$this->cacheHandler->write($key, serialize($definition), 0);
+					$item->set($definition, $this->expire);
+
+					$this->cache->save($item);
 				}
 			}
 		}

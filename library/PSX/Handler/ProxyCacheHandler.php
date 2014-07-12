@@ -24,8 +24,8 @@
 namespace PSX\Handler;
 
 use InvalidArgumentException;
+use Psr\Cache\CacheItemPoolInterface;
 use PSX\Data\RecordInterface;
-use PSX\Cache\HandlerInterface as CacheHandlerInterface;
 use PSX\Sql\Condition;
 
 /**
@@ -43,7 +43,9 @@ class ProxyCacheHandler extends HandlerAbstract
 	protected $cache;
 	protected $expire;
 
-	public function __construct(HandlerQueryInterface $handler, CacheHandlerInterface $cache, $expire = 0)
+	private $_hasChanged = false;
+
+	public function __construct(HandlerQueryInterface $handler, /*CacheItemPoolInterface*/ $cache, $expire = null)
 	{
 		$this->handler = $handler;
 		$this->cache   = $cache;
@@ -57,19 +59,23 @@ class ProxyCacheHandler extends HandlerAbstract
 
 	public function getAll(array $fields = array(), $startIndex = 0, $count = 16, $sortBy = null, $sortOrder = null, Condition $con = null)
 	{
-		$key    = '__PC__' . md5(json_encode(array(__METHOD__, $fields, $startIndex, $count, $sortBy, $sortOrder, (string) $con)));
-		$return = $this->cache->load($key);
+		$key  = '__PC__' . md5(json_encode(array(__METHOD__, $fields, $startIndex, $count, $sortBy, $sortOrder, (string) $con, $this->handler->getRestrictedFields())));
+		$item = $this->cache->getItem($key);
 
-		if($return !== false)
+		if(!$this->_hasChanged && $item->isHit())
 		{
-			return unserialize($return->getContent());
+			return $item->get();
 		}
+		else
+		{
+			$return = $this->handler->getAll($fields, $startIndex, $count, $sortBy, $sortOrder, $con);
 
-		$return = $this->handler->getAll($fields, $startIndex, $count, $sortBy, $sortOrder, $con);
+			$item->set($return, $this->expire);
 
-		$this->cache->write($key, serialize($return), $this->expire);
+			$this->cache->save($item);
 
-		return $return;
+			return $return;
+		}
 	}
 
 	public function get($id, array $fields = array())
@@ -79,36 +85,44 @@ class ProxyCacheHandler extends HandlerAbstract
 
 	public function getSupportedFields()
 	{
-		$key    = '__PC__' . md5(json_encode(array(__METHOD__)));
-		$return = $this->cache->load($key);
+		$key  = '__PC__' . md5(json_encode(array(__METHOD__)));
+		$item = $this->cache->getItem($key);
 
-		if($return !== false)
+		if($item->isHit())
 		{
-			return unserialize($return->getContent());
+			return $item->get();
 		}
+		else
+		{
+			$return = $this->handler->getSupportedFields();
 
-		$return = $this->handler->getSupportedFields();
+			$item->set($return, $this->expire);
 
-		$this->cache->write($key, serialize($return), $this->expire);
+			$this->cache->save($item);
 
-		return $return;
+			return $return;
+		}
 	}
 
 	public function getCount(Condition $con = null)
 	{
-		$key    = '__PC__' . md5(json_encode(array(__METHOD__, (string) $con)));
-		$return = $this->cache->load($key);
+		$key  = '__PC__' . md5(json_encode(array(__METHOD__, (string) $con)));
+		$item = $this->cache->getItem($key);
 
-		if($return !== false)
+		if($item->isHit())
 		{
-			return unserialize($return->getContent());
+			return $item->get();
 		}
+		else
+		{
+			$return = $this->handler->getCount($con);
 
-		$return = $this->handler->getCount($con);
+			$item->set($return, $this->expire);
 
-		$this->cache->write($key, serialize($return), $this->expire);
+			$this->cache->save($item);
 
-		return $return;
+			return $return;
+		}
 	}
 
 	public function getRecord($id = null)
@@ -121,6 +135,8 @@ class ProxyCacheHandler extends HandlerAbstract
 		if($this->handler instanceof HandlerManipulationInterface)
 		{
 			$this->handler->create($record);
+
+			$this->_hasChanged = true;
 		}
 		else
 		{
@@ -133,6 +149,8 @@ class ProxyCacheHandler extends HandlerAbstract
 		if($this->handler instanceof HandlerManipulationInterface)
 		{
 			$this->handler->update($record);
+
+			$this->_hasChanged = true;
 		}
 		else
 		{
@@ -145,6 +163,8 @@ class ProxyCacheHandler extends HandlerAbstract
 		if($this->handler instanceof HandlerManipulationInterface)
 		{
 			$this->handler->delete($record);
+
+			$this->_hasChanged = true;
 		}
 		else
 		{

@@ -23,7 +23,7 @@
 
 namespace PSX\Loader\RoutingParser;
 
-use PSX\Cache;
+use Psr\Cache\CacheItemPoolInterface;
 use PSX\Loader\RoutingCollection;
 use PSX\Loader\RoutingParserInterface;
 
@@ -39,28 +39,31 @@ class CachedParser implements RoutingParserInterface
 	const CACHE_KEY = 'routing_file';
 
 	protected $routingParser;
-	protected $cacheHandler;
+	protected $cache;
 	protected $expire;
 
-	public function __construct(RoutingParserInterface $routingParser, Cache\HandlerInterface $cacheHandler, $expire = 0)
+	public function __construct(RoutingParserInterface $routingParser, /*CacheItemPoolInterface*/ $cache, $expire = null)
 	{
 		$this->routingParser = $routingParser;
-		$this->cacheHandler  = $cacheHandler;
+		$this->cache         = $cache;
+		$this->expire        = $expire;
 	}
 
 	public function getCollection()
 	{
-		if(($cacheItem = $this->cacheHandler->load(self::CACHE_KEY)) !== false)
-		{
-			$collection = json_decode($cacheItem->getContent());
+		$item = $this->cache->getItem(self::CACHE_KEY);
 
-			return new RoutingCollection($collection);
+		if($item->isHit())
+		{
+			return $item->get();
 		}
 		else
 		{
 			$collection = $this->routingParser->getCollection();
 
-			$this->cacheHandler->write(self::CACHE_KEY, json_encode($collection->getAll()), $this->expire);
+			$item->set($collection, $this->expire);
+
+			$this->cache->save($item);
 
 			return $collection;
 		}

@@ -24,7 +24,7 @@
 namespace PSX\Sql;
 
 use PDOException;
-use PSX\Cache\Handler;
+use PSX\Cache;
 use PSX\Sql\Table\Reader;
 
 /**
@@ -75,12 +75,12 @@ class TableManagerTest extends \PHPUnit_Framework_TestCase
 
 	public function testGetTableCaching()
 	{
-		$cacheHandler = new Handler\Memory();
+		$cache = new Cache(new Cache\Handler\Memory());
 
-		$this->assertEmpty($cacheHandler->load('__TD__dd205a64cc84c9bab0bce59595154301'));
+		$this->assertFalse($cache->getItem('__TD__dd205a64cc84c9bab0bce59595154301')->isHit());
 
 		$tm = new TableManager($this->sql);
-		$tm->setCacheHandler($cacheHandler);
+		$tm->setCache($cache);
 		$tm->setDefaultReader(new Reader\MysqlDescribe($this->sql));
 
 		$table = $tm->getTable('psx_sql_table_test');
@@ -94,9 +94,9 @@ class TableManagerTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(TableInterface::TYPE_DATETIME, $columns['date']);
 
 		// now we must have an cache entry in the handler
-		$cache = $cacheHandler->load('__TD__dd205a64cc84c9bab0bce59595154301');
+		$item = $cache->getItem('__TD__dd205a64cc84c9bab0bce59595154301');
 
-		$this->assertInstanceOf('PSX\Cache\Item', $cache);
+		$this->assertInstanceOf('PSX\Sql\Table\Definition', $item->get());
 
 		// this must be called from cache
 		$table = $tm->getTable('psx_sql_table_test');
