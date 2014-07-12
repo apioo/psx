@@ -23,6 +23,8 @@
 
 namespace PSX\Cache;
 
+use Psr\Cache\CacheItemInterface;
+
 /**
  * Item
  *
@@ -30,41 +32,83 @@ namespace PSX\Cache;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Item
+class Item /*implements CacheItemInterface*/
 {
-	protected $content;
-	protected $time;
+	protected $key;
+	protected $value;
+	protected $isHit;
+	protected $ttl;
 
-	public function __construct($content, $time)
+	public function __construct($key, $value, $isHit, $ttl = null)
 	{
-		$this->content = $content;
-		$this->time    = $time;
+		$this->key   = $key;
+		$this->value = $value;
+		$this->isHit = $isHit;
+
+		$this->setExpiration($ttl);
 	}
 
-	/**
-	 * The cached content
-	 *
-	 * @return mixed
-	 */
-	public function getContent()
+	public function getKey()
 	{
-		return $this->content;
+		return $this->key;
 	}
 
-	/**
-	 * The timstamp of the cache item. If the time is null the cache class will
-	 * not check whether the cache is expired. In this case this must be done
-	 * by the handler
-	 *
-	 * @return integer
-	 */
-	public function getTime()
+	public function get()
 	{
-		return $this->time;
+		return $this->value;
 	}
 
-	public function __toString()
+	public function set($value, $ttl = null)
 	{
-		return $this->getContent();
+		$this->value = $value;
+
+		$this->setExpiration($ttl);
+
+		return $this;
+	}
+
+	public function isHit()
+	{
+		return $this->isHit;
+	}
+
+	public function exists()
+	{
+		return $this->value !== null;
+	}
+
+	public function setExpiration($ttl = null)
+	{
+		if(is_numeric($ttl))
+		{
+			$this->ttl = time() + $ttl;
+		}
+		else if($ttl instanceof \DateTime)
+		{
+			$this->ttl = $ttl->getTimestamp();
+		}
+		else if($ttl === null)
+		{
+			$this->ttl = null;
+		}
+
+		return $this;
+	}
+
+	public function getExpiration()
+	{
+		if($this->ttl === null)
+		{
+			return new \DateTime();
+		}
+		else
+		{
+			return new \DateTime('@' . $this->ttl);
+		}
+	}
+
+	public function hasExpiration()
+	{
+		return $this->ttl !== null;
 	}
 }

@@ -23,28 +23,12 @@
 
 namespace PSX;
 
-use DateInterval;
-use PSX\Cache\Handler\File;
-use PSX\Cache\Item;
+use Psr\Cache\CacheItemPoolInterface;
+use PSX\Cache\Handler;
 use PSX\Cache\HandlerInterface;
 
 /**
- * Provides a general caching mechanism. This class abstracts how cached items
- * are saved (i.e. file, sql, ...) and handels expire times. Here an example how
- * you can use the cache class. As [key] you must provide a unique key.
- * <code>
- * $cache = new Cache('[key]');
- *
- * if(($content = $cache->load()) === false)
- * {
- * 	// here some complex stuff so that it is worth to cache the content
- * 	$content = 'test';
- *
- * 	$cache->write($content);
- * }
- *
- * echo $content;
- * </code>
+ * Cache
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
@@ -52,203 +36,69 @@ use PSX\Cache\HandlerInterface;
  */
 class Cache
 {
-	/**
-	 * The cache key
-	 *
-	 * @var string
-	 */
-	protected $key;
-
-	/**
-	 * The expire time of the cache in seconds
-	 *
-	 * @var integer
-	 */
-	protected $expire;
-
-	/**
-	 * Whether to write the cache or not
-	 *
-	 * @var boolean
-	 */
-	protected $enabled;
-
-	/**
-	 * The handler for the class
-	 *
-	 * @var PSX\Cache\HandlerInterface
-	 */
 	protected $handler;
+	protected $items = array();
 
-	/**
-	 * The cache item
-	 *
-	 * @var PSX\Cache\Item
-	 */
-	protected $item;
-
-	/**
-	 * To create an cache object we need an $key wich identifies the cache. The
-	 * handler is an object of type PSX\Cache\HandlerInterface wich is used to
-	 * load and write the cache. Optional you can set the $expire time how long
-	 * the cache remains if not set the default config cache expire time is
-	 * used.
-	 *
-	 * @param string $key
-	 * @param integer|DateInterval $expire
-	 * @param PSX\Cache\HandlerInterface $handler
-	 */
-	public function __construct($key, $expire = 0, HandlerInterface $handler = null)
+	public function __construct(HandlerInterface $handler = null)
 	{
-		if(!is_numeric($expire))
-		{
-			$interval = $expire instanceof DateInterval ? $expire : new DateInterval($expire);
-			$now      = new DateTime();
-			$tstamp   = $now->getTimestamp();
+		$this->handler = $handler === null ? new Handler\File() : $handler;
+	}
 
-			$now->add($interval);
+	public function getItem($key)
+	{
+		return $this->handler->load($key);
+	}
 
-			$this->expire = $now->getTimestamp() - $tstamp;
-		}
-		else
+	public function getItems(array $keys = array())
+	{
+		$items = array();
+
+		foreach($keys as $key)
 		{
-			$this->expire = $expire;
+			$items[] = $this->handler->load($key);
 		}
 
-		$this->key     = md5($key);
-		$this->handler = $handler !== null ? $handler : new File();
-		$this->enabled = true;
+		return $items;
 	}
 
-	public function getKey()
+	public function clear()
 	{
-		return $this->key;
+		return $this->handler->removeAll();
 	}
 
-	public function getExpire()
+	public function deleteItems(array $keys)
 	{
-		return $this->expire;
-	}
-
-	public function isEnabled()
-	{
-		return $this->enabled;
-	}
-
-	public function setEnabled($enabled)
-	{
-		$this->enabled = (bool) $enabled;
-	}
-
-	/**
-	 * If caching is enabled and the item exists and is not expired we load the
-	 * cache from the handler if not we return false
-	 *
-	 * @return false|string
-	 */
-	public function load()
-	{
-		if($this->enabled && $this->exists() && !$this->isExpired())
+		foreach($keys as $key)
 		{
-			return $this->get()->getContent();
+			$this->handler->remove($key);
 		}
 
-		return false;
+		return $this;
 	}
 
-	/**
-	 * Returns whether the cache item is expired. Note if the underlying cache
-	 * item does not exist it is also expired
-	 *
-	 * @return boolean
-	 */
-	public function isExpired()
+	public function save(/*CacheItemInterface*/ $item)
 	{
-		if($this->exists())
+		$this->handler->write($item);
+
+		return $this;
+	}
+
+	public function saveDeferred(/*CacheItemInterface*/ $item)
+	{
+		$this->items[] = $item;
+
+		return $this;
+	}
+
+	public function commit()
+	{
+		foreach($this->items as $item)
 		{
-			if($this->expire > 0 && $this->get()->getTime() !== null && (time() - $this->get()->getTime()) > $this->expire)
-			{
-				return true;
-			}
-			else
-			{
-				return false;
-			}
+			$this->handler->write($item);
 		}
+
+		$this->items = array();
 
 		return true;
 	}
-
-	/**
-	 * Returns whether an cache exists
-	 *
-	 * @return boolean
-	 */
-	public function exists()
-	{
-		return $this->get() instanceof Item;
-	}
-
-	/**
-	 * Returns the cache item or null if not available. The cache item contains
-	 * the cache content and time and is independent from the underlying cache
-	 * handler
-	 *
-	 * @return PSX\Cache\Item
-	 */
-	public function get()
-	{
-		if($this->item === null)
-		{
-			$item = $this->handler->load($this->key);
-
-			if($item instanceof Item)
-			{
-				$this->item = $item;
-			}
-		}
-
-		return $this->item;
-	}
-
-	/**
-	 * Removes the internal cache wich is present if you call the load method so
-	 * you can reload the cache item
-	 */
-	public function reset()
-	{
-		$this->item = null;
-	}
-
-	/**
-	 * Write the string $content to the cache by using the handler.
-	 *
-	 * @param string $content
-	 * @return void
-	 */
-	public function write($content)
-	{
-		if($this->enabled)
-		{
-			$this->handler->write($this->key, $content, $this->expire);
-
-			$this->reset();
-		}
-	}
-
-	/**
-	 * Remove the key from the cache using the handler
-	 *
-	 * @return void
-	 */
-	public function remove()
-	{
-		if($this->enabled)
-		{
-			$this->handler->remove($this->key);
-
-			$this->reset();
-		}
-	}
 }
-

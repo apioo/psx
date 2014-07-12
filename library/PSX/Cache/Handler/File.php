@@ -23,11 +23,14 @@
 
 namespace PSX\Cache\Handler;
 
+use Psr\Cache\CacheItemInterface;
 use PSX\Cache\HandlerInterface;
 use PSX\Cache\Item;
 
 /**
- * File
+ * Cache handle which writes cache items to an file. Note this handler does not 
+ * work after 2038 since the expire timestamp of the file is stored in the first 
+ * 32bits of the file
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
@@ -41,22 +44,46 @@ class File implements HandlerInterface
 
 		if(is_file($file))
 		{
-			$content = file_get_contents($file);
-			$time    = filemtime($file);
+			$handle = fopen($file, 'r');
+			$ttl    = unpack('I*', fread($handle, 4));
+			$ttl    = (int) current($ttl);
 
-			return new Item($content, $time);
+			if($ttl >= time())
+			{
+				$value = stream_get_contents($handle);
+
+				fclose($handle);
+
+				return new Item($key, unserialize($value), true, new \DateTime('@' . $ttl));
+			}
+			else
+			{
+				fclose($handle);
+			}
+		}
+
+		return new Item($key, null, false);
+	}
+
+	public function write(/*CacheItemInterface*/ $item)
+	{
+		$file = self::getFile($item->getKey());
+
+		if($item->hasExpiration())
+		{
+			$ttl = $item->getExpiration()->getTimestamp();
 		}
 		else
 		{
-			return false;
+			$ttl = PHP_INT_MAX;
 		}
-	}
 
-	public function write($key, $content, $expire)
-	{
-		$file = self::getFile($key);
+		// we write the expire date in the first bits of the file and then the 
+		// content
+		$data = pack('I*', $ttl);
+		$data.= serialize($item->get());
 
-		file_put_contents($file, $content);
+		file_put_contents($file, $data);
 	}
 
 	public function remove($key)
@@ -67,6 +94,11 @@ class File implements HandlerInterface
 		{
 			unlink($file);
 		}
+	}
+
+	public function removeAll()
+	{
+		return true;
 	}
 
 	public static function getFile($key)

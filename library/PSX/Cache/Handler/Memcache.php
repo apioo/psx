@@ -24,6 +24,7 @@
 namespace PSX\Cache\Handler;
 
 use Memcache as Mem;
+use Psr\Cache\CacheItemInterface;
 use PSX\Cache\HandlerInterface;
 use PSX\Cache\Item;
 
@@ -45,21 +46,23 @@ class Memcache implements HandlerInterface
 
 	public function load($key)
 	{
-		$content = $this->memcache->get($key);
+		$value = $this->memcache->get($key);
 
-		if($content !== false)
+		if($value !== false)
 		{
-			return new Item($content, null);
+			return new Item($key, $value, true);
 		}
 		else
 		{
-			return false;
+			return new Item($key, null, false);
 		}
 	}
 
-	public function write($key, $content, $expire)
+	public function write(CacheItemInterface $item)
 	{
-		$this->memcache->set($key, $content, 0, $expire);
+		$ttl = $item->getExpiration()->getTimestamp();
+
+		$this->memcache->set($item->getKey(), $item->get(), 0, $ttl);
 	}
 
 	public function remove($key)
@@ -67,8 +70,8 @@ class Memcache implements HandlerInterface
 		$this->memcache->delete($key);
 	}
 
-	public function getMemcache()
+	public function removeAll()
 	{
-		return $this->memcache;
+		return true;
 	}
 }

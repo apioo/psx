@@ -23,6 +23,7 @@
 
 namespace PSX\Cache\Handler;
 
+use Psr\Cache\CacheItemInterface;
 use PSX\Cache\HandlerInterface;
 use PSX\Cache\Item;
 
@@ -41,17 +42,20 @@ class Memory implements HandlerInterface
 	{
 		if(isset($this->_container[$key]))
 		{
-			return $this->_container[$key];
+			$item = $this->_container[$key];
+
+			if(!$item->hasExpiration() || $item->getExpiration()->getTimestamp() >= time())
+			{
+				return new Item($item->getKey(), $item->get(), true, $item->getExpiration());
+			}
 		}
-		else
-		{
-			return false;
-		}
+
+		return new Item($key, null, false);
 	}
 
-	public function write($key, $content, $expire)
+	public function write(/*CacheItemInterface*/ $item)
 	{
-		$this->_container[$key] = new Item($content, time());
+		$this->_container[$item->getKey()] = $item;
 	}
 
 	public function remove($key)
@@ -60,6 +64,13 @@ class Memory implements HandlerInterface
 		{
 			unset($this->_container[$key]);
 		}
+	}
+
+	public function removeAll()
+	{
+		$this->_container = array();
+
+		return true;
 	}
 }
 

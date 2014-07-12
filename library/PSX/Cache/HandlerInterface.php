@@ -23,6 +23,8 @@
 
 namespace PSX\Cache;
 
+use Psr\Cache\CacheItemInterface;
+
 /**
  * HandlerInterface
  *
@@ -33,30 +35,34 @@ namespace PSX\Cache;
 interface HandlerInterface
 {
 	/**
-	 * Returns the cache item with the given key or false if the cache item
-	 * doesnt exist
+	 * Returns the cache item with the given key. If it doesn exist it returns
+	 * an empty item
 	 *
 	 * @param string $key
-	 * @return PSX\Cache\Item|false
+	 * @return Psr\Cache\CacheItemInterface
 	 */
 	public function load($key);
 
 	/**
-	 * Writes the cache item. If no expire time is set the $expire value will
-	 * be 0
+	 * Writes the cache item
 	 *
-	 * @param string $key
-	 * @param string $content
-	 * @param integer $expire
+	 * @param Psr\Cache\CacheItemInterface $item
 	 * @return void
 	 */
-	public function write($key, $content, $expire);
+	public function write(/*CacheItemInterface*/ $item);
 
 	/**
-	 * Removes the cache item
+	 * Removes the cache item associated with the key
 	 *
 	 * @param string $key
 	 * @return void
 	 */
 	public function remove($key);
+
+	/**
+	 * Removes all entries. Returns whether all entries were successful removed
+	 *
+	 * @return boolean
+	 */
+	public function removeAll();
 }

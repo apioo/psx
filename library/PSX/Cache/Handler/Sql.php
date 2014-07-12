@@ -23,6 +23,7 @@
 
 namespace PSX\Cache\Handler;
 
+use Psr\Cache\CacheItemInterface;
 use PSX\Cache\HandlerInterface;
 use PSX\Cache\Item;
 use PSX\DateTime;
@@ -35,10 +36,10 @@ use UnexpectedValueException;
  * This handler stores cache entries in an simple sql table. The table must have
  * the following structure
  * <code>
- * CREATE TABLE IF NOT EXISTS `psx_cache` (
+ * CREATE TABLE `psx_cache` (
  *   `id` varchar(32) NOT NULL,
  *   `content` blob NOT NULL,
- *   `date` datetime NOT NULL,
+ *   `date` datetime DEFAULT NULL,
  *   PRIMARY KEY (`id`)
  * ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
  * </code>
@@ -66,39 +67,48 @@ class Sql implements HandlerInterface
 	{
 		$columnContent = $this->allocation->get(self::COLUMN_CONTENT);
 		$columnDate    = $this->allocation->get(self::COLUMN_DATE);
-		$condition     = new Condition(array($this->allocation->get(self::COLUMN_ID), '=', $key));
+
+		$condition = new Condition();
+		$condition->add($this->allocation->get(self::COLUMN_ID), '=', $key, 'AND');
+		$condition->add($this->allocation->get(self::COLUMN_DATE), 'IS', 'NULL', 'OR', Condition::TYPE_RAW);
+		$condition->add($this->allocation->get(self::COLUMN_DATE), '>=', date(DateTime::SQL));
 
 		$row = $this->table->getRow(array($columnContent, $columnDate), $condition);
 
 		if(!empty($row))
 		{
-			$content = $row[$columnContent];
-			$time    = strtotime($row[$columnDate]);
+			$value = $row[$columnContent];
+			$ttl   = !empty($row[$columnDate]) ? new \DateTime($row[$columnDate]) : null;
 
-			return new Item($content, $time);
+			return new Item($key, unserialize($value), true, $ttl);
 		}
 		else
 		{
-			return false;
+			return new Item($key, null, false);
 		}
 	}
 
-	public function write($key, $content, $expire)
+	public function write(/*CacheItemInterface*/ $item)
 	{
 		$columnId      = $this->allocation->get(self::COLUMN_ID);
 		$columnContent = $this->allocation->get(self::COLUMN_CONTENT);
 		$columnDate    = $this->allocation->get(self::COLUMN_DATE);
 
-		$this->table->insert(array(
-			$columnId      => $key,
-			$columnContent => $content,
-			$columnDate    => date(DateTime::SQL),
+		$this->table->replace(array(
+			$columnId      => $item->getKey(),
+			$columnContent => serialize($item->get()),
+			$columnDate    => $item->hasExpiration() ? date(DateTime::SQL) : null,
 		));
 	}
 
 	public function remove($key)
 	{
 		$this->table->delete(new Condition(array($this->table->getPrimaryKey(), '=', $key)));
+	}
+
+	public function removeAll()
+	{
+		return true;
 	}
 }
 

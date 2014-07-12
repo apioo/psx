@@ -23,7 +23,9 @@
 
 namespace PSX\Cache\Handler;
 
+use Psr\Cache\CacheItemInterface;
 use PSX\Cache\HandlerInterface;
+use PSX\Cache\Item;
 
 /**
  * Null
@@ -36,15 +38,20 @@ class Null implements HandlerInterface
 {
 	public function load($key)
 	{
-		return false;
+		return new Item($key, null, false);
 	}
 
-	public function write($key, $content, $expire)
+	public function write(/*CacheItemInterface*/ $item)
 	{
 	}
 
 	public function remove($key)
 	{
+	}
+
+	public function removeAll()
+	{
+		return true;
 	}
 }
 
