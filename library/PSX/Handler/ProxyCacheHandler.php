@@ -29,9 +29,9 @@ use PSX\Data\RecordInterface;
 use PSX\Sql\Condition;
 
 /**
- * Handler wich can be used to cache handler results. This can be useful if your
- * handler is expensive because of an complex sql query or api call. The result
- * can be cached through different handler
+ * Handler which can be used to cache handler results. This can be useful if 
+ * your handler is expensive because of an complex sql query or api call. The 
+ * result can be cached through different handler
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3

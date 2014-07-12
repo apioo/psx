@@ -35,7 +35,7 @@ use PSX\Sql\Condition;
 use PSX\Sql\TableInterface;
 
 /**
- * Handler wich uses native sql queries to obtain the fields
+ * Handler which uses native sql queries to obtain the fields
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3

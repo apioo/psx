@@ -36,7 +36,7 @@ use PSX\Sql\TableManagerInterface;
 use RuntimeException;
 
 /**
- * Database handler wich implements all necessary methods using an
+ * Database handler which implements all necessary methods using an
  * TableInterface. The TableInterface only simplyfies creating sql queries you
  * could also write an handler wich uses another DBAL or simply pure sql. Each
  * handler must specify the sql table and an select wich represents the view

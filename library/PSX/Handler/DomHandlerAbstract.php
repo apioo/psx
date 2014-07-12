@@ -31,7 +31,7 @@ use PSX\Sql;
 use PSX\Sql\Condition;
 
 /**
- * Handler wich can query an underlying DOMDocument
+ * Handler which can query an underlying DOMDocument
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3

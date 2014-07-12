@@ -79,7 +79,6 @@ interface HandlerQueryInterface
 	/**
 	 * Returns the record which can be used for import
 	 *
-	 * @param integer $id
 	 * @return PSX\Data\RecordInterface
 	 */
 	public function getRecord();

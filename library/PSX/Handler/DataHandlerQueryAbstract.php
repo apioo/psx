@@ -27,7 +27,7 @@ use DateTime;
 use PSX\Sql\Condition;
 
 /**
- * Abstract handler wich can be used to access internal data structures through 
+ * Abstract handler which can be used to access internal data structures through 
  * the query interface i.e. to use an DOMDocument or an simple array
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
