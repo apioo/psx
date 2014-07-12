@@ -23,7 +23,7 @@
 
 namespace PSX\Dispatch;
 
-use Psr\HttpMessage\ResponseInterface;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * VoidSender

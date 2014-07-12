@@ -24,8 +24,8 @@
 namespace PSX\Dispatch\Filter;
 
 use Closure;
-use Psr\HttpMessage\RequestInterface;
-use Psr\HttpMessage\ResponseInterface;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use PSX\Base;
 use PSX\Dispatch\FilterInterface;
 use PSX\Exception;

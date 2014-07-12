@@ -23,8 +23,8 @@
 
 namespace PSX\Http;
 
-use Psr\HttpMessage\ResponseInterface;
-use Psr\HttpMessage\StreamInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
 use PSX\Http;
 use PSX\Exception;
 

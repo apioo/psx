@@ -24,8 +24,8 @@
 namespace PSX\Loader\CallbackResolver;
 
 use RuntimeException;
-use Psr\HttpMessage\RequestInterface;
-use Psr\HttpMessage\ResponseInterface;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use PSX\Dispatch\ControllerFactoryInterface;
 use PSX\Exception;
 use PSX\Loader\Callback;

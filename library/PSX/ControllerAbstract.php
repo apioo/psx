@@ -26,8 +26,8 @@ namespace PSX;
 use BadMethodCallException;
 use DOMDocument;
 use InvalidArgumentException;
-use Psr\HttpMessage\RequestInterface;
-use Psr\HttpMessage\ResponseInterface;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use PSX\Data\NotFoundException;
 use PSX\Data\ReaderFactory;
 use PSX\Data\RecordInterface;
@@ -60,12 +60,12 @@ abstract class ControllerAbstract implements ControllerInterface
 	protected $location;
 
 	/**
-	 * @var Psr\HttpMessage\RequestInterface
+	 * @var Psr\Http\Message\RequestInterface
 	 */
 	protected $request;
 
 	/**
-	 * @var Psr\HttpMessage\ResponseInterface
+	 * @var Psr\Http\Message\ResponseInterface
 	 */
 	protected $response;
 

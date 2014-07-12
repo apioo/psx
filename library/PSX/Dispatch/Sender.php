@@ -23,7 +23,7 @@
 
 namespace PSX\Dispatch;
 
-use Psr\HttpMessage\ResponseInterface;
+use Psr\Http\Message\ResponseInterface;
 use PSX\Http;
 use PSX\Http\ResponseParser;
 use PSX\Http\Stream\FileStream;

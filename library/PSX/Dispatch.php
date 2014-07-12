@@ -24,8 +24,8 @@
 namespace PSX;
 
 use DOMDocument;
-use Psr\HttpMessage\RequestInterface;
-use Psr\HttpMessage\ResponseInterface;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use PSX\Base;
 use PSX\Dispatch\ControllerFactoryInterface;
 use PSX\Dispatch\SenderInterface;

@@ -24,7 +24,7 @@
 namespace PSX\Http\Stream;
 
 use InvalidArgumentException;
-use Psr\HttpMessage\StreamInterface;
+use Psr\Http\Message\StreamInterface;
 
 /**
  * The curl handler writes the http body response into an php://temp stream 

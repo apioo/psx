@@ -23,7 +23,7 @@
 
 namespace PSX\Http\Stream;
 
-use Psr\HttpMessage\StreamInterface;
+use Psr\Http\Message\StreamInterface;
 
 /**
  * Stream wich works on an string therefore the size of the stream is limited to

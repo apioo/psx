@@ -23,8 +23,8 @@
 
 namespace PSX\Dispatch;
 
-use Psr\HttpMessage\RequestInterface;
-use Psr\HttpMessage\ResponseInterface;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * FilterInterface

@@ -23,8 +23,8 @@
 
 namespace PSX;
 
-use Psr\HttpMessage\RequestInterface;
-use Psr\HttpMessage\ResponseInterface;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * LoaderInterface
@@ -40,8 +40,8 @@ interface LoaderInterface
 	 * loader should pass the response to the controller so that the controller
 	 * can write data to the response
 	 *
-	 * @param Psr\HttpMessage\RequestInterface $request
-	 * @param Psr\HttpMessage\ResponseInterface $response
+	 * @param Psr\Http\Message\RequestInterface $request
+	 * @param Psr\Http\Message\ResponseInterface $response
 	 * @return PSX\ControllerInterface
 	 */
 	public function load(RequestInterface $request, ResponseInterface $response);

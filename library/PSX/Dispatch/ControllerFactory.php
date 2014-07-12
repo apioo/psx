@@ -24,8 +24,8 @@
 namespace PSX\Dispatch;
 
 use PSX\Dependency\ObjectBuilderInterface;
-use Psr\HttpMessage\RequestInterface;
-use Psr\HttpMessage\ResponseInterface;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use PSX\Loader\Location;
 use RuntimeException;
 use Symfony\Component\DependencyInjection\ContainerInterface;

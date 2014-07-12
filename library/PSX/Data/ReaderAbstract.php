@@ -23,7 +23,7 @@
 
 namespace PSX\Data;
 
-use Psr\HttpMessage\MessageInterface;
+use Psr\Http\Message\MessageInterface;
 use PSX\Data\Record\ImporterInterface;
 use RuntimeException;
 

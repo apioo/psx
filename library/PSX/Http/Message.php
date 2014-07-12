@@ -24,8 +24,8 @@
 namespace PSX\Http;
 
 use InvalidArgumentException;
-use Psr\HttpMessage\MessageInterface;
-use Psr\HttpMessage\StreamInterface;
+use Psr\Http\Message\MessageInterface;
+use Psr\Http\Message\StreamInterface;
 use PSX\Http\Stream\StringStream;
 
 /**
@@ -43,7 +43,7 @@ class Message implements MessageInterface
 
 	/**
 	 * @param array $header
-	 * @param Psr\HttpMessage\StreamInterface|string $body
+	 * @param Psr\Http\Message\StreamInterface|string $body
 	 * @param string $scheme
 	 */
 	public function __construct(array $header = array(), $body = null, $scheme = null)
@@ -163,7 +163,7 @@ class Message implements MessageInterface
 		}
 		else
 		{
-			throw new InvalidArgumentException('Body must be either an Psr\HttpMessage\StreamInterface or string');
+			throw new InvalidArgumentException('Body must be either an Psr\Http\Message\StreamInterface or string');
 		}
 	}
 }

@@ -24,7 +24,7 @@
 namespace PSX\Http\Stream;
 
 use InvalidArgumentException;
-use Psr\HttpMessage\StreamInterface;
+use Psr\Http\Message\StreamInterface;
 
 /**
  * The socks stream is used by the socks http handler. When you read data from 

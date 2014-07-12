@@ -24,7 +24,7 @@
 namespace PSX\Data\Reader;
 
 use DOMDocument;
-use Psr\HttpMessage\MessageInterface;
+use Psr\Http\Message\MessageInterface;
 use PSX\Data\ReaderAbstract;
 
 /**

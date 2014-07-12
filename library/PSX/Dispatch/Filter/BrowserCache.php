@@ -23,8 +23,8 @@
 
 namespace PSX\Dispatch\Filter;
 
-use Psr\HttpMessage\RequestInterface;
-use Psr\HttpMessage\ResponseInterface;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use PSX\DateTime;
 use PSX\Dispatch\FilterInterface;
 
