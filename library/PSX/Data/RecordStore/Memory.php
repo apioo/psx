@@ -44,11 +44,6 @@ class Memory implements RecordStoreInterface
 
 	public function load($key)
 	{
-		if(isset($this->protected[$key]))
-		{
-			return $this->protected[$key];
-		}
-
-		return null;
+		return isset($this->protected[$key]) ? $this->protected[$key] : null;
 	}
 }

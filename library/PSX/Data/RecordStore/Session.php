@@ -42,11 +42,6 @@ class Session implements RecordStoreInterface
 
 	public function load($key)
 	{
-		if(isset($_SESSION[$key]))
-		{
-			return $_SESSION[$key];
-		}
-
-		return null;
+		return isset($_SESSION[$key]) ? $_SESSION[$key] : null;
 	}
 }
