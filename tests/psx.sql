@@ -25,7 +25,7 @@ DROP TABLE IF EXISTS `psx_cache_handler_sql_test`;
 CREATE TABLE `psx_cache_handler_sql_test` (
   `id` varchar(32) NOT NULL,
   `content` blob NOT NULL,
-  `date` datetime NOT NULL,
+  `date` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
