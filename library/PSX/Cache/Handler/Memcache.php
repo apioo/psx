@@ -60,7 +60,14 @@ class Memcache implements HandlerInterface
 
 	public function write(/*CacheItemInterface*/ $item)
 	{
-		$ttl = $item->getExpiration()->getTimestamp();
+		if($item->hasExpiration())
+		{
+			$ttl = $item->getExpiration()->getTimestamp();
+		}
+		else
+		{
+			$ttl = 0;
+		}
 
 		$this->memcache->set($item->getKey(), $item->get(), 0, $ttl);
 	}
