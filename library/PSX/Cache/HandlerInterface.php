@@ -23,10 +23,8 @@
 
 namespace PSX\Cache;
 
-use Psr\Cache\CacheItemInterface;
-
 /**
- * HandlerInterface
+ * The handler is the storage enginge of an cache pool
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
@@ -35,21 +33,21 @@ use Psr\Cache\CacheItemInterface;
 interface HandlerInterface
 {
 	/**
-	 * Returns the cache item with the given key. If it doesn exist it returns
+	 * Returns the cache item with the given key. If it doesnt exist it returns
 	 * an empty item
 	 *
 	 * @param string $key
-	 * @return Psr\Cache\CacheItemInterface
+	 * @return PSX\Cache\Item
 	 */
 	public function load($key);
 
 	/**
 	 * Writes the cache item
 	 *
-	 * @param Psr\Cache\CacheItemInterface $item
+	 * @param PSX\Cache\Item $item
 	 * @return void
 	 */
-	public function write(/*CacheItemInterface*/ $item);
+	public function write(Item $item);
 
 	/**
 	 * Removes the cache item associated with the key
