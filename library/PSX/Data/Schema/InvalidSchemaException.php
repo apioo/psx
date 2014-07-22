@@ -21,22 +21,17 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Data\Schema\Generator;
+namespace PSX\Data\Schema;
+
+use PSX\Exception;
 
 /**
- * ReaderInterface
+ * InvalidSchemaException
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-interface ReaderInterface
+class InvalidSchemaException extends Exception
 {
-	/**
-	 * Generates an representation of this schema in another schema format
-	 *
-	 * @return string $schema
-	 * @return PSX\Data\SchemaInterface
-	 */
-	public function getSchemaDefinition($schema);
 }

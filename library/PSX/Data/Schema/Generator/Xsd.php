@@ -244,14 +244,6 @@ class Xsd implements GeneratorInterface
 
 	protected function generateTypeString(Property\String $type)
 	{
-		$length = $type->getLength();
-		if($length)
-		{
-			$this->writer->startElement('xs:length');
-			$this->writer->writeAttribute('value', $length);
-			$this->writer->endElement();
-		}
-
 		$minLength = $type->getMinLength();
 		if($minLength)
 		{

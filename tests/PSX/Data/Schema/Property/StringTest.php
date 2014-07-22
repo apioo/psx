@@ -49,25 +49,6 @@ class StringTest extends \PHPUnit_Framework_TestCase
 		$this->assertTrue($property->validate(new \stdClass()));
 	}
 
-	public function testLength()
-	{
-		$property = new String('test');
-		$property->setLength(3);
-
-		$this->assertTrue($property->validate('foo'));
-	}
-
-	/**
-	 * @expectedException PSX\Data\Schema\ValidationException
-	 */
-	public function testLengthInvalid()
-	{
-		$property = new String('test');
-		$property->setLength(3);
-
-		$this->assertTrue($property->validate('fooo'));
-	}
-
 	public function testMinLength()
 	{
 		$property = new String('test');

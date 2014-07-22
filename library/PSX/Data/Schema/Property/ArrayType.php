@@ -37,6 +37,7 @@ class ArrayType implements PropertyInterface
 {
 	protected $name;
 	protected $required;
+	protected $prototype;
 	protected $minLength;
 	protected $maxLength;
 

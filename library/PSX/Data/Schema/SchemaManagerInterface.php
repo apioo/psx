@@ -34,7 +34,7 @@ interface SchemaManagerInterface
 {
 	/**
 	 * The schema manager knows howto create an schema instance from the given 
-	 * schema name
+	 * schema name. Returns an schema interface or must throw an exception
 	 *
 	 * @param string $schemaName
 	 * @return PSX\Data\SchemaInterface

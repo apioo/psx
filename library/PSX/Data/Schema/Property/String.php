@@ -64,7 +64,7 @@ class String extends PropertyAbstract
 
 	public function hasConstraints()
 	{
-		return parent::hasConstraints() || $this->length || $this->minLength || $this->maxLength;
+		return parent::hasConstraints() || $this->minLength || $this->maxLength;
 	}
 
 	public function validate($data)
