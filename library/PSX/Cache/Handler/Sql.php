@@ -23,7 +23,6 @@
 
 namespace PSX\Cache\Handler;
 
-use Psr\Cache\CacheItemInterface;
 use PSX\Cache\HandlerInterface;
 use PSX\Cache\Item;
 use PSX\DateTime;
@@ -88,7 +87,7 @@ class Sql implements HandlerInterface
 		}
 	}
 
-	public function write(/*CacheItemInterface*/ $item)
+	public function write(Item $item)
 	{
 		$columnId      = $this->allocation->get(self::COLUMN_ID);
 		$columnContent = $this->allocation->get(self::COLUMN_CONTENT);

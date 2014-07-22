@@ -23,7 +23,6 @@
 
 namespace PSX\Cache\Handler;
 
-use Psr\Cache\CacheItemInterface;
 use PSX\Cache\HandlerInterface;
 use PSX\Cache\Item;
 
@@ -41,7 +40,7 @@ class Null implements HandlerInterface
 		return new Item($key, null, false);
 	}
 
-	public function write(/*CacheItemInterface*/ $item)
+	public function write(Item $item)
 	{
 	}
 

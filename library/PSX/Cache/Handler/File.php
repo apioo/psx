@@ -23,7 +23,6 @@
 
 namespace PSX\Cache\Handler;
 
-use Psr\Cache\CacheItemInterface;
 use PSX\Cache\HandlerInterface;
 use PSX\Cache\Item;
 
@@ -65,7 +64,7 @@ class File implements HandlerInterface
 		return new Item($key, null, false);
 	}
 
-	public function write(/*CacheItemInterface*/ $item)
+	public function write(Item $item)
 	{
 		$file = self::getFile($item->getKey());
 
