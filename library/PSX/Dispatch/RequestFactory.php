@@ -25,6 +25,7 @@ namespace PSX\Dispatch;
 
 use PSX\Config;
 use PSX\Http\Request;
+use PSX\Http\Stream\MultipartStream;
 use PSX\Http\Stream\TempStream;
 use PSX\Url;
 use UnexpectedValueException;
@@ -83,7 +84,16 @@ class RequestFactory implements RequestFactoryInterface
 			$url     = new Url($self);
 			$method  = $this->getRequestMethod();
 			$headers = $this->getRequestHeaders();
-			$body    = new TempStream(fopen('php://input', 'r'));
+			$body    = null;
+
+			if($_SERVER['REQUEST_METHOD'] == 'POST' && strpos($_SERVER['CONTENT_TYPE'], 'multipart/form-data') !== false)
+			{
+				$body = MultipartStream::createFromEnvironment();
+			}
+			else if(in_array($_SERVER['REQUEST_METHOD'], array('POST', 'PUT', 'DELETE')))
+			{
+				$body = new TempStream(fopen('php://input', 'r'));
+			}
 
 			return new Request($url, $method, $headers, $body);
 		}
