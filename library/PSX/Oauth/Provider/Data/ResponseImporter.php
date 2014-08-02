@@ -36,9 +36,9 @@ use PSX\Http\Message;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class ResponseImporter implements ImporterInterface
+class ResponseImporter
 {
-	public function import($record, $data)
+	public function import(RecordInterface $record, $data)
 	{
 		if(!is_array($data))
 		{

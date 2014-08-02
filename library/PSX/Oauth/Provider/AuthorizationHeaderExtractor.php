@@ -21,8 +21,9 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Oauth\Provider\Data;
+namespace PSX\Oauth\Provider;
 
+use Psr\Http\Message\MessageInterface;
 use InvalidArgumentException;
 use PSX\Data\InvalidDataException;
 use PSX\Data\RecordInterface;
@@ -31,13 +32,13 @@ use PSX\Http\Message;
 use PSX\Oauth;
 
 /**
- * RequestImporter
+ * AuthorizationHeaderExtractor
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class RequestImporter implements ImporterInterface
+class AuthorizationHeaderExtractor
 {
 	protected $requiredFields;
 	protected $map = array(
@@ -52,14 +53,19 @@ class RequestImporter implements ImporterInterface
 		'verifier'        => 'verifier'
 	);
 
-	public function import($record, $data)
+	public function __construct(array $requiredFields)
 	{
-		if(!$data instanceof Message)
-		{
-			throw new InvalidArgumentException('Data must be an Message object');
-		}
+		$this->requiredFields = $requiredFields;
+	}
 
-		$auth = (string) $data->getHeader('Authorization');
+	public function setRequiredFields(array $requiredFields)
+	{
+		$this->requiredFields = $requiredFields;
+	}
+
+	public function extract(MessageInterface $message, RecordInterface $record)
+	{
+		$auth = (string) $message->getHeader('Authorization');
 
 		if(!empty($auth))
 		{
@@ -108,6 +114,8 @@ class RequestImporter implements ImporterInterface
 						throw new InvalidDataException('Required parameter "' . $v . '" is missing');
 					}
 				}
+
+				return $record;
 			}
 			else
 			{
@@ -118,10 +126,5 @@ class RequestImporter implements ImporterInterface
 		{
 			throw new InvalidDataException('Missing Authorization header');
 		}
-	}
-
-	public function setRequiredFields(array $requiredFields)
-	{
-		$this->requiredFields = $requiredFields;
 	}
 }

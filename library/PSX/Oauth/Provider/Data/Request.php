@@ -120,12 +120,6 @@ class Request extends RecordAbstract
 	}
 
 	/**
-	 * Currenty a timestamp has 10 signs i.e. 1256852759 in ca 300 years we get 
-	 * a timestamp that has 11 signs ... because of that we check without 
-	 * consideration whether the timestamp has 10 signs ... should be future 
-	 * safe if many websites uses in the future psx and they get problems 
-	 * because of that ... shame on me ^^
-	 *
 	 * @param integer $timestamp
 	 */
 	public function setTimestamp($timestamp)

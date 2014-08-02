@@ -54,9 +54,7 @@ abstract class RequestAbstract extends ApiAbstract
 
 	protected function doHandle()
 	{
-		$request  = new Request();
-		$importer = new Data\RequestImporter();
-		$importer->setRequiredFields(array(
+		$extractor = new AuthorizationHeaderExtractor(array(
 			'consumerKey',
 			'signatureMethod',
 			'signature',
@@ -65,8 +63,8 @@ abstract class RequestAbstract extends ApiAbstract
 			'version',
 			'callback',
 		));
-		$importer->import($request, $this->getBody(ReaderInterface::RAW));
 
+		$request  = $extractor->extract($this->request, new Request());
 		$consumer = $this->getConsumer($request->getConsumerKey());
 
 		if($consumer instanceof Consumer)
@@ -88,7 +86,7 @@ abstract class RequestAbstract extends ApiAbstract
 				{
 					$response->addParam('oauth_callback_confirmed', true);
 
-					$this->setResponse($response, WriterInterface::FORM);
+					$this->setBody($response, WriterInterface::FORM);
 				}
 				else
 				{

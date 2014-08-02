@@ -54,9 +54,7 @@ abstract class AccessAbstract extends ApiAbstract
 
 	protected function doHandle()
 	{
-		$request  = new Request();
-		$importer = new Data\RequestImporter();
-		$importer->setRequiredFields(array(
+		$extractor = new AuthorizationHeaderExtractor(array(
 			'consumerKey',
 			'token',
 			'signatureMethod',
@@ -65,8 +63,8 @@ abstract class AccessAbstract extends ApiAbstract
 			'nonce',
 			'verifier',
 		));
-		$importer->import($request, $this->getBody(ReaderInterface::RAW));
 
+		$request  = $extractor->extract($this->request, new Request());
 		$consumer = $this->getConsumer($request->getConsumerKey(), $request->getToken());
 
 		if($consumer instanceof Consumer)
@@ -86,7 +84,7 @@ abstract class AccessAbstract extends ApiAbstract
 
 				if($response instanceof Response)
 				{
-					$this->setResponse($response, WriterInterface::FORM);
+					$this->setBody($response, WriterInterface::FORM);
 				}
 				else
 				{
