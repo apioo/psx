@@ -144,6 +144,11 @@ class MultipartStream implements StreamInterface, \Iterator, \Countable
 		return count($this->streams);
 	}
 
+	public function get($key)
+	{
+		return isset($this->streams[$key]) ? $this->streams[$key] : null;
+	}
+
 	public static function createFromEnvironment()
 	{
 		$streams = array();
@@ -152,7 +157,7 @@ class MultipartStream implements StreamInterface, \Iterator, \Countable
 		{
 			if(is_uploaded_file($file['tmp_name']))
 			{
-				$streams[$name] = new TempStream(fopen($file['tmp_name'], 'r'));
+				$streams[$name] = new FileStream(fopen($file['tmp_name'], 'r'), $file['name'], $file['type']);
 			}
 		}
 
