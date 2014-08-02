@@ -75,18 +75,9 @@ class Link extends RecordAbstract
 		}
 	}
 
-	public function getRecordInfo()
-	{
-		return new RecordInfo('link', array(
-			'href'     => $this->href,
-			'rel'      => $this->rel,
-			'type'     => $this->type,
-			'hreflang' => $this->hreflang,
-			'title'    => $this->title,
-			'length'   => $this->length,
-		));
-	}
-
+	/**
+	 * @param string $href
+	 */
 	public function setHref($href)
 	{
 		$this->href = $href;
@@ -97,6 +88,9 @@ class Link extends RecordAbstract
 		return $this->href;
 	}
 
+	/**
+	 * @param string $rel
+	 */
 	public function setRel($rel)
 	{
 		$this->rel = $rel;
@@ -107,6 +101,9 @@ class Link extends RecordAbstract
 		return $this->rel;
 	}
 
+	/**
+	 * @param string $type
+	 */
 	public function setType($type)
 	{
 		$this->type = $type;
@@ -117,16 +114,22 @@ class Link extends RecordAbstract
 		return $this->type;
 	}
 
-	public function setHrefLang($hreflang)
+	/**
+	 * @param string $hreflang
+	 */
+	public function setHreflang($hreflang)
 	{
 		$this->hreflang = $hreflang;
 	}
 	
-	public function getHrefLang()
+	public function getHreflang()
 	{
 		return $this->hreflang;
 	}
 
+	/**
+	 * @param string $title
+	 */
 	public function setTitle($title)
 	{
 		$this->title = $title;
@@ -137,6 +140,9 @@ class Link extends RecordAbstract
 		return $this->title;
 	}
 
+	/**
+	 * @param string $length
+	 */
 	public function setLength($length)
 	{
 		$this->length = $length;

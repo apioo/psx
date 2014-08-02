@@ -57,15 +57,9 @@ class Category extends RecordAbstract
 		}
 	}
 
-	public function getRecordInfo()
-	{
-		return new RecordInfo('category', array(
-			'term'   => $this->term,
-			'scheme' => $this->scheme,
-			'label'  => $this->label,
-		));
-	}
-
+	/**
+	 * @param string $term
+	 */
 	public function setTerm($term)
 	{
 		$this->term = $term;
@@ -76,6 +70,9 @@ class Category extends RecordAbstract
 		return $this->term;
 	}
 
+	/**
+	 * @param string $scheme
+	 */
 	public function setScheme($scheme)
 	{
 		$this->scheme = $scheme;
@@ -86,6 +83,9 @@ class Category extends RecordAbstract
 		return $this->scheme;
 	}
 
+	/**
+	 * @param string $label
+	 */
 	public function setLabel($label)
 	{
 		$this->label = $label;

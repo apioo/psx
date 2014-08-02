@@ -50,24 +50,6 @@ class Entry extends RecordAbstract
 	protected $title;
 	protected $updated;
 
-	public function getRecordInfo()
-	{
-		return new RecordInfo('entry', array(
-			'author'      => $this->author,
-			'category'    => $this->category,
-			'content'     => $this->content,
-			'contributor' => $this->contributor,
-			'id'          => $this->id,
-			'link'        => $this->link,
-			'published'   => $this->published,
-			'rights'      => $this->rights,
-			'source'      => $this->source,
-			'summary'     => $this->summary,
-			'title'       => $this->title,
-			'updated'     => $this->updated,
-		));
-	}
-
 	/**
 	 * @param PSX\Atom\Person $author
 	 */
@@ -159,6 +141,9 @@ class Entry extends RecordAbstract
 		return $this->contributor;
 	}
 
+	/**
+	 * @param string $id
+	 */
 	public function setId($id)
 	{
 		$this->id = $id;
@@ -169,6 +154,9 @@ class Entry extends RecordAbstract
 		return $this->id;
 	}
 
+	/**
+	 * @param string $id
+	 */
 	public function setRights($rights)
 	{
 		$this->rights = $rights;
@@ -179,6 +167,9 @@ class Entry extends RecordAbstract
 		return $this->rights;
 	}
 
+	/**
+	 * @param string $id
+	 */
 	public function setTitle($title)
 	{
 		$this->title = $title;

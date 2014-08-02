@@ -35,9 +35,7 @@ use PSX\Data\RecordAbstract;
 use PSX\Data\RecordInfo;
 
 /**
- * This record represents an atom feed. It is possible to import an existing 
- * feed into the record through the AtomImporter. In the same way you can 
- * produce a feed with the AtomExporter.
+ * This record represents an atom feed
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
@@ -73,7 +71,7 @@ class Atom extends CollectionAbstract
 			'id'          => $this->id,
 			'link'        => $this->link,
 			'rights'      => $this->rights,
-			'subtitle'    => $this->subTitle,
+			'subTitle'    => $this->subTitle,
 			'title'       => $this->title,
 			'updated'     => $this->updated,
 			'entry'       => $this->collection,
@@ -276,7 +274,7 @@ class Atom extends CollectionAbstract
 	/**
 	 * @param array<PSX\Atom\Entry>
 	 */
-	public function setEntry($entry)
+	public function setEntry(array $entry)
 	{
 		$this->collection = $entry;
 	}

@@ -51,14 +51,9 @@ class Text extends RecordAbstract
 		}
 	}
 
-	public function getRecordInfo()
-	{
-		return new RecordInfo('text', array(
-			'type'    => $this->type,
-			'content' => $this->content,
-		));
-	}
-
+	/**
+	 * @param string $type
+	 */
 	public function setType($type)
 	{
 		$this->type = $type;
@@ -69,6 +64,9 @@ class Text extends RecordAbstract
 		return $this->type;
 	}
 
+	/**
+	 * @param string $content
+	 */
 	public function setContent($content)
 	{
 		$this->content = $content;

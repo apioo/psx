@@ -57,15 +57,9 @@ class Person extends RecordAbstract
 		}
 	}
 
-	public function getRecordInfo()
-	{
-		return new RecordInfo('person', array(
-			'name'  => $this->name,
-			'uri'   => $this->uri,
-			'email' => $this->email,
-		));
-	}
-
+	/**
+	 * @param string $name
+	 */
 	public function setName($name)
 	{
 		$this->name = $name;
@@ -76,6 +70,9 @@ class Person extends RecordAbstract
 		return $this->name;
 	}
 
+	/**
+	 * @param string $uri
+	 */
 	public function setUri($uri)
 	{
 		$this->uri = $uri;
@@ -86,6 +83,9 @@ class Person extends RecordAbstract
 		return $this->uri;
 	}
 
+	/**
+	 * @param string $email
+	 */
 	public function setEmail($email)
 	{
 		$this->email = $email;

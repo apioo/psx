@@ -57,15 +57,9 @@ class Generator extends RecordAbstract
 		}
 	}
 
-	public function getRecordInfo()
-	{
-		return new RecordInfo('generator', array(
-			'text'    => $this->text,
-			'uri'     => $this->uri,
-			'version' => $this->version,
-		));
-	}
-
+	/**
+	 * @param string $text
+	 */
 	public function setText($text)
 	{
 		$this->text = $text;
@@ -76,6 +70,9 @@ class Generator extends RecordAbstract
 		return $this->text;
 	}
 
+	/**
+	 * @param string $uri
+	 */
 	public function setUri($uri)
 	{
 		$this->uri = $uri;
@@ -86,6 +83,9 @@ class Generator extends RecordAbstract
 		return $this->uri;
 	}
 
+	/**
+	 * @param string $version
+	 */
 	public function setVersion($version)
 	{
 		$this->version = $version;
