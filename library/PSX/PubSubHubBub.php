@@ -24,7 +24,7 @@
 namespace PSX;
 
 use PSX\Exception;
-use PSX\Data\Reader\Dom;
+use PSX\Data\Reader\Xml;
 use PSX\Http\GetRequest;
 use PSX\Http\PostRequest;
 
@@ -217,7 +217,7 @@ class PubSubHubBub
 	 */
 	public function discover(Url $url, $type = 0)
 	{
-		$reader   = new Dom();
+		$reader   = new Xml();
 		$request  = new GetRequest($url);
 		$request->setFollowLocation(true);
 		$response = $this->http->request($request);

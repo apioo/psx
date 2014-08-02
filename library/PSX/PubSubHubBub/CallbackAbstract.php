@@ -24,14 +24,12 @@
 namespace PSX\PubSubHubBub;
 
 use PSX\Atom;
-use PSX\Atom\Importer as AtomImporter;
 use PSX\Base;
 use PSX\ControllerAbstract;
 use PSX\Data\ReaderInterface;
 use PSX\Exception;
 use PSX\Filter;
 use PSX\Rss;
-use PSX\Rss\Importer as RssImporter;
 use PSX\Url;
 use PSX\Validate;
 
@@ -61,17 +59,13 @@ abstract class CallbackAbstract extends ControllerAbstract
 		switch($contentType)
 		{
 			case 'application/atom+xml':
-				$atom     = new Atom();
-				$importer = new AtomImporter();
-				$importer->import($atom, $this->getBody(ReaderInterface::DOM));
+				$atom = $this->importer->import(new Atom(), $this->request);
 
 				$this->onAtom($atom);
 				break;
 
 			case 'application/rss+xml':
-				$rss      = new Rss();
-				$importer = new RssImporter();
-				$importer->import($rss, $this->getBody(ReaderInterface::DOM));
+				$rss = $this->importer->import(new Rss(), $this->request);
 
 				$this->onRss($rss);
 				break;
@@ -86,22 +80,18 @@ abstract class CallbackAbstract extends ControllerAbstract
 
 	protected function doVerify()
 	{
-		$mode         = $this->request->getUrl()->getParam('hub_mode');
-		$topic        = $this->request->getUrl()->getParam('hub_topic');
-		$challenge    = $this->request->getUrl()->getParam('hub_challenge');
-		$leaseSeconds = $this->request->getUrl()->getParam('hub_lease_seconds');
-
-		$mode         = $this->validate->apply($mode, Validate::TYPE_STRING, array(new Filter\InArray(array('subscribe', 'unsubscribe'))), 'hub.mode', 'Mode');
-		$topic        = $this->validate->apply($topic, Validate::TYPE_STRING, array(new Filter\Length(3, 512), new Filter\Url()), 'hub.topic', 'Topic');
-		$challenge    = $this->validate->apply($challenge, Validate::TYPE_STRING, array(new Filter\Length(1, 512)), 'hub.challenge', 'Challenge');
-		$leaseSeconds = $this->validate->apply($leaseSeconds, Validate::TYPE_INTEGER, array(), 'hub.lease_seconds', 'Lease seconds', false);
+		$mode         = $this->getParameter('hub_mode', Validate::TYPE_STRING, array(new Filter\InArray(array('subscribe', 'unsubscribe'))), 'Mode');
+		$topic        = $this->getParameter('hub_topic', Validate::TYPE_STRING, array(new Filter\Length(3, 512), new Filter\Url()), 'Topic');
+		$challenge    = $this->getParameter('hub_challenge', Validate::TYPE_STRING, array(new Filter\Length(1, 512)), 'Challenge');
+		$leaseSeconds = $this->getParameter('hub_lease_seconds', Validate::TYPE_INTEGER, array(), 'Lease seconds', false);
 
 		$topic = new Url($topic);
 
 		if($this->onVerify($mode, $topic, $leaseSeconds) === true)
 		{
 			$this->response->setStatusCode(200);
-			$this->response->getBody()->write($challenge);
+
+			$this->setBody($challenge);
 		}
 		else
 		{
@@ -117,7 +107,7 @@ abstract class CallbackAbstract extends ControllerAbstract
 	abstract protected function onAtom(Atom $atom);
 
 	/**
-	 * Is called if the incomming entry from an hub is an rss entry
+	 * Is called if the incomming entry from an hub is an rss item
 	 *
 	 * @return void
 	 */
