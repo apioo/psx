@@ -53,7 +53,7 @@ class Video extends Object
 	}
 
 	/**
-	 * @param PSX\ActivityStream\LinkBuilder $stream
+	 * @param PSX\ActivityStream\ObjectFactory $stream
 	 */
 	public function setStream($stream)
 	{

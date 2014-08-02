@@ -24,35 +24,69 @@
 namespace PSX\ActivityStream;
 
 /**
- * LinkObject
+ * AudienceTargetingTrait
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class LinkObject extends Object
+trait AudienceTargetingTrait
 {
-	protected $rel;
-	protected $mediaType;
+	protected $to;
+	protected $cc;
+	protected $bto;
+	protected $bcc;
 
-	public function setRel($rel)
+	/**
+	 * @param PSX\ActivityStream\ObjectFactory $to
+	 */
+	public function setTo($to)
 	{
-		$this->rel = $rel;
+		$this->to = $to;
 	}
 	
-	public function getRel()
+	public function getTo()
 	{
-		return $this->rel;
+		return $this->to;
 	}
 
-	public function setMediaType($mediaType)
+	/**
+	 * @param PSX\ActivityStream\ObjectFactory $cc
+	 */
+	public function setCc($cc)
 	{
-		$this->mediaType = $mediaType;
+		$this->cc = $cc;
 	}
 	
-	public function getMediaType()
+	public function getCc()
 	{
-		return $this->mediaType;
+		return $this->cc;
+	}
+
+	/**
+	 * @param PSX\ActivityStream\ObjectFactory $bto
+	 */
+	public function setBto($bto)
+	{
+		$this->bto = $bto;
+	}
+	
+	public function getBto()
+	{
+		return $this->bto;
+	}
+
+	/**
+	 * @param PSX\ActivityStream\ObjectFactory $bcc
+	 */
+	public function setBcc($bcc)
+	{
+		$this->bcc = $bcc;
+	}
+	
+	public function getBcc()
+	{
+		return $this->bcc;
 	}
 }
-
+	

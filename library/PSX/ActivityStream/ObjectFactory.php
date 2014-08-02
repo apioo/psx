@@ -23,19 +23,19 @@
 
 namespace PSX\ActivityStream;
 
-use PSX\Data\BuilderInterface;
-use PSX\Data\Record\DefaultImporter;
+use PSX\Data\Record\FactoryInterface;
+use PSX\Data\Record\ImporterInterface;
 
 /**
- * LinkBuilder
+ * Object
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class LinkBuilder implements BuilderInterface
+class ObjectFactory implements FactoryInterface
 {
-	public function build($data)
+	public function factory($data, ImporterInterface $importer)
 	{
 		if(is_array($data))
 		{
@@ -45,7 +45,7 @@ class LinkBuilder implements BuilderInterface
 
 				foreach($data as $row)
 				{
-					$objects[] = $this->build($row);
+					$objects[] = $this->factory($row, $importer);
 				}
 
 				return $objects;
@@ -56,16 +56,7 @@ class LinkBuilder implements BuilderInterface
 
 				if(isset($data['objectType']) && !empty($data['objectType']))
 				{
-					if(is_array($data['objectType']))
-					{
-						$objectType = isset($data['objectType']['id']) ? $data['objectType']['id'] : null;
-					}
-					else
-					{
-						$objectType = (string) $data['objectType'];
-					}
-
-					$class = 'PSX\ActivityStream\ObjectType\\' . ucfirst(strtolower($objectType));
+					$class = $this->resolveType($data['objectType']);
 				}
 
 				if($class !== null && class_exists($class))
@@ -74,18 +65,53 @@ class LinkBuilder implements BuilderInterface
 				}
 				else
 				{
-					$object = isset($data['url']) ? new LinkObject() : new Object();
+					$object = new Object();
 				}
 
-				$importer = new DefaultImporter();
-				$importer->import($object, $data);
-
-				return $object;
+				return $importer->import($object, $data);
 			}
 		}
 		else
 		{
+			$object = new Object();
+			$object->setUrl($data);
+
 			return $data;
 		}
+	}
+
+	protected function resolveType($type)
+	{
+		if(is_array($type))
+		{
+			$type = isset($type['id']) ? $type['id'] : null;
+		}
+		else
+		{
+			$type = (string) $type;
+		}
+
+		$type  = strtolower($type);
+		$class = null;
+
+		switch($type)
+		{
+			case 'activity':
+			case 'audio':
+			case 'binary':
+			case 'collection':
+			case 'event':
+			case 'group':
+			case 'issue':
+			case 'permission':
+			case 'place':
+			case 'role':
+			case 'task':
+			case 'video':
+				$class = 'PSX\\ActivityStream\\ObjectType\\' . ucfirst($type);
+				break;
+		}
+
+		return $class;
 	}
 }

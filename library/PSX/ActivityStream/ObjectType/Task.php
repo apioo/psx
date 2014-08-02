@@ -48,7 +48,7 @@ class Task extends Object
 	}
 
 	/**
-	 * @param PSX\ActivityStream\LinkBuilder $actor
+	 * @param PSX\ActivityStream\ObjectFactory $actor
 	 */
 	public function setActor($actor)
 	{
@@ -71,7 +71,7 @@ class Task extends Object
 	}
 
 	/**
-	 * @param PSX\ActivityStream\LinkBuilder $object
+	 * @param PSX\ActivityStream\ObjectFactory $object
 	 */
 	public function setObject($object)
 	{
@@ -84,7 +84,7 @@ class Task extends Object
 	}
 
 	/**
-	 * @param PSX\ActivityStream\LinkBuilder $prerequisites
+	 * @param PSX\ActivityStream\ObjectFactory $prerequisites
 	 */
 	public function setPrerequisites($prerequisites)
 	{
@@ -107,7 +107,7 @@ class Task extends Object
 	}
 
 	/**
-	 * @param PSX\ActivityStream\LinkBuilder $supersedes
+	 * @param PSX\ActivityStream\ObjectFactory $supersedes
 	 */
 	public function setSupersedes($supersedes)
 	{

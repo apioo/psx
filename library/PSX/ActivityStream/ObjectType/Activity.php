@@ -24,6 +24,7 @@
 namespace PSX\ActivityStream\ObjectType;
 
 use DateTime;
+use PSX\ActivityStream\AudienceTargetingTrait;
 use PSX\ActivityStream\Object;
 
 /**
@@ -35,16 +36,17 @@ use PSX\ActivityStream\Object;
  */
 class Activity extends Object
 {
+	use AudienceTargetingTrait;
+
 	protected $verb;
 	protected $actor;
 	protected $object;
 	protected $target;
 	protected $result;
+	protected $instrument;
+	protected $participant;
 	protected $priority;
-	protected $to;
-	protected $cc;
-	protected $bto;
-	protected $bcc;
+	protected $status;
 
 	public function setVerb($verb)
 	{
@@ -57,7 +59,7 @@ class Activity extends Object
 	}
 
 	/**
-	 * @param PSX\ActivityStream\LinkBuilder $actor
+	 * @param PSX\ActivityStream\ObjectFactory $actor
 	 */
 	public function setActor($actor)
 	{
@@ -70,7 +72,7 @@ class Activity extends Object
 	}
 
 	/**
-	 * @param PSX\ActivityStream\LinkBuilder $object
+	 * @param PSX\ActivityStream\ObjectFactory $object
 	 */
 	public function setObject($object)
 	{
@@ -83,7 +85,7 @@ class Activity extends Object
 	}
 
 	/**
-	 * @param PSX\ActivityStream\LinkBuilder $target
+	 * @param PSX\ActivityStream\ObjectFactory $target
 	 */
 	public function setTarget($target)
 	{
@@ -96,7 +98,7 @@ class Activity extends Object
 	}
 
 	/**
-	 * @param PSX\ActivityStream\LinkBuilder $result
+	 * @param PSX\ActivityStream\ObjectFactory $result
 	 */
 	public function setResult($result)
 	{
@@ -108,65 +110,54 @@ class Activity extends Object
 		return $this->result;
 	}
 
+
+	/**
+	 * @param PSX\ActivityStream\ObjectFactory $result
+	 */
+	public function setInstrument($instrument)
+	{
+		$this->instrument = $instrument;
+	}
+	
+	public function getInstrument()
+	{
+		return $this->instrument;
+	}
+
+
+	/**
+	 * @param PSX\ActivityStream\ObjectFactory $result
+	 */
+	public function setParticipant($participant)
+	{
+		$this->participant = $participant;
+	}
+	
+	public function getParticipant()
+	{
+		return $this->participant;
+	}
+
+	/**
+	 * @param float $priority
+	 */
 	public function setPriority($priority)
 	{
 		$this->priority = $priority;
 	}
-	
+
 	public function getPriority()
 	{
 		return $this->priority;
 	}
 
-	/**
-	 * @param PSX\ActivityStream\LinkBuilder $to
-	 */
-	public function setTo($to)
+	public function setStatus($status)
 	{
-		$this->to = $to;
+		$this->status = $status;
 	}
 	
-	public function getTo()
+	public function getStatus()
 	{
-		return $this->to;
-	}
-
-	/**
-	 * @param PSX\ActivityStream\LinkBuilder $cc
-	 */
-	public function setCc($cc)
-	{
-		$this->cc = $cc;
-	}
-	
-	public function getCc()
-	{
-		return $this->cc;
-	}
-
-	/**
-	 * @param PSX\ActivityStream\LinkBuilder $bto
-	 */
-	public function setBto($bto)
-	{
-		$this->bto = $bto;
-	}
-	
-	public function getBto()
-	{
-		return $this->bto;
-	}
-
-	/**
-	 * @param PSX\ActivityStream\LinkBuilder $bcc
-	 */
-	public function setBcc($bcc)
-	{
-		$this->bcc = $bcc;
-	}
-	
-	public function getBcc()
-	{
-		return $this->bcc;
+		return $this->status;
 	}
 }
