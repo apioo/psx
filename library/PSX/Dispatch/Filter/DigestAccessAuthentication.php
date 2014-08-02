@@ -26,7 +26,7 @@ namespace PSX\Dispatch\Filter;
 use Closure;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use PSX\Data\RecordStoreInterface;
+use PSX\Data\Record\StoreInterface;
 use PSX\Dispatch\FilterInterface;
 use PSX\Dispatch\Filter\DigestAccessAuthentication\Digest;
 use PSX\Exception;
@@ -67,9 +67,9 @@ class DigestAccessAuthentication implements FilterInterface
 	 * default onMissing callback
 	 *
 	 * @param Closure $ha1Callback
-	 * @param PSX\Data\RecordStoreInterface $digestStore
+	 * @param PSX\Data\Record\StoreInterface $digestStore
 	 */
-	public function __construct(Closure $ha1Callback, RecordStoreInterface $digestStore)
+	public function __construct(Closure $ha1Callback, StoreInterface $digestStore)
 	{
 		$this->ha1Callback = $ha1Callback;
 		$this->digestStore = $digestStore;
