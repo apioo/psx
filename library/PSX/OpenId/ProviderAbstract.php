@@ -31,11 +31,11 @@ use PSX\Http\Response;
 use PSX\OpenId;
 use PSX\OpenId\Provider\Association;
 use PSX\OpenId\Provider\AssociationGenerator;
-use PSX\OpenId\Provider\Data\AssociationImporter;
+use PSX\OpenId\Provider\Data\AssociationExtractor;
 use PSX\OpenId\Provider\Data\AssociationRequest;
-use PSX\OpenId\Provider\Data\ResImporter;
+use PSX\OpenId\Provider\Data\ResExtractor;
 use PSX\OpenId\Provider\Data\ResRequest;
-use PSX\OpenId\Provider\Data\SetupImporter;
+use PSX\OpenId\Provider\Data\SetupExtractor;
 use PSX\OpenId\Provider\Data\SetupRequest;
 use PSX\OpenSsl;
 use PSX\OpenSsl\PKey;
@@ -54,6 +54,8 @@ abstract class ProviderAbstract extends ApiAbstract
 	const DH_P = 'dcf93a0b883972ec0e19989ac5a2ce310e1d37717e8d9571bb7623731866e61ef75a2e27898b057f9891c2e27a639c3f29b60814581cd3b2ca3986d2683705577d45c2e7e52dc81c7a171876e5cea74b1448bfdfaf18828efd2519f14e45e3826634af1949e5b535cc829a483b8a76223e5d490a257f05bdff16f2fb22c583ab';
 	const DH_G = '02';
 
+	protected $data;
+
 	public function onGet()
 	{
 		$this->doHandle();
@@ -66,9 +68,10 @@ abstract class ProviderAbstract extends ApiAbstract
 
 	protected function doHandle()
 	{
-		$body = $this->getBody(ReaderInterface::GPC);
-		$ns   = isset($body['openid_ns'])   ? $body['openid_ns']   : null;
-		$mode = isset($body['openid_mode']) ? $body['openid_mode'] : null;
+		$this->data = array_merge($this->getParameters(), $this->getBody(ReaderInterface::FORM));
+
+		$ns   = isset($this->data['openid_ns'])   ? $this->data['openid_ns']   : null;
+		$mode = isset($this->data['openid_mode']) ? $this->data['openid_mode'] : null;
 
 		if($ns != self::NS)
 		{
@@ -100,9 +103,8 @@ abstract class ProviderAbstract extends ApiAbstract
 	{
 		try
 		{
-			$request  = new AssociationRequest();
-			$importer = new AssociationImporter();
-			$importer->import($request, $this->getBody(ReaderInterface::GPC));
+			$extractor = new AssociationExtractor();
+			$request   = $extractor->extract($this->data);
 
 			$generator = new AssociationGenerator();
 			$assoc     = $generator->generate($request);
@@ -157,9 +159,8 @@ abstract class ProviderAbstract extends ApiAbstract
 	{
 		try
 		{
-			$request  = new SetupRequest();
-			$importer = new SetupImporter();
-			$importer->import($request, $this->getBody(ReaderInterface::GPC));
+			$extractor = new SetupExtractor();
+			$request   = $extractor->extract($this->data);
 
 			$request->setImmediate($immediate);
 
@@ -207,9 +208,8 @@ abstract class ProviderAbstract extends ApiAbstract
 	{
 		try
 		{
-			$request  = new ResRequest();
-			$importer = new ResImporter();
-			$importer->import($request, $this->getBody(ReaderInterface::GPC));
+			$extractor = new ResExtractor();
+			$request   = $extractor->extract($this->data);
 
 			if($this->onCheckAuthentication($request) === true)
 			{

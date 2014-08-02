@@ -23,27 +23,20 @@
 
 namespace PSX\OpenId\Provider\Data;
 
-use InvalidArgumentException;
 use PSX\Data\InvalidDataException;
-use PSX\Data\Record\ImporterInterface;
-use PSX\Http\Message;
 
 /**
- * ResImporter
+ * ResExtractor
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class ResImporter implements ImporterInterface
+class ResExtractor
 {
-	public function import($record, $data)
+	public function extract(array $data)
 	{
-		if(!is_array($data))
-		{
-			throw new InvalidArgumentException('Data must be an array');
-		}
-
+		$record = new ResRequest();
 		$record->setParams($data);
 
 		if(isset($data['openid_op_endpoint']))
@@ -114,5 +107,7 @@ class ResImporter implements ImporterInterface
 		{
 			throw new InvalidDataException('Sig not set');
 		}
+
+		return $record;
 	}
 }

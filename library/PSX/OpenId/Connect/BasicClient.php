@@ -25,8 +25,8 @@ namespace PSX\OpenId\Connect;
 
 use Closure;
 use PSX\Base;
-use PSX\Data\RecordStore;
-use PSX\Data\RecordStoreInterface;
+use PSX\Data\Record\Store;
+use PSX\Data\Record\StoreInterface;
 use PSX\Exception;
 use PSX\Json;
 use PSX\Json\WebToken;
@@ -46,11 +46,11 @@ class BasicClient
 	protected $http;
 	protected $creds;
 
-	public function __construct(Http $http, Credentials $creds, RecordStoreInterface $store = null)
+	public function __construct(Http $http, Credentials $creds, StoreInterface $store = null)
 	{
 		$this->http  = $http;
 		$this->creds = $creds;
-		$this->store = $store !== null ? $store : new RecordStore\Session();
+		$this->store = $store !== null ? $store : new Store\Session();
 	}
 
 	public function redirect($redirectUri, $scope)

@@ -23,27 +23,20 @@
 
 namespace PSX\OpenId\Provider\Data;
 
-use InvalidArgumentException;
 use PSX\Data\InvalidDataException;
-use PSX\Data\Record\ImporterInterface;
-use PSX\Http\Message;
 
 /**
- * SetupImporter
+ * SetupExtractor
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class SetupImporter implements ImporterInterface
+class SetupExtractor
 {
-	public function import($record, $data)
+	public function extract(array $data)
 	{
-		if(!is_array($data))
-		{
-			throw new InvalidArgumentException('Data must be an array');
-		}
-
+		$record = new SetupRequest();
 		$record->setParams($data);
 
 		if(isset($data['openid_claimed_id']))
@@ -70,5 +63,7 @@ class SetupImporter implements ImporterInterface
 		{
 			$record->setRealm($data['openid_realm']);
 		}
+
+		return $record;
 	}
 }

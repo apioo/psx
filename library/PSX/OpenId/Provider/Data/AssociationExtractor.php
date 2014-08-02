@@ -23,26 +23,20 @@
 
 namespace PSX\OpenId\Provider\Data;
 
-use InvalidArgumentException;
 use PSX\Data\InvalidDataException;
-use PSX\Data\Record\ImporterInterface;
-use PSX\Http\Message;
 
 /**
- * AssociationImporter
+ * AssociationExtractor
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class AssociationImporter implements ImporterInterface
+class AssociationExtractor
 {
-	public function import($record, $data)
+	public function extract(array $data)
 	{
-		if(!is_array($data))
-		{
-			throw new InvalidArgumentException('Data must be an array');
-		}
+		$record = new AssociationRequest();
 
 		if(isset($data['openid_assoc_type']))
 		{
@@ -68,5 +62,7 @@ class AssociationImporter implements ImporterInterface
 		{
 			$record->setDhConsumerPublic($data['openid_dh_consumer_public']);
 		}
+
+		return $record;
 	}
 }
