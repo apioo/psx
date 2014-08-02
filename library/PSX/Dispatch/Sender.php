@@ -53,6 +53,26 @@ class Sender implements SenderInterface
 	{
 		if(!$this->isCli())
 		{
+			// if we have an file stream set custom header
+			if($response->getBody() instanceof FileStream)
+			{
+				$fileName = $response->getBody()->getFileName();
+				if(empty($fileName))
+				{
+					$fileName = 'file';
+				}
+
+				$contentType = $response->getBody()->getContentType();
+				if(empty($contentType))
+				{
+					$contentType = 'application/octet-stream';
+				}
+
+				$response->setHeader('Content-Type', $contentType);
+				$response->setHeader('Content-Disposition', 'attachment; filename="' . addcslashes($fileName, '"') . '"');
+				$response->setHeader('Transfer-Encoding', 'chunked');
+			}
+
 			// content and transfer encoding is only useful if we are not in an
 			// cli environment
 			$transferEncoding = $response->getHeader('Transfer-Encoding');
