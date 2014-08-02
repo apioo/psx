@@ -23,8 +23,16 @@
 
 namespace PSX\Dependency;
 
+use PSX\Data\Importer as DataImporter;
 use PSX\Data\Reader;
 use PSX\Data\ReaderFactory;
+use PSX\Data\Record\FactoryFactory;
+use PSX\Data\Record\Importer;
+use PSX\Data\Record\ImporterManager;
+use PSX\Data\Schema\SchemaManager;
+use PSX\Data\Schema\Validator;
+use PSX\Data\Transformer;
+use PSX\Data\Transformer\TransformerManager;
 use PSX\Data\Writer;
 use PSX\Data\WriterFactory;
 
@@ -44,11 +52,7 @@ trait Data
 	{
 		$reader = new ReaderFactory();
 		$reader->addReader(new Reader\Json());
-		$reader->addReader(new Reader\Dom());
 		$reader->addReader(new Reader\Form());
-		$reader->addReader(new Reader\Gpc());
-		$reader->addReader(new Reader\Multipart());
-		$reader->addReader(new Reader\Raw());
 		$reader->addReader(new Reader\Xml());
 
 		return $reader;
@@ -69,5 +73,63 @@ trait Data
 		$writer->addWriter(new Writer\Xml());
 
 		return $writer;
+	}
+
+	/**
+	 * @return PSX\Data\Transformer\TransformerManager
+	 */
+	public function getTransformerManager()
+	{
+		$manager = new TransformerManager();
+		$manager->addTransformer(new Transformer\Atom());
+		$manager->addTransformer(new Transformer\Rss());
+		$manager->addTransformer(new Transformer\XmlArray());
+
+		return $manager;
+	}
+
+	/**
+	 * @return PSX\Data\Record\ImporterManager
+	 */
+	public function getImporterManager()
+	{
+		$manager = new ImporterManager();
+		$manager->addImporter(new Importer\Record($this->get('record_factory_factory')));
+		$manager->addImporter(new Importer\Schema($this->get('schema_validator')));
+		$manager->addImporter(new Importer\Table());
+
+		return $manager;
+	}
+
+	/**
+	 * @return PSX\Data\Schema\SchemaManagerInterface
+	 */
+	public function getSchemaManager()
+	{
+		return new SchemaManager();
+	}
+
+	/**
+	 * @return PSX\Data\Schema\ValidatorInterface
+	 */
+	public function getSchemaValidator()
+	{
+		return new Validator();
+	}
+
+	/**
+	 * @return PSX\Data\Record\FactoryFactory
+	 */
+	public function getRecordFactoryFactory()
+	{
+		return new FactoryFactory();
+	}
+
+	/**
+	 * @return PSX\Data\Importer
+	 */
+	public function getImporter()
+	{
+		return new DataImporter($this->get('reader_factory'), $this->get('importer_manager'), $this->get('transformer_manager'));
 	}
 }
