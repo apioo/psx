@@ -87,7 +87,7 @@ class Transaction extends RecordAbstract
 	}
 
 	/**
-	 * @param PSX\Payment\Paypal\Data\RelatedResourceBuilder $relatedResources
+	 * @param PSX\Payment\Paypal\Data\RelatedResourceFactory $relatedResources
 	 */
 	public function setRelatedResources($relatedResources)
 	{

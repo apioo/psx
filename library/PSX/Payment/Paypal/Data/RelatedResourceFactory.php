@@ -25,19 +25,19 @@ namespace PSX\Payment\Paypal\Data;
 
 use InvalidArgumentException;
 use PSX\Data\InvalidDataException;
-use PSX\Data\BuilderInterface;
-use PSX\Data\Record\DefaultImporter;
+use PSX\Data\Record\FactoryInterface;
+use PSX\Data\Record\ImporterInterface;
 
 /**
- * RelatedResourceBuilder
+ * RelatedResourceFactory
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class RelatedResourceBuilder implements BuilderInterface
+class RelatedResourceFactory implements FactoryInterface
 {
-	public function build($data)
+	public function factory($data, ImporterInterface $importer)
 	{
 		if(!is_array($data))
 		{
@@ -56,11 +56,7 @@ class RelatedResourceBuilder implements BuilderInterface
 
 				if(class_exists($class))
 				{
-					$resource = new $class();
-					$importer = new DefaultImporter();
-					$importer->import($resource, $value);
-
-					$record->add($resource);
+					$record->add($importer->import(new $class(), $value));
 				}
 			}
 		}

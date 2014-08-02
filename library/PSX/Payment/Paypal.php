@@ -23,9 +23,10 @@
 
 namespace PSX\Payment;
 
+use PSX\Data\Importer;
 use PSX\Data\Reader;
+use PSX\Data\Record\StoreInterface;
 use PSX\Data\Writer;
-use PSX\Data\RecordStoreInterface;
 use PSX\Payment\Paypal\Data;
 use PSX\Payment\Paypal\Credentials;
 use PSX\Oauth2;
@@ -55,13 +56,14 @@ class Paypal
 
 	protected $http;
 	protected $credentials;
+	protected $importer;
 	protected $oauth2;
 	protected $store;
 
 	protected $accessToken;
 	protected $approvalUrl;
 
-	public function __construct(Http $http, Credentials $credentials, RecordStoreInterface $store = null)
+	public function __construct(Http $http, Credentials $credentials, Importer $importer, StoreInterface $store = null)
 	{
 		if($http->getHandler() instanceof Http\Handler\Curl)
 		{
@@ -72,6 +74,7 @@ class Paypal
 
 		$this->http        = $http;
 		$this->credentials = $credentials;
+		$this->importer    = $importer;
 		$this->oauth2      = new Oauth2();
 		$this->store       = $store;
 	}
@@ -89,7 +92,7 @@ class Paypal
 
 			if(!$accessToken instanceof AccessToken)
 			{
-				$cred = new ClientCredentials($this->http, new Url($this->credentials->getEndpoint() . self::TOKEN));
+				$cred = new ClientCredentials($this->http, new Url($this->credentials->getEndpoint() . self::TOKEN), $this->importer);
 				$cred->setClientPassword($this->credentials->getClientId(), $this->credentials->getClientSecret());
 
 				$accessToken = $cred->getAccessToken();
@@ -132,9 +135,7 @@ class Paypal
 
 		if($response->getStatusCode() == 201)
 		{
-			$payment = new Data\Payment();
-			$reader  = new Reader\Json();
-			$payment = $reader->import($payment, $response);
+			$payment = $this->importer->import(new Data\Payment(), $response);
 
 			// save approval uri
 			$link = $payment->getLinkByRel('approval_url');
@@ -177,10 +178,7 @@ class Paypal
 
 		if($response->getStatusCode() == 200)
 		{
-			$payment = new Data\Payment();
-			$reader  = new Reader\Json();
-
-			return $reader->import($payment, $response);
+			return $this->importer->import(new Data\Payment(), $response);
 		}
 		else
 		{
@@ -203,10 +201,7 @@ class Paypal
 
 		if($response->getStatusCode() == 200)
 		{
-			$payment = new Data\Payment();
-			$reader  = new Reader\Json();
-
-			return $reader->import($payment, $response);
+			return $this->importer->import(new Data\Payment(), $response);
 		}
 		else
 		{
@@ -264,10 +259,7 @@ class Paypal
 
 		if($response->getStatusCode() == 200)
 		{
-			$payments = new Data\Payments();
-			$reader   = new Reader\Json();
-
-			return $reader->import($payments, $response);
+			return $this->importer->import(new Data\Payments(), $response);
 		}
 		else
 		{
