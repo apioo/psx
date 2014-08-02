@@ -23,28 +23,27 @@
 
 namespace PSX\Swagger;
 
-use PSX\Data\BuilderInterface;
-use PSX\Data\Record\DefaultImporter;
+use PSX\Data\Record\FactoryInterface;
+use PSX\Data\Record\ImporterInterface;
 use RuntimeException;
 
 /**
- * ModelBuilder
+ * ModelFactory
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class ModelBuilder implements BuilderInterface
+class ModelFactory implements FactoryInterface
 {
-	public function build($data)
+	public function factory($data, ImporterInterface $importer)
 	{
 		if(!is_array($data))
 		{
 			throw new RuntimeException('Models must be an array');
 		}
 
-		$importer = new DefaultImporter();
-		$models   = array();
+		$models = array();
 
 		foreach($data as $name => $value)
 		{

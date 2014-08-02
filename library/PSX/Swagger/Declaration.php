@@ -102,7 +102,7 @@ class Declaration extends RecordAbstract
 	}
 
 	/**
-	 * @param PSX\Swagger\ModelBuilder $models
+	 * @param PSX\Swagger\ModelFactory $models
 	 */
 	public function setModels(array $models)
 	{
