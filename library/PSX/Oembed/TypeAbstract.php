@@ -26,7 +26,6 @@ namespace PSX\Oembed;
 use PSX\Data\RecordAbstract;
 use PSX\Data\Record\DefaultImporter;
 use PSX\Data\RecordInfo;
-use PSX\Data\InvalidDataException;
 
 /**
  * TypeAbstract

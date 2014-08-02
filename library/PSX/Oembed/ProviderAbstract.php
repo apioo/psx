@@ -54,19 +54,17 @@ abstract class ProviderAbstract extends ApiAbstract
 
 	protected function doDiscover()
 	{
-		$url       = $this->request->getUrl()->getParam('url');
-		$maxWidth  = $this->request->getUrl()->getParam('maxwidth');
-		$maxHeight = $this->request->getUrl()->getParam('maxheight');
-
-		$url       = $this->validate->apply($url, Validate::TYPE_STRING, array(new Filter\Length(3, 512), new Filter\Url()), 'url', 'Url');
-		$maxWidth  = $this->validate->apply($maxWidth, Validate::TYPE_INTEGER, array(), 'maxwidth', 'Max width');
-		$maxHeight = $this->validate->apply($maxHeight, Validate::TYPE_INTEGER, array(), 'maxheight', 'Max height');
+		$url       = $this->getParameter('url', Validate::TYPE_STRING, array(new Filter\Length(3, 512), new Filter\Url()), 'Url');
+		$maxWidth  = $this->getParameter('maxwidth', Validate::TYPE_INTEGER, array(), 'Max width');
+		$maxHeight = $this->getParameter('maxHeight', Validate::TYPE_INTEGER, array(), 'Max height');
 
 		$url  = new Url($url);
 		$type = $this->onRequest($url, $maxWidth, $maxHeight);
 
 		if($type instanceof TypeAbstract)
 		{
+			$this->response->setStatusCode(200);
+
 			if($this->isWriter(WriterInterface::XML))
 			{
 				$this->response->setHeader('Content-Type', 'text/xml+oembed');
@@ -76,7 +74,7 @@ abstract class ProviderAbstract extends ApiAbstract
 				$this->response->setHeader('Content-Type', 'application/json+oembed');
 			}
 
-			$this->setResponse($type);
+			$this->setBody($type);
 		}
 		else
 		{

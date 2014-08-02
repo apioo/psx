@@ -23,7 +23,9 @@
 
 namespace PSX;
 
-use PSX\Data\Reader;
+use PSX\Data\ReaderInterface;
+use PSX\Data\InvalidDataException;
+use PSX\Data\Importer;
 use PSX\Exception;
 use PSX\Html\Parse;
 use PSX\Html\Parse\Element;
@@ -40,10 +42,12 @@ use PSX\Oembed\TypeAbstract;
 class Oembed
 {
 	protected $http;
+	protected $importer;
 
-	public function __construct(Http $http)
+	public function __construct(Http $http, Importer $importer)
 	{
-		$this->http = $http;
+		$this->http     = $http;
+		$this->importer = $importer;
 	}
 
 	/**
@@ -63,31 +67,38 @@ class Oembed
 
 		$format   = $url->addParam('format', 'json');
 		$request  = new GetRequest($url, array(
-			'User-Agent' => __CLASS__ . ' ' . Base::VERSION
+			'User-Agent' => __CLASS__ . ' ' . Base::VERSION,
+			'Accept'     => 'application/json'
 		));
 		$response = $this->http->request($request);
 
 		if($response->getStatusCode() >= 200 && $response->getStatusCode() < 300)
 		{
-			switch($url->getParam('format'))
-			{
-				case 'json':
-					$reader = new Reader\Json();
-					$result = $reader->read($response);
-					break;
+			$source = function(array $data){
 
-				case 'xml':
-					$reader = new Reader\Xml();
-					$result = $reader->read($response);
-					break;
+				$type = isset($data['type']) ? strtolower($data['type']) : null;
+				
+				if(in_array($type, array('link', 'photo', 'rich', 'video')))
+				{
+					$class = 'PSX\\Oembed\\Type\\' . ucfirst($type);
 
-				default:
+					if(class_exists($class))
+					{
+						return new $class();
+					}
+					else
+					{
+						throw new Exception('Class "' . $class . '" does not exist');
+					}
+				}
+				else
+				{
+					throw new InvalidDataException('Invalid type');
+				}
 
-					throw new Exception('Invalid format');
-					break;
-			}
+			};
 
-			return TypeAbstract::factory($result);
+			return $this->importer->import($source, $response, null, ReaderInterface::JSON);
 		}
 		else
 		{
