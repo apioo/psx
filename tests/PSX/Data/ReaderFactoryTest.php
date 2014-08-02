@@ -38,11 +38,7 @@ class ReaderFactoryTest extends \PHPUnit_Framework_TestCase
 	{
 		$this->readerFactory = new ReaderFactory();
 		$this->readerFactory->addReader(new Reader\Json());
-		$this->readerFactory->addReader(new Reader\Dom());
 		$this->readerFactory->addReader(new Reader\Form());
-		$this->readerFactory->addReader(new Reader\Gpc());
-		$this->readerFactory->addReader(new Reader\Multipart());
-		$this->readerFactory->addReader(new Reader\Raw());
 		$this->readerFactory->addReader(new Reader\Xml());
 	}
 
@@ -55,7 +51,6 @@ class ReaderFactoryTest extends \PHPUnit_Framework_TestCase
 	{
 		$this->assertInstanceOf('PSX\Data\Reader\Json', $this->readerFactory->getReaderByContentType('application/json'));
 		$this->assertInstanceOf('PSX\Data\Reader\Form', $this->readerFactory->getReaderByContentType('application/x-www-form-urlencoded'));
-		$this->assertInstanceOf('PSX\Data\Reader\Multipart', $this->readerFactory->getReaderByContentType('multipart/form-data'));
 		$this->assertInstanceOf('PSX\Data\Reader\Xml', $this->readerFactory->getReaderByContentType('application/xml'));
 	}
 
@@ -75,11 +70,7 @@ class ReaderFactoryTest extends \PHPUnit_Framework_TestCase
 	public function testGetReaderByInstance()
 	{
 		$this->assertInstanceOf('PSX\Data\Reader\Json', $this->readerFactory->getReaderByInstance('PSX\Data\Reader\Json'));
-		$this->assertInstanceOf('PSX\Data\Reader\Dom', $this->readerFactory->getReaderByInstance('PSX\Data\Reader\Dom'));
 		$this->assertInstanceOf('PSX\Data\Reader\Form', $this->readerFactory->getReaderByInstance('PSX\Data\Reader\Form'));
-		$this->assertInstanceOf('PSX\Data\Reader\Gpc', $this->readerFactory->getReaderByInstance('PSX\Data\Reader\Gpc'));
-		$this->assertInstanceOf('PSX\Data\Reader\Multipart', $this->readerFactory->getReaderByInstance('PSX\Data\Reader\Multipart'));
-		$this->assertInstanceOf('PSX\Data\Reader\Raw', $this->readerFactory->getReaderByInstance('PSX\Data\Reader\Raw'));
 		$this->assertInstanceOf('PSX\Data\Reader\Xml', $this->readerFactory->getReaderByInstance('PSX\Data\Reader\Xml'));		
 	}
 }

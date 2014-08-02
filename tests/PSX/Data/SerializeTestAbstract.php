@@ -60,15 +60,11 @@ abstract class SerializeTestAbstract extends \PHPUnit_Framework_TestCase
 		$this->assertJsonStringEqualsJsonString($content, $response);
 
 		// create a new record of the same class and import the content
-		$message = new Message(array(), $content);
-		$reader  = new Reader\Json();
-		$result  = $reader->read($message);
-
+		$message   = new Message(array(), $content);
 		$class     = get_class($record);
-		$newRecord = new $class();
-		$importer  = new DefaultImporter();
-		$importer->import($newRecord, $result);
+		$newRecord = getContainer()->get('importer')->import(new $class(), $message);
 
+		// get response
 		$newResponse = $this->getWriterResponse($newRecord);
 
 		// check whether the newResponse is the same as the content

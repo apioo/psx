@@ -23,11 +23,9 @@
 
 namespace PSX\Data\Record;
 
-use PSX\Data\RecordInterface;
-
 /**
- * The importer takes meta informations about an record with the actual data and
- * returns an record containing the data
+ * The importer takes meta informations from an source and returns an record 
+ * containing the actual data
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
@@ -35,10 +33,23 @@ use PSX\Data\RecordInterface;
  */
 interface ImporterInterface
 {
+	const ENTITY = 'PSX\Data\Record\Importer\Entity';
+	const RECORD = 'PSX\Data\Record\Importer\Record';
+	const SCHEMA = 'PSX\Data\Record\Importer\Schema';
+	const TABLE  = 'PSX\Data\Record\Importer\Table';
+
 	/**
-	 * @param mixed $record
+	 * Returns whether the source is acceptable for this importer
+	 *
+	 * @param mixed $source
+	 * @return boolean
+	 */
+	public function accept($source);
+
+	/**
+	 * @param mixed $source
 	 * @param mixed $data
 	 * @return PSX\Data\RecordInterface
 	 */
-	public function import($record, $data);
+	public function import($source, $data);
 }

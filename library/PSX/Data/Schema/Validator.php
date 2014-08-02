@@ -36,7 +36,7 @@ use PSX\Data\Schema\PropertyInterface;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Validator
+class Validator implements ValidatorInterface
 {
 	public function validate(SchemaInterface $schema, $data)
 	{
@@ -47,14 +47,6 @@ class Validator
 
 	protected function recValidate(PropertyInterface $type, $data)
 	{
-		if($data instanceof RecordInterface)
-		{
-			$data = $data->getRecordInfo()->getData();
-		}
-		else if(is_array($data))
-		{
-		}
-
 		$type->validate($data);
 
 		if($type instanceof Property\ComplexType)

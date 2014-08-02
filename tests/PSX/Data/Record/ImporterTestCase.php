@@ -23,16 +23,7 @@
 
 namespace PSX\Data\Record;
 
-use PDOException;
-use PSX\Data\Record;
-use PSX\Data\RecordAbstract;
 use PSX\Data\RecordInterface;
-use PSX\Data\FactoryInterface;
-use PSX\Data\BuilderInterface;
-use PSX\Data\Reader;
-use PSX\Data\Writer;
-use PSX\Exception;
-use PSX\Http\Message;
 
 /**
  * ImporterTestCase
@@ -41,22 +32,8 @@ use PSX\Http\Message;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-abstract class ImporterTestCase extends \PHPUnit_Framework_TestCase
+trait ImporterTestCase
 {
-	/**
-	 * Returns the importer on which the test should operate
-	 *
-	 * @return PSX\Data\Record\ImporterInterface
-	 */
-	abstract protected function getImporter();
-
-	/**
-	 * Returns the source record
-	 *
-	 * @return mixed
-	 */
-	abstract protected function getRecord();
-
 	/**
 	 * Tells the test whether the importer can import complex records if yes
 	 * the importer gets a more complex payload
@@ -79,26 +56,12 @@ abstract class ImporterTestCase extends \PHPUnit_Framework_TestCase
 		return true;
 	}
 
-	public function testImportJson()
+	public function testImport()
 	{
-		// read json
 		$news     = $this->getRecord();
-		$body     = $this->getJsonPayload();
-		$reader   = new Reader\Json();
+		$body     = $this->getPayload();
 		$importer = $this->getImporter();
-		$record   = $importer->import($news, $reader->read(new Message(array(), $body)));
-
-		$this->assertRecord($record);
-	}
-
-	public function testImportXml()
-	{
-		// read xml
-		$news     = $this->getRecord();
-		$body     = $this->getXmlPayload();
-		$reader   = new Reader\Xml();
-		$importer = $this->getImporter();
-		$record   = $importer->import($news, $reader->read(new Message(array(), $body)));
+		$record   = $importer->import($news, $body);
 
 		$this->assertRecord($record);
 	}
@@ -150,144 +113,70 @@ abstract class ImporterTestCase extends \PHPUnit_Framework_TestCase
 			$this->assertInstanceOf('PSX\Data\RecordInterface', $record->getPerson());
 			$this->assertEquals('Foo', $record->getPerson()->getTitle());
 
-			$this->assertInstanceOf('PSX\Data\RecordInterface', $record->getPayment());
-			$this->assertEquals('paypal', $record->getPayment()->getType());
-			$this->assertEquals('foobar', $record->getPayment()->getCustom());
-
-			$this->assertEquals(true, is_array($record->getAchievment()));
-			$this->assertEquals(2, count($record->getAchievment()));
-			$this->assertEquals('bar', $record->getAchievment()[0]->getFoo());
-			$this->assertEquals('foo', $record->getAchievment()[1]->getBar());
-
 			$this->assertEquals(true, is_array($record->getTags()));
 			$this->assertEquals(3, count($record->getTags()));
-			$this->assertEquals('bar', $record->getTags()[0]->getTitle());
-			$this->assertEquals('foo', $record->getTags()[1]->getTitle());
-			$this->assertEquals('test', $record->getTags()[2]->getTitle());
+			$this->assertEquals('bar', $record->getTags()[0]);
+			$this->assertEquals('foo', $record->getTags()[1]);
+			$this->assertEquals('test', $record->getTags()[2]);
 
-			foreach($record->getTags() as $tag)
+			$this->assertEquals(true, is_array($record->getEntry()));
+			$this->assertEquals(3, count($record->getEntry()));
+			$this->assertEquals('bar', $record->getEntry()[0]->getTitle());
+			$this->assertEquals('foo', $record->getEntry()[1]->getTitle());
+			$this->assertEquals('test', $record->getEntry()[2]->getTitle());
+
+			foreach($record->getEntry() as $entry)
 			{
-				$this->assertInstanceOf('PSX\Data\RecordInterface', $tag);
+				$this->assertInstanceOf('PSX\Data\RecordInterface', $entry);
 			}
 		}
 	}
 
-	protected function getJsonPayload()
+	protected function getPayload()
 	{
-		return $this->canImportComplexRecord() ? $this->getComplexJsonPayload() : $this->getSimpleJsonPayload();
+		return $this->canImportComplexRecord() ? $this->getComplexPayload() : $this->getSimplePayload();
 	}
 
-	protected function getXmlPayload()
+	protected function getComplexPayload()
 	{
-		return $this->canImportComplexRecord() ? $this->getComplexXmlPayload() : $this->getSimpleXmlPayload();
+		return array(
+			'id' => '1',
+			'title' => 'foobar',
+			'active' => 'true',
+			'disabled' => 'false',
+			'count' => '12',
+			'rating' => '12.45',
+			'foobar' => 'foo',
+			'date' => '2014-01-01T12:34:47+01:00',
+			'person' => array(
+				'title' => 'Foo',
+			),
+			'tags' => array('bar', 'foo', 'test'),
+			'entry' => array(
+				array(
+					'title' => 'bar'
+				),
+				array(
+					'title' => 'foo'
+				),
+				array(
+					'title' => 'test'
+				),
+			),
+		);
 	}
 
-	protected function getSimpleJsonPayload()
+	protected function getSimplePayload()
 	{
-		return <<<DATA
-{
-	"id": 1,
-	"title": "foobar",
-	"active": true,
-	"disabled": false,
-	"count": 12,
-	"rating": 12.45,
-	"foobar": "foo",
-	"date": "2014-01-01T12:34:47+01:00"
-}
-DATA;
-	}
-
-	protected function getComplexJsonPayload()
-	{
-		return <<<DATA
-{
-	"id": 1,
-	"title": "foobar",
-	"active": true,
-	"disabled": false,
-	"count": 12,
-	"rating": 12.45,
-	"foobar": "foo",
-	"date": "2014-01-01T12:34:47+01:00",
-	"person": {
-		"title": "Foo"
-	},
-	"tags": [{
-		"title": "bar"
-	},{
-		"title": "foo"
-	},{
-		"title": "test"
-	}],
-	"achievment": [{
-		"type": "foo",
-		"foo": "bar"
-	},{
-		"type": "bar",
-		"bar": "foo"
-	}],
-	"payment": {
-		"type": "paypal"
-	}
-}
-DATA;
-	}
-
-	protected function getSimpleXmlPayload()
-	{
-		return <<<DATA
-<?xml version="1.0" encoding="UTF-8"?>
-<news>
-	<id>1</id>
-	<title>foobar</title>
-	<active>true</active>
-	<disabled>false</disabled>
-	<count>12</count>
-	<rating>12.45</rating>
-	<foobar>foo</foobar>
-	<date>2014-01-01T12:34:47+01:00</date>
-</news>
-DATA;
-	}
-
-	protected function getComplexXmlPayload()
-	{
-		return <<<DATA
-<?xml version="1.0" encoding="UTF-8"?>
-<news>
-	<id>1</id>
-	<title>foobar</title>
-	<active>true</active>
-	<disabled>false</disabled>
-	<count>12</count>
-	<rating>12.45</rating>
-	<foobar>foo</foobar>
-	<date>2014-01-01T12:34:47+01:00</date>
-	<person>
-		<title>Foo</title>
-	</person>
-	<tags>
-		<title>bar</title>
-	</tags>
-	<tags>
-		<title>foo</title>
-	</tags>
-	<tags>
-		<title>test</title>
-	</tags>
-	<achievment>
-		<type>foo</type>
-		<foo>bar</foo>
-	</achievment>
-	<achievment>
-		<type>bar</type>
-		<bar>foo</bar>
-	</achievment>
-	<payment>
-		<type>paypal</type>
-	</payment>
-</news>
-DATA;
+		return array(
+			'id' => '1',
+			'title' => 'foobar',
+			'active' => 'true',
+			'disabled' => 'false',
+			'count' => '12',
+			'rating' => '12.45',
+			'foobar' => 'foo',
+			'date' => '2014-01-01T12:34:47+01:00',
+		);
 	}
 }

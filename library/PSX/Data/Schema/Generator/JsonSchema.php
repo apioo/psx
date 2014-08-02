@@ -31,6 +31,7 @@ use PSX\Data\Schema\PropertyInterface;
 /**
  * JsonSchema
  *
+ * @see     http://tools.ietf.org/html/draft-zyp-json-schema-04
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org

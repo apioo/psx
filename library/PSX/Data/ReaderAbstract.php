@@ -36,34 +36,8 @@ use RuntimeException;
  */
 abstract class ReaderAbstract implements ReaderInterface
 {
-	protected $importer;
-
-	public function import(RecordInterface $record, MessageInterface $message)
-	{
-		$importer = $this->getDefaultImporter();
-
-		if($importer instanceof Record\ImporterInterface)
-		{
-			return $importer->import($record, $this->read($message));
-		}
-		else
-		{
-			throw new RuntimeException('Default importer not available');
-		}
-	}
-
 	public function isContentTypeSupported($contentType)
 	{
 		return false;
-	}
-
-	public function getDefaultImporter()
-	{
-		return $this->importer;
-	}
-
-	public function setDefaultImporter(ImporterInterface $importer)
-	{
-		$this->importer = $importer;
 	}
 }

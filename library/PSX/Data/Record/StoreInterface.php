@@ -21,47 +21,32 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Data\Schema;
+namespace PSX\Data\Record;
 
-use PSX\Data\Schema\Generator\TestSchema;
+use PSX\Data\RecordInterface;
 
 /**
- * ValidatorTest
+ * StoreInterface
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class ValidatorTest extends \PHPUnit_Framework_TestCase
+interface StoreInterface
 {
-	public function testValidate()
-	{
-		$json = <<<'JSON'
-{
-	"tags": ["foo"],
-	"receiver": [{
-		"title": "bar"
-	}],
-	"read": true,
-	"author": {
-		"title": "test"
-	},
-	"sendDate": "2014-07-22",
-	"readDate": "2014-07-22T22:47:00",
-	"expires": "P1M",
-	"price": 13.37,
-	"rating": 4,
-	"content": "foobar",
-"question": "foo",
-	"coffeeTime": "16:00:00"
-}
-JSON;
+	/**
+	 * Saves an record under the given key
+	 *
+	 * @param string $key
+	 * @param PSX\Data\RecordInterface $record
+	 */
+	public function save($key, RecordInterface $record);
 
-		$data = json_decode($json, true);
-
-		$validator = new Validator();
-		$schema    = getContainer()->get('schema_manager')->getSchema('PSX\Data\Schema\Generator\TestSchema');
-
-		$this->assertTrue($validator->validate($schema, $data));
-	}
+	/**
+	 * Returns the record from the given key or null
+	 *
+	 * @param string $key
+	 * @return PSX\Data\RecordInterface
+	 */
+	public function load($key);
 }

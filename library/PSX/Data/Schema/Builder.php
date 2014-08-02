@@ -46,7 +46,14 @@ class Builder
 	 */
 	public function arrayType($name)
 	{
-		$this->addProperty($property = new Property\ArrayType($name));
+		if($name instanceof Property\ArrayType)
+		{
+			$this->addProperty($property = $name);
+		}
+		else
+		{
+			$this->addProperty($property = new Property\ArrayType($name));
+		}
 
 		return $property;
 	}

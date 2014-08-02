@@ -21,47 +21,25 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Data\Schema;
+namespace PSX\Data\Schema\Generator;
 
-use PSX\Data\Schema\Generator\TestSchema;
+use PSX\Data\SchemaInterface;
+use PSX\Data\Schema\GeneratorInterface;
+use PSX\Data\Schema\Property;
+use PSX\Data\Schema\PropertyInterface;
 
 /**
- * ValidatorTest
+ * Can generate sample request data from an schema which can be used for 
+ * documentation purpose
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class ValidatorTest extends \PHPUnit_Framework_TestCase
+class Html implements GeneratorInterface
 {
-	public function testValidate()
+	public function generate(SchemaInterface $schema)
 	{
-		$json = <<<'JSON'
-{
-	"tags": ["foo"],
-	"receiver": [{
-		"title": "bar"
-	}],
-	"read": true,
-	"author": {
-		"title": "test"
-	},
-	"sendDate": "2014-07-22",
-	"readDate": "2014-07-22T22:47:00",
-	"expires": "P1M",
-	"price": 13.37,
-	"rating": 4,
-	"content": "foobar",
-"question": "foo",
-	"coffeeTime": "16:00:00"
-}
-JSON;
-
-		$data = json_decode($json, true);
-
-		$validator = new Validator();
-		$schema    = getContainer()->get('schema_manager')->getSchema('PSX\Data\Schema\Generator\TestSchema');
-
-		$this->assertTrue($validator->validate($schema, $data));
+		
 	}
 }

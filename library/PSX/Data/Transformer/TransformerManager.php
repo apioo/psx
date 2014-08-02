@@ -21,47 +21,38 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Data\Schema;
+namespace PSX\Data\Transformer;
 
-use PSX\Data\Schema\Generator\TestSchema;
+use DOMDocument;
+use DOMElement;
+use PSX\Data\TransformerInterface;
 
 /**
- * ValidatorTest
+ * TransformerManager
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class ValidatorTest extends \PHPUnit_Framework_TestCase
+class TransformerManager
 {
-	public function testValidate()
+	protected $transformers = array();
+
+	public function addTransformer(TransformerInterface $transformer, $priority = 0)
 	{
-		$json = <<<'JSON'
-{
-	"tags": ["foo"],
-	"receiver": [{
-		"title": "bar"
-	}],
-	"read": true,
-	"author": {
-		"title": "test"
-	},
-	"sendDate": "2014-07-22",
-	"readDate": "2014-07-22T22:47:00",
-	"expires": "P1M",
-	"price": 13.37,
-	"rating": 4,
-	"content": "foobar",
-"question": "foo",
-	"coffeeTime": "16:00:00"
-}
-JSON;
+		$this->transformers[] = $transformer;
+	}
 
-		$data = json_decode($json, true);
+	public function getTransformerByContentType($contentType)
+	{
+		foreach($this->transformers as $transformer)
+		{
+			if($transformer->accept($contentType))
+			{
+				return $transformer;
+			}
+		}
 
-		$validator = new Validator();
-		$schema    = getContainer()->get('schema_manager')->getSchema('PSX\Data\Schema\Generator\TestSchema');
-
-		$this->assertTrue($validator->validate($schema, $data));
+		return null;
 	}
 }

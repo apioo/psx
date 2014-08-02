@@ -21,47 +21,46 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Data\Schema;
+namespace PSX\Data\Record;
 
-use PSX\Data\Schema\Generator\TestSchema;
+use InvalidArgumentException;
 
 /**
- * ValidatorTest
+ * This factory produces record factory classes. If you have an annotation in an 
+ * record which points to an class which implements the FactoryInterface the
+ * factory method will be called to create the factory class. If your factory 
+ * has dependecies i.e. an database connection you can build your own factory
+ * to provide such dependencies
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class ValidatorTest extends \PHPUnit_Framework_TestCase
+class FactoryFactory
 {
-	public function testValidate()
+	public function getFactory($className)
 	{
-		$json = <<<'JSON'
-{
-	"tags": ["foo"],
-	"receiver": [{
-		"title": "bar"
-	}],
-	"read": true,
-	"author": {
-		"title": "test"
-	},
-	"sendDate": "2014-07-22",
-	"readDate": "2014-07-22T22:47:00",
-	"expires": "P1M",
-	"price": 13.37,
-	"rating": 4,
-	"content": "foobar",
-"question": "foo",
-	"coffeeTime": "16:00:00"
-}
-JSON;
+		if(class_exists($className))
+		{
+			$factory = $this->createInstance($className);
 
-		$data = json_decode($json, true);
+			if($factory instanceof FactoryInterface)
+			{
+				return $factory;
+			}
+			else
+			{
+				throw new InvalidArgumentException('Factory must be an instanceof PSX\Data\Record\FactoryInterface');
+			}
+		}
+		else
+		{
+			throw new InvalidArgumentException('Factory class "' . $className . '" does not exist');
+		}
+	}
 
-		$validator = new Validator();
-		$schema    = getContainer()->get('schema_manager')->getSchema('PSX\Data\Schema\Generator\TestSchema');
-
-		$this->assertTrue($validator->validate($schema, $data));
+	protected function createInstance($className)
+	{
+		return new $className();
 	}
 }

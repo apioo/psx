@@ -21,47 +21,45 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Data\Schema;
+namespace PSX\Data\Record\Store;
 
-use PSX\Data\Schema\Generator\TestSchema;
+use Psr\Cache\CacheItemPoolInterface;
+use PSX\Data\RecordInterface;
+use PSX\Data\Record\StoreInterface;
 
 /**
- * ValidatorTest
+ * Cache
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class ValidatorTest extends \PHPUnit_Framework_TestCase
+class Cache implements StoreInterface
 {
-	public function testValidate()
+	protected $cache;
+
+	public function __construct(/*CacheItemPoolInterface*/ $cache)
 	{
-		$json = <<<'JSON'
-{
-	"tags": ["foo"],
-	"receiver": [{
-		"title": "bar"
-	}],
-	"read": true,
-	"author": {
-		"title": "test"
-	},
-	"sendDate": "2014-07-22",
-	"readDate": "2014-07-22T22:47:00",
-	"expires": "P1M",
-	"price": 13.37,
-	"rating": 4,
-	"content": "foobar",
-"question": "foo",
-	"coffeeTime": "16:00:00"
-}
-JSON;
+		$this->cache = $cache;
+	}
 
-		$data = json_decode($json, true);
+	public function save($key, RecordInterface $record)
+	{
+		$item = $this->cache->getItem($key);
+		$item->set($record);
 
-		$validator = new Validator();
-		$schema    = getContainer()->get('schema_manager')->getSchema('PSX\Data\Schema\Generator\TestSchema');
+		$this->cache->save($item);
+	}
 
-		$this->assertTrue($validator->validate($schema, $data));
+	public function load($key)
+	{
+		$item = $this->cache->getItem($key);
+
+		if($item->isHit())
+		{
+			return $item->get();
+		}
+
+		return null;
 	}
 }

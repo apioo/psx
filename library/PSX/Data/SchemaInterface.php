@@ -32,5 +32,10 @@ namespace PSX\Data;
  */
 interface SchemaInterface
 {
+	/**
+	 * Returns an schema definition
+	 *
+	 * @return PSX\Data\Schema\PropertyInterface
+	 */
 	public function getDefinition();
 }

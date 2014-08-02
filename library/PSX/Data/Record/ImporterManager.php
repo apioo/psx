@@ -21,47 +21,57 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Data\Schema;
-
-use PSX\Data\Schema\Generator\TestSchema;
+namespace PSX\Data\Record;
 
 /**
- * ValidatorTest
+ * The importer manager returns the fitting importer for an source
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class ValidatorTest extends \PHPUnit_Framework_TestCase
+class ImporterManager
 {
-	public function testValidate()
+	protected $importers = array();
+
+	public function addImporter(ImporterInterface $importer, $priority = 0)
 	{
-		$json = <<<'JSON'
-{
-	"tags": ["foo"],
-	"receiver": [{
-		"title": "bar"
-	}],
-	"read": true,
-	"author": {
-		"title": "test"
-	},
-	"sendDate": "2014-07-22",
-	"readDate": "2014-07-22T22:47:00",
-	"expires": "P1M",
-	"price": 13.37,
-	"rating": 4,
-	"content": "foobar",
-"question": "foo",
-	"coffeeTime": "16:00:00"
-}
-JSON;
+		$this->importers[] = $importer;
+	}
 
-		$data = json_decode($json, true);
+	/**
+	 * Returns the fitting importer for the source
+	 *
+	 * @return PSX\Data\Record\ImporterInterface
+	 */
+	public function getImporterBySource($source)
+	{
+		foreach($this->importers as $importer)
+		{
+			if($importer->accept($source))
+			{
+				return $importer;
+			}
+		}
 
-		$validator = new Validator();
-		$schema    = getContainer()->get('schema_manager')->getSchema('PSX\Data\Schema\Generator\TestSchema');
+		return null;
+	}
 
-		$this->assertTrue($validator->validate($schema, $data));
+	/**
+	 * Returns the importer which is an instanceof the given class name
+	 *
+	 * @return PSX\Data\Record\ImporterInterface
+	 */
+	public function getImporterByInstance($className)
+	{
+		foreach($this->importers as $importer)
+		{
+			if($importer instanceof $className)
+			{
+				return $importer;
+			}
+		}
+
+		return null;
 	}
 }

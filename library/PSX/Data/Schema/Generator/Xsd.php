@@ -31,6 +31,7 @@ use PSX\Data\Schema\PropertyInterface;
 /**
  * Xsd
  *
+ * @see     http://www.w3.org/XML/Schema
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org

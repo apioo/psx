@@ -35,13 +35,9 @@ use PSX\Data\Record\ImporterInterface;
  */
 interface ReaderInterface
 {
-	const DOM       = 'PSX\Data\Reader\Dom';
-	const FORM      = 'PSX\Data\Reader\Form';
-	const GPC       = 'PSX\Data\Reader\Gpc';
-	const JSON      = 'PSX\Data\Reader\Json';
-	const MULTIPART = 'PSX\Data\Reader\Multipart';
-	const RAW       = 'PSX\Data\Reader\Raw';
-	const XML       = 'PSX\Data\Reader\Xml';
+	const FORM = 'PSX\Data\Reader\Form';
+	const JSON = 'PSX\Data\Reader\Json';
+	const XML  = 'PSX\Data\Reader\Xml';
 
 	/**
 	 * Transforms the $request into an parseable form this can be an array
@@ -59,28 +55,4 @@ interface ReaderInterface
 	 * @return boolean
 	 */
 	public function isContentTypeSupported($contentType);
-
-	/**
-	 * Returns the default importer of this reader
-	 *
-	 * @return PSX\Data\Record\ImporterInterface|null
-	 */
-	public function getDefaultImporter();
-
-	/**
-	 * Sets the default importer of this reader
-	 *
-	 * @param PSX\Data\Record\ImporterInterface
-	 */
-	public function setDefaultImporter(ImporterInterface $importer);
-
-	/**
-	 * Imports the data from the http message into the record using the default
-	 * importer
-	 *
-	 * @param PSX\Data\RecordInterface $record
-	 * @param Psr\Http\Message\MessageInterface $message
-	 * @return PSX\Data\RecordInterface
-	 */
-	public function import(RecordInterface $record, MessageInterface $message);
 }

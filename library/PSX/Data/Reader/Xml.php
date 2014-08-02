@@ -23,11 +23,11 @@
 
 namespace PSX\Data\Reader;
 
+use DOMDocument;
 use Psr\Http\Message\MessageInterface;
 use PSX\Data\ReaderAbstract;
 use PSX\Data\Record\DefaultImporter;
 use PSX\Xml as XmlParser;
-use SimpleXMLElement;
 
 /**
  * Xml
@@ -38,48 +38,25 @@ use SimpleXMLElement;
  */
 class Xml extends ReaderAbstract
 {
-	public static $mime = 'application/xml';
+	public static $mediaTypes = array(
+		'text/xml',
+		'application/xml',
+		'text/xml-external-parsed-entity',
+		'application/xml-external-parsed-entity',
+		'application/xml-dtd'
+	);
 
 	public function read(MessageInterface $message)
 	{
-		$xml = new XmlParser((string) $message->getBody());
+		$dom = new DOMDocument();
+		$dom->encoding = 'UTF-8';
+		$dom->loadXML((string) $message->getBody());
 
-		return $this->recToXml((array) $xml);
+		return $dom;
 	}
 
 	public function isContentTypeSupported($contentType)
 	{
-		return stripos($contentType, self::$mime) !== false;
-	}
-
-	public function getDefaultImporter()
-	{
-		$importer = parent::getDefaultImporter();
-
-		return $importer === null ? new DefaultImporter() : $importer;
-	}
-
-	protected function recToXml(array $element)
-	{
-		foreach($element as $key => $value)
-		{
-			if($value instanceof SimpleXMLElement)
-			{
-				if(count($value) == 0)
-				{
-					$element[$key] = (string) $value;
-				}
-				else
-				{
-					$element[$key] = $this->recToXml((array) $value);
-				}
-			}
-			else if(is_array($value))
-			{
-				$element[$key] = $this->recToXml($value);
-			}
-		}
-
-		return $element;
+		return in_array($contentType, self::$mediaTypes) || substr($contentType, -4) == '+xml' || substr($contentType, -4) == '/xml';
 	}
 }

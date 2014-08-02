@@ -36,8 +36,6 @@ use PSX\Data\Record\DefaultImporter;
  */
 class Form extends ReaderAbstract
 {
-	public static $mime = 'application/x-www-form-urlencoded';
-
 	public function read(MessageInterface $message)
 	{
 		$form = array();
@@ -49,14 +47,7 @@ class Form extends ReaderAbstract
 
 	public function isContentTypeSupported($contentType)
 	{
-		return stripos($contentType, self::$mime) !== false;
-	}
-
-	public function getDefaultImporter()
-	{
-		$importer = parent::getDefaultImporter();
-
-		return $importer === null ? new DefaultImporter() : $importer;
+		return stripos($contentType, 'application/x-www-form-urlencoded') !== false;
 	}
 }
 

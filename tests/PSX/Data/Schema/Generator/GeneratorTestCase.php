@@ -34,6 +34,6 @@ abstract class GeneratorTestCase extends \PHPUnit_Framework_TestCase
 {
 	protected function getSchema()
 	{
-		return new TestSchema();
+		return getContainer()->get('schema_manager')->getSchema('PSX\Data\Schema\Generator\TestSchema');
 	}
 }

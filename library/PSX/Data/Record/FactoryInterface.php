@@ -21,47 +21,25 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Data\Schema;
-
-use PSX\Data\Schema\Generator\TestSchema;
+namespace PSX\Data\Record;
 
 /**
- * ValidatorTest
+ * If an method has as parameter an class wich implements this interface the
+ * data is passed to the factory wich returns an specific RecordInterface
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class ValidatorTest extends \PHPUnit_Framework_TestCase
+interface FactoryInterface
 {
-	public function testValidate()
-	{
-		$json = <<<'JSON'
-{
-	"tags": ["foo"],
-	"receiver": [{
-		"title": "bar"
-	}],
-	"read": true,
-	"author": {
-		"title": "test"
-	},
-	"sendDate": "2014-07-22",
-	"readDate": "2014-07-22T22:47:00",
-	"expires": "P1M",
-	"price": 13.37,
-	"rating": 4,
-	"content": "foobar",
-"question": "foo",
-	"coffeeTime": "16:00:00"
+	/**
+	 * Returns the object depending on the result
+	 *
+	 * @param mixed $data
+	 * @param PSX\Data\Record\ImporterInterface $importer
+	 * @return PSX\Data\RecordInterface
+	 */
+	public function factory($data, ImporterInterface $importer);
 }
-JSON;
 
-		$data = json_decode($json, true);
-
-		$validator = new Validator();
-		$schema    = getContainer()->get('schema_manager')->getSchema('PSX\Data\Schema\Generator\TestSchema');
-
-		$this->assertTrue($validator->validate($schema, $data));
-	}
-}

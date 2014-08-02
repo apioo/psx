@@ -37,8 +37,6 @@ use PSX\Json as JsonParser;
  */
 class Json extends ReaderAbstract
 {
-	public static $mime = 'application/json';
-
 	public function read(MessageInterface $message)
 	{
 		$json = JsonParser::decode((string) $message->getBody());
@@ -48,13 +46,6 @@ class Json extends ReaderAbstract
 
 	public function isContentTypeSupported($contentType)
 	{
-		return stripos($contentType, self::$mime) !== false;
-	}
-
-	public function getDefaultImporter()
-	{
-		$importer = parent::getDefaultImporter();
-
-		return $importer === null ? new DefaultImporter() : $importer;
+		return substr($contentType, -5) == '+json' || substr($contentType, -5) == '/json';
 	}
 }

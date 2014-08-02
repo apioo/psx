@@ -39,16 +39,20 @@ class SchemaManager implements SchemaManagerInterface
 	{
 		if(class_exists($schemaName))
 		{
-			$schema = new $schemaName();
-		}
+			$schema = new $schemaName($this);
 
-		if($schema instanceof SchemaInterface)
-		{
-			return $schema;
+			if($schema instanceof SchemaInterface)
+			{
+				return $schema;
+			}
+			else
+			{
+				throw new InvalidSchemaException('Could not find schema ' . $schemaName);
+			}
 		}
 		else
 		{
-			throw new InvalidSchemaException('Could not find schema ' . $schemaName);
+			throw new InvalidSchemaException('Schema class ' . $schemaName . ' does not exist');
 		}
 	}
 }

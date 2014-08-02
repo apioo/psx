@@ -21,43 +21,69 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Data\Reader;
+namespace PSX\Data\Transformer;
 
-use DOMDocument;
+use PSX\Rss;
+use PSX\Rss\Item;
 use PSX\Http\Message;
 
 /**
- * XmlTest
+ * XmlArrayTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
- * @link	http://phpsx.org
+ * @link    http://phpsx.org
  */
-class XmlTest extends \PHPUnit_Framework_TestCase
+class XmlArrayTest extends \PHPUnit_Framework_TestCase
 {
-	protected function setUp()
-	{
-	}
-
-	protected function tearDown()
-	{
-	}
-
-	public function testRead()
+	public function testTransform()
 	{
 		$body = <<<INPUT
-<?xml version="1.0" encoding="UTF-8"?>
-<foo>
-	<bar>jedi</bar>
-	<baz>power</baz>
-</foo>
+<test>
+	<empty></empty>
+	<foo>bar</foo>
+	<bar>blub</bar>
+	<bar>bla</bar>
+	<test>
+		<foo>bar</foo>
+	</test>
+	<item>
+		<foo>
+			<bar>
+				<title>foo</title>
+			</bar>
+		</foo>
+	</item>
+	<items>
+		<item>
+			<title>foo</title>
+			<text>bar</text>
+		</item>
+		<item>
+			<title>foo</title>
+			<text>bar</text>
+		</item>
+	</items>
+</test>
 INPUT;
 
-		$reader  = new Xml();
-		$message = new Message(array(), $body);
-		$dom     = $reader->read($message);
+		$dom = new \DOMDocument();
+		$dom->loadXML($body);
 
-		$this->assertEquals(true, $dom instanceof DOMDocument);
-		$this->assertEquals('foo', $dom->documentElement->localName);
+		$transformer = new XmlArray();
+
+		$expect = array(
+			'empty' => '', 
+			'foo' => 'bar', 
+			'bar' => array('blub', 'bla'), 
+			'test' => array('foo' => 'bar'),
+			'item' => array('foo' => array('bar' => array('title' => 'foo'))),
+			'items' => array('item' => array(array('title' => 'foo', 'text' => 'bar'), array('title' => 'foo', 'text' => 'bar'))),
+		);
+
+		$data = $transformer->transform($dom);
+
+		$this->assertTrue(is_array($data));
+		$this->assertEquals($expect, $data);
 	}
 }

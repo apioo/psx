@@ -24,6 +24,7 @@
 namespace PSX\Data;
 
 use PSX\Data\Schema\Builder;
+use PSX\Data\Schema\SchemaManagerInterface;
 
 /**
  * SchemaAbstract
@@ -34,6 +35,18 @@ use PSX\Data\Schema\Builder;
  */
 abstract class SchemaAbstract implements SchemaInterface
 {
+	protected $schemaManager;
+
+	public function __construct(SchemaManagerInterface $schemaManager)
+	{
+		$this->schemaManager = $schemaManager;
+	}
+
+	protected function getSchema($name)
+	{
+		return $this->schemaManager->getSchema($name)->getDefinition();
+	}
+
 	protected function getSchemaBuilder($name)
 	{
 		return new Builder($name);
