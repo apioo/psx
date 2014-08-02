@@ -128,7 +128,6 @@ class AuthorizationAbstractTest extends ControllerTestCase
 		$response = $this->callEndpoint(array());
 		$data     = Json::decode((string) $response->getBody());
 
-		$this->assertEquals(200, $response->getStatusCode());
 		$this->assertEquals(false, $data['success']);
 		$this->assertEquals('PSX\Oauth2\Authorization\Exception\InvalidRequestException', $data['title']);
 	}

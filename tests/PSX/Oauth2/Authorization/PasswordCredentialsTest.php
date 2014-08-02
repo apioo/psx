@@ -75,7 +75,7 @@ TEXT;
 
 		}));
 
-		$oauth = new PasswordCredentials($http, new Url('http://127.0.0.1/api'));
+		$oauth = new PasswordCredentials($http, new Url('http://127.0.0.1/api'), getContainer()->get('importer'));
 		$oauth->setClientPassword(self::CLIENT_ID, self::CLIENT_SECRET);
 
 		$accessToken = $oauth->getAccessToken('johndoe', 'A3ddj3w');

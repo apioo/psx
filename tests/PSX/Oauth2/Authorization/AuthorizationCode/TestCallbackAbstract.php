@@ -79,7 +79,7 @@ TEXT;
 			return Response::convert($response, ResponseParser::MODE_LOOSE)->toString();
 
 		}));
-		$oauth = new AuthorizationCode($http, new Url('http://127.0.0.1/api'));
+		$oauth = new AuthorizationCode($http, new Url('http://127.0.0.1/api'), getContainer()->get('importer'));
 		$oauth->setClientPassword(ClientCredentialsTest::CLIENT_ID, ClientCredentialsTest::CLIENT_SECRET);
 
 		return $oauth;

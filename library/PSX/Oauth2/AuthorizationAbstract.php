@@ -23,10 +23,7 @@
 
 namespace PSX\Oauth2;
 
-use PSX\Data\ReaderFactory;
-use PSX\Data\ReaderInterface;
-use PSX\Data\Reader;
-use PSX\Data\Record\DefaultImporter;
+use PSX\Data\Importer;
 use PSX\Exception;
 use PSX\Http;
 use PSX\Http\PostRequest;
@@ -47,6 +44,7 @@ abstract class AuthorizationAbstract
 
 	protected $http;
 	protected $url;
+	protected $importer;
 
 	protected $clientId;
 	protected $clientSecret;
@@ -54,10 +52,11 @@ abstract class AuthorizationAbstract
 
 	protected $accessTokenClass;
 
-	public function __construct(Http $http, Url $url)
+	public function __construct(Http $http, Url $url, Importer $importer)
 	{
-		$this->http = $http;
-		$this->url  = $url;
+		$this->http     = $http;
+		$this->url      = $url;
+		$this->importer = $importer;
 	}
 
 	public function setClientPassword($clientId, $clientSecret, $type = 0x1)
@@ -125,19 +124,7 @@ abstract class AuthorizationAbstract
 
 		if($response->getStatusCode() == 200)
 		{
-			if($this->accessTokenClass != null && class_exists($this->accessTokenClass))
-			{
-				$accessToken = new $this->accessTokenClass();
-			}
-			else
-			{
-				$accessToken = new AccessToken();
-			}
-
-			$reader = new Reader\Json();
-			$result = $reader->import($accessToken, $response);
-
-			return $accessToken;
+			return $this->importer->import($this->createAccessToken(), $response);
 		}
 		else
 		{
@@ -152,36 +139,26 @@ abstract class AuthorizationAbstract
 
 		if($response->getStatusCode() == 200)
 		{
-			// if the content type is application/json use json reader else
-			// asume application/x-www-form-urlencoded 
-			if(strpos($response->getHeader('Content-Type'), 'application/json') !== false)
-			{
-				$reader = new Reader\Json();
-			}
-			else
-			{
-				$reader = new Reader\Form();
-			}
-
 			// import data
-			if($this->accessTokenClass != null && class_exists($this->accessTokenClass))
-			{
-				$accessToken = new $this->accessTokenClass();
-			}
-			else
-			{
-				$accessToken = new AccessToken();
-			}
-
-			$reader->import($accessToken, $response);
-
-			return $accessToken;
+			return $this->importer->import($this->createAccessToken(), $response);
 		}
 		else
 		{
 			$resp = Json::decode($response->getBody());
 
 			self::throwErrorException($resp);
+		}
+	}
+
+	protected function createAccessToken()
+	{
+		if($this->accessTokenClass != null && class_exists($this->accessTokenClass))
+		{
+			return new $this->accessTokenClass();
+		}
+		else
+		{
+			return new AccessToken();
 		}
 	}
 
