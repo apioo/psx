@@ -95,6 +95,7 @@ class Http
 		505 => 'HTTP Version Not Supported'
 	);
 
+	protected $handler;
 	protected $cookieStore;
 
 	/**
@@ -104,7 +105,7 @@ class Http
 	 */
 	public function __construct(HandlerInterface $handler = null)
 	{
-		$this->setHandler($handler !== null ? $handler : new Curl());
+		$this->handler = $handler !== null ? $handler : new Curl();
 	}
 
 	/**
