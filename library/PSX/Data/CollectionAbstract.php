@@ -59,7 +59,7 @@ abstract class CollectionAbstract extends RecordAbstract implements CollectionIn
 
 	public function get($key)
 	{
-		return $this->collection[$key];
+		return isset($this->collection[$key]) ? $this->collection[$key] : null;
 	}
 
 	public function set($key, RecordInterface $record)
