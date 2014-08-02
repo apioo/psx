@@ -67,11 +67,11 @@ abstract class HandlerApiAbstract extends ApiAbstract
 
 		if($this->isWriter(WriterInterface::ATOM))
 		{
-			$this->setResponse($this->getAtomRecord($result));
+			$this->setBody($this->getAtomRecord($result));
 		}
 		else
 		{
-			$this->setResponse($result);
+			$this->setBody($result);
 		}
 	}
 
@@ -81,6 +81,7 @@ abstract class HandlerApiAbstract extends ApiAbstract
 		{
 			throw new Exception('Method not allowed', 405);
 		}
+
 
 		$record = $this->import($this->getHandler()->getRecord());
 
@@ -106,7 +107,7 @@ abstract class HandlerApiAbstract extends ApiAbstract
 		// message
 		$msg = new Message('You have successful create a ' . $record->getRecordInfo()->getName(), true);
 
-		$this->setResponse($msg);
+		$this->setBody($msg);
 	}
 
 	public function onPut()
@@ -141,7 +142,7 @@ abstract class HandlerApiAbstract extends ApiAbstract
 		// message
 		$msg = new Message('You have successful update a ' . $record->getRecordInfo()->getName(), true);
 
-		$this->setResponse($msg);
+		$this->setBody($msg);
 	}
 
 	public function onDelete()
@@ -176,7 +177,7 @@ abstract class HandlerApiAbstract extends ApiAbstract
 		// message
 		$msg = new Message('You have successful delete a ' . $record->getRecordInfo()->getName(), true);
 
-		$this->setResponse($msg);
+		$this->setBody($msg);
 	}
 
 	protected function getHandler()
