@@ -28,6 +28,7 @@ use DOMDocument;
 use InvalidArgumentException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
 use PSX\Data\NotFoundException;
 use PSX\Data\ReaderFactory;
 use PSX\Data\RecordInterface;
@@ -35,9 +36,9 @@ use PSX\Data\Record\ImporterInterface;
 use PSX\Data\Writer;
 use PSX\Data\WriterInterface;
 use PSX\Data\Record;
+use PSX\Data\TransformerInterface;
 use PSX\Dependency;
 use PSX\Dispatch\RedirectException;
-use PSX\Http\FileEntity;
 use PSX\Http\Stream\TempStream;
 use PSX\Loader\Location;
 use PSX\Url;
@@ -115,9 +116,19 @@ abstract class ControllerAbstract implements ControllerInterface
 	 */
 	protected $writerFactory;
 
-	private $_requestReader;
-	private $_responseWriter;
+	/**
+	 * @Inject
+	 * @var PSX\Data\Importer
+	 */
+	protected $importer;
 
+	private $_responseWritten = false;
+
+	/**
+	 * @param PSX\Loader\Location $location
+	 * @param Psr\Http\Message\RequestInterface $request
+	 * @param Psr\Http\Message\ResponseInterface $request
+	 */
 	public function __construct(Location $location, RequestInterface $request, ResponseInterface $response)
 	{
 		$this->location     = $location;
@@ -175,7 +186,7 @@ abstract class ControllerAbstract implements ControllerInterface
 	{
 		$body = $this->response->getBody();
 
-		if($body !== null && $body->tell() == 0)
+		if($body !== null && $body->tell() == 0 && !$this->_responseWritten)
 		{
 			$this->setResponse(new Record());
 		}
@@ -299,7 +310,17 @@ abstract class ControllerAbstract implements ControllerInterface
 	}
 
 	/**
-	 * Returns the result of the reader 
+	 * Returns all available request parameters
+	 *
+	 * @return array
+	 */
+	protected function getParameters()
+	{
+		return $this->getUrl()->getParams();
+	}
+
+	/**
+	 * Returns the result of the reader for the request
 	 *
 	 * @param string $readerType
 	 * @return mixed
@@ -310,63 +331,104 @@ abstract class ControllerAbstract implements ControllerInterface
 	}
 
 	/**
-	 * Uses the default importer from the request reader to import arbitrary 
-	 * data into an record
+	 * Method to set an response body
 	 *
-	 * @param mixed $record
-	 * @param string $readerType
-	 * @return PSX\Data\RecordInterface
+	 * @param mixed $data
 	 */
-	protected function import($record, $readerType = null)
+	protected function setBody($data, $writerType = null)
 	{
-		$reader   = $this->getRequestReader($readerType);
-		$importer = $reader->getDefaultImporter();
-
-		if($importer instanceof ImporterInterface)
+		if($this->_responseWritten)
 		{
-			return $importer->import($record, $reader->read($this->request));
+			throw new RuntimeException('Response was already written');
+		}
+
+		if(is_array($data))
+		{
+			$this->setResponse(new Record('record', $data), $writerType);
+		}
+		else if($data instanceof RecordInterface)
+		{
+			$this->setResponse($data, $writerType);
+		}
+		else if($data instanceof DOMDocument)
+		{
+			if(!$this->response->hasHeader('Content-Type'))
+			{
+				$this->response->setHeader('Content-Type', 'application/xml');
+			}
+
+			$this->response->getBody()->write($data->saveXML());
+		}
+		else if($data instanceof SimpleXMLElement)
+		{
+			if(!$this->response->hasHeader('Content-Type'))
+			{
+				$this->response->setHeader('Content-Type', 'application/xml');
+			}
+
+			$this->response->getBody()->write($data->asXML());
+		}
+		else if(is_string($data))
+		{
+			$this->response->getBody()->write($data);
+		}
+		else if($data instanceof StreamInterface)
+		{
+			$this->response->setBody($data);
 		}
 		else
 		{
-			throw new RuntimeException('Reader has no default importer');
+			throw new InvalidArgumentException('Invalid data type');
 		}
+
+		$this->_responseWritten = true;
 	}
 
 	/**
-	 * Returns the best reader for the given content type or the default reader
-	 * from the factory
+	 * Imports data from the current request into an record
 	 *
+	 * @param mixed $source
+	 * @param PSX\Data\TransformerInterface $transformer
 	 * @param string $readerType
-	 * @return PSX\Data\ReaderInterface
+	 * @return PSX\Data\RecordInterface
 	 */
-	protected function getRequestReader($readerType = null)
+	protected function import($source, TransformerInterface $transformer = null, $readerType = null)
 	{
-		if($this->_requestReader === null)
-		{
-			// find best reader type
-			if($readerType === null)
-			{
-				$reader = $this->readerFactory->getReaderByContentType($this->request->getHeader('Content-Type'));
-			}
-			else
-			{
-				$reader = $this->readerFactory->getReaderByInstance($readerType);
-			}
+		return $this->importer->import($source, $this->request, $transformer, $readerType);
+	}
 
-			if($reader === null)
-			{
-				$reader = $this->readerFactory->getDefaultReader();
-			}
+	/**
+	 * Checks whether the preferred reader is an instance of the reader class
+	 *
+	 * @param string $writerClass
+	 * @return boolean
+	 */
+	protected function isReader($readerClass)
+	{
+		return $this->getPreferredReader() instanceof $readerClass;
+	}
 
-			if($reader === null)
-			{
-				throw new NotFoundException('Could not find fitting data reader');
-			}
+	/**
+	 * Checks whether the preferred writer is an instance of the writer class
+	 *
+	 * @param string $writerClass
+	 * @return boolean
+	 */
+	protected function isWriter($writerClass)
+	{
+		return $this->getPreferredWriter() instanceof $writerClass;
+	}
 
-			$this->_requestReader = $reader;
-		}
-
-		return $this->_requestReader;
+	/**
+	 * Returns the formats which are supported by this controller. If null gets
+	 * returned every available format is supported otherwise it must return
+	 * an array containing writer class names
+	 *
+	 * @return array
+	 */
+	protected function getSupportedWriter()
+	{
+		return null;
 	}
 
 	/**
@@ -378,14 +440,8 @@ abstract class ControllerAbstract implements ControllerInterface
 	 * @param integer $code
 	 * @return void
 	 */
-	protected function setResponse(RecordInterface $record, $writerType = null, $code = 200)
+	private function setResponse(RecordInterface $record, $writerType = null)
 	{
-		// set response code
-		if($code !== null)
-		{
-			$this->response->setStatusCode($code);
-		}
-
 		// find best writer type if not set
 		$writer   = $this->getResponseWriter($writerType);
 		$response = $writer->write($record);
@@ -414,60 +470,35 @@ abstract class ControllerAbstract implements ControllerInterface
 	}
 
 	/**
-	 * Convenient method to set an response body
+	 * Returns the best reader for the given content type or the default reader
+	 * from the factory
 	 *
-	 * @param mixed $data
+	 * @param string $readerType
+	 * @return PSX\Data\ReaderInterface
 	 */
-	public function setBody($data)
+	private function getRequestReader($readerType = null)
 	{
-		if(is_array($data))
+		// find best reader type
+		if($readerType === null)
 		{
-			$response = new Record('record', $data);
-		}
-		else if($data instanceof RecordInterface)
-		{
-			$response = $data;
-		}
-		else if($data instanceof DOMDocument)
-		{
-			if(!$this->response->hasHeader('Content-Type'))
-			{
-				$this->response->setHeader('Content-Type', 'application/xml');
-			}
-
-			$this->response->getBody()->write($data->saveXML());
-			return;
-		}
-		else if($data instanceof SimpleXMLElement)
-		{
-			if(!$this->response->hasHeader('Content-Type'))
-			{
-				$this->response->setHeader('Content-Type', 'application/xml');
-			}
-
-			$this->response->getBody()->write($data->asXML());
-			return;
-		}
-		else if(is_string($data))
-		{
-			$this->response->getBody()->write($data);
-			return;
-		}
-		else if($data instanceof FileEntity)
-		{
-			$this->response->setHeader('Content-Type', 'application/octet-stream');
-			$this->response->setHeader('Content-Disposition', 'attachment; filename="' . addcslashes($data->getFileName(), '"') . '"');
-			$this->response->setHeader('Transfer-Encoding', 'chunked');
-
-			$this->response->setBody(new TempStream($data->getResource()));
-			return;
+			$reader = $this->getPreferredReader();
 		}
 		else
 		{
-			throw new InvalidArgumentException('Invalid data type');
+			$reader = $this->readerFactory->getReaderByInstance($readerType);
 		}
 
-		$this->setResponse($response);
+		if($reader === null)
+		{
+			$reader = $this->readerFactory->getDefaultReader();
+		}
+
+		if($reader === null)
+		{
+			throw new NotFoundException('Could not find fitting data reader');
+		}
+
+		return $reader;
 	}
 
 	/**
@@ -475,44 +506,38 @@ abstract class ControllerAbstract implements ControllerInterface
 	 *
 	 * @return PSX\Data\WriterInterface
 	 */
-	protected function getResponseWriter($writerType = null)
+	private function getResponseWriter($writerType = null)
 	{
-		if($this->_responseWriter === null)
+		if($writerType === null)
 		{
-			if($writerType === null)
-			{
-				$writer = $this->getPreferredWriter();
-			}
-			else
-			{
-				$writer = $this->writerFactory->getWriterByInstance($writerType);
-			}
-
-			if($writer === null)
-			{
-				$writer = $this->writerFactory->getDefaultWriter();
-			}
-
-			if(!$writer instanceof WriterInterface)
-			{
-				throw new NotFoundException('Could not find fitting data writer');
-			}
-
-			$this->_responseWriter = $writer;
+			$writer = $this->getPreferredWriter();
+		}
+		else
+		{
+			$writer = $this->writerFactory->getWriterByInstance($writerType);
 		}
 
-		return $this->_responseWriter;
+		if($writer === null)
+		{
+			$writer = $this->writerFactory->getDefaultWriter();
+		}
+
+		if(!$writer instanceof WriterInterface)
+		{
+			throw new NotFoundException('Could not find fitting data writer');
+		}
+
+		return $writer;
 	}
 
 	/**
-	 * Checks whether the preferred writer is an instance of the writer class
+	 * Returns the reader depending on the content type
 	 *
-	 * @param string $writerClass
-	 * @return boolean
+	 * @return PSX\Data\ReaderInterface
 	 */
-	protected function isWriter($writerClass)
+	private function getPreferredReader()
 	{
-		return $this->getPreferredWriter() instanceof $writerClass;
+		return $this->readerFactory->getReaderByContentType($this->request->getHeader('Content-Type'));
 	}
 
 	/**
@@ -520,7 +545,7 @@ abstract class ControllerAbstract implements ControllerInterface
 	 *
 	 * @return PSX\Data\WriterInterface
 	 */
-	protected function getPreferredWriter()
+	private function getPreferredWriter()
 	{
 		$format = $this->request->getUrl()->getParam('format');
 
@@ -534,17 +559,5 @@ abstract class ControllerAbstract implements ControllerInterface
 		}
 
 		return $this->writerFactory->getWriterByContentType($contentType, $this->getSupportedWriter());
-	}
-
-	/**
-	 * Returns the formats which are supported by this controller. If null gets
-	 * returned every available format is supported otherwise it must return
-	 * an array containing writer class names
-	 *
-	 * @return array
-	 */
-	protected function getSupportedWriter()
-	{
-		return null;
 	}
 }
