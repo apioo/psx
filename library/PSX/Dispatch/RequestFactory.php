@@ -86,11 +86,14 @@ class RequestFactory implements RequestFactoryInterface
 			$headers = $this->getRequestHeaders();
 			$body    = null;
 
-			if($_SERVER['REQUEST_METHOD'] == 'POST' && strpos($_SERVER['CONTENT_TYPE'], 'multipart/form-data') !== false)
+			$requestMethod = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : null;
+			$contentType   = isset($_SERVER['CONTENT_TYPE'])   ? $_SERVER['CONTENT_TYPE']   : null;
+
+			if($requestMethod == 'POST' && strpos($contentType, 'multipart/form-data') !== false)
 			{
 				$body = MultipartStream::createFromEnvironment();
 			}
-			else if(in_array($_SERVER['REQUEST_METHOD'], array('POST', 'PUT', 'DELETE')))
+			else if(in_array($requestMethod, array('POST', 'PUT', 'DELETE')))
 			{
 				$body = new TempStream(fopen('php://input', 'r'));
 			}
