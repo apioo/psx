@@ -23,7 +23,6 @@
 
 namespace PSX\ActivityStream\ObjectType;
 
-use PSX\ActivityStream\LinkObject;
 use PSX\ActivityStream\Object;
 use PSX\DateTime;
 use PSX\Data\SerializeTestAbstract;
@@ -43,7 +42,7 @@ class TaskTest extends SerializeTestAbstract
 		$actor->setObjectType('person');
 		$actor->setDisplayName('James');
 
-		$object = new LinkObject();
+		$object = new Object();
 		$object->setObjectType('file');
 		$object->setDisplayName('A specification');
 		$object->setUrl('http://example.org/spec.html');

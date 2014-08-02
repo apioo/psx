@@ -23,7 +23,6 @@
 
 namespace PSX\ActivityStream\ObjectType;
 
-use PSX\ActivityStream\LinkObject;
 use PSX\DateTime;
 use PSX\Data\SerializeTestAbstract;
 

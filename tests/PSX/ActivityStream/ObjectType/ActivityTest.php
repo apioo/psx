@@ -23,7 +23,6 @@
 
 namespace PSX\ActivityStream\ObjectType;
 
-use PSX\ActivityStream\LinkObject;
 use PSX\ActivityStream\Object;
 use PSX\DateTime;
 use PSX\Data\SerializeTestAbstract;
@@ -39,7 +38,7 @@ class ActivityTest extends SerializeTestAbstract
 {
 	public function testActivity()
 	{
-		$image = new LinkObject();
+		$image = new Object();
 		$image->setUrl('http://example.org/martin/image.jpg');
 		$image->setMediaType('image/jpeg');
 		$image->setWidth(250);
@@ -189,7 +188,7 @@ JSON;
 		$provider = new Object();
 		$provider->setUrl('http://example.org/activity-stream');
 
-		$image = new LinkObject();
+		$image = new Object();
 		$image->setUrl('http://example.org/martin/image');
 		$image->setMediaType('image/jpeg');
 		$image->setWidth(250);
@@ -202,7 +201,7 @@ JSON;
 		$actor->setImage($image);
 		$actor->setDisplayName('Martin Smith');
 
-		$image = new LinkObject();
+		$image = new Object();
 		$image->setUrl('http://example.org/album/my_fluffy_cat_thumb.jpg');
 		$image->setMediaType('image/jpeg');
 		$image->setWidth(250);
@@ -218,7 +217,7 @@ JSON;
 		$object->setId('urn:example:album:abc123/my_fluffy_cat');
 		$object->setImage($image);
 
-		$image = new LinkObject();
+		$image = new Object();
 		$image->setUrl('http://example.org/album/thumbnail.jpg');
 		$image->setMediaType('image/jpeg');
 		$image->setWidth(250);

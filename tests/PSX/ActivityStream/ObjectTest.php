@@ -78,7 +78,6 @@ class ObjectTest extends SerializeTestAbstract
 		$object->setHeight(256);
 		$object->setWidth(256);
 		$object->setInReplyTo('http://localhost.com#foo');
-		$object->setActions(array('edit' => 'http://localhost.com#edit'));
 		$object->setScope('http://localhost.com');
 
 		$content = <<<JSON
@@ -124,7 +123,6 @@ class ObjectTest extends SerializeTestAbstract
   "height": 256,
   "width": 256,
   "inReplyTo": "http://localhost.com#foo",
-  "actions": {"edit": "http://localhost.com#edit"},
   "scope": "http://localhost.com"
 }
 JSON;
@@ -158,7 +156,6 @@ JSON;
 		$this->assertEquals(256, $object->getHeight());
 		$this->assertEquals(256, $object->getWidth());
 		$this->assertEquals('http://localhost.com#foo', $object->getInReplyTo());
-		$this->assertEquals(array('edit' => 'http://localhost.com#edit'), $object->getActions());
 		$this->assertEquals('http://localhost.com', $object->getScope());
 	}
 }

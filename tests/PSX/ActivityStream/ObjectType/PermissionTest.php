@@ -23,7 +23,6 @@
 
 namespace PSX\ActivityStream\ObjectType;
 
-use PSX\ActivityStream\LinkObject;
 use PSX\ActivityStream\Object;
 use PSX\DateTime;
 use PSX\Data\SerializeTestAbstract;
@@ -47,7 +46,7 @@ class PermissionTest extends SerializeTestAbstract
 		$html->setObjectType('inline-html');
 		$html->setContent('<video ... />');
 
-		$share = new LinkObject();
+		$share = new Object();
 		$share->setObjectType('service');
 		$share->setDisplayName('My Sharing Service');
 		$share->setUrl('http://example.net/share');
@@ -55,9 +54,6 @@ class PermissionTest extends SerializeTestAbstract
 		$permission = new Permission();
 		$permission->setDisplayName('Permission to Edit File: 2Q2014 Sales Forecast.xls');
 		$permission->setScope($file);
-		$permission->addAction('watch', 'movie://example.org/cats.mpg');
-		$permission->addAction('share', $share);
-		$permission->addAction('embed', array('http://example.org/gadgets/video.xml?v=cats.mpg', $html));
 
 		$content = <<<JSON
   {
@@ -66,21 +62,6 @@ class PermissionTest extends SerializeTestAbstract
     "scope": {
       "objectType": "file",
       "displayName": "2Q2014 Sales Forecast.xls"
-    },
-    "actions": {
-      "watch": "movie://example.org/cats.mpg",
-      "share": {
-        "objectType": "service",
-        "displayName": "My Sharing Service",
-        "url": "http://example.net/share"
-      },
-      "embed": [
-        "http://example.org/gadgets/video.xml?v=cats.mpg",
-        {
-          "objectType": "inline-html",
-          "content": "<video ... />"
-        }
-      ]
     }
   }
 JSON;

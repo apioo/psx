@@ -23,7 +23,7 @@
 
 namespace PSX\ActivityStream\ObjectType;
 
-use PSX\ActivityStream\LinkObject;
+use PSX\ActivityStream\Object;
 use PSX\DateTime;
 use PSX\Data\SerializeTestAbstract;
 
@@ -38,7 +38,7 @@ class VideoTest extends SerializeTestAbstract
 {
 	public function testVideo()
 	{
-		$stream = new LinkObject();
+		$stream = new Object();
 		$stream->setUrl('http://example.org/my_video.mpg');
 
 		$video = new Video();

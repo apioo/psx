@@ -23,7 +23,6 @@
 
 namespace PSX\ActivityStream\ObjectType;
 
-use PSX\ActivityStream\LinkObject;
 use PSX\ActivityStream\Address;
 use PSX\ActivityStream\Position;
 use PSX\DateTime;
