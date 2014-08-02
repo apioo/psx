@@ -44,19 +44,6 @@ class CallbackAbstractTest extends ControllerTestCase
 {
 	public function testCallbackAtom()
 	{
-		$testCase = $this;
-		$http = new Http(new Callback(function($request) use ($testCase){
-
-			$body     = new TempStream(fopen('php://memory', 'r+'));
-			$response = new Response();
-			$response->setBody($body);
-
-			$testCase->loadController($request, $response);
-
-			return $response;
-
-		}));
-
 		$atom = <<<ATOM
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
@@ -78,26 +65,17 @@ class CallbackAbstractTest extends ControllerTestCase
 ATOM;
 
 		$request  = new PostRequest(new Url('http://127.0.0.1/callback'), array('Content-Type' => 'application/atom+xml'), $atom);
-		$response = $http->request($request);
+		$body     = new TempStream(fopen('php://memory', 'r+'));
+		$response = new Response();
+		$response->setBody($body);
+
+		$this->loadController($request, $response);
 
 		$this->assertEquals(200, $response->getStatusCode());
 	}
 
 	public function testCallbackAtomEntry()
 	{
-		$testCase = $this;
-		$http = new Http(new Callback(function($request) use ($testCase){
-
-			$body     = new TempStream(fopen('php://memory', 'r+'));
-			$response = new Response();
-			$response->setBody($body);
-
-			$testCase->loadController($request, $response);
-
-			return $response;
-
-		}));
-
 		$atom = <<<ATOM
 <?xml version="1.0" encoding="UTF-8"?>
 <entry>
@@ -109,26 +87,17 @@ ATOM;
 ATOM;
 
 		$request  = new PostRequest(new Url('http://127.0.0.1/callback'), array('Content-Type' => 'application/atom+xml'), $atom);
-		$response = $http->request($request);
+		$body     = new TempStream(fopen('php://memory', 'r+'));
+		$response = new Response();
+		$response->setBody($body);
+
+		$this->loadController($request, $response);
 
 		$this->assertEquals(200, $response->getStatusCode());
 	}
 
 	public function testCallbackRss()
 	{
-		$testCase = $this;
-		$http = new Http(new Callback(function($request) use ($testCase){
-
-			$body     = new TempStream(fopen('php://memory', 'r+'));
-			$response = new Response();
-			$response->setBody($body);
-
-			$testCase->loadController($request, $response);
-
-			return $response;
-
-		}));
-
 		$rss = <<<ATOM
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
@@ -154,26 +123,17 @@ ATOM;
 ATOM;
 
 		$request  = new PostRequest(new Url('http://127.0.0.1/callback'), array('Content-Type' => 'application/rss+xml'), $rss);
-		$response = $http->request($request);
+		$body     = new TempStream(fopen('php://memory', 'r+'));
+		$response = new Response();
+		$response->setBody($body);
+
+		$this->loadController($request, $response);
 
 		$this->assertEquals(200, $response->getStatusCode());
 	}
 
 	public function testCallbackRssItem()
 	{
-		$testCase = $this;
-		$http = new Http(new Callback(function($request) use ($testCase){
-
-			$body     = new TempStream(fopen('php://memory', 'r+'));
-			$response = new Response();
-			$response->setBody($body);
-
-			$testCase->loadController($request, $response);
-
-			return $response;
-
-		}));
-
 		$rss = <<<ATOM
 <?xml version="1.0" encoding="UTF-8"?>
 <item>
@@ -185,28 +145,23 @@ ATOM;
 ATOM;
 
 		$request  = new PostRequest(new Url('http://127.0.0.1/callback'), array('Content-Type' => 'application/rss+xml'), $rss);
-		$response = $http->request($request);
+		$body     = new TempStream(fopen('php://memory', 'r+'));
+		$response = new Response();
+		$response->setBody($body);
+
+		$this->loadController($request, $response);
 
 		$this->assertEquals(200, $response->getStatusCode());
 	}
 
 	public function testVerify()
 	{
-		$testCase = $this;
-		$http = new Http(new Callback(function($request) use ($testCase){
-
-			$body     = new TempStream(fopen('php://memory', 'r+'));
-			$response = new Response();
-			$response->setBody($body);
-
-			$testCase->loadController($request, $response);
-
-			return $response;
-
-		}));
-
 		$request  = new GetRequest(new Url('http://127.0.0.1/callback?hub.mode=subscribe&hub.topic=http%3A%2F%2F127.0.0.1%2Ftopic&hub.challenge=foobar'));
-		$response = $http->request($request);
+		$body     = new TempStream(fopen('php://memory', 'r+'));
+		$response = new Response();
+		$response->setBody($body);
+
+		$this->loadController($request, $response);
 
 		$this->assertEquals(200, $response->getStatusCode());
 		$this->assertEquals('foobar', (string) $response->getBody());

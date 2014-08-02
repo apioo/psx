@@ -55,7 +55,7 @@ class PaypalTest extends \PHPUnit_Framework_TestCase
 		$credentials  = new Credentials($endpoint, $clientId, $clientSecret, $certificate);
 
 		$this->http   = new Http($mock);
-		$this->paypal = new Paypal($this->http, $credentials);
+		$this->paypal = new Paypal($this->http, $credentials, getContainer()->get('importer'));
 	}
 
 	public function testCreatePayment()

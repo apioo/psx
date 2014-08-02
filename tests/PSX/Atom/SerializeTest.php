@@ -101,7 +101,7 @@ class SerializeTest extends SerializeTestAbstract
     "length": 1337
   }],
   "rights": "foo",
-  "subtitle": {
+  "subTitle": {
   	"content": "And some more content"
   },
   "title": "Foo has bar",

@@ -24,8 +24,8 @@
 namespace PSX\Dispatch\Filter;
 
 use Closure;
-use PSX\Data\RecordStoreInterface;
-use PSX\Data\RecordStore\Memory;
+use PSX\Data\Record\StoreInterface;
+use PSX\Data\Record\Store\Memory;
 use PSX\Dispatch\Filter\Exception\FailureException;
 use PSX\Dispatch\Filter\Exception\MissingException;
 use PSX\Dispatch\Filter\Exception\SuccessException;
@@ -181,7 +181,7 @@ class DigestAccessAuthenticationTest extends \PHPUnit_Framework_TestCase
 		}
 	}
 
-	protected function makeHandshake(RecordStoreInterface $store)
+	protected function makeHandshake(StoreInterface $store)
 	{
 		// first we make an normal request without authentication then we should
 		// get an 401 response with the nonce and opaque then we can make an

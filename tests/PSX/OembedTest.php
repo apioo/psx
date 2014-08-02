@@ -67,7 +67,7 @@ TEXT;
 
 		}));
 
-		$oembed = new Oembed($http);
+		$oembed = new Oembed($http, getContainer()->get('importer'));
 		$url    = new Url('http://127.0.0.1/oembed/link?url=http%3A%2F%2Flocalhost.com%2Fresource');
 		$type   = $oembed->request($url);
 
@@ -115,7 +115,7 @@ TEXT;
 
 		}));
 
-		$oembed = new Oembed($http);
+		$oembed = new Oembed($http, getContainer()->get('importer'));
 		$url    = new Url('http://127.0.0.1/oembed/photo?url=http%3A%2F%2Flocalhost.com%2Fresource');
 		$type   = $oembed->request($url);
 
@@ -166,7 +166,7 @@ TEXT;
 
 		}));
 
-		$oembed = new Oembed($http);
+		$oembed = new Oembed($http, getContainer()->get('importer'));
 		$url    = new Url('http://127.0.0.1/oembed/rich?url=http%3A%2F%2Flocalhost.com%2Fresource');
 		$type   = $oembed->request($url);
 
@@ -217,7 +217,7 @@ TEXT;
 
 		}));
 
-		$oembed = new Oembed($http);
+		$oembed = new Oembed($http, getContainer()->get('importer'));
 		$url    = new Url('http://127.0.0.1/oembed/video?url=http%3A%2F%2Flocalhost.com%2Fresource');
 		$type   = $oembed->request($url);
 
