@@ -23,6 +23,8 @@
 
 namespace PSX;
 
+use InvalidArgumentException;
+
 /**
  * Url
  *
@@ -39,17 +41,7 @@ class Url extends Uri
 
 	public function __construct($url)
 	{
-		$parts = self::parse($url);
-
-		$this->setScheme($parts['scheme']);
-		$this->setAuthority($parts['authority']);
-		$this->setHost($parts['host']);
-		$this->setPort($parts['port']);
-		$this->setUser($parts['user']);
-		$this->setPass($parts['pass']);
-		$this->setPath($parts['path']);
-		$this->setQuery($parts['query']);
-		$this->setFragment($parts['fragment']);
+		$this->parse($url);
 	}
 
 	public function getHost()
@@ -90,18 +82,6 @@ class Url extends Uri
 	public function setPass($pass)
 	{
 		$this->pass = $pass;
-	}
-
-	public function getContent()
-	{
-		if(in_array($this->getScheme(), stream_get_wrappers()))
-		{
-			return file_get_contents($this->getUrl());
-		}
-		else
-		{
-			throw new Exception('Scheme not supported');
-		}
 	}
 
 	public function getUrl()
@@ -201,17 +181,7 @@ class Url extends Uri
 		return $this->getUrl();
 	}
 
-	public static function encode($encode)
-	{
-		return urlencode($encode);
-	}
-
-	public static function decode($decode)
-	{
-		return urldecode($decode);
-	}
-
-	public static function parse($url)
+	protected function parse($url)
 	{
 		$url = (string) $url;
 
@@ -223,58 +193,63 @@ class Url extends Uri
 		// validate url format
 		if(filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED) === false)
 		{
-			throw new Exception('Invalid url syntax');
+			throw new InvalidArgumentException('Invalid url syntax');
 		}
 
 		$matches = parse_url($url);
 
-		$parts = array(
-			'scheme'    => isset($matches['scheme'])   ? $matches['scheme']       : null,
-			'authority' => null,
-			'host'      => isset($matches['host'])     ? $matches['host']         : null,
-			'port'      => isset($matches['port'])     ? intval($matches['port']) : null,
-			'user'      => isset($matches['user'])     ? $matches['user']         : null,
-			'pass'      => isset($matches['pass'])     ? $matches['pass']         : null,
-			'path'      => isset($matches['path'])     ? $matches['path']         : null,
-			'query'     => isset($matches['query'])    ? $matches['query']        : array(),
-			'fragment'  => isset($matches['fragment']) ? $matches['fragment']     : null,
-		);
+		$this->setScheme(isset($matches['scheme']) ? $matches['scheme'] : null);
+		$this->setHost(isset($matches['host']) ? $matches['host'] : null);
+		$this->setPort(isset($matches['port']) ? intval($matches['port']) : null);
+		$this->setUser(isset($matches['user']) ? $matches['user'] : null);
+		$this->setPass(isset($matches['pass']) ? $matches['pass'] : null);
+		$this->setPath(isset($matches['path']) ? $matches['path'] : null);
+		$this->setFragment(isset($matches['fragment']) ? $matches['fragment'] : null);
 
 		// build authority
 		$authority = '';
 
-		if($parts['user'] !== null)
+		if($this->user !== null)
 		{
-			$authority.= $parts['user'];
+			$authority.= $this->user;
 
-			if($parts['pass'] !== null)
+			if($this->pass !== null)
 			{
-				$authority.= ':' . $parts['pass'];
+				$authority.= ':' . $this->pass;
 			}
 
 			$authority.= '@';
 		}
 
-		$authority.= $parts['host'];
+		$authority.= $this->host;
 
-		if($parts['port'] !== null)
+		if($this->port !== null)
 		{
-			$authority.= ':' . $parts['port'];
+			$authority.= ':' . $this->port;
 		}
 
-		$parts['authority'] = $authority;
+		$this->setAuthority($authority);
 
 		// parse params
-		if(!empty($parts['query']))
+		$query      = isset($matches['query']) ? $matches['query'] : '';
+		$parameters = array();
+
+		if(!empty($query))
 		{
-			$query = array();
-
-			parse_str($parts['query'], $query);
-
-			$parts['query'] = $query;
+			parse_str($query, $parameters);
 		}
 
-		return $parts;
+		$this->setQuery($parameters);
+	}
+
+	public static function encode($encode)
+	{
+		return urlencode($encode);
+	}
+
+	public static function decode($decode)
+	{
+		return urldecode($decode);
 	}
 }
 

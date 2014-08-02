@@ -55,14 +55,14 @@ class UrlTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException \PSX\Exception
+	 * @expectedException InvalidArgumentException
 	 */
 	public function testInvalidUrl()
 	{
 		new Url('foobar');
 	}
 
-	public function testUrltoString()
+	public function testToString()
 	{
 		$urls = array(
 			'http://www.yahoo.com',

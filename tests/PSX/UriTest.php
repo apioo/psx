@@ -49,119 +49,99 @@ class UriTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('/over/there', $uri->getPath());
 		$this->assertEquals('name=ferret', $uri->getQuery());
 		$this->assertEquals('nose', $uri->getFragment());
+
+		$uri = new Uri('ftp://ftp.is.co.za/rfc/rfc1808.txt');
+
+		$this->assertEquals('ftp', $uri->getScheme());
+		$this->assertEquals('ftp.is.co.za', $uri->getAuthority());
+		$this->assertEquals('/rfc/rfc1808.txt', $uri->getPath());
+		$this->assertEquals(null, $uri->getQuery());
+		$this->assertEquals(null, $uri->getFragment());
+
+		$uri = new Uri('http://www.ietf.org/rfc/rfc2396.txt');
+
+		$this->assertEquals('http', $uri->getScheme());
+		$this->assertEquals('www.ietf.org', $uri->getAuthority());
+		$this->assertEquals('/rfc/rfc2396.txt', $uri->getPath());
+		$this->assertEquals(null, $uri->getQuery());
+		$this->assertEquals(null, $uri->getFragment());
+
+		$uri = new Uri('ldap://[2001:db8::7]/c=GB?objectClass?one');
+
+		$this->assertEquals('ldap', $uri->getScheme());
+		$this->assertEquals('[2001:db8::7]', $uri->getAuthority());
+		$this->assertEquals('/c=GB', $uri->getPath());
+		$this->assertEquals('objectClass?one', $uri->getQuery());
+		$this->assertEquals(null, $uri->getFragment());
+
+		$uri = new Uri('mailto:John.Doe@example.com');
+
+		$this->assertEquals('mailto', $uri->getScheme());
+		$this->assertEquals(null, $uri->getAuthority());
+		$this->assertEquals('John.Doe@example.com', $uri->getPath());
+		$this->assertEquals(null, $uri->getQuery());
+		$this->assertEquals(null, $uri->getFragment());
+
+		$uri = new Uri('mailto://John.Doe@example.com');
+
+		$this->assertEquals('mailto', $uri->getScheme());
+		$this->assertEquals('John.Doe@example.com', $uri->getAuthority());
+		$this->assertEquals(null, $uri->getPath());
+		$this->assertEquals(null, $uri->getQuery());
+		$this->assertEquals(null, $uri->getFragment());
+
+		$uri = new Uri('news:comp.infosystems.www.servers.unix');
+
+		$this->assertEquals('news', $uri->getScheme());
+		$this->assertEquals(null, $uri->getAuthority());
+		$this->assertEquals('comp.infosystems.www.servers.unix', $uri->getPath());
+		$this->assertEquals(null, $uri->getQuery());
+		$this->assertEquals(null, $uri->getFragment());
+
+		$uri = new Uri('tel:+1-816-555-1212');
+
+		$this->assertEquals('tel', $uri->getScheme());
+		$this->assertEquals(null, $uri->getAuthority());
+		$this->assertEquals('+1-816-555-1212', $uri->getPath());
+		$this->assertEquals(null, $uri->getQuery());
+		$this->assertEquals(null, $uri->getFragment());
+
+		$uri = new Uri('telnet://192.0.2.16:80/');
+
+		$this->assertEquals('telnet', $uri->getScheme());
+		$this->assertEquals('192.0.2.16:80', $uri->getAuthority());
+		$this->assertEquals('/', $uri->getPath());
+		$this->assertEquals(null, $uri->getQuery());
+		$this->assertEquals(null, $uri->getFragment());
+
+		$uri = new Uri('urn:oasis:names:specification:docbook:dtd:xml:4.1.2');
+
+		$this->assertEquals('urn', $uri->getScheme());
+		$this->assertEquals(null, $uri->getAuthority());
+		$this->assertEquals('oasis:names:specification:docbook:dtd:xml:4.1.2', $uri->getPath());
+		$this->assertEquals(null, $uri->getQuery());
+		$this->assertEquals(null, $uri->getFragment());
 	}
 
-	public function testParseUri()
+	public function testToString()
 	{
-		$r = Uri::parse('foo://example.com:8042/over/there?name=ferret#nose');
-		$e = array(
-			'scheme'    => 'foo',
-			'authority' => 'example.com:8042',
-			'path'      => '/over/there',
-			'query'     => 'name=ferret',
-			'fragment'  => 'nose',
+		$uris = array(
+			'http://www.yahoo.com',
+			'http://www.yahoo.com/',
+			'http://www.yahoo.com/foo/bar',
+			'http://www.yahoo.com?foo=bar&bar=foo',
+			'http://www.yahoo.com:8080',
+			'http://www.yahoo.com:8080/foo/bar',
+			'http://www.yahoo.com:8080?foo=bar&bar=foo',
+			'http://benutzername:passwort@hostname:8080/pfad?argument=wert#textanker',
 		);
 
-		$this->assertEquals($e, $r);
+		foreach($uris as $u)
+		{
+			$uri = new Uri($u);
 
-		$r = Uri::parse('ftp://ftp.is.co.za/rfc/rfc1808.txt');
-		$e = array(
-			'scheme'    => 'ftp',
-			'authority' => 'ftp.is.co.za',
-			'path'      => '/rfc/rfc1808.txt',
-			'query'     => null,
-			'fragment'  => null,
-		);
-
-		$this->assertEquals($e, $r);
-
-		$r = Uri::parse('http://www.ietf.org/rfc/rfc2396.txt');
-		$e = array(
-			'scheme'    => 'http',
-			'authority' => 'www.ietf.org',
-			'path'      => '/rfc/rfc2396.txt',
-			'query'     => null,
-			'fragment'  => null,
-		);
-
-		$this->assertEquals($e, $r);
-
-		$r = Uri::parse('ldap://[2001:db8::7]/c=GB?objectClass?one');
-		$e = array(
-			'scheme'    => 'ldap',
-			'authority' => '[2001:db8::7]',
-			'path'      => '/c=GB',
-			'query'     => 'objectClass?one',
-			'fragment'  => null,
-		);
-
-		$this->assertEquals($e, $r);
-
-		$r = Uri::parse('mailto:John.Doe@example.com');
-		$e = array(
-			'scheme'    => 'mailto',
-			'authority' => null,
-			'path'      => 'John.Doe@example.com',
-			'query'     => null,
-			'fragment'  => null,
-		);
-
-		$this->assertEquals($e, $r);
-
-		$r = Uri::parse('mailto://John.Doe@example.com');
-		$e = array(
-			'scheme'    => 'mailto',
-			'authority' => 'John.Doe@example.com',
-			'path'      => null,
-			'query'     => null,
-			'fragment'  => null,
-		);
-
-		$this->assertEquals($e, $r);
-
-		$r = Uri::parse('news:comp.infosystems.www.servers.unix');
-		$e = array(
-			'scheme'    => 'news',
-			'authority' => null,
-			'path'      => 'comp.infosystems.www.servers.unix',
-			'query'     => null,
-			'fragment'  => null,
-		);
-
-		$this->assertEquals($e, $r);
-
-		$r = Uri::parse('tel:+1-816-555-1212');
-		$e = array(
-			'scheme'    => 'tel',
-			'authority' => null,
-			'path'      => '+1-816-555-1212',
-			'query'     => null,
-			'fragment'  => null,
-		);
-
-		$this->assertEquals($e, $r);
-
-		$r = Uri::parse('telnet://192.0.2.16:80/');
-		$e = array(
-			'scheme'    => 'telnet',
-			'authority' => '192.0.2.16:80',
-			'path'      => '/',
-			'query'     => null,
-			'fragment'  => null,
-		);
-
-		$this->assertEquals($e, $r);
-
-		$r = Uri::parse('urn:oasis:names:specification:docbook:dtd:xml:4.1.2');
-		$e = array(
-			'scheme'    => 'urn',
-			'authority' => null,
-			'path'      => 'oasis:names:specification:docbook:dtd:xml:4.1.2',
-			'query'     => null,
-			'fragment'  => null,
-		);
-
-		$this->assertEquals($e, $r);
+			$this->assertEquals($u, $uri->__toString());
+		}
 	}
 
 	public function testRemoveDotSegments()
@@ -170,6 +150,11 @@ class UriTest extends \PHPUnit_Framework_TestCase
 		$e = '/a/g';
 
 		$this->assertEquals($e, $r);
+	}
+
+	public function testBuildTag()
+	{
+		$this->assertEquals('tag:foo,2013-08-02:blog#1', Uri::buildTag('foo', new \DateTime('2013-08-02'), 'blog', '1'));
 	}
 
 	public function testPercentEncode()

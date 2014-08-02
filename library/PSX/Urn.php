@@ -23,6 +23,8 @@
 
 namespace PSX;
 
+use InvalidArgumentException;
+
 /**
  * Urn
  *
@@ -35,13 +37,7 @@ class Urn extends Uri
 {
 	public function __construct($uri)
 	{
-		$parts = self::parse($uri);
-
-		$this->setScheme($parts['scheme']);
-		$this->setAuthority($parts['authority']);
-		$this->setPath($parts['path']);
-		$this->setQuery($parts['query']);
-		$this->setFragment($parts['fragment']);
+		$this->parse($uri);
 	}
 
 	/**
@@ -86,7 +82,7 @@ class Urn extends Uri
 		return $result;
 	}
 
-	public static function parse($urn)
+	protected function parse($urn)
 	{
 		$urn = (string) $urn;
 		$urn = rawurldecode($urn);
@@ -96,20 +92,16 @@ class Urn extends Uri
 
 		preg_match_all('!^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?!', $urn, $matches);
 
-		$parts = array(
-			'scheme'    => isset($matches[2][0]) ? $matches[2][0] : null,
-			'authority' => isset($matches[4][0]) ? $matches[4][0] : null,
-			'path'      => isset($matches[5][0]) ? $matches[5][0] : null,
-			'query'     => isset($matches[7][0]) ? $matches[7][0] : null,
-			'fragment'  => isset($matches[9][0]) ? $matches[9][0] : null,
-		);
+		$this->setScheme(isset($matches[2][0]) ? $matches[2][0] : null);
+		$this->setAuthority(isset($matches[4][0]) ? $matches[4][0] : null);
+		$this->setPath(isset($matches[5][0]) ? $matches[5][0] : null);
+		$this->setQuery(isset($matches[7][0]) ? $matches[7][0] : null);
+		$this->setFragment(isset($matches[9][0]) ? $matches[9][0] : null);
 
-		if($parts['scheme'] != 'urn')
+		if($this->scheme != 'urn')
 		{
-			throw new Exception('Invalid urn syntax');
+			throw new InvalidArgumentException('Invalid urn syntax');
 		}
-
-		return $parts;
 	}
 
 	/**

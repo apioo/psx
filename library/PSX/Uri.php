@@ -41,13 +41,7 @@ class Uri
 
 	public function __construct($uri)
 	{
-		$parts = self::parse($uri);
-
-		$this->setScheme($parts['scheme']);
-		$this->setAuthority($parts['authority']);
-		$this->setPath($parts['path']);
-		$this->setQuery($parts['query']);
-		$this->setFragment($parts['fragment']);
+		$this->parse($uri);
 	}
 
 	public function getScheme()
@@ -135,24 +129,13 @@ class Uri
 	}
 
 	/**
-	 * Generates an tag uri wich is often used in atom feeds as id
-	 *
-	 * @see http://www.ietf.org/rfc/rfc4151.txt
-	 * @return string
-	 */
-	public static function buildTag($authorityName, DateTime $date, $specific, $fragment = null, $format = 'Y-m-d')
-	{
-		return 'tag:' . $authorityName . ',' . $date->format($format) . ':' . $specific . ($fragment !== null ? '#' . $fragment : '');
-	}
-
-	/**
 	 * Parses the given uri into the specificed "Syntax Components". Returns an
 	 * associatve array containing the defined parts. Throws an exception if its
 	 * an invalid uri
 	 *
 	 * @return array
 	 */
-	public static function parse($uri)
+	protected function parse($uri)
 	{
 		$uri = (string) $uri;
 		$uri = rawurldecode($uri);
@@ -161,20 +144,27 @@ class Uri
 
 		preg_match_all('!^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?!', $uri, $matches);
 
-		$parts = array(
-			'scheme'    => isset($matches[2][0]) ? $matches[2][0] : null,
-			'authority' => isset($matches[4][0]) ? $matches[4][0] : null,
-			'path'      => isset($matches[5][0]) ? $matches[5][0] : null,
-			'query'     => isset($matches[7][0]) ? $matches[7][0] : null,
-			'fragment'  => isset($matches[9][0]) ? $matches[9][0] : null,
-		);
+		$this->setScheme(isset($matches[2][0]) ? $matches[2][0] : null);
+		$this->setAuthority(isset($matches[4][0]) ? $matches[4][0] : null);
+		$this->setQuery(isset($matches[7][0]) ? $matches[7][0] : null);
+		$this->setFragment(isset($matches[9][0]) ? $matches[9][0] : null);
 
-		if($parts['path'] !== null)
+		$path = isset($matches[5][0]) ? $matches[5][0] : null;
+		if(!empty($path))
 		{
-			$parts['path'] = self::removeDotSegments($parts['path']);
+			$this->setPath(self::removeDotSegments($path));
 		}
+	}
 
-		return $parts;
+	/**
+	 * Generates an tag uri wich is often used in atom feeds as id
+	 *
+	 * @see http://www.ietf.org/rfc/rfc4151.txt
+	 * @return string
+	 */
+	public static function buildTag($authorityName, \DateTime $date, $specific, $fragment = null, $format = 'Y-m-d')
+	{
+		return 'tag:' . $authorityName . ',' . $date->format($format) . ':' . $specific . ($fragment !== null ? '#' . $fragment : '');
 	}
 
 	public static function removeDotSegments($relativePath)

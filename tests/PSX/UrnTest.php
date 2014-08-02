@@ -55,7 +55,7 @@ class UrnTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException \PSX\Exception
+	 * @expectedException InvalidArgumentException
 	 */
 	public function testInvalidUrn()
 	{
