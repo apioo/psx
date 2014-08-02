@@ -28,7 +28,7 @@ use PSX\ControllerAbstract;
 use PSX\Data\ReaderInterface;
 use PSX\Data\Record;
 use PSX\Filter;
-use PSX\Http\FileEntity;
+use PSX\Http\Stream\FileStream;
 use PSX\Loader\Location;
 use PSX\Validate;
 use SimpleXMLElement;
@@ -87,20 +87,16 @@ class TestController extends ControllerAbstract
 		$this->testCase->assertInstanceOf('PSX\Data\Record', $this->import($record));
 		$this->testCase->assertEquals('bar', $record->getFoo());
 
-		// get request reader
-		$this->testCase->assertInstanceOf('PSX\Data\Reader\Json', $this->getRequestReader());
-		$this->testCase->assertInstanceOf('PSX\Data\Reader\Json', $this->getRequestReader(ReaderInterface::JSON));
-
 		// set response
 		$record = new Record('foo', array('bar' => 'foo'));
 
-		$this->setResponse($record);
-
-		// get response writer
-		$this->testCase->assertInstanceOf('PSX\Data\Writer\Json', $this->getResponseWriter());
+		$this->setBody($record);
 
 		// is writer
 		$this->testCase->assertTrue($this->isWriter('PSX\Data\Writer\Json'));
+
+		// is reader
+		$this->testCase->assertTrue($this->isReader('PSX\Data\Writer\Json'));
 
 		// get preferred writer
 		$this->testCase->assertInstanceOf('PSX\Data\Writer\Json', $this->getPreferredWriter());
@@ -168,9 +164,9 @@ class TestController extends ControllerAbstract
 		$this->setBody('foobar');
 	}
 
-	public function doSetFileEntityBody()
+	public function doSetStreamBody()
 	{
-		$this->setBody(new FileEntity(fopen(__DIR__ . '/../Resource/test_file', 'r'), 'foo.txt'));
+		$this->setBody(new FileStream(fopen(__DIR__ . '/../Resource/test_file', 'r'), 'foo.txt', 'application/octet-stream'));
 	}
 
 	public function doRedirectDestiniation()

@@ -47,7 +47,7 @@ class TestApiController extends ApiAbstract
 	{
 		$record = new Record('foo', array('bar' => 'foo'));
 
-		$this->setResponse($record);
+		$this->setBody($record);
 	}
 
 	public function doInsert()
@@ -55,7 +55,7 @@ class TestApiController extends ApiAbstract
 		$record = new NewsRecord();
 		$record = $this->import($record);
 
-		$this->setResponse($record);
+		$this->setBody($record);
 	}
 
 	public function doInspect()
@@ -76,10 +76,7 @@ class TestApiController extends ApiAbstract
 
 		$this->testCase->assertEquals(array(array('id', '=', '12', 'AND', 1), array('date', '>', '2014-01-26 00:00:00', 'AND', 1)), $condition->toArray());
 
-		// get preferred writer
-		$writer = $this->getPreferredWriter();
-
-		$this->testCase->assertInstanceOf('PSX\Data\Writer\Json', $writer);
+		// check writer
 		$this->testCase->assertTrue($this->isWriter('PSX\Data\Writer\Json'));
 	}
 }

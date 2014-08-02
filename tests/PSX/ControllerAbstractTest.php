@@ -183,7 +183,7 @@ XML;
 		$this->assertEquals($expect, (string) $response->getBody());
 	}
 
-	public function testSetFileEntityBody()
+	public function testSetStreamBody()
 	{
 		$path     = '/controller/file';
 		$request  = new Request(new Url('http://127.0.0.1' . $path), 'GET');
@@ -191,9 +191,11 @@ XML;
 
 		$controller = $this->loadController($request, $response);
 
-		$this->assertEquals('application/octet-stream', $response->getHeader('Content-Type'));
-		$this->assertEquals('attachment; filename="foo.txt"', $response->getHeader('Content-Disposition'));
-		$this->assertEquals('chunked', $response->getHeader('Transfer-Encoding'));
+		$body = $response->getBody();
+
+		$this->assertInstanceOf('PSX\Http\Stream\FileStream', $body);
+		$this->assertEquals('foo.txt', $body->getFileName());
+		$this->assertEquals('application/octet-stream', $body->getContentType());
 
 		$expect = <<<XML
 foobar
@@ -215,7 +217,7 @@ XML;
 			'/controller/dom'       => 'PSX\Controller\Foo\Application\TestController::doSetDomDocumentBody',
 			'/controller/simplexml' => 'PSX\Controller\Foo\Application\TestController::doSetSimpleXmlBody',
 			'/controller/string'    => 'PSX\Controller\Foo\Application\TestController::doSetStringBody',
-			'/controller/file'      => 'PSX\Controller\Foo\Application\TestController::doSetFileEntityBody',
+			'/controller/file'      => 'PSX\Controller\Foo\Application\TestController::doSetStreamBody',
 			'/redirect/:foo'        => 'PSX\Controller\Foo\Application\TestController::doRedirectDestiniation',
 			'/api'                  => 'PSX\Controller\Foo\Application\TestApiController::doIndex',
 			'/api/insert'           => 'PSX\Controller\Foo\Application\TestApiController::doInsert',
