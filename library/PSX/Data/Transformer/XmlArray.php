@@ -66,7 +66,7 @@ class XmlArray implements TransformerInterface
 				continue;
 			}
 
-			if(isset($result[$node->nodeName]))
+			if(isset($result[$node->nodeName]) && (!isset($result[$node->nodeName][0]) || !is_array($result[$node->nodeName][0])))
 			{
 				$result[$node->nodeName] = array($result[$node->nodeName]);
 			}

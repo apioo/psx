@@ -40,30 +40,38 @@ class XmlArrayTest extends \PHPUnit_Framework_TestCase
 	{
 		$body = <<<INPUT
 <test>
-	<empty></empty>
+	<empty />
+	<empty_2></empty_2>
 	<foo>bar</foo>
 	<bar>blub</bar>
 	<bar>bla</bar>
 	<test>
 		<foo>bar</foo>
 	</test>
+	<foooo>
+		<test>
+			<title>blub</title>
+		</test>
+		<bar>
+			<title>foo</title>
+		</bar>
+	</foooo>
 	<item>
-		<foo>
-			<bar>
-				<title>foo</title>
-			</bar>
-		</foo>
+		<title>foo</title>
+		<text>bar</text>
 	</item>
-	<items>
-		<item>
-			<title>foo</title>
-			<text>bar</text>
-		</item>
-		<item>
-			<title>foo</title>
-			<text>bar</text>
-		</item>
-	</items>
+	<item>
+		<title>foo</title>
+		<text>bar</text>
+	</item>
+	<item>
+		<title>foo</title>
+		<text>bar</text>
+	</item>
+	<item>
+		<title>foo</title>
+		<text>bar</text>
+	</item>
 </test>
 INPUT;
 
@@ -74,11 +82,17 @@ INPUT;
 
 		$expect = array(
 			'empty' => '', 
+			'empty_2' => '', 
 			'foo' => 'bar', 
 			'bar' => array('blub', 'bla'), 
 			'test' => array('foo' => 'bar'),
-			'item' => array('foo' => array('bar' => array('title' => 'foo'))),
-			'items' => array('item' => array(array('title' => 'foo', 'text' => 'bar'), array('title' => 'foo', 'text' => 'bar'))),
+			'foooo' => array('test' => array('title' => 'blub'), 'bar' => array('title' => 'foo')),
+			'item' => array(
+				array('title' => 'foo', 'text' => 'bar'), 
+				array('title' => 'foo', 'text' => 'bar'), 
+				array('title' => 'foo', 'text' => 'bar'), 
+				array('title' => 'foo', 'text' => 'bar')
+			),
 		);
 
 		$data = $transformer->transform($dom);
