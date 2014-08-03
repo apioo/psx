@@ -41,10 +41,16 @@ class JsonpTest extends WriterTestCase
 		$actual = $writer->write($this->getRecord());
 
 		$expect = <<<TEXT
-foo({"id":1,"author":"foo","title":"bar","content":"foobar","date":"2012-03-11T13:37:21+00:00"})
+foo({
+    "id": 1,
+    "author": "foo",
+    "title": "bar",
+    "content": "foobar",
+    "date": "2012-03-11T13:37:21+00:00"
+})
 TEXT;
 
-		$this->assertEquals($expect, $actual);
+		$this->assertJsonp($expect, $actual);
 	}
 
 	public function testWriteResultSet()
@@ -54,10 +60,30 @@ TEXT;
 		$actual = $writer->write($this->getResultSet());
 
 		$expect = <<<TEXT
-foo({"totalResults":2,"startIndex":0,"itemsPerPage":8,"entry":[{"id":1,"author":"foo","title":"bar","content":"foobar","date":"2012-03-11T13:37:21+00:00"},{"id":2,"author":"foo","title":"bar","content":"foobar","date":"2012-03-11T13:37:21+00:00"}]})
+foo({
+    "totalResults": 2,
+    "startIndex": 0,
+    "itemsPerPage": 8,
+    "entry": [
+        {
+            "id": 1,
+            "author": "foo",
+            "title": "bar",
+            "content": "foobar",
+            "date": "2012-03-11T13:37:21+00:00"
+        },
+        {
+            "id": 2,
+            "author": "foo",
+            "title": "bar",
+            "content": "foobar",
+            "date": "2012-03-11T13:37:21+00:00"
+        }
+    ]
+})
 TEXT;
 
-		$this->assertEquals($expect, $actual);
+		$this->assertJsonp($expect, $actual);
 	}
 
 	public function testWriteComplex()
@@ -67,10 +93,29 @@ TEXT;
 		$actual = $writer->write($this->getComplexRecord());
 
 		$expect = <<<TEXT
-foo({"verb":"post","actor":{"id":"tag:example.org,2011:martin","objectType":"person","displayName":"Martin Smith","url":"http:\/\/example.org\/martin"},"object":{"id":"tag:example.org,2011:abc123\/xyz","url":"http:\/\/example.org\/blog\/2011\/02\/entry"},"target":{"id":"tag:example.org,2011:abc123","objectType":"blog","displayName":"Martin's Blog","url":"http:\/\/example.org\/blog\/"},"published":"2011-02-10T15:04:55+00:00"})
+foo({
+    "verb": "post",
+    "actor": {
+        "id": "tag:example.org,2011:martin",
+        "objectType": "person",
+        "displayName": "Martin Smith",
+        "url": "http:\/\/example.org\/martin"
+    },
+    "object": {
+        "id": "tag:example.org,2011:abc123\/xyz",
+        "url": "http:\/\/example.org\/blog\/2011\/02\/entry"
+    },
+    "target": {
+        "id": "tag:example.org,2011:abc123",
+        "objectType": "blog",
+        "displayName": "Martin's Blog",
+        "url": "http:\/\/example.org\/blog\/"
+    },
+    "published": "2011-02-10T15:04:55+00:00"
+})
 TEXT;
 
-		$this->assertEquals($expect, $actual);
+		$this->assertJsonp($expect, $actual);
 	}
 
 	public function testSetCallbackName()
@@ -99,5 +144,13 @@ TEXT;
 		$writer->setCallbackName('fooooooooooooooofoooooooooooooooo');
 
 		$this->assertEquals(null, $writer->getCallbackName());
+	}
+
+	protected function assertJsonp($expect, $actual)
+	{
+		preg_match('/^foo\((.*)\)$/s', $expect, $matchesExpect);
+		preg_match('/^foo\((.*)\)$/s', $actual, $matchesActual);
+
+		$this->assertJsonStringEqualsJsonString($matchesExpect[1], $matchesActual[1]);
 	}
 }

@@ -41,11 +41,12 @@ class Json
 	 * Returns the json encoded value as string of $value
 	 *
 	 * @param mixed $value
+	 * @param integer $options
 	 * @return string
 	 */
-	public static function encode($value)
+	public static function encode($value, $options = 0)
 	{
-		return json_encode($value);
+		return json_encode($value, $options);
 	}
 
 	/**

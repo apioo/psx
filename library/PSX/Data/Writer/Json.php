@@ -40,7 +40,7 @@ class Json extends ArrayAbstract
 
 	public function write(RecordInterface $record)
 	{
-		return JsonParser::encode($this->export($record));
+		return JsonParser::encode($this->export($record), JSON_PRETTY_PRINT);
 	}
 
 	public function isContentTypeSupported($contentType)
