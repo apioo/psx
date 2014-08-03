@@ -42,125 +42,171 @@ class Builder
 	}
 
 	/**
+	 * @param string $description
+	 * @return $this
+	 */
+	public function setDescription($description)
+	{
+		$this->property->setDescription($description);
+
+		return $this;
+	}
+
+	/**
+	 * @param boolean $required
+	 * @return $this
+	 */
+	public function setRequired($required)
+	{
+		$this->property->setRequired($required);
+
+		return $this;
+	}
+
+	/**
+	 * @param string $reference
+	 * @return $this
+	 */
+	public function setReference($reference)
+	{
+		$this->property->setReference($reference);
+
+		return $this;
+	}
+
+	/**
+	 * @param PSX\Data\Schema\PropertyInteface $property
+	 * @return $this
+	 */
+	public function add(PropertyInterface $property)
+	{
+		$this->property->add($property);
+
+		return $this;
+	}
+
+	/**
+	 * @param string $name
 	 * @return PSX\Data\Schema\Property\ArrayType
 	 */
 	public function arrayType($name)
 	{
 		if($name instanceof Property\ArrayType)
 		{
-			$this->addProperty($property = $name);
+			$this->add($property = $name);
 		}
 		else
 		{
-			$this->addProperty($property = new Property\ArrayType($name));
+			$this->add($property = new Property\ArrayType($name));
 		}
 
 		return $property;
 	}
 
 	/**
+	 * @param string $name
 	 * @return PSX\Data\Schema\Property\Boolean
 	 */
 	public function boolean($name)
 	{
-		$this->addProperty($property = new Property\Boolean($name));
+		$this->add($property = new Property\Boolean($name));
 
 		return $property;
 	}
 
 	/**
+	 * @param string $name
 	 * @return PSX\Data\Schema\Property\ComplexType
 	 */
 	public function complexType($name)
 	{
 		if($name instanceof Property\ComplexType)
 		{
-			$this->addProperty($property = $name);
+			$this->add($property = $name);
 		}
 		else
 		{
-			$this->addProperty($property = new Property\ComplexType($name));
+			$this->add($property = new Property\ComplexType($name));
 		}
 
 		return $property;
 	}
 
 	/**
+	 * @param string $name
 	 * @return PSX\Data\Schema\Property\Date
 	 */
 	public function date($name)
 	{
-		$this->addProperty($property = new Property\Date($name));
+		$this->add($property = new Property\Date($name));
 
 		return $property;
 	}
 
 	/**
+	 * @param string $name
 	 * @return PSX\Data\Schema\Property\DateTime
 	 */
 	public function dateTime($name)
 	{
-		$this->addProperty($property = new Property\DateTime($name));
+		$this->add($property = new Property\DateTime($name));
 
 		return $property;
 	}
 
 	/**
+	 * @param string $name
 	 * @return PSX\Data\Schema\Property\Duration
 	 */
 	public function duration($name)
 	{
-		$this->addProperty($property = new Property\Duration($name));
+		$this->add($property = new Property\Duration($name));
 
 		return $property;
 	}
 
 	/**
+	 * @param string $name
 	 * @return PSX\Data\Schema\Property\Float
 	 */
 	public function float($name)
 	{
-		$this->addProperty($property = new Property\Float($name));
+		$this->add($property = new Property\Float($name));
 
 		return $property;
 	}
 
 	/**
+	 * @param string $name
 	 * @return PSX\Data\Schema\Property\Integer
 	 */
 	public function integer($name)
 	{
-		$this->addProperty($property = new Property\Integer($name));
+		$this->add($property = new Property\Integer($name));
 
 		return $property;
 	}
 
 	/**
+	 * @param string $name
 	 * @return PSX\Data\Schema\Property\String
 	 */
 	public function string($name)
 	{
-		$this->addProperty($property = new Property\String($name));
+		$this->add($property = new Property\String($name));
 
 		return $property;
 	}
 
 	/**
+	 * @param string $name
 	 * @return PSX\Data\Schema\Property\Time
 	 */
 	public function time($name)
 	{
-		$this->addProperty($property = new Property\Time($name));
+		$this->add($property = new Property\Time($name));
 
 		return $property;
-	}
-
-	/**
-	 * @param PSX\Data\Schema\PropertyInteface $property
-	 */
-	public function addProperty(PropertyInterface $property)
-	{
-		$this->property->add($property);
 	}
 
 	/**
