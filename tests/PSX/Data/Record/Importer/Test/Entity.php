@@ -21,41 +21,47 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Data\Record\Importer;
-
-use PSX\Data\Record\ImporterTestCase;
-use PSX\Handler\Doctrine\DoctrineTestCase;
+namespace PSX\Data\Record\Importer\Test;
 
 /**
- * EntityTest
- *
- * @author  Christoph Kappestein <k42b3.x@gmail.com>
- * @license http://www.gnu.org/licenses/gpl.html GPLv3
- * @link    http://phpsx.org
+ * @Entity
+ * @Table(name="news")
  */
-class EntityTest extends DoctrineTestCase
+class Entity
 {
-	use ImporterTestCase;
+	/**
+	 * @Id
+	 * @Column(type="integer")
+	 */
+	protected $id;
 
-	public function getDataSet()
-	{
-		return $this->createFlatXMLDataSet(dirname(__FILE__) . '/../../../Handler/handler_fixture.xml');
-	}
+	/**
+	 * @Column(type="string")
+	 */
+	protected $title;
 
-	protected function getImporter()
-	{
-		return new Entity($this->getEntityManager());
-	}
+	/**
+	 * @Column(type="boolean")
+	 */
+	protected $active;
 
-	protected function getRecord()
-	{
-		return new Test\Entity();
-	}
+	/**
+	 * @Column(type="boolean")
+	 */
+	protected $disabled;
 
-	protected function canImportComplexRecord()
-	{
-		return false;
-	}
+	/**
+	 * @Column(type="integer")
+	 */
+	protected $count;
+
+	/**
+	 * @Column(type="float")
+	 */
+	protected $rating;
+
+	/**
+	 * @Column(type="datetime")
+	 */
+	protected $date;
 }
-
-

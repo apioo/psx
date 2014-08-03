@@ -21,41 +21,35 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Data\Record\Importer;
+namespace PSX\Data\Record\Importer\Test;
 
-use PSX\Data\Record\ImporterTestCase;
-use PSX\Handler\Doctrine\DoctrineTestCase;
+use PSX\Sql\TableAbstract;
+use PSX\Sql\TableInterface;
 
 /**
- * EntityTest
+ * Table
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class EntityTest extends DoctrineTestCase
+class Table extends TableAbstract
 {
-	use ImporterTestCase;
-
-	public function getDataSet()
+	public function getName()
 	{
-		return $this->createFlatXMLDataSet(dirname(__FILE__) . '/../../../Handler/handler_fixture.xml');
+		return 'news';
 	}
 
-	protected function getImporter()
+	public function getColumns()
 	{
-		return new Entity($this->getEntityManager());
-	}
-
-	protected function getRecord()
-	{
-		return new Test\Entity();
-	}
-
-	protected function canImportComplexRecord()
-	{
-		return false;
+		return array(
+			'id'       => TableInterface::TYPE_INT | 10 | TableInterface::PRIMARY_KEY | TableInterface::AUTO_INCREMENT,
+			'title'    => TableInterface::TYPE_VARCHAR | 16,
+			'active'   => TableInterface::TYPE_BOOLEAN,
+			'disabled' => TableInterface::TYPE_BOOLEAN,
+			'count'    => TableInterface::TYPE_INT,
+			'rating'   => TableInterface::TYPE_FLOAT,
+			'date'     => TableInterface::TYPE_DATETIME,
+		);
 	}
 }
-
-

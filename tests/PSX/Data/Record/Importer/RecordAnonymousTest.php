@@ -24,7 +24,6 @@
 namespace PSX\Data\Record\Importer;
 
 use PSX\Data\Record as DataRecord;
-use PSX\Data\RecordAbstract;
 use PSX\Data\Record\ImporterTestCase;
 
 /**

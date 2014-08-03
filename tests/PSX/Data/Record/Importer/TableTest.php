@@ -23,11 +23,7 @@
 
 namespace PSX\Data\Record\Importer;
 
-use PDOException;
-use PSX\Data\Record;
 use PSX\Data\Record\ImporterTestCase;
-use PSX\Sql\TableAbstract;
-use PSX\Sql\TableInterface;
 use PSX\Sql\DbTestCase;
 
 /**
@@ -53,7 +49,7 @@ class TableImporterTest extends DbTestCase
 
 	protected function getRecord()
 	{
-		return new TestTable($this->sql);
+		return new Test\Table($this->sql);
 	}
 
 	protected function canImportComplexRecord()
@@ -62,24 +58,4 @@ class TableImporterTest extends DbTestCase
 	}
 }
 
-class TestTable extends TableAbstract
-{
-	public function getName()
-	{
-		return 'news';
-	}
-
-	public function getColumns()
-	{
-		return array(
-			'id'       => TableInterface::TYPE_INT | 10 | TableInterface::PRIMARY_KEY | TableInterface::AUTO_INCREMENT,
-			'title'    => TableInterface::TYPE_VARCHAR | 16,
-			'active'   => TableInterface::TYPE_BOOLEAN,
-			'disabled' => TableInterface::TYPE_BOOLEAN,
-			'count'    => TableInterface::TYPE_INT,
-			'rating'   => TableInterface::TYPE_FLOAT,
-			'date'     => TableInterface::TYPE_DATETIME,
-		);
-	}
-}
 

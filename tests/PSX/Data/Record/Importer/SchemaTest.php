@@ -23,10 +23,7 @@
 
 namespace PSX\Data\Record\Importer;
 
-use PSX\Data\RecordAbstract;
 use PSX\Data\Record\ImporterTestCase;
-use PSX\Data\SchemaAbstract;
-use PSX\Data\Schema\Property;
 
 /**
  * SchemaTest
@@ -41,39 +38,11 @@ class SchemaTest extends \PHPUnit_Framework_TestCase
 	
 	protected function getImporter()
 	{
-		return new Schema(getContainer()->get('schema_validator'));
+		return new Schema(getContainer()->get('schema_validator'), getContainer()->get('record_factory_factory'));
 	}
 
 	protected function getRecord()
 	{
-		return getContainer()->get('schema_manager')->getSchema('PSX\Data\Record\Importer\DefaultSchema');
-	}
-}
-
-class DefaultSchema extends SchemaAbstract
-{
-	public function getDefinition()
-	{
-		$sb = $this->getSchemaBuilder('person');
-		$sb->string('title');
-		$person = $sb->getProperty();
-
-		$sb = $this->getSchemaBuilder('entry');
-		$sb->string('title');
-		$entry = $sb->getProperty();
-
-		$sb = $this->getSchemaBuilder('news');
-		$sb->integer('id');
-		$sb->string('title');
-		$sb->boolean('active');
-		$sb->boolean('disabled');
-		$sb->integer('count');
-		$sb->float('rating');
-		$sb->dateTime('date');
-		$sb->complexType($person);
-		$sb->arrayType('tags')->setPrototype(new Property\String('tag'));
-		$sb->arrayType('entry')->setPrototype($entry);
-
-		return $sb->getProperty();
+		return getContainer()->get('schema_manager')->getSchema('PSX\Data\Record\Importer\Test\Schema');
 	}
 }

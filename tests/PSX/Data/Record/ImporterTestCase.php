@@ -110,7 +110,7 @@ trait ImporterTestCase
 
 		if($this->canImportComplexRecord())
 		{
-			$this->assertInstanceOf('PSX\Data\RecordInterface', $record->getPerson());
+			$this->assertInstanceOf('PSX\Data\Record\Importer\Test\Person', $record->getPerson());
 			$this->assertEquals('Foo', $record->getPerson()->getTitle());
 
 			$this->assertEquals(true, is_array($record->getTags()));
@@ -127,7 +127,7 @@ trait ImporterTestCase
 
 			foreach($record->getEntry() as $entry)
 			{
-				$this->assertInstanceOf('PSX\Data\RecordInterface', $entry);
+				$this->assertInstanceOf('PSX\Data\Record\Importer\Test\Entry', $entry);
 			}
 		}
 	}

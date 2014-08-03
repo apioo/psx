@@ -21,41 +21,28 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Data\Record\Importer;
+namespace PSX\Data\Record\Importer\Test;
 
-use PSX\Data\Record\ImporterTestCase;
-use PSX\Handler\Doctrine\DoctrineTestCase;
+use PSX\Data\RecordAbstract;
 
 /**
- * EntityTest
+ * Entry
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class EntityTest extends DoctrineTestCase
+class Entry extends RecordAbstract
 {
-	use ImporterTestCase;
+	protected $title;
 
-	public function getDataSet()
+	public function setTitle($title)
 	{
-		return $this->createFlatXMLDataSet(dirname(__FILE__) . '/../../../Handler/handler_fixture.xml');
+		$this->title = $title;
 	}
 
-	protected function getImporter()
+	public function getTitle()
 	{
-		return new Entity($this->getEntityManager());
-	}
-
-	protected function getRecord()
-	{
-		return new Test\Entity();
-	}
-
-	protected function canImportComplexRecord()
-	{
-		return false;
+		return $this->title;
 	}
 }
-
-
