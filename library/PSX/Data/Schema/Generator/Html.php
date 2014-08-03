@@ -158,7 +158,7 @@ class Html implements GeneratorInterface
 				{
 					$enumeration.= '<li><span class="constraint-enumeration-value">' . $enum . '</span></li>';
 				}
-				$enumeration.= '</li>';
+				$enumeration.= '</ul>';
 
 				$constraints['enumeration'] = '<span class="constraint-enumeration">' . $enumeration .'</span>';
 			}
