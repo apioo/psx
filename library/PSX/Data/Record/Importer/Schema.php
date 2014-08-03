@@ -25,11 +25,15 @@ namespace PSX\Data\Record\Importer;
 
 use InvalidArgumentException;
 use PSX\Data\Record as DataRecord;
+use PSX\Data\Record\FactoryFactory;
 use PSX\Data\Record\ImporterInterface;
 use PSX\Data\SchemaInterface;
 use PSX\Data\Schema\Property;
 use PSX\Data\Schema\PropertyInterface;
 use PSX\Data\Schema\ValidatorInterface;
+use ReflectionClass;
+use ReflectionException;
+use ReflectionMethod;
 
 /**
  * Imports data based on an given schema. Validates also the data if an 
@@ -42,10 +46,12 @@ use PSX\Data\Schema\ValidatorInterface;
 class Schema implements ImporterInterface
 {
 	protected $validator;
+	protected $factory;
 
-	public function __construct(ValidatorInterface $validator)
+	public function __construct(ValidatorInterface $validator, FactoryFactory $factory)
 	{
 		$this->validator = $validator;
+		$this->factory   = $factory;
 	}
 
 	public function accept($schema)
@@ -72,6 +78,8 @@ class Schema implements ImporterInterface
 
 	protected function recImport(PropertyInterface $type, $data)
 	{
+		$reference = $type->getReference();
+
 		if($type instanceof Property\ComplexType)
 		{
 			$children = $type->getChildren();
@@ -85,7 +93,14 @@ class Schema implements ImporterInterface
 				}
 			}
 
-			return new DataRecord($type->getName(), $fields);
+			if(empty($reference))
+			{
+				return new DataRecord($type->getName(), $fields);
+			}
+			else
+			{
+				return $this->getComplexReference($reference, $fields);
+			}
 		}
 		else if($type instanceof Property\ArrayType)
 		{
@@ -101,27 +116,93 @@ class Schema implements ImporterInterface
 		}
 		else if($type instanceof Property\Boolean)
 		{
-			return $data === 'false' ? false : (bool) $data;
+			$data = $data === 'false' ? false : (bool) $data;
+
+			return empty($reference) ? $data : $this->getSimpleReference($reference, $data);
 		}
 		else if($type instanceof Property\Date || $type instanceof Property\DateTime)
 		{
-			return new \DateTime($data);
+			return empty($reference) ? new \DateTime($data) : $this->getSimpleReference($reference, $data);
 		}
 		else if($type instanceof Property\Duration)
 		{
-			return new \DateInterval($data);
+			return empty($reference) ? new \DateInterval($data) : $this->getSimpleReference($reference, $data);
 		}
 		else if($type instanceof Property\Float)
 		{
-			return (float) $data;
+			$data = (float) $data;
+
+			return empty($reference) ? $data : $this->getSimpleReference($reference, $data);
 		}
 		else if($type instanceof Property\Integer)
 		{
-			return (int) $data;
+			$data = (int) $data;
+
+			return empty($reference) ? $data : $this->getSimpleReference($reference, $data);
 		}
 		else
 		{
-			return (string) $data;
+			$data = (string) $data;
+
+			return empty($reference) ? $data : $this->getSimpleReference($reference, $data);
 		}
+	}
+
+	protected function getComplexReference($reference, array $fields)
+	{
+		$class = new ReflectionClass($reference);
+
+		if($class->implementsInterface('PSX\Data\RecordInterface'))
+		{
+			$record = $class->newInstance();
+
+			foreach($fields as $key => $value)
+			{
+				try
+				{
+					$methodName = 'set' . ucfirst($key);
+					$method     = $class->getMethod($methodName);
+
+					if($method instanceof ReflectionMethod)
+					{
+						$method->invokeArgs($record, array($value));
+					}
+				}
+				catch(ReflectionException $e)
+				{
+					// method does not exist
+				}
+			}
+
+			return $record;
+		}
+		else if($class->implementsInterface('PSX\Data\Record\FactoryInterface'))
+		{
+			return $this->factory->getFactory($reference)->factory($fields, $this);
+		}
+		else
+		{
+			return $class->newInstance($fields);
+		}
+	}
+
+	protected function getSimpleReference($reference, $value)
+	{
+		try
+		{
+			$class       = new ReflectionClass($reference);
+			$constructor = $class->getConstructor();
+
+			if($constructor instanceof ReflectionMethod && $constructor->getNumberOfRequiredParameters() == 1)
+			{
+				return $class->newInstance($value);
+			}
+		}
+		catch(ReflectionException $e)
+		{
+			// class does not exist
+		}
+
+		return $value;
 	}
 }

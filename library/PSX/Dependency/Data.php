@@ -95,7 +95,7 @@ trait Data
 	{
 		$manager = new ImporterManager();
 		$manager->addImporter(new Importer\Record($this->get('record_factory_factory')));
-		$manager->addImporter(new Importer\Schema($this->get('schema_validator')));
+		$manager->addImporter(new Importer\Schema($this->get('schema_validator'), $this->get('record_factory_factory')));
 		$manager->addImporter(new Importer\Table());
 
 		return $manager;
