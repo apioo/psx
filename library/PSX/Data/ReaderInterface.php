@@ -24,7 +24,6 @@
 namespace PSX\Data;
 
 use Psr\Http\Message\MessageInterface;
-use PSX\Data\Record\ImporterInterface;
 
 /**
  * ReaderInterface
