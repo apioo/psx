@@ -43,16 +43,47 @@ class Float extends Decimal
 			return true;
 		}
 
-		if(is_string($data) || is_float($data))
+		if(is_float($data))
 		{
-			return true;
+		}
+		else if(is_int($data))
+		{
+			$data = (float) $data;
+		}
+		else if(is_string($data))
+		{
+			$result = preg_match('/^((\+|-)?([0-9]+(\.[0-9]*)?|\.[0-9]+)([Ee](\+|-)?[0-9]+)?){1}$/', $data);
+
+			if($result)
+			{
+				$data = (float) $data;
+			}
+			else
+			{
+				throw new ValidationException($this->getName() . ' must be an float');
+			}
+		}
+		else
+		{
+			throw new ValidationException($this->getName() . ' must be an float');
 		}
 
-		throw new ValidationException($this->getName() . ' must be an float');
-	}
+		if($this->max !== null)
+		{
+			if($data > $this->max)
+			{
+				throw new ValidationException($this->getName() . ' must be lower or equal then ' . $this->max);
+			}
+		}
 
-	protected function getValuePattern()
-	{
-		return '(\+|-)?([0-9]+(\.[0-9]*)?|\.[0-9]+)([Ee](\+|-)?[0-9]+)?';
+		if($this->min !== null)
+		{
+			if($data < $this->min)
+			{
+				throw new ValidationException($this->getName() . ' must be greater or equal then ' . $this->min);
+			}
+		}
+
+		return true;
 	}
 }

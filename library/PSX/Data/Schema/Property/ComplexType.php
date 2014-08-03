@@ -23,6 +23,7 @@
 
 namespace PSX\Data\Schema\Property;
 
+use PSX\Data\Schema\PropertyAbstract;
 use PSX\Data\Schema\PropertyInterface;
 use PSX\Data\Schema\ValidationException;
 
@@ -33,33 +34,9 @@ use PSX\Data\Schema\ValidationException;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class ComplexType implements PropertyInterface
+class ComplexType extends PropertyAbstract
 {
-	protected $name;
-	protected $required;
 	protected $properties = array();
-
-	public function __construct($name)
-	{
-		$this->name = $name;
-	}
-
-	public function getName()
-	{
-		return $this->name;
-	}
-
-	public function isRequired()
-	{
-		return $this->required;
-	}
-
-	public function setRequired($required)
-	{
-		$this->required = $required;
-
-		return $this;
-	}
 
 	public function add(PropertyInterface $property)
 	{
@@ -73,13 +50,10 @@ class ComplexType implements PropertyInterface
 		return $this->properties;
 	}
 
-	public function hasConstraints()
-	{
-		return true;
-	}
-
 	public function validate($data)
 	{
+		parent::validate($data);
+
 		if($data === null)
 		{
 			return true;

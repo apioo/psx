@@ -21,20 +21,61 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Data\Schema\Property;
-
-use PSX\Data\Schema\PropertySimpleAbstract;
-use PSX\Data\Schema\ValidationException;
+namespace PSX\Data\Schema;
 
 /**
- * Boolean
+ * PropertySimpleAbstract
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Boolean extends PropertySimpleAbstract
+abstract class PropertySimpleAbstract extends PropertyAbstract
 {
+	protected $pattern;
+	protected $enumeration;
+
+	/**
+	 * @param string $pattern
+	 * @return $this
+	 */
+	public function setPattern($pattern)
+	{
+		$this->pattern = $pattern;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getPattern()
+	{
+		return $this->pattern;
+	}
+
+	/**
+	 * @param string $enumeration
+	 * @return $this
+	 */
+	public function setEnumeration(array $enumeration)
+	{
+		$this->enumeration = $enumeration;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getEnumeration()
+	{
+		return $this->enumeration;
+	}
+
+	/**
+	 * @return boolean
+	 */
 	public function validate($data)
 	{
 		parent::validate($data);
@@ -44,20 +85,22 @@ class Boolean extends PropertySimpleAbstract
 			return true;
 		}
 
-		if(is_bool($data))
+		if($this->pattern !== null)
 		{
-			return true;
-		}
-		else if(is_scalar($data))
-		{
-			$result = preg_match('/^(true|false|1|0){1}$/', $data);
+			$result = preg_match('/^(' . $this->pattern . '){1}$/', $data);
 
-			if($result)
+			if(!$result)
 			{
-				return true;
+				throw new ValidationException($this->getName() . ' does not match pattern');
 			}
 		}
 
-		throw new ValidationException($this->getName() . ' must be an boolean');
+		if($this->enumeration !== null)
+		{
+			if(!in_array($data, $this->enumeration))
+			{
+				throw new ValidationException($this->getName() . ' is not in enumeration');
+			}
+		}
 	}
 }

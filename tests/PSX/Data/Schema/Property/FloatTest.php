@@ -36,6 +36,7 @@ class FloatTest extends \PHPUnit_Framework_TestCase
 	{
 		$property = new Float('test');
 
+		$this->assertTrue($property->validate(1));
 		$this->assertTrue($property->validate(1.0));
 		$this->assertTrue($property->validate('1.0'));
 	}

@@ -37,6 +37,7 @@ class ArrayTypeTest extends \PHPUnit_Framework_TestCase
 		$property = new ArrayType('test');
 
 		$this->assertTrue($property->validate(array()));
+		$this->assertTrue($property->validate(array('foo')));
 	}
 
 	/**
@@ -47,5 +48,58 @@ class ArrayTypeTest extends \PHPUnit_Framework_TestCase
 		$property = new ArrayType('test');
 
 		$this->assertTrue($property->validate('foo'));
+	}
+
+	public function testValidateNull()
+	{
+		$property = new ArrayType('test');
+
+		$this->assertTrue($property->validate(null));
+	}
+
+	/**
+	 * @expectedException PSX\Data\Schema\ValidationException
+	 */
+	public function testValidateNullIsRequired()
+	{
+		$property = new ArrayType('test');
+		$property->setRequired(true);
+
+		$this->assertTrue($property->validate(null));
+		$this->assertTrue($property->isRequired());
+	}
+
+	/**
+	 * @expectedException PSX\Data\Schema\ValidationException
+	 */
+	public function testValidateMinLength()
+	{
+		$property = new ArrayType('test');
+		$property->setMinLength(1);
+
+		$this->assertTrue($property->validate(array()));
+		$this->assertEquals(1, $property->getMinLength());
+	}
+
+	/**
+	 * @expectedException PSX\Data\Schema\ValidationException
+	 */
+	public function testValidateMaxLength()
+	{
+		$property = new ArrayType('test');
+		$property->setMaxLength(1);
+
+		$this->assertTrue($property->validate(array('foo', 'bar')));
+		$this->assertEquals(1, $property->getMaxLength());
+	}
+
+	public function testSetPrototype()
+	{
+		$prototype = new String('foo');
+
+		$property = new ArrayType('test');
+		$property->setPrototype($prototype);
+
+		$this->assertEquals($prototype, $property->getPrototype());
 	}
 }

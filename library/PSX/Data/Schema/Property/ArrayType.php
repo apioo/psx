@@ -23,6 +23,7 @@
 
 namespace PSX\Data\Schema\Property;
 
+use PSX\Data\Schema\PropertyAbstract;
 use PSX\Data\Schema\PropertyInterface;
 use PSX\Data\Schema\ValidationException;
 
@@ -33,35 +34,11 @@ use PSX\Data\Schema\ValidationException;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class ArrayType implements PropertyInterface
+class ArrayType extends PropertyAbstract
 {
-	protected $name;
-	protected $required;
 	protected $prototype;
 	protected $minLength;
 	protected $maxLength;
-
-	public function __construct($name)
-	{
-		$this->name = $name;
-	}
-
-	public function getName()
-	{
-		return $this->name;
-	}
-
-	public function isRequired()
-	{
-		return $this->required;
-	}
-
-	public function setRequired($required)
-	{
-		$this->required = $required;
-
-		return $this;
-	}
 
 	public function setPrototype(PropertyInterface $prototype)
 	{
@@ -99,13 +76,10 @@ class ArrayType implements PropertyInterface
 		return $this->maxLength;
 	}
 
-	public function hasConstraints()
-	{
-		return true;
-	}
-
 	public function validate($data)
 	{
+		parent::validate($data);
+
 		if($data === null)
 		{
 			return true;

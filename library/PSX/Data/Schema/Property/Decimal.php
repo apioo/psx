@@ -23,7 +23,7 @@
 
 namespace PSX\Data\Schema\Property;
 
-use PSX\Data\Schema\PropertyAbstract;
+use PSX\Data\Schema\PropertySimpleAbstract;
 use PSX\Data\Schema\ValidationException;
 
 /**
@@ -33,7 +33,7 @@ use PSX\Data\Schema\ValidationException;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-abstract class Decimal extends PropertyAbstract
+abstract class Decimal extends PropertySimpleAbstract
 {
 	protected $max;
 	protected $min;
@@ -61,60 +61,4 @@ abstract class Decimal extends PropertyAbstract
 	{
 		return $this->min;
 	}
-
-	public function hasConstraints()
-	{
-		return parent::hasConstraints() || $this->max || $this->min;
-	}
-
-	public function validate($data)
-	{
-		parent::validate($data);
-
-		if($data === null)
-		{
-			return true;
-		}
-
-		if(is_int($data) || is_float($data))
-		{
-		}
-		else if(is_string($data))
-		{
-			$result = preg_match('/^(' . $this->getValuePattern() . '){1}$/', $data);
-
-			if($result)
-			{
-				$data = floatval($data);
-			}
-			else
-			{
-				throw new ValidationException($this->getName() . ' must be an decimal');
-			}
-		}
-		else
-		{
-			throw new ValidationException($this->getName() . ' must be an decimal');
-		}
-
-		if($this->max !== null)
-		{
-			if($data > $this->max)
-			{
-				throw new ValidationException($this->getName() . ' must be lower or equal then ' . $this->max);
-			}
-		}
-
-		if($this->min !== null)
-		{
-			if($data < $this->min)
-			{
-				throw new ValidationException($this->getName() . ' must be greater or equal then ' . $this->min);
-			}
-		}
-
-		return true;
-	}
-
-	abstract protected function getValuePattern();
 }

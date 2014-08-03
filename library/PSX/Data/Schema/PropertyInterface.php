@@ -40,6 +40,27 @@ interface PropertyInterface
 	public function getName();
 
 	/**
+	 * Returns an description of this property
+	 *
+	 * @return string
+	 */
+	public function getDescription();
+
+	/**
+	 * Returns whether this property is required
+	 *
+	 * @return boolean
+	 */
+	public function isRequired();
+
+	/**
+	 * Returns the class name which should be used to create this property
+	 *
+	 * @return string
+	 */
+	public function getReference();
+
+	/**
 	 * Validates the given data and throws an exception if the data is not valid
 	 *
 	 * @throws PSX\Data\Schema\ValidationException

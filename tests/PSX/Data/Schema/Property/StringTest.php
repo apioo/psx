@@ -23,6 +23,8 @@
 
 namespace PSX\Data\Schema\Property;
 
+use PSX\Url;
+
 /**
  * StringTest
  *
@@ -39,14 +41,30 @@ class StringTest extends \PHPUnit_Framework_TestCase
 		$this->assertTrue($property->validate('foo'));
 	}
 
+	public function testValidateObjectToString()
+	{
+		$property = new String('test');
+		$property->setMinLength(3);
+
+		$property->validate(new Url('http://google.com'));
+	}
+
 	/**
 	 * @expectedException PSX\Data\Schema\ValidationException
 	 */
 	public function testValidateInvalidFormat()
 	{
 		$property = new String('test');
+		$property->validate(new \stdClass());
+	}
 
-		$this->assertTrue($property->validate(new \stdClass()));
+	/**
+	 * @expectedException PSX\Data\Schema\ValidationException
+	 */
+	public function testValidateInvalidFormatArray()
+	{
+		$property = new String('test');
+		$property->validate(array());
 	}
 
 	public function testMinLength()
@@ -65,7 +83,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
 		$property = new String('test');
 		$property->setMinLength(3);
 
-		$this->assertTrue($property->validate('fo'));
+		$property->validate('fo');
 	}
 
 	public function testMaxLength()
@@ -84,7 +102,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
 		$property = new String('test');
 		$property->setMaxLength(3);
 
-		$this->assertTrue($property->validate('fooo'));
+		$property->validate('fooo');
 	}
 
 	public function testPattern()
@@ -103,6 +121,25 @@ class StringTest extends \PHPUnit_Framework_TestCase
 		$property = new String('test');
 		$property->setPattern('[A-z]');
 
-		$this->assertTrue($property->validate('123'));
+		$property->validate('123');
+	}
+
+	public function testEnumeration()
+	{
+		$property = new String('test');
+		$property->setEnumeration(array('foo', 'bar'));
+
+		$this->assertTrue($property->validate('foo'));
+	}
+
+	/**
+	 * @expectedException PSX\Data\Schema\ValidationException
+	 */
+	public function testEnumerationInvalid()
+	{
+		$property = new String('test');
+		$property->setEnumeration(array('foo', 'bar'));
+
+		$property->validate('test');
 	}
 }

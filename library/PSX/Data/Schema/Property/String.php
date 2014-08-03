@@ -23,7 +23,7 @@
 
 namespace PSX\Data\Schema\Property;
 
-use PSX\Data\Schema\PropertyAbstract;
+use PSX\Data\Schema\PropertySimpleAbstract;
 use PSX\Data\Schema\ValidationException;
 
 /**
@@ -33,7 +33,7 @@ use PSX\Data\Schema\ValidationException;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class String extends PropertyAbstract
+class String extends PropertySimpleAbstract
 {
 	protected $minLength;
 	protected $maxLength;
@@ -60,11 +60,6 @@ class String extends PropertyAbstract
 	public function getMaxLength()
 	{
 		return $this->maxLength;
-	}
-
-	public function hasConstraints()
-	{
-		return parent::hasConstraints() || $this->minLength || $this->maxLength;
 	}
 
 	public function validate($data)

@@ -33,25 +33,46 @@ namespace PSX\Data\Schema;
 abstract class PropertyAbstract implements PropertyInterface
 {
 	protected $name;
+	protected $description;
 	protected $required;
-	protected $pattern;
-	protected $enumeration;
+	protected $reference;
 
 	public function __construct($name)
 	{
 		$this->name = $name;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getName()
 	{
 		return $this->name;
 	}
 
-	public function isRequired()
+	/**
+	 * @param string $description
+	 * @return $this
+	 */
+	public function setDescription($description)
 	{
-		return $this->required;
+		$this->description = $description;
+
+		return $this;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getDescription()
+	{
+		return $this->description;
 	}
 
+	/**
+	 * @param boolean $required
+	 * @return $this
+	 */
 	public function setRequired($required)
 	{
 		$this->required = $required;
@@ -59,35 +80,36 @@ abstract class PropertyAbstract implements PropertyInterface
 		return $this;
 	}
 
-	public function setPattern($pattern)
+	/**
+	 * @return boolean
+	 */
+	public function isRequired()
 	{
-		$this->pattern = $pattern;
+		return $this->required;
+	}
+
+	/**
+	 * @param string $required
+	 * @return $this
+	 */
+	public function setReference($reference)
+	{
+		$this->reference = $reference;
 
 		return $this;
 	}
 
-	public function getPattern()
+	/**
+	 * @return string
+	 */
+	public function getReference()
 	{
-		return $this->pattern;
+		return $this->reference;
 	}
 
-	public function setEnumeration(array $enumeration)
-	{
-		$this->enumeration = $enumeration;
-
-		return $this;
-	}
-
-	public function getEnumeration()
-	{
-		return $this->enumeration;
-	}
-
-	public function hasConstraints()
-	{
-		return $this->pattern || $this->enumeration;
-	}
-
+	/**
+	 * @return boolean
+	 */
 	public function validate($data)
 	{
 		if($this->required && $data === null)
@@ -97,24 +119,6 @@ abstract class PropertyAbstract implements PropertyInterface
 		else if($data === null)
 		{
 			return true;
-		}
-
-		if($this->pattern !== null)
-		{
-			$result = preg_match('/^(' . $this->pattern . '){1}$/', $data);
-
-			if(!$result)
-			{
-				throw new ValidationException($this->getName() . ' does not match pattern');
-			}
-		}
-
-		if($this->enumeration !== null)
-		{
-			if(!in_array($data, $this->enumeration))
-			{
-				throw new ValidationException($this->getName() . ' is not in enumeration');
-			}
 		}
 	}
 }

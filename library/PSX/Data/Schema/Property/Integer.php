@@ -43,16 +43,43 @@ class Integer extends Decimal
 			return true;
 		}
 
-		if(is_string($data) || is_int($data))
+		if(is_int($data))
 		{
-			return true;
+		}
+		else if(is_string($data))
+		{
+			$result = preg_match('/^([\-+]?[0-9]+){1}$/', $data);
+
+			if($result)
+			{
+				$data = (int) $data;
+			}
+			else
+			{
+				throw new ValidationException($this->getName() . ' must be an integer');
+			}
+		}
+		else
+		{
+			throw new ValidationException($this->getName() . ' must be an integer');
 		}
 
-		throw new ValidationException($this->getName() . ' must be an integer');
-	}
+		if($this->max !== null)
+		{
+			if($data > $this->max)
+			{
+				throw new ValidationException($this->getName() . ' must be lower or equal then ' . $this->max);
+			}
+		}
 
-	protected function getValuePattern()
-	{
-		return '[\-+]?[0-9]+';
+		if($this->min !== null)
+		{
+			if($data < $this->min)
+			{
+				throw new ValidationException($this->getName() . ' must be greater or equal then ' . $this->min);
+			}
+		}
+
+		return true;
 	}
 }
