@@ -100,7 +100,7 @@ class Record implements ImporterInterface
 
 						if($method instanceof ReflectionMethod)
 						{
-							$record->$methodName($this->getMethodValue($method, $v));
+							$method->invokeArgs($record, array($this->getMethodValue($method, $v)));
 						}
 					}
 					catch(ReflectionException $e)
