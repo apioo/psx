@@ -24,17 +24,17 @@
 namespace PSX\Data\Schema\Generator;
 
 /**
- * RequestSampleTest
+ * SampleTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class RequestSampleTest extends GeneratorTestCase
+class SampleTest extends GeneratorTestCase
 {
 	public function testGenerateJson()
 	{
-		$generator = new RequestSample(RequestSample::FORMAT_JSON);
+		$generator = new Sample(Sample::FORMAT_JSON);
 		$generator->setData($this->getSampleData());
 		$result    = $generator->generate($this->getSchema());
 
@@ -63,7 +63,7 @@ JSON;
 
 	public function testGenerateXml()
 	{
-		$generator = new RequestSample(RequestSample::FORMAT_XML);
+		$generator = new Sample(Sample::FORMAT_XML);
 		$generator->setData($this->getSampleData());
 		$result    = $generator->generate($this->getSchema());
 

@@ -40,7 +40,7 @@ use RuntimeException;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class RequestSample implements GeneratorInterface
+class Sample implements GeneratorInterface
 {
 	const FORMAT_JSON = 0;
 	const FORMAT_XML  = 1;
