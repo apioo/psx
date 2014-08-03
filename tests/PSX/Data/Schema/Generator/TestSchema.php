@@ -37,23 +37,44 @@ class TestSchema extends SchemaAbstract
 {
 	public function getDefinition()
 	{
-		$sb = $this->getSchemaBuilder('author');
-		$sb->string('title')->setPattern('[A-z]{3,16}')->setRequired(true);
-		$sb->string('email');
+		$sb = $this->getSchemaBuilder('author')
+			->setDescription('An simple author element with some description');
+		$sb->string('title')
+			->setPattern('[A-z]{3,16}')
+			->setRequired(true);
+		$sb->string('email')
+			->setDescription('We will send no spam to this addresss');
 		$author = $sb->getProperty();
 
-		$sb = $this->getSchemaBuilder('news');
-		$sb->arrayType('tags')->setPrototype(new Property\String('tag'))->setMinLength(1);
-		$sb->arrayType('receiver')->setPrototype($author)->setMinLength(1)->setRequired(true);
+		$sb = $this->getSchemaBuilder('news')
+			->setDescription('An general news entry');
+		$sb->arrayType('tags')
+			->setPrototype(new Property\String('tag'))
+			->setMinLength(1);
+		$sb->arrayType('receiver')
+			->setPrototype($author)
+			->setMinLength(1)
+			->setRequired(true);
 		$sb->boolean('read');
-		$sb->complexType($author)->setRequired(true);
+		$sb->complexType($author)
+			->setRequired(true);
 		$sb->date('sendDate');
 		$sb->dateTime('readDate');
 		$sb->duration('expires');
-		$sb->float('price')->setMin(1)->setMax(100)->setRequired(true);
-		$sb->integer('rating')->setMin(1)->setMax(5);
-		$sb->string('content')->setMinLength(3)->setMaxLength(512)->setRequired(true);
-		$sb->string('question')->setEnumeration(array('foo', 'bar'));
+		$sb->float('price')
+			->setMin(1)
+			->setMax(100)
+			->setRequired(true);
+		$sb->integer('rating')
+			->setMin(1)
+			->setMax(5);
+		$sb->string('content')
+			->setDescription('Contains the main content of the news entry')
+			->setMinLength(3)
+			->setMaxLength(512)
+			->setRequired(true);
+		$sb->string('question')
+			->setEnumeration(array('foo', 'bar'));
 		$sb->time('coffeeTime');
 
 		return $sb->getProperty();
