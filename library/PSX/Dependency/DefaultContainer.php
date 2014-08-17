@@ -23,11 +23,16 @@
 
 namespace PSX\Dependency;
 
+use Doctrine\DBAL\Configuration;
+use Doctrine\DBAL\DriverManager;
+use Doctrine\ORM\Tools\Setup;
+use Doctrine\ORM\EntityManager;
 use Monolog\Logger;
 use PSX\Base;
 use PSX\Cache;
 use PSX\Config;
 use PSX\Http;
+use PSX\Handler\Doctrine\RecordHydrator;
 use PSX\Session;
 use PSX\Sql;
 use PSX\Sql\TableManager;
@@ -85,14 +90,20 @@ class DefaultContainer extends Container
 	}
 
 	/**
-	 * @return PSX\Sql\Connection
+	 * @return Doctrine\DBAL\Connection
 	 */
-	public function getSql()
+	public function getConnection()
 	{
-		return new Sql($this->get('config')->get('psx_sql_host'),
-			$this->get('config')->get('psx_sql_user'),
-			$this->get('config')->get('psx_sql_pw'),
-			$this->get('config')->get('psx_sql_db'));
+		$config = new Configuration();
+		$params = array(
+			'dbname'   => $this->get('config')->get('psx_sql_db'),
+			'user'     => $this->get('config')->get('psx_sql_user'),
+			'password' => $this->get('config')->get('psx_sql_pw'),
+			'host'     => $this->get('config')->get('psx_sql_host'),
+			'driver'   => 'pdo_mysql',
+		);
+
+		return DriverManager::getConnection($params, $config);
 	}
 
 	/**
@@ -100,7 +111,7 @@ class DefaultContainer extends Container
 	 */
 	public function getTableManager()
 	{
-		return new TableManager($this->get('sql'));
+		return new TableManager($this->get('connection'));
 	}
 
 	/**
@@ -157,34 +168,23 @@ class DefaultContainer extends Container
 	/**
 	 * @return Doctrine\ORM\EntityManager
 	 */
-	/*
 	public function getEntityManager()
 	{
-		$paths     = array(PSX_PATH_LIBRARY);
-		$isDevMode = $this->get('config')->get('psx_debug');
-		$dbParams  = array(
-			'driver'   => 'pdo_mysql',
-			'user'     => $this->get('config')->get('psx_sql_user'),
-			'password' => $this->get('config')->get('psx_sql_pw'),
-			'dbname'   => $this->get('config')->get('psx_sql_db'),
-		);
+		$connection = $this->get('connection');
+		$paths      = array(PSX_PATH_LIBRARY);
+		$isDevMode  = getContainer()->get('config')->get('psx_debug');
 
 		$config = Setup::createAnnotationMetadataConfiguration($paths, $isDevMode);
 		$config->addCustomHydrationMode(RecordHydrator::HYDRATE_RECORD, 'PSX\Handler\Doctrine\RecordHydrator');
 
-		$entityManager = EntityManager::create($dbParams, $config);
-
-		return $entityManager;
+		return EntityManager::create($connection, $config, $connection->getEventManager());
 	}
-	*/
 
 	/**
 	 * @return MongoClient
 	 */
-	/*
 	public function getMongoClient()
 	{
 		return new MongoClient();
 	}
-	*/
 }

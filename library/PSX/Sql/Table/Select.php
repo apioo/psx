@@ -23,8 +23,12 @@
 
 namespace PSX\Sql\Table;
 
+use BadMethodCallException;
+use Doctrine\DBAL\Connection;
 use PSX\DateTime;
-use PSX\Data\ResultSet;
+use PSX\Data\Record;
+use PSX\Data\RecordInterface;
+use PSX\Handler\HandlerAbstract;
 use PSX\Exception;
 use PSX\Sql;
 use PSX\Sql\Condition;
@@ -32,16 +36,20 @@ use PSX\Sql\Join;
 use PSX\Sql\TableInterface;
 
 /**
- * Select
+ * The select represents an view on an table. This view can be used as an 
+ * handler. We have two ways of restrict the result set first through the
+ * SelectInterface methods where(), orderBy() etc. and through the parameters
+ * which gets passed to the getAll() method. The SelectInterface methods have
+ * always a higher priority
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Select implements SelectInterface
+class Select extends HandlerAbstract implements SelectInterface
 {
+	protected $connection;
 	protected $table;
-	protected $sql;
 	protected $condition;
 
 	protected $joins   = array();
@@ -58,13 +66,46 @@ class Select implements SelectInterface
 	protected $orderBy = array();
 	protected $groupBy = array();
 
-	public function __construct(TableInterface $table, $prefix = null)
+	public function __construct(Connection $connection, TableInterface $table, $prefix = null)
 	{
-		$this->table     = $table;
-		$this->sql       = $table->getSql();
-		$this->condition = new Condition();
+		$this->connection = $connection;
+		$this->table      = $table;
+		$this->condition  = new Condition();
 
 		$this->setPrefix($prefix);
+	}
+
+	public function getTable()
+	{
+		return $this->table;
+	}
+
+	public function getCondition()
+	{
+		return $this->condition;
+	}
+
+	public function getPrefix()
+	{
+		return $this->prefix;
+	}
+
+	public function getAllColumns()
+	{
+		return $this->availableColumns;
+	}
+
+	public function getAllSelectedColumns()
+	{
+		return $this->selectedColumns;
+	}
+
+	public function select(array $columns)
+	{
+		$this->columns         = $columns;
+		$this->selectedColumns = $this->getSelectedColumns();
+
+		return $this;
 	}
 
 	public function join($type, $table, $cardinality = 'n:1', $foreignKey = null)
@@ -104,7 +145,7 @@ class Select implements SelectInterface
 			throw new Exception('Invalid column');
 		}
 
-		$this->condition->add($this->availableColumns[$column], $operator, $value, $conjunction);
+		$this->condition->add($this->availableColumns[$column][0], $operator, $value, $conjunction);
 
 		return $this;
 	}
@@ -116,12 +157,12 @@ class Select implements SelectInterface
 			throw new Exception('Invalid column');
 		}
 
-		$this->groupBy[] = $this->availableColumns[$column];
+		$this->groupBy[] = $this->availableColumns[$column][0];
 
 		return $this;
 	}
 
-	public function orderBy($column, $sort = 0x1)
+	public function orderBy($column, $sort = Sql::SORT_DESC)
 	{
 		if(!isset($this->availableColumns[$column]))
 		{
@@ -149,160 +190,58 @@ class Select implements SelectInterface
 		return $this;
 	}
 
-	public function getAll($mode = 0, $class = null, array $args = null)
+	public function getAll(array $fields = null, $startIndex = null, $count = null, $sortBy = null, $sortOrder = null, Condition $condition = null)
 	{
-		if($mode == Sql::FETCH_OBJECT && $class === null)
+		$startIndex = $startIndex !== null ? (int) $startIndex : 0;
+		$count      = !empty($count)       ? (int) $count      : 16;
+		$sortBy     = $sortBy     !== null ? $sortBy           : $this->table->getPrimaryKey();
+		$sortOrder  = $sortOrder  !== null ? (int) $sortOrder  : Sql::SORT_DESC;
+
+		$copyCondition = clone $this->condition;
+		if($condition !== null)
 		{
-			$class = 'stdClass';
+			$copyCondition->merge($condition);
 		}
 
-		return $this->sql->getAll($this->buildQuery(), $this->condition->getValues(), $mode, $class, $args);
+		return $this->project($this->buildQuery($fields, $startIndex, $count, $sortBy, $sortOrder, $copyCondition), $copyCondition->getValues());
 	}
 
-	public function getRow($mode = 0, $class = null, array $args = null)
+	public function get($id)
 	{
-		if($mode == Sql::FETCH_OBJECT && $class === null)
+		$condition = new Condition(array($this->table->getPrimaryKey(), '=', $id));
+
+		return $this->getOneBy($condition);
+	}
+
+	public function getCount(Condition $condition = null)
+	{
+		$copyCondition = clone $this->condition;
+		if($condition !== null)
 		{
-			$class = 'stdClass';
+			$copyCondition->merge($condition);
 		}
 
-		$this->limit(1);
-
-		return $this->sql->getRow($this->buildQuery(), $this->condition->getValues(), $mode, $class, $args);
-	}
-
-	public function getCol()
-	{
-		return $this->sql->getCol($this->buildQuery(), $this->condition->getValues());
-	}
-
-	public function getField()
-	{
-		$this->limit(1);
-
-		return $this->sql->getField($this->buildQuery(), $this->condition->getValues());
-	}
-
-	public function getTotalResults()
-	{
-		return (int) $this->sql->getField($this->buildCountQuery(), $this->condition->getValues());
+		return (int) $this->connection->fetchColumn($this->buildCountQuery($copyCondition), $copyCondition->getValues());
 	}
 
 	public function getSupportedFields()
 	{
-		return array_keys($this->availableColumns);
+		return array_diff(array_keys($this->availableColumns), $this->getRestrictedFields());
 	}
 
-	public function setColumns(array $columns)
+	public function create(RecordInterface $record)
 	{
-		$this->columns         = $columns;
-		$this->selectedColumns = $this->getSelectedColumns();
-
-		return $this;
+		$this->table->create($record);
 	}
 
-	public function getColumns()
+	public function update(RecordInterface $record)
 	{
-		return $this->columns;
+		$this->table->update($record);
 	}
 
-	public function setSelectedColumns(array $columns)
+	public function delete(RecordInterface $record)
 	{
-		$selectedColumns = array();
-
-		foreach($columns as $column)
-		{
-			if(isset($this->availableColumns[$column]))
-			{
-				$selectedColumns[$column] = $this->availableColumns[$column];
-			}
-		}
-
-		$this->selectedColumns = $selectedColumns;
-	}
-
-	/**
-	 * Returns the underlying table
-	 *
-	 * @return PSX\Sql\TableInterface
-	 */
-	public function getTable()
-	{
-		return $this->table;
-	}
-
-	/**
-	 * Returns the sql connection from the table
-	 *
-	 * @return PSX\Sql
-	 */
-	public function getSql()
-	{
-		return $this->sql;
-	}
-
-	/**
-	 * Returns the condition
-	 *
-	 * @return PSX\Sql\Condition
-	 */
-	public function getCondition()
-	{
-		return $this->condition;
-	}
-
-	/**
-	 * Returns all available joins
-	 *
-	 * @return PSX\Sql\Join
-	 */
-	public function getJoins()
-	{
-		return $this->joins;
-	}
-
-	/**
-	 * Returns the prefix for this select
-	 *
-	 * @return string
-	 */
-	public function getPrefix()
-	{
-		return $this->prefix;
-	}
-
-	/**
-	 * Set the prefix
-	 *
-	 * @param string $prefix
-	 */
-	public function setPrefix($prefix)
-	{
-		$this->prefix           = $prefix === null ? '__self' : $prefix;
-		$this->selfColumns      = $this->getSelfColumns();
-		$this->availableColumns = $this->selfColumns;
-
-		return $this;
-	}
-
-	/**
-	 * Returns all available columns
-	 *
-	 * @return array
-	 */
-	public function getAllColumns()
-	{
-		return $this->availableColumns;
-	}
-
-	/**
-	 * Returns all selected columns
-	 *
-	 * @return array
-	 */
-	public function getAllSelectedColumns()
-	{
-		return $this->selectedColumns;
+		$this->table->delete($record);
 	}
 
 	/**
@@ -354,6 +293,13 @@ class Select implements SelectInterface
 		$this->condition = clone $this->condition;
 	}
 
+	protected function setPrefix($prefix)
+	{
+		$this->prefix           = $prefix === null ? '__self' : $prefix;
+		$this->selfColumns      = $this->getSelfColumns();
+		$this->availableColumns = $this->selfColumns;
+	}
+
 	protected function getSelfColumns()
 	{
 		$columns     = array();
@@ -364,7 +310,7 @@ class Select implements SelectInterface
 			$key   = $this->prefix !== '__self' ? $this->prefix . ucfirst($column) : $column;
 			$value = '`' . $this->prefix . '`.`' . $column . '`';
 
-			$columns[$key] = $value;
+			$columns[$key] = array($value, $attr);
 		}
 
 		return $columns;
@@ -384,16 +330,23 @@ class Select implements SelectInterface
 
 			if(isset($this->availableColumns[$column]))
 			{
-				$selectedColumns[$column] = $this->availableColumns[$column];
+				$selectedColumns[$column] = $this->availableColumns[$column][0];
 			}
 		}
 
 		return $selectedColumns;
 	}
 
-	protected function buildQuery()
+	protected function buildQuery(array $fields = null, $startIndex = null, $count = null, $sortBy = null, $sortOrder = null, Condition $condition = null)
 	{
 		$selectedColumns = $this->getAllSelectedColumns();
+
+		if($fields !== null)
+		{
+			$selectedColumns = array_intersect_key($selectedColumns, array_flip($fields));
+		}
+
+		$selectedColumns = array_intersect_key($selectedColumns, array_flip($this->getSupportedFields()));
 
 		if(empty($selectedColumns))
 		{
@@ -415,9 +368,9 @@ class Select implements SelectInterface
 		$sql.= ' FROM `' . $this->table->getName() . '` AS `' . $this->prefix . '` ' . $this->buildJoins();
 
 		// where
-		if($this->condition->hasCondition())
+		if($condition->hasCondition())
 		{
-			$sql.= $this->condition->getStatment();
+			$sql.= $condition->getStatment();
 		}
 
 		// group by
@@ -427,6 +380,11 @@ class Select implements SelectInterface
 		}
 
 		// order
+		if($sortBy !== null && $sortOrder !== null)
+		{
+			$this->orderBy($sortBy, $sortOrder);
+		}
+
 		if(!empty($this->orderBy))
 		{
 			$len = count($this->orderBy) - 1;
@@ -434,7 +392,7 @@ class Select implements SelectInterface
 
 			foreach($this->orderBy as $key => $orderBy)
 			{
-				$sql.= $this->availableColumns[$orderBy[0]] . ' ' . $orderBy[1] . ' ' . ($len == $key ? '' : ',');
+				$sql.= $this->availableColumns[$orderBy[0]][0] . ' ' . $orderBy[1] . ' ' . ($len == $key ? '' : ',');
 			}
 		}
 
@@ -443,19 +401,23 @@ class Select implements SelectInterface
 		{
 			$sql.= ' LIMIT ' . $this->start . ', ' . $this->count;
 		}
+		else if($startIndex !== null && $count !== null)
+		{
+			$sql.= ' LIMIT ' . intval($startIndex) . ', ' . intval($count);
+		}
 
 		return $sql;
 	}
 
-	protected function buildCountQuery()
+	protected function buildCountQuery(Condition $condition)
 	{
 		// select
 		$sql = 'SELECT COUNT(*) FROM `' . $this->table->getName() . '` AS `' . $this->prefix . '` ' . $this->buildJoins();
 
 		// condition
-		if($this->condition->hasCondition())
+		if($condition->hasCondition())
 		{
-			$sql.= $this->condition->getStatment();
+			$sql.= $condition->getStatment();
 		}
 
 		return $sql;
@@ -472,5 +434,64 @@ class Select implements SelectInterface
 		}
 
 		throw new Exception($foreignTable . ' is not connected to ' . $this->table->getName());
+	}
+
+	protected function project($sql, array $params = array())
+	{
+		$name    = $this->table->getDisplayName();
+		$columns = $this->availableColumns;
+
+		return $this->connection->project($sql, $params, function(array $row) use ($name, $columns){
+
+			$data = array();
+			foreach($columns as $alias => $spec)
+			{
+				if(isset($row[$alias]))
+				{
+					$data[$alias] = $this->convertColumnTypes($row[$alias], $spec[1]);
+				}
+			}
+
+			return new Record($name, $data);
+
+		});
+	}
+
+	protected function convertColumnTypes($value, $type)
+	{
+		$type = (($type >> 20) & 0xFF) << 20;
+
+		switch($type)
+		{
+			case TableInterface::TYPE_TINYINT:
+			case TableInterface::TYPE_SMALLINT:
+			case TableInterface::TYPE_MEDIUMINT:
+			case TableInterface::TYPE_INT:
+			case TableInterface::TYPE_BIGINT:
+			case TableInterface::TYPE_BIT:
+			case TableInterface::TYPE_SERIAL:
+				return (int) $value;
+				break;
+
+			case TableInterface::TYPE_DECIMAL:
+			case TableInterface::TYPE_FLOAT:
+			case TableInterface::TYPE_DOUBLE:
+			case TableInterface::TYPE_REAL:
+				return (float) $value;
+				break;
+
+			case TableInterface::TYPE_BOOLEAN:
+				return (bool) $value;
+				break;
+
+			case TableInterface::TYPE_DATE:
+			case TableInterface::TYPE_DATETIME:
+				return new \DateTime($value);
+				break;
+
+			default:
+				return $value;
+				break;
+		}
 	}
 }

@@ -42,7 +42,7 @@ trait Handler
 	 */
 	public function getDatabaseManager()
 	{
-		return new Database\Manager($this->get('table_manager'));
+		return new Database\Manager($this->get('connection'));
 	}
 
 	/**
@@ -59,14 +59,6 @@ trait Handler
 	public function getMapManager()
 	{
 		return new Map\Manager();
-	}
-
-	/**
-	 * @return PSX\Handler\HandlerManagerInterface
-	 */
-	public function getPdoManager()
-	{
-		return new Pdo\Manager($this->get('sql'));
 	}
 
 	/**

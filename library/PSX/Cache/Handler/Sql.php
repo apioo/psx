@@ -23,6 +23,7 @@
 
 namespace PSX\Cache\Handler;
 
+use Doctrine\DBAL\Connection;
 use PSX\Cache\HandlerInterface;
 use PSX\Cache\Item;
 use PSX\DateTime;
@@ -53,12 +54,14 @@ class Sql implements HandlerInterface
 	const COLUMN_CONTENT = 0x2;
 	const COLUMN_DATE    = 0x3;
 
-	protected $table;
+	protected $connection;
+	protected $tableName;
 	protected $allocation;
 
-	public function __construct(TableInterface $table, ColumnAllocation $allocation)
+	public function __construct(Connection $connection, $tableName, ColumnAllocation $allocation)
 	{
-		$this->table      = $table;
+		$this->connection = $connection;
+		$this->tableName  = $tableName;
 		$this->allocation = $allocation;
 	}
 
@@ -72,7 +75,8 @@ class Sql implements HandlerInterface
 		$condition->add($this->allocation->get(self::COLUMN_DATE), 'IS', 'NULL', 'OR', Condition::TYPE_RAW);
 		$condition->add($this->allocation->get(self::COLUMN_DATE), '>=', date(DateTime::SQL));
 
-		$row = $this->table->getRow(array($columnContent, $columnDate), $condition);
+		$sql = 'SELECT ' . $columnContent . ', ' . $columnDate . ' FROM ' . $this->tableName . ' ' . $condition->getStatment();
+		$row = $this->connection->fetchAssoc($sql, $condition->getValues());
 
 		if(!empty($row))
 		{
@@ -93,7 +97,7 @@ class Sql implements HandlerInterface
 		$columnContent = $this->allocation->get(self::COLUMN_CONTENT);
 		$columnDate    = $this->allocation->get(self::COLUMN_DATE);
 
-		$this->table->replace(array(
+		$this->connection->insert($this->tableName, array(
 			$columnId      => $item->getKey(),
 			$columnContent => serialize($item->get()),
 			$columnDate    => $item->hasExpiration() ? date(DateTime::SQL) : null,
@@ -102,7 +106,11 @@ class Sql implements HandlerInterface
 
 	public function remove($key)
 	{
-		$this->table->delete(new Condition(array($this->table->getPrimaryKey(), '=', $key)));
+		$columnId = $this->allocation->get(self::COLUMN_ID);
+
+		$this->connection->delete($this->tableName, array(
+			$columnId => $key
+		));
 	}
 
 	public function removeAll()

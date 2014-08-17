@@ -23,6 +23,7 @@
 
 namespace PSX\Session\Handler;
 
+use Doctrine\DBAL\Connection;
 use PSX\DateTime;
 use PSX\Sql\Condition;
 use PSX\Sql\TableInterface;
@@ -42,12 +43,14 @@ class Sql implements SessionHandlerInterface
 	const COLUMN_CONTENT = 0x2;
 	const COLUMN_DATE    = 0x3;
 
-	protected $table;
+	protected $connection;
+	protected $tableName;
 	protected $allocation;
 
-	public function __construct(TableInterface $table, ColumnAllocation $allocation)
+	public function __construct(Connection $connection, $tableName, ColumnAllocation $allocation)
 	{
-		$this->table      = $table;
+		$this->connection = $connection;
+		$this->tableName  = $tableName;
 		$this->allocation = $allocation;
 	}
 
@@ -63,7 +66,13 @@ class Sql implements SessionHandlerInterface
 
 	public function read($id)
 	{
-		return $this->table->getField('content', new Condition(array($this->allocation->get(self::COLUMN_ID), '=', $id)));
+		$columnId      = $this->allocation->get(self::COLUMN_ID);
+		$columnContent = $this->allocation->get(self::COLUMN_CONTENT);
+
+		$sql     = 'SELECT `' . $columnContent . '` FROM `' . $this->tableName . '` WHERE `' . $columnId . '` = :id';
+		$content = $this->connection->fetchColumn($sql, array('id' => $id));
+
+		return $content;
 	}
 
 	public function write($id, $data)
@@ -72,7 +81,7 @@ class Sql implements SessionHandlerInterface
 		$columnContent = $this->allocation->get(self::COLUMN_CONTENT);
 		$columnDate    = $this->allocation->get(self::COLUMN_DATE);
 
-		$this->table->insert(array(
+		$this->connection->insert($this->tableName, array(
 			$columnId      => $id,
 			$columnContent => $data,
 			$columnDate    => date(DateTime::SQL),
@@ -81,17 +90,19 @@ class Sql implements SessionHandlerInterface
 
 	public function destroy($id)
 	{
-		$this->table->delete(new Condition(array($this->allocation->get(self::COLUMN_ID), '=', $id)));
+		$this->connection->delete($this->tableName, array(
+			$this->allocation->get(self::COLUMN_ID) => $id,
+		));
 	}
 
 	public function gc($maxTime)
 	{
+		$columnDate = $this->allocation->get(self::COLUMN_DATE);
+
 		$maxTime = (int) $maxTime;
+		$sql     = 'DELETE FROM `' . $this->tableName . '` WHERE DATE_ADD(`' . $columnDate . '`, INTERVAL :maxTime SECOND) < NOW()';
 
-		$con = new Condition();
-		$con->add('DATE_ADD(`date`, INTERVAL ' . $maxTime . ' SECOND)', '<', date(DateTime::SQL));
-
-		$this->table->delete($con);
+		$this->connection->executeUpdate($sql, array('maxTime' => $maxTime));
 
 		return true;
 	}

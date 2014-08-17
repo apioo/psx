@@ -33,6 +33,13 @@ namespace PSX\Sql\Table;
 interface SelectInterface
 {
 	/**
+	 * Sets the selected columns
+	 *
+	 * @param array $columns
+	 */
+	public function select(array $columns);
+
+	/**
 	 * Joins another table on this selection
 	 *
 	 * @param integer $type
@@ -79,71 +86,5 @@ interface SelectInterface
 	 * @return PSX\Sql\SelectInterface
 	 */
 	public function limit($start, $count = null);
-
-	/**
-	 * Returns all results from the given selection
-	 *
-	 * @return array
-	 */
-	public function getAll($mode = 0, $class = null, array $args = null);
-
-	/**
-	 * Returns this first row from the given selection
-	 *
-	 * @return array
-	 */
-	public function getRow($mode = 0, $class = null, array $args = null);
-
-	/**
-	 * Returns an array wich contains the value of each the first column from 
-	 * the given selection
-	 *
-	 * @return array
-	 */
-	public function getCol();
-
-	/**
-	 * Returns the value of the first row and column
-	 *
-	 * @return string
-	 */
-	public function getField();
-
-	/**
-	 * Returns the total result count of the selection
-	 *
-	 * @return integer
-	 */
-	public function getTotalResults();
-
-	/**
-	 * Returns an array of all supported columns
-	 *
-	 * @return array<string>
-	 */
-	public function getSupportedFields();
-
-	/**
-	 * Selects the specific columns for the table. The columns refers only to
-	 * this table if you want set columns from the complete select use the
-	 * setSelectedColumns method
-	 *
-	 * @param array $columns
-	 */
-	public function setColumns(array $columns);
-
-	/**
-	 * Returns all selected columns
-	 *
-	 * @return array<string>
-	 */
-	public function getColumns();
-
-	/**
-	 * Sets the selected columns
-	 *
-	 * @param array $columns
-	 */
-	public function setSelectedColumns(array $columns);
 }
 

@@ -23,6 +23,7 @@
 
 namespace PSX\Sql;
 
+use Doctrine\DBAL\Connection;
 use Psr\Cache\CacheItemPoolInterface;
 use PSX\Sql;
 use PSX\Sql\Table\Definition;
@@ -38,9 +39,9 @@ use PSX\Sql\Table\ReaderInterface;
 class TableManager implements TableManagerInterface
 {
 	/**
-	 * @var PSX\Sql
+	 * @var Doctrine\DBAL\Connection
 	 */
-	protected $sql;
+	protected $connection;
 
 	/**
 	 * @var PSX\Sql\Table\ReaderInterface
@@ -59,9 +60,9 @@ class TableManager implements TableManagerInterface
 
 	protected $_container;
 
-	public function __construct(Sql $sql)
+	public function __construct(Connection $connection)
 	{
-		$this->sql = $sql;
+		$this->connection = $connection;
 	}
 
 	/**
@@ -112,7 +113,7 @@ class TableManager implements TableManagerInterface
 			{
 				$definition = $item->get();
 
-				$this->_container[$tableName] = new Table($this->sql,
+				$this->_container[$tableName] = new Table($this->connection,
 					$definition->getName(),
 					$definition->getColumns(), 
 					$definition->getConnections());
@@ -125,13 +126,13 @@ class TableManager implements TableManagerInterface
 			{
 				// we assume that $tableName is an class name of an 
 				// TableInterface implementation
-				$this->_container[$tableName] = new $tableName($this->sql);
+				$this->_container[$tableName] = new $tableName($this->connection);
 			}
 			else
 			{
 				$definition = $this->defaultReader->getTableDefinition($tableName);
 
-				$this->_container[$tableName] = new Table($this->sql,
+				$this->_container[$tableName] = new Table($this->connection,
 					$definition->getName(),
 					$definition->getColumns(), 
 					$definition->getConnections());

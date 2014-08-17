@@ -23,6 +23,7 @@
 
 namespace PSX\Filter;
 
+use Doctrine\DBAL\Connection;
 use PSX\FilterAbstract;
 use PSX\Sql\Condition;
 use PSX\Sql\TableInterface;
@@ -36,12 +37,14 @@ use PSX\Sql\TableInterface;
  */
 class InColumn extends FilterAbstract
 {
-	private $table;
-	private $columnName;
+	protected $connection;
+	protected $tableName;
+	protected $columnName;
 
-	public function __construct(TableInterface $table, $columnName)
+	public function __construct(Connection $connection, $tableName, $columnName)
 	{
-		$this->table      = $table;
+		$this->connection = $connection;
+		$this->tableName  = $tableName;
 		$this->columnName = $columnName;
 	}
 
@@ -53,7 +56,10 @@ class InColumn extends FilterAbstract
 	 */
 	public function apply($value)
 	{
-		return $this->table->count(new Condition(array($this->columnName, '=', $value))) > 0;
+		$sql   = 'SELECT COUNT(*) FROM `' . $this->tableName . '` WHERE `' . $this->columnName . '` = :value';
+		$count = (int) $this->connection->fetchColumn($sql, array('value' => $value));
+
+		return $count > 0;
 	}
 
 	public function getErrorMessage()

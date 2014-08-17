@@ -45,8 +45,8 @@ class Condition implements Countable
 	const TYPE_IN     = 0x2;
 	const TYPE_RAW    = 0x3;
 
-	private static $a_op = array('=', 'IS', '!=', 'IS NOT', 'LIKE', 'NOT LIKE', '<', '>', '<=', '>=', 'IN');
-	private static $l_op = array('AND', 'OR', '&&', '||');
+	private static $arithmeticOperator = array('=', 'IS', '!=', 'IS NOT', 'LIKE', 'NOT LIKE', '<', '>', '<=', '>=', 'IN');
+	private static $logicOperator = array('AND', 'OR', '&&', '||');
 
 	private $values = array();
 	private $stmt;
@@ -77,16 +77,16 @@ class Condition implements Countable
 	 * @param int $type
 	 * @return PSX\Sql\Condition
 	 */
-	public function add($column, $operator, $value, $conjunction = 'AND', $type = 0x1)
+	public function add($column, $operator, $value, $conjunction = 'AND', $type = self::TYPE_SCALAR)
 	{
-		if(!in_array($operator, self::$a_op))
+		if(!in_array($operator, self::$arithmeticOperator))
 		{
-			throw new UnexpectedValueException('Invalid arithmetic operator (allowed: ' . implode(', ', self::$a_op) . ')');
+			throw new UnexpectedValueException('Invalid arithmetic operator (allowed: ' . implode(', ', self::$arithmeticOperator) . ')');
 		}
 
-		if(!in_array($conjunction, self::$l_op))
+		if(!in_array($conjunction, self::$logicOperator))
 		{
-			throw new UnexpectedValueException('Invalid logic operator (allowed: ' . implode(', ', self::$l_op) . ')');
+			throw new UnexpectedValueException('Invalid logic operator (allowed: ' . implode(', ', self::$logicOperator) . ')');
 		}
 
 		if($operator == 'IN')
@@ -272,6 +272,23 @@ class Condition implements Countable
 					$params[] = $value[self::VALUE];
 					break;
 			}
+		}
+
+		return $params;
+	}
+
+	/**
+	 * Returns an column => value array of this condition
+	 *
+	 * @return array
+	 */
+	public function getArray()
+	{
+		$params = array();
+
+		foreach($this->values as $value)
+		{
+			$params[$value[self::COLUMN]] = $value[self::VALUE];
 		}
 
 		return $params;

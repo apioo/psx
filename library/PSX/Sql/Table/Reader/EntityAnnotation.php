@@ -23,11 +23,12 @@
 
 namespace PSX\Sql\Table\Reader;
 
+use Doctrine\ORM\EntityManager;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use ReflectionClass;
 use PSX\Sql\TableInterface;
 use PSX\Sql\Table\Definition;
 use PSX\Sql\Table\ReaderInterface;
-use PSX\Util\Annotation;
 
 /**
  * EntityAnnotation
@@ -38,95 +39,49 @@ use PSX\Util\Annotation;
  */
 class EntityAnnotation implements ReaderInterface
 {
+	protected $em;
+
+	public function __construct(EntityManager $em)
+	{
+		$this->em = $em;
+	}
+
 	public function getTableDefinition($class)
 	{
-		$class   = new ReflectionClass($class);
-		$name    = $this->getNameFromEntity($class);
-		$columns = $this->getColumnsFromEntity($class);
+		$metaData = $this->em->getMetadataFactory()->getMetadataFor($class);
+		$columns  = $this->getEntityColumns($metaData);
 
-		// @todo try to read connections
-
-		return new Definition($name, $columns);
+		return new Definition($metaData->getTableName(), $columns);
 	}
 
-	protected function getNameFromEntity(ReflectionClass $class)
+	protected function getEntityColumns(ClassMetadata $metaData)
 	{
-		$doc   = Annotation::parse($class->getDocComment());
-		$table = $doc->getFirstAnnotation('Table');
-		$name  = null;
+		$columns = $metaData->getColumnNames();
+		$result  = array();
 
-		if(!empty($table))
+		foreach($columns as $columnName)
 		{
-			$attributes = Annotation::parseAttributes($table);
+			$type = $this->getColumnTypeValue($metaData->getTypeOfField($columnName));
 
-			if(isset($attributes['name']))
+			if($metaData->isIdentifier($metaData->getFieldName($columnName)))
 			{
-				$name = $attributes['name'];
-			}
-		}
+				$type|= TableInterface::PRIMARY_KEY;
 
-		if(empty($name))
-		{
-			$name = $class->getShortName();
-		}
-
-		return $name;
-	}
-
-	protected function getColumnsFromEntity(ReflectionClass $class)
-	{
-		$properties = $class->getProperties();
-		$columns    = array();
-
-		foreach($properties as $property)
-		{
-			$doc    = Annotation::parse($property->getDocComment());
-			$column = $doc->getFirstAnnotation('Column');
-
-			if(!empty($column))
-			{
-				$columnName  = null;
-				$columnValue = null;
-				$attributes  = Annotation::parseAttributes($column);
-
-				if(isset($attributes['type']))
+				if($metaData->isIdGeneratorIdentity() || $metaData->isIdGeneratorSequence())
 				{
-					$columnValue = $this->getColumnTypeValue($attributes['type']);
-				}
-
-				if(isset($attributes['name']))
-				{
-					$columnName = $attributes['name'];
-				}
-
-				if($columnValue !== null)
-				{
-					if($columnName === null)
-					{
-						$columnName = $property->getName();
-					}
-
-					if($doc->hasAnnotation('Id'))
-					{
-						$columnValue|= TableInterface::PRIMARY_KEY;
-					}
-
-					if($doc->hasAnnotation('GeneratedValue'))
-					{
-						$columnValue|= TableInterface::AUTO_INCREMENT;
-					}
-
-					$columns[$columnName] = $columnValue;
+					$type|= TableInterface::AUTO_INCREMENT;
 				}
 			}
+
+			$result[$columnName] = $type;
 		}
 
-		return $columns;
+		return $result;
 	}
 
-	protected function getColumnTypeValue($value)
+	protected function getColumnTypeValue($type)
 	{
-		switch($value)
+		switch($type)
 		{
 			case 'integer':
 				return TableInterface::TYPE_INT;
@@ -136,9 +91,6 @@ class EntityAnnotation implements ReaderInterface
 
 			case 'bigint':
 				return TableInterface::TYPE_BIGINT;
-
-			case 'string':
-				return TableInterface::TYPE_VARCHAR;
 
 			case 'text':
 			case 'array':
@@ -162,8 +114,10 @@ class EntityAnnotation implements ReaderInterface
 
 			case 'float':
 				return TableInterface::TYPE_FLOAT;
-		}
 
-		return null;
+			default:
+			case 'string':
+				return TableInterface::TYPE_VARCHAR;
+		}
 	}
 }

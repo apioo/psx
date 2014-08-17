@@ -23,6 +23,7 @@
 
 namespace PSX\Sql;
 
+use Doctrine\DBAL\Connection;
 use PSX\Data\RecordInterface;
 use PSX\Exception;
 use PSX\Sql;
@@ -42,9 +43,9 @@ class Table extends TableAbstract
 	protected $columns = array();
 	protected $connections = array();
 
-	public function __construct(Sql $sql, $name, array $columns, array $connections = array())
+	public function __construct(Connection $connection, $name, array $columns, array $connections = array())
 	{
-		parent::__construct($sql);
+		parent::__construct($connection);
 
 		$this->name        = $name;
 		$this->columns     = $columns;

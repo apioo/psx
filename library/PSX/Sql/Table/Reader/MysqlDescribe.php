@@ -23,6 +23,7 @@
 
 namespace PSX\Sql\Table\Reader;
 
+use Doctrine\DBAL\Connection;
 use PSX\Sql;
 use PSX\Sql\TableInterface;
 use PSX\Sql\Table\Definition;
@@ -37,17 +38,17 @@ use PSX\Sql\Table\ReaderInterface;
  */
 class MysqlDescribe implements ReaderInterface
 {
-	protected $sql;
+	protected $connection;
 
-	public function __construct(Sql $sql)
+	public function __construct(Connection $connection)
 	{
-		$this->sql = $sql;
+		$this->connection = $connection;
 	}
 
 	public function getTableDefinition($tableName)
 	{
 		$columns = array();
-		$result  = $this->sql->getAll('DESCRIBE `' . $tableName . '`');
+		$result  = $this->connection->fetchAll('DESCRIBE `' . $tableName . '`');
 
 		foreach($result as $row)
 		{
@@ -68,7 +69,7 @@ AND
 	`REFERENCED_TABLE_NAME` IS NOT NULL;
 SQL;
 
-		$result = $this->sql->getAll($query, array($tableName));
+		$result = $this->connection->fetchAll($query, array($tableName));
 
 		foreach($result as $row)
 		{
