@@ -49,7 +49,7 @@ class TableImporterTest extends DbTestCase
 
 	protected function getRecord()
 	{
-		return new Test\Table($this->sql);
+		return new Test\Table($this->connection);
 	}
 
 	protected function canImportComplexRecord()

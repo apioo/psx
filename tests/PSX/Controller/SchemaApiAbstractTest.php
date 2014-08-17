@@ -35,13 +35,13 @@ use PSX\Url;
 use ReflectionClass;
 
 /**
- * HandlerApiAbstractTest
+ * SchemaApiAbstractTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class HandlerApiAbstractTest extends ControllerTestCase
+class SchemaApiAbstractTest extends ControllerTestCase
 {
 	public function testGet()
 	{
@@ -121,7 +121,7 @@ JSON;
 
 		$expect = array(
 			'success' => false,
-			'message' => 'title has an invalid length min 3 and max 16 signs',
+			'message' => 'title must contain less then 16 characters',
 			'title'   => 'Internal Server Error'
 		);
 
@@ -143,7 +143,7 @@ JSON;
 
 		$expect = array(
 			'success' => false,
-			'message' => 'No valid data defined',
+			'message' => 'Required property "title" not available',
 			'title'   => 'Internal Server Error'
 		);
 
@@ -195,7 +195,7 @@ JSON;
 	protected function getPaths()
 	{
 		return array(
-			'/api' => 'PSX\Controller\Foo\Application\TestHandlerApiController',
+			'/api' => 'PSX\Controller\Foo\Application\TestSchemaApiController',
 		);
 	}
 }

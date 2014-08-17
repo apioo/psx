@@ -21,34 +21,24 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Handler\Pdo;
+namespace PSX\Controller\Foo\Schema;
 
-use PSX\Handler\PdoHandlerAbstract;
-use PSX\Handler\MappingAbstract;
-use PSX\Sql;
-use PSX\Sql\Condition;
+use PSX\Data\SchemaAbstract;
 
 /**
- * TestHandler
+ * Collection
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class TestHandler extends PdoHandlerAbstract
+class Delete extends SchemaAbstract
 {
-	public function getMapping()
+	public function getDefinition()
 	{
-		return new Mapping($this->getQuery(), array(
-			'id'     => MappingAbstract::TYPE_INTEGER | 10 | MappingAbstract::ID_PROPERTY,
-			'userId' => MappingAbstract::TYPE_INTEGER | 10,
-			'title'  => MappingAbstract::TYPE_STRING | 32,
-			'date'   => MappingAbstract::TYPE_DATETIME,
-		));
-	}
+		$entry = $this->getSchema('PSX\Controller\Foo\Schema\Entry');
+		$entry->getChild('id')->setRequired(true);
 
-	protected function getQuery()
-	{
-		return 'SELECT {fields} FROM `psx_handler_comment` {condition} {orderBy} {limit}';
+		return $entry;
 	}
 }

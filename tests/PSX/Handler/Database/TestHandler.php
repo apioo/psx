@@ -24,6 +24,7 @@
 namespace PSX\Handler\Database;
 
 use PSX\Handler\DatabaseHandlerAbstract;
+use PSX\Handler\MappingAbstract;
 
 /**
  * TestHandler
@@ -34,9 +35,18 @@ use PSX\Handler\DatabaseHandlerAbstract;
  */
 class TestHandler extends DatabaseHandlerAbstract
 {
-	public function getDefaultSelect()
+	public function getMapping()
 	{
-		return $this->manager->getTable('PSX\Handler\Database\TestTable')
-			->select(array('id', 'userId', 'title', 'date'));
+		return new Mapping($this->getQuery(), array(
+			'id'     => MappingAbstract::TYPE_INTEGER | 10 | MappingAbstract::ID_PROPERTY,
+			'userId' => MappingAbstract::TYPE_INTEGER | 10,
+			'title'  => MappingAbstract::TYPE_STRING | 32,
+			'date'   => MappingAbstract::TYPE_DATETIME,
+		));
+	}
+
+	protected function getQuery()
+	{
+		return 'SELECT {fields} FROM `psx_handler_comment` {condition} {orderBy} {limit}';
 	}
 }

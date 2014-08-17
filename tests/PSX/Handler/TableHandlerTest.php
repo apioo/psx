@@ -21,39 +21,31 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Controller\Foo\Application;
+namespace PSX\Handler;
 
-use PSX\Controller\HandlerApiAbstract;
-use PSX\Data\RecordAbstract;
-use PSX\Filter;
-use PSX\Handler\Table\TestHandler;
-use PSX\Sql;
+use PSX\Sql\DbTestCase;
 use PSX\Sql\TableManager;
-use PSX\Validate;
-use PSX\Validate\RecordValidator;
-use PSX\Validate\Property;
 
 /**
- * TestHandlerApiController
+ * TableHandlerTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class TestHandlerApiController extends HandlerApiAbstract
+class TableHandlerTest extends DbTestCase
 {
-	protected function getValidator()
+	use HandlerTestCase;
+
+	public function getDataSet()
 	{
-		return new RecordValidator($this->validate, array(
-			new Property('id', Validate::TYPE_INTEGER),
-			new Property('userId', Validate::TYPE_INTEGER),
-			new Property('title', Validate::TYPE_STRING, array(new Filter\Length(3, 16))),
-			new Property('date', Validate::TYPE_STRING, array(new Filter\DateTime())),
-		));
+		return $this->createFlatXMLDataSet(dirname(__FILE__) . '/handler_fixture.xml');
 	}
 
 	protected function getHandler()
 	{
-		return getContainer()->get('table_manager')->getTable('PSX\Handler\Table\TestTable');
+		$tableManager = new TableManager($this->connection);
+
+		return $tableManager->getTable('PSX\Handler\Table\TestTable');
 	}
 }

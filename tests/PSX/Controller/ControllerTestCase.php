@@ -50,7 +50,7 @@ abstract class ControllerTestCase extends \PHPUnit_Extensions_Database_TestCase
 	protected static $con;
 
 	protected $paths;
-	protected $sql;
+	protected $connection;
 
 	protected $containerBackup;
 
@@ -60,7 +60,7 @@ abstract class ControllerTestCase extends \PHPUnit_Extensions_Database_TestCase
 		{
 			try
 			{
-				self::$con = getContainer()->get('sql');
+				self::$con = getContainer()->get('connection');
 			}
 			catch(PDOException $e)
 			{
@@ -68,12 +68,12 @@ abstract class ControllerTestCase extends \PHPUnit_Extensions_Database_TestCase
 			}
 		}
 
-		if($this->sql === null)
+		if($this->connection === null)
 		{
-			$this->sql = self::$con;
+			$this->connection = self::$con;
 		}
 
-		return $this->createDefaultDBConnection($this->sql, getContainer()->get('config')->get('psx_sql_db'));
+		return $this->createDefaultDBConnection($this->connection->getWrappedConnection(), getContainer()->get('config')->get('psx_sql_db'));
 	}
 
 	public function getDataSet()

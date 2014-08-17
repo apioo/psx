@@ -40,7 +40,7 @@ class TableManagerTest extends \PHPUnit_Framework_TestCase
 	{
 		try
 		{
-			$this->sql = getContainer()->get('sql');
+			$this->connection = getContainer()->get('connection');
 		}
 		catch(PDOException $e)
 		{
@@ -50,17 +50,17 @@ class TableManagerTest extends \PHPUnit_Framework_TestCase
 
 	public function testGetTable()
 	{
-		$tm = new TableManager($this->sql);
+		$tm = new TableManager($this->connection);
 
-		$table = $tm->getTable('PSX\Handler\Database\TestTable');
+		$table = $tm->getTable('PSX\Handler\Table\TestTable');
 
 		$this->assertInstanceOf('PSX\Sql\TableInterface', $table);
 	}
 
 	public function testGetTableCustomReader()
 	{
-		$tm = new TableManager($this->sql);
-		$tm->setDefaultReader(new Reader\MysqlDescribe($this->sql));
+		$tm = new TableManager($this->connection);
+		$tm->setDefaultReader(new Reader\MysqlDescribe($this->connection));
 
 		$table = $tm->getTable('psx_sql_table_test');
 
@@ -79,9 +79,9 @@ class TableManagerTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertFalse($cache->getItem('__TD__dd205a64cc84c9bab0bce59595154301')->isHit());
 
-		$tm = new TableManager($this->sql);
+		$tm = new TableManager($this->connection);
 		$tm->setCache($cache);
-		$tm->setDefaultReader(new Reader\MysqlDescribe($this->sql));
+		$tm->setDefaultReader(new Reader\MysqlDescribe($this->connection));
 
 		$table = $tm->getTable('psx_sql_table_test');
 

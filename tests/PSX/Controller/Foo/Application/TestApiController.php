@@ -27,6 +27,7 @@ use PSX\Data\Record;
 use PSX\Data\RecordAbstract;
 use PSX\Controller\ApiAbstract;
 use PSX\Sql;
+use PSX\Util\Api\FilterParameter;
 
 /**
  * TestApiController
@@ -60,19 +61,19 @@ class TestApiController extends ApiAbstract
 
 	public function doInspect()
 	{
-		$params = $this->getRequestParams();
+		$params = $this->getFilterParameter();
 
-		$this->testCase->assertEquals(array('foo', 'bar'), $params['fields']);
-		$this->testCase->assertEquals('2014-01-26', $params['updatedSince']->format('Y-m-d'));
-		$this->testCase->assertEquals(8, $params['count']);
-		$this->testCase->assertEquals('id', $params['filterBy']);
-		$this->testCase->assertEquals('equals', $params['filterOp']);
-		$this->testCase->assertEquals('12', $params['filterValue']);
-		$this->testCase->assertEquals('id', $params['sortBy']);
-		$this->testCase->assertEquals(Sql::SORT_DESC, $params['sortOrder']);
-		$this->testCase->assertEquals(4, $params['startIndex']);
+		$this->testCase->assertEquals(array('foo', 'bar'), $params->getFields());
+		$this->testCase->assertEquals('2014-01-26', $params->getUpdatedSince()->format('Y-m-d'));
+		$this->testCase->assertEquals(8, $params->getCount());
+		$this->testCase->assertEquals('id', $params->getFilterBy());
+		$this->testCase->assertEquals('equals', $params->getFilterOp());
+		$this->testCase->assertEquals('12', $params->getFilterValue());
+		$this->testCase->assertEquals('id', $params->getSortBy());
+		$this->testCase->assertEquals(Sql::SORT_DESC, $params->getSortOrder());
+		$this->testCase->assertEquals(4, $params->getStartIndex());
 
-		$condition = $this->getRequestCondition();
+		$condition = FilterParameter::getCondition($params);
 
 		$this->testCase->assertEquals(array(array('id', '=', '12', 'AND', 1), array('date', '>', '2014-01-26 00:00:00', 'AND', 1)), $condition->toArray());
 

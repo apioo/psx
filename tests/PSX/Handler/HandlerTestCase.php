@@ -488,13 +488,13 @@ trait HandlerTestCase
 			$this->markTestSkipped('Handler not an query interface');
 		}
 
-		$row = $handler->get(1, array('id', 'title'));
+		$row = $handler->get(1);
 
 		$this->assertInstanceOf('PSX\Data\Record', $row);
 		$this->assertEquals(true, $row->getId() != null);
-		$this->assertEquals(true, $row->getUserId() == null);
+		$this->assertEquals(true, $row->getUserId() != null);
 		$this->assertEquals(true, $row->getTitle() != null);
-		$this->assertEquals(true, $row->getDate() == null);
+		$this->assertEquals(true, $row->getDate() != null);
 	}
 
 	public function testGetCollection()

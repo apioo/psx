@@ -21,32 +21,37 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Handler\Database;
-
-use PSX\Sql\TableAbstract;
-use PSX\Sql\TableInterface;
+namespace PSX\Sql\Table\Reader\EntityAnnotation;
 
 /**
- * TestTable
- *
- * @author  Christoph Kappestein <k42b3.x@gmail.com>
- * @license http://www.gnu.org/licenses/gpl.html GPLv3
- * @link    http://phpsx.org
+ * @Entity
+ * @Table(name="bugs")
  */
-class TestTable extends TableAbstract
+class TestEntity
 {
-	public function getName()
-	{
-		return 'psx_handler_comment';
-	}
+	/**
+	 * @Id 
+	 * @Column(type="integer") 
+	 * @GeneratedValue
+	 * @var int
+	 */
+	protected $id;
 
-	public function getColumns()
-	{
-		return array(
-			'id'     => TableInterface::TYPE_INT | 10 | TableInterface::PRIMARY_KEY | TableInterface::AUTO_INCREMENT,
-			'userId' => TableInterface::TYPE_INT | 10,
-			'title'  => TableInterface::TYPE_VARCHAR | 32,
-			'date'   => TableInterface::TYPE_DATETIME,
-		);
-	}
+	/**
+	 * @Column(type="string")
+	 * @var string
+	 */
+	protected $description;
+
+	/**
+	 * @Column(type="datetime")
+	 * @var DateTime
+	 */
+	protected $created;
+
+	/**
+	 * @Column(name="foobar", type="string")
+	 * @var string
+	 */
+	protected $status;
 }

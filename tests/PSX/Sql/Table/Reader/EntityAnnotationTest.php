@@ -23,7 +23,11 @@
 
 namespace PSX\Sql\Table\Reader;
 
+use PSX\DateTime;
+use PSX\Handler\Doctrine\DoctrineTestCase;
+use PSX\Sql\Table;
 use PSX\Sql\TableInterface;
+use PSX\Test\TableDataSet;
 
 /**
  * EntityAnnotationTest
@@ -32,12 +36,28 @@ use PSX\Sql\TableInterface;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class EntityAnnotationTest extends \PHPUnit_Framework_TestCase
+class EntityAnnotationTest extends DoctrineTestCase
 {
+	public function getDataSet()
+	{
+		$table = new Table($this->connection, 'psx_sql_table_test', array(
+			'id'    => TableInterface::TYPE_INT | 10 | TableInterface::PRIMARY_KEY | TableInterface::AUTO_INCREMENT,
+			'title' => TableInterface::TYPE_VARCHAR | 32,
+			'date'  => TableInterface::TYPE_DATETIME,
+		));
+
+		$dataSet = new TableDataSet();
+		$dataSet->addTable($table, array(
+			array('id' => null, 'title' => 'foo', 'date' => date(DateTime::SQL)),
+		));
+
+		return $dataSet;
+	}
+
 	public function testGetTableDefinition()
 	{
-		$reader = new EntityAnnotation();
-		$table  = $reader->getTableDefinition('PSX\Sql\Table\Reader\TestEntity');
+		$reader = new EntityAnnotation($this->getEntityManager());
+		$table  = $reader->getTableDefinition('PSX\Sql\Table\Reader\EntityAnnotation\TestEntity');
 
 		$this->assertEquals('bugs', $table->getName());
 
@@ -50,34 +70,3 @@ class EntityAnnotationTest extends \PHPUnit_Framework_TestCase
 	}
 }
 
-/**
- * @Table(name="bugs")
- */
-class TestEntity
-{
-	/**
-	 * @Id 
-	 * @Column(type="integer") 
-	 * @GeneratedValue
-	 * @var int
-	 */
-	protected $id;
-
-	/**
-	 * @Column(type="string")
-	 * @var string
-	 */
-	protected $description;
-
-	/**
-	 * @Column(type="datetime")
-	 * @var DateTime
-	 */
-	protected $created;
-
-	/**
-	 * @Column(name="foobar", type="string")
-	 * @var string
-	 */
-	protected $status;
-}

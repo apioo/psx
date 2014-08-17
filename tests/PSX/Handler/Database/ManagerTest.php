@@ -24,7 +24,6 @@
 namespace PSX\Handler\Database;
 
 use PSX\Sql\DbTestCase;
-use PSX\Sql\TableManager;
 
 /**
  * ManagerTest
@@ -42,15 +41,14 @@ class ManagerTest extends DbTestCase
 
 	public function testManager()
 	{
-		$manager = new Manager(new TableManager($this->sql));
+		$manager = new Manager($this->connection);
 
 		$handler = $manager->getHandler('PSX\Handler\Database\TestHandler');
 
 		$this->assertInstanceOf('PSX\Handler\Database\TestHandler', $handler);
 
-		$handler = $manager->getHandler(function($manager){
-			return $manager->getTable('PSX\Handler\Database\TestTable')
-				->select(array('id', 'userId', 'title', 'date'));
+		$handler = $manager->getHandler(function(){
+			return null;
 		});
 
 		$this->assertInstanceOf('PSX\Handler\Database\CallbackHandler', $handler);

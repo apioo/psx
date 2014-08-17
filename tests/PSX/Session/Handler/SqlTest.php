@@ -101,18 +101,12 @@ class SqlTest extends DbTestCase
 
 	protected function getHandler()
 	{
-		$table = new Table($this->sql, $this->table, array(
-			'id'      => TableInterface::TYPE_VARCHAR | TableInterface::PRIMARY_KEY,
-			'content' => TableInterface::TYPE_BLOB,
-			'date'    => TableInterface::TYPE_DATETIME,
-		));
-
 		$allocation = new ColumnAllocation(array(
 			Sql::COLUMN_ID      => 'id',
 			Sql::COLUMN_CONTENT => 'content',
 			Sql::COLUMN_DATE    => 'date',
 		));
 
-		return new Sql($table, $allocation);
+		return new Sql($this->connection, $this->table, $allocation);
 	}
 }

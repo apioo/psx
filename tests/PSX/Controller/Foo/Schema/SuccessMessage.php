@@ -21,42 +21,27 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Handler\Pdo;
+namespace PSX\Controller\Foo\Schema;
 
-use PSX\Handler\MappingAbstract;
-use PSX\Handler\HandlerTestCase;
-use PSX\Sql\DbTestCase;
+use PSX\Data\SchemaAbstract;
 
 /**
- * CallbackHandlerTest
+ * Collection
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class CallbackHandlerTest extends DbTestCase
+class SuccessMessage extends SchemaAbstract
 {
-	use HandlerTestCase;
-
-	public function getDataSet()
+	public function getDefinition()
 	{
-		return $this->createFlatXMLDataSet(dirname(__FILE__) . '/../handler_fixture.xml');
-	}
+		$sb = $this->getSchemaBuilder('message');
+		$sb->boolean('success')
+			->setRequired(true);
+		$sb->string('message')
+			->setRequired(true);
 
-	protected function getHandler()
-	{
-		return new CallbackHandler($this->sql, function(){
-			return new Mapping($this->getQuery(), array(
-				'id'     => MappingAbstract::TYPE_INTEGER | 10 | MappingAbstract::ID_PROPERTY,
-				'userId' => MappingAbstract::TYPE_INTEGER | 10,
-				'title'  => MappingAbstract::TYPE_STRING | 32,
-				'date'   => MappingAbstract::TYPE_DATETIME,
-			));
-		});
-	}
-
-	protected function getQuery()
-	{
-		return 'SELECT {fields} FROM `psx_handler_comment` {condition} {orderBy} {limit}';
+		return $sb->getProperty();
 	}
 }

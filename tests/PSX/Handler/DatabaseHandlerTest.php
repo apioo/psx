@@ -44,6 +44,6 @@ class DatabaseHandlerTest extends DbTestCase
 
 	protected function getHandler()
 	{
-		return new Database\TestHandler(new TableManager($this->sql));
+		return new Database\TestHandler($this->connection);
 	}
 }

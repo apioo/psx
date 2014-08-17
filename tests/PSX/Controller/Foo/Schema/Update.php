@@ -21,28 +21,24 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Handler;
+namespace PSX\Controller\Foo\Schema;
 
-use PSX\Sql\DbTestCase;
+use PSX\Data\SchemaAbstract;
 
 /**
- * PdoHandlerTest
+ * Update
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class PdoHandlerTest extends DbTestCase
+class Update extends SchemaAbstract
 {
-	use HandlerTestCase;
-
-	public function getDataSet()
+	public function getDefinition()
 	{
-		return $this->createFlatXMLDataSet(dirname(__FILE__) . '/handler_fixture.xml');
-	}
+		$entry = $this->getSchema('PSX\Controller\Foo\Schema\Entry');
+		$entry->getChild('id')->setRequired(true);
 
-	protected function getHandler()
-	{
-		return new Pdo\TestHandler($this->sql);
+		return $entry;
 	}
 }

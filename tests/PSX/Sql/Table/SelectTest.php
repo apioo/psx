@@ -26,6 +26,7 @@ namespace PSX\Sql\Table;
 use PSX\Data\ResultSet;
 use PSX\DateTime;
 use PSX\Sql;
+use PSX\Sql\Condition;
 use PSX\Sql\DbTestCase;
 use PSX\Sql\Join;
 use PSX\Sql\TableAbstract;
@@ -47,19 +48,19 @@ class SelectTest extends DbTestCase
 	public function getDataSet()
 	{
 		$dataSet = new TableDataSet();
-		$dataSet->addTable(new SelectTestNews($this->sql), array(
+		$dataSet->addTable(new SelectTestNews($this->connection), array(
 			array('id' => null, 'userId' => 1, 'title' => 'foo', 'date' => date(DateTime::SQL)),
 			array('id' => null, 'userId' => 1, 'title' => 'bar', 'date' => date(DateTime::SQL)),
 			array('id' => null, 'userId' => 2, 'title' => 'test', 'date' => date(DateTime::SQL)),
 			array('id' => null, 'userId' => 3, 'title' => 'blub', 'date' => date(DateTime::SQL)),
 		));
 
-		$dataSet->addTable(new SelectTestUser($this->sql), array(
+		$dataSet->addTable(new SelectTestUser($this->connection), array(
 			array('id' => null, 'groupId' => 1, 'name' => 'foo'),
 			array('id' => null, 'groupId' => 1, 'name' => 'bar'),
 		));
 
-		$dataSet->addTable(new SelectTestUserNews($this->sql), array(
+		$dataSet->addTable(new SelectTestUserNews($this->connection), array(
 			array('id' => null, 'userId' => 1, 'newsId' => 1),
 			array('id' => null, 'userId' => 1, 'newsId' => 2),
 			array('id' => null, 'userId' => 1, 'newsId' => 3),
@@ -68,7 +69,7 @@ class SelectTest extends DbTestCase
 			array('id' => null, 'userId' => 2, 'newsId' => 2),
 		));
 
-		$dataSet->addTable(new SelectTestGroup($this->sql), array(
+		$dataSet->addTable(new SelectTestGroup($this->connection), array(
 			array('id' => null, 'name' => 'test'),
 		));
 
@@ -78,8 +79,8 @@ class SelectTest extends DbTestCase
 	public function testJoin()
 	{
 		// inner
-		$news   = new SelectTestNews($this->sql);
-		$user   = new SelectTestUser($this->sql);
+		$news   = new SelectTestNews($this->connection);
+		$user   = new SelectTestUser($this->connection);
 		$result = $news->select(array('id', 'userId', 'title'))
 			->join(Join::INNER, $user
 				->select(array('id', 'name'), 'user')
@@ -89,8 +90,8 @@ class SelectTest extends DbTestCase
 		$this->assertEquals(3, count($result));
 
 		// left
-		$news   = new SelectTestNews($this->sql);
-		$user   = new SelectTestUser($this->sql);
+		$news   = new SelectTestNews($this->connection);
+		$user   = new SelectTestUser($this->connection);
 		$result = $news->select(array('id', 'userId', 'title'))
 			->join(Join::LEFT, $user
 				->select(array('id', 'name'), 'user')
@@ -100,8 +101,8 @@ class SelectTest extends DbTestCase
 		$this->assertEquals(4, count($result));
 
 		// right
-		$news   = new SelectTestNews($this->sql);
-		$user   = new SelectTestUser($this->sql);
+		$news   = new SelectTestNews($this->connection);
+		$user   = new SelectTestUser($this->connection);
 		$result = $news->select(array('id', 'userId', 'title'))
 			->join(Join::RIGHT, $user
 				->select(array('id', 'name'), 'user')
@@ -113,7 +114,7 @@ class SelectTest extends DbTestCase
 
 	public function testWhere()
 	{
-		$news = new SelectTestNews($this->sql);
+		$news = new SelectTestNews($this->connection);
 
 		// where
 		$result = $news->select(array('id', 'userId', 'title'))
@@ -141,7 +142,7 @@ class SelectTest extends DbTestCase
 
 	public function testGroupBy()
 	{
-		$news = new SelectTestNews($this->sql);
+		$news = new SelectTestNews($this->connection);
 
 		$result = $news->select(array('id', 'userId', 'title'))
 			->groupBy('userId')
@@ -152,62 +153,62 @@ class SelectTest extends DbTestCase
 
 	public function testOrderBy()
 	{
-		$user = new SelectTestUser($this->sql);
+		$user = new SelectTestUser($this->connection);
 
 		$result = $user->select(array('id', 'name'))
 			->orderBy('name')
 			->getAll();
 
-		$this->assertEquals('foo', $result[0]['name']);
-		$this->assertEquals('bar', $result[1]['name']);
+		$this->assertEquals('foo', $result[0]->getName());
+		$this->assertEquals('bar', $result[1]->getName());
 
 		$result = $user->select(array('id', 'name'))
 			->orderBy('name', Sql::SORT_ASC)
 			->getAll();
 
-		$this->assertEquals('bar', $result[0]['name']);
-		$this->assertEquals('foo', $result[1]['name']);
+		$this->assertEquals('bar', $result[0]->getName());
+		$this->assertEquals('foo', $result[1]->getName());
 
 		$result = $user->select(array('id', 'name'))
 			->orderBy('name', Sql::SORT_DESC)
 			->getAll();
 
-		$this->assertEquals('foo', $result[0]['name']);
-		$this->assertEquals('bar', $result[1]['name']);
+		$this->assertEquals('foo', $result[0]->getName());
+		$this->assertEquals('bar', $result[1]->getName());
 	}
 
 	public function testLimit()
 	{
-		$user = new SelectTestUser($this->sql);
+		$user = new SelectTestUser($this->connection);
 
 		$result = $user->select(array('id', 'name'))
 			->limit(1)
 			->getAll();
 
 		$this->assertEquals(1, count($result));
-		$this->assertEquals('foo', $result[0]['name']);
+		$this->assertEquals('bar', $result[0]->getName());
 
 		$result = $user->select(array('id', 'name'))
 			->limit(0, 1)
 			->getAll();
 
 		$this->assertEquals(1, count($result));
-		$this->assertEquals('foo', $result[0]['name']);
+		$this->assertEquals('bar', $result[0]->getName());
 
 		$result = $user->select(array('id', 'name'))
 			->limit(1, 1)
 			->getAll();
 
 		$this->assertEquals(1, count($result));
-		$this->assertEquals('bar', $result[0]['name']);
+		$this->assertEquals('foo', $result[0]->getName());
 	}
 
 	public function testJoinCardinality()
 	{
 		// test normal join
-		$news     = new SelectTestNews($this->sql);
-		$user     = new SelectTestUser($this->sql);
-		$userNews = new SelectTestUserNews($this->sql);
+		$news     = new SelectTestNews($this->connection);
+		$user     = new SelectTestUser($this->connection);
+		$userNews = new SelectTestUserNews($this->connection);
 
 		$result = $userNews->select(array('userId'))
 			->join(Join::INNER, $user
@@ -219,20 +220,23 @@ class SelectTest extends DbTestCase
 			->getAll();
 
 		$this->assertEquals(6, count($result));
+		$this->assertContainsOnlyInstancesOf('PSX\Data\RecordInterface', $result);
 
 		foreach($result as $row)
 		{
-			$this->assertArrayHasKey('userId', $row);
-			$this->assertArrayHasKey('newsId', $row);
-			$this->assertArrayHasKey('clientId', $row);
-			$this->assertArrayHasKey('clientName', $row);
-			$this->assertArrayHasKey('newsId', $row);
-			$this->assertArrayHasKey('newsTitle', $row);
+			$data = $row->getRecordInfo()->getData();
+
+			$this->assertArrayHasKey('userId', $data);
+			$this->assertArrayHasKey('newsId', $data);
+			$this->assertArrayHasKey('clientId', $data);
+			$this->assertArrayHasKey('clientName', $data);
+			$this->assertArrayHasKey('newsId', $data);
+			$this->assertNotEmpty('newsTitle', $data);
 		}
 
 		// test 1:n join
-		$news     = new SelectTestNews($this->sql);
-		$userNews = new SelectTestUserNews($this->sql);
+		$news     = new SelectTestNews($this->connection);
+		$userNews = new SelectTestUserNews($this->connection);
 
 		$result = $news->select(array('id', 'title'))
 			->join(Join::INNER, $userNews
@@ -241,18 +245,21 @@ class SelectTest extends DbTestCase
 			->getAll();
 
 		$this->assertEquals(6, count($result));
+		$this->assertContainsOnlyInstancesOf('PSX\Data\RecordInterface', $result);
 
 		foreach($result as $row)
 		{
-			$this->assertArrayHasKey('id', $row);
-			$this->assertArrayHasKey('title', $row);
-			$this->assertArrayHasKey('fooUserId', $row);
-			$this->assertArrayHasKey('fooNewsId', $row);
+			$data = $row->getRecordInfo()->getData();
+
+			$this->assertArrayHasKey('id', $data);
+			$this->assertArrayHasKey('title', $data);
+			$this->assertArrayHasKey('fooUserId', $data);
+			$this->assertArrayHasKey('fooNewsId', $data);
 		}
 
 		// test n:1 join
-		$news     = new SelectTestNews($this->sql);
-		$userNews = new SelectTestUserNews($this->sql);
+		$news     = new SelectTestNews($this->connection);
+		$userNews = new SelectTestUserNews($this->connection);
 
 		$result = $userNews->select(array('userId', 'newsId'))
 			->join(Join::INNER, $news
@@ -261,143 +268,72 @@ class SelectTest extends DbTestCase
 			->getAll();
 
 		$this->assertEquals(6, count($result));
+		$this->assertContainsOnlyInstancesOf('PSX\Data\RecordInterface', $result);
 
 		foreach($result as $row)
 		{
-			$this->assertArrayHasKey('userId', $row);
-			$this->assertArrayHasKey('newsId', $row);
-			$this->assertArrayHasKey('fooId', $row);
-			$this->assertArrayHasKey('fooTitle', $row);
+			$data = $row->getRecordInfo()->getData();
+
+			$this->assertArrayHasKey('userId', $data);
+			$this->assertArrayHasKey('newsId', $data);
+			$this->assertArrayHasKey('fooId', $data);
+			$this->assertArrayHasKey('fooTitle', $data);
 		}
 	}
 
 	public function testGetAll()
 	{
-		// array
-		$news   = new SelectTestNews($this->sql);
-		$user   = new SelectTestUser($this->sql);
+		$news   = new SelectTestNews($this->connection);
+		$user   = new SelectTestUser($this->connection);
 		$result = $news->select(array('id', 'userId', 'title'))
 			->join(Join::INNER, $user
 				->select(array('id', 'name'), 'client')
 			)
-			->orderBy('clientId', Sql::SORT_DESC)
+			->orderBy('id', Sql::SORT_DESC)
 			->limit(1)
 			->getAll();
 
 		$row = current($result);
 
-		$this->assertEquals(true, is_array($row));
-		$this->assertArrayHasKey('id', $row);
-		$this->assertArrayHasKey('userId', $row);
-		$this->assertArrayHasKey('title', $row);
-		$this->assertArrayHasKey('clientId', $row);
-		$this->assertArrayHasKey('clientName', $row);
+		$this->assertInstanceOf('PSX\Data\RecordInterface', $row);
 
-		// default object
-		$news   = new SelectTestNews($this->sql);
-		$user   = new SelectTestUser($this->sql);
-		$result = $news->select(array('id', 'userId', 'title'))
-			->join(Join::INNER, $user
-				->select(array('id', 'name'), 'client')
-			)
-			->orderBy('id', Sql::SORT_DESC)
-			->limit(1)
-			->getAll(Sql::FETCH_OBJECT);
+		$data = $row->getRecordInfo()->getData();
 
-		$row = current($result);
-
-		$this->assertInstanceOf('stdClass', $row);
-		$this->assertObjectHasAttribute('id', $row);
-		$this->assertObjectHasAttribute('userId', $row);
-		$this->assertObjectHasAttribute('title', $row);
-		$this->assertObjectHasAttribute('clientId', $row);
-		$this->assertObjectHasAttribute('clientName', $row);
-
-		// custom object
-		$news   = new SelectTestNews($this->sql);
-		$user   = new SelectTestUser($this->sql);
-		$args   = array('foo', 'bar');
-		$result = $news->select(array('id', 'userId', 'title'))
-			->join(Join::INNER, $user
-				->select(array('id', 'name'), 'client')
-			)
-			->orderBy('id', Sql::SORT_DESC)
-			->limit(1)
-			->getAll(Sql::FETCH_OBJECT, '\PSX\Sql\Table\SelectTestRecord', $args);
-
-		$row = current($result);
-
-		$this->assertInstanceOf('\PSX\Sql\Table\SelectTestRecord', $row);
-		$this->assertObjectHasAttribute('id', $row);
-		$this->assertObjectHasAttribute('userId', $row);
-		$this->assertObjectHasAttribute('title', $row);
-		$this->assertObjectHasAttribute('clientId', $row);
-		$this->assertObjectHasAttribute('clientName', $row);
-		$this->assertEquals($args, $row->getArgs());
+		$this->assertArrayHasKey('id', $data);
+		$this->assertArrayHasKey('userId', $data);
+		$this->assertArrayHasKey('title', $data);
+		$this->assertArrayHasKey('clientId', $data);
+		$this->assertArrayHasKey('clientName', $data);
 	}
 
-	public function testGetRow()
+	public function testGetOneBy()
 	{
-		// array
-		$news = new SelectTestNews($this->sql);
-		$user = new SelectTestUser($this->sql);
+		$news = new SelectTestNews($this->connection);
+		$user = new SelectTestUser($this->connection);
 		$row  = $news->select(array('id', 'userId', 'title'))
 			->join(Join::INNER, $user
 				->select(array('id', 'name'), 'client')
 			)
 			->limit(1)
-			->getRow();
+			->getOneBy(new Condition());
 
-		$this->assertEquals(true, is_array($row));
-		$this->assertArrayHasKey('id', $row);
-		$this->assertArrayHasKey('userId', $row);
-		$this->assertArrayHasKey('title', $row);
-		$this->assertArrayHasKey('clientId', $row);
-		$this->assertArrayHasKey('clientName', $row);
+		$this->assertInstanceOf('PSX\Data\RecordInterface', $row);
 
-		// default object
-		$news = new SelectTestNews($this->sql);
-		$user = new SelectTestUser($this->sql);
-		$row  = $news->select(array('id', 'userId', 'title'))
-			->join(Join::INNER, $user
-				->select(array('id', 'name'), 'client')
-			)
-			->limit(1)
-			->getRow(Sql::FETCH_OBJECT);
+		$data = $row->getRecordInfo()->getData();
 
-		$this->assertInstanceOf('stdClass', $row);
-		$this->assertObjectHasAttribute('id', $row);
-		$this->assertObjectHasAttribute('userId', $row);
-		$this->assertObjectHasAttribute('title', $row);
-		$this->assertObjectHasAttribute('clientId', $row);
-		$this->assertObjectHasAttribute('clientName', $row);
-
-		// custom object
-		$news = new SelectTestNews($this->sql);
-		$user = new SelectTestUser($this->sql);
-		$args = array('foo', 'bar');
-		$row  = $news->select(array('id', 'userId', 'title'))
-			->join(Join::INNER, $user
-				->select(array('id', 'name'), 'client')
-			)
-			->limit(1)
-			->getRow(Sql::FETCH_OBJECT, '\PSX\Sql\Table\SelectTestRecord', $args);
-
-		$this->assertInstanceOf('\PSX\Sql\Table\SelectTestRecord', $row);
-		$this->assertObjectHasAttribute('id', $row);
-		$this->assertObjectHasAttribute('userId', $row);
-		$this->assertObjectHasAttribute('title', $row);
-		$this->assertObjectHasAttribute('clientId', $row);
-		$this->assertObjectHasAttribute('clientName', $row);
-		$this->assertEquals($args, $row->getArgs());
+		$this->assertArrayHasKey('id', $data);
+		$this->assertArrayHasKey('userId', $data);
+		$this->assertArrayHasKey('title', $data);
+		$this->assertArrayHasKey('clientId', $data);
+		$this->assertArrayHasKey('clientName', $data);
 	}
 
 	public function testDeepJoins()
 	{
-		$news     = new SelectTestNews($this->sql);
-		$userNews = new SelectTestUserNews($this->sql);
-		$user     = new SelectTestUser($this->sql);
-		$group    = new SelectTestGroup($this->sql);
+		$news     = new SelectTestNews($this->connection);
+		$userNews = new SelectTestUserNews($this->connection);
+		$user     = new SelectTestUser($this->connection);
+		$group    = new SelectTestGroup($this->connection);
 		$result   = $news->select(array('id', 'userId', 'title'))
 			->join(Join::INNER, $userNews
 				->select(array(), 'userNews')
@@ -410,22 +346,27 @@ class SelectTest extends DbTestCase
 			, '1:n')
 			->getAll();
 
+		$this->assertEquals(6, count($result));
+		$this->assertContainsOnlyInstancesOf('PSX\Data\RecordInterface', $result);
+
 		foreach($result as $row)
 		{
-			$this->assertArrayHasKey('id', $row);
-			$this->assertArrayHasKey('userId', $row);
-			$this->assertArrayHasKey('title', $row);
-			$this->assertArrayHasKey('userName', $row);
-			$this->assertArrayHasKey('groupName', $row);
+			$data = $row->getRecordInfo()->getData();
+
+			$this->assertArrayHasKey('id', $data);
+			$this->assertArrayHasKey('userId', $data);
+			$this->assertArrayHasKey('title', $data);
+			$this->assertArrayHasKey('userName', $data);
+			$this->assertArrayHasKey('groupName', $data);
 		}
 	}
 
 	public function testNoPrimaryPrefix()
 	{
-		$news     = new SelectTestNews($this->sql);
-		$userNews = new SelectTestUserNews($this->sql);
-		$user     = new SelectTestUser($this->sql);
-		$group    = new SelectTestGroup($this->sql);
+		$news     = new SelectTestNews($this->connection);
+		$userNews = new SelectTestUserNews($this->connection);
+		$user     = new SelectTestUser($this->connection);
+		$group    = new SelectTestGroup($this->connection);
 		$result   = $news->select(array('id', 'userId', 'title'), 'news')
 			->join(Join::INNER, $userNews
 				->select(array(), 'userNews')
@@ -438,13 +379,18 @@ class SelectTest extends DbTestCase
 			, '1:n')
 			->getAll();
 
+		$this->assertEquals(6, count($result));
+		$this->assertContainsOnlyInstancesOf('PSX\Data\RecordInterface', $result);
+
 		foreach($result as $row)
 		{
-			$this->assertArrayHasKey('newsId', $row);
-			$this->assertArrayHasKey('newsUserId', $row);
-			$this->assertArrayHasKey('newsTitle', $row);
-			$this->assertArrayHasKey('name', $row);
-			$this->assertArrayHasKey('groupName', $row);
+			$data = $row->getRecordInfo()->getData();
+			
+			$this->assertArrayHasKey('newsId', $data);
+			$this->assertArrayHasKey('newsUserId', $data);
+			$this->assertArrayHasKey('newsTitle', $data);
+			$this->assertArrayHasKey('name', $data);
+			$this->assertArrayHasKey('groupName', $data);
 		}
 	}
 }

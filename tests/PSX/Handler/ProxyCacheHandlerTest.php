@@ -54,6 +54,6 @@ class ProxyCacheHandlerTest extends DbTestCase
 
 	protected function getHandler()
 	{
-		return new ProxyCacheHandler(new Database\TestHandler(new TableManager($this->sql)), new Cache(new Cache\Handler\Memory()));
+		return new ProxyCacheHandler(new Database\TestHandler($this->connection), new Cache(new Cache\Handler\Memory()));
 	}
 }

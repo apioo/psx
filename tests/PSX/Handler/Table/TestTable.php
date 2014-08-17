@@ -21,39 +21,32 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Controller\Foo\Application;
+namespace PSX\Handler\Table;
 
-use PSX\Controller\HandlerApiAbstract;
-use PSX\Data\RecordAbstract;
-use PSX\Filter;
-use PSX\Handler\Table\TestHandler;
-use PSX\Sql;
-use PSX\Sql\TableManager;
-use PSX\Validate;
-use PSX\Validate\RecordValidator;
-use PSX\Validate\Property;
+use PSX\Sql\TableAbstract;
+use PSX\Sql\TableInterface;
 
 /**
- * TestHandlerApiController
+ * TestTable
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class TestHandlerApiController extends HandlerApiAbstract
+class TestTable extends TableAbstract
 {
-	protected function getValidator()
+	public function getName()
 	{
-		return new RecordValidator($this->validate, array(
-			new Property('id', Validate::TYPE_INTEGER),
-			new Property('userId', Validate::TYPE_INTEGER),
-			new Property('title', Validate::TYPE_STRING, array(new Filter\Length(3, 16))),
-			new Property('date', Validate::TYPE_STRING, array(new Filter\DateTime())),
-		));
+		return 'psx_handler_comment';
 	}
 
-	protected function getHandler()
+	public function getColumns()
 	{
-		return getContainer()->get('table_manager')->getTable('PSX\Handler\Table\TestTable');
+		return array(
+			'id'     => TableInterface::TYPE_INT | 10 | TableInterface::PRIMARY_KEY | TableInterface::AUTO_INCREMENT,
+			'userId' => TableInterface::TYPE_INT | 10,
+			'title'  => TableInterface::TYPE_VARCHAR | 32,
+			'date'   => TableInterface::TYPE_DATETIME,
+		);
 	}
 }

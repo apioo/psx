@@ -41,9 +41,7 @@ class InColumnTest extends DbTestCase
 
 	public function testFilter()
 	{
-		$table = getContainer()->getTableManager()->getTable('PSX\Handler\Database\TestTable');
-
-		$filter = new InColumn($table, 'id');
+		$filter = new InColumn($this->connection, 'psx_handler_comment', 'id');
 
 		$this->assertEquals(true, $filter->apply(1));
 		$this->assertEquals(false, $filter->apply(32));

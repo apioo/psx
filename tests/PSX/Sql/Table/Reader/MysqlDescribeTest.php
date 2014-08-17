@@ -40,7 +40,7 @@ class MysqlDescribeTest extends DbTestCase
 {
 	public function getDataSet()
 	{
-		$table = new Table($this->sql, 'psx_sql_table_test', array(
+		$table = new Table($this->connection, 'psx_sql_table_test', array(
 			'id'    => TableInterface::TYPE_INT | 10 | TableInterface::PRIMARY_KEY | TableInterface::AUTO_INCREMENT,
 			'title' => TableInterface::TYPE_VARCHAR | 32,
 			'date'  => TableInterface::TYPE_DATETIME,
@@ -56,7 +56,7 @@ class MysqlDescribeTest extends DbTestCase
 
 	public function testGetTableDefinition()
 	{
-		$reader = new MysqlDescribe($this->sql);
+		$reader = new MysqlDescribe($this->connection);
 		$table  = $reader->getTableDefinition('psx_sql_table_test');
 
 		$this->assertEquals('psx_sql_table_test', $table->getName());

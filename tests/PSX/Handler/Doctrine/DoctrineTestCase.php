@@ -60,20 +60,7 @@ abstract class DoctrineTestCase extends DbTestCase
 	{
 		if(self::$em === null)
 		{
-			// the default di container doesnt have the entity manager service
-			$paths     = array(PSX_PATH_LIBRARY);
-			$isDevMode = getContainer()->get('config')->get('psx_debug');
-			$dbParams  = array(
-				'driver'   => 'pdo_mysql',
-				'user'     => getContainer()->get('config')->get('psx_sql_user'),
-				'password' => getContainer()->get('config')->get('psx_sql_pw'),
-				'dbname'   => getContainer()->get('config')->get('psx_sql_db'),
-			);
-
-			$config = Setup::createAnnotationMetadataConfiguration($paths, $isDevMode);
-			$config->addCustomHydrationMode(RecordHydrator::HYDRATE_RECORD, 'PSX\Handler\Doctrine\RecordHydrator');
-
-			self::$em = EntityManager::create($dbParams, $config);
+			self::$em = getContainer()->get('entity_manager');
 		}
 
 		return self::$em;

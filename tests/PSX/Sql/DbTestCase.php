@@ -24,10 +24,6 @@
 namespace PSX\Sql;
 
 use PDOException;
-use PSX\Config;
-use PSX\Data\Record;
-use PSX\DateTime;
-use PSX\Sql\Table\Select;
 
 /**
  * DbTestCase
@@ -40,7 +36,7 @@ abstract class DbTestCase extends \PHPUnit_Extensions_Database_TestCase
 {
 	protected static $con;
 
-	protected $sql;
+	protected $connection;
 
 	public function getConnection()
 	{
@@ -48,7 +44,7 @@ abstract class DbTestCase extends \PHPUnit_Extensions_Database_TestCase
 		{
 			try
 			{
-				self::$con = getContainer()->get('sql');
+				self::$con = getContainer()->get('connection');
 			}
 			catch(PDOException $e)
 			{
@@ -56,11 +52,11 @@ abstract class DbTestCase extends \PHPUnit_Extensions_Database_TestCase
 			}
 		}
 
-		if($this->sql === null)
+		if($this->connection === null)
 		{
-			$this->sql = self::$con;
+			$this->connection = self::$con;
 		}
 
-		return $this->createDefaultDBConnection($this->sql, getContainer()->get('config')->get('psx_sql_db'));
+		return $this->createDefaultDBConnection($this->connection->getWrappedConnection(), getContainer()->get('config')->get('psx_sql_db'));
 	}
 }

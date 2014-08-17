@@ -21,39 +21,30 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Controller\Foo\Application;
+namespace PSX\Controller\Foo\Schema;
 
-use PSX\Controller\HandlerApiAbstract;
-use PSX\Data\RecordAbstract;
-use PSX\Filter;
-use PSX\Handler\Table\TestHandler;
-use PSX\Sql;
-use PSX\Sql\TableManager;
-use PSX\Validate;
-use PSX\Validate\RecordValidator;
-use PSX\Validate\Property;
+use PSX\Data\SchemaAbstract;
 
 /**
- * TestHandlerApiController
+ * Collection
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class TestHandlerApiController extends HandlerApiAbstract
+class Entry extends SchemaAbstract
 {
-	protected function getValidator()
+	public function getDefinition()
 	{
-		return new RecordValidator($this->validate, array(
-			new Property('id', Validate::TYPE_INTEGER),
-			new Property('userId', Validate::TYPE_INTEGER),
-			new Property('title', Validate::TYPE_STRING, array(new Filter\Length(3, 16))),
-			new Property('date', Validate::TYPE_STRING, array(new Filter\DateTime())),
-		));
-	}
+		$sb = $this->getSchemaBuilder('entry');
+		$sb->integer('id');
+		$sb->integer('userId');
+		$sb->string('title')
+			->setMinLength(3)
+			->setMaxLength(16)
+			->setPattern('[A-z]+');
+		$sb->dateTime('date');
 
-	protected function getHandler()
-	{
-		return getContainer()->get('table_manager')->getTable('PSX\Handler\Table\TestTable');
+		return $sb->getProperty();
 	}
 }

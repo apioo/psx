@@ -24,6 +24,7 @@
 namespace PSX\Handler\Database;
 
 use PSX\Handler\HandlerTestCase;
+use PSX\Handler\MappingAbstract;
 use PSX\Sql\DbTestCase;
 use PSX\Sql\TableManager;
 
@@ -45,9 +46,18 @@ class CallbackHandlerTest extends DbTestCase
 
 	protected function getHandler()
 	{
-		return new CallbackHandler(new TableManager($this->sql), function($manager){
-			return $manager->getTable('PSX\Handler\Database\TestTable')
-				->select(array('id', 'userId', 'title', 'date'));
+		return new CallbackHandler($this->connection, function(){
+			return new Mapping($this->getQuery(), array(
+				'id'     => MappingAbstract::TYPE_INTEGER | 10 | MappingAbstract::ID_PROPERTY,
+				'userId' => MappingAbstract::TYPE_INTEGER | 10,
+				'title'  => MappingAbstract::TYPE_STRING | 32,
+				'date'   => MappingAbstract::TYPE_DATETIME,
+			));
 		});
+	}
+
+	protected function getQuery()
+	{
+		return 'SELECT {fields} FROM `psx_handler_comment` {condition} {orderBy} {limit}';
 	}
 }
