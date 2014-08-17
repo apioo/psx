@@ -129,11 +129,9 @@ class Uri
 	}
 
 	/**
-	 * Parses the given uri into the specificed "Syntax Components". Returns an
-	 * associatve array containing the defined parts. Throws an exception if its
-	 * an invalid uri
+	 * Parses the given uri into the specificed "Syntax Components"
 	 *
-	 * @return array
+	 * @param string $uri
 	 */
 	protected function parse($uri)
 	{
@@ -148,12 +146,7 @@ class Uri
 		$this->setAuthority(isset($matches[4][0]) ? $matches[4][0] : null);
 		$this->setQuery(isset($matches[7][0]) ? $matches[7][0] : null);
 		$this->setFragment(isset($matches[9][0]) ? $matches[9][0] : null);
-
-		$path = isset($matches[5][0]) ? $matches[5][0] : null;
-		if(!empty($path))
-		{
-			$this->setPath(self::removeDotSegments($path));
-		}
+		$this->setPath(isset($matches[5][0]) ? $matches[5][0] : null);
 	}
 
 	/**
@@ -167,6 +160,10 @@ class Uri
 		return 'tag:' . $authorityName . ',' . $date->format($format) . ':' . $specific . ($fragment !== null ? '#' . $fragment : '');
 	}
 
+	/**
+	 * @param string $relativePath
+	 * @return string
+	 */
 	public static function removeDotSegments($relativePath)
 	{
 		if(strpos($relativePath, '/') === false)
@@ -210,6 +207,7 @@ class Uri
 	 * Percent encodes an value
 	 *
 	 * @param string $value
+	 * @param boolean $preventDoubleEncode
 	 * @return string
 	 */
 	public static function percentEncode($value, $preventDoubleEncode = true)
