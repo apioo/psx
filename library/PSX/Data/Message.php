@@ -38,10 +38,10 @@ class Message extends RecordAbstract
 	protected $message;
 	protected $success;
 
-	public function __construct($message = null, $success = null)
+	public function __construct($message, $success)
 	{
-		$this->setMessage($message);
-		$this->setSuccess($success);
+		$this->message = $message;
+		$this->success = (bool) $success;
 	}
 
 	public function getRecordInfo()
