@@ -76,7 +76,7 @@ abstract class MongodbHandlerAbstract extends DataHandlerQueryAbstract implement
 		$cursor->skip($startIndex);
 		$cursor->limit($count);
 
-		$name          = $this->mapping->getCollection()->getName();
+		$recordName    = $this->mapping->getCollection()->getName();
 		$mappingFields = $this->mapping->getFields();
 		$return        = array();
 
@@ -93,7 +93,7 @@ abstract class MongodbHandlerAbstract extends DataHandlerQueryAbstract implement
 				}
 			}
 
-			$return[] = new Record($name, $row);
+			$return[] = new Record($recordName, $row);
 		}
 
 		return $return;
