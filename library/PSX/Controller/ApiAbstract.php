@@ -23,11 +23,9 @@
 
 namespace PSX\Controller;
 
-use PSX\DateTime;
 use PSX\Data\WriterInterface;
 use PSX\ControllerAbstract;
-use PSX\Sql;
-use PSX\Sql\Condition;
+use PSX\Util\Api\FilterParameter;
 
 /**
  * ApiAbstract
@@ -38,148 +36,29 @@ use PSX\Sql\Condition;
  */
 abstract class ApiAbstract extends ControllerAbstract
 {
-	private $_requestParams;
+	private $_filterParameter;
 
 	/**
-	 * Returns an condition object depending on the filter params
+	 * Returns an parameter bag which contains common filter GET parameters
 	 *
-	 * @param string $dateColumn
-	 * @return PSX\Sql\Condition
+	 * @return PSX\Util\Api\FilterParameter
 	 */
-	protected function getRequestCondition($dateColumn = 'date')
+	protected function getFilterParameter()
 	{
-		$con          = new Condition();
-		$params       = $this->getRequestParams();
-		$filterBy     = $params['filterBy'];
-		$filterOp     = $params['filterOp'];
-		$filterValue  = $params['filterValue'];
-		$updatedSince = $params['updatedSince'];
-
-		if(!empty($filterBy) && !empty($filterOp) && !empty($filterValue))
+		if($this->_filterParameter === null)
 		{
-			switch($filterOp)
-			{
-				case 'contains':
-					$con->add($filterBy, 'LIKE', '%' . $filterValue . '%');
-					break;
-
-				case 'equals':
-					$con->add($filterBy, '=', $filterValue);
-					break;
-
-				case 'startsWith':
-					$con->add($filterBy, 'LIKE', $filterValue . '%');
-					break;
-
-				case 'present':
-					$con->add($filterBy, 'IS NOT', 'NULL', 'AND');
-					$con->add($filterBy, 'NOT LIKE', '');
-					break;
-			}
+			$this->_filterParameter = FilterParameter::extract($this->getParameters());
 		}
 
-		if($updatedSince instanceof \DateTime)
-		{
-			$con->add($dateColumn, '>', $updatedSince->format(DateTime::SQL));
-		}
-
-		return $con;
-	}
-
-	/**
-	 * Returns an associative array containing all available request parameters
-	 *
-	 * @return array
-	 */
-	protected function getRequestParams()
-	{
-		if($this->_requestParams === null)
-		{
-			$fields       = $this->request->getUrl()->getParam('fields');
-			$updatedSince = $this->request->getUrl()->getParam('updatedSince');
-			$count        = $this->request->getUrl()->getParam('count');
-			$filterBy     = $this->request->getUrl()->getParam('filterBy');
-			$filterOp     = $this->request->getUrl()->getParam('filterOp');
-			$filterValue  = $this->request->getUrl()->getParam('filterValue');
-			$sortBy       = $this->request->getUrl()->getParam('sortBy');
-			$sortOrder    = $this->request->getUrl()->getParam('sortOrder');
-			$startIndex   = $this->request->getUrl()->getParam('startIndex');
-
-			if(!empty($fields))
-			{
-				$parts  = explode(',', $fields);
-				$fields = array();
-
-				foreach($parts as $field)
-				{
-					$field = trim($field);
-
-					if(strlen($field) > 1 && strlen($field) < 32 && ctype_alnum($field))
-					{
-						$fields[] = $field;
-					}
-				}
-			}
-			else
-			{
-				$fields = array();
-			}
-
-			$updatedSince = !empty($updatedSince) ? new \DateTime($updatedSince) : null;
-			$count        = !empty($count) ? intval($count) : null;
-			$filterBy     = !empty($filterBy) && ctype_alnum($filterBy) && strlen($filterBy) < 32 ? $filterBy : null;
-			$filterOp     = !empty($filterOp) && in_array($filterOp, array('contains', 'equals', 'startsWith', 'present')) ? $filterOp : null;
-			$filterValue  = !empty($filterValue) && strlen($filterValue) < 128 ? $filterValue : null;
-			$sortBy       = !empty($sortBy) && strlen($sortBy) < 128 ? $sortBy : null;
-			$startIndex   = !empty($startIndex) ? intval($startIndex) : null;
-
-			if(!empty($sortOrder))
-			{
-				switch(strtolower($sortOrder))
-				{
-					case 'asc':
-					case 'ascending':
-						$sortOrder = Sql::SORT_ASC;
-						break;
-
-					case 'desc':
-					case 'descending':
-						$sortOrder = Sql::SORT_DESC;
-						break;
-
-					default:
-						$sortOrder = null;
-						break;
-				}
-			}
-			else
-			{
-				$sortOrder = null;
-			}
-
-			$this->_requestParams = array(
-				'fields'       => $fields,
-				'updatedSince' => $updatedSince,
-				'count'        => $count,
-				'filterBy'     => $filterBy,
-				'filterOp'     => $filterOp,
-				'filterValue'  => $filterValue,
-				'sortBy'       => $sortBy,
-				'sortOrder'    => $sortOrder,
-				'startIndex'   => $startIndex,
-			);
-		}
-
-		return $this->_requestParams;
+		return $this->_filterParameter;
 	}
 
 	protected function getSupportedWriter()
 	{
 		return array(
-			WriterInterface::JSON,
 			WriterInterface::ATOM,
+			WriterInterface::JSON,
 			WriterInterface::JSONP,
-			WriterInterface::RSS,
 			WriterInterface::XML,
 		);
 	}
