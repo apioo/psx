@@ -51,15 +51,11 @@ class ImmutableRecord extends RecordAbstract
 	public function __call($method, array $args)
 	{
 		$type = substr($method, 0, 3);
+		$key  = lcfirst(substr($method, 3));
 
 		if($type == 'get')
 		{
-			$key = lcfirst(substr($method, 3));
-
-			if(isset($this->fields[$key]))
-			{
-				return $this->fields[$key];
-			}
+			return isset($this->fields[$key]) ? $this->fields[$key] : null;
 		}
 		else
 		{
