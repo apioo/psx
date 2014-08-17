@@ -25,6 +25,7 @@ namespace PSX\Validate;
 
 use InvalidArgumentException;
 use PSX\Data\RecordInterface;
+use PSX\DisplayException;
 
 /**
  * RecordValidator
@@ -46,7 +47,7 @@ class RecordValidator extends ValidatorAbstract
 
 		if(empty($data))
 		{
-			throw new InvalidArgumentException('No valid data defined');
+			throw new DisplayException('No valid data defined');
 		}
 
 		foreach($data as $key => $value)
