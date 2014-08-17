@@ -23,6 +23,7 @@
 
 namespace PSX;
 
+use PSX\Exception;
 use PSX\Template\ErrorException;
 
 /**
@@ -80,15 +81,19 @@ class Template implements TemplateInterface
 
 	public function transform()
 	{
-		// populate the data vars in the scope of the template
-		extract($this->data, EXTR_SKIP);
+		$file = $this->getFile();
+
+		if(!is_file($file))
+		{
+			throw new Exception('Template "' . $file . '" not found');
+		}
 
 		// parse template
 		try
 		{
 			ob_start();
 
-			require_once($this->getFile());
+			includeTemplateScope($this->data, $file);
 
 			$html = ob_get_clean();
 		}
@@ -100,3 +105,16 @@ class Template implements TemplateInterface
 		return $html;
 	}
 }
+
+/**
+ * Includes the file without exposing the properties of the template object
+ */
+function includeTemplateScope(array $data, $file)
+{
+	// populate the data vars in the scope of the template
+	extract($data, EXTR_SKIP);
+
+	// include file
+	require_once($file);
+}
+
