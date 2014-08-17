@@ -21,73 +21,48 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Data\Schema\Property;
+namespace PSX\Data\Schema;
 
-use PSX\Data\Schema\PropertyAbstract;
-use PSX\Data\Schema\PropertyInterface;
-use PSX\Data\Schema\ValidationException;
+use PSX\Data\SchemaInterface;
 
 /**
- * ComplexType
+ * ApiDocumentation
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class ComplexType extends PropertyAbstract
+class ApiDocumentation
 {
-	protected $properties = array();
+	const METHOD_GET    = 0x0;
+	const METHOD_POST   = 0x1;
+	const METHOD_PUT    = 0x2;
+	const METHOD_DELETE = 0x3;
 
-	public function add(PropertyInterface $property)
+	protected $container = array();
+
+	public function setGet(SchemaInterface $responseSchema)
 	{
-		$this->properties[] = $property;
-
-		return $this;
+		$this->container[self::METHOD_GET] = [$responseSchema];
 	}
 
-	public function getChildren()
+	public function setPost(SchemaInterface $requestSchema, SchemaInterface $responseSchema = null)
 	{
-		return $this->properties;
+		$this->container[self::METHOD_POST] = [$requestSchema, $responseSchema];
 	}
 
-	public function getChild($name)
+	public function setPut(SchemaInterface $requestSchema, SchemaInterface $responseSchema = null)
 	{
-		foreach($this->properties as $property)
-		{
-			if($property->getName() == $name)
-			{
-				return $property;
-			}
-		}
-
-		return null;
+		$this->container[self::METHOD_PUT] = [$requestSchema, $responseSchema];
 	}
 
-	public function removeChild($name)
+	public function setDelete(SchemaInterface $requestSchema, SchemaInterface $responseSchema = null)
 	{
-		foreach($this->properties as $key => $property)
-		{
-			if($property->getName() == $name)
-			{
-				unset($this->properties[$key]);
-			}
-		}
+		$this->container[self::METHOD_DELETE] = [$requestSchema, $responseSchema];
 	}
 
-	public function validate($data)
+	public function get($method)
 	{
-		parent::validate($data);
-
-		if($data === null)
-		{
-			return true;
-		}
-
-		if(!is_array($data))
-		{
-			throw new ValidationException($this->getName() . ' must be an array');
-		}
-
-		return true;
+		return isset($this->container[$method]) ? $this->container[$method] : null;
 	}
 }
