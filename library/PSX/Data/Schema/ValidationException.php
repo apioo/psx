@@ -23,7 +23,7 @@
 
 namespace PSX\Data\Schema;
 
-use PSX\Exception;
+use PSX\DisplayException;
 
 /**
  * ValidationException
@@ -32,6 +32,6 @@ use PSX\Exception;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class ValidationException extends Exception
+class ValidationException extends DisplayException
 {
 }
