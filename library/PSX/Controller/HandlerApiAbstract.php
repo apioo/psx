@@ -36,6 +36,7 @@ use PSX\Exception;
 use PSX\Handler\HandlerManipulationInterface;
 use PSX\Handler\HandlerQueryInterface;
 use PSX\Util\Uuid;
+use PSX\Util\Api\FilterParameter;
 use PSX\Sql\Condition;
 use PSX\Validate\ValidatorInterface;
 
@@ -52,18 +53,22 @@ abstract class HandlerApiAbstract extends ApiAbstract
 
 	public function onGet()
 	{
-		if(!$this->getHandler() instanceof HandlerQueryInterface)
+		$this->_handler = $this->getHandler();
+
+		if(!$this->_handler instanceof HandlerQueryInterface)
 		{
 			throw new Exception('Method not allowed', 405);
 		}
 
-		$params = $this->getRequestParams();
-		$result = $this->getCollection($params['fields'], 
-				$params['startIndex'], 
-				$params['count'], 
-				$params['sortBy'], 
-				$params['sortOrder'], 
-				$this->getRequestCondition());
+		$parameter = $this->getFilterParameter();
+		$condition = FilterParameter::getCondition($parameter);
+
+		$result = $this->doGet($parameter->getFields(), 
+				$parameter->getStartIndex(), 
+				$parameter->getCount(), 
+				$parameter->getSortBy(), 
+				$parameter->getSortOrder(), 
+				$condition);
 
 		if($this->isWriter(WriterInterface::ATOM))
 		{
@@ -77,13 +82,14 @@ abstract class HandlerApiAbstract extends ApiAbstract
 
 	public function onPost()
 	{
-		if(!$this->getHandler() instanceof HandlerManipulationInterface)
+		$this->_handler = $this->getHandler();
+
+		if(!$this->_handler instanceof HandlerManipulationInterface)
 		{
 			throw new Exception('Method not allowed', 405);
 		}
 
-
-		$record = $this->import($this->getHandler()->getRecord());
+		$record = $this->import($this->_handler->getRecord());
 
 		$this->beforeValidate($record);
 
@@ -105,20 +111,21 @@ abstract class HandlerApiAbstract extends ApiAbstract
 		$this->afterCreate($record);
 
 		// message
-		$msg = new Message('You have successful create a ' . $record->getRecordInfo()->getName(), true);
+		$message = new Message('You have successful create a ' . $record->getRecordInfo()->getName(), true);
 
-		$this->setBody($msg);
+		$this->setBody($message);
 	}
 
 	public function onPut()
 	{
-		if(!$this->getHandler() instanceof HandlerManipulationInterface)
+		$this->_handler = $this->getHandler();
+
+		if(!$this->_handler instanceof HandlerManipulationInterface)
 		{
 			throw new Exception('Method not allowed', 405);
 		}
 
-		$record = $this->getHandler()->getRecord();
-		$record = $this->import($record);
+		$record = $this->import($this->_handler->getRecord());
 
 		$this->beforeValidate($record);
 
@@ -140,20 +147,21 @@ abstract class HandlerApiAbstract extends ApiAbstract
 		$this->afterUpdate($record);
 
 		// message
-		$msg = new Message('You have successful update a ' . $record->getRecordInfo()->getName(), true);
+		$message = new Message('You have successful update a ' . $record->getRecordInfo()->getName(), true);
 
-		$this->setBody($msg);
+		$this->setBody($message);
 	}
 
 	public function onDelete()
 	{
-		if(!$this->getHandler() instanceof HandlerManipulationInterface)
+		$this->_handler = $this->getHandler();
+		
+		if(!$this->_handler instanceof HandlerManipulationInterface)
 		{
 			throw new Exception('Method not allowed', 405);
 		}
 
-		$record = $this->getHandler()->getRecord();
-		$record = $this->import($record);
+		$record = $this->import($this->_handler->getRecord());
 
 		$this->beforeValidate($record);
 
@@ -175,24 +183,14 @@ abstract class HandlerApiAbstract extends ApiAbstract
 		$this->afterDelete($record);
 
 		// message
-		$msg = new Message('You have successful delete a ' . $record->getRecordInfo()->getName(), true);
+		$message = new Message('You have successful delete a ' . $record->getRecordInfo()->getName(), true);
 
-		$this->setBody($msg);
+		$this->setBody($message);
 	}
 
-	protected function getHandler()
+	protected function doGet(array $fields = null, $startIndex = null, $count = null, $sortBy = null, $sortOrder = null, Condition $condition = null)
 	{
-		if($this->_handler === null)
-		{
-			$this->_handler = $this->getDefaultHandler();
-		}
-
-		return $this->_handler;
-	}
-
-	protected function getCollection(array $fields, $startIndex, $count, $sortBy, $sortOrder, Condition $condition)
-	{
-		return $this->getHandler()->getCollection($fields, 
+		return $this->_handler->getCollection($fields, 
 					$startIndex, 
 					$count, 
 					$sortBy, 
@@ -202,17 +200,17 @@ abstract class HandlerApiAbstract extends ApiAbstract
 
 	protected function doCreate(RecordInterface $record)
 	{
-		$this->getHandler()->create($record);
+		$this->_handler->create($record);
 	}
 
 	protected function doUpdate(RecordInterface $record)
 	{
-		$this->getHandler()->update($record);
+		$this->_handler->update($record);
 	}
 
 	protected function doDelete(RecordInterface $record)
 	{
-		$this->getHandler()->delete($record);
+		$this->_handler->delete($record);
 	}
 
 	/**
@@ -298,12 +296,12 @@ abstract class HandlerApiAbstract extends ApiAbstract
 	 */
 	protected function getAtomRecord(RecordInterface $result)
 	{
-		$msg = new Entry();
-		$msg->setId(Uuid::nameBased($this->config['psx_url']));
-		$msg->setTitle('ATOM format is not implemented');
-		$msg->setUpdated(new DateTime());
+		$message = new Entry();
+		$message->setId(Uuid::nameBased($this->config['psx_url']));
+		$message->setTitle('ATOM format is not implemented');
+		$message->setUpdated(new DateTime());
 
-		return $msg;
+		return $message;
 	}
 
 	/**
@@ -321,5 +319,5 @@ abstract class HandlerApiAbstract extends ApiAbstract
 	 *
 	 * @return PSX\Handler\HandlerInterface
 	 */
-	abstract protected function getDefaultHandler();
+	abstract protected function getHandler();
 }
