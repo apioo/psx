@@ -87,9 +87,9 @@ abstract class MongodbHandlerAbstract extends DataHandlerQueryAbstract implement
 
 			foreach($mappingFields as $name => $type)
 			{
-				if(isset($data[$key]))
+				if(isset($data[$name]))
 				{
-					$row[$key] = $this->unserializeType($data[$key], $type);
+					$row[$name] = $this->unserializeType($data[$name], $type);
 				}
 			}
 
