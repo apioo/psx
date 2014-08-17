@@ -29,6 +29,7 @@ use PSX\Data\ReaderFactory;
 use PSX\Data\Record\FactoryFactory;
 use PSX\Data\Record\Importer;
 use PSX\Data\Record\ImporterManager;
+use PSX\Data\Schema\Assimilator;
 use PSX\Data\Schema\SchemaManager;
 use PSX\Data\Schema\Validator;
 use PSX\Data\Transformer;
@@ -115,6 +116,14 @@ trait Data
 	public function getSchemaValidator()
 	{
 		return new Validator();
+	}
+
+	/**
+	 * @return PSX\Data\Schema\Assimilator
+	 */
+	public function getSchemaAssimilator()
+	{
+		return new Assimilator();
 	}
 
 	/**
