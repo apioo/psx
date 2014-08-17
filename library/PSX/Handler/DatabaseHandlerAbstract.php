@@ -24,6 +24,7 @@
 namespace PSX\Handler;
 
 use DateTime;
+use Doctrine\DBAL\Connection;
 use BadMethodCallException;
 use InvalidArgumentException;
 use PSX\Data\ResultSet;
@@ -36,201 +37,163 @@ use PSX\Sql\TableManagerInterface;
 use RuntimeException;
 
 /**
- * Database handler which implements all necessary methods using an
- * TableInterface. The TableInterface only simplyfies creating sql queries you
- * could also write an handler wich uses another DBAL or simply pure sql. Each
- * handler must specify the sql table and an select wich represents the view
+ * Database handler which operates on an DBAL connection. Is intended to build
+ * complex queries which can not be handeled by the table or select handler
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-abstract class DatabaseHandlerAbstract extends HandlerAbstract
+abstract class DatabaseHandlerAbstract extends DataHandlerQueryAbstract
 {
-	protected $manager;
-	protected $table;
+	protected $connection;
+	protected $mapping;
 
-	protected $_select;
-
-	public function __construct(TableManagerInterface $manager)
+	public function __construct(Connection $connection)
 	{
-		$this->manager = $manager;
-		$this->table   = $this->getSelect()->getTable();
+		$this->connection = $connection;
+		$this->mapping    = $this->getMapping();
 	}
 
-	public function getAll(array $fields = array(), $startIndex = 0, $count = 16, $sortBy = null, $sortOrder = null, Condition $con = null)
+	public function getAll(array $fields = null, $startIndex = null, $count = null, $sortBy = null, $sortOrder = null, Condition $condition = null)
 	{
 		$startIndex = $startIndex !== null ? (int) $startIndex : 0;
 		$count      = !empty($count)       ? (int) $count      : 16;
-		$sortBy     = $sortBy     !== null ? $sortBy           : $this->table->getPrimaryKey();
+		$sortBy     = $sortBy     !== null ? $sortBy           : $this->mapping->getIdProperty();
 		$sortOrder  = $sortOrder  !== null ? (int) $sortOrder  : Sql::SORT_DESC;
 
-		$select = $this->getSelect();
-		$fields = array_intersect($fields, $this->getSupportedFields());
+		$fields = $this->getValidFields($fields);
 
-		if(empty($fields))
+		if(!in_array($sortBy, $this->getSupportedFields()))
 		{
-			$fields = $this->getSupportedFields();
+			$sortBy = $this->mapping->getIdProperty();
 		}
 
-		$select->setColumns($fields)
-			->orderBy($sortBy, $sortOrder)
-			->limit($startIndex, $count);
+		$sql    = $this->getSelectQuery($fields, $startIndex, $count, $sortBy, $sortOrder, $condition);
+		$params = $condition !== null ? $condition->getValues() : array();
 
-		if($con !== null && $con->hasCondition())
-		{
-			$values = $con->toArray();
-
-			foreach($values as $row)
-			{
-				$select->where($row[Condition::COLUMN], 
-					$row[Condition::OPERATOR], 
-					$row[Condition::VALUE], 
-					$row[Condition::CONJUNCTION], 
-					$row[Condition::TYPE]);
-			}
-		}
-
-		$result = $select->getAll();
-		$return = array();
-
-		foreach($result as $row)
-		{
-			$return[] = new Record($this->table->getDisplayName(), $this->convertColumnTypes($row));
-		}
-
-		return $return;
+		return $this->project($sql, $params);
 	}
 
-	public function get($id, array $fields = array())
+	public function get($id)
 	{
-		$con = new Condition(array($this->table->getPrimaryKey(), '=', $id));
+		$condition = new Condition(array($this->mapping->getIdProperty(), '=', $id));
 
-		return $this->getOneBy($con, $fields);
+		return $this->getOneBy($condition);
 	}
 
 	public function getSupportedFields()
 	{
-		return array_diff($this->getSelect()->getSupportedFields(), $this->getRestrictedFields());
+		return array_diff(array_keys($this->mapping->getFields()), $this->getRestrictedFields());
 	}
 
-	public function getCount(Condition $con = null)
+	public function getCount(Condition $condition = null)
 	{
-		$select = $this->getSelect();
+		$sql    = $this->getCountQuery($condition);
+		$params = $condition !== null ? $condition->getValues() : array();
 
-		if($con !== null && $con->hasCondition())
+		return (int) $this->connection->fetchColumn($sql, $params);
+	}
+
+	protected function getSelectQuery(array $fields, $startIndex, $count, $sortBy, $sortOrder, Condition $condition = null)
+	{
+		if(empty($fields))
 		{
-			$values = $con->toArray();
+			throw new InvalidArgumentException('Field must not be empty');
+		}
 
-			foreach($values as $row)
+		array_walk($fields, function(&$value){
+			$value = '`' . $value . '`';
+		});
+
+		$sql = $this->mapping->getSql();
+		$sql = str_replace('{fields}', implode(', ', $fields), $sql);
+
+		if($condition !== null)
+		{
+			$sql    = str_replace('{condition}', $condition->getStatment(), $sql);
+			$params = $condition->getValues();
+		}
+		else
+		{
+			$sql    = str_replace('{condition}', 'WHERE 1', $sql);
+			$params = array();
+		}
+
+		if($sortBy !== null)
+		{
+			$sql = str_replace('{orderBy}', 'ORDER BY `' . $sortBy . '` ' . ($sortOrder == Sql::SORT_ASC ? 'ASC' : 'DESC'), $sql);
+		}
+		else
+		{
+			$sql = str_replace('{orderBy}', '', $sql);
+		}
+
+		if($startIndex !== null)
+		{
+			$sql = str_replace('{limit}', 'LIMIT ' . intval($startIndex) . ', ' . intval($count), $sql);
+		}
+		else
+		{
+			$sql = str_replace('{limit}', '', $sql);
+		}
+
+		return $sql;
+	}
+
+	protected function getCountQuery(Condition $condition = null)
+	{
+		$sql = $this->mapping->getSql();
+		$sql = str_replace('{fields}', 'COUNT(*)', $sql);
+		$sql = str_replace('{orderBy}', '', $sql);
+		$sql = str_replace('{limit}', '', $sql);
+
+		if($condition !== null)
+		{
+			$sql    = str_replace('{condition}', $condition->getStatment(), $sql);
+			$params = $condition->getValues();
+		}
+		else
+		{
+			$sql    = str_replace('{condition}', 'WHERE 1', $sql);
+			$params = array();
+		}
+
+		return $sql;
+	}
+
+	protected function getRecordName()
+	{
+		return 'record';
+	}
+
+	protected function project($sql, array $params)
+	{
+		$name          = $this->getRecordName();
+		$mappingFields = $this->mapping->getFields();
+
+		return $this->connection->project($sql, $params, function(array $row) use ($name, $mappingFields){
+
+			$data = array();
+			foreach($mappingFields as $name => $type)
 			{
-				$select->where($row[Condition::COLUMN], 
-					$row[Condition::OPERATOR], 
-					$row[Condition::VALUE], 
-					$row[Condition::CONJUNCTION], 
-					$row[Condition::TYPE]);
+				if(isset($row[$name]))
+				{
+					$data[$name] = $this->unserializeType($row[$name], $type);
+				}
 			}
-		}
 
-		return $select->getTotalResults();
-	}
+			return new Record($name, $data);
 
-	public function create(RecordInterface $record)
-	{
-		$this->table->insert($record);
-
-		// set id to record
-		$method = 'set' . ucfirst($this->table->getPrimaryKey());
-
-		if(method_exists($record, $method))
-		{
-			$record->$method($this->table->getSql()->getLastInsertId());
-		}
-	}
-
-	public function update(RecordInterface $record)
-	{
-		$this->table->update($record);
-	}
-
-	public function delete(RecordInterface $record)
-	{
-		$this->table->delete($record);
+		});
 	}
 
 	/**
-	 * Returns the default select interface. The handler should select the 
-	 * needed fields and join the fitting tables
+	 * Returns the mapping informations about this query. The mapping contains
+	 * the select query. The query can contain the following fields which get 
+	 * replaced {fields}, {condition}, {orderBy}, {limit}
 	 *
-	 * @return PSX\Sql\Table\SelectInterface
+	 * @return string
 	 */
-	abstract protected function getDefaultSelect();
-
-	protected function getSelect()
-	{
-		if($this->_select === null)
-		{
-			$this->_select = $this->getDefaultSelect();
-		}
-
-		$select = clone $this->_select;
-
-		return $select;
-	}
-
-	protected function convertColumnTypes(array $row)
-	{
-		$columns = $this->table->getColumns();
-		$result  = array();
-
-		foreach($row as $key => $value)
-		{
-			if(isset($columns[$key]))
-			{
-				$type = (($columns[$key] >> 20) & 0xFF) << 20;
-
-				switch($type)
-				{
-					case TableInterface::TYPE_TINYINT:
-					case TableInterface::TYPE_SMALLINT:
-					case TableInterface::TYPE_MEDIUMINT:
-					case TableInterface::TYPE_INT:
-					case TableInterface::TYPE_BIGINT:
-					case TableInterface::TYPE_BIT:
-					case TableInterface::TYPE_SERIAL:
-						$result[$key] = (int) $value;
-						break;
-
-					case TableInterface::TYPE_DECIMAL:
-					case TableInterface::TYPE_FLOAT:
-					case TableInterface::TYPE_DOUBLE:
-					case TableInterface::TYPE_REAL:
-						$result[$key] = (float) $value;
-						break;
-
-					case TableInterface::TYPE_BOOLEAN:
-						$result[$key] = (bool) $value;
-						break;
-
-					case TableInterface::TYPE_DATE:
-					case TableInterface::TYPE_DATETIME:
-						$result[$key] = new DateTime($value);
-						break;
-
-					default:
-						$result[$key] = $value;
-						break;
-				}
-			}
-			else
-			{
-				// @TODO how to handle columns from an join which are not listed 
-				// in the table ... probably we can look at the table
-				// connections to determine the field type but this is expensive
-				$result[$key] = $value;
-			}
-		}
-
-		return $result;
-	}
+	abstract public function getMapping();
 }

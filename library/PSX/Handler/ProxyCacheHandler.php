@@ -37,13 +37,11 @@ use PSX\Sql\Condition;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class ProxyCacheHandler extends HandlerAbstract
+class ProxyCacheHandler extends HandlerQueryAbstract
 {
 	protected $handler;
 	protected $cache;
 	protected $expire;
-
-	private $_hasChanged = false;
 
 	public function __construct(HandlerQueryInterface $handler, /*CacheItemPoolInterface*/ $cache, $expire = null)
 	{
@@ -57,18 +55,18 @@ class ProxyCacheHandler extends HandlerAbstract
 		$this->expire = $expire;
 	}
 
-	public function getAll(array $fields = array(), $startIndex = 0, $count = 16, $sortBy = null, $sortOrder = null, Condition $con = null)
+	public function getAll(array $fields = null, $startIndex = null, $count = null, $sortBy = null, $sortOrder = null, Condition $condition = null)
 	{
-		$key  = '__PC__' . md5(json_encode(array(__METHOD__, $fields, $startIndex, $count, $sortBy, $sortOrder, (string) $con, $this->handler->getRestrictedFields())));
+		$key  = '__PC__' . md5(json_encode(array(__METHOD__, $fields, $startIndex, $count, $sortBy, $sortOrder, (string) $condition, $this->handler->getRestrictedFields())));
 		$item = $this->cache->getItem($key);
 
-		if(!$this->_hasChanged && $item->isHit())
+		if($item->isHit())
 		{
 			return $item->get();
 		}
 		else
 		{
-			$return = $this->handler->getAll($fields, $startIndex, $count, $sortBy, $sortOrder, $con);
+			$return = $this->handler->getAll($fields, $startIndex, $count, $sortBy, $sortOrder, $condition);
 
 			$item->set($return, $this->expire);
 
@@ -78,9 +76,9 @@ class ProxyCacheHandler extends HandlerAbstract
 		}
 	}
 
-	public function get($id, array $fields = array())
+	public function get($id)
 	{
-		return $this->handler->get($id, $fields);
+		return $this->handler->get($id);
 	}
 
 	public function getSupportedFields()
@@ -104,9 +102,9 @@ class ProxyCacheHandler extends HandlerAbstract
 		}
 	}
 
-	public function getCount(Condition $con = null)
+	public function getCount(Condition $condition = null)
 	{
-		$key  = '__PC__' . md5(json_encode(array(__METHOD__, (string) $con)));
+		$key  = '__PC__' . md5(json_encode(array(__METHOD__, (string) $condition)));
 		$item = $this->cache->getItem($key);
 
 		if($item->isHit())
@@ -115,7 +113,7 @@ class ProxyCacheHandler extends HandlerAbstract
 		}
 		else
 		{
-			$return = $this->handler->getCount($con);
+			$return = $this->handler->getCount($condition);
 
 			$item->set($return, $this->expire);
 
@@ -125,51 +123,9 @@ class ProxyCacheHandler extends HandlerAbstract
 		}
 	}
 
-	public function getRecord($id = null)
+	public function getRecord()
 	{
-		return $this->handler->getRecord($id);
-	}
-
-	public function create(RecordInterface $record)
-	{
-		if($this->handler instanceof HandlerManipulationInterface)
-		{
-			$this->handler->create($record);
-
-			$this->_hasChanged = true;
-		}
-		else
-		{
-			throw new InvalidArgumentException('Handler is not an manipulation instance');
-		}
-	}
-
-	public function update(RecordInterface $record)
-	{
-		if($this->handler instanceof HandlerManipulationInterface)
-		{
-			$this->handler->update($record);
-
-			$this->_hasChanged = true;
-		}
-		else
-		{
-			throw new InvalidArgumentException('Handler is not an manipulation instance');
-		}
-	}
-
-	public function delete(RecordInterface $record)
-	{
-		if($this->handler instanceof HandlerManipulationInterface)
-		{
-			$this->handler->delete($record);
-
-			$this->_hasChanged = true;
-		}
-		else
-		{
-			throw new InvalidArgumentException('Handler is not an manipulation instance');
-		}
+		return $this->handler->getRecord();
 	}
 
 	public function getRestrictedFields()

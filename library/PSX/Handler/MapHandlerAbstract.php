@@ -43,48 +43,40 @@ abstract class MapHandlerAbstract extends DataHandlerQueryAbstract
 		$this->mapping = $this->getMapping();
 	}
 
-	public function getAll(array $fields = array(), $startIndex = 0, $count = 16, $sortBy = null, $sortOrder = null, Condition $con = null)
+	public function getAll(array $fields = null, $startIndex = null, $count = null, $sortBy = null, $sortOrder = null, Condition $condition = null)
 	{
 		$startIndex = $startIndex !== null ? (int) $startIndex : 0;
 		$count      = !empty($count)       ? (int) $count      : 16;
 		$sortBy     = $sortBy     !== null ? $sortBy           : $this->mapping->getIdProperty();
 		$sortOrder  = $sortOrder  !== null ? (int) $sortOrder  : Sql::SORT_DESC;
 
-		$fields = array_intersect($fields, $this->getSupportedFields());
-
-		if(empty($fields))
-		{
-			$fields = $this->getSupportedFields();
-		}
-
-		$array   = $this->mapping->getArray();
-		$sort    = array();
-		$return  = array();
+		$fields        = $this->getValidFields($fields);
+		$array         = $this->mapping->getArray();
+		$mappingFields = $this->mapping->getFields();
+		$sort          = array();
+		$return        = array();
 
 		foreach($array as $entry)
 		{
 			$row       = array();
 			$sortValue = null;
 
-			foreach($entry as $key => $value)
+			foreach($mappingFields as $name => $type)
 			{
-				foreach($this->mapping->getFields() as $field => $type)
+				if(isset($entry[$name]))
 				{
-					if($key == $field)
-					{
-						$row[$field] = $this->unserializeType($value, $type);
+					$row[$name] = $this->unserializeType($entry[$name], $type);
 
-						if($sortBy == $field)
-						{
-							$sortValue = $row[$field];
-						}
+					if($sortBy == $name)
+					{
+						$sortValue = $row[$name];
 					}
 				}
 			}
 
-			if($con !== null && $con->hasCondition())
+			if($condition !== null && $condition->hasCondition())
 			{
-				if(!$this->isConditionFulfilled($con, $row))
+				if(!$this->isConditionFulfilled($condition, $row))
 				{
 					continue;
 				}
@@ -115,11 +107,11 @@ abstract class MapHandlerAbstract extends DataHandlerQueryAbstract
 		return array_slice($result, $startIndex, $count);
 	}
 
-	public function get($id, array $fields = array())
+	public function get($id)
 	{
-		$con = new Condition(array($this->mapping->getIdProperty(), '=', $id));
+		$condition = new Condition(array($this->mapping->getIdProperty(), '=', $id));
 
-		return $this->getOneBy($con, $fields);
+		return $this->getOneBy($condition);
 	}
 
 	public function getSupportedFields()
@@ -127,29 +119,27 @@ abstract class MapHandlerAbstract extends DataHandlerQueryAbstract
 		return array_diff(array_keys($this->mapping->getFields()), $this->getRestrictedFields());
 	}
 
-	public function getCount(Condition $con = null)
+	public function getCount(Condition $condition = null)
 	{
-		$count = 0;
-		$array = $this->mapping->getArray();
+		$count         = 0;
+		$array         = $this->mapping->getArray();
+		$mappingFields = $this->mapping->getFields();
 
 		foreach($array as $entry)
 		{
 			$row = array();
 
-			foreach($entry as $key => $value)
+			foreach($mappingFields as $name => $type)
 			{
-				foreach($this->mapping->getFields() as $field => $type)
+				if(isset($entry[$name]))
 				{
-					if($key == $field)
-					{
-						$row[$field] = $this->unserializeType($value, $type);
-					}
+					$row[$name] = $this->unserializeType($entry[$name], $type);
 				}
 			}
 
-			if($con !== null && $con->hasCondition())
+			if($condition !== null && $condition->hasCondition())
 			{
-				if(!$this->isConditionFulfilled($con, $row))
+				if(!$this->isConditionFulfilled($condition, $row))
 				{
 					continue;
 				}

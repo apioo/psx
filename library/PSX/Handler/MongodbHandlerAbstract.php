@@ -49,19 +49,14 @@ abstract class MongodbHandlerAbstract extends DataHandlerQueryAbstract implement
 		$this->mapping = $this->getMapping();
 	}
 
-	public function getAll(array $fields = array(), $startIndex = 0, $count = 16, $sortBy = null, $sortOrder = null, Condition $con = null)
+	public function getAll(array $fields = null, $startIndex = null, $count = null, $sortBy = null, $sortOrder = null, Condition $condition = null)
 	{
 		$startIndex = $startIndex !== null ? (int) $startIndex : 0;
 		$count      = !empty($count)       ? (int) $count      : 16;
 		$sortBy     = $sortBy     !== null ? $sortBy           : $this->mapping->getIdProperty();
 		$sortOrder  = $sortOrder  !== null ? (int) $sortOrder  : Sql::SORT_DESC;
 
-		$fields = array_intersect($fields, $this->getSupportedFields());
-
-		if(empty($fields))
-		{
-			$fields = $this->getSupportedFields();
-		}
+		$fields = $this->getValidFields($fields);
 
 		if(!in_array($sortBy, $this->getSupportedFields()))
 		{
@@ -71,9 +66,9 @@ abstract class MongodbHandlerAbstract extends DataHandlerQueryAbstract implement
 		$fields = array_combine($fields, array_fill(0, count($fields), true));
 		$query  = array();
 
-		if($con !== null && $con->hasCondition())
+		if($condition !== null && $condition->hasCondition())
 		{
-			$query = $this->getQueryByCondition($con);
+			$query = $this->getQueryByCondition($condition);
 		}
 
 		$cursor = $this->mapping->getCollection()->find($query, $fields);
@@ -81,20 +76,20 @@ abstract class MongodbHandlerAbstract extends DataHandlerQueryAbstract implement
 		$cursor->skip($startIndex);
 		$cursor->limit($count);
 
-		$name   = $this->mapping->getCollection()->getName();
-		$fields = $this->mapping->getFields();
-		$return = array();
+		$name          = $this->mapping->getCollection()->getName();
+		$mappingFields = $this->mapping->getFields();
+		$return        = array();
 
 		while($cursor->hasNext())
 		{
 			$data = $cursor->getNext();
 			$row  = array();
 
-			foreach($data as $key => $value)
+			foreach($mappingFields as $name => $type)
 			{
-				if(isset($fields[$key]))
+				if(isset($data[$key]))
 				{
-					$row[$key] = $this->unserializeType($value, $fields[$key]);
+					$row[$key] = $this->unserializeType($data[$key], $type);
 				}
 			}
 
@@ -104,11 +99,11 @@ abstract class MongodbHandlerAbstract extends DataHandlerQueryAbstract implement
 		return $return;
 	}
 
-	public function get($id, array $fields = array())
+	public function get($id)
 	{
-		$con = new Condition(array($this->mapping->getIdProperty(), '=', $id));
+		$condition = new Condition(array($this->mapping->getIdProperty(), '=', $id));
 
-		return $this->getOneBy($con, $fields);
+		return $this->getOneBy($condition);
 	}
 
 	public function getSupportedFields()
@@ -116,13 +111,13 @@ abstract class MongodbHandlerAbstract extends DataHandlerQueryAbstract implement
 		return array_diff(array_keys($this->mapping->getFields()), $this->getRestrictedFields());
 	}
 
-	public function getCount(Condition $con = null)
+	public function getCount(Condition $condition = null)
 	{
 		$query = array();
 
-		if($con !== null && $con->hasCondition())
+		if($condition !== null && $condition->hasCondition())
 		{
-			$query = array_merge($query, $this->getQueryByCondition($con));
+			$query = array_merge($query, $this->getQueryByCondition($condition));
 		}
 
 		return $this->mapping->getCollection()->find($query)->count();
@@ -176,10 +171,10 @@ abstract class MongodbHandlerAbstract extends DataHandlerQueryAbstract implement
 	 *
 	 * @return array
 	 */
-	protected function getQueryByCondition(Condition $con)
+	protected function getQueryByCondition(Condition $condition)
 	{
-		$values      = $con->toArray();
-		$conjunction = null;
+		$values      = $condition->toArray();
+		$condition = null;
 		$query       = array();
 
 		foreach($values as $value)
@@ -220,7 +215,7 @@ abstract class MongodbHandlerAbstract extends DataHandlerQueryAbstract implement
 			{
 			}
 
-			$conjunction = $value[Condition::CONJUNCTION];
+			$condition = $value[Condition::CONJUNCTION];
 
 			if(isset($query['$and']))
 			{
@@ -230,12 +225,12 @@ abstract class MongodbHandlerAbstract extends DataHandlerQueryAbstract implement
 			{
 				$query['$or'][] = $part;
 			}
-			else if($conjunction == 'AND' || $conjunction == '&&')
+			else if($condition == 'AND' || $condition == '&&')
 			{
 				$query['$and'] = array();
 				$query['$and'][] = $part;
 			}
-			else if($conjunction == 'OR' || $conjunction == '||')
+			else if($condition == 'OR' || $condition == '||')
 			{
 				$query['$or'] = array();
 				$query['$or'][] = $part;

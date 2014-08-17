@@ -42,14 +42,14 @@ abstract class HandlerQueryAbstract implements HandlerQueryInterface
 {
 	protected $restrictedFields = array();
 
-	public function getBy(Condition $con, array $fields = array())
+	public function getBy(Condition $condition, array $fields = null)
 	{
-		return $this->getAll($fields, null, null, null, null, $con);
+		return $this->getAll($fields, null, null, null, null, $condition);
 	}
 
-	public function getOneBy(Condition $con, array $fields = array())
+	public function getOneBy(Condition $condition, array $fields = null)
 	{
-		$result = $this->getAll($fields, 0, 1, null, null, $con);
+		$result = $this->getAll($fields, 0, 1, null, null, $condition);
 
 		return current($result);
 	}
@@ -70,12 +70,12 @@ abstract class HandlerQueryAbstract implements HandlerQueryInterface
 	 * @param integer $count
 	 * @param string $sortBy
 	 * @param string $sortOrder
-	 * @param PSX\Sql\Condition $con
+	 * @param PSX\Sql\Condition $condition
 	 * @return PSX\Data\Collection
 	 */
-	public function getCollection(array $fields, $startIndex = 0, $count = 16, $sortBy = null, $sortOrder = null, Condition $con = null)
+	public function getCollection(array $fields = null, $startIndex = null, $count = null, $sortBy = null, $sortOrder = null, Condition $condition = null)
 	{
-		$entries    = $this->getAll($fields, $startIndex, $count, $sortBy, $sortOrder, $con);
+		$entries    = $this->getAll($fields, $startIndex, $count, $sortBy, $sortOrder, $condition);
 		$collection = new Collection($entries);
 
 		return $collection;
@@ -90,17 +90,13 @@ abstract class HandlerQueryAbstract implements HandlerQueryInterface
 	 * @param integer $count
 	 * @param string $sortBy
 	 * @param string $sortOrder
-	 * @param PSX\Sql\Condition $con
+	 * @param PSX\Sql\Condition $condition
 	 * @return PSX\Data\ResultSet
 	 */
-	public function getResultSet(array $fields, $startIndex = 0, $count = 16, $sortBy = null, $sortOrder = null, Condition $con = null)
+	public function getResultSet(array $fields = null, $startIndex = null, $count = null, $sortBy = null, $sortOrder = null, Condition $condition = null)
 	{
-		$startIndex = $startIndex !== null ? (int) $startIndex : 0;
-		$count      = !empty($count)       ? (int) $count      : 16;
-		$sortOrder  = $sortOrder  !== null ? (strcasecmp($sortOrder, 'ascending') == 0 ? Sql::SORT_ASC : Sql::SORT_DESC) : null;
-
-		$total      = $this->getCount($con);
-		$entries    = $this->getAll($fields, $startIndex, $count, $sortBy, $sortOrder, $con);
+		$total      = $this->getCount($condition);
+		$entries    = $this->getAll($fields, $startIndex, $count, $sortBy, $sortOrder, $condition);
 		$resultSet  = new ResultSet($total, $startIndex, $count, $entries);
 
 		return $resultSet;
@@ -119,41 +115,35 @@ abstract class HandlerQueryAbstract implements HandlerQueryInterface
 		{
 			$column = lcfirst(substr($method, 8));
 			$value  = isset($arguments[0]) ? $arguments[0] : null;
-			$fields = isset($arguments[1]) ? $arguments[1] : array();
-			$mode   = isset($arguments[2]) ? $arguments[2] : 0;
-			$class  = isset($arguments[3]) ? $arguments[3] : null;
-			$args   = isset($arguments[4]) ? $arguments[4] : array();
+			$fields = isset($arguments[1]) ? $arguments[1] : null;
 
 			if(!empty($value))
 			{
-				$con = new Condition(array($column, '=', $value));
+				$condition = new Condition(array($column, '=', $value));
 			}
 			else
 			{
 				throw new InvalidArgumentException('Value required');
 			}
 
-			return $this->getOneBy($con, $fields, $mode, $class, $args);
+			return $this->getOneBy($condition, $fields);
 		}
 		else if(substr($method, 0, 5) == 'getBy')
 		{
 			$column = lcfirst(substr($method, 5));
 			$value  = isset($arguments[0]) ? $arguments[0] : null;
-			$fields = isset($arguments[1]) ? $arguments[1] : array();
-			$mode   = isset($arguments[2]) ? $arguments[2] : 0;
-			$class  = isset($arguments[3]) ? $arguments[3] : null;
-			$args   = isset($arguments[4]) ? $arguments[4] : array();
+			$fields = isset($arguments[1]) ? $arguments[1] : null;
 
 			if(!empty($value))
 			{
-				$con = new Condition(array($column, '=', $value));
+				$condition = new Condition(array($column, '=', $value));
 			}
 			else
 			{
 				throw new InvalidArgumentException('Value required');
 			}
 
-			return $this->getBy($con, $fields, $mode, $class, $args);
+			return $this->getBy($condition, $fields);
 		}
 		else
 		{
@@ -181,5 +171,24 @@ abstract class HandlerQueryAbstract implements HandlerQueryInterface
 	public function setRestrictedFields(array $restrictedFields)
 	{
 		$this->restrictedFields = $restrictedFields;
+	}
+
+	protected function getValidFields(array $fields = null)
+	{
+		if($fields !== null)
+		{
+			$fields = array_intersect($fields, $this->getSupportedFields());
+
+			if(empty($fields))
+			{
+				throw new \Exception('No valid field selected');
+			}
+
+			return $fields;
+		}
+		else
+		{
+			return $this->getSupportedFields();
+		}
 	}
 }

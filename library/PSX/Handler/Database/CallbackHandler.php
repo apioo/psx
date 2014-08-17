@@ -24,6 +24,7 @@
 namespace PSX\Handler\Database;
 
 use Closure;
+use Doctrine\DBAL\Connection;
 use PSX\Handler\DatabaseHandlerAbstract;
 use PSX\Sql\TableManagerInterface;
 
@@ -38,15 +39,15 @@ class CallbackHandler extends DatabaseHandlerAbstract
 {
 	protected $callback;
 
-	public function __construct(TableManagerInterface $manager, Closure $callback)
+	public function __construct(Connection $connection, Closure $callback)
 	{
 		$this->callback = $callback;
 
-		parent::__construct($manager);
+		parent::__construct($connection);
 	}
 
-	public function getDefaultSelect()
+	public function getMapping()
 	{
-		return call_user_func($this->callback, $this->manager);
+		return call_user_func($this->callback, $this->connection);
 	}
 }

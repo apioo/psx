@@ -23,46 +23,28 @@
 
 namespace PSX\Handler\Database;
 
-use Closure;
-use Doctrine\DBAL\Connection;
-use PSX\Handler\HandlerManagerInterface;
-use PSX\Sql\TableManagerInterface;
+use PSX\Handler\MappingAbstract;
 
 /**
- * Manager
+ * Mapping
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Manager implements HandlerManagerInterface
+class Mapping extends MappingAbstract
 {
-	/**
-	 * @var Doctrine\DBAL\Connection
-	 */
-	protected $connection;
+	protected $sql;
 
-	protected $_container;
-
-	public function __construct(Connection $connection)
+	public function __construct($sql, array $fields)
 	{
-		$this->connection = $connection;
+		parent::__construct($fields);
+
+		$this->sql = $sql;
 	}
 
-	public function getHandler($className)
+	public function getSql()
 	{
-		if($className instanceof Closure)
-		{
-			return new CallbackHandler($this->connection, $className);
-		}
-		else
-		{
-			if(!isset($this->_container[$className]))
-			{
-				$this->_container[$className] = new $className($this->connection);
-			}
-
-			return $this->_container[$className];
-		}
+		return $this->sql;
 	}
 }

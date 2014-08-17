@@ -35,52 +35,54 @@ use PSX\Sql\Condition;
 interface HandlerQueryInterface
 {
 	/**
-	 * Returns an array of records matching the condition
+	 * Returns an array of records matching the conditions
 	 *
+	 * @param array $fields
+	 * @param integer $startIndex
+	 * @param integer $count
+	 * @param integer $sortBy
+	 * @param integer $sortOrder
+	 * @param PSX\Sql\Condition $condition
 	 * @return array<PSX\Data\RecordInterface>
 	 */
-	public function getAll(array $fields, $startIndex = 0, $count = 16, $sortBy = null, $sortOrder = null, Condition $con = null);
+	public function getAll(array $fields = null, $startIndex = null, $count = null, $sortBy = null, $sortOrder = null, Condition $condition = null);
 
 	/**
 	 * Returns an array of records matching the condition
 	 *
+	 * @param PSX\Sql\Condition $condition
+	 * @param array $fields
 	 * @return array<PSX\Data\RecordInterface>
 	 */
-	public function getBy(Condition $con, array $fields = array());
+	public function getBy(Condition $condition, array $fields = null);
 
 	/**
 	 * Returns an record by the condition
 	 *
+	 * @param PSX\Sql\Condition $condition
+	 * @param array $fields
 	 * @return PSX\Data\RecordInterface
 	 */
-	public function getOneBy(Condition $con, array $fields = array());
+	public function getOneBy(Condition $condition, array $fields = null);
 
 	/**
 	 * Returns an record by the primary key
 	 *
 	 * @return PSX\Data\RecordInterface
 	 */
-	public function get($id, array $fields = array());
-
-	/**
-	 * Returns all available fields for this handler
-	 *
-	 * @return array
-	 */
-	public function getSupportedFields();
+	public function get($id);
 
 	/**
 	 * Returns how many records exists matching the given condition
 	 *
 	 * @return integer
 	 */
-	public function getCount(Condition $con = null);
+	public function getCount(Condition $condition = null);
 
 	/**
-	 * Returns the record which can be used for import
+	 * Returns all available fields of this handler
 	 *
-	 * @return PSX\Data\RecordInterface
+	 * @return array
 	 */
-	public function getRecord();
+	public function getSupportedFields();
 }
-

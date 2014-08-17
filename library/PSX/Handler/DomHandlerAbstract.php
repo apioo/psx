@@ -46,27 +46,22 @@ abstract class DomHandlerAbstract extends DataHandlerQueryAbstract
 		$this->mapping = $this->getMapping();
 	}
 
-	public function getAll(array $fields = array(), $startIndex = 0, $count = 16, $sortBy = null, $sortOrder = null, Condition $con = null)
+	public function getAll(array $fields = null, $startIndex = null, $count = null, $sortBy = null, $sortOrder = null, Condition $condition = null)
 	{
 		$startIndex = $startIndex !== null ? (int) $startIndex : 0;
 		$count      = !empty($count)       ? (int) $count      : 16;
 		$sortBy     = $sortBy     !== null ? $sortBy           : $this->mapping->getIdProperty();
 		$sortOrder  = $sortOrder  !== null ? (int) $sortOrder  : Sql::SORT_DESC;
 
-		$fields = array_intersect($fields, $this->getSupportedFields());
-
-		if(empty($fields))
-		{
-			$fields = $this->getSupportedFields();
-		}
-
-		$root = $this->mapping->getDom()->getElementsByTagName($this->mapping->getRoot())->item(0);
+		$fields = $this->getValidFields($fields);
+		$root   = $this->mapping->getDom()->getElementsByTagName($this->mapping->getRoot())->item(0);
 
 		if($root instanceof DOMElement)
 		{
-			$entries = $root->getElementsByTagName($this->mapping->getRecord());
-			$sort    = array();
-			$return  = array();
+			$mappingFields = $this->mapping->getFields();
+			$entries       = $root->getElementsByTagName($this->mapping->getRecord());
+			$sort          = array();
+			$return        = array();
 
 			for($i = 0; $i < $entries->length; $i++)
 			{
@@ -78,26 +73,24 @@ abstract class DomHandlerAbstract extends DataHandlerQueryAbstract
 				{
 					if($entry->childNodes->item($j) instanceof DOMElement)
 					{
-						foreach($this->mapping->getFields() as $field => $type)
+						foreach($mappingFields as $name => $type)
 						{
-							if($entry->childNodes->item($j)->nodeName == $field)
+							if($entry->childNodes->item($j)->nodeName == $name)
 							{
-								$value = $entry->childNodes->item($j)->nodeValue;
+								$row[$name] = $this->unserializeType($entry->childNodes->item($j)->nodeValue, $type);
 
-								$row[$field] = $this->unserializeType($value, $type);
-
-								if($sortBy == $field)
+								if($sortBy == $name)
 								{
-									$sortValue = $row[$field];
+									$sortValue = $row[$name];
 								}
 							}
 						}
 					}
 				}
 
-				if($con !== null && $con->hasCondition())
+				if($condition !== null && $condition->hasCondition())
 				{
-					if(!$this->isConditionFulfilled($con, $row))
+					if(!$this->isConditionFulfilled($condition, $row))
 					{
 						continue;
 					}
@@ -133,11 +126,11 @@ abstract class DomHandlerAbstract extends DataHandlerQueryAbstract
 		}
 	}
 
-	public function get($id, array $fields = array())
+	public function get($id)
 	{
-		$con = new Condition(array($this->mapping->getIdProperty(), '=', $id));
+		$condition = new Condition(array($this->mapping->getIdProperty(), '=', $id));
 
-		return $this->getOneBy($con, $fields);
+		return $this->getOneBy($condition);
 	}
 
 	public function getSupportedFields()
@@ -145,7 +138,7 @@ abstract class DomHandlerAbstract extends DataHandlerQueryAbstract
 		return array_diff(array_keys($this->mapping->getFields()), $this->getRestrictedFields());
 	}
 
-	public function getCount(Condition $con = null)
+	public function getCount(Condition $condition = null)
 	{
 		$count = 0;
 		$root  = $this->mapping->getDom()->getElementsByTagName($this->mapping->getRoot())->item(0);
@@ -175,9 +168,9 @@ abstract class DomHandlerAbstract extends DataHandlerQueryAbstract
 					}
 				}
 
-				if($con !== null && $con->hasCondition())
+				if($condition !== null && $condition->hasCondition())
 				{
-					if(!$this->isConditionFulfilled($con, $row))
+					if(!$this->isConditionFulfilled($condition, $row))
 					{
 						continue;
 					}

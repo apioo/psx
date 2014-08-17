@@ -58,7 +58,7 @@ abstract class DataHandlerQueryAbstract extends HandlerQueryAbstract
 				break;
 
 			case MappingAbstract::TYPE_BOOLEAN:
-				return (bool) $data;
+				return $data == 'false' ? false : (bool) $data;
 				break;
 
 			case MappingAbstract::TYPE_DATETIME:
@@ -85,7 +85,7 @@ abstract class DataHandlerQueryAbstract extends HandlerQueryAbstract
 		switch($type)
 		{
 			case MappingAbstract::TYPE_BOOLEAN:
-				return $data ? 'true' : 'false';
+				return $data ? '1' : '0';
 				break;
 
 			case MappingAbstract::TYPE_DATETIME:
@@ -102,15 +102,15 @@ abstract class DataHandlerQueryAbstract extends HandlerQueryAbstract
 	}
 
 	/**
-	 * Checks whether an row fulfills the condition specified in $con
+	 * Checks whether an row fulfills the condition specified in $condition
 	 *
-	 * @param PSX\Sql\Condition $con
+	 * @param PSX\Sql\Condition $condition
 	 * @param array $row
 	 * @return boolean
 	 */
-	protected function isConditionFulfilled(Condition $con, array $row)
+	protected function isConditionFulfilled(Condition $condition, array $row)
 	{
-		$values  = $con->toArray();
+		$values  = $condition->toArray();
 		$isValid = true;
 
 		foreach($values as $value)

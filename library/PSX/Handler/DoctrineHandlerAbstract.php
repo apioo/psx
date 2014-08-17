@@ -60,19 +60,14 @@ abstract class DoctrineHandlerAbstract extends HandlerAbstract
 		$this->entityName = $this->getEntityName();
 	}
 
-	public function getAll(array $fields = array(), $startIndex = 0, $count = 16, $sortBy = null, $sortOrder = null, Condition $con = null)
+	public function getAll(array $fields = null, $startIndex = null, $count = null, $sortBy = null, $sortOrder = null, Condition $condition = null)
 	{
 		$startIndex = $startIndex !== null ? (int) $startIndex : 0;
 		$count      = !empty($count)       ? (int) $count      : 16;
 		$sortBy     = $sortBy     !== null ? $sortBy           : $this->getPrimaryIdField();
 		$sortOrder  = $sortOrder  !== null ? (int) $sortOrder  : Sql::SORT_DESC;
 
-		$fields = array_intersect($fields, $this->getSupportedFields());
-
-		if(empty($fields))
-		{
-			$fields = $this->getSupportedFields();
-		}
+		$fields = $this->getValidFields($fields);
 
 		if(!in_array($sortBy, $this->getSupportedFields()))
 		{
@@ -86,9 +81,9 @@ abstract class DoctrineHandlerAbstract extends HandlerAbstract
 			->setFirstResult($startIndex)
 			->setMaxResults($count);
 
-		if($con !== null && $con->hasCondition())
+		if($condition !== null && $condition->hasCondition())
 		{
-			$values      = $con->toArray();
+			$values      = $condition->toArray();
 			$conjunction = null;
 
 			foreach($values as $key => $row)
@@ -119,11 +114,11 @@ abstract class DoctrineHandlerAbstract extends HandlerAbstract
 		return $qb->getQuery()->getResult(Doctrine\RecordHydrator::HYDRATE_RECORD);
 	}
 
-	public function get($id, array $fields = array())
+	public function get($id)
 	{
-		$con = new Condition(array($this->getPrimaryIdField(), '=', $id));
+		$condition = new Condition(array($this->getPrimaryIdField(), '=', $id));
 
-		return $this->getOneBy($con, $fields);
+		return $this->getOneBy($condition);
 	}
 
 	public function getSupportedFields()
@@ -151,15 +146,15 @@ abstract class DoctrineHandlerAbstract extends HandlerAbstract
 		return array_diff($result, $this->getRestrictedFields());
 	}
 
-	public function getCount(Condition $con = null)
+	public function getCount(Condition $condition = null)
 	{
 		$qb = $this
 			->getSelect()
 			->select('count(' . $this->getColumnNameByAlias($this->getPrimaryIdField()) . ')');
 
-		if($con !== null && $con->hasCondition())
+		if($condition !== null && $condition->hasCondition())
 		{
-			$values = $con->toArray();
+			$values = $condition->toArray();
 
 			foreach($values as $key => $row)
 			{
