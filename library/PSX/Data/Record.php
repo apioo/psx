@@ -49,11 +49,10 @@ class Record extends RecordAbstract
 	public function __call($method, array $args)
 	{
 		$type = substr($method, 0, 3);
+		$key  = lcfirst(substr($method, 3));
 
 		if($type == 'set')
 		{
-			$key = lcfirst(substr($method, 3));
-
 			if(array_key_exists($key, $this->fields))
 			{
 				$this->fields[$key] = current($args);
@@ -61,12 +60,7 @@ class Record extends RecordAbstract
 		}
 		elseif($type == 'get')
 		{
-			$key = lcfirst(substr($method, 3));
-
-			if(isset($this->fields[$key]))
-			{
-				return $this->fields[$key];
-			}
+			return isset($this->fields[$key]) ? $this->fields[$key] : null;
 		}
 		else
 		{
