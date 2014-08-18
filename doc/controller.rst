@@ -37,19 +37,16 @@ Usage
             // returns an GET parameter
             $this->getParameter('id');
 
-            // returns the request body as an array. This works with normal 
-            // x-www-form-urlencoded form submits, json and xml data
+            // returns the request body. For x-www-form-urlencoded or json data
+            // this will be an array for xml an DOMDocument
             $body = $this->getBody();
-
-            // the body gets imported into an DOMDocument
-            $body = $this->getBody(ReaderInterface::DOM);
 
             // if you want assign an value to the template which is not exposed
             // to the public you can assign it directly to the template
             $this->template->assign('foo', 'bar');
 
             // imports data from the request body into the record. See the 
-            // chapter import data for more informations
+            // data chapter for more informations
             $record = $this->import(new Record('foo', array('field1' => null)));;
 
             // set data to the response body. How this data is presented depends

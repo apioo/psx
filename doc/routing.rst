@@ -78,7 +78,7 @@ and all links point automatically to the correct path.
 Custom routing
 --------------
 
-If you want to store you routes in another format or in an database you can 
+If you want store your routes in another format or in an database you can 
 easily write your own RoutingParser. The routing parser returns an 
 RoutingCollection which contains all available routes.
 

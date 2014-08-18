@@ -6,6 +6,6 @@ PSX Framework
    :maxdepth: 2
 
    getting_started
-   advanced_topics
+   api
    tutorials
    

@@ -1,26 +1,82 @@
 
-Handler concept
-===============
+Handler
+=======
 
-As stated in the tutorial the core of every PSX api is the handler system. This
-chapter will explain how different handler work and howto write your own handler
+Abstract
+--------
+
+This chapter gives an overview howto build an REST API around an handler. An 
+handler is an concept in PSX which offers a simple interface to CRUD records.
+
+API
+---
+
+Creating an API through an handler is the easiest way to create an REST API
+in PSX since the handler provides already all CRUD capabilities.
+
+.. code-block:: php
+
+    namespace Foo\Application;
+
+    use PSX\Controller\HandlerApiAbstract;
+    use PSX\Filter;
+    use PSX\Validate;
+    use PSX\Validate\RecordValidator;
+    use PSX\Validate\Property;
+
+    class NewsApi extends HandlerApiAbstract
+    {
+        /**
+         * @Inject
+         * @var PSX\Sql\TableManager
+         */
+        protected $tableManager;
+
+        protected function getValidator()
+        {
+            return new RecordValidator($this->validate, array(
+                new Property('id', Validate::TYPE_INTEGER),
+                new Property('userId', Validate::TYPE_INTEGER),
+                new Property('title', Validate::TYPE_STRING, array(new Filter\Length(3, 16))),
+                new Property('date', Validate::TYPE_STRING, array(new Filter\DateTime())),
+            ));
+        }
+
+        protected function getHandler()
+        {
+            return $this->tableManager->getTable('Foo\NewsTable');
+        }
+    }
+
+In our example we use the table manager which returns an table handler. More
+informations about the table manager at the table chapter. Beside that PSX
+offers other handler
 
 Database handler
 ----------------
 
-The database handler returns an PSX\\Table\\Select object which gives the 
-handler all informations about the table and all available fields
+The database handler is for making raw SQL queries. This handler implements only
+the HandlerQueryInterface that means we can not CUD records
 
 .. code-block:: php
 
     <?php
     
-    class Handler extends DatabaseHandlerAbstract
+    class TestHandler extends DatabaseHandlerAbstract
     {
-        public function getDefaultSelect()
+        public function getMapping()
         {
-            return $this->manager->getTable('Test\Table')
-                ->select(array('id', 'userId', 'title', 'date'));
+            return new Mapping($this->getQuery(), array(
+                'id'     => MappingAbstract::TYPE_INTEGER | 10 | MappingAbstract::ID_PROPERTY,
+                'userId' => MappingAbstract::TYPE_INTEGER | 10,
+                'title'  => MappingAbstract::TYPE_STRING | 32,
+                'date'   => MappingAbstract::TYPE_DATETIME,
+            ));
+        }
+
+        protected function getQuery()
+        {
+            return 'SELECT {fields} FROM `psx_handler_comment` {condition} {orderBy} {limit}';
         }
     }
 
@@ -35,12 +91,12 @@ handler gets all available fields from this query
 
     <?php
     
-    class Handler extends DoctrineHandlerAbstract
+    class TestHandler extends DoctrineHandlerAbstract
     {
-        protected function getDefaultSelect()
+        protected function getMapping()
         {
             return $this->manager->createQueryBuilder()
-                ->from('Test\Entity', 'entity');
+                ->from('PSX\Handler\Doctrine\TestEntity', 'comment');
         }
     }
 
@@ -48,9 +104,9 @@ handler gets all available fields from this query
 Dom handler
 -----------
 
-The DOM handler uses the DOMDocument to query the records. As mapping you define
-the source document, the root key of the entries element, the name auf the entry 
-element and also the available fields
+The DOM handler uses an DOMDocument. As mapping you define the source document, 
+the root key of the entries element, the name auf the entry element and also the 
+available fields
 
 .. code-block:: php
 
@@ -61,9 +117,9 @@ element and also the available fields
         public function getMapping()
         {
             $dom = new DOMDocument();
-            $dom->loadXml('');
-    
-            return new Mapping($dom, 'root', 'entry', array(
+            $dom->loadXml('<xml />');
+
+            return new Mapping($dom, 'comments', 'comment', array(
                 'id'     => MappingAbstract::TYPE_INTEGER | 10 | MappingAbstract::ID_PROPERTY,
                 'userId' => MappingAbstract::TYPE_INTEGER | 10,
                 'title'  => MappingAbstract::TYPE_STRING | 32,
@@ -103,7 +159,7 @@ available as array
 Mongodb handler
 ---------------
 
-The mongodb handler can select records from an mongo database. The mapping 
+The mongodb handler can select records from an mongodb collection. The mapping 
 returns the MongoCollection and the mapping of the available fields
 
 .. code-block:: php
@@ -114,43 +170,12 @@ returns the MongoCollection and the mapping of the available fields
     {
         public function getMapping()
         {
-            return new Mapping($this->client->selectCollection('test', 'collection'), array(
+            return new Mapping($this->client->selectCollection('psx', 'psx_handler_comment'), array(
                 'id'     => MappingAbstract::TYPE_INTEGER | 10 | MappingAbstract::ID_PROPERTY,
                 'userId' => MappingAbstract::TYPE_INTEGER | 10,
                 'title'  => MappingAbstract::TYPE_STRING | 32,
                 'date'   => MappingAbstract::TYPE_DATETIME,
             ));
-        }
-    }
-
-Pdo handler
------------
-
-The PDO handler uses native SQL queries through PDO in order to obtain the 
-result. The getSelectStatment and getCountStatment method return an PDOStatement
-
-.. code-block:: php
-
-    <?php
-
-    class Handler extends PdoHandlerAbstract
-    {
-        public function getMapping()
-        {
-            return new Mapping(array(
-                'id'     => MappingAbstract::TYPE_INTEGER | 10 | MappingAbstract::ID_PROPERTY,
-                'userId' => MappingAbstract::TYPE_INTEGER | 10,
-                'title'  => MappingAbstract::TYPE_STRING | 32,
-                'date'   => MappingAbstract::TYPE_DATETIME,
-            ));
-        }
-
-        protected function getSelectStatment(array $fields, $startIndex = 0, $count = 16, $sortBy = null, $sortOrder = null, Condition $con = null)
-        {
-        }
-
-        protected function getCountStatment(Condition $con = null)
-        {
         }
     }
 

@@ -2,12 +2,16 @@
 Design
 ======
 
-This chapter explains some important design concepts of PSX. If you develop a 
-new application you should try to not bind any business logic to the framework 
-which you are using. Instead you should create services which get their 
-dependencies via constructor or setter injection. So you can use your code also 
-in other environments. PSX helps you in building applications which are not tied 
-to the framework.
+This chapter explains some important design concepts of PSX.
+
+Abstract
+--------
+
+If you develop a new application you should try to not bind any business logic 
+to the framework which you are using. Instead you should create services which 
+get their dependencies via constructor or setter injection. So you can use your 
+code also in other environments. PSX helps you in building applications which 
+are not tied to the framework.
 
 Dependency injection
 --------------------

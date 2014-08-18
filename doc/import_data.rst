@@ -2,19 +2,20 @@
 Import data
 ===========
 
-Record classes are used in PSX to import data from an request. We use an reader
-class to read the request body and then the request gets imported into an record
-through an importer class. This chapter explains the default annotation importer 
-and howto write your own importer
+Abstract
+--------
 
-General
--------
+This chapter will explain more detailed how you can use the record or schema
+importer to read request data.
 
-A record is a simple object to store key value pairs. When we use an importer
-class the importer needs to know which fields are available and what type has
-each field. The default importer obtains theses meta informations from the 
-annotation of each method. As example lets say we want import the following xml 
-from an request
+Record
+------
+
+A record is a simple object which stores key value pairs. When we use an 
+importer class the importer needs to know which fields are available and what 
+type has each field. The record importer obtains theses meta informations from 
+the annotation of each method. As example lets say we want import the following 
+xml from an request
 
 .. code-block:: xml
 
@@ -151,100 +152,11 @@ key value pairs of the record. By default this includes every defined property
 of the class which doesnt start with "_". You can override this method if the 
 field names are not like your property names
 
-Using data factories
---------------------
+Schema
+------
 
-If we have a collection of records and you want to create for each item a 
-different record class you can use the FactoryInterface. Lets say we have the
-following request body
-
-.. code-block:: xml
-
-    <?xml version="1.0" encoding="UTF-8"?>
-    <entry>
-        <id>1</id>
-        <title>foobar</title>
-        <items>
-            <item>
-                <id>1</id>
-                <type>article</type>
-                <content>foo</content>
-            </item>
-            <item>
-                <id>2</id>
-                <type>page</type>
-                <content>bar</content>
-            </item>
-        </items>
-    </entry>
-
-In this case we want create for each item the fitting record class depending on
-the type value. Therefor we have to define as @param annotation an class wich 
-implements the PSX\\Data\\FactoryInterface i.e.
-
-.. code-block:: php
-
-    <?php
-
-    namespace Test\News;
-
-    use PSX\Data\RecordAbstract;
-
-    class Entry extends RecordAbstract
-    {
-        // ...
-
-        /**
-         * @param array<Test\ItemFactory> $items
-         */
-        public function setItems(array $items)
-        {
-            $this->items = $items;
-        }
-    }
-
-The $data wich is passed to the factory method is the complete item entry. In 
-our case we check whether a class exists with the type and then return an 
-instance of it else we use a default type
-
-.. code-block:: php
-
-    <?php
-    
-    namespace Test\News;
-    
-    use PSX\Data\FactoryInterface;
-    
-    class ItemFactory implements FactoryInterface
-    {
-        public function factory($data)
-        {
-            $type  = isset($data['type']) ? $data['type'] : 'article';
-            $class = 'Test\Item' . ucrifst($type)
-            
-            if(class_exists($class))
-            {
-                return new $class();
-            }
-            else
-            {
-                return new ItemArticle();
-            }
-        }
-    }
-
-The importer will use the record object wich gets returned by the factory and
-imports the data into the record
-
-Using data builder
-------------------
-
-If you want completely overwrite the import mechanism for a specific key you can
-use the BuilderInterface. The difference between a factory and the builder is
-that the factory returns only the record without any data (the data gets then 
-imported through the standard import mechanism) and the builder returns the 
-complete record containing any necessary data. Lets look at this example request
-body
+A schema is a general representation of your data format written in PHP. Lets 
+say we want import the request data.
 
 .. code-block:: xml
 
@@ -252,54 +164,64 @@ body
     <entry>
         <id>1</id>
         <title>foobar</title>
-        <item>
-            <foo>
-                <bar>
-                    <title>foo</title>
-                </bar>
-            </foo>
-        </item>
+        <user>
+            <id>1</id>
+            <name>foo</name>
+        </user>
+        <date>2014-01-12 11:11:53</date>
     </entry>
 
-In this example we only want to create one item record containing the title. We 
-use the following builder to read the title from the nested xml
+Therefor we need to define the following schema classes.
 
 .. code-block:: php
 
-    <?php
-    
-    namespace Test\News;
-    
-    use PSX\Data\BuilderInterface;
-    
-    class ItemBuilder implements BuilderInterface
+    class Entry extends SchemaAbstract
     {
-        public function build($data)
+        public function getDefinition()
         {
-            $title = isset($data['item']['foo']['bar']['title']) ? $data['item']['foo']['bar']['title'] : null;
+            $sb = $this->getSchemaBuilder('entry');
+            $sb->integer('id');
+            $sb->string('title')
+                ->setPattern('[A-z]+');
+            $sb->complexType($this->getSchema('User'));
+            $sb->dateTime('date');
 
-            return new Record('item', array(
-                'title' => $title,
-            ));
+            return $sb->getProperty();
         }
     }
+
+.. code-block:: php
+
+    class User extends SchemaAbstract
+    {
+        public function getDefinition()
+        {
+            $sb = $this->getSchemaBuilder('user');
+            $sb->integer('id');
+            $sb->string('name')
+                ->setPattern('[A-z]+');
+
+            return $sb->getProperty();
+        }
+    }
+
+With the schema you can define a much finer representation of your data model.
+More informations about the schema concept at the schema chapter.
 
 Writing a custom importer
 -------------------------
 
-The meta informations how an record is structured can be obtained from different
-sources. By default we use the annotation importer but you can also write your
-own importer wich gets theses informations from other sources. PSX comes also
-with an entity annotation importer wich reads the annotations from an doctrine
-entity and creates the fitting record from it. The importer interface has only
-a single method
+The meta informations how the requests data looks can be obtained from different
+sources. If you have already meta data in your project about your models you
+could write your own importer. The importer has an accept method which checks
+whether the source is valid to get passed to the import method. The import 
+method takes the response from the reader and creates an record based on the
+meta data from the source.
 
 .. literalinclude:: ../library/PSX/Data/Record/ImporterInterface.php
    :language: php
-   :lines: 36-44
+   :lines: 34-55
    :prepend: <?php
 
-The first argument $record is not type hinted since this can be an 
-RecordInterface or an entity or an path to an xml file containing the meta 
-informations from the record. The $data argument is the result from the reader.
-The importer returns then the record containing the data from the reader result.
+The importer must be added to the importer manager in the DI container. After
+that you can use your own class in the import method inside the controller

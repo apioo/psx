@@ -1,0 +1,207 @@
+
+Data
+====
+
+Abstract
+--------
+
+This chapter should give an overview how data handling works in PSX. That means
+how you can read data from an request and write an response
+
+Reading requests
+----------------
+
+If we want import data from an request we have to known the format of the 
+request body. PSX uses the content type header to determine which reader should 
+be used. I.e. if we have an application/xml content type we use the xml reader 
+and if we have an application/json content type we use the json reader. The 
+reader returns the request data in an form which can be easily used in php. I.e. 
+the xml reader returns an DOMDocument and the json reader returns an array.
+
+.. literalinclude:: ../library/PSX/Data/ReaderInterface.php
+   :language: php
+   :lines: 35-57
+   :prepend: <?php
+
+Since the importer needs an array structure we must apply an transformation in
+some cases. The transformation depends also on the content type. If we receive
+an application/xml content type the XmlArray transformer gets applied.
+
+.. literalinclude:: ../library/PSX/Data/TransformerInterface.php
+   :language: php
+   :lines: 34-50
+   :prepend: <?php
+
+The data gets then imported into an record through an importer class. In 
+abstract an importer class takes meta informations from an source and returns an 
+record class containing the data.
+
+.. literalinclude:: ../library/PSX/Data/Record/ImporterInterface.php
+   :language: php
+   :lines: 36-44
+   :prepend: <?php
+
+Available data reader
+---------------------
+
+PSX comes with the following data reader:
+
++--------------------------+-----------------------------------+-------------+
+| Class                    | Content-Type                      | Return-Type |
++==========================+===================================+=============+
+| PSX\\Data\\Reader\\Form  | application/x-www-form-urlencoded | array       |
++--------------------------+-----------------------------------+-------------+
+| PSX\\Data\\Reader\\Json  | application/json                  | array       |
++--------------------------+-----------------------------------+-------------+
+| PSX\\Data\\Reader\\Xml   | application/xml                   | DOMDocument |
++--------------------------+-----------------------------------+-------------+
+
+The result of the data reader can be obtained by using the getBody method inside
+the controller
+
+.. code-block:: php
+
+    <?php
+
+    namespace Foo\Application;
+
+    use PSX\ControllerAbstract;
+
+    class Index extends ControllerAbstract
+    {
+        public function doIndex()
+        {
+            $body = $this->getBody();
+
+            // do something with the body
+        }
+    }
+
+Importer
+--------
+
+Which importer gets used depends on the source. You can pass different objects 
+to the import method which in the end provide meta informations how the 
+incomming request data looks. If you pass to the source an 
+PSX\Data\RecordInterface the annotations of the record class gets parsed. I.e. 
+if you want import an atom xml format you could use the following controller
+
+.. code-block:: php
+
+    <?php
+
+    namespace Foo\Application;
+
+    use PSX\Atom;
+    use PSX\ControllerAbstract;
+
+    class Index extends ControllerAbstract
+    {
+        public function doIndex()
+        {
+            $atom = $this->import(new Atom());
+
+            // do something with the atom record i.e. $atom->getTitle();
+        }
+    }
+
+The content type application/atom+xml has also an transformer registered which
+builds an array structure from the DOMDocument which then gets imported into the 
+Atom record.
+
+It is also possible to pass an schema definition to the import method. The data
+will be validate against this schema. This has also the advantage that you can 
+use the schema to generate great documentation about the API
+
+.. code-block:: php
+
+    <?php
+
+    namespace Foo\Application;
+
+    use PSX\ControllerAbstract;
+
+    class Index extends ControllerAbstract
+    {
+        /**
+         * @Inject
+         * @var PSX\Data\Schema\SchemaManager
+         */
+        protected $schemaManager;
+
+        public function doIndex()
+        {
+            $entry = $this->import($this->schemaManager->getSchema('Foo\Schema\Entry'));
+
+            // do something with the entry
+        }
+    }
+
+Here an example schema from an test case
+
+.. literalinclude:: ../tests/PSX/Controller/Foo/Schema/Entry.php
+   :language: php
+   :lines: 35-50
+   :prepend: <?php
+
+More detailed informations about data importing at the import_data chapter
+
+Writing responses
+-----------------
+
+PSX uses a data writer conecpt to transform the data which was produced by the
+controller into an fitting format for the client. What content is served depends
+on the Accept header and the GET parameter format.
+
+Available data writer
+---------------------
+
+In PSX we distinct between two types of data writer. First an writer which 
+produces an data format and an writer which produces an specification of an data 
+format. An "data format" writer can produce content from arbitrary content where
+an "specification" data writer needs an specific model to produce the content.
+In the following an overview of available writer in PSX: 
+
++--------------------------+------------------------+------------------+---------------+---------------+
+| Class                    | Content-Type           | Format-Parameter | Data-Format   | Specification |
++==========================+========================+==================+===============+===============+
+| PSX\\Data\\Writer\\Html  | text/html              | html             | X             |               |
++--------------------------+------------------------+------------------+---------------+---------------+
+| PSX\\Data\\Writer\\Json  | application/json       | json             | X             |               |
++--------------------------+------------------------+------------------+---------------+---------------+
+| PSX\\Data\\Writer\\Jsonp | application/javascript | jsonp            | X             |               |
++--------------------------+------------------------+------------------+---------------+---------------+
+| PSX\\Data\\Writer\\Xml   | application/xml        | xml              | X             |               |
++--------------------------+------------------------+------------------+---------------+---------------+
+| PSX\\Data\\Writer\\Atom  | application/atom+xml   | atom             |               | X             |
++--------------------------+------------------------+------------------+---------------+---------------+
+| PSX\\Data\\Writer\\Rss   | application/rss+xml    | rss              |               | X             |
++--------------------------+------------------------+------------------+---------------+---------------+
+
+Use case
+--------
+
+Lets take a look at the following controller.
+
+.. code-block:: php
+
+    <?php
+
+    class FooController extends ControllerAbstract
+    {
+        public function doIndex()
+        {
+            $atom = new Atom();
+            $atom->setTitle('lorem ipsum');
+
+            $this->setBody($atom);
+        }
+    }
+
+If you would request this method with an normal browser PSX would try to display
+the data as HTML. Therefor it would use the html writer which assigns the data
+to the template. In your template you can then build the html representation of 
+the feed. If we would make the request containing an Accept header 
+application/json or GET parameter "format" containing "json" the data would be
+returned as json format.
+
