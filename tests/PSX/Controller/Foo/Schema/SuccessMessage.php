@@ -37,10 +37,8 @@ class SuccessMessage extends SchemaAbstract
 	public function getDefinition()
 	{
 		$sb = $this->getSchemaBuilder('message');
-		$sb->boolean('success')
-			->setRequired(true);
-		$sb->string('message')
-			->setRequired(true);
+		$sb->boolean('success');
+		$sb->string('message');
 
 		return $sb->getProperty();
 	}

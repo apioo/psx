@@ -48,6 +48,19 @@ class TestSchemaApiController extends SchemaApiAbstract
 	 */
 	protected $testCase;
 
+	public function getSchemaDocumentation()
+	{
+		$responseSchema = $this->schemaManager->getSchema('PSX\Controller\Foo\Schema\SuccessMessage');
+
+		$doc = new ApiDocumentation();
+		$doc->setGet($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Collection'));
+		$doc->setPost($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Create'), $responseSchema);
+		$doc->setPut($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Update'), $responseSchema);
+		$doc->setDelete($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Delete'), $responseSchema);
+
+		return $doc;
+	}
+
 	protected function doGet()
 	{
 		return array(
@@ -87,18 +100,5 @@ class TestSchemaApiController extends SchemaApiAbstract
 			'success' => true,
 			'message' => 'You have successful delete a record'
 		);
-	}
-
-	public function getSchemaDocumentation()
-	{
-		$responseSchema = $this->schemaManager->getSchema('PSX\Controller\Foo\Schema\SuccessMessage');
-
-		$doc = new ApiDocumentation();
-		$doc->setGet($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Collection'));
-		$doc->setPost($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Create'), $responseSchema);
-		$doc->setPut($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Update'), $responseSchema);
-		$doc->setDelete($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Delete'), $responseSchema);
-
-		return $doc;
 	}
 }
