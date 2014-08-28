@@ -83,7 +83,7 @@ class TableManager implements TableManagerInterface
 	 * @param Psr\Cache\CacheItemPoolInterface $cache
 	 * @param integer $expire
 	 */
-	public function setCache(/*CacheItemPoolInterface*/ $cache, $expire = null)
+	public function setCache(CacheItemPoolInterface $cache, $expire = null)
 	{
 		$this->cache  = $cache;
 		$this->expire = $expire;

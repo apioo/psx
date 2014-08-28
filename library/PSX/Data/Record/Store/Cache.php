@@ -38,7 +38,7 @@ class Cache implements StoreInterface
 {
 	protected $cache;
 
-	public function __construct(/*CacheItemPoolInterface*/ $cache)
+	public function __construct(CacheItemPoolInterface $cache)
 	{
 		$this->cache = $cache;
 	}

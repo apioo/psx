@@ -43,7 +43,7 @@ class ProxyCacheHandler extends HandlerQueryAbstract
 	protected $cache;
 	protected $expire;
 
-	public function __construct(HandlerQueryInterface $handler, /*CacheItemPoolInterface*/ $cache, $expire = null)
+	public function __construct(HandlerQueryInterface $handler, CacheItemPoolInterface $cache, $expire = null)
 	{
 		$this->handler = $handler;
 		$this->cache   = $cache;

@@ -42,7 +42,7 @@ class CachedParser implements RoutingParserInterface
 	protected $cache;
 	protected $expire;
 
-	public function __construct(RoutingParserInterface $routingParser, /*CacheItemPoolInterface*/ $cache, $expire = null)
+	public function __construct(RoutingParserInterface $routingParser, CacheItemPoolInterface $cache, $expire = null)
 	{
 		$this->routingParser = $routingParser;
 		$this->cache         = $cache;

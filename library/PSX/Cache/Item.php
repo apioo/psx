@@ -32,7 +32,7 @@ use Psr\Cache\CacheItemInterface;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Item /*implements CacheItemInterface*/
+class Item implements CacheItemInterface
 {
 	protected $key;
 	protected $value;

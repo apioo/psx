@@ -12,7 +12,6 @@
   ],
   "require": {
     "php": ">=5.4",
-    "psr/http-message": "dev-master#98ef8f215a7b86af3fd35b98b98bc79c15057f65",
     "psr/log": "~1.0",
     "monolog/monolog": "~1.0",
     "symfony/event-dispatcher": "~2.0",
@@ -26,7 +25,8 @@
   "bin": ["bin/console/psx"],
   "autoload": {
     "psr-0": {
-      "PSX": "library/"
+      "PSX\\": "library/",
+      "Psr\\": "library/"
     }
   }
 }

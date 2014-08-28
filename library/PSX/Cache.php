@@ -23,6 +23,7 @@
 
 namespace PSX;
 
+use Psr\Cache\CacheItemInterface;
 use Psr\Cache\CacheItemPoolInterface;
 use PSX\Cache\Handler;
 use PSX\Cache\HandlerInterface;
@@ -34,7 +35,7 @@ use PSX\Cache\HandlerInterface;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Cache
+class Cache implements CacheItemPoolInterface
 {
 	protected $handler;
 	protected $items = array();
@@ -76,14 +77,14 @@ class Cache
 		return $this;
 	}
 
-	public function save(/*CacheItemInterface*/ $item)
+	public function save(CacheItemInterface $item)
 	{
 		$this->handler->write($item);
 
 		return $this;
 	}
 
-	public function saveDeferred(/*CacheItemInterface*/ $item)
+	public function saveDeferred(CacheItemInterface $item)
 	{
 		$this->items[] = $item;
 
