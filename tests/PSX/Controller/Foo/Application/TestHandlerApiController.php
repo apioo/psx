@@ -24,11 +24,7 @@
 namespace PSX\Controller\Foo\Application;
 
 use PSX\Controller\HandlerApiAbstract;
-use PSX\Data\RecordAbstract;
 use PSX\Filter;
-use PSX\Handler\Table\TestHandler;
-use PSX\Sql;
-use PSX\Sql\TableManager;
 use PSX\Validate;
 use PSX\Validate\RecordValidator;
 use PSX\Validate\Property;

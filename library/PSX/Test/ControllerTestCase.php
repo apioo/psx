@@ -21,22 +21,39 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Handler\Doctrine;
+namespace PSX\Test;
 
-use PSX\Handler\DoctrineHandlerAbstract;
+use PDOException;
+use PSX\Http\Request;
+use PSX\Http\Response;
 
 /**
- * TestHandler
+ * ControllerTestCase
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class TestHandler extends DoctrineHandlerAbstract
+abstract class ControllerTestCase extends \PHPUnit_Framework_TestCase
 {
-	protected function getMapping()
+	use ContainerTestCaseTrait;
+
+	/**
+	 * Loads an specific controller
+	 *
+	 * @param PSX\Http\Request $request
+	 * @param PSX\Http\Response $response
+	 * @return PSX\ControllerInterface
+	 */
+	protected function loadController(Request $request, Response $response)
 	{
-		return $this->manager->createQueryBuilder()
-			->from('PSX\Handler\Doctrine\TestEntity', 'comment');
+		return getContainer()->get('dispatch')->route($request, $response);
 	}
+
+	/**
+	 * Returns the available modules for the testcase
+	 *
+	 * @return array
+	 */
+	abstract protected function getPaths();
 }

@@ -27,6 +27,7 @@ use PSX\Handler\Database;
 use PSX\Handler\Dom;
 use PSX\Handler\Map;
 use PSX\Handler\Pdo;
+use PSX\Sql\TableManager;
 
 /**
  * Handler
@@ -37,6 +38,14 @@ use PSX\Handler\Pdo;
  */
 trait Handler
 {
+	/**
+	 * @return PSX\Sql\TableManager
+	 */
+	public function getTableManager()
+	{
+		return new TableManager($this->get('connection'));
+	}
+
 	/**
 	 * @return PSX\Handler\HandlerManagerInterface
 	 */

@@ -34,8 +34,6 @@ use PSX\Config;
 use PSX\Http;
 use PSX\Handler\Doctrine\RecordHydrator;
 use PSX\Session;
-use PSX\Sql;
-use PSX\Sql\TableManager;
 use PSX\Template;
 use PSX\Validate;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -104,14 +102,6 @@ class DefaultContainer extends Container
 		);
 
 		return DriverManager::getConnection($params, $config);
-	}
-
-	/**
-	 * @return PSX\Sql\TableManager
-	 */
-	public function getTableManager()
-	{
-		return new TableManager($this->get('connection'));
 	}
 
 	/**

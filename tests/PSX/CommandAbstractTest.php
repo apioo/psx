@@ -23,7 +23,7 @@
 
 namespace PSX;
 
-use PSX\Command\CommandTestCase;
+use PSX\Test\CommandTestCase;
 
 /**
  * CommandAbstractTest

@@ -21,22 +21,62 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Handler\Doctrine;
+namespace PSX\Test;
 
-use PSX\Handler\DoctrineHandlerAbstract;
+use PDOException;
+use PSX\Command\ParameterParser\Map;
 
 /**
- * TestHandler
+ * CommandDbTestCase
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class TestHandler extends DoctrineHandlerAbstract
+abstract class CommandDbTestCase extends \PHPUnit_Extensions_Database_TestCase
 {
-	protected function getMapping()
+	use ContainerTestCaseTrait;
+
+	protected static $con;
+
+	protected $connection;
+
+	public function getConnection()
 	{
-		return $this->manager->createQueryBuilder()
-			->from('PSX\Handler\Doctrine\TestEntity', 'comment');
+		if(self::$con === null)
+		{
+			try
+			{
+				self::$con = getContainer()->get('connection');
+			}
+			catch(PDOException $e)
+			{
+				$this->markTestSkipped($e->getMessage());
+			}
+		}
+
+		if($this->connection === null)
+		{
+			$this->connection = self::$con;
+		}
+
+		return $this->createDefaultDBConnection($this->connection->getWrappedConnection(), getContainer()->get('config')->get('psx_sql_db'));
+	}
+
+	/**
+	 * Loads an specific command
+	 *
+	 * @param string $className
+	 * @param array $parameters
+	 * @return PSX\CommandInterface
+	 */
+	protected function loadCommand($className, array $parameters)
+	{
+		return getContainer()->get('executor')->run(new Map($className, $parameters));
+	}
+
+	protected function getPaths()
+	{
+		return array();
 	}
 }

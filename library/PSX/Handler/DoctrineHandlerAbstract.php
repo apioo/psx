@@ -36,7 +36,7 @@ use PSX\Sql\Condition;
 
 /**
  * Handler which can operate on an entity repository. You can extend this 
- * handler and implement the method getDefaultSelect() wich simply returns an 
+ * handler and implement the method getMapping() wich simply returns an 
  * query builder where the from and join fields are set. All other field  
  * selection is made by the handler. This handler uses partial selection in 
  * order to select only specific fields
@@ -205,7 +205,7 @@ abstract class DoctrineHandlerAbstract extends HandlerAbstract
 	 *
 	 * @return Doctrine\ORM\QueryBuilder
 	 */
-	abstract protected function getDefaultSelect();
+	abstract protected function getMapping();
 
 	/**
 	 * Returns the entity on wich the handler operates
@@ -303,7 +303,7 @@ abstract class DoctrineHandlerAbstract extends HandlerAbstract
 	{
 		if($this->_select === null)
 		{
-			$this->_select = $this->getDefaultSelect();
+			$this->_select = $this->getMapping();
 		}
 
 		$select = clone $this->_select;

@@ -23,7 +23,6 @@
 
 namespace PSX\PubSubHubBub;
 
-use PSX\Controller\ControllerTestCase;
 use PSX\Http;
 use PSX\Http\Handler\Callback;
 use PSX\Http\GetRequest;
@@ -31,6 +30,7 @@ use PSX\Http\PostRequest;
 use PSX\Http\Request;
 use PSX\Http\Response;
 use PSX\Http\Stream\TempStream;
+use PSX\Test\ControllerTestCase;
 use PSX\Url;
 
 /**

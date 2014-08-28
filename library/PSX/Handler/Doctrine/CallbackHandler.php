@@ -45,7 +45,7 @@ class CallbackHandler extends DoctrineHandlerAbstract
 		parent::__construct($manager);
 	}
 
-	public function getDefaultSelect()
+	public function getMapping()
 	{
 		return call_user_func($this->callback, $this->manager);
 	}

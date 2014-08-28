@@ -31,8 +31,8 @@ use PSX\Http\Response;
 use PSX\Http\Stream\TempStream;
 use PSX\Json;
 use PSX\Loader\Location;
+use PSX\Test\ControllerDbTestCase;
 use PSX\Url;
-use ReflectionClass;
 
 /**
  * SchemaApiAbstractTest
@@ -41,8 +41,13 @@ use ReflectionClass;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class SchemaApiAbstractTest extends ControllerTestCase
+class SchemaApiAbstractTest extends ControllerDbTestCase
 {
+	public function getDataSet()
+	{
+		return $this->createFlatXMLDataSet(dirname(__FILE__) . '/../Handler/handler_fixture.xml');
+	}
+
 	public function testGet()
 	{
 		$body     = new TempStream(fopen('php://memory', 'r+'));

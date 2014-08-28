@@ -23,7 +23,6 @@
 
 namespace PSX\Oauth\Provider;
 
-use PSX\Controller\ControllerTestCase;
 use PSX\Http;
 use PSX\Http\Handler\Callback;
 use PSX\Http\GetRequest;
@@ -32,6 +31,7 @@ use PSX\Http\Response;
 use PSX\Http\Stream\TempStream;
 use PSX\Oauth;
 use PSX\OauthTest;
+use PSX\Test\ControllerTestCase;
 use PSX\Url;
 
 /**

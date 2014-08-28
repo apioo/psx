@@ -23,15 +23,15 @@
 
 namespace PSX\Controller;
 
-use PSX\Loader\Location;
-use PSX\Loader\LocationFinder\CallbackMethod;
-use PSX\Loader\InvalidPathException;
 use PSX\Http\Stream\TempStream;
 use PSX\Http\Request;
 use PSX\Http\Response;
 use PSX\Json;
+use PSX\Loader\Location;
+use PSX\Loader\LocationFinder\CallbackMethod;
+use PSX\Loader\InvalidPathException;
+use PSX\Test\ControllerTestCase;
 use PSX\Url;
-use ReflectionClass;
 
 /**
  * ErrorControllerTest

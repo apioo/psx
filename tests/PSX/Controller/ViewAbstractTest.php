@@ -29,8 +29,8 @@ use PSX\Loader\InvalidPathException;
 use PSX\Http\Stream\TempStream;
 use PSX\Http\Request;
 use PSX\Http\Response;
+use PSX\Test\ControllerTestCase;
 use PSX\Url;
-use ReflectionClass;
 
 /**
  * ViewAbstractTest

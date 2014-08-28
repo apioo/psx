@@ -23,13 +23,13 @@
 
 namespace PSX\OpenId;
 
-use PSX\Controller\ControllerTestCase;
 use PSX\Http\Request;
 use PSX\Http\Response;
 use PSX\Http\Stream\TempStream;
 use PSX\OpenId;
 use PSX\OpenSsl;
 use PSX\OpenSsl\PKey;
+use PSX\Test\ControllerTestCase;
 use PSX\Url;
 
 /**

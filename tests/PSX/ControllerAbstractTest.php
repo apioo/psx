@@ -23,12 +23,12 @@
 
 namespace PSX;
 
+use PSX\Dispatch\RedirectException;
 use PSX\Http\Request;
 use PSX\Http\Response;
 use PSX\Http\Stream\TempStream;
 use PSX\Http\Stream\StringStream;
-use PSX\Controller\ControllerTestCase;
-use PSX\Dispatch\RedirectException;
+use PSX\Test\ControllerTestCase;
 use PSX\Url;
 
 /**
