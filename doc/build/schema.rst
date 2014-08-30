@@ -18,6 +18,8 @@ will be skipped
 
 .. code-block:: php
 
+    <?php
+
     namespace Foo\Application;
 
     use PSX\Data\RecordInterface;
@@ -83,4 +85,4 @@ will be skipped
         }
     }
 
-
+More informations about the schema concept at :doc:`../concept/schema`

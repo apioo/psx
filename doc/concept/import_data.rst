@@ -5,17 +5,16 @@ Import data
 Abstract
 --------
 
-This chapter will explain more detailed how you can use the record or schema
-importer to read request data.
+This chapter will explain more detailed how you can use an importer to read 
+request data.
 
 Record
 ------
 
-A record is a simple object which stores key value pairs. When we use an 
-importer class the importer needs to know which fields are available and what 
-type has each field. The record importer obtains theses meta informations from 
-the annotation of each method. As example lets say we want import the following 
-xml from an request
+A record is a simple object which stores key value pairs. The importer needs to 
+know which fields are available and what type has each field. The record 
+importer obtains theses meta informations from the annotation of each method. As 
+example lets say we want import the following xml from an request
 
 .. code-block:: xml
 
@@ -175,6 +174,8 @@ Therefor we need to define the following schema classes.
 
 .. code-block:: php
 
+    <?php
+
     class Entry extends SchemaAbstract
     {
         public function getDefinition()
@@ -192,6 +193,8 @@ Therefor we need to define the following schema classes.
 
 .. code-block:: php
 
+    <?php
+    
     class User extends SchemaAbstract
     {
         public function getDefinition()
@@ -206,19 +209,47 @@ Therefor we need to define the following schema classes.
     }
 
 With the schema you can define a much finer representation of your data model.
-More informations about the schema concept at the schema chapter.
+More informations about the schema concept at :doc:`schema`.
+
+Entity
+------
+
+PSX has also an entity importer which get the meta informations from the 
+annotations of an entity. At the moment the entity importer will not lookup
+any references means that only the available fields of the entity will be 
+imported. In the following an example howto use an entity.
+
+.. code-block:: php
+
+    <?php
+
+    namespace Foo\Application;
+
+    use PSX\ControllerAbstract;
+
+    class Index extends ControllerAbstract
+    {
+        public function doIndex()
+        {
+            $entry = $this->import(new FooEntity());
+
+            // do something with the entry
+        }
+    }
+
+
 
 Writing a custom importer
 -------------------------
 
-The meta informations how the requests data looks can be obtained from different
+The meta informations how the request data looks can be obtained from different
 sources. If you have already meta data in your project about your models you
 could write your own importer. The importer has an accept method which checks
 whether the source is valid to get passed to the import method. The import 
 method takes the response from the reader and creates an record based on the
 meta data from the source.
 
-.. literalinclude:: ../library/PSX/Data/Record/ImporterInterface.php
+.. literalinclude:: ../../library/PSX/Data/Record/ImporterInterface.php
    :language: php
    :lines: 34-55
    :prepend: <?php

@@ -18,7 +18,7 @@ and if we have an application/json content type we use the json reader. The
 reader returns the request data in an form which can be easily used in php. I.e. 
 the xml reader returns an DOMDocument and the json reader returns an array.
 
-.. literalinclude:: ../library/PSX/Data/ReaderInterface.php
+.. literalinclude:: ../../library/PSX/Data/ReaderInterface.php
    :language: php
    :lines: 35-57
    :prepend: <?php
@@ -27,7 +27,7 @@ Since the importer needs an array structure we must apply an transformation in
 some cases. The transformation depends also on the content type. If we receive
 an application/xml content type the XmlArray transformer gets applied.
 
-.. literalinclude:: ../library/PSX/Data/TransformerInterface.php
+.. literalinclude:: ../../library/PSX/Data/TransformerInterface.php
    :language: php
    :lines: 34-50
    :prepend: <?php
@@ -36,9 +36,9 @@ The data gets then imported into an record through an importer class. In
 abstract an importer class takes meta informations from an source and returns an 
 record class containing the data.
 
-.. literalinclude:: ../library/PSX/Data/Record/ImporterInterface.php
+.. literalinclude:: ../../library/PSX/Data/Record/ImporterInterface.php
    :language: php
-   :lines: 36-44
+   :lines: 34-55
    :prepend: <?php
 
 Available data reader
@@ -57,7 +57,8 @@ PSX comes with the following data reader:
 +--------------------------+-----------------------------------+-------------+
 
 The result of the data reader can be obtained by using the getBody method inside
-the controller
+the controller. Depending on the content type the response is either an arry
+or DOMDocument.
 
 .. code-block:: php
 
@@ -73,7 +74,7 @@ the controller
         {
             $body = $this->getBody();
 
-            // do something with the body
+            // @TODO do something with the body
         }
     }
 
@@ -81,7 +82,7 @@ Importer
 --------
 
 Which importer gets used depends on the source. You can pass different objects 
-to the import method which in the end provide meta informations how the 
+to the import method which in the end provides meta informations how the 
 incomming request data looks. If you pass to the source an 
 PSX\Data\RecordInterface the annotations of the record class gets parsed. I.e. 
 if you want import an atom xml format you could use the following controller
@@ -139,12 +140,12 @@ use the schema to generate great documentation about the API
 
 Here an example schema from an test case
 
-.. literalinclude:: ../tests/PSX/Controller/Foo/Schema/Entry.php
+.. literalinclude:: ../../tests/PSX/Controller/Foo/Schema/Entry.php
    :language: php
    :lines: 35-50
    :prepend: <?php
 
-More detailed informations about data importing at the import_data chapter
+More detailed informations about data importing at :doc:`import_data`
 
 Writing responses
 -----------------
@@ -199,9 +200,10 @@ Lets take a look at the following controller.
     }
 
 If you would request this method with an normal browser PSX would try to display
-the data as HTML. Therefor it would use the html writer which assigns the data
-to the template. In your template you can then build the html representation of 
-the feed. If we would make the request containing an Accept header 
-application/json or GET parameter "format" containing "json" the data would be
-returned as json format.
+the data as HTML (since the most browsers send an Accept header with text/html). 
+Therefor it would use the html writer which assigns the data to the template. In 
+your template you can then build the html representation of the feed. If we 
+would make the request containing an Accept header application/json or GET 
+parameter "format" containing "json" the data would be returned as json format. 
+If we would provide an application/atom+xml the atom feed gets returned.
 

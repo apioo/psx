@@ -2,11 +2,10 @@
 Authentication
 ==============
 
-It is often the case that you want that only registered users can POST new 
-entries to the API endpoint. In this case the user has to authorize before 
-submitting a new record. PSX offers several authorization methods for your API. 
-In this chapter we will look at different authentication methods and howto 
-implement them.
+Abstract
+--------
+
+This chapter shows how to implement authentication for an controller
 
 Basic authentication
 --------------------
@@ -25,7 +24,7 @@ controller in order to add basic authentication
     
     ...
     
-    public function getPostFilter()
+    public function getPreFilter()
     {
     	$auth = new BasicAuthentication(function($username, $password){
     
@@ -63,7 +62,7 @@ informations see :rfc:`5849#anchor`
     
     ...
     
-    public function getPostFilter()
+    public function getPreFilter()
     {
     	$auth = new OauthAuthentication(function($consumerKey, $token){
     

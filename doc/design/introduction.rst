@@ -6,30 +6,19 @@ About
 -----
 
 PSX is a framework written in PHP to create RESTful APIs. It helps you building 
-clean URLs serving web standard formats like JSON, XML, Atom and RSS. At the 
-core PSX is build of three parts. A handler system (similar to repositories in 
-doctrine) wich abstracts away the actual SQL queries from the domain logic. An 
-routing system wich executes the fitting controller method. And an flexible data 
-system to convert data records from the database into different formats like 
-JSON, XML, Atom and RSS. PSX uses a lightweight DI container to handle 
-dependencies (but is also compatible with the symfony DI container). The 
-controller can return request or response filter wich can react or modify the 
-HTTP request or response. PSX offers some basic request filter to handle i.e. 
-Basic or Oauth authentication. In addition PSX offers some cool components to 
-use and implement OAuth, OpenID, Opengraph, Opensocial, Opensearch, 
-PubSubHubbub, WebFinger, Atom, and RSS.
+clean URLs serving web standard formats like JSON, XML, Atom and RSS.
 
 Installation
 ------------
 
 If you want use PSX fully you can either download a current release at 
 https://github.com/k42b3/psx/releases or you can install the sample project 
-through composer::
+through composer:
 
     php composer.phar create-project psx/sample .
 
 In case you only want to use specific components you can easily require the
-PSX framework to your composer.json::
+PSX framework to your composer.json:
 
     "psx/psx": "0.9.*@dev"
 

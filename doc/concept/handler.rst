@@ -5,26 +5,41 @@ Handler
 Abstract
 --------
 
-This chapter gives an overview howto build an REST API around an handler. An 
-handler is an concept in PSX which offers a simple interface to CRUD records.
+This chapter should give you an overview what the handler system is how it works
+and what handler are avaialble. To see howto build an API based on an handler
+go to :doc:`../build/handler`
 
-API
----
+Design
+------
 
-Creating an API through an handler is the easiest way to create an REST API
-in PSX since the handler provides already all CRUD capabilities.
+An handler is an object which offers a simple interface to CRUD records. The 
+handler should simplify creating an API based on various data sources. There are
+two interfaces which an handler can implement. The HandlerQueryInterface which
+provides method for data retrieval
+
+.. literalinclude:: ../../library/PSX/Handler/HandlerQueryInterface.php
+   :language: php
+   :lines: 35-88
+   :prepend: <?php
+
+and the HandlerManipulationInterface to create, update or delete an record
+
+.. literalinclude:: ../../library/PSX/Handler/HandlerManipulationInterface.php
+   :language: php
+   :lines: 35-57
+   :prepend: <?php
+
+Table handler
+-------------
+
+The table handler operates on an sql table. You can obtain an table through the
+table manager
 
 .. code-block:: php
 
-    namespace Foo\Application;
-
-    use PSX\Controller\HandlerApiAbstract;
-    use PSX\Filter;
-    use PSX\Validate;
-    use PSX\Validate\RecordValidator;
-    use PSX\Validate\Property;
-
-    class NewsApi extends HandlerApiAbstract
+    <?php
+    
+    class FooController
     {
         /**
          * @Inject
@@ -32,31 +47,80 @@ in PSX since the handler provides already all CRUD capabilities.
          */
         protected $tableManager;
 
-        protected function getValidator()
+        public function doIndex()
         {
-            return new RecordValidator($this->validate, array(
-                new Property('id', Validate::TYPE_INTEGER),
-                new Property('userId', Validate::TYPE_INTEGER),
-                new Property('title', Validate::TYPE_STRING, array(new Filter\Length(3, 16))),
-                new Property('date', Validate::TYPE_STRING, array(new Filter\DateTime())),
-            ));
-        }
+            $table = $this->tableManager->getTable('Foo\Table');
 
-        protected function getHandler()
-        {
-            return $this->tableManager->getTable('Foo\NewsTable');
+            // @TODO work with $table
         }
     }
 
-In our example we use the table manager which returns an table handler. More
-informations about the table manager at the table chapter. Beside that PSX
-offers other handler
+The table class provides informations how the table is structured.
+
+.. code-block:: php
+
+    <?php
+
+    use PSX\Sql\TableAbstract;
+
+    class Table extends TableAbstract
+    {
+        public function getName()
+        {
+            return 'foo';
+        }
+
+        public function getColumns()
+        {
+            return array(
+                'id'    => self::TYPE_INT | 11 | self::PRIMARY_KEY,
+                'title' => self::TYPE_VARCHAR | 32,
+                'date'  => self::TYPE_DATETIME
+            );
+        }
+    }
+
+It is possible to register an table reader class which provides these table 
+informations. By default the table name and available columns are hard coded 
+into an class but you could also use i.e. the mysql describe reader which 
+obtains these informations from an describe query.
+
+Select handler
+--------------
+
+With the select handle you can join over multiple tables. 
+
+.. code-block:: php
+
+    <?php
+    
+    class FooController
+    {
+        /**
+         * @Inject
+         * @var PSX\Sql\TableManager
+         */
+        protected $tableManager;
+
+        public function doIndex()
+        {
+            $select = $this->tableManager->getTable('Foo\Table')
+                        ->select(array('id', 'title'), 'news')
+                        ->join(Join::INNER, $this->tableManager->getTable('Foo\User')
+                            ->select(array('name'), 'user')
+                        )
+                        ->orderBy('id', Sql::SORT_DESC)
+                        ->limit(8);
+
+            // @TODO work with $select
+        }
+    }
 
 Database handler
 ----------------
 
 The database handler is for making raw SQL queries. This handler implements only
-the HandlerQueryInterface that means we can not CUD records
+the HandlerQueryInterface that means we can not create, update or delete records
 
 .. code-block:: php
 
@@ -76,10 +140,9 @@ the HandlerQueryInterface that means we can not CUD records
 
         protected function getQuery()
         {
-            return 'SELECT {fields} FROM `psx_handler_comment` {condition} {orderBy} {limit}';
+            return 'SELECT `id`, `userId`, `title`, `date` FROM `psx_handler_comment` {condition} {orderBy} {limit}';
         }
     }
-
 
 Doctrine handler
 ----------------
@@ -195,4 +258,4 @@ or both which means you implement the PSX\\Handler\\HandlerInterface. If you
 implement the HandlerManipulationInterface your handler must be able to create,
 update or delete records. If you implement the HandlerQueryInterface your
 handler must support retrieval of records please see the API documentation for
-detailed list of all required methods
+a detailed list of all required methods

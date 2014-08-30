@@ -82,7 +82,7 @@ If you want store your routes in another format or in an database you can
 easily write your own RoutingParser. The routing parser returns an 
 RoutingCollection which contains all available routes.
 
-.. literalinclude:: ../library/PSX/Loader/RoutingParserInterface.php
+.. literalinclude:: ../../library/PSX/Loader/RoutingParserInterface.php
    :language: php
    :lines: 33-39
    :prepend: <?php
