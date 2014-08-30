@@ -68,13 +68,13 @@ class Entity implements ImporterInterface
 			throw new InvalidArgumentException('Data must be an array');
 		}
 
-		$metaData = $this->em->getMetadataFactory()->getMetadataFor(get_class($entity));
-		$fields   = $this->getEntityFields($entity, $data, $metaData);
+		$metaData = $this->em->getMetadataFactory()->getMetadataFor($this->getClassName($entity));
+		$fields   = $this->getEntityFields($metaData, $data);
 
 		return new DataRecord($metaData->getTableName(), $fields);
 	}
 
-	protected function getEntityFields($entity, array $data, ClassMetadata $metaData)
+	protected function getEntityFields(ClassMetadata $metaData, array $data)
 	{
 		// change data keys to camelcase
 		$result = array();
@@ -137,11 +137,16 @@ class Entity implements ImporterInterface
 
 	protected function isEntity($class)
 	{
+		return !$this->em->getMetadataFactory()->isTransient($this->getClassName($class));
+	}
+
+	protected function getClassName($class)
+	{
 		if(is_object($class))
 		{
 			$class = ($class instanceof Proxy) ? get_parent_class($class) : get_class($class);
 		}
 
-		return !$this->em->getMetadataFactory()->isTransient($class);
+		return $class;
 	}
 }
