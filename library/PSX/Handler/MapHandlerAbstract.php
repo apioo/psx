@@ -43,14 +43,13 @@ abstract class MapHandlerAbstract extends DataHandlerQueryAbstract
 		$this->mapping = $this->getMapping();
 	}
 
-	public function getAll(array $fields = null, $startIndex = null, $count = null, $sortBy = null, $sortOrder = null, Condition $condition = null)
+	public function getAll($startIndex = null, $count = null, $sortBy = null, $sortOrder = null, Condition $condition = null)
 	{
 		$startIndex = $startIndex !== null ? (int) $startIndex : 0;
 		$count      = !empty($count)       ? (int) $count      : 16;
 		$sortBy     = $sortBy     !== null ? $sortBy           : $this->mapping->getIdProperty();
 		$sortOrder  = $sortOrder  !== null ? (int) $sortOrder  : Sql::SORT_DESC;
 
-		$fields        = $this->getValidFields($fields);
 		$array         = $this->mapping->getArray();
 		$mappingFields = $this->mapping->getFields();
 		$sort          = array();
@@ -99,9 +98,7 @@ abstract class MapHandlerAbstract extends DataHandlerQueryAbstract
 		$result = array();
 		foreach($sort as $key => $value)
 		{
-			$row = array_intersect_key($return[$key], array_flip($fields));
-
-			$result[] = new Record('record', $row);
+			$result[] = new Record('record', $return[$key]);
 		}
 
 		return array_slice($result, $startIndex, $count);

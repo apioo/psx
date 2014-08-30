@@ -42,14 +42,14 @@ abstract class HandlerQueryAbstract implements HandlerQueryInterface
 {
 	protected $restrictedFields = array();
 
-	public function getBy(Condition $condition, array $fields = null)
+	public function getBy(Condition $condition)
 	{
-		return $this->getAll($fields, null, null, null, null, $condition);
+		return $this->getAll(null, null, null, null, $condition);
 	}
 
-	public function getOneBy(Condition $condition, array $fields = null)
+	public function getOneBy(Condition $condition)
 	{
-		$result = $this->getAll($fields, 0, 1, null, null, $condition);
+		$result = $this->getAll(0, 1, null, null, $condition);
 
 		return current($result);
 	}
@@ -73,9 +73,9 @@ abstract class HandlerQueryAbstract implements HandlerQueryInterface
 	 * @param PSX\Sql\Condition $condition
 	 * @return PSX\Data\Collection
 	 */
-	public function getCollection(array $fields = null, $startIndex = null, $count = null, $sortBy = null, $sortOrder = null, Condition $condition = null)
+	public function getCollection($startIndex = null, $count = null, $sortBy = null, $sortOrder = null, Condition $condition = null)
 	{
-		$entries    = $this->getAll($fields, $startIndex, $count, $sortBy, $sortOrder, $condition);
+		$entries    = $this->getAll($startIndex, $count, $sortBy, $sortOrder, $condition);
 		$collection = new Collection($entries);
 
 		return $collection;
@@ -93,10 +93,10 @@ abstract class HandlerQueryAbstract implements HandlerQueryInterface
 	 * @param PSX\Sql\Condition $condition
 	 * @return PSX\Data\ResultSet
 	 */
-	public function getResultSet(array $fields = null, $startIndex = null, $count = null, $sortBy = null, $sortOrder = null, Condition $condition = null)
+	public function getResultSet($startIndex = null, $count = null, $sortBy = null, $sortOrder = null, Condition $condition = null)
 	{
 		$total      = $this->getCount($condition);
-		$entries    = $this->getAll($fields, $startIndex, $count, $sortBy, $sortOrder, $condition);
+		$entries    = $this->getAll($startIndex, $count, $sortBy, $sortOrder, $condition);
 		$resultSet  = new ResultSet($total, $startIndex, $count, $entries);
 
 		return $resultSet;
@@ -171,24 +171,5 @@ abstract class HandlerQueryAbstract implements HandlerQueryInterface
 	public function setRestrictedFields(array $restrictedFields)
 	{
 		$this->restrictedFields = $restrictedFields;
-	}
-
-	protected function getValidFields(array $fields = null)
-	{
-		if($fields !== null)
-		{
-			$fields = array_intersect($fields, $this->getSupportedFields());
-
-			if(empty($fields))
-			{
-				throw new \Exception('No valid field selected');
-			}
-
-			return $fields;
-		}
-		else
-		{
-			return $this->getSupportedFields();
-		}
 	}
 }

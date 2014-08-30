@@ -63,8 +63,7 @@ abstract class HandlerApiAbstract extends ApiAbstract
 		$parameter = $this->getFilterParameter();
 		$condition = FilterParameter::getCondition($parameter);
 
-		$result = $this->doGet($parameter->getFields(), 
-				$parameter->getStartIndex(), 
+		$result = $this->doGet($parameter->getStartIndex(), 
 				$parameter->getCount(), 
 				$parameter->getSortBy(), 
 				$parameter->getSortOrder(), 
@@ -188,10 +187,9 @@ abstract class HandlerApiAbstract extends ApiAbstract
 		$this->setBody($message);
 	}
 
-	protected function doGet(array $fields = null, $startIndex = null, $count = null, $sortBy = null, $sortOrder = null, Condition $condition = null)
+	protected function doGet($startIndex = null, $count = null, $sortBy = null, $sortOrder = null, Condition $condition = null)
 	{
-		return $this->_handler->getCollection($fields, 
-					$startIndex, 
+		return $this->_handler->getCollection($startIndex, 
 					$count, 
 					$sortBy, 
 					$sortOrder, 

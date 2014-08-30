@@ -130,14 +130,19 @@ abstract class TableAbstract extends HandlerAbstract implements TableInterface
 		return $this->select;
 	}
 
-	public function getAll(array $fields = null, $startIndex = null, $count = null, $sortBy = null, $sortOrder = null, Condition $condition = null)
+	public function getAll($startIndex = null, $count = null, $sortBy = null, $sortOrder = null, Condition $condition = null)
 	{
 		$startIndex = $startIndex !== null ? (int) $startIndex : 0;
 		$count      = !empty($count)       ? (int) $count      : 16;
 		$sortBy     = $sortBy     !== null ? $sortBy           : $this->getPrimaryKey();
 		$sortOrder  = $sortOrder  !== null ? (int) $sortOrder  : Sql::SORT_DESC;
 
-		$fields = $this->getValidFields($fields);
+		if(!in_array($sortBy, $this->getSupportedFields()))
+		{
+			$sortBy = $this->getPrimaryKey();
+		}
+
+		$fields = $this->getSupportedFields();
 		
 		array_walk($fields, function(&$value){
 			$value = '`' . $value . '`';

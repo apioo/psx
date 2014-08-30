@@ -190,12 +190,17 @@ class Select extends HandlerAbstract implements SelectInterface
 		return $this;
 	}
 
-	public function getAll(array $fields = null, $startIndex = null, $count = null, $sortBy = null, $sortOrder = null, Condition $condition = null)
+	public function getAll($startIndex = null, $count = null, $sortBy = null, $sortOrder = null, Condition $condition = null)
 	{
 		$startIndex = $startIndex !== null ? (int) $startIndex : 0;
 		$count      = !empty($count)       ? (int) $count      : 16;
 		$sortBy     = $sortBy     !== null ? $sortBy           : $this->table->getPrimaryKey();
 		$sortOrder  = $sortOrder  !== null ? (int) $sortOrder  : Sql::SORT_DESC;
+
+		if(!in_array($sortBy, $this->getSupportedFields()))
+		{
+			$sortBy = $this->table->getPrimaryKey();
+		}
 
 		$copyCondition = clone $this->condition;
 		if($condition !== null)
@@ -203,7 +208,7 @@ class Select extends HandlerAbstract implements SelectInterface
 			$copyCondition->merge($condition);
 		}
 
-		return $this->project($this->buildQuery($fields, $startIndex, $count, $sortBy, $sortOrder, $copyCondition), $copyCondition->getValues());
+		return $this->project($this->buildQuery($startIndex, $count, $sortBy, $sortOrder, $copyCondition), $copyCondition->getValues());
 	}
 
 	public function get($id)
@@ -337,15 +342,9 @@ class Select extends HandlerAbstract implements SelectInterface
 		return $selectedColumns;
 	}
 
-	protected function buildQuery(array $fields = null, $startIndex = null, $count = null, $sortBy = null, $sortOrder = null, Condition $condition = null)
+	protected function buildQuery($startIndex = null, $count = null, $sortBy = null, $sortOrder = null, Condition $condition = null)
 	{
 		$selectedColumns = $this->getAllSelectedColumns();
-
-		if($fields !== null)
-		{
-			$selectedColumns = array_intersect_key($selectedColumns, array_flip($fields));
-		}
-
 		$selectedColumns = array_intersect_key($selectedColumns, array_flip($this->getSupportedFields()));
 
 		if(empty($selectedColumns))

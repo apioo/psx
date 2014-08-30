@@ -60,14 +60,12 @@ abstract class DoctrineHandlerAbstract extends HandlerAbstract
 		$this->entityName = $this->getEntityName();
 	}
 
-	public function getAll(array $fields = null, $startIndex = null, $count = null, $sortBy = null, $sortOrder = null, Condition $condition = null)
+	public function getAll($startIndex = null, $count = null, $sortBy = null, $sortOrder = null, Condition $condition = null)
 	{
 		$startIndex = $startIndex !== null ? (int) $startIndex : 0;
 		$count      = !empty($count)       ? (int) $count      : 16;
 		$sortBy     = $sortBy     !== null ? $sortBy           : $this->getPrimaryIdField();
 		$sortOrder  = $sortOrder  !== null ? (int) $sortOrder  : Sql::SORT_DESC;
-
-		$fields = $this->getValidFields($fields);
 
 		if(!in_array($sortBy, $this->getSupportedFields()))
 		{
@@ -76,7 +74,7 @@ abstract class DoctrineHandlerAbstract extends HandlerAbstract
 
 		$qb = $this
 			->getSelect()
-			->select($this->getQuerySelect($fields))
+			->select($this->getQuerySelect())
 			->orderBy($this->getQueryOrderBy($sortBy), $sortOrder == Sql::SORT_ASC ? 'ASC' : 'DESC')
 			->setFirstResult($startIndex)
 			->setMaxResults($count);
@@ -316,7 +314,7 @@ abstract class DoctrineHandlerAbstract extends HandlerAbstract
 		return $this->manager->getClassMetadata($this->entityName)->getSingleIdentifierFieldName();
 	}
 
-	protected function getQuerySelect(array $selectedFields)
+	protected function getQuerySelect()
 	{
 		$dql    = array();
 		$fields = $this->getPartialFields();
@@ -337,17 +335,14 @@ abstract class DoctrineHandlerAbstract extends HandlerAbstract
 
 				foreach($values as $k => $v)
 				{
-					if(in_array($v, $selectedFields))
-					{
-						$result[] = $field[$k];
-					}
+					$result[] = $field[$k];
 				}
 
 				$values = $result;
 			}
 			else
 			{
-				$values = array_intersect($field, $selectedFields);
+				$values = $field;
 			}
 
 			// partial selection must include the id field

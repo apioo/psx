@@ -55,9 +55,9 @@ class ProxyCacheHandler extends HandlerQueryAbstract
 		$this->expire = $expire;
 	}
 
-	public function getAll(array $fields = null, $startIndex = null, $count = null, $sortBy = null, $sortOrder = null, Condition $condition = null)
+	public function getAll($startIndex = null, $count = null, $sortBy = null, $sortOrder = null, Condition $condition = null)
 	{
-		$key  = '__PC__' . md5(json_encode(array(__METHOD__, $fields, $startIndex, $count, $sortBy, $sortOrder, (string) $condition, $this->handler->getRestrictedFields())));
+		$key  = '__PC__' . md5(json_encode(array(__METHOD__, $startIndex, $count, $sortBy, $sortOrder, (string) $condition, $this->handler->getRestrictedFields())));
 		$item = $this->cache->getItem($key);
 
 		if($item->isHit())
@@ -66,7 +66,7 @@ class ProxyCacheHandler extends HandlerQueryAbstract
 		}
 		else
 		{
-			$return = $this->handler->getAll($fields, $startIndex, $count, $sortBy, $sortOrder, $condition);
+			$return = $this->handler->getAll($startIndex, $count, $sortBy, $sortOrder, $condition);
 
 			$item->set($return, $this->expire);
 

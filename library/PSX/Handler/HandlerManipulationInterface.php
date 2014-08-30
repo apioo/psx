@@ -24,7 +24,6 @@
 namespace PSX\Handler;
 
 use PSX\Data\RecordInterface;
-use PSX\Sql\Condition;
 
 /**
  * HandlerManipulationInterface

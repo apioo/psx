@@ -47,6 +47,6 @@ class TestHandler extends DatabaseHandlerAbstract
 
 	protected function getQuery()
 	{
-		return 'SELECT {fields} FROM `psx_handler_comment` {condition} {orderBy} {limit}';
+		return 'SELECT `id`, `userId`, `title`, `date` FROM `psx_handler_comment` {condition} {orderBy} {limit}';
 	}
 }

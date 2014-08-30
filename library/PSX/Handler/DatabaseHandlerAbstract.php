@@ -55,21 +55,19 @@ abstract class DatabaseHandlerAbstract extends DataHandlerQueryAbstract
 		$this->mapping    = $this->getMapping();
 	}
 
-	public function getAll(array $fields = null, $startIndex = null, $count = null, $sortBy = null, $sortOrder = null, Condition $condition = null)
+	public function getAll($startIndex = null, $count = null, $sortBy = null, $sortOrder = null, Condition $condition = null)
 	{
 		$startIndex = $startIndex !== null ? (int) $startIndex : 0;
 		$count      = !empty($count)       ? (int) $count      : 16;
 		$sortBy     = $sortBy     !== null ? $sortBy           : $this->mapping->getIdProperty();
 		$sortOrder  = $sortOrder  !== null ? (int) $sortOrder  : Sql::SORT_DESC;
 
-		$fields = $this->getValidFields($fields);
-
 		if(!in_array($sortBy, $this->getSupportedFields()))
 		{
 			$sortBy = $this->mapping->getIdProperty();
 		}
 
-		$sql    = $this->getSelectQuery($fields, $startIndex, $count, $sortBy, $sortOrder, $condition);
+		$sql    = $this->getSelectQuery($startIndex, $count, $sortBy, $sortOrder, $condition);
 		$params = $condition !== null ? $condition->getValues() : array();
 
 		return $this->project($sql, $params);
@@ -95,19 +93,9 @@ abstract class DatabaseHandlerAbstract extends DataHandlerQueryAbstract
 		return (int) $this->connection->fetchColumn($sql, $params);
 	}
 
-	protected function getSelectQuery(array $fields, $startIndex, $count, $sortBy, $sortOrder, Condition $condition = null)
+	protected function getSelectQuery($startIndex, $count, $sortBy, $sortOrder, Condition $condition = null)
 	{
-		if(empty($fields))
-		{
-			throw new InvalidArgumentException('Field must not be empty');
-		}
-
-		array_walk($fields, function(&$value){
-			$value = '`' . $value . '`';
-		});
-
 		$sql = $this->mapping->getSql();
-		$sql = str_replace('{fields}', implode(', ', $fields), $sql);
 
 		if($condition !== null)
 		{
@@ -144,7 +132,12 @@ abstract class DatabaseHandlerAbstract extends DataHandlerQueryAbstract
 	protected function getCountQuery(Condition $condition = null)
 	{
 		$sql = $this->mapping->getSql();
-		$sql = str_replace('{fields}', 'COUNT(*)', $sql);
+
+		$sql    = preg_match_all('/SELECT(.*)FROM(.*)/ims', $sql, $matches);
+		$select = isset($matches[1][0]) ? $matches[1][0] : null;
+		$from   = isset($matches[2][0]) ? $matches[2][0] : null;
+		$sql    = 'SELECT COUNT(*) FROM ' . $from;
+
 		$sql = str_replace('{orderBy}', '', $sql);
 		$sql = str_replace('{limit}', '', $sql);
 

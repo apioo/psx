@@ -90,90 +90,34 @@ trait HandlerTestCase
 		$this->assertEquals(true, is_array($result));
 		$this->assertEquals(4, count($result));
 
-		foreach($result as $row)
-		{
-			$this->assertInstanceOf('PSX\Data\Record', $row);
-			$this->assertEquals(true, $row->getId() != null);
-			$this->assertEquals(true, $row->getUserId() != null);
-			$this->assertEquals(true, $row->getTitle() != null);
-			$this->assertInstanceOf('DateTime', $row->getDate());
-		}
-	}
+		$expect = array(
+			array(
+				'id' => 4,
+				'userId' => 3,
+				'title' => 'blub',
+				'date' => '2013-04-29 16:56:32',
+			),
+			array(
+				'id' => 3,
+				'userId' => 2,
+				'title' => 'test',
+				'date' => '2013-04-29 16:56:32',
+			),
+			array(
+				'id' => 2,
+				'userId' => 1,
+				'title' => 'bar',
+				'date' => '2013-04-29 16:56:32',
+			),
+			array(
+				'id' => 1,
+				'userId' => 1,
+				'title' => 'foo',
+				'date' => '2013-04-29 16:56:32',
+			),
+		);
 
-	public function testGetAllRestricted()
-	{
-		$handler = $this->getHandler();
-
-		if(!$handler instanceof HandlerQueryInterface)
-		{
-			$this->markTestSkipped('Handler not an query interface');
-		}
-
-		$handler->setRestrictedFields(array('userId'));
-
-		$result = $handler->getAll();
-
-		$this->assertEquals(true, is_array($result));
-		$this->assertEquals(4, count($result));
-
-		foreach($result as $row)
-		{
-			$this->assertInstanceOf('PSX\Data\Record', $row);
-			$this->assertEquals(true, $row->getId() != null);
-			$this->assertEquals(true, $row->getUserId() == null);
-			$this->assertEquals(true, $row->getTitle() != null);
-			$this->assertInstanceOf('DateTime', $row->getDate());
-		}
-	}
-
-	public function testGetAllSelectFields()
-	{
-		$handler = $this->getHandler();
-
-		if(!$handler instanceof HandlerQueryInterface)
-		{
-			$this->markTestSkipped('Handler not an query interface');
-		}
-
-		$result = $handler->getAll(array('id', 'title'));
-
-		$this->assertEquals(true, is_array($result));
-		$this->assertEquals(4, count($result));
-
-		foreach($result as $row)
-		{
-			$this->assertInstanceOf('PSX\Data\Record', $row);
-			$this->assertEquals(true, $row->getId() != null);
-			$this->assertEquals(true, $row->getUserId() == null);
-			$this->assertEquals(true, $row->getTitle() != null);
-			$this->assertEquals(true, $row->getDate() == null);
-		}
-	}
-
-	public function testGetAllSelectFieldsRestricted()
-	{
-		$handler = $this->getHandler();
-
-		if(!$handler instanceof HandlerQueryInterface)
-		{
-			$this->markTestSkipped('Handler not an query interface');
-		}
-
-		$handler->setRestrictedFields(array('title'));
-
-		$result = $handler->getAll(array('id', 'title'));
-
-		$this->assertEquals(true, is_array($result));
-		$this->assertEquals(4, count($result));
-
-		foreach($result as $row)
-		{
-			$this->assertInstanceOf('PSX\Data\Record', $row);
-			$this->assertEquals(true, $row->getId() != null);
-			$this->assertEquals(true, $row->getUserId() == null);
-			$this->assertEquals(true, $row->getTitle() == null);
-			$this->assertEquals(true, $row->getDate() == null);
-		}
+		$this->assertResult($expect, $result);
 	}
 
 	public function testGetAllStartIndex()
@@ -185,17 +129,21 @@ trait HandlerTestCase
 			$this->markTestSkipped('Handler not an query interface');
 		}
 
-		$result = $handler->getAll(array('id', 'title'), 3);
+		$result = $handler->getAll(3);
 
 		$this->assertEquals(true, is_array($result));
 		$this->assertEquals(1, count($result));
 
-		foreach($result as $row)
-		{
-			$this->assertInstanceOf('PSX\Data\Record', $row);
-			$this->assertEquals(true, $row->getId() != null);
-			$this->assertEquals(true, $row->getTitle() != null);
-		}
+		$expect = array(
+			array(
+				'id' => 1,
+				'userId' => 1,
+				'title' => 'foo',
+				'date' => '2013-04-29 16:56:32',
+			),
+		);
+
+		$this->assertResult($expect, $result);
 	}
 
 	public function testGetAllCount()
@@ -207,17 +155,27 @@ trait HandlerTestCase
 			$this->markTestSkipped('Handler not an query interface');
 		}
 
-		$result = $handler->getAll(array('id', 'title'), 0, 2);
+		$result = $handler->getAll(0, 2);
 
 		$this->assertEquals(true, is_array($result));
 		$this->assertEquals(2, count($result));
 
-		foreach($result as $row)
-		{
-			$this->assertInstanceOf('PSX\Data\Record', $row);
-			$this->assertEquals(true, $row->getId() != null);
-			$this->assertEquals(true, $row->getTitle() != null);
-		}
+		$expect = array(
+			array(
+				'id' => 4,
+				'userId' => 3,
+				'title' => 'blub',
+				'date' => '2013-04-29 16:56:32',
+			),
+			array(
+				'id' => 3,
+				'userId' => 2,
+				'title' => 'test',
+				'date' => '2013-04-29 16:56:32',
+			),
+		);
+
+		$this->assertResult($expect, $result);
 	}
 
 	public function testGetAllStartIndexAndCountDefault()
@@ -229,19 +187,27 @@ trait HandlerTestCase
 			$this->markTestSkipped('Handler not an query interface');
 		}
 
-		$result = $handler->getAll(array('id', 'title'), 2, 2);
+		$result = $handler->getAll(2, 2);
 
 		$this->assertEquals(true, is_array($result));
 		$this->assertEquals(2, count($result));
 
-		$i = 2;
-		foreach($result as $row)
-		{
-			$this->assertInstanceOf('PSX\Data\Record', $row);
-			$this->assertEquals($i, $row->getId());
-			$this->assertEquals(true, $row->getTitle() != null);
-			$i--;
-		}
+		$expect = array(
+			array(
+				'id' => 2,
+				'userId' => 1,
+				'title' => 'bar',
+				'date' => '2013-04-29 16:56:32',
+			),
+			array(
+				'id' => 1,
+				'userId' => 1,
+				'title' => 'foo',
+				'date' => '2013-04-29 16:56:32',
+			),
+		);
+
+		$this->assertResult($expect, $result);
 	}
 
 	public function testGetAllStartIndexAndCountDesc()
@@ -253,19 +219,27 @@ trait HandlerTestCase
 			$this->markTestSkipped('Handler not an query interface');
 		}
 
-		$result = $handler->getAll(array('id', 'title'), 2, 2, 'id', Sql::SORT_DESC);
+		$result = $handler->getAll(2, 2, 'id', Sql::SORT_DESC);
 
 		$this->assertEquals(true, is_array($result));
 		$this->assertEquals(2, count($result));
 
-		$i = 2;
-		foreach($result as $row)
-		{
-			$this->assertInstanceOf('PSX\Data\Record', $row);
-			$this->assertEquals($i, $row->getId());
-			$this->assertEquals(true, $row->getTitle() != null);
-			$i--;
-		}
+		$expect = array(
+			array(
+				'id' => 2,
+				'userId' => 1,
+				'title' => 'bar',
+				'date' => '2013-04-29 16:56:32',
+			),
+			array(
+				'id' => 1,
+				'userId' => 1,
+				'title' => 'foo',
+				'date' => '2013-04-29 16:56:32',
+			),
+		);
+
+		$this->assertResult($expect, $result);
 	}
 
 	public function testGetAllStartIndexAndCountAsc()
@@ -277,19 +251,27 @@ trait HandlerTestCase
 			$this->markTestSkipped('Handler not an query interface');
 		}
 
-		$result = $handler->getAll(array('id', 'title'), 2, 2, 'id', Sql::SORT_ASC);
+		$result = $handler->getAll(2, 2, 'id', Sql::SORT_ASC);
 
 		$this->assertEquals(true, is_array($result));
 		$this->assertEquals(2, count($result));
 
-		$i = 3;
-		foreach($result as $row)
-		{
-			$this->assertInstanceOf('PSX\Data\Record', $row);
-			$this->assertEquals($i, $row->getId());
-			$this->assertEquals(true, $row->getTitle() != null);
-			$i++;
-		}
+		$expect = array(
+			array(
+				'id' => 3,
+				'userId' => 2,
+				'title' => 'test',
+				'date' => '2013-04-29 16:56:32',
+			),
+			array(
+				'id' => 4,
+				'userId' => 3,
+				'title' => 'blub',
+				'date' => '2013-04-29 16:56:32',
+			),
+		);
+
+		$this->assertResult($expect, $result);
 	}
 
 	public function testGetAllSortDesc()
@@ -301,10 +283,27 @@ trait HandlerTestCase
 			$this->markTestSkipped('Handler not an query interface');
 		}
 
-		$result = $handler->getAll(array('id', 'title'), 0, 2, 'id', Sql::SORT_DESC);
+		$result = $handler->getAll(0, 2, 'id', Sql::SORT_DESC);
 
 		$this->assertEquals(true, is_array($result));
 		$this->assertEquals(2, count($result));
+
+		$expect = array(
+			array(
+				'id' => 4,
+				'userId' => 3,
+				'title' => 'blub',
+				'date' => '2013-04-29 16:56:32',
+			),
+			array(
+				'id' => 3,
+				'userId' => 2,
+				'title' => 'test',
+				'date' => '2013-04-29 16:56:32',
+			),
+		);
+
+		$this->assertResult($expect, $result);
 
 		foreach($result as $row)
 		{
@@ -327,21 +326,27 @@ trait HandlerTestCase
 			$this->markTestSkipped('Handler not an query interface');
 		}
 
-		$result = $handler->getAll(array('id', 'title'), 0, 2, 'id', Sql::SORT_ASC);
+		$result = $handler->getAll(0, 2, 'id', Sql::SORT_ASC);
 
 		$this->assertEquals(true, is_array($result));
 		$this->assertEquals(2, count($result));
 
-		foreach($result as $row)
-		{
-			$this->assertInstanceOf('PSX\Data\Record', $row);
-			$this->assertEquals(true, $row->getId() != null);
-			$this->assertEquals(true, $row->getTitle() != null);
-		}
+		$expect = array(
+			array(
+				'id' => 1,
+				'userId' => 1,
+				'title' => 'foo',
+				'date' => '2013-04-29 16:56:32',
+			),
+			array(
+				'id' => 2,
+				'userId' => 1,
+				'title' => 'bar',
+				'date' => '2013-04-29 16:56:32',
+			),
+		);
 
-		// check order
-		$this->assertEquals(1, $result[0]->getId());
-		$this->assertEquals(2, $result[1]->getId());
+		$this->assertResult($expect, $result);
 	}
 
 	public function testGetAllCondition()
@@ -354,21 +359,27 @@ trait HandlerTestCase
 		}
 
 		$con    = new Condition(array('userId', '=', 1));
-		$result = $handler->getAll(array('id', 'title'), 0, 16, 'id', Sql::SORT_DESC, $con);
+		$result = $handler->getAll(0, 16, 'id', Sql::SORT_DESC, $con);
 
 		$this->assertEquals(true, is_array($result));
 		$this->assertEquals(2, count($result));
 
-		foreach($result as $row)
-		{
-			$this->assertInstanceOf('PSX\Data\Record', $row);
-			$this->assertEquals(true, $row->getId() != null);
-			$this->assertEquals(true, $row->getTitle() != null);
-		}
+		$expect = array(
+			array(
+				'id' => 2,
+				'userId' => 1,
+				'title' => 'bar',
+				'date' => '2013-04-29 16:56:32',
+			),
+			array(
+				'id' => 1,
+				'userId' => 1,
+				'title' => 'foo',
+				'date' => '2013-04-29 16:56:32',
+			),
+		);
 
-		// check order
-		$this->assertEquals(2, $result[0]->getId());
-		$this->assertEquals(1, $result[1]->getId());
+		$this->assertResult($expect, $result);
 	}
 
 	public function testGetAllConditionAndConjunction()
@@ -383,7 +394,7 @@ trait HandlerTestCase
 		$con = new Condition();
 		$con->add('userId', '=', 1, 'AND');
 		$con->add('userId', '=', 3);
-		$result = $handler->getAll(array('id', 'title'), 0, 16, 'id', Sql::SORT_DESC, $con);
+		$result = $handler->getAll(0, 16, 'id', Sql::SORT_DESC, $con);
 
 		$this->assertEquals(true, is_array($result));
 		$this->assertEquals(0, count($result));
@@ -392,19 +403,21 @@ trait HandlerTestCase
 		$con = new Condition();
 		$con->add('userId', '=', 1, 'AND');
 		$con->add('title', '=', 'foo');
-		$result = $handler->getAll(array('id', 'title'), 0, 16, 'id', Sql::SORT_DESC, $con);
+		$result = $handler->getAll(0, 16, 'id', Sql::SORT_DESC, $con);
 
 		$this->assertEquals(true, is_array($result));
 		$this->assertEquals(1, count($result));
 
-		foreach($result as $row)
-		{
-			$this->assertInstanceOf('PSX\Data\Record', $row);
-			$this->assertEquals(true, $row->getId() != null);
-			$this->assertEquals(true, $row->getTitle() != null);
-		}
+		$expect = array(
+			array(
+				'id' => 1,
+				'userId' => 1,
+				'title' => 'foo',
+				'date' => '2013-04-29 16:56:32',
+			),
+		);
 
-		$this->assertEquals(1, $result[0]->getId());
+		$this->assertResult($expect, $result);
 	}
 
 	public function testGetAllConditionOrConjunction()
@@ -419,22 +432,33 @@ trait HandlerTestCase
 		$con = new Condition();
 		$con->add('userId', '=', 1, 'OR');
 		$con->add('userId', '=', 3);
-		$result = $handler->getAll(array('id', 'title'), 0, 16, 'id', Sql::SORT_DESC, $con);
+		$result = $handler->getAll(0, 16, 'id', Sql::SORT_DESC, $con);
 
 		$this->assertEquals(true, is_array($result));
 		$this->assertEquals(3, count($result));
 
-		foreach($result as $row)
-		{
-			$this->assertInstanceOf('PSX\Data\Record', $row);
-			$this->assertEquals(true, $row->getId() != null);
-			$this->assertEquals(true, $row->getTitle() != null);
-		}
+		$expect = array(
+			array(
+				'id' => 4,
+				'userId' => 3,
+				'title' => 'blub',
+				'date' => '2013-04-29 16:56:32',
+			),
+			array(
+				'id' => 2,
+				'userId' => 1,
+				'title' => 'bar',
+				'date' => '2013-04-29 16:56:32',
+			),
+			array(
+				'id' => 1,
+				'userId' => 1,
+				'title' => 'foo',
+				'date' => '2013-04-29 16:56:32',
+			),
+		);
 
-		// check order
-		$this->assertEquals(4, $result[0]->getId());
-		$this->assertEquals(2, $result[1]->getId());
-		$this->assertEquals(1, $result[2]->getId());
+		$this->assertResult($expect, $result);
 	}
 
 	public function testGetBy()
@@ -446,19 +470,27 @@ trait HandlerTestCase
 			$this->markTestSkipped('Handler not an query interface');
 		}
 
-		$result = $handler->getByUserId(1, array('id', 'title'));
+		$result = $handler->getByUserId(1);
 
 		$this->assertEquals(true, is_array($result));
 		$this->assertEquals(2, count($result));
 
-		foreach($result as $row)
-		{
-			$this->assertInstanceOf('PSX\Data\Record', $row);
-			$this->assertEquals(true, $row->getId() != null);
-			$this->assertEquals(true, $row->getUserId() == null);
-			$this->assertEquals(true, $row->getTitle() != null);
-			$this->assertEquals(true, $row->getDate() == null);
-		}
+		$expect = array(
+			array(
+				'id' => 2,
+				'userId' => 1,
+				'title' => 'bar',
+				'date' => '2013-04-29 16:56:32',
+			),
+			array(
+				'id' => 1,
+				'userId' => 1,
+				'title' => 'foo',
+				'date' => '2013-04-29 16:56:32',
+			),
+		);
+
+		$this->assertResult($expect, $result);
 	}
 
 	public function testGetOneBy()
@@ -470,13 +502,18 @@ trait HandlerTestCase
 			$this->markTestSkipped('Handler not an query interface');
 		}
 
-		$row = $handler->getOneById(1, array('id', 'title'));
+		$row = $handler->getOneById(1);
 
-		$this->assertInstanceOf('PSX\Data\Record', $row);
-		$this->assertEquals(true, $row->getId() != null);
-		$this->assertEquals(true, $row->getUserId() == null);
-		$this->assertEquals(true, $row->getTitle() != null);
-		$this->assertEquals(true, $row->getDate() == null);
+		$expect = array(
+			array(
+				'id' => 1,
+				'userId' => 1,
+				'title' => 'foo',
+				'date' => '2013-04-29 16:56:32',
+			),
+		);
+
+		$this->assertResult($expect, array($row));
 	}
 
 	public function testGet()
@@ -490,11 +527,16 @@ trait HandlerTestCase
 
 		$row = $handler->get(1);
 
-		$this->assertInstanceOf('PSX\Data\Record', $row);
-		$this->assertEquals(true, $row->getId() != null);
-		$this->assertEquals(true, $row->getUserId() != null);
-		$this->assertEquals(true, $row->getTitle() != null);
-		$this->assertEquals(true, $row->getDate() != null);
+		$expect = array(
+			array(
+				'id' => 1,
+				'userId' => 1,
+				'title' => 'foo',
+				'date' => '2013-04-29 16:56:32',
+			),
+		);
+
+		$this->assertResult($expect, array($row));
 	}
 
 	public function testGetCollection()
@@ -506,17 +548,27 @@ trait HandlerTestCase
 			$this->markTestSkipped('Handler not an query abstract');
 		}
 
-		$result = $handler->getCollection(array('id', 'title'), 0, 2, 'id', Sql::SORT_DESC);
+		$result = $handler->getCollection(0, 2, 'id', Sql::SORT_DESC);
 
 		$this->assertInstanceOf('\PSX\Data\Collection', $result);
 		$this->assertEquals(2, count($result));
 
-		foreach($result as $row)
-		{
-			$this->assertInstanceOf('PSX\Data\Record', $row);
-			$this->assertEquals(true, $row->getId() != null);
-			$this->assertEquals(true, $row->getTitle() != null);
-		}
+		$expect = array(
+			array(
+				'id' => 4,
+				'userId' => 3,
+				'title' => 'blub',
+				'date' => '2013-04-29 16:56:32',
+			),
+			array(
+				'id' => 3,
+				'userId' => 2,
+				'title' => 'test',
+				'date' => '2013-04-29 16:56:32',
+			),
+		);
+
+		$this->assertResult($expect, $result);
 	}
 
 	public function testGetResultSet()
@@ -528,18 +580,28 @@ trait HandlerTestCase
 			$this->markTestSkipped('Handler not an query abstract');
 		}
 
-		$result = $handler->getResultSet(array('id', 'title'), 0, 2, 'id', Sql::SORT_DESC);
+		$result = $handler->getResultSet(0, 2, 'id', Sql::SORT_DESC);
 
 		$this->assertInstanceOf('\PSX\Data\ResultSet', $result);
 		$this->assertEquals(2, count($result));
 		$this->assertEquals(4, $result->getTotalResults());
 
-		foreach($result as $row)
-		{
-			$this->assertInstanceOf('PSX\Data\Record', $row);
-			$this->assertEquals(true, $row->getId() != null);
-			$this->assertEquals(true, $row->getTitle() != null);
-		}
+		$expect = array(
+			array(
+				'id' => 4,
+				'userId' => 3,
+				'title' => 'blub',
+				'date' => '2013-04-29 16:56:32',
+			),
+			array(
+				'id' => 3,
+				'userId' => 2,
+				'title' => 'test',
+				'date' => '2013-04-29 16:56:32',
+			),
+		);
+
+		$this->assertResult($expect, $result);
 	}
 
 	public function testGetSupportedFields()
@@ -650,5 +712,20 @@ trait HandlerTestCase
 		$record = $handler->getOneById(1);
 
 		$this->assertEmpty($record);
+	}
+
+	protected function assertResult($expect, $result)
+	{
+		foreach($result as $key => $row)
+		{
+			$this->assertInstanceOf('PSX\Data\Record', $row);
+			$this->assertEquals(array('id', 'userId', 'title', 'date'), array_keys($row->getRecordInfo()->getData()));
+			
+			$this->assertEquals($expect[$key]['id'], $row->getId());
+			$this->assertEquals($expect[$key]['userId'], $row->getUserId());
+			$this->assertEquals($expect[$key]['title'], $row->getTitle());
+			$this->assertInstanceOf('DateTime', $row->getDate());
+			$this->assertEquals($expect[$key]['date'], $row->getDate()->format('Y-m-d H:i:s'));
+		}
 	}
 }
