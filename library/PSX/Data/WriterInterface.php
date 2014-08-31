@@ -34,6 +34,7 @@ interface WriterInterface
 {
 	const ATOM  = 'PSX\Data\Writer\Atom';
 	const FORM  = 'PSX\Data\Writer\Form';
+	const HTML  = 'PSX\Data\Writer\Html';
 	const JSON  = 'PSX\Data\Writer\Json';
 	const JSONP = 'PSX\Data\Writer\Jsonp';
 	const RSS   = 'PSX\Data\Writer\Rss';
