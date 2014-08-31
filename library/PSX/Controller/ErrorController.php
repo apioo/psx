@@ -185,7 +185,7 @@ class ErrorController extends ViewAbstract
 		}
 		else
 		{
-			return __DIR__ . '/default_error.tpl';
+			return __DIR__ . '/Resource/error_controller.tpl';
 		}
 	}
 

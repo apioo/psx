@@ -26,7 +26,7 @@ namespace PSX\Controller;
 use PSX\ControllerAbstract;
 use PSX\Data\RecordInterface;
 use PSX\Data\SchemaInterface;
-use PSX\Data\Schema\ApiDocumentation;
+use PSX\Data\Schema\Documentation;
 
 /**
  * SchemaApiAbstract
@@ -35,7 +35,7 @@ use PSX\Data\Schema\ApiDocumentation;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link	http://phpsx.org
  */
-abstract class SchemaApiAbstract extends ApiAbstract
+abstract class SchemaApiAbstract extends ApiAbstract implements SchemaDocumentedInterface
 {
 	/**
 	 * @Inject
@@ -46,12 +46,11 @@ abstract class SchemaApiAbstract extends ApiAbstract
 	public function onGet()
 	{
 		$response = $this->doGet();
+		$schema   = $this->getSchemaDocumentation();
 
-		list($responseSchema) = $this->getSchemaDocumentation()->get(ApiDocumentation::METHOD_GET);
-
-		if($responseSchema instanceof SchemaInterface)
+		if($schema->hasResponse(Documentation::METHOD_GET))
 		{
-			$this->setBody($this->schemaAssimilator->assimilate($response, $responseSchema));
+			$this->setBody($this->schemaAssimilator->assimilate($response, $schema->getResponse(Documentation::METHOD_GET)));
 		}
 		else
 		{
@@ -61,19 +60,19 @@ abstract class SchemaApiAbstract extends ApiAbstract
 
 	public function onPost()
 	{
-		list($requestSchema, $responseSchema) = $this->getSchemaDocumentation()->get(ApiDocumentation::METHOD_POST);
+		$schema = $this->getSchemaDocumentation();
 
-		if(!$requestSchema instanceof SchemaInterface)
+		if(!$schema->hasRequest(Documentation::METHOD_POST))
 		{
 			throw new \Exception('Method not allowed', 405);
 		}
 
-		$record   = $this->import($requestSchema);
+		$record   = $this->import($schema->getRequest(Documentation::METHOD_POST));
 		$response = $this->doCreate($record);
 
-		if($responseSchema instanceof SchemaInterface)
+		if($schema->hasResponse(Documentation::METHOD_POST))
 		{
-			$this->setBody($this->schemaAssimilator->assimilate($response, $responseSchema));
+			$this->setBody($this->schemaAssimilator->assimilate($response, $schema->getResponse(Documentation::METHOD_POST)));
 		}
 		else
 		{
@@ -83,19 +82,19 @@ abstract class SchemaApiAbstract extends ApiAbstract
 
 	public function onPut()
 	{
-		list($requestSchema, $responseSchema) = $this->getSchemaDocumentation()->get(ApiDocumentation::METHOD_PUT);
+		$schema = $this->getSchemaDocumentation();
 
-		if(!$requestSchema instanceof SchemaInterface)
+		if(!$schema->hasRequest(Documentation::METHOD_PUT))
 		{
 			throw new \Exception('Method not allowed', 405);
 		}
 
-		$record   = $this->import($requestSchema);
+		$record   = $this->import($schema->getRequest(Documentation::METHOD_PUT));
 		$response = $this->doUpdate($record);
 
-		if($responseSchema instanceof SchemaInterface)
+		if($schema->hasResponse(Documentation::METHOD_PUT))
 		{
-			$this->setBody($this->schemaAssimilator->assimilate($response, $responseSchema));
+			$this->setBody($this->schemaAssimilator->assimilate($response, $schema->getResponse(Documentation::METHOD_PUT)));
 		}
 		else
 		{
@@ -105,19 +104,19 @@ abstract class SchemaApiAbstract extends ApiAbstract
 
 	public function onDelete()
 	{
-		list($requestSchema, $responseSchema) = $this->getSchemaDocumentation()->get(ApiDocumentation::METHOD_DELETE);
+		$schema = $this->getSchemaDocumentation();
 
-		if(!$requestSchema instanceof SchemaInterface)
+		if(!$schema->hasRequest(Documentation::METHOD_DELETE))
 		{
 			throw new \Exception('Method not allowed', 405);
 		}
 
-		$record   = $this->import($requestSchema);
+		$record   = $this->import($schema->getRequest(Documentation::METHOD_DELETE));
 		$response = $this->doDelete($record);
 
-		if($responseSchema instanceof SchemaInterface)
+		if($schema->hasResponse(Documentation::METHOD_DELETE))
 		{
-			$this->setBody($this->schemaAssimilator->assimilate($response, $responseSchema));
+			$this->setBody($this->schemaAssimilator->assimilate($response, $schema->getResponse(Documentation::METHOD_DELETE)));
 		}
 		else
 		{
@@ -140,13 +139,4 @@ abstract class SchemaApiAbstract extends ApiAbstract
 	protected function doDelete(RecordInterface $record)
 	{
 	}
-
-	/**
-	 * Returns an object which contains all available schema definitions for 
-	 * this api. The method is public so that we can get the object for 
-	 * automatic api doc generation
-	 *
-	 * @return PSX\Data\Schema\ApiDocumentation
-	 */
-	abstract public function getSchemaDocumentation();
 }
