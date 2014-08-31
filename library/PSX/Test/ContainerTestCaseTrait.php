@@ -25,7 +25,6 @@ namespace PSX\Test;
 
 use Monolog\Logger;
 use Monolog\Handler\NullHandler;
-use PSX\Command\Executor;
 use PSX\Command\Output\Void;
 use PSX\Dispatch\VoidSender;
 use PSX\Loader\RoutingParser;
@@ -62,8 +61,8 @@ trait ContainerTestCaseTrait
 		// enables us to load the same controller method multiple times
 		getContainer()->get('loader')->setRecursiveLoading(true);
 
-		// we replace the executor
-		getContainer()->set('executor', new Executor(getContainer()->get('command_factory'), new Void()));
+		// we replace the command output
+		getContainer()->set('command_output', new Void());
 
 		// set void logger
 		$logger = new Logger('psx');

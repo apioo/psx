@@ -1,0 +1,84 @@
+
+.psx-tool-navigation
+{
+	float:left;
+	width:260px;
+	background-color:#eee;
+	height:100%;
+	overflow:hidden;
+	border-right:1px solid #222;
+}
+
+.psx-tool-navigation h1
+{
+	background-color:#222;
+	color:#fff;
+	margin:0px;
+	padding:12px;
+	padding-left:8px;
+	font-size:0.8em;
+}
+
+.psx-tool-navigation ul
+{
+	list-style-type:none;
+	padding:0px;
+}
+
+.psx-tool-navigation li
+{
+	padding:8px;
+}
+
+.psx-tool-navigation a
+{
+	font-size:1.4em;
+}
+
+.psx-tool-navigation .odd
+{
+	background-color:#fff;
+}
+
+.psx-tool-content
+{
+	height:100%;
+	overflow:auto;
+}
+
+.psx-tool-content h1
+{
+	background-color:#222;
+	color:#fff;
+	margin:0px;
+	padding:12px;
+	padding-left:8px;
+	font-size:0.8em;
+}
+
+.psx-tool-content h2
+{
+	margin:0px;
+	padding:8px;
+	background-color:#eee;
+	font-size:1.4em;
+}
+
+.psx-tool-content h3
+{
+	margin:0px;
+	padding:8px;
+	background-color:#e7f0f7;
+	border-top:1px solid #0f6ab4;
+	font-size:1.4em;
+}
+
+.psx-tool-content h4
+{
+	margin:0px;
+	padding:8px;
+	background-color:#222;
+	color:#fff;
+	font-size:1.2em;
+	text-align:right;
+}

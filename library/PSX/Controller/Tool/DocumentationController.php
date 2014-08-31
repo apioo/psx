@@ -114,14 +114,6 @@ class DocumentationController extends ViewAbstract
 		}
 	}
 
-	protected function getSupportedWriter()
-	{
-		return array(
-			WriterInterface::HTML,
-			WriterInterface::JSON,
-		);
-	}
-
 	protected function getRoutings()
 	{
 		$collections = $this->routingParser->getCollection();
@@ -140,7 +132,11 @@ class DocumentationController extends ViewAbstract
 
 				if($controller instanceof SchemaDocumentedInterface)
 				{
-					$routings[] = array($methods, $path, $className);
+					$routings[] = array(
+						'method'     => $methods, 
+						'path'       => $path, 
+						'controller' => $className
+					);
 				}
 			}
 		}
