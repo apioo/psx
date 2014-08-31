@@ -24,7 +24,7 @@
 namespace PSX\Controller\Foo\Application;
 
 use PSX\Data\RecordInterface;
-use PSX\Data\Schema\ApiDocumentation;
+use PSX\Data\Schema\Documentation;
 use PSX\Controller\SchemaApiAbstract;
 
 /**
@@ -52,7 +52,7 @@ class TestSchemaApiController extends SchemaApiAbstract
 	{
 		$responseSchema = $this->schemaManager->getSchema('PSX\Controller\Foo\Schema\SuccessMessage');
 
-		$doc = new ApiDocumentation();
+		$doc = new Documentation();
 		$doc->setGet($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Collection'));
 		$doc->setPost($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Create'), $responseSchema);
 		$doc->setPut($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Update'), $responseSchema);
