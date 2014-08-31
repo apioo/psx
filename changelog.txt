@@ -1,4 +1,25 @@
 
+0.9
+* Remove psx sql library and using doctrine dbal instead
+* Improved data system seperating reader functionality into an reader and 
+  transformer class
+* Added data schema component with that it is possible to describe json or xml
+  data formats. The schema can be exported into XSD or JsonSchema
+* Make cache system psr-6 compatible
+* Added @Inject annotation to use a service from the DI container inside and 
+  command or controller
+* Extended validate library
+* Implemented the first version of the psr http-message interfaces
+* Improve template interface and add missing methods in smarty and twig handler
+* Split up di container services into different traits
+* Add command system
+* Add support for chunked transfer encoding
+* Error handling was shifted in an controller which can be overwritten to 
+  provide custom error page or handling 
+* Doctrine handler resolves TO_ONE entity associations
+* Improved request factory
+* Possibility to set an wildcard in an routing file
+
 0.8.6
 * Added missing http event method onHead
 * Possibiliy to set an alias path in an routing file
