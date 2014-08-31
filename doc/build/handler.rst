@@ -15,6 +15,8 @@ in PSX since the handler provides already all CRUD capabilities.
 
 .. code-block:: php
 
+    <?php
+
     namespace Foo\Application;
 
     use PSX\Controller\HandlerApiAbstract;

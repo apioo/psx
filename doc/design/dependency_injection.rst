@@ -2,21 +2,12 @@
 Depndency injection
 ===================
 
-Abstract
---------
-
-If you develop a new application you should try to not bind any business logic 
-to the framework which you are using. Instead you should create services which 
-get their dependencies via constructor or setter injection. So you can use your 
-code also in other environments. PSX helps you in building applications which 
-are not tied to the framework.
-
 Definition
 ----------
 
 The DI container of PSX is a simple class where each method represents an 
-service definition. Because of that you have to specifiy in the index.php which 
-container you are using.
+service definition. In the file public/index.php you have to specify an DI 
+container.
 
 .. literalinclude:: ../../public/index.php
    :language: php

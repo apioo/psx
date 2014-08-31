@@ -9,8 +9,8 @@ The routing file was inspired by the java play framework
 Routing file
 ------------
 
-PSX parses the routing file and the route which matches is taken. Lets see the 
-following example routing file
+PSX parses the routing file and the route which matches first is taken. Lets see 
+the following example routing file
 
 .. code-block:: none
 
@@ -23,8 +23,8 @@ following example routing file
     GET /news/archive/$year<[0-9]+> Foo\News\Application\News::doArchive
     GET /file/*path Foo\News\Application\File::downloadFile
 
-in case we make the following HTTP request the class Foo\\News\\Application\\Api 
-gets created and the doIndex method gets called
+in case we make the following HTTP request the method doIndex of the class 
+Foo\\News\\Application\\Api gets called
 
 .. code-block:: none
 
@@ -34,7 +34,7 @@ The path /foo is an alias for the path /. That means in both cases we call the
 method doFoo of the class Foo\\News\\Application\\Index.
 
 If we make an HTTP request to /news/2 the controller 
-Foo\News\Application\News::doDetail gets called. In our controller we can access
+Foo\\News\\Application\\News::doDetail gets called. In our controller we can access
 the dynmic part of the path with
 
 .. code-block:: php
@@ -49,7 +49,7 @@ our example the path /news/archive/$year<[0-9]+> is only matched if the last
 part contains numeric signs i.e. /news/archive/2014.
 
 Also you can specifiy an wildcard * which matches all content i.e. 
-/file/foo/bar/test.txt would invoke Foo\News\Application\File::downloadFile
+/file/foo/bar/test.txt would invoke Foo\\News\\Application\\File::downloadFile
 
 Reverse routing
 ---------------

@@ -84,7 +84,7 @@ Importer
 Which importer gets used depends on the source. You can pass different objects 
 to the import method which in the end provides meta informations how the 
 incomming request data looks. If you pass to the source an 
-PSX\Data\RecordInterface the annotations of the record class gets parsed. I.e. 
+PSX\\Data\\RecordInterface the annotations of the record class gets parsed. I.e. 
 if you want import an atom xml format you could use the following controller
 
 .. code-block:: php
