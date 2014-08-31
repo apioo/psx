@@ -39,10 +39,12 @@ use PSX\Data\Schema\PropertySimpleAbstract;
  */
 class Html implements GeneratorInterface
 {
-	protected $_types = array();
+	protected $_types;
 
 	public function generate(SchemaInterface $schema)
 	{
+		$this->_types = array();
+
 		return $this->generateType($schema->getDefinition());
 	}
 
