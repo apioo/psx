@@ -94,20 +94,18 @@ class RoutingParserTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(array('path' => 'foo/bar/foo.htm'), $location->getParameter(Location::KEY_FRAGMENT));
 	}
 
-	/**
-	 * @expectedException PSX\Loader\InvalidPathException
-	 */
 	public function testInvalidRoute()
 	{
-		$this->resolve('/foo/baz', 'GET');
+		$location = $this->resolve('/foo/baz', 'GET');
+
+		$this->assertEquals(null, $location);
 	}
 
-	/**
-	 * @expectedException PSX\Loader\InvalidPathException
-	 */
 	public function testRegexpRoute()
 	{
-		$this->resolve('GET', '/bar/foo/16');
+		$location = $this->resolve('GET', '/bar/foo/16');
+
+		$this->assertEquals(null, $location);
 	}
 
 	protected function resolve($method, $path)

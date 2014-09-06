@@ -23,55 +23,48 @@
 
 namespace PSX\Data;
 
-use PSX\Exception;
-
 /**
- * ResultSetTest
+ * CollectionAbstractTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class ResultSetTest extends \PHPUnit_Framework_TestCase
+class CollectionAbstractTest extends \PHPUnit_Framework_TestCase
 {
-	public function testFullResultSet()
+	public function testCollection()
 	{
-		$entries = array(
-			array('id' => 1, 'title' => 'foo'),
-			array('id' => 2, 'title' => 'bar'),
-			array('id' => 3, 'title' => 'blu'),
-			array('id' => 4, 'title' => 'bla'),
-		);
+		$collection = new TestCollection(array(new Record(), new Record()));
+		$collection->add(new Record());
 
-		$resultSet = new ResultSet(12, 0, 2, $entries);
+		$this->assertInstanceOf('PSX\Data\CollectionInterface', $collection);
+		$this->assertEquals(3, $collection->count());
+		$this->assertEquals(3, count($collection));
+		$this->assertFalse($collection->isEmpty());
 
-		$this->assertEquals(4, count($resultSet));
-		$this->assertEquals(4, $resultSet->count());
-		$this->assertEquals(false, $resultSet->isEmpty());
+		$this->assertEquals(null, $collection->get(3));
 
-		foreach($resultSet as $i => $result)
+		$collection->set(3, new Record());
+
+		$this->assertInstanceOf('PSX\Data\RecordInterface', $collection->get(3));
+
+		foreach($collection as $record)
 		{
-			$this->assertEquals($i + 1, $result['id']);
+			$this->assertInstanceOf('PSX\Data\RecordInterface', $collection->get(3));
 		}
 
-		// test internal reset
-		foreach($resultSet as $i => $result)
-		{
-			$this->assertEquals($i + 1, $result['id']);
-		}
+		$collection->clear();
+
+		$this->assertEquals(0, $collection->count());
+		$this->assertEquals(array(), $collection->toArray());
+		$this->assertTrue($collection->isEmpty());
 	}
+}
 
-	public function testEmptyResultSet()
+class TestCollection extends CollectionAbstract
+{
+	public function getRecordInfo()
 	{
-		$resultSet = new ResultSet(12, 0, 2, array());
-
-		$this->assertEquals(0, count($resultSet));
-		$this->assertEquals(0, $resultSet->count());
-		$this->assertEquals(true, $resultSet->isEmpty());
-
-		foreach($resultSet as $row)
-		{
-			throw new Exception('Should not happen');
-		}
+		return new RecordInfo('foo', array());
 	}
 }

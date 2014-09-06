@@ -21,57 +21,48 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Data;
-
-use PSX\Exception;
+namespace PSX\Data\Record;
 
 /**
- * ResultSetTest
+ * FactoryFactoryTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class ResultSetTest extends \PHPUnit_Framework_TestCase
+class FactoryFactoryTest extends \PHPUnit_Framework_TestCase
 {
-	public function testFullResultSet()
+	public function testGetFactory()
 	{
-		$entries = array(
-			array('id' => 1, 'title' => 'foo'),
-			array('id' => 2, 'title' => 'bar'),
-			array('id' => 3, 'title' => 'blu'),
-			array('id' => 4, 'title' => 'bla'),
-		);
+		$factoryFactory = new FactoryFactory();
+		$factory = $factoryFactory->getFactory('PSX\Data\Record\FooFactory');
 
-		$resultSet = new ResultSet(12, 0, 2, $entries);
-
-		$this->assertEquals(4, count($resultSet));
-		$this->assertEquals(4, $resultSet->count());
-		$this->assertEquals(false, $resultSet->isEmpty());
-
-		foreach($resultSet as $i => $result)
-		{
-			$this->assertEquals($i + 1, $result['id']);
-		}
-
-		// test internal reset
-		foreach($resultSet as $i => $result)
-		{
-			$this->assertEquals($i + 1, $result['id']);
-		}
+		$this->assertInstanceOf('PSX\Data\Record\FooFactory', $factory);
 	}
 
-	public function testEmptyResultSet()
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testGetFactoryInvalidClass()
 	{
-		$resultSet = new ResultSet(12, 0, 2, array());
+		$factoryFactory = new FactoryFactory();
+		$factoryFactory->getFactory('stdClass');
+	}
 
-		$this->assertEquals(0, count($resultSet));
-		$this->assertEquals(0, $resultSet->count());
-		$this->assertEquals(true, $resultSet->isEmpty());
-
-		foreach($resultSet as $row)
-		{
-			throw new Exception('Should not happen');
-		}
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testGetFactoryClassNotExist()
+	{
+		$factoryFactory = new FactoryFactory();
+		$factoryFactory->getFactory('foo');
 	}
 }
+
+class FooFactory implements FactoryInterface
+{
+	public function factory($data, ImporterInterface $importer)
+	{
+	}
+}
+

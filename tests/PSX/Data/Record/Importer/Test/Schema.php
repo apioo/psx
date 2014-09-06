@@ -47,6 +47,12 @@ class Schema extends SchemaAbstract
 		$sb->string('title')->setRequired(true);
 		$entry = $sb->getProperty();
 
+		$sb = $this->getSchemaBuilder('token');
+		$sb->setReference('PSX\Data\Record\Importer\Test\Factory');
+		$sb->string('alg')->setRequired(true);
+		$sb->string('sig')->setRequired(true);
+		$token = $sb->getProperty();
+
 		$sb = $this->getSchemaBuilder('news');
 		$sb->integer('id')->setRequired(true);
 		$sb->string('title')->setPattern('[A-z]{3,16}')->setRequired(true);
@@ -58,6 +64,8 @@ class Schema extends SchemaAbstract
 		$sb->complexType($person);
 		$sb->arrayType('tags')->setPrototype(new Property\String('tag'))->setMinLength(0)->setMaxLength(4);
 		$sb->arrayType('entry')->setPrototype($entry);
+		$sb->complexType($token);
+		$sb->string('url')->setReference('PSX\Url')->setRequired(true);
 
 		return $sb->getProperty();
 	}

@@ -29,6 +29,7 @@ use PSX\Dispatch\Filter\Exception\MissingException;
 use PSX\Dispatch\Filter\Exception\SuccessException;
 use PSX\Http\Request;
 use PSX\Http\Response;
+use PSX\Http\Exception\UnauthorizedException;
 use PSX\Url;
 
 /**
@@ -90,38 +91,43 @@ class BasicAuthenticationTest extends \PHPUnit_Framework_TestCase
 			return $username == 'test' && $password == 'test';
 		});
 
+		$request  = new Request(new Url('http://localhost'), 'GET');
+		$response = new Response();
+
 		try
 		{
-			$request  = new Request(new Url('http://localhost'), 'GET');
-			$response = new Response();
-
 			$handle->handle($request, $response);
 
 			$this->fail('Must throw an Exception');
 		}
-		catch(\Exception $e)
+		catch(UnauthorizedException $e)
 		{
-			$this->assertEquals(401, $response->getStatusCode());
-			$this->assertEquals('Basic realm="psx"', (string) $response->getHeader('WWW-Authenticate'));
+			$this->assertEquals(401, $e->getStatusCode());
+			$this->assertEquals('Basic', $e->getType());
+			$this->assertEquals(array('realm' => 'psx'), $e->getParameters());
 		}
 	}
 
-	/**
-	 * @expectedException \PSX\Dispatch\Filter\Exception\MissingException
-	 */
 	public function testMissingWrongType()
 	{
 		$handle = new BasicAuthentication(function($username, $password){
 			return $username == 'test' && $password == 'test';
 		});
 
-		$handle->onMissing(function(){
-			throw new MissingException();
-		});
-
 		$request  = new Request(new Url('http://localhost'), 'GET', array('Authorization' => 'Foo'));
 		$response = new Response();
 
-		$handle->handle($request, $response);
+		try
+		{
+			$handle->handle($request, $response);
+
+			$this->fail('Must throw an Exception');
+		}
+		catch(UnauthorizedException $e)
+		{
+			$this->assertEquals(401, $e->getStatusCode());
+			$this->assertEquals('Basic', $e->getType());
+			$this->assertEquals(array('realm' => 'psx'), $e->getParameters());
+		}
 	}
 }

@@ -35,14 +35,6 @@ use PSX\Http\Message;
  */
 class RecordTest extends \PHPUnit_Framework_TestCase
 {
-	protected function setUp()
-	{
-	}
-
-	protected function tearDown()
-	{
-	}
-
 	public function testGetMagicMethods()
 	{
 		$record = new Record('foo', array(

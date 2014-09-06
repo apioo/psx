@@ -31,6 +31,7 @@ use PSX\Http;
 use PSX\Http\Request;
 use PSX\Http\Response;
 use PSX\Http\Authentication;
+use PSX\Http\Exception\UnauthorizedException;
 use PSX\Oauth;
 use PSX\Oauth\Provider\Data\Consumer;
 use PSX\Url;
@@ -199,9 +200,6 @@ class OauthAuthenticationTest extends \PHPUnit_Framework_TestCase
 		$handle->handle($request, $response);
 	}
 
-	/**
-	 * @expectedException \PSX\Dispatch\Filter\Exception\MissingException
-	 */
 	public function testMissing()
 	{
 		$handle = new OauthAuthentication(function($consumerKey, $token){
@@ -211,22 +209,26 @@ class OauthAuthenticationTest extends \PHPUnit_Framework_TestCase
 			}
 		});
 
-		$handle->onMissing(function(){
-			throw new MissingException();
-		});
-
 		$oauth = new Oauth(new Http());
 		$value = $oauth->getAuthorizationHeader(new Url('http://localhost/index.php'), self::CONSUMER_KEY, self::CONSUMER_SECRET, self::TOKEN, self::TOKEN_SECRET);
 
 		$request  = new Request(new Url('http://localhost/index.php'), 'GET');
 		$response = new Response();
 
-		$handle->handle($request, $response);
+		try
+		{
+			$handle->handle($request, $response);
+
+			$this->fail('Must throw an Exception');
+		}
+		catch(UnauthorizedException $e)
+		{
+			$this->assertEquals(401, $e->getStatusCode());
+			$this->assertEquals('Oauth', $e->getType());
+			$this->assertEquals(array('realm' => 'psx'), $e->getParameters());
+		}
 	}
 
-	/**
-	 * @expectedException \PSX\Dispatch\Filter\Exception\MissingException
-	 */
 	public function testMissingWrongType()
 	{
 		$handle = new OauthAuthentication(function($consumerKey, $token){
@@ -236,16 +238,23 @@ class OauthAuthenticationTest extends \PHPUnit_Framework_TestCase
 			}
 		});
 
-		$handle->onMissing(function(){
-			throw new MissingException();
-		});
-
 		$oauth = new Oauth(new Http());
 		$value = $oauth->getAuthorizationHeader(new Url('http://localhost/index.php'), self::CONSUMER_KEY, self::CONSUMER_SECRET, self::TOKEN, self::TOKEN_SECRET);
 
 		$request  = new Request(new Url('http://localhost/index.php'), 'GET', array('Authorization' => 'Foo'));
 		$response = new Response();
 
-		$handle->handle($request, $response);
+		try
+		{
+			$handle->handle($request, $response);
+
+			$this->fail('Must throw an Exception');
+		}
+		catch(UnauthorizedException $e)
+		{
+			$this->assertEquals(401, $e->getStatusCode());
+			$this->assertEquals('Oauth', $e->getType());
+			$this->assertEquals(array('realm' => 'psx'), $e->getParameters());
+		}
 	}
 }

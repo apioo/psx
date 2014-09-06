@@ -171,7 +171,7 @@ class TestController extends ControllerAbstract
 
 	public function doRedirectDestiniation()
 	{
-		$this->response->getBody()->write(json_encode($this->uriFragments));
+		$this->setBody($this->uriFragments);
 	}
 
 	public function getPreFilter()

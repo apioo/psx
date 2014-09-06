@@ -79,7 +79,7 @@ class SenderTest extends \PHPUnit_Framework_TestCase
 
 	/**
 	 * If we have an location header we only send the location header and no 
-	 * other headers or content
+	 * other content
 	 */
 	public function testSendHeaderLocation()
 	{
@@ -102,10 +102,11 @@ class SenderTest extends \PHPUnit_Framework_TestCase
 
 		$sender->expects($this->at(2))
 			->method('sendHeader')
-			->with($this->identicalTo('Location: http://localhost.com'));
+			->with($this->identicalTo('content-type: application/xml'));
 
-		$sender->expects($this->exactly(2))
-			->method('sendHeader');
+		$sender->expects($this->at(3))
+			->method('sendHeader')
+			->with($this->identicalTo('location: http://localhost.com'));
 
 		$actual = $this->captureOutput($sender, $response);
 
@@ -173,11 +174,25 @@ class SenderTest extends \PHPUnit_Framework_TestCase
 
 	protected function captureOutput(Sender $sender, Response $response)
 	{
+		$lastError = null;
+
 		ob_start();
 
-		$sender->send($response);
+		try
+		{
+			$sender->send($response);
+		}
+		catch(\Exception $e)
+		{
+			$lastError = $e->getMessage();
+		}
 
 		$content = ob_get_clean();
+
+		if($lastError !== null)
+		{
+			$this->fail($lastError);
+		}
 
 		return $content;
 	}

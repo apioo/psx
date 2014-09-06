@@ -56,14 +56,51 @@ trait ImporterTestCase
 		return true;
 	}
 
+	public function testAccept()
+	{
+		$news     = $this->getRecord();
+		$importer = $this->getImporter();
+
+		$this->assertTrue($importer->accept($news));
+	}
+
+	public function testAcceptInvalid()
+	{
+		$importer = $this->getImporter();
+
+		$this->assertFalse($importer->accept('foo'));
+	}
+
 	public function testImport()
 	{
 		$news     = $this->getRecord();
 		$body     = $this->getPayload();
 		$importer = $this->getImporter();
-		$record   = $importer->import($news, $body);
+
+		$record = $importer->import($news, $body);
 
 		$this->assertRecord($record);
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testImportInvalidData()
+	{
+		$news     = $this->getRecord();
+		$importer = $this->getImporter();
+		$importer->import($news, 'foo');
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testImportInvalidSource()
+	{
+		$news     = $this->getRecord();
+		$body     = $this->getPayload();
+		$importer = $this->getImporter();
+		$importer->import('foo', $body);
 	}
 
 	protected function assertRecord(RecordInterface $record)
@@ -129,6 +166,12 @@ trait ImporterTestCase
 			{
 				$this->assertInstanceOf('PSX\Data\Record\Importer\Test\Entry', $entry);
 			}
+
+			$this->assertInstanceOf('stdClass', $record->getToken());
+			$this->assertEquals('bar', $record->getToken()->value);
+
+			$this->assertInstanceOf('PSX\Url', $record->getUrl());
+			$this->assertEquals('http://google.com', $record->getUrl()->__toString());
 		}
 	}
 
@@ -163,6 +206,11 @@ trait ImporterTestCase
 					'title' => 'test'
 				),
 			),
+			'token' => array(
+				'sig' => 'bar',
+				'alg' => 'foo',
+			),
+			'url' => 'http://google.com'
 		);
 	}
 

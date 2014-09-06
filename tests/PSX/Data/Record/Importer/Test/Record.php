@@ -24,6 +24,7 @@
 namespace PSX\Data\Record\Importer\Test;
 
 use PSX\Data\RecordAbstract;
+use PSX\Url;
 
 /**
  * Record
@@ -44,6 +45,8 @@ class Record extends RecordAbstract
 	protected $person;
 	protected $tags;
 	protected $entry;
+	protected $token;
+	protected $url;
 
 	/**
 	 * @param integer $id
@@ -174,4 +177,31 @@ class Record extends RecordAbstract
 	{
 		return $this->entry;
 	}
+
+	/**
+	 * @param PSX\Data\Record\Importer\Test\Factory $token
+	 */
+	public function setToken(\stdClass $token)
+	{
+		$this->token = $token;
+	}
+	
+	public function getToken()
+	{
+		return $this->token;
+	}
+
+	/**
+	 * @param PSX\Url $url
+	 */
+	public function setUrl(Url $url)
+	{
+		$this->url = $url;
+	}
+	
+	public function getUrl()
+	{
+		return $this->url;
+	}
 }
+

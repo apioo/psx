@@ -35,14 +35,6 @@ use PSX\Http\Message;
  */
 class ImmutableRecordTest extends \PHPUnit_Framework_TestCase
 {
-	protected function setUp()
-	{
-	}
-
-	protected function tearDown()
-	{
-	}
-
 	public function testGetMagicMethods()
 	{
 		$record = new ImmutableRecord('foo', array(

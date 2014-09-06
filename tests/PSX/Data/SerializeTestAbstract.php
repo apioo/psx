@@ -36,14 +36,6 @@ use PSX\Http\Message;
  */
 abstract class SerializeTestAbstract extends \PHPUnit_Framework_TestCase
 {
-	protected function setUp()
-	{
-	}
-
-	protected function tearDown()
-	{
-	}
-
 	/**
 	 * Checks whether the records can be serialzed to the content format and the
 	 * content format can be serialized to the record without loosing data

@@ -23,8 +23,10 @@
 
 namespace PSX\Controller\Foo\Application;
 
+use PSX\Api\Documentation;
+use PSX\Api\Version;
+use PSX\Api\View;
 use PSX\Data\RecordInterface;
-use PSX\Data\Schema\Documentation;
 use PSX\Controller\SchemaApiAbstract;
 
 /**
@@ -48,27 +50,30 @@ class TestSchemaApiController extends SchemaApiAbstract
 	 */
 	protected $testCase;
 
-	public function getSchemaDocumentation()
+	public function getDocumentation()
 	{
 		$responseSchema = $this->schemaManager->getSchema('PSX\Controller\Foo\Schema\SuccessMessage');
 
+		$view = new View();
+		$view->setGet($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Collection'));
+		$view->setPost($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Create'), $responseSchema);
+		$view->setPut($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Update'), $responseSchema);
+		$view->setDelete($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Delete'), $responseSchema);
+
 		$doc = new Documentation();
-		$doc->setGet($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Collection'));
-		$doc->setPost($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Create'), $responseSchema);
-		$doc->setPut($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Update'), $responseSchema);
-		$doc->setDelete($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Delete'), $responseSchema);
+		$doc->addView(1, $view);
 
 		return $doc;
 	}
 
-	protected function doGet()
+	protected function doGet(Version $version)
 	{
 		return array(
 			'entry' => getContainer()->get('table_manager')->getTable('PSX\Handler\Table\TestTable')->getAll()
 		);
 	}
 
-	protected function doCreate(RecordInterface $record)
+	protected function doCreate(RecordInterface $record, Version $version)
 	{
 		$this->testCase->assertEquals(3, $record->getUserId());
 		$this->testCase->assertEquals('test', $record->getTitle());
@@ -80,7 +85,7 @@ class TestSchemaApiController extends SchemaApiAbstract
 		);
 	}
 
-	protected function doUpdate(RecordInterface $record)
+	protected function doUpdate(RecordInterface $record, Version $version)
 	{
 		$this->testCase->assertEquals(1, $record->getId());
 		$this->testCase->assertEquals(3, $record->getUserId());
@@ -92,7 +97,7 @@ class TestSchemaApiController extends SchemaApiAbstract
 		);
 	}
 
-	protected function doDelete(RecordInterface $record)
+	protected function doDelete(RecordInterface $record, Version $version)
 	{
 		$this->testCase->assertEquals(1, $record->getId());
 

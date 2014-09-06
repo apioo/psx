@@ -23,55 +23,19 @@
 
 namespace PSX\Data;
 
-use PSX\Exception;
-
 /**
- * ResultSetTest
+ * RecordEventTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class ResultSetTest extends \PHPUnit_Framework_TestCase
+class RecordEventTest extends \PHPUnit_Framework_TestCase
 {
-	public function testFullResultSet()
+	public function testSetGet()
 	{
-		$entries = array(
-			array('id' => 1, 'title' => 'foo'),
-			array('id' => 2, 'title' => 'bar'),
-			array('id' => 3, 'title' => 'blu'),
-			array('id' => 4, 'title' => 'bla'),
-		);
+		$event = new RecordEvent(new Record());
 
-		$resultSet = new ResultSet(12, 0, 2, $entries);
-
-		$this->assertEquals(4, count($resultSet));
-		$this->assertEquals(4, $resultSet->count());
-		$this->assertEquals(false, $resultSet->isEmpty());
-
-		foreach($resultSet as $i => $result)
-		{
-			$this->assertEquals($i + 1, $result['id']);
-		}
-
-		// test internal reset
-		foreach($resultSet as $i => $result)
-		{
-			$this->assertEquals($i + 1, $result['id']);
-		}
-	}
-
-	public function testEmptyResultSet()
-	{
-		$resultSet = new ResultSet(12, 0, 2, array());
-
-		$this->assertEquals(0, count($resultSet));
-		$this->assertEquals(0, $resultSet->count());
-		$this->assertEquals(true, $resultSet->isEmpty());
-
-		foreach($resultSet as $row)
-		{
-			throw new Exception('Should not happen');
-		}
+		$this->assertInstanceOf('PSX\Data\RecordInterface', $event->getRecord());
 	}
 }

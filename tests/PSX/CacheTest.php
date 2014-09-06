@@ -53,7 +53,7 @@ class CacheTest extends \PHPUnit_Framework_TestCase
 		$cache = new Cache($this->getHandler());
 
 		// remove any existing cache
-		$cache->deleteItems(['key']);
+		$cache->clear();
 
 		// get an item which does not exist
 		$item = $cache->getItem('key');
@@ -109,7 +109,7 @@ class CacheTest extends \PHPUnit_Framework_TestCase
 		$cache = new Cache($this->getHandler());
 
 		// remove any existing cache
-		$cache->deleteItems(['key']);
+		$cache->clear();
 
 		// get an item which does not exist
 		$item = $cache->getItem('key');

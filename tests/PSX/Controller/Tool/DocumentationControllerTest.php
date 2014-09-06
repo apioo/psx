@@ -76,13 +76,25 @@ class DocumentationControllerTest extends ControllerTestCase
 		$this->assertEquals('/api', $data['path']);
 		$this->assertArrayHasKey('controller', $data);
 		$this->assertEquals('PSX\Controller\Foo\Application\TestSchemaApiController', $data['controller']);
-		$this->assertArrayHasKey('get_response', $data);
-		$this->assertArrayHasKey('post_request', $data);
-		$this->assertArrayHasKey('post_response', $data);
-		$this->assertArrayHasKey('put_request', $data);
-		$this->assertArrayHasKey('put_response', $data);
-		$this->assertArrayHasKey('delete_request', $data);
-		$this->assertArrayHasKey('delete_response', $data);
+		$this->assertArrayHasKey('versions', $data);
+
+		$version = current($data['versions']);
+
+		$this->assertArrayHasKey('version', $version);
+		$this->assertEquals(1, $version['version']);
+		$this->assertArrayHasKey('status', $version);
+		$this->assertEquals(0, $version['status']);
+		$this->assertArrayHasKey('view', $version);
+
+		$view = $version['view'];
+
+		$this->assertArrayHasKey('get_response', $view);
+		$this->assertArrayHasKey('post_request', $view);
+		$this->assertArrayHasKey('post_response', $view);
+		$this->assertArrayHasKey('put_request', $view);
+		$this->assertArrayHasKey('put_response', $view);
+		$this->assertArrayHasKey('delete_request', $view);
+		$this->assertArrayHasKey('delete_response', $view);
 	}
 
 	protected function getPaths()

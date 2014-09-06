@@ -23,55 +23,31 @@
 
 namespace PSX\Data;
 
-use PSX\Exception;
-
 /**
- * ResultSetTest
+ * MessageTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class ResultSetTest extends \PHPUnit_Framework_TestCase
+class MessageTest extends \PHPUnit_Framework_TestCase
 {
-	public function testFullResultSet()
+	public function testSetGet()
 	{
-		$entries = array(
-			array('id' => 1, 'title' => 'foo'),
-			array('id' => 2, 'title' => 'bar'),
-			array('id' => 3, 'title' => 'blu'),
-			array('id' => 4, 'title' => 'bla'),
-		);
+		$message = new Message('success', true);
 
-		$resultSet = new ResultSet(12, 0, 2, $entries);
+		$this->assertEquals('success', $message->getMessage());
+		$this->assertEquals(true, $message->hasSuccess());
 
-		$this->assertEquals(4, count($resultSet));
-		$this->assertEquals(4, $resultSet->count());
-		$this->assertEquals(false, $resultSet->isEmpty());
+		$message = new Message('failure', false);
 
-		foreach($resultSet as $i => $result)
-		{
-			$this->assertEquals($i + 1, $result['id']);
-		}
+		$this->assertEquals('failure', $message->getMessage());
+		$this->assertEquals(false, $message->hasSuccess());
 
-		// test internal reset
-		foreach($resultSet as $i => $result)
-		{
-			$this->assertEquals($i + 1, $result['id']);
-		}
-	}
+		$message->setMessage('success');
+		$message->setSuccess(true);
 
-	public function testEmptyResultSet()
-	{
-		$resultSet = new ResultSet(12, 0, 2, array());
-
-		$this->assertEquals(0, count($resultSet));
-		$this->assertEquals(0, $resultSet->count());
-		$this->assertEquals(true, $resultSet->isEmpty());
-
-		foreach($resultSet as $row)
-		{
-			throw new Exception('Should not happen');
-		}
+		$this->assertEquals('success', $message->getMessage());
+		$this->assertEquals(true, $message->hasSuccess());
 	}
 }

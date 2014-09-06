@@ -32,6 +32,7 @@ use PSX\Dispatch\Filter\Exception\SuccessException;
 use PSX\Http\Request;
 use PSX\Http\Response;
 use PSX\Http\Authentication;
+use PSX\Http\Exception\UnauthorizedException;
 use PSX\Url;
 
 /**
@@ -139,14 +140,14 @@ class DigestAccessAuthenticationTest extends \PHPUnit_Framework_TestCase
 
 			$this->fail('Must throw an Exception');
 		}
-		catch(\Exception $e)
+		catch(UnauthorizedException $e)
 		{
-			$this->assertEquals(401, $response->getStatusCode());
+			$this->assertEquals(401, $e->getStatusCode());
+			$this->assertEquals('Digest', $e->getType());
 
-			$header = (string) $response->getHeader('WWW-Authenticate');
-			$params = Authentication::decodeParameters($header);
+			$params = $e->getParameters();
 
-			$this->assertEquals('auth', $params['qop']);
+			$this->assertEquals('auth,auth-int', $params['qop']);
 			$this->assertTrue(strlen($params['nonce']) > 8);
 			$this->assertTrue(strlen($params['opaque']) > 8);
 		}
@@ -168,14 +169,14 @@ class DigestAccessAuthenticationTest extends \PHPUnit_Framework_TestCase
 
 			$this->fail('Must throw an Exception');
 		}
-		catch(\Exception $e)
+		catch(UnauthorizedException $e)
 		{
-			$this->assertEquals(401, $response->getStatusCode());
+			$this->assertEquals(401, $e->getStatusCode());
+			$this->assertEquals('Digest', $e->getType());
 
-			$header = (string) $response->getHeader('WWW-Authenticate');
-			$params = Authentication::decodeParameters($header);
+			$params = $e->getParameters();
 
-			$this->assertEquals('auth', $params['qop']);
+			$this->assertEquals('auth,auth-int', $params['qop']);
 			$this->assertTrue(strlen($params['nonce']) > 8);
 			$this->assertTrue(strlen($params['opaque']) > 8);
 		}
@@ -199,14 +200,14 @@ class DigestAccessAuthenticationTest extends \PHPUnit_Framework_TestCase
 
 			$this->fail('Must throw an Exception');
 		}
-		catch(\Exception $e)
+		catch(UnauthorizedException $e)
 		{
-			$this->assertEquals(401, $response->getStatusCode());
+			$this->assertEquals(401, $e->getStatusCode());
+			$this->assertEquals('Digest', $e->getType());
 
-			$header = (string) $response->getHeader('WWW-Authenticate');
-			$params = Authentication::decodeParameters($header);
+			$params = $e->getParameters();
 
-			$this->assertEquals('auth', $params['qop']);
+			$this->assertEquals('auth,auth-int', $params['qop']);
 			$this->assertTrue(strlen($params['nonce']) > 8);
 			$this->assertTrue(strlen($params['opaque']) > 8);
 		}
