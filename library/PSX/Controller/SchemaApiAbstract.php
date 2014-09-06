@@ -23,10 +23,14 @@
 
 namespace PSX\Controller;
 
+use PSX\Api\Documentation;
+use PSX\Api\DocumentedInterface;
+use PSX\Api\Version;
+use PSX\Api\InvalidVersionException;
 use PSX\ControllerAbstract;
 use PSX\Data\RecordInterface;
 use PSX\Data\SchemaInterface;
-use PSX\Data\Schema\Documentation;
+use PSX\Http\Exception as StatusCode;
 
 /**
  * SchemaApiAbstract
@@ -35,7 +39,7 @@ use PSX\Data\Schema\Documentation;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link	http://phpsx.org
  */
-abstract class SchemaApiAbstract extends ApiAbstract implements SchemaDocumentedInterface
+abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterface
 {
 	/**
 	 * @Inject
@@ -45,98 +49,148 @@ abstract class SchemaApiAbstract extends ApiAbstract implements SchemaDocumented
 
 	public function onGet()
 	{
-		$response = $this->doGet();
-		$schema   = $this->getSchemaDocumentation();
+		$version = $this->getVersion();
+		$doc     = $this->getDocumentation();
+		$view    = $this->getView($doc, $version);
 
-		if($schema->hasResponse(Documentation::METHOD_GET))
+		if(!$view->hasGet())
 		{
-			$this->setBody($this->schemaAssimilator->assimilate($response, $schema->getResponse(Documentation::METHOD_GET)));
+			throw new StatusCode\MethodNotAllowedException('Method is not allowed', $view->getAllowedMethods());
 		}
-		else
-		{
-			$this->setBody($response);
-		}
+
+		$response = $this->doGet($version);
+
+		$this->setBody($this->schemaAssimilator->assimilate($response, $view->getGetResponse()));
 	}
 
 	public function onPost()
 	{
-		$schema = $this->getSchemaDocumentation();
+		$version = $this->getVersion();
+		$doc     = $this->getDocumentation();
+		$view    = $this->getView($doc, $version);
 
-		if(!$schema->hasRequest(Documentation::METHOD_POST))
+		if(!$view->hasPost())
 		{
-			throw new \Exception('Method not allowed', 405);
+			throw new StatusCode\MethodNotAllowedException('Method is not allowed', $view->getAllowedMethods());
 		}
 
-		$record   = $this->import($schema->getRequest(Documentation::METHOD_POST));
-		$response = $this->doCreate($record);
+		$record   = $this->import($view->getPostRequest());
+		$response = $this->doCreate($record, $version);
 
-		if($schema->hasResponse(Documentation::METHOD_POST))
+		if($view->hasPostResponse())
 		{
-			$this->setBody($this->schemaAssimilator->assimilate($response, $schema->getResponse(Documentation::METHOD_POST)));
+			$this->setResponseCode(201);
+			$this->setBody($this->schemaAssimilator->assimilate($response, $view->getPostResponse()));
 		}
 		else
 		{
-			$this->setBody($response);
+			$this->setResponseCode(204);
 		}
 	}
 
 	public function onPut()
 	{
-		$schema = $this->getSchemaDocumentation();
+		$version = $this->getVersion();
+		$doc     = $this->getDocumentation();
+		$view    = $this->getView($doc, $version);
 
-		if(!$schema->hasRequest(Documentation::METHOD_PUT))
+		if(!$view->hasPut())
 		{
-			throw new \Exception('Method not allowed', 405);
+			throw new StatusCode\MethodNotAllowedException('Method is not allowed', $view->getAllowedMethods());
 		}
 
-		$record   = $this->import($schema->getRequest(Documentation::METHOD_PUT));
-		$response = $this->doUpdate($record);
+		$record   = $this->import($view->getPutRequest());
+		$response = $this->doUpdate($record, $version);
 
-		if($schema->hasResponse(Documentation::METHOD_PUT))
+		if($view->hasPutResponse())
 		{
-			$this->setBody($this->schemaAssimilator->assimilate($response, $schema->getResponse(Documentation::METHOD_PUT)));
+			$this->setResponseCode(200);
+			$this->setBody($this->schemaAssimilator->assimilate($response, $view->getPutResponse()));
 		}
 		else
 		{
-			$this->setBody($response);
+			$this->setResponseCode(204);
 		}
 	}
 
 	public function onDelete()
 	{
-		$schema = $this->getSchemaDocumentation();
+		$version = $this->getVersion();
+		$doc     = $this->getDocumentation();
+		$view    = $this->getView($doc, $version);
 
-		if(!$schema->hasRequest(Documentation::METHOD_DELETE))
+		if(!$view->hasDelete())
 		{
-			throw new \Exception('Method not allowed', 405);
+			throw new StatusCode\MethodNotAllowedException('Method is not allowed', $view->getAllowedMethods());
 		}
 
-		$record   = $this->import($schema->getRequest(Documentation::METHOD_DELETE));
-		$response = $this->doDelete($record);
+		$record   = $this->import($view->getDeleteRequest());
+		$response = $this->doDelete($record, $version);
 
-		if($schema->hasResponse(Documentation::METHOD_DELETE))
+		if($view->hasDeleteResponse())
 		{
-			$this->setBody($this->schemaAssimilator->assimilate($response, $schema->getResponse(Documentation::METHOD_DELETE)));
+			$this->setResponseCode(200);
+			$this->setBody($this->schemaAssimilator->assimilate($response, $view->getDeleteResponse()));
 		}
 		else
 		{
-			$this->setBody($response);
+			$this->setResponseCode(204);
 		}
 	}
 
-	protected function doGet()
+	protected function doGet(Version $version)
 	{
 	}
 
-	protected function doCreate(RecordInterface $record)
+	protected function doCreate(RecordInterface $record, Version $version)
 	{
 	}
 
-	protected function doUpdate(RecordInterface $record)
+	protected function doUpdate(RecordInterface $record, Version $version)
 	{
 	}
 
-	protected function doDelete(RecordInterface $record)
+	protected function doDelete(RecordInterface $record, Version $version)
 	{
+	}
+
+	protected function getView(Documentation $doc, Version $version)
+	{
+		if(!$doc->hasView($version->getVersion()))
+		{
+			throw new StatusCode\NotAcceptableException('Version is not available');
+		}
+
+		$view = $doc->getView($version->getVersion());
+
+		if($view->isActive())
+		{
+		}
+		else if($view->isDeprecated())
+		{
+			$this->response->addHeader('Warning', '199 PSX "Version v' . $version->getVersion() . ' is deprecated"');
+		}
+		else if($view->isClosed())
+		{
+			throw new StatusCode\GoneException('Version v' . $version->getVersion() . ' is not longer supported');
+		}
+
+		return $view;
+	}
+
+	protected function getVersion()
+	{
+		$accept  = $this->getHeader('Accept');
+		$matches = array();
+
+		preg_match('/^application\/vnd\.([a-z.-_]+)\.v([\d]+)\+([a-z]+)$/', $accept, $matches);
+
+		$name    = isset($matches[1]) ? $matches[1] : null;
+		$version = isset($matches[2]) ? $matches[2] : null;
+		$format  = isset($matches[3]) ? $matches[3] : null;
+
+		$version = $version === null ? 1 : (int) $version;
+
+		return new Version($name, $version);
 	}
 }
