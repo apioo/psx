@@ -51,85 +51,108 @@ class Sender implements SenderInterface
 
 	public function send(ResponseInterface $response)
 	{
+		// remove body on specific status codes
+		if(in_array($response->getStatusCode(), array(100, 101, 204, 304)))
+		{
+			$response->setBody(null);
+		}
+		// if we have an location header we dont send any content
+		else if($response->hasHeader('Location'))
+		{
+			$response->setBody(null);
+		}
+
 		if(!$this->isCli())
 		{
-			// if we have an file stream set custom header
-			if($response->getBody() instanceof FileStream)
-			{
-				$fileName = $response->getBody()->getFileName();
-				if(empty($fileName))
-				{
-					$fileName = 'file';
-				}
+			// if we have an file stream body set custom header
+			$this->prepareFileStream($response);
 
-				$contentType = $response->getBody()->getContentType();
-				if(empty($contentType))
-				{
-					$contentType = 'application/octet-stream';
-				}
+			// send status line
+			$this->sendStatusLine($response);
 
-				$response->setHeader('Content-Type', $contentType);
-				$response->setHeader('Content-Disposition', 'attachment; filename="' . addcslashes($fileName, '"') . '"');
-				$response->setHeader('Transfer-Encoding', 'chunked');
-			}
-
-			// content and transfer encoding is only useful if we are not in an
-			// cli environment
-			$transferEncoding = $response->getHeader('Transfer-Encoding');
-			$contentEncoding  = $response->getHeader('Content-Encoding');
-
-			// send response code
-			$scheme = $response->getProtocolVersion();
-			if(empty($scheme))
-			{
-				$scheme = 'HTTP/1.1';
-			}
-
-			$code = $response->getCode();
-			if(!isset(Http::$codes[$code]))
-			{
-				$code = 200;
-			}
-
-			$this->sendHeader($scheme . ' ' . $code . ' ' . Http::$codes[$code]);
-
-			// if we have an locaion header
-			$location = $response->getHeader('Location');
-
-			if(!empty($location))
-			{
-				$this->sendHeader('Location: ' . $location);
-				return;
-			}
-
-			// send header
-			$headers = ResponseParser::buildHeaderFromMessage($response);
-
-			foreach($headers as $header)
-			{
-				$this->sendHeader($header);
-			}
-		}
-		else
-		{
-			$transferEncoding = null;
-			$contentEncoding  = null;
+			// send headers
+			$this->sendHeaders($response);
 		}
 
 		// send body
-		if($transferEncoding == 'chunked')
+		$this->sendBody($response);
+	}
+
+	protected function isCli()
+	{
+		return PHP_SAPI == 'cli';
+	}
+
+	protected function prepareFileStream(ResponseInterface $response)
+	{
+		if($response->getBody() instanceof FileStream)
 		{
-			$this->sendContentChunked($response);
+			$fileName = $response->getBody()->getFileName();
+			if(empty($fileName))
+			{
+				$fileName = 'file';
+			}
+
+			$contentType = $response->getBody()->getContentType();
+			if(empty($contentType))
+			{
+				$contentType = 'application/octet-stream';
+			}
+
+			$response->setHeader('Content-Type', $contentType);
+			$response->setHeader('Content-Disposition', 'attachment; filename="' . addcslashes($fileName, '"') . '"');
+			$response->setHeader('Transfer-Encoding', 'chunked');
 		}
-		else
+	}
+
+	protected function sendStatusLine(ResponseInterface $response)
+	{
+		$scheme = $response->getProtocolVersion();
+		if(empty($scheme))
 		{
-			$this->sendContentEncoded($contentEncoding, $response);
+			$scheme = 'HTTP/1.1';
+		}
+
+		$code = $response->getCode();
+		if(!isset(Http::$codes[$code]))
+		{
+			$code = 200;
+		}
+
+		$this->sendHeader($scheme . ' ' . $code . ' ' . Http::$codes[$code]);
+	}
+
+	protected function sendHeaders(ResponseInterface $response)
+	{
+		$headers = ResponseParser::buildHeaderFromMessage($response);
+
+		foreach($headers as $header)
+		{
+			$this->sendHeader($header);
 		}
 	}
 
 	protected function sendHeader($header)
 	{
 		header($header);
+	}
+
+	protected function sendBody(ResponseInterface $response)
+	{
+		if($response->getBody() !== null)
+		{
+			$transferEncoding = $response->getHeader('Transfer-Encoding');
+			$contentEncoding  = $response->getHeader('Content-Encoding');
+
+			if($transferEncoding == 'chunked')
+			{
+				$this->sendContentChunked($response);
+			}
+			else
+			{
+				$this->sendContentEncoded($contentEncoding, $response);
+			}
+		}
 	}
 
 	protected function sendContentEncoded($contentEncoding, ResponseInterface $response)
@@ -172,10 +195,5 @@ class Sender implements SenderInterface
 		flush();
 
 		$body->close();
-	}
-
-	protected function isCli()
-	{
-		return PHP_SAPI == 'cli';
 	}
 }
