@@ -37,9 +37,16 @@ use PSX\Cache\Item;
  */
 class File implements HandlerInterface
 {
+	protected $path;
+
+	public function __construct($path = null)
+	{
+		$this->path = $path === null ? PSX_PATH_CACHE : $path;
+	}
+
 	public function load($key)
 	{
-		$file = self::getFile($key);
+		$file = $this->getFile($key);
 
 		if(is_file($file))
 		{
@@ -66,7 +73,7 @@ class File implements HandlerInterface
 
 	public function write(Item $item)
 	{
-		$file = self::getFile($item->getKey());
+		$file = $this->getFile($item->getKey());
 
 		if($item->hasExpiration())
 		{
@@ -87,7 +94,7 @@ class File implements HandlerInterface
 
 	public function remove($key)
 	{
-		$file = self::getFile($key);
+		$file = $this->getFile($key);
 
 		if(is_file($file))
 		{
@@ -97,12 +104,24 @@ class File implements HandlerInterface
 
 	public function removeAll()
 	{
+		$files = scandir($this->path);
+
+		foreach($files as $file)
+		{
+			$item = $this->path . '/' . $file;
+
+			if(is_file($item) && preg_match('/^psx_(.*).cache$/', $file))
+			{
+				unlink($item);
+			}
+		}
+
 		return true;
 	}
 
-	public static function getFile($key)
+	public function getFile($key)
 	{
-		return PSX_PATH_CACHE . '/psx_' . $key . '.cache';
+		return $this->path . '/psx_' . $key . '.cache';
 	}
 }
 

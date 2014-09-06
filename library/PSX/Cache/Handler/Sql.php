@@ -115,6 +115,8 @@ class Sql implements HandlerInterface
 
 	public function removeAll()
 	{
+		$this->connection->query('DELETE FROM ' . $this->tableName . ' WHERE 1');
+
 		return true;
 	}
 }

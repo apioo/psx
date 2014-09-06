@@ -78,6 +78,8 @@ class Memcache implements HandlerInterface
 
 	public function removeAll()
 	{
+		$this->memcache->flush();
+
 		return true;
 	}
 }
