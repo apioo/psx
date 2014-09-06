@@ -23,6 +23,7 @@
 
 namespace PSX\Dependency;
 
+use PSX\Data\Extractor;
 use PSX\Data\Importer as DataImporter;
 use PSX\Data\Reader;
 use PSX\Data\ReaderFactory;
@@ -139,6 +140,14 @@ trait Data
 	 */
 	public function getImporter()
 	{
-		return new DataImporter($this->get('reader_factory'), $this->get('importer_manager'), $this->get('transformer_manager'));
+		return new DataImporter($this->get('extractor'), $this->get('importer_manager'));
+	}
+
+	/**
+	 * @return PSX\Data\Extractor
+	 */
+	public function getExtractor()
+	{
+		return new Extractor($this->get('reader_factory'), $this->get('transformer_manager'));
 	}
 }
