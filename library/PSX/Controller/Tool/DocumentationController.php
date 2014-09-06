@@ -23,8 +23,9 @@
 
 namespace PSX\Controller\Tool;
 
+use PSX\Api\DocumentedInterface;
+use PSX\Api\View;
 use PSX\Controller\ViewAbstract;
-use PSX\Controller\SchemaDocumentedInterface;
 use PSX\Data\Schema\Generator;
 use PSX\Data\WriterInterface;
 use PSX\Data\Schema\Documentation;
@@ -60,51 +61,27 @@ class DocumentationController extends ViewAbstract
 
 		if(!empty($path))
 		{
-			$html   = new Generator\Html();
-			$schema = $this->getSchema($path);
+			$schema   = $this->getSchema($path);
+			$views    = $schema->doc->getViews();
+			$versions = array();
 
-			$data = array(
+			krsort($views);
+
+			foreach($views as $version => $view)
+			{
+				$versions[] = array(
+					'version' => $version,
+					'status'  => $view->getStatus(),
+					'view'    => $this->getDataFromView($view),
+				);
+			}
+
+			$this->setBody(array(
 				'method'     => $schema->routing[0],
 				'path'       => $schema->routing[1],
 				'controller' => $schema->routing[2],
-			);
-
-			if($schema->doc->hasResponse(Documentation::METHOD_GET))
-			{
-				$data['get_response'] = $html->generate($schema->doc->getResponse(Documentation::METHOD_GET));
-			}
-
-			if($schema->doc->hasRequest(Documentation::METHOD_POST))
-			{
-				$data['post_request'] = $html->generate($schema->doc->getRequest(Documentation::METHOD_POST));
-			}
-
-			if($schema->doc->hasResponse(Documentation::METHOD_POST))
-			{
-				$data['post_response'] = $html->generate($schema->doc->getResponse(Documentation::METHOD_POST));
-			}
-
-			if($schema->doc->hasRequest(Documentation::METHOD_PUT))
-			{
-				$data['put_request'] = $html->generate($schema->doc->getRequest(Documentation::METHOD_PUT));
-			}
-
-			if($schema->doc->hasResponse(Documentation::METHOD_PUT))
-			{
-				$data['put_response'] = $html->generate($schema->doc->getResponse(Documentation::METHOD_PUT));
-			}
-
-			if($schema->doc->hasRequest(Documentation::METHOD_DELETE))
-			{
-				$data['delete_request'] = $html->generate($schema->doc->getRequest(Documentation::METHOD_DELETE));
-			}
-
-			if($schema->doc->hasResponse(Documentation::METHOD_DELETE))
-			{
-				$data['delete_response'] = $html->generate($schema->doc->getResponse(Documentation::METHOD_DELETE));
-			}
-
-			$this->setBody($data);
+				'versions'   => $versions,
+			));
 		}
 		else
 		{
@@ -130,7 +107,7 @@ class DocumentationController extends ViewAbstract
 			{
 				$controller = $this->controllerFactory->getController($className, $this->location, $this->request, $this->response);
 
-				if($controller instanceof SchemaDocumentedInterface)
+				if($controller instanceof DocumentedInterface)
 				{
 					$routings[] = array(
 						'method'     => $methods, 
@@ -160,11 +137,11 @@ class DocumentationController extends ViewAbstract
 			{
 				$controller = $this->controllerFactory->getController($className, $this->location, $this->request, $this->response);
 
-				if($controller instanceof SchemaDocumentedInterface && $sourcePath == $path)
+				if($controller instanceof DocumentedInterface && $sourcePath == $path)
 				{
 					$obj = new \stdClass();
 					$obj->routing = array($methods, $path, $className);
-					$obj->doc = $controller->getSchemaDocumentation();
+					$obj->doc = $controller->getDocumentation();
 
 					return $obj;
 				}
@@ -172,5 +149,48 @@ class DocumentationController extends ViewAbstract
 		}
 
 		throw new \Exception('Invalid path');
+	}
+
+	protected function getDataFromView(View $view)
+	{
+		$html = new Generator\Html();
+		$data = array();
+
+		if($view->hasGetResponse())
+		{
+			$data['get_response'] = $html->generate($view->getGetResponse());
+		}
+
+		if($view->hasPostRequest())
+		{
+			$data['post_request'] = $html->generate($view->getPostRequest());
+		}
+
+		if($view->hasPostResponse())
+		{
+			$data['post_response'] = $html->generate($view->getPostResponse());
+		}
+
+		if($view->hasPutRequest())
+		{
+			$data['put_request'] = $html->generate($view->getPutRequest());
+		}
+
+		if($view->hasPutResponse())
+		{
+			$data['put_response'] = $html->generate($view->getPutResponse());
+		}
+
+		if($view->hasDeleteRequest())
+		{
+			$data['delete_request'] = $html->generate($view->getDeleteRequest());
+		}
+
+		if($view->hasDeleteResponse())
+		{
+			$data['delete_response'] = $html->generate($view->getDeleteResponse());
+		}
+
+		return $data;
 	}
 }
