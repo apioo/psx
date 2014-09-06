@@ -23,15 +23,28 @@
 
 namespace PSX\Loader;
 
-use PSX\Exception;
+use PSX\Http\Exception\NotFoundException;
 
 /**
- * InvalidPathException
+ * Exception which gets thrown if an loader can not resolve the given path
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class InvalidPathException extends Exception
+class InvalidPathException extends NotFoundException
 {
+	protected $path;
+
+	public function __construct($message, $path)
+	{
+		parent::__construct($message);
+
+		$this->path = $path;
+	}
+
+	public function getPath()
+	{
+		return $this->path;
+	}
 }

@@ -102,7 +102,7 @@ class Loader implements LoaderInterface
 		}
 		else
 		{
-			throw new InvalidPathException('Unkown module "' . $path . '"', 404);
+			throw new InvalidPathException('Unkown location', $path);
 		}
 	}
 
