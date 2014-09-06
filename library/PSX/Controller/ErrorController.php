@@ -71,20 +71,6 @@ class ErrorController extends ViewAbstract
 
 	protected function handleException(\Exception $exception)
 	{
-		// set status code
-		$code = $this->response->getStatusCode();
-
-		if($code === null && isset(Http::$codes[$exception->getCode()]))
-		{
-			$code = $exception->getCode();
-		}
-		else if($code === null)
-		{
-			$code = 500;
-		}
-
-		$this->response->setStatusCode($code);
-
 		// set error template
 		$class = str_replace('\\', '/', get_class($this));
 
