@@ -23,10 +23,6 @@
 
 namespace PSX\Data;
 
-use Psr\Http\Message\MessageInterface;
-use PSX\Data\Record\ImporterInterface;
-use RuntimeException;
-
 /**
  * ReaderAbstract
  *
@@ -36,8 +32,4 @@ use RuntimeException;
  */
 abstract class ReaderAbstract implements ReaderInterface
 {
-	public function isContentTypeSupported($contentType)
-	{
-		return false;
-	}
 }
