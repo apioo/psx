@@ -38,7 +38,7 @@ use PSX\Data\WriterInterface;
 use PSX\Data\Record;
 use PSX\Data\TransformerInterface;
 use PSX\Dependency;
-use PSX\Dispatch\RedirectException;
+use PSX\Http\Exception\TemporaryRedirectException;
 use PSX\Http\Stream\TempStream;
 use PSX\Loader\Location;
 use PSX\Url;
@@ -122,7 +122,15 @@ abstract class ControllerAbstract implements ControllerInterface
 	 */
 	protected $importer;
 
+	/**
+	 * @Inject
+	 * @var PSX\Data\Extractor
+	 */
+	protected $extractor;
+
 	private $_responseWritten = false;
+
+	private $_accessor;
 
 	/**
 	 * @param PSX\Loader\Location $location
@@ -242,7 +250,7 @@ abstract class ControllerAbstract implements ControllerInterface
 			$url = $this->reverseRouter->getUrl($source, $parameters);
 		}
 
-		throw new RedirectException($url, $code);
+		throw new TemporaryRedirectException($url);
 	}
 
 	/**
@@ -328,6 +336,27 @@ abstract class ControllerAbstract implements ControllerInterface
 	protected function getBody($readerType = null)
 	{
 		return $this->getRequestReader($readerType)->read($this->request);
+	}
+
+	/**
+	 * Returns an accessor object with that you can easily access values from
+	 * the request body
+	 *
+	 * @param PSX\Data\TransformerInterface $transformer
+	 * @param string $readerType
+	 * @return PSX\Data\Accessor
+	 */
+	protected function getAccessor(TransformerInterface $transformer = null, $readerType = null)
+	{
+		if($this->_accessor === null)
+		{
+			$data     = $this->extractor->extract($this->request, $transformer, $readerType);
+			$accessor = new Accessor($this->validate, $data);
+
+			$this->_accessor = $accessor;
+		}
+
+		return $this->_accessor;
 	}
 
 	/**
@@ -495,7 +524,7 @@ abstract class ControllerAbstract implements ControllerInterface
 
 		if($reader === null)
 		{
-			throw new NotFoundException('Could not find fitting data reader');
+			throw new NotFoundException('Could not find fitting data reader', 415);
 		}
 
 		return $reader;
