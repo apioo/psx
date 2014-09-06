@@ -30,8 +30,12 @@ use PSX\Base;
 use PSX\Dispatch\ControllerFactoryInterface;
 use PSX\Dispatch\SenderInterface;
 use PSX\Dispatch\RedirectException;
+use PSX\Http;
+use PSX\Http\Authentication;
+use PSX\Http\Exception as StatusCode;
 use PSX\Loader\Callback;
 use PSX\Loader\Location;
+use PSX\Url;
 
 /**
  * The dispatcher routes the request to the fitting controller. The route method
@@ -63,13 +67,58 @@ class Dispatch
 		{
 			$this->loader->load($request, $response);
 		}
-		catch(RedirectException $e)
+		catch(StatusCode\NotModifiedException $e)
 		{
 			$response->setStatusCode($e->getStatusCode());
-			$response->setHeader('Location', $e->getUrl());
+			$response->setBody(null);
+		}
+		catch(StatusCode\MethodNotAllowedException $e)
+		{
+			$response->setStatusCode($e->getStatusCode());
+
+			$allowedMethods = $e->getAllowedMethods();
+			if(!empty($allowedMethods))
+			{
+				$response->setHeader('Allow', implode(', ', $allowedMethods));
+			}
+		}
+		catch(StatusCode\UnauthorizedException $e)
+		{
+			$response->setStatusCode($e->getStatusCode());
+
+			$parameters = $e->getParameters();
+			if(!empty($parameters))
+			{
+				$response->setHeader('WWW-Authenticate', $e->getType() . ' ' . Authentication::encodeParameters($params));
+			}
+			else
+			{
+				$response->setHeader('WWW-Authenticate', $e->getType());
+			}
+		}
+		catch(StatusCode\RedirectionException $e)
+		{
+			$response->setStatusCode($e->getStatusCode());
+			$response->setHeader('Location', $e->getLocation());
 		}
 		catch(\Exception $e)
 		{
+			if($e instanceof StatusCode\StatusCodeException)
+			{
+				$response->setStatusCode($e->getStatusCode());
+			}
+			else if($response->getStatusCode() === null)
+			{
+				if(isset(Http::$codes[$e->getCode()]))
+				{
+					$response->setStatusCode($e->getCode());
+				}
+				else
+				{
+					$response->setStatusCode(500);
+				}
+			}
+
 			$class    = isset($this->config['psx_error_controller']) ? $this->config['psx_error_controller'] : 'PSX\Controller\ErrorController';
 			$location = new Location();
 			$location->setParameter(Location::KEY_EXCEPTION, $e);
