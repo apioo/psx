@@ -165,6 +165,10 @@ class FilterParameter
 				}
 			}
 		}
+		else
+		{
+			$fields = null;
+		}
 
 		$filter->setFields($fields);
 
