@@ -31,6 +31,7 @@ use PSX\Dispatch\FilterInterface;
 use PSX\Dispatch\Filter\DigestAccessAuthentication\Digest;
 use PSX\Exception;
 use PSX\Http\Authentication;
+use PSX\Http\Exception\UnauthorizedException;
 
 /**
  * Implementation of the http digest authentication. Note the digest
@@ -96,10 +97,7 @@ class DigestAccessAuthentication implements FilterInterface
 				'opaque' => $digest->getOpaque(),
 			);
 
-			$response->setStatusCode(401);
-			$response->setHeader('WWW-Authenticate', 'Digest ' . Authentication::encodeParameters($params));
-
-			throw new Exception('Missing authorization header');
+			throw new UnauthorizedException('Missing authorization header', 'Digest', $params);
 		});
 
 		// load digest from store

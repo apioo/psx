@@ -30,6 +30,7 @@ use PSX\Base;
 use PSX\Dispatch\FilterInterface;
 use PSX\Exception;
 use PSX\Http\Authentication;
+use PSX\Http\Exception\UnauthorizedException;
 
 /**
  * BasicAuthentication
@@ -70,10 +71,7 @@ class BasicAuthentication implements FilterInterface
 				'realm' => 'psx',
 			);
 
-			$response->setStatusCode(401);
-			$response->setHeader('WWW-Authenticate', 'Basic ' . Authentication::encodeParameters($params));
-
-			throw new Exception('Missing authorization header');
+			throw new UnauthorizedException('Missing authorization header', 'Basic', $params);
 		});
 	}
 

@@ -29,6 +29,7 @@ use Psr\Http\Message\ResponseInterface;
 use PSX\Dispatch\FilterInterface;
 use PSX\Exception;
 use PSX\Http\Authentication;
+use PSX\Http\Exception\UnauthorizedException;
 
 /**
  * Oauth2Authentication
@@ -68,10 +69,7 @@ class Oauth2Authentication implements FilterInterface
 				'realm' => 'psx',
 			);
 
-			$response->setStatusCode(401);
-			$response->setHeader('WWW-Authenticate', 'Bearer ' . Authentication::encodeParameters($params));
-
-			throw new Exception('Missing authorization header');
+			throw new UnauthorizedException('Missing authorization header', 'Bearer', $params);
 		});
 	}
 
