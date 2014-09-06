@@ -137,7 +137,14 @@ class Entity implements ImporterInterface
 
 	protected function isEntity($class)
 	{
-		return !$this->em->getMetadataFactory()->isTransient($this->getClassName($class));
+		try
+		{
+			return !$this->em->getMetadataFactory()->isTransient($this->getClassName($class));
+		}
+		catch(\ReflectionException $e)
+		{
+			return false;
+		}
 	}
 
 	protected function getClassName($class)
