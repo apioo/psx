@@ -41,25 +41,19 @@ use PSX\Data\Transformer\TransformerManager;
 class Importer
 {
 	/**
-	 * @var PSX\Data\ReaderFactory
+	 * @var PSX\Data\Extractor
 	 */
-	protected $readerFactory;
+	protected $extractor;
 
 	/**
 	 * @var PSX\Data\Record\ImporterManager
 	 */
 	protected $importerManager;
 
-	/**
-	 * @var PSX\Data\Record\TransformerManager
-	 */
-	protected $transformerManager;
-
-	public function __construct(ReaderFactory $readerFactory, ImporterManager $importerManager, TransformerManager $transformerManager)
+	public function __construct(Extractor $extractor, ImporterManager $importerManager)
 	{
-		$this->readerFactory      = $readerFactory;
-		$this->importerManager    = $importerManager;
-		$this->transformerManager = $transformerManager;
+		$this->extractor       = $extractor;
+		$this->importerManager = $importerManager;
 	}
 
 	/**
@@ -76,20 +70,7 @@ class Importer
 	 */
 	public function import($source, MessageInterface $message, TransformerInterface $transformer = null, $readerType = null)
 	{
-		$contentType = strstr($message->getHeader('Content-Type') . ';', ';', true);
-		$reader      = $this->getRequestReader($contentType, $readerType);
-		$data        = $reader->read($message);
-
-		// get transformer
-		if($transformer === null)
-		{
-			$transformer = $this->transformerManager->getTransformerByContentType($contentType);
-		}
-
-		if($transformer instanceof TransformerInterface)
-		{
-			$data = $transformer->transform($data);
-		}
+		$data = $this->extractor->extract($message, $transformer, $readerType);
 
 		if(is_callable($source))
 		{
@@ -106,30 +87,5 @@ class Importer
 		{
 			throw new NotFoundException('Could not find fitting importer');
 		}
-	}
-
-	protected function getRequestReader($contentType, $readerType)
-	{
-		// find best reader type
-		if($readerType === null)
-		{
-			$reader = $this->readerFactory->getReaderByContentType($contentType);
-		}
-		else
-		{
-			$reader = $this->readerFactory->getReaderByInstance($readerType);
-		}
-
-		if($reader === null)
-		{
-			$reader = $this->readerFactory->getDefaultReader();
-		}
-
-		if($reader === null)
-		{
-			throw new NotFoundException('Could not find fitting data reader');
-		}
-
-		return $reader;
 	}
 }
