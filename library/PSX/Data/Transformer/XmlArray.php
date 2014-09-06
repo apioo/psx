@@ -27,6 +27,7 @@ use DOMDocument;
 use DOMElement;
 use PSX\Data\Reader\Xml;
 use PSX\Data\TransformerInterface;
+use InvalidArgumentException;
 
 /**
  * Takes an DOMDocument and formats it into an array structure which can be used
