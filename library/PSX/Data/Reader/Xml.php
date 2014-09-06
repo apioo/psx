@@ -26,8 +26,6 @@ namespace PSX\Data\Reader;
 use DOMDocument;
 use Psr\Http\Message\MessageInterface;
 use PSX\Data\ReaderAbstract;
-use PSX\Data\Record\DefaultImporter;
-use PSX\Xml as XmlParser;
 
 /**
  * Xml
