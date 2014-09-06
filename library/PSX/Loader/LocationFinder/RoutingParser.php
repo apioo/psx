@@ -74,7 +74,5 @@ class RoutingParser implements LocationFinderInterface
 				return $location;
 			}
 		}
-
-		throw new InvalidPathException('Path not found', 404);
 	}
 }
