@@ -24,9 +24,10 @@
 namespace PSX\Html;
 
 use Countable;
-use PSX\Data\ResultSet;
-use PSX\Url;
 use Iterator;
+use PSX\Data\ResultSet;
+use PSX\Html\Paging\Page;
+use PSX\Url;
 
 /**
  * Paging
@@ -38,13 +39,11 @@ use Iterator;
 class Paging implements Countable, Iterator
 {
 	protected $url;
-	protected $resultSet;
 	protected $range;
 
 	protected $totalResults;
 	protected $itemsPerPage;
 	protected $startIndex;
-	protected $count;
 
 	protected $page;
 	protected $pages;
@@ -60,23 +59,16 @@ class Paging implements Countable, Iterator
 
 	public function __construct(Url $url, ResultSet $resultSet, $range = 2)
 	{
-		$this->url       = $url;
-		$this->resultSet = $resultSet;
-		$this->range     = $range;
+		$this->url   = $url;
+		$this->range = $range;
 
 		// resultset values
-		$this->totalResults = (int) $resultSet->getTotalResults();
-		$this->itemsPerPage = (int) $resultSet->getItemsPerPage();
-		$this->startIndex   = (int) $resultSet->getStartIndex();
-		$this->count        = $resultSet->count();
+		$this->totalResults = $resultSet->getTotalResults();
+		$this->itemsPerPage = $resultSet->getItemsPerPage();
+		$this->startIndex   = $resultSet->getStartIndex();
 
 		// do the math
-		$this->calcPages();
-	}
-
-	public function getResultSet()
-	{
-		return $this->resultSet;
+		$this->calculatePages();
 	}
 
 	public function getRange()
@@ -152,22 +144,6 @@ class Paging implements Countable, Iterator
 		return $this->url->__toString();
 	}
 
-	public function calcPages()
-	{
-		$this->pages = $this->totalResults > 0 && $this->totalResults > $this->itemsPerPage ? ceil($this->totalResults / $this->itemsPerPage) - 1 : 0;
-		$this->page  = $this->startIndex >= 0 ? intval($this->startIndex / $this->itemsPerPage) : 0;
-		$this->page  = $this->page < 0 ? 0 : $this->page; # lower limit
-		$this->page  = $this->page > $this->pages ? $this->pages : $this->page; # upper limit
-
-		$this->first = 0;
-		$this->prev  = $this->page > 1 ? $this->page - 1 : 0;
-		$this->next  = $this->page < $this->pages ? $this->page + 1 : $this->pages;
-		$this->last  = $this->pages;
-
-		$this->min   = $this->page - $this->range < 0 ? 0 : $this->page - $this->range;
-		$this->max   = $this->page + $this->range > $this->pages ? $this->pages : $this->page + $this->range;
-	}
-
 	// Countable
 	public function count()
 	{
@@ -179,11 +155,7 @@ class Paging implements Countable, Iterator
 	{
 		$this->url->addParam('startIndex', $this->itPos * $this->itemsPerPage, true);
 
-		return array(
-			'name'    => $this->itPos + 1,
-			'current' => $this->itPos == $this->page,
-			'href'    => strval($this->url)
-		);
+		return new Page($this->itPos + 1, $this->itPos == $this->page, $this->url->getUrl());
 	}
 
 	public function key()
@@ -204,6 +176,22 @@ class Paging implements Countable, Iterator
 	public function valid()
 	{
 		return $this->pages > 0 && $this->itPos >= $this->min && $this->itPos <= $this->max;
+	}
+
+	protected function calculatePages()
+	{
+		$this->pages = $this->totalResults > 0 && $this->totalResults > $this->itemsPerPage ? ceil($this->totalResults / $this->itemsPerPage) - 1 : 0;
+		$this->page  = $this->startIndex >= 0 ? intval($this->startIndex / $this->itemsPerPage) : 0;
+		$this->page  = $this->page < 0 ? 0 : $this->page; # lower limit
+		$this->page  = $this->page > $this->pages ? $this->pages : $this->page; # upper limit
+
+		$this->first = 0;
+		$this->prev  = $this->page > 1 ? $this->page - 1 : 0;
+		$this->next  = $this->page < $this->pages ? $this->page + 1 : $this->pages;
+		$this->last  = $this->pages;
+
+		$this->min   = $this->page - $this->range < 0 ? 0 : $this->page - $this->range;
+		$this->max   = $this->page + $this->range > $this->pages ? $this->pages : $this->page + $this->range;
 	}
 }
 
