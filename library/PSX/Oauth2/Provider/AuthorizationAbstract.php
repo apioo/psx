@@ -26,7 +26,7 @@ namespace PSX\Oauth2\Provider;
 use PSX\Controller\ApiAbstract;
 use PSX\Data\RecordAbstract;
 use PSX\Data\RecordInfo;
-use PSX\Dispatch\RedirectException;
+use PSX\Http\Exception\RedirectionException;
 use PSX\Oauth2\Authorization\Exception\ErrorExceptionAbstract;
 use PSX\Oauth2\Authorization\Exception\InvalidRequestException;
 use PSX\Oauth2\Authorization\Exception\UnauthorizedClientException;
@@ -119,7 +119,7 @@ abstract class AuthorizationAbstract extends ApiAbstract
 				throw $e;
 			}
 		}
-		catch(RedirectException $e)
+		catch(RedirectionException $e)
 		{
 			throw $e;
 		}
