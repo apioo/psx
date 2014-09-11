@@ -23,6 +23,8 @@
 
 namespace PSX\OpenSsl;
 
+use InvalidArgumentException;
+
 /**
  * PKey
  *
@@ -32,19 +34,30 @@ namespace PSX\OpenSsl;
  */
 class PKey
 {
-	private $res;
+	protected $res;
 
-	public function __construct(array $configargs = array())
+	public function __construct($configargs = array())
 	{
-		$res = openssl_pkey_new($configargs);
-
-		if($res !== false)
+		if(is_array($configargs))
 		{
-			$this->res = $res;
+			$res = openssl_pkey_new($configargs);
+
+			if($res !== false)
+			{
+				$this->res = $res;
+			}
+			else
+			{
+				throw new Exception('Could not create private key');
+			}
+		}
+		else if(is_resource($configargs))
+		{
+			$this->res = $configargs;
 		}
 		else
 		{
-			throw new Exception('Could not create private key');
+			throw new InvalidArgumentException('Must be either an array or resource');
 		}
 	}
 
@@ -67,6 +80,13 @@ class PKey
 		}
 	}
 
+	public function getPublicKey()
+	{
+		$details = $this->getDetails();
+
+		return isset($details['key']) ? $details['key'] : null;
+	}
+
 	public function getResource()
 	{
 		return $this->res;
@@ -77,18 +97,13 @@ class PKey
 		return openssl_pkey_export($this->res, $out, $passphrase, $configargs);
 	}
 
-	public function exportToFile($outfilename, $passphrase = null, array $configargs = array())
-	{
-		return openssl_pkey_export_to_file($this->res, $outfilename, $passphrase, $configargs);
-	}
-
 	public static function getPrivate($key, $passphrase = null)
 	{
 		$res = openssl_pkey_get_private($key, $passphrase);
 
 		if($res !== false)
 		{
-			return $res;
+			return new self($res);
 		}
 		else
 		{
@@ -102,7 +117,7 @@ class PKey
 
 		if($res !== false)
 		{
-			return $res;
+			return new self($res);
 		}
 		else
 		{

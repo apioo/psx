@@ -23,6 +23,7 @@
 
 namespace PSX;
 
+use PSX\OpenSsl\Exception as OpenSslException;
 use PSX\OpenSsl\PKey;
 
 /**
@@ -36,60 +37,43 @@ class OpenSsl
 {
 	public static function decrypt($data, $method, $password, $rawInput = false, $iv = '')
 	{
-		$ret = openssl_decrypt($data, $method, $password, $rawInput, $iv);
+		$return = openssl_decrypt($data, $method, $password, $rawInput, $iv);
 
-		if($ret === false)
-		{
-			throw new Exception('Could not decrypt data');
-		}
+		self::handleReturn($return);
 
-		return $ret;
+		return $return;
 	}
 
 	public static function dhComputeKey($pubKey, PKey $dhKey)
 	{
-		$ret = openssl_dh_compute_key($pubKey, $dhKey->getResource());
+		$return = openssl_dh_compute_key($pubKey, $dhKey->getResource());
 
-		if($ret === false)
-		{
-			throw new Exception('Could not compute secret');
-		}
+		self::handleReturn($return);
 
-		return $ret;
+		return $return;
 	}
 
 	public static function digest($data, $func, $rawOutput = false)
 	{
-		$ret = openssl_digest($data, $func, $rawOutput);
+		$return = openssl_digest($data, $func, $rawOutput);
 
-		if($ret === false)
-		{
-			throw new Exception('Could not compute digest');
-		}
+		self::handleReturn($return);
 
-		return $ret;
+		return $return;
 	}
 
 	public static function encrypt($data, $method, $password, $rawOutput = false, $iv = '')
 	{
-		$ret = openssl_encrypt($data, $method, $password, $rawOutput, $iv);
+		$return = openssl_encrypt($data, $method, $password, $rawOutput, $iv);
 
-		if($ret === false)
-		{
-			throw new Exception('Could not encrypt data');
-		}
+		self::handleReturn($return);
 
-		return $ret;
+		return $return;
 	}
 
 	public static function errorString()
 	{
 		return openssl_error_string();
-	}
-
-	public static function freeKey($keyIdentifier)
-	{
-		openssl_free_key($keyIdentifier);
 	}
 
 	public static function getCipherMethods($aliases = false)
@@ -102,58 +86,126 @@ class OpenSsl
 		return openssl_get_md_methods($aliases);
 	}
 
-	public static function getPrivateKey($key, $passphrase = null)
+	public static function open($sealedData, &$openData, $envKey, PKey $key)
 	{
-		return PKey::getPrivate($key, $passphrase);
+		$return = openssl_open($sealedData, $openData, $envKey, $key->getResource());
+
+		self::handleReturn($return);
+
+		return $return;
 	}
 
-	public static function getPublicKey($certificate)
+	public static function seal($data, &$sealedData, &$envKeys, array $pubKeys)
 	{
-		return PKey::getPublic($certificate);
+		$pubKeyIds = array();
+		foreach($pubKeys as $pubKey)
+		{
+			if($pubKey instanceof PKey)
+			{
+				$pubKeyIds[] = $pubKey->getPublicKey();
+			}
+			else
+			{
+				throw new OpenSslException('Pub keys must be an array containing PSX\OpenSsl\PKey instances');
+			}
+		}
+
+		$return = openssl_seal($data, $sealedData, $envKeys, $pubKeyIds);
+
+		self::handleReturn($return);
+
+		return $return;
 	}
 
-	public static function open($sealedData, &$openData, $envKey, $privKeyId)
+	public static function sign($data, &$signature, PKey $key, $signatureAlg = OPENSSL_ALGO_SHA1)
 	{
-		return openssl_open($sealedData, $openData, $envKey, $privKeyId);
+		$return = openssl_sign($data, $signature, $key->getResource(), $signatureAlg);
+
+		self::handleReturn($return);
+
+		return $return;
 	}
 
-	public static function privateDecrypt($data, &$decrypted, $key, $padding = null)
+	public static function verify($data, $signature, PKey $key, $signatureAlg = OPENSSL_ALGO_SHA1)
 	{
-		return openssl_private_decrypt($data, $decrypted, $key, $padding);
+		$return = openssl_verify($data, $signature, $key->getPublicKey(), $signatureAlg);
+
+		self::handleReturn($return);
+
+		return $return;
 	}
 
-	public static function privateEncrypt($data, &$crypted, $key, $padding = null)
+	public static function privateDecrypt($data, &$decrypted, PKey $key, $padding = OPENSSL_PKCS1_PADDING)
 	{
-		return openssl_private_encrypt($data, $crypted, $key, $padding);
+		$return = openssl_private_decrypt($data, $decrypted, $key->getResource(), $padding);
+
+		self::handleReturn($return);
+
+		return $return;
 	}
 
-	public static function publicDecrypt($data, &$decrypted, $key, $padding = null)
+	public static function privateEncrypt($data, &$crypted, PKey $key, $padding = OPENSSL_PKCS1_PADDING)
 	{
-		return openssl_public_decrypt($data, $decrypted, $key, $padding);
+		$return = openssl_private_encrypt($data, $crypted, $key->getResource(), $padding);
+
+		self::handleReturn($return);
+
+		return $return;
 	}
 
-	public static function publicEncrypt($data, &$crypted, $key, $padding = null)
+	public static function publicDecrypt($data, &$decrypted, PKey $key, $padding = OPENSSL_PKCS1_PADDING)
 	{
-		return openssl_public_encrypt($data, $crypted, $key, $padding);
+		$return = openssl_public_decrypt($data, $decrypted, $key->getPublicKey(), $padding);
+
+		self::handleReturn($return);
+
+		return $return;
 	}
 
-	public static function randomPseudoBytes($length, &$cryptoStrong)
+	public static function publicEncrypt($data, &$crypted, PKey $key, $padding = OPENSSL_PKCS1_PADDING)
 	{
-		return openssl_random_pseudo_bytes($length, $cryptoStrong);
+		$return = openssl_public_encrypt($data, $crypted, $key->getPublicKey(), $padding);
+
+		self::handleReturn($return);
+
+		return $return;
 	}
 
-	public static function seal($data, &$sealedData, &$envKeys, $pubKeyIds)
+	public static function randomPseudoBytes($length)
 	{
-		return openssl_seal($data, $sealedData, $envKeys, $pubKeyIds);
+		return openssl_random_pseudo_bytes($length);
 	}
 
-	public static function sign($data, &$signature, $privKeyId, $signatureAlg = null)
+	protected static function handleReturn($return)
 	{
-		return openssl_sign($data, $signature, $privKeyId, $signatureAlg);
+		if($return === false)
+		{
+			self::assertErrorStack();
+		}
+		else
+		{
+			self::clearErrorStack();
+		}
 	}
 
-	public static function verify($data, $signature, $pubKeyId, $signatureAlg = null)
+	protected static function assertErrorStack()
 	{
-		return openssl_verify($data, $signature, $pubKeyId, $signatureAlg);
+		$message = array();
+		while($msg = openssl_error_string())
+		{
+			$message[] = $msg;
+		}
+
+		if(!empty($message))
+		{
+			throw new OpenSslException(implode("\n", $message));
+		}
+	}
+
+	protected static function clearErrorStack()
+	{
+		while($msg = openssl_error_string())
+		{
+		}
 	}
 }
