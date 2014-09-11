@@ -3,9 +3,7 @@
 $loader = require('vendor/autoload.php');
 $loader->add('PSX', 'tests');
 
-$container = getContainer();
-
-PSX\Bootstrap::setupEnvironment($container->get('config'));
+PSX\Bootstrap::setupEnvironment(getContainer()->get('config'));
 
 // some settings for the session test
 ini_set('session.use_cookies', 0);
@@ -27,7 +25,24 @@ function getContainer()
 		$config['psx_dispatch']     = '';
 		$config['psx_path_cache']   = 'cache';
 		$config['psx_path_library'] = 'library';
+
+		// check whether an SQL connection is available
+		try
+		{
+			$container->get('connection')->query('SELECT PI()');
+
+			define('PSX_CONNECTION', true);
+		}
+		catch(PDOException $e)
+		{
+			define('PSX_CONNECTION', false);
+		}
 	}
 
 	return $container;
+}
+
+function hasConnection()
+{
+	return PSX_CONNECTION === true;
 }
