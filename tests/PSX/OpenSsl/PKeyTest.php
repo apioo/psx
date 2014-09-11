@@ -41,7 +41,6 @@ class PKeyTest extends \PHPUnit_Framework_TestCase
 
 		$pkey->free();
 
-		$this->assertEquals('-----BEGIN RSA PRIVATE KEY-----', substr($privateKey, 0, 31));
 		$this->assertEquals('-----BEGIN PUBLIC KEY-----', substr($publicKey, 0, 26));
 	}
 
