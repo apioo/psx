@@ -26,7 +26,7 @@ namespace PSX\Test;
 use Monolog\Logger;
 use Monolog\Handler\NullHandler;
 use PSX\Command\Output\Void;
-use PSX\Dispatch\VoidSender;
+use PSX\Dispatch\Sender\Void as VoidSender;
 use PSX\Loader\RoutingParser;
 
 /**
