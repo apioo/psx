@@ -27,7 +27,7 @@ use PSX\Dispatch;
 use PSX\Dispatch\ControllerFactory;
 use PSX\Dispatch\RequestFactory;
 use PSX\Dispatch\ResponseFactory;
-use PSX\Dispatch\Sender;
+use PSX\Dispatch\Sender\Basic as BasicSender;
 use PSX\Loader;
 
 /**
@@ -52,7 +52,7 @@ trait Controller
 	 */
 	public function getDispatchSender()
 	{
-		return new Sender();
+		return new BasicSender();
 	}
 
 	/**

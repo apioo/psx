@@ -37,6 +37,6 @@ class FoundException extends RedirectionException
 {
 	public function __construct($location)
 	{
-		parent::__construct(301, $location);
+		parent::__construct(302, $location);
 	}
 }
