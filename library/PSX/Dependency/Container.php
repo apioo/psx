@@ -112,7 +112,7 @@ class Container implements ContainerInterface
 		}
 		else
 		{
-			throw new InvalidArgumentException('Parameter not set');
+			throw new InvalidArgumentException('Parameter ' . $name . ' not set');
 		}
 	}
 
@@ -127,7 +127,7 @@ class Container implements ContainerInterface
 	{
 		if(!$this->hasScope($name))
 		{
-			throw new InvalidArgumentException('Scope does not exist');
+			throw new InvalidArgumentException('Scope ' . $name . ' does not exist');
 		}
 
 		$this->scope = $name;
