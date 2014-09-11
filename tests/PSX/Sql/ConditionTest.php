@@ -32,14 +32,6 @@ namespace PSX\Sql;
  */
 class ConditionTest extends \PHPUnit_Framework_TestCase
 {
-	protected function setUp()
-	{
-	}
-
-	protected function tearDown()
-	{
-	}
-
 	public function testCondition()
 	{
 		$con = new Condition(array('id', '=', '1'));

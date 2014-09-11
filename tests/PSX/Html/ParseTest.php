@@ -34,14 +34,6 @@ use PSX\Html\Parse\Element;
  */
 class ParseTest extends \PHPUnit_Framework_TestCase
 {
-	protected function setUp()
-	{
-	}
-
-	protected function tearDown()
-	{
-	}
-
 	public function testParseAtomLink()
 	{
 		$html = <<<HTML

@@ -38,14 +38,6 @@ use PSX\Validate\Property;
  */
 class RecordValidatorTest extends \PHPUnit_Framework_TestCase
 {
-	protected function setUp()
-	{
-	}
-
-	protected function tearDown()
-	{
-	}
-
 	public function testValidate()
 	{
 		$record = new ValidateTestRecord();

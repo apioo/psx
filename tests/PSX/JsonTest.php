@@ -32,14 +32,6 @@ namespace PSX;
  */
 class JsonTest extends \PHPUnit_Framework_TestCase
 {
-	protected function setUp()
-	{
-	}
-
-	protected function tearDown()
-	{
-	}
-
 	public function testJsonEncode()
 	{
 		$val = array('foo' => 'bar');

@@ -36,14 +36,6 @@ use PSX\Html\Lexer\Token\Text;
  */
 class FilterTest extends \PHPUnit_Framework_TestCase
 {
-	protected function setUp()
-	{
-	}
-
-	protected function tearDown()
-	{
-	}
-
 	public function testFilterNormal()
 	{
 		$html = <<<HTML

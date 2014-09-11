@@ -32,14 +32,6 @@ namespace PSX\Filter;
  */
 class InArrayTest extends FilterTestCase
 {
-	protected function setUp()
-	{
-	}
-
-	protected function tearDown()
-	{
-	}
-
 	public function testFilter()
 	{
 		$filter = new InArray(range(1, 9));

@@ -34,14 +34,6 @@ use PSX\Html\Filter;
  */
 class Html5TextTest extends \PHPUnit_Framework_TestCase
 {
-	protected function setUp()
-	{
-	}
-
-	protected function tearDown()
-	{
-	}
-
 	public function testNormalHtml()
 	{
 		$html = <<<HTML

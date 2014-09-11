@@ -32,14 +32,6 @@ namespace PSX\Util;
  */
 class BencodingTest extends \PHPUnit_Framework_TestCase
 {
-	protected function setUp()
-	{
-	}
-
-	protected function tearDown()
-	{
-	}
-
 	public function testBencodingEncode()
 	{
 		$this->assertEquals('3:foo', Bencoding::encode('foo'));

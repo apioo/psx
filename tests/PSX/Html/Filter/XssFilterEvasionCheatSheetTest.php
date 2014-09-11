@@ -33,14 +33,6 @@ namespace PSX\Html\Filter;
  */
 class XssFilterEvasionCheatSheetTest extends XssTestCase
 {
-	protected function setUp()
-	{
-	}
-
-	protected function tearDown()
-	{
-	}
-
 	public function testFilterXss()
 	{
 		// XSS Locator

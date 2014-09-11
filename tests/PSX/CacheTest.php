@@ -35,14 +35,6 @@ use PSX\Cache\Handler;
  */
 class CacheTest extends \PHPUnit_Framework_TestCase
 {
-	protected function setUp()
-	{
-	}
-
-	protected function tearDown()
-	{
-	}
-
 	protected function getHandler()
 	{
 		return new Handler\File();

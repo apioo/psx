@@ -32,14 +32,6 @@ namespace PSX\Filter;
  */
 class UrlTest extends FilterTestCase
 {
-	protected function setUp()
-	{
-	}
-
-	protected function tearDown()
-	{
-	}
-
 	public function testFilter()
 	{
 		$filter = new Url();

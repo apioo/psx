@@ -32,14 +32,6 @@ namespace PSX\Filter;
  */
 class ArrayFilterTest extends FilterTestCase
 {
-	protected function setUp()
-	{
-	}
-
-	protected function tearDown()
-	{
-	}
-
 	public function testFilter()
 	{
 		$filter = new ArrayFilter(new Alnum());

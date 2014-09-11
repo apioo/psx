@@ -32,14 +32,6 @@ namespace PSX\Filter;
  */
 class XdigitTest extends FilterTestCase
 {
-	protected function setUp()
-	{
-	}
-
-	protected function tearDown()
-	{
-	}
-
 	public function testFilter()
 	{
 		$filter = new Xdigit();

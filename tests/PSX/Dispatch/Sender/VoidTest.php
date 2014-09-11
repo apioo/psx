@@ -21,25 +21,30 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Filter;
+namespace PSX\Dispatch\Sender;
+
+use PSX\Http\Response;
+use PSX\Http\Stream\FileStream;
+use PSX\Http\Stream\StringStream;
 
 /**
- * HtmlTest
+ * VoidTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class HtmlTest extends FilterTestCase
+class VoidTest extends SenderTestCase
 {
-	public function testFilter()
+	public function testSend()
 	{
-		$filter = new Html();
+		$response = new Response();
+		$response->setBody(new StringStream('foobar'));
 
-		$this->assertEquals('&lt;a&gt;test&lt;/a&gt;', $filter->apply('<a>test</a>'));
-		$this->assertEquals('test', $filter->apply('test'));
+		$sender = new Void();
 
-		// test error message
-		$this->assertErrorMessage($filter->getErrorMessage());
+		$actual = $this->captureOutput($sender, $response);
+
+		$this->assertEmpty($actual);
 	}
 }

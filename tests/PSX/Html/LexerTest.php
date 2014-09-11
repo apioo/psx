@@ -34,14 +34,6 @@ use PSX\Html\Lexer\Token\Element;
  */
 class LexerTest extends \PHPUnit_Framework_TestCase
 {
-	protected function setUp()
-	{
-	}
-
-	protected function tearDown()
-	{
-	}
-
 	public function testNormalHtml()
 	{
 		$html = <<<HTML

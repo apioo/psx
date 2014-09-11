@@ -32,14 +32,6 @@ namespace PSX\Filter;
  */
 class LengthTest extends FilterTestCase
 {
-	protected function setUp()
-	{
-	}
-
-	protected function tearDown()
-	{
-	}
-
 	public function testFilterIntegerLength()
 	{
 		$filter = new Length(3, 8);

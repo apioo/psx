@@ -32,14 +32,6 @@ namespace PSX;
  */
 class BootstrapTest extends \PHPUnit_Framework_TestCase
 {
-	protected function setUp()
-	{
-	}
-
-	protected function tearDown()
-	{
-	}
-
 	public function testSettings()
 	{
 		$this->assertEquals(true, defined('PSX_PATH_CACHE'));

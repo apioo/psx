@@ -32,14 +32,6 @@ namespace PSX\Util;
  */
 class UuidTest extends \PHPUnit_Framework_TestCase
 {
-	protected function setUp()
-	{
-	}
-
-	protected function tearDown()
-	{
-	}
-
 	public function testTimeBase()
 	{
 		$uuid = Uuid::timeBased();

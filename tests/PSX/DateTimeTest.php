@@ -34,14 +34,6 @@ use DateInterval;
  */
 class DateTimeTest extends \PHPUnit_Framework_TestCase
 {
-	protected function setUp()
-	{
-	}
-
-	protected function tearDown()
-	{
-	}
-
 	public function testConvertIntervalToSeconds()
 	{
 		$this->assertEquals(1, DateTime::convertIntervalToSeconds(new DateInterval('PT1S')));

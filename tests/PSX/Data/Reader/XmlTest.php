@@ -35,14 +35,6 @@ use PSX\Http\Message;
  */
 class XmlTest extends \PHPUnit_Framework_TestCase
 {
-	protected function setUp()
-	{
-	}
-
-	protected function tearDown()
-	{
-	}
-
 	public function testRead()
 	{
 		$body = <<<INPUT

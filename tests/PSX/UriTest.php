@@ -32,14 +32,6 @@ namespace PSX;
  */
 class UriTest extends \PHPUnit_Framework_TestCase
 {
-	protected function setUp()
-	{
-	}
-
-	protected function tearDown()
-	{
-	}
-
 	public function testUri()
 	{
 		$uri = new Uri('foo://example.com:8042/over/there?name=ferret#nose');

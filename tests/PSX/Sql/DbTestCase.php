@@ -40,16 +40,14 @@ abstract class DbTestCase extends \PHPUnit_Extensions_Database_TestCase
 
 	public function getConnection()
 	{
+		if(!hasConnection())
+		{
+			$this->markTestSkipped('Database connection not available');
+		}
+
 		if(self::$con === null)
 		{
-			try
-			{
-				self::$con = getContainer()->get('connection');
-			}
-			catch(PDOException $e)
-			{
-				$this->markTestSkipped($e->getMessage());
-			}
+			self::$con = getContainer()->get('connection');
 		}
 
 		if($this->connection === null)

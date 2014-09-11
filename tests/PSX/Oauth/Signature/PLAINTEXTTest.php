@@ -32,14 +32,6 @@ namespace PSX\Oauth\Signature;
  */
 class PLAINTEXTTest extends \PHPUnit_Framework_TestCase
 {
-	protected function setUp()
-	{
-	}
-
-	protected function tearDown()
-	{
-	}
-
 	public function testSignature()
 	{
 		$signature = new PLAINTEXT();

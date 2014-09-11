@@ -36,14 +36,6 @@ use PSX\Html\Paging;
  */
 class PagingTest extends \PHPUnit_Framework_TestCase
 {
-	protected function setUp()
-	{
-	}
-
-	protected function tearDown()
-	{
-	}
-
 	public function testPagingUrls()
 	{
 		$url    = new Url('http://foobar.com');
@@ -88,19 +80,28 @@ class PagingTest extends \PHPUnit_Framework_TestCase
 		$paging->rewind();
 
 		$this->assertEquals(true, $paging->valid());
-		$this->assertEquals(array('name' => 1, 'current' => true, 'href' => 'http://foobar.com?startIndex=0'), $paging->current());
+		$this->assertInstanceOf('PSX\Html\Paging\Page', $paging->current());
+		$this->assertEquals(1, $paging->current()->getName());
+		$this->assertEquals(true, $paging->current()->isCurrent());
+		$this->assertEquals('http://foobar.com?startIndex=0', $paging->current()->getUrl());
 		$this->assertEquals(0, $paging->key());
 
 		$paging->next();
 
 		$this->assertEquals(true, $paging->valid());
-		$this->assertEquals(array('name' => 2, 'current' => false, 'href' => 'http://foobar.com?startIndex=4'), $paging->current());
+		$this->assertInstanceOf('PSX\Html\Paging\Page', $paging->current());
+		$this->assertEquals(2, $paging->current()->getName());
+		$this->assertEquals(false, $paging->current()->isCurrent());
+		$this->assertEquals('http://foobar.com?startIndex=4', $paging->current()->getUrl());
 		$this->assertEquals(1, $paging->key());
 
 		$paging->next();
 
 		$this->assertEquals(true, $paging->valid());
-		$this->assertEquals(array('name' => 3, 'current' => false, 'href' => 'http://foobar.com?startIndex=8'), $paging->current());
+		$this->assertInstanceOf('PSX\Html\Paging\Page', $paging->current());
+		$this->assertEquals(3, $paging->current()->getName());
+		$this->assertEquals(false, $paging->current()->isCurrent());
+		$this->assertEquals('http://foobar.com?startIndex=8', $paging->current()->getUrl());
 		$this->assertEquals(2, $paging->key());
 
 		foreach($paging as $key => $page)

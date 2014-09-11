@@ -24,7 +24,7 @@
 namespace PSX;
 
 use PSX\Dispatch;
-use PSX\Dispatch\VoidSender;
+use PSX\Dispatch\Sender\Void as VoidSender;
 use PSX\Http\Request;
 use PSX\Http\Response;
 use PSX\Http\Stream\StringStream;
@@ -33,6 +33,7 @@ use PSX\Loader\Location;
 use PSX\Loader\LocationFinder\CallbackMethod;
 use PSX\ModuleAbstract;
 use PSX\Template;
+use PSX\Test\ControllerTestCase;
 
 /**
  * DispatchTest
@@ -41,52 +42,263 @@ use PSX\Template;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class DispatchTest extends \PHPUnit_Framework_TestCase
+class DispatchTest extends ControllerTestCase
 {
-	protected function setUp()
-	{
-	}
-
-	protected function tearDown()
-	{
-	}
-
 	public function testRoute()
 	{
-		$locationFinder = new CallbackMethod(function($method, $path){
-
-			return new Location(array(Location::KEY_SOURCE => 'PSX\Dispatch\DummyController'));
-
-		});
-
-		$loader   = new Loader($locationFinder, getContainer()->get('loader_callback_resolver'));
-		$dispatch = new Dispatch(getContainer()->get('config'), $loader, getContainer()->get('controller_factory'), new VoidSender());
-		$request  = new Request(new Url('http://localhost.com'), 'GET');
+		$request  = new Request(new Url('http://localhost.com/dummy'), 'GET');
 		$response = new Response();
 		$response->setBody(new StringStream());
 
-		$dispatch->route($request, $response);
+		$this->loadController($request, $response);
 
 		$this->assertEquals('foo', (string) $response->getBody());
 	}
 
 	public function testRouteRedirectException()
 	{
-		$locationFinder = new CallbackMethod(function($method, $path){
-
-			return new Location(array(Location::KEY_SOURCE => 'PSX\Dispatch\RedirectExceptionController'));
-
-		});
-
-		$loader   = new Loader($locationFinder, getContainer()->get('loader_callback_resolver'));
-		$dispatch = new Dispatch(getContainer()->get('config'), $loader, getContainer()->get('controller_factory'), new VoidSender());
-		$request  = new Request(new Url('http://localhost.com'), 'GET');
+		$request  = new Request(new Url('http://localhost.com/redirect'), 'GET');
 		$response = new Response();
 		$response->setBody(new StringStream());
 
-		$dispatch->route($request, $response);
+		$this->loadController($request, $response);
 
 		$this->assertEquals(307, $response->getStatusCode());
 		$this->assertEquals('http://localhost.com/foobar', $response->getHeader('Location'));
+	}
+
+	public function testBadRequestException()
+	{
+		$request  = new Request(new Url('http://localhost.com/400'), 'GET');
+		$response = new Response();
+		$response->setBody(new StringStream());
+
+		$this->loadController($request, $response);
+
+		$this->assertEquals(400, $response->getStatusCode());
+		$this->assertInstanceOf('PSX\Http\Stream\StringStream', $response->getBody());
+	}
+
+	public function testConflictException()
+	{
+		$request  = new Request(new Url('http://localhost.com/409'), 'GET');
+		$response = new Response();
+		$response->setBody(new StringStream());
+
+		$this->loadController($request, $response);
+
+		$this->assertEquals(409, $response->getStatusCode());
+		$this->assertInstanceOf('PSX\Http\Stream\StringStream', $response->getBody());
+	}
+
+	public function testForbiddenException()
+	{
+		$request  = new Request(new Url('http://localhost.com/403'), 'GET');
+		$response = new Response();
+		$response->setBody(new StringStream());
+
+		$this->loadController($request, $response);
+
+		$this->assertEquals(403, $response->getStatusCode());
+		$this->assertInstanceOf('PSX\Http\Stream\StringStream', $response->getBody());
+	}
+
+	public function testFoundException()
+	{
+		$request  = new Request(new Url('http://localhost.com/302'), 'GET');
+		$response = new Response();
+		$response->setBody(new StringStream());
+
+		$this->loadController($request, $response);
+
+		$this->assertEquals(302, $response->getStatusCode());
+		$this->assertEquals('http://google.com', $response->getHeader('Location'));
+		$this->assertEquals(null, $response->getBody());
+	}
+
+	public function testGoneException()
+	{
+		$request  = new Request(new Url('http://localhost.com/410'), 'GET');
+		$response = new Response();
+		$response->setBody(new StringStream());
+
+		$this->loadController($request, $response);
+
+		$this->assertEquals(410, $response->getStatusCode());
+		$this->assertInstanceOf('PSX\Http\Stream\StringStream', $response->getBody());
+	}
+
+	public function testInternalServerErrorException()
+	{
+		$request  = new Request(new Url('http://localhost.com/500'), 'GET');
+		$response = new Response();
+		$response->setBody(new StringStream());
+
+		$this->loadController($request, $response);
+
+		$this->assertEquals(500, $response->getStatusCode());
+		$this->assertInstanceOf('PSX\Http\Stream\StringStream', $response->getBody());
+	}
+
+	public function testMethodNotAllowedException()
+	{
+		$request  = new Request(new Url('http://localhost.com/405'), 'GET');
+		$response = new Response();
+		$response->setBody(new StringStream());
+
+		$this->loadController($request, $response);
+
+		$this->assertEquals(405, $response->getStatusCode());
+		$this->assertEquals('GET, POST', $response->getHeader('Allow'));
+		$this->assertInstanceOf('PSX\Http\Stream\StringStream', $response->getBody());
+	}
+
+	public function testMovedPermanentlyException()
+	{
+		$request  = new Request(new Url('http://localhost.com/301'), 'GET');
+		$response = new Response();
+		$response->setBody(new StringStream());
+
+		$this->loadController($request, $response);
+
+		$this->assertEquals(301, $response->getStatusCode());
+		$this->assertEquals('http://google.com', $response->getHeader('Location'));
+		$this->assertEquals(null, $response->getBody());
+	}
+
+	public function testNotAcceptableException()
+	{
+		$request  = new Request(new Url('http://localhost.com/406'), 'GET');
+		$response = new Response();
+		$response->setBody(new StringStream());
+
+		$this->loadController($request, $response);
+
+		$this->assertEquals(406, $response->getStatusCode());
+		$this->assertInstanceOf('PSX\Http\Stream\StringStream', $response->getBody());
+	}
+
+	public function testNotFoundException()
+	{
+		$request  = new Request(new Url('http://localhost.com/404'), 'GET');
+		$response = new Response();
+		$response->setBody(new StringStream());
+
+		$this->loadController($request, $response);
+
+		$this->assertEquals(404, $response->getStatusCode());
+		$this->assertInstanceOf('PSX\Http\Stream\StringStream', $response->getBody());
+	}
+
+	public function testNotImplementedException()
+	{
+		$request  = new Request(new Url('http://localhost.com/501'), 'GET');
+		$response = new Response();
+		$response->setBody(new StringStream());
+
+		$this->loadController($request, $response);
+
+		$this->assertEquals(501, $response->getStatusCode());
+		$this->assertInstanceOf('PSX\Http\Stream\StringStream', $response->getBody());
+	}
+
+	public function testNotModifiedException()
+	{
+		$request  = new Request(new Url('http://localhost.com/304'), 'GET');
+		$response = new Response();
+		$response->setBody(new StringStream());
+
+		$this->loadController($request, $response);
+
+		$this->assertEquals(304, $response->getStatusCode());
+		$this->assertEquals(null, $response->getBody());
+	}
+
+	public function testSeeOtherException()
+	{
+		$request  = new Request(new Url('http://localhost.com/303'), 'GET');
+		$response = new Response();
+		$response->setBody(new StringStream());
+
+		$this->loadController($request, $response);
+
+		$this->assertEquals(303, $response->getStatusCode());
+		$this->assertEquals('http://google.com', $response->getHeader('Location'));
+		$this->assertEquals(null, $response->getBody());
+	}
+
+	public function testServiceUnavailableException()
+	{
+		$request  = new Request(new Url('http://localhost.com/503'), 'GET');
+		$response = new Response();
+		$response->setBody(new StringStream());
+
+		$this->loadController($request, $response);
+
+		$this->assertEquals(503, $response->getStatusCode());
+		$this->assertInstanceOf('PSX\Http\Stream\StringStream', $response->getBody());
+	}
+
+	public function testTemporaryRedirectException()
+	{
+		$request  = new Request(new Url('http://localhost.com/307'), 'GET');
+		$response = new Response();
+		$response->setBody(new StringStream());
+
+		$this->loadController($request, $response);
+
+		$this->assertEquals(307, $response->getStatusCode());
+		$this->assertEquals('http://google.com', $response->getHeader('Location'));
+		$this->assertEquals(null, $response->getBody());
+	}
+
+	public function testUnauthorizedException()
+	{
+		$request  = new Request(new Url('http://localhost.com/401'), 'GET');
+		$response = new Response();
+		$response->setBody(new StringStream());
+
+		$this->loadController($request, $response);
+
+		$this->assertEquals(401, $response->getStatusCode());
+		$this->assertEquals('Basic realm="foo"', $response->getHeader('WWW-Authenticate'));
+		$this->assertInstanceOf('PSX\Http\Stream\StringStream', $response->getBody());
+	}
+
+	public function testUnsupportedMediaTypeException()
+	{
+		$request  = new Request(new Url('http://localhost.com/415'), 'GET');
+		$response = new Response();
+		$response->setBody(new StringStream());
+
+		$this->loadController($request, $response);
+
+		$this->assertEquals(415, $response->getStatusCode());
+		$this->assertInstanceOf('PSX\Http\Stream\StringStream', $response->getBody());
+	}
+
+	protected function getPaths()
+	{
+		return array(
+			'/dummy'    => 'PSX\Dispatch\DummyController',
+			'/redirect' => 'PSX\Dispatch\RedirectExceptionController',
+			'/400'      => 'PSX\Dispatch\StatusCodeExceptionController::throwBadRequestException',
+			'/409'      => 'PSX\Dispatch\StatusCodeExceptionController::throwConflictException',
+			'/403'      => 'PSX\Dispatch\StatusCodeExceptionController::throwForbiddenException',
+			'/302'      => 'PSX\Dispatch\StatusCodeExceptionController::throwFoundException',
+			'/410'      => 'PSX\Dispatch\StatusCodeExceptionController::throwGoneException',
+			'/500'      => 'PSX\Dispatch\StatusCodeExceptionController::throwInternalServerErrorException',
+			'/405'      => 'PSX\Dispatch\StatusCodeExceptionController::throwMethodNotAllowedException',
+			'/301'      => 'PSX\Dispatch\StatusCodeExceptionController::throwMovedPermanentlyException',
+			'/406'      => 'PSX\Dispatch\StatusCodeExceptionController::throwNotAcceptableException',
+			'/404'      => 'PSX\Dispatch\StatusCodeExceptionController::throwNotFoundException',
+			'/501'      => 'PSX\Dispatch\StatusCodeExceptionController::throwNotImplementedException',
+			'/304'      => 'PSX\Dispatch\StatusCodeExceptionController::throwNotModifiedException',
+			'/303'      => 'PSX\Dispatch\StatusCodeExceptionController::throwSeeOtherException',
+			'/503'      => 'PSX\Dispatch\StatusCodeExceptionController::throwServiceUnavailableException',
+			'/307'      => 'PSX\Dispatch\StatusCodeExceptionController::throwTemporaryRedirectException',
+			'/401'      => 'PSX\Dispatch\StatusCodeExceptionController::throwUnauthorizedException',
+			'/415'      => 'PSX\Dispatch\StatusCodeExceptionController::throwUnsupportedMediaTypeException',
+		);
 	}
 }

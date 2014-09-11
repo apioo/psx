@@ -34,14 +34,6 @@ use PSX\Exception;
  */
 class AuthorizationAbstractTest extends \PHPUnit_Framework_TestCase
 {
-	protected function setUp()
-	{
-	}
-
-	protected function tearDown()
-	{
-	}
-
 	/**
 	 * @expectedException PSX\Oauth2\Authorization\Exception\InvalidRequestException
 	 */

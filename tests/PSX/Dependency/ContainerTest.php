@@ -35,14 +35,6 @@ use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
  */
 class ContainerTest extends \PHPUnit_Framework_TestCase
 {
-	protected function setUp()
-	{
-	}
-
-	protected function tearDown()
-	{
-	}
-
 	public function testSet()
 	{
 		$sc = new Container();

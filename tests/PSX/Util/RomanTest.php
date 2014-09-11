@@ -32,14 +32,6 @@ namespace PSX\Util;
  */
 class RomanTest extends \PHPUnit_Framework_TestCase
 {
-	protected function setUp()
-	{
-	}
-
-	protected function tearDown()
-	{
-	}
-
 	public function testEncode()
 	{
 		$this->assertEquals('I', Roman::encode(1));

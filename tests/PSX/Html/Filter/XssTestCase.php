@@ -33,14 +33,6 @@ namespace PSX\Html\Filter;
  */
 class XssTestCase extends \PHPUnit_Framework_TestCase
 {
-	protected function setUp()
-	{
-	}
-
-	protected function tearDown()
-	{
-	}
-
 	public function assertXss($expected, $actual)
 	{
 		$filter = new \PSX\Html\Filter($actual);

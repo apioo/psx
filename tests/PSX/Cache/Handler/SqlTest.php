@@ -42,14 +42,12 @@ class SqlTest extends CacheTest
 	{
 		parent::setUp();
 
-		try
+		if(!hasConnection())
 		{
-			$this->connection = getContainer()->get('connection');
+			$this->markTestSkipped('Database connection not available');
 		}
-		catch(PDOException $e)
-		{
-			$this->markTestSkipped($e->getMessage());
-		}
+
+		$this->connection = getContainer()->get('connection');
 	}
 
 	protected function getHandler()

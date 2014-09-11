@@ -32,14 +32,6 @@ namespace PSX\Util;
  */
 class ConversionTest extends \PHPUnit_Framework_TestCase
 {
-	protected function setUp()
-	{
-	}
-
-	protected function tearDown()
-	{
-	}
-
 	public function testConversionBi()
 	{
 		$this->assertEquals('32 byte', Conversion::bi(32));

@@ -32,14 +32,6 @@ namespace PSX;
  */
 class ConfigTest extends \PHPUnit_Framework_TestCase
 {
-	protected function setUp()
-	{
-	}
-
-	protected function tearDown()
-	{
-	}
-
 	public function testConstructorArray()
 	{
 		$config = new Config(array(

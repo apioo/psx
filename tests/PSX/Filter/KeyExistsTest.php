@@ -32,14 +32,6 @@ namespace PSX\Filter;
  */
 class KeyExistsTest extends FilterTestCase
 {
-	protected function setUp()
-	{
-	}
-
-	protected function tearDown()
-	{
-	}
-
 	public function testFilter()
 	{
 		$filter = new KeyExists(range(0, 9));

@@ -32,14 +32,6 @@ namespace PSX\Util;
  */
 class NumerativeTest extends \PHPUnit_Framework_TestCase
 {
-	protected function setUp()
-	{
-	}
-
-	protected function tearDown()
-	{
-	}
-
 	public function testNumerativeBin()
 	{
 		$this->assertEquals(20, Numerative::bin2oct(10000));

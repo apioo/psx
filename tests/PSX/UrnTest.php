@@ -32,14 +32,6 @@ namespace PSX;
  */
 class UrnTest extends \PHPUnit_Framework_TestCase
 {
-	protected function setUp()
-	{
-	}
-
-	protected function tearDown()
-	{
-	}
-
 	public function testUrn()
 	{
 		$urn = new Urn('urn:uuid:f81d4fae-7dec-11d0-a765-00a0c91e6bf6');

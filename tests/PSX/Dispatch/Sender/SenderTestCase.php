@@ -21,25 +21,42 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Filter;
+namespace PSX\Dispatch\Sender;
+
+use PSX\Dispatch\SenderInterface;
+use PSX\Http\Response;
 
 /**
- * HtmlTest
+ * SenderTestCase
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class HtmlTest extends FilterTestCase
+class SenderTestCase extends \PHPUnit_Framework_TestCase
 {
-	public function testFilter()
+	protected function captureOutput(SenderInterface $sender, Response $response)
 	{
-		$filter = new Html();
+		$lastError = null;
 
-		$this->assertEquals('&lt;a&gt;test&lt;/a&gt;', $filter->apply('<a>test</a>'));
-		$this->assertEquals('test', $filter->apply('test'));
+		ob_start();
 
-		// test error message
-		$this->assertErrorMessage($filter->getErrorMessage());
+		try
+		{
+			$sender->send($response);
+		}
+		catch(\Exception $e)
+		{
+			$lastError = $e->getMessage();
+		}
+
+		$content = ob_get_clean();
+
+		if($lastError !== null)
+		{
+			$this->fail($lastError);
+		}
+
+		return $content;
 	}
 }

@@ -32,14 +32,6 @@ namespace PSX\Filter;
  */
 class DigitTest extends FilterTestCase
 {
-	protected function setUp()
-	{
-	}
-
-	protected function tearDown()
-	{
-	}
-
 	public function testFilter()
 	{
 		$filter = new Digit();

@@ -32,14 +32,6 @@ namespace PSX\Filter;
  */
 class RegexpTest extends FilterTestCase
 {
-	protected function setUp()
-	{
-	}
-
-	protected function tearDown()
-	{
-	}
-
 	public function testFilter()
 	{
 		$filter = new Regexp('/php/');

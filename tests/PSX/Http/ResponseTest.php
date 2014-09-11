@@ -35,14 +35,6 @@ use PSX\Http\Stream\StringStream;
  */
 class ResponseTest extends \PHPUnit_Framework_TestCase
 {
-	protected function setUp()
-	{
-	}
-
-	protected function tearDown()
-	{
-	}
-
 	public function testConvert()
 	{
 		$httpResponse = 'HTTP/1.1 200 OK' . Http::$newLine;

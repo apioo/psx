@@ -32,14 +32,6 @@ namespace PSX\Filter;
  */
 class DateRangeTest extends FilterTestCase
 {
-	protected function setUp()
-	{
-	}
-
-	protected function tearDown()
-	{
-	}
-
 	public function testFilter()
 	{
 		$from   = new \DateTime('2010-10-10 06:00:00');

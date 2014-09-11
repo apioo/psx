@@ -32,14 +32,6 @@ namespace PSX\Html\Filter;
  */
 class XssTest extends XssTestCase
 {
-	protected function setUp()
-	{
-	}
-
-	protected function tearDown()
-	{
-	}
-
 	public function testNoHrefs()
 	{
 		$actual = <<<HTML

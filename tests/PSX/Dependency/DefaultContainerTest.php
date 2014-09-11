@@ -33,14 +33,6 @@ namespace PSX\Dependency;
  */
 class DefaultContainerTest extends \PHPUnit_Framework_TestCase
 {
-	protected function setUp()
-	{
-	}
-
-	protected function tearDown()
-	{
-	}
-
 	public function testGet()
 	{
 		$container = getContainer();

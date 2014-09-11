@@ -38,14 +38,6 @@ use PSX\Validate\Property;
  */
 class ArrayValidatorTest extends \PHPUnit_Framework_TestCase
 {
-	protected function setUp()
-	{
-	}
-
-	protected function tearDown()
-	{
-	}
-
 	public function testValidate()
 	{
 		$validator = new ArrayValidator(new Validate(), array(

@@ -38,14 +38,12 @@ class TableManagerTest extends \PHPUnit_Framework_TestCase
 {
 	protected function setUp()
 	{
-		try
+		if(!hasConnection())
 		{
-			$this->connection = getContainer()->get('connection');
+			$this->markTestSkipped('Database connection not available');
 		}
-		catch(PDOException $e)
-		{
-			$this->markTestSkipped($e->getMessage());
-		}
+
+		$this->connection = getContainer()->get('connection');
 	}
 
 	public function testGetTable()

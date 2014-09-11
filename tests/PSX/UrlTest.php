@@ -32,14 +32,6 @@ namespace PSX;
  */
 class UrlTest extends \PHPUnit_Framework_TestCase
 {
-	protected function setUp()
-	{
-	}
-
-	protected function tearDown()
-	{
-	}
-
 	public function testUrl()
 	{
 		$url = new Url('http://benutzername:passwort@hostname:8080/pfad?argument=wert#textanker');
