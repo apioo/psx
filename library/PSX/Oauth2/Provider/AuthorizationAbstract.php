@@ -26,7 +26,6 @@ namespace PSX\Oauth2\Provider;
 use PSX\Controller\ApiAbstract;
 use PSX\Data\RecordAbstract;
 use PSX\Data\RecordInfo;
-use PSX\Http\Exception\RedirectionException;
 use PSX\Oauth2\Authorization\Exception\ErrorExceptionAbstract;
 use PSX\Oauth2\Authorization\Exception\InvalidRequestException;
 use PSX\Oauth2\Authorization\Exception\UnauthorizedClientException;
@@ -59,11 +58,11 @@ abstract class AuthorizationAbstract extends ApiAbstract
 
 	protected function doHandle()
 	{
-		$responseType = $this->request->getUrl()->getParam('response_type');
-		$clientId     = $this->request->getUrl()->getParam('client_id');
-		$redirectUri  = $this->request->getUrl()->getParam('redirect_uri');
-		$scope        = $this->request->getUrl()->getParam('scope');
-		$state        = $this->request->getUrl()->getParam('state');
+		$responseType = $this->getParameter('response_type');
+		$clientId     = $this->getParameter('client_id');
+		$redirectUri  = $this->getParameter('redirect_uri');
+		$scope        = $this->getParameter('scope');
+		$state        = $this->getParameter('state');
 
 		try
 		{
@@ -118,10 +117,6 @@ abstract class AuthorizationAbstract extends ApiAbstract
 			{
 				throw $e;
 			}
-		}
-		catch(RedirectionException $e)
-		{
-			throw $e;
 		}
 	}
 
@@ -204,7 +199,7 @@ abstract class AuthorizationAbstract extends ApiAbstract
 	/**
 	 * Returns whether the user has authorized the client_id. This method must
 	 * redirect the user to an login form and display an form where the user can
-	 * grant the authorization request. If the request was approved
+	 * grant the authorization request
 	 *
 	 * @return boolean
 	 */
