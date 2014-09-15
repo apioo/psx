@@ -60,10 +60,7 @@ class TestSchemaApiController extends SchemaApiAbstract
 		$view->setPut($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Update'), $responseSchema);
 		$view->setDelete($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Delete'), $responseSchema);
 
-		$doc = new Documentation();
-		$doc->addView(1, $view);
-
-		return $doc;
+		return new Documentation\Simple($view);
 	}
 
 	protected function doGet(Version $version)
