@@ -23,24 +23,43 @@
 
 namespace PSX\Api;
 
+use PSX\Data\SchemaInterface;
+
 /**
- * Version
+ * DocumentationInterface
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Version
+interface DocumentationInterface
 {
-	protected $version;
+	/**
+	 * Returns whether an view exists for the given version
+	 *
+	 * @return boolean
+	 */
+	public function hasView($version);
 
-	public function __construct($version)
-	{
-		$this->version = (int) $version;
-	}
+	/**
+	 * Returns the view for the given version
+	 *
+	 * @return PSX\Api\View
+	 */
+	public function getView($version);
 
-	public function getVersion()
-	{
-		return $this->version;
-	}
+	/**
+	 * Returns an array containing all registered views on this documentation
+	 *
+	 * @return array
+	 */
+	public function getViews();
+
+	/**
+	 * Returns whether the API requires an version information in the content 
+	 * type header
+	 *
+	 * @return boolean
+	 */
+	public function isVersionRequired();
 }

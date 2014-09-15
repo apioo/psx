@@ -23,7 +23,7 @@
 
 namespace PSX\Controller;
 
-use PSX\Api\Documentation;
+use PSX\Api\DocumentationInterface;
 use PSX\Api\DocumentedInterface;
 use PSX\Api\Version;
 use PSX\Api\InvalidVersionException;
@@ -49,8 +49,8 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 
 	public function onGet()
 	{
-		$version = $this->getVersion();
 		$doc     = $this->getDocumentation();
+		$version = $this->getVersion($doc);
 		$view    = $this->getView($doc, $version);
 
 		if(!$view->hasGet())
@@ -65,8 +65,8 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 
 	public function onPost()
 	{
-		$version = $this->getVersion();
 		$doc     = $this->getDocumentation();
+		$version = $this->getVersion($doc);
 		$view    = $this->getView($doc, $version);
 
 		if(!$view->hasPost())
@@ -90,8 +90,8 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 
 	public function onPut()
 	{
-		$version = $this->getVersion();
 		$doc     = $this->getDocumentation();
+		$version = $this->getVersion($doc);
 		$view    = $this->getView($doc, $version);
 
 		if(!$view->hasPut())
@@ -115,8 +115,8 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 
 	public function onDelete()
 	{
-		$version = $this->getVersion();
 		$doc     = $this->getDocumentation();
+		$version = $this->getVersion($doc);
 		$view    = $this->getView($doc, $version);
 
 		if(!$view->hasDelete())
@@ -154,7 +154,7 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 	{
 	}
 
-	protected function getView(Documentation $doc, Version $version)
+	protected function getView(DocumentationInterface $doc, Version $version)
 	{
 		if(!$doc->hasView($version->getVersion()))
 		{
@@ -178,19 +178,31 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 		return $view;
 	}
 
-	protected function getVersion()
+	protected function getVersion(DocumentationInterface $doc)
 	{
-		$accept  = $this->getHeader('Accept');
-		$matches = array();
+		if($doc->isVersionRequired())
+		{
+			$accept  = $this->getHeader('Accept');
+			$matches = array();
 
-		preg_match('/^application\/vnd\.([a-z.-_]+)\.v([\d]+)\+([a-z]+)$/', $accept, $matches);
+			preg_match('/^application\/vnd\.([a-z.-_]+)\.v([\d]+)\+([a-z]+)$/', $accept, $matches);
 
-		$name    = isset($matches[1]) ? $matches[1] : null;
-		$version = isset($matches[2]) ? $matches[2] : null;
-		$format  = isset($matches[3]) ? $matches[3] : null;
+			$name    = isset($matches[1]) ? $matches[1] : null;
+			$version = isset($matches[2]) ? $matches[2] : null;
+			$format  = isset($matches[3]) ? $matches[3] : null;
 
-		$version = $version === null ? 1 : (int) $version;
-
-		return new Version($name, $version);
+			if($version !== null)
+			{
+				return new Version((int) $version);
+			}
+			else
+			{
+				throw new StatusCode\UnsupportedMediaTypeException('Requires an content type containing an explicit version');
+			}
+		}
+		else
+		{
+			return new Version(1);
+		}
 	}
 }

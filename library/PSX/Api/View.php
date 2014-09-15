@@ -34,6 +34,10 @@ use PSX\Data\SchemaInterface;
  */
 class View
 {
+	const STATUS_ACTIVE     = 0x0;
+	const STATUS_DEPRECATED = 0x1;
+	const STATUS_CLOSED     = 0x2;
+
 	const METHOD_GET    = 'GET';
 	const METHOD_POST   = 'POST';
 	const METHOD_PUT    = 'PUT';
@@ -45,24 +49,24 @@ class View
 	protected $status;
 	protected $container = array();
 
-	public function __construct($status = Documentation::STATUS_ACTIVE)
+	public function __construct($status = self::STATUS_ACTIVE)
 	{
 		$this->status = $status;
 	}
 
 	public function isActive()
 	{
-		return $this->status == Documentation::STATUS_ACTIVE;
+		return $this->status == self::STATUS_ACTIVE;
 	}
 
 	public function isDeprecated()
 	{
-		return $this->status == Documentation::STATUS_DEPRECATED;
+		return $this->status == self::STATUS_DEPRECATED;
 	}
 
 	public function isClosed()
 	{
-		return $this->status == Documentation::STATUS_CLOSED;
+		return $this->status == self::STATUS_CLOSED;
 	}
 
 	public function getStatus()

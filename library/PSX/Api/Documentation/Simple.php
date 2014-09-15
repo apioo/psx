@@ -21,26 +21,44 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Api;
+namespace PSX\Api\Documentation;
+
+use PSX\Api\DocumentationInterface;
+use PSX\Api\View;
 
 /**
- * Version
+ * Simple
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Version
+class Simple implements DocumentationInterface
 {
-	protected $version;
+	protected $view;
 
-	public function __construct($version)
+	public function __construct(View $view)
 	{
-		$this->version = (int) $version;
+		$this->view = $view;
 	}
 
-	public function getVersion()
+	public function hasView($version)
 	{
-		return $this->version;
+		return true;
+	}
+
+	public function getView($version)
+	{
+		return $this->view;
+	}
+
+	public function getViews()
+	{
+		return array(1 => $this->view);
+	}
+
+	public function isVersionRequired()
+	{
+		return false;
 	}
 }

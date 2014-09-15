@@ -21,23 +21,20 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Api;
+namespace PSX\Api\Documentation;
 
-use PSX\Data\SchemaInterface;
+use PSX\Api\DocumentationInterface;
+use PSX\Api\View;
 
 /**
- * Documentation
+ * Version
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Documentation
+class Version implements DocumentationInterface
 {
-	const STATUS_ACTIVE     = 0x0;
-	const STATUS_DEPRECATED = 0x1;
-	const STATUS_CLOSED     = 0x2;
-
 	protected $views = array();
 
 	public function addView($version, View $view)
@@ -58,5 +55,10 @@ class Documentation
 	public function getViews()
 	{
 		return $this->views;
+	}
+
+	public function isVersionRequired()
+	{
+		return true;
 	}
 }
