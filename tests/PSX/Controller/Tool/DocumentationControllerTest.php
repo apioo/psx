@@ -97,11 +97,44 @@ class DocumentationControllerTest extends ControllerTestCase
 		$this->assertArrayHasKey('delete_response', $view);
 	}
 
+	public function testExportXsd()
+	{
+		$body     = new TempStream(fopen('php://memory', 'r+'));
+		$request  = new Request(new Url('http://127.0.0.1/doc?path=' . urlencode('/api') . '&export=1&version=1&method=GET&type=1'), 'GET');
+		$response = new Response();
+		$response->setBody($body);
+
+		$controller = $this->loadController($request, $response);
+
+		$dom = new \DOMDocument();
+		$dom->loadXML((string) $body);
+
+		$elements = $dom->getElementsByTagNameNS('http://www.w3.org/2001/XMLSchema', 'element');
+
+		$this->assertEquals('collection', $elements->item(0)->getAttribute('name'));
+		$this->assertEquals('entry', $elements->item(1)->getAttribute('name'));
+		$this->assertEquals('item', $elements->item(2)->getAttribute('name'));
+	}
+
+	public function testExportJsonSchema()
+	{
+		$body     = new TempStream(fopen('php://memory', 'r+'));
+		$request  = new Request(new Url('http://127.0.0.1/doc?path=' . urlencode('/api') . '&export=2&version=1&method=GET&type=1'), 'GET');
+		$response = new Response();
+		$response->setBody($body);
+
+		$controller = $this->loadController($request, $response);
+
+		$data = Json::decode((string) $body);
+
+		$this->assertEquals('entry', key($data['properties']));
+	}
+
 	protected function getPaths()
 	{
 		return array(
-			'/doc' => 'PSX\Controller\Tool\DocumentationController',
-			'/api' => 'PSX\Controller\Foo\Application\TestSchemaApiController',
+			[['GET'], '/doc', 'PSX\Controller\Tool\DocumentationController'],
+			[['GET', 'POST', 'PUT', 'DELETE'], '/api', 'PSX\Controller\Foo\Application\TestSchemaApiController'],
 		);
 	}
 }

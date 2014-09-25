@@ -200,7 +200,7 @@ JSON;
 	protected function getPaths()
 	{
 		return array(
-			'/api' => 'PSX\Controller\Foo\Application\TestHandlerApiController',
+			[['GET', 'POST', 'PUT', 'DELETE'], '/api', 'PSX\Controller\Foo\Application\TestHandlerApiController'],
 		);
 	}
 }

@@ -100,7 +100,7 @@ class CommandControllerTest extends ControllerTestCase
 	protected function getPaths()
 	{
 		return array(
-			'/command' => 'PSX\Controller\Tool\CommandController',
+			[['GET', 'POST'], '/command', 'PSX\Controller\Tool\CommandController'],
 		);
 	}
 }

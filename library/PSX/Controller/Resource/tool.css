@@ -82,3 +82,8 @@
 	font-size:1.2em;
 	text-align:right;
 }
+
+.form-control, .btn
+{
+	border-radius:0px;
+}

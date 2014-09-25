@@ -21,30 +21,57 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Controller\Foo\Schema;
+namespace PSX\Controller\Tool;
 
-use PSX\Data\SchemaAbstract;
+use PSX\Api\DocumentedInterface;
+use PSX\Api\View;
+use PSX\Controller\ViewAbstract;
+use PSX\Data\Schema\Generator;
+use PSX\Data\WriterInterface;
+use PSX\Data\Schema\Documentation;
 
 /**
- * Entry
+ * RoutingController
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Entry extends SchemaAbstract
+class RoutingController extends ViewAbstract
 {
-	public function getDefinition()
-	{
-		$sb = $this->getSchemaBuilder('item');
-		$sb->integer('id');
-		$sb->integer('userId');
-		$sb->string('title')
-			->setMinLength(3)
-			->setMaxLength(16)
-			->setPattern('[A-z]+');
-		$sb->dateTime('date');
+	/**
+	 * @Inject
+	 * @var PSX\Loader\RoutingParserInterface
+	 */
+	protected $routingParser;
 
-		return $sb->getProperty();
+	public function onGet()
+	{
+		parent::onGet();
+
+		$this->template->set(__DIR__ . '/../Resource/routing_controller.tpl');
+
+		$this->setBody(array(
+			'routings' => $this->getRoutings(),
+		));
+	}
+
+	protected function getRoutings()
+	{
+		$result   = array();
+		$routings = $this->routingParser->getCollection()->getAll();
+
+		foreach($routings as $routing)
+		{
+			list($methods, $path, $source) = $routing;
+
+			$result[] = array(
+				'methods' => $methods,
+				'path'    => $path,
+				'source'  => $source,
+			);
+		}
+
+		return $result;
 	}
 }

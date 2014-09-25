@@ -113,9 +113,9 @@ class ViewAbstractTest extends ControllerTestCase
 	protected function getPaths()
 	{
 		return array(
-			'/view' => 'PSX\Controller\Foo\Application\TestViewController::doIndex',
-			'/view/detail' => 'PSX\Controller\Foo\Application\TestViewController::doDetail',
-			'/view/explicit' => 'PSX\Controller\Foo\Application\TestViewController::doExplicit',
+			[['GET'], '/view', 'PSX\Controller\Foo\Application\TestViewController::doIndex'],
+			[['GET'], '/view/detail', 'PSX\Controller\Foo\Application\TestViewController::doDetail'],
+			[['GET'], '/view/explicit', 'PSX\Controller\Foo\Application\TestViewController::doExplicit'],
 		);
 	}
 }

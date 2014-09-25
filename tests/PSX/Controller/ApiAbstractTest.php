@@ -79,9 +79,9 @@ class ApiAbstractTest extends ControllerTestCase
 	protected function getPaths()
 	{
 		return array(
-			'/api'         => 'PSX\Controller\Foo\Application\TestApiController::doIndex',
-			'/api/insert'  => 'PSX\Controller\Foo\Application\TestApiController::doInsert',
-			'/api/inspect' => 'PSX\Controller\Foo\Application\TestApiController::doInspect',
+			[['GET'], '/api', 'PSX\Controller\Foo\Application\TestApiController::doIndex'],
+			[['POST'], '/api/insert', 'PSX\Controller\Foo\Application\TestApiController::doInsert'],
+			[['GET'], '/api/inspect', 'PSX\Controller\Foo\Application\TestApiController::doInspect'],
 		);
 	}
 }

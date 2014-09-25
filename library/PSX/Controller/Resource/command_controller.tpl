@@ -19,11 +19,6 @@
 		font-family:monospace;
 		margin:8px;
 	}
-
-	.form-control, .btn
-	{
-		border-radius:0px;
-	}
 	</style>
 	<script type="text/javascript">
 	function loadCommand(command)

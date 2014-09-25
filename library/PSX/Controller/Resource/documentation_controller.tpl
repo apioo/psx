@@ -15,6 +15,28 @@
 		margin:6px
 	}
 
+	.api-schema-download
+	{
+		float:left;
+		padding:4px;
+	}
+
+	.api-schema-download select
+	{
+		width:120px;
+		padding:3px;
+		margin:0px;
+		margin-right:8px
+	}
+
+	.api-schema-download a
+	{
+		padding:0px;
+		margin:0px;
+		color:#fff;
+		text-decoration:underline;
+	}
+
 	.api-info
 	{
 		padding:12px;
@@ -65,7 +87,7 @@
 					if (version.status != 2) {
 						html+= '<div id="api-version-' + version.version + '" class="api-version" ' + (i > 0 ? 'style="display:none"' : '') + '>';
 						html+= '<h2>' + (version.status == 1 ? '<s>' + resp.path + '</s>' : resp.path) + ' (v' + version.version + ')</h2>';
-						html+= '<div class="api-version-view">' + getApiBody(version.view) + '</div>';
+						html+= '<div class="api-version-view">' + getApiBody(version.view, resp.path, version.version) + '</div>';
 						html+= '</div>';
 					}
 				}
@@ -79,12 +101,13 @@
 		});
 	}
 
-	function getApiBody(resp)
+	function getApiBody(resp, path, version)
 	{
 		var html = '';
 		if (resp.get_response) {
 			html+= '<h3><a href="#" onclick="$(this).parent().next().slideToggle();return false;">GET</a></h3>';
 			html+= '<div style="display:none;">';
+			html+= getSchemaDownload(path, version, 'GET', 1);
 			html+= '<h4>Response</h4>';
 			html+= resp.get_response;
 			html+= '</div>';
@@ -94,10 +117,12 @@
 			html+= '<h3><a href="#" onclick="$(this).parent().next().slideToggle();return false;">POST</a></h3>';
 			html+= '<div style="display:none;">';
 			if (resp.post_request) {
+				html+= getSchemaDownload(path, version, 'POST', 0);
 				html+= '<h4>Request</h4>';
 				html+= resp.post_request;
 			}
 			if (resp.post_response) {
+				html+= getSchemaDownload(path, version, 'POST', 1);
 				html+= '<h4>Response</h4>';
 				html+= resp.post_response;
 			}
@@ -108,10 +133,12 @@
 			html+= '<h3><a href="#" onclick="$(this).parent().next().slideToggle();return false;">PUT</a></h3>';
 			html+= '<div style="display:none;">';
 			if (resp.put_request) {
+				html+= getSchemaDownload(path, version, 'PUT', 0);
 				html+= '<h4>Request</h4>';
 				html+= resp.put_request;
 			}
 			if (resp.put_response) {
+				html+= getSchemaDownload(path, version, 'PUT', 1);
 				html+= '<h4>Response</h4>';
 				html+= resp.put_response;
 			}
@@ -122,10 +149,12 @@
 			html+= '<h3><a href="#" onclick="$(this).parent().next().slideToggle();return false;">DELETE</a></h3>';
 			html+= '<div style="display:none;">';
 			if (resp.delete_request) {
+				html+= getSchemaDownload(path, version, 'DELETE', 0);
 				html+= '<h4>Request</h4>';
 				html+= resp.delete_request;
 			}
 			if (resp.delete_response) {
+				html+= getSchemaDownload(path, version, 'DELETE', 1);
 				html+= '<h4>Response</h4>';
 				html+= resp.delete_response;
 			}
@@ -149,6 +178,24 @@
 		html+= '</select>';
 
 		return html;
+	}
+
+	function getSchemaDownload(path, version, method, type)
+	{
+		var html = '<div class="api-schema-download">';
+		html+= '<select id="' + path.replace(/\//g, '_') + '-' + version + '-' + method + '-' + type + '"><option value="1">XSD</option><option value="2">JsonSchema</option><option value="3">HTML</option></select>';
+		html+= '<a href="#" onclick="downloadSchema(\'' + path + '\',' + version + ',\'' + method + '\',' + type + ');return false">Download</a>';
+		html+= '</div>';
+
+		return html;
+	}
+
+	function downloadSchema(path, version, method, type)
+	{
+		var exportType = $('#' + path.replace(/\//g, '_') + '-' + version + '-' + method + '-' + type).val();
+		var url = '?path=' + path + '&export=' + exportType + '&version=' + version + '&method=' + method + '&type=' + type;
+
+		window.open(url, '_blank');
 	}
 
 	function changeVersion(el)

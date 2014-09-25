@@ -21,30 +21,48 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Controller\Foo\Schema;
+namespace PSX\Controller\Tool;
 
-use PSX\Data\SchemaAbstract;
+use PSX\Http\Stream\TempStream;
+use PSX\Http\Request;
+use PSX\Http\Response;
+use PSX\Json;
+use PSX\Test\ControllerTestCase;
+use PSX\Url;
 
 /**
- * Entry
+ * RoutingControllerTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Entry extends SchemaAbstract
+class RoutingControllerTest extends ControllerTestCase
 {
-	public function getDefinition()
+	public function testIndex()
 	{
-		$sb = $this->getSchemaBuilder('item');
-		$sb->integer('id');
-		$sb->integer('userId');
-		$sb->string('title')
-			->setMinLength(3)
-			->setMaxLength(16)
-			->setPattern('[A-z]+');
-		$sb->dateTime('date');
+		$body     = new TempStream(fopen('php://memory', 'r+'));
+		$request  = new Request(new Url('http://127.0.0.1/routing'), 'GET');
+		$request->addHeader('Accept', 'application/json');
+		$response = new Response();
+		$response->setBody($body);
 
-		return $sb->getProperty();
+		$controller = $this->loadController($request, $response);
+		$data       = Json::decode((string) $body);
+
+		$this->assertArrayHasKey('routings', $data);
+
+		$routing = current($data['routings']);
+
+		$this->assertEquals(array('GET'), $routing['methods']);
+		$this->assertEquals('/routing', $routing['path']);
+		$this->assertEquals('PSX\Controller\Tool\RoutingController', $routing['source']);
+	}
+
+	protected function getPaths()
+	{
+		return array(
+			[['GET'], '/routing', 'PSX\Controller\Tool\RoutingController'],
+		);
 	}
 }

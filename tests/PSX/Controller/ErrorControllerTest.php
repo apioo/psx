@@ -299,8 +299,8 @@ JSON;
 	protected function getPaths()
 	{
 		return array(
-			'/error' => 'PSX\Controller\Foo\Application\TestErrorController::doError',
-			'/display_error' => 'PSX\Controller\Foo\Application\TestErrorController::doDisplayError',
+			[['GET'], '/error', 'PSX\Controller\Foo\Application\TestErrorController::doError'],
+			[['GET'], '/display_error', 'PSX\Controller\Foo\Application\TestErrorController::doDisplayError'],
 		);
 	}
 }

@@ -29,6 +29,8 @@ use PSX\Controller\ViewAbstract;
 use PSX\Data\Schema\Generator;
 use PSX\Data\WriterInterface;
 use PSX\Data\Schema\Documentation;
+use PSX\Data\SchemaInterface;
+use PSX\Exception;
 
 /**
  * DocumentationController
@@ -39,6 +41,10 @@ use PSX\Data\Schema\Documentation;
  */
 class DocumentationController extends ViewAbstract
 {
+	const EXPORT_XSD        = 1;
+	const EXPORT_JSONSCHEMA = 2;
+	const EXPORT_HTML       = 3;
+
 	/**
 	 * @Inject
 	 * @var PSX\Loader\RoutingParserInterface
@@ -57,31 +63,78 @@ class DocumentationController extends ViewAbstract
 
 		$this->template->set(__DIR__ . '/../Resource/documentation_controller.tpl');
 
-		$path = $this->getParameter('path');
+		$path    = $this->getParameter('path');
+		$export  = $this->getParameter('export');
+		$version = $this->getParameter('version');
+		$method  = $this->getParameter('method');
+		$type    = $this->getParameter('type');
 
 		if(!empty($path))
 		{
-			$schema   = $this->getSchema($path);
-			$views    = $schema->doc->getViews();
-			$versions = array();
+			$resource = $this->getResource($path);
 
-			krsort($views);
-
-			foreach($views as $version => $view)
+			if(!empty($export))
 			{
-				$versions[] = array(
-					'version' => $version,
-					'status'  => $view->getStatus(),
-					'view'    => $this->getDataFromView($view),
-				);
-			}
+				$view   = $resource->doc->getView($version);
+				$schema = $view->get($method, $type);
+				$body   = null;
 
-			$this->setBody(array(
-				'method'     => $schema->routing[0],
-				'path'       => $schema->routing[1],
-				'controller' => $schema->routing[2],
-				'versions'   => $versions,
-			));
+				if(!$schema instanceof SchemaInterface)
+				{
+					throw new Exception('Schema not available');
+				}
+
+				if($export == self::EXPORT_XSD)
+				{
+					$this->response->setHeader('Content-Type', 'application/xml');
+
+					$generator = new Generator\Xsd($this->config->get('psx_url'));
+					$body      = $generator->generate($schema);
+				}
+				else if($export == self::EXPORT_JSONSCHEMA)
+				{
+					$this->response->setHeader('Content-Type', 'application/json');
+
+					$generator = new Generator\JsonSchema($this->config->get('psx_url'));
+					$body      = $generator->generate($schema);
+				}
+				else if($export == self::EXPORT_HTML)
+				{
+					$this->response->setHeader('Content-Type', 'text/html');
+
+					$generator = new Generator\Html($this->config->get('psx_url'));
+					$body      = $this->getHtmlTemplate($generator->generate($schema));
+				}
+				else
+				{
+					throw new Exception('Invalid generator');
+				}
+
+				$this->setBody($body);
+			}
+			else
+			{
+				$views    = $resource->doc->getViews();
+				$versions = array();
+
+				krsort($views);
+
+				foreach($views as $version => $view)
+				{
+					$versions[] = array(
+						'version' => $version,
+						'status'  => $view->getStatus(),
+						'view'    => $this->getDataFromView($view),
+					);
+				}
+
+				$this->setBody(array(
+					'method'     => $resource->routing[0],
+					'path'       => $resource->routing[1],
+					'controller' => $resource->routing[2],
+					'versions'   => $versions,
+				));
+			}
 		}
 		else
 		{
@@ -121,7 +174,7 @@ class DocumentationController extends ViewAbstract
 		return $routings;
 	}
 
-	protected function getSchema($sourcePath)
+	protected function getResource($sourcePath)
 	{
 		$collections = $this->routingParser->getCollection();
 		$routings    = array();
@@ -192,5 +245,59 @@ class DocumentationController extends ViewAbstract
 		}
 
 		return $data;
+	}
+
+	protected function getHtmlTemplate($body)
+	{
+		return <<<HTML
+<!DOCTYPE>
+<html>
+<head>
+	<title></title>
+	<style type="text/css">
+	body
+	{
+		font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+	}
+
+	h1
+	{
+		padding:10px;
+		background-color:#222;
+		color:#fff;
+		font-size:1.4em;
+	}
+
+	.table
+	{
+		width:100%;
+	}
+
+	.table th
+	{
+		border-bottom:2px solid #ccc;
+		text-align:left;
+		padding:6px;
+	}
+
+	.table td
+	{
+		padding:6px;
+		border-bottom:1px solid #eee;
+	}
+
+	.property-required
+	{
+		font-weight:bold;
+	}
+	</style>
+</head>
+<body>
+
+{$body}
+
+</body>
+</html>
+HTML;
 	}
 }

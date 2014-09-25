@@ -26,7 +26,7 @@ namespace PSX\Controller\Foo\Schema;
 use PSX\Data\SchemaAbstract;
 
 /**
- * Collection
+ * SuccessMessage
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
