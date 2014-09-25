@@ -87,7 +87,7 @@ class CallbackAbstractTest extends ControllerTestCase
 	protected function getPaths()
 	{
 		return array(
-			'/cb' => 'PSX\Oauth2\Authorization\AuthorizationCode\TestCallbackAbstract',
+			[['GET'], '/cb', 'PSX\Oauth2\Authorization\AuthorizationCode\TestCallbackAbstract'],
 		);
 	}
 }

@@ -84,7 +84,7 @@ TEXT;
 	protected function getPaths()
 	{
 		return array(
-			'/ipn' => 'PSX\Payment\Paypal\TestIpnController'
+			[['POST'], '/ipn', 'PSX\Payment\Paypal\TestIpnController']
 		);
 	}
 }

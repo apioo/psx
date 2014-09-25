@@ -89,9 +89,9 @@ class FlowAbstractTest extends ControllerTestCase
 	protected function getPaths()
 	{
 		return array(
-			'/request' => 'PSX\Oauth\Provider\TestRequestAbstract',
-			'/access'  => 'PSX\Oauth\Provider\TestAccessAbstract',
-			'/api'     => 'PSX\Oauth\Provider\TestOauth::doIndex',
+			[['POST'], '/request', 'PSX\Oauth\Provider\TestRequestAbstract'],
+			[['POST'], '/access', 'PSX\Oauth\Provider\TestAccessAbstract'],
+			[['GET'], '/api', 'PSX\Oauth\Provider\TestOauth::doIndex'],
 		);
 	}
 }

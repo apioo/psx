@@ -171,7 +171,7 @@ JSON;
 	protected function getPaths()
 	{
 		return array(
-			'/token' => 'PSX\Oauth2\Provider\TestTokenAbstract',
+			[['POST'], '/token', 'PSX\Oauth2\Provider\TestTokenAbstract'],
 		);
 	}
 }

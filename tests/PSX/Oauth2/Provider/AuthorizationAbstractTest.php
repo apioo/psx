@@ -148,7 +148,7 @@ class AuthorizationAbstractTest extends ControllerTestCase
 	protected function getPaths()
 	{
 		return array(
-			'/auth' => 'PSX\Oauth2\Provider\TestAuthorizationAbstract',
+			[['GET'], '/auth', 'PSX\Oauth2\Provider\TestAuthorizationAbstract'],
 		);
 	}
 }

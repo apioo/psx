@@ -32,8 +32,7 @@ use ReflectionClass;
 use ReflectionException;
 
 /**
- * A simple routing parser which gets all informations from an key value array
- * which is useful for testing
+ * A simple routing parser which gets all informations from an array
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
@@ -52,9 +51,11 @@ class ArrayCollection implements RoutingParserInterface
 	{
 		$collection = new RoutingCollection();
 
-		foreach($this->routings as $path => $source)
+		foreach($this->routings as $route)
 		{
-			$collection->add(array('GET', 'POST', 'PUT', 'DELETE'), $path, $source);
+			list($methods, $path, $source) = $route;
+
+			$collection->add($methods, $path, $source);
 		}
 
 		return $collection;

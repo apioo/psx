@@ -207,21 +207,21 @@ XML;
 	protected function getPaths()
 	{
 		return array(
-			'/controller'           => 'PSX\Controller\Foo\Application\TestController::doIndex',
-			'/controller/inspect'   => 'PSX\Controller\Foo\Application\TestController::doInspect',
-			'/controller/forward'   => 'PSX\Controller\Foo\Application\TestController::doForward',
-			'/controller/redirect'  => 'PSX\Controller\Foo\Application\TestController::doRedirect',
-			'/controller/absolute'  => 'PSX\Controller\Foo\Application\TestController::doRedirectAbsolute',
-			'/controller/array'     => 'PSX\Controller\Foo\Application\TestController::doSetArrayBody',
-			'/controller/record'    => 'PSX\Controller\Foo\Application\TestController::doSetRecordBody',
-			'/controller/dom'       => 'PSX\Controller\Foo\Application\TestController::doSetDomDocumentBody',
-			'/controller/simplexml' => 'PSX\Controller\Foo\Application\TestController::doSetSimpleXmlBody',
-			'/controller/string'    => 'PSX\Controller\Foo\Application\TestController::doSetStringBody',
-			'/controller/file'      => 'PSX\Controller\Foo\Application\TestController::doSetStreamBody',
-			'/redirect/:foo'        => 'PSX\Controller\Foo\Application\TestController::doRedirectDestiniation',
-			'/api'                  => 'PSX\Controller\Foo\Application\TestApiController::doIndex',
-			'/api/insert'           => 'PSX\Controller\Foo\Application\TestApiController::doInsert',
-			'/api/inspect'          => 'PSX\Controller\Foo\Application\TestApiController::doInspect',
+			[['GET'], '/controller', 'PSX\Controller\Foo\Application\TestController::doIndex'],
+			[['GET'], '/controller/inspect', 'PSX\Controller\Foo\Application\TestController::doInspect'],
+			[['GET'], '/controller/forward', 'PSX\Controller\Foo\Application\TestController::doForward'],
+			[['GET'], '/controller/redirect', 'PSX\Controller\Foo\Application\TestController::doRedirect'],
+			[['GET'], '/controller/absolute', 'PSX\Controller\Foo\Application\TestController::doRedirectAbsolute'],
+			[['GET'], '/controller/array', 'PSX\Controller\Foo\Application\TestController::doSetArrayBody'],
+			[['GET'], '/controller/record', 'PSX\Controller\Foo\Application\TestController::doSetRecordBody'],
+			[['GET'], '/controller/dom', 'PSX\Controller\Foo\Application\TestController::doSetDomDocumentBody'],
+			[['GET'], '/controller/simplexml', 'PSX\Controller\Foo\Application\TestController::doSetSimpleXmlBody'],
+			[['GET'], '/controller/string', 'PSX\Controller\Foo\Application\TestController::doSetStringBody'],
+			[['GET'], '/controller/file', 'PSX\Controller\Foo\Application\TestController::doSetStreamBody'],
+			[['GET'], '/redirect/:foo', 'PSX\Controller\Foo\Application\TestController::doRedirectDestiniation'],
+			[['GET'], '/api', 'PSX\Controller\Foo\Application\TestApiController::doIndex'],
+			[['GET'], '/api/insert', 'PSX\Controller\Foo\Application\TestApiController::doInsert'],
+			[['GET'], '/api/inspect', 'PSX\Controller\Foo\Application\TestApiController::doInspect'],
 		);
 	}
 }
