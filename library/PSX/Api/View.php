@@ -195,6 +195,18 @@ class View
 		return $this->container[self::METHOD_DELETE][self::TYPE_RESPONSE];
 	}
 
+	public function get($method, $type)
+	{
+		if(isset($this->container[$method][$type]))
+		{
+			return $this->container[$method][$type];
+		}
+		else
+		{
+			return null;
+		}
+	}
+
 	public function getAllowedMethods()
 	{
 		return array_keys($this->container);
