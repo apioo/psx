@@ -81,6 +81,16 @@ class ReverseRouterTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('/foo/bla/blub', $router->getPath('PSX\Loader\Foo4Controller', array('bla')));
 	}
 
+	public function testGetNotExisting()
+	{
+		$routingFile = new RoutingFile('tests/PSX/Loader/routes');
+		$router      = new ReverseRouter($routingFile, 'http://foo.com', '');
+
+		$this->assertNull($router->getPath('Foo\Bar'));
+		$this->assertNull($router->getAbsolutePath('Foo\Bar'));
+		$this->assertNull($router->getUrl('Foo\Bar'));
+	}
+
 	public function testGetPath()
 	{
 		$routingFile = new RoutingFile('tests/PSX/Loader/routes');

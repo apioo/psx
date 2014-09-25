@@ -48,7 +48,13 @@ class ReverseRouter
 
 	public function getPath($source, array $parameters = array(), $leadingPath = true)
 	{
-		$path  = $this->getPathBySource($source);
+		$path = $this->getPathBySource($source);
+
+		if($path === null)
+		{
+			return null;
+		}
+
 		$path  = explode('/', trim($path, '/'));
 		$parts = array();
 		$i     = 0;
@@ -125,6 +131,11 @@ class ReverseRouter
 	{
 		$path = $this->getPath($source, $parameters, false);
 
+		if($path === null)
+		{
+			return null;
+		}
+
 		if($this->isAbsoluteUrl($path))
 		{
 			return $path;
@@ -138,6 +149,11 @@ class ReverseRouter
 	public function getUrl($source, array $parameters = array())
 	{
 		$path = $this->getPath($source, $parameters, false);
+
+		if($path === null)
+		{
+			return null;
+		}
 
 		if($this->isAbsoluteUrl($path))
 		{
