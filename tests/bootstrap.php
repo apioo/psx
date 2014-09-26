@@ -33,7 +33,7 @@ function getContainer()
 
 			define('PSX_CONNECTION', true);
 		}
-		catch(PDOException $e)
+		catch(\Exception $e)
 		{
 			define('PSX_CONNECTION', false);
 		}
