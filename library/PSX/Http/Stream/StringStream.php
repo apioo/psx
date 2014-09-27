@@ -36,26 +36,41 @@ use Psr\Http\Message\StreamInterface;
 class StringStream implements StreamInterface
 {
 	protected $data;
+	protected $length;
 
 	protected $_pointer = 0;
 
 	public function __construct($data = '')
 	{
-		$this->data = $data;
-		$this->len  = strlen($data);
+		$this->data   = $data;
+		$this->length = strlen($data);
 	}
 
 	public function close()
 	{
+		$this->data   = null;
+		$this->length = 0;
 	}
 
 	public function detach()
 	{
+		if($this->data !== null)
+		{
+			$handle = fopen('php://memory', 'r+');
+			fwrite($handle, $this->data);
+			fseek($handle, 0);
+
+			$this->close();
+
+			return $handle;
+		}
+
+		return null;
 	}
 
 	public function getSize()
 	{
-		return $this->len;
+		return $this->length;
 	}
 
 	public function tell()
@@ -65,75 +80,100 @@ class StringStream implements StreamInterface
 
 	public function eof()
 	{
-		return $this->_pointer >= $this->len;
+		if($this->data !== null)
+		{
+			return $this->_pointer >= $this->length;
+		}
+
+		return true;
 	}
 
 	public function isSeekable()
 	{
-		return true;
+		return $this->data !== null;
 	}
 
 	public function seek($offset, $whence = SEEK_SET)
 	{
-		if($whence === SEEK_SET)
+		if($this->isSeekable())
 		{
-			$this->_pointer = $offset;
+			if($whence === SEEK_SET)
+			{
+				$this->_pointer = $offset;
+			}
+			else if($whence === SEEK_CUR)
+			{
+				$this->_pointer+= $offset;
+			}
+			else if($whence === SEEK_END)
+			{
+				$this->_pointer = $this->length + $offset;
+			}
 		}
-		else if($whence === SEEK_CUR)
-		{
-			$this->_pointer+= $offset;
-		}
-		else if($whence === SEEK_END)
-		{
-			$this->_pointer = $this->len + $offset;
-		}
+
+		return false;
 	}
 
 	public function isWritable()
 	{
-		return true;
+		return $this->data !== null;
 	}
 
 	public function write($string)
 	{
-		$len  = strlen($string);
-		$pre  = substr($this->data, 0, $this->_pointer);
-		$post = substr($this->data, $this->_pointer + $len);
+		if($this->isWritable())
+		{
+			$length  = strlen($string);
+			$pre  = substr($this->data, 0, $this->_pointer);
+			$post = substr($this->data, $this->_pointer + $length);
 
-		$this->data = $pre . $string . $post;
+			$this->data = $pre . $string . $post;
 
-		$this->_pointer+= $len;
+			$this->_pointer+= $length;
 
-		return $len;
+			return $length;
+		}
+
+		return false;
 	}
 
 	public function isReadable()
 	{
-		return true;
+		return $this->data !== null;
 	}
 
-	public function read($length)
+	public function read($maxLength)
 	{
-		$data = substr($this->data, $this->_pointer, $length);
+		if($this->isReadable())
+		{
+			$data = substr($this->data, $this->_pointer, $maxLength);
 
-		$this->_pointer+= $length;
+			$this->_pointer+= $maxLength;
 
-		return $data;
+			return $data;
+		}
+
+		return false;
 	}
 
-	public function getContents($length = -1)
+	public function getContents($maxLength = -1)
 	{
-		if($length == -1)
+		if($this->data === null)
+		{
+			return null;
+		}
+
+		if($maxLength == -1)
 		{
 			$data = substr($this->data, $this->_pointer);
 
-			$this->_pointer = $this->len;
+			$this->_pointer = $this->length;
 		}
 		else
 		{
-			$data = substr($this->data, $this->_pointer, $length);
+			$data = substr($this->data, $this->_pointer, $maxLength);
 
-			$this->_pointer+= $length;
+			$this->_pointer+= $maxLength;
 		}
 
 		return $data;
@@ -141,6 +181,6 @@ class StringStream implements StreamInterface
 
 	public function __toString()
 	{
-		return $this->data;
+		return $this->data === null ? '' : $this->data;
 	}
 }

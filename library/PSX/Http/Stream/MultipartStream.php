@@ -46,17 +46,12 @@ class MultipartStream implements StreamInterface, \Iterator, \Countable
 
 	public function close()
 	{
-		foreach($this->streams as $stream)
-		{
-			$stream->close();
-		}
+		return $this->current()->close();
 	}
 
 	public function detach()
 	{
-		$this->close();
-
-		$this->streams = array();
+		return $this->current()->detach();
 	}
 
 	public function getSize()

@@ -64,6 +64,31 @@ abstract class StreamTestCase extends \PHPUnit_Framework_TestCase
 		}
 	}
 
+	public function testDetach()
+	{
+		$handle = $this->stream->detach();
+
+		$this->assertTrue(is_resource($handle));
+		$this->assertEquals('foobar', stream_get_contents($handle, -1, 0));
+
+		// after detatching the stream object is in an unusable state but this 
+		// should not produce any error on further method calls
+		$this->assertEquals('', $this->stream->__toString());
+		$this->assertEquals(null, $this->stream->close());
+		$this->assertEquals(null, $this->stream->detach());
+		$this->assertEquals(null, $this->stream->getSize());
+		$this->assertEquals(false, $this->stream->tell());
+		// after detaching eof returns always true to not enter any while(!eof)
+		$this->assertEquals(true, $this->stream->eof());
+		$this->assertEquals(false, $this->stream->isSeekable());
+		$this->assertEquals(false, $this->stream->seek(0));
+		$this->assertEquals(false, $this->stream->isWritable());
+		$this->assertEquals(false, $this->stream->write('foo'));
+		$this->assertEquals(false, $this->stream->isReadable());
+		$this->assertEquals(false, $this->stream->read(2));
+		$this->assertEquals(null, $this->stream->getContents());
+	}
+
 	public function testEof()
 	{
 		if($this->stream->isReadable())
@@ -81,7 +106,9 @@ abstract class StreamTestCase extends \PHPUnit_Framework_TestCase
 
 	public function testIsSeekable()
 	{
-		$this->stream->isSeekable();
+		$result = $this->stream->isSeekable();
+
+		$this->assertTrue(is_bool($result));
 	}
 
 	public function testSeek()
@@ -100,9 +127,11 @@ abstract class StreamTestCase extends \PHPUnit_Framework_TestCase
 		}
 	}
 
-	public function testIsWriteable()
+	public function testIsWritable()
 	{
-		$this->stream->isWritable();
+		$result = $this->stream->isWritable();
+
+		$this->assertTrue(is_bool($result));
 	}
 
 	public function testWrite()
@@ -121,7 +150,9 @@ abstract class StreamTestCase extends \PHPUnit_Framework_TestCase
 
 	public function testIsReadable()
 	{
-		$this->stream->isReadable();
+		$result = $this->stream->isReadable();
+
+		$this->assertTrue(is_bool($result));
 	}
 
 	public function testRead()

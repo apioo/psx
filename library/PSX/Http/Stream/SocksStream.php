@@ -35,7 +35,7 @@ use Psr\Http\Message\StreamInterface;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class SocksStream implements StreamInterface
+class SocksStream extends TempStream
 {
 	protected $resource;
 	protected $contentLength;
@@ -43,29 +43,18 @@ class SocksStream implements StreamInterface
 
 	public function __construct($resource, $contentLength, $chunkedEncoding = false)
 	{
-		if(!is_resource($resource))
-		{
-			throw new InvalidArgumentException('Must be an resource');
-		}
+		parent::__construct($resource);
 
-		$this->resource        = $resource;
 		$this->contentLength   = $contentLength;
 		$this->chunkedEncoding = $chunkedEncoding;
 	}
 
-	public function close()
-	{
-		if($this->isAvailable())
-		{
-			fclose($this->resource);
-		}
-	}
-
 	public function detach()
 	{
-		$this->close();
+		$this->contentLength   = null;
+		$this->chunkedEncoding = false;
 
-		$this->resource = null;
+		return parent::detach();
 	}
 
 	public function getSize()
@@ -73,48 +62,18 @@ class SocksStream implements StreamInterface
 		return $this->contentLength;
 	}
 
-	public function tell()
-	{
-		return ftell($this->resource);
-	}
-
-	public function eof()
-	{
-		return feof($this->resource);
-	}
-
-	public function isSeekable()
-	{
-		return true;
-	}
-
-	public function seek($offset, $whence = SEEK_SET)
-	{
-		fseek($this->resource, $offset, $whence);
-	}
-
 	public function isWritable()
 	{
 		return false;
 	}
 
-	public function write($string)
-	{
-		return false;
-	}
-
-	public function isReadable()
-	{
-		return true;
-	}
-
-	public function read($length)
-	{
-		return fread($this->resource, $length);
-	}
-
 	public function getContents($length = -1)
 	{
+		if(!$this->resource)
+		{
+			return '';
+		}
+
 		if($length !== -1)
 		{
 			$content = '';
@@ -154,6 +113,11 @@ class SocksStream implements StreamInterface
 
 	public function __toString()
 	{
+		if(!$this->resource)
+		{
+			return '';
+		}
+
 		if($this->contentLength > 0)
 		{
 			$body = $this->getContents($this->contentLength);
@@ -179,10 +143,5 @@ class SocksStream implements StreamInterface
 		$this->close();
 
 		return $body;
-	}
-
-	protected function isAvailable()
-	{
-		return is_resource($this->resource);
 	}
 }

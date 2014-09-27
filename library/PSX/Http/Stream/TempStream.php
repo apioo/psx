@@ -39,6 +39,9 @@ use Psr\Http\Message\StreamInterface;
 class TempStream implements StreamInterface
 {
 	protected $resource;
+	protected $seekable;
+	protected $readable;
+	protected $writable;
 
 	public function __construct($resource)
 	{
@@ -47,87 +50,133 @@ class TempStream implements StreamInterface
 			throw new InvalidArgumentException('Must be an resource');
 		}
 
+		$meta = stream_get_meta_data($resource);
+		$mode = $meta['mode'] . ' ';
+
 		$this->resource = $resource;
+		$this->seekable = $meta['seekable'];
+		$this->writable = $mode[0] != 'r' || $mode[1] == '+';
+		$this->readable = $mode[0] == 'r' || $mode[1] == '+';
 	}
 
 	public function close()
 	{
-		if($this->isAvailable())
+		if($this->resource)
 		{
 			fclose($this->resource);
 		}
+
+		$this->detach();
 	}
 
 	public function detach()
 	{
-		$this->close();
+		$handle = $this->resource;
 
 		$this->resource = null;
+		$this->seekable = $this->writable = $this->readable = false;
+
+		return $handle;
 	}
 
 	public function getSize()
 	{
-		$stat = fstat($this->resource);
+		if($this->resource)
+		{
+			$stat = fstat($this->resource);
 
-		return isset($stat['size']) ? $stat['size'] : false;
+			return isset($stat['size']) ? $stat['size'] : null;
+		}
+
+		return null;
 	}
 
 	public function tell()
 	{
-		return ftell($this->resource);
+		if($this->resource)
+		{
+			return ftell($this->resource);
+		}
+
+		return false;
 	}
 
 	public function eof()
 	{
-		return feof($this->resource);
+		if($this->resource)
+		{
+			return feof($this->resource);
+		}
+
+		return true;
 	}
 
 	public function isSeekable()
 	{
-		return true;
+		return $this->seekable;
 	}
 
 	public function seek($offset, $whence = SEEK_SET)
 	{
-		fseek($this->resource, $offset, $whence);
+		if($this->resource && $this->seekable)
+		{
+			return fseek($this->resource, $offset, $whence);
+		}
+
+		return false;
 	}
 
 	public function isWritable()
 	{
-		return true;
+		return $this->writable;
 	}
 
 	public function write($string)
 	{
-		return fwrite($this->resource, $string);
+		if($this->resource && $this->writable)
+		{
+			return fwrite($this->resource, $string);
+		}
+
+		return false;
 	}
 
 	public function isReadable()
 	{
-		return true;
+		return $this->readable;
 	}
 
 	public function read($length)
 	{
-		return fread($this->resource, $length);
+		if($this->resource && $this->readable)
+		{
+			return fread($this->resource, $length);
+		}
+
+		return false;
 	}
 
 	public function getContents($length = -1)
 	{
-		return stream_get_contents($this->resource, $length);
+		if($this->resource)
+		{
+			return stream_get_contents($this->resource, $length);
+		}
+
+		return null;
 	}
 
 	public function __toString()
 	{
-		$content = stream_get_contents($this->resource, -1, 0);
+		if($this->resource)
+		{
+			$content = stream_get_contents($this->resource, -1, 0);
 
-		$this->close();
+			$this->close();
 
-		return $content;
-	}
+			return $content;
+		}
 
-	protected function isAvailable()
-	{
-		return is_resource($this->resource);
+		return '';
 	}
 }
