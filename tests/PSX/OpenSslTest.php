@@ -150,7 +150,7 @@ class OpenSslTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(8, strlen($data));
 	}
 
-	public function test()
+	public function testErrorString()
 	{
 		$message = OpenSsl::errorString();
 

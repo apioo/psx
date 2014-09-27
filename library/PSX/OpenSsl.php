@@ -23,6 +23,7 @@
 
 namespace PSX;
 
+use PSX\OpenSsl\ErrorHandleTrait;
 use PSX\OpenSsl\Exception as OpenSslException;
 use PSX\OpenSsl\PKey;
 
@@ -35,6 +36,8 @@ use PSX\OpenSsl\PKey;
  */
 class OpenSsl
 {
+	use ErrorHandleTrait;
+
 	public static function decrypt($data, $method, $password, $rawInput = false, $iv = '')
 	{
 		$return = openssl_decrypt($data, $method, $password, $rawInput, $iv);
@@ -174,38 +177,5 @@ class OpenSsl
 	public static function randomPseudoBytes($length)
 	{
 		return openssl_random_pseudo_bytes($length);
-	}
-
-	protected static function handleReturn($return)
-	{
-		if($return === false)
-		{
-			self::assertErrorStack();
-		}
-		else
-		{
-			self::clearErrorStack();
-		}
-	}
-
-	protected static function assertErrorStack()
-	{
-		$message = array();
-		while($msg = openssl_error_string())
-		{
-			$message[] = $msg;
-		}
-
-		if(!empty($message))
-		{
-			throw new OpenSslException(implode("\n", $message));
-		}
-	}
-
-	protected static function clearErrorStack()
-	{
-		while($msg = openssl_error_string())
-		{
-		}
 	}
 }

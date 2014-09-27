@@ -34,6 +34,8 @@ use InvalidArgumentException;
  */
 class PKey
 {
+	use ErrorHandleTrait;
+
 	protected $res;
 
 	public function __construct($configargs = array())
@@ -42,14 +44,9 @@ class PKey
 		{
 			$res = openssl_pkey_new($configargs);
 
-			if($res !== false)
-			{
-				$this->res = $res;
-			}
-			else
-			{
-				throw new Exception('Could not create private key');
-			}
+			self::handleReturn($res);
+
+			$this->res = $res;
 		}
 		else if(is_resource($configargs))
 		{
@@ -57,7 +54,7 @@ class PKey
 		}
 		else
 		{
-			throw new InvalidArgumentException('Must be either an array or resource');
+			throw new InvalidArgumentException('Must be either an array or a resource');
 		}
 	}
 
@@ -70,14 +67,9 @@ class PKey
 	{
 		$details = openssl_pkey_get_details($this->res);
 
-		if($details !== false)
-		{
-			return $details;
-		}
-		else
-		{
-			throw new Exception('Could not get details');
-		}
+		self::handleReturn($details);
+
+		return $details;
 	}
 
 	public function getPublicKey()
@@ -94,34 +86,28 @@ class PKey
 
 	public function export(&$out, $passphrase = null, array $configargs = array())
 	{
-		return openssl_pkey_export($this->res, $out, $passphrase, $configargs);
+		$result = openssl_pkey_export($this->res, $out, $passphrase, $configargs);
+
+		self::handleReturn($result);
+
+		return $result;
 	}
 
 	public static function getPrivate($key, $passphrase = null)
 	{
 		$res = openssl_pkey_get_private($key, $passphrase);
 
-		if($res !== false)
-		{
-			return new self($res);
-		}
-		else
-		{
-			throw new Exception('Could not get private');
-		}
+		self::handleReturn($res);
+
+		return new self($res);
 	}
 
 	public static function getPublic($certificate)
 	{
 		$res = openssl_pkey_get_public($certificate);
 
-		if($res !== false)
-		{
-			return new self($res);
-		}
-		else
-		{
-			throw new Exception('Could not get private');
-		}
+		self::handleReturn($res);
+
+		return new self($res);
 	}
 }
