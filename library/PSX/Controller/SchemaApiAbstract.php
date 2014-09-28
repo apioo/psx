@@ -197,7 +197,7 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 			}
 			else
 			{
-				throw new StatusCode\UnsupportedMediaTypeException('Requires an content type containing an explicit version');
+				throw new StatusCode\UnsupportedMediaTypeException('Requires an Accept header containing an explicit version');
 			}
 		}
 		else
