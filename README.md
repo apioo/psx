@@ -3,28 +3,34 @@ PSX Framework
 
 ## About
 
-PSX is a framework written in PHP to create RESTful APIs. It helps you building 
-clean URLs serving web standard formats like JSON, XML, Atom and RSS. At the 
-core PSX is build of three parts. A handler system (similar to repositories in 
-doctrine) wich abstracts away the actual SQL queries from the domain logic. An 
-routing system wich executes the fitting controller method depending on	the 
-location of the controller and the annotation of the method. And an flexible 
-data system to convert data records from the database into different formats 
-like JSON, XML, Atom and RSS. PSX uses a lightweight DI container to handle 
-dependencies (but is also compatible with the symfony DI container). The 
-controller can return request or response filter wich can react or modify the 
-HTTP request or response. PSX offers some basic request filter to handle i.e. 
-Basic or Oauth authentication. In addition PSX offers some cool components to 
-use and implement OAuth, OpenID, Opengraph, Opensocial, Opensearch, 
-PubSubHubbub, WebFinger, Atom, and RSS.
-
-## Links
-
-Website:
+PSX is a framework written in PHP to create RESTful APIs. It provides tools to 
+handle routing, API versioning, data transformation, authentication, 
+documentation and testing. With PSX you can easily build an REST API around an 
+existing application or create a new one from scratch. More informations at
 http://phpsx.org
 
-Examples:
-http://example.phpsx.org
+## Requirements
+
+>= PHP 5.4 or HHVM 3.2.0
+
+## Installation
+
+You have three options in order to install PSX. Either download a current 
+release from github
+
+	https://github.com/k42b3/psx/releases
+
+install the PSX sample project via composer
+
+    php composer.phar create-project psx/sample .
+
+or require PSX as dependency in your composer.json
+
+    "psx/psx": "0.9.*@dev"
+
+## Documentation
+
+The official manual is at http://phpsx.org/doc/
 
 
 [![Build Status](https://travis-ci.org/k42b3/psx.png)](https://travis-ci.org/k42b3/psx)
