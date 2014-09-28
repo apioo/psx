@@ -27,7 +27,7 @@ After the request and response objects are created the loader searches the
 fitting controller based on the routing file. Then the controller can read from
 the request object and add data to the response object. Finally the response 
 must be send to the client. This is done through an sender class which sends the 
-header through the "header" function and outputs the response body.
+header through the "header" function and outputs the response body via "echo".
 
 .. literalinclude:: ../../library/PSX/Dispatch/SenderInterface.php
    :language: php

@@ -11,10 +11,10 @@ your application later. You can see a command like an controller but without
 the request/response context. A command can be executed from the command line or 
 from an controller/command. I.e. if you have a command which sends an email if 
 an payment process was successful you could execute this command directly from 
-the controller and also from an cron in order to complete missing payments. In 
-contrast to an symfony command an psx command was not designed for cli that 
-means you can not access user input. All settings which the command needs must 
-be available in the parameters.
+the controller and also from an cron in order to complete payments. In contrast 
+to an symfony command an psx command was not designed for cli that means you can 
+not access user input. All settings which the command needs must be available in 
+the parameters.
 
 Usage
 -----

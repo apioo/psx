@@ -14,7 +14,8 @@ In order to create an API around an schema definition you have to define the
 request and response data schemas for each method. For the GET method you 
 obviously dont need an request schema. The do* methods must return an array
 in the format of the schema. Properties which are not available in the schema
-will be skipped
+will be skipped. It is possible to generate automatically an API documentation
+based on the defined schema documentation
 
 .. code-block:: php
 
@@ -22,6 +23,9 @@ will be skipped
 
     namespace Foo\Application;
 
+    use PSX\Api\Documentation;
+    use PSX\Api\Version;
+    use PSX\Api\View;
     use PSX\Data\RecordInterface;
     use PSX\Data\Schema\Documentation;
     use PSX\Controller\SchemaApiAbstract;
@@ -30,15 +34,15 @@ will be skipped
     {
         public function getSchemaDocumentation()
         {
-            $responseSchema = $this->schemaManager->getSchema('PSX\Controller\Foo\Schema\SuccessMessage');
+            $responseSchema = $this->schemaManager->getSchema('Foo\Blog\Schema\SuccessMessage');
 
-            $doc = new Documentation();
-            $doc->setGet($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Collection'));
-            $doc->setPost($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Create'), $responseSchema);
-            $doc->setPut($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Update'), $responseSchema);
-            $doc->setDelete($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Delete'), $responseSchema);
+            $view = new View();
+            $view->setGet($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Collection'));
+            $view->setPost($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Create'), $responseSchema);
+            $view->setPut($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Update'), $responseSchema);
+            $view->setDelete($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Delete'), $responseSchema);
 
-            return $doc;
+            return new Documentation\Simple($view);
         }
 
         protected function doGet()

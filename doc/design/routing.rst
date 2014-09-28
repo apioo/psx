@@ -34,8 +34,8 @@ The path /foo is an alias for the path /. That means in both cases we call the
 method doFoo of the class Foo\\News\\Application\\Index.
 
 If we make an HTTP request to /news/2 the controller 
-Foo\\News\\Application\\News::doDetail gets called. In our controller we can access
-the dynmic part of the path with
+Foo\\News\\Application\\News::doDetail gets called. In our controller we can 
+access the dynamic part of the path with
 
 .. code-block:: php
 
@@ -79,8 +79,8 @@ Custom routing
 --------------
 
 If you want store your routes in another format or in an database you can 
-easily write your own RoutingParser. The routing parser returns an 
-RoutingCollection which contains all available routes.
+write your own RoutingParser. The routing parser returns an RoutingCollection 
+which contains all available routes.
 
 .. literalinclude:: ../../library/PSX/Loader/RoutingParserInterface.php
    :language: php

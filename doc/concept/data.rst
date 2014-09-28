@@ -57,7 +57,7 @@ PSX comes with the following data reader:
 +--------------------------+-----------------------------------+-------------+
 
 The result of the data reader can be obtained by using the getBody method inside
-the controller. Depending on the content type the response is either an arry
+the controller. Depending on the content type the response is either an array
 or DOMDocument.
 
 .. code-block:: php

@@ -140,11 +140,11 @@ In this case we have to define the following records
         }
     }
 
-If the @param annotation is defined the default importer will cast the variable
-to the specific type if it is a scalar type: string, float, integer or boolean.
-In every other case we check whether the given name is a valid class. If the
-class is an RecordInterface we import the data into this record else we pass the
-data as first argument to the constructor.
+If the @param annotation is defined the importer will cast the variable to the 
+specific type if it is a scalar type: string, float, integer or boolean. In 
+every other case we check whether the given name is a valid class. If the class 
+is an RecordInterface we import the data into this record else we pass the data 
+as first argument to the constructor.
 
 Through the method getRecordInfo()->getFields() we get an array of all available 
 key value pairs of the record. By default this includes every defined property 
@@ -236,8 +236,6 @@ imported. In the following an example howto use an entity.
             // do something with the entry
         }
     }
-
-
 
 Writing a custom importer
 -------------------------

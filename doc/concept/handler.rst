@@ -88,7 +88,7 @@ obtains these informations from an describe query.
 Select handler
 --------------
 
-With the select handle you can join over multiple tables. 
+With the select handler you can join over multiple tables. 
 
 .. code-block:: php
 

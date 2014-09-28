@@ -41,6 +41,10 @@ Usage
             // this will be an array for xml an DOMDocument
             $body = $this->getBody();
 
+            // returns the value for the key "title". This works with 
+            // x-www-form-urlencoded, json or xml data
+            $title = $this->getAccessor()->get('title');
+
             // if you want assign an value to the template which is not exposed
             // to the public you can assign it directly to the template
             $this->template->assign('foo', 'bar');
