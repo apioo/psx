@@ -118,15 +118,25 @@ class Builder
 	 * @param string $name
 	 * @return PSX\Data\Schema\Property\ComplexType
 	 */
-	public function complexType($name)
+	public function complexType($name, Property\ComplexType $template = null)
 	{
-		if($name instanceof Property\ComplexType)
+		if($template === null)
 		{
-			$this->add($property = $name);
+			if($name instanceof Property\ComplexType)
+			{
+				$this->add($property = $name);
+			}
+			else
+			{
+				$this->add($property = new Property\ComplexType($name));
+			}
 		}
 		else
 		{
-			$this->add($property = new Property\ComplexType($name));
+			$property = clone $template;
+			$property->setName($name);
+
+			$this->add($property);
 		}
 
 		return $property;
