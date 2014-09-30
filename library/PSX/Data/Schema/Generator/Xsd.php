@@ -81,12 +81,25 @@ class Xsd implements GeneratorInterface
 
 		foreach($children as $child)
 		{
-			$this->writer->startElement('xs:element');
-			$this->writer->writeAttribute('name', $child->getName());
-			$this->writer->writeAttribute('type', $this->hasConstraints($child) ? $child->getName() : $this->getPropertyTypeName($child));
-			$this->writer->writeAttribute('minOccurs', $child->isRequired() ? 1 : 0);
-			$this->writer->writeAttribute('maxOccurs', 1);
-			$this->writer->endElement();
+			if($child instanceof Property\ArrayType)
+			{
+				$this->writer->startElement('xs:element');
+				$this->writer->writeAttribute('name', $child->getName());
+				$this->writer->writeAttribute('type', $this->getPropertyTypeName($child->getPrototype()));
+
+				$this->generateTypeArray($child);
+
+				$this->writer->endElement();
+			}
+			else
+			{
+				$this->writer->startElement('xs:element');
+				$this->writer->writeAttribute('name', $child->getName());
+				$this->writer->writeAttribute('type', $this->getPropertyTypeName($child));
+				$this->writer->writeAttribute('minOccurs', $child->isRequired() ? 1 : 0);
+				$this->writer->writeAttribute('maxOccurs', 1);
+				$this->writer->endElement();
+			}
 		}
 
 		$this->writer->endElement();
@@ -95,6 +108,11 @@ class Xsd implements GeneratorInterface
 
 		foreach($children as $child)
 		{
+			if($child instanceof Property\ArrayType)
+			{
+				$child = $child->getPrototype();
+			}
+
 			if($this->hasConstraints($child))
 			{
 				$this->generateType($child);
@@ -104,29 +122,44 @@ class Xsd implements GeneratorInterface
 
 	protected function generateType(PropertyInterface $type)
 	{
-		if(in_array($type->getName(), $this->_types))
+		$typeName = $this->getPropertyTypeName($type);
+
+		if(in_array($typeName, $this->_types))
 		{
 			return;
 		}
 
-		$this->_types[] = $type->getName();
+		$this->_types[] = $typeName;
 
 		if($type instanceof Property\ComplexType)
 		{
 			$this->writer->startElement('xs:complexType');
-			$this->writer->writeAttribute('name', $type->getName());
+			$this->writer->writeAttribute('name', $typeName);
 			$this->writer->startElement('xs:sequence');
 
 			$children = $type->getChildren();
 
 			foreach($children as $child)
 			{
-				$this->writer->startElement('xs:element');
-				$this->writer->writeAttribute('name', $child->getName());
-				$this->writer->writeAttribute('type', $this->hasConstraints($child) ? $child->getName() : $this->getPropertyTypeName($child));
-				$this->writer->writeAttribute('minOccurs', $child->isRequired() ? 1 : 0);
-				$this->writer->writeAttribute('maxOccurs', 1);
-				$this->writer->endElement();
+				if($child instanceof Property\ArrayType)
+				{
+					$this->writer->startElement('xs:element');
+					$this->writer->writeAttribute('name', $child->getName());
+					$this->writer->writeAttribute('type', $this->getPropertyTypeName($child->getPrototype()));
+
+					$this->generateTypeArray($child);
+
+					$this->writer->endElement();
+				}
+				else
+				{
+					$this->writer->startElement('xs:element');
+					$this->writer->writeAttribute('name', $child->getName());
+					$this->writer->writeAttribute('type', $this->getPropertyTypeName($child));
+					$this->writer->writeAttribute('minOccurs', $child->isRequired() ? 1 : 0);
+					$this->writer->writeAttribute('maxOccurs', 1);
+					$this->writer->endElement();
+				}
 			}
 
 			$this->writer->endElement();
@@ -134,6 +167,11 @@ class Xsd implements GeneratorInterface
 
 			foreach($children as $child)
 			{
+				if($child instanceof Property\ArrayType)
+				{
+					$child = $child->getPrototype();
+				}
+
 				if($this->hasConstraints($child))
 				{
 					$this->generateType($child);
@@ -143,37 +181,16 @@ class Xsd implements GeneratorInterface
 		else if($type instanceof Property\ArrayType)
 		{
 			$this->writer->startElement('xs:complexType');
-			$this->writer->writeAttribute('name', $type->getName());
+			$this->writer->writeAttribute('name', $typeName);
 			$this->writer->startElement('xs:sequence');
 
 			$prototype = $type->getPrototype();
 
 			$this->writer->startElement('xs:element');
 			$this->writer->writeAttribute('name', $prototype->getName());
-			$this->writer->writeAttribute('type', $this->hasConstraints($prototype) ? $prototype->getName() : $this->getPropertyTypeName($prototype));
+			$this->writer->writeAttribute('type', $this->getPropertyTypeName($prototype));
 
-			$length    = $type->getMinLength();
-			$minOccurs = $type->getMinLength();
-			$maxOccurs = $type->getMaxLength();
-
-			if($length)
-			{
-				$this->writer->writeAttribute('minOccurs', $length);
-				$this->writer->writeAttribute('maxOccurs', $length);
-			}
-			else if($minOccurs)
-			{
-				$this->writer->writeAttribute('minOccurs', $minOccurs);
-			}
-			else if($maxOccurs)
-			{
-				$this->writer->writeAttribute('maxOccurs', $maxOccurs);
-			}
-			else
-			{
-				$this->writer->writeAttribute('minOccurs', 0);
-				$this->writer->writeAttribute('maxOccurs', 'unbounded');
-			}
+			$this->generateTypeArray($type);
 
 			$this->writer->endElement();
 
@@ -188,9 +205,9 @@ class Xsd implements GeneratorInterface
 		else
 		{
 			$this->writer->startElement('xs:simpleType');
-			$this->writer->writeAttribute('name', $type->getName());
+			$this->writer->writeAttribute('name', $typeName);
 			$this->writer->startElement('xs:restriction');
-			$this->writer->writeAttribute('base', $this->getPropertyTypeName($type));
+			$this->writer->writeAttribute('base', $this->getBasicType($type));
 
 			if($type instanceof Property\String)
 			{
@@ -222,6 +239,28 @@ class Xsd implements GeneratorInterface
 
 			$this->writer->endElement();
 			$this->writer->endElement();
+		}
+	}
+
+	protected function generateTypeArray(Property\ArrayType $type)
+	{
+		$minOccurs = $type->getMinLength();
+		$maxOccurs = $type->getMaxLength();
+
+		if($minOccurs)
+		{
+			$this->writer->writeAttribute('minOccurs', $minOccurs);
+			$this->writer->writeAttribute('maxOccurs', 'unbounded');
+		}
+		else if($maxOccurs)
+		{
+			$this->writer->writeAttribute('minOccurs', 'unbounded');
+			$this->writer->writeAttribute('maxOccurs', $maxOccurs);
+		}
+		else
+		{
+			$this->writer->writeAttribute('minOccurs', 0);
+			$this->writer->writeAttribute('maxOccurs', 'unbounded');
 		}
 	}
 
@@ -264,6 +303,18 @@ class Xsd implements GeneratorInterface
 	}
 
 	protected function getPropertyTypeName(PropertyInterface $type)
+	{
+		if($this->hasConstraints($type))
+		{
+			return $type->getName();
+		}
+		else
+		{
+			return $this->getBasicType($type);
+		}
+	}
+
+	protected function getBasicType(PropertyInterface $type)
 	{
 		$parts = explode('\\', get_class($type));
 
