@@ -60,6 +60,39 @@ class JsonSchemaTest extends GeneratorTestCase
           },
           "email": {
             "type": "string"
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "locations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "lat": {
+                  "type": "integer"
+                },
+                "long": {
+                  "type": "integer"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "origin": {
+            "type": "object",
+            "properties": {
+              "lat": {
+                "type": "integer"
+              },
+              "long": {
+                "type": "integer"
+              }
+            },
+            "additionalProperties": false
           }
         },
         "required": [
@@ -81,6 +114,39 @@ class JsonSchemaTest extends GeneratorTestCase
         },
         "email": {
           "type": "string"
+        },
+        "categories": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "locations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "lat": {
+                "type": "integer"
+              },
+              "long": {
+                "type": "integer"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "origin": {
+          "type": "object",
+          "properties": {
+            "lat": {
+              "type": "integer"
+            },
+            "long": {
+              "type": "integer"
+            }
+          },
+          "additionalProperties": false
         }
       },
       "required": [

@@ -37,6 +37,12 @@ class TestSchema extends SchemaAbstract
 {
 	public function getDefinition()
 	{
+		$sb = $this->getSchemaBuilder('location')
+			->setDescription('Location of the person');
+		$sb->integer('lat');
+		$sb->integer('long');
+		$location = $sb->getProperty();
+
 		$sb = $this->getSchemaBuilder('author')
 			->setDescription('An simple author element with some description');
 		$sb->string('title')
@@ -44,6 +50,11 @@ class TestSchema extends SchemaAbstract
 			->setRequired(true);
 		$sb->string('email')
 			->setDescription('We will send no spam to this addresss');
+		$sb->arrayType('categories')
+			->setPrototype(new Property\String('category'));
+		$sb->arrayType('locations')
+			->setPrototype($location);
+		$sb->complexType('origin', $location);
 		$author = $sb->getProperty();
 
 		$sb = $this->getSchemaBuilder('news')

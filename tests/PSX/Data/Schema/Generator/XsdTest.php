@@ -43,8 +43,8 @@ class XsdTest extends GeneratorTestCase
 	<xs:element name="news">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="tags" type="tags" minOccurs="0" maxOccurs="1"/>
-				<xs:element name="receiver" type="receiver" minOccurs="1" maxOccurs="1"/>
+				<xs:element name="tags" type="xs:string" maxOccurs="unbounded" minOccurs="1"/>
+				<xs:element name="receiver" type="author" maxOccurs="unbounded" minOccurs="1"/>
 				<xs:element name="read" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
 				<xs:element name="author" type="author" minOccurs="1" maxOccurs="1"/>
 				<xs:element name="sendDate" type="xs:date" minOccurs="0" maxOccurs="1"/>
@@ -58,20 +58,13 @@ class XsdTest extends GeneratorTestCase
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
-	<xs:complexType name="tags">
-		<xs:sequence>
-			<xs:element name="tag" type="xs:string" minOccurs="1" maxOccurs="1"/>
-		</xs:sequence>
-	</xs:complexType>
-	<xs:complexType name="receiver">
-		<xs:sequence>
-			<xs:element name="author" type="author" minOccurs="1" maxOccurs="1"/>
-		</xs:sequence>
-	</xs:complexType>
 	<xs:complexType name="author">
 		<xs:sequence>
 			<xs:element name="title" type="title" minOccurs="1" maxOccurs="1"/>
 			<xs:element name="email" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element maxOccurs="unbounded" minOccurs="0" name="categories" type="xs:string"/>
+			<xs:element maxOccurs="unbounded" minOccurs="0" name="locations" type="location"/>
+			<xs:element maxOccurs="1" minOccurs="0" name="origin" type="origin"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:simpleType name="title">
@@ -79,6 +72,18 @@ class XsdTest extends GeneratorTestCase
 			<xs:pattern value="[A-z]{3,16}"/>
 		</xs:restriction>
 	</xs:simpleType>
+	<xs:complexType name="location">
+		<xs:sequence>
+			<xs:element maxOccurs="1" minOccurs="0" name="lat" type="xs:integer"/>
+			<xs:element maxOccurs="1" minOccurs="0" name="long" type="xs:integer"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="origin">
+		<xs:sequence>
+			<xs:element maxOccurs="1" minOccurs="0" name="lat" type="xs:integer"/>
+			<xs:element maxOccurs="1" minOccurs="0" name="long" type="xs:integer"/>
+		</xs:sequence>
+	</xs:complexType>
 	<xs:simpleType name="price">
 		<xs:restriction base="xs:float">
 			<xs:maxInclusive value="100"/>
@@ -120,17 +125,20 @@ XML;
 
 		$xml = <<<XML
 <news xmlns="http://ns.foo.com">
-	<tags>
-		<tag>foo</tag>
-	</tags>
+	<tags>foo</tags>
+	<tags>bar</tags>
 	<receiver>
-		<author>
-			<title>bar</title>
-		</author>
+		<title>bar</title>
 	</receiver>
 	<read>1</read>
 	<author>
 		<title>test</title>
+		<categories>foo</categories>
+		<categories>bar</categories>
+		<locations>
+			<lat>13</lat>
+			<long>-37</long>
+		</locations>
 	</author>
 	<sendDate>2014-07-22</sendDate>
 	<readDate>2014-07-22T22:47:00</readDate>

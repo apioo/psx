@@ -51,7 +51,11 @@ class SampleTest extends GeneratorTestCase
         }
     ],
     "author": {
-        "title": "foo"
+        "title": "foo",
+        "locations": [{
+        	"lat": 13,
+        	"long": -37
+        }]
     },
     "price": 4,
     "content": "foo"
@@ -77,6 +81,10 @@ JSON;
  </receiver>
  <author>
   <title>foo</title>
+  <locations>
+   <lat>13</lat>
+   <long>-37</long>
+  </locations>
  </author>
  <price>4</price>
  <content>foo</content>
@@ -90,12 +98,20 @@ XML;
 	{
 		return array(
 			'tags' => array('bar', 'foo'),
-			'receiver' => array(array(
-				'title' => 'foo',
-				'email' => 'foo@bar.com',
-			)),
+			'receiver' => array(
+				array(
+					'title' => 'foo',
+					'email' => 'foo@bar.com',
+				)
+			),
 			'author' => array(
 				'title' => 'foo',
+				'locations' => array(
+					array(
+						'lat' => 13,
+						'long' => -37
+					),
+				)
 			),
 			'price' => 4,
 			'content' => 'foo',
