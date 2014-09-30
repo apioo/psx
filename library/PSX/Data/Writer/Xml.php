@@ -41,10 +41,10 @@ class Xml extends ArrayAbstract
 
 	public function write(RecordInterface $record)
 	{
-		$this->writer = new Writer();
-		$this->writer->setRecord($record->getRecordInfo()->getName(), $this->export($record));
+		$writer = new Writer();
+		$writer->setRecord($record->getRecordInfo()->getName(), $this->export($record));
 
-		return $this->writer->toString();
+		return $writer->toString();
 	}
 
 	public function isContentTypeSupported($contentType)
