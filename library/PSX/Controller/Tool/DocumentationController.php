@@ -186,11 +186,11 @@ class DocumentationController extends ViewAbstract
 			$parts     = explode('::', $source, 2);
 			$className = isset($parts[0]) ? $parts[0] : null;
 
-			if(class_exists($className))
+			if(class_exists($className) && $sourcePath == $path)
 			{
 				$controller = $this->controllerFactory->getController($className, $this->location, $this->request, $this->response);
 
-				if($controller instanceof DocumentedInterface && $sourcePath == $path)
+				if($controller instanceof DocumentedInterface)
 				{
 					$obj = new \stdClass();
 					$obj->routing = array($methods, $path, $className);

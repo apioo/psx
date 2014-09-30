@@ -113,7 +113,7 @@ class DocumentationControllerTest extends ControllerTestCase
 
 		$this->assertEquals('collection', $elements->item(0)->getAttribute('name'));
 		$this->assertEquals('entry', $elements->item(1)->getAttribute('name'));
-		$this->assertEquals('item', $elements->item(2)->getAttribute('name'));
+		$this->assertEquals('id', $elements->item(2)->getAttribute('name'));
 	}
 
 	public function testExportJsonSchema()
