@@ -35,7 +35,6 @@ use XMLWriter;
 class Writer implements WriterInterface
 {
 	public static $mime  = 'application/xml';
-	public static $xmlns = 'http://www.w3.org/2005/Atom';
 
 	protected $writer;
 
@@ -53,7 +52,7 @@ class Writer implements WriterInterface
 
 	public function setRecord($name, array $fields, $ns = null)
 	{
-		$this->recXmlEncode($name, $fields);
+		$this->recXmlEncode($name, $fields, $ns);
 	}
 
 	public function close()
@@ -87,7 +86,7 @@ class Writer implements WriterInterface
 
 			if($ns !== null)
 			{
-				$this->writer->writeAttribute('xmlns', self::$xmlns);
+				$this->writer->writeAttribute('xmlns', $ns);
 			}
 
 			foreach($fields as $k => $v)
