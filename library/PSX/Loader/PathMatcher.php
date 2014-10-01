@@ -52,7 +52,7 @@ class PathMatcher
 				{
 					$name = substr($part, 1);
 
-					$parameters[$name] = $this->srcPath[$key];
+					$parameters[$name] = isset($this->srcPath[$key]) ? $this->srcPath[$key] : null;
 				}
 				else if(isset($part[0]) && $part[0] == '$')
 				{
@@ -62,7 +62,7 @@ class PathMatcher
 
 					if(preg_match('/' . $rexp . '/', $this->srcPath[$key]))
 					{
-						$parameters[$name] = $this->srcPath[$key];
+						$parameters[$name] = isset($this->srcPath[$key]) ? $this->srcPath[$key] : null;
 					}
 					else
 					{
