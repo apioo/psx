@@ -32,19 +32,19 @@ use PSX\Data\SchemaInterface;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class View
+class View implements \IteratorAggregate
 {
 	const STATUS_ACTIVE     = 0x0;
 	const STATUS_DEPRECATED = 0x1;
 	const STATUS_CLOSED     = 0x2;
 
-	const METHOD_GET    = 'GET';
-	const METHOD_POST   = 'POST';
-	const METHOD_PUT    = 'PUT';
-	const METHOD_DELETE = 'DELETE';
+	const METHOD_GET    = 0x1;
+	const METHOD_POST   = 0x2;
+	const METHOD_PUT    = 0x4;
+	const METHOD_DELETE = 0x8;
 
-	const TYPE_REQUEST  = 0x0;
-	const TYPE_RESPONSE = 0x1;
+	const TYPE_REQUEST  = 0x10;
+	const TYPE_RESPONSE = 0x20;
 
 	protected $status;
 	protected $container = array();
@@ -76,139 +76,181 @@ class View
 
 	public function setGet(SchemaInterface $responseSchema)
 	{
-		$this->container[self::METHOD_GET] = array(
-			self::TYPE_RESPONSE => $responseSchema
-		);
+		$this->set(self::METHOD_GET | self::TYPE_RESPONSE, $responseSchema);
 	}
 
 	public function hasGet()
 	{
-		return isset($this->container[self::METHOD_GET]);
+		return $this->has(self::METHOD_GET);
 	}
 
 	public function hasGetResponse()
 	{
-		return isset($this->container[self::METHOD_GET][self::TYPE_RESPONSE]);
+		return $this->has(self::METHOD_GET | self::TYPE_RESPONSE);
 	}
 
 	public function getGetResponse()
 	{
-		return $this->container[self::METHOD_GET][self::TYPE_RESPONSE];
+		return $this->get(self::METHOD_GET | self::TYPE_RESPONSE);
 	}
 
 	public function setPost(SchemaInterface $requestSchema, SchemaInterface $responseSchema = null)
 	{
-		$this->container[self::METHOD_POST] = array(
-			self::TYPE_REQUEST  => $requestSchema, 
-			self::TYPE_RESPONSE => $responseSchema
-		);
+		$this->set(self::METHOD_POST | self::TYPE_REQUEST, $requestSchema);
+		$this->set(self::METHOD_POST | self::TYPE_RESPONSE, $responseSchema);
 	}
 
 	public function hasPost()
 	{
-		return isset($this->container[self::METHOD_POST]);
+		return $this->has(self::METHOD_POST);
 	}
 
 	public function hasPostRequest()
 	{
-		return isset($this->container[self::METHOD_POST][self::TYPE_REQUEST]);
+		return $this->has(self::METHOD_POST | self::TYPE_REQUEST);
 	}
 
 	public function getPostRequest()
 	{
-		return $this->container[self::METHOD_POST][self::TYPE_REQUEST];
+		return $this->get(self::METHOD_POST | self::TYPE_REQUEST);
 	}
 
 	public function hasPostResponse()
 	{
-		return isset($this->container[self::METHOD_POST][self::TYPE_RESPONSE]);
+		return $this->has(self::METHOD_POST | self::TYPE_RESPONSE);
 	}
 
 	public function getPostResponse()
 	{
-		return $this->container[self::METHOD_POST][self::TYPE_RESPONSE];
+		return $this->get(self::METHOD_POST | self::TYPE_RESPONSE);
 	}
 
 	public function setPut(SchemaInterface $requestSchema, SchemaInterface $responseSchema = null)
 	{
-		$this->container[self::METHOD_PUT] = array(
-			self::TYPE_REQUEST  => $requestSchema, 
-			self::TYPE_RESPONSE => $responseSchema
-		);
+		$this->set(self::METHOD_PUT | self::TYPE_REQUEST, $requestSchema);
+		$this->set(self::METHOD_PUT | self::TYPE_RESPONSE, $responseSchema);
 	}
 
 	public function hasPut()
 	{
-		return isset($this->container[self::METHOD_PUT]);
+		return $this->has(self::METHOD_PUT);
 	}
 
 	public function hasPutRequest()
 	{
-		return isset($this->container[self::METHOD_PUT][self::TYPE_REQUEST]);
+		return $this->has(self::METHOD_PUT | self::TYPE_REQUEST);
 	}
 
 	public function getPutRequest()
 	{
-		return $this->container[self::METHOD_PUT][self::TYPE_REQUEST];
+		return $this->get(self::METHOD_PUT | self::TYPE_REQUEST);
 	}
 
 	public function hasPutResponse()
 	{
-		return isset($this->container[self::METHOD_PUT][self::TYPE_RESPONSE]);
+		return $this->has(self::METHOD_PUT | self::TYPE_RESPONSE);
 	}
 
 	public function getPutResponse()
 	{
-		return $this->container[self::METHOD_PUT][self::TYPE_RESPONSE];
+		return $this->get(self::METHOD_PUT | self::TYPE_RESPONSE);
 	}
 
 	public function setDelete(SchemaInterface $requestSchema, SchemaInterface $responseSchema = null)
 	{
-		$this->container[self::METHOD_DELETE] = array(
-			self::TYPE_REQUEST  => $requestSchema, 
-			self::TYPE_RESPONSE => $responseSchema
-		);
+		$this->set(self::METHOD_DELETE | self::TYPE_REQUEST, $requestSchema);
+		$this->set(self::METHOD_DELETE | self::TYPE_RESPONSE, $responseSchema);
 	}
 
 	public function hasDelete()
 	{
-		return isset($this->container[self::METHOD_DELETE]);
+		return $this->has(self::METHOD_DELETE);
 	}
 
 	public function hasDeleteRequest()
 	{
-		return isset($this->container[self::METHOD_DELETE][self::TYPE_REQUEST]);
+		return $this->has(self::METHOD_DELETE | self::TYPE_REQUEST);
 	}
 
 	public function getDeleteRequest()
 	{
-		return $this->container[self::METHOD_DELETE][self::TYPE_REQUEST];
+		return $this->get(self::METHOD_DELETE | self::TYPE_REQUEST);
 	}
 
 	public function hasDeleteResponse()
 	{
-		return isset($this->container[self::METHOD_DELETE][self::TYPE_RESPONSE]);
+		return $this->has(self::METHOD_DELETE | self::TYPE_RESPONSE);
 	}
 
 	public function getDeleteResponse()
 	{
-		return $this->container[self::METHOD_DELETE][self::TYPE_RESPONSE];
+		return $this->get(self::METHOD_DELETE | self::TYPE_RESPONSE);
 	}
 
-	public function get($method, $type)
+	public function get($modifier)
 	{
-		if(isset($this->container[$method][$type]))
+		return isset($this->container[$modifier]) ? $this->container[$modifier] : null;
+	}
+
+	public function has($modifier)
+	{
+		if($modifier >= self::TYPE_REQUEST)
 		{
-			return $this->container[$method][$type];
+			return isset($this->container[$modifier]);
 		}
 		else
 		{
-			return null;
+			$result = 0;
+			foreach($this->container as $key => $view)
+			{
+				$result|= $key;
+			}
+
+			return (bool) ($result & $modifier);
+		}
+	}
+
+	public function set($modifier, SchemaInterface $schema = null)
+	{
+		if($schema !== null)
+		{
+			$this->container[$modifier] = $schema;
+		}
+		else if(isset($this->container[$modifier]))
+		{
+			unset($this->container[$modifier]);
 		}
 	}
 
 	public function getAllowedMethods()
 	{
-		return array_keys($this->container);
+		$methods = array();
+
+		foreach($this->container as $key => $view)
+		{
+			if($key & self::METHOD_GET)
+			{
+				$methods[] = 'GET';
+			}
+			else if($key & self::METHOD_POST)
+			{
+				$methods[] = 'POST';
+			}
+			else if($key & self::METHOD_PUT)
+			{
+				$methods[] = 'PUT';
+			}
+			else if($key & self::METHOD_DELETE)
+			{
+				$methods[] = 'DELETE';
+			}
+		}
+
+		return array_values(array_unique($methods));
+	}
+
+	public function getIterator()
+	{
+		return new \ArrayIterator($this->container);
 	}
 }

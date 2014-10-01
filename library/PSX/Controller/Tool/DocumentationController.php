@@ -76,7 +76,7 @@ class DocumentationController extends ViewAbstract
 			if(!empty($export))
 			{
 				$view   = $resource->doc->getView($version);
-				$schema = $view->get($method, $type);
+				$schema = $view->get($this->getViewModifier($method, $type));
 				$body   = null;
 
 				if(!$schema instanceof SchemaInterface)
@@ -245,6 +245,47 @@ class DocumentationController extends ViewAbstract
 		}
 
 		return $data;
+	}
+
+	protected function getViewModifier($method, $type)
+	{
+		return $this->getMethodParameter($method) | $this->getTypeParameter($type);
+	}
+
+	protected function getMethodParameter($method)
+	{
+		$methodMap = array(
+			'GET'    => View::METHOD_GET,
+			'POST'   => View::METHOD_POST,
+			'PUT'    => View::METHOD_PUT,
+			'DELETE' => View::METHOD_DELETE,
+		);
+
+		if(isset($methodMap[$method]))
+		{
+			return $methodMap[$method];
+		}
+		else
+		{
+			throw new Exception('Invalid method parameter');
+		}
+	}
+
+	protected function getTypeParameter($type)
+	{
+		$typeMap = array(
+			0 => View::TYPE_REQUEST,
+			1 => View::TYPE_RESPONSE,
+		);
+
+		if(isset($typeMap[$type]))
+		{
+			return $typeMap[$type];
+		}
+		else
+		{
+			throw new Exception('Invalid type parameter');
+		}
 	}
 
 	protected function getHtmlTemplate($body)
