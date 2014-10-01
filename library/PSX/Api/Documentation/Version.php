@@ -49,7 +49,7 @@ class Version implements DocumentationInterface
 
 	public function getView($version)
 	{
-		return $this->views[$version];
+		return isset($this->views[$version]) ? $this->views[$version] : null;
 	}
 
 	public function getViews()
