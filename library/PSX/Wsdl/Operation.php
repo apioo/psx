@@ -33,6 +33,7 @@ namespace PSX\Wsdl;
 class Operation
 {
 	protected $name;
+	protected $method;
 	protected $endpoint;
 	protected $in;
 	protected $out;
@@ -45,6 +46,16 @@ class Operation
 	public function getName()
 	{
 		return $this->name;
+	}
+
+	public function setMethod($method)
+	{
+		$this->method = $method;
+	}
+	
+	public function getMethod()
+	{
+		return $this->method;
 	}
 
 	public function setEndpoint($endpoint)

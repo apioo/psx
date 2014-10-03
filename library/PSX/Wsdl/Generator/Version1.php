@@ -181,7 +181,7 @@ class Version1 implements GeneratorInterface
 			$oper->setAttribute('name', $operation->getName());
 
 			$soapOperation = $this->document->createElement('soap:operation');
-			$soapOperation->setAttribute('soapAction', $this->targetNamespace . '/' . $operation->getName());
+			$soapOperation->setAttribute('soapAction', $this->targetNamespace . '/' . $operation->getName() . '#' . $operation->getMethod());
 
 			$oper->appendChild($soapOperation);
 
@@ -218,7 +218,7 @@ class Version1 implements GeneratorInterface
 
 			$port = $this->document->createElement('port');
 			$port->setAttribute('name', $operation->getName() . 'Port');
-			$port->setAttribute('binding', $operation->getName() . 'Binding');
+			$port->setAttribute('binding', 'tns:' . $operation->getName() . 'Binding');
 
 			$address = $this->document->createElement('soap:address');
 			$address->setAttribute('location', $operation->getEndpoint());

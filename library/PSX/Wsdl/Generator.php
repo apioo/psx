@@ -83,17 +83,54 @@ class Generator
 				{
 					$name = $childNode->getAttribute('name');
 
-					if(!empty($name) && !in_array($name, $this->types))
+					if(!empty($name))
 					{
 						$types[] = $childNode;
-
-						$this->types[] = $name;
 					}
 				}
 			}
 		}
 
-		return $types;
+		// complex and simple types
+		$definedTypes = array();
+		foreach($types as $type)
+		{
+			$name = $type->getAttribute('name');
+			if(!isset($definedTypes[$name]) && in_array($type->nodeName, array('xs:complexType', 'xs:simpleType')))
+			{
+				$definedTypes[$name] = $type;
+			}
+		}
+
+		// elements
+		$elements = array();
+		foreach($types as $type)
+		{
+			$name = $type->getAttribute('name');
+			if(!isset($elements[$name]) && $type->nodeName == 'xs:element')
+			{
+				// if the element is specified as type use the type
+				if(isset($definedTypes[$name]))
+				{
+					$type->setAttribute('type', $name);
+
+					// remove all child nodes since we assume that the 
+					// definition is in the complex type
+					while($type->hasChildNodes())
+					{
+						$type->removeChild($type->childNodes->item(0));
+					}
+
+					$elements[$name] = $type;
+				}
+				else
+				{
+					$elements[$name] = $type;
+				}
+			}
+		}
+
+		return array_merge(array_values($elements), array_values($definedTypes));
 	}
 
 	protected function getOperations(View $views)
@@ -115,10 +152,9 @@ class Generator
 				}
 
 				$methodName = $this->getMethodNameByModifier($method);
-				$endpoint   = $this->endpoint . '?_method=' . $methodName;
-
-				$operation = new Operation($methodName . ucfirst($entityName));
-				$operation->setEndpoint($endpoint);
+				$operation  = new Operation($methodName . ucfirst($entityName));
+				$operation->setMethod(strtoupper($methodName));
+				$operation->setEndpoint($this->endpoint);
 
 				if($views->has($method | View::TYPE_REQUEST))
 				{

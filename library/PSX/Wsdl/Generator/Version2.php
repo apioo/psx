@@ -141,11 +141,13 @@ class Version2 implements GeneratorInterface
 			$binding->setAttribute('name', $operation->getName() . 'Binding');
 			$binding->setAttribute('interface', 'tns:' . $operation->getName() . 'Interface');
 			$binding->setAttribute('type', 'http://www.w3.org/ns/wsdl/soap');
+			$binding->setAttribute('wsoap:version', '1.1');
 			$binding->setAttribute('wsoap:protocol', 'http://www.w3.org/2003/05/soap/bindings/HTTP/');
 
 			$oper = $this->document->createElement('operation');
 			$oper->setAttribute('ref', 'tns:' . $operation->getName());
 			$oper->setAttribute('wsoap:mep', 'http://www.w3.org/2003/05/soap/mep/soap-response');
+			$oper->setAttribute('wsoap:action', $this->targetNamespace . '/' . $operation->getName() . '#' . $operation->getMethod());
 
 			$binding->appendChild($oper);
 
