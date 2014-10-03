@@ -49,10 +49,10 @@ class Version1 implements GeneratorInterface
 		$definition = $this->document->createElement('definitions');
 		$definition->setAttribute('name', 'psx');
 		$definition->setAttribute('targetNamespace', $this->targetNamespace);
-		$definition->setAttribute('xmlns', 'http://schemas.xmlsoap.org/wsdl/');
 		$definition->setAttribute('xmlns:tns', $this->targetNamespace);
 		$definition->setAttribute('xmlns:sns', $this->schemaNamespace);
 		$definition->setAttribute('xmlns:soap', 'http://schemas.xmlsoap.org/wsdl/soap/');
+		$definition->setAttribute('xmlns', 'http://schemas.xmlsoap.org/wsdl/');
 
 		$this->appendTypes($definition, $types);
 		$this->appendMessages($definition, $operations);
