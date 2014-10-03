@@ -105,19 +105,13 @@ class Generator
 		{
 			if($views->has($method))
 			{
-				$modifier = 0;
-
 				if($views->has($method | View::TYPE_REQUEST))
 				{
-					$modifier   = $method | View::TYPE_REQUEST;
-					$view       = $views->get($modifier);
-					$entityName = $view->getDefinition()->getName();
+					$entityName = $views->get($method | View::TYPE_REQUEST)->getDefinition()->getName();
 				}
 				else if($views->has($method | View::TYPE_RESPONSE))
 				{
-					$modifier   = $method | View::TYPE_RESPONSE;
-					$view       = $views->get($modifier);
-					$entityName = $view->getDefinition()->getName();
+					$entityName = $views->get($method | View::TYPE_RESPONSE)->getDefinition()->getName();
 				}
 
 				$methodName = $this->getMethodNameByModifier($method);
@@ -128,12 +122,12 @@ class Generator
 
 				if($views->has($method | View::TYPE_REQUEST))
 				{
-					$operation->setIn($entityName);
+					$operation->setIn($views->get($method | View::TYPE_REQUEST)->getDefinition()->getName());
 				}
 
 				if($views->has($method | View::TYPE_RESPONSE))
 				{
-					$operation->setOut($entityName);
+					$operation->setOut($views->get($method | View::TYPE_RESPONSE)->getDefinition()->getName());
 				}
 
 				if($operation->hasOperation())
