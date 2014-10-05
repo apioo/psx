@@ -25,10 +25,11 @@ namespace PSX\Controller\Tool;
 
 use DOMDocument;
 use DOMElement;
+use PSX\Api\DocumentationInterface;
 use PSX\Api\DocumentedInterface;
 use PSX\Api\View;
 use PSX\ControllerAbstract;
-use PSX\Data\SchemaInterface;
+use PSX\Http\Exception as HttpException;
 use PSX\Loader\PathMatcher;
 use PSX\Wsdl\Generator;
 
@@ -60,7 +61,20 @@ class WsdlGeneratorController extends ControllerAbstract
 		$version   = $this->getUriFragment('version');
 		$path      = $this->getUriFragment('path');
 		$resource  = $this->getResource($path);
-		$views     = $resource->doc->getView($version);
+
+		if($resource->doc instanceof DocumentationInterface)
+		{
+			$view = $resource->doc->getView($version);
+
+			if(!$view instanceof View)
+			{
+				throw new HttpException\NotFoundException('Given version is not available');
+			}
+		}
+		else
+		{
+			throw new HttpException\InternalServerErrorException('Controller provides no documentation informations');
+		}
 
 		$name            = $resource->name;
 		$endpoint        = $this->config['psx_url'] . '/' . $this->config['psx_dispatch'] . ltrim($path, '/');
@@ -68,7 +82,7 @@ class WsdlGeneratorController extends ControllerAbstract
 
 		$generator = new Generator(Generator::VERSION_1, $name, $endpoint, $targetNamespace);
 
-		$wsdl = $generator->generate($views);
+		$wsdl = $generator->generate($view);
 		$wsdl->formatOutput = true;
 
 		$this->setBody($wsdl);
@@ -103,6 +117,6 @@ class WsdlGeneratorController extends ControllerAbstract
 			}
 		}
 
-		throw new \Exception('Invalid path');
+		throw new HttpException\NotFoundException('Invalid path');
 	}
 }
