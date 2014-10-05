@@ -39,32 +39,32 @@ class XsdTest extends GeneratorTestCase
 
 		$expect = <<<'XML'
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns="http://ns.foo.com" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://ns.foo.com" elementFormDefault="qualified">
+<xs:schema xmlns:tns="http://ns.foo.com" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://ns.foo.com">
 	<xs:element name="news">
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element name="tags" type="xs:string" maxOccurs="unbounded" minOccurs="1"/>
-				<xs:element name="receiver" type="author" maxOccurs="unbounded" minOccurs="1"/>
+				<xs:element name="receiver" type="tns:author" maxOccurs="unbounded" minOccurs="1"/>
 				<xs:element name="read" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
-				<xs:element name="author" type="author" minOccurs="1" maxOccurs="1"/>
+				<xs:element name="author" type="tns:author" minOccurs="1" maxOccurs="1"/>
 				<xs:element name="sendDate" type="xs:date" minOccurs="0" maxOccurs="1"/>
 				<xs:element name="readDate" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 				<xs:element name="expires" type="xs:duration" minOccurs="0" maxOccurs="1"/>
-				<xs:element name="price" type="price" minOccurs="1" maxOccurs="1"/>
-				<xs:element name="rating" type="rating" minOccurs="0" maxOccurs="1"/>
-				<xs:element name="content" type="content" minOccurs="1" maxOccurs="1"/>
-				<xs:element name="question" type="question" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="price" type="tns:price" minOccurs="1" maxOccurs="1"/>
+				<xs:element name="rating" type="tns:rating" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="content" type="tns:content" minOccurs="1" maxOccurs="1"/>
+				<xs:element name="question" type="tns:question" minOccurs="0" maxOccurs="1"/>
 				<xs:element name="coffeeTime" type="xs:time" minOccurs="0" maxOccurs="1"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
 	<xs:complexType name="author">
 		<xs:sequence>
-			<xs:element name="title" type="title" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="title" type="tns:title" minOccurs="1" maxOccurs="1"/>
 			<xs:element name="email" type="xs:string" minOccurs="0" maxOccurs="1"/>
 			<xs:element maxOccurs="unbounded" minOccurs="0" name="categories" type="xs:string"/>
-			<xs:element maxOccurs="unbounded" minOccurs="0" name="locations" type="location"/>
-			<xs:element maxOccurs="1" minOccurs="0" name="origin" type="origin"/>
+			<xs:element maxOccurs="unbounded" minOccurs="0" name="locations" type="tns:location"/>
+			<xs:element maxOccurs="1" minOccurs="0" name="origin" type="tns:origin"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:simpleType name="title">
@@ -154,5 +154,19 @@ XML;
 		$dom->loadXML($xml);
 
 		$this->assertTrue($dom->schemaValidateSource($result));
+	}
+
+	/**
+	 * Test whether the generated XSD follows the schema XSD
+	 */
+	public function testXsdSchema()
+	{
+		$generator = new Xsd('http://ns.foo.com');
+		$result    = $generator->generate($this->getSchema());
+
+		$dom = new \DOMDocument();
+		$dom->loadXML($result);
+
+		$this->assertTrue($dom->schemaValidate(__DIR__ . '/../../../Wsdl/schema.xsd'));
 	}
 }

@@ -44,7 +44,7 @@ class GeneratorTest extends \PHPUnit_Framework_TestCase
 		$schemaNamespace = 'http://127.0.0.1/schema/1/foo/api';
 		$targetNamespace = 'http://127.0.0.1/wsdl/1/foo/api';
 
-		$generator = new Generator(Generator::VERSION_1, $endpoint, $targetNamespace, $schemaNamespace);
+		$generator = new Generator(Generator::VERSION_1, 'foo', $endpoint, $targetNamespace, $schemaNamespace);
 
 		$wsdl = $generator->generate($this->getView());
 		$wsdl->formatOutput = true;
@@ -53,25 +53,6 @@ class GeneratorTest extends \PHPUnit_Framework_TestCase
 		$dom->loadXML($wsdl->saveXML());
 
 		$result = $dom->schemaValidate(__DIR__ . '/wsdl1.xsd');
-
-		$this->assertTrue($result);
-	}
-
-	public function testVersion2()
-	{
-		$endpoint        = 'http://127.0.0.1/foo/api';
-		$schemaNamespace = 'http://127.0.0.1/schema/1/foo/api';
-		$targetNamespace = 'http://127.0.0.1/wsdl/1/foo/api';
-
-		$generator = new Generator(Generator::VERSION_2, $endpoint, $targetNamespace, $schemaNamespace);
-
-		$wsdl = $generator->generate($this->getView());
-		$wsdl->formatOutput = true;
-
-		$dom = new DOMDocument();
-		$dom->loadXML($wsdl->saveXML());
-
-		$result = $dom->schemaValidate(__DIR__ . '/wsdl2.xsd');
 
 		$this->assertTrue($result);
 	}
