@@ -35,11 +35,12 @@ interface GeneratorInterface
 	/**
 	 * Generates a WSDL schema
 	 *
+	 * @param string $name
+	 * @param string $endpoint
 	 * @param string $targetNamespace
-	 * @param string $schemaNamespace
 	 * @param array<DOMElement> $types
 	 * @param array<PSX\Wsdl\Operation> $operations
 	 * @return DOMDocument
 	 */
-	public function generate($targetNamespace, $schemaNamespace, array $types, array $operations);
+	public function generate($name, $endpoint, $targetNamespace, array $types, array $operations);
 }

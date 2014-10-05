@@ -37,22 +37,23 @@ use PSX\Wsdl\GeneratorInterface;
 class Version1 implements GeneratorInterface
 {
 	protected $document;
+	protected $name;
+	protected $endpoint;
 	protected $targetNamespace;
-	protected $schemaNamespace;
 
-	public function generate($targetNamespace, $schemaNamespace, array $types, array $operations)
+	public function generate($name, $endpoint, $targetNamespace, array $types, array $operations)
 	{
 		$this->document        = new DOMDocument();
+		$this->name            = $name;
+		$this->endpoint        = $endpoint;
 		$this->targetNamespace = $targetNamespace;
-		$this->schemaNamespace = $schemaNamespace;
 
-		$definition = $this->document->createElement('definitions');
-		$definition->setAttribute('name', 'psx');
+		$definition = $this->document->createElement('wsdl:definitions');
+		$definition->setAttribute('name', $this->name);
 		$definition->setAttribute('targetNamespace', $this->targetNamespace);
 		$definition->setAttribute('xmlns:tns', $this->targetNamespace);
-		$definition->setAttribute('xmlns:sns', $this->schemaNamespace);
 		$definition->setAttribute('xmlns:soap', 'http://schemas.xmlsoap.org/wsdl/soap/');
-		$definition->setAttribute('xmlns', 'http://schemas.xmlsoap.org/wsdl/');
+		$definition->setAttribute('xmlns:wsdl', 'http://schemas.xmlsoap.org/wsdl/');
 
 		$this->appendTypes($definition, $types);
 		$this->appendMessages($definition, $operations);
@@ -67,10 +68,11 @@ class Version1 implements GeneratorInterface
 
 	public function appendTypes(DOMElement $element, array $operations)
 	{
-		$types  = $this->document->createElement('types');
+		$types  = $this->document->createElement('wsdl:types');
 		$schema = $this->document->createElementNS('http://www.w3.org/2001/XMLSchema', 'xs:schema');
-		$schema->setAttribute('targetNamespace', $this->schemaNamespace);
-		$schema->setAttribute('xmlns', $this->schemaNamespace);
+		$schema->setAttribute('targetNamespace', $this->targetNamespace);
+		$schema->setAttribute('elementFormDefault', 'qualified');
+		$schema->setAttribute('xmlns:tns', $this->targetNamespace);
 
 		foreach($operations as $type)
 		{
@@ -88,96 +90,93 @@ class Version1 implements GeneratorInterface
 	{
 		foreach($operations as $operation)
 		{
-			if($operation->hasIn())
-			{
-				$interface = $this->document->createElement('message');
-				$interface->setAttribute('name', $operation->getName() . 'Input');
+			// input
+			$interface = $this->document->createElement('wsdl:message');
+			$interface->setAttribute('name', $operation->getName() . 'Input');
 
-				$part = $this->document->createElement('part');
-				$part->setAttribute('name', 'body');
-				$part->setAttribute('element', 'sns:' . $operation->getIn());
+			$part = $this->document->createElement('wsdl:part');
+			$part->setAttribute('name', 'body');
+			$part->setAttribute('element', 'tns:' . strtolower($operation->getMethod()) . 'Request');
 
-				$interface->appendChild($part);
+			$interface->appendChild($part);
 
-				$element->appendChild($interface);
-			}
+			$element->appendChild($interface);
 
-			if($operation->hasOut())
-			{
-				$interface = $this->document->createElement('message');
-				$interface->setAttribute('name', $operation->getName() . 'Output');
+			// output
+			$interface = $this->document->createElement('wsdl:message');
+			$interface->setAttribute('name', $operation->getName() . 'Output');
 
-				$part = $this->document->createElement('part');
-				$part->setAttribute('name', 'body');
-				$part->setAttribute('element', 'sns:' . $operation->getOut());
+			$part = $this->document->createElement('wsdl:part');
+			$part->setAttribute('name', 'body');
+			$part->setAttribute('element', 'tns:' . strtolower($operation->getMethod()) . 'Response');
 
-				$interface->appendChild($part);
+			$interface->appendChild($part);
 
-				$element->appendChild($interface);
-			}
+			$element->appendChild($interface);
 		}
+
+		// default types
+		$interface = $this->document->createElement('wsdl:message');
+		$interface->setAttribute('name', 'faultOutput');
+
+		$part = $this->document->createElement('wsdl:part');
+		$part->setAttribute('name', 'body');
+		$part->setAttribute('element', 'tns:' . 'exceptionRecord');
+
+		$interface->appendChild($part);
+
+		$element->appendChild($interface);
 	}
 
 	public function appendPortTypes(DOMElement $element, array $operations)
 	{
+		$portType = $this->document->createElement('wsdl:portType');
+		$portType->setAttribute('name', $this->name . 'PortType');
+
 		foreach($operations as $operation)
 		{
-			if($operation->isInOnly())
-			{
-				$pattern = 'http://www.w3.org/ns/wsdl/in-only';
-			}
-			else if($operation->isOutOnly())
-			{
-				$pattern = 'http://www.w3.org/ns/wsdl/out-only';
-			}
-			else
-			{
-				$pattern = 'http://www.w3.org/ns/wsdl/in-out';
-			}
-
-			$portType = $this->document->createElement('portType');
-			$portType->setAttribute('name', $operation->getName() . 'PortType');
-
-			$oper = $this->document->createElement('operation');
+			$oper = $this->document->createElement('wsdl:operation');
 			$oper->setAttribute('name', $operation->getName());
 
-			if($operation->hasIn())
-			{
-				$input = $this->document->createElement('input');
-				$input->setAttribute('message', 'tns:' . $operation->getName() . 'Input');
+			// input
+			$input = $this->document->createElement('wsdl:input');
+			$input->setAttribute('message', 'tns:' . $operation->getName() . 'Input');
 
-				$oper->appendChild($input);
-			}
+			$oper->appendChild($input);
 
-			if($operation->hasOut())
-			{
-				$output = $this->document->createElement('output');
-				$output->setAttribute('message', 'tns:' . $operation->getName() . 'Output');
+			// output
+			$output = $this->document->createElement('wsdl:output');
+			$output->setAttribute('message', 'tns:' . $operation->getName() . 'Output');
 
-				$oper->appendChild($output);
-			}
+			$oper->appendChild($output);
+
+			$output = $this->document->createElement('wsdl:fault');
+			$output->setAttribute('message', 'tns:' . 'faultOutput');
+			$output->setAttribute('name', 'SoapFaultException');
+	
+			$oper->appendChild($output);
 
 			$portType->appendChild($oper);
-
-			$element->appendChild($portType);
 		}
+
+		$element->appendChild($portType);
 	}
 
 	public function appendBindings(DOMElement $element, array $operations)
 	{
+		$binding = $this->document->createElement('wsdl:binding');
+		$binding->setAttribute('name', $this->name . 'Binding');
+		$binding->setAttribute('type', 'tns:' . $this->name . 'PortType');
+
+		$soapBinding = $this->document->createElement('soap:binding');
+		$soapBinding->setAttribute('style', 'document');
+		$soapBinding->setAttribute('transport', 'http://schemas.xmlsoap.org/soap/http');
+
+		$binding->appendChild($soapBinding);
+
 		foreach($operations as $operation)
 		{
-			$binding = $this->document->createElement('binding');
-			$binding->setAttribute('name', $operation->getName() . 'Binding');
-			$binding->setAttribute('type', 'tns:' . $operation->getName() . 'PortType');
-
-			$soapBinding = $this->document->createElement('soap:binding');
-			$soapBinding->setAttribute('style', 'document');
-			$soapBinding->setAttribute('transport', 'http://schemas.xmlsoap.org/soap/http');
-
-			$binding->appendChild($soapBinding);
-
-			$oper = $this->document->createElement('operation');
+			$oper = $this->document->createElement('wsdl:operation');
 			$oper->setAttribute('name', $operation->getName());
 
 			$soapOperation = $this->document->createElement('soap:operation');
@@ -185,49 +184,57 @@ class Version1 implements GeneratorInterface
 
 			$oper->appendChild($soapOperation);
 
-			if($operation->hasIn())
-			{
-				$input    = $this->document->createElement('input');
-				$soapBody = $this->document->createElement('soap:body');
-				$soapBody->setAttribute('use', 'literal');
+			// input
+			$input    = $this->document->createElement('wsdl:input');
+			$soapBody = $this->document->createElement('soap:body');
+			$soapBody->setAttribute('use', 'literal');
 
-				$oper->appendChild($input);
-			}
+			$input->appendChild($soapBody);
 
-			if($operation->hasOut())
-			{
-				$output   = $this->document->createElement('output');
-				$soapBody = $this->document->createElement('soap:body');
-				$soapBody->setAttribute('use', 'literal');
+			$oper->appendChild($input);
 
-				$oper->appendChild($output);
-			}
+			// output
+			$output   = $this->document->createElement('wsdl:output');
+			$soapBody = $this->document->createElement('soap:body');
+			$soapBody->setAttribute('use', 'literal');
+
+			$output->appendChild($soapBody);
+
+			$oper->appendChild($output);
+
+			// fault
+			$output   = $this->document->createElement('wsdl:fault');
+			$output->setAttribute('name', 'SoapFaultException');
+			$soapBody = $this->document->createElement('soap:body');
+			$soapBody->setAttribute('use', 'literal');
+			$soapBody->setAttribute('name', 'SoapFaultException');
+
+			$output->appendChild($soapBody);
+
+			$oper->appendChild($output);
 
 			$binding->appendChild($oper);
-
-			$element->appendChild($binding);
 		}
+
+		$element->appendChild($binding);
 	}
 
 	public function appendServices(DOMElement $element, array $operations)
 	{
-		foreach($operations as $operation)
-		{
-			$service = $this->document->createElement('service');
-			$service->setAttribute('name', $operation->getName() . 'Service');
+		$service = $this->document->createElement('wsdl:service');
+		$service->setAttribute('name', $this->name . 'Service');
 
-			$port = $this->document->createElement('port');
-			$port->setAttribute('name', $operation->getName() . 'Port');
-			$port->setAttribute('binding', 'tns:' . $operation->getName() . 'Binding');
+		$port = $this->document->createElement('wsdl:port');
+		$port->setAttribute('name', $this->name . 'Port');
+		$port->setAttribute('binding', 'tns:' . $this->name . 'Binding');
 
-			$address = $this->document->createElement('soap:address');
-			$address->setAttribute('location', $operation->getEndpoint());
+		$address = $this->document->createElement('soap:address');
+		$address->setAttribute('location', $this->endpoint);
 
-			$port->appendChild($address);
+		$port->appendChild($address);
 
-			$service->appendChild($port);
+		$service->appendChild($port);
 
-			$element->appendChild($service);
-		}
+		$element->appendChild($service);
 	}
 }

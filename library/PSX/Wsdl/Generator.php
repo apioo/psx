@@ -24,6 +24,7 @@
 namespace PSX\Wsdl;
 
 use DOMDocument;
+use DOMElement;
 use InvalidArgumentException;
 use PSX\Config;
 use PSX\Api\View;
@@ -39,21 +40,20 @@ use PSX\Data\Schema\Generator\Xsd as XsdGenerator;
 class Generator
 {
 	const VERSION_1 = 0x1;
-	const VERSION_2 = 0x2;
 
-	protected $endpoint;
 	protected $version;
+	protected $name;
+	protected $endpoint;
 	protected $targetNamespace;
-	protected $schemaNamespace;
 
 	protected $types = array();
 
-	public function __construct($version, $endpoint, $targetNamespace, $schemaNamespace)
+	public function __construct($version, $name, $endpoint, $targetNamespace)
 	{
 		$this->version         = $version;
+		$this->name            = $name;
 		$this->endpoint        = $endpoint;
 		$this->targetNamespace = $targetNamespace;
-		$this->schemaNamespace = $schemaNamespace;
 	}
 
 	public function generate(View $views)
@@ -64,12 +64,12 @@ class Generator
 		$types      = $this->getTypes($views);
 		$operations = $this->getOperations($views);
 		
-		return $generator->generate($this->targetNamespace, $this->schemaNamespace, $types, $operations);
+		return $generator->generate($this->name, $this->endpoint, $this->targetNamespace, $types, $operations);
 	}
 
 	protected function getTypes(View $views)
 	{
-		$xsdGenerator = new XsdGenerator($this->schemaNamespace);
+		$xsdGenerator = new XsdGenerator($this->targetNamespace);
 		$types        = array();
 
 		foreach($views as $view)
@@ -85,8 +85,40 @@ class Generator
 
 					if(!empty($name))
 					{
-						$types[] = $childNode;
+						if($childNode->nodeName == 'xs:element')
+						{
+							// if we have an element check whether it contains an complex type
+							$complexTypes = $this->getElementsByTagName($childNode, 'xs:complexType');
+
+							foreach($complexTypes as $complexType)
+							{
+								$complexType->setAttribute('name', $name);
+
+								$types[] = $complexType;
+							}
+						}
+						else
+						{
+							$types[] = $childNode;
+						}
 					}
+				}
+			}
+		}
+
+		// add default schema types
+		$dom = new DOMDocument();
+		$dom->loadXML($this->getDefaultSchema());
+
+		foreach($dom->documentElement->childNodes as $childNode)
+		{
+			if($childNode->nodeType == XML_ELEMENT_NODE)
+			{
+				$name = $childNode->getAttribute('name');
+
+				if(!empty($name))
+				{
+					$types[] = $childNode;
 				}
 			}
 		}
@@ -102,33 +134,62 @@ class Generator
 			}
 		}
 
-		// elements
-		$elements = array();
-		foreach($types as $type)
+		// create elements for each operation
+		$dom     = new DOMDocument();
+		$methods = array(View::METHOD_GET, View::METHOD_POST, View::METHOD_PUT, View::METHOD_DELETE);
+
+		foreach($methods as $method)
 		{
-			$name = $type->getAttribute('name');
-			if(!isset($elements[$name]) && $type->nodeName == 'xs:element')
+			if($views->has($method))
 			{
-				// if the element is specified as type use the type
-				if(isset($definedTypes[$name]))
+				if($views->has($method | View::TYPE_REQUEST))
 				{
-					$type->setAttribute('type', $name);
+					$name = $this->getMethodNameByModifier($method);
+				}
+				else if($views->has($method | View::TYPE_RESPONSE))
+				{
+					$name = $this->getMethodNameByModifier($method);
+				}
 
-					// remove all child nodes since we assume that the 
-					// definition is in the complex type
-					while($type->hasChildNodes())
-					{
-						$type->removeChild($type->childNodes->item(0));
-					}
-
-					$elements[$name] = $type;
+				// request
+				if($views->has($method | View::TYPE_REQUEST))
+				{
+					$type = $views->get($method | View::TYPE_REQUEST)->getDefinition()->getName();
 				}
 				else
 				{
-					$elements[$name] = $type;
+					$type = 'void';
 				}
+
+				$element = $dom->createElement('xs:element');
+				$element->setAttribute('name', $name . 'Request');
+				$element->setAttribute('type', 'tns:' . $type);
+
+				$elements[$name . 'Request'] = $element;
+
+				// response
+				if($views->has($method | View::TYPE_RESPONSE))
+				{
+					$type = $views->get($method | View::TYPE_RESPONSE)->getDefinition()->getName();
+				}
+				else
+				{
+					$type = 'void';
+				}
+
+				$element = $dom->createElement('xs:element');
+				$element->setAttribute('name', $name . 'Response');
+				$element->setAttribute('type', 'tns:' . $type);
+
+				$elements[$name . 'Response'] = $element;
 			}
 		}
+
+		$element = $dom->createElement('xs:element');
+		$element->setAttribute('name', 'exceptionRecord');
+		$element->setAttribute('type', 'tns:' . 'fault');
+
+		$elements['faultResponse'] = $element;
 
 		return array_merge(array_values($elements), array_values($definedTypes));
 	}
@@ -154,7 +215,6 @@ class Generator
 				$methodName = $this->getMethodNameByModifier($method);
 				$operation  = new Operation($methodName . ucfirst($entityName));
 				$operation->setMethod(strtoupper($methodName));
-				$operation->setEndpoint($this->endpoint);
 
 				if($views->has($method | View::TYPE_REQUEST))
 				{
@@ -214,13 +274,45 @@ class Generator
 		{
 			return new Generator\Version1();
 		}
-		else if($this->version == self::VERSION_2)
-		{
-			return new Generator\Version2();
-		}
 		else
 		{
 			throw new InvalidArgumentException('Unknown version');
 		}
+	}
+
+	protected function getDefaultSchema()
+	{
+		return <<<XML
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:complexType name="fault">
+		<xs:sequence>
+			<xs:element name="success" type="xs:boolean" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="title" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="message" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="trace" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="context" type="xs:string" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="void">
+		<xs:sequence>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>
+XML;
+	}
+
+	protected function getElementsByTagName(DOMElement $element, $nodeName)
+	{
+		$result = array();
+		foreach($element->childNodes as $childNode)
+		{
+			if($childNode->nodeType == XML_ELEMENT_NODE && $childNode->nodeName == $nodeName)
+			{
+				$result[] = $childNode;
+			}
+		}
+
+		return $result;
 	}
 }

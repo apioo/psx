@@ -34,7 +34,6 @@ class Operation
 {
 	protected $name;
 	protected $method;
-	protected $endpoint;
 	protected $in;
 	protected $out;
 
@@ -56,16 +55,6 @@ class Operation
 	public function getMethod()
 	{
 		return $this->method;
-	}
-
-	public function setEndpoint($endpoint)
-	{
-		$this->endpoint = $endpoint;
-	}
-	
-	public function getEndpoint()
-	{
-		return $this->endpoint;
 	}
 
 	public function setIn($in)
