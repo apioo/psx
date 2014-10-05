@@ -481,6 +481,11 @@ abstract class ControllerAbstract implements ControllerInterface
 		}
 		else if($writer instanceof Writer\Soap)
 		{
+			if(!$writer->getNamespace())
+			{
+				$writer->setNamespace($this->config['psx_url']);
+			}
+
 			if(!$writer->getRequestMethod())
 			{
 				$writer->setRequestMethod($this->request->getMethod());

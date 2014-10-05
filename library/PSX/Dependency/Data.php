@@ -72,7 +72,7 @@ trait Data
 		$writer->addWriter(new Writer\Form());
 		$writer->addWriter(new Writer\Jsonp());
 		$writer->addWriter(new Writer\Rss());
-		$writer->addWriter(new Writer\Soap($this->get('config')->get('psx_url')));
+		$writer->addWriter(new Writer\Soap());
 		$writer->addWriter(new Writer\Xml());
 
 		return $writer;
