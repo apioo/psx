@@ -57,6 +57,11 @@ class Simple implements DocumentationInterface
 		return array(1 => $this->view);
 	}
 
+	public function getLatestVersion()
+	{
+		return 1;
+	}
+
 	public function isVersionRequired()
 	{
 		return false;

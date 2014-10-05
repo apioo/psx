@@ -57,6 +57,11 @@ class Version implements DocumentationInterface
 		return $this->views;
 	}
 
+	public function getLatestVersion()
+	{
+		return max(array_keys($this->views));
+	}
+
 	public function isVersionRequired()
 	{
 		return true;

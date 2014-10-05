@@ -56,6 +56,13 @@ interface DocumentationInterface
 	public function getViews();
 
 	/**
+	 * Returns the latest version number
+	 *
+	 * @return integer
+	 */
+	public function getLatestVersion();
+
+	/**
 	 * Returns whether the API requires an version information in the content 
 	 * type header
 	 *
