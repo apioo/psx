@@ -50,6 +50,7 @@ class VersionTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals($view2, $version->getView(2));
 		$this->assertEquals(null, $version->getView(8));
 		$this->assertEquals(array(1 => $view1, 2 => $view2), $version->getViews());
+		$this->assertEquals(2, $version->getLatestVersion());
 		$this->assertTrue($version->isVersionRequired());
 	}
 }
