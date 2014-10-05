@@ -50,14 +50,24 @@ class Html implements WriterInterface
 		$this->baseDir       = PSX_PATH_LIBRARY;
 	}
 
-	public function setBaseDir($dir)
+	public function setBaseDir($baseDir)
 	{
-		$this->baseDir = $dir;
+		$this->baseDir = $baseDir;
+	}
+
+	public function getBaseDir()
+	{
+		return $this->baseDir;
 	}
 
 	public function setControllerClass($className)
 	{
 		$this->className = $className;
+	}
+
+	public function getControllerClass()
+	{
+		return $this->className;
 	}
 
 	public function write(RecordInterface $record)
