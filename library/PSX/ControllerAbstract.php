@@ -461,6 +461,34 @@ abstract class ControllerAbstract implements ControllerInterface
 	}
 
 	/**
+	 * Configures the writer
+	 *
+	 * @param PSX\Data\WriterInterface $writer
+	 */
+	protected function configureWriter(WriterInterface $writer)
+	{
+		if($writer instanceof Writer\Html)
+		{
+			if(!$writer->getBaseDir())
+			{
+				$writer->setBaseDir(PSX_PATH_LIBRARY);
+			}
+
+			if(!$writer->getControllerClass())
+			{
+				$writer->setControllerClass(get_class($this));
+			}
+		}
+		else if($writer instanceof Writer\Soap)
+		{
+			if(!$writer->getRequestMethod())
+			{
+				$writer->setRequestMethod($this->request->getMethod());
+			}
+		}
+	}
+
+	/**
 	 * Writes the $record with the writer $writerType or depending on the get 
 	 * parameter format or of the mime type of the Accept header
 	 *
@@ -471,8 +499,13 @@ abstract class ControllerAbstract implements ControllerInterface
 	 */
 	private function setResponse(RecordInterface $record, $writerType = null)
 	{
-		// find best writer type if not set
-		$writer   = $this->getResponseWriter($writerType);
+		// find best writer type
+		$writer = $this->getResponseWriter($writerType);
+
+		// set writer specific settings
+		$this->configureWriter($writer);
+
+		// write the response
 		$response = $writer->write($record);
 
 		// send content type header if not sent

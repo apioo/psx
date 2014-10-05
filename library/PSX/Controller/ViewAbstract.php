@@ -43,19 +43,4 @@ abstract class ViewAbstract extends ControllerAbstract
 	 * @var PSX\TemplateInterface
 	 */
 	protected $template;
-
-	public function onLoad()
-	{
-		parent::onLoad();
-
-		// set controller class to html writer for automatic template file 
-		// detection
-		$writer = $this->writerFactory->getWriterByContentType('text/html');
-
-		if($writer instanceof Writer\Html)
-		{
-			$writer->setBaseDir(PSX_PATH_LIBRARY);
-			$writer->setControllerClass(get_class($this));
-		}
-	}
 }
