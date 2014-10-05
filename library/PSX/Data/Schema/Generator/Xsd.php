@@ -56,8 +56,8 @@ class Xsd implements GeneratorInterface
 	{
 		$this->writer->startDocument('1.0', 'UTF-8');
 		$this->writer->startElement('xs:schema');
-		$this->writer->writeAttribute('xmlns', $this->targetNamespace);
 		$this->writer->writeAttribute('xmlns:xs', 'http://www.w3.org/2001/XMLSchema');
+		$this->writer->writeAttribute('xmlns:tns', $this->targetNamespace);
 		$this->writer->writeAttribute('targetNamespace', $this->targetNamespace);
 		$this->writer->writeAttribute('elementFormDefault', 'qualified');
 
@@ -85,7 +85,7 @@ class Xsd implements GeneratorInterface
 			{
 				$this->writer->startElement('xs:element');
 				$this->writer->writeAttribute('name', $child->getName());
-				$this->writer->writeAttribute('type', $this->getPropertyTypeName($child->getPrototype()));
+				$this->writer->writeAttribute('type', $this->getPropertyTypeName($child->getPrototype(), true));
 
 				$this->generateTypeArray($child);
 
@@ -95,7 +95,7 @@ class Xsd implements GeneratorInterface
 			{
 				$this->writer->startElement('xs:element');
 				$this->writer->writeAttribute('name', $child->getName());
-				$this->writer->writeAttribute('type', $this->getPropertyTypeName($child));
+				$this->writer->writeAttribute('type', $this->getPropertyTypeName($child, true));
 				$this->writer->writeAttribute('minOccurs', $child->isRequired() ? 1 : 0);
 				$this->writer->writeAttribute('maxOccurs', 1);
 				$this->writer->endElement();
@@ -145,7 +145,7 @@ class Xsd implements GeneratorInterface
 				{
 					$this->writer->startElement('xs:element');
 					$this->writer->writeAttribute('name', $child->getName());
-					$this->writer->writeAttribute('type', $this->getPropertyTypeName($child->getPrototype()));
+					$this->writer->writeAttribute('type', $this->getPropertyTypeName($child->getPrototype(), true));
 
 					$this->generateTypeArray($child);
 
@@ -155,7 +155,7 @@ class Xsd implements GeneratorInterface
 				{
 					$this->writer->startElement('xs:element');
 					$this->writer->writeAttribute('name', $child->getName());
-					$this->writer->writeAttribute('type', $this->getPropertyTypeName($child));
+					$this->writer->writeAttribute('type', $this->getPropertyTypeName($child, true));
 					$this->writer->writeAttribute('minOccurs', $child->isRequired() ? 1 : 0);
 					$this->writer->writeAttribute('maxOccurs', 1);
 					$this->writer->endElement();
@@ -188,7 +188,7 @@ class Xsd implements GeneratorInterface
 
 			$this->writer->startElement('xs:element');
 			$this->writer->writeAttribute('name', $prototype->getName());
-			$this->writer->writeAttribute('type', $this->getPropertyTypeName($prototype));
+			$this->writer->writeAttribute('type', $this->getPropertyTypeName($prototype, true));
 
 			$this->generateTypeArray($type);
 
@@ -207,7 +207,7 @@ class Xsd implements GeneratorInterface
 			$this->writer->startElement('xs:simpleType');
 			$this->writer->writeAttribute('name', $typeName);
 			$this->writer->startElement('xs:restriction');
-			$this->writer->writeAttribute('base', $this->getBasicType($type));
+			$this->writer->writeAttribute('base', $this->getBasicType($type, true));
 
 			if($type instanceof Property\String)
 			{
@@ -302,23 +302,23 @@ class Xsd implements GeneratorInterface
 		}
 	}
 
-	protected function getPropertyTypeName(PropertyInterface $type)
+	protected function getPropertyTypeName(PropertyInterface $type, $withNamespace = false)
 	{
 		if($this->hasConstraints($type))
 		{
-			return $type->getName();
+			return ($withNamespace ? 'tns:' : '') . $type->getName();
 		}
 		else
 		{
-			return $this->getBasicType($type);
+			return ($withNamespace ? 'xs:' : '') . $this->getBasicType($type);
 		}
 	}
 
-	protected function getBasicType(PropertyInterface $type)
+	protected function getBasicType(PropertyInterface $type, $withNamespace = false)
 	{
 		$parts = explode('\\', get_class($type));
 
-		return 'xs:' . lcfirst(end($parts));
+		return ($withNamespace ? 'xs:' : '') . lcfirst(end($parts));
 	}
 
 	protected function hasConstraints(PropertyInterface $type)
