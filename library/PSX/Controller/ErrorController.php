@@ -25,6 +25,7 @@ namespace PSX\Controller;
 
 use DOMDocument;
 use PSX\Controller\ViewAbstract;
+use PSX\Data\ExceptionRecord;
 use PSX\DisplayException;
 use PSX\Http;
 use PSX\Loader\Location;
@@ -146,15 +147,14 @@ class ErrorController extends ViewAbstract
 			$context = null;
 		}
 
-		$data = array(
-			'success' => false,
-			'title'   => $title,
-			'message' => $message,
-			'trace'   => $trace,
-			'context' => $context,
-		);
+		$record = new ExceptionRecord();
+		$record->setSuccess(false);
+		$record->setTitle($title);
+		$record->setMessage($message);
+		$record->setTrace($trace);
+		$record->setContext($context);
 
-		$this->setBody($data);
+		$this->setBody($record);
 	}
 
 	/**
