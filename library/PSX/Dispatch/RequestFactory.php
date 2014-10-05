@@ -86,6 +86,7 @@ class RequestFactory implements RequestFactoryInterface
 			$headers = $this->getRequestHeaders();
 			$body    = null;
 
+			// create body
 			$requestMethod = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : null;
 			$contentType   = isset($_SERVER['CONTENT_TYPE'])   ? $_SERVER['CONTENT_TYPE']   : null;
 
@@ -96,6 +97,21 @@ class RequestFactory implements RequestFactoryInterface
 			else if(in_array($requestMethod, array('POST', 'PUT', 'DELETE')))
 			{
 				$body = new TempStream(fopen('php://input', 'r'));
+			}
+
+			// soap handling
+			if(isset($headers['SOAPACTION']))
+			{
+				$headers['CONTENT-TYPE'] = 'application/soap+xml';
+				$headers['ACCEPT']       = 'application/soap+xml';
+
+				$actionUri  = trim(strstr($headers['SOAPACTION'] . ';', ';', true), '" ');
+				$soapMethod = parse_url($actionUri, PHP_URL_FRAGMENT);
+
+				if(in_array($soapMethod, array('GET', 'POST', 'PUT', 'DELETE')))
+				{
+					$method = $soapMethod;
+				}
 			}
 
 			return new Request($url, $method, $headers, $body);

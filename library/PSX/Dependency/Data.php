@@ -72,6 +72,7 @@ trait Data
 		$writer->addWriter(new Writer\Form());
 		$writer->addWriter(new Writer\Jsonp());
 		$writer->addWriter(new Writer\Rss());
+		$writer->addWriter(new Writer\Soap($this->get('config')->get('psx_url')));
 		$writer->addWriter(new Writer\Xml());
 
 		return $writer;
@@ -85,6 +86,7 @@ trait Data
 		$manager = new TransformerManager();
 		$manager->addTransformer(new Transformer\Atom());
 		$manager->addTransformer(new Transformer\Rss());
+		$manager->addTransformer(new Transformer\Soap());
 		$manager->addTransformer(new Transformer\XmlArray());
 
 		return $manager;

@@ -38,6 +38,7 @@ interface WriterInterface
 	const JSON  = 'PSX\Data\Writer\Json';
 	const JSONP = 'PSX\Data\Writer\Jsonp';
 	const RSS   = 'PSX\Data\Writer\Rss';
+	const SOAP  = 'PSX\Data\Writer\Soap';
 	const XML   = 'PSX\Data\Writer\Xml';
 
 	/**
