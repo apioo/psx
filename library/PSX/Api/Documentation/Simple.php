@@ -44,12 +44,12 @@ class Simple implements DocumentationInterface
 
 	public function hasView($version)
 	{
-		return true;
+		return $version == 1;
 	}
 
 	public function getView($version)
 	{
-		return $this->view;
+		return $version == 1 ? $this->view : null;
 	}
 
 	public function getViews()
