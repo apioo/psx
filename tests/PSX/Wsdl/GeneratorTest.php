@@ -41,10 +41,9 @@ class GeneratorTest extends \PHPUnit_Framework_TestCase
 	public function testVersion1()
 	{
 		$endpoint        = 'http://127.0.0.1/foo/api';
-		$schemaNamespace = 'http://127.0.0.1/schema/1/foo/api';
 		$targetNamespace = 'http://127.0.0.1/wsdl/1/foo/api';
 
-		$generator = new Generator(Generator::VERSION_1, 'foo', $endpoint, $targetNamespace, $schemaNamespace);
+		$generator = new Generator(Generator::VERSION_1, 'foo', $endpoint, $targetNamespace);
 
 		$wsdl = $generator->generate($this->getView());
 		$wsdl->formatOutput = true;
