@@ -54,15 +54,14 @@ class DocumentationControllerTest extends ControllerTestCase
 
 		$routing = current($data['routings']);
 
-		$this->assertEquals(array('GET', 'POST', 'PUT', 'DELETE'), $routing['method']);
 		$this->assertEquals('/api', $routing['path']);
-		$this->assertEquals('PSX\Controller\Foo\Application\TestSchemaApiController', $routing['controller']);
+		$this->assertEquals(1, $routing['version']);
 	}
 
 	public function testDetail()
 	{
 		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/doc?path=' . urlencode('/api')), 'GET');
+		$request  = new Request(new Url('http://127.0.0.1/doc/1/api'), 'GET');
 		$request->addHeader('Accept', 'application/json');
 		$response = new Response();
 		$response->setBody($body);
@@ -77,6 +76,8 @@ class DocumentationControllerTest extends ControllerTestCase
 		$this->assertArrayHasKey('controller', $data);
 		$this->assertEquals('PSX\Controller\Foo\Application\TestSchemaApiController', $data['controller']);
 		$this->assertArrayHasKey('versions', $data);
+		$this->assertArrayHasKey('see_others', $data);
+		$this->assertArrayHasKey('view', $data);
 
 		$version = current($data['versions']);
 
@@ -84,23 +85,30 @@ class DocumentationControllerTest extends ControllerTestCase
 		$this->assertEquals(1, $version['version']);
 		$this->assertArrayHasKey('status', $version);
 		$this->assertEquals(0, $version['status']);
-		$this->assertArrayHasKey('view', $version);
 
-		$view = $version['view'];
+		$view = $data['view'];
 
-		$this->assertArrayHasKey('get_response', $view);
-		$this->assertArrayHasKey('post_request', $view);
-		$this->assertArrayHasKey('post_response', $view);
-		$this->assertArrayHasKey('put_request', $view);
-		$this->assertArrayHasKey('put_response', $view);
-		$this->assertArrayHasKey('delete_request', $view);
-		$this->assertArrayHasKey('delete_response', $view);
+		$this->assertArrayHasKey('version', $view);
+		$this->assertEquals(1, $view['version']);
+		$this->assertArrayHasKey('status', $view);
+		$this->assertEquals(0, $view['status']);
+		$this->assertArrayHasKey('data', $view);
+
+		$data = $view['data'];
+
+		$this->assertArrayHasKey('get_response', $data);
+		$this->assertArrayHasKey('post_request', $data);
+		$this->assertArrayHasKey('post_response', $data);
+		$this->assertArrayHasKey('put_request', $data);
+		$this->assertArrayHasKey('put_response', $data);
+		$this->assertArrayHasKey('delete_request', $data);
+		$this->assertArrayHasKey('delete_response', $data);
 	}
 
 	public function testExportXsd()
 	{
 		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/doc?path=' . urlencode('/api') . '&export=1&version=1&method=GET&type=1'), 'GET');
+		$request  = new Request(new Url('http://127.0.0.1/doc/1/api?export=1&method=GET&type=1'), 'GET');
 		$response = new Response();
 		$response->setBody($body);
 
@@ -119,7 +127,7 @@ class DocumentationControllerTest extends ControllerTestCase
 	public function testExportJsonSchema()
 	{
 		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/doc?path=' . urlencode('/api') . '&export=2&version=1&method=GET&type=1'), 'GET');
+		$request  = new Request(new Url('http://127.0.0.1/doc/1/api?export=2&version=1&method=GET&type=1'), 'GET');
 		$response = new Response();
 		$response->setBody($body);
 
@@ -133,7 +141,7 @@ class DocumentationControllerTest extends ControllerTestCase
 	protected function getPaths()
 	{
 		return array(
-			[['GET'], '/doc', 'PSX\Controller\Tool\DocumentationController'],
+			[['GET'], '/doc/:version/*path', 'PSX\Controller\Tool\DocumentationController'],
 			[['GET', 'POST', 'PUT', 'DELETE'], '/api', 'PSX\Controller\Foo\Application\TestSchemaApiController'],
 		);
 	}
