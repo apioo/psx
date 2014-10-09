@@ -39,15 +39,15 @@ class Operation extends RecordAbstract
 	protected $nickname;
 	protected $summary;
 	protected $notes;
+	protected $type;
 
 	protected $parameters       = array();
 	protected $responseMessages = array();
 
-	public function __construct($method = null, $nickname = null, $summary = null, $notes = null)
+	public function __construct($method = null, $nickname = null, $summary = null)
 	{
 		$this->nickname = $nickname;
 		$this->summary  = $summary;
-		$this->notes    = $notes;
 
 		if($method !== null)
 		{
@@ -98,6 +98,16 @@ class Operation extends RecordAbstract
 	public function getNotes()
 	{
 		return $this->notes;
+	}
+
+	public function setType($type)
+	{
+		$this->type = $type;
+	}
+	
+	public function getType()
+	{
+		return $this->type;
 	}
 
 	/**

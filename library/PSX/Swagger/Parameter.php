@@ -46,13 +46,13 @@ class Parameter extends RecordAbstract
 	protected $description;
 	protected $required;
 	protected $allowMultiple;
+	protected $type;
 
-	public function __construct($paramType = null, $name = null, $description = null, $required = null, $allowMultiple = null)
+	public function __construct($paramType = null, $name = null, $description = null, $required = null)
 	{
-		$this->name          = $name;
-		$this->description   = $description;
-		$this->required      = $required;
-		$this->allowMultiple = $allowMultiple;
+		$this->name        = $name;
+		$this->description = $description;
+		$this->required    = $required;
 
 		if($paramType !== null)
 		{
@@ -88,5 +88,10 @@ class Parameter extends RecordAbstract
 	public function setAllowMultiple($allowMultiple)
 	{
 		$this->allowMultiple = $allowMultiple;
+	}
+
+	public function setType($type)
+	{
+		$this->type = $type;
 	}
 }
