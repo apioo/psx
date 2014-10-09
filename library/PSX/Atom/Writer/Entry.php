@@ -88,8 +88,10 @@ class Entry implements WriterInterface
 
 					if($content instanceof RecordInterface)
 					{
+						$info = $content->getRecordInfo();
+
 						$xml = new Xml($this->writer);
-						$xml->setRecord($content->getName(), $content->getData());
+						$xml->setRecord($info->getName(), $info->getData());
 						$xml->close();
 					}
 					else

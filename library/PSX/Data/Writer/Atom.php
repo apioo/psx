@@ -42,7 +42,7 @@ use XMLWriter;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Atom implements WriterInterface
+class Atom extends Xml
 {
 	public static $mime = 'application/atom+xml';
 
@@ -75,7 +75,10 @@ class Atom implements WriterInterface
 		}
 		else
 		{
-			throw new InvalidArgumentException('Record must be an PSX\Atom or PSX\Atom\Entry record');
+			$writer = new Writer\Entry();
+			$writer->setContent($record, 'application/xml');
+
+			return $writer->toString();
 		}
 	}
 
