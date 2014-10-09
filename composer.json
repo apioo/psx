@@ -16,7 +16,7 @@
     "monolog/monolog": "~1.0",
     "symfony/event-dispatcher": "~2.0",
     "symfony/dependency-injection": "~2.0",
-    "doctrine/dbal": "2.5.*@dev"
+    "doctrine/dbal": "2.5.0-RC2"
   },
   "require-dev": {
     "phpunit/phpunit": "~4.1",
