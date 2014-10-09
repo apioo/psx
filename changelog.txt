@@ -1,4 +1,14 @@
 
+0.9.1
+* Added tool controller to generate an Swagger or WSDL definition from an API
+* Added SOAP support and WSDL generator
+* Improved OpenSSL classes
+* Add common http exceptions which can be used to directly deliver an specific 
+  status code
+* Added version handling for API
+* Added getAccessor() method to controller which offers a way to easily get an
+  value from the request body
+
 0.9
 * Remove psx sql library and using doctrine dbal instead
 * Improved data system seperating reader functionality into an reader and 
