@@ -24,8 +24,10 @@
 namespace PSX\Controller\Tool;
 
 use PSX\Api\DocumentedInterface;
+use PSX\Api\DocumentationInterface;
 use PSX\Api\View;
 use PSX\Controller\ViewAbstract;
+use PSX\Http\Exception as HttpException;
 use PSX\Data\Schema\Generator;
 use PSX\Data\WriterInterface;
 use PSX\Data\Schema\Documentation;
@@ -57,21 +59,39 @@ class DocumentationController extends ViewAbstract
 	 */
 	protected $controllerFactory;
 
+	/**
+	 * @Inject
+	 * @var PSX\Loader\ReverseRouter
+	 */
+	protected $reverseRouter;
+
 	public function onGet()
 	{
 		parent::onGet();
 
-		$this->template->set(__DIR__ . '/../Resource/documentation_controller.tpl');
+		$version = $this->getUriFragment('version');
+		$path    = $this->getUriFragment('path');
 
-		$path    = $this->getParameter('path');
-		$export  = $this->getParameter('export');
-		$version = $this->getParameter('version');
-		$method  = $this->getParameter('method');
-		$type    = $this->getParameter('type');
-
-		if(!empty($path))
+		if(empty($version) && empty($path))
 		{
+			$this->template->set(__DIR__ . '/../Resource/documentation_controller.tpl');
+
+			$this->setBody(array(
+				'routings' => $this->getRoutings()
+			));
+		}
+		else
+		{
+			$export = $this->getParameter('export');
+			$method = $this->getParameter('method');
+			$type   = $this->getParameter('type');
+
 			$resource = $this->getResource($path);
+
+			if(!$resource->doc instanceof DocumentationInterface)
+			{
+				throw new HttpException\InternalServerErrorException('Controller provides no documentation informations');
+			}
 
 			if(!empty($export))
 			{
@@ -107,40 +127,50 @@ class DocumentationController extends ViewAbstract
 				}
 				else
 				{
-					throw new Exception('Invalid generator');
+					throw new HttpException\BadRequestException('Invalid export type');
 				}
 
 				$this->setBody($body);
 			}
 			else
 			{
-				$views    = $resource->doc->getViews();
-				$versions = array();
+				$this->template->set(__DIR__ . '/../Resource/documentation_api_controller.tpl');
 
-				krsort($views);
+				$view = $resource->doc->getView($version);
 
-				foreach($views as $version => $view)
+				if($view instanceof View)
 				{
-					$versions[] = array(
-						'version' => $version,
-						'status'  => $view->getStatus(),
-						'view'    => $this->getDataFromView($view),
-					);
-				}
+					$views = $resource->doc->getViews();
 
-				$this->setBody(array(
-					'method'     => $resource->routing[0],
-					'path'       => $resource->routing[1],
-					'controller' => $resource->routing[2],
-					'versions'   => $versions,
-				));
+					krsort($views);
+
+					$versions = array();
+					foreach($views as $key => $row)
+					{
+						$versions[] = array(
+							'version' => $key,
+							'status'  => $row->getStatus(),
+						);
+					}
+
+					$this->setBody(array(
+						'method'     => $resource->routing[0],
+						'path'       => $resource->routing[1],
+						'controller' => $resource->routing[2],
+						'versions'   => $versions,
+						'see_others' => $this->getSeeOthers($version, $resource->routing[1]),
+						'view'       => array(
+							'version' => $version,
+							'status'  => $view->getStatus(),
+							'data'    => $this->getDataFromView($view),
+						),
+					));
+				}
+				else
+				{
+					throw new HttpException\BadRequestException('Invalid api version');
+				}
 			}
-		}
-		else
-		{
-			$this->setBody(array(
-				'routings' => $this->getRoutings()
-			));
 		}
 	}
 
@@ -163,9 +193,8 @@ class DocumentationController extends ViewAbstract
 				if($controller instanceof DocumentedInterface)
 				{
 					$routings[] = array(
-						'method'     => $methods, 
-						'path'       => $path, 
-						'controller' => $className
+						'path'    => $path, 
+						'version' => $controller->getDocumentation()->getLatestVersion(),
 					);
 				}
 			}
@@ -186,7 +215,7 @@ class DocumentationController extends ViewAbstract
 			$parts     = explode('::', $source, 2);
 			$className = isset($parts[0]) ? $parts[0] : null;
 
-			if(class_exists($className) && $sourcePath == $path)
+			if(class_exists($className) && $sourcePath == ltrim($path, '/'))
 			{
 				$controller = $this->controllerFactory->getController($className, $this->location, $this->request, $this->response);
 
@@ -201,7 +230,27 @@ class DocumentationController extends ViewAbstract
 			}
 		}
 
-		throw new \Exception('Invalid path');
+		throw new HttpException\NotFoundException('Invalid api path');
+	}
+
+	protected function getSeeOthers($version, $path)
+	{
+		$path   = ltrim($path, '/');
+		$result = array();
+
+		$wsdlGeneratorPath = $this->reverseRouter->getAbsolutePath('PSX\Controller\Tool\WsdlGeneratorController', array('version' => $version, 'path' => $path));
+		if($wsdlGeneratorPath !== null)
+		{
+			$result['WSDL'] = $wsdlGeneratorPath;
+		}
+
+		$swaggerGeneratorPath = $this->reverseRouter->getAbsolutePath('PSX\Controller\Tool\SwaggerGeneratorController', array('version' => $version, 'path' => $path));
+		if($swaggerGeneratorPath !== null)
+		{
+			$result['Swagger'] = $swaggerGeneratorPath;
+		}
+
+		return $result;
 	}
 
 	protected function getDataFromView(View $view)
@@ -267,7 +316,7 @@ class DocumentationController extends ViewAbstract
 		}
 		else
 		{
-			throw new Exception('Invalid method parameter');
+			throw new HttpException\BadRequestException('Invalid method parameter');
 		}
 	}
 
@@ -284,7 +333,7 @@ class DocumentationController extends ViewAbstract
 		}
 		else
 		{
-			throw new Exception('Invalid type parameter');
+			throw new HttpException\BadRequestException('Invalid type parameter');
 		}
 	}
 
@@ -294,7 +343,7 @@ class DocumentationController extends ViewAbstract
 <!DOCTYPE>
 <html>
 <head>
-	<title></title>
+	<title>Html</title>
 	<style type="text/css">
 	body
 	{

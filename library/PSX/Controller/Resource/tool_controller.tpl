@@ -14,13 +14,17 @@
 <body>
 
 <div class="psx-tool-navigation">
-	<h1>Navigation</h1>
 	<?php if(!empty($paths)): ?>
 	<ul>
-		<?php foreach($paths as $i => $path): ?>
-		<li class="<?php echo $i % 2 == 0 ? 'even' : 'odd' ?>">
+		<?php foreach($paths as $title => $group): ?>
+		<li class="psx-tool-navigation-heading">
+			<?php echo ucfirst($title); ?>
+		</li>
+		<?php foreach($group as $i => $path): ?>
+		<li class="psx-tool-navigation-item <?php echo $i % 2 == 0 ? 'even' : 'odd' ?>">
 			<a href="<?php echo $path['path']; ?>" target="psx-tool-content-frame"><?php echo $path['title']; ?></a>
 		</li>
+		<?php endforeach; ?>
 		<?php endforeach; ?>
 	</ul>
 	<?php endif; ?>

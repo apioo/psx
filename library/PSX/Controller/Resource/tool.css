@@ -25,19 +25,31 @@
 	padding:0px;
 }
 
-.psx-tool-navigation li
+.psx-tool-navigation-item
 {
 	padding:8px;
 }
 
-.psx-tool-navigation a
+.psx-tool-navigation-item a
 {
 	font-size:1.4em;
 }
 
-.psx-tool-navigation .odd
+.odd
 {
 	background-color:#fff;
+}
+
+.psx-tool-navigation-heading
+{
+	background-color:#444;
+	border-bottom:1px solid #222;
+	color:#fff;
+	margin:0px;
+	padding:10px;
+	padding-left:8px;
+	font-size:0.8em;
+	height:36px;
 }
 
 .psx-tool-content

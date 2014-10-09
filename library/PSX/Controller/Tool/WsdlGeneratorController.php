@@ -28,7 +28,7 @@ use DOMElement;
 use PSX\Api\DocumentationInterface;
 use PSX\Api\DocumentedInterface;
 use PSX\Api\View;
-use PSX\ControllerAbstract;
+use PSX\Controller\ViewAbstract;
 use PSX\Http\Exception as HttpException;
 use PSX\Loader\PathMatcher;
 use PSX\Wsdl\Generator;
@@ -40,7 +40,7 @@ use PSX\Wsdl\Generator;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class WsdlGeneratorController extends ControllerAbstract
+class WsdlGeneratorController extends ViewAbstract
 {
 	/**
 	 * @Inject
@@ -58,9 +58,9 @@ class WsdlGeneratorController extends ControllerAbstract
 	{
 		parent::onGet();
 
-		$version   = $this->getUriFragment('version');
-		$path      = $this->getUriFragment('path');
-		$resource  = $this->getResource($path);
+		$version  = $this->getUriFragment('version');
+		$path     = $this->getUriFragment('path');
+		$resource = $this->getEndpoint($path);
 
 		if($resource->doc instanceof DocumentationInterface)
 		{
@@ -88,11 +88,39 @@ class WsdlGeneratorController extends ControllerAbstract
 		$this->setBody($wsdl);
 	}
 
-	protected function getResource($sourcePath)
+	protected function getEndpoints()
+	{
+		$endpoints   = array();
+		$collections = $this->routingParser->getCollection();
+
+		foreach($collections as $collection)
+		{
+			list($methods, $path, $source) = $collection;
+
+			$parts     = explode('::', $source, 2);
+			$className = isset($parts[0]) ? $parts[0] : null;
+
+			if(class_exists($className))
+			{
+				$controller = $this->controllerFactory->getController($className, $this->location, $this->request, $this->response);
+
+				if($controller instanceof DocumentedInterface)
+				{
+					$endpoints[] = array(
+						'path'    => $path, 
+						'version' => $controller->getDocumentation()->getLatestVersion()
+					);
+				}
+			}
+		}
+
+		return $endpoints;
+	}
+
+	protected function getEndpoint($sourcePath)
 	{
 		$matcher     = new PathMatcher($sourcePath);
 		$collections = $this->routingParser->getCollection();
-		$routings    = array();
 
 		foreach($collections as $collection)
 		{

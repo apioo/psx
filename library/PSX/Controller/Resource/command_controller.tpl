@@ -78,7 +78,7 @@
 	<?php if(!empty($commands)): ?>
 	<ul>
 		<?php $i = 0; foreach($commands as $alias => $command): ?>
-		<li class="<?php echo $i % 2 == 0 ? 'even' : 'odd' ?>">
+		<li class="psx-tool-navigation-item <?php echo $i % 2 == 0 ? 'even' : 'odd' ?>">
 			<a href="#content" onclick="loadCommand('<?php echo addslashes($command); ?>');"><?php echo $alias; ?></a>
 		</li>
 		<?php $i++; endforeach; ?>

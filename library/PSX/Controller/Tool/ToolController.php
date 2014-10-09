@@ -51,30 +51,24 @@ class ToolController extends ViewAbstract
 
 		$this->template->set(__DIR__ . '/../Resource/tool_controller.tpl');
 
-		$paths = array();
+		$paths = array(
+			'general' => array(),
+			'api'     => array(),
+		);
 
 		$routingPath = $this->reverseRouter->getAbsolutePath('PSX\Controller\Tool\RoutingController');
 		if($routingPath !== null)
 		{
-			$paths[] = array(
+			$paths['general'][] = array(
 				'title' => 'Routing',
 				'path'  => $routingPath,
-			);
-		}
-
-		$documentationPath = $this->reverseRouter->getAbsolutePath('PSX\Controller\Tool\DocumentationController');
-		if($documentationPath !== null)
-		{
-			$paths[] = array(
-				'title' => 'Documentation',
-				'path'  => $documentationPath,
 			);
 		}
 
 		$commandPath = $this->reverseRouter->getAbsolutePath('PSX\Controller\Tool\CommandController');
 		if($commandPath !== null)
 		{
-			$paths[] = array(
+			$paths['general'][] = array(
 				'title' => 'Command',
 				'path'  => $commandPath,
 			);
@@ -83,15 +77,24 @@ class ToolController extends ViewAbstract
 		$restPath = $this->reverseRouter->getAbsolutePath('PSX\Controller\Tool\RestController');
 		if($restPath !== null)
 		{
-			$paths[] = array(
-				'title' => 'Rest',
+			$paths['api'][] = array(
+				'title' => 'Console',
 				'path'  => $restPath,
 			);
 		}
 
+		$documentationPath = $this->reverseRouter->getAbsolutePath('PSX\Controller\Tool\DocumentationController');
+		if($documentationPath !== null)
+		{
+			$paths['api'][] = array(
+				'title' => 'Documentation',
+				'path'  => $documentationPath,
+			);
+		}
+
 		$this->setBody(array(
-			'paths' => $paths,
-			'current' => current($paths),
+			'paths'   => $paths,
+			'current' => current(current($paths)),
 		));
 	}
 }

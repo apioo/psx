@@ -27,6 +27,26 @@
 		font-family:monospace;
 		margin:0px;
 	}
+
+	#rest-header
+	{
+		width:100%;
+		margin-top:4px;
+	}
+
+	#rest-header-heading td
+	{
+		background-color:#eee;
+		color:#222;
+		border-bottom:1px solid #222;
+		font-size:0.7em;
+	}
+
+	#rest-header td
+	{
+		padding:4px 0px;
+	}
+
 	</style>
 	<script type="text/javascript">
 	function loadRoutes(){
@@ -47,6 +67,18 @@
 
 	function sendRequest(){
 
+		var headers = {};
+		$('#rest-header tbody tr').each(function(){
+
+			var key = $(this).find('.key').val();
+			var value = $(this).find('.value').val();
+
+			if (key && value) {
+				headers[key] = value;
+			}
+
+		});
+
 		var method = $('#request-method').val();
 		var path = $('#request-path').val();
 		var body = method != 'GET' ? ace.edit("body").getSession().getValue() : undefined;
@@ -54,7 +86,7 @@
 		$.ajax(path, {
 			type: method,
 			data: body,
-			headers: undefined,
+			headers: headers,
 			processData: false,
 			error: function(xhr, status, err){
 				var statusLine = '<b>' + xhr.status + ' ' + xhr.statusText + '</b>';
@@ -76,6 +108,24 @@
 
 	}
 
+	function addHeader(){
+
+		var html = '';
+		html+= '<tr>';
+		html+= '<td><input type="text" class="form-control key" list="available-header" style="width:246px" /></td>';
+		html+= '<td><input type="text" class="form-control value" style="width:100%" /></td>';
+		html+= '<td><button type="button" onclick="removeHeader(this);return false;" class="btn btn-default" style="margin-left:6px;">&times;</button></td>';
+		html+= '</tr>';
+		$('#rest-header tbody').append(html);
+
+	}
+
+	function removeHeader(el){
+
+		$(el).parent().parent().fadeOut(20);
+
+	}
+
 	$(document).ready(function(){
 
 		var editor = ace.edit("body");
@@ -84,6 +134,9 @@
 
 		loadRoutes();
 
+		addHeader();
+		addHeader();
+
 	});
 	</script>
 </head>
@@ -91,30 +144,85 @@
 
 <div class="psx-tool-content">
 	<h1>Request</h1>
-	<div id="rest-request" style="width:95%;margin:8px">
+	<div id="rest-request" style="margin:8px">
 		
-		<form class="form-inline" role="form">
-			<div class="form-group">
-				<label class="sr-only" for="request-method">Method</label>
-				<select class="form-control" id="request-method">
-					<option>GET</option>
-					<option>POST</option>
-					<option>PUT</option>
-					<option>DELETE</option>
-				</select>
-			</div>
+		<form role="form" onsubmit="sendRequest();return false;">
 
-			<div class="form-group">
-				<label class="sr-only" for="request-path">Path</label>
-				<input type="text" class="form-control" list="available-paths" id="request-path" style="width:429px" />
-				<datalist id="available-paths">
-				</datalist>
-			</div>
+			<table style="width:100%">
+			<colgroup>
+				<col width="100" />
+				<col width="*" />
+				<col width="20" />
+				<col width="20" />
+			</colgroup>
+			<tr>
+				<td>
+					<select class="form-control" id="request-method" style="width:94px;">
+						<option>GET</option>
+						<option>POST</option>
+						<option>PUT</option>
+						<option>DELETE</option>
+					</select>
+				</td>
+				<td>
+					<input type="text" class="form-control" list="available-paths" id="request-path" style="width:100%;" />
+				</td>
+				<td>
+					<button type="button" onclick="sendRequest();return false;" class="btn btn-default" style="margin-left:6px;">Send</button>
+				</td>
+				<td>
+					<button type="button" onclick="addHeader();return false;" class="btn btn-default" style="margin-left:6px;">+</button>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<table id="rest-header">
+					<colgroup>
+						<col width="250" />
+						<col width="*" />
+						<col width="20" />
+					</colgroup>
+					<tbody>
+					</tbody>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<div id="body" style="width:100%;height:200px;margin-top:8px;border:1px solid #999;"></div>
+				</td>
+			</tr>
+			</table>
 
-			<button type="button" onclick="sendRequest();return false;" class="btn btn-default">Send</button>
+			<datalist id="available-paths">
+			</datalist>
 
-			<div id="body" style="width:600px;height:200px;margin-top:8px;border:1px solid #999;"></div>
-
+			<datalist id="available-header">
+				<option value="Accept" />
+				<option value="Accept-Charset" />
+				<option value="Accept-Encoding" />
+				<option value="Accept-Language" />
+				<option value="Accept-Ranges" />
+				<option value="Age" />
+				<option value="Allow" />
+				<option value="Authorization" />
+				<option value="Cache-Control" />
+				<option value="Cookie" />
+				<option value="Content-MD5" />
+				<option value="Content-Type" />
+				<option value="Date" />
+				<option value="Expect" />
+				<option value="From" />
+				<option value="If-Match" />
+				<option value="If-Modified-Since" />
+				<option value="If-None-Match" />
+				<option value="If-Range" />
+				<option value="If-Unmodified-Since" />
+				<option value="Pragma" />
+				<option value="Referer" />
+				<option value="User-Agent" />
+				<option value="Via" />
+			</datalist>
 		</form>
 
 	</div>

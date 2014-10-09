@@ -7,14 +7,6 @@
 	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 	<style type="text/css">
 	<?php include __DIR__ . '/tool.css'; ?>
-	.api-version-select
-	{
-		float:right;
-		width:160px;
-		padding:4px;
-		margin:6px
-	}
-
 	.api-schema-download
 	{
 		float:left;
@@ -41,6 +33,26 @@
 	{
 		padding:12px;
 		background-color:#e7f0f7;
+	}
+
+	.api-toolbar
+	{
+		float:right;
+		padding:4px;
+		width:340px;
+		text-align:right;
+	}
+
+	.api-toolbar button
+	{
+		margin-left:4px;
+		height:30px;
+	}
+
+	.api-toolbar select
+	{
+		margin-left:4px;
+		height:30px;
 	}
 
 	.type h1
@@ -75,21 +87,21 @@
 	}
 	</style>
 	<script type="text/javascript">
-	function loadController(path)
+	function loadController(path, version)
 	{
-		$.get('?format=json&path=' + encodeURIComponent(path), function(resp){
+		var absolutePath = location.pathname + '/' + version + path;
+
+		$.get(absolutePath, function(resp){
 
 			var html = '';
 			if (resp.versions && resp.versions.length > 0) {
-				html+= getVersionSelect(resp.versions);
-				for (var i = 0; i < resp.versions.length; i++) {
-					var version = resp.versions[i];
-					if (version.status != 2) {
-						html+= '<div id="api-version-' + version.version + '" class="api-version" ' + (i > 0 ? 'style="display:none"' : '') + '>';
-						html+= '<h2>' + (version.status == 1 ? '<s>' + resp.path + '</s>' : resp.path) + ' (v' + version.version + ')</h2>';
-						html+= '<div class="api-version-view">' + getApiBody(version.view, resp.path, version.version) + '</div>';
-						html+= '</div>';
-					}
+				var view = resp.view;
+				html+= getToolbar(resp, view.version);
+				if (view.status != 2) {
+					html+= '<div id="api-version-' + view.version + '" class="api-version">';
+					html+= '<h2>' + (view.status == 1 ? '<s><span id="api-path">' + resp.path + '</span></s>' : '<span id="api-path">' + resp.path + '</span>') + ' (v' + view.version + ')</h2>';
+					html+= '<div class="api-version-view">' + getApiBody(view.data, resp.path, view.version) + '</div>';
+					html+= '</div>';
 				}
 			} else {
 				html+= '<div class="api-info">No API documentation available</div>';
@@ -163,19 +175,27 @@
 		return html;
 	}
 
-	function getVersionSelect(versions)
+	function getToolbar(resp, currentVersion)
 	{
 		var html = '';
-		html+= '<select class="api-version-select" onchange="changeVersion(this)">';
+		html+= '<div class="api-toolbar">';
 
-		for (var i = 0; i < versions.length; i++) {
-			var version = versions[i];
+		if (resp.see_others) {
+			for (var key in resp.see_others) {
+				html+= '<button onclick="goToOther(\'' + resp.see_others[key] + '\')">' + key + '</button>';
+			}
+		}
+
+		html+= '<select onchange="changeVersion(this)">';
+		for (var i = 0; i < resp.versions.length; i++) {
+			var version = resp.versions[i];
 			if (version.status != 2) {
-				html+= '<option value="' + version.version + '">v' + version.version + (version.status == 1 ? ' (Deprecated)' : '') + '</option>';
+				html+= '<option value="' + version.version + '" ' + (currentVersion == version.version ? 'selected="selected"' : '') + '>v' + version.version + (version.status == 1 ? ' (Deprecated)' : '') + '</option>';
 			}
 		}
 		
 		html+= '</select>';
+		html+= '</div>';
 
 		return html;
 	}
@@ -193,15 +213,22 @@
 	function downloadSchema(path, version, method, type)
 	{
 		var exportType = $('#' + path.replace(/\//g, '_') + '-' + version + '-' + method + '-' + type).val();
-		var url = '?path=' + path + '&export=' + exportType + '&version=' + version + '&method=' + method + '&type=' + type;
+		var absoluteUrl = location.pathname + '/' + version + path + '?export=' + exportType + '&method=' + method + '&type=' + type;
 
-		window.open(url, '_blank');
+		window.open(absoluteUrl, '_blank');
+	}
+
+	function goToOther(path)
+	{
+		window.open(path, '_blank');
 	}
 
 	function changeVersion(el)
 	{
-		$('.api-version').fadeOut(0);
-		$('#api-version-' + $(el).val()).fadeIn(0);
+		var path = $('#api-path').text();
+		var version = $(el).val();
+
+		loadController(path, version);
 	}
 
 	$(document).ready(function(){
@@ -218,8 +245,8 @@
 	<?php if(!empty($routings)): ?>
 	<ul>
 		<?php foreach($routings as $i => $routing): ?>
-		<li class="<?php echo $i % 2 == 0 ? 'even' : 'odd' ?>">
-			<a href="#content" onclick="loadController('<?php echo $routing['path']; ?>');"><?php echo $routing['path']; ?></a>
+		<li class="psx-tool-navigation-item <?php echo $i % 2 == 0 ? 'even' : 'odd' ?>">
+			<a href="#content" onclick="loadController('<?php echo $routing['path']; ?>',<?php echo $routing['version']; ?>);"><?php echo $routing['path']; ?></a>
 		</li>
 		<?php endforeach; ?>
 	</ul>
