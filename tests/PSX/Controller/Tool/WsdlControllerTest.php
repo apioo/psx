@@ -32,13 +32,13 @@ use PSX\Test\ControllerTestCase;
 use PSX\Url;
 
 /**
- * SwaggerControllerTest
+ * WsdlControllerTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class SwaggerControllerTest extends ControllerTestCase
+class WsdlControllerTest extends ControllerTestCase
 {
 	public function testWsdl()
 	{
