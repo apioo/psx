@@ -146,6 +146,21 @@ TEXT;
 		$this->assertEquals(null, $writer->getCallbackName());
 	}
 
+	public function testIsContentTypeSupported()
+	{
+		$writer = new Jsonp();
+
+		$this->assertTrue($writer->isContentTypeSupported('application/javascript'));
+		$this->assertFalse($writer->isContentTypeSupported('text/html'));
+	}
+
+	public function testGetContentType()
+	{
+		$writer = new Jsonp();
+
+		$this->assertEquals('application/javascript', $writer->getContentType());
+	}
+
 	protected function assertJsonp($expect, $actual)
 	{
 		preg_match('/^foo\((.*)\)$/s', $expect, $matchesExpect);

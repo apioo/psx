@@ -118,4 +118,19 @@ TEXT;
 
 		return $item;
 	}
+
+	public function testIsContentTypeSupported()
+	{
+		$writer = new Rss();
+
+		$this->assertTrue($writer->isContentTypeSupported('application/rss+xml'));
+		$this->assertFalse($writer->isContentTypeSupported('text/html'));
+	}
+
+	public function testGetContentType()
+	{
+		$writer = new Rss();
+
+		$this->assertEquals('application/rss+xml', $writer->getContentType());
+	}
 }

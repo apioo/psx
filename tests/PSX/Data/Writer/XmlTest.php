@@ -115,4 +115,19 @@ TEXT;
 
 		$this->assertXmlStringEqualsXmlString($expect, $actual);
 	}
+
+	public function testIsContentTypeSupported()
+	{
+		$writer = new Xml();
+
+		$this->assertTrue($writer->isContentTypeSupported('application/xml'));
+		$this->assertFalse($writer->isContentTypeSupported('text/html'));
+	}
+
+	public function testGetContentType()
+	{
+		$writer = new Xml();
+
+		$this->assertEquals('application/xml', $writer->getContentType());
+	}
 }

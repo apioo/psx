@@ -180,4 +180,19 @@ XML;
 
 		return $entry;
 	}
+
+	public function testIsContentTypeSupported()
+	{
+		$writer = new Atom();
+
+		$this->assertTrue($writer->isContentTypeSupported('application/atom+xml'));
+		$this->assertFalse($writer->isContentTypeSupported('application/xml'));
+	}
+
+	public function testGetContentType()
+	{
+		$writer = new Atom();
+
+		$this->assertEquals('application/atom+xml', $writer->getContentType());
+	}
 }

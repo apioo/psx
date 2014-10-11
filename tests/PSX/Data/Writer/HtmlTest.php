@@ -248,4 +248,19 @@ TEXT;
 
 		$actual = $writer->write($this->getRecord());
 	}
+
+	public function testIsContentTypeSupported()
+	{
+		$writer = new Html();
+
+		$this->assertTrue($writer->isContentTypeSupported('text/html'));
+		$this->assertFalse($writer->isContentTypeSupported('application/xml'));
+	}
+
+	public function testGetContentType()
+	{
+		$writer = new Html();
+
+		$this->assertEquals('text/html', $writer->getContentType());
+	}
 }

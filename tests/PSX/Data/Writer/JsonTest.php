@@ -111,4 +111,19 @@ TEXT;
 
 		$this->assertJsonStringEqualsJsonString($expect, $actual);
 	}
+
+	public function testIsContentTypeSupported()
+	{
+		$writer = new Json();
+
+		$this->assertTrue($writer->isContentTypeSupported('application/json'));
+		$this->assertFalse($writer->isContentTypeSupported('text/html'));
+	}
+
+	public function testGetContentType()
+	{
+		$writer = new Json();
+
+		$this->assertEquals('application/json', $writer->getContentType());
+	}
 }

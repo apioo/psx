@@ -57,4 +57,19 @@ TEXT;
 
 		$this->assertEquals($expect, $actual);
 	}
+
+	public function testIsContentTypeSupported()
+	{
+		$writer = new Form();
+
+		$this->assertTrue($writer->isContentTypeSupported('application/x-www-form-urlencoded'));
+		$this->assertFalse($writer->isContentTypeSupported('application/xml'));
+	}
+
+	public function testGetContentType()
+	{
+		$writer = new Form();
+
+		$this->assertEquals('application/x-www-form-urlencoded', $writer->getContentType());
+	}
 }
