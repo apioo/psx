@@ -71,7 +71,6 @@ trait Data
 		$writer->addWriter(new Writer\Atom());
 		$writer->addWriter(new Writer\Form());
 		$writer->addWriter(new Writer\Jsonp());
-		$writer->addWriter(new Writer\Rss());
 		$writer->addWriter(new Writer\Soap());
 		$writer->addWriter(new Writer\Xml());
 
