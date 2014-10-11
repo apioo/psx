@@ -618,13 +618,13 @@ abstract class ControllerAbstract implements ControllerInterface
 
 		if(!empty($format))
 		{
-			$contentType = $this->writerFactory->getContentTypeByFormat($format);
+			return $this->writerFactory->getWriterByFormat($format, $this->getSupportedWriter());
 		}
 		else
 		{
 			$contentType = $this->request->getHeader('Accept');
-		}
 
-		return $this->writerFactory->getWriterByContentType($contentType, $this->getSupportedWriter());
+			return $this->writerFactory->getWriterByContentType($contentType, $this->getSupportedWriter());
+		}
 	}
 }
