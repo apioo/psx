@@ -28,7 +28,7 @@ use DOMDocument;
 use InvalidArgumentException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\StreamableInterface;
 use PSX\Data\NotFoundException;
 use PSX\Data\ReaderFactory;
 use PSX\Data\RecordInterface;
@@ -401,7 +401,7 @@ abstract class ControllerAbstract implements ControllerInterface
 		{
 			$this->response->getBody()->write($data);
 		}
-		else if($data instanceof StreamInterface)
+		else if($data instanceof StreamableInterface)
 		{
 			$this->response->setBody($data);
 		}

@@ -23,9 +23,6 @@
 
 namespace PSX\Http\Stream;
 
-use InvalidArgumentException;
-use Psr\Http\Message\StreamInterface;
-
 /**
  * FileStream
  *

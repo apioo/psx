@@ -24,7 +24,7 @@
 namespace PSX\Http;
 
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\StreamableInterface;
 use PSX\Http;
 use PSX\Exception;
 

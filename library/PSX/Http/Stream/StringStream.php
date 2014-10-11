@@ -23,7 +23,7 @@
 
 namespace PSX\Http\Stream;
 
-use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\StreamableInterface;
 
 /**
  * Stream wich works on an string therefore the size of the stream is limited to
@@ -33,7 +33,7 @@ use Psr\Http\Message\StreamInterface;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class StringStream implements StreamInterface
+class StringStream implements StreamableInterface
 {
 	protected $data;
 	protected $length;
@@ -66,6 +66,10 @@ class StringStream implements StreamInterface
 		}
 
 		return null;
+	}
+
+	public function attach($stream)
+	{
 	}
 
 	public function getSize()
@@ -177,6 +181,11 @@ class StringStream implements StreamInterface
 		}
 
 		return $data;
+	}
+
+	public function getMetadata($key = null)
+	{
+		return null;
 	}
 
 	public function __toString()

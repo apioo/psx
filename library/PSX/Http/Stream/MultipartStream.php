@@ -24,7 +24,7 @@
 namespace PSX\Http\Stream;
 
 use InvalidArgumentException;
-use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\StreamableInterface;
 
 /**
  * MultipartStream
@@ -33,7 +33,7 @@ use Psr\Http\Message\StreamInterface;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class MultipartStream implements StreamInterface, \Iterator, \Countable
+class MultipartStream implements StreamableInterface, \Iterator, \Countable
 {
 	protected $streams;
 
@@ -52,6 +52,11 @@ class MultipartStream implements StreamInterface, \Iterator, \Countable
 	public function detach()
 	{
 		return $this->current()->detach();
+	}
+
+	public function attach($stream)
+	{
+		return $this->current()->attach($stream);
 	}
 
 	public function getSize()
@@ -102,6 +107,11 @@ class MultipartStream implements StreamInterface, \Iterator, \Countable
 	public function getContents($length = -1)
 	{
 		return $this->current()->getContents($length);
+	}
+
+	public function getMetadata($key = null)
+	{
+		return $this->current()->getMetadata($key);
 	}
 
 	public function __toString()

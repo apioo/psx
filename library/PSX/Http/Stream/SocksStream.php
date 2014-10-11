@@ -24,7 +24,7 @@
 namespace PSX\Http\Stream;
 
 use InvalidArgumentException;
-use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\StreamableInterface;
 
 /**
  * The socks stream is used by the socks http handler. When you read data from 
@@ -55,6 +55,10 @@ class SocksStream extends TempStream
 		$this->chunkedEncoding = false;
 
 		return parent::detach();
+	}
+
+	public function attach($stream)
+	{
 	}
 
 	public function getSize()
@@ -94,6 +98,11 @@ class SocksStream extends TempStream
 		{
 			return stream_get_contents($this->resource);
 		}
+	}
+
+	public function getMetadata($key = null)
+	{
+		return null;
 	}
 
 	public function isChunkEncoded()

@@ -23,7 +23,7 @@
 
 namespace PSX\Http;
 
-use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\StreamableInterface;
 use PSX\Url;
 
 /**
@@ -40,7 +40,7 @@ class DeleteRequest extends Request
 	 *
 	 * @param PSX\Url|string $url
 	 * @param array $header
-	 * @param Psr\Http\Message\StreamInterface|string|array $body
+	 * @param Psr\Http\Message\StreamableInterface|string|array $body
 	 */
 	public function __construct($url, array $header = array(), $body = null)
 	{

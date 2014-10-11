@@ -24,7 +24,7 @@
 namespace PSX\Http;
 
 use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\StreamableInterface;
 use PSX\Http;
 use PSX\Url;
 

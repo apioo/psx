@@ -24,7 +24,7 @@
 namespace PSX\Http\Stream;
 
 use InvalidArgumentException;
-use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\StreamableInterface;
 
 /**
  * The curl handler writes the http body response into an php://temp stream 
@@ -36,7 +36,7 @@ use Psr\Http\Message\StreamInterface;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class TempStream implements StreamInterface
+class TempStream implements StreamableInterface
 {
 	protected $resource;
 	protected $seekable;
@@ -77,6 +77,10 @@ class TempStream implements StreamInterface
 		$this->seekable = $this->writable = $this->readable = false;
 
 		return $handle;
+	}
+
+	public function attach($stream)
+	{
 	}
 
 	public function getSize()
@@ -163,6 +167,11 @@ class TempStream implements StreamInterface
 			return stream_get_contents($this->resource, $length);
 		}
 
+		return null;
+	}
+
+	public function getMetadata($key = null)
+	{
 		return null;
 	}
 
