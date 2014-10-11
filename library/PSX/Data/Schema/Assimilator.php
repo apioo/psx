@@ -48,7 +48,7 @@ class Assimilator
 	 * @param PSX\Data\SchemaInterface $schema
 	 * @return array
 	 */
-	public function assimilate(array $data, SchemaInterface $schema)
+	public function assimilate($data, SchemaInterface $schema)
 	{
 		return $this->recAssimilate($data, $schema->getDefinition());
 	}
