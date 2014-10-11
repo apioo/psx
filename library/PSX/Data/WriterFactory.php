@@ -69,11 +69,21 @@ class WriterFactory
 		return null;
 	}
 
-	public function getWriterByInstance($className)
+	public function getWriterByFormat($format, array $supportedWriter = null)
 	{
 		foreach($this->writers as $writer)
 		{
-			if($writer instanceof $className)
+			$className = get_class($writer);
+
+			if($supportedWriter !== null && !in_array($className, $supportedWriter))
+			{
+				continue;
+			}
+
+			$pos       = strrpos($className, '\\');
+			$shortName = strtolower(substr($className, $pos === false ? 0 : $pos + 1));
+
+			if($shortName == $format)
 			{
 				return $writer;
 			}
@@ -82,17 +92,13 @@ class WriterFactory
 		return null;
 	}
 
-	public function getContentTypeByFormat($format)
+	public function getWriterByInstance($className)
 	{
 		foreach($this->writers as $writer)
 		{
-			$className = get_class($writer);
-			$pos       = strrpos($className, '\\');
-			$shortName = strtolower(substr($className, $pos === false ? 0 : $pos + 1));
-
-			if($shortName == $format)
+			if($writer instanceof $className)
 			{
-				return $writer->getContentType();
+				return $writer;
 			}
 		}
 
