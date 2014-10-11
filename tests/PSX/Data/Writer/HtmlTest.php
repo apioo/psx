@@ -251,7 +251,12 @@ TEXT;
 
 	public function testIsContentTypeSupported()
 	{
-		$writer = new Html();
+		$template = $this->getMock('PSX\TemplateInterface');
+		$router   = $this->getMockBuilder('PSX\Loader\ReverseRouter')
+			->disableOriginalConstructor()
+			->getMock();
+
+		$writer = new Html($template, $router);
 
 		$this->assertTrue($writer->isContentTypeSupported('text/html'));
 		$this->assertFalse($writer->isContentTypeSupported('application/xml'));
@@ -259,7 +264,12 @@ TEXT;
 
 	public function testGetContentType()
 	{
-		$writer = new Html();
+		$template = $this->getMock('PSX\TemplateInterface');
+		$router   = $this->getMockBuilder('PSX\Loader\ReverseRouter')
+			->disableOriginalConstructor()
+			->getMock();
+
+		$writer = new Html($template, $router);
 
 		$this->assertEquals('text/html', $writer->getContentType());
 	}
