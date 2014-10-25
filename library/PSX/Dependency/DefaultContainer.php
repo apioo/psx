@@ -25,12 +25,15 @@ namespace PSX\Dependency;
 
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\DriverManager;
+use Doctrine\ORM\Tools\Setup;
+use Doctrine\ORM\EntityManager;
 use Monolog\Logger;
 use Monolog\Handler as MonologHandler;
 use Monolog\Processor as MonologProcessor;
 use PSX\Base;
 use PSX\Cache;
 use PSX\Config;
+use PSX\Handler\Doctrine\RecordHydrator;
 use PSX\Http;
 use PSX\Session;
 use PSX\Template;
@@ -150,7 +153,6 @@ class DefaultContainer extends Container
 	/**
 	 * @return Doctrine\ORM\EntityManager
 	 */
-	/*
 	public function getEntityManager()
 	{
 		$connection = $this->get('connection');
@@ -162,7 +164,6 @@ class DefaultContainer extends Container
 
 		return EntityManager::create($connection, $config, $connection->getEventManager());
 	}
-	*/
 
 	/**
 	 * @return MongoClient
