@@ -135,16 +135,6 @@ class Response extends Message implements ResponseInterface
 	}
 
 	/**
-	 * Returns the http request line
-	 *
-	 * @return string
-	 */
-	public function getLine()
-	{
-		return $this->getProtocolVersion() . ' ' . $this->getStatusCode() . ' ' . $this->getReasonPhrase();
-	}
-
-	/**
 	 * Tries to detect the character encoding of the body. Returns the detected 
 	 * charset or false
 	 *
@@ -214,6 +204,16 @@ class Response extends Message implements ResponseInterface
 		$response.= (string) $this->getBody();
 
 		return $response;
+	}
+
+	/**
+	 * Returns the http request line
+	 *
+	 * @return string
+	 */
+	public function getLine()
+	{
+		return $this->getProtocolVersion() . ' ' . $this->getStatusCode() . ' ' . $this->getReasonPhrase();
 	}
 
 	public function __toString()

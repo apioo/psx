@@ -41,13 +41,6 @@ class Request extends Message implements RequestInterface
 	protected $method;
 	protected $scheme;
 
-	protected $ssl = false;
-	protected $timeout;
-	protected $callback;
-
-	protected $followLocation = false;
-	protected $maxRedirects   = 8;
-
 	/**
 	 * __construct
 	 *
@@ -64,11 +57,6 @@ class Request extends Message implements RequestInterface
 		$this->setUrl($url);
 		$this->setMethod($method);
 		$this->setProtocolVersion($scheme);
-
-		if($url->getScheme() == 'https')
-		{
-			$this->setSSL(true);
-		}
 	}
 
 	/**
@@ -138,114 +126,13 @@ class Request extends Message implements RequestInterface
 	}
 
 	/**
-	 * Whether this request should be made through SSL
-	 *
-	 * @param boolean $ssl
-	 * @return void
-	 */
-	public function setSSL($ssl)
-	{
-		$this->ssl = (bool) $ssl;
-	}
-
-	/**
-	 * Returns whether the request is made through ssl
+	 * Returns whether the request url uses https
 	 *
 	 * @return boolean
 	 */
 	public function isSSL()
 	{
-		return $this->ssl;
-	}
-
-	/**
-	 * Sets the timeout in seconds
-	 *
-	 * @param integer $timeout
-	 * @return void
-	 */
-	public function setTimeout($timeout)
-	{
-		$this->timeout = (int) $timeout;
-	}
-
-	/**
-	 * Returns the timeout in seconds
-	 *
-	 * @return integer
-	 */
-	public function getTimeout()
-	{
-		return $this->timeout;
-	}
-
-	/**
-	 * Sets a custom callback wich is called before the http request is made.
-	 * The first argument of the function is an resource wich depends on the
-	 * handler and the second is the http request object
-	 *
-	 * @param Closure $callback
-	 * @return void
-	 */
-	public function setCallback($callback)
-	{
-		$this->callback = $callback;
-	}
-
-	/**
-	 * Returns the callback if set
-	 *
-	 * @return Closure
-	 */
-	public function getCallback()
-	{
-		return $this->callback;
-	}
-
-	/**
-	 * Returns the http request line
-	 *
-	 * @return string
-	 */
-	public function getLine()
-	{
-		$path = $this->getUrl()->getPath();
-		$path = empty($path) ? '/' : $path;
-
-		return $this->getMethod() . ' ' . $path . ' ' . $this->getProtocolVersion();
-	}
-
-	/**
-	 * Sets whether the request should follow redirection headers
-	 *
-	 * @param boolean $location
-	 * @param integer $maxRedirects
-	 * @return void
-	 */
-	public function setFollowLocation($location, $maxRedirects = 8)
-	{
-		$this->followLocation = (bool) $location;
-		$this->maxRedirects   = (int) $maxRedirects;
-	}
-
-	/**
-	 * Returns whether the request follows redirection headers
-	 *
-	 * @return boolean
-	 */
-	public function getFollowLocation()
-	{
-		return $this->followLocation;
-	}
-
-	/**
-	 * Returns how many redirects the request should follow
-	 *
-	 * @return integer
-	 */
-	public function getMaxRedirects()
-	{
-		return $this->maxRedirects;
+		return $this->getUrl()->getScheme() == 'https';
 	}
 
 	/**
@@ -256,7 +143,7 @@ class Request extends Message implements RequestInterface
 	public function toString()
 	{
 		$request = $this->getLine() . Http::$newLine;
-		$headers = ResponseParser::buildHeaderFromMessage($this);
+		$headers = RequestParser::buildHeaderFromMessage($this);
 
 		foreach($headers as $header)
 		{
@@ -269,9 +156,41 @@ class Request extends Message implements RequestInterface
 		return $request;
 	}
 
+	/**
+	 * Returns the http request line
+	 *
+	 * @return string
+	 */
+	public function getLine()
+	{
+		$path     = $this->getUrl()->getPath();
+		$path     = empty($path) ? '/' : $path;
+		$query    = $this->getUrl()->getQuery();
+		$fragment = $this->getUrl()->getFragment();
+
+		$encodedChars = array('%2F', '%3A', '%40', '%7E', '%21', '%24', '%26', '%5C', '%28', '%29', '%2A', '%2B', '%2C', '%3B', '%3D');
+		$allowedChars = array('/', ':', '@', '~', '!', '$', '&', '\'', '(', ')', '*', '+', ',', ';', '=');
+		$path         = str_replace($encodedChars, $allowedChars, rawurlencode($path));
+
+		if(!empty($query))
+		{
+			$path.= '?' . http_build_query($query, '', '&');
+		}
+
+		if(!empty($fragment))
+		{
+			$encodedChars = array('%2F', '%3F', '%3A', '%40', '%7E', '%21', '%24', '%26', '%5C', '%28', '%29', '%2A', '%2B', '%2C', '%3B', '%3D');
+			$allowedChars = array('/', '?', ':', '@', '~', '!', '$', '&', '\'', '(', ')', '*', '+', ',', ';', '=');
+			$fragment     = str_replace($encodedChars, $allowedChars, rawurlencode($fragment));
+
+			$path.= '#' . $fragment;
+		}
+
+		return $this->getMethod() . ' ' . $path . ' ' . $this->getProtocolVersion();
+	}
+
 	public function __toString()
 	{
 		return $this->toString();
 	}
 }
-

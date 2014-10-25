@@ -27,6 +27,7 @@ use PSX\Http;
 use PSX\Http\HandlerException;
 use PSX\Http\HandlerInterface;
 use PSX\Http\NotSupportedException;
+use PSX\Http\Options;
 use PSX\Http\Request;
 use PSX\Http\Response;
 use PSX\Http\ResponseParser;
@@ -53,16 +54,12 @@ class Socks implements HandlerInterface
 		$this->chunkSize = $chunkSize;
 	}
 
-	public function request(Request $request, $count = 0)
+	public function request(Request $request, Options $options)
 	{
 		// ssl
 		$scheme = null;
 
-		if(!$request->isSSL())
-		{
-			$scheme = 'tcp';
-		}
-		else
+		if($options->getSsl() !== false && ($options->getSsl() === true || $request->isSSL()))
 		{
 			$transports = stream_get_transports();
 
@@ -79,6 +76,10 @@ class Socks implements HandlerInterface
 				throw new NotSupportedException('https is not supported');
 			}
 		}
+		else
+		{
+			$scheme = 'tcp';
+		}
 
 		// port
 		$port = $request->getUrl()->getPort();
@@ -94,7 +95,7 @@ class Socks implements HandlerInterface
 		if($handle !== false)
 		{
 			// timeout
-			$timeout = $request->getTimeout();
+			$timeout = $options->getTimeout();
 
 			if(!empty($timeout))
 			{
@@ -102,7 +103,7 @@ class Socks implements HandlerInterface
 			}
 
 			// callback
-			$callback = $request->getCallback();
+			$callback = $options->getCallback();
 
 			if(!empty($callback))
 			{

@@ -53,4 +53,17 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals($httpRequest, (string) $request);
 	}
+
+	public function testFragmentEncoding()
+	{
+		$request = new Request(new Url('http://127.0.0.1/foobar?bar=foo#!"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~'), 'POST');
+		$request->setHeader('Content-Type', 'text/html; charset=UTF-8');
+
+		$httpRequest = 'POST /foobar?bar=foo#!%22%23$%25&%27()*+,-./0123456789:;%3C=%3E?@ABCDEFGHIJKLMNOPQRSTUVWXYZ%5B\'%5D%5E_%60abcdefghijklmnopqrstuvwxyz%7B%7C%7D~ HTTP/1.1' . Http::$newLine;
+		$httpRequest.= 'host: 127.0.0.1' . Http::$newLine;
+		$httpRequest.= 'content-type: text/html; charset=UTF-8' . Http::$newLine;
+		$httpRequest.= Http::$newLine;
+
+		$this->assertEquals($httpRequest, (string) $request);
+	}
 }

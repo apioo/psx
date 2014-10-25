@@ -28,6 +28,7 @@ use PSX\Http\CookieStoreInterface;
 use PSX\Http\GetRequest;
 use PSX\Http\HandlerInterface;
 use PSX\Http\Handler\Curl;
+use PSX\Http\Options;
 use PSX\Http\RedirectException;
 use PSX\Http\Request;
 use PSX\Http\Response;
@@ -114,7 +115,7 @@ class Http
 	 * @param PSX\Http\Request $request
 	 * @return PSX\Http\Response
 	 */
-	public function request(Request $request, $count = 0)
+	public function request(Request $request, Options $options = null, $count = 0)
 	{
 		// set cookie headers
 		if($this->cookieStore !== null)
@@ -160,8 +161,14 @@ class Http
 			}
 		}
 
+		// set default options
+		if($options === null)
+		{
+			$options = new Options();
+		}
+
 		// make request
-		$response = $this->handler->request($request);
+		$response = $this->handler->request($request, $options);
 
 		// store cookies
 		if($this->cookieStore !== null)
@@ -182,13 +189,13 @@ class Http
 		}
 
 		// check follow location
-		if($request->getFollowLocation() && ($response->getStatusCode() >= 300 && $response->getStatusCode() < 400))
+		if($options->getFollowLocation() && ($response->getStatusCode() >= 300 && $response->getStatusCode() < 400))
 		{
 			$location = (string) $response->getHeader('Location');
 
 			if(!empty($location) && $location != $request->getUrl()->__toString())
 			{
-				if($request->getMaxRedirects() > $count)
+				if($options->getMaxRedirects() > $count)
 				{
 					if(strpos($location, '://') === false)
 					{
@@ -208,10 +215,7 @@ class Http
 						$location = $request->getUrl()->getScheme() . '://' . $request->getUrl()->getHost() . $port . '/' . ltrim($location, '/');
 					}
 
-					$locationRequest = new GetRequest($location);
-					$locationRequest->setFollowLocation(true, $request->getMaxRedirects());
-
-					return $this->request($locationRequest, ++$count);
+					return $this->request(new GetRequest($location), $options, ++$count);
 				}
 				else
 				{

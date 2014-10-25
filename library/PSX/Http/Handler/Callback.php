@@ -26,6 +26,7 @@ namespace PSX\Http\Handler;
 use Closure;
 use PSX\Http;
 use PSX\Http\HandlerInterface;
+use PSX\Http\Options;
 use PSX\Http\Request;
 use PSX\Http\Response;
 
@@ -45,11 +46,11 @@ class Callback implements HandlerInterface
 		$this->callback = $callback;
 	}
 
-	public function request(Request $request)
+	public function request(Request $request, Options $options)
 	{
 		try
 		{
-			$response = call_user_func($this->callback, $request);
+			$response = call_user_func_array($this->callback, array($request, $options));
 
 			if($response instanceof Response)
 			{

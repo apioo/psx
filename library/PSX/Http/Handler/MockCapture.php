@@ -29,6 +29,7 @@ use DOMElement;
 use DOMCdataSection;
 use PSX\Exception;
 use PSX\Http;
+use PSX\Http\Options;
 use PSX\Http\Request;
 use PSX\Http\Response;
 
@@ -51,9 +52,9 @@ class MockCapture extends Curl
 		$this->file = $file;
 	}
 
-	public function request(Request $request, $count = 0)
+	public function request(Request $request, Options $options)
 	{
-		$response = parent::request($request, $count);
+		$response = parent::request($request, $options);
 
 		$dom = new DOMDocument();
 		$dom->formatOutput = true;

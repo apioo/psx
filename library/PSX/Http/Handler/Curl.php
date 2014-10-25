@@ -27,6 +27,7 @@ use InvalidArgumentException;
 use PSX\Http;
 use PSX\Http\HandlerInterface;
 use PSX\Http\HandlerException;
+use PSX\Http\Options;
 use PSX\Http\RedirectException;
 use PSX\Http\Request;
 use PSX\Http\Response;
@@ -82,7 +83,7 @@ class Curl implements HandlerInterface
 		$this->caInfo = $path;
 	}
 
-	public function request(Request $request, $count = 0)
+	public function request(Request $request, Options $options)
 	{
 		$this->header = array();
 		$this->body   = fopen('php://temp', 'r+');
@@ -132,14 +133,14 @@ class Curl implements HandlerInterface
 		}
 
 		// set follow location
-		if($request->getFollowLocation() && $this->hasFollowLocation)
+		if($options->getFollowLocation() && $this->hasFollowLocation)
 		{
 			curl_setopt($handle, CURLOPT_FOLLOWLOCATION, true);
-			curl_setopt($handle, CURLOPT_MAXREDIRS, $request->getMaxRedirects());
+			curl_setopt($handle, CURLOPT_MAXREDIRS, $options->getMaxRedirects());
 		}
 
 		// set ssl
-		if($request->isSSL())
+		if($options->getSsl() !== false && ($options->getSsl() === true || $request->isSSL()))
 		{
 			if(!empty($this->caInfo))
 			{
@@ -154,7 +155,7 @@ class Curl implements HandlerInterface
 		}
 
 		// set timeout
-		$timeout = $request->getTimeout();
+		$timeout = $options->getTimeout();
 
 		if(!empty($timeout))
 		{
@@ -162,7 +163,7 @@ class Curl implements HandlerInterface
 		}
 
 		// callback
-		$callback = $request->getCallback();
+		$callback = $options->getCallback();
 
 		if(!empty($callback))
 		{
@@ -175,7 +176,7 @@ class Curl implements HandlerInterface
 
 		// if follow location is active modify the header since all headers from
 		// each redirection are included
-		if($request->getFollowLocation() && $this->hasFollowLocation)
+		if($options->getFollowLocation() && $this->hasFollowLocation)
 		{
 			$positions = array();
 			foreach($this->header as $key => $header)
