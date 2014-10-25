@@ -27,6 +27,7 @@ use PSX\Http;
 use PSX\Http\DeleteRequest;
 use PSX\Http\GetRequest;
 use PSX\Http\HeadRequest;
+use PSX\Http\Options;
 use PSX\Http\PostRequest;
 use PSX\Http\PutRequest;
 use PSX\Http\Stream\TempStream;
@@ -215,9 +216,11 @@ abstract class HandlerTestCase extends \PHPUnit_Framework_TestCase
 
 	public function testFollowRedirects()
 	{
+		$options = new Options();
+		$options->setFollowLocation(true);
+
 		$request  = new GetRequest(new Url(self::URL . '/redirect'));
-		$request->setFollowLocation(true);
-		$response = $this->http->request($request);
+		$response = $this->http->request($request, $options);
 
 		$this->assertEquals('HTTP/1.1', $response->getProtocolVersion());
 		$this->assertEquals(200, $response->getStatusCode());
@@ -233,10 +236,12 @@ abstract class HandlerTestCase extends \PHPUnit_Framework_TestCase
 	 */
 	public function testMaxRedirect()
 	{
-		$request = new GetRequest(new Url(self::URL . '/redirect'));
-		$request->setFollowLocation(true, 1);
+		$options = new Options();
+		$options->setFollowLocation(true, 1);
 
-		$response = $this->http->request($request);
+		$request = new GetRequest(new Url(self::URL . '/redirect'));
+
+		$response = $this->http->request($request, $options);
 	}
 
 	/**
