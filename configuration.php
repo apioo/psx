@@ -4,12 +4,13 @@
 This is the configuration file of PSX. Every parameter can be used inside your
 application or in the DI container. Which configuration file gets loaded depends 
 on the DI container parameter "config.file". See the container.php if you want 
-load an  different configuration depending on the environment.
+load an different configuration depending on the environment.
 */
 
 return array(
 
-	// The url to the psx public folder (i.e. http://127.0.0.1/psx/public)
+	// The url to the psx public folder (i.e. http://127.0.0.1/psx/public or 
+	// http://localhost.com)
 	'psx_url'                 => 'http://127.0.0.1/projects/psx/public',
 
 	// The input path 'index.php/' or '' if you use mod_rewrite

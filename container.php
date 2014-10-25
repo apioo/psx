@@ -2,7 +2,7 @@
 
 /*
 This file returns the global DI container for the application. The DI container
-which gets returned must be compatbile with the symfony DI container interface.
+which gets returned must be compatible with the symfony DI container interface.
 If you want load an different configuration depending on the environment you can 
 change the "config.file" parameter.
 */
