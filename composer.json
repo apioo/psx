@@ -17,13 +17,14 @@
     "monolog/monolog": "~1.0",
     "symfony/event-dispatcher": "~2.0",
     "symfony/dependency-injection": "~2.0",
+    "symfony/console": "~2.0",
     "doctrine/dbal": "~2.5@RC"
   },
   "require-dev": {
     "phpunit/phpunit": "~4.1",
     "phpunit/dbunit": "~1.3"
   },
-  "bin": ["bin/console/psx"],
+  "bin": ["bin/psx"],
   "autoload": {
     "psr-0": {
       "PSX\\": "library/",
