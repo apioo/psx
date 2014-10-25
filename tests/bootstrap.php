@@ -1,6 +1,6 @@
 <?php
 
-$loader = require('vendor/autoload.php');
+$loader = require(__DIR__ . '/../vendor/autoload.php');
 $loader->add('PSX', 'tests');
 
 PSX\Bootstrap::setupEnvironment(getContainer()->get('config'));
@@ -17,8 +17,7 @@ function getContainer()
 
 	if($container === null)
 	{
-		$container = new PSX\Dependency\DefaultContainer();
-		$container->setParameter('config.file', 'configuration.php');
+		$container = require_once(__DIR__ . '/../container.php');
 
 		$config = $container->get('config');
 		$config['psx_url']          = 'http://127.0.0.1';
