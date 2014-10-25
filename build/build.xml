@@ -2,7 +2,7 @@
 <project name="psx" default="build-release" basedir="..">
 	<description>PSX build script</description>
 
-	<property name="build" location="bin/psx" />
+	<property name="build" location="build/psx" />
 	<property name="bin" location="bin" />
 	<property name="doc" location="doc" />
 	<property name="library" location="library" />
@@ -25,7 +25,7 @@
 	<!-- removes all files wich are not needed in the release -->
 	<target name="clean-git">
 		<delete dir="${build}/.git" />
-		<delete dir="${build}/bin" />
+		<delete dir="${build}/build" />
 		<delete dir="${build}/tests" />
 		<delete file="${build}/.travis.yml" />
 		<delete file="${build}/phpunit.xml" />
@@ -33,7 +33,7 @@
 	</target>
 
 	<target name="get-version">
-		<exec dir="${bin}" executable="php" failonerror="true" outputproperty="version">
+		<exec dir="${build}" executable="php" failonerror="true" outputproperty="version">
 			<arg line="get-version.php" />
 		</exec>
 		<echo message="Building version ${version}" />
@@ -41,7 +41,7 @@
 
 	<!-- syntax check of all files -->
 	<target name="syntax-check">
-		<exec dir="${bin}" executable="check-syntax.bat" failonerror="true" osfamily="windows" />
+		<exec dir="${build}" executable="check-syntax.bat" failonerror="true" osfamily="windows" />
 	</target>
 
 	<!-- run phpunit tests -->
@@ -57,7 +57,7 @@
 	</target>
 
 	<target name="build-phar" depends="build-init">
-		<exec dir="${bin}" executable="php" failonerror="true">
+		<exec dir="${build}" executable="php" failonerror="true">
 			<arg line="generate-phar.php ${version}" />
 		</exec>
 	</target>
@@ -74,7 +74,7 @@
 
 	<target name="manual-doc">
 		<mkdir dir="${build}/doc/manual" />
-		<exec dir="${bin}" executable="sphinx-build" failonerror="true">
+		<exec dir="${build}" executable="sphinx-build" failonerror="true">
 			<arg line="${build}/doc ${build}/doc/manual" />
 		</exec>
 		<delete>
@@ -93,10 +93,10 @@
 
 	<!-- compress -->
 	<target name="build-release" depends="build-init">
-		<tar destfile="${bin}/psx_${version}.tar" basedir="${build}" />
-		<gzip destfile="${bin}/psx_${version}.tar.gz" src="${bin}/psx_${version}.tar" />
-		<delete file="${bin}/psx_${version}.tar" />
-		<zip destfile="${bin}/psx_${version}.zip" basedir="${build}" />
+		<tar destfile="${build}/psx_${version}.tar" basedir="${build}" />
+		<gzip destfile="${build}/psx_${version}.tar.gz" src="${build}/psx_${version}.tar" />
+		<delete file="${build}/psx_${version}.tar" />
+		<zip destfile="${build}/psx_${version}.zip" basedir="${build}" />
 	</target>
 
 	<!-- delete build folder -->
