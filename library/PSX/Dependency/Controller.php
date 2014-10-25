@@ -76,7 +76,7 @@ trait Controller
 	 */
 	public function getLoader()
 	{
-		$loader = new Loader($this->get('loader_location_finder'), $this->get('loader_callback_resolver'));
+		$loader = new Loader($this->get('loader_location_finder'), $this->get('loader_callback_resolver'), $this->get('event_dispatcher'));
 
 		// configure loader
 		//$loader->addRoute('.well-known/host-meta', 'foo');
@@ -105,7 +105,7 @@ trait Controller
 	 */
 	public function getDispatch()
 	{
-		return new Dispatch($this->get('config'), $this->get('loader'), $this->get('controller_factory'), $this->get('dispatch_sender'));
+		return new Dispatch($this->get('config'), $this->get('loader'), $this->get('controller_factory'), $this->get('dispatch_sender'), $this->get('event_dispatcher'));
 	}
 
 	/**

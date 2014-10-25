@@ -156,15 +156,29 @@ class Container implements ContainerInterface
 		return $this->scope == $name;
 	}
 
-	public function getServiceIds($scope = null)
+	public function getServiceIds()
 	{
-		$name = $scope === null ? $this->scope : $scope;
+		$services  = array();
+		$container = new \ReflectionClass($this);
 
-		return isset($this->services[$name]) ? array_keys($this->services[$name]) : array();
+		foreach($container->getMethods() as $method)
+		{
+			if(preg_match('/^get(.+)$/', $method->name, $match))
+			{
+				$services[] = self::underscore($match[1]);
+			}
+		}
+
+		return array_unique(array_merge($services, array_keys($this->services)));
 	}
 
 	public static function normalizeName($name)
 	{
 		return str_replace(' ', '', ucwords(str_replace('_', ' ', $name)));
+	}
+
+	public static function underscore($id)
+	{
+		return strtolower(preg_replace(array('/([A-Z]+)([A-Z][a-z])/', '/([a-z\d])([A-Z])/'), array('\\1_\\2', '\\1_\\2'), strtr($id, '_', '.')));
 	}
 }

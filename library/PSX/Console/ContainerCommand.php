@@ -21,67 +21,57 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Dependency;
+namespace PSX\Console;
 
-use InvalidArgumentException;
-use RuntimeException;
-use ReflectionClass;
-use PSX\Util\Annotation;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\TableHelper;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * ObjectBuilder
+ * Displays all available services from the DI container. Note the getServiceIds
+ * method is not defined in the interface
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class ObjectBuilder implements ObjectBuilderInterface
+class ContainerCommand extends Command
 {
 	protected $container;
 
 	public function __construct(ContainerInterface $container)
 	{
+		parent::__construct();
+
 		$this->container = $container;
 	}
 
-	public function getObject($className, array $constructorArguments = array(), $instanceOf = null)
+	protected function configure()
 	{
-		$class  = new ReflectionClass($className);
-		$object = $class->newInstanceArgs($constructorArguments);
+		$this
+			->setName('container')
+			->setDescription('Displays all registered services');
+	}
 
-		if($instanceOf !== null && !$object instanceof $instanceOf)
+	protected function execute(InputInterface $input, OutputInterface $output)
+	{
+		$services = $this->container->getServiceIds();
+		$rows     = array();
+
+		foreach($services as $service)
 		{
-			throw new InvalidArgumentException('Class ' . $className . ' must be an instanceof ' . $instanceOf);
+			$rows[] = array($service);
 		}
 
-		foreach($class->getProperties() as $property)
-		{
-			if(strpos($property->getDocComment(), '@Inject') !== false)
-			{
-				$doc = Annotation::parse($property->getDocComment());
+		$table = $this->getHelper('table');
+		$table
+			->setLayout(TableHelper::LAYOUT_COMPACT)
+			->setRows($rows);
 
-				if($doc->hasAnnotation('Inject'))
-				{
-					$name = $doc->getFirstAnnotation('Inject');
-					if(empty($name))
-					{
-						$name = $property->getName();
-					}
-
-					if($this->container->has($name))
-					{
-						$property->setAccessible(true);
-						$property->setValue($object, $this->container->get($name));
-					}
-					else
-					{
-						throw new RuntimeException('Trying to inject an non existing service ' . $name);
-					}
-				}
-			}
-		}
-
-		return $object;
+		$table->render($output);
 	}
 }

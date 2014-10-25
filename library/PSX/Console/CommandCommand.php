@@ -21,44 +21,51 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Dependency;
+namespace PSX\Console;
 
 use PSX\Command\Executor;
-use PSX\Command\Output\Logger;
-use PSX\Command\Output\Stdout;
-use PSX\Command\StdinReader;
-use PSX\Dispatch\CommandFactory;
+use PSX\Command\ParameterParser;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Command
+ * CommandCommand
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-trait Command
+class CommandCommand extends Command
 {
-	/**
-	 * @return PSX\Dispatch\CommandFactoryInterface
-	 */
-	public function getCommandFactory()
+	protected $executor;
+
+	public function __construct(Executor $executor)
 	{
-		return new CommandFactory($this->get('object_builder'));
+		parent::__construct();
+
+		$this->executor = $executor;
 	}
 
-	/**
-	 * @return PSX\Command\OutputInterface
-	 */
-	public function getCommandOutput()
+	protected function configure()
 	{
-		return PHP_SAPI == 'cli' ? new Stdout() : new Logger($this->get('logger'));
+		$this
+			->setName('command')
+			->setDescription('Executes an PSX command through the console. The parameters must be provided as JSON via stdin')
+			->addArgument('cmd', InputArgument::REQUIRED, 'Name of the command');
 	}
 
-	/**
-	 * @return PSX\Command\Executor
-	 */
-	public function getExecutor()
+	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		return new Executor($this->get('command_factory'), $this->get('command_output'), $this->get('event_dispatcher'));
+		$body = StdinReader::read();
+
+		if(empty($body))
+		{
+			$body = '{}';
+		}
+
+		$this->executor->run(new ParameterParser\Json($input->getArgument('cmd'), $body));
 	}
 }

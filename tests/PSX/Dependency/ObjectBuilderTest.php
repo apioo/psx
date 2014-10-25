@@ -48,7 +48,7 @@ class ObjectBuilderTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException
+	 * @expectedException RuntimeException
 	 */
 	public function testGetObjectInjectUnknownService()
 	{

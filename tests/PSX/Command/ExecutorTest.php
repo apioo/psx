@@ -61,7 +61,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
 			->with($this->identicalTo('Foo\Bar'))
 			->will($this->returnValue($command));
 
-		$executor = new Executor($factory, new Void());
+		$executor = new Executor($factory, new Void(), getContainer()->get('event_dispatcher'));
 		$executor->run(new Map('Foo\Bar', array('r' => 'foo', 'o' => 'bar', 'f' => true)));
 	}
 
@@ -83,7 +83,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
 			->with($this->identicalTo('Foo\Bar'))
 			->will($this->returnValue($command));
 
-		$executor = new Executor($factory, new Void());
+		$executor = new Executor($factory, new Void(), getContainer()->get('event_dispatcher'));
 		$executor->run(new Map('Foo\Bar', array('o' => 'bar', 'f' => true)));
 	}
 
@@ -110,7 +110,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
 			->with($this->identicalTo('Foo\Bar'))
 			->will($this->returnValue($command));
 
-		$executor = new Executor($factory, new Void());
+		$executor = new Executor($factory, new Void(), getContainer()->get('event_dispatcher'));
 		$executor->run(new Map('Foo\Bar', array('r' => 'foo', 'f' => true)));
 	}
 
@@ -137,7 +137,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
 			->with($this->identicalTo('Foo\Bar'))
 			->will($this->returnValue($command));
 
-		$executor = new Executor($factory, new Void());
+		$executor = new Executor($factory, new Void(), getContainer()->get('event_dispatcher'));
 		$executor->run(new Map('Foo\Bar', array('r' => 'foo', 'o' => 'bar')));
 	}
 
@@ -155,7 +155,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
 			->with($this->identicalTo('Foo\Bar'))
 			->will($this->returnValue($command));
 
-		$executor = new Executor($factory, new Void());
+		$executor = new Executor($factory, new Void(), getContainer()->get('event_dispatcher'));
 		$executor->addAlias('foo', 'Foo\Bar');
 		$executor->run(new Map('foo', array('r' => 'foo')));
 
@@ -184,7 +184,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
 			->with($this->identicalTo('PSX\Command\ErrorCommand'))
 			->will($this->returnValue(getContainer()->get('command_factory')->getCommand('PSX\Command\ErrorCommand', new Location())));
 
-		$executor = new Executor($factory, new Void());
+		$executor = new Executor($factory, new Void(), getContainer()->get('event_dispatcher'));
 		$executor->run(new Map('Foo\Bar', array('r' => 'foo')));
 	}
 }

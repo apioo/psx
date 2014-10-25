@@ -21,38 +21,33 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Command;
-
-use PSX\Command\Executor;
-use PSX\Command\ParameterParser\Map;
-use PSX\Command\Output\Memory;
-use PSX\Test\CommandTestCase;
+namespace PSX\Console;
 
 /**
- * ListCommandTest
+ * Helper class which reads the stdin until an EOT character occurs or EOF is 
+ * reached
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class ListCommandTest extends CommandTestCase
+class StdinReader
 {
-	public function testExecute()
+	public static function read()
 	{
-		$output   = new Memory();
-		$executor = new Executor(getContainer()->get('command_factory'), $output);
-		$executor->run(new Map('PSX\Command\ListCommand', array()));
+		$body = '';
+		while(!feof(STDIN))
+		{
+			$line = fgets(STDIN);
 
-		$this->assertEquals(array(
-			"Usage:" . PHP_EOL,
-			"  psx <command> [<options>]" . PHP_EOL,
-			PHP_EOL,
-			"Commands:" . PHP_EOL,
-			"  help  Displays informations about an command" . PHP_EOL,
-			"  list  Lists all available commands" . PHP_EOL,
-			PHP_EOL,
-			"See 'psx help -c <command>' for more information on a specific command." . PHP_EOL,
-			PHP_EOL,
-		), $output->getMessages());
+			if($line[0] == chr(4))
+			{
+				break;
+			}
+
+			$body.= $line;
+		}
+
+		return $body;
 	}
 }

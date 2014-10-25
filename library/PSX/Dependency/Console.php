@@ -23,42 +23,43 @@
 
 namespace PSX\Dependency;
 
-use PSX\Command\Executor;
-use PSX\Command\Output\Logger;
-use PSX\Command\Output\Stdout;
-use PSX\Command\StdinReader;
-use PSX\Dispatch\CommandFactory;
+use PSX\Base;
+use PSX\Console\CommandCommand;
+use PSX\Console\ContainerCommand;
+use PSX\Console\RouteCommand;
+use PSX\Console\ServeCommand;
+use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Command\HelpCommand;
+use Symfony\Component\Console\Command\ListCommand;
 
 /**
- * Command
+ * Console
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-trait Command
+trait Console
 {
 	/**
-	 * @return PSX\Dispatch\CommandFactoryInterface
+	 * @return Symfony\Component\Console\Application
 	 */
-	public function getCommandFactory()
+	public function getConsole()
 	{
-		return new CommandFactory($this->get('object_builder'));
+		$application = new Application('psx', Base::getVersion());
+
+		$this->appendDefaultCommands($application);
+
+		return $application;
 	}
 
-	/**
-	 * @return PSX\Command\OutputInterface
-	 */
-	public function getCommandOutput()
+	protected function appendDefaultCommands(Application $application)
 	{
-		return PHP_SAPI == 'cli' ? new Stdout() : new Logger($this->get('logger'));
-	}
-
-	/**
-	 * @return PSX\Command\Executor
-	 */
-	public function getExecutor()
-	{
-		return new Executor($this->get('command_factory'), $this->get('command_output'), $this->get('event_dispatcher'));
+		$application->add(new HelpCommand());
+		$application->add(new ListCommand());
+		$application->add(new CommandCommand($this->get('executor')));
+		$application->add(new ContainerCommand($this));
+		$application->add(new RouteCommand($this->get('routing_parser')));
+		$application->add(new ServeCommand($this->get('config'), $this->get('dispatch')));
 	}
 }

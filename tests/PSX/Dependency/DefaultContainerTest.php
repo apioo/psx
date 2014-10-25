@@ -41,7 +41,9 @@ class DefaultContainerTest extends \PHPUnit_Framework_TestCase
 		$this->assertInstanceOf('PSX\Dispatch\CommandFactoryInterface', $container->get('command_factory'));
 		$this->assertInstanceOf('PSX\Command\OutputInterface', $container->get('command_output'));
 		$this->assertInstanceOf('PSX\Command\Executor', $container->get('executor'));
-		$this->assertInstanceOf('PSX\Console', $container->get('console'));
+
+		// console
+		$this->assertInstanceOf('Symfony\Component\Console\Application', $container->get('console'));
 
 		// controller
 		$this->assertInstanceOf('PSX\Dispatch\ControllerFactoryInterface', $container->get('controller_factory'));
@@ -70,5 +72,8 @@ class DefaultContainerTest extends \PHPUnit_Framework_TestCase
 		$this->assertInstanceOf('PSX\Validate', $container->get('validate'));
 		$this->assertInstanceOf('Symfony\Component\EventDispatcher\EventDispatcherInterface', $container->get('event_dispatcher'));
 		$this->assertInstanceOf('Psr\Log\LoggerInterface', $container->get('logger'));
+
+		// event
+		$this->assertInstanceOf('Symfony\Component\EventDispatcher\EventDispatcherInterface', $container->get('event_dispatcher'));
 	}
 }

@@ -21,72 +21,58 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX;
+namespace PSX\Console;
 
 use PSX\Command\Executor;
 use PSX\Command\ParameterParser;
-use PSX\Config;
+use PSX\Loader\RoutingParserInterface;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\TableHelper;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Console
+ * RouteCommand
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Console
+class RouteCommand extends Command
 {
-	protected $executor;
-	protected $config;
+	protected $routingParser;
 
-	public function __construct(Executor $executor, Config $config)
+	public function __construct(RoutingParserInterface $routingParser)
 	{
-		$this->executor = $executor;
-		$this->config   = $config;
+		parent::__construct();
+
+		$this->routingParser = $routingParser;
 	}
 
-	public function run()
+	protected function configure()
 	{
-		try
+		$this
+			->setName('route')
+			->setDescription('Displays all available routes');
+	}
+
+	protected function execute(InputInterface $input, OutputInterface $output)
+	{
+		$collection = $this->routingParser->getCollection();
+		$rows       = array();
+
+		foreach($collection as $route)
 		{
-			$fileName  = array_shift($_SERVER['argv']);
-			$className = array_shift($_SERVER['argv']);
-
-			if(in_array('--stdin', $_SERVER['argv']))
-			{
-				$body = '';
-				while(!feof(STDIN))
-				{
-					$line = fgets(STDIN);
-
-					if($line[0] == chr(4))
-					{
-						break;
-					}
-
-					$body.= $line;
-				}
-
-				$this->executor->run(new ParameterParser\Json($className, $body));
-			}
-			else
-			{
-				if(empty($className))
-				{
-					$className = 'PSX\Command\ListCommand';
-				}
-
-				$this->executor->run(new ParameterParser\CliArgument($className, $_SERVER['argv']));
-			}
+			$rows[] = array(implode(',', $route[0]), $route[1], $route[2]);
 		}
-		catch(\Exception $e)
-		{
-			echo $e->getMessage() . PHP_EOL . PHP_EOL;
 
-			if($this->config['psx_debug'] === true)
-			{
-				echo $e->getTraceAsString() . PHP_EOL;
-			}
-		}
+		$table = $this->getHelper('table');
+		$table
+			->setLayout(TableHelper::LAYOUT_COMPACT)
+			->setRows($rows);
+
+		$table->render($output);
 	}
 }
