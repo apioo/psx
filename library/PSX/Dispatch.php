@@ -30,6 +30,10 @@ use PSX\Base;
 use PSX\Dispatch\ControllerFactoryInterface;
 use PSX\Dispatch\SenderInterface;
 use PSX\Dispatch\RedirectException;
+use PSX\Event\Context\ControllerContext;
+use PSX\Event\ExceptionThrownEvent;
+use PSX\Event\RequestIncomingEvent;
+use PSX\Event\ResponseSendEvent;
 use PSX\Http;
 use PSX\Http\Authentication;
 use PSX\Http\Exception as StatusCode;
@@ -37,6 +41,7 @@ use PSX\Http\Stream\StringStream;
 use PSX\Loader\Callback;
 use PSX\Loader\Location;
 use PSX\Url;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * The dispatcher routes the request to the fitting controller. The route method
@@ -52,17 +57,21 @@ class Dispatch
 	protected $loader;
 	protected $sender;
 	protected $factory;
+	protected $eventDispatcher;
 
-	public function __construct(Config $config, LoaderInterface $loader, ControllerFactoryInterface $factory, SenderInterface $sender)
+	public function __construct(Config $config, LoaderInterface $loader, ControllerFactoryInterface $factory, SenderInterface $sender, EventDispatcherInterface $eventDispatcher)
 	{
-		$this->config  = $config;
-		$this->loader  = $loader;
-		$this->sender  = $sender;
-		$this->factory = $factory;
+		$this->config          = $config;
+		$this->loader          = $loader;
+		$this->sender          = $sender;
+		$this->factory         = $factory;
+		$this->eventDispatcher = $eventDispatcher;
 	}
 
 	public function route(RequestInterface $request, ResponseInterface $response)
 	{
+		$this->eventDispatcher->dispatch(Event::REQUEST_INCOMING, new RequestIncomingEvent($request));
+
 		// load controller
 		try
 		{
@@ -81,6 +90,8 @@ class Dispatch
 		}
 		catch(\Exception $e)
 		{
+			$this->eventDispatcher->dispatch(Event::EXCEPTION_THROWN, new ExceptionThrownEvent($e, new ControllerContext($request, $response)));
+
 			if($e instanceof StatusCode\StatusCodeException)
 			{
 				$this->handleHttpStatusCodeException($e, $response);
@@ -106,6 +117,8 @@ class Dispatch
 
 			$this->loader->loadClass($callback, $request, $response);
 		}
+
+		$this->eventDispatcher->dispatch(Event::RESPONSE_SEND, new ResponseSendEvent($response));
 
 		// send response
 		$this->sender->send($response);
@@ -141,9 +154,5 @@ class Dispatch
 				}
 			}
 		}
-	}
-
-	protected function getRedirectBody()
-	{
 	}
 }

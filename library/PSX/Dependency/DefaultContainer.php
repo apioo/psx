@@ -25,18 +25,16 @@ namespace PSX\Dependency;
 
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\DriverManager;
-use Doctrine\ORM\Tools\Setup;
-use Doctrine\ORM\EntityManager;
 use Monolog\Logger;
+use Monolog\Handler as MonologHandler;
+use Monolog\Processor as MonologProcessor;
 use PSX\Base;
 use PSX\Cache;
 use PSX\Config;
 use PSX\Http;
-use PSX\Handler\Doctrine\RecordHydrator;
 use PSX\Session;
 use PSX\Template;
 use PSX\Validate;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
  * DefaultContainer
@@ -48,8 +46,10 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 class DefaultContainer extends Container
 {
 	use Command;
+	use Console;
 	use Controller;
 	use Data;
+	use Event;
 	use Handler;
 
 	/**
@@ -137,20 +137,12 @@ class DefaultContainer extends Container
 	}
 
 	/**
-	 * @return Symfony\Component\EventDispatcher\EventDispatcherInterface
-	 */
-	public function getEventDispatcher()
-	{
-		return new EventDispatcher();
-	}
-
-	/**
 	 * @return Psr\Log\LoggerInterface
 	 */
 	public function getLogger()
 	{
 		$logger = new Logger('psx');
-		//$logger->pushHandler(new StreamHandler('path/to/your.log', Logger::WARNING));
+		$logger->pushHandler(new MonologHandler\NullHandler());
 
 		return $logger;
 	}
@@ -158,6 +150,7 @@ class DefaultContainer extends Container
 	/**
 	 * @return Doctrine\ORM\EntityManager
 	 */
+	/*
 	public function getEntityManager()
 	{
 		$connection = $this->get('connection');
@@ -169,12 +162,15 @@ class DefaultContainer extends Container
 
 		return EntityManager::create($connection, $config, $connection->getEventManager());
 	}
+	*/
 
 	/**
 	 * @return MongoClient
 	 */
+	/*
 	public function getMongoClient()
 	{
 		return new MongoClient();
 	}
+	*/
 }

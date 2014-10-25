@@ -26,7 +26,13 @@ namespace PSX\Command;
 use InvalidArgumentException;
 use PSX\CommandInterface;
 use PSX\Dispatch\CommandFactoryInterface;
+use PSX\Event;
+use PSX\Event\Context\CommandContext;
+use PSX\Event\CommandExecuteEvent;
+use PSX\Event\CommandProcessedEvent;
+use PSX\Event\ExceptionThrownEvent;
 use PSX\Loader\Location;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Executor
@@ -39,13 +45,15 @@ class Executor
 {
 	protected $factory;
 	protected $output;
+	protected $eventDispatcher;
 
 	protected $aliases = array();
 
-	public function __construct(CommandFactoryInterface $factory, OutputInterface $output)
+	public function __construct(CommandFactoryInterface $factory, OutputInterface $output, EventDispatcherInterface $eventDispatcher)
 	{
-		$this->factory = $factory;
-		$this->output  = $output;
+		$this->factory         = $factory;
+		$this->output          = $output;
+		$this->eventDispatcher = $eventDispatcher;
 	}
 
 	public function addAlias($alias, $className)
@@ -73,18 +81,24 @@ class Executor
 
 		$parser->fillParameters($parameters);
 
+		$this->eventDispatcher->dispatch(Event::COMMAND_EXECUTE, new CommandExecuteEvent($command, $parameters));
+
 		try
 		{
 			$command->onExecute($parameters, $this->output);
 		}
 		catch(\Exception $e)
 		{
+			$this->eventDispatcher->dispatch(Event::EXCEPTION_THROWN, new ExceptionThrownEvent($e, new CommandContext($parameters)));
+
 			$class    = isset($this->config['psx_error_command']) ? $this->config['psx_error_command'] : 'PSX\Command\ErrorCommand';
 			$location = new Location();
 			$location->setParameter(Location::KEY_EXCEPTION, $e);
 
 			$this->factory->getCommand($class, $location)->onExecute(new Parameters(), $this->output);
 		}
+
+		$this->eventDispatcher->dispatch(Event::COMMAND_PROCESSED, new CommandProcessedEvent($command, $parameters));
 
 		return $command;
 	}

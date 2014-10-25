@@ -27,12 +27,16 @@ use InvalidArgumentException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use PSX\Dispatch\FilterInterface;
+use PSX\Event\ControllerExecuteEvent;
+use PSX\Event\ControllerProcessedEvent;
+use PSX\Event\RouteMatchedEvent;
 use PSX\Loader\Callback;
 use PSX\Loader\CallbackResolverInterface;
 use PSX\Loader\Location;
 use PSX\Loader\LocationFinderInterface;
 use PSX\Loader\LocationFinder\RoutingFile;
 use PSX\Loader\InvalidPathException;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use UnexpectedValueException;
 
 /**
@@ -51,10 +55,12 @@ class Loader implements LoaderInterface
 	protected $loaded = array();
 	protected $routes = array();
 
-	public function __construct(LocationFinderInterface $locationFinder, CallbackResolverInterface $callbackResolver)
+	public function __construct(LocationFinderInterface $locationFinder, CallbackResolverInterface $callbackResolver, EventDispatcherInterface $eventDispatcher)
 	{
 		$this->locationFinder   = $locationFinder;
 		$this->callbackResolver = $callbackResolver;
+		$this->eventDispatcher  = $eventDispatcher;
+
 		$this->recursiveLoading = false;
 	}
 
@@ -84,6 +90,8 @@ class Loader implements LoaderInterface
 
 		if($location instanceof Location)
 		{
+			$this->eventDispatcher->dispatch(Event::ROUTE_MATCHED, new RouteMatchedEvent($request->getMethod(), $path, $location));
+
 			$callback = $this->callbackResolver->resolve($location, $request, $response);
 			$id       = spl_object_hash($callback->getClass());
 
@@ -140,6 +148,8 @@ class Loader implements LoaderInterface
 
 		if($controller instanceof ControllerInterface)
 		{
+			$this->eventDispatcher->dispatch(Event::CONTROLLER_EXECUTE, new ControllerExecuteEvent($controller, $request, $response));
+
 			// call pre filter
 			if($controller->getStage() & ControllerInterface::CALL_PRE_FILTER)
 			{
@@ -230,6 +240,8 @@ class Loader implements LoaderInterface
 					}
 				}
 			}
+
+			$this->eventDispatcher->dispatch(Event::CONTROLLER_PROCESSED, new ControllerProcessedEvent($controller, $request, $response));
 
 			return $controller;
 		}
