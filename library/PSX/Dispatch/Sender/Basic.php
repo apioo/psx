@@ -126,6 +126,8 @@ class Basic implements SenderInterface
 
 	protected function sendHeaders(ResponseInterface $response)
 	{
+		// @TODO check whether header were already sent
+
 		$headers = ResponseParser::buildHeaderFromMessage($response);
 
 		foreach($headers as $header)
