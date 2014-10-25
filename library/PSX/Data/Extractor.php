@@ -24,10 +24,10 @@
 namespace PSX\Data;
 
 use Psr\Http\Message\MessageInterface;
-use PSX\Data\NotFoundException;
 use PSX\Data\ReaderFactory;
 use PSX\Data\TransformerInterface;
 use PSX\Data\Transformer\TransformerManager;
+use PSX\Http\Exception\UnsupportedMediaTypeException;
 
 /**
  * Extractor
@@ -98,11 +98,11 @@ class Extractor
 		if($reader === null)
 		{
 			$reader = $this->readerFactory->getDefaultReader();
-		}
 
-		if($reader === null)
-		{
-			throw new NotFoundException('Could not find fitting data reader', 415);
+			// @TODO the correct response would be to throw an unsupported 
+			// content type exception since this would enforce clients to send
+			// an correct content type
+			//throw new UnsupportedMediaTypeException('Unsupported content type', 415);
 		}
 
 		return $reader;
