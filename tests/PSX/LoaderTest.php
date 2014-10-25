@@ -50,7 +50,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 
 		});
 
-		$loader   = new Loader($locationFinder, getContainer()->get('loader_callback_resolver'));
+		$loader   = new Loader($locationFinder, getContainer()->get('loader_callback_resolver'), getContainer()->get('event_dispatcher'));
 		$request  = new Request(new Url('http://127.0.0.1/foobar'), 'GET');
 		$response = new Response();
 		$module   = $loader->load($request, $response);
@@ -84,7 +84,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 
 		});
 
-		$loader   = new Loader($locationFinder, getContainer()->get('loader_callback_resolver'));
+		$loader   = new Loader($locationFinder, getContainer()->get('loader_callback_resolver'), getContainer()->get('event_dispatcher'));
 		$request  = new Request(new Url('http://127.0.0.1/foobar/detail/12'), 'GET');
 		$response = new Response();
 		$module   = $loader->load($request, $response);
