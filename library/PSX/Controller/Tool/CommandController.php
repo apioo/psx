@@ -109,8 +109,12 @@ class CommandController extends ViewAbstract
 
 			$this->executor->run(new ParameterParser\Map($commandClass, $parameters));
 
+			$output = stream_get_contents($stream, -1, 0);
+
+			$this->logger->popHandler();
+
 			$this->setBody(array(
-				'output' => stream_get_contents($stream, -1, 0),
+				'output' => $output,
 			));
 		}
 		else

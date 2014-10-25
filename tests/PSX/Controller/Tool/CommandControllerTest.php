@@ -23,6 +23,7 @@
 
 namespace PSX\Controller\Tool;
 
+use PSX\Command\Output;
 use PSX\Http\Stream\TempStream;
 use PSX\Http\Request;
 use PSX\Http\Response;
@@ -43,22 +44,24 @@ class CommandControllerTest extends ControllerTestCase
 	{
 		$body     = new TempStream(fopen('php://memory', 'r+'));
 		$request  = new Request(new Url('http://127.0.0.1/command'), 'GET');
-		$request->addHeader('Accept', 'application/json');
+		$request->setHeader('Accept', 'application/json');
 		$response = new Response();
 		$response->setBody($body);
+
+		getContainer()->get('executor')->addAlias('foo', 'PSX\Command\Foo\Command\FooCommand');
 
 		$controller = $this->loadController($request, $response);
 		$data       = Json::decode((string) $body);
 
 		$this->assertArrayHasKey('commands', $data);
-		$this->assertEquals(array('help' => 'PSX\Command\HelpCommand', 'list' => 'PSX\Command\ListCommand'), $data['commands']);
+		$this->assertEquals(array('foo' => 'PSX\Command\Foo\Command\FooCommand'), $data['commands']);
 	}
 
 	public function testDetail()
 	{
 		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/command?command=' . urlencode('PSX\Command\HelpCommand')), 'GET');
-		$request->addHeader('Accept', 'application/json');
+		$request  = new Request(new Url('http://127.0.0.1/command?command=' . urlencode('PSX\Command\Foo\Command\FooCommand')), 'GET');
+		$request->setHeader('Accept', 'application/json');
 		$response = new Response();
 		$response->setBody($body);
 
@@ -66,15 +69,20 @@ class CommandControllerTest extends ControllerTestCase
 		$data       = Json::decode((string) $body);
 
 		$this->assertArrayHasKey('command', $data);
-		$this->assertEquals('PSX\Command\HelpCommand', $data['command']);
+		$this->assertEquals('PSX\Command\Foo\Command\FooCommand', $data['command']);
 		$this->assertArrayHasKey('description', $data);
-		$this->assertEquals('Displays informations about an command', $data['description']);
+		$this->assertEquals('Displays informations about an foo command', $data['description']);
 		$this->assertArrayHasKey('parameters', $data);
 
 		$expect = array(
 			array(
-				'name' => 'c',
-				'description' => 'The name of the class or the alias',
+				'name' => 'foo',
+				'description' => 'The foo parameter',
+				'type' => 2,
+			),
+			array(
+				'name' => 'bar',
+				'description' => 'The bar parameter',
 				'type' => 1,
 			)
 		);
@@ -84,17 +92,33 @@ class CommandControllerTest extends ControllerTestCase
 
 	public function testExecute()
 	{
+		$request  = new Request(new Url('http://127.0.0.1/command?command=' . urlencode('PSX\Command\Foo\Command\FooCommand')), 'POST', array(), '{"foo": "bar"}');
+		$request->setHeader('Content-Type', 'application/json');
+		$request->setHeader('Accept', 'application/json');
+
 		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/command?command=' . urlencode('PSX\Command\HelpCommand')), 'POST');
-		$request->addHeader('Accept', 'application/json');
 		$response = new Response();
 		$response->setBody($body);
 
+		$memory = new Output\Memory();
+		$output = new Output\Composite(array($memory, new Output\Logger(getContainer()->get('logger'))));
+
+		getContainer()->set('command_output', $output);
+
 		$controller = $this->loadController($request, $response);
 		$data       = Json::decode((string) $body);
+		$messages   = $memory->getMessages();
 
-		// we dont have any output since the executor has an void output
 		$this->assertArrayHasKey('output', $data);
+		$this->assertEquals(2, count($messages));
+
+		$lines = explode("\n", trim($data['output']));
+
+		foreach($lines as $key => $line)
+		{
+			$this->assertArrayHasKey($key, $messages);
+			$this->assertContains(trim($messages[$key]), $line);
+		}
 	}
 
 	protected function getPaths()
