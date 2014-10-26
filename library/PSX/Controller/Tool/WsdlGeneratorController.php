@@ -88,35 +88,6 @@ class WsdlGeneratorController extends ViewAbstract
 		$this->setBody($wsdl);
 	}
 
-	protected function getEndpoints()
-	{
-		$endpoints   = array();
-		$collections = $this->routingParser->getCollection();
-
-		foreach($collections as $collection)
-		{
-			list($methods, $path, $source) = $collection;
-
-			$parts     = explode('::', $source, 2);
-			$className = isset($parts[0]) ? $parts[0] : null;
-
-			if(class_exists($className))
-			{
-				$controller = $this->controllerFactory->getController($className, $this->location, $this->request, $this->response);
-
-				if($controller instanceof DocumentedInterface)
-				{
-					$endpoints[] = array(
-						'path'    => $path, 
-						'version' => $controller->getDocumentation()->getLatestVersion()
-					);
-				}
-			}
-		}
-
-		return $endpoints;
-	}
-
 	protected function getEndpoint($sourcePath)
 	{
 		$matcher     = new PathMatcher($sourcePath);
