@@ -85,6 +85,7 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 		else
 		{
 			$this->setResponseCode(204);
+			$this->setBody('');
 		}
 	}
 
@@ -110,6 +111,7 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 		else
 		{
 			$this->setResponseCode(204);
+			$this->setBody('');
 		}
 	}
 
@@ -135,24 +137,44 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 		else
 		{
 			$this->setResponseCode(204);
+			$this->setBody('');
 		}
 	}
 
-	protected function doGet(Version $version)
-	{
-	}
+	/**
+	 * Returns the GET response
+	 *
+	 * @param PSX\Api\Version $version
+	 * @return array|PSX\Data\RecordInterface
+	 */
+	abstract protected function doGet(Version $version);
 
-	protected function doCreate(RecordInterface $record, Version $version)
-	{
-	}
+	/**
+	 * Returns the POST response
+	 *
+	 * @param PSX\Data\RecordInterface $record
+	 * @param PSX\Api\Version $version
+	 * @return array|PSX\Data\RecordInterface
+	 */
+	abstract protected function doCreate(RecordInterface $record, Version $version);
 
-	protected function doUpdate(RecordInterface $record, Version $version)
-	{
-	}
+	/**
+	 * Returns the PUT response
+	 *
+	 * @param PSX\Data\RecordInterface $record
+	 * @param PSX\Api\Version $version
+	 * @return array|PSX\Data\RecordInterface
+	 */
+	abstract protected function doUpdate(RecordInterface $record, Version $version);
 
-	protected function doDelete(RecordInterface $record, Version $version)
-	{
-	}
+	/**
+	 * Returns the DELETE response
+	 *
+	 * @param PSX\Data\RecordInterface $record
+	 * @param PSX\Api\Version $version
+	 * @return array|PSX\Data\RecordInterface
+	 */
+	abstract protected function doDelete(RecordInterface $record, Version $version);
 
 	protected function getView(DocumentationInterface $doc, Version $version)
 	{
