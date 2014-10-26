@@ -28,6 +28,7 @@ use PSX\Console\CommandCommand;
 use PSX\Console\ContainerCommand;
 use PSX\Console\RouteCommand;
 use PSX\Console\ServeCommand;
+use PSX\Console\Reader;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\HelpCommand;
 use Symfony\Component\Console\Command\ListCommand;
@@ -53,13 +54,21 @@ trait Console
 		return $application;
 	}
 
+	/**
+	 * @return PSX\Console\ReaderInterface
+	 */
+	public function getConsoleReader()
+	{
+		return new Reader\Stdin();
+	}
+
 	protected function appendDefaultCommands(Application $application)
 	{
 		$application->add(new HelpCommand());
 		$application->add(new ListCommand());
-		$application->add(new CommandCommand($this->get('executor')));
+		$application->add(new CommandCommand($this->get('executor'), $this->get('console_reader')));
 		$application->add(new ContainerCommand($this));
 		$application->add(new RouteCommand($this->get('routing_parser')));
-		$application->add(new ServeCommand($this->get('config'), $this->get('dispatch')));
+		$application->add(new ServeCommand($this->get('config'), $this->get('dispatch'), $this->get('console_reader')));
 	}
 }

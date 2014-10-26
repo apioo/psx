@@ -23,31 +23,36 @@
 
 namespace PSX\Console;
 
+use Symfony\Component\Console\Tester\CommandTester;
+
 /**
- * Helper class which reads the stdin until an EOT character occurs or EOF is 
- * reached
+ * RouteCommandTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class StdinReader
+class RouteCommandTest extends \PHPUnit_Framework_TestCase
 {
-	public static function read()
+	public function testCommand()
 	{
-		$body = '';
-		while(!feof(STDIN))
+		$command = getContainer()->get('console')->find('route');
+
+		$commandTester = new CommandTester($command);
+		$commandTester->execute(array(
+			'command' => $command->getName()
+		));
+
+		$collection = getContainer()->get('routing_parser')->getCollection();
+		$response   = $commandTester->getDisplay();
+
+		foreach($collection as $route)
 		{
-			$line = fgets(STDIN);
+			$methods = implode('|', $route[0]);
 
-			if($line[0] == chr(4))
-			{
-				break;
-			}
-
-			$body.= $line;
+			$this->assertTrue(strpos($response, $methods) !== false, $methods);
+			$this->assertTrue(strpos($response, $route[1]) !== false, $route[1]);
+			$this->assertTrue(strpos($response, $route[2]) !== false, $route[2]);
 		}
-
-		return $body;
 	}
 }

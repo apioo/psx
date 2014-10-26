@@ -50,12 +50,12 @@ trait Event
 	{
 		$eventDispatcher = new EventDispatcher();
 
-		$this->appendLogListener($eventDispatcher);
+		$this->appendDefaultListener($eventDispatcher);
 
 		return $eventDispatcher;
 	}
 
-	protected function appendLogListener(EventDispatcherInterface $eventDispatcher)
+	protected function appendDefaultListener(EventDispatcherInterface $eventDispatcher)
 	{
 		$logger = $this->get('logger');
 

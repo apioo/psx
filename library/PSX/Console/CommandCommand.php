@@ -41,12 +41,19 @@ use Symfony\Component\Console\Output\OutputInterface;
 class CommandCommand extends Command
 {
 	protected $executor;
+	protected $reader;
 
-	public function __construct(Executor $executor)
+	public function __construct(Executor $executor, ReaderInterface $reader)
 	{
 		parent::__construct();
 
 		$this->executor = $executor;
+		$this->reader   = $reader;
+	}
+
+	public function setReader(ReaderInterface $reader)
+	{
+		$this->reader = $reader;
 	}
 
 	protected function configure()
@@ -59,7 +66,7 @@ class CommandCommand extends Command
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$body = StdinReader::read();
+		$body = $this->reader->read();
 
 		if(empty($body))
 		{

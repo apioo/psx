@@ -47,13 +47,20 @@ class ServeCommand extends Command
 {
 	protected $config;
 	protected $dispatch;
+	protected $reader;
 
-	public function __construct(Config $config, Dispatch $dispatch)
+	public function __construct(Config $config, Dispatch $dispatch, ReaderInterface $reader)
 	{
 		parent::__construct();
 
 		$this->config   = $config;
 		$this->dispatch = $dispatch;
+		$this->reader   = $reader;
+	}
+
+	public function setReader(ReaderInterface $reader)
+	{
+		$this->reader = $reader;
 	}
 
 	protected function configure()
@@ -70,7 +77,7 @@ class ServeCommand extends Command
 
 		// request
 		$parser   = new RequestParser($scheme . '://' . $host, RequestParser::MODE_LOOSE);
-		$request  = $parser->parse(StdinReader::read());
+		$request  = $parser->parse($this->reader->read());
 
 		// response
 		$response = new Response('HTTP/1.1');
@@ -81,15 +88,6 @@ class ServeCommand extends Command
 		$this->dispatch->route($request, $response);
 
 		// determine return code
-		if($response->getStatusCode() >= 200 && $response->getStatusCode() < 300)
-		{
-			$returnCode = 0;
-		}
-		else
-		{
-			$returnCode = 1;
-		}
-
-		return $returnCode;
+		return $response->getStatusCode() >= 400 && $response->getStatusCode() < 600 ? 1 : 0;
 	}
 }

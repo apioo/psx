@@ -65,7 +65,7 @@ class RouteCommand extends Command
 
 		foreach($collection as $route)
 		{
-			$rows[] = array(implode(',', $route[0]), $route[1], $route[2]);
+			$rows[] = array(implode('|', $route[0]), $route[1], $route[2]);
 		}
 
 		$table = $this->getHelper('table');
