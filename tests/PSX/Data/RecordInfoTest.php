@@ -23,51 +23,32 @@
 
 namespace PSX\Data;
 
-use BadMethodCallException;
-
 /**
- * Record
+ * RecordInfoTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Record extends RecordAbstract
+class RecordInfoTest extends \PHPUnit_Framework_TestCase
 {
-	protected $name;
-	protected $fields;
-
-	public function __construct($name = 'record', array $fields = array())
+	public function testRecordInfo()
 	{
-		$this->name   = $name;
-		$this->fields = $fields;
-	}
+		$info = new RecordInfo('record', array('title' => 'foo'));
 
-	public function getRecordInfo()
-	{
-		return new RecordInfo($this->name, $this->fields);
-	}
+		$this->assertEquals('record', $info->getName());
+		$this->assertEquals(array('title' => 'foo'), $info->getFields());
+		$this->assertTrue($info->hasField('title'));
+		$this->assertFalse($info->hasField('foo'));
+		$this->assertTrue($info->hasFields(['title']));
+		$this->assertFalse($info->hasFields(['foo']));
+		$this->assertEquals(array(), $info->getMissingFields(['title']));
+		$this->assertEquals(array('title'), $info->getMissingFields(['foo']));
 
-	public function __call($method, array $args)
-	{
-		$type = substr($method, 0, 3);
-		$key  = lcfirst(substr($method, 3));
+		$info->setName('bar');
+		$info->setFields(array('bar' => 'foo'));
 
-		if($type == 'set')
-		{
-			if(array_key_exists($key, $this->fields))
-			{
-				$this->fields[$key] = current($args);
-			}
-		}
-		elseif($type == 'get')
-		{
-			return isset($this->fields[$key]) ? $this->fields[$key] : null;
-		}
-		else
-		{
-			throw new BadMethodCallException('Invalid method call ' . $method);
-		}
+		$this->assertEquals('bar', $info->getName());
+		$this->assertEquals(array('bar' => 'foo'), $info->getFields());
 	}
 }
-

@@ -59,7 +59,7 @@ class RecordInfo
 		return $this->name;
 	}
 
-	public function setFields($fields)
+	public function setFields(array $fields)
 	{
 		$this->fields = $fields;
 	}

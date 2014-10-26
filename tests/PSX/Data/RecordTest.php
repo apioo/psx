@@ -23,9 +23,6 @@
 
 namespace PSX\Data;
 
-use PSX\Exception;
-use PSX\Http\Message;
-
 /**
  * RecordTest
  *
@@ -91,5 +88,18 @@ class RecordTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals(1, $record->getId());
 		$this->assertEquals('bar', $record->getTitle());
+	}
+
+	/**
+	 * @expectedException BadMethodCallException
+	 */
+	public function testBadMethodCall()
+	{
+		$record = new Record('foo', array(
+			'id'    => 1,
+			'title' => 'bar',
+		));
+
+		$record->foo();
 	}
 }

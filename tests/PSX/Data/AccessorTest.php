@@ -95,4 +95,19 @@ class AccessorTest extends \PHPUnit_Framework_TestCase
 		$accessor->get('bar.foo', Validate::TYPE_INTEGER);
 		$accessor->get('tes.0.foo', Validate::TYPE_STRING, array($filter));
 	}
+
+	/**
+	 * @expectedException PSX\Validate\ValidationException
+	 */
+	public function testGetUnknownKey()
+	{
+		$source = array(
+			'bar' => array(
+				'foo' => '1',
+			),
+		);
+
+		$accessor = new Accessor(new Validate(), $source);
+		$accessor->get('bar.bar');
+	}
 }

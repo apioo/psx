@@ -103,6 +103,29 @@ TEXT;
 		$this->assertEquals('foo', $record->getTitle());
 		$this->assertEquals('lorem ipsum', $record->getContent());
 	}
+
+	/**
+	 * @expectedException PSX\Data\NotFoundException
+	 */
+	public function testNoImporter()
+	{
+		$data = <<<TEXT
+<entry>
+	<title>Atom-Powered Robots Run Amok</title>
+	<id>urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id>
+	<updated>2003-12-13T18:30:02+00:00</updated>
+	<link href="http://example.org/2003/12/13/atom03"/>
+	<summary>Some text.</summary>
+</entry>
+TEXT;
+
+		$message = new Message();
+		$message->addHeader('Content-Type', 'application/atom+xml');
+		$message->setBody(new StringStream($data));
+
+		$importer = new Importer(getContainer()->get('extractor'), getContainer()->get('importer_manager'));
+		$importer->import('foobar', $message);
+	}
 }
 
 class Page extends RecordAbstract
