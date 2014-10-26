@@ -24,6 +24,7 @@
 namespace PSX\Data\Writer;
 
 use DateTime;
+use PSX\Data\Record;
 use PSX\Data\WriterTestCase;
 use PSX\Rss as RssRecord;
 use PSX\Rss\Item;
@@ -132,5 +133,14 @@ TEXT;
 		$writer = new Rss();
 
 		$this->assertEquals('application/rss+xml', $writer->getContentType());
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testInvalidData()
+	{
+		$writer = new Rss();
+		$writer->write(new Record());
 	}
 }

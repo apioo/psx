@@ -161,6 +161,44 @@ TEXT;
 		$this->assertEquals('application/javascript', $writer->getContentType());
 	}
 
+	public function testWriteEmptyCallback()
+	{
+		$writer = new Jsonp();
+		$actual = $writer->write($this->getRecord());
+
+		$expect = <<<TEXT
+{
+    "id": 1,
+    "author": "foo",
+    "title": "bar",
+    "content": "foobar",
+    "date": "2012-03-11T13:37:21+00:00"
+}
+TEXT;
+
+		$this->assertJsonStringEqualsJsonString($expect, $actual);
+	}
+
+	public function testGetCallbackName()
+	{
+		$_GET['callback'] = 'foo';
+
+		$writer = new Jsonp();
+		$actual = $writer->write($this->getRecord());
+
+		$expect = <<<TEXT
+foo({
+    "id": 1,
+    "author": "foo",
+    "title": "bar",
+    "content": "foobar",
+    "date": "2012-03-11T13:37:21+00:00"
+})
+TEXT;
+
+		$this->assertJsonp($expect, $actual);
+	}
+
 	protected function assertJsonp($expect, $actual)
 	{
 		preg_match('/^foo\((.*)\)$/s', $expect, $matchesExpect);

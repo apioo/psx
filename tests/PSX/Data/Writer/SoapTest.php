@@ -24,6 +24,7 @@
 namespace PSX\Data\Writer;
 
 use PSX\Data\WriterTestCase;
+use PSX\Data\ExceptionRecord;
 
 /**
  * SoapTest
@@ -58,6 +59,8 @@ class SoapTest extends WriterTestCase
 TEXT;
 
 		$this->assertXmlStringEqualsXmlString($expect, $actual);
+		$this->assertEquals('get', $writer->getRequestMethod());
+		$this->assertEquals('http://foo.bar', $writer->getNamespace());
 	}
 
 	public function testWriteResultSet()
@@ -96,6 +99,8 @@ TEXT;
 TEXT;
 
 		$this->assertXmlStringEqualsXmlString($expect, $actual);
+		$this->assertEquals('get', $writer->getRequestMethod());
+		$this->assertEquals('http://foo.bar', $writer->getNamespace());
 	}
 
 	public function testWriteComplex()
@@ -150,5 +155,44 @@ TEXT;
 		$writer = new Soap();
 
 		$this->assertEquals('text/xml', $writer->getContentType());
+	}
+
+	public function testWriteExceptionRecord()
+	{
+		$record = new ExceptionRecord();
+		$record->setSuccess(false);
+		$record->setTitle('An error occured');
+		$record->setMessage('Foobar');
+		$record->setTrace('Foo');
+		$record->setContext('Bar');
+
+		$writer = new Soap();
+		$writer->setRequestMethod('GET');
+		$writer->setNamespace('http://foo.bar');
+
+		$actual = $writer->write($record);
+
+		$expect = <<<TEXT
+<?xml version="1.0" encoding="UTF-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  <soap:Body>
+	<soap:Fault>
+	  <faultcode>soap:Server</faultcode>
+	  <faultstring>Foobar</faultstring>
+	  <detail>
+	    <exceptionRecord xmlns="http://foo.bar">
+	      <success>false</success>
+	      <title>An error occured</title>
+	      <message>Foobar</message>
+	      <trace>Foo</trace>
+	      <context>Bar</context>
+	    </exceptionRecord>
+	  </detail>
+	</soap:Fault>
+  </soap:Body>
+</soap:Envelope>
+TEXT;
+
+		$this->assertXmlStringEqualsXmlString($expect, $actual);
 	}
 }
