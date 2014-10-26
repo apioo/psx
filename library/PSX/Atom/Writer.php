@@ -75,7 +75,7 @@ class Writer implements WriterInterface
 
 	public function addCategory($term, $scheme = null, $label = null)
 	{
-		self::categoryConstruct($term, $scheme, $label);
+		self::categoryConstruct($this->writer, $term, $scheme, $label);
 	}
 
 	public function addContributor($name, $uri = null, $email = null)

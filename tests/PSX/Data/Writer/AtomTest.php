@@ -32,6 +32,7 @@ use PSX\Atom\Link;
 use PSX\Atom\Person;
 use PSX\Atom\Text;
 use PSX\Data\WriterTestCase;
+use PSX\Data\WriterTestRecord;
 
 /**
  * AtomTest
@@ -58,6 +59,17 @@ class AtomTest extends \PHPUnit_Framework_TestCase
  <link href="http://example.org/feed.atom" rel="self" type="application/atom+xml"/>
  <rights>Copyright (c) 2003, Mark Pilgrim</rights>
  <generator uri="http://www.example.com/" version="1.0">Example Toolkit</generator>
+ <author>
+  <name>Mark Pilgrim</name>
+  <uri>http://example.org/</uri>
+  <email>f8dy@example.com</email>
+ </author>
+ <category term="news"/>
+ <contributor>
+  <name>Sam Ruby</name>
+ </contributor>
+ <icon>http://localhost.com/icon.png</icon>
+ <logo>http://localhost.com/logo.png</logo>
  <entry>
   <id>tag:example.org,2003:3.2397</id>
   <title>Atom draft-07 snapshot</title>
@@ -65,11 +77,13 @@ class AtomTest extends \PHPUnit_Framework_TestCase
   <published>2003-12-13T08:29:29-04:00</published>
   <link href="http://example.org/2005/04/02/atom" rel="alternate" type="text/html"/>
   <link href="http://example.org/audio/ph34r_my_podcast.mp3" rel="enclosure" type="audio/mpeg" length="1337"/>
+  <rights>Copyright (c) 2003, Mark Pilgrim</rights>
   <author>
    <name>Mark Pilgrim</name>
    <uri>http://example.org/</uri>
    <email>f8dy@example.com</email>
   </author>
+  <category term="news"/>
   <contributor>
    <name>Sam Ruby</name>
   </contributor>
@@ -77,6 +91,7 @@ class AtomTest extends \PHPUnit_Framework_TestCase
    <name>Joe Gregorio</name>
   </contributor>
   <content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><p><i>[Update: The Atom draft is finished.]</i></p></div></content>
+  <summary type="text">foobar</summary>
   <source>
    <title>dive into mark</title>
    <id>tag:example.org,2003:3</id>
@@ -108,11 +123,13 @@ XML;
  <published>2003-12-13T08:29:29-04:00</published>
  <link href="http://example.org/2005/04/02/atom" rel="alternate" type="text/html"/>
  <link href="http://example.org/audio/ph34r_my_podcast.mp3" rel="enclosure" type="audio/mpeg" length="1337"/>
+ <rights>Copyright (c) 2003, Mark Pilgrim</rights>
  <author>
   <name>Mark Pilgrim</name>
   <uri>http://example.org/</uri>
   <email>f8dy@example.com</email>
  </author>
+ <category term="news"/>
  <contributor>
   <name>Sam Ruby</name>
  </contributor>
@@ -120,6 +137,7 @@ XML;
   <name>Joe Gregorio</name>
  </contributor>
  <content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><p><i>[Update: The Atom draft is finished.]</i></p></div></content>
+ <summary type="text">foobar</summary>
  <source>
   <title>dive into mark</title>
   <id>tag:example.org,2003:3</id>
@@ -147,6 +165,11 @@ XML;
 		$atom->addLink(new Link('http://example.org/feed.atom', 'self', 'application/atom+xml'));
 		$atom->setRights('Copyright (c) 2003, Mark Pilgrim');
 		$atom->setGenerator(new Generator('Example Toolkit', 'http://www.example.com/', '1.0'));
+		$atom->addAuthor(new Person('Mark Pilgrim', 'http://example.org/', 'f8dy@example.com'));
+		$atom->addContributor(new Person('Sam Ruby'));
+		$atom->addCategory(new Category('news'));
+		$atom->setIcon('http://localhost.com/icon.png');
+		$atom->setLogo('http://localhost.com/logo.png');
 		$atom->add($this->getEntryRecord());
 
 		return $atom;
@@ -164,8 +187,11 @@ XML;
 		$entry->addAuthor(new Person('Mark Pilgrim', 'http://example.org/', 'f8dy@example.com'));
 		$entry->addContributor(new Person('Sam Ruby'));
 		$entry->addContributor(new Person('Joe Gregorio'));
+		$entry->addCategory(new Category('news'));
 		$entry->setContent(new Text('<div xmlns="http://www.w3.org/1999/xhtml"><p><i>[Update: The Atom draft is finished.]</i></p></div>', 'xhtml'));
-		
+		$entry->setSummary(new Text('foobar', 'text'));
+		$entry->setRights('Copyright (c) 2003, Mark Pilgrim');
+
 		$atom = new AtomRecord();
 		$atom->setTitle('dive into mark');
 		$atom->setSubTitle(new Text('A <em>lot</em> of effort went into making this effortless', 'html'));
@@ -194,5 +220,33 @@ XML;
 		$writer = new Atom();
 
 		$this->assertEquals('application/atom+xml', $writer->getContentType());
+	}
+
+	public function testWriteRecord()
+	{
+		$record = new WriterTestRecord();
+		$record->setId(1);
+		$record->setAuthor('foo');
+		$record->setTitle('bar');
+		$record->setContent('foobar');
+
+		$writer = new Atom();
+		$actual = $writer->write($record);
+
+		$expect = <<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns="http://www.w3.org/2005/Atom">
+  <content type="application/xml">
+    <record>
+      <id>1</id>
+      <author>foo</author>
+      <title>bar</title>
+      <content>foobar</content>
+    </record>
+  </content>
+</entry>
+XML;
+
+		$this->assertXmlStringEqualsXmlString($expect, $actual);
 	}
 }

@@ -199,7 +199,7 @@ class Atom extends Xml
 		$rights = $entry->getRights();
 		if(!empty($rights))
 		{
-			$entry->setRights($rights);
+			$writer->setRights($rights);
 		}
 
 		$authors = $entry->getAuthor();
