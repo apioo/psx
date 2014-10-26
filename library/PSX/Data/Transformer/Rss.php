@@ -25,6 +25,7 @@ namespace PSX\Data\Transformer;
 
 use DOMDocument;
 use DOMElement;
+use InvalidArgumentException;
 use PSX\Data\TransformerInterface;
 
 /**
@@ -114,14 +115,6 @@ class Rss implements TransformerInterface
 					$result['webMaster'] = $item->nodeValue;
 					break;
 
-				case 'skiphours':
-					$result['skipHours'] = $item->nodeValue;
-					break;
-
-				case 'skipdays':
-					$result['skipDays'] = $item->nodeValue;
-					break;
-
 				case 'category':
 					$result['category'] = self::categoryConstruct($item);
 					break;
@@ -187,7 +180,7 @@ class Rss implements TransformerInterface
 
 				case 'source':
 					$result['source'] = array(
-						'text' => $item->nodeValues,
+						'text' => $item->nodeValue,
 						'url'  => $item->getAttribute('url'),
 					);
 					break;

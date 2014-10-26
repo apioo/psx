@@ -68,4 +68,20 @@ class CallbackTest extends \PHPUnit_Framework_TestCase
 		$this->assertTrue($transformer->accept('text/plain'));
 		$this->assertFalse($transformer->accept('foo'));
 	}
+
+	public function testAcceptAll()
+	{
+		$transformer = new Callback(function(){});
+
+		$this->assertTrue($transformer->accept('text/plain'));
+		$this->assertTrue($transformer->accept('foo'));
+	}
+
+	public function testAcceptNone()
+	{
+		$transformer = new Callback(function(){}, false);
+
+		$this->assertFalse($transformer->accept('text/plain'));
+		$this->assertFalse($transformer->accept('foo'));
+	}
 }

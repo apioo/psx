@@ -24,7 +24,7 @@
 namespace PSX\Data\Transformer;
 
 /**
- * XmlArrayTest
+ * RssTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
@@ -48,12 +48,16 @@ class RssTest extends \PHPUnit_Framework_TestCase
 		<generator>Weblog Editor 2.0</generator>
 		<managingEditor>editor@example.com</managingEditor>
 		<webMaster>webmaster@example.com</webMaster>
+		<category>News</category>
 		<item>
 			<title>Star City</title>
 			<link>http://liftoff.msfc.nasa.gov/news/2003/news-starcity.asp</link>
 			<description>How do Americans get ready to work with Russians aboard the International Space Station? They take a crash course in culture, language and protocol at Russia's &lt;a href="http://howe.iki.rssi.ru/GCTC/gctc_e.htm"&gt;Star City&lt;/a&gt;.</description>
 			<pubDate>Tue, 03 Jun 2003 09:39:21 +0000</pubDate>
+			<category domain="http://google.com">News</category>
 			<guid>http://liftoff.msfc.nasa.gov/2003/06/03.html#item573</guid>
+			<enclosure url="http://www.scripting.com/mp3s/weatherReportSuite.mp3" length="12216320" type="audio/mpeg" />
+			<source url="http://www.tomalak.org/links2.xml">Tomalak's Realm</source>
 		</item>
 	</channel>
 </rss>
@@ -76,6 +80,10 @@ INPUT;
 			'generator' => 'Weblog Editor 2.0',
 			'managingEditor' => 'editor@example.com',
 			'webMaster' => 'webmaster@example.com',
+			'category' => array(
+				'text' => 'News',
+				'domain' => null,
+			),
 			'item' => array(
 				array(
 					'type' => 'item',
@@ -84,6 +92,19 @@ INPUT;
 					'description' => 'How do Americans get ready to work with Russians aboard the International Space Station? They take a crash course in culture, language and protocol at Russia\'s <a href="http://howe.iki.rssi.ru/GCTC/gctc_e.htm">Star City</a>.',
 					'pubDate' => 'Tue, 03 Jun 2003 09:39:21 +0000',
 					'guid' => 'http://liftoff.msfc.nasa.gov/2003/06/03.html#item573',
+					'category' => array(
+						'text' => 'News',
+						'domain' => 'http://google.com',
+					),
+					'enclosure' => array(
+						'url' => 'http://www.scripting.com/mp3s/weatherReportSuite.mp3',
+						'length' => '12216320',
+						'type' => 'audio/mpeg',
+					),
+					'source' => array(
+						'url' => 'http://www.tomalak.org/links2.xml',
+						'text' => 'Tomalak\'s Realm',
+					),
 				)
 			),
 		);
@@ -92,5 +113,49 @@ INPUT;
 
 		$this->assertTrue(is_array($data));
 		$this->assertEquals($expect, $data);
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testNoRssElement()
+	{
+		$body = <<<INPUT
+<?xml version="1.0" encoding="UTF-8"?>
+<foo />
+INPUT;
+
+		$dom = new \DOMDocument();
+		$dom->loadXML($body);
+
+		$transformer = new Rss();
+		$transformer->transform($dom);
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testNoChannelElement()
+	{
+		$body = <<<INPUT
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+</rss>
+INPUT;
+
+		$dom = new \DOMDocument();
+		$dom->loadXML($body);
+
+		$transformer = new Rss();
+		$transformer->transform($dom);
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testInvalidData()
+	{
+		$transformer = new Rss();
+		$transformer->transform(array());
 	}
 }

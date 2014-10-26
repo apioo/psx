@@ -25,9 +25,9 @@ namespace PSX\Data\Transformer;
 
 use DOMDocument;
 use DOMElement;
+use InvalidArgumentException;
 use PSX\Data\Reader\Xml;
 use PSX\Data\TransformerInterface;
-use InvalidArgumentException;
 use RuntimeException;
 
 /**
@@ -40,7 +40,6 @@ use RuntimeException;
 class Soap extends XmlArray
 {
 	const ENVELOPE_NS = 'http://schemas.xmlsoap.org/soap/envelope/';
-	#const ENVELOPE_NS = 'http://www.w3.org/2003/05/soap-envelope';
 
 	public function accept($contentType)
 	{

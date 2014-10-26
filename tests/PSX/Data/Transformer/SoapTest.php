@@ -23,76 +23,41 @@
 
 namespace PSX\Data\Transformer;
 
-use PSX\Rss;
-use PSX\Rss\Item;
-use PSX\Http\Message;
-
 /**
- * XmlArrayTest
+ * SoapTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class XmlArrayTest extends \PHPUnit_Framework_TestCase
+class SoapTest extends \PHPUnit_Framework_TestCase
 {
 	public function testTransform()
 	{
 		$body = <<<INPUT
-<test>
-	<empty />
-	<empty_2></empty_2>
-	<foo>bar</foo>
-	<bar>blub</bar>
-	<bar>bla</bar>
-	<test>
-		<foo>bar</foo>
-	</test>
-	<foooo>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+	<soap:Body>
 		<test>
-			<title>blub</title>
+			<foo>bar</foo>
+			<bar>blub</bar>
+			<bar>bla</bar>
+			<test>
+				<foo>bar</foo>
+			</test>
 		</test>
-		<bar>
-			<title>foo</title>
-		</bar>
-	</foooo>
-	<item>
-		<title>foo</title>
-		<text>bar</text>
-	</item>
-	<item>
-		<title>foo</title>
-		<text>bar</text>
-	</item>
-	<item>
-		<title>foo</title>
-		<text>bar</text>
-	</item>
-	<item>
-		<title>foo</title>
-		<text>bar</text>
-	</item>
-</test>
+	</soap:Body>
+</soap:Envelope>
 INPUT;
 
 		$dom = new \DOMDocument();
 		$dom->loadXML($body);
 
-		$transformer = new XmlArray();
+		$transformer = new Soap();
 
 		$expect = array(
-			'empty' => '', 
-			'empty_2' => '', 
 			'foo' => 'bar', 
 			'bar' => array('blub', 'bla'), 
 			'test' => array('foo' => 'bar'),
-			'foooo' => array('test' => array('title' => 'blub'), 'bar' => array('title' => 'foo')),
-			'item' => array(
-				array('title' => 'foo', 'text' => 'bar'), 
-				array('title' => 'foo', 'text' => 'bar'), 
-				array('title' => 'foo', 'text' => 'bar'), 
-				array('title' => 'foo', 'text' => 'bar')
-			),
 		);
 
 		$data = $transformer->transform($dom);
@@ -102,11 +67,75 @@ INPUT;
 	}
 
 	/**
+	 * @expectedException RuntimeException
+	 */
+	public function testNoEnvelope()
+	{
+		$body = <<<INPUT
+<test>
+	<foo>bar</foo>
+	<bar>blub</bar>
+	<bar>bla</bar>
+	<test>
+		<foo>bar</foo>
+	</test>
+</test>
+INPUT;
+
+		$dom = new \DOMDocument();
+		$dom->loadXML($body);
+
+		$transformer = new Soap();
+		$transformer->transform($dom);
+	}
+
+	public function testEmptyBody()
+	{
+		$body = <<<INPUT
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+	<soap:Body>
+	</soap:Body>
+</soap:Envelope>
+INPUT;
+
+		$dom = new \DOMDocument();
+		$dom->loadXML($body);
+
+		$transformer = new Soap();
+
+		$expect = array();
+
+		$data = $transformer->transform($dom);
+
+		$this->assertTrue(is_array($data));
+		$this->assertEquals($expect, $data);
+	}
+
+	/**
+	 * @expectedException RuntimeException
+	 */
+	public function testBodyWrongNamespace()
+	{
+		$body = <<<INPUT
+<soap:Envelope xmlns:soap="http://www.w3.org/2001/12/soap-envelope">
+	<soap:Body>
+	</soap:Body>
+</soap:Envelope>
+INPUT;
+
+		$dom = new \DOMDocument();
+		$dom->loadXML($body);
+
+		$transformer = new Soap();
+		$transformer->transform($dom);
+	}
+
+	/**
 	 * @expectedException InvalidArgumentException
 	 */
 	public function testInvalidData()
 	{
-		$transformer = new XmlArray();
+		$transformer = new Soap();
 		$transformer->transform(array());
 	}
 }

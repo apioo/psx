@@ -26,6 +26,7 @@ namespace PSX\Data\Transformer;
 use DateTime;
 use DOMDocument;
 use DOMElement;
+use InvalidArgumentException;
 use PSX\Atom as AtomRecord;
 use PSX\Data\Reader\Xml;
 use PSX\Data\TransformerInterface;
@@ -213,7 +214,7 @@ class Atom implements TransformerInterface
 		{
 			$content = $el->nodeValue;
 		}
-		else if($type == 'xhtml' || in_array($type, Xml::$xmlMediaTypes) || substr($type, -4) == '+xml' || substr($type, -4) == '/xml')
+		else if($type == 'xhtml' || in_array($type, Xml::$mediaTypes) || substr($type, -4) == '+xml' || substr($type, -4) == '/xml')
 		{
 			// get first child element
 			$child = null;

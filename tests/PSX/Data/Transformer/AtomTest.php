@@ -44,11 +44,22 @@ class AtomTest extends \PHPUnit_Framework_TestCase
 	<author>
 		<name>John Doe</name>
 	</author>
+	<author>
+		<name>John Doe</name>
+	</author>
+	<contributor>
+		<name>John Doe</name>
+	</contributor>
+	<contributor>
+		<name>John Doe</name>
+	</contributor>
+	<category term="news" scheme="urn:foo:bar" label="News" />
 	<entry>
 		<title>Atom-Powered Robots Run Amok</title>
 		<id>urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id>
 		<updated>2003-12-13T18:30:02+00:00</updated>
-		<link href="http://example.org/2003/12/13/atom03"/>
+		<link href="http://example.org/2003/12/13/atom03" title="Website" />
+		<category term="news" scheme="urn:foo:bar" label="News" />
 		<summary>Some text.</summary>
 	</entry>
 </feed>
@@ -72,7 +83,25 @@ INPUT;
 			'author' => array(
 				array(
 					'name' => 'John Doe',
+				),
+				array(
+					'name' => 'John Doe',
 				)
+			),
+			'contributor' => array(
+				array(
+					'name' => 'John Doe',
+				),
+				array(
+					'name' => 'John Doe',
+				)
+			),
+			'category' => array(
+				array(
+					'term' => 'news',
+					'scheme' => 'urn:foo:bar',
+					'label' => 'News',
+				),
 			),
 			'entry' => array(
 				array(
@@ -82,8 +111,16 @@ INPUT;
 					'updated' => '2003-12-13T18:30:02+00:00',
 					'link' => array(
 						array(
-							'href' => 'http://example.org/2003/12/13/atom03'
+							'href' => 'http://example.org/2003/12/13/atom03',
+							'title' => 'Website',
 						)
+					),
+					'category' => array(
+						array(
+							'term' => 'news',
+							'scheme' => 'urn:foo:bar',
+							'label' => 'News',
+						),
 					),
 					'summary' => array(
 						'content' => 'Some text.'
@@ -96,5 +133,72 @@ INPUT;
 
 		$this->assertTrue(is_array($data));
 		$this->assertEquals($expect, $data);
+	}
+
+	public function testBase64TextConstruct()
+	{
+		$body = <<<INPUT
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<entry>
+		<title>Atom-Powered Robots Run Amok</title>
+		<id>urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id>
+		<updated>2003-12-13T18:30:02+00:00</updated>
+		<content type="application/octet-stream">Zm9vYmFy</content>
+	</entry>
+</feed>
+INPUT;
+
+		$dom = new \DOMDocument();
+		$dom->loadXML($body);
+
+		$transformer = new Atom();
+
+		$expect = array(
+			'type' => 'feed',
+			'entry' => array(
+				array(
+					'type' => 'entry',
+					'title' => 'Atom-Powered Robots Run Amok',
+					'id' => 'urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a',
+					'updated' => '2003-12-13T18:30:02+00:00',
+					'content' => array(
+						'type' => 'application/octet-stream',
+						'content' => 'foobar',
+					),
+				)
+			),
+		);
+
+		$data = $transformer->transform($dom);
+
+		$this->assertTrue(is_array($data));
+		$this->assertEquals($expect, $data);
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testNoFeedElement()
+	{
+		$body = <<<INPUT
+<?xml version="1.0" encoding="UTF-8"?>
+<foo />
+INPUT;
+
+		$dom = new \DOMDocument();
+		$dom->loadXML($body);
+
+		$transformer = new Atom();
+		$transformer->transform($dom);
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testInvalidData()
+	{
+		$transformer = new Atom();
+		$transformer->transform(array());
 	}
 }
