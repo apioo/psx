@@ -77,15 +77,15 @@ class Dispatch
 		{
 			$this->loader->load($request, $response);
 		}
+		catch(StatusCode\NotModifiedException $e)
+		{
+			$response->setStatusCode($e->getStatusCode());
+			$response->setBody(null);
+		}
 		catch(StatusCode\RedirectionException $e)
 		{
 			$response->setStatusCode($e->getStatusCode());
 			$response->setHeader('Location', $e->getLocation());
-			$response->setBody(null);
-		}
-		catch(StatusCode\NotModifiedException $e)
-		{
-			$response->setStatusCode($e->getStatusCode());
 			$response->setBody(null);
 		}
 		catch(\Exception $e)
