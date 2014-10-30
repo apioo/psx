@@ -25,6 +25,10 @@ namespace PSX;
 
 use PSX\Dispatch;
 use PSX\Dispatch\Sender\Void as VoidSender;
+use PSX\Event\Context;
+use PSX\Event\ExceptionThrownEvent;
+use PSX\Event\RequestIncomingEvent;
+use PSX\Event\ResponseSendEvent;
 use PSX\Http\Request;
 use PSX\Http\Response;
 use PSX\Http\Stream\StringStream;
@@ -50,6 +54,33 @@ class DispatchTest extends ControllerTestCase
 		$response = new Response();
 		$response->setBody(new StringStream());
 
+		$testCase = $this;
+
+		$requestIncomingListener = $this->getMock('PSX\Dispatch\TestListener', array('on'));
+		$requestIncomingListener->expects($this->once())
+			->method('on')
+			->with($this->callback(function($event) use ($request, $testCase){
+				$testCase->assertInstanceOf('PSX\Event\RequestIncomingEvent', $event);
+				$testCase->assertInstanceOf('Psr\Http\Message\RequestInterface', $event->getRequest());
+				$testCase->assertEquals($request, $event->getRequest());
+
+				return true;
+			}));
+
+		$responseSendListener = $this->getMock('PSX\Dispatch\TestListener', array('on'));
+		$responseSendListener->expects($this->once())
+			->method('on')
+			->with($this->callback(function($event) use ($response, $testCase){
+				$testCase->assertInstanceOf('PSX\Event\ResponseSendEvent', $event);
+				$testCase->assertInstanceOf('Psr\Http\Message\ResponseInterface', $event->getResponse());
+				$testCase->assertEquals($response, $event->getResponse());
+
+				return true;
+			}));
+
+		getContainer()->get('event_dispatcher')->addListener(Event::REQUEST_INCOMING, array($requestIncomingListener, 'on'));
+		getContainer()->get('event_dispatcher')->addListener(Event::RESPONSE_SEND, array($responseSendListener, 'on'));
+
 		$this->loadController($request, $response);
 
 		$this->assertEquals('foo', (string) $response->getBody());
@@ -72,6 +103,24 @@ class DispatchTest extends ControllerTestCase
 		$request  = new Request(new Url('http://localhost.com/exception'), 'GET');
 		$response = new Response();
 		$response->setBody(new StringStream());
+
+		$testCase = $this;
+
+		$exceptionListener = $this->getMock('PSX\Dispatch\TestListener', array('on'));
+		$exceptionListener->expects($this->once())
+			->method('on')
+			->with($this->callback(function($event) use ($request, $response, $testCase){
+				$testCase->assertInstanceOf('PSX\Event\ExceptionThrownEvent', $event);
+				$testCase->assertInstanceOf('PSX\Event\Context\ControllerContext', $event->getContext());
+				$testCase->assertInstanceOf('Psr\Http\Message\RequestInterface', $event->getContext()->getRequest());
+				$testCase->assertInstanceOf('Psr\Http\Message\ResponseInterface', $event->getContext()->getResponse());
+				$testCase->assertEquals($request, $event->getContext()->getRequest());
+				$testCase->assertEquals($response, $event->getContext()->getResponse());
+
+				return true;
+			}));
+
+		getContainer()->get('event_dispatcher')->addListener(Event::EXCEPTION_THROWN, array($exceptionListener, 'on'));
 
 		$this->loadController($request, $response);
 
@@ -298,6 +347,19 @@ class DispatchTest extends ControllerTestCase
 		$this->assertInstanceOf('PSX\Http\Stream\StringStream', $response->getBody());
 	}
 
+	public function testUnauthorizedNoParameterException()
+	{
+		$request  = new Request(new Url('http://localhost.com/401_1'), 'GET');
+		$response = new Response();
+		$response->setBody(new StringStream());
+
+		$this->loadController($request, $response);
+
+		$this->assertEquals(401, $response->getStatusCode());
+		$this->assertEquals('Foo', $response->getHeader('WWW-Authenticate'));
+		$this->assertInstanceOf('PSX\Http\Stream\StringStream', $response->getBody());
+	}
+
 	public function testUnsupportedMediaTypeException()
 	{
 		$request  = new Request(new Url('http://localhost.com/415'), 'GET');
@@ -334,6 +396,7 @@ class DispatchTest extends ControllerTestCase
 			[['GET'], '/503', 'PSX\Dispatch\StatusCodeExceptionController::throwServiceUnavailableException'],
 			[['GET'], '/307', 'PSX\Dispatch\StatusCodeExceptionController::throwTemporaryRedirectException'],
 			[['GET'], '/401', 'PSX\Dispatch\StatusCodeExceptionController::throwUnauthorizedException'],
+			[['GET'], '/401_1', 'PSX\Dispatch\StatusCodeExceptionController::throwUnauthorizedNoParameterException'],
 			[['GET'], '/415', 'PSX\Dispatch\StatusCodeExceptionController::throwUnsupportedMediaTypeException'],
 		);
 	}

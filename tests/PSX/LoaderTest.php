@@ -24,6 +24,9 @@
 namespace PSX;
 
 use ReflectionClass;
+use PSX\Event\RouteMatchedEvent;
+use PSX\Event\ControllerExecuteEvent;
+use PSX\Event\ControllerProcessedEvent;
 use PSX\Http\Request;
 use PSX\Http\Response;
 use PSX\Loader\Location;
@@ -50,6 +53,48 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 
 		});
 
+		// test events
+		$routeMatchedListener = $this->getMock('PSX\Dispatch\TestListener', array('on'));
+		$routeMatchedListener->expects($this->once())
+			->method('on')
+			->with($this->callback(function($event) use ($testCase){
+				$testCase->assertInstanceOf('PSX\Event\RouteMatchedEvent', $event);
+				$testCase->assertEquals('GET', $event->getRequestMethod());
+				$testCase->assertEquals('/foobar', $event->getPath());
+				$testCase->assertInstanceOf('PSX\Loader\Location', $event->getLocation());
+				$testCase->assertEquals('PSX\Loader\ProbeController::doIndex', $event->getLocation()->getParameter(Location::KEY_SOURCE));
+
+				return true;
+			}));
+
+		$controllerExecuteListener = $this->getMock('PSX\Dispatch\TestListener', array('on'));
+		$controllerExecuteListener->expects($this->once())
+			->method('on')
+			->with($this->callback(function($event) use ($testCase){
+				$testCase->assertInstanceOf('PSX\Event\ControllerExecuteEvent', $event);
+				$testCase->assertInstanceOf('PSX\ControllerInterface', $event->getController());
+				$testCase->assertInstanceOf('Psr\Http\Message\RequestInterface', $event->getRequest());
+				$testCase->assertInstanceOf('Psr\Http\Message\ResponseInterface', $event->getResponse());
+
+				return true;
+			}));
+
+		$controllerProcessedListener = $this->getMock('PSX\Dispatch\TestListener', array('on'));
+		$controllerProcessedListener->expects($this->once())
+			->method('on')
+			->with($this->callback(function($event) use ($testCase){
+				$testCase->assertInstanceOf('PSX\Event\ControllerProcessedEvent', $event);
+				$testCase->assertInstanceOf('PSX\ControllerInterface', $event->getController());
+				$testCase->assertInstanceOf('Psr\Http\Message\RequestInterface', $event->getRequest());
+				$testCase->assertInstanceOf('Psr\Http\Message\ResponseInterface', $event->getResponse());
+
+				return true;
+			}));
+
+		getContainer()->get('event_dispatcher')->addListener(Event::ROUTE_MATCHED, array($routeMatchedListener, 'on'));
+		getContainer()->get('event_dispatcher')->addListener(Event::CONTROLLER_EXECUTE, array($controllerExecuteListener, 'on'));
+		getContainer()->get('event_dispatcher')->addListener(Event::CONTROLLER_PROCESSED, array($controllerProcessedListener, 'on'));
+
 		$loader   = new Loader($locationFinder, getContainer()->get('loader_callback_resolver'), getContainer()->get('event_dispatcher'));
 		$request  = new Request(new Url('http://127.0.0.1/foobar'), 'GET');
 		$response = new Response();
@@ -71,6 +116,10 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 		);
 
 		$this->assertEquals($expect, $module->getMethodsCalled());
+
+		getContainer()->get('event_dispatcher')->removeListener(Event::REQUEST_INCOMING, $routeMatchedListener);
+		getContainer()->get('event_dispatcher')->removeListener(Event::CONTROLLER_EXECUTE, $controllerExecuteListener);
+		getContainer()->get('event_dispatcher')->removeListener(Event::CONTROLLER_PROCESSED, $controllerProcessedListener);
 	}
 
 	public function testLoadDetailCall()

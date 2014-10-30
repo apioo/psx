@@ -23,6 +23,7 @@
 
 namespace PSX\Command;
 
+use PSX\Event;
 use PSX\CommandAbstract;
 use PSX\Command\OutputInterface;
 use PSX\Command\Output\Void;
@@ -52,6 +53,38 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
 
 		});
 
+		// test events
+		$commandExecuteListener = $this->getMock('PSX\Dispatch\TestListener', array('on'));
+		$commandExecuteListener->expects($this->once())
+			->method('on')
+			->with($this->callback(function($event) use ($testCase){
+				$testCase->assertInstanceOf('PSX\Event\CommandExecuteEvent', $event);
+				$testCase->assertInstanceOf('PSX\CommandInterface', $event->getCommand());
+				$testCase->assertInstanceOf('PSX\Command\Parameters', $event->getParameters());
+				$testCase->assertEquals('foo', $event->getParameters()->get('r'));
+				$testCase->assertEquals('bar', $event->getParameters()->get('o'));
+				$testCase->assertEquals(true, $event->getParameters()->get('f'));
+
+				return true;
+			}));
+
+		$commandProcessedListener = $this->getMock('PSX\Dispatch\TestListener', array('on'));
+		$commandProcessedListener->expects($this->once())
+			->method('on')
+			->with($this->callback(function($event) use ($testCase){
+				$testCase->assertInstanceOf('PSX\Event\CommandProcessedEvent', $event);
+				$testCase->assertInstanceOf('PSX\CommandInterface', $event->getCommand());
+				$testCase->assertInstanceOf('PSX\Command\Parameters', $event->getParameters());
+				$testCase->assertEquals('foo', $event->getParameters()->get('r'));
+				$testCase->assertEquals('bar', $event->getParameters()->get('o'));
+				$testCase->assertEquals(true, $event->getParameters()->get('f'));
+
+				return true;
+			}));
+
+		getContainer()->get('event_dispatcher')->addListener(Event::COMMAND_EXECUTE, array($commandExecuteListener, 'on'));
+		getContainer()->get('event_dispatcher')->addListener(Event::COMMAND_PROCESSED, array($commandProcessedListener, 'on'));
+
 		$factory = $this->getMockBuilder('PSX\Dispatch\CommandFactoryInterface')
 			->setMethods(array('getCommand'))
 			->getMock();
@@ -63,6 +96,9 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
 
 		$executor = new Executor($factory, new Void(), getContainer()->get('event_dispatcher'));
 		$executor->run(new Map('Foo\Bar', array('r' => 'foo', 'o' => 'bar', 'f' => true)));
+
+		getContainer()->get('event_dispatcher')->removeListener(Event::COMMAND_EXECUTE, $commandExecuteListener);
+		getContainer()->get('event_dispatcher')->removeListener(Event::COMMAND_PROCESSED, $commandProcessedListener);
 	}
 
 	/**
