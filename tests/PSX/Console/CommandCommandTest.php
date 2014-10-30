@@ -60,4 +60,42 @@ class CommandCommandTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('Some foo informations', rtrim($messages[0]));
 		$this->assertEquals('Hello test', rtrim($messages[1]));
 	}
+
+	/**
+	 * @expectedException PSX\Command\MissingParameterException
+	 */
+	public function testCommandEmptyBody()
+	{
+		$stream = fopen('php://memory', 'r+');
+		fwrite($stream, '');
+		rewind($stream);
+
+		$command = getContainer()->get('console')->find('command');
+		$command->setReader(new Reader\Stdin($stream));
+
+		$commandTester = new CommandTester($command);
+		$commandTester->execute(array(
+			'command' => $command->getName(),
+			'cmd' => 'PSX\Command\Foo\Command\FooCommand',
+		));
+	}
+
+	/**
+	 * @expectedException PSX\Exception
+	 */
+	public function testCommandInvalidJson()
+	{
+		$stream = fopen('php://memory', 'r+');
+		fwrite($stream, 'foobar');
+		rewind($stream);
+
+		$command = getContainer()->get('console')->find('command');
+		$command->setReader(new Reader\Stdin($stream));
+
+		$commandTester = new CommandTester($command);
+		$commandTester->execute(array(
+			'command' => $command->getName(),
+			'cmd' => 'PSX\Command\Foo\Command\FooCommand',
+		));
+	}
 }
