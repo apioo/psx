@@ -24,9 +24,6 @@
 namespace PSX\Controller;
 
 use DateTime;
-use PSX\Atom;
-use PSX\Atom\Entry;
-use PSX\Atom\Text;
 use PSX\Data\Message;
 use PSX\Data\Record\Mapper;
 use PSX\Data\Record\Mapper\Rule;
@@ -39,6 +36,7 @@ use PSX\Util\Uuid;
 use PSX\Util\Api\FilterParameter;
 use PSX\Sql\Condition;
 use PSX\Validate\ValidatorInterface;
+use PSX\Http\Exception as StatusCode;
 
 /**
  * This controller simplifies creating an API from an handler
@@ -57,7 +55,7 @@ abstract class HandlerApiAbstract extends ApiAbstract
 
 		if(!$this->_handler instanceof HandlerQueryInterface)
 		{
-			throw new Exception('Method not allowed', 405);
+			throw new StatusCode\MethodNotAllowedException('Method is not allowed', array('POST', 'PUT', 'DELETE'));
 		}
 
 		$parameter = $this->getFilterParameter();
@@ -69,14 +67,7 @@ abstract class HandlerApiAbstract extends ApiAbstract
 				$parameter->getSortOrder(), 
 				$condition);
 
-		if($this->isWriter(WriterInterface::ATOM))
-		{
-			$this->setBody($this->getAtomRecord($result));
-		}
-		else
-		{
-			$this->setBody($result);
-		}
+		$this->setBody($result);
 	}
 
 	public function onPost()
@@ -85,7 +76,7 @@ abstract class HandlerApiAbstract extends ApiAbstract
 
 		if(!$this->_handler instanceof HandlerManipulationInterface)
 		{
-			throw new Exception('Method not allowed', 405);
+			throw new StatusCode\MethodNotAllowedException('Method is not allowed', array('GET'));
 		}
 
 		$record = $this->import($this->_handler->getRecord());
@@ -121,7 +112,7 @@ abstract class HandlerApiAbstract extends ApiAbstract
 
 		if(!$this->_handler instanceof HandlerManipulationInterface)
 		{
-			throw new Exception('Method not allowed', 405);
+			throw new StatusCode\MethodNotAllowedException('Method is not allowed', array('GET'));
 		}
 
 		$record = $this->import($this->_handler->getRecord());
@@ -157,7 +148,7 @@ abstract class HandlerApiAbstract extends ApiAbstract
 		
 		if(!$this->_handler instanceof HandlerManipulationInterface)
 		{
-			throw new Exception('Method not allowed', 405);
+			throw new StatusCode\MethodNotAllowedException('Method is not allowed', array('GET'));
 		}
 
 		$record = $this->import($this->_handler->getRecord());
@@ -281,25 +272,6 @@ abstract class HandlerApiAbstract extends ApiAbstract
 	 */
 	protected function afterValidate(RecordInterface $record)
 	{
-	}
-
-	/**
-	 * If we want display an atom feed we need to convert our record to an 
-	 * Atom\Record. This method does the mapping. By default we return an entry
-	 * that the ATOM format is not supported so you have to overwrite this 
-	 * method
-	 *
-	 * @param PSX\Data\RecordInterface $result
-	 * @return PSX\Atom
-	 */
-	protected function getAtomRecord(RecordInterface $result)
-	{
-		$message = new Entry();
-		$message->setId(Uuid::nameBased($this->config['psx_url']));
-		$message->setTitle('ATOM format is not implemented');
-		$message->setUpdated(new DateTime());
-
-		return $message;
 	}
 
 	/**
