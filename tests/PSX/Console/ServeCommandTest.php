@@ -37,8 +37,12 @@ class ServeCommandTest extends ControllerTestCase
 {
 	public function testCommand()
 	{
+		$stream = fopen('php://memory', 'r+');
+		fwrite($stream, 'GET /api HTTP/1.1' . "\n" . 'Accept: application/xml' . "\n");
+		rewind($stream);
+
 		$command = getContainer()->get('console')->find('serve');
-		$command->setReader(new Reader\String('GET /api HTTP/1.1' . "\n" . 'Accept: application/xml' . "\n"));
+		$command->setReader(new Reader\Stdin($stream));
 
 		ob_start();
 

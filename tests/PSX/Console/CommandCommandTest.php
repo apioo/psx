@@ -41,8 +41,12 @@ class CommandCommandTest extends \PHPUnit_Framework_TestCase
 
 		getContainer()->set('command_output', $memory);
 
+		$stream = fopen('php://memory', 'r+');
+		fwrite($stream, '{"foo": "test"}');
+		rewind($stream);
+
 		$command = getContainer()->get('console')->find('command');
-		$command->setReader(new Reader\String('{"foo": "test"}'));
+		$command->setReader(new Reader\Stdin($stream));
 
 		$commandTester = new CommandTester($command);
 		$commandTester->execute(array(
