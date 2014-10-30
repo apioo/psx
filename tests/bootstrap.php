@@ -11,6 +11,12 @@ ini_set('session.use_only_cookies', 0);
 ini_set('session.use_trans_sid', 1);
 ini_set('session.cache_limiter', ''); // prevent sending header
 
+// test hhvm settings
+if(getenv('TRAVIS_PHP_VERSION') == 'hhvm')
+{
+	ini_set('hhvm.libxml.ext_entity_whitelist', 'file');
+}
+
 function getContainer()
 {
 	static $container;
