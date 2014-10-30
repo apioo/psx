@@ -67,6 +67,39 @@ class DispatchTest extends ControllerTestCase
 		$this->assertEquals('http://localhost.com/foobar', $response->getHeader('Location'));
 	}
 
+	public function testRouteException()
+	{
+		$request  = new Request(new Url('http://localhost.com/exception'), 'GET');
+		$response = new Response();
+		$response->setBody(new StringStream());
+
+		$this->loadController($request, $response);
+
+		$this->assertEquals(500, $response->getStatusCode());
+	}
+
+	public function testRouteStatusCodeException()
+	{
+		$request  = new Request(new Url('http://localhost.com/exception_code'), 'GET');
+		$response = new Response();
+		$response->setBody(new StringStream());
+
+		$this->loadController($request, $response);
+
+		$this->assertEquals(501, $response->getStatusCode());
+	}
+
+	public function testRouteWrongStatusCodeException()
+	{
+		$request  = new Request(new Url('http://localhost.com/exception_wrong_code'), 'GET');
+		$response = new Response();
+		$response->setBody(new StringStream());
+
+		$this->loadController($request, $response);
+
+		$this->assertEquals(500, $response->getStatusCode());
+	}
+
 	public function testBadRequestException()
 	{
 		$request  = new Request(new Url('http://localhost.com/400'), 'GET');
@@ -282,6 +315,9 @@ class DispatchTest extends ControllerTestCase
 		return array(
 			[['GET'], '/dummy', 'PSX\Dispatch\DummyController'],
 			[['GET'], '/redirect', 'PSX\Dispatch\RedirectExceptionController'],
+			[['GET'], '/exception', 'PSX\Dispatch\ExceptionController::doException'],
+			[['GET'], '/exception_code', 'PSX\Dispatch\ExceptionController::doStatusCodeException'],
+			[['GET'], '/exception_wrong_code', 'PSX\Dispatch\ExceptionController::doWrongStatusCodeException'],
 			[['GET'], '/400', 'PSX\Dispatch\StatusCodeExceptionController::throwBadRequestException'],
 			[['GET'], '/409', 'PSX\Dispatch\StatusCodeExceptionController::throwConflictException'],
 			[['GET'], '/403', 'PSX\Dispatch\StatusCodeExceptionController::throwForbiddenException'],

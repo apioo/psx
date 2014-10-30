@@ -34,8 +34,18 @@ use PSX\ControllerAbstract;
  */
 class ExceptionController extends ControllerAbstract
 {
-	public function onLoad()
+	public function doException()
 	{
 		throw new \Exception('foo');
+	}
+
+	public function doStatusCodeException()
+	{
+		throw new \Exception('foo', 501);
+	}
+
+	public function doWrongStatusCodeException()
+	{
+		throw new \Exception('foo', 1024);
 	}
 }

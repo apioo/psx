@@ -96,7 +96,7 @@ class Dispatch
 			{
 				$this->handleHttpStatusCodeException($e, $response);
 			}
-			else if($response->getStatusCode() === null)
+			else if($response->getStatusCode() == null)
 			{
 				if(isset(Http::$codes[$e->getCode()]))
 				{
