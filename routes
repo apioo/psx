@@ -1,5 +1,2 @@
 
-# example routing file
-
-GET|POST / Foo\News\Application\Index
-GET /test Foo\News\Application\Foo
+GET / PSX\Controller\Tool\DefaultController
