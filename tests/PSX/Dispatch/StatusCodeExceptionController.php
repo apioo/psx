@@ -92,7 +92,7 @@ class StatusCodeExceptionController extends ControllerAbstract
 
 	public function throwNotModifiedException()
 	{
-		throw new StatusCode\NotModifiedException('foobar');
+		throw new StatusCode\NotModifiedException();
 	}
 
 	public function throwSeeOtherException()
