@@ -115,6 +115,11 @@ class StatusCodeExceptionController extends ControllerAbstract
 		throw new StatusCode\UnauthorizedException('foobar', 'Basic', array('realm' => 'foo'));
 	}
 
+	public function throwUnauthorizedNoParameterException()
+	{
+		throw new StatusCode\UnauthorizedException('foobar', 'Foo');
+	}
+
 	public function throwUnsupportedMediaTypeException()
 	{
 		throw new StatusCode\UnsupportedMediaTypeException('foobar');
