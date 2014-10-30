@@ -23,6 +23,7 @@
 
 namespace PSX\Console\Reader;
 
+use InvalidArgumentException;
 use PSX\Console\ReaderInterface;
 
 /**
@@ -35,15 +36,42 @@ use PSX\Console\ReaderInterface;
  */
 class Stdin implements ReaderInterface
 {
+	protected $handle;
+
+	/**
+	 * Takes the stream on which the reader operates. If no stream is provided
+	 * STDIN is used
+	 *
+	 * @param resource $handle
+	 */
+	public function __construct($handle = null)
+	{
+		if($handle === null)
+		{
+			$this->handle = STDIN;
+		}
+		else if(is_resource($handle))
+		{
+			$this->handle = $handle;
+		}
+		else
+		{
+			throw new InvalidArgumentException('Must be an resource');
+		}
+	}
+
 	public function read()
 	{
 		$body = '';
-		while(!feof(STDIN))
-		{
-			$line = fgets(STDIN);
 
-			if($line[0] == chr(4))
+		while(!feof($this->handle))
+		{
+			$line = fgets($this->handle);
+			$pos  = strpos($line, chr(4));
+
+			if($pos !== false)
 			{
+				$body.= substr($line, 0, $pos);
 				break;
 			}
 
