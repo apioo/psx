@@ -32,6 +32,7 @@ use PSX\Dispatch\Filter\Exception\SuccessException;
 use PSX\Http\Request;
 use PSX\Http\Response;
 use PSX\Http\Authentication;
+use PSX\Http\Exception\BadRequestException;
 use PSX\Http\Exception\UnauthorizedException;
 use PSX\Url;
 
@@ -45,7 +46,7 @@ use PSX\Url;
 class DigestAccessAuthenticationTest extends \PHPUnit_Framework_TestCase
 {
 	/**
-	 * @expectedException \PSX\Dispatch\Filter\Exception\SuccessException
+	 * @expectedException PSX\Dispatch\Filter\Exception\SuccessException
 	 */
 	public function testSuccessful()
 	{
@@ -85,16 +86,12 @@ class DigestAccessAuthenticationTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException \PSX\Dispatch\Filter\Exception\FailureException
+	 * @expectedException PSX\Http\Exception\BadRequestException
 	 */
 	public function testFailure()
 	{
 		$store  = new Memory();
 		$handle = $this->makeHandshake($store);
-
-		$handle->onFailure(function(){
-			throw new FailureException();
-		});
 
 		$username = 'test';
 		$password = 'bar';

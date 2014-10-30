@@ -31,6 +31,7 @@ use PSX\Dispatch\FilterInterface;
 use PSX\Dispatch\Filter\DigestAccessAuthentication\Digest;
 use PSX\Exception;
 use PSX\Http\Authentication;
+use PSX\Http\Exception\BadRequestException;
 use PSX\Http\Exception\UnauthorizedException;
 
 /**
@@ -80,7 +81,7 @@ class DigestAccessAuthentication implements FilterInterface
 		});
 
 		$this->onFailure(function(){
-			throw new Exception('Invalid username or password');
+			throw new BadRequestException('Invalid username or password');
 		});
 
 		$this->onMissing(function(ResponseInterface $response) use ($digestStore) {
@@ -127,12 +128,12 @@ class DigestAccessAuthentication implements FilterInterface
 
 				if(!$this->digest instanceof Digest)
 				{
-					throw new Exception('Digest not available');
+					throw new BadRequestException('Digest not available');
 				}
 
 				if($this->digest->getOpaque() != $params['opaque'])
 				{
-					throw new Exception('Invalid opaque');
+					throw new BadRequestException('Invalid opaque');
 				}
 
 				// build ha1

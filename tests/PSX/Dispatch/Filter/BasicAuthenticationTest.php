@@ -29,6 +29,7 @@ use PSX\Dispatch\Filter\Exception\MissingException;
 use PSX\Dispatch\Filter\Exception\SuccessException;
 use PSX\Http\Request;
 use PSX\Http\Response;
+use PSX\Http\Exception\BadRequestException;
 use PSX\Http\Exception\UnauthorizedException;
 use PSX\Url;
 
@@ -42,7 +43,7 @@ use PSX\Url;
 class BasicAuthenticationTest extends \PHPUnit_Framework_TestCase
 {
 	/**
-	 * @expectedException \PSX\Dispatch\Filter\Exception\SuccessException
+	 * @expectedException PSX\Dispatch\Filter\Exception\SuccessException
 	 */
 	public function testSuccessful()
 	{
@@ -64,16 +65,12 @@ class BasicAuthenticationTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException \PSX\Dispatch\Filter\Exception\FailureException
+	 * @expectedException PSX\Http\Exception\BadRequestException
 	 */
 	public function testFailure()
 	{
 		$handle = new BasicAuthentication(function($username, $password){
 			return $username == 'test' && $password == 'test';
-		});
-
-		$handle->onFailure(function(){
-			throw new FailureException();
 		});
 
 		$username = 'foo';

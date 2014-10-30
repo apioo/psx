@@ -28,8 +28,8 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use PSX\Base;
 use PSX\Dispatch\FilterInterface;
-use PSX\Exception;
 use PSX\Http\Authentication;
+use PSX\Http\Exception\BadRequestException;
 use PSX\Http\Exception\UnauthorizedException;
 
 /**
@@ -63,7 +63,7 @@ class BasicAuthentication implements FilterInterface
 		});
 
 		$this->onFailure(function(){
-			throw new Exception('Invalid username or password');
+			throw new BadRequestException('Invalid username or password');
 		});
 
 		$this->onMissing(function(ResponseInterface $response){
