@@ -39,6 +39,14 @@ class StdinTest extends \PHPUnit_Framework_TestCase
 		$this->assertInstanceOf('PSX\Console\ReaderInterface', $reader);
 	}
 
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testConstructorWrongType()
+	{
+		new Stdin(array());
+	}
+
 	public function testRead()
 	{
 		$stream = fopen('php://memory', 'r+');
