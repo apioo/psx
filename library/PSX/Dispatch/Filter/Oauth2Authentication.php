@@ -27,8 +27,8 @@ use Closure;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use PSX\Dispatch\FilterInterface;
-use PSX\Exception;
 use PSX\Http\Authentication;
+use PSX\Http\Exception\BadRequestException;
 use PSX\Http\Exception\UnauthorizedException;
 
 /**
@@ -61,7 +61,7 @@ class Oauth2Authentication implements FilterInterface
 		});
 
 		$this->onFailure(function(){
-			throw new Exception('Invalid access token');
+			throw new BadRequestException('Invalid access token');
 		});
 
 		$this->onMissing(function(ResponseInterface $response){

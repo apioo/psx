@@ -31,6 +31,7 @@ use PSX\Http;
 use PSX\Http\Request;
 use PSX\Http\Response;
 use PSX\Http\Authentication;
+use PSX\Http\Exception\BadRequestException;
 use PSX\Http\Exception\UnauthorizedException;
 use PSX\Oauth;
 use PSX\Oauth\Provider\Data\Consumer;
@@ -51,15 +52,17 @@ class OauthAuthenticationTest extends \PHPUnit_Framework_TestCase
 	const TOKEN_SECRET    = 'hdhd0244k9j7ao03';
 
 	/**
-	 * @expectedException \PSX\Dispatch\Filter\Exception\SuccessException
+	 * @expectedException PSX\Dispatch\Filter\Exception\SuccessException
 	 */
 	public function testSuccessful()
 	{
 		$handle = new OauthAuthentication(function($consumerKey, $token){
+
 			if($consumerKey == self::CONSUMER_KEY && $token == self::TOKEN)
 			{
 				return new Consumer(self::CONSUMER_KEY, self::CONSUMER_SECRET, self::TOKEN, self::TOKEN_SECRET);
 			}
+
 		});
 
 		$handle->onSuccess(function(){
@@ -76,19 +79,17 @@ class OauthAuthenticationTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException \PSX\Dispatch\Filter\Exception\FailureException
+	 * @expectedException PSX\Http\Exception\BadRequestException
 	 */
 	public function testFailureEmptyCredentials()
 	{
 		$handle = new OauthAuthentication(function($consumerKey, $token){
+
 			if($consumerKey == self::CONSUMER_KEY && $token == self::TOKEN)
 			{
 				return new Consumer(self::CONSUMER_KEY, self::CONSUMER_SECRET, self::TOKEN, self::TOKEN_SECRET);
 			}
-		});
 
-		$handle->onFailure(function(){
-			throw new FailureException();
 		});
 
 		$oauth = new Oauth(new Http());
@@ -101,19 +102,17 @@ class OauthAuthenticationTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException \PSX\Dispatch\Filter\Exception\FailureException
+	 * @expectedException PSX\Http\Exception\BadRequestException
 	 */
 	public function testFailureWrongConsumerKey()
 	{
 		$handle = new OauthAuthentication(function($consumerKey, $token){
+
 			if($consumerKey == self::CONSUMER_KEY && $token == self::TOKEN)
 			{
 				return new Consumer(self::CONSUMER_KEY, self::CONSUMER_SECRET, self::TOKEN, self::TOKEN_SECRET);
 			}
-		});
 
-		$handle->onFailure(function(){
-			throw new FailureException();
 		});
 
 		$oauth = new Oauth(new Http());
@@ -126,19 +125,17 @@ class OauthAuthenticationTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException \PSX\Dispatch\Filter\Exception\FailureException
+	 * @expectedException PSX\Http\Exception\BadRequestException
 	 */
 	public function testFailureWrongConsumerSecret()
 	{
 		$handle = new OauthAuthentication(function($consumerKey, $token){
+
 			if($consumerKey == self::CONSUMER_KEY && $token == self::TOKEN)
 			{
 				return new Consumer(self::CONSUMER_KEY, self::CONSUMER_SECRET, self::TOKEN, self::TOKEN_SECRET);
 			}
-		});
 
-		$handle->onFailure(function(){
-			throw new FailureException();
 		});
 
 		$oauth = new Oauth(new Http());
@@ -151,19 +148,17 @@ class OauthAuthenticationTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException \PSX\Dispatch\Filter\Exception\FailureException
+	 * @expectedException PSX\Http\Exception\BadRequestException
 	 */
 	public function testFailureWrongToken()
 	{
 		$handle = new OauthAuthentication(function($consumerKey, $token){
+
 			if($consumerKey == self::CONSUMER_KEY && $token == self::TOKEN)
 			{
 				return new Consumer(self::CONSUMER_KEY, self::CONSUMER_SECRET, self::TOKEN, self::TOKEN_SECRET);
 			}
-		});
 
-		$handle->onFailure(function(){
-			throw new FailureException();
 		});
 
 		$oauth = new Oauth(new Http());
@@ -176,19 +171,17 @@ class OauthAuthenticationTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException \PSX\Dispatch\Filter\Exception\FailureException
+	 * @expectedException PSX\Http\Exception\BadRequestException
 	 */
 	public function testFailureWrongTokenSecret()
 	{
 		$handle = new OauthAuthentication(function($consumerKey, $token){
+
 			if($consumerKey == self::CONSUMER_KEY && $token == self::TOKEN)
 			{
 				return new Consumer(self::CONSUMER_KEY, self::CONSUMER_SECRET, self::TOKEN, self::TOKEN_SECRET);
 			}
-		});
 
-		$handle->onFailure(function(){
-			throw new FailureException();
 		});
 
 		$oauth = new Oauth(new Http());
@@ -203,10 +196,12 @@ class OauthAuthenticationTest extends \PHPUnit_Framework_TestCase
 	public function testMissing()
 	{
 		$handle = new OauthAuthentication(function($consumerKey, $token){
+
 			if($consumerKey == self::CONSUMER_KEY && $token == self::TOKEN)
 			{
 				return new Consumer(self::CONSUMER_KEY, self::CONSUMER_SECRET, self::TOKEN, self::TOKEN_SECRET);
 			}
+
 		});
 
 		$oauth = new Oauth(new Http());
@@ -232,10 +227,12 @@ class OauthAuthenticationTest extends \PHPUnit_Framework_TestCase
 	public function testMissingWrongType()
 	{
 		$handle = new OauthAuthentication(function($consumerKey, $token){
+
 			if($consumerKey == self::CONSUMER_KEY && $token == self::TOKEN)
 			{
 				return new Consumer(self::CONSUMER_KEY, self::CONSUMER_SECRET, self::TOKEN, self::TOKEN_SECRET);
 			}
+			
 		});
 
 		$oauth = new Oauth(new Http());

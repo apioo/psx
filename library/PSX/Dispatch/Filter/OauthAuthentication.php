@@ -28,8 +28,8 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use PSX\Base;
 use PSX\Dispatch\FilterInterface;
-use PSX\Exception;
 use PSX\Http\Authentication;
+use PSX\Http\Exception\BadRequestException;
 use PSX\Http\Exception\UnauthorizedException;
 use PSX\Oauth;
 use PSX\Oauth\Provider\Data\Consumer;
@@ -65,7 +65,7 @@ class OauthAuthentication implements FilterInterface
 		});
 
 		$this->onFailure(function(){
-			throw new Exception('Invalid consumer key or signature');
+			throw new BadRequestException('Invalid consumer key or signature');
 		});
 
 		$this->onMissing(function(ResponseInterface $response){
@@ -97,22 +97,22 @@ class OauthAuthentication implements FilterInterface
 
 				if(!isset($params['oauth_consumer_key']))
 				{
-					throw new Exception('Consumer key not set');
+					throw new BadRequestException('Consumer key not set');
 				}
 
 				if(!isset($params['oauth_token']))
 				{
-					throw new Exception('Token not set');
+					throw new BadRequestException('Token not set');
 				}
 
 				if(!isset($params['oauth_signature_method']))
 				{
-					throw new Exception('Signature method not set');
+					throw new BadRequestException('Signature method not set');
 				}
 
 				if(!isset($params['oauth_signature']))
 				{
-					throw new Exception('Signature not set');
+					throw new BadRequestException('Signature not set');
 				}
 
 				$consumer = call_user_func_array($this->consumerCallback, array($params['oauth_consumer_key'], $params['oauth_token']));
