@@ -78,8 +78,20 @@ class TestController extends ControllerAbstract
 		$this->testCase->assertEquals('bar', $this->getParameter('foo', Validate::TYPE_STRING, array(), 'Foo', true));
 
 		// get body
-		$this->testCase->assertEquals(array('foo' => 'bar'), $this->getBody());
-		$this->testCase->assertEquals(array('foo' => 'bar'), $this->getBody(ReaderInterface::JSON));
+		$data = array(
+			'foo' => 'bar',
+			'bar' => array('foo' => 'nested'),
+			'entries' => array(array('title' => 'bar'), array('title' => 'foo')),
+		);
+
+		$this->testCase->assertEquals($data, $this->getBody());
+		$this->testCase->assertEquals($data, $this->getBody(ReaderInterface::JSON));
+
+		// accessor
+		$this->testCase->assertEquals('bar', $this->getAccessor()->get('foo'));
+		$this->testCase->assertEquals('nested', $this->getAccessor()->get('bar.foo'));
+		$this->testCase->assertEquals('bar', $this->getAccessor()->get('entries.0.title'));
+		$this->testCase->assertEquals('foo', $this->getAccessor()->get('entries.1.title'));
 
 		// import
 		$record = new Record('foo', array('foo' => null));
@@ -96,10 +108,7 @@ class TestController extends ControllerAbstract
 		$this->testCase->assertTrue($this->isWriter('PSX\Data\Writer\Json'));
 
 		// is reader
-		$this->testCase->assertTrue($this->isReader('PSX\Data\Writer\Json'));
-
-		// get preferred writer
-		$this->testCase->assertInstanceOf('PSX\Data\Writer\Json', $this->getPreferredWriter());
+		$this->testCase->assertTrue($this->isReader('PSX\Data\Reader\Json'));
 
 		// get preferred writer
 		$this->testCase->assertEquals(null, $this->getSupportedWriter());
@@ -117,6 +126,8 @@ class TestController extends ControllerAbstract
 		$this->testCase->assertInstanceOf('PSX\Loader\ReverseRouter', $this->reverseRouter);
 		$this->testCase->assertInstanceOf('PSX\Data\ReaderFactory', $this->readerFactory);
 		$this->testCase->assertInstanceOf('PSX\Data\WriterFactory', $this->writerFactory);
+		$this->testCase->assertInstanceOf('PSX\Data\Importer', $this->importer);
+		$this->testCase->assertInstanceOf('PSX\Data\Extractor', $this->extractor);
 	}
 
 	public function doForward()
