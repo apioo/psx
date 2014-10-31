@@ -23,6 +23,10 @@
 
 namespace PSX\Console;
 
+use PSX\Dependency\Container;
+use PSX\Util\Annotation;
+use ReflectionClass;
+use ReflectionException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputArgument;
@@ -59,12 +63,33 @@ class ContainerCommand extends Command
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$services = $this->container->getServiceIds();
-		$rows     = array();
+		$services  = $this->container->getServiceIds();
+		$container = new ReflectionClass($this->container);
+		$rows      = array();
 
-		foreach($services as $service)
+		foreach($services as $serviceId)
 		{
-			$rows[] = array($service);
+			try
+			{
+				$method = $container->getMethod('get' . Container::normalizeName($serviceId));
+				$doc    = Annotation::parse($method->getDocComment());
+				$return = $doc->getFirstAnnotation('return');
+
+				if(!empty($return))
+				{
+					$definition = $return;
+				}
+				else
+				{
+					$definition = 'void';
+				}
+
+				$rows[] = array($serviceId, $definition);
+			}
+			catch(ReflectionException $e)
+			{
+				// method does not exist
+			}
 		}
 
 		$table = $this->getHelper('table');

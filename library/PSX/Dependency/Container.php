@@ -163,13 +163,13 @@ class Container implements ContainerInterface
 
 		foreach($container->getMethods() as $method)
 		{
-			if(preg_match('/^get(.+)$/', $method->name, $match))
+			if(!in_array($method->name, array('get', 'getParameter', 'getServiceIds')) && preg_match('/^get(.+)$/', $method->name, $match))
 			{
 				$services[] = self::underscore($match[1]);
 			}
 		}
 
-		return array_unique(array_merge($services, array_keys($this->services)));
+		return $services;
 	}
 
 	public static function normalizeName($name)
