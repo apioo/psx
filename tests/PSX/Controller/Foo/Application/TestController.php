@@ -30,6 +30,7 @@ use PSX\Data\Record;
 use PSX\Filter;
 use PSX\Http\Stream\FileStream;
 use PSX\Loader\Location;
+use PSX\Url;
 use PSX\Validate;
 use SimpleXMLElement;
 
@@ -140,9 +141,14 @@ class TestController extends ControllerAbstract
 		$this->redirect('PSX\Controller\Foo\Application\TestController::doRedirectDestiniation', array('foo' => 'bar'));
 	}
 
-	public function doRedirectAbsolute()
+	public function doRedirectAbsoluteString()
 	{
 		$this->redirect('http://localhost.com/foobar');
+	}
+
+	public function doRedirectAbsoluteObject()
+	{
+		$this->redirect(new Url('http://localhost.com/foobar'));
 	}
 
 	public function doSetArrayBody()

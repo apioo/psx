@@ -96,9 +96,22 @@ class ControllerAbstractTest extends ControllerTestCase
 		$this->assertEquals('/redirect/bar', substr($response->getHeader('Location'), -13));
 	}
 
-	public function testRedirectAbsolute()
+	public function testRedirectAbsoluteString()
 	{
-		$path     = '/controller/absolute';
+		$path     = '/controller/absolute/string';
+		$request  = new Request(new Url('http://127.0.0.1' . $path), 'GET');
+		$response = new Response();
+		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
+
+		$controller = $this->loadController($request, $response);
+
+		$this->assertEquals(307, $response->getStatusCode());
+		$this->assertEquals('http://localhost.com/foobar', $response->getHeader('Location'));
+	}
+
+	public function testRedirectAbsoluteObject()
+	{
+		$path     = '/controller/absolute/object';
 		$request  = new Request(new Url('http://127.0.0.1' . $path), 'GET');
 		$response = new Response();
 		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
@@ -219,7 +232,8 @@ XML;
 			[['POST'], '/controller/inspect', 'PSX\Controller\Foo\Application\TestController::doInspect'],
 			[['GET'], '/controller/forward', 'PSX\Controller\Foo\Application\TestController::doForward'],
 			[['GET'], '/controller/redirect', 'PSX\Controller\Foo\Application\TestController::doRedirect'],
-			[['GET'], '/controller/absolute', 'PSX\Controller\Foo\Application\TestController::doRedirectAbsolute'],
+			[['GET'], '/controller/absolute/string', 'PSX\Controller\Foo\Application\TestController::doRedirectAbsoluteString'],
+			[['GET'], '/controller/absolute/object', 'PSX\Controller\Foo\Application\TestController::doRedirectAbsoluteObject'],
 			[['GET'], '/controller/array', 'PSX\Controller\Foo\Application\TestController::doSetArrayBody'],
 			[['GET'], '/controller/record', 'PSX\Controller\Foo\Application\TestController::doSetRecordBody'],
 			[['GET'], '/controller/dom', 'PSX\Controller\Foo\Application\TestController::doSetDomDocumentBody'],
