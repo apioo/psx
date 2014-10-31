@@ -54,13 +54,21 @@ class ControllerAbstractTest extends ControllerTestCase
 
 	public function testInnerApi()
 	{
+		$data = array(
+			'foo' => 'bar',
+			'bar' => array('foo' => 'nested'),
+			'entries' => array(array('title' => 'bar'), array('title' => 'foo')),
+		);
+
 		$path     = '/controller/inspect';
 		$request  = new Request(new Url('http://127.0.0.1' . $path . '?foo=bar'), 'POST', array('Content-Type' => 'application/json', 'Accept' => 'application/json'));
-		$request->setBody(new StringStream('{"foo": "bar"}'));
+		$request->setBody(new StringStream(json_encode($data)));
 		$response = new Response();
 		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
 
 		$controller = $this->loadController($request, $response);
+
+		$this->assertJsonStringEqualsJsonString(json_encode(array('bar' => 'foo')), (string) $response->getBody());
 	}
 
 	public function testForward()
@@ -208,7 +216,7 @@ XML;
 	{
 		return array(
 			[['GET'], '/controller', 'PSX\Controller\Foo\Application\TestController::doIndex'],
-			[['GET'], '/controller/inspect', 'PSX\Controller\Foo\Application\TestController::doInspect'],
+			[['POST'], '/controller/inspect', 'PSX\Controller\Foo\Application\TestController::doInspect'],
 			[['GET'], '/controller/forward', 'PSX\Controller\Foo\Application\TestController::doForward'],
 			[['GET'], '/controller/redirect', 'PSX\Controller\Foo\Application\TestController::doRedirect'],
 			[['GET'], '/controller/absolute', 'PSX\Controller\Foo\Application\TestController::doRedirectAbsolute'],
