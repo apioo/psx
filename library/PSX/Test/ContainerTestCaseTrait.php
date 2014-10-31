@@ -27,6 +27,8 @@ use Monolog\Logger;
 use Monolog\Handler\NullHandler;
 use PSX\Command\Output\Void;
 use PSX\Dispatch\Sender\Void as VoidSender;
+use PSX\Event;
+use PSX\Event\ExceptionThrownEvent;
 use PSX\Loader\RoutingParser;
 
 /**
@@ -63,6 +65,17 @@ trait ContainerTestCaseTrait
 
 		// we replace the command output
 		getContainer()->set('command_output', new Void());
+
+		// add event listener which redirects PHPUnit exceptions
+		$eventDispatcher = getContainer()->get('event_dispatcher');
+		$eventDispatcher->addListener(Event::EXCEPTION_THROWN, function(ExceptionThrownEvent $event){
+
+			if($event->getException() instanceof \PHPUnit_Framework_Exception)
+			{
+				throw $event->getException();
+			}
+
+		});
 
 		// set void logger
 		$logger = new Logger('psx');
