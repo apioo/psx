@@ -84,8 +84,13 @@ class DefaultContainer extends Container
 	 */
 	public function getSession()
 	{
-		$session = new Session($this->getParameter('session.name'));
-		$session->start();
+		$name    = $this->hasParameter('session.name') ? $this->getParameter('session.name') : 'psx';
+		$session = new Session($name);
+
+		if(PHP_SAPI != 'cli')
+		{
+			$session->start();
+		}
 
 		return $session;
 	}
@@ -157,7 +162,7 @@ class DefaultContainer extends Container
 	{
 		$connection = $this->get('connection');
 		$paths      = array(PSX_PATH_LIBRARY);
-		$isDevMode  = getContainer()->get('config')->get('psx_debug');
+		$isDevMode  = $this->get('config')->get('psx_debug');
 
 		$config = Setup::createAnnotationMetadataConfiguration($paths, $isDevMode);
 		$config->addCustomHydrationMode(RecordHydrator::HYDRATE_RECORD, 'PSX\Handler\Doctrine\RecordHydrator');
