@@ -29,6 +29,7 @@ use InvalidArgumentException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamableInterface;
+use PSX\Data\Accessor;
 use PSX\Data\NotFoundException;
 use PSX\Data\ReaderFactory;
 use PSX\Data\RecordInterface;
