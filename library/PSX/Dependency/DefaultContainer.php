@@ -33,7 +33,7 @@ use Monolog\Processor as MonologProcessor;
 use PSX\Base;
 use PSX\Cache;
 use PSX\Config;
-use PSX\Handler\Doctrine\RecordHydrator;
+use PSX\Handler\Impl\Doctrine\RecordHydrator;
 use PSX\Http;
 use PSX\Session;
 use PSX\Template;
@@ -165,7 +165,7 @@ class DefaultContainer extends Container
 		$isDevMode  = $this->get('config')->get('psx_debug');
 
 		$config = Setup::createAnnotationMetadataConfiguration($paths, $isDevMode);
-		$config->addCustomHydrationMode(RecordHydrator::HYDRATE_RECORD, 'PSX\Handler\Doctrine\RecordHydrator');
+		$config->addCustomHydrationMode(RecordHydrator::HYDRATE_RECORD, 'PSX\Handler\Impl\Doctrine\RecordHydrator');
 
 		return EntityManager::create($connection, $config, $connection->getEventManager());
 	}
