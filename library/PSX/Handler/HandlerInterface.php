@@ -23,15 +23,10 @@
 
 namespace PSX\Handler;
 
-use PSX\Sql\Condition;
-
 /**
  * The handler is an interface to CRUD records. A handler has a fixed amount of 
  * fields wich can be queried. The fields can be i.e. an select from an database 
- * or a result from an api request. By using an handler in your domain logic you 
- * remove the connection from sql queries to your application. In this way you 
- * could easily get the latest news from an api endpoint or nosql database 
- * instead of an mysql database
+ * or a result from an api request
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3

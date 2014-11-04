@@ -21,32 +21,40 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Handler;
+namespace PSX\Handler\Impl;
 
+use PSX\Cache;
+use PSX\Data\ResultSet;
+use PSX\DateTime;
+use PSX\Handler\HandlerTestCase;
+use PSX\Sql;
 use PSX\Sql\Condition;
+use PSX\Sql\DbTestCase;
+use PSX\Sql\Join;
+use PSX\Sql\Table;
+use PSX\Sql\TableAbstract;
+use PSX\Sql\TableInterface;
+use PSX\Sql\TableManager;
+use PSX\Test\TableDataSet;
 
 /**
- * The handler manager has all informations in order to create an object from
- * an handler class name
+ * ProxyCacheHandlerTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-interface HandlerManagerInterface
+class ProxyCacheHandlerTest extends DbTestCase
 {
-	/**
-	 * Returns the name of the handler
-	 *
-	 * @return string
-	 */
-	public function getName();
+	use HandlerTestCase;
 
-	/**
-	 * Returns an instance of the given handler
-	 *
-	 * @param string $className
-	 * @return PSX\Data\HandlerInterface
-	 */
-	public function get($className);
+	public function getDataSet()
+	{
+		return $this->createFlatXMLDataSet(__DIR__ . '/../handler_fixture.xml');
+	}
+
+	protected function getHandler()
+	{
+		return new ProxyCacheHandler(new Database\TestHandler($this->connection), new Cache(new Cache\Handler\Memory()));
+	}
 }

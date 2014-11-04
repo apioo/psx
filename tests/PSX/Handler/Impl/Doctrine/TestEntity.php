@@ -21,32 +21,78 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Handler;
-
-use PSX\Sql\Condition;
+namespace PSX\Handler\Impl\Doctrine;
 
 /**
- * The handler manager has all informations in order to create an object from
- * an handler class name
+ * @Entity
+ * @Table(name="psx_handler_comment")
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-interface HandlerManagerInterface
+class TestEntity
 {
 	/**
-	 * Returns the name of the handler
-	 *
-	 * @return string
+	 * @Id
+	 * @Column(type="integer", nullable=false)
+	 * @GeneratedValue(strategy="IDENTITY")
 	 */
-	public function getName();
+	protected $id;
 
 	/**
-	 * Returns an instance of the given handler
-	 *
-	 * @param string $className
-	 * @return PSX\Data\HandlerInterface
+	 * @Column(type="integer", nullable=false)
 	 */
-	public function get($className);
+	protected $userId;
+
+	/**
+	 * @Column(type="string", nullable=false)
+	 */
+	protected $title;
+
+	/**
+	 * @Column(type="datetime", nullable=false)
+	 */
+	protected $date;
+
+	public function setId($id)
+	{
+		$this->id = $id;
+	}
+
+	public function getId()
+	{
+		return $this->id;
+	}
+
+	public function setUserId($userId)
+	{
+		$this->userId = $userId;
+	}
+	
+	public function getUserId()
+	{
+		return $this->userId;
+	}
+
+	public function setTitle($title)
+	{
+		$this->title = $title;
+	}
+	
+	public function getTitle()
+	{
+		return $this->title;
+	}
+
+	public function setDate($date)
+	{
+		$this->date = $date;
+	}
+	
+	public function getDate()
+	{
+		return $this->date;
+	}
 }
+

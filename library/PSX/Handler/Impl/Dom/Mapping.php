@@ -21,32 +21,45 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Handler;
+namespace PSX\Handler\Impl\Dom;
 
-use PSX\Sql\Condition;
+use DOMDocument;
+use PSX\Handler\MappingAbstract;
 
 /**
- * The handler manager has all informations in order to create an object from
- * an handler class name
+ * Mapping
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-interface HandlerManagerInterface
+class Mapping extends MappingAbstract
 {
-	/**
-	 * Returns the name of the handler
-	 *
-	 * @return string
-	 */
-	public function getName();
+	protected $dom;
+	protected $root;
+	protected $record;
 
-	/**
-	 * Returns an instance of the given handler
-	 *
-	 * @param string $className
-	 * @return PSX\Data\HandlerInterface
-	 */
-	public function get($className);
+	public function __construct(DOMDocument $dom, $root, $record, array $fields)
+	{
+		parent::__construct($fields);
+
+		$this->dom    = $dom;
+		$this->root   = $root;
+		$this->record = $record;
+	}
+
+	public function getDom()
+	{
+		return $this->dom;
+	}
+
+	public function getRoot()
+	{
+		return $this->root;
+	}
+
+	public function getRecord()
+	{
+		return $this->record;
+	}
 }

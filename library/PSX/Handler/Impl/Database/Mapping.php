@@ -21,32 +21,30 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Handler;
+namespace PSX\Handler\Impl\Database;
 
-use PSX\Sql\Condition;
+use PSX\Handler\MappingAbstract;
 
 /**
- * The handler manager has all informations in order to create an object from
- * an handler class name
+ * Mapping
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-interface HandlerManagerInterface
+class Mapping extends MappingAbstract
 {
-	/**
-	 * Returns the name of the handler
-	 *
-	 * @return string
-	 */
-	public function getName();
+	protected $sql;
 
-	/**
-	 * Returns an instance of the given handler
-	 *
-	 * @param string $className
-	 * @return PSX\Data\HandlerInterface
-	 */
-	public function get($className);
+	public function __construct($sql, array $fields)
+	{
+		parent::__construct($fields);
+
+		$this->sql = $sql;
+	}
+
+	public function getSql()
+	{
+		return $this->sql;
+	}
 }

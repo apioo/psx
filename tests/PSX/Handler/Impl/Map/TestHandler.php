@@ -21,32 +21,57 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Handler;
+namespace PSX\Handler\Impl\Map;
 
-use PSX\Sql\Condition;
+use PSX\Handler\Impl\MapHandlerAbstract;
+use PSX\Handler\MappingAbstract;
 
 /**
- * The handler manager has all informations in order to create an object from
- * an handler class name
+ * TestHandler
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-interface HandlerManagerInterface
+class TestHandler extends MapHandlerAbstract
 {
-	/**
-	 * Returns the name of the handler
-	 *
-	 * @return string
-	 */
-	public function getName();
+	public function getMapping()
+	{
+		return new Mapping($this->getArray(), array(
+			'id'     => MappingAbstract::TYPE_INTEGER | 10 | MappingAbstract::ID_PROPERTY,
+			'userId' => MappingAbstract::TYPE_INTEGER | 10,
+			'title'  => MappingAbstract::TYPE_STRING | 32,
+			'date'   => MappingAbstract::TYPE_DATETIME,
+		));
+	}
 
-	/**
-	 * Returns an instance of the given handler
-	 *
-	 * @param string $className
-	 * @return PSX\Data\HandlerInterface
-	 */
-	public function get($className);
+	protected function getArray()
+	{
+		return array(
+			array(
+				'id'     => 1,
+				'userId' => 1,
+				'title'  => 'foo',
+				'date'   => '2013-04-29 16:56:32',
+			),
+			array(
+				'id'     => 2,
+				'userId' => 1,
+				'title'  => 'bar',
+				'date'   => '2013-04-29 16:56:32',
+			),
+			array(
+				'id'     => 3,
+				'userId' => 2,
+				'title'  => 'test',
+				'date'   => '2013-04-29 16:56:32',
+			),
+			array(
+				'id'     => 4,
+				'userId' => 3,
+				'title'  => 'blub',
+				'date'   => '2013-04-29 16:56:32',
+			),
+		);
+	}
 }

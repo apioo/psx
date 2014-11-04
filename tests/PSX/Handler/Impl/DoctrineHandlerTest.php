@@ -21,32 +21,30 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Handler;
+namespace PSX\Handler\Impl;
 
-use PSX\Sql\Condition;
+use PSX\Handler\Impl\Doctrine\DoctrineTestCase;
+use PSX\Handler\Impl\Doctrine\RecordHydrator;
+use PSX\Handler\HandlerTestCase;
 
 /**
- * The handler manager has all informations in order to create an object from
- * an handler class name
+ * DoctrineHandlerTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-interface HandlerManagerInterface
+class DoctrineHandlerTest extends DoctrineTestCase
 {
-	/**
-	 * Returns the name of the handler
-	 *
-	 * @return string
-	 */
-	public function getName();
+	use HandlerTestCase;
 
-	/**
-	 * Returns an instance of the given handler
-	 *
-	 * @param string $className
-	 * @return PSX\Data\HandlerInterface
-	 */
-	public function get($className);
+	public function getDataSet()
+	{
+		return $this->createFlatXMLDataSet(__DIR__ . '/../handler_fixture.xml');
+	}
+
+	protected function getHandler()
+	{
+		return new Doctrine\TestHandler($this->getEntityManager());
+	}
 }

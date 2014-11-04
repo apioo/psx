@@ -21,32 +21,70 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Handler;
+namespace PSX\Handler\Impl\Database;
 
-use PSX\Sql\Condition;
+use PSX\Data\RecordAbstract;
 
 /**
- * The handler manager has all informations in order to create an object from
- * an handler class name
+ * TestRecord
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-interface HandlerManagerInterface
+class TestRecord extends RecordAbstract
 {
-	/**
-	 * Returns the name of the handler
-	 *
-	 * @return string
-	 */
-	public function getName();
+	protected $id;
+	protected $userId;
+	protected $title;
+	protected $date;
 
 	/**
-	 * Returns an instance of the given handler
-	 *
-	 * @param string $className
-	 * @return PSX\Data\HandlerInterface
+	 * @param integer $id
 	 */
-	public function get($className);
+	public function setId($id)
+	{
+		$this->id = $id;
+	}
+
+	public function getId()
+	{
+		return $this->id;
+	}
+
+	/**
+	 * @param integer $userId
+	 */
+	public function setUserId($userId)
+	{
+		$this->userId = $userId;
+	}
+
+	public function getUserId()
+	{
+		return $this->userId;
+	}
+
+	public function setTitle($title)
+	{
+		$this->title = $title;
+	}
+
+	public function getTitle()
+	{
+		return $this->title;
+	}
+
+	/**
+	 * @param string $date
+	 */
+	public function setDate($date)
+	{
+		$this->date = $date;
+	}
+
+	public function getDate()
+	{
+		return $this->date;
+	}
 }

@@ -21,32 +21,22 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Handler;
+namespace PSX\Handler\Impl\Doctrine;
 
-use PSX\Sql\Condition;
+use PSX\Handler\Impl\DoctrineHandlerAbstract;
 
 /**
- * The handler manager has all informations in order to create an object from
- * an handler class name
+ * TestHandler
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-interface HandlerManagerInterface
+class TestHandler extends DoctrineHandlerAbstract
 {
-	/**
-	 * Returns the name of the handler
-	 *
-	 * @return string
-	 */
-	public function getName();
-
-	/**
-	 * Returns an instance of the given handler
-	 *
-	 * @param string $className
-	 * @return PSX\Data\HandlerInterface
-	 */
-	public function get($className);
+	protected function getMapping()
+	{
+		return $this->manager->createQueryBuilder()
+			->from('PSX\Handler\Doctrine\TestEntity', 'comment');
+	}
 }

@@ -21,32 +21,32 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Handler;
+namespace PSX\Handler\Impl\Database;
 
-use PSX\Sql\Condition;
+use PSX\Handler\Impl\DatabaseHandlerAbstract;
+use PSX\Handler\MappingAbstract;
 
 /**
- * The handler manager has all informations in order to create an object from
- * an handler class name
+ * TestHandler
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-interface HandlerManagerInterface
+class TestHandler extends DatabaseHandlerAbstract
 {
-	/**
-	 * Returns the name of the handler
-	 *
-	 * @return string
-	 */
-	public function getName();
+	public function getMapping()
+	{
+		return new Mapping($this->getQuery(), array(
+			'id'     => MappingAbstract::TYPE_INTEGER | 10 | MappingAbstract::ID_PROPERTY,
+			'userId' => MappingAbstract::TYPE_INTEGER | 10,
+			'title'  => MappingAbstract::TYPE_STRING | 32,
+			'date'   => MappingAbstract::TYPE_DATETIME,
+		));
+	}
 
-	/**
-	 * Returns an instance of the given handler
-	 *
-	 * @param string $className
-	 * @return PSX\Data\HandlerInterface
-	 */
-	public function get($className);
+	protected function getQuery()
+	{
+		return 'SELECT `id`, `userId`, `title`, `date` FROM `psx_handler_comment` {condition} {orderBy} {limit}';
+	}
 }

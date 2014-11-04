@@ -21,32 +21,23 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Handler;
+namespace PSX\Handler\Impl;
 
-use PSX\Sql\Condition;
+use PSX\Handler\HandlerTestCase;
 
 /**
- * The handler manager has all informations in order to create an object from
- * an handler class name
+ * MapHandlerTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-interface HandlerManagerInterface
+class MapHandlerTest extends \PHPUnit_Framework_TestCase
 {
-	/**
-	 * Returns the name of the handler
-	 *
-	 * @return string
-	 */
-	public function getName();
+	use HandlerTestCase;
 
-	/**
-	 * Returns an instance of the given handler
-	 *
-	 * @param string $className
-	 * @return PSX\Data\HandlerInterface
-	 */
-	public function get($className);
+	protected function getHandler()
+	{
+		return new Map\TestHandler();
+	}
 }

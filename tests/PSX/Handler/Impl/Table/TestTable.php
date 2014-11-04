@@ -21,32 +21,32 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Handler;
+namespace PSX\Handler\Impl\Table;
 
-use PSX\Sql\Condition;
+use PSX\Sql\TableAbstract;
+use PSX\Sql\TableInterface;
 
 /**
- * The handler manager has all informations in order to create an object from
- * an handler class name
+ * TestTable
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-interface HandlerManagerInterface
+class TestTable extends TableAbstract
 {
-	/**
-	 * Returns the name of the handler
-	 *
-	 * @return string
-	 */
-	public function getName();
+	public function getName()
+	{
+		return 'psx_handler_comment';
+	}
 
-	/**
-	 * Returns an instance of the given handler
-	 *
-	 * @param string $className
-	 * @return PSX\Data\HandlerInterface
-	 */
-	public function get($className);
+	public function getColumns()
+	{
+		return array(
+			'id'     => TableInterface::TYPE_INT | 10 | TableInterface::PRIMARY_KEY | TableInterface::AUTO_INCREMENT,
+			'userId' => TableInterface::TYPE_INT | 10,
+			'title'  => TableInterface::TYPE_VARCHAR | 32,
+			'date'   => TableInterface::TYPE_DATETIME,
+		);
+	}
 }

@@ -23,13 +23,6 @@
 
 namespace PSX\Handler;
 
-use BadMethodCallException;
-use InvalidArgumentException;
-use PSX\Data\Collection;
-use PSX\Data\ResultSet;
-use PSX\Sql;
-use PSX\Sql\Condition;
-
 /**
  * HandlerAbstract
  *

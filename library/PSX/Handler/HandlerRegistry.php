@@ -23,30 +23,67 @@
 
 namespace PSX\Handler;
 
+use BadMethodCallException;
+use RuntimeException;
 use PSX\Sql\Condition;
 
 /**
- * The handler manager has all informations in order to create an object from
- * an handler class name
+ * HandlerQueryInterface
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-interface HandlerManagerInterface
+class HandlerRegistry
 {
-	/**
-	 * Returns the name of the handler
-	 *
-	 * @return string
-	 */
-	public function getName();
+	protected $manager = array();
 
-	/**
-	 * Returns an instance of the given handler
-	 *
-	 * @param string $className
-	 * @return PSX\Data\HandlerInterface
-	 */
-	public function get($className);
+	public function add(HandlerManagerInterface $manager)
+	{
+		$this->manager[] = $manager;
+	}
+
+	public function get($name)
+	{
+		foreach($this->manager as $manager)
+		{
+			if($manager->getName() == $name)
+			{
+				return $manager;
+			}
+		}
+
+		return null;
+	}
+
+	public function __call($method, array $arguments)
+	{
+		if(substr($method, 0, 3) == 'get')
+		{
+			$name    = lcfirst(substr($method, 3));
+			$manager = $this->get($name);
+
+			if($manager instanceof HandlerManagerInterface)
+			{
+				$className = isset($arguments[0]) ? $arguments[0] : null;
+
+				if(!empty($className))
+				{
+					return $manager->get($className);
+				}
+				else
+				{
+					throw new RuntimeException('First argument must be an class name');
+				}
+			}
+			else
+			{
+				throw new RuntimeException('Found no manager for "' . $name . '"');
+			}
+		}
+		else
+		{
+			throw new BadMethodCallException('Undefined method ' . $method);
+		}
+	}
 }

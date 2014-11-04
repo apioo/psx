@@ -21,32 +21,27 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Handler;
+namespace PSX\Handler\Impl\Mongodb;
 
-use PSX\Sql\Condition;
+use PSX\Handler\Impl\MongodbHandlerAbstract;
+use PSX\Handler\MappingAbstract;
 
 /**
- * The handler manager has all informations in order to create an object from
- * an handler class name
+ * TestHandler
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-interface HandlerManagerInterface
+class TestHandler extends MongodbHandlerAbstract
 {
-	/**
-	 * Returns the name of the handler
-	 *
-	 * @return string
-	 */
-	public function getName();
-
-	/**
-	 * Returns an instance of the given handler
-	 *
-	 * @param string $className
-	 * @return PSX\Data\HandlerInterface
-	 */
-	public function get($className);
+	public function getMapping()
+	{
+		return new Mapping($this->client->selectCollection('psx', 'psx_handler_comment'), array(
+			'id'     => MappingAbstract::TYPE_INTEGER | 10 | MappingAbstract::ID_PROPERTY,
+			'userId' => MappingAbstract::TYPE_INTEGER | 10,
+			'title'  => MappingAbstract::TYPE_STRING | 32,
+			'date'   => MappingAbstract::TYPE_DATETIME,
+		));
+	}
 }

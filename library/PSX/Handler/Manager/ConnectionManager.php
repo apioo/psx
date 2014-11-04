@@ -21,32 +21,46 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Handler;
+namespace PSX\Handler\Manager;
 
-use PSX\Sql\Condition;
+use Doctrine\DBAL\Connection;
+use PSX\Handler\HandlerManagerInterface;
 
 /**
- * The handler manager has all informations in order to create an object from
- * an handler class name
+ * ConnectionManager
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-interface HandlerManagerInterface
+class ConnectionManager implements HandlerManagerInterface
 {
-	/**
-	 * Returns the name of the handler
-	 *
-	 * @return string
-	 */
-	public function getName();
+	const NAME = 'connection';
 
 	/**
-	 * Returns an instance of the given handler
-	 *
-	 * @param string $className
-	 * @return PSX\Data\HandlerInterface
+	 * @var Doctrine\DBAL\Connection
 	 */
-	public function get($className);
+	protected $connection;
+
+	protected $_container;
+
+	public function __construct(Connection $connection)
+	{
+		$this->connection = $connection;
+	}
+
+	public function getName()
+	{
+		return self::NAME;
+	}
+
+	public function get($className)
+	{
+		if(!isset($this->_container[$className]))
+		{
+			$this->_container[$className] = new $className($this->connection);
+		}
+
+		return $this->_container[$className];
+	}
 }

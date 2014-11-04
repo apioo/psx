@@ -21,32 +21,35 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Handler;
+namespace PSX\Handler\Manager;
 
-use PSX\Sql\Condition;
+use PSX\Handler\HandlerManagerInterface;
 
 /**
- * The handler manager has all informations in order to create an object from
- * an handler class name
+ * DefaultManager
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-interface HandlerManagerInterface
+class DefaultManager implements HandlerManagerInterface
 {
-	/**
-	 * Returns the name of the handler
-	 *
-	 * @return string
-	 */
-	public function getName();
+	const NAME = 'handler';
 
-	/**
-	 * Returns an instance of the given handler
-	 *
-	 * @param string $className
-	 * @return PSX\Data\HandlerInterface
-	 */
-	public function get($className);
+	protected $_container;
+
+	public function getName()
+	{
+		return self::NAME;
+	}
+
+	public function get($className)
+	{
+		if(!isset($this->_container[$className]))
+		{
+			$this->_container[$className] = new $className();
+		}
+
+		return $this->_container[$className];
+	}
 }

@@ -21,32 +21,48 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Handler;
+namespace PSX\Handler\Impl\Doctrine;
 
-use PSX\Sql\Condition;
+use Doctrine\ORM\Tools\Setup;
+use Doctrine\ORM\EntityManager;
+use PSX\Handler\Doctrine\RecordHydrator;
+use PSX\Handler\HandlerTestCase;
+use PSX\Sql\DbTestCase;
 
 /**
- * The handler manager has all informations in order to create an object from
- * an handler class name
+ * DoctrineTestCase
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-interface HandlerManagerInterface
+abstract class DoctrineTestCase extends DbTestCase
 {
-	/**
-	 * Returns the name of the handler
-	 *
-	 * @return string
-	 */
-	public function getName();
+	private static $em;
 
-	/**
-	 * Returns an instance of the given handler
-	 *
-	 * @param string $className
-	 * @return PSX\Data\HandlerInterface
-	 */
-	public function get($className);
+	public function setUp()
+	{
+		// we cant work with doctrine under hhvm
+		if(getenv('TRAVIS_PHP_VERSION') == 'hhvm')
+		{
+			$this->markTestSkipped('Doctrine is not compatible with hhvm');
+		}
+
+		if(!class_exists('Doctrine\ORM\EntityManager'))
+		{
+			$this->markTestSkipped('Doctrine not installed');
+		}
+
+		parent::setUp();
+	}
+
+	protected function getEntityManager()
+	{
+		if(self::$em === null)
+		{
+			self::$em = getContainer()->get('entity_manager');
+		}
+
+		return self::$em;
+	}
 }
