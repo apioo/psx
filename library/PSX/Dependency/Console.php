@@ -23,6 +23,8 @@
 
 namespace PSX\Dependency;
 
+use Doctrine\DBAL\Tools\Console\ConsoleRunner;
+use Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper;
 use PSX\Base;
 use PSX\Console\CommandCommand;
 use PSX\Console\ContainerCommand;
@@ -32,6 +34,8 @@ use PSX\Console\Reader;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\HelpCommand;
 use Symfony\Component\Console\Command\ListCommand;
+use Symfony\Component\Console\Helper\HelperSet;
+use Symfony\Component\Console\Helper\Table;
 
 /**
  * Console
@@ -48,8 +52,9 @@ trait Console
 	public function getConsole()
 	{
 		$application = new Application('psx', Base::getVersion());
+		$application->setHelperSet(new HelperSet($this->appendHelpers()));
 
-		$this->appendDefaultCommands($application);
+		$this->appendCommands($application);
 
 		return $application;
 	}
@@ -62,7 +67,7 @@ trait Console
 		return new Reader\Stdin();
 	}
 
-	protected function appendDefaultCommands(Application $application)
+	protected function appendCommands(Application $application)
 	{
 		$application->add(new HelpCommand());
 		$application->add(new ListCommand());
@@ -70,5 +75,18 @@ trait Console
 		$application->add(new ContainerCommand($this));
 		$application->add(new RouteCommand($this->get('routing_parser')));
 		$application->add(new ServeCommand($this->get('config'), $this->get('dispatch'), $this->get('console_reader')));
+
+		// add doctrine commands
+		ConsoleRunner::addCommands($application);
+	}
+
+	/**
+	 * @return array
+	 */
+	protected function appendHelpers()
+	{
+		return array(
+			'db' => new ConnectionHelper($this->get('connection')),
+		);
 	}
 }
