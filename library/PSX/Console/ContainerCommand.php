@@ -28,7 +28,7 @@ use PSX\Util\Annotation;
 use ReflectionClass;
 use ReflectionException;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Helper\TableHelper;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -92,11 +92,11 @@ class ContainerCommand extends Command
 			}
 		}
 
-		$table = $this->getHelper('table');
+		$table = new Table($output);
 		$table
-			->setLayout(TableHelper::LAYOUT_COMPACT)
+			->setStyle('compact')
 			->setRows($rows);
 
-		$table->render($output);
+		$table->render();
 	}
 }
