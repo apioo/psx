@@ -90,6 +90,156 @@ JSON;
 		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
 	}
 
+	public function testGetFilterCount()
+	{
+		$body     = new TempStream(fopen('php://memory', 'r+'));
+		$request  = new Request(new Url('http://127.0.0.1/api?count=2'), 'GET');
+		$response = new Response();
+		$response->setBody($body);
+
+		$controller = $this->loadController($request, $response);
+		$body       = (string) $response->getBody();
+
+		$expect = <<<JSON
+{"entry": [
+    {
+      "id": 4,
+      "userId": 3,
+      "title": "blub",
+      "date": "2013-04-29T16:56:32+00:00"
+    },
+    {
+      "id": 3,
+      "userId": 2,
+      "title": "test",
+      "date": "2013-04-29T16:56:32+00:00"
+    }
+  ]}
+JSON;
+
+		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
+	}
+
+	public function testGetFilterStartIndex()
+	{
+		$body     = new TempStream(fopen('php://memory', 'r+'));
+		$request  = new Request(new Url('http://127.0.0.1/api?startIndex=2'), 'GET');
+		$response = new Response();
+		$response->setBody($body);
+
+		$controller = $this->loadController($request, $response);
+		$body       = (string) $response->getBody();
+
+		$expect = <<<JSON
+{"entry": [
+    {
+      "id": 2,
+      "userId": 1,
+      "title": "bar",
+      "date": "2013-04-29T16:56:32+00:00"
+    },
+    {
+      "id": 1,
+      "userId": 1,
+      "title": "foo",
+      "date": "2013-04-29T16:56:32+00:00"
+    }
+  ]}
+JSON;
+
+		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
+	}
+
+	public function testGetFilterSortOrder()
+	{
+		$body     = new TempStream(fopen('php://memory', 'r+'));
+		$request  = new Request(new Url('http://127.0.0.1/api?count=2&sortOrder=asc'), 'GET');
+		$response = new Response();
+		$response->setBody($body);
+
+		$controller = $this->loadController($request, $response);
+		$body       = (string) $response->getBody();
+
+		$expect = <<<JSON
+{"entry": [
+    {
+      "id": 1,
+      "userId": 1,
+      "title": "foo",
+      "date": "2013-04-29T16:56:32+00:00"
+    },
+    {
+      "id": 2,
+      "userId": 1,
+      "title": "bar",
+      "date": "2013-04-29T16:56:32+00:00"
+    }
+  ]}
+JSON;
+
+		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
+	}
+
+	public function testGetFilterSortBy()
+	{
+		$body     = new TempStream(fopen('php://memory', 'r+'));
+		$request  = new Request(new Url('http://127.0.0.1/api?count=2&sortBy=userId&sortOrder=desc'), 'GET');
+		$response = new Response();
+		$response->setBody($body);
+
+		$controller = $this->loadController($request, $response);
+		$body       = (string) $response->getBody();
+
+		$expect = <<<JSON
+{"entry": [
+    {
+      "id": 4,
+      "userId": 3,
+      "title": "blub",
+      "date": "2013-04-29T16:56:32+00:00"
+    },
+    {
+      "id": 3,
+      "userId": 2,
+      "title": "test",
+      "date": "2013-04-29T16:56:32+00:00"
+    }
+  ]}
+JSON;
+
+		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
+	}
+
+	public function testGetFilterValue()
+	{
+		$body     = new TempStream(fopen('php://memory', 'r+'));
+		$request  = new Request(new Url('http://127.0.0.1/api?filterBy=userId&filterOp=equals&filterValue=1'), 'GET');
+		$response = new Response();
+		$response->setBody($body);
+
+		$controller = $this->loadController($request, $response);
+		$body       = (string) $response->getBody();
+
+		$expect = <<<JSON
+{"entry": [
+    {
+      "id": 2,
+      "userId": 1,
+      "title": "bar",
+      "date": "2013-04-29T16:56:32+00:00"
+    },
+    {
+      "id": 1,
+      "userId": 1,
+      "title": "foo",
+      "date": "2013-04-29T16:56:32+00:00"
+    }
+  ]}
+JSON;
+
+		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
+	}
+
 	public function testPost()
 	{
 		$data     = json_encode(array('userId' => 3, 'title' => 'test', 'date' => '2013-05-29T16:56:32+00:00'));
