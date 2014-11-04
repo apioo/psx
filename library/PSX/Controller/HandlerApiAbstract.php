@@ -23,19 +23,12 @@
 
 namespace PSX\Controller;
 
-use DateTime;
 use PSX\Data\Message;
-use PSX\Data\Record\Mapper;
-use PSX\Data\Record\Mapper\Rule;
 use PSX\Data\RecordInterface;
-use PSX\Data\WriterInterface;
-use PSX\Exception;
 use PSX\Handler\HandlerManipulationInterface;
 use PSX\Handler\HandlerQueryInterface;
-use PSX\Util\Uuid;
 use PSX\Util\Api\FilterParameter;
 use PSX\Sql\Condition;
-use PSX\Validate\ValidatorInterface;
 use PSX\Http\Exception as StatusCode;
 
 /**
@@ -81,24 +74,8 @@ abstract class HandlerApiAbstract extends ApiAbstract
 
 		$record = $this->import($this->_handler->getRecord());
 
-		$this->beforeValidate($record);
-
-		// validate
-		$validator = $this->getValidator();
-
-		if($validator instanceof ValidatorInterface)
-		{
-			$validator->validate($record);
-		}
-
-		$this->afterValidate($record);
-
-		// insert
-		$this->beforeCreate($record);
-
+		// create
 		$this->doCreate($record);
-
-		$this->afterCreate($record);
 
 		// message
 		$message = new Message('You have successful create a ' . $record->getRecordInfo()->getName(), true);
@@ -117,24 +94,8 @@ abstract class HandlerApiAbstract extends ApiAbstract
 
 		$record = $this->import($this->_handler->getRecord());
 
-		$this->beforeValidate($record);
-
-		// validate
-		$validator = $this->getValidator();
-
-		if($validator instanceof ValidatorInterface)
-		{
-			$validator->validate($record);
-		}
-
-		$this->afterValidate($record);
-
 		// update
-		$this->beforeUpdate($record);
-
 		$this->doUpdate($record);
-
-		$this->afterUpdate($record);
 
 		// message
 		$message = new Message('You have successful update a ' . $record->getRecordInfo()->getName(), true);
@@ -153,24 +114,8 @@ abstract class HandlerApiAbstract extends ApiAbstract
 
 		$record = $this->import($this->_handler->getRecord());
 
-		$this->beforeValidate($record);
-
-		// validate
-		$validator = $this->getValidator();
-
-		if($validator instanceof ValidatorInterface)
-		{
-			$validator->validate($record);
-		}
-
-		$this->afterValidate($record);
-
 		// delete
-		$this->beforeDelete($record);
-
 		$this->doDelete($record);
-
-		$this->afterDelete($record);
 
 		// message
 		$message = new Message('You have successful delete a ' . $record->getRecordInfo()->getName(), true);
@@ -200,88 +145,6 @@ abstract class HandlerApiAbstract extends ApiAbstract
 	protected function doDelete(RecordInterface $record)
 	{
 		$this->_handler->delete($record);
-	}
-
-	/**
-	 * Method which is called before the record gets created
-	 *
-	 * @param PSX\Data\RecordInterface $record
-	 */
-	protected function beforeCreate(RecordInterface $record)
-	{
-	}
-
-	/**
-	 * Method which is called after the record was created
-	 *
-	 * @param PSX\Data\RecordInterface $record
-	 */
-	protected function afterCreate(RecordInterface $record)
-	{
-	}
-
-	/**
-	 * Method which is called before the record gets updated
-	 *
-	 * @param PSX\Data\RecordInterface $record
-	 */
-	protected function beforeUpdate(RecordInterface $record)
-	{
-	}
-
-	/**
-	 * Method which is called after the record was updated
-	 *
-	 * @param PSX\Data\RecordInterface $record
-	 */
-	protected function afterUpdate(RecordInterface $record)
-	{
-	}
-
-	/**
-	 * Method which is called before the record gets deleted
-	 *
-	 * @param PSX\Data\RecordInterface $record
-	 */
-	protected function beforeDelete(RecordInterface $record)
-	{
-	}
-
-	/**
-	 * Method which is called after the record was deleted
-	 *
-	 * @param PSX\Data\RecordInterface $record
-	 */
-	protected function afterDelete(RecordInterface $record)
-	{
-	}
-
-	/**
-	 * Method which is called before the record gets validated
-	 *
-	 * @param PSX\Data\RecordInterface $record
-	 */
-	protected function beforeValidate(RecordInterface $record)
-	{
-	}
-
-	/**
-	 * Method which is called after the record was validated
-	 *
-	 * @param PSX\Data\RecordInterface $record
-	 */
-	protected function afterValidate(RecordInterface $record)
-	{
-	}
-
-	/**
-	 * Returns the filter definition which validates values
-	 *
-	 * @return PSX\Validate\ValidatorInterface
-	 */
-	protected function getValidator()
-	{
-		return null;
 	}
 
 	/**
