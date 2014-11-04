@@ -37,6 +37,6 @@ class TestHandler extends DoctrineHandlerAbstract
 	protected function getMapping()
 	{
 		return $this->manager->createQueryBuilder()
-			->from('PSX\Handler\Doctrine\TestEntity', 'comment');
+			->from('PSX\Handler\Impl\Doctrine\TestEntity', 'comment');
 	}
 }
