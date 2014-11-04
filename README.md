@@ -11,7 +11,7 @@ http://phpsx.org
 
 ## Requirements
 
->= PHP 5.4 or HHVM 3.2.0
+> >= PHP 5.4 or HHVM 3.2.0
 
 ## Installation
 
