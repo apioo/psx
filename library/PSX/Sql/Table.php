@@ -24,11 +24,6 @@
 namespace PSX\Sql;
 
 use Doctrine\DBAL\Connection;
-use PSX\Data\RecordInterface;
-use PSX\Exception;
-use PSX\Sql;
-use PSX\Sql\Table\Select;
-use ReflectionClass;
 
 /**
  * Table

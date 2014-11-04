@@ -23,14 +23,10 @@
 
 namespace PSX\Sql;
 
-use Doctrine\DBAL\Connection;
-use PSX\Data\Record;
-use PSX\Data\RecordInterface;
-use PSX\Handler\HandlerAbstract;
-use PSX\Exception;
-use PSX\Sql;
+use PSX\Handler\Impl\TableHandlerAbstract;
+use PSX\Handler\Impl\Table\Mapping;
+use PSX\Handler\MappingAbstract;
 use PSX\Sql\Table\Select;
-use ReflectionClass;
 
 /**
  * TableAbstract
@@ -39,15 +35,9 @@ use ReflectionClass;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-abstract class TableAbstract extends HandlerAbstract implements TableInterface
+abstract class TableAbstract extends TableHandlerAbstract implements TableInterface
 {
-	protected $connection;
 	protected $select;
-
-	public function __construct(Connection $connection)
-	{
-		$this->connection = $connection;
-	}
 
 	public function getConnections()
 	{
@@ -130,169 +120,28 @@ abstract class TableAbstract extends HandlerAbstract implements TableInterface
 		return $this->select;
 	}
 
-	public function getAll($startIndex = null, $count = null, $sortBy = null, $sortOrder = null, Condition $condition = null)
+	public function getMapping()
 	{
-		$startIndex = $startIndex !== null ? (int) $startIndex : 0;
-		$count      = !empty($count)       ? (int) $count      : 16;
-		$sortBy     = $sortBy     !== null ? $sortBy           : $this->getPrimaryKey();
-		$sortOrder  = $sortOrder  !== null ? (int) $sortOrder  : Sql::SORT_DESC;
-
-		if(!in_array($sortBy, $this->getSupportedFields()))
-		{
-			$sortBy = $this->getPrimaryKey();
-		}
-
-		$fields = $this->getSupportedFields();
-		
-		array_walk($fields, function(&$value){
-			$value = '`' . $value . '`';
-		});
-
-		if($condition !== null)
-		{
-			$sql    = 'SELECT ' . implode(', ', $fields) . ' FROM `' . $this->getName() . '` ' . $condition->getStatment() . ' ';
-			$params = $condition->getValues();
-		}
-		else
-		{
-			$sql    = 'SELECT ' . implode(', ', $fields) . ' FROM `' . $this->getName() . '` ';
-			$params = array();
-		}
-
-		$sql.= 'ORDER BY `' . $sortBy . '` ' . ($sortOrder == Sql::SORT_ASC ? 'ASC' : 'DESC') . ' ';
-		$sql.= 'LIMIT ' . intval($startIndex) . ', ' . intval($count);
-
-		return $this->project($sql, $params);
-	}
-
-	public function get($id)
-	{
-		$condition = new Condition(array($this->getPrimaryKey(), '=', $id));
-
-		return $this->getOneBy($condition);
-	}
-
-	public function getCount(Condition $condition = null)
-	{
-		$pk = $this->getPrimaryKey();
-
-		if($condition !== null)
-		{
-			$sql    = 'SELECT COUNT(`' . $pk . '`) FROM `' . $this->getName() . '` ' . $condition->getStatment();
-			$params = $condition->getValues();
-		}
-		else
-		{
-			$sql    = 'SELECT COUNT(`' . $pk . '`) FROM `' . $this->getName() . '`';
-			$params = array();
-		}
-
-		return (int) $this->connection->fetchColumn($sql, $params);
-	}
-
-	public function getSupportedFields()
-	{
-		return array_diff(array_keys($this->getColumns()), $this->getRestrictedFields());
-	}
-
-	public function create(RecordInterface $record)
-	{
-		$params = $record->getRecordInfo()->getData();
-		$fields = array_intersect_key($params, $this->getColumns());
-
-		if(empty($fields))
-		{
-			throw new Exception('No valid field set');
-		}
-
-		$result = $this->connection->insert($this->getName(), $fields);
-
-		// set id to record
-		$primarySetter = 'set' . ucfirst($this->getPrimaryKey());
-
-		if(is_callable($record, $primarySetter))
-		{
-			$record->$primarySetter($this->connection->lastInsertId());
-		}
-
-		return $result;
-	}
-
-	public function update(RecordInterface $record)
-	{
-		$params = $record->getRecordInfo()->getData();
-		$fields = array_intersect_key($params, $this->getColumns());
-
-		if(!empty($fields))
-		{
-			$pk = $this->getPrimaryKey();
-
-			if(isset($fields[$pk]))
-			{
-				$condition = array($pk => $fields[$pk]);
-			}
-			else
-			{
-				throw new Exception('No primary key set');
-			}
-		}
-		else
-		{
-			throw new Exception('No valid field set');
-		}
-
-		return $this->connection->update($this->getName(), $fields, $condition);
-	}
-
-	public function delete(RecordInterface $record)
-	{
-		$params = $record->getRecordInfo()->getData();
-		$fields = array_intersect_key($params, $this->getColumns());
-
-		if(!empty($fields))
-		{
-			$pk = $this->getPrimaryKey();
-
-			if(isset($fields[$pk]))
-			{
-				$condition = array($pk => $fields[$pk]);
-			}
-			else
-			{
-				throw new Exception('No primary key set');
-			}
-		}
-		else
-		{
-			throw new Exception('No valid field set');
-		}
-
-		return $this->connection->delete($this->getName(), $condition);
-	}
-
-	protected function project($sql, array $params = array())
-	{
-		$name    = $this->getDisplayName();
+		$fields  = array();
 		$columns = $this->getColumns();
 
-		return $this->connection->project($sql, $params, function(array $row) use ($name, $columns){
+		foreach($columns as $name => $type)
+		{
+			$fields[$name] = $this->convertColumnTypes($type);
+		}
 
-			$data = array();
-			foreach($columns as $name => $type)
-			{
-				if(isset($row[$name]))
-				{
-					$data[$name] = $this->convertColumnTypes($row[$name], $type);
-				}
-			}
-
-			return new Record($name, $data);
-
-		});
+		return new Mapping($this->getName(), $fields, $this->getConnections());
 	}
 
-	protected function convertColumnTypes($value, $type)
+	protected function convertColumnTypes($type)
 	{
+		$value = 0;
+
+		if($type & self::PRIMARY_KEY)
+		{
+			$value|= MappingAbstract::ID_PROPERTY;
+		}
+
 		$type = (($type >> 20) & 0xFF) << 20;
 
 		switch($type)
@@ -304,28 +153,30 @@ abstract class TableAbstract extends HandlerAbstract implements TableInterface
 			case TableInterface::TYPE_BIGINT:
 			case TableInterface::TYPE_BIT:
 			case TableInterface::TYPE_SERIAL:
-				return (int) $value;
+				$value|= MappingAbstract::TYPE_INTEGER;
 				break;
 
 			case TableInterface::TYPE_DECIMAL:
 			case TableInterface::TYPE_FLOAT:
 			case TableInterface::TYPE_DOUBLE:
 			case TableInterface::TYPE_REAL:
-				return (float) $value;
+				$value|= MappingAbstract::TYPE_FLOAT;
 				break;
 
 			case TableInterface::TYPE_BOOLEAN:
-				return (bool) $value;
+				$value|= MappingAbstract::TYPE_BOOLEAN;
 				break;
 
 			case TableInterface::TYPE_DATE:
 			case TableInterface::TYPE_DATETIME:
-				return new \DateTime($value);
+				$value|= MappingAbstract::TYPE_DATETIME;
 				break;
 
 			default:
-				return $value;
+				$value|= MappingAbstract::TYPE_STRING;
 				break;
 		}
+
+		return $value;
 	}
 }
