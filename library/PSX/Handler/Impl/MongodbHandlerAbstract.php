@@ -28,6 +28,8 @@ use InvalidArgumentException;
 use MongoClient;
 use PSX\Data\Record;
 use PSX\Data\RecordInterface;
+use PSX\Handler\DataHandlerQueryAbstract;
+use PSX\Handler\HandlerManipulationInterface;
 use PSX\Sql;
 use PSX\Sql\Condition;
 
