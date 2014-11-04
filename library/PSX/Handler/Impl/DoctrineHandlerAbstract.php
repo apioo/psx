@@ -31,6 +31,7 @@ use Doctrine\ORM\Query\Expr\From;
 use Doctrine\ORM\Query\Expr\Join;
 use PSX\Data\Record;
 use PSX\Data\RecordInterface;
+use PSX\Handler\HandlerAbstract;
 use PSX\Sql;
 use PSX\Sql\Condition;
 
