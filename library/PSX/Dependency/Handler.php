@@ -23,11 +23,8 @@
 
 namespace PSX\Dependency;
 
-use PSX\Handler\Database;
-use PSX\Handler\Dom;
-use PSX\Handler\Map;
-use PSX\Handler\Pdo;
-use PSX\Sql\TableManager;
+use PSX\Handler\HandlerRegistry;
+use PSX\Handler\Manager;
 
 /**
  * Handler
@@ -43,50 +40,20 @@ trait Handler
 	 */
 	public function getTableManager()
 	{
-		return new TableManager($this->get('connection'));
+		return new Manager\TableManager($this->get('connection'));
 	}
 
 	/**
-	 * @return PSX\Handler\HandlerManagerInterface
+	 * @return PSX\Handler\HandlerRegistry
 	 */
-	public function getDatabaseManager()
+	public function getHandlerRegistry()
 	{
-		return new Database\Manager($this->get('connection'));
-	}
+		$registry = new HandlerRegistry();
+		$registry->add($this->get('table_manager'));
+		$registry->add(new Manager\ConnectionManager($this->get('connection')));
+		#$registry->add(new Manager\EntityManager($this->get('entity_manager')));
+		$registry->add(new Manager\DefaultManager());
 
-	/**
-	 * @return PSX\Handler\HandlerManagerInterface
-	 */
-	public function getDomManager()
-	{
-		return new Dom\Manager();
+		return $registry;
 	}
-
-	/**
-	 * @return PSX\Handler\HandlerManagerInterface
-	 */
-	public function getMapManager()
-	{
-		return new Map\Manager();
-	}
-
-	/**
-	 * @return PSX\Handler\HandlerManagerInterface
-	 */
-	/*
-	public function getDoctrineManager()
-	{
-		return new Doctrine\Manager($this->get('entity_manager'));
-	}
-	*/
-
-	/**
-	 * @return PSX\Handler\HandlerManagerInterface
-	 */
-	/*
-	public function getMongodbManager()
-	{
-		return new Mongodb\Manager($this->get('mongo_client'));
-	}
-	*/
 }
