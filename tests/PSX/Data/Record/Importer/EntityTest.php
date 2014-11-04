@@ -24,7 +24,7 @@
 namespace PSX\Data\Record\Importer;
 
 use PSX\Data\Record\ImporterTestCase;
-use PSX\Handler\Doctrine\DoctrineTestCase;
+use PSX\Handler\Impl\Doctrine\DoctrineTestCase;
 
 /**
  * EntityTest

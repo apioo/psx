@@ -24,7 +24,7 @@
 namespace PSX\Sql\Table\Reader;
 
 use PSX\DateTime;
-use PSX\Handler\Doctrine\DoctrineTestCase;
+use PSX\Handler\Impl\Doctrine\DoctrineTestCase;
 use PSX\Sql\Table;
 use PSX\Sql\TableInterface;
 use PSX\Test\TableDataSet;
