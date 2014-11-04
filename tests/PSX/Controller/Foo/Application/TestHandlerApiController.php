@@ -24,6 +24,7 @@
 namespace PSX\Controller\Foo\Application;
 
 use PSX\Controller\HandlerApiAbstract;
+use PSX\Data\RecordInterface;
 use PSX\Filter;
 use PSX\Validate;
 use PSX\Validate\RecordValidator;
@@ -48,8 +49,29 @@ class TestHandlerApiController extends HandlerApiAbstract
 		));
 	}
 
+	protected function doCreate(RecordInterface $record)
+	{
+		$this->getValidator()->validate($record);
+
+		parent::doCreate($record);
+	}
+
+	protected function doUpdate(RecordInterface $record)
+	{
+		$this->getValidator()->validate($record);
+
+		parent::doUpdate($record);
+	}
+
+	protected function doDelete(RecordInterface $record)
+	{
+		$this->getValidator()->validate($record);
+
+		parent::doDelete($record);
+	}
+
 	protected function getHandler()
 	{
-		return getContainer()->get('table_manager')->getTable('PSX\Handler\Table\TestTable');
+		return getContainer()->get('table_manager')->get('PSX\Handler\Impl\Table\TestTable');
 	}
 }
