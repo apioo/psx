@@ -119,31 +119,31 @@ abstract class TableHandlerAbstract extends DataHandlerQueryAbstract implements 
 
 	public function create(RecordInterface $record)
 	{
-		$params = $record->getRecordInfo()->getData();
-		$fields = array_intersect_key($params, $this->mapping->getFields());
+		$fields = $this->serializeFields($record->getRecordInfo()->getData(), $this->mapping->getFields());
 
-		if(empty($fields))
+		if(!empty($fields))
+		{
+			$result = $this->connection->insert($this->mapping->getTableName(), $fields);
+
+			// set id to record
+			$primarySetter = 'set' . ucfirst($this->mapping->getIdProperty());
+
+			if(is_callable($record, $primarySetter))
+			{
+				$record->$primarySetter($this->connection->lastInsertId());
+			}
+
+			return $result;
+		}
+		else
 		{
 			throw new Exception('No valid field set');
 		}
-
-		$result = $this->connection->insert($this->mapping->getTableName(), $fields);
-
-		// set id to record
-		$primarySetter = 'set' . ucfirst($this->mapping->getIdProperty());
-
-		if(is_callable($record, $primarySetter))
-		{
-			$record->$primarySetter($this->connection->lastInsertId());
-		}
-
-		return $result;
 	}
 
 	public function update(RecordInterface $record)
 	{
-		$params = $record->getRecordInfo()->getData();
-		$fields = array_intersect_key($params, $this->mapping->getFields());
+		$fields = $this->serializeFields($record->getRecordInfo()->getData(), $this->mapping->getFields());
 
 		if(!empty($fields))
 		{
@@ -157,19 +157,18 @@ abstract class TableHandlerAbstract extends DataHandlerQueryAbstract implements 
 			{
 				throw new Exception('No primary key set');
 			}
+
+			return $this->connection->update($this->mapping->getTableName(), $fields, $condition);
 		}
 		else
 		{
 			throw new Exception('No valid field set');
 		}
-
-		return $this->connection->update($this->mapping->getTableName(), $fields, $condition);
 	}
 
 	public function delete(RecordInterface $record)
 	{
-		$params = $record->getRecordInfo()->getData();
-		$fields = array_intersect_key($params, $this->mapping->getFields());
+		$fields = $this->serializeFields($record->getRecordInfo()->getData(), $this->mapping->getFields());
 
 		if(!empty($fields))
 		{
@@ -183,13 +182,13 @@ abstract class TableHandlerAbstract extends DataHandlerQueryAbstract implements 
 			{
 				throw new Exception('No primary key set');
 			}
+
+			return $this->connection->delete($this->mapping->getTableName(), $condition);
 		}
 		else
 		{
 			throw new Exception('No valid field set');
 		}
-
-		return $this->connection->delete($this->mapping->getTableName(), $condition);
 	}
 
 	/**
@@ -218,5 +217,25 @@ abstract class TableHandlerAbstract extends DataHandlerQueryAbstract implements 
 			return new Record($name, $data);
 
 		});
+	}
+
+	/**
+	 * Returns an array which can be used by the dbal insert, update and delete
+	 * methods
+	 *
+	 * @return array
+	 */
+	protected function serializeFields(array $row, array $columns)
+	{
+		$data = array();
+		foreach($columns as $name => $type)
+		{
+			if(isset($row[$name]))
+			{
+				$data[$name] = $this->serializeType($row[$name], $type);
+			}
+		}
+
+		return $data;
 	}
 }
