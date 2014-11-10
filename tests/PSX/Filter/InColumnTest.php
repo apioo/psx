@@ -36,7 +36,7 @@ class InColumnTest extends DbTestCase
 {
 	public function getDataSet()
 	{
-		return $this->createFlatXMLDataSet(dirname(__FILE__) . '/../Handler/handler_fixture.xml');
+		return $this->createFlatXMLDataSet(__DIR__ . '/../Sql/table_fixture.xml');
 	}
 
 	public function testFilter()

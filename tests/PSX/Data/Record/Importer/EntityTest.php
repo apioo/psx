@@ -24,7 +24,7 @@
 namespace PSX\Data\Record\Importer;
 
 use PSX\Data\Record\ImporterTestCase;
-use PSX\Handler\Impl\Doctrine\DoctrineTestCase;
+use PSX\Sql\DoctrineTestCase;
 
 /**
  * EntityTest
@@ -39,7 +39,7 @@ class EntityTest extends DoctrineTestCase
 
 	public function getDataSet()
 	{
-		return $this->createFlatXMLDataSet(dirname(__FILE__) . '/../../../Handler/handler_fixture.xml');
+		return $this->createFlatXMLDataSet(__DIR__ . '/../../../Sql/table_fixture.xml');
 	}
 
 	protected function getImporter()
