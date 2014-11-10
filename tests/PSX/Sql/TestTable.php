@@ -23,71 +23,30 @@
 
 namespace PSX\Sql;
 
-use PSX\Config;
-use PSX\Data\Record;
-use PSX\DateTime;
-use PSX\Sql;
-use PSX\Sql\Table\Select;
+use PSX\Sql\TableAbstract;
 use PSX\Sql\TableInterface;
-use PSX\Test\TableDataSet;
 
 /**
- * TableTest
+ * TestTable
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class TableTest extends DbTestCase
+class TestTable extends TableAbstract
 {
-	use TableTestCase;
-
-	public function getDataSet()
+	public function getName()
 	{
-		return $this->createFlatXMLDataSet(__DIR__ . '/table_fixture.xml');
+		return 'psx_handler_comment';
 	}
 
-	protected function getTable()
+	public function getColumns()
 	{
-		return getContainer()->get('table_manager')->getTable('PSX\Sql\TestTable');
-	}
-
-	public function testGetName()
-	{
-		$this->assertEquals('psx_handler_comment', $this->getTable()->getName());
-	}
-
-	public function testGetColumns()
-	{
-		$expect = array(
+		return array(
 			'id'     => TableInterface::TYPE_INT | 10 | TableInterface::PRIMARY_KEY | TableInterface::AUTO_INCREMENT,
 			'userId' => TableInterface::TYPE_INT | 10,
 			'title'  => TableInterface::TYPE_VARCHAR | 32,
 			'date'   => TableInterface::TYPE_DATETIME,
 		);
-
-		$this->assertEquals($expect, $this->getTable()->getColumns());
-	}
-
-	public function testGetConnections()
-	{
-		$this->assertEquals(array(), $this->getTable()->getConnections());
-	}
-
-	public function testGetDisplayName()
-	{
-		$this->assertEquals('comment', $this->getTable()->getDisplayName());
-	}
-
-	public function testGetPrimaryKey()
-	{
-		$this->assertEquals('id', $this->getTable()->getPrimaryKey());
-	}
-
-	public function testHasColumn()
-	{
-		$this->assertTrue($this->getTable()->hasColumn('title'));
-		$this->assertFalse($this->getTable()->hasColumn('foobar'));
 	}
 }
-

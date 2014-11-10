@@ -30,7 +30,7 @@ namespace PSX\Sql;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-interface TableInterface
+interface TableInterface extends TableQueryInterface, TableManipulationInterface
 {
 	const PRIMARY_KEY     = 0x10000000;
 	const AUTO_INCREMENT  = 0x20000000;
@@ -146,44 +146,9 @@ interface TableInterface
 	public function getPrimaryKey();
 
 	/**
-	 * Returns the first column with a specific attribute
-	 *
-	 * @return string
-	 */
-	public function getFirstColumnWithAttr($searchAttr);
-
-	/**
-	 * Returns the first column from the type
-	 *
-	 * @return string
-	 */
-	public function getFirstColumnWithType($searchType);
-
-	/**
-	 * Returns an array containing all valid columns of the array $columns
-	 *
-	 * @return array
-	 */
-	public function getValidColumns(array $columns);
-
-	/**
 	 * Returns whether the table has the $column
 	 *
 	 * @return boolean
 	 */
 	public function hasColumn($column);
-
-	/**
-	 * Starts a new complex selection on this table
-	 *
-	 * @return PSX\Sql\Table\SelectInterface
-	 */
-	public function select(array $columns = array(), $prefix = null);
-
-	/**
-	 * Returns the last selection wich was created by the method select()
-	 *
-	 * @return PSX\Sql\Table\SelectInterface
-	 */
-	public function getLastSelect();
 }
