@@ -23,6 +23,9 @@
 
 namespace PSX\Dependency;
 
+use JMS\Serializer\Naming\CamelCaseNamingStrategy;
+use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
+use JMS\Serializer\SerializerBuilder;
 use PSX\Data\Extractor;
 use PSX\Data\Importer as DataImporter;
 use PSX\Data\Reader;
@@ -33,6 +36,7 @@ use PSX\Data\Record\ImporterManager;
 use PSX\Data\Schema\Assimilator;
 use PSX\Data\Schema\SchemaManager;
 use PSX\Data\Schema\Validator;
+use PSX\Data\Serializer;
 use PSX\Data\Transformer;
 use PSX\Data\Transformer\TransformerManager;
 use PSX\Data\Writer;
@@ -150,5 +154,22 @@ trait Data
 	public function getExtractor()
 	{
 		return new Extractor($this->get('reader_factory'), $this->get('transformer_manager'));
+	}
+
+	/**
+	 * @return PSX\Data\SerializerInterface
+	 */
+	public function getSerializer()
+	{
+		$propertyNamingStrategy = new SerializedNameAnnotationStrategy(new CamelCaseNamingStrategy());
+
+		$serializer = SerializerBuilder::create()
+			->setCacheDir(PSX_PATH_CACHE)
+			->setDebug($this->get('config')->get('psx_debug'))
+			->setSerializationVisitor('array', new Serializer\ArraySerializationVisitor($propertyNamingStrategy))
+			->setDeserializationVisitor('array', new Serializer\ArrayDeserializationVisitor($propertyNamingStrategy))
+			->build();
+
+		return new Serializer($serializer);
 	}
 }
