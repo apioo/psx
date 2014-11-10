@@ -40,10 +40,15 @@ class File
 	private $tmpName;
 	private $error;
 
-	private $_tmpFile;
-	private $_tmpContent;
+	public function __construct(array $file = null)
+	{
+		if($file !== null)
+		{
+			$this->setFile($file);
+		}
+	}
 
-	public function __construct(array $file)
+	public function setFile(array $file)
 	{
 		if($this->isValidUpload($file))
 		{
@@ -86,37 +91,7 @@ class File
 
 	public function move($path)
 	{
-		return move_uploaded_file($this->tmpName, $path);
-	}
-
-	public function getTmpSize()
-	{
-		return filesize($this->tmpName);
-	}
-
-	public function getTmpFile($mode = 'a')
-	{
-		if($this->_tmpFile === null)
-		{
-			$this->_tmpFile = FileObject::open($this->tmpName, $mode);
-		}
-
-		return $this->_tmpFile;
-	}
-
-	public function getTmpContent()
-	{
-		if($this->_tmpContent === null)
-		{
-			$this->_tmpContent = FileObject::getContents($this->tmpName);
-		}
-
-		return $this->_tmpContent;
-	}
-
-	public function __toString()
-	{
-		return $this->getTmpContent();
+		return $this->moveUploadedFile($this->tmpName, $path);
 	}
 
 	protected function isValidUpload(array $file)
@@ -126,7 +101,7 @@ class File
 		switch($error)
 		{
 			case UPLOAD_ERR_OK:
-				return is_uploaded_file($file['tmp_name']);
+				return $this->isUploadedFile($file['tmp_name']);
 				break;
 
 			case UPLOAD_ERR_INI_SIZE:
@@ -161,6 +136,16 @@ class File
 				throw new Exception('Invalid error code');
 				break;
 		}
+	}
+
+	protected function isUploadedFile($tmpName)
+	{
+		return is_uploaded_file($tmpName);
+	}
+
+	protected function moveUploadedFile($tmpName, $path)
+	{
+		return move_uploaded_file($tmpName, $path);
 	}
 }
 
