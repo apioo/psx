@@ -33,9 +33,10 @@ use Monolog\Processor as MonologProcessor;
 use PSX\Base;
 use PSX\Cache;
 use PSX\Config;
-use PSX\Handler\Impl\Doctrine\RecordHydrator;
 use PSX\Http;
 use PSX\Session;
+use PSX\Sql\Logger as SqlLogger;
+use PSX\Sql\TableManager;
 use PSX\Template;
 use PSX\Validate;
 
@@ -53,7 +54,6 @@ class DefaultContainer extends Container
 	use Controller;
 	use Data;
 	use Event;
-	use Handler;
 
 	/**
 	 * @return PSX\Base
@@ -101,6 +101,8 @@ class DefaultContainer extends Container
 	public function getConnection()
 	{
 		$config = new Configuration();
+		$config->setSQLLogger(new SqlLogger($this->get('logger')));
+
 		$params = array(
 			'dbname'   => $this->get('config')->get('psx_sql_db'),
 			'user'     => $this->get('config')->get('psx_sql_user'),
@@ -156,8 +158,17 @@ class DefaultContainer extends Container
 	}
 
 	/**
+	 * @return PSX\Sql\TableManagerInterface
+	 */
+	public function getTableManager()
+	{
+		return new TableManager($this->get('connection'));
+	}
+
+	/**
 	 * @return Doctrine\ORM\EntityManager
 	 */
+	/*
 	public function getEntityManager()
 	{
 		$connection = $this->get('connection');
@@ -165,10 +176,10 @@ class DefaultContainer extends Container
 		$isDevMode  = $this->get('config')->get('psx_debug');
 
 		$config = Setup::createAnnotationMetadataConfiguration($paths, $isDevMode);
-		$config->addCustomHydrationMode(RecordHydrator::HYDRATE_RECORD, 'PSX\Handler\Impl\Doctrine\RecordHydrator');
 
 		return EntityManager::create($connection, $config, $connection->getEventManager());
 	}
+	*/
 
 	/**
 	 * @return MongoClient
