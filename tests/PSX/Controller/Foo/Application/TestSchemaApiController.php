@@ -66,7 +66,7 @@ class TestSchemaApiController extends SchemaApiAbstract
 	protected function doGet(Version $version)
 	{
 		return array(
-			'entry' => getContainer()->get('table_manager')->get('PSX\Handler\Impl\Table\TestTable')->getAll()
+			'entry' => getContainer()->get('table_manager')->getTable('PSX\Sql\TestTable')->getAll()
 		);
 	}
 
