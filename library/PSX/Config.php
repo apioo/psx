@@ -27,11 +27,10 @@ use ArrayIterator;
 use PSX\Config\NotFoundException;
 
 /**
- * The class is the common config in psx. It includes the file provided in the
- * first argument of the constructor. This file must return an array. Here an 
- * example how to create an access the config.
+ * Simple config class which uses a simple array to store all values. Here an
+ * example howto use the class
  * <code>
- * $config = new Config('configuration.php');
+ * $config = Config::fromFile('configuration.php');
  *
  * echo $config['psx_url'];
  * </code>
