@@ -42,9 +42,12 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('bar', $config->get('foo'));
 	}
 
+	/**
+	 * @expectedException PSX\Config\NotFoundException
+	 */
 	public function testDefinitionConfig()
 	{
-		$config = new Config('tests/PSX/Config/definition_config.php');
+		$config = Config::fromFile(__DIR__ . '/Config/definition_config.php');
 
 		$this->assertEquals('bar', $config['foo']);
 		$this->assertEquals('bar', $config->get('foo'));
@@ -55,12 +58,12 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testDefinitionConfigInvalidType()
 	{
-		$config = new Config('tests/PSX/Config/definition_invalid_config_type.php');
+		$config = Config::fromFile(__DIR__ . '/Config/definition_invalid_config_type.php');
 	}
 
 	public function testReturnConfig()
 	{
-		$config = new Config('tests/PSX/Config/return_config.php');
+		$config = Config::fromFile(__DIR__ . '/Config/return_config.php');
 
 		$this->assertEquals('bar', $config['foo']);
 		$this->assertEquals('bar', $config->get('foo'));
@@ -71,7 +74,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testReturnConfigInvalidType()
 	{
-		$config = new Config('tests/PSX/Config/return_invalid_config_type.php');
+		$config = Config::fromFile(__DIR__ . '/Config/return_invalid_config_type.php');
 	}
 
 	/**
@@ -79,15 +82,15 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testNoConfig()
 	{
-		$config = new Config('tests/PSX/Config/no_config.php');
+		$config = Config::fromFile(__DIR__ . '/Config/no_config.php');
 	}
 
 	/**
 	 * @expectedException ErrorException
 	 */
-	public function testConfigCFileNotExisting()
+	public function testConfigFileNotExisting()
 	{
-		$config = new Config('tests/PSX/Config/foo_config.php');
+		$config = Config::fromFile(__DIR__ . '/Config/foo_config.php');
 	}
 
 	public function testConfigOffsetSet()

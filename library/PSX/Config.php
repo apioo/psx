@@ -49,33 +49,9 @@ class Config extends ArrayIterator
 	 */
 	private $container = array();
 
-	public function __construct($file)
+	public function __construct(array $config)
 	{
-		$config = null;
-
-		if(is_array($file))
-		{
-			$config = $file;
-		}
-		else
-		{
-			$return = include($file);
-
-			if(is_array($return))
-			{
-				$config = $return;
-			}
-		}
-
-		if(is_array($config))
-		{
-			// assign container
-			parent::__construct($config);
-		}
-		else
-		{
-			throw new NotFoundException('Couldnt find config in file');
-		}
+		parent::__construct($config);
 	}
 
 	public function set($key, $value)
@@ -92,5 +68,23 @@ class Config extends ArrayIterator
 	{
 		return $this->offsetExists($key);
 	}
-}
 
+	public function merge(Config $config)
+	{
+		return new Config(array_merge($this->getArrayCopy(), $config->getArrayCopy()));
+	}
+
+	public static function fromFile($file)
+	{
+		$config = include($file);
+
+		if(is_array($config))
+		{
+			return new self($config);
+		}
+		else
+		{
+			throw new NotFoundException('Config file must return an array');
+		}
+	}
+}

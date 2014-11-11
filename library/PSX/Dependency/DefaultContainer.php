@@ -23,6 +23,7 @@
 
 namespace PSX\Dependency;
 
+use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\Tools\Setup;
@@ -68,7 +69,10 @@ class DefaultContainer extends Container
 	 */
 	public function getConfig()
 	{
-		return new Config($this->getParameter('config.file'));
+		$config = new Config($this->appendDefaultConfig());
+		$config = $config->merge(Config::fromFile($this->getParameter('config.file')));
+
+		return $config;
 	}
 
 	/**
@@ -177,5 +181,16 @@ class DefaultContainer extends Container
 		$config = Setup::createAnnotationMetadataConfiguration($paths, $isDevMode);
 
 		return EntityManager::create($connection, $config, $connection->getEventManager());
+	}
+
+	protected function appendDefaultConfig()
+	{
+		return array(
+			'psx_dispatch'         => 'index.php/',
+			'psx_timezone'         => 'UTC',
+			'psx_error_controller' => null,
+			'psx_error_template'   => null,
+			'annotation_autoload'  => array('Doctrine\ORM\Mapping', 'JMS\Serializer\Annotation'),
+		);
 	}
 }
