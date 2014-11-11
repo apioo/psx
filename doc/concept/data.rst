@@ -157,27 +157,23 @@ on the Accept header and the GET parameter format.
 Available data writer
 ---------------------
 
-In PSX we distinct between two types of data writer. First an writer which 
-produces an data format and an writer which produces an specification of an data 
-format. An "data format" writer can produce content from arbitrary content where
-an "specification" data writer needs an specific model to produce the content.
 In the following an overview of available writer in PSX: 
 
-+--------------------------+------------------------+------------------+---------------+---------------+
-| Class                    | Content-Type           | Format-Parameter | Data-Format   | Specification |
-+==========================+========================+==================+===============+===============+
-| PSX\\Data\\Writer\\Html  | text/html              | html             | X             |               |
-+--------------------------+------------------------+------------------+---------------+---------------+
-| PSX\\Data\\Writer\\Json  | application/json       | json             | X             |               |
-+--------------------------+------------------------+------------------+---------------+---------------+
-| PSX\\Data\\Writer\\Jsonp | application/javascript | jsonp            | X             |               |
-+--------------------------+------------------------+------------------+---------------+---------------+
-| PSX\\Data\\Writer\\Xml   | application/xml        | xml              | X             |               |
-+--------------------------+------------------------+------------------+---------------+---------------+
-| PSX\\Data\\Writer\\Atom  | application/atom+xml   | atom             |               | X             |
-+--------------------------+------------------------+------------------+---------------+---------------+
-| PSX\\Data\\Writer\\Rss   | application/rss+xml    | rss              |               | X             |
-+--------------------------+------------------------+------------------+---------------+---------------+
++--------------------------+------------------------+------------------+
+| Class                    | Content-Type           | Format-Parameter |
++==========================+========================+==================+
+| PSX\\Data\\Writer\\Html  | text/html              | html             |
++--------------------------+------------------------+------------------+
+| PSX\\Data\\Writer\\Json  | application/json       | json             |
++--------------------------+------------------------+------------------+
+| PSX\\Data\\Writer\\Jsonp | application/javascript | jsonp            |
++--------------------------+------------------------+------------------+
+| PSX\\Data\\Writer\\Xml   | application/xml        | xml              |
++--------------------------+------------------------+------------------+
+| PSX\\Data\\Writer\\Atom  | application/atom+xml   | atom             |
++--------------------------+------------------------+------------------+
+| PSX\\Data\\Writer\\Soap  | application/soap+xml   | soap             |
++--------------------------+------------------------+------------------+
 
 Use case
 --------
@@ -200,10 +196,47 @@ Lets take a look at the following controller.
     }
 
 If you would request this method with an normal browser PSX would try to display
-the data as HTML (since the most browsers send an Accept header with text/html). 
+the data as HTML (since most browsers send an Accept header with text/html). 
 Therefor it would use the html writer which assigns the data to the template. In 
 your template you can then build the html representation of the feed. If we 
 would make the request containing an Accept header application/json or GET 
 parameter "format" containing "json" the data would be returned as json format. 
 If we would provide an application/atom+xml the atom feed gets returned.
 
+Serializer
+----------
+
+PSX integrates the JMS serializer library to serialize arbitrary objects. This
+is useful if you use i.e. an ORM like doctrine where you have objects which
+contain fields which you want expose per API. Here an example how you could use 
+the serializer
+
+.. code-block:: php
+
+    <?php
+
+    class FooController extends ControllerAbstract
+    {
+        /**
+         * @Inject
+         * @var PSX\Data\SerializerInterface
+         */
+        protected $serializer;
+
+        /**
+         * @Inject
+         * @var Doctrine\ORM\EntityManager
+         */
+        protected $entityManager;
+
+        public function doIndex()
+        {
+            $news = $this->entityManager->getRepository('Foo\BarRepository')->findAll();
+
+            $this->setBody(array(
+                'news' => $this->serialize($news),
+            ));
+        }
+    }
+
+More informations how the serializer works at https://github.com/schmittjoh/serializer.

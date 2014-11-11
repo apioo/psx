@@ -5,18 +5,16 @@ Depndency injection
 Definition
 ----------
 
-The DI container of PSX is a simple class where each method represents an 
-service definition. In the file public/index.php you have to specify an DI 
-container.
+The file :file:`container.php` returns the main DI container of your 
+application. 
 
-.. literalinclude:: ../../public/index.php
+.. literalinclude:: ../../container.php
    :language: php
-   :lines: 23-28
-   :prepend: <?php
 
-Normally you would create your own container which extends the PSX default 
-container. To add a service to the container you have to simply specifiy a 
-method in the container which returns an object instance.
+The DI container of PSX is a simple class where each method represents an 
+service definition. Normally you would create your own container which extends 
+the PSX default container. To add a service to the container you have to simply 
+specifiy a method in the container which returns an object instance.
 
 .. code-block:: php
 
@@ -52,26 +50,19 @@ container uses several traits which contains service methods
    :lines: 44-50
    :prepend: <?php
 
-The container is also compatible with the symfony DI container in case you want
-use a service definition file you could also use the following code in your 
-index.php
+The returned container must be compatible with the symfony DI container. In case 
+you want use a service definition file you could also use the following code in 
+your :file:`container.php`
 
 .. code-block:: php
 
     <?php
 
-    require_once('../vendor/autoload.php');
-
     $container = new Symfony\Component\DependencyInjection\ContainerBuilder();
     $loader = new Symfony\Component\DependencyInjection\Loader\XmlFileLoader($container, new Symfony\Component\Config\FileLocator(__DIR__));
     $loader->load('services.xml');
 
-    PSX\Bootstrap::setupEnvironment($container->get('config'));
-
-    $request  = $container->get('request_factory')->createRequest();
-    $response = $container->get('response_factory')->createResponse();
-
-    $container->get('dispatch')->route($request, $response);
+    return $container;
 
 Usage
 -----

@@ -242,7 +242,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
   ('index', 'PSX', 'PSX Documentation',
-   'Christoph Kappestein', 'PSX', 'One line description of project.',
+   'Christoph Kappestein', 'PSX', 'PSX is a framework written in PHP to create RESTful APIs.',
    'Miscellaneous'),
 ]
 
