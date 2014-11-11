@@ -23,6 +23,7 @@
 
 namespace PSX;
 
+use Doctrine\Common\Annotations\AnnotationRegistry;
 use ErrorException;
 
 /**
@@ -60,6 +61,13 @@ class Bootstrap
 			error_reporting($errorReporting);
 			set_error_handler('\PSX\Bootstrap::errorHandler');
 
+			// annotation autoload
+			$namespaces = $config->get('annotation_autoload');
+			if(!empty($namespaces) && is_array($namespaces))
+			{
+				self::registerAnnotationLoader($namespaces);
+			}
+
 			// ini settings
 			ini_set('date.timezone', $config['psx_timezone']);
 			ini_set('session.use_only_cookies', '1');
@@ -85,31 +93,21 @@ class Bootstrap
 		}
 	}
 
-	/**
-	 * Implementation of the standard autoload function.
-	 *
-	 * @see https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-0.md
-	 * @return void
-	 */
-	public static function autoload($className)
+	protected static function registerAnnotationLoader(array $namespaces)
 	{
-		$className = ltrim($className, '\\');
-		$fileName  = '';
-		$namespace = '';
+		AnnotationRegistry::reset();
+		AnnotationRegistry::registerLoader(function($class) use ($namespaces){
 
-		if($lastNsPos = strripos($className, '\\'))
-		{
-			$namespace = substr($className, 0, $lastNsPos);
-			$className = substr($className, $lastNsPos + 1);
-			$fileName  = str_replace('\\', DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
-		}
+			foreach($namespaces as $namespace)
+			{
+				if(strpos($class, $namespace) === 0)
+				{
+					spl_autoload_call($class);
 
-		$fileName.= str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
-		$filePath = stream_resolve_include_path($fileName);
+					return class_exists($class, false);
+				}
+			}
 
-		if($filePath !== false)
-		{
-			require($filePath);
-		}
+		});
 	}
 }
