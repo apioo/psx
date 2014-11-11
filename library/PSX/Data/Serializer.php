@@ -43,10 +43,17 @@ class Serializer implements SerializerInterface
 		$this->serializer = $serializer;
 	}
 
-	public function serialize($data, Version $version)
+	public function serialize($data, Version $version = null)
 	{
-		$context  = SerializationContext::create()->setVersion($version->getVersion());
-		$response = $this->serializer->serialize($data, 'array', $context);
+		if($version !== null)
+		{
+			$context  = SerializationContext::create()->setVersion($version->getVersion());
+			$response = $this->serializer->serialize($data, 'array', $context);
+		}
+		else
+		{
+			$response = $this->serializer->serialize($data, 'array');
+		}
 
 		return $response;
 	}
