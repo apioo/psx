@@ -168,7 +168,6 @@ class DefaultContainer extends Container
 	/**
 	 * @return Doctrine\ORM\EntityManager
 	 */
-	/*
 	public function getEntityManager()
 	{
 		$connection = $this->get('connection');
@@ -179,15 +178,4 @@ class DefaultContainer extends Container
 
 		return EntityManager::create($connection, $config, $connection->getEventManager());
 	}
-	*/
-
-	/**
-	 * @return MongoClient
-	 */
-	/*
-	public function getMongoClient()
-	{
-		return new MongoClient();
-	}
-	*/
 }
