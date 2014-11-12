@@ -28,7 +28,6 @@ use PSX\Data\Record;
 use PSX\Data\RecordInterface;
 use PSX\Exception;
 use PSX\Sql;
-use PSX\Sql\Table\Select;
 
 /**
  * TableAbstract
