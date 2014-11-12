@@ -26,8 +26,6 @@ namespace PSX\Sql;
 use PSX\Config;
 use PSX\Data\Record;
 use PSX\DateTime;
-use PSX\Sql;
-use PSX\Sql\Table\Select;
 use PSX\Sql\TableInterface;
 use PSX\Test\TableDataSet;
 
@@ -88,6 +86,73 @@ class TableTest extends DbTestCase
 	{
 		$this->assertTrue($this->getTable()->hasColumn('title'));
 		$this->assertFalse($this->getTable()->hasColumn('foobar'));
+	}
+
+	public function testRestrictedFields()
+	{
+		$table = $this->getTable();
+		$table->setRestrictedFields(array('id', 'userId'));
+
+		$result = $table->getAll();
+
+		$this->assertEquals(true, is_array($result));
+		$this->assertEquals(4, count($result));
+		$this->assertEquals(array(2 => 'title', 3 => 'date'), $table->getSupportedFields());
+
+		$table->setRestrictedFields(array());
+
+		$expect = array(
+			array(
+				'title' => 'blub',
+				'date' => '2013-04-29 16:56:32',
+			),
+			array(
+				'title' => 'test',
+				'date' => '2013-04-29 16:56:32',
+			),
+			array(
+				'title' => 'bar',
+				'date' => '2013-04-29 16:56:32',
+			),
+			array(
+				'title' => 'foo',
+				'date' => '2013-04-29 16:56:32',
+			),
+		);
+
+		foreach($result as $key => $row)
+		{
+			$this->assertInstanceOf('PSX\Data\Record', $row);
+			$this->assertEquals(array('title', 'date'), array_keys($row->getRecordInfo()->getData()));
+			
+			$this->assertEquals($expect[$key]['title'], $row->getTitle());
+			$this->assertInstanceOf('DateTime', $row->getDate());
+			$this->assertEquals($expect[$key]['date'], $row->getDate()->format('Y-m-d H:i:s'));
+		}
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testGetOneByXXXMethodNoValue()
+	{
+		$this->getTable()->getOneById();
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testGetByXXXMethodNoValue()
+	{
+		$this->getTable()->getById();
+	}
+
+	/**
+	 * @expectedException BadMethodCallException
+	 */
+	public function testInvalidMethodCall()
+	{
+		$this->getTable()->foobar();
 	}
 }
 
