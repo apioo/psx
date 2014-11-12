@@ -93,7 +93,7 @@ abstract class TableAbstract extends TableQueryAbstract implements TableInterfac
 			->setFirstResult($startIndex)
 			->setMaxResults($count);
 
-		if($condition !== null)
+		if($condition !== null && $condition->hasCondition())
 		{
 			$builder->where(substr($condition->getStatment(), 5));
 
@@ -120,7 +120,7 @@ abstract class TableAbstract extends TableQueryAbstract implements TableInterfac
 			->select($this->connection->getDatabasePlatform()->getCountExpression($this->getPrimaryKey()))
 			->from($this->getName());
 
-		if($condition !== null)
+		if($condition !== null && $condition->hasCondition())
 		{
 			$builder->where(substr($condition->getStatment(), 5));
 
