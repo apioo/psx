@@ -56,6 +56,15 @@ class GeneratorTest extends \PHPUnit_Framework_TestCase
 		$this->assertTrue($result);
 	}
 
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testInvalidVersion()
+	{
+		$generator = new Generator(8, 'foo', 'http://127.0.0.1/foo/api', 'http://127.0.0.1/wsdl/1/foo/api');
+		$generator->generate($this->getView());
+	}
+
 	protected function getView()
 	{
 		$request    = new Request(new Url('http://127.0.0.1/foo/api'), 'GET');

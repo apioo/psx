@@ -256,18 +256,6 @@ class Generator
 		}
 	}
 
-	protected function getTypeNameByModifier($modifier)
-	{
-		if($modifier & View::TYPE_REQUEST)
-		{
-			return 'request';
-		}
-		else if($modifier & View::TYPE_RESPONSE)
-		{
-			return 'response';
-		}
-	}
-
 	protected function getGenerator()
 	{
 		if($this->version == self::VERSION_1)
