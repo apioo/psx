@@ -43,14 +43,9 @@ class Soap extends Xml
 	protected $namespace;
 	protected $requestMethod;
 
-	public function setNamespace($namespace)
+	public function __construct($namespace)
 	{
 		$this->namespace = $namespace;
-	}
-	
-	public function getNamespace()
-	{
-		return $this->namespace;
 	}
 
 	public function setRequestMethod($requestMethod)

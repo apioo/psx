@@ -78,7 +78,7 @@ class WsdlGeneratorController extends ViewAbstract
 
 		$name            = $resource->name;
 		$endpoint        = $this->config['psx_url'] . '/' . $this->config['psx_dispatch'] . ltrim($path, '/');
-		$targetNamespace = $this->config['psx_url'];
+		$targetNamespace = $this->config['psx_soap_namespace'];
 
 		$generator = new Generator(Generator::VERSION_1, $name, $endpoint, $targetNamespace);
 
