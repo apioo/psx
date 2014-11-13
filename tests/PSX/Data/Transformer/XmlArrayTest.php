@@ -109,4 +109,40 @@ INPUT;
 		$transformer = new XmlArray();
 		$transformer->transform(array());
 	}
+
+	public function testTransformNamespace()
+	{
+		$body = <<<INPUT
+<foo:test xmlns:foo="http://foo.com" xmlns:bar="http://bar.com">
+	<foo:foo>bar</foo:foo>
+	<foo:bar>blub</foo:bar>
+	<bar:bar>bla</bar:bar>
+	<foo:test>
+		<foo:foo>bar</foo:foo>
+	</foo:test>
+	<foo:foooo>
+		<bar:bar>bar</bar:bar>
+		<bar:foo>bar</bar:foo>
+	</foo:foooo>
+</foo:test>
+INPUT;
+
+		$dom = new \DOMDocument();
+		$dom->loadXML($body);
+
+		$transformer = new XmlArray();
+		$transformer->setNamespace('http://foo.com');
+
+		$expect = array(
+			'foo' => 'bar', 
+			'bar' => 'blub', 
+			'test' => array('foo' => 'bar'),
+			'foooo' => $dom->getElementsByTagName('foooo')->item(0),
+		);
+
+		$data = $transformer->transform($dom);
+
+		$this->assertTrue(is_array($data));
+		$this->assertEquals($expect, $data);
+	}
 }
