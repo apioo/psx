@@ -23,19 +23,14 @@
 
 namespace PSX\Dependency;
 
-use Doctrine\DBAL\Tools\Console\ConsoleRunner;
+use Doctrine\DBAL\Tools\Console\Command as DBALCommand;
 use Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper;
 use PSX\Base;
-use PSX\Console\CommandCommand;
-use PSX\Console\ContainerCommand;
-use PSX\Console\RouteCommand;
-use PSX\Console\ServeCommand;
+use PSX\Console as PSXCommand;
 use PSX\Console\Reader;
 use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Command\HelpCommand;
-use Symfony\Component\Console\Command\ListCommand;
+use Symfony\Component\Console\Command as SymfonyCommand;
 use Symfony\Component\Console\Helper\HelperSet;
-use Symfony\Component\Console\Helper\Table;
 
 /**
  * Console
@@ -69,15 +64,19 @@ trait Console
 
 	protected function appendCommands(Application $application)
 	{
-		$application->add(new HelpCommand());
-		$application->add(new ListCommand());
-		$application->add(new CommandCommand($this->get('executor'), $this->get('console_reader')));
-		$application->add(new ContainerCommand($this));
-		$application->add(new RouteCommand($this->get('routing_parser')));
-		$application->add(new ServeCommand($this->get('config'), $this->get('dispatch'), $this->get('console_reader')));
+		$application->add(new PSXCommand\CommandCommand($this->get('executor'), $this->get('console_reader')));
+		$application->add(new PSXCommand\ContainerCommand($this));
+		$application->add(new PSXCommand\RouteCommand($this->get('routing_parser')));
+		$application->add(new PSXCommand\ServeCommand($this->get('config'), $this->get('dispatch'), $this->get('console_reader')));
 
-		// add doctrine commands
-		ConsoleRunner::addCommands($application);
+		// symfony commands
+		$application->add(new SymfonyCommand\HelpCommand());
+		$application->add(new SymfonyCommand\ListCommand());
+
+		// dbal commands
+		$application->add(new DBALCommand\ImportCommand());
+		$application->add(new DBALCommand\ReservedWordsCommand());
+		$application->add(new DBALCommand\RunSqlCommand());
 	}
 
 	/**
