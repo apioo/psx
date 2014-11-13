@@ -37,9 +37,8 @@ class SoapTest extends WriterTestCase
 {
 	public function testWrite()
 	{
-		$writer = new Soap();
+		$writer = new Soap('http://foo.bar');
 		$writer->setRequestMethod('GET');
-		$writer->setNamespace('http://foo.bar');
 
 		$actual = $writer->write($this->getRecord());
 
@@ -60,14 +59,12 @@ TEXT;
 
 		$this->assertXmlStringEqualsXmlString($expect, $actual);
 		$this->assertEquals('get', $writer->getRequestMethod());
-		$this->assertEquals('http://foo.bar', $writer->getNamespace());
 	}
 
 	public function testWriteResultSet()
 	{
-		$writer = new Soap();
+		$writer = new Soap('http://foo.bar');
 		$writer->setRequestMethod('GET');
-		$writer->setNamespace('http://foo.bar');
 
 		$actual = $writer->write($this->getResultSet());
 
@@ -100,14 +97,12 @@ TEXT;
 
 		$this->assertXmlStringEqualsXmlString($expect, $actual);
 		$this->assertEquals('get', $writer->getRequestMethod());
-		$this->assertEquals('http://foo.bar', $writer->getNamespace());
 	}
 
 	public function testWriteComplex()
 	{
-		$writer = new Soap();
+		$writer = new Soap('http://foo.bar');
 		$writer->setRequestMethod('GET');
-		$writer->setNamespace('http://foo.bar');
 
 		$actual = $writer->write($this->getComplexRecord());
 
@@ -144,7 +139,7 @@ TEXT;
 
 	public function testIsContentTypeSupported()
 	{
-		$writer = new Soap();
+		$writer = new Soap('http://foo.bar');
 
 		$this->assertTrue($writer->isContentTypeSupported('application/soap+xml'));
 		$this->assertFalse($writer->isContentTypeSupported('text/html'));
@@ -152,7 +147,7 @@ TEXT;
 
 	public function testGetContentType()
 	{
-		$writer = new Soap();
+		$writer = new Soap('http://foo.bar');
 
 		$this->assertEquals('text/xml', $writer->getContentType());
 	}
@@ -166,9 +161,8 @@ TEXT;
 		$record->setTrace('Foo');
 		$record->setContext('Bar');
 
-		$writer = new Soap();
+		$writer = new Soap('http://foo.bar');
 		$writer->setRequestMethod('GET');
-		$writer->setNamespace('http://foo.bar');
 
 		$actual = $writer->write($record);
 

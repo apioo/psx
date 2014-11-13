@@ -49,7 +49,7 @@ class WriterFactoryTest extends \PHPUnit_Framework_TestCase
 		$this->writerFactory->addWriter(new Writer\Atom());
 		$this->writerFactory->addWriter(new Writer\Form());
 		$this->writerFactory->addWriter(new Writer\Jsonp());
-		$this->writerFactory->addWriter(new Writer\Soap());
+		$this->writerFactory->addWriter(new Writer\Soap('http://phpsx.org/2014/data'));
 		$this->writerFactory->addWriter(new Writer\Xml());
 	}
 

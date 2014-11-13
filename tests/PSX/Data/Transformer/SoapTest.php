@@ -37,7 +37,7 @@ class SoapTest extends \PHPUnit_Framework_TestCase
 		$body = <<<INPUT
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
 	<soap:Body>
-		<test>
+		<test xmlns="http://phpsx.org/2014/data">
 			<foo>bar</foo>
 			<bar>blub</bar>
 			<bar>bla</bar>
@@ -52,7 +52,7 @@ INPUT;
 		$dom = new \DOMDocument();
 		$dom->loadXML($body);
 
-		$transformer = new Soap();
+		$transformer = new Soap('http://phpsx.org/2014/data');
 
 		$expect = array(
 			'foo' => 'bar', 
@@ -72,7 +72,7 @@ INPUT;
 	public function testNoEnvelope()
 	{
 		$body = <<<INPUT
-<test>
+<test xmlns="http://phpsx.org/2014/data">
 	<foo>bar</foo>
 	<bar>blub</bar>
 	<bar>bla</bar>
@@ -85,7 +85,7 @@ INPUT;
 		$dom = new \DOMDocument();
 		$dom->loadXML($body);
 
-		$transformer = new Soap();
+		$transformer = new Soap('http://phpsx.org/2014/data');
 		$transformer->transform($dom);
 	}
 
@@ -101,7 +101,7 @@ INPUT;
 		$dom = new \DOMDocument();
 		$dom->loadXML($body);
 
-		$transformer = new Soap();
+		$transformer = new Soap('http://phpsx.org/2014/data');
 
 		$expect = array();
 
@@ -126,7 +126,7 @@ INPUT;
 		$dom = new \DOMDocument();
 		$dom->loadXML($body);
 
-		$transformer = new Soap();
+		$transformer = new Soap('http://phpsx.org/2014/data');
 		$transformer->transform($dom);
 	}
 
@@ -135,7 +135,7 @@ INPUT;
 	 */
 	public function testInvalidData()
 	{
-		$transformer = new Soap();
+		$transformer = new Soap('http://phpsx.org/2014/data');
 		$transformer->transform(array());
 	}
 }
