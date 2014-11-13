@@ -186,11 +186,12 @@ class DefaultContainer extends Container
 	protected function appendDefaultConfig()
 	{
 		return array(
-			'psx_dispatch'         => 'index.php/',
-			'psx_timezone'         => 'UTC',
-			'psx_error_controller' => null,
-			'psx_error_template'   => null,
-			'annotation_autoload'  => array('Doctrine\ORM\Mapping', 'JMS\Serializer\Annotation'),
+			'psx_dispatch'            => 'index.php/',
+			'psx_timezone'            => 'UTC',
+			'psx_error_controller'    => null,
+			'psx_error_template'      => null,
+			'psx_annotation_autoload' => array('Doctrine\ORM\Mapping', 'JMS\Serializer\Annotation'),
+			'psx_soap_namespace'      => 'http://phpsx.org/2014/data',
 		);
 	}
 }

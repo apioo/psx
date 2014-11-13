@@ -62,7 +62,7 @@ class Bootstrap
 			set_error_handler('\PSX\Bootstrap::errorHandler');
 
 			// annotation autoload
-			$namespaces = $config->get('annotation_autoload');
+			$namespaces = $config->get('psx_annotation_autoload');
 			if(!empty($namespaces) && is_array($namespaces))
 			{
 				self::registerAnnotationLoader($namespaces);
