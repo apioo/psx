@@ -41,8 +41,6 @@ class Soap extends XmlArray
 {
 	const ENVELOPE_NS = 'http://schemas.xmlsoap.org/soap/envelope/';
 
-	protected $namespace;
-
 	public function __construct($namespace)
 	{
 		$this->namespace = $namespace;
@@ -73,7 +71,7 @@ class Soap extends XmlArray
 
 			if($root instanceof DOMElement)
 			{
-				return $this->recToXml($root);;
+				return $this->recToXml($root);
 			}
 
 			return array();

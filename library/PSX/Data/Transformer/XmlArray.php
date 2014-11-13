@@ -41,6 +41,13 @@ use InvalidArgumentException;
  */
 class XmlArray implements TransformerInterface
 {
+	protected $namespace;
+
+	public function setNamespace($namespace)
+	{
+		$this->namespace = $namespace;
+	}
+
 	public function accept($contentType)
 	{
 		return in_array($contentType, Xml::$mediaTypes) || substr($contentType, -4) == '+xml' || substr($contentType, -4) == '/xml';
@@ -67,38 +74,53 @@ class XmlArray implements TransformerInterface
 				continue;
 			}
 
-			if(isset($result[$node->nodeName]) && (!isset($result[$node->nodeName][0]) || !is_array($result[$node->nodeName][0])))
+			if($this->namespace !== null && $node->namespaceURI != $this->namespace)
 			{
-				$result[$node->nodeName] = array($result[$node->nodeName]);
+				continue;
 			}
 
-			if($this->hasChildElements($node))
+			if(isset($result[$node->localName]) && (!isset($result[$node->localName][0]) || !is_array($result[$node->localName][0])))
+			{
+				$result[$node->localName] = array($result[$node->localName]);
+			}
+
+			if($this->hasChildElements($node, $this->namespace))
 			{
 				$value = $this->recToXml($node);
 			}
 			else
 			{
-				$value = $node->textContent;
+				if($this->namespace !== null && $this->hasChildElements($node, null))
+				{
+					// if we need an specific namespace and the node has child
+					// elements add the complete node as value since we have no
+					// idea howto handle the data
+					$value = $node;
+				}
+				else
+				{
+					$value = $node->textContent;
+				}
 			}
 
-			if(isset($result[$node->nodeName]) && is_array($result[$node->nodeName]))
+			if(isset($result[$node->localName]) && is_array($result[$node->localName]))
 			{
-				$result[$node->nodeName][] = $value;
+				$result[$node->localName][] = $value;
 			}
 			else
 			{
-				$result[$node->nodeName] = $value;
+				$result[$node->localName] = $value;
 			}
 		}
 
 		return $result;
 	}
 
-	protected function hasChildElements(DOMElement $element)
+	protected function hasChildElements(DOMElement $element, $namespace)
 	{
 		foreach($element->childNodes as $node)
 		{
-			if($node->nodeType === XML_ELEMENT_NODE)
+			if($node->nodeType === XML_ELEMENT_NODE && ($namespace === null || $node->namespaceURI == $namespace))
 			{
 				return true;
 			}
