@@ -15,11 +15,11 @@
     "psr/log": "~1.0",
     "psr/http-message": "0.2.0",
     "monolog/monolog": "~1.0",
-    "symfony/event-dispatcher": "~2.0",
-    "symfony/dependency-injection": "~2.0",
-    "symfony/console": "~2.0",
+    "symfony/event-dispatcher": "~2.5",
+    "symfony/dependency-injection": "~2.5",
+    "symfony/console": "~2.5",
     "doctrine/annotations": "~1.2",
-    "doctrine/dbal": "2.5.0-RC2",
+    "doctrine/dbal": "~2.4",
     "jms/serializer": "0.16.0"
   },
   "require-dev": {
