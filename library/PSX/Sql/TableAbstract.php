@@ -118,7 +118,7 @@ abstract class TableAbstract extends TableQueryAbstract implements TableInterfac
 	{
 		$builder = $this->connection->createQueryBuilder()
 			->select($this->connection->getDatabasePlatform()->getCountExpression($this->getPrimaryKey()))
-			->from($this->getName());
+			->from($this->getName(), null);
 
 		if($condition !== null && $condition->hasCondition())
 		{
