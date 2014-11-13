@@ -88,7 +88,7 @@ abstract class TableAbstract extends TableQueryAbstract implements TableInterfac
 		$fields  = $this->getSupportedFields();
 		$builder = $this->connection->createQueryBuilder()
 			->select($fields)
-			->from($this->getName())
+			->from($this->getName(), null)
 			->orderBy($sortBy, $sortOrder == Sql::SORT_ASC ? 'ASC' : 'DESC')
 			->setFirstResult($startIndex)
 			->setMaxResults($count);
