@@ -29,6 +29,9 @@ use PSX\Event\ControllerExecuteEvent;
 use PSX\Event\ControllerProcessedEvent;
 use PSX\Http\Request;
 use PSX\Http\Response;
+use PSX\Http\Stream\StringStream;
+use PSX\Loader\Callback;
+use PSX\Loader\FilterController;
 use PSX\Loader\Location;
 use PSX\Loader\LocationFinder\CallbackMethod;
 use PSX\Url;
@@ -155,5 +158,248 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals($expect, $module->getMethodsCalled());
 		$this->assertEquals(array('id' => 12), $module->getFragments());
+	}
+
+	/**
+	 * @expectedException PSX\Loader\InvalidPathException
+	 */
+	public function testUnknownLocation()
+	{
+		$locationFinder = new CallbackMethod(function($method, $path){
+
+			return null;
+
+		});
+
+		$loader   = new Loader($locationFinder, getContainer()->get('loader_callback_resolver'), getContainer()->get('event_dispatcher'));
+		$request  = new Request(new Url('http://127.0.0.1/foobar'), 'GET');
+		$response = new Response();
+
+		$loader->load($request, $response);
+	}
+
+	public function testLoadRecursiveOff()
+	{
+		$locationFinder = new CallbackMethod(function($method, $path){
+
+			return new Location(array(Location::KEY_SOURCE => 'stdClass'));
+
+		});
+
+		$controller = new \stdClass();
+		$callback   = new Callback($controller, 'foo');
+		$resolver   = $this->getMock('PSX\Loader\CallbackResolverInterface');
+
+		$resolver
+			->method('resolve')
+			->will($this->returnValue($callback));
+
+		$loader = $this->getMockBuilder('PSX\Loader')
+			->setConstructorArgs(array($locationFinder, $resolver, getContainer()->get('event_dispatcher')))
+			->setMethods(array('runControllerLifecycle'))
+			->getMock();
+
+		$loader->setRecursiveLoading(false);
+
+		$loader->expects($this->once())
+			->method('runControllerLifecycle')
+			->will($this->returnValue($controller));
+
+		$request  = new Request(new Url('http://127.0.0.1/foobar'), 'GET');
+		$response = new Response();
+
+		$this->assertEquals($controller, $loader->load($request, $response));
+		$this->assertEquals($controller, $loader->load($request, $response));
+	}
+
+	public function testLoadRecursiveOn()
+	{
+		$locationFinder = new CallbackMethod(function($method, $path){
+
+			return new Location(array(Location::KEY_SOURCE => 'stdClass'));
+
+		});
+
+		$controller = new \stdClass();
+		$callback   = new Callback($controller, 'foo');
+		$resolver   = $this->getMock('PSX\Loader\CallbackResolverInterface');
+
+		$resolver
+			->method('resolve')
+			->will($this->returnValue($callback));
+
+		$loader = $this->getMockBuilder('PSX\Loader')
+			->setConstructorArgs(array($locationFinder, $resolver, getContainer()->get('event_dispatcher')))
+			->setMethods(array('runControllerLifecycle'))
+			->getMock();
+
+		$loader->setRecursiveLoading(true);
+
+		$loader->expects($this->exactly(2))
+			->method('runControllerLifecycle')
+			->will($this->returnValue($controller));
+
+		$request  = new Request(new Url('http://127.0.0.1/foobar'), 'GET');
+		$response = new Response();
+
+		$this->assertEquals($controller, $loader->load($request, $response));
+		$this->assertEquals($controller, $loader->load($request, $response));
+	}
+
+	public function testPreFilter()
+	{
+		$location = new Location(array(Location::KEY_SOURCE => 'PSX\Loader\FilterController'));
+		$request  = new Request(new Url('http://127.0.0.1/foobar'), 'GET');
+		$response = new Response();
+
+		$locationFinder = new CallbackMethod(function($method, $path) use ($location){
+
+			return $location;
+
+		});
+
+		$filter1 = $this->getMock('PSX\Dispatch\FilterInterface');
+		$filter1->expects($this->once())
+			->method('handle')
+			->with($request, $response);
+
+		$filter2 = $this->getMock('PSX\Dispatch\TestListener');
+		$filter2->expects($this->once())
+			->method('on')
+			->with($request, $response);
+
+		$controller = new FilterController($location, $request, $response);
+		$controller->setPreFilter(array($filter1, array($filter2, 'on')));
+
+		$callback = new Callback($controller, null);
+		$resolver = $this->getMock('PSX\Loader\CallbackResolverInterface');
+
+		$resolver
+			->method('resolve')
+			->will($this->returnValue($callback));
+
+		$loader = new Loader($locationFinder, $resolver, getContainer()->get('event_dispatcher'));
+
+		$this->assertEquals($controller, $loader->load($request, $response));
+	}
+
+	/**
+	 * @expectedException PSX\Exception
+	 */
+	public function testPreFilterInvalid()
+	{
+		$location = new Location(array(Location::KEY_SOURCE => 'PSX\Loader\FilterController'));
+		$request  = new Request(new Url('http://127.0.0.1/foobar'), 'GET');
+		$response = new Response();
+
+		$locationFinder = new CallbackMethod(function($method, $path) use ($location){
+
+			return $location;
+
+		});
+
+		$controller = new FilterController($location, $request, $response);
+		$controller->setPreFilter(array('foo'));
+
+		$callback = new Callback($controller, null);
+		$resolver = $this->getMock('PSX\Loader\CallbackResolverInterface');
+
+		$resolver
+			->method('resolve')
+			->will($this->returnValue($callback));
+
+		$loader = new Loader($locationFinder, $resolver, getContainer()->get('event_dispatcher'));
+		$loader->load($request, $response);
+	}
+
+	public function testPostFilter()
+	{
+		$location = new Location(array(Location::KEY_SOURCE => 'PSX\Loader\FilterController'));
+		$request  = new Request(new Url('http://127.0.0.1/foobar'), 'GET');
+		$response = new Response();
+
+		$locationFinder = new CallbackMethod(function($method, $path) use ($location){
+
+			return $location;
+
+		});
+
+		$filter1 = $this->getMock('PSX\Dispatch\FilterInterface');
+		$filter1->expects($this->once())
+			->method('handle')
+			->with($request, $response);
+
+		$filter2 = $this->getMock('PSX\Dispatch\TestListener');
+		$filter2->expects($this->once())
+			->method('on')
+			->with($request, $response);
+
+		$controller = new FilterController($location, $request, $response);
+		$controller->setPostFilter(array($filter1, array($filter2, 'on')));
+
+		$callback = new Callback($controller, null);
+		$resolver = $this->getMock('PSX\Loader\CallbackResolverInterface');
+
+		$resolver
+			->method('resolve')
+			->will($this->returnValue($callback));
+
+		$loader = new Loader($locationFinder, $resolver, getContainer()->get('event_dispatcher'));
+
+		$this->assertEquals($controller, $loader->load($request, $response));
+	}
+
+	/**
+	 * @expectedException PSX\Exception
+	 */
+	public function testPostFilterInvalid()
+	{
+		$location = new Location(array(Location::KEY_SOURCE => 'PSX\Loader\FilterController'));
+		$request  = new Request(new Url('http://127.0.0.1/foobar'), 'GET');
+		$response = new Response();
+
+		$locationFinder = new CallbackMethod(function($method, $path) use ($location){
+
+			return $location;
+
+		});
+
+		$controller = new FilterController($location, $request, $response);
+		$controller->setPostFilter(array('foo'));
+
+		$callback = new Callback($controller, null);
+		$resolver = $this->getMock('PSX\Loader\CallbackResolverInterface');
+
+		$resolver
+			->method('resolve')
+			->will($this->returnValue($callback));
+
+		$loader = new Loader($locationFinder, $resolver, getContainer()->get('event_dispatcher'));
+		$loader->load($request, $response);
+	}
+
+	/**
+	 * @expectedException UnexpectedValueException
+	 */
+	public function testWrongCallbackClassType()
+	{
+		$locationFinder = new CallbackMethod(function($method, $path){
+
+			return new Location(array(Location::KEY_SOURCE => 'PSX\Loader\ProbeController::doIndex'));
+
+		});
+
+		$callback = new Callback(new \stdClass(), null);
+		$resolver = $this->getMock('PSX\Loader\CallbackResolverInterface');
+
+		$resolver
+			->method('resolve')
+			->will($this->returnValue($callback));
+
+		$loader   = new Loader($locationFinder, $resolver, getContainer()->get('event_dispatcher'));
+		$request  = new Request(new Url('http://127.0.0.1/foobar'), 'GET');
+		$response = new Response();
+
+		$loader->load($request, $response);
 	}
 }
