@@ -46,7 +46,7 @@ class ReverseRouterTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('/bar', $router->getPath('PSX\Loader\Foo5Controller'));
 		$this->assertEquals('/bar/foo', $router->getPath('PSX\Loader\Foo6Controller'));
 		$this->assertEquals('/bar/12', $router->getPath('PSX\Loader\Foo7Controller', array(12)));
-		$this->assertEquals('/bar/13/37', $router->getPath('PSX\Loader\Foo8Controller', array(13, 37)));
+		$this->assertEquals('/bar/37/13', $router->getPath('PSX\Loader\Foo8Controller', array('bar' => 13, 'foo' => 37)));
 		$this->assertEquals('/bar', $router->getPath('PSX\Loader\Foo9Controller'));
 		$this->assertEquals('/whitespace', $router->getPath('PSX\Loader\Foo10Controller'));
 		$this->assertEquals('/test', $router->getPath('PSX\Loader\Foo11Controller'));
@@ -78,7 +78,18 @@ class ReverseRouterTest extends \PHPUnit_Framework_TestCase
 		$routingFile = new RoutingFile('tests/PSX/Loader/routes');
 		$router      = new ReverseRouter($routingFile, 'http://foo.com', '');
 
-		$this->assertEquals('/foo/bla/blub', $router->getPath('PSX\Loader\Foo4Controller', array('bla')));
+		$router->getPath('PSX\Loader\Foo4Controller', array('bla'));
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testGetPathRegExpMissingParameter()
+	{
+		$routingFile = new RoutingFile('tests/PSX/Loader/routes');
+		$router      = new ReverseRouter($routingFile, 'http://foo.com', '');
+
+		$router->getPath('PSX\Loader\Foo8Controller', array('bla'));
 	}
 
 	public function testGetNotExisting()
