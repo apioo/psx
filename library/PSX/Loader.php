@@ -53,7 +53,6 @@ class Loader implements LoaderInterface
 	protected $recursiveLoading;
 
 	protected $loaded = array();
-	protected $routes = array();
 
 	public function __construct(LocationFinderInterface $locationFinder, CallbackResolverInterface $callbackResolver, EventDispatcherInterface $eventDispatcher)
 	{
@@ -79,13 +78,7 @@ class Loader implements LoaderInterface
 	 */
 	public function load(RequestInterface $request, ResponseInterface $response)
 	{
-		$path = $request->getUrl()->getPath();
-
-		if(isset($this->routes[md5($path)]))
-		{
-			$path = $this->routes[md5($path)];
-		}
-
+		$path     = $request->getUrl()->getPath();
 		$location = $this->locationFinder->resolve($request->getMethod(), $path);
 
 		if($location instanceof Location)
@@ -125,20 +118,6 @@ class Loader implements LoaderInterface
 	public function loadClass(Callback $callback, RequestInterface $request, ResponseInterface $response)
 	{
 		return $this->runControllerLifecycle($callback, $request, $response);
-	}
-
-	public function addRoute($sourcePath, $destPath)
-	{
-		$key = md5($sourcePath);
-
-		$this->routes[$key] = $destPath;
-	}
-
-	public function getRoute($path)
-	{
-		$key = md5($path);
-
-		return isset($this->routes[$key]) ? $this->routes[$key] : null;
 	}
 
 	protected function runControllerLifecycle(Callback $callback, RequestInterface $request, ResponseInterface $response)
