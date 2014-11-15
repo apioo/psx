@@ -28,6 +28,7 @@ use PSX\Http\Request;
 use PSX\Http\Response;
 use PSX\Http\Stream\TempStream;
 use PSX\Http\Stream\StringStream;
+use PSX\Json;
 use PSX\Test\ControllerTestCase;
 use PSX\Url;
 
@@ -225,6 +226,45 @@ XML;
 		$this->assertEquals($expect, (string) $response->getBody());
 	}
 
+	public function testSetInvalidBody()
+	{
+		$path     = '/controller/invalid_body';
+		$request  = new Request(new Url('http://127.0.0.1' . $path), 'GET');
+		$response = new Response();
+		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
+
+		$this->loadController($request, $response);
+
+		$body     = (string) $response->getBody();
+		$response = Json::decode($body);
+
+		$this->assertArrayHasKey('success', $response);
+		$this->assertArrayHasKey('title', $response);
+		$this->assertArrayHasKey('message', $response);
+		$this->assertEquals(false, $response['success']);
+		$this->assertEquals('InvalidArgumentException', $response['title']);
+		$this->assertEquals('Invalid data type', substr($response['message'], 0, 17));
+	}
+
+	/**
+	 * In case the controller calls the setBody method multiple times only the
+	 * first call gets written as response since the response gets appendend
+	 * which would probably produce an invalid output
+	 */
+	public function testSetDoubleBody()
+	{
+		$path     = '/controller/double_body';
+		$request  = new Request(new Url('http://127.0.0.1' . $path), 'GET');
+		$response = new Response();
+		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
+
+		$this->loadController($request, $response);
+
+		$body = (string) $response->getBody();
+
+		$this->assertEquals('foo', $body);
+	}
+
 	protected function getPaths()
 	{
 		return array(
@@ -240,6 +280,8 @@ XML;
 			[['GET'], '/controller/simplexml', 'PSX\Controller\Foo\Application\TestController::doSetSimpleXmlBody'],
 			[['GET'], '/controller/string', 'PSX\Controller\Foo\Application\TestController::doSetStringBody'],
 			[['GET'], '/controller/file', 'PSX\Controller\Foo\Application\TestController::doSetStreamBody'],
+			[['GET'], '/controller/invalid_body', 'PSX\Controller\Foo\Application\TestController::doSetInvalidBody'],
+			[['GET'], '/controller/double_body', 'PSX\Controller\Foo\Application\TestController::doSetDoubleBody'],
 			[['GET'], '/redirect/:foo', 'PSX\Controller\Foo\Application\TestController::doRedirectDestiniation'],
 			[['GET'], '/api', 'PSX\Controller\Foo\Application\TestApiController::doIndex'],
 			[['GET'], '/api/insert', 'PSX\Controller\Foo\Application\TestApiController::doInsert'],

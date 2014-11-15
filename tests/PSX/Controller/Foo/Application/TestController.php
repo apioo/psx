@@ -186,6 +186,23 @@ class TestController extends ControllerAbstract
 		$this->setBody(new FileStream(fopen(__DIR__ . '/../Resource/test_file', 'r'), 'foo.txt', 'application/octet-stream'));
 	}
 
+	/**
+	 * Should throw an exception
+	 */
+	public function doSetInvalidBody()
+	{
+		$this->setBody(new \stdClass());
+	}
+
+	/**
+	 * Should only write foo once
+	 */
+	public function doSetDoubleBody()
+	{
+		$this->setBody('foo');
+		$this->setBody('foo');
+	}
+
 	public function doRedirectDestiniation()
 	{
 		$this->setBody($this->uriFragments);

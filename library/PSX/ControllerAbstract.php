@@ -369,7 +369,8 @@ abstract class ControllerAbstract implements ControllerInterface
 	{
 		if($this->_responseWritten)
 		{
-			throw new RuntimeException('Response was already written');
+			// we have already written a response
+			return;
 		}
 
 		if(is_array($data))
