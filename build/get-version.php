@@ -5,7 +5,7 @@
  * dynamic web applications. For the current version and informations
  * visit <http://phpsx.org>
  *
- * Copyright (c) 2010-2013 Christoph Kappestein <k42b3.x@gmail.com>
+ * Copyright (c) 2010-2014 Christoph Kappestein <k42b3.x@gmail.com>
  *
  * This file is part of psx. psx is free software: you can
  * redistribute it and/or modify it under the terms of the
@@ -21,9 +21,13 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once('psx/vendor/autoload.php');
+$autoloadFile = __DIR__ . '/../vendor/autoload.php';
 
-$config    = new PSX\Config('psx/configuration.php');
-$bootstrap = new PSX\Bootstrap($config);
+require_once($autoloadFile);
+
+$containerFile = strstr($autoloadFile, 'autoload.php', true) . '../container.php';
+$container     = require_once($containerFile);
+
+PSX\Bootstrap::setupEnvironment($container->get('config'));
 
 echo PSX\Base::getVersion();
