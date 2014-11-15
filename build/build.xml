@@ -33,7 +33,7 @@
 	</target>
 
 	<target name="get-version">
-		<exec dir="${build}" executable="php" failonerror="true" outputproperty="version">
+		<exec dir="build" executable="php" failonerror="true" outputproperty="version">
 			<arg line="get-version.php" />
 		</exec>
 		<echo message="Building version ${version}" />
@@ -41,7 +41,7 @@
 
 	<!-- syntax check of all files -->
 	<target name="syntax-check">
-		<exec dir="${build}" executable="check-syntax.bat" failonerror="true" osfamily="windows" />
+		<exec dir="build" executable="check-syntax.bat" failonerror="true" osfamily="windows" />
 	</target>
 
 	<!-- run phpunit tests -->
