@@ -1,4 +1,15 @@
 
+0.9.2
+* Integrated JMS serializer
+* Removed payment and handler classes
+* Added symfony console component and added several commands
+* Http client removed parameters from the http request object which not directly  
+  belong to the request into an http option object which can be passed to the  
+  request method
+* Moved creation of the DI container into its own file so it can be used in 
+  different environments and the user can easily change the container
+* Dispatch events at key locations
+
 0.9.1
 * Added tool controller to generate an Swagger or WSDL definition from an API
 * Added SOAP support and WSDL generator
