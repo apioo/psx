@@ -21,7 +21,7 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-$autoloadFile = __DIR__ . '/../vendor/autoload.php';
+$autoloadFile = __DIR__ . '/psx/vendor/autoload.php';
 
 require_once($autoloadFile);
 
