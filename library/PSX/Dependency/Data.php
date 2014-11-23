@@ -57,9 +57,9 @@ trait Data
 	public function getReaderFactory()
 	{
 		$reader = new ReaderFactory();
-		$reader->addReader(new Reader\Json());
-		$reader->addReader(new Reader\Form());
-		$reader->addReader(new Reader\Xml());
+		$reader->addReader(new Reader\Json(), 16);
+		$reader->addReader(new Reader\Form(), 8);
+		$reader->addReader(new Reader\Xml(), 0);
 
 		return $reader;
 	}
@@ -70,13 +70,13 @@ trait Data
 	public function getWriterFactory()
 	{
 		$writer = new WriterFactory();
-		$writer->addWriter(new Writer\Json());
-		$writer->addWriter(new Writer\Html($this->get('template'), $this->get('reverse_router')));
-		$writer->addWriter(new Writer\Atom());
-		$writer->addWriter(new Writer\Form());
-		$writer->addWriter(new Writer\Jsonp());
-		$writer->addWriter(new Writer\Soap($this->get('config')->get('psx_soap_namespace')));
-		$writer->addWriter(new Writer\Xml());
+		$writer->addWriter(new Writer\Json(), 48);
+		$writer->addWriter(new Writer\Html($this->get('template'), $this->get('reverse_router')), 40);
+		$writer->addWriter(new Writer\Atom(), 32);
+		$writer->addWriter(new Writer\Form(), 24);
+		$writer->addWriter(new Writer\Jsonp(), 16);
+		$writer->addWriter(new Writer\Soap($this->get('config')->get('psx_soap_namespace')), 8);
+		$writer->addWriter(new Writer\Xml(), 0);
 
 		return $writer;
 	}
@@ -87,10 +87,9 @@ trait Data
 	public function getTransformerManager()
 	{
 		$manager = new TransformerManager();
-		$manager->addTransformer(new Transformer\Atom());
-		$manager->addTransformer(new Transformer\Rss());
-		$manager->addTransformer(new Transformer\Soap($this->get('config')->get('psx_soap_namespace')));
-		$manager->addTransformer(new Transformer\XmlArray());
+		$manager->addTransformer(new Transformer\Atom(), 16);
+		$manager->addTransformer(new Transformer\Soap($this->get('config')->get('psx_soap_namespace')), 8);
+		$manager->addTransformer(new Transformer\XmlArray(), 0);
 
 		return $manager;
 	}
@@ -101,9 +100,9 @@ trait Data
 	public function getImporterManager()
 	{
 		$manager = new ImporterManager();
-		$manager->addImporter(new Importer\Record($this->get('record_factory_factory')));
-		$manager->addImporter(new Importer\Schema($this->get('schema_validator'), $this->get('record_factory_factory')));
-		$manager->addImporter(new Importer\Table());
+		$manager->addImporter(new Importer\Record($this->get('record_factory_factory')), 16);
+		$manager->addImporter(new Importer\Schema($this->get('schema_validator'), $this->get('record_factory_factory')), 8);
+		$manager->addImporter(new Importer\Table(), 0);
 
 		return $manager;
 	}
