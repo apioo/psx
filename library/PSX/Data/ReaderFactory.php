@@ -24,7 +24,7 @@
 namespace PSX\Data;
 
 use PSX\Data\Reader;
-use ReflectionException;
+use PSX\Util\PriorityQueue;
 
 /**
  * ReaderFactory
@@ -35,16 +35,21 @@ use ReflectionException;
  */
 class ReaderFactory
 {
-	protected $readers = array();
+	protected $readers;
+
+	public function __construct()
+	{
+		$this->readers = new PriorityQueue();
+	}
 
 	public function addReader(ReaderInterface $reader, $priority = 0)
 	{
-		$this->readers[] = $reader;
+		$this->readers->insert($reader, $priority);
 	}
 
 	public function getDefaultReader()
 	{
-		return isset($this->readers[0]) ? $this->readers[0] : null;
+		return $this->readers->getIterator()->current();
 	}
 
 	public function getReaderByContentType($contentType, array $supportedReader = null)

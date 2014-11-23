@@ -23,6 +23,8 @@
 
 namespace PSX\Data\Record;
 
+use PSX\Util\PriorityQueue;
+
 /**
  * The importer manager returns the fitting importer for an source
  *
@@ -32,11 +34,16 @@ namespace PSX\Data\Record;
  */
 class ImporterManager
 {
-	protected $importers = array();
+	protected $importers;
+
+	public function __construct()
+	{
+		$this->importers = new PriorityQueue();
+	}
 
 	public function addImporter(ImporterInterface $importer, $priority = 0)
 	{
-		$this->importers[] = $importer;
+		$this->importers->insert($importer, $priority);
 	}
 
 	/**

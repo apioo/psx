@@ -21,42 +21,41 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Data\Transformer;
+namespace PSX\Util;
 
-use PSX\Data\TransformerInterface;
-use PSX\Util\PriorityQueue;
+use Countable;
+use IteratorAggregate;
+use SplPriorityQueue;
 
 /**
- * TransformerManager
+ * A priority queue which you can iterate multiple times. The SplPriorityQueue
+ * removes an element after traversing
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class TransformerManager
+class PriorityQueue implements IteratorAggregate, Countable
 {
-	protected $transformers;
+	protected $queue;
 
 	public function __construct()
 	{
-		$this->transformers = new PriorityQueue();
+		$this->queue = new SplPriorityQueue();
 	}
 
-	public function addTransformer(TransformerInterface $transformer, $priority = 0)
+	public function insert($value, $priority)
 	{
-		$this->transformers->insert($transformer, $priority);
+		$this->queue->insert($value, $priority);
 	}
 
-	public function getTransformerByContentType($contentType)
+	public function count()
 	{
-		foreach($this->transformers as $transformer)
-		{
-			if($transformer->accept($contentType))
-			{
-				return $transformer;
-			}
-		}
+		return $this->queue->count();
+	}
 
-		return null;
+	public function getIterator()
+	{
+		return clone $this->queue;
 	}
 }

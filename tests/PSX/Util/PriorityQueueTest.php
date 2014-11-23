@@ -21,42 +21,44 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Data\Transformer;
-
-use PSX\Data\TransformerInterface;
-use PSX\Util\PriorityQueue;
+namespace PSX\Util;
 
 /**
- * TransformerManager
+ * PriorityQueueTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class TransformerManager
+class PriorityQueueTest extends \PHPUnit_Framework_TestCase
 {
-	protected $transformers;
-
-	public function __construct()
+	public function testQueue()
 	{
-		$this->transformers = new PriorityQueue();
-	}
+		$queue = new PriorityQueue();
+		$queue->insert('foo', 0);
+		$queue->insert('test', 16);
+		$queue->insert('bar', 8);
 
-	public function addTransformer(TransformerInterface $transformer, $priority = 0)
-	{
-		$this->transformers->insert($transformer, $priority);
-	}
+		$this->assertInstanceOf('Countable', $queue);
+		$this->assertInstanceOf('IteratorAggregate', $queue);
 
-	public function getTransformerByContentType($contentType)
-	{
-		foreach($this->transformers as $transformer)
-		{
-			if($transformer->accept($contentType))
-			{
-				return $transformer;
-			}
-		}
+		$this->assertEquals(3, $queue->count());
+		$this->assertEquals(3, count($queue));
 
-		return null;
+		$iterator = $queue->getIterator();
+
+		$this->assertEquals('test', $iterator->current());
+
+		$iterator->next();
+
+		$this->assertEquals('bar', $iterator->current());
+
+		$iterator->next();
+
+		$this->assertEquals('foo', $iterator->current());
+
+		$iterator->next();
+
+		$this->assertEmpty($iterator->current());
 	}
 }
