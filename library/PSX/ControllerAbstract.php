@@ -580,7 +580,7 @@ abstract class ControllerAbstract implements ControllerInterface
 
 		if($writer === null)
 		{
-			$writer = $this->writerFactory->getDefaultWriter();
+			$writer = $this->writerFactory->getDefaultWriter($this->getSupportedWriter());
 		}
 
 		if(!$writer instanceof WriterInterface)
