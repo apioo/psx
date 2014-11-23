@@ -34,7 +34,6 @@ use PSX\Util\Annotation;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
-use Serializable;
 
 /**
  * Importer which reads the annotations of the given RecordInterface and calls 
