@@ -78,6 +78,7 @@ XML;
 		$request = new Message(array('Content-Type' => 'application/atom+xml'), $body);
 		$atom    = getContainer()->get('importer')->import(new Atom(), $request);
 
+		$this->assertInstanceOf('PSX\Atom', $atom);
 		$this->assertEquals('dive into mark', $atom->getTitle());
 		$this->assertEquals('A <em>lot</em> of effort went into making this effortless', $atom->getSubTitle());
 		$this->assertEquals('2005-07-31', $atom->getUpdated()->format('Y-m-d'));
@@ -203,7 +204,8 @@ XML;
 
 		$entry = $atom->current();
 
-		$this->assertEquals(true, $entry->getSource() instanceof Atom);
+		$this->assertInstanceOf('PSX\Atom\Entry', $entry);
+		$this->assertInstanceOf('PSX\Atom', $entry->getSource());
 		$this->assertEquals('dive into mark', $entry->getSource()->getTitle());
 		$this->assertEquals('A <em>lot</em> of effort went into making this effortless', $entry->getSource()->getSubTitle());
 		$this->assertEquals('2005-07-31', $entry->getSource()->getUpdated()->format('Y-m-d'));
@@ -246,13 +248,17 @@ XML;
 		$request = new Message(array('Content-Type' => 'application/atom+xml'), $body);
 		$atom    = getContainer()->get('importer')->import(new Atom(), $request);
 		$entry   = $atom->current();
-		$link    = current($entry->getLink());
 
+		$this->assertInstanceOf('PSX\Atom\Entry', $entry);
 		$this->assertEquals('Atom-Powered Robots Run Amok', $entry->getTitle());
-		$this->assertEquals('http://example.org/2003/12/13/atom03', $link->getHref());
 		$this->assertEquals('urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a', $entry->getId());
 		$this->assertEquals(new \DateTime('2003-12-13T18:30:02Z'), $entry->getUpdated());
 		$this->assertEquals('Some text.', $entry->getSummary());
+
+		$link = current($entry->getLink());
+
+		$this->assertInstanceOf('PSX\Atom\Link', $link);
+		$this->assertEquals('http://example.org/2003/12/13/atom03', $link->getHref());
 	}
 }
 
