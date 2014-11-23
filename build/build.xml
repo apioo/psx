@@ -93,10 +93,10 @@
 
 	<!-- compress -->
 	<target name="build-release" depends="build-init">
-		<tar destfile="${build}/psx_${version}.tar" basedir="${build}" />
-		<gzip destfile="${build}/psx_${version}.tar.gz" src="${build}/psx_${version}.tar" />
-		<delete file="${build}/psx_${version}.tar" />
-		<zip destfile="${build}/psx_${version}.zip" basedir="${build}" />
+		<tar destfile="build/psx_${version}.tar" basedir="${build}" />
+		<gzip destfile="build/psx_${version}.tar.gz" src="build/psx_${version}.tar" />
+		<delete file="build/psx_${version}.tar" />
+		<zip destfile="build/psx_${version}.zip" basedir="${build}" />
 	</target>
 
 	<!-- delete build folder -->
