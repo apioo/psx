@@ -23,11 +23,6 @@
 
 namespace PSX\Data\Writer;
 
-use PSX\Data\RecordInterface;
-use PSX\Data\WriterInterface;
-use PSX\Loader\ReverseRouter;
-use PSX\TemplateInterface;
-
 /**
  * Html
  *
@@ -35,81 +30,9 @@ use PSX\TemplateInterface;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Html implements WriterInterface
+class Html extends TemplateAbstract
 {
 	public static $mime = 'text/html';
-
-	protected $template;
-	protected $reverseRouter;
-	protected $className;
-
-	public function __construct(TemplateInterface $template, ReverseRouter $reverseRouter)
-	{
-		$this->template      = $template;
-		$this->reverseRouter = $reverseRouter;
-		$this->baseDir       = PSX_PATH_LIBRARY;
-	}
-
-	public function setBaseDir($baseDir)
-	{
-		$this->baseDir = $baseDir;
-	}
-
-	public function getBaseDir()
-	{
-		return $this->baseDir;
-	}
-
-	public function setControllerClass($className)
-	{
-		$this->className = $className;
-	}
-
-	public function getControllerClass()
-	{
-		return $this->className;
-	}
-
-	public function write(RecordInterface $record)
-	{
-		// set default template if no template is set
-		$class = str_replace('\\', '/', $this->className);
-		$path  = $this->baseDir . '/' . strstr($class, '/Application/', true) . '/Resource';
-
-		if(!$this->template->hasFile())
-		{
-			$file = substr(strstr($class, 'Application'), 12);
-			$file = $this->underscore($file) . '.tpl';
-
-			$this->template->setDir($path);
-			$this->template->set($file);
-		}
-		else
-		{
-			$this->template->setDir(!$this->template->fileExists() ? $path : null);
-		}
-
-		// assign default values
-		$self   = isset($_SERVER['QUERY_STRING']) && !empty($_SERVER['QUERY_STRING']) ? $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING'] : $_SERVER['PHP_SELF'];
-		$render = round(microtime(true) - $GLOBALS['psx_benchmark'], 6);
-
-		$this->template->assign('self', htmlspecialchars($self));
-		$this->template->assign('url', $this->reverseRouter->getDispatchUrl());
-		$this->template->assign('base', $this->reverseRouter->getBasePath());
-		$this->template->assign('render', $render);
-		$this->template->assign('location', $path);
-		$this->template->assign('router', $this->reverseRouter);
-
-		// assign data
-		$fields = $record->getRecordInfo()->getFields();
-
-		foreach($fields as $key => $value)
-		{
-			$this->template->assign($key, $value);
-		}
-
-		return $this->template->transform();
-	}
 
 	public function isContentTypeSupported($contentType)
 	{
@@ -121,8 +44,8 @@ class Html implements WriterInterface
 		return self::$mime;
 	}
 
-	protected function underscore($word)
+	public function getFileExtension()
 	{
-		return strtolower(preg_replace('/(?<=\\w)([A-Z])/', '_\\1', $word));
+		return 'html';
 	}
 }

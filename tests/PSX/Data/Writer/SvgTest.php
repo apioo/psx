@@ -21,44 +21,47 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Controller\Foo\Application;
+namespace PSX\Data\Writer;
 
-use PSX\Controller\ViewAbstract;
-use PSX\Loader\Location;
-use PSX\Http\Request;
-use PSX\Http\Response;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use PSX\TemplateInterface;
+use PSX\Loader\ReverseRouter;
 
 /**
- * TestViewController
+ * SvgTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class TestViewController extends ViewAbstract
+class SvgTest extends TemplateAbstractTestCase
 {
-	public function onLoad()
+	protected function getWriter(TemplateInterface $template, ReverseRouter $router)
 	{
-		parent::onLoad();
-
-		$this->writerFactory->getWriterByContentType('text/html')->setBaseDir('tests');
+		return new Svg($template, $router);
 	}
 
-	public function doIndex()
+	public function testIsContentTypeSupported()
 	{
-		$this->template->assign('foo', 'bar');
+		$template = $this->getMock('PSX\TemplateInterface');
+		$router   = $this->getMockBuilder('PSX\Loader\ReverseRouter')
+			->disableOriginalConstructor()
+			->getMock();
+
+		$writer = new Svg($template, $router);
+
+		$this->assertTrue($writer->isContentTypeSupported('image/svg+xml'));
+		$this->assertFalse($writer->isContentTypeSupported('text/html'));
 	}
 
-	public function doDetail()
+	public function testGetContentType()
 	{
-		$this->template->assign('foo', 'bar');
-		$this->template->set('detail.tpl');
-	}
+		$template = $this->getMock('PSX\TemplateInterface');
+		$router   = $this->getMockBuilder('PSX\Loader\ReverseRouter')
+			->disableOriginalConstructor()
+			->getMock();
 
-	public function doExplicit()
-	{
-		$this->template->assign('foo', 'bar');
-		$this->template->set(__DIR__ . '/../Resource/explicit.tpl');
+		$writer = new Svg($template, $router);
+
+		$this->assertEquals('image/svg+xml', $writer->getContentType());
 	}
 }

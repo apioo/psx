@@ -21,44 +21,31 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Controller\Foo\Application;
-
-use PSX\Controller\ViewAbstract;
-use PSX\Loader\Location;
-use PSX\Http\Request;
-use PSX\Http\Response;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+namespace PSX\Data\Writer;
 
 /**
- * TestViewController
+ * Svg
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class TestViewController extends ViewAbstract
+class Svg extends TemplateAbstract
 {
-	public function onLoad()
-	{
-		parent::onLoad();
+	public static $mime = 'image/svg+xml';
 
-		$this->writerFactory->getWriterByContentType('text/html')->setBaseDir('tests');
+	public function isContentTypeSupported($contentType)
+	{
+		return stripos($contentType, self::$mime) !== false;
 	}
 
-	public function doIndex()
+	public function getContentType()
 	{
-		$this->template->assign('foo', 'bar');
+		return self::$mime;
 	}
 
-	public function doDetail()
+	public function getFileExtension()
 	{
-		$this->template->assign('foo', 'bar');
-		$this->template->set('detail.tpl');
-	}
-
-	public function doExplicit()
-	{
-		$this->template->assign('foo', 'bar');
-		$this->template->set(__DIR__ . '/../Resource/explicit.tpl');
+		return 'svg';
 	}
 }
