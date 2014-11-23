@@ -23,6 +23,7 @@
 
 namespace PSX\Data\Importer;
 
+use PSX\Data\Transformer;
 use PSX\Rss;
 use PSX\Http\Message;
 
@@ -35,6 +36,22 @@ use PSX\Http\Message;
  */
 class RssTest extends \PHPUnit_Framework_TestCase
 {
+	protected function setUp()
+	{
+		parent::setUp();
+
+		// by default the rss transformer gets not added. We must set a higher
+		// priority because else the XmlArray transformer would be used
+		getContainer()->get('transformer_manager')->addTransformer(new Transformer\Rss(), 24);
+	}
+
+	protected function tearDown()
+	{
+		parent::tearDown();
+
+		getContainer()->set('transformer_manager', null);
+	}
+
 	public function testRss()
 	{
 		$body = <<<XML
@@ -65,6 +82,7 @@ XML;
 		$request = new Message(array('Content-Type' => 'application/rss+xml'), $body);
 		$rss     = getContainer()->get('importer')->import(new Rss(), $request);
 
+		$this->assertInstanceOf('PSX\Data\RecordInterface', $rss);
 		$this->assertEquals('Liftoff News', $rss->getTitle());
 		$this->assertEquals('http://liftoff.msfc.nasa.gov/', $rss->getLink());
 		$this->assertEquals('Liftoff to Space Exploration.', $rss->getDescription());
@@ -102,6 +120,7 @@ XML;
 		$rss     = getContainer()->get('importer')->import(new Rss(), $request);
 		$item    = $rss->current();
 
+		$this->assertInstanceOf('PSX\Data\RecordInterface', $item);
 		$this->assertEquals('Star City', $item->getTitle());
 		$this->assertEquals('http://liftoff.msfc.nasa.gov/news/2003/news-starcity.asp', $item->getLink());
 		$this->assertEquals('How do Americans get ready to work with Russians aboard the International Space Station? They take a crash course in culture, language and protocol at Russia\'s <a href="http://howe.iki.rssi.ru/GCTC/gctc_e.htm">Star City</a>.', $item->getDescription());
