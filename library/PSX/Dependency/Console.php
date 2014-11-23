@@ -69,6 +69,13 @@ trait Console
 		$application->add(new PSXCommand\RouteCommand($this->get('routing_parser')));
 		$application->add(new PSXCommand\ServeCommand($this->get('config'), $this->get('dispatch'), $this->get('console_reader')));
 
+		$application->add(new PSXCommand\Generate\ApiCommand($this));
+		$application->add(new PSXCommand\Generate\BootstrapCacheCommand());
+		$application->add(new PSXCommand\Generate\CommandCommand($this));
+		$application->add(new PSXCommand\Generate\ControllerCommand($this));
+		$application->add(new PSXCommand\Generate\SchemaCommand($this->get('connection')));
+		$application->add(new PSXCommand\Generate\ViewCommand($this));
+
 		// symfony commands
 		$application->add(new SymfonyCommand\HelpCommand());
 		$application->add(new SymfonyCommand\ListCommand());
