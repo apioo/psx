@@ -24,6 +24,7 @@
 namespace PSX\Data;
 
 use PSX\Data\Writer;
+use PSX\Util\PriorityQueue;
 
 /**
  * WriterFactory
@@ -34,22 +35,60 @@ use PSX\Data\Writer;
  */
 class WriterFactory
 {
-	protected $writers = array();
+	protected $writers;
+	protected $contentNegotiation = array();
+
+	public function __construct()
+	{
+		$this->writers = new PriorityQueue();
+	}
 
 	public function addWriter(WriterInterface $writer, $priority = 0)
 	{
-		$this->writers[] = $writer;
+		$this->writers->insert($writer, $priority);
 	}
 
-	public function getDefaultWriter()
+	public function getDefaultWriter(array $supportedWriter = null)
 	{
-		return isset($this->writers[0]) ? $this->writers[0] : null;
+		foreach($this->writers as $writer)
+		{
+			$className = get_class($writer);
+
+			if($supportedWriter !== null && !in_array($className, $supportedWriter))
+			{
+				continue;
+			}
+
+			return $writer;
+		}
+
+		return null;
 	}
 
 	public function getWriterByContentType($contentType, array $supportedWriter = null)
 	{
+		// @TODO we should sort the content types after the quality value
 		$contentTypes = explode(',', $contentType);
 
+		// first we check all content negotiation rules
+		if(!empty($this->contentNegotiation))
+		{
+			foreach($contentTypes as $contentType)
+			{
+				// remove quality
+				$qualityPos  = strpos(';', $contentType);
+				$contentType = $qualityPos !== false ? substr($contentType, 0, $qualityPos) : $contentType;
+
+				$writer = $this->getWriterFromContentNegotiation($contentType, $supportedWriter);
+
+				if($writer !== null)
+				{
+					return $writer;
+				}
+			}
+		}
+
+		// as fallback we ask every writer whether they support the content type
 		foreach($contentTypes as $contentType)
 		{
 			foreach($this->writers as $writer)
@@ -103,5 +142,68 @@ class WriterFactory
 		}
 
 		return null;
+	}
+
+	/**
+	 * With this method you can set which writer should be used for an specific
+	 * content type. The content type can be i.e. text/plain or image/*
+	 *
+	 * @param string $contentType
+	 * @param string $writerClass
+	 */
+	public function setContentNegotiation($contentType, $writerClass)
+	{
+		$this->contentNegotiation[$contentType] = $writerClass;
+	}
+
+	/**
+	 * Returns the fitting writer according to the content negotiation. If no
+	 * fitting writer could be found null gets returned
+	 *
+	 * @return PSX\Data\WriterInterface
+	 */
+	protected function getWriterFromContentNegotiation($contentType, array $supportedWriter = null)
+	{
+		if(empty($this->contentNegotiation))
+		{
+			return null;
+		}
+
+		list($type, $subType) = $this->getTypes($contentType);
+
+		foreach($this->contentNegotiation as $acceptedContentType => $writerClass)
+		{
+			if($supportedWriter !== null && !in_array($writerClass, $supportedWriter))
+			{
+				continue;
+			}
+
+			list($acceptType, $acceptSubType) = $this->getTypes($acceptedContentType);
+
+			$match = ($acceptType == $type && $acceptSubType == $subType) || // we have an explicit match
+				($acceptType == $type && $acceptSubType == '*') || // the type matches and the sub type has an wildcard
+				($acceptType == '*' && $acceptSubType == '*'); // accepts all content types
+
+			if($match)
+			{
+				$writer = $this->getWriterByInstance($writerClass);
+
+				if($writer !== null)
+				{
+					return $writer;
+				}
+			}
+		}
+
+		return null;
+	}
+
+	protected function getTypes($contentType)
+	{
+		$parts   = explode('/', strtolower(trim($contentType)), 2);
+		$type    = $parts[0];
+		$subType = isset($parts[1]) ? $parts[1] : null;
+
+		return array($type, $subType);
 	}
 }

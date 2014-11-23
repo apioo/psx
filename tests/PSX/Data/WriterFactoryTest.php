@@ -113,4 +113,39 @@ class WriterFactoryTest extends \PHPUnit_Framework_TestCase
 		$this->assertInstanceOf('PSX\Data\Writer\Soap', $this->writerFactory->getWriterByInstance('PSX\Data\Writer\Soap'));
 		$this->assertInstanceOf('PSX\Data\Writer\Xml', $this->writerFactory->getWriterByInstance('PSX\Data\Writer\Xml'));		
 	}
+
+	public function testContentNegotiationExplicit()
+	{
+		$this->writerFactory->setContentNegotiation('text/plain', WriterInterface::XML);
+
+		$this->assertInstanceOf('PSX\Data\Writer\Xml', $this->writerFactory->getWriterByContentType('text/plain'));
+	}
+
+	public function testContentNegotiationWildcardSubtype()
+	{
+		$this->writerFactory->setContentNegotiation('text/*', WriterInterface::XML);
+
+		$this->assertInstanceOf('PSX\Data\Writer\Xml', $this->writerFactory->getWriterByContentType('text/plain'));
+		$this->assertInstanceOf('PSX\Data\Writer\Xml', $this->writerFactory->getWriterByContentType('text/foo'));
+		$this->assertInstanceOf('PSX\Data\Writer\Xml', $this->writerFactory->getWriterByContentType('application/xml'));
+		$this->assertInstanceOf('PSX\Data\Writer\Json', $this->writerFactory->getWriterByContentType('application/json'));
+		$this->assertNull($this->writerFactory->getWriterByContentType('image/png'));
+	}
+
+	public function testContentNegotiationAll()
+	{
+		$this->writerFactory->setContentNegotiation('*/*', WriterInterface::XML);
+
+		$this->assertInstanceOf('PSX\Data\Writer\Xml', $this->writerFactory->getWriterByContentType('text/plain'));
+		$this->assertInstanceOf('PSX\Data\Writer\Xml', $this->writerFactory->getWriterByContentType('application/json'));
+	}
+
+	public function testContentNegotiation()
+	{
+		$this->writerFactory->setContentNegotiation('image/*', WriterInterface::HTML);
+
+		$this->assertInstanceOf('PSX\Data\Writer\Html', $this->writerFactory->getWriterByContentType('image/webp,*/*;q=0.8'));
+		$this->assertInstanceOf('PSX\Data\Writer\Html', $this->writerFactory->getWriterByContentType('image/png, image/svg+xml, image/*;q=0.8, */*;q=0.5'));
+		$this->assertInstanceOf('PSX\Data\Writer\Html', $this->writerFactory->getWriterByContentType('text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'));
+	}
 }
