@@ -24,6 +24,9 @@
 namespace PSX\Dependency;
 
 use InvalidArgumentException;
+use PSX\Util\Annotation;
+use ReflectionClass;
+use ReflectionException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\ScopeInterface;
 use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
@@ -156,6 +159,11 @@ class Container implements ContainerInterface
 		return $this->scope == $name;
 	}
 
+	/**
+	 * Returns all available service ids of this container
+	 *
+	 * @return array
+	 */
 	public function getServiceIds()
 	{
 		$services  = array();
@@ -163,13 +171,55 @@ class Container implements ContainerInterface
 
 		foreach($container->getMethods() as $method)
 		{
-			if(!in_array($method->name, array('get', 'getParameter', 'getServiceIds')) && preg_match('/^get(.+)$/', $method->name, $match))
+			if(!in_array($method->name, array('get', 'getParameter', 'getServiceIds', 'getReturnType')) && preg_match('/^get(.+)$/', $method->name, $match))
 			{
 				$services[] = self::underscore($match[1]);
 			}
 		}
 
 		return $services;
+	}
+
+	/**
+	 * Tries to determine the return type of an service. At first we try to 
+	 * determine the type from the return annotation which is in most cases 
+	 * more useful because it could specify an interface instead of an concrete 
+	 * implementation. As fallback we get an instance of the service and return
+	 * the type
+	 *
+	 * @return string
+	 */
+	public function getReturnType($name)
+	{
+		$container = new ReflectionClass($this);
+
+		try
+		{
+			$method = $container->getMethod('get' . self::normalizeName($name));
+			$doc    = Annotation::parse($method->getDocComment());
+			$return = $doc->getFirstAnnotation('return');
+
+			if(!empty($return))
+			{
+				return $return;
+			}
+		}
+		catch(ReflectionException $e)
+		{
+			// method does not exist
+		}
+
+		// as fallback we get the service and return the used type
+		$service = $this->get($name);
+
+		if(is_object($service))
+		{
+			return get_class($service);
+		}
+		else
+		{
+			return gettype($service);
+		}
 	}
 
 	public static function normalizeName($name)

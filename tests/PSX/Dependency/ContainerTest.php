@@ -176,11 +176,29 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertFalse($sc->isScopeActive('foo'));
 	}
+
+	public function testGetServiceIds()
+	{
+		$sc = new ProjectServiceContainer();
+
+		$services = $sc->getServiceIds();
+
+		$this->assertEquals(array('bar', 'foo_bar', 'scalar'), $services);
+	}
+
+	public function testGetReturnType()
+	{
+		$sc = new ProjectServiceContainer();
+
+		$this->assertEquals('stdClass', $sc->getReturnType('bar'));
+		$this->assertEquals('Foo\BarInterface', $sc->getReturnType('foo_bar'));
+		$this->assertEquals('array', $sc->getReturnType('scalar'));
+	}
 }
 
 class ProjectServiceContainer extends Container
 {
-	public $__bar, $__foo_bar, $__foo_baz;
+	public $__bar, $__foo_bar;
 
 	public function __construct()
 	{
@@ -188,7 +206,6 @@ class ProjectServiceContainer extends Container
 
 		$this->__bar = new \stdClass();
 		$this->__foo_bar = new \stdClass();
-		$this->__foo_baz = new \stdClass();
 	}
 
 	protected function getBar()
@@ -196,13 +213,16 @@ class ProjectServiceContainer extends Container
 		return $this->__bar;
 	}
 
+	/**
+	 * @return Foo\BarInterface
+	 */
 	protected function getFooBar()
 	{
 		return $this->__foo_bar;
 	}
 
-	protected function getFoo_Baz()
+	protected function getScalar()
 	{
-		return $this->__foo_baz;
+		return array('foo', 'bar');
 	}
 }
