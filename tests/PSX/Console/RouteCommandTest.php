@@ -40,7 +40,6 @@ class RouteCommandTest extends \PHPUnit_Framework_TestCase
 
 		$commandTester = new CommandTester($command);
 		$commandTester->execute(array(
-			'command' => $command->getName()
 		));
 
 		$collection = getContainer()->get('routing_parser')->getCollection();

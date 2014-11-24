@@ -37,7 +37,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class BootstrapCacheCommand extends Command
+class BootstrapCacheCommand extends GenerateCommandAbstract
 {
 	protected function configure()
 	{
@@ -61,9 +61,9 @@ class BootstrapCacheCommand extends Command
 			$content.= $source;
 		}
 
-		$bytes = file_put_contents(PSX_PATH_CACHE . '/bootstrap.cache.php', $content);
+		$this->writeFile(PSX_PATH_CACHE . '/bootstrap.cache.php', $content);
 
-		$output->writeln('Generation successful (' . $bytes . ' bytes written)');
+		$output->writeln('Generation successful');
 	}
 
 	/**

@@ -21,46 +21,18 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Console\Generate;
-
-use PSX\Dependency\Container as PSXContainer;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+namespace PSX\Console\Generate\BootstrapCache;
 
 /**
- * GenerateCommandAbstract
+ * Bar
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-abstract class GenerateCommandAbstract extends Command
+class Bar
 {
-	protected function getServiceDefinition(InputInterface $input)
+	public function __construct()
 	{
-		$namespace = $input->getArgument('namespace');
-		$dryRun    = $input->getOption('dry-run');
-
-		$parts     = explode('\\', $namespace);
-		$namespace = implode('\\', array_map('ucfirst', array_slice($parts, 0, count($parts) - 1)));
-		$class     = end($parts);
-
-		if(empty($namespace) || empty($class))
-		{
-			throw new \InvalidArgumentException('Namespace must have at least an vendor and class name i.e. Acme\News');
-		}
-
-		return new ServiceDefinition($namespace, $class, $dryRun);
-	}
-
-	protected function makeDir($path)
-	{
-		return mkdir($path, 0744, true);
-	}
-
-	protected function writeFile($file, $content)
-	{
-		return file_put_contents($file, $content);
 	}
 }

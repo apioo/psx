@@ -35,7 +35,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class ViewCommand extends GenerateCommandAbstract
+class ViewCommand extends ContainerGenerateCommandAbstract
 {
 	protected function configure()
 	{
@@ -64,7 +64,7 @@ class ViewCommand extends GenerateCommandAbstract
 
 			if(!$definition->isDryRun())
 			{
-				mkdir($applicationPath, 0744, true);
+				$this->makeDir($applicationPath);
 			}
 		}
 
@@ -74,7 +74,7 @@ class ViewCommand extends GenerateCommandAbstract
 
 			if(!$definition->isDryRun())
 			{
-				mkdir($resourcePath, 0744, true);
+				$this->makeDir($resourcePath);
 			}
 		}
 
@@ -92,7 +92,7 @@ class ViewCommand extends GenerateCommandAbstract
 
 			if(!$definition->isDryRun())
 			{
-				file_put_contents($controllerFile, $source);
+				$this->writeFile($controllerFile, $source);
 			}
 
 			// template file
@@ -102,7 +102,7 @@ class ViewCommand extends GenerateCommandAbstract
 
 			if(!$definition->isDryRun())
 			{
-				file_put_contents($templateFile, $source);
+				$this->writeFile($templateFile, $source);
 			}
 		}
 		else

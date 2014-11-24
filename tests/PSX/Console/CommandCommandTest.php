@@ -50,7 +50,6 @@ class CommandCommandTest extends \PHPUnit_Framework_TestCase
 
 		$commandTester = new CommandTester($command);
 		$commandTester->execute(array(
-			'command' => $command->getName(),
 			'cmd' => 'PSX\Command\Foo\Command\FooCommand',
 		));
 

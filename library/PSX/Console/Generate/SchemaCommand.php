@@ -39,7 +39,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class SchemaCommand extends Command
+class SchemaCommand extends GenerateCommandAbstract
 {
 	protected $connection;
 
@@ -62,46 +62,36 @@ class SchemaCommand extends Command
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$namespace = $input->getArgument('namespace');
-		$table     = $input->getArgument('table');
-		$dryRun    = $input->getOption('dry-run');
-
-		$parts     = explode('\\', $namespace);
-		$namespace = implode('\\', array_map('ucfirst', array_slice($parts, 0, count($parts) - 1)));
-		$class     = end($parts);
-
-		if(empty($namespace) || empty($class))
-		{
-			throw new \InvalidArgumentException('Namespace must have at least an vendor and class name i.e. Acme\News');
-		}
+		$definition = $this->getServiceDefinition($input);
+		$table      = $input->getArgument('table');
 
 		$output->writeln('Generating schema');
 
 		// create dir
-		$path = PSX_PATH_LIBRARY . DIRECTORY_SEPARATOR . str_replace('\\', DIRECTORY_SEPARATOR, $namespace);
+		$path = $definition->getPath();
 
 		if(!is_dir($path))
 		{
 			$output->writeln('Create dir ' . $path);
 
-			if(!$dryRun)
+			if(!$definition->isDryRun())
 			{
-				mkdir($path, 0744, true);
+				$this->makeDir($path);
 			}
 		}
 
 		// generate controller
-		$file = $path . DIRECTORY_SEPARATOR . $class . '.php';
+		$file = $path . DIRECTORY_SEPARATOR . $definition->getClassName() . '.php';
 
 		if(!is_file($file))
 		{
-			$source = $this->getSchemaSource($namespace, $class, $table);
+			$source = $this->getSchemaSource($definition, $table);
 
 			$output->writeln('Write file ' . $file);
 
-			if(!$dryRun)
+			if(!$definition->isDryRun())
 			{
-				file_put_contents($file, $source);
+				$this->writeFile($file, $source);
 			}
 		}
 		else
@@ -110,9 +100,11 @@ class SchemaCommand extends Command
 		}
 	}
 
-	protected function getSchemaSource($namespace, $className, $table)
+	protected function getSchemaSource(ServiceDefinition $definition, $table)
 	{
-		$name = lcfirst($className);
+		$namespace = $definition->getNamespace();
+		$className = $definition->getClassName();
+		$name      = lcfirst($className);
 
 		if(!empty($table))
 		{

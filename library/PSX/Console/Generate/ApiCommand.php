@@ -35,7 +35,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class ApiCommand extends GenerateCommandAbstract
+class ApiCommand extends ContainerGenerateCommandAbstract
 {
 	protected function configure()
 	{
@@ -62,7 +62,7 @@ class ApiCommand extends GenerateCommandAbstract
 
 			if(!$definition->isDryRun())
 			{
-				mkdir($path, 0744, true);
+				$this->makeDir($path);
 			}
 		}
 
@@ -77,7 +77,7 @@ class ApiCommand extends GenerateCommandAbstract
 
 			if(!$definition->isDryRun())
 			{
-				file_put_contents($file, $source);
+				$this->writeFile($file, $source);
 			}
 		}
 		else

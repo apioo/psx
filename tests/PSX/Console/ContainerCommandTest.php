@@ -40,7 +40,6 @@ class ContainerCommandTest extends \PHPUnit_Framework_TestCase
 
 		$commandTester = new CommandTester($command);
 		$commandTester->execute(array(
-			'command' => $command->getName()
 		));
 
 		$serviceIds = getContainer()->getServiceIds();

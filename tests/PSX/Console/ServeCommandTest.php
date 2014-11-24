@@ -48,7 +48,6 @@ class ServeCommandTest extends ControllerTestCase
 
 		$commandTester = new CommandTester($command);
 		$commandTester->execute(array(
-			'command' => $command->getName(),
 		));
 
 		$response = ob_get_contents();

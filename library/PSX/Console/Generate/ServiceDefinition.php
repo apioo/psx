@@ -37,11 +37,10 @@ class ServiceDefinition
 	protected $services;
 	protected $isDryRun;
 
-	public function __construct($namespace, $className, array $services, $isDryRun)
+	public function __construct($namespace, $className, $isDryRun)
 	{
 		$this->namespace = $namespace;
 		$this->className = $className;
-		$this->services  = $services;
 		$this->isDryRun  = $isDryRun;
 	}
 
