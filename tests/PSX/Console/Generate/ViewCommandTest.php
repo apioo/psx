@@ -43,16 +43,16 @@ class ViewCommandTest extends \PHPUnit_Framework_TestCase
 
 		$command->expects($this->at(0))
 			->method('makeDir')
-			->with($this->equalTo('library\Acme\Foo\Application'));
+			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Application'));
 
 		$command->expects($this->at(1))
 			->method('makeDir')
-			->with($this->equalTo('library\Acme\Foo\Resource'));
+			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Resource'));
 
 		$command->expects($this->at(2))
 			->method('writeFile')
 			->with(
-				$this->equalTo('library\Acme\Foo\Application\Bar.php'), 
+				$this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Application' . DIRECTORY_SEPARATOR . 'Bar.php'), 
 				$this->callback(function($source){
 					$this->assertSource($this->getExpectedControllerSource(), $source);
 					return true;

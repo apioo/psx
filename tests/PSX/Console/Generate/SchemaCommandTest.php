@@ -44,7 +44,7 @@ class SchemaCommandTest extends \PHPUnit_Framework_TestCase
 		$command->expects($this->once())
 			->method('writeFile')
 			->with(
-				$this->equalTo('library\Acme\Foo\Bar.php'), 
+				$this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Bar.php'), 
 				$this->callback(function($source){
 					$this->assertSource($this->getExpectedSource(), $source);
 					return true;
