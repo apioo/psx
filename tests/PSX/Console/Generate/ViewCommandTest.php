@@ -62,7 +62,7 @@ class ViewCommandTest extends \PHPUnit_Framework_TestCase
 		$command->expects($this->at(3))
 			->method('writeFile')
 			->with(
-				$this->equalTo('library\Acme\Foo\Resource\bar.html'), 
+				$this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Resource' . DIRECTORY_SEPARATOR . 'bar.html'), 
 				$this->callback(function($source){
 					$this->assertSource($this->getExpectedResourceSource(), $source);
 					return true;
