@@ -101,7 +101,7 @@ class EntityAnnotation implements ReaderInterface
 				return TableInterface::TYPE_DECIMAL;
 
 			case 'boolean':
-				return TableInterface::TYPE_TINYINT | 1;
+				return TableInterface::TYPE_BOOLEAN;
 
 			case 'datetime':
 				return TableInterface::TYPE_DATETIME;
