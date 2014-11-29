@@ -74,6 +74,7 @@ trait Console
 		$application->add(new PSXCommand\Generate\CommandCommand($this));
 		$application->add(new PSXCommand\Generate\ControllerCommand($this));
 		$application->add(new PSXCommand\Generate\SchemaCommand($this->get('connection')));
+		$application->add(new PSXCommand\Generate\TableCommand($this->get('connection')));
 		$application->add(new PSXCommand\Generate\ViewCommand($this));
 
 		// symfony commands
