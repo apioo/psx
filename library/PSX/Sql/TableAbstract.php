@@ -265,11 +265,6 @@ abstract class TableAbstract extends TableQueryAbstract implements TableInterfac
 		return null;
 	}
 
-	protected function getValidColumns(array $columns)
-	{
-		return array_intersect($columns, array_keys($this->getColumns()));
-	}
-
 	protected function project($sql, array $params = array(), array $columns = null)
 	{
 		$name    = $this->getDisplayName();
