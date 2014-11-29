@@ -70,6 +70,8 @@ class BootstrapCacheCommand extends GenerateCommandAbstract
 	 * All files which get included into the bootstrap cache. Note dont include
 	 * controller/command classes which contain annotations since all comments  
 	 * get removed
+	 *
+	 * @codeCoverageIgnore
 	 */
 	protected function getFiles()
 	{
