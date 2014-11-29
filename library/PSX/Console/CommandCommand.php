@@ -25,6 +25,7 @@ namespace PSX\Console;
 
 use PSX\Command\Executor;
 use PSX\Command\ParameterParser;
+use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -60,19 +61,42 @@ class CommandCommand extends Command
 	{
 		$this
 			->setName('command')
-			->setDescription('Executes an PSX command through the console. The parameters must be provided as JSON via stdin')
-			->addArgument('cmd', InputArgument::REQUIRED, 'Name of the command');
+			->setDescription('Executes an PSX command through the console. The parameters must be either provided as JSON via stdin or per parameter')
+			->addArgument('cmd', InputArgument::REQUIRED, 'Name of the command')
+			->addArgument('parameters', InputArgument::IS_ARRAY | InputArgument::OPTIONAL, 'Needed parameters for the command')
+			->addOption('stdin', 's', InputOption::VALUE_NONE, 'Whether to read from stdin');
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$body = $this->reader->read();
+		$command    = $input->getArgument('cmd');
+		$parameters = $input->getArgument('parameters');
 
-		if(empty($body))
+		if($input->getOption('stdin'))
 		{
-			$body = '{}';
+			$body = $this->reader->read();
+			if(empty($body))
+			{
+				$body = '{}';
+			}
+
+			$parser = new ParameterParser\Json($command, $body);
+		}
+		else
+		{
+			$map = array();
+			foreach($parameters as $parameter)
+			{
+				$parts = explode(':', $parameter, 2);
+				$key   = $parts[0];
+				$value = isset($parts[1]) ? $parts[1] : null;
+
+				$map[$key] = $value;
+			}
+
+			$parser = new ParameterParser\Map($command, $map);
 		}
 
-		$this->executor->run(new ParameterParser\Json($input->getArgument('cmd'), $body));
+		$this->executor->run($parser);
 	}
 }

@@ -24,6 +24,7 @@
 namespace PSX\Console;
 
 use PSX\Command\Output;
+use PSX\Test\CommandTestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
@@ -33,9 +34,48 @@ use Symfony\Component\Console\Tester\CommandTester;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class CommandCommandTest extends \PHPUnit_Framework_TestCase
+class CommandCommandTest extends CommandTestCase
 {
-	public function testCommand()
+	public function testCommandParameter()
+	{
+		$memory = new Output\Memory();
+
+		getContainer()->set('command_output', $memory);
+
+		$command = getContainer()->get('console')->find('command');
+
+		$commandTester = new CommandTester($command);
+		$commandTester->execute(array(
+			'cmd'        => 'PSX\Command\Foo\Command\FooCommand',
+			'parameters' => array('foo:test'),
+		));
+
+		$messages = $memory->getMessages();
+
+		$this->assertEquals(2, count($messages));
+		$this->assertEquals('Some foo informations', rtrim($messages[0]));
+		$this->assertEquals('Hello test', rtrim($messages[1]));
+	}
+
+	/**
+	 * @expectedException PSX\Command\MissingParameterException
+	 */
+	public function testCommandParameterEmpty()
+	{
+		$memory = new Output\Memory();
+
+		getContainer()->set('command_output', $memory);
+
+		$command = getContainer()->get('console')->find('command');
+
+		$commandTester = new CommandTester($command);
+		$commandTester->execute(array(
+			'cmd'        => 'PSX\Command\Foo\Command\FooCommand',
+			'parameters' => array(),
+		));
+	}
+
+	public function testCommandStdin()
 	{
 		$memory = new Output\Memory();
 
@@ -50,7 +90,8 @@ class CommandCommandTest extends \PHPUnit_Framework_TestCase
 
 		$commandTester = new CommandTester($command);
 		$commandTester->execute(array(
-			'cmd' => 'PSX\Command\Foo\Command\FooCommand',
+			'cmd'     => 'PSX\Command\Foo\Command\FooCommand',
+			'--stdin' => true,
 		));
 
 		$messages = $memory->getMessages();
@@ -63,7 +104,7 @@ class CommandCommandTest extends \PHPUnit_Framework_TestCase
 	/**
 	 * @expectedException PSX\Command\MissingParameterException
 	 */
-	public function testCommandEmptyBody()
+	public function testCommandStdinEmptyBody()
 	{
 		$stream = fopen('php://memory', 'r+');
 		fwrite($stream, '');
@@ -74,15 +115,15 @@ class CommandCommandTest extends \PHPUnit_Framework_TestCase
 
 		$commandTester = new CommandTester($command);
 		$commandTester->execute(array(
-			'command' => $command->getName(),
-			'cmd' => 'PSX\Command\Foo\Command\FooCommand',
+			'cmd'     => 'PSX\Command\Foo\Command\FooCommand',
+			'--stdin' => true,
 		));
 	}
 
 	/**
 	 * @expectedException PSX\Exception
 	 */
-	public function testCommandInvalidJson()
+	public function testCommandStdinInvalidJson()
 	{
 		$stream = fopen('php://memory', 'r+');
 		fwrite($stream, 'foobar');
@@ -93,8 +134,8 @@ class CommandCommandTest extends \PHPUnit_Framework_TestCase
 
 		$commandTester = new CommandTester($command);
 		$commandTester->execute(array(
-			'command' => $command->getName(),
-			'cmd' => 'PSX\Command\Foo\Command\FooCommand',
+			'cmd'     => 'PSX\Command\Foo\Command\FooCommand',
+			'--stdin' => true,
 		));
 	}
 }
