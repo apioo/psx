@@ -24,7 +24,7 @@
 namespace PSX\Sql;
 
 /**
- * TableInterface
+ * Represents a class which describes an table
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
@@ -38,47 +38,24 @@ interface TableInterface extends TableQueryInterface, TableManipulationInterface
 	const UNSIGNED        = 0x80000000;
 
 	// integer
-	const TYPE_TINYINT    = 0x100000;
-	const TYPE_SMALLINT   = 0x200000;
-	const TYPE_MEDIUMINT  = 0x300000;
+	const TYPE_SMALLINT   = 0x100000;
 	const TYPE_INT        = 0x400000;
 	const TYPE_BIGINT     = 0x500000;
+	const TYPE_BOOLEAN    = 0xB00000;
 
+	// float
 	const TYPE_DECIMAL    = 0x600000;
 	const TYPE_FLOAT      = 0x700000;
-	const TYPE_DOUBLE     = 0x800000;
-	const TYPE_REAL       = 0x900000;
-
-	const TYPE_BIT        = 0xA00000;
-	const TYPE_BOOLEAN    = 0xB00000;
-	const TYPE_SERIAL     = 0xC00000;
 
 	// date
 	const TYPE_DATE       = 0xD00000;
 	const TYPE_DATETIME   = 0xE00000;
-	const TYPE_TIMESTAMP  = 0xF00000;
 	const TYPE_TIME       = 0x1000000;
-	const TYPE_YEAR       = 0x1100000;
 
 	// string
-	const TYPE_CHAR       = 0x1200000;
 	const TYPE_VARCHAR    = 0x1300000;
-
-	const TYPE_BINARY     = 0x1400000;
-	const TYPE_VARBINARY  = 0x1500000;
-
-	const TYPE_TINYTEXT   = 0x1600000;
 	const TYPE_TEXT       = 0x1700000;
-	const TYPE_MEDIUMTEXT = 0x1800000;
-	const TYPE_LONGTEXT   = 0x1900000;
-
-	const TYPE_TINYBLOB   = 0x1A00000;
-	const TYPE_MEDIUMBLOB = 0x1B00000;
 	const TYPE_BLOB       = 0x1C00000;
-	const TYPE_LONGBLOB   = 0x1D00000;
-
-	const TYPE_ENUM       = 0x1E00000;
-	const TYPE_SET        = 0x1F00000;
 
 	/**
 	 * Returns the name of the table
@@ -92,7 +69,7 @@ interface TableInterface extends TableQueryInterface, TableManipulationInterface
 	 * and the value contains OR connected informations. I.e.:
 	 * <code>
 	 * array(
-	 *  'id'    => self::TYPE_INT | 10 | self::AUTO_INCREMENT | self::PRIMARY_KEY,
+	 *  'id'    => self::TYPE_INT | 10 | self::PRIMARY_KEY,
 	 *  'title' => self::TYPE_VARCHAR | 256
 	 * )
 	 * </code>
