@@ -26,10 +26,12 @@ Url versioning
 The most easiest solution to versioning is to simply provide multiple routes 
 to an API i.e.
 
+.. code-block:: none
+
     GET /api/v1/news Acme\News\Lion\Api
     GET /api/v2/news Acme\News\Zebra\Api
 
-While this is easy to implement it hast the disadvantage that you have multiple
+While this is easy to implement it has the disadvantage that you have multiple
 presentations for the same resource. I.e. /api/v1/news and /api/v2/news 
 represent the same resource but in different formats
 
@@ -38,6 +40,8 @@ Accept-Header versioning
 
 PSX comes with support to handle API versioning throught the Accept header 
 field. That means you must specify an explicit version in the Accept header i.e.
+
+.. code-block:: none
 
     Accept: application/vnd.foobar.v2+json
 
@@ -60,7 +64,7 @@ In the following a short example howto add versioning to an schema API
     {
         public function getSchemaDocumentation()
         {
-        	$documentation  = new Documentation\Version();
+            $documentation  = new Documentation\Version();
             $responseSchema = $this->schemaManager->getSchema('Foo\Blog\Schema\SuccessMessage');
 
             $view = new View(View::STATUS_DEPRECATED);

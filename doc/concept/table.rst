@@ -7,7 +7,7 @@ Abstract
 
 The PSX table classes offern an alternative to an ORM. Each table class
 represents an sql table. The table class contains the table name and all 
-available columns. It is also the place where you put all complex business 
+available columns. It is also the place where you can put all complex business 
 queries like in an repository. To get an first impression here an example:
 
 .. code-block:: php
@@ -77,7 +77,7 @@ fictional method which returns the best comments
     {
         // ...
 
-        public function getBestComments($userId)
+        public function getBestCommentsByUser($userId)
         {
             $sql = '   SELECT id,
                               title,
@@ -94,3 +94,14 @@ fictional method which returns the best comments
             ));
         }
     }
+
+Generation
+----------
+
+It is possible to generate such table classes from an sql table. Therefor you
+can use the following command
+
+.. code::
+
+    $ ./vendor/bin/psx generate:table Acme\Table\Comment psx_handler_comment
+

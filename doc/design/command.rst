@@ -78,9 +78,29 @@ required parameter is missing an exception gets thrown.
     
     $this->executor->run(new Map('Foo\Bar\Command', array('bar' => 'foo')));
 
-It is also possible to invoke the command through the console
+It is also possible to invoke the command through the console. Therefor you have
+to pass the parameters as arguments
 
-.. code-block:: none
+.. code::
 
-    vendor\bin\psx Foo\Bar\Command -bar foo
+    $ ./vendor/bin/psx command Foo\Bar\Command bar:foo
+
+You could also pipe the parameters as JSON string through stdin with the "-s" 
+switch
+
+.. code::
+
+    $ echo {"bar": "foo"} | ./vendor/bin/psx command -s Foo\Bar\Command
+
+Generation
+----------
+
+It is possible to generate an command template. You can use the following 
+command which takes as first argument the class name and as second a comma 
+seperated list with service names. These services are automatically included in
+the command
+
+.. code::
+
+    $ ./vendor/bin/psx generate:command Acme\Command connection,http
 

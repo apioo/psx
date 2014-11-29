@@ -60,3 +60,16 @@ Usage
             ));
         }
     }
+
+Generation
+----------
+
+It is possible to generate an controller template. You can use the following 
+command which takes as first argument the class name and as second a comma 
+seperated list with service names. These services are automatically included in
+the controller
+
+.. code::
+
+    $ ./vendor/bin/psx generate:controller Acme\Controller connection,http
+
