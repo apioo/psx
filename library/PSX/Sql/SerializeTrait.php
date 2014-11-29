@@ -24,6 +24,7 @@
 namespace PSX\Sql;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Types\Type;
 
 /**
  * SerializeTrait
@@ -36,60 +37,51 @@ trait SerializeTrait
 {
 	protected function unserializeType($value, $type)
 	{
-		$type = (($type >> 20) & 0xFF) << 20;
+		$type     = (($type >> 20) & 0xFF) << 20;
+		$platform = $this->connection->getDatabasePlatform();
+		$mapping  = $this->getDbalTableMapping();
 
-		switch($type)
+		if(isset($mapping[$type]))
 		{
-			case TableInterface::TYPE_TINYINT:
-			case TableInterface::TYPE_SMALLINT:
-			case TableInterface::TYPE_MEDIUMINT:
-			case TableInterface::TYPE_INT:
-			case TableInterface::TYPE_BIGINT:
-			case TableInterface::TYPE_BIT:
-			case TableInterface::TYPE_SERIAL:
-				return (int) $value;
-				break;
-
-			case TableInterface::TYPE_DECIMAL:
-			case TableInterface::TYPE_FLOAT:
-			case TableInterface::TYPE_DOUBLE:
-			case TableInterface::TYPE_REAL:
-				return (float) $value;
-				break;
-
-			case TableInterface::TYPE_BOOLEAN:
-				return (bool) $value;
-				break;
-
-			case TableInterface::TYPE_DATE:
-			case TableInterface::TYPE_DATETIME:
-				return new \DateTime($value);
-				break;
-
-			default:
-				return $value;
-				break;
+			return Type::getType($mapping[$type])->convertToPHPValue($value, $platform);
+		}
+		else
+		{
+			return Type::getType(Type::STRING)->convertToPHPValue($value, $platform);
 		}
 	}
 
 	protected function serializeType($value, $type)
 	{
-		$type = (($type >> 20) & 0xFF) << 20;
+		$type     = (($type >> 20) & 0xFF) << 20;
+		$platform = $this->connection->getDatabasePlatform();
+		$mapping  = $this->getDbalTableMapping();
 
-		switch($type)
+		if(isset($mapping[$type]))
 		{
-			case TableInterface::TYPE_BOOLEAN:
-				return $value ? '1' : '0';
-				break;
-
-			case TableInterface::TYPE_DATE:
-			case TableInterface::TYPE_DATETIME:
-				return $value instanceof \DateTime ? $value->format('Y-m-d H:i:s') : (string) $value;
-				break;
-
-			default:
-				return (string) $value;
-				break;
+			return Type::getType($mapping[$type])->convertToDatabaseValue($value, $platform);
 		}
+		else
+		{
+			return Type::getType(Type::STRING)->convertToDatabaseValue($value, $platform);
+		}
+	}
+
+	protected function getDbalTableMapping()
+	{
+		return array(
+			TableInterface::TYPE_SMALLINT => Type::SMALLINT,
+			TableInterface::TYPE_INT      => Type::INTEGER,
+			TableInterface::TYPE_BIGINT   => Type::BIGINT,
+			TableInterface::TYPE_BOOLEAN  => Type::BOOLEAN,
+			TableInterface::TYPE_DECIMAL  => Type::DECIMAL,
+			TableInterface::TYPE_FLOAT    => Type::FLOAT,
+			TableInterface::TYPE_DATE     => Type::DATE,
+			TableInterface::TYPE_DATETIME => Type::DATETIME,
+			TableInterface::TYPE_TIME     => Type::TIME,
+			TableInterface::TYPE_VARCHAR  => Type::STRING,
+			TableInterface::TYPE_TEXT     => Type::TEXT,
+			TableInterface::TYPE_BLOB     => Type::BLOB,
+		);
 	}
 }
