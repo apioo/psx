@@ -60,9 +60,9 @@ class SchemaCommandTest extends \PHPUnit_Framework_TestCase
 
 	public function testCommandAvailable()
 	{
-		$command = getContainer()->get('console')->find('generate:controller');
+		$command = getContainer()->get('console')->find('generate:schema');
 
-		$this->assertInstanceOf('PSX\Console\Generate\ControllerCommand', $command);
+		$this->assertInstanceOf('PSX\Console\Generate\SchemaCommand', $command);
 	}
 
 	protected function assertSource($expect, $actual)
