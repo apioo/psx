@@ -80,20 +80,14 @@ class Table implements ImporterInterface
 
 		switch($type)
 		{
-			case TableInterface::TYPE_TINYINT:
 			case TableInterface::TYPE_SMALLINT:
-			case TableInterface::TYPE_MEDIUMINT:
 			case TableInterface::TYPE_INT:
 			case TableInterface::TYPE_BIGINT:
-			case TableInterface::TYPE_BIT:
-			case TableInterface::TYPE_SERIAL:
 				return (int) $data;
 				break;
 
 			case TableInterface::TYPE_DECIMAL:
 			case TableInterface::TYPE_FLOAT:
-			case TableInterface::TYPE_DOUBLE:
-			case TableInterface::TYPE_REAL:
 				return (float) $data;
 				break;
 
