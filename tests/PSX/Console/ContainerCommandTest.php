@@ -23,6 +23,7 @@
 
 namespace PSX\Console;
 
+use PSX\Test\CommandTestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
@@ -32,7 +33,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class ContainerCommandTest extends \PHPUnit_Framework_TestCase
+class ContainerCommandTest extends CommandTestCase
 {
 	public function testCommand()
 	{
