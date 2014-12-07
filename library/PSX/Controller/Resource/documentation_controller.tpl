@@ -3,219 +3,274 @@
 <head>
 	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/monokai_sublime.min.css">
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
 	<style type="text/css">
-	<?php include __DIR__ . '/tool.css'; ?>
-	.api-schema-download
+	html, body, .container-fluid, .row 
 	{
-		float:left;
-		padding:4px;
+	    height:100%;
 	}
 
-	.api-schema-download select
+	body
 	{
-		width:120px;
-		padding:3px;
-		margin:0px;
-		margin-right:8px
+		background-color:#fff;
 	}
 
-	.api-schema-download a
+	pre
 	{
 		padding:0px;
 		margin:0px;
-		color:#fff;
-		text-decoration:underline;
+		border:none;
+		border-radius:0px;
 	}
 
-	.api-info
+	.sidebar 
 	{
-		padding:12px;
-		background-color:#e7f0f7;
+		background-color:#021c35;
 	}
 
-	.api-toolbar
+	@media (min-width: 992px){
+	  .sidebar {
+	    position:fixed;
+	    top:0;
+	    left:0;
+	    bottom:0;
+	    z-index:1000;
+	    display:block;
+	    background-color:#021c35;
+	  }
+	}
+
+	.psx-navigation
+	{
+		background-color:#021c35;
+		overflow:hidden;
+	}
+
+	.psx-navigation ul
+	{
+		list-style-type:none;
+		padding:0px;
+		margin:0px;
+		margin-top:16px;
+	}
+
+	.psx-navigation a
+	{
+		display:block;
+		padding:8px;
+		color:#fff;
+		font-family:monospace;
+	}
+
+	.psx-navigation .nav-head
+	{
+		color:#55acee;
+		font-weight:bold;
+		font-size:0.8em;
+		padding:8px;
+		margin-bottom:4px;
+		border-bottom:1px solid #55acee;
+	}
+
+	.psx-content
+	{
+		background-color:#fff;
+		margin-bottom:64px;
+	}
+
+	.psx-content > h3
+	{
+		margin:12px 8px;
+	}
+
+	.psx-content > div > div > h4
+	{
+		margin:0px;
+		margin-top:8px;
+		padding:8px;
+		font-size:0.9em;
+		font-weight:bold;
+		background-color:#021c35;
+		color:#fff;
+	}
+
+	.psx-content > div > div > h5
+	{
+		text-align:right;
+		background-color:#eee;
+		margin:0px;
+		padding:10px;
+		font-weight:bold;
+		font-size:0.9em;
+		opacity:0.8;
+	}
+
+	#api-toolbar
 	{
 		float:right;
-		padding:4px;
-		width:340px;
-		text-align:right;
 	}
 
-	.api-toolbar button
+	#api-toolbar button
 	{
-		margin-left:4px;
-		height:30px;
+		margin-left:8px;
 	}
 
-	.api-toolbar select
+	#api-description
 	{
-		margin-left:4px;
-		height:30px;
+		margin:12px 8px
 	}
 
-	.type h1
+	.form-control, .btn
 	{
-		background-color:#eee;
-		color:#222;
-		font-size:1.2em;
-		font-weight:bold;
-		border-bottom:1px solid #666;
+		border-radius:0px;
+	}
+
+	.nav-tabs > li > a
+	{
+		border-radius:0px;
+	}
+
+	.type > h1
+	{
+		font-family:monospace;
+		font-size:1.6em;
+		border-bottom:2px solid #222;
+		padding:8px;
 	}
 
 	.property-required
 	{
-		padding:2px 4px;
-		font-size:90%;
 		font-weight:bold;
-		color:#c7254e;
-		background-color:#f9f2f4;
-		border-radius:4px;
-		font-family:Menlo, Monaco, Consolas, "Courier New", monospace;
 	}
 
-	.property-optional
+	.property-constraint dt
 	{
-		padding:2px 4px;
-		font-size:90%;
-		font-weight:normal;
-		color:#c7254e;
-		background-color:#f9f2f4;
-		border-radius:4px;
-		font-family:Menlo, Monaco, Consolas, "Courier New", monospace;
+		font-size:0.9em;
+		float:left;
+		width:100px;
+		clear:left;
+	}
+
+	.property-constraint dd ul
+	{
+		list-style-type:none;
+		padding:0px;
+		margin:0px;
+		padding-left:100px;
 	}
 	</style>
 	<script type="text/javascript">
-	function loadController(path, version)
+	function loadApi(path, version)
 	{
-		var absolutePath = location.pathname + '/' + version + path;
+		var html = '<div id="api-toolbar"></div>';
+		html+= '<h3 id="api-title"></h3>';
+		html+= '<div id="api-description"></div>';
+		html+= '<div id="api-nav"></div>';
+		html+= '<div id="api-doc" class="tab-content"></div>';
+		$('.psx-content').html(html);
 
-		$.get(absolutePath, function(resp){
+		var successCallback = function(resp){
+			if (resp.path) {
+				$('#api-title').html(resp.path + ' (v' + resp.view.version + ')');
+				$('#api-description').html(resp.description);
+				$('#api-toolbar').html(getToolbar(resp));
 
-			var html = '';
-			if (resp.versions && resp.versions.length > 0) {
-				var view = resp.view;
-				html+= getToolbar(resp, view.version);
-				if (view.status != 2) {
-					html+= '<div id="api-version-' + view.version + '" class="api-version">';
-					html+= '<h2>' + (view.status == 1 ? '<s><span id="api-path">' + resp.path + '</span></s>' : '<span id="api-path">' + resp.path + '</span>') + ' (v' + view.version + ')</h2>';
-					html+= '<div class="api-version-view">' + getApiBody(view.data, resp.path, view.version) + '</div>';
+				var html = '';
+				var nav = '<ul class="nav nav-tabs">';
+
+				for (var i = 0; i < resp.method.length; i++) {
+
+					var method = resp.method[i].toLowerCase();
+
+					nav+= '<li role="presentation"><a href="#' + method + '">' + resp.method[i] + '</a></li>'
+
+					var requestKey  = method + '_request';
+					var responseKey = method + '_response';
+
+					html+= '<div role="tabpanel" class="tab-pane" id="' + method + '">';
+
+					for (var key in resp.view.data) {
+
+						var dataType = resp.view.data[key];
+						var row = dataType[method];
+
+						if (row && (row['request'] || row['response'])) {
+
+							html+= '<h4>' + key + '</h4>';
+
+							if (row['request']) {
+								html+= '<h5>Request</h5>';
+								html+= row['request'];
+							}
+
+							if (row['response']) {
+								html+= '<h5>Response</h5>';
+								html+= row['response'];
+							}
+						}
+
+					}
+
 					html+= '</div>';
 				}
+
+				nav+= '</ul>';
+
+				// nav
+				$('#api-nav').html(nav);
+				$('#api-nav a').click(function(e){
+					e.preventDefault();
+					$(this).tab('show');
+				});
+
+				// doc
+				$('#api-doc').html(html);
+				$('#api-doc').find('pre code').each(function(i, block) {
+					hljs.highlightBlock(block);
+				});
+				$('#api-nav a:first').trigger('click');
 			} else {
-				html+= '<div class="api-info">No API documentation available</div>';
+				$('#api-nav').html('');
+				$('#api-doc').html('<div class="alert alert-info" role="alert>No API documentation available</div>');
 			}
+		};
 
-			$('#body').html(html);
-			$('#body .api-version-view').find('div:first').slideToggle();
+		var errorCallback = function(resp){
+			var data = resp.responseJSON;
+			if (data.hasOwnProperty('success') && data.success === false) {
+				$('#api-doc').html('<div class="alert alert-danger" role="alert">' + data.message + '</div><pre>' + data.trace + '</pre>');
+			} else {
+				$('#api-doc').html('<div class="alert alert-danger" role="alert">An unknown error occured</div><pre>' + resp.responseText + '</pre>');
+			}
+		};
 
+		var url = location.pathname + '/' + version + path;
+
+		$.ajax(url, {
+			success: successCallback,
+			error: errorCallback
 		});
 	}
 
-	function getApiBody(resp, path, version)
+	function loadPage(url)
 	{
-		var html = '';
-		if (resp.get_response) {
-			html+= '<h3><a href="#" onclick="$(this).parent().next().slideToggle();return false;">GET</a></h3>';
-			html+= '<div style="display:none;">';
-			html+= getSchemaDownload(path, version, 'GET', 1);
-			html+= '<h4>Response</h4>';
-			html+= resp.get_response;
-			html+= '</div>';
-		}
-
-		if (resp.post_request || resp.post_response) {
-			html+= '<h3><a href="#" onclick="$(this).parent().next().slideToggle();return false;">POST</a></h3>';
-			html+= '<div style="display:none;">';
-			if (resp.post_request) {
-				html+= getSchemaDownload(path, version, 'POST', 0);
-				html+= '<h4>Request</h4>';
-				html+= resp.post_request;
-			}
-			if (resp.post_response) {
-				html+= getSchemaDownload(path, version, 'POST', 1);
-				html+= '<h4>Response</h4>';
-				html+= resp.post_response;
-			}
-			html+= '</div>';
-		}
-
-		if (resp.put_request || resp.put_response) {
-			html+= '<h3><a href="#" onclick="$(this).parent().next().slideToggle();return false;">PUT</a></h3>';
-			html+= '<div style="display:none;">';
-			if (resp.put_request) {
-				html+= getSchemaDownload(path, version, 'PUT', 0);
-				html+= '<h4>Request</h4>';
-				html+= resp.put_request;
-			}
-			if (resp.put_response) {
-				html+= getSchemaDownload(path, version, 'PUT', 1);
-				html+= '<h4>Response</h4>';
-				html+= resp.put_response;
-			}
-			html+= '</div>';
-		}
-
-		if (resp.delete_request || resp.delete_response) {
-			html+= '<h3><a href="#" onclick="$(this).parent().next().slideToggle();return false;">DELETE</a></h3>';
-			html+= '<div style="display:none;">';
-			if (resp.delete_request) {
-				html+= getSchemaDownload(path, version, 'DELETE', 0);
-				html+= '<h4>Request</h4>';
-				html+= resp.delete_request;
-			}
-			if (resp.delete_response) {
-				html+= getSchemaDownload(path, version, 'DELETE', 1);
-				html+= '<h4>Response</h4>';
-				html+= resp.delete_response;
-			}
-			html+= '</div>';
-		}
-		return html;
+		$.get(url, function(resp){
+			$('.psx-content').html(resp);
+		});
 	}
 
 	function getToolbar(resp, currentVersion)
 	{
 		var html = '';
-		html+= '<div class="api-toolbar">';
-
 		if (resp.see_others) {
 			for (var key in resp.see_others) {
-				html+= '<button onclick="goToOther(\'' + resp.see_others[key] + '\')">' + key + '</button>';
+				html+= '<button class="btn btn-default" onclick="goToOther(\'' + resp.see_others[key] + '\')">' + key + '</button>';
 			}
 		}
-
-		html+= '<select onchange="changeVersion(this)">';
-		for (var i = 0; i < resp.versions.length; i++) {
-			var version = resp.versions[i];
-			if (version.status != 2) {
-				html+= '<option value="' + version.version + '" ' + (currentVersion == version.version ? 'selected="selected"' : '') + '>v' + version.version + (version.status == 1 ? ' (Deprecated)' : '') + '</option>';
-			}
-		}
-		
-		html+= '</select>';
-		html+= '</div>';
-
 		return html;
-	}
-
-	function getSchemaDownload(path, version, method, type)
-	{
-		var html = '<div class="api-schema-download">';
-		html+= '<select id="' + path.replace(/\//g, '_') + '-' + version + '-' + method + '-' + type + '"><option value="1">XSD</option><option value="2">JsonSchema</option><option value="3">HTML</option></select>';
-		html+= '<a href="#" onclick="downloadSchema(\'' + path + '\',' + version + ',\'' + method + '\',' + type + ');return false">Download</a>';
-		html+= '</div>';
-
-		return html;
-	}
-
-	function downloadSchema(path, version, method, type)
-	{
-		var exportType = $('#' + path.replace(/\//g, '_') + '-' + version + '-' + method + '-' + type).val();
-		var absoluteUrl = location.pathname + '/' + version + path + '?export=' + exportType + '&method=' + method + '&type=' + type;
-
-		window.open(absoluteUrl, '_blank');
 	}
 
 	function goToOther(path)
@@ -223,41 +278,45 @@
 		window.open(path, '_blank');
 	}
 
-	function changeVersion(el)
-	{
-		var path = $('#api-path').text();
-		var version = $(el).val();
-
-		loadController(path, version);
-	}
-
 	$(document).ready(function(){
-
-		$('.psx-tool-navigation').find('a:first').trigger('click');
-
+		$('.psx-navigation ul li a:first').trigger('click');
 	});
 	</script>
 </head>
 <body>
 
-<div class="psx-tool-navigation">
-	<h1>Navigation</h1>
-	<?php if(!empty($routings)): ?>
-	<ul>
-		<?php foreach($routings as $i => $routing): ?>
-		<li class="psx-tool-navigation-item <?php echo $i % 2 == 0 ? 'even' : 'odd' ?>">
-			<a href="#content" onclick="loadController('<?php echo $routing['path']; ?>',<?php echo $routing['version']; ?>);"><?php echo $routing['path']; ?></a>
-		</li>
-		<?php endforeach; ?>
-	</ul>
-	<?php endif; ?>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-2 sidebar">
+			<nav class="psx-navigation">
+				<ul>
+					<?php if(!empty($metas)): ?>
+					<li class="nav-head">Meta</li>
+					<?php foreach($metas as $name => $url): ?>
+					<li><a href="#" onclick="loadPage('<?php echo $url; ?>');return false"><?php echo $name; ?></a></li>
+					<?php endforeach; ?>
+					<?php endif; ?>
+					<?php if(!empty($routings)): ?>
+					<li class="nav-head">Endpoints</li>
+					<?php foreach($routings as $routing): ?>
+					<li><a href="#" onclick="loadApi('<?php echo $routing['path']; ?>', <?php echo $routing['version']; ?>);return false"><?php echo $routing['path']; ?></a></li>
+					<?php endforeach; ?>
+					<?php endif; ?>
+				</ul>
+			</nav>
+		</div>
+		<div class="col-md-10 col-md-offset-2 content">
+			<div class="psx-content">
+				<div id="api-toolbar"></div>
+				<h3 id="api-title"></h3>
+				<div id="api-description"></div>
+				<div id="api-nav"></div>
+				<div id="api-doc" class="tab-content"></div>
+			</div>
+		</div>
+	</div>
 </div>
 
-<div class="psx-tool-content">
-	<a name="content"></a>
-	<h1>Content</h1>
-	<div id="body"></div>
-</div>
 
 </body>
 </html>

@@ -25,10 +25,12 @@ namespace PSX\Controller\Tool;
 
 use PSX\Api\DocumentedInterface;
 use PSX\Api\DocumentationInterface;
+use PSX\Api\Documentation\Generator;
+use PSX\Api\Documentation\Data;
 use PSX\Api\View;
 use PSX\Controller\ViewAbstract;
 use PSX\Http\Exception as HttpException;
-use PSX\Data\Schema\Generator;
+use PSX\Data\Schema\Generator as SchemaGenerator;
 use PSX\Data\WriterInterface;
 use PSX\Data\Schema\Documentation;
 use PSX\Data\SchemaInterface;
@@ -65,6 +67,8 @@ class DocumentationController extends ViewAbstract
 	 */
 	protected $reverseRouter;
 
+	protected $supportedWriter;
+
 	public function onGet()
 	{
 		parent::onGet();
@@ -74,10 +78,11 @@ class DocumentationController extends ViewAbstract
 
 		if(empty($version) && empty($path))
 		{
-			$this->template->set(__DIR__ . '/../Resource/documentation_controller.tpl');
+			$this->template->set($this->getTemplateFile());
 
 			$this->setBody(array(
-				'routings' => $this->getRoutings()
+				'metas'    => $this->getMetaLinks(),
+				'routings' => $this->getRoutings(),
 			));
 		}
 		else
@@ -108,21 +113,21 @@ class DocumentationController extends ViewAbstract
 				{
 					$this->response->setHeader('Content-Type', 'application/xml');
 
-					$generator = new Generator\Xsd($this->config->get('psx_url'));
+					$generator = new SchemaGenerator\Xsd($this->config->get('psx_url'));
 					$body      = $generator->generate($schema);
 				}
 				else if($export == self::EXPORT_JSONSCHEMA)
 				{
 					$this->response->setHeader('Content-Type', 'application/json');
 
-					$generator = new Generator\JsonSchema($this->config->get('psx_url'));
+					$generator = new SchemaGenerator\JsonSchema($this->config->get('psx_url'));
 					$body      = $generator->generate($schema);
 				}
 				else if($export == self::EXPORT_HTML)
 				{
 					$this->response->setHeader('Content-Type', 'text/html');
 
-					$generator = new Generator\Html($this->config->get('psx_url'));
+					$generator = new SchemaGenerator\Html($this->config->get('psx_url'));
 					$body      = $this->getHtmlTemplate($generator->generate($schema));
 				}
 				else
@@ -134,7 +139,7 @@ class DocumentationController extends ViewAbstract
 			}
 			else
 			{
-				$this->template->set(__DIR__ . '/../Resource/documentation_api_controller.tpl');
+				$this->supportedWriter = array(WriterInterface::JSON, WriterInterface::XML);
 
 				$view = $resource->doc->getView($version);
 
@@ -153,16 +158,31 @@ class DocumentationController extends ViewAbstract
 						);
 					}
 
+
+					$generators = $this->getViewGenerators();
+					$data       = array();
+
+					foreach($generators as $name => $generator)
+					{
+						$result = $generator->generate($resource->routing->path, $view);
+
+						if($result instanceof Data)
+						{
+							$data[$name] = $result->toArray();
+						}
+					}
+
 					$this->setBody(array(
-						'method'     => $resource->routing[0],
-						'path'       => $resource->routing[1],
-						'controller' => $resource->routing[2],
-						'versions'   => $versions,
-						'see_others' => $this->getSeeOthers($version, $resource->routing[1]),
-						'view'       => array(
+						'method'      => $resource->routing->method,
+						'path'        => $resource->routing->path,
+						'controller'  => $resource->routing->controller,
+						'description' => $resource->doc->getDescription(),
+						'versions'    => $versions,
+						'see_others'  => $this->getSeeOthers($version, $resource->routing->path),
+						'view'        => array(
 							'version' => $version,
 							'status'  => $view->getStatus(),
-							'data'    => $this->getDataFromView($view),
+							'data'    => $data,
 						),
 					));
 				}
@@ -221,8 +241,13 @@ class DocumentationController extends ViewAbstract
 
 				if($controller instanceof DocumentedInterface)
 				{
+					$routing = new \stdClass();
+					$routing->method = $methods;
+					$routing->path = $path;
+					$routing->controller = $className;
+
 					$obj = new \stdClass();
-					$obj->routing = array($methods, $path, $className);
+					$obj->routing = $routing;
 					$obj->doc = $controller->getDocumentation();
 
 					return $obj;
@@ -251,49 +276,6 @@ class DocumentationController extends ViewAbstract
 		}
 
 		return $result;
-	}
-
-	protected function getDataFromView(View $view)
-	{
-		$html = new Generator\Html();
-		$data = array();
-
-		if($view->hasGetResponse())
-		{
-			$data['get_response'] = $html->generate($view->getGetResponse());
-		}
-
-		if($view->hasPostRequest())
-		{
-			$data['post_request'] = $html->generate($view->getPostRequest());
-		}
-
-		if($view->hasPostResponse())
-		{
-			$data['post_response'] = $html->generate($view->getPostResponse());
-		}
-
-		if($view->hasPutRequest())
-		{
-			$data['put_request'] = $html->generate($view->getPutRequest());
-		}
-
-		if($view->hasPutResponse())
-		{
-			$data['put_response'] = $html->generate($view->getPutResponse());
-		}
-
-		if($view->hasDeleteRequest())
-		{
-			$data['delete_request'] = $html->generate($view->getDeleteRequest());
-		}
-
-		if($view->hasDeleteResponse())
-		{
-			$data['delete_response'] = $html->generate($view->getDeleteResponse());
-		}
-
-		return $data;
 	}
 
 	protected function getViewModifier($method, $type)
@@ -389,5 +371,34 @@ class DocumentationController extends ViewAbstract
 </body>
 </html>
 HTML;
+	}
+
+	protected function getTemplateFile()
+	{
+		return __DIR__ . '/../Resource/documentation_controller.tpl';
+	}
+
+	protected function getViewGenerators()
+	{
+		return array(
+			'Schema' => new Generator\Schema(new SchemaGenerator\Html()),
+		);
+	}
+
+	protected function getMetaLinks()
+	{
+		return array();
+	}
+
+	protected function getSupportedWriter()
+	{
+		if($this->supportedWriter === null)
+		{
+			return parent::getSupportedWriter();
+		}
+		else
+		{
+			return $this->supportedWriter;
+		}
 	}
 }
