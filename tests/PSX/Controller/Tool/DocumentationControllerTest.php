@@ -96,13 +96,24 @@ class DocumentationControllerTest extends ControllerTestCase
 
 		$data = $view['data'];
 
-		$this->assertArrayHasKey('get_response', $data);
-		$this->assertArrayHasKey('post_request', $data);
-		$this->assertArrayHasKey('post_response', $data);
-		$this->assertArrayHasKey('put_request', $data);
-		$this->assertArrayHasKey('put_response', $data);
-		$this->assertArrayHasKey('delete_request', $data);
-		$this->assertArrayHasKey('delete_response', $data);
+		$this->assertArrayHasKey('Schema', $data);
+
+		$schema = $data['Schema'];
+
+		$this->assertArrayHasKey('get', $schema);
+		$this->assertArrayHasKey('response', $schema['get']);
+
+		$this->assertArrayHasKey('post', $schema);
+		$this->assertArrayHasKey('request', $schema['post']);
+		$this->assertArrayHasKey('response', $schema['post']);
+
+		$this->assertArrayHasKey('put', $schema);
+		$this->assertArrayHasKey('request', $schema['put']);
+		$this->assertArrayHasKey('response', $schema['put']);
+
+		$this->assertArrayHasKey('delete', $schema);
+		$this->assertArrayHasKey('request', $schema['delete']);
+		$this->assertArrayHasKey('response', $schema['delete']);
 	}
 
 	public function testExportXsd()
