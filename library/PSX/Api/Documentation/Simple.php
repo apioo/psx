@@ -36,10 +36,12 @@ use PSX\Api\View;
 class Simple implements DocumentationInterface
 {
 	protected $view;
+	protected $description;
 
-	public function __construct(View $view)
+	public function __construct(View $view, $description = null)
 	{
-		$this->view = $view;
+		$this->view        = $view;
+		$this->description = $description;
 	}
 
 	public function hasView($version)
@@ -65,5 +67,10 @@ class Simple implements DocumentationInterface
 	public function isVersionRequired()
 	{
 		return false;
+	}
+
+	public function getDescription()
+	{
+		return $this->description;
 	}
 }

@@ -69,4 +69,12 @@ interface DocumentationInterface
 	 * @return boolean
 	 */
 	public function isVersionRequired();
+
+	/**
+	 * Returns an description about the API endpoint. The content may contain 
+	 * html
+	 *
+	 * @return string
+	 */
+	public function getDescription();
 }

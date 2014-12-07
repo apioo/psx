@@ -36,6 +36,12 @@ use PSX\Api\View;
 class Version implements DocumentationInterface
 {
 	protected $views = array();
+	protected $description;
+
+	public function __construct($description = null)
+	{
+		$this->description = $description;
+	}
 
 	public function addView($version, View $view)
 	{
@@ -59,11 +65,23 @@ class Version implements DocumentationInterface
 
 	public function getLatestVersion()
 	{
-		return max(array_keys($this->views));
+		if(count($this->views) > 0)
+		{
+			return max(array_keys($this->views));
+		}
+		else
+		{
+			return 1;
+		}
 	}
 
 	public function isVersionRequired()
 	{
 		return true;
+	}
+
+	public function getDescription()
+	{
+		return $this->description;
 	}
 }
