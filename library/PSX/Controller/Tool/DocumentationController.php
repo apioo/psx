@@ -79,11 +79,11 @@ class DocumentationController extends ViewAbstract
 			'links'    => array(
 				array(
 					'rel'  => 'self',
-					'href' => $this->reverseRouter->getUrl(get_class() . '::doIndex'),
+					'href' => $this->reverseRouter->getUrl(get_class($this) . '::doIndex'),
 				),
 				array(
 					'rel'  => 'detail',
-					'href' => $this->reverseRouter->getUrl(get_class() . '::doDetail', array('{version}', '{path}')),
+					'href' => $this->reverseRouter->getUrl(get_class($this) . '::doDetail', array('{version}', '{path}')),
 				)
 			)
 		));
