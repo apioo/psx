@@ -56,6 +56,21 @@ class DocumentationControllerTest extends ControllerTestCase
 
 		$this->assertEquals('/api', $routing['path']);
 		$this->assertEquals(1, $routing['version']);
+
+		$this->assertArrayHasKey('links', $data);
+
+		$links = $data['links'];
+
+		$this->assertTrue(is_array($links));
+		$this->assertEquals(2, count($links));
+		$this->assertArrayHasKey('rel', $links[0]);
+		$this->assertArrayHasKey('href', $links[0]);
+		$this->assertEquals('self', $links[0]['rel']);
+		$this->assertEquals('/doc', substr($links[0]['href'], -4));
+		$this->assertArrayHasKey('rel', $links[1]);
+		$this->assertArrayHasKey('href', $links[1]);
+		$this->assertEquals('detail', $links[1]['rel']);
+		$this->assertEquals('/doc/{version}/{path}', substr($links[1]['href'], -21));
 	}
 
 	public function testDetail()
@@ -152,7 +167,8 @@ class DocumentationControllerTest extends ControllerTestCase
 	protected function getPaths()
 	{
 		return array(
-			[['GET'], '/doc/:version/*path', 'PSX\Controller\Tool\DocumentationController'],
+			[['GET'], '/doc', 'PSX\Controller\Tool\DocumentationController::doIndex'],
+			[['GET'], '/doc/:version/*path', 'PSX\Controller\Tool\DocumentationController::doDetail'],
 			[['GET', 'POST', 'PUT', 'DELETE'], '/api', 'PSX\Controller\Foo\Application\TestSchemaApiController'],
 		);
 	}
