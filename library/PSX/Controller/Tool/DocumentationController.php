@@ -69,127 +69,138 @@ class DocumentationController extends ViewAbstract
 
 	protected $supportedWriter;
 
-	public function onGet()
+	public function doIndex()
 	{
-		parent::onGet();
+		$this->template->set($this->getTemplateFile());
 
+		$this->setBody(array(
+			'metas'    => $this->getMetaLinks(),
+			'routings' => $this->getRoutings(),
+			'links'    => array(
+				array(
+					'rel'  => 'self',
+					'href' => $this->reverseRouter->getUrl(__CLASS__ . '::doIndex'),
+				),
+				array(
+					'rel'  => 'detail',
+					'href' => $this->reverseRouter->getUrl(__CLASS__ . '::doDetail', array('{version}', '{path}')),
+				)
+			)
+		));
+	}
+
+	public function doDetail()
+	{
 		$version = $this->getUriFragment('version');
 		$path    = $this->getUriFragment('path');
 
-		if(empty($version) && empty($path))
+		if(empty($version) || empty($path))
 		{
-			$this->template->set($this->getTemplateFile());
-
-			$this->setBody(array(
-				'metas'    => $this->getMetaLinks(),
-				'routings' => $this->getRoutings(),
-			));
+			throw new HttpException\BadRequestException('Version and path not provided');
 		}
-		else
+
+		$export = $this->getParameter('export');
+		$method = $this->getParameter('method');
+		$type   = $this->getParameter('type');
+
+		$resource = $this->getResource($path);
+
+		if(!$resource->doc instanceof DocumentationInterface)
 		{
-			$export = $this->getParameter('export');
-			$method = $this->getParameter('method');
-			$type   = $this->getParameter('type');
+			throw new HttpException\InternalServerErrorException('Controller provides no documentation informations');
+		}
 
-			$resource = $this->getResource($path);
+		if(!empty($export))
+		{
+			$view   = $resource->doc->getView($version);
+			$schema = $view->get($this->getViewModifier($method, $type));
+			$body   = null;
 
-			if(!$resource->doc instanceof DocumentationInterface)
+			if(!$schema instanceof SchemaInterface)
 			{
-				throw new HttpException\InternalServerErrorException('Controller provides no documentation informations');
+				throw new Exception('Schema not available');
 			}
 
-			if(!empty($export))
+			if($export == self::EXPORT_XSD)
 			{
-				$view   = $resource->doc->getView($version);
-				$schema = $view->get($this->getViewModifier($method, $type));
-				$body   = null;
+				$this->response->setHeader('Content-Type', 'application/xml');
 
-				if(!$schema instanceof SchemaInterface)
-				{
-					throw new Exception('Schema not available');
-				}
+				$generator = new SchemaGenerator\Xsd($this->config->get('psx_url'));
+				$body      = $generator->generate($schema);
+			}
+			else if($export == self::EXPORT_JSONSCHEMA)
+			{
+				$this->response->setHeader('Content-Type', 'application/json');
 
-				if($export == self::EXPORT_XSD)
-				{
-					$this->response->setHeader('Content-Type', 'application/xml');
+				$generator = new SchemaGenerator\JsonSchema($this->config->get('psx_url'));
+				$body      = $generator->generate($schema);
+			}
+			else if($export == self::EXPORT_HTML)
+			{
+				$this->response->setHeader('Content-Type', 'text/html');
 
-					$generator = new SchemaGenerator\Xsd($this->config->get('psx_url'));
-					$body      = $generator->generate($schema);
-				}
-				else if($export == self::EXPORT_JSONSCHEMA)
-				{
-					$this->response->setHeader('Content-Type', 'application/json');
-
-					$generator = new SchemaGenerator\JsonSchema($this->config->get('psx_url'));
-					$body      = $generator->generate($schema);
-				}
-				else if($export == self::EXPORT_HTML)
-				{
-					$this->response->setHeader('Content-Type', 'text/html');
-
-					$generator = new SchemaGenerator\Html($this->config->get('psx_url'));
-					$body      = $this->getHtmlTemplate($generator->generate($schema));
-				}
-				else
-				{
-					throw new HttpException\BadRequestException('Invalid export type');
-				}
-
-				$this->setBody($body);
+				$generator = new SchemaGenerator\Html($this->config->get('psx_url'));
+				$body      = $this->getHtmlTemplate($generator->generate($schema));
 			}
 			else
 			{
-				$this->supportedWriter = array(WriterInterface::JSON, WriterInterface::XML);
+				throw new HttpException\BadRequestException('Invalid export type');
+			}
 
-				$view = $resource->doc->getView($version);
+			$this->setBody($body);
+		}
+		else
+		{
+			$this->supportedWriter = array(WriterInterface::JSON, WriterInterface::XML);
 
-				if($view instanceof View)
+			$view = $resource->doc->getView($version);
+
+			if($view instanceof View)
+			{
+				$views = $resource->doc->getViews();
+
+				krsort($views);
+
+				$versions = array();
+				foreach($views as $key => $row)
 				{
-					$views = $resource->doc->getViews();
-
-					krsort($views);
-
-					$versions = array();
-					foreach($views as $key => $row)
-					{
-						$versions[] = array(
-							'version' => $key,
-							'status'  => $row->getStatus(),
-						);
-					}
-
-
-					$generators = $this->getViewGenerators();
-					$data       = array();
-
-					foreach($generators as $name => $generator)
-					{
-						$result = $generator->generate($resource->routing->path, $view);
-
-						if($result instanceof Data)
-						{
-							$data[$name] = $result->toArray();
-						}
-					}
-
-					$this->setBody(array(
-						'method'      => $resource->routing->method,
-						'path'        => $resource->routing->path,
-						'controller'  => $resource->routing->controller,
-						'description' => $resource->doc->getDescription(),
-						'versions'    => $versions,
-						'see_others'  => $this->getSeeOthers($version, $resource->routing->path),
-						'view'        => array(
-							'version' => $version,
-							'status'  => $view->getStatus(),
-							'data'    => $data,
-						),
-					));
+					$versions[] = array(
+						'version' => $key,
+						'status'  => $row->getStatus(),
+					);
 				}
-				else
+
+
+				$generators = $this->getViewGenerators();
+				$data       = array();
+
+				foreach($generators as $name => $generator)
 				{
-					throw new HttpException\BadRequestException('Invalid api version');
+					$result = $generator->generate($resource->routing->path, $view);
+
+					if($result instanceof Data)
+					{
+						$data[$name] = $result->toArray();
+					}
 				}
+
+				$this->setBody(array(
+					'method'      => $resource->routing->method,
+					'path'        => $resource->routing->path,
+					'controller'  => $resource->routing->controller,
+					'description' => $resource->doc->getDescription(),
+					'versions'    => $versions,
+					'see_others'  => $this->getSeeOthers($version, $resource->routing->path),
+					'view'        => array(
+						'version' => $version,
+						'status'  => $view->getStatus(),
+						'data'    => $data,
+					),
+				));
+			}
+			else
+			{
+				throw new HttpException\BadRequestException('Invalid api version');
 			}
 		}
 	}
