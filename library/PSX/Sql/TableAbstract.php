@@ -139,20 +139,23 @@ abstract class TableAbstract extends TableQueryAbstract implements TableInterfac
 		return array_diff(array_keys($this->getColumns()), $this->getRestrictedFields());
 	}
 
-	public function create(RecordInterface $record)
+	public function create($record)
 	{
-		$fields = $this->serializeFields($record->getRecordInfo()->getData());
+		$fields = $this->serializeFields($this->getArray($record));
 
 		if(!empty($fields))
 		{
 			$result = $this->connection->insert($this->getName(), $fields);
 
 			// set id to record
-			$primarySetter = 'set' . ucfirst($this->getPrimaryKey());
-
-			if(is_callable($record, $primarySetter))
+			if($record instanceof RecordInterface)
 			{
-				$record->$primarySetter($this->connection->lastInsertId());
+				$primarySetter = 'set' . ucfirst($this->getPrimaryKey());
+
+				if(is_callable($record, $primarySetter))
+				{
+					$record->$primarySetter($this->connection->lastInsertId());
+				}
 			}
 
 			return $result;
@@ -163,9 +166,9 @@ abstract class TableAbstract extends TableQueryAbstract implements TableInterfac
 		}
 	}
 
-	public function update(RecordInterface $record)
+	public function update($record)
 	{
-		$fields = $this->serializeFields($record->getRecordInfo()->getData());
+		$fields = $this->serializeFields($this->getArray($record));
 
 		if(!empty($fields))
 		{
@@ -188,9 +191,9 @@ abstract class TableAbstract extends TableQueryAbstract implements TableInterfac
 		}
 	}
 
-	public function delete(RecordInterface $record)
+	public function delete($record)
 	{
-		$fields = $this->serializeFields($record->getRecordInfo()->getData());
+		$fields = $this->serializeFields($this->getArray($record));
 
 		if(!empty($fields))
 		{
@@ -283,5 +286,21 @@ abstract class TableAbstract extends TableQueryAbstract implements TableInterfac
 			return new Record($name, $row);
 
 		});
+	}
+
+	protected function getArray($record)
+	{
+		if($record instanceof RecordInterface)
+		{
+			return $record->getRecordInfo()->getData();
+		}
+		else if(is_array($record))
+		{
+			return $record;
+		}
+		else
+		{
+			throw new InvalidArgumentException('Record must bei either an PSX\Data\RecordInterface or array');
+		}
 	}
 }

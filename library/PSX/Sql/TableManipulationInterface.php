@@ -37,21 +37,24 @@ interface TableManipulationInterface
 	/**
 	 * Create the record
 	 *
+	 * @param PSX\Data\RecordInterface|array $record
 	 * @return void
 	 */
-	public function create(RecordInterface $record);
+	public function create($record);
 
 	/**
 	 * Update the record
 	 *
+	 * @param PSX\Data\RecordInterface|array $record
 	 * @return void
 	 */
-	public function update(RecordInterface $record);
+	public function update($record);
 
 	/**
 	 * Delete the record
 	 *
+	 * @param PSX\Data\RecordInterface|array $record
 	 * @return void
 	 */
-	public function delete(RecordInterface $record);
+	public function delete($record);
 }
