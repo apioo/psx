@@ -283,8 +283,13 @@
 	function loadPage(url)
 	{
 		$('.psx-content').html('<div id="api-loader"><img /></div>');
-		$.get(url, function(resp){
-			$('.psx-content').html(resp);
+
+		$.ajax({
+			url: url,
+			dataType: 'html',
+			success: function(resp){
+				$('.psx-content').html(resp);
+			}
 		});
 	}
 
