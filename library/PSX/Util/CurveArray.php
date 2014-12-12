@@ -57,7 +57,14 @@ class CurveArray
 			}
 			else
 			{
-				$result[$key] = $value;
+				if(is_array($value))
+				{
+					$result[$key] = self::nest($value);
+				}
+				else
+				{
+					$result[$key] = $value;
+				}
 			}
 		}
 
