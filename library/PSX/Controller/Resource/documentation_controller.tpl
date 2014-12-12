@@ -173,6 +173,11 @@
 		margin:0px;
 		padding-left:100px;
 	}
+
+	.type-description
+	{
+		margin:8px;
+	}
 	</style>
 	<script type="text/javascript">
 	var links = <?php echo json_encode($links); ?>;
