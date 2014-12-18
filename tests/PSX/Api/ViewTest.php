@@ -187,6 +187,18 @@ class ViewTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(array('DELETE'), $view->getAllowedMethods());
 	}
 
+	public function testSet()
+	{
+		$view = new View();
+		$view->set(1, $this->getDummySchema());
+
+		$this->assertInstanceOf('PSX\Data\SchemaInterface', $view->get(1));
+
+		$view->set(1, null);
+
+		$this->assertEmpty($view->get(1));
+	}
+
 	public function testGetAllowedMethods()
 	{
 		$view = new View();

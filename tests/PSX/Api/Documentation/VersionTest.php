@@ -38,7 +38,7 @@ class VersionTest extends \PHPUnit_Framework_TestCase
 	{
 		$view1   = new View();
 		$view2   = new View();
-		$version = new Version();
+		$version = new Version('foo');
 
 		$version->addView(1, $view1);
 		$version->addView(2, $view2);
@@ -52,5 +52,13 @@ class VersionTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(array(1 => $view1, 2 => $view2), $version->getViews());
 		$this->assertEquals(2, $version->getLatestVersion());
 		$this->assertTrue($version->isVersionRequired());
+		$this->assertEquals('foo', $version->getDescription());
+	}
+
+	public function testGetLatestVersionNoView()
+	{
+		$version = new Version();
+
+		$this->assertEquals(1, $version->getLatestVersion());
 	}
 }

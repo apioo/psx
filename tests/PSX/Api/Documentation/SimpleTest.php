@@ -37,7 +37,7 @@ class SimpleTest extends \PHPUnit_Framework_TestCase
 	public function testSimple()
 	{
 		$view   = new View();
-		$simple = new Simple($view);
+		$simple = new Simple($view, 'foo');
 
 		$this->assertTrue($simple->hasView(1));
 		$this->assertFalse($simple->hasView(8));
@@ -46,5 +46,6 @@ class SimpleTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(array(1 => $view), $simple->getViews());
 		$this->assertEquals(1, $simple->getLatestVersion());
 		$this->assertFalse($simple->isVersionRequired());
+		$this->assertEquals('foo', $simple->getDescription());
 	}
 }
