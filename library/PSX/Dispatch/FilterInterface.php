@@ -35,5 +35,10 @@ use Psr\Http\Message\ResponseInterface;
  */
 interface FilterInterface
 {
+	/**
+	 * @param Psr\Http\Message\RequestInterface $request
+	 * @param Psr\Http\Message\ResponseInterface $response
+	 * @return void
+	 */
 	public function handle(RequestInterface $request, ResponseInterface $response);
 }
