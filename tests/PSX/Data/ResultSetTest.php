@@ -47,6 +47,9 @@ class ResultSetTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals(4, count($resultSet));
 		$this->assertEquals(4, $resultSet->count());
+		$this->assertEquals(12, $resultSet->getTotalResults());
+		$this->assertEquals(0, $resultSet->getStartIndex());
+		$this->assertEquals(2, $resultSet->getItemsPerPage());
 		$this->assertEquals(false, $resultSet->isEmpty());
 
 		foreach($resultSet as $i => $result)
