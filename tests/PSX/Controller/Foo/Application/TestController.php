@@ -62,6 +62,13 @@ class TestController extends ControllerAbstract
 		// set response code
 		$this->setResponseCode(200);
 
+		$this->testCase->assertEquals(200, $this->response->getStatusCode());
+
+		// set header
+		$this->setHeader('Content-Type', 'application/xml');
+
+		$this->testCase->assertEquals('application/xml', $this->response->getHeader('Content-Type'));
+
 		// get method
 		$this->testCase->assertEquals('POST', $this->getMethod());
 

@@ -265,6 +265,17 @@ abstract class ControllerAbstract implements ControllerInterface
 	}
 
 	/**
+	 * Sets an response header
+	 *
+	 * @param string $name
+	 * @param string $value
+	 */
+	protected function setHeader($name, $value)
+	{
+		$this->response->setHeader($name, $value);
+	}
+
+	/**
 	 * Returns the request method. Note the X-HTTP-Method-Override header 
 	 * replaces the actually request method if available
 	 *
