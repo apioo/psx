@@ -61,7 +61,7 @@ class XmlFile implements LoaderInterface
 			{
 				if($samplePath == $path && $sampleMethod == $this->getModifierMethod($modifier) && $sampleType == $this->getModifierType($modifier))
 				{
-					return '<pre><code class="' . $sampleLang . '">' . htmlspecialchars($sample->textContent) . '</pre></code>';
+					return '<pre><code class="' . $sampleLang . '">' . htmlspecialchars($sample->textContent) . '</code></pre>';
 				}
 			}
 		}
