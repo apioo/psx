@@ -24,6 +24,7 @@
 namespace PSX;
 
 use ReflectionClass;
+use PSX\Dispatch\Filter\BrowserCache;
 use PSX\Event\RouteMatchedEvent;
 use PSX\Event\ControllerExecuteEvent;
 use PSX\Event\ControllerProcessedEvent;
@@ -105,17 +106,12 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 
 		$expect = array(
 			'PSX\Loader\ProbeController::__construct',
-			'PSX\Loader\ProbeController::getStage',
 			'PSX\Loader\ProbeController::getPreFilter',
-			'PSX\Loader\ProbeController::getStage',
+			'PSX\Loader\ProbeController::getPostFilter',
 			'PSX\Loader\ProbeController::onLoad',
-			'PSX\Loader\ProbeController::getStage',
 			'PSX\Loader\ProbeController::onGet',
-			'PSX\Loader\ProbeController::getStage',
 			'PSX\Loader\ProbeController::doIndex',
 			'PSX\Loader\ProbeController::processResponse',
-			'PSX\Loader\ProbeController::getStage',
-			'PSX\Loader\ProbeController::getPostFilter',
 		);
 
 		$this->assertEquals($expect, $module->getMethodsCalled());
@@ -143,17 +139,12 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 
 		$expect = array(
 			'PSX\Loader\ProbeController::__construct',
-			'PSX\Loader\ProbeController::getStage',
 			'PSX\Loader\ProbeController::getPreFilter',
-			'PSX\Loader\ProbeController::getStage',
+			'PSX\Loader\ProbeController::getPostFilter',
 			'PSX\Loader\ProbeController::onLoad',
-			'PSX\Loader\ProbeController::getStage',
 			'PSX\Loader\ProbeController::onGet',
-			'PSX\Loader\ProbeController::getStage',
 			'PSX\Loader\ProbeController::doShowDetails',
 			'PSX\Loader\ProbeController::processResponse',
-			'PSX\Loader\ProbeController::getStage',
-			'PSX\Loader\ProbeController::getPostFilter',
 		);
 
 		$this->assertEquals($expect, $module->getMethodsCalled());
@@ -258,10 +249,9 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 
 		});
 
-		$filter1 = $this->getMock('PSX\Dispatch\FilterInterface');
-		$filter1->expects($this->once())
-			->method('handle')
-			->with($request, $response);
+		$filter1 = function($request, $response, $filterChain){
+			$filterChain->handle($request, $response);
+		};
 
 		$filter2 = $this->getMock('PSX\Dispatch\TestListener');
 		$filter2->expects($this->once())
@@ -284,7 +274,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Exception
+	 * @expectedException RuntimeException
 	 */
 	public function testPreFilterInvalid()
 	{
@@ -324,10 +314,9 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 
 		});
 
-		$filter1 = $this->getMock('PSX\Dispatch\FilterInterface');
-		$filter1->expects($this->once())
-			->method('handle')
-			->with($request, $response);
+		$filter1 = function($request, $response, $filterChain){
+			$filterChain->handle($request, $response);
+		};
 
 		$filter2 = $this->getMock('PSX\Dispatch\TestListener');
 		$filter2->expects($this->once())
@@ -350,7 +339,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Exception
+	 * @expectedException RuntimeException
 	 */
 	public function testPostFilterInvalid()
 	{
