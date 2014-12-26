@@ -41,6 +41,8 @@ class Request extends Message implements RequestInterface
 	protected $method;
 	protected $scheme;
 
+	protected $attributes = array();
+
 	/**
 	 * __construct
 	 *
@@ -133,6 +135,26 @@ class Request extends Message implements RequestInterface
 	public function isSSL()
 	{
 		return $this->getUrl()->getScheme() == 'https';
+	}
+
+	public function getAttributes()
+	{
+		return $this->attributes;
+	}
+
+	public function getAttribute($attribute, $default = null)
+	{
+		return isset($this->attributes[$attribute]) ? $this->attributes[$attribute] : $default;
+	}
+
+	public function setAttributes(array $attributes)
+	{
+		$this->attributes = $attributes;
+	}
+
+	public function setAttribute($attribute, $value)
+	{
+		$this->attributes[$attribute] = $value;
 	}
 
 	/**
