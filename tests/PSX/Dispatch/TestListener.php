@@ -32,7 +32,8 @@ namespace PSX\Dispatch;
  */
 class TestListener
 {
-	public function on()
+	public function on($request, $response, $filterChain)
 	{
+		$filterChain->handle($request, $response);
 	}
 }
