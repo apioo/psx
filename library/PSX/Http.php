@@ -24,6 +24,7 @@
 namespace PSX;
 
 use PSX\Http\Cookie;
+use PSX\Http\CookieParser;
 use PSX\Http\CookieStoreInterface;
 use PSX\Http\GetRequest;
 use PSX\Http\HandlerInterface;
@@ -177,7 +178,7 @@ class Http
 
 			foreach($cookies as $rawCookie)
 			{
-				$cookie = Cookie::convert($rawCookie);
+				$cookie = CookieParser::parseSetCookie($rawCookie);
 
 				if($cookie instanceof Cookie)
 				{
