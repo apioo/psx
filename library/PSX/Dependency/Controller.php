@@ -24,6 +24,7 @@
 namespace PSX\Dependency;
 
 use PSX\Dispatch;
+use PSX\Dispatch\ApplicationStackFactory;
 use PSX\Dispatch\ControllerFactory;
 use PSX\Dispatch\RequestFactory;
 use PSX\Dispatch\ResponseFactory;
@@ -39,6 +40,14 @@ use PSX\Loader;
  */
 trait Controller
 {
+	/**
+	 * @return PSX\Dispatch\ControllerFactoryInterface
+	 */
+	public function getApplicationStackFactory()
+	{
+		return new ApplicationStackFactory($this->get('object_builder'));
+	}
+
 	/**
 	 * @return PSX\Dispatch\ControllerFactoryInterface
 	 */
@@ -68,7 +77,7 @@ trait Controller
 	 */
 	public function getLoaderCallbackResolver()
 	{
-		return new Loader\CallbackResolver\DependencyInjector($this->get('controller_factory'));
+		return new Loader\CallbackResolver\DependencyInjector($this->get('application_stack_factory'));
 	}
 
 	/**
