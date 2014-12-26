@@ -82,7 +82,7 @@ class ServeCommand extends Command
 		// response
 		$response = new Response('HTTP/1.1');
 		$response->addHeader('X-Powered-By', 'psx');
-		$response->setBody(new TempStream(fopen('php://output', 'r+')));
+		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
 
 		// dispatch request
 		$this->dispatch->route($request, $response);

@@ -25,6 +25,7 @@ namespace PSX\Console;
 
 use Symfony\Component\Console\Tester\CommandTester;
 use PSX\Test\ControllerTestCase;
+use PSX\Dispatch\Sender\Memory;
 
 /**
  * ServeCommandTest
@@ -35,6 +36,14 @@ use PSX\Test\ControllerTestCase;
  */
 class ServeCommandTest extends ControllerTestCase
 {
+	protected function setUp()
+	{
+		parent::setUp();
+
+		// use memory sender
+		getContainer()->set('dispatch_sender', new Memory());
+	}
+
 	public function testCommand()
 	{
 		$stream = fopen('php://memory', 'r+');
@@ -44,15 +53,9 @@ class ServeCommandTest extends ControllerTestCase
 		$command = getContainer()->get('console')->find('serve');
 		$command->setReader(new Reader\Stdin($stream));
 
-		ob_start();
-
 		$commandTester = new CommandTester($command);
 		$commandTester->execute(array(
 		));
-
-		$response = ob_get_contents();
-
-		ob_end_clean();
 
 		$expect = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
@@ -61,7 +64,7 @@ class ServeCommandTest extends ControllerTestCase
 </foo>
 XML;
 
-		$this->assertXmlStringEqualsXmlString($expect, $response);
+		$this->assertXmlStringEqualsXmlString($expect, getContainer()->get('dispatch_sender')->getResponse());
 	}
 
 	protected function getPaths()
