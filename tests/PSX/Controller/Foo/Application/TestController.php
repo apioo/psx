@@ -127,7 +127,6 @@ class TestController extends ControllerAbstract
 		$this->testCase->assertInstanceOf('PSX\Http\Request', $this->request);
 		$this->testCase->assertInstanceOf('PSX\Http\Response', $this->response);
 		$this->testCase->assertTrue(is_array($this->uriFragments));
-		$this->testCase->assertEquals(0x3F, $this->stage);
 		$this->testCase->assertInstanceOf('PSX\Config', $this->config);
 		$this->testCase->assertInstanceOf('PSX\Validate', $this->validate);
 		$this->testCase->assertInstanceOf('PSX\Loader', $this->loader);
@@ -217,24 +216,24 @@ class TestController extends ControllerAbstract
 
 	public function getPreFilter()
 	{
-		$testCase = $this->testCase;
+		return array(function($request, $response, $stack){
 
-		return array(function($request, $response) use ($testCase){
+			$this->testCase->assertInstanceOf('PSX\Http\Request', $request);
+			$this->testCase->assertInstanceOf('PSX\Http\Response', $response);
 
-			$testCase->assertInstanceOf('PSX\Http\Request', $request);
-			$testCase->assertInstanceOf('PSX\Http\Response', $response);
+			$stack->handle($request, $response);
 
 		});
 	}
 
 	public function getPostFilter()
 	{
-		$testCase = $this->testCase;
+		return array(function($request, $response, $stack){
 
-		return array(function($request, $response) use ($testCase){
+			$this->testCase->assertInstanceOf('PSX\Http\Request', $request);
+			$this->testCase->assertInstanceOf('PSX\Http\Response', $response);
 
-			$testCase->assertInstanceOf('PSX\Http\Request', $request);
-			$testCase->assertInstanceOf('PSX\Http\Response', $response);
+			$stack->handle($request, $response);
 
 		});
 	}
