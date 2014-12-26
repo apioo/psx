@@ -39,6 +39,7 @@ use PSX\Data\WriterInterface;
 use PSX\Data\Record;
 use PSX\Data\TransformerInterface;
 use PSX\Dependency;
+use PSX\Dispatch\Filter\ControllerExecutor;
 use PSX\Http\Exception\TemporaryRedirectException;
 use PSX\Http\Stream\TempStream;
 use PSX\Loader\Location;
@@ -54,7 +55,7 @@ use RuntimeException;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-abstract class ControllerAbstract implements ControllerInterface
+abstract class ControllerAbstract implements ControllerInterface, ApplicationStackInterface
 {
 	/**
 	 * @var PSX\Loader\Location
@@ -75,11 +76,6 @@ abstract class ControllerAbstract implements ControllerInterface
 	 * @var array
 	 */
 	protected $uriFragments;
-
-	/**
-	 * @var integer
-	 */
-	protected $stage;
 
 	/**
 	 * @Inject
@@ -136,7 +132,7 @@ abstract class ControllerAbstract implements ControllerInterface
 	/**
 	 * @param PSX\Loader\Location $location
 	 * @param Psr\Http\Message\RequestInterface $request
-	 * @param Psr\Http\Message\ResponseInterface $request
+	 * @param Psr\Http\Message\ResponseInterface $response
 	 */
 	public function __construct(Location $location, RequestInterface $request, ResponseInterface $response)
 	{
@@ -144,12 +140,15 @@ abstract class ControllerAbstract implements ControllerInterface
 		$this->request      = $request;
 		$this->response     = $response;
 		$this->uriFragments = $location->getParameter(Location::KEY_FRAGMENT);
-		$this->stage        = 0x3F;
 	}
 
-	public function getStage()
+	public function getApplicationStack()
 	{
-		return $this->stage;
+		return array_merge(
+			$this->getPreFilter(), 
+			array(new ControllerExecutor($this)), 
+			$this->getPostFilter()
+		);
 	}
 
 	public function getPreFilter()
@@ -178,11 +177,19 @@ abstract class ControllerAbstract implements ControllerInterface
 	{
 	}
 
+	public function onOptions()
+	{
+	}
+
 	public function onPost()
 	{
 	}
 
 	public function onPut()
+	{
+	}
+
+	public function onTrace()
 	{
 	}
 

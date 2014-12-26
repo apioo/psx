@@ -21,25 +21,23 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Dispatch;
-
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
+namespace PSX;
 
 /**
- * FilterInterface
+ * ApplicationStackInterface
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-interface FilterInterface
+interface ApplicationStackInterface
 {
 	/**
-	 * @param Psr\Http\Message\RequestInterface $request
-	 * @param Psr\Http\Message\ResponseInterface $response
-	 * @param PSX\Dispatch\FilterChainInterface $filterChain
-	 * @return void
+	 * Returns an array containing FilterInterface or callable. The request and
+	 * response object gets passed to each filter which then can produce the 
+	 * response
+	 *
+	 * @return array<FilterInterface|callable>
 	 */
-	public function handle(RequestInterface $request, ResponseInterface $response, FilterChainInterface $filterChain);
+	public function getApplicationStack();
 }

@@ -27,19 +27,19 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 /**
- * FilterInterface
+ * FilterChainInterface
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-interface FilterInterface
+interface FilterChainInterface
 {
 	/**
+	 * Calls the next filter in the chain
+	 *
 	 * @param Psr\Http\Message\RequestInterface $request
 	 * @param Psr\Http\Message\ResponseInterface $response
-	 * @param PSX\Dispatch\FilterChainInterface $filterChain
-	 * @return void
 	 */
-	public function handle(RequestInterface $request, ResponseInterface $response, FilterChainInterface $filterChain);
+	public function handle(RequestInterface $request, ResponseInterface $response);
 }

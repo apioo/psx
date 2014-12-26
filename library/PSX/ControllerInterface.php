@@ -32,45 +32,30 @@ namespace PSX;
  */
 interface ControllerInterface
 {
-	const CALL_PRE_FILTER       = 0x1;
-	const CALL_ONLOAD           = 0x2;
-	const CALL_REQUEST_METHOD   = 0x4;
-	const CALL_METHOD           = 0x8;
-	const CALL_PROCESS_RESPONSE = 0x10;
-	const CALL_POST_FILTER      = 0x20;
-
-	/**
-	 * The controller can control the behaviour wich method should be called by 
-	 * the loader. Returns an integer of OR connected CALL_* constants. In most 
-	 * cases you do not need to modify this behaviour
-	 *
-	 * @return integer
-	 */
-	public function getStage();
-
-	/**
-	 * Returns an array of filters wich are applied before
-	 *
-	 * @return array<PSX\Dispatch\FilterInterface>
-	 */
-	public function getPreFilter();
-
-	/**
-	 * Returns an array of filters wich are applied after
-	 *
-	 * @return array<PSX\Dispatch\FilterInterface>
-	 */
-	public function getPostFilter();
-
 	/**
 	 * Method which gets always called before the on* methods are called
 	 */
 	public function onLoad();
 
 	/**
+	 * Method which gets called on an DELETE request
+	 */
+	public function onDelete();
+
+	/**
 	 * Method which gets called on an GET request
 	 */
 	public function onGet();
+
+	/**
+	 * Method which gets called on an HEAD request
+	 */
+	public function onHead();
+
+	/**
+	 * Method which gets called on an OPTIONS request
+	 */
+	public function onOptions();
 
 	/**
 	 * Method which gets called on an POST request
@@ -83,9 +68,9 @@ interface ControllerInterface
 	public function onPut();
 
 	/**
-	 * Method which gets called on an DELETE request
+	 * Method which gets called on an TRACE request
 	 */
-	public function onDelete();
+	public function onTrace();
 
 	/**
 	 * Is called after the controller action was called

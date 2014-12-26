@@ -25,21 +25,42 @@ namespace PSX\Dispatch;
 
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use RuntimeException;
 
 /**
- * FilterInterface
+ * FilterChain
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-interface FilterInterface
+class FilterChain implements FilterChainInterface
 {
-	/**
-	 * @param Psr\Http\Message\RequestInterface $request
-	 * @param Psr\Http\Message\ResponseInterface $response
-	 * @param PSX\Dispatch\FilterChainInterface $filterChain
-	 * @return void
-	 */
-	public function handle(RequestInterface $request, ResponseInterface $response, FilterChainInterface $filterChain);
+	protected $filters;
+
+	public function __construct(array $filters)
+	{
+		$this->filters = $filters;
+	}
+
+	public function handle(RequestInterface $request, ResponseInterface $response)
+	{
+		$filter = array_shift($this->filters);
+
+		if($filter === null)
+		{
+		}
+		else if($filter instanceof FilterInterface)
+		{
+			$filter->handle($request, $response, $this);
+		}
+		else if(is_callable($filter))
+		{
+			call_user_func_array($filter, array($request, $response, $this));
+		}
+		else
+		{
+			throw new RuntimeException('Invalid filter value');
+		}
+	}
 }

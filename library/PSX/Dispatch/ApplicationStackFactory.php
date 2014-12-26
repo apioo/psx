@@ -23,23 +23,29 @@
 
 namespace PSX\Dispatch;
 
+use PSX\Dependency\ObjectBuilderInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use PSX\Loader\Location;
 
 /**
- * FilterInterface
+ * ApplicationStackFactory
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-interface FilterInterface
+class ApplicationStackFactory implements ControllerFactoryInterface
 {
-	/**
-	 * @param Psr\Http\Message\RequestInterface $request
-	 * @param Psr\Http\Message\ResponseInterface $response
-	 * @param PSX\Dispatch\FilterChainInterface $filterChain
-	 * @return void
-	 */
-	public function handle(RequestInterface $request, ResponseInterface $response, FilterChainInterface $filterChain);
+	protected $objectBuilder;
+
+	public function __construct(ObjectBuilderInterface $objectBuilder)
+	{
+		$this->objectBuilder = $objectBuilder;
+	}
+
+	public function getController($className, Location $location, RequestInterface $request, ResponseInterface $response)
+	{
+		return $this->objectBuilder->getObject($className, array($location, $request, $response), 'PSX\ApplicationStackInterface');
+	}
 }

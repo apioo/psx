@@ -36,6 +36,7 @@ use PSX\Loader\Location;
 use PSX\Loader\LocationFinderInterface;
 use PSX\Loader\LocationFinder\RoutingFile;
 use PSX\Loader\InvalidPathException;
+use PSX\Dispatch\FilterChain;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use UnexpectedValueException;
 
@@ -48,6 +49,9 @@ use UnexpectedValueException;
  */
 class Loader implements LoaderInterface
 {
+	const REQUEST_LOCATION = 'psx_request_location';
+	const REQUEST_CALLBACK = 'psx_request_callback';
+
 	protected $locationFinder;
 	protected $callbackResolver;
 	protected $recursiveLoading;
@@ -83,6 +87,8 @@ class Loader implements LoaderInterface
 
 		if($location instanceof Location)
 		{
+			$request->setAttribute(self::REQUEST_LOCATION, $location);
+
 			$this->eventDispatcher->dispatch(Event::ROUTE_MATCHED, new RouteMatchedEvent($request->getMethod(), $path, $location));
 
 			$callback = $this->callbackResolver->resolve($location, $request, $response);
@@ -122,103 +128,16 @@ class Loader implements LoaderInterface
 
 	protected function runControllerLifecycle(Callback $callback, RequestInterface $request, ResponseInterface $response)
 	{
-		$controller = $callback->getClass();
-		$method     = $callback->getMethod();
+		$request->setAttribute(self::REQUEST_CALLBACK, $callback);
 
-		if($controller instanceof ControllerInterface)
+		$controller = $callback->getClass();
+
+		if($controller instanceof ApplicationStackInterface)
 		{
 			$this->eventDispatcher->dispatch(Event::CONTROLLER_EXECUTE, new ControllerExecuteEvent($controller, $request, $response));
 
-			// call pre filter
-			if($controller->getStage() & ControllerInterface::CALL_PRE_FILTER)
-			{
-				$filters = $controller->getPreFilter();
-
-				foreach($filters as $filter)
-				{
-					if($filter instanceof FilterInterface)
-					{
-						$filter->handle($request, $response);
-					}
-					else if(is_callable($filter))
-					{
-						call_user_func_array($filter, array($request, $response));
-					}
-					else
-					{
-						throw new Exception('Invalid request filter');
-					}
-				}
-			}
-
-			// call onload method
-			if($controller->getStage() & ControllerInterface::CALL_ONLOAD)
-			{
-				$controller->onLoad();
-			}
-
-			// call request method
-			if($controller->getStage() & ControllerInterface::CALL_REQUEST_METHOD)
-			{
-				switch($request->getMethod())
-				{
-					case 'DELETE':
-						$controller->onDelete();
-						break;
-
-					case 'GET':
-						$controller->onGet();
-						break;
-
-					case 'HEAD':
-						$controller->onHead();
-						break;
-
-					case 'POST':
-						$controller->onPost();
-						break;
-
-					case 'PUT':
-						$controller->onPut();
-						break;
-				}
-			}
-
-			// call method if available
-			if($controller->getStage() & ControllerInterface::CALL_METHOD)
-			{
-				$method = $callback->getMethod();
-
-				if(!empty($method))
-				{
-					call_user_func_array(array($controller, $method), $callback->getParameters());
-				}
-			}
-
-			// process response
-			$controller->processResponse(null);
-
-			// call post filter
-			if($controller->getStage() & ControllerInterface::CALL_POST_FILTER)
-			{
-				$filters = $controller->getPostFilter();
-
-				foreach($filters as $filter)
-				{
-					if($filter instanceof FilterInterface)
-					{
-						$filter->handle($request, $response);
-					}
-					else if(is_callable($filter))
-					{
-						call_user_func_array($filter, array($request, $response));
-					}
-					else
-					{
-						throw new Exception('Invalid response filter');
-					}
-				}
-			}
+			$filterChain = new FilterChain($controller->getApplicationStack());
+			$filterChain->handle($request, $response);
 
 			$this->eventDispatcher->dispatch(Event::CONTROLLER_PROCESSED, new ControllerProcessedEvent($controller, $request, $response));
 
