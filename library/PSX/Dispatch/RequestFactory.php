@@ -63,21 +63,16 @@ class RequestFactory implements RequestFactoryInterface
 
 			if(!$this->isCli())
 			{
-				$script = isset($_SERVER['SCRIPT_NAME'])  ? $_SERVER['SCRIPT_NAME']  : null;
-				$info   = isset($_SERVER['PATH_INFO'])    ? $_SERVER['PATH_INFO']    : null;
-				$query  = isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : null;
-				$path   = $info;
-
-				if(!empty($query))
-				{
-					$path.= '?' . $query;
-				}
+				$path     = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+				$skipPath = (isset($parts['path']) ? $parts['path'] : '') . '/' . $this->config['psx_dispatch'];
+				$path     = substr($path, strlen($skipPath) - 1);
 			}
 			else
 			{
-				$path = isset($_SERVER['argv'][1]) ? $_SERVER['argv'][1] : '/';
+				$path = isset($_SERVER['argv'][1]) ? $_SERVER['argv'][1] : '';
 			}
 
+			$path = '/' . ltrim($path, '/');
 			$self = $parts['scheme'] . '://' . $parts['host'] . $port . $path;
 
 			// create request

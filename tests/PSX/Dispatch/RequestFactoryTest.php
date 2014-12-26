@@ -26,9 +26,8 @@ namespace PSX\Dispatch;
 use PSX\Config;
 
 /**
- * The most difficult task of the request factory is to recreate the request uri
- * from the server environment vars since its not always sure which vars are 
- * available. We assume the webserver follows the rfc3875
+ * The task of the request factory is to recreate the request from the server 
+ * environment vars. We assume the webserver follows rfc3875
  *
  * @see     http://www.ietf.org/rfc/rfc3875
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
@@ -37,19 +36,98 @@ use PSX\Config;
  */
 class RequestFactoryTest extends \PHPUnit_Framework_TestCase
 {
-	public function testCreateRequest()
+	public function testCreateRequestNoPathAndNoDispatch()
 	{
 		$config = new Config(array(
-			'psx_url' => 'http://foo.com',
+			'psx_url'      => 'http://foo.com',
+			'psx_dispatch' => '',
 		));
 
 		$matrix = array(
-			'http://foo.com' => array('PATH_INFO' => null, 'QUERY_STRING' => null),
-			'http://foo.com/' => array('PATH_INFO' => null, 'QUERY_STRING' => null),
-			'http://foo.com/' => array('PATH_INFO' => '/', 'QUERY_STRING' => null),
-			'http://foo.com/bar' => array('PATH_INFO' => '/bar', 'QUERY_STRING' => null),
-			'http://foo.com/bar?bar=test' => array('PATH_INFO' => '/bar', 'QUERY_STRING' => 'bar=test'),
-			'http://foo.com?bar=test' => array('PATH_INFO' => null, 'QUERY_STRING' => 'bar=test'),
+			'http://foo.com/' => array('REQUEST_URI' => null),
+			'http://foo.com/' => array('REQUEST_URI' => ''),
+			'http://foo.com/' => array('REQUEST_URI' => '/'),
+			'http://foo.com/bar' => array('REQUEST_URI' => '/bar'),
+			'http://foo.com/bar?bar=test' => array('REQUEST_URI' => '/bar?bar=test'),
+			'http://foo.com/?bar=test' => array('REQUEST_URI' => '/?bar=test'),
+			'http://foo.com/?bar=test' => array('REQUEST_URI' => '?bar=test'),
+		);
+
+		foreach($matrix as $uri => $env)
+		{
+			$request = $this->getRequest($env, $config);
+
+			$this->assertEquals($uri, (string) $request->getUrl());
+		}
+	}
+
+	public function testCreateRequestNoPathAndDispatch()
+	{
+		$config = new Config(array(
+			'psx_url'      => 'http://foo.com',
+			'psx_dispatch' => 'index.php/',
+		));
+
+		$matrix = array(
+			'http://foo.com/' => array('REQUEST_URI' => null),
+			'http://foo.com/' => array('REQUEST_URI' => '/index.php'),
+			'http://foo.com/' => array('REQUEST_URI' => '/index.php/'),
+			'http://foo.com/bar' => array('REQUEST_URI' => '/index.php/bar'),
+			'http://foo.com/bar?bar=test' => array('REQUEST_URI' => '/index.php/bar?bar=test'),
+			'http://foo.com/?bar=test' => array('REQUEST_URI' => '/index.php/?bar=test'),
+			'http://foo.com/?bar=test' => array('REQUEST_URI' => '/index.php?bar=test'),
+		);
+
+		foreach($matrix as $uri => $env)
+		{
+			$request = $this->getRequest($env, $config);
+
+			$this->assertEquals($uri, (string) $request->getUrl(), var_export($env, true));
+		}
+	}
+
+	public function testCreateRequestPathAndNoDispatch()
+	{
+		$config = new Config(array(
+			'psx_url'      => 'http://foo.com/sub/folder',
+			'psx_dispatch' => '',
+		));
+
+		$matrix = array(
+			'http://foo.com/' => array('REQUEST_URI' => null),
+			'http://foo.com/' => array('REQUEST_URI' => '/sub/folder'),
+			'http://foo.com/' => array('REQUEST_URI' => '/sub/folder/'),
+			'http://foo.com/bar' => array('REQUEST_URI' => '/sub/folder/bar'),
+			'http://foo.com/bar/' => array('REQUEST_URI' => '/sub/folder/bar/'),
+			'http://foo.com/bar?bar=test' => array('REQUEST_URI' => '/sub/folder/bar?bar=test'),
+			'http://foo.com/?bar=test' => array('REQUEST_URI' => '/sub/folder/?bar=test'),
+			'http://foo.com/?bar=test' => array('REQUEST_URI' => '/sub/folder?bar=test'),
+		);
+
+		foreach($matrix as $uri => $env)
+		{
+			$request = $this->getRequest($env, $config);
+
+			$this->assertEquals($uri, (string) $request->getUrl());
+		}
+	}
+
+	public function testCreateRequestPathAndDispatch()
+	{
+		$config = new Config(array(
+			'psx_url'      => 'http://foo.com/sub/folder',
+			'psx_dispatch' => 'index.php/',
+		));
+
+		$matrix = array(
+			'http://foo.com/' => array('REQUEST_URI' => null),
+			'http://foo.com/' => array('REQUEST_URI' => '/sub/folder/index.php'),
+			'http://foo.com/' => array('REQUEST_URI' => '/sub/folder/index.php/'),
+			'http://foo.com/bar' => array('REQUEST_URI' => '/sub/folder/index.php/bar'),
+			'http://foo.com/bar/' => array('REQUEST_URI' => '/sub/folder/index.php/bar/'),
+			'http://foo.com/bar?bar=test' => array('REQUEST_URI' => '/sub/folder/index.php/bar?bar=test'),
+			'http://foo.com/?bar=test' => array('REQUEST_URI' => '/sub/folder/index.php/?bar=test'),
+			'http://foo.com/?bar=test' => array('REQUEST_URI' => '/sub/folder/index.php?bar=test'),
 		);
 
 		foreach($matrix as $uri => $env)
