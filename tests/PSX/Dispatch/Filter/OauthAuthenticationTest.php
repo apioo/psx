@@ -51,9 +51,6 @@ class OauthAuthenticationTest extends \PHPUnit_Framework_TestCase
 	const TOKEN           = 'hh5s93j4hdidpola';
 	const TOKEN_SECRET    = 'hdhd0244k9j7ao03';
 
-	/**
-	 * @expectedException PSX\Dispatch\Filter\Exception\SuccessException
-	 */
 	public function testSuccessful()
 	{
 		$handle = new OauthAuthentication(function($consumerKey, $token){
@@ -66,7 +63,7 @@ class OauthAuthenticationTest extends \PHPUnit_Framework_TestCase
 		});
 
 		$handle->onSuccess(function(){
-			throw new SuccessException();
+			// success
 		});
 
 		$oauth = new Oauth(new Http());
@@ -75,7 +72,12 @@ class OauthAuthenticationTest extends \PHPUnit_Framework_TestCase
 		$request  = new Request(new Url('http://localhost/index.php'), 'GET', array('Authorization' => $value));
 		$response = new Response();
 
-		$handle->handle($request, $response);
+		$filterChain = $this->getMockFilterChain();
+		$filterChain->expects($this->once())
+			->method('handle')
+			->with($this->equalTo($request), $this->equalTo($response));
+
+		$handle->handle($request, $response, $filterChain);
 	}
 
 	/**
@@ -98,7 +100,11 @@ class OauthAuthenticationTest extends \PHPUnit_Framework_TestCase
 		$request  = new Request(new Url('http://localhost/index.php'), 'GET', array('Authorization' => $value));
 		$response = new Response();
 
-		$handle->handle($request, $response);
+		$filterChain = $this->getMockFilterChain();
+		$filterChain->expects($this->never())
+			->method('handle');
+
+		$handle->handle($request, $response, $filterChain);
 	}
 
 	/**
@@ -121,7 +127,11 @@ class OauthAuthenticationTest extends \PHPUnit_Framework_TestCase
 		$request  = new Request(new Url('http://localhost/index.php'), 'GET', array('Authorization' => $value));
 		$response = new Response();
 
-		$handle->handle($request, $response);
+		$filterChain = $this->getMockFilterChain();
+		$filterChain->expects($this->never())
+			->method('handle');
+
+		$handle->handle($request, $response, $filterChain);
 	}
 
 	/**
@@ -144,7 +154,11 @@ class OauthAuthenticationTest extends \PHPUnit_Framework_TestCase
 		$request  = new Request(new Url('http://localhost/index.php'), 'GET', array('Authorization' => $value));
 		$response = new Response();
 
-		$handle->handle($request, $response);
+		$filterChain = $this->getMockFilterChain();
+		$filterChain->expects($this->never())
+			->method('handle');
+
+		$handle->handle($request, $response, $filterChain);
 	}
 
 	/**
@@ -167,7 +181,11 @@ class OauthAuthenticationTest extends \PHPUnit_Framework_TestCase
 		$request  = new Request(new Url('http://localhost/index.php'), 'GET', array('Authorization' => $value));
 		$response = new Response();
 
-		$handle->handle($request, $response);
+		$filterChain = $this->getMockFilterChain();
+		$filterChain->expects($this->never())
+			->method('handle');
+
+		$handle->handle($request, $response, $filterChain);
 	}
 
 	/**
@@ -190,7 +208,11 @@ class OauthAuthenticationTest extends \PHPUnit_Framework_TestCase
 		$request  = new Request(new Url('http://localhost/index.php'), 'GET', array('Authorization' => $value));
 		$response = new Response();
 
-		$handle->handle($request, $response);
+		$filterChain = $this->getMockFilterChain();
+		$filterChain->expects($this->never())
+			->method('handle');
+
+		$handle->handle($request, $response, $filterChain);
 	}
 
 	public function testMissing()
@@ -210,9 +232,13 @@ class OauthAuthenticationTest extends \PHPUnit_Framework_TestCase
 		$request  = new Request(new Url('http://localhost/index.php'), 'GET');
 		$response = new Response();
 
+		$filterChain = $this->getMockFilterChain();
+		$filterChain->expects($this->never())
+			->method('handle');
+
 		try
 		{
-			$handle->handle($request, $response);
+			$handle->handle($request, $response, $filterChain);
 
 			$this->fail('Must throw an Exception');
 		}
@@ -241,9 +267,13 @@ class OauthAuthenticationTest extends \PHPUnit_Framework_TestCase
 		$request  = new Request(new Url('http://localhost/index.php'), 'GET', array('Authorization' => 'Foo'));
 		$response = new Response();
 
+		$filterChain = $this->getMockFilterChain();
+		$filterChain->expects($this->never())
+			->method('handle');
+
 		try
 		{
-			$handle->handle($request, $response);
+			$handle->handle($request, $response, $filterChain);
 
 			$this->fail('Must throw an Exception');
 		}
@@ -253,5 +283,13 @@ class OauthAuthenticationTest extends \PHPUnit_Framework_TestCase
 			$this->assertEquals('Oauth', $e->getType());
 			$this->assertEquals(array('realm' => 'psx'), $e->getParameters());
 		}
+	}
+
+	protected function getMockFilterChain()
+	{
+		return $this->getMockBuilder('PSX\Dispatch\FilterChain')
+			->setConstructorArgs(array(array()))
+			->setMethods(array('handle'))
+			->getMock();
 	}
 }

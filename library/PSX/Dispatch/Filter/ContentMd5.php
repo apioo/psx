@@ -25,7 +25,10 @@ namespace PSX\Dispatch\Filter;
 
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use PSX\Dispatch\FilterChainInterface;
 use PSX\Dispatch\FilterInterface;
+
+use PSX\Http\Stream\Util;
 
 /**
  * ContentMd5
@@ -36,20 +39,13 @@ use PSX\Dispatch\FilterInterface;
  */
 class ContentMd5 implements FilterInterface
 {
-	public function handle(RequestInterface $request, ResponseInterface $response)
+	public function handle(RequestInterface $request, ResponseInterface $response, FilterChainInterface $filterChain)
 	{
+		$filterChain->handle($request, $response, $filterChain);
+
 		if(!$response->hasHeader('Content-MD5'))
 		{
-			$body = $response->getBody();
-			$pos  = $body->tell();
-
-			$body->seek(0);
-
-			$content = $body->getContents();
-
-			$body->seek($pos);
-
-			$response->setHeader('Content-MD5', md5($content));
+			$response->setHeader('Content-MD5', md5(Util::toString($response->getBody())));
 		}
 	}
 }

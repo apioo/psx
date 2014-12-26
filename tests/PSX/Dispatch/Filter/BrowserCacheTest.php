@@ -42,7 +42,7 @@ class BrowserCacheTest extends \PHPUnit_Framework_TestCase
 		$response = new Response();
 
 		$handle = BrowserCache::expires(new \DateTime('1986-10-09'));
-		$handle->handle($request, $response);
+		$handle->handle($request, $response, $this->getMockFilterChain($request, $response));
 
 		$this->assertEquals('Thu, 09 Oct 1986 00:00:00 GMT', $response->getHeader('Expires'));
 	}
@@ -59,7 +59,7 @@ class BrowserCacheTest extends \PHPUnit_Framework_TestCase
 			1024,
 			2048
 		);
-		$handle->handle($request, $response);
+		$handle->handle($request, $response, $this->getMockFilterChain($request, $response));
 
 		$this->assertEquals('public, private, no-cache, no-store, no-transform, must-revalidate, proxy-revalidate, max-age=1024, s-maxage=2048', $response->getHeader('Cache-Control'));
 	}
@@ -75,7 +75,7 @@ class BrowserCacheTest extends \PHPUnit_Framework_TestCase
 			BrowserCache::MUST_REVALIDATE,
 			1024
 		);
-		$handle->handle($request, $response);
+		$handle->handle($request, $response, $this->getMockFilterChain($request, $response));
 
 		$this->assertEquals('public, no-cache, no-store, must-revalidate, max-age=1024', $response->getHeader('Cache-Control'));
 	}
@@ -86,9 +86,23 @@ class BrowserCacheTest extends \PHPUnit_Framework_TestCase
 		$response = new Response();
 
 		$handle = BrowserCache::preventCache();
-		$handle->handle($request, $response);
+		$handle->handle($request, $response, $this->getMockFilterChain($request, $response));
 
 		$this->assertEquals('Thu, 09 Oct 1986 00:00:00 GMT', $response->getHeader('Expires'));
 		$this->assertEquals('no-cache, no-store, must-revalidate', $response->getHeader('Cache-Control'));
+	}
+
+	protected function getMockFilterChain($request, $response)
+	{
+		$filterChain = $this->getMockBuilder('PSX\Dispatch\FilterChain')
+			->setConstructorArgs(array(array()))
+			->setMethods(array('handle'))
+			->getMock();
+
+		$filterChain->expects($this->once())
+			->method('handle')
+			->with($this->equalTo($request), $this->equalTo($response));
+
+		return $filterChain;
 	}
 }

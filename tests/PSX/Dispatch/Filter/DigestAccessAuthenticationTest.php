@@ -45,16 +45,13 @@ use PSX\Url;
  */
 class DigestAccessAuthenticationTest extends \PHPUnit_Framework_TestCase
 {
-	/**
-	 * @expectedException PSX\Dispatch\Filter\Exception\SuccessException
-	 */
 	public function testSuccessful()
 	{
 		$store  = new Memory();
 		$handle = $this->makeHandshake($store);
 
 		$handle->onSuccess(function(){
-			throw new SuccessException();
+			// success
 		});
 
 		$username = 'test';
@@ -82,7 +79,12 @@ class DigestAccessAuthenticationTest extends \PHPUnit_Framework_TestCase
 		$request  = new Request(new Url('http://localhost/index.php'), 'GET', array('Authorization' => 'Digest ' . Authentication::encodeParameters($params)));
 		$response = new Response();
 
-		$handle->handle($request, $response);
+		$filterChain = $this->getMockFilterChain();
+		$filterChain->expects($this->once())
+			->method('handle')
+			->with($this->equalTo($request), $this->equalTo($response));
+
+		$handle->handle($request, $response, $filterChain);
 	}
 
 	/**
@@ -118,7 +120,11 @@ class DigestAccessAuthenticationTest extends \PHPUnit_Framework_TestCase
 		$request  = new Request(new Url('http://localhost/index.php'), 'GET', array('Authorization' => 'Digest ' . Authentication::encodeParameters($params)));
 		$response = new Response();
 
-		$handle->handle($request, $response);
+		$filterChain = $this->getMockFilterChain();
+		$filterChain->expects($this->never())
+			->method('handle');
+
+		$handle->handle($request, $response, $filterChain);
 	}
 
 	public function testMissing()
@@ -131,9 +137,13 @@ class DigestAccessAuthenticationTest extends \PHPUnit_Framework_TestCase
 		$request  = new Request(new Url('http://localhost/index.php'), 'GET');
 		$response = new Response();
 
+		$filterChain = $this->getMockFilterChain();
+		$filterChain->expects($this->never())
+			->method('handle');
+
 		try
 		{
-			$handle->handle($request, $response);
+			$handle->handle($request, $response, $filterChain);
 
 			$this->fail('Must throw an Exception');
 		}
@@ -160,9 +170,13 @@ class DigestAccessAuthenticationTest extends \PHPUnit_Framework_TestCase
 		$request  = new Request(new Url('http://localhost'), 'GET', array('Authorization' => 'Foo'));
 		$response = new Response();
 
+		$filterChain = $this->getMockFilterChain();
+		$filterChain->expects($this->never())
+			->method('handle');
+
 		try
 		{
-			$handle->handle($request, $response);
+			$handle->handle($request, $response, $filterChain);
 
 			$this->fail('Must throw an Exception');
 		}
@@ -191,9 +205,13 @@ class DigestAccessAuthenticationTest extends \PHPUnit_Framework_TestCase
 		$request  = new Request(new Url('http://localhost/index.php'), 'GET');
 		$response = new Response();
 
+		$filterChain = $this->getMockFilterChain();
+		$filterChain->expects($this->never())
+			->method('handle');
+
 		try
 		{
-			$handle->handle($request, $response);
+			$handle->handle($request, $response, $filterChain);
 
 			$this->fail('Must throw an Exception');
 		}
@@ -213,5 +231,13 @@ class DigestAccessAuthenticationTest extends \PHPUnit_Framework_TestCase
 		$handle->loadDigest();
 
 		return $handle;
+	}
+
+	protected function getMockFilterChain()
+	{
+		return $this->getMockBuilder('PSX\Dispatch\FilterChain')
+			->setConstructorArgs(array(array()))
+			->setMethods(array('handle'))
+			->getMock();
 	}
 }

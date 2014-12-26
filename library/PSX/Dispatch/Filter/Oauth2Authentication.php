@@ -26,6 +26,7 @@ namespace PSX\Dispatch\Filter;
 use Closure;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use PSX\Dispatch\FilterChainInterface;
 use PSX\Dispatch\FilterInterface;
 use PSX\Http\Authentication;
 use PSX\Http\Exception\BadRequestException;
@@ -73,7 +74,7 @@ class Oauth2Authentication implements FilterInterface
 		});
 	}
 
-	public function handle(RequestInterface $request, ResponseInterface $response)
+	public function handle(RequestInterface $request, ResponseInterface $response, FilterChainInterface $filterChain)
 	{
 		$authorization = $request->getHeader('Authorization');
 
@@ -90,6 +91,8 @@ class Oauth2Authentication implements FilterInterface
 				if($result === true)
 				{
 					$this->callSuccess($response);
+
+					$filterChain->handle($request, $response);
 				}
 				else
 				{

@@ -37,7 +37,7 @@ use PSX\Url;
  */
 class ContentMd5Test extends \PHPUnit_Framework_TestCase
 {
-	public function testHandle()
+	public function testAddHeader()
 	{
 		$body = new TempStream(fopen('php://memory', 'r+'));
 		$body->write('foobar');
@@ -47,9 +47,39 @@ class ContentMd5Test extends \PHPUnit_Framework_TestCase
 		$response->setBody($body);
 
 		$filter = new ContentMd5();
-		$filter->handle($request, $response);
+		$filter->handle($request, $response, $this->getMockFilterChain($request, $response));
 
 		$this->assertEquals(md5('foobar'), $response->getHeader('Content-MD5'));
 		$this->assertEquals('foobar', (string) $response->getBody());
+	}
+
+	public function testHeaderExist()
+	{
+		$body = new TempStream(fopen('php://memory', 'r+'));
+		$body->write('foobar');
+
+		$request  = new Request(new Url('http://localhost'), 'GET');
+		$response = new Response();
+		$response->setHeader('Content-MD5', 'foobar');
+		$response->setBody($body);
+
+		$filter = new ContentMd5();
+		$filter->handle($request, $response, $this->getMockFilterChain($request, $response));
+
+		$this->assertEquals('foobar', $response->getHeader('Content-MD5'));
+	}
+
+	protected function getMockFilterChain($request, $response)
+	{
+		$filterChain = $this->getMockBuilder('PSX\Dispatch\FilterChain')
+			->setConstructorArgs(array(array()))
+			->setMethods(array('handle'))
+			->getMock();
+
+		$filterChain->expects($this->once())
+			->method('handle')
+			->with($this->equalTo($request), $this->equalTo($response));
+
+		return $filterChain;
 	}
 }

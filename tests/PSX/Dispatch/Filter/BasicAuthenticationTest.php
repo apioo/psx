@@ -42,9 +42,6 @@ use PSX\Url;
  */
 class BasicAuthenticationTest extends \PHPUnit_Framework_TestCase
 {
-	/**
-	 * @expectedException PSX\Dispatch\Filter\Exception\SuccessException
-	 */
 	public function testSuccessful()
 	{
 		$handle = new BasicAuthentication(function($username, $password){
@@ -52,7 +49,7 @@ class BasicAuthenticationTest extends \PHPUnit_Framework_TestCase
 		});
 
 		$handle->onSuccess(function(){
-			throw new SuccessException();
+			// success
 		});
 
 		$username = 'test';
@@ -61,7 +58,12 @@ class BasicAuthenticationTest extends \PHPUnit_Framework_TestCase
 		$request  = new Request(new Url('http://localhost'), 'GET', array('Authorization' => 'Basic ' . base64_encode($username . ':' . $password)));
 		$response = new Response();
 
-		$handle->handle($request, $response);
+		$filterChain = $this->getMockFilterChain();
+		$filterChain->expects($this->once())
+			->method('handle')
+			->with($this->equalTo($request), $this->equalTo($response));
+
+		$handle->handle($request, $response, $filterChain);
 	}
 
 	/**
@@ -79,7 +81,7 @@ class BasicAuthenticationTest extends \PHPUnit_Framework_TestCase
 		$request  = new Request(new Url('http://localhost'), 'GET', array('Authorization' => 'Basic ' . base64_encode($username . ':' . $password)));
 		$response = new Response();
 
-		$handle->handle($request, $response);
+		$handle->handle($request, $response, $this->getMockFilterChain());
 	}
 
 	public function testMissing()
@@ -93,7 +95,7 @@ class BasicAuthenticationTest extends \PHPUnit_Framework_TestCase
 
 		try
 		{
-			$handle->handle($request, $response);
+			$handle->handle($request, $response, $this->getMockFilterChain());
 
 			$this->fail('Must throw an Exception');
 		}
@@ -116,7 +118,7 @@ class BasicAuthenticationTest extends \PHPUnit_Framework_TestCase
 
 		try
 		{
-			$handle->handle($request, $response);
+			$handle->handle($request, $response, $this->getMockFilterChain());
 
 			$this->fail('Must throw an Exception');
 		}
@@ -126,5 +128,13 @@ class BasicAuthenticationTest extends \PHPUnit_Framework_TestCase
 			$this->assertEquals('Basic', $e->getType());
 			$this->assertEquals(array('realm' => 'psx'), $e->getParameters());
 		}
+	}
+
+	protected function getMockFilterChain()
+	{
+		return $this->getMockBuilder('PSX\Dispatch\FilterChain')
+			->setConstructorArgs(array(array()))
+			->setMethods(array('handle'))
+			->getMock();
 	}
 }

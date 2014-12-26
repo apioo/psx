@@ -21,44 +21,41 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Dispatch\Filter;
+namespace PSX\Dispatch\Filter\Condition;
 
-use PSX\Http\Request;
-use PSX\Http\Response;
-use PSX\Http\Stream\TempStream;
-use PSX\Url;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use PSX\Dispatch\FilterChainInterface;
+use PSX\Dispatch\FilterInterface;
 
 /**
- * GzipEncodeTest
+ * Applies an filter only for specific request methods. This is useful if you 
+ * want i.e. authentication only for specific request methods
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class GzipEncodeTest extends \PHPUnit_Framework_TestCase
+class RequestMethodChoice implements FilterInterface
 {
-	public function testAddHeader()
+	protected $requestMethods;
+	protected $filter;
+
+	public function __construct(array $requestMethods, FilterInterface $filter)
 	{
-		$request  = new Request(new Url('http://localhost'), 'GET', array('Accept-Encoding' => 'gzip'));
-		$response = new Response();
-
-		$filter = new GzipEncode();
-		$filter->handle($request, $response, $this->getMockFilterChain($request, $response));
-
-		$this->assertEquals('gzip', $response->getHeader('Content-Encoding'));
+		$this->requestMethods = $requestMethods;
+		$this->filter         = $filter;
 	}
 
-	protected function getMockFilterChain($request, $response)
+	public function handle(RequestInterface $request, ResponseInterface $response, FilterChainInterface $filterChain)
 	{
-		$filterChain = $this->getMockBuilder('PSX\Dispatch\FilterChain')
-			->setConstructorArgs(array(array()))
-			->setMethods(array('handle'))
-			->getMock();
-
-		$filterChain->expects($this->once())
-			->method('handle')
-			->with($this->equalTo($request), $this->equalTo($response));
-
-		return $filterChain;
+		if(in_array($request->getMethod(), $this->requestMethods))
+		{
+			$this->filter->handle($request, $response, $filterChain);
+		}
+		else
+		{
+			$filterChain->handle($request, $response);
+		}
 	}
 }

@@ -26,6 +26,7 @@ namespace PSX\Dispatch\Filter;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use PSX\DateTime;
+use PSX\Dispatch\FilterChainInterface;
 use PSX\Dispatch\FilterInterface;
 
 /**
@@ -73,7 +74,7 @@ class BrowserCache implements FilterInterface
 		$this->expires = $expires;
 	}
 
-	public function handle(RequestInterface $request, ResponseInterface $response)
+	public function handle(RequestInterface $request, ResponseInterface $response, FilterChainInterface $filterChain)
 	{
 		$cacheControl = array();
 
@@ -131,6 +132,8 @@ class BrowserCache implements FilterInterface
 		{
 			$response->setHeader('Expires', $this->expires->format(DateTime::HTTP));
 		}
+
+		$filterChain->handle($request, $response);
 	}
 
 	public static function expires(\DateTime $expires)

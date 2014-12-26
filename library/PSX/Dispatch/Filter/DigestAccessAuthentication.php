@@ -27,6 +27,7 @@ use Closure;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use PSX\Data\Record\StoreInterface;
+use PSX\Dispatch\FilterChainInterface;
 use PSX\Dispatch\FilterInterface;
 use PSX\Dispatch\Filter\DigestAccessAuthentication\Digest;
 use PSX\Exception;
@@ -110,7 +111,7 @@ class DigestAccessAuthentication implements FilterInterface
 		$this->digest = $this->digestStore->load('digest');
 	}
 
-	public function handle(RequestInterface $request, ResponseInterface $response)
+	public function handle(RequestInterface $request, ResponseInterface $response, FilterChainInterface $filterChain)
 	{
 		$authorization = $request->getHeader('Authorization');
 
@@ -167,6 +168,8 @@ class DigestAccessAuthentication implements FilterInterface
 				if(strcmp($hash, $params['response']) === 0)
 				{
 					$this->callSuccess($response, $hash);
+
+					$filterChain->handle($request, $response);
 				}
 				else
 				{

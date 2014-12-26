@@ -21,35 +21,61 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Dispatch\Filter;
+namespace PSX\Dispatch\Filter\Condition;
 
 use PSX\Http\Request;
 use PSX\Http\Response;
-use PSX\Http\Stream\TempStream;
+use PSX\Http\Stream\StringStream;
 use PSX\Url;
 
 /**
- * GzipEncodeTest
+ * RequestMethodChoiceTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class GzipEncodeTest extends \PHPUnit_Framework_TestCase
+class RequestMethodChoiceTest extends \PHPUnit_Framework_TestCase
 {
-	public function testAddHeader()
+	public function testCorrectMethod()
 	{
-		$request  = new Request(new Url('http://localhost'), 'GET', array('Accept-Encoding' => 'gzip'));
+		$request  = new Request(new Url('http://localhost'), 'GET');
 		$response = new Response();
+		$response->setBody(new StringStream());
 
-		$filter = new GzipEncode();
-		$filter->handle($request, $response, $this->getMockFilterChain($request, $response));
+		$filter = $this->getMockBuilder('PSX\Dispatch\FilterInterface')
+			->setMethods(array('handle'))
+			->getMock();
 
-		$this->assertEquals('gzip', $response->getHeader('Content-Encoding'));
+		$filter->expects($this->once())
+			->method('handle')
+			->with($this->equalTo($request), $this->equalTo($response));
+
+		$filterChain = $this->getMockBuilder('PSX\Dispatch\FilterChain')
+			->setConstructorArgs(array(array()))
+			->setMethods(array('handle'))
+			->getMock();
+
+		$filterChain->expects($this->never())
+			->method('handle');
+
+		$handle = new RequestMethodChoice(array('GET'), $filter);
+		$handle->handle($request, $response, $filterChain);
 	}
 
-	protected function getMockFilterChain($request, $response)
+	public function testWrongMethod()
 	{
+		$request  = new Request(new Url('http://localhost'), 'GET');
+		$response = new Response();
+		$response->setBody(new StringStream());
+
+		$filter = $this->getMockBuilder('PSX\Dispatch\FilterInterface')
+			->setMethods(array('handle'))
+			->getMock();
+
+		$filter->expects($this->never())
+			->method('handle');
+
 		$filterChain = $this->getMockBuilder('PSX\Dispatch\FilterChain')
 			->setConstructorArgs(array(array()))
 			->setMethods(array('handle'))
@@ -59,6 +85,7 @@ class GzipEncodeTest extends \PHPUnit_Framework_TestCase
 			->method('handle')
 			->with($this->equalTo($request), $this->equalTo($response));
 
-		return $filterChain;
+		$handle = new RequestMethodChoice(array('POST', 'PUT', 'DELETE'), $filter);
+		$handle->handle($request, $response, $filterChain);
 	}
 }

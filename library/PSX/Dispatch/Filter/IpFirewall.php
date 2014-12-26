@@ -23,42 +23,37 @@
 
 namespace PSX\Dispatch\Filter;
 
-use PSX\Http\Request;
-use PSX\Http\Response;
-use PSX\Http\Stream\TempStream;
-use PSX\Url;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use PSX\Dispatch\FilterChainInterface;
+use PSX\Dispatch\FilterInterface;
+use PSX\Http\Exception\ForbiddenException;
 
 /**
- * GzipEncodeTest
+ * IpFirewall
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class GzipEncodeTest extends \PHPUnit_Framework_TestCase
+class IpFirewall implements FilterInterface
 {
-	public function testAddHeader()
+	protected $allowedIps;
+
+	public function __construct(array $allowedIps)
 	{
-		$request  = new Request(new Url('http://localhost'), 'GET', array('Accept-Encoding' => 'gzip'));
-		$response = new Response();
-
-		$filter = new GzipEncode();
-		$filter->handle($request, $response, $this->getMockFilterChain($request, $response));
-
-		$this->assertEquals('gzip', $response->getHeader('Content-Encoding'));
+		$this->allowedIps = $allowedIps;
 	}
 
-	protected function getMockFilterChain($request, $response)
+	public function handle(RequestInterface $request, ResponseInterface $response, FilterChainInterface $filterChain)
 	{
-		$filterChain = $this->getMockBuilder('PSX\Dispatch\FilterChain')
-			->setConstructorArgs(array(array()))
-			->setMethods(array('handle'))
-			->getMock();
-
-		$filterChain->expects($this->once())
-			->method('handle')
-			->with($this->equalTo($request), $this->equalTo($response));
-
-		return $filterChain;
+		if(in_array($_SERVER['REMOTE_ADDR'], $this->allowedIps))
+		{
+			$filterChain->handle($request, $response);
+		}
+		else
+		{
+			throw new ForbiddenException('Access not allowed');
+		}
 	}
 }

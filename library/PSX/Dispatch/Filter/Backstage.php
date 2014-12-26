@@ -23,42 +23,43 @@
 
 namespace PSX\Dispatch\Filter;
 
-use PSX\Http\Request;
-use PSX\Http\Response;
-use PSX\Http\Stream\TempStream;
-use PSX\Url;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use PSX\Dispatch\FilterChainInterface;
+use PSX\Dispatch\FilterInterface;
+use PSX\Loader;
 
 /**
- * GzipEncodeTest
+ * Inspired by rubys rack backstage. If the specified file exists it get 
+ * written as response i.e. to show an maintenance message else the next filter
+ * gets called. Note the message gets only displayed for text/html visitors all
+ * other requests get passed to the application
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class GzipEncodeTest extends \PHPUnit_Framework_TestCase
+class Backstage implements FilterInterface
 {
-	public function testAddHeader()
+	protected $file;
+
+	public function __construct($file)
 	{
-		$request  = new Request(new Url('http://localhost'), 'GET', array('Accept-Encoding' => 'gzip'));
-		$response = new Response();
-
-		$filter = new GzipEncode();
-		$filter->handle($request, $response, $this->getMockFilterChain($request, $response));
-
-		$this->assertEquals('gzip', $response->getHeader('Content-Encoding'));
+		$this->file = $file;
 	}
 
-	protected function getMockFilterChain($request, $response)
+	public function handle(RequestInterface $request, ResponseInterface $response, FilterChainInterface $filterChain)
 	{
-		$filterChain = $this->getMockBuilder('PSX\Dispatch\FilterChain')
-			->setConstructorArgs(array(array()))
-			->setMethods(array('handle'))
-			->getMock();
+		$accept = $request->getHeader('Accept');
 
-		$filterChain->expects($this->once())
-			->method('handle')
-			->with($this->equalTo($request), $this->equalTo($response));
-
-		return $filterChain;
+		if(stripos($accept, 'text/html') !== false && is_file($this->file))
+		{
+			$response->setHeader('Content-Type', 'text/html');
+			$response->getBody()->write(file_get_contents($this->file));
+		}
+		else
+		{
+			$filterChain->handle($request, $response);
+		}
 	}
 }

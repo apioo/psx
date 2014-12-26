@@ -23,42 +23,32 @@
 
 namespace PSX\Dispatch\Filter;
 
-use PSX\Http\Request;
-use PSX\Http\Response;
-use PSX\Http\Stream\TempStream;
-use PSX\Url;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use PSX\Dispatch\FilterChainInterface;
+use PSX\Dispatch\FilterInterface;
+use PSX\Http\Exception\BadRequestException;
 
 /**
- * GzipEncodeTest
+ * UserAgentEnforcer
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class GzipEncodeTest extends \PHPUnit_Framework_TestCase
+class UserAgentEnforcer implements FilterInterface
 {
-	public function testAddHeader()
+	public function handle(RequestInterface $request, ResponseInterface $response, FilterChainInterface $filterChain)
 	{
-		$request  = new Request(new Url('http://localhost'), 'GET', array('Accept-Encoding' => 'gzip'));
-		$response = new Response();
+		$userAgent = $request->getHeader('User-Agent');
 
-		$filter = new GzipEncode();
-		$filter->handle($request, $response, $this->getMockFilterChain($request, $response));
-
-		$this->assertEquals('gzip', $response->getHeader('Content-Encoding'));
-	}
-
-	protected function getMockFilterChain($request, $response)
-	{
-		$filterChain = $this->getMockBuilder('PSX\Dispatch\FilterChain')
-			->setConstructorArgs(array(array()))
-			->setMethods(array('handle'))
-			->getMock();
-
-		$filterChain->expects($this->once())
-			->method('handle')
-			->with($this->equalTo($request), $this->equalTo($response));
-
-		return $filterChain;
+		if(!empty($userAgent))
+		{
+			$filterChain->handle($request, $response);
+		}
+		else
+		{
+			throw new BadRequestException('Request must contain an User-Agent header');
+		}
 	}
 }

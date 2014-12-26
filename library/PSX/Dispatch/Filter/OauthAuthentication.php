@@ -27,6 +27,7 @@ use Closure;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use PSX\Base;
+use PSX\Dispatch\FilterChainInterface;
 use PSX\Dispatch\FilterInterface;
 use PSX\Http\Authentication;
 use PSX\Http\Exception\BadRequestException;
@@ -77,7 +78,7 @@ class OauthAuthentication implements FilterInterface
 		});
 	}
 
-	public function handle(RequestInterface $request, ResponseInterface $response)
+	public function handle(RequestInterface $request, ResponseInterface $response, FilterChainInterface $filterChain)
 	{
 		$authorization = $request->getHeader('Authorization');
 
@@ -140,6 +141,8 @@ class OauthAuthentication implements FilterInterface
 					if($signature->verify($baseString, $consumer->getConsumerSecret(), $consumer->getTokenSecret(), $params['oauth_signature']) !== false)
 					{
 						$this->callSuccess($response);
+
+						$filterChain->handle($request, $response);
 					}
 					else
 					{

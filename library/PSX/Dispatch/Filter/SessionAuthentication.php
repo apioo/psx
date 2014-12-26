@@ -31,27 +31,23 @@ use PSX\Dispatch\FilterChainInterface;
 use PSX\Dispatch\FilterInterface;
 use PSX\Http\Authentication;
 use PSX\Http\Exception\BadRequestException;
-use PSX\Http\Exception\UnauthorizedException;
 
 /**
- * BasicAuthentication
+ * SessionAuthentication
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class BasicAuthentication implements FilterInterface
+class SessionAuthentication implements FilterInterface
 {
 	protected $isValidCallback;
 	protected $successCallback;
 	protected $failureCallback;
-	protected $missingCallback;
 
 	/**
-	 * The isValidCallback is called with the provided username and password
-	 * if an Authorization header is present. Depending on the result the 
-	 * onSuccess or onFailure callback is called. If the header is missing the
-	 * onMissing callback is called
+	 * The isValidCallback is called where you can check whether your user is
+	 * authenticated in $_SESSION. If yes return true else false
 	 *
 	 * @param Closure $isValidCallback
 	 */
@@ -64,56 +60,23 @@ class BasicAuthentication implements FilterInterface
 		});
 
 		$this->onFailure(function(){
-			throw new BadRequestException('Invalid username or password');
-		});
-
-		$this->onMissing(function(ResponseInterface $response){
-			$params = array(
-				'realm' => 'psx',
-			);
-
-			throw new UnauthorizedException('Missing authorization header', 'Basic', $params);
+			throw new BadRequestException('User is not authenticated');
 		});
 	}
 
 	public function handle(RequestInterface $request, ResponseInterface $response, FilterChainInterface $filterChain)
 	{
-		$authorization = $request->getHeader('Authorization');
+		$result = call_user_func_array($this->isValidCallback, array());
 
-		if(!empty($authorization))
+		if($result === true)
 		{
-			$parts = explode(' ', $authorization, 2);
-			$type  = isset($parts[0]) ? $parts[0] : null;
-			$data  = isset($parts[1]) ? $parts[1] : null;
+			$this->callSuccess($response);
 
-			if($type == 'Basic' && !empty($data))
-			{
-				$data  = base64_decode($data);
-				$parts = explode(':', $data, 2);
-
-				$username = isset($parts[0]) ? $parts[0] : null;
-				$password = isset($parts[1]) ? $parts[1] : null;
-				$result   = call_user_func_array($this->isValidCallback, array($username, $password));
-
-				if($result === true)
-				{
-					$this->callSuccess($response);
-
-					$filterChain->handle($request, $response);
-				}
-				else
-				{
-					$this->callFailure($response);
-				}
-			}
-			else
-			{
-				$this->callMissing($response);
-			}
+			$filterChain->handle($request, $response);
 		}
 		else
 		{
-			$this->callMissing($response);
+			$this->callFailure($response);
 		}
 	}
 
@@ -127,11 +90,6 @@ class BasicAuthentication implements FilterInterface
 		$this->failureCallback = $failureCallback;
 	}
 
-	public function onMissing(Closure $missingCallback)
-	{
-		$this->missingCallback = $missingCallback;
-	}
-
 	protected function callSuccess(ResponseInterface $response)
 	{
 		call_user_func_array($this->successCallback, array($response));
@@ -140,10 +98,5 @@ class BasicAuthentication implements FilterInterface
 	protected function callFailure(ResponseInterface $response)
 	{
 		call_user_func_array($this->failureCallback, array($response));
-	}
-
-	protected function callMissing(ResponseInterface $response)
-	{
-		call_user_func_array($this->missingCallback, array($response));
 	}
 }
