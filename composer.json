@@ -19,7 +19,7 @@
     "symfony/dependency-injection": "~2.5",
     "symfony/console": "~2.5",
     "doctrine/annotations": "~1.2",
-    "doctrine/dbal": "~2.4",
+    "doctrine/dbal": "~2.5",
     "jms/serializer": "0.16.0"
   },
   "require-dev": {
