@@ -24,6 +24,7 @@
 namespace PSX\Xml;
 
 use XMLWriter;
+use PSX\Util\CurveArray;
 
 /**
  * Writer
@@ -80,7 +81,7 @@ class Writer implements WriterInterface
 
 	protected function recXmlEncode($name, array $fields, $ns = null)
 	{
-		if($this->isAssocArray($fields))
+		if(CurveArray::isAssoc($fields))
 		{
 			$this->writer->startElement($name);
 
@@ -125,20 +126,5 @@ class Writer implements WriterInterface
 				}
 			}
 		}
-	}
-
-	private function isAssocArray(array $array)
-	{
-		$len = count($array);
-
-		for($i = 0; $i < $len; $i++)
-		{
-			if(!isset($array[$i]))
-			{
-				return true;
-			}
-		}
-
-		return false;
 	}
 }

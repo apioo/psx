@@ -108,4 +108,12 @@ class CurveArrayTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals($expect, CurveArray::nest($data));
 	}
+
+	public function testIsAssoc()
+	{
+		$this->assertTrue(CurveArray::isAssoc(array()));
+		$this->assertFalse(CurveArray::isAssoc(range(0, 9)));
+		$this->assertTrue(CurveArray::isAssoc(array('foo' => null, 'bar' => null)));
+		$this->assertTrue(CurveArray::isAssoc(array(0 => 'foo', 'foo' => null, 'bar' => null)));
+	}
 }

@@ -102,6 +102,26 @@ class CurveArray
 		return $result;
 	}
 
+	/**
+	 * Returns whether an array is index based or associative
+	 *
+	 * @param array $array
+	 * @return boolean
+	 */
+	public static function isAssoc(array $array)
+	{
+		if(isset($array[0]))
+		{
+			$n = count($array) - 1;
+
+			return array_sum(array_keys($array)) != ($n * ($n + 1)) / 2;
+		}
+		else
+		{
+			return true;
+		}
+	}
+
 	protected static function getParts(array $data, $prefix)
 	{
 		$result = array();
