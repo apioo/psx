@@ -51,4 +51,13 @@ class RecordInfoTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('bar', $info->getName());
 		$this->assertEquals(array('bar' => 'foo'), $info->getFields());
 	}
+
+	public function testRecordInfoParent()
+	{
+		$parent = new RecordInfo('record', array('bar' => 'foo'));
+		$info   = new RecordInfo('record', array('title' => 'foo'), $parent);
+
+		$this->assertEquals('record', $info->getName());
+		$this->assertEquals(array('title' => 'foo', 'bar' => 'foo'), $info->getFields());
+	}
 }
