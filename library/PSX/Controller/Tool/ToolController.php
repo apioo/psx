@@ -83,7 +83,7 @@ class ToolController extends ViewAbstract
 			);
 		}
 
-		$documentationPath = $this->reverseRouter->getAbsolutePath('PSX\Controller\Tool\DocumentationController');
+		$documentationPath = $this->reverseRouter->getAbsolutePath('PSX\Controller\Tool\DocumentationController::doIndex');
 		if($documentationPath !== null)
 		{
 			$paths['api'][] = array(

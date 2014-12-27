@@ -39,10 +39,29 @@ use PSX\Data\Schema\Documentation;
  */
 class RestController extends ViewAbstract
 {
+	/**
+	 * @Inject
+	 * @var PSX\Loader\ReverseRouter
+	 */
+	protected $reverseRouter;
+
 	public function onGet()
 	{
 		parent::onGet();
 
 		$this->template->set(__DIR__ . '/../Resource/rest_controller.tpl');
+
+		$this->setBody(array(
+			'links' => array(
+				array(
+					'rel'  => 'self',
+					'href' => $this->reverseRouter->getAbsolutePath('PSX\Controller\Tool\RestController'),
+				),
+				array(
+					'rel'  => 'router',
+					'href' => $this->reverseRouter->getAbsolutePath('PSX\Controller\Tool\RoutingController'),
+				)
+			)
+		));
 	}
 }

@@ -49,11 +49,13 @@
 
 	</style>
 	<script type="text/javascript">
+	var links = <?php echo json_encode($links); ?>;
+
 	function loadRoutes(){
 
 		$('#available-paths option').remove();
 
-		$.get('<?php echo $router->getAbsolutePath('PSX\Controller\Tool\RoutingController'); ?>', function(resp){
+		$.get(getLink('router'), function(resp){
 
 			if (resp.routings) {
 				for (var i = 0; i < resp.routings.length; i++) {
@@ -124,6 +126,18 @@
 
 		$(el).parent().parent().fadeOut(20);
 
+	}
+
+	function getLink(rel)
+	{
+		if (links) {
+			for (var i = 0; i < links.length; i++) {
+				if (links[i].rel == rel) {
+					return links[i].href;
+				}
+			}
+		}
+		return null;
 	}
 
 	$(document).ready(function(){
