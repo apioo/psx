@@ -111,6 +111,34 @@ class RecordValidatorTest extends \PHPUnit_Framework_TestCase
 
 		$validator->validate($record);
 	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testValidateInvalidData()
+	{
+		$validator = new RecordValidator(new Validate(), array(
+			new Property('id', Validate::TYPE_INTEGER),
+			new Property('title', Validate::TYPE_STRING, array(new Filter\Length(2, 8))),
+			new Property('date', Validate::TYPE_STRING, array(new Filter\DateTime())),
+		));
+
+		$validator->validate('foo');
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testValidateEmptyData()
+	{
+		$validator = new RecordValidator(new Validate(), array(
+			new Property('id', Validate::TYPE_INTEGER),
+			new Property('title', Validate::TYPE_STRING, array(new Filter\Length(2, 8))),
+			new Property('date', Validate::TYPE_STRING, array(new Filter\DateTime())),
+		));
+
+		$validator->validate(new ValidateTestRecord());
+	}
 }
 
 class ValidateTestRecord extends RecordAbstract

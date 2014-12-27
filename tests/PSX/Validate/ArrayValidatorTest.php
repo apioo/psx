@@ -102,4 +102,32 @@ class ArrayValidatorTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals('acbd18db4cc2f85cedef654fccc4a4d8', $data['title']);
 	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testValidateInvalidData()
+	{
+		$validator = new ArrayValidator(new Validate(), array(
+			new Property('id', Validate::TYPE_INTEGER),
+			new Property('title', Validate::TYPE_STRING, array(new Filter\Length(2, 8))),
+			new Property('date', Validate::TYPE_STRING, array(new Filter\DateTime())),
+		));
+
+		$validator->validate('foo');
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testValidateEmptyData()
+	{
+		$validator = new ArrayValidator(new Validate(), array(
+			new Property('id', Validate::TYPE_INTEGER),
+			new Property('title', Validate::TYPE_STRING, array(new Filter\Length(2, 8))),
+			new Property('date', Validate::TYPE_STRING, array(new Filter\DateTime())),
+		));
+
+		$validator->validate(array());
+	}
 }
