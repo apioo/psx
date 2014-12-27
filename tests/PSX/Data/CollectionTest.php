@@ -24,47 +24,21 @@
 namespace PSX\Data;
 
 /**
- * CollectionAbstractTest
+ * CollectionTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class CollectionAbstractTest extends \PHPUnit_Framework_TestCase
+class CollectionTest extends \PHPUnit_Framework_TestCase
 {
 	public function testCollection()
 	{
-		$collection = new TestCollection(array(new Record(), new Record()));
-		$collection->add(new Record());
+		$data       = array(new Record(), new Record());
+		$collection = new Collection($data);
+		$recordInfo = $collection->getRecordInfo();
 
-		$this->assertInstanceOf('PSX\Data\CollectionInterface', $collection);
-		$this->assertEquals(3, $collection->count());
-		$this->assertEquals(3, count($collection));
-		$this->assertFalse($collection->isEmpty());
-
-		$this->assertEquals(null, $collection->get(3));
-
-		$collection->set(3, new Record());
-
-		$this->assertInstanceOf('PSX\Data\RecordInterface', $collection->get(3));
-
-		foreach($collection as $record)
-		{
-			$this->assertInstanceOf('PSX\Data\RecordInterface', $record);
-		}
-
-		$collection->clear();
-
-		$this->assertEquals(0, $collection->count());
-		$this->assertEquals(array(), $collection->toArray());
-		$this->assertTrue($collection->isEmpty());
-	}
-}
-
-class TestCollection extends CollectionAbstract
-{
-	public function getRecordInfo()
-	{
-		return new RecordInfo('foo', array());
+		$this->assertInstanceOf('PSX\Data\RecordInfo', $recordInfo);
+		$this->assertEquals(array('entry' => $data), $recordInfo->getData());
 	}
 }
