@@ -76,10 +76,11 @@ XML;
 	{
 		$writer = new Writer('dive into mark', 'tag:example.org,2003:3', new DateTime('2005-07-31T12:29:29Z'));
 		$writer->setSubTitle('html', 'A <em>lot</em> of effort went into making this effortless');
-		$writer->addLink('http://example.org/', 'alternate', 'text/html', 'en');
+		$writer->addLink('http://example.org/', 'alternate', 'text/html', 'en', 'foo');
 		$writer->addLink('http://example.org/feed.atom', 'self', 'application/atom+xml');
 		$writer->setRights('Copyright (c) 2003, Mark Pilgrim');
 		$writer->setGenerator('Example Toolkit', 'http://www.example.com/', '1.0');
+		$writer->addCategory('foo', 'urn:foo:bar', 'foo@bar.com');
 
 		$entry = $writer->createEntry();
 		$entry->setTitle('Atom draft-07 snapshot');
@@ -102,10 +103,11 @@ XML;
 	<id>tag:example.org,2003:3</id>
 	<updated>2005-07-31T12:29:29+00:00</updated>
 	<subtitle type="html">A &lt;em&gt;lot&lt;/em&gt; of effort went into making this effortless</subtitle>
-	<link rel="alternate" type="text/html" hreflang="en" href="http://example.org/"/>
+	<link rel="alternate" type="text/html" hreflang="en" title="foo" href="http://example.org/"/>
 	<link rel="self" type="application/atom+xml" href="http://example.org/feed.atom"/>
 	<rights>Copyright (c) 2003, Mark Pilgrim</rights>
 	<generator uri="http://www.example.com/" version="1.0">Example Toolkit</generator>
+	<category label="foo@bar.com" scheme="urn:foo:bar" term="foo"/>
 	<entry>
 		<title>Atom draft-07 snapshot</title>
 		<id>tag:example.org,2003:3.2397</id>
@@ -132,5 +134,27 @@ XML;
 XML;
 
 		$this->assertXmlStringEqualsXmlString($expected, $actual);
+	}
+
+	public function testGetWriter()
+	{
+		$writer = new Writer('dive into mark', 'tag:example.org,2003:3', new DateTime('2005-07-31T12:29:29Z'));
+
+		$this->assertInstanceOf('XMLWriter', $writer->getWriter());
+	}
+
+	public function testGetCustomWriter()
+	{
+		$handle = $this->getMock('XMLWriter');
+		$writer = new Writer('dive into mark', 'tag:example.org,2003:3', new DateTime('2005-07-31T12:29:29Z'), $handle);
+
+		$this->assertTrue($handle === $writer->getWriter());
+	}
+
+	public function testLink()
+	{
+		$html = Writer::link('foo > bar', 'http://foo.com');
+
+		$this->assertEquals('<link rel="alternate" type="application/atom+xml" title="foo &gt; bar" href="http://foo.com" />', $html);
 	}
 }
