@@ -50,4 +50,22 @@ class XmlFileTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('<pre><code class="http">get-request-detail</code></pre>', $loader->get(View::METHOD_GET | View::TYPE_REQUEST, '/population/:id'));
 		$this->assertEquals('<pre><code class="http">get-response-detail</code></pre>', $loader->get(View::METHOD_GET | View::TYPE_RESPONSE, '/population/:id'));
 	}
+
+	public function testGetUnknownModifier()
+	{
+		$loader = new XmlFile(__DIR__ . '/sample.xml');
+
+		$this->assertEmpty($loader->get(0, '/population'));
+		$this->assertEmpty($loader->get('', '/population'));
+		$this->assertEmpty($loader->get('GET', '/population'));
+	}
+
+	public function testGetUnknownPath()
+	{
+		$loader = new XmlFile(__DIR__ . '/sample.xml');
+
+		$this->assertEmpty($loader->get(View::METHOD_GET | View::TYPE_REQUEST, null));
+		$this->assertEmpty($loader->get(View::METHOD_GET | View::TYPE_REQUEST, '/foo'));
+	}
+
 }
