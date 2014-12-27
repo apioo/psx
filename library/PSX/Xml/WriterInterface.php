@@ -42,13 +42,6 @@ interface WriterInterface
 	public function close();
 
 	/**
-	 * Should send an appropriated content type header and output the xml
-	 *
-	 * @return void
-	 */
-	public function output();
-
-	/**
 	 * Returns the xml as string. In most cases this method calls the close()
 	 * method, ends the document and returns the result as string
 	 *

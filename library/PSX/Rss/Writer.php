@@ -189,13 +189,6 @@ class Writer implements WriterInterface
 		$this->writer->endElement();
 	}
 
-	public function output()
-	{
-		header('Content-Type: ' . self::$mime);
-
-		echo $this->toString();
-	}
-
 	public function toString()
 	{
 		$this->close();
@@ -224,6 +217,6 @@ class Writer implements WriterInterface
 
 	public static function link($title, $href)
 	{
-		return '<link rel="alternate" type="' . self::$mime . '" title="' . $title . '" href="' . $href . '" />';
+		return '<link rel="alternate" type="' . self::$mime . '" title="' . htmlspecialchars($title) . '" href="' . htmlspecialchars($href) . '" />';
 	}
 }

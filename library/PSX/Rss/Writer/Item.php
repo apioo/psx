@@ -127,13 +127,6 @@ class Item implements WriterInterface
 		$this->writer->endElement();
 	}
 
-	public function output()
-	{
-		header('Content-Type: ' . self::$mime);
-
-		echo $this->toString();
-	}
-
 	public function toString()
 	{
 		$this->close();

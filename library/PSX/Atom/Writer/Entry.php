@@ -26,6 +26,7 @@ namespace PSX\Atom\Writer;
 use DateTime;
 use PSX\Atom\Writer as Atom;
 use PSX\Data\RecordInterface;
+use PSX\Data\Reader\Xml as XmlReader;
 use PSX\Xml\Writer as Xml;
 use PSX\Xml\WriterInterface;
 use XMLWriter;
@@ -82,43 +83,45 @@ class Entry implements WriterInterface
 		{
 			switch($type)
 			{
-				case 'application/xml':
-
-					$this->writer->writeAttribute('type', $type);
-
-					if($content instanceof RecordInterface)
-					{
-						$info = $content->getRecordInfo();
-
-						$xml = new Xml($this->writer);
-						$xml->setRecord($info->getName(), $info->getData());
-						$xml->close();
-					}
-					else
-					{
-						$this->writer->writeRaw($content);
-					}
-
-					break;
-
 				case 'text':
 				case 'html':
 
 					$this->writer->writeAttribute('type', $type);
 					$this->writer->text($content);
-
 					break;
 
 				case 'xhtml':
 
 					$this->writer->writeAttribute('type', $type);
 					$this->writer->writeRaw($content);
-
 					break;
 
 				default:
 
-					$this->writer->text($content);
+					if(!empty($type))
+					{
+						$this->writer->writeAttribute('type', $type);
+					}
+
+					if(XmlReader::isXmlMediaContentType($type))
+					{
+						if($content instanceof RecordInterface)
+						{
+							$info = $content->getRecordInfo();
+
+							$xml = new Xml($this->writer);
+							$xml->setRecord($info->getName(), $info->getData());
+							$xml->close();
+						}
+						else
+						{
+							$this->writer->writeRaw($content);
+						}
+					}
+					else
+					{
+						$this->writer->text($content);
+					}
 
 					break;
 			}
@@ -126,6 +129,11 @@ class Entry implements WriterInterface
 		else
 		{
 			$this->writer->writeAttribute('src', $src);
+
+			if(!empty($type))
+			{
+				$this->writer->writeAttribute('type', $type);
+			}
 		}
 
 		$this->writer->endElement();
@@ -178,13 +186,6 @@ class Entry implements WriterInterface
 	public function close()
 	{
 		$this->writer->endElement();
-	}
-
-	public function output()
-	{
-		header('Content-Type: ' . Atom::$mime);
-
-		echo $this->toString();
 	}
 
 	public function toString()

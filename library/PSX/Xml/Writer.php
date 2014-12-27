@@ -60,13 +60,6 @@ class Writer implements WriterInterface
 	{
 	}
 
-	public function output()
-	{
-		header('Content-Type: ' . self::$mime);
-
-		echo $this->toString();
-	}
-
 	public function toString()
 	{
 		$this->writer->endDocument();

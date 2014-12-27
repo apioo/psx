@@ -55,6 +55,11 @@ class Xml extends ReaderAbstract
 
 	public function isContentTypeSupported($contentType)
 	{
+		return self::isXmlMediaContentType($contentType);
+	}
+
+	public static function isXmlMediaContentType($contentType)
+	{
 		return in_array($contentType, self::$mediaTypes) || substr($contentType, -4) == '+xml' || substr($contentType, -4) == '/xml';
 	}
 }
