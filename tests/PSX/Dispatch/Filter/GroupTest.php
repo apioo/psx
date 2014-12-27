@@ -23,6 +23,11 @@
 
 namespace PSX\Dispatch\Filter;
 
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use PSX\Dispatch\FilterChain;
+use PSX\Dispatch\FilterChainInterface;
+use PSX\Dispatch\FilterInterface;
 use PSX\Http\Request;
 use PSX\Http\Response;
 use PSX\Http\Stream\TempStream;
@@ -42,29 +47,37 @@ class GroupTest extends \PHPUnit_Framework_TestCase
 		$request  = new Request(new Url('http://localhost'), 'GET');
 		$response = new Response();
 
-		$filter = $this->getMockBuilder('PSX\Dispatch\FilterInterface')
-			->setMethods(array('handle'))
-			->getMock();
+		$subFilters[] = new DummyFilter(3);
+		$subFilters[] = new DummyFilter(4);
 
-		$filter->expects($this->once())
-			->method('handle')
-			->with($this->equalTo($request), $this->equalTo($response));
+		$filters[] = new DummyFilter(1);
+		$filters[] = new DummyFilter(2);
+		$filters[] = new Group($subFilters);
+		$filters[] = new DummyFilter(5);
+		$filters[] = new DummyFilter(6);
 
-		$group = new Group(array($filter));
-		$group->handle($request, $response, $this->getMockFilterChain($request, $response));
+		$filterChain = new FilterChain($filters);
+		$filterChain->handle($request, $response);
+
+		$this->assertEquals(array(1, 2, 3, 4, 5, 6), DummyFilter::$calls);
+	}
+}
+
+class DummyFilter implements FilterInterface
+{
+	public static $calls = array();
+
+	protected $id;
+
+	public function __construct($id)
+	{
+		$this->id = $id;
 	}
 
-	protected function getMockFilterChain($request, $response)
+	public function handle(RequestInterface $request, ResponseInterface $response, FilterChainInterface $filterChain)
 	{
-		$filterChain = $this->getMockBuilder('PSX\Dispatch\FilterChain')
-			->setConstructorArgs(array(array()))
-			->setMethods(array('handle'))
-			->getMock();
+		self::$calls[] = $this->id;
 
-		$filterChain->expects($this->once())
-			->method('handle')
-			->with($this->equalTo($request), $this->equalTo($response));
-
-		return $filterChain;
+		$filterChain->handle($request, $response);
 	}
 }

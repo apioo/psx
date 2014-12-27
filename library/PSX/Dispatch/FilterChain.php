@@ -37,10 +37,12 @@ use RuntimeException;
 class FilterChain implements FilterChainInterface
 {
 	protected $filters;
+	protected $filterChain;
 
-	public function __construct(array $filters)
+	public function __construct(array $filters, FilterChain $filterChain = null)
 	{
-		$this->filters = $filters;
+		$this->filters     = $filters;
+		$this->filterChain = $filterChain;
 	}
 
 	public function handle(RequestInterface $request, ResponseInterface $response)
@@ -49,6 +51,12 @@ class FilterChain implements FilterChainInterface
 
 		if($filter === null)
 		{
+			// if we have no filters check whether we have another filter chain
+			// which should be called next
+			if($this->filterChain !== null)
+			{
+				$this->filterChain->handle($request, $response, $this->filterChain);
+			}
 		}
 		else if($filter instanceof FilterInterface)
 		{

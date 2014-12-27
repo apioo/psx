@@ -25,6 +25,7 @@ namespace PSX\Dispatch\Filter;
 
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use PSX\Dispatch\FilterChain;
 use PSX\Dispatch\FilterChainInterface;
 use PSX\Dispatch\FilterInterface;
 
@@ -46,11 +47,7 @@ class Group implements FilterInterface
 
 	public function handle(RequestInterface $request, ResponseInterface $response, FilterChainInterface $filterChain)
 	{
-		foreach($this->filters as $filter)
-		{
-			$filter->handle($request, $response, $filterChain);
-		}
-
+		$filterChain = new FilterChain($this->filters, $filterChain);
 		$filterChain->handle($request, $response);
 	}
 }
