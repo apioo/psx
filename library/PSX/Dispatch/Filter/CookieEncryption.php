@@ -91,7 +91,7 @@ class CookieEncryption implements FilterInterface
 			$payload      = $this->serializeData($data);
 			$newSignature = $this->generateSignature($payload);
 
-			// set only a new cookie of the data has changed
+			// send only a new cookie if the data has changed
 			if($newSignature != $signature)
 			{
 				$response->addHeader('Set-Cookie', self::COOKIE_NAME . '=' . $payload . '.' . $newSignature);

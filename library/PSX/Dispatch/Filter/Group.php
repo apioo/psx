@@ -48,7 +48,7 @@ class Group implements FilterInterface
 	{
 		foreach($this->filters as $filter)
 		{
-			$filter->handle($request, $response);
+			$filter->handle($request, $response, $filterChain);
 		}
 
 		$filterChain->handle($request, $response);

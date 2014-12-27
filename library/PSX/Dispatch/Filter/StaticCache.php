@@ -142,9 +142,15 @@ class StaticCache implements FilterInterface
 	 */
 	protected function getCacheHeaders(ResponseInterface $response)
 	{
-		return array(
-			'Content-Type'  => $response->getHeader('Content-Type'),
+		$headers = array(
 			'Last-Modified' => date(DateTime::HTTP),
 		);
+
+		if($response->hasHeader('Content-Type'))
+		{
+			$headers['Content-Type'] = $response->getHeader('Content-Type');
+		}
+
+		return $headers;
 	}
 }

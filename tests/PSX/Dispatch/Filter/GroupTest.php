@@ -23,47 +23,48 @@
 
 namespace PSX\Dispatch\Filter;
 
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
-use PSX\Dispatch\FilterChainInterface;
-use PSX\Dispatch\FilterInterface;
-use PSX\Http\Exception\ForbiddenException;
+use PSX\Http\Request;
+use PSX\Http\Response;
+use PSX\Http\Stream\TempStream;
+use PSX\Url;
 
 /**
- * Filters an incomming request based on the request IP. Only IPs which are 
- * listed in the $allowedIps array can access the application. Note if the IP is
- * not available in the REMOTE_ADDR field of the environment variables (cli) the
- * request can access the application
+ * GroupTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class IpFirewall implements FilterInterface
+class GroupTest extends \PHPUnit_Framework_TestCase
 {
-	protected $allowedIps;
-
-	public function __construct(array $allowedIps)
+	public function testGroup()
 	{
-		$this->allowedIps = $allowedIps;
+		$request  = new Request(new Url('http://localhost'), 'GET');
+		$response = new Response();
+
+		$filter = $this->getMockBuilder('PSX\Dispatch\FilterInterface')
+			->setMethods(array('handle'))
+			->getMock();
+
+		$filter->expects($this->once())
+			->method('handle')
+			->with($this->equalTo($request), $this->equalTo($response));
+
+		$group = new Group(array($filter));
+		$group->handle($request, $response, $this->getMockFilterChain($request, $response));
 	}
 
-	public function handle(RequestInterface $request, ResponseInterface $response, FilterChainInterface $filterChain)
+	protected function getMockFilterChain($request, $response)
 	{
-		$ip = $this->getIp();
+		$filterChain = $this->getMockBuilder('PSX\Dispatch\FilterChain')
+			->setConstructorArgs(array(array()))
+			->setMethods(array('handle'))
+			->getMock();
 
-		if($ip === null || in_array($ip, $this->allowedIps))
-		{
-			$filterChain->handle($request, $response);
-		}
-		else
-		{
-			throw new ForbiddenException('Access not allowed');
-		}
-	}
+		$filterChain->expects($this->once())
+			->method('handle')
+			->with($this->equalTo($request), $this->equalTo($response));
 
-	protected function getIp()
-	{
-		return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
+		return $filterChain;
 	}
 }
