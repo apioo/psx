@@ -51,11 +51,10 @@ class ConditionTest extends \PHPUnit_Framework_TestCase
 
 	public function testConditionMultiple()
 	{
-		$con = new Condition();
-		$con->add('id', '=', '1');
+		$con = new Condition(array('id', '=', '1', 'OR'));
 		$con->add('id', '=', '2');
 
-		$this->assertEquals('WHERE id = ? AND id = ?', $con->getStatment());
+		$this->assertEquals('WHERE id = ? OR id = ?', $con->getStatment());
 		$this->assertEquals(array('1', '2'), $con->getValues());
 		$this->assertEquals(true, $con->hasCondition());
 
@@ -73,10 +72,30 @@ class ConditionTest extends \PHPUnit_Framework_TestCase
 	{
 		$con = new Condition();
 		$con->add('id', '=', '1');
+		$con->add('foo', 'IN', 'foo');
+		$con->add('foo', 'IN', array(1, 2));
 
-		$this->assertEquals('WHERE id = ?', $con->getStatment());
-		$this->assertEquals(array('1'), $con->getValues());
+		$this->assertEquals('WHERE id = ? AND foo IN (?) AND foo IN (?,?)', $con->getStatment());
+		$this->assertEquals(array('1', 'foo', 1, 2), $con->getValues());
 		$this->assertEquals(true, $con->hasCondition());
+	}
+
+	/**
+	 * @expectedException UnexpectedValueException
+	 */
+	public function testAddInvalidOperator()
+	{
+		$con = new Condition();
+		$con->add('id', 'foo', '1');
+	}
+
+	/**
+	 * @expectedException UnexpectedValueException
+	 */
+	public function testAddInvalidConjunction()
+	{
+		$con = new Condition();
+		$con->add('id', '=', '1', 'foo');
 	}
 
 	public function testCount()
@@ -117,6 +136,18 @@ class ConditionTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(2, count($con));
 	}
 
+	public function testRemoveInvalidColumn()
+	{
+		$con = new Condition();
+		$con->add('id', '=', '1');
+
+		$this->assertEquals(1, count($con));
+
+		$con->remove('title');
+
+		$this->assertEquals(1, count($con));
+	}
+
 	public function testRemoveAll()
 	{
 		$con = new Condition(array('id', '=', '1'));
@@ -137,14 +168,100 @@ class ConditionTest extends \PHPUnit_Framework_TestCase
 		$con = new Condition();
 		$con->add('id', '=', '1');
 
-		$this->assertEquals(array(array(
+		$this->assertEquals(array(
+			array(
+				Condition::COLUMN      => 'id',
+				Condition::OPERATOR    => '=',
+				Condition::VALUE       => '1',
+				Condition::CONJUNCTION => 'AND',
+				Condition::TYPE        => Condition::TYPE_SCALAR,
+			)
+		), $con->toArray());
+	}
 
-			Condition::COLUMN      => 'id',
-			Condition::OPERATOR    => '=',
-			Condition::VALUE       => '1',
-			Condition::CONJUNCTION => 'AND',
-			Condition::TYPE        => Condition::TYPE_SCALAR,
+	public function testGetStatment()
+	{
+		$con = Condition::fromCriteria(array(
+			'foo' => 'bar',
+			'bar' => array(1, 2),
+			'baz' => null,
+		));
 
-		)), $con->toArray());
+		$this->assertEquals('WHERE foo = ? AND bar IN (?,?) AND baz IS NULL', $con->getStatment());
+
+		// test buffer
+		$this->assertEquals('WHERE foo = ? AND bar IN (?,?) AND baz IS NULL', $con->getStatment());
+	}
+
+	public function testGetValues()
+	{
+		$con = Condition::fromCriteria(array(
+			'foo' => 'bar',
+			'bar' => array(1, 2),
+			'baz' => null,
+		));
+
+		$this->assertEquals(array('bar', 1, 2), $con->getValues());
+	}
+
+	public function testGetArray()
+	{
+		$criteria = array(
+			'foo' => 'bar',
+			'bar' => array(1, 2),
+			'baz' => null,
+		);
+
+		$con = Condition::fromCriteria($criteria);
+
+		// null converts to the string NULL
+		$criteria['baz'] = 'NULL';
+
+		$this->assertEquals($criteria, $con->getArray());
+	}
+
+	public function testToString()
+	{
+		$con = Condition::fromCriteria(array(
+			'foo' => 'bar',
+			'bar' => array(1, 2),
+			'baz' => null,
+		));
+
+		$this->assertEquals('c2f74e822ac583a9face16c2460574c4', $con->toString());
+		$this->assertEquals('c2f74e822ac583a9face16c2460574c4', (string) $con);
+	}
+
+	public function testFromCriteria()
+	{
+		$con = Condition::fromCriteria(array(
+			'foo' => 'bar',
+			'bar' => array(1, 2),
+			'baz' => null,
+		));
+
+		$this->assertEquals(array(
+			array(
+				Condition::COLUMN      => 'foo',
+				Condition::OPERATOR    => '=',
+				Condition::VALUE       => 'bar',
+				Condition::CONJUNCTION => 'AND',
+				Condition::TYPE        => Condition::TYPE_SCALAR,
+			),
+			array(
+				Condition::COLUMN      => 'bar',
+				Condition::OPERATOR    => 'IN',
+				Condition::VALUE       => array(1, 2),
+				Condition::CONJUNCTION => 'AND',
+				Condition::TYPE        => Condition::TYPE_IN,
+			),
+			array(
+				Condition::COLUMN      => 'baz',
+				Condition::OPERATOR    => 'IS',
+				Condition::VALUE       => 'NULL',
+				Condition::CONJUNCTION => 'AND',
+				Condition::TYPE        => Condition::TYPE_RAW,
+			),
+		), $con->toArray());
 	}
 }

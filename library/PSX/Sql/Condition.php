@@ -95,13 +95,11 @@ class Condition implements Countable
 		}
 
 		$this->values[] = array(
-
 			self::COLUMN      => $column,
 			self::OPERATOR    => $operator,
 			self::VALUE       => $value,
 			self::CONJUNCTION => $conjunction,
 			self::TYPE        => $type,
-
 		);
 
 		return $this;
@@ -263,7 +261,15 @@ class Condition implements Countable
 
 				case self::TYPE_IN:
 
-					$params+= $value[self::VALUE];
+					if(is_array($value[self::VALUE]))
+					{
+						$params = array_merge($params, $value[self::VALUE]);
+					}
+					else
+					{
+						$params[] = $value[self::VALUE];
+					}
+
 					break;
 
 				case self::TYPE_SCALAR:
