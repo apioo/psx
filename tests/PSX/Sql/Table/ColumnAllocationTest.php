@@ -23,42 +23,32 @@
 
 namespace PSX\Sql\Table;
 
-use UnexpectedValueException;
-
 /**
- * Some implementations needs to know the name of specific columns i.e. the sql 
- * cache handler needs to know the data or date column. This class contains
- * such informations
+ * ColumnAllocationTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class ColumnAllocation
+class ColumnAllocationTest extends \PHPUnit_Framework_TestCase
 {
-	protected $columns;
-
-	public function __construct(array $columns = array())
+	public function testAllocation()
 	{
-		$this->columns = $columns;
+		$allocation = new ColumnAllocation(array(
+			'bar' => 'foo',
+		));
+		$allocation->set('foo', 'bar');
+
+		$this->assertEquals('bar', $allocation->get('foo'));
+		$this->assertEquals('foo', $allocation->get('bar'));
 	}
 
-	public function set($key, $name)
+	/**
+	 * @expectedException UnexpectedValueException
+	 */
+	public function testAllocationInvalidColumn()
 	{
-		$this->columns[$key] = $name;
-	}
-
-	public function get($key)
-	{
-		$name = isset($this->columns[$key]) ? $this->columns[$key] : null;
-
-		if(!empty($name))
-		{
-			return $name;
-		}
-		else
-		{
-			throw new UnexpectedValueException('Unknown column name given');
-		}
+		$allocation = new ColumnAllocation();
+		$allocation->get('foo');
 	}
 }
