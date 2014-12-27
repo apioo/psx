@@ -44,8 +44,10 @@ class DefaultContainerTest extends \PHPUnit_Framework_TestCase
 
 		// console
 		$this->assertInstanceOf('Symfony\Component\Console\Application', $container->get('console'));
+		$this->assertInstanceOf('PSX\Console\ReaderInterface', $container->get('console_reader'));
 
 		// controller
+		$this->assertInstanceOf('PSX\Dispatch\ControllerFactoryInterface', $container->get('application_stack_factory'));
 		$this->assertInstanceOf('PSX\Dispatch\ControllerFactoryInterface', $container->get('controller_factory'));
 		$this->assertInstanceOf('PSX\Dispatch\SenderInterface', $container->get('dispatch_sender'));
 		$this->assertInstanceOf('PSX\Loader\LocationFinderInterface', $container->get('loader_location_finder'));
@@ -60,17 +62,32 @@ class DefaultContainerTest extends \PHPUnit_Framework_TestCase
 		// data
 		$this->assertInstanceOf('PSX\Data\ReaderFactory', $container->get('reader_factory'));
 		$this->assertInstanceOf('PSX\Data\WriterFactory', $container->get('writer_factory'));
+		$this->assertInstanceOf('PSX\Data\Transformer\TransformerManager', $container->get('transformer_manager'));
+		$this->assertInstanceOf('PSX\Data\Record\ImporterManager', $container->get('importer_manager'));
+		$this->assertInstanceOf('PSX\Data\Schema\SchemaManagerInterface', $container->get('schema_manager'));
+		$this->assertInstanceOf('PSX\Data\Schema\ValidatorInterface', $container->get('schema_validator'));
+		$this->assertInstanceOf('PSX\Data\Schema\Assimilator', $container->get('schema_assimilator'));
+		$this->assertInstanceOf('PSX\Data\Record\FactoryFactory', $container->get('record_factory_factory'));
+		$this->assertInstanceOf('PSX\Data\Importer', $container->get('importer'));
+		$this->assertInstanceOf('PSX\Data\Extractor', $container->get('extractor'));
+		$this->assertInstanceOf('PSX\Data\SerializerInterface', $container->get('serializer'));
 
-		// default		
+		// default
 		$this->assertInstanceOf('PSX\Base', $container->get('base'));
 		$this->assertInstanceOf('PSX\Config', $container->get('config'));
 		$this->assertInstanceOf('PSX\Http', $container->get('http'));
-		//$this->assertInstanceOf('PSX\Session', $container->get('session'));
-		//$this->assertInstanceOf('Doctrine\DBAL\Connection', $container->get('connection'));
-		//$this->assertInstanceOf('PSX\Sql\TableManager', $container->get('table_manager'));
+		$this->assertInstanceOf('PSX\Session', $container->get('session'));
+		
+		if(defined('PSX_CONNECTION') && PSX_CONNECTION === true)
+		{
+			$this->assertInstanceOf('Doctrine\DBAL\Connection', $container->get('connection'));
+			$this->assertInstanceOf('PSX\Sql\TableManager', $container->get('table_manager'));
+		}
+
 		$this->assertInstanceOf('PSX\TemplateInterface', $container->get('template'));
 		$this->assertInstanceOf('PSX\Validate', $container->get('validate'));
-		$this->assertInstanceOf('Symfony\Component\EventDispatcher\EventDispatcherInterface', $container->get('event_dispatcher'));
+		$this->assertInstanceOf('PSX\Dependency\ObjectBuilderInterface', $container->get('object_builder'));
+		$this->assertInstanceOf('Psr\Cache\CacheItemPoolInterface', $container->get('cache'));
 		$this->assertInstanceOf('Psr\Log\LoggerInterface', $container->get('logger'));
 
 		// event
