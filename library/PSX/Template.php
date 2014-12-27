@@ -24,7 +24,6 @@
 namespace PSX;
 
 use PSX\Data\RecordInterface;
-use PSX\Exception;
 use PSX\Template\ErrorException;
 use PSX\Util\CurveArray;
 use Symfony\Component\VarDumper\VarDumper;
@@ -190,7 +189,7 @@ HTML;
 
 		foreach($fields as $key => $value)
 		{
-			$html.= '<dt>' . $key . '</dt>';
+			$html.= '<dt>' . htmlspecialchars($key) . '</dt>';
 
 			if(is_array($value))
 			{
@@ -205,16 +204,23 @@ HTML;
 
 					foreach($value as $v)
 					{
-						$html.= '<li>' . $this->getHtml($v) . '</li>';
+						if(is_array($v))
+						{
+							$html.= '<li>' . $this->getHtml($v) . '</li>';
+						}
+						else
+						{
+							$html.= '<li>' . htmlspecialchars($v) . '</li>';
+						}
 					}
 
-					$html.= '</dd>';
 					$html.= '</ul>';
+					$html.= '</dd>';
 				}
 			}
 			else
 			{
-				$html.= '<dd class="scalar">' . $value . '</dd>';
+				$html.= '<dd class="scalar">' . htmlspecialchars($value) . '</dd>';
 			}
 		}
 
