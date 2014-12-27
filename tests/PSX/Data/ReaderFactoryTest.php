@@ -71,6 +71,7 @@ class ReaderFactoryTest extends \PHPUnit_Framework_TestCase
 	{
 		$this->assertInstanceOf('PSX\Data\Reader\Json', $this->readerFactory->getReaderByInstance('PSX\Data\Reader\Json'));
 		$this->assertInstanceOf('PSX\Data\Reader\Form', $this->readerFactory->getReaderByInstance('PSX\Data\Reader\Form'));
-		$this->assertInstanceOf('PSX\Data\Reader\Xml', $this->readerFactory->getReaderByInstance('PSX\Data\Reader\Xml'));		
+		$this->assertInstanceOf('PSX\Data\Reader\Xml', $this->readerFactory->getReaderByInstance('PSX\Data\Reader\Xml'));
+		$this->assertEquals(null, $this->readerFactory->getReaderByInstance('PSX\Data\Reader\Foo'));
 	}
 }
