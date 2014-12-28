@@ -128,7 +128,7 @@ abstract class HandlerTestCase extends \PHPUnit_Framework_TestCase
 
 	public function testPostRequestStream()
 	{
-		$file     = 'tests/PSX/Template/files/foo.tpl';
+		$file     = 'tests/PSX/Template/files/foo.htm';
 		$request  = new PostRequest(new Url(self::URL . '/post'), array('Content-Type' => 'text/plain', 'Content-Length' => filesize($file)), new TempStream(fopen($file, 'r+')));
 		$response = $this->http->request($request);
 
@@ -143,7 +143,7 @@ abstract class HandlerTestCase extends \PHPUnit_Framework_TestCase
 
 	public function testPostRequestStreamChunkedTransfer()
 	{
-		$file     = 'tests/PSX/Template/files/foo.tpl';
+		$file     = 'tests/PSX/Template/files/foo.htm';
 		$request  = new PostRequest(new Url(self::URL . '/post'), array('Content-Type' => 'text/plain', 'Transfer-Encoding' => 'chunked'), new TempStream(fopen($file, 'r+')));
 		$response = $this->http->request($request);
 
@@ -172,7 +172,7 @@ abstract class HandlerTestCase extends \PHPUnit_Framework_TestCase
 
 	public function testPutRequestStream()
 	{
-		$file     = 'tests/PSX/Template/files/foo.tpl';
+		$file     = 'tests/PSX/Template/files/foo.htm';
 		$request  = new PutRequest(new Url(self::URL . '/put'), array('Content-Type' => 'text/plain', 'Content-Length' => filesize($file)), new TempStream(fopen($file, 'r+')));
 		$response = $this->http->request($request);
 
@@ -201,7 +201,7 @@ abstract class HandlerTestCase extends \PHPUnit_Framework_TestCase
 
 	public function testDeleteRequestStream()
 	{
-		$file     = 'tests/PSX/Template/files/foo.tpl';
+		$file     = 'tests/PSX/Template/files/foo.htm';
 		$request  = new DeleteRequest(new Url(self::URL . '/delete'), array('Content-Type' => 'text/plain', 'Content-Length' => filesize($file)), new TempStream(fopen($file, 'r+')));
 		$response = $this->http->request($request);
 
