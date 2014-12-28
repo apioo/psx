@@ -118,7 +118,7 @@ class ArrayValidatorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException PSX\DisplayException
 	 */
 	public function testValidateEmptyData()
 	{

@@ -24,6 +24,7 @@
 namespace PSX\Validate;
 
 use InvalidArgumentException;
+use PSX\DisplayException;
 
 /**
  * ArrayValidator
@@ -43,7 +44,7 @@ class ArrayValidator extends ValidatorAbstract
 
 		if(empty($data))
 		{
-			throw new InvalidArgumentException('No valid data defined');
+			throw new DisplayException('No valid data defined');
 		}
 
 		$cleanData = array();
