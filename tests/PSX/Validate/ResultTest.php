@@ -30,13 +30,13 @@ use PSX\Validate;
 use PSX\Validate\Property;
 
 /**
- * ArrayValidatorTest
+ * ResultTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class ArrayValidatorTest extends \PHPUnit_Framework_TestCase
+class ResultTest extends \PHPUnit_Framework_TestCase
 {
 	public function testResult()
 	{
