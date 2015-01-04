@@ -73,7 +73,6 @@ class DefaultContainerTest extends \PHPUnit_Framework_TestCase
 		$this->assertInstanceOf('PSX\Data\SerializerInterface', $container->get('serializer'));
 
 		// default
-		$this->assertInstanceOf('PSX\Base', $container->get('base'));
 		$this->assertInstanceOf('PSX\Config', $container->get('config'));
 		$this->assertInstanceOf('PSX\Http', $container->get('http'));
 		$this->assertInstanceOf('PSX\Session', $container->get('session'));

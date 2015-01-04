@@ -57,14 +57,6 @@ class DefaultContainer extends Container
 	use Event;
 
 	/**
-	 * @return PSX\Base
-	 */
-	public function getBase()
-	{
-		return new Base($this->get('config'));
-	}
-
-	/**
 	 * @return PSX\Config
 	 */
 	public function getConfig()

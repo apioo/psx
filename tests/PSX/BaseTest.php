@@ -34,48 +34,9 @@ use PSX\Base;
  */
 class BaseTest extends \PHPUnit_Framework_TestCase
 {
-	private $base;
-
-	protected function setUp()
-	{
-		$this->base = getContainer()->get('base');
-	}
-
-	protected function tearDown()
-	{
-		unset($this->base);
-	}
-
-	public function testGetHost()
-	{
-		$this->assertEquals('127.0.0.1', $this->base->getHost());
-	}
-
-	public function testGetUrn()
-	{
-		$this->assertEquals('urn:psx:127.0.0.1:foo:bar', $this->base->getUrn('foo', 'bar'));
-	}
-
-	public function testGetTag()
-	{
-		$date = new DateTime('1986-10-09 00:00:00');
-		$specific = 'foo';
-
-		$this->assertEquals('tag:127.0.0.1,1986-10-09:foo', $this->base->getTag($date, $specific));
-	}
-
-	public function testGetUUID()
-	{
-		$this->assertEquals('31a897ea-a0f4-53c3-922a-a72d8bf9b7e1', $this->base->getUUID('foo'));
-	}
-
 	public function testGetVersion()
 	{
 		// test whether the version is an "PHP-standardized" version
 		$this->assertEquals(true, version_compare(Base::getVersion(), '0.0.1') > 0);
 	}
 }
-
-
-
-
