@@ -38,12 +38,8 @@ class UrnTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals('urn', $urn->getScheme());
 		$this->assertEquals('uuid:f81d4fae-7dec-11d0-a765-00a0c91e6bf6', $urn->getPath());
+		$this->assertEquals('uuid', $urn->getNid());
 		$this->assertEquals('f81d4fae-7dec-11d0-a765-00a0c91e6bf6', $urn->getNss());
-	}
-
-	public function testBuidUrn()
-	{
-		$this->assertEquals('urn:foo:bar', Urn::buildUrn(array('foo', 'bar')));
 	}
 
 	/**

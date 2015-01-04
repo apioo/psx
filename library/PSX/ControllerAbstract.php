@@ -247,7 +247,7 @@ abstract class ControllerAbstract implements ControllerInterface, ApplicationSta
 	{
 		if($source instanceof Url)
 		{
-			$url = $source->getUrl();
+			$url = $source->toString();
 		}
 		else if(filter_var($source, FILTER_VALIDATE_URL))
 		{
@@ -326,9 +326,9 @@ abstract class ControllerAbstract implements ControllerInterface, ApplicationSta
 	 */
 	protected function getParameter($key, $type = Validate::TYPE_STRING, array $filter = array(), $title = null, $required = true)
 	{
-		if($this->getUrl()->issetParam($key))
+		if($this->getUrl()->hasParameter($key))
 		{
-			return $this->validate->apply($this->getUrl()->getParam($key), $type, $filter, $title, $required);
+			return $this->validate->apply($this->getUrl()->getParameter($key), $type, $filter, $title, $required);
 		}
 		else
 		{
@@ -343,7 +343,7 @@ abstract class ControllerAbstract implements ControllerInterface, ApplicationSta
 	 */
 	protected function getParameters()
 	{
-		return $this->getUrl()->getParams();
+		return $this->getUrl()->getParameters();
 	}
 
 	/**
@@ -626,7 +626,7 @@ abstract class ControllerAbstract implements ControllerInterface, ApplicationSta
 	 */
 	private function getPreferredWriter()
 	{
-		$format = $this->request->getUrl()->getParam('format');
+		$format = $this->request->getUrl()->getParameter('format');
 
 		if(!empty($format))
 		{

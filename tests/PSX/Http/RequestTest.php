@@ -51,7 +51,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 		$httpRequest.= Http::$newLine;
 		$httpRequest.= 'foobar';
 
-		$this->assertEquals($httpRequest, (string) $request);
+		$this->assertEquals($httpRequest, $request->toString());
 	}
 
 	public function testFragmentEncoding()
@@ -64,6 +64,6 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 		$httpRequest.= 'content-type: text/html; charset=UTF-8' . Http::$newLine;
 		$httpRequest.= Http::$newLine;
 
-		$this->assertEquals($httpRequest, (string) $request);
+		$this->assertEquals($httpRequest, $request->toString());
 	}
 }

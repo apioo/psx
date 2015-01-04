@@ -26,7 +26,12 @@ namespace PSX;
 use InvalidArgumentException;
 
 /**
- * Url
+ * Represents an URL. A string is only an valid URL if it has an scheme and host
+ * part. If the URL is not valid an exception gets thrown. Also the query 
+ * parameters are parsed into an array. Note if you want display an URL you need 
+ * to escape the URL according to the context. I.e. to display the URL in an 
+ * HTML context it is nessacary to use htmlspecialchars since the URL could 
+ * contain an XSS vector
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
@@ -34,212 +39,106 @@ use InvalidArgumentException;
  */
 class Url extends Uri
 {
-	protected $host;
-	protected $port;
-	protected $user;
-	protected $pass;
+	protected $parameters = array();
 
-	public function __construct($url)
+	public function setQuery($query)
 	{
-		$this->parse($url);
-	}
+		parent::setQuery($query);
 
-	public function getHost()
-	{
-		return $this->host;
-	}
-
-	public function getPort()
-	{
-		return $this->port;
-	}
-
-	public function getUser()
-	{
-		return $this->user;
-	}
-
-	public function getPass()
-	{
-		return $this->pass;
-	}
-
-	public function setHost($host)
-	{
-		$this->host = $host;
+		if(!empty($this->query))
+		{
+			parse_str($this->query, $this->parameters);
+		}
 	}
 
 	public function setPort($port)
 	{
-		$this->port = $port;
+		$port = (int) $port;
+
+		if($port < 1 || $port > 0xFFFF)
+		{
+			throw new InvalidArgumentException('Invalid port range');
+		}
+
+		parent::setPort($port);
 	}
 
-	public function setUser($user)
+	public function hasParameter($name)
 	{
-		$this->user = $user;
+		return isset($this->parameters[$name]);
 	}
 
-	public function setPass($pass)
+	public function getParameter($name)
 	{
-		$this->pass = $pass;
+		return isset($this->parameters[$name]) ? $this->parameters[$name] : null;
 	}
 
-	public function getUrl()
+	public function setParameter($name, $value)
 	{
-		$url = $this->scheme . '://';
+		$this->parameters[$name] = $value;
 
-		if(!empty($this->user) && !empty($this->pass))
-		{
-			$url.= $this->user . ':' . $this->pass . '@';
-		}
-
-		if(!empty($this->host))
-		{
-			$url.= $this->host;
-		}
-		else
-		{
-			throw new Exception('No host set');
-		}
-
-		if(!empty($this->port) && $this->port != 80 && $this->port != 443)
-		{
-			$url.= ':' . $this->port;
-		}
-
-		if(!empty($this->path))
-		{
-			$url.= '/' . ltrim($this->path, '/');
-		}
-
-		if(!empty($this->query))
-		{
-			$url.= '?' . http_build_query($this->query, '', '&');
-		}
-
-		if(!empty($this->fragment))
-		{
-			$url.= '#' . $this->fragment;
-		}
-
-		return $url;
+		$this->_updateQuery();
 	}
 
-	public function getParams()
+	public function removeParameter($name)
 	{
-		return $this->query;
-	}
-
-	public function addParams(array $params)
-	{
-		foreach($params as $k => $v)
+		if(array_key_exists($name, $this->parameters))
 		{
-			$this->addParam($k, $v);
+			unset($this->parameters[$name]);
+
+			$this->_updateQuery();
 		}
 	}
 
-	public function getParam($key)
+	public function setParameters(array $parameters)
 	{
-		return isset($this->query[$key]) ? $this->query[$key] : null;
+		$this->parameters = $parameters;
+
+		$this->_updateQuery();
 	}
 
-	public function setParam($key, $value)
+	public function getParameters()
 	{
-		$this->query[$key] = $value;
+		return $this->parameters;
 	}
 
-	public function addParam($key, $value, $replace = false)
+	public function toString()
 	{
-		if($replace === false)
+		// remove port if known scheme
+		if($this->port == 80 && $this->scheme == 'http')
 		{
-			if(!isset($this->query[$key]))
-			{
-				$this->query[$key] = $value;
-			}
+			$this->port = null;
 		}
-		else
+		else if($this->port == 443 && $this->scheme == 'https')
 		{
-			$this->query[$key] = $value;
+			$this->port = null;
 		}
-	}
 
-	public function deleteParam($key)
-	{
-		if(isset($this->query[$key]))
-		{
-			unset($this->query[$key]);
-		}
-	}
-
-	public function issetParam($key)
-	{
-		return isset($this->query[$key]);
-	}
-
-	public function __toString()
-	{
-		return $this->getUrl();
+		return parent::toString();
 	}
 
 	protected function parse($url)
 	{
 		$url = (string) $url;
 
+		// append http scheme for urls starting with //
 		if(substr($url, 0, 2) == '//')
 		{
 			$url = 'http:' . $url;
 		}
 
-		// validate url format
-		if(filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED) === false)
+		parent::parse($url);
+
+		// we need at least an scheme and host
+		if(empty($this->scheme) || empty($this->host))
 		{
 			throw new InvalidArgumentException('Invalid url syntax');
 		}
+	}
 
-		$matches = parse_url($url);
-
-		$this->setScheme(isset($matches['scheme']) ? $matches['scheme'] : null);
-		$this->setHost(isset($matches['host']) ? $matches['host'] : null);
-		$this->setPort(isset($matches['port']) ? intval($matches['port']) : null);
-		$this->setUser(isset($matches['user']) ? $matches['user'] : null);
-		$this->setPass(isset($matches['pass']) ? $matches['pass'] : null);
-		$this->setPath(isset($matches['path']) ? $matches['path'] : null);
-		$this->setFragment(isset($matches['fragment']) ? $matches['fragment'] : null);
-
-		// build authority
-		$authority = '';
-
-		if($this->user !== null)
-		{
-			$authority.= $this->user;
-
-			if($this->pass !== null)
-			{
-				$authority.= ':' . $this->pass;
-			}
-
-			$authority.= '@';
-		}
-
-		$authority.= $this->host;
-
-		if($this->port !== null)
-		{
-			$authority.= ':' . $this->port;
-		}
-
-		$this->setAuthority($authority);
-
-		// parse params
-		$query      = isset($matches['query']) ? $matches['query'] : '';
-		$parameters = array();
-
-		if(!empty($query))
-		{
-			parse_str($query, $parameters);
-		}
-
-		$this->setQuery($parameters);
+	private function _updateQuery()
+	{
+		$this->query = http_build_query($this->parameters);
 	}
 
 	public static function encode($encode)
@@ -252,4 +151,3 @@ class Url extends Uri
 		return urldecode($decode);
 	}
 }
-

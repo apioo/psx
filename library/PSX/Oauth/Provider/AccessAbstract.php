@@ -73,7 +73,7 @@ abstract class AccessAbstract extends ApiAbstract
 
 			$method = $this->request->getMethod();
 			$url    = $this->request->getUrl();
-			$params = array_merge($request->getRecordInfo()->getData(), $this->request->getUrl()->getParams());
+			$params = array_merge($request->getRecordInfo()->getData(), $this->request->getUrl()->getParameters());
 
 			$baseString = Oauth::buildBasestring($method, $url, $params);
 

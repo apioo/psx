@@ -43,16 +43,16 @@ abstract class CallbackAbstract extends ApiAbstract
 
 		try
 		{
-			$error = $this->request->getUrl()->getParam('error');
+			$error = $this->request->getUrl()->getParameter('error');
 
 			// error detection
 			if(!empty($error))
 			{
-				AuthorizationAbstract::throwErrorException($this->request->getUrl()->getParams());
+				AuthorizationAbstract::throwErrorException($this->request->getUrl()->getParameters());
 			}
 
-			$code  = $this->request->getUrl()->getParam('code');
-			$state = $this->request->getUrl()->getParam('state');
+			$code  = $this->request->getUrl()->getParameter('code');
+			$state = $this->request->getUrl()->getParameter('state');
 
 			if(empty($code))
 			{

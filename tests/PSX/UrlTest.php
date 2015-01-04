@@ -37,13 +37,25 @@ class UrlTest extends \PHPUnit_Framework_TestCase
 		$url = new Url('http://benutzername:passwort@hostname:8080/pfad?argument=wert#textanker');
 
 		$this->assertEquals('http', $url->getScheme());
-		$this->assertEquals('benutzername', $url->getUser());
-		$this->assertEquals('passwort', $url->getPass());
+		$this->assertEquals('benutzername:passwort', $url->getUserInfo());
 		$this->assertEquals('hostname', $url->getHost());
 		$this->assertEquals('8080', $url->getPort());
 		$this->assertEquals('/pfad', $url->getPath());
-		$this->assertEquals(array('argument' => 'wert'), $url->getParams());
+		$this->assertEquals(array('argument' => 'wert'), $url->getParameters());
 		$this->assertEquals('textanker', $url->getFragment());
+	}
+
+	public function testUrlIpv6()
+	{
+		$url = new Url('http://[FEDC:BA98:7654:3210:FEDC:BA98:7654:3210]:80/index.html');
+
+		$this->assertEquals('http', $url->getScheme());
+		$this->assertEquals(null, $url->getUserInfo());
+		$this->assertEquals('[FEDC:BA98:7654:3210:FEDC:BA98:7654:3210]', $url->getHost());
+		$this->assertEquals(80, $url->getPort());
+		$this->assertEquals('/index.html', $url->getPath());
+		$this->assertEquals(array(), $url->getParameters());
+		$this->assertEquals(null, $url->getFragment());
 	}
 
 	/**
@@ -54,25 +66,76 @@ class UrlTest extends \PHPUnit_Framework_TestCase
 		new Url('foobar');
 	}
 
-	public function testToString()
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testInvalidUrlScheme()
 	{
-		$urls = array(
-			'http://www.yahoo.com',
-			'http://www.yahoo.com/',
-			'http://www.yahoo.com/foo/bar',
-			'http://www.yahoo.com?foo=bar&bar=foo',
-			'http://www.yahoo.com:8080',
-			'http://www.yahoo.com:8080/foo/bar',
-			'http://www.yahoo.com:8080?foo=bar&bar=foo',
-			'http://benutzername:passwort@hostname:8080/pfad?argument=wert#textanker',
-		);
+		new Url('foo!bar://foobar');
+	}
 
-		foreach($urls as $u)
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testInvalidUrlEmptyHost()
+	{
+		new Url('foo://');
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testInvalidUrlEmptyHostButPath()
+	{
+		new Url('foo:///foo');
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testInvalidUrlEmptyHostButQuery()
+	{
+		new Url('foo://?foo=bar');
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testInvalidUrlEmptyHostButFragment()
+	{
+		new Url('foo://#foo');
+	}
+
+	public function testSetPortValidRange()
+	{
+		$uri = new Url('http://www.yahoo.com/');
+
+		for($i = 0; $i < 20; $i++)
 		{
-			$url = new Url($u);
+			$port = rand(1, 0xFFFF);
 
-			$this->assertEquals($u, $url->__toString());
+			$uri->setPort($port);
+
+			$this->assertEquals('http://www.yahoo.com:' . $port . '/', $uri->__toString());
 		}
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testSetPortInvalidRangeMin()
+	{
+		$uri = new Url('http://www.yahoo.com/');
+		$uri->setPort(-1);
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testSetPortInvalidRangeMax()
+	{
+		$uri = new Url('http://www.yahoo.com/');
+		$uri->setPort(0xFFFF + 1);
 	}
 
 	public function testShortUrls()
@@ -82,65 +145,41 @@ class UrlTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('http://www.yahoo.com', $url->__toString());
 	}
 
-	public function testGetParams()
+	public function testGetParameters()
 	{
 		$url = new Url('http://foo.com?bar=foo&foo=bar');
 
-		$this->assertEquals(array('bar' => 'foo', 'foo' => 'bar'), $url->getParams());
+		$this->assertEquals(array('bar' => 'foo', 'foo' => 'bar'), $url->getParameters());
 	}
 
-	public function testAddParams()
-	{
-		$url = new Url('http://foo.com');
-		$url->addParams(array('bar' => 'foo', 'foo' => 'bar'));
-
-		$this->assertEquals(array('bar' => 'foo', 'foo' => 'bar'), $url->getParams());
-	}
-
-	public function testGetParam()
+	public function testGetParameter()
 	{
 		$url = new Url('http://foo.com?bar=foo&foo=bar');
 
-		$this->assertEquals('foo', $url->getParam('bar'));
+		$this->assertEquals('foo', $url->getParameter('bar'));
 	}
 
-	public function testSetParam()
+	public function testSetParameter()
 	{
 		$url = new Url('http://foo.com?bar=foo&foo=bar');
-		$url->setParam('bar', 'test');
+		$url->setParameter('bar', 'test');
 
-		$this->assertEquals('test', $url->getParam('bar'));
+		$this->assertEquals('test', $url->getParameter('bar'));
 	}
 
-	public function testAddParam()
+	public function testRemoveParameter()
 	{
 		$url = new Url('http://foo.com?bar=foo&foo=bar');
-		$url->addParam('bar', 'test');
+		$url->removeParameter('bar');
 
-		$this->assertEquals('foo', $url->getParam('bar'));
+		$this->assertEquals(null, $url->getParameter('bar'));
 	}
 
-	public function testAddParamReplace()
-	{
-		$url = new Url('http://foo.com?bar=foo&foo=bar');
-		$url->addParam('bar', 'test', true);
-
-		$this->assertEquals('test', $url->getParam('bar'));
-	}
-
-	public function testDeleteParam()
-	{
-		$url = new Url('http://foo.com?bar=foo&foo=bar');
-		$url->deleteParam('bar');
-
-		$this->assertEquals(null, $url->getParam('bar'));
-	}
-
-	public function testIssetParam()
+	public function testHasParameter()
 	{
 		$url = new Url('http://foo.com?bar=foo&foo=bar');
 
-		$this->assertTrue($url->issetParam('bar'));
+		$this->assertTrue($url->hasParameter('bar'));
 	}
 
 	public function testUrlWithoutFile()
@@ -148,12 +187,24 @@ class UrlTest extends \PHPUnit_Framework_TestCase
 		$url = new Url('http://127.0.0.1/projects/foo/bar/?project=symfony%2Fsymfony&source=1&destination=2');
 
 		$this->assertEquals('http', $url->getScheme());
-		$this->assertEquals(null, $url->getUser());
-		$this->assertEquals(null, $url->getPass());
+		$this->assertEquals(null, $url->getUserInfo());
 		$this->assertEquals('127.0.0.1', $url->getHost());
 		$this->assertEquals(null, $url->getPort());
 		$this->assertEquals('/projects/foo/bar/', $url->getPath());
-		$this->assertEquals(array('project' => 'symfony/symfony', 'source' => '1', 'destination' => '2'), $url->getParams());
+		$this->assertEquals(array('project' => 'symfony/symfony', 'source' => '1', 'destination' => '2'), $url->getParameters());
 		$this->assertEquals(null, $url->getFragment());
+	}
+
+	public function testUrlFragmentEncoding()
+	{
+		$url = new Url('http://127.0.0.1/foobar?bar=foo#!"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~');
+
+		$this->assertEquals('http', $url->getScheme());
+		$this->assertEquals(null, $url->getUserInfo());
+		$this->assertEquals('127.0.0.1', $url->getHost());
+		$this->assertEquals(null, $url->getPort());
+		$this->assertEquals('/foobar', $url->getPath());
+		$this->assertEquals(array('bar' => 'foo'), $url->getParameters());
+		$this->assertEquals('!"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~', $url->getFragment());
 	}
 }

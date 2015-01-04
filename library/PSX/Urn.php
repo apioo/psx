@@ -26,7 +26,9 @@ namespace PSX;
 use InvalidArgumentException;
 
 /**
- * Urn
+ * Represents an URN. This class exists mostly to express in your code that 
+ * you expect/return an URN. Also the value must have "urn" as scheme else an 
+ * exception gets thrown
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
@@ -35,84 +37,37 @@ use InvalidArgumentException;
  */
 class Urn extends Uri
 {
-	public function __construct($uri)
+	/**
+	 * Returns the NID (Namespace Identifier)
+	 *
+	 * @return string
+	 */
+	public function getNid()
 	{
-		$this->parse($uri);
+		return strstr($this->path, ':', true);
 	}
 
 	/**
-	 * Returns the NSS (namespace specific string). If the NSS has an known
-	 * format like i.e. uuid the specific value is returned.
+	 * Returns the NSS (Namespace Specific String)
 	 *
 	 * @return string
 	 */
 	public function getNss()
 	{
-		$parts  = explode(':', $this->getPath(), 2);
-		$nid    = isset($parts[0]) ? $parts[0] : '';
-		$nss    = isset($parts[1]) ? $parts[1] : '';
-
-		switch($nid)
-		{
-			case 'uuid':
-			case 'isbn':
-			case 'issn':
-
-				return $nss;
-				break;
-
-			default:
-
-				return $nid . ':' . $nss;
-				break;
-		}
-	}
-
-	public function getUrn()
-	{
-		$result = '';
-
-		if(!empty($this->scheme))
-		{
-			$result.= $this->scheme . ':';
-		}
-
-		$result.= $this->path;
-
-		return $result;
+		return substr(strstr($this->path, ':'), 1);
 	}
 
 	protected function parse($urn)
 	{
-		$urn = (string) $urn;
-		$urn = rawurldecode($urn);
-		$urn = strtolower($urn);
+		// URNs are case insensitive
+		$urn = strtolower((string) $urn);
 
-		$matches = array();
+		parent::parse($urn);
 
-		preg_match_all('!^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?!', $urn, $matches);
-
-		$this->setScheme(isset($matches[2][0]) ? $matches[2][0] : null);
-		$this->setAuthority(isset($matches[4][0]) ? $matches[4][0] : null);
-		$this->setPath(isset($matches[5][0]) ? $matches[5][0] : null);
-		$this->setQuery(isset($matches[7][0]) ? $matches[7][0] : null);
-		$this->setFragment(isset($matches[9][0]) ? $matches[9][0] : null);
-
-		if($this->scheme != 'urn')
+		// must have an urn scheme and path part
+		if($this->scheme != 'urn' || empty($this->path))
 		{
 			throw new InvalidArgumentException('Invalid urn syntax');
 		}
 	}
-
-	/**
-	 * Generates an urn from an array. Returns an string concatenated with
-	 * an colon ':'
-	 *
-	 * @return string
-	 */
-	public static function buildUrn(array $parts)
-	{
-		return 'urn:' . implode(':', $parts);
-	}
 }
-

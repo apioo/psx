@@ -194,7 +194,7 @@ class Http
 		{
 			$location = (string) $response->getHeader('Location');
 
-			if(!empty($location) && $location != $request->getUrl()->__toString())
+			if(!empty($location) && $location != $request->getUrl()->toString())
 			{
 				if($options->getMaxRedirects() > $count)
 				{

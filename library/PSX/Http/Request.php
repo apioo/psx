@@ -187,7 +187,7 @@ class Request extends Message implements RequestInterface
 	{
 		$path     = $this->getUrl()->getPath();
 		$path     = empty($path) ? '/' : $path;
-		$query    = $this->getUrl()->getQuery();
+		$query    = $this->getUrl()->getParameters();
 		$fragment = $this->getUrl()->getFragment();
 
 		$encodedChars = array('%2F', '%3A', '%40', '%7E', '%21', '%24', '%26', '%5C', '%28', '%29', '%2A', '%2B', '%2C', '%3B', '%3D');

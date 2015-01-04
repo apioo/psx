@@ -87,7 +87,7 @@ class Oauth
 
 		// build the base string
 		$requestMethod = 'POST';
-		$params        = array_merge($values, $url->getParams());
+		$params        = array_merge($values, $url->getParameters());
 		$baseString    = self::buildBasestring($requestMethod, $url, $params);
 
 		// get the signature object
@@ -165,7 +165,7 @@ class Oauth
 
 		// build the base string
 		$requestMethod = 'POST';
-		$params        = array_merge($values, $url->getParams());
+		$params        = array_merge($values, $url->getParameters());
 		$baseString    = self::buildBasestring($requestMethod, $url, $params);
 
 		// get the signature object
@@ -222,7 +222,7 @@ class Oauth
 		);
 
 		// build the base string
-		$params = array_merge($values, $url->getParams());
+		$params = array_merge($values, $url->getParameters());
 
 		if($requestMethod == 'POST' && !empty($post))
 		{

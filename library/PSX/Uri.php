@@ -24,7 +24,13 @@
 namespace PSX;
 
 /**
- * Uri
+ * Represents an URI. Provides getters and settes to modify parts of the URI.
+ * The class tries to parse the given string into the URI specific components:
+ *
+ *   foo://example.com:8042/over/there?name=ferret#nose
+ *   \_/   \______________/\_________/ \_________/ \__/
+ *    |           |            |            |        |
+ * scheme     authority       path        query   fragment
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
@@ -33,11 +39,20 @@ namespace PSX;
  */
 class Uri
 {
+	const PATTERN_SCHEME     = 'A-z0-9\+\-\.';
+	const PATTERN_UNRESERVED = 'A-z0-9\-\.\_\~';
+	const PATTERN_GEN_DELIMS = '\:\/\?\#\[\]\@';
+	const PATTERN_SUB_DELIMS = '\!\$\&\\\'\(\)\*\+\,\;\=';
+
 	protected $scheme;
 	protected $authority;
 	protected $path;
 	protected $query;
 	protected $fragment;
+
+	protected $userInfo;
+	protected $host;
+	protected $port;
 
 	public function __construct($uri)
 	{
@@ -49,9 +64,77 @@ class Uri
 		return $this->scheme;
 	}
 
+	public function setScheme($scheme)
+	{
+		if(!preg_match('/^[' . self::PATTERN_SCHEME . ']+$/', $scheme))
+		{
+			throw new \InvalidArgumentException('Scheme contains invalid characters');
+		}
+
+		$this->scheme = $scheme;
+	}
+
 	public function getAuthority()
 	{
 		return $this->authority;
+	}
+
+	public function setAuthority($authority)
+	{
+		$this->authority = $authority;
+
+		list($userInfo, $host, $port) = $this->_splitAuthority($authority);
+
+		if(!empty($userInfo))
+		{
+			$this->setUserInfo($userInfo);
+		}
+
+		if(!empty($host))
+		{
+			$this->setHost($host);
+		}
+
+		if(!empty($port))
+		{
+			$this->setPort($port);
+		}
+	}
+
+	public function getUserInfo()
+	{
+		return $this->userInfo;
+	}
+
+	public function setUserInfo($userInfo)
+	{
+		$this->userInfo = $userInfo;
+
+		$this->_updateAuthority();
+	}
+
+	public function getHost()
+	{
+		return $this->host;
+	}
+
+	public function setHost($host)
+	{
+		$this->host = $host;
+
+		$this->_updateAuthority();
+	}
+
+	public function getPort()
+	{
+		return $this->port;
+	}
+
+	public function setPort($port)
+	{
+		$this->port = $port;
+
+		$this->_updateAuthority();
 	}
 
 	public function getPath()
@@ -59,29 +142,14 @@ class Uri
 		return $this->path;
 	}
 
-	public function getQuery()
-	{
-		return $this->query;
-	}
-
-	public function getFragment()
-	{
-		return $this->fragment;
-	}
-
-	public function setScheme($scheme)
-	{
-		$this->scheme = $scheme;
-	}
-
-	public function setAuthority($authority)
-	{
-		$this->authority = $authority;
-	}
-
 	public function setPath($path)
 	{
 		$this->path = $path;
+	}
+
+	public function getQuery()
+	{
+		return $this->query;
 	}
 
 	public function setQuery($query)
@@ -89,12 +157,28 @@ class Uri
 		$this->query = $query;
 	}
 
+	public function getFragment()
+	{
+		return $this->fragment;
+	}
+
 	public function setFragment($fragment)
 	{
 		$this->fragment = $fragment;
 	}
 
-	public function getUri()
+	public function isAbsolute()
+	{
+		return !empty($this->scheme);
+	}
+
+	/**
+	 * Returns the string representation of the URI
+	 *
+	 * @see http://tools.ietf.org/html/rfc3986#section-5.3
+	 * @return string
+	 */
+	public function toString()
 	{
 		$result = '';
 
@@ -123,147 +207,139 @@ class Uri
 		return $result;
 	}
 
-	public function __toString()
+	/**
+	 * Compares this URI against another URI and returns whether they are equal
+	 *
+	 * @return boolean
+	 */
+	public function equals($uri)
 	{
-		return $this->getUri();
+		if(is_string($uri))
+		{
+			$uri = new static($uri);
+		}
+		else if($uri instanceof Uri)
+		{
+		}
+		else
+		{
+			return false;
+		}
+
+		return strcasecmp($this->toString(), $uri->toString()) === 0;
 	}
 
 	/**
-	 * Parses the given uri into the specificed "Syntax Components"
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return $this->toString();
+	}
+
+	/**
+	 * Parses the given URI into the components
 	 *
+	 * @see http://tools.ietf.org/html/rfc3986#appendix-B
 	 * @param string $uri
 	 */
 	protected function parse($uri)
 	{
-		$uri = (string) $uri;
-		$uri = rawurldecode($uri);
-
+		$uri     = rawurldecode((string) $uri);
 		$matches = array();
 
 		preg_match_all('!^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?!', $uri, $matches);
 
-		$this->setScheme(isset($matches[2][0]) ? $matches[2][0] : null);
-		$this->setAuthority(isset($matches[4][0]) ? $matches[4][0] : null);
-		$this->setQuery(isset($matches[7][0]) ? $matches[7][0] : null);
-		$this->setFragment(isset($matches[9][0]) ? $matches[9][0] : null);
-		$this->setPath(isset($matches[5][0]) ? $matches[5][0] : null);
-	}
+		$scheme    = isset($matches[2][0]) ? $matches[2][0] : null;
+		$authority = isset($matches[4][0]) ? $matches[4][0] : null;
+		$path      = isset($matches[5][0]) ? $matches[5][0] : null;
+		$query     = isset($matches[7][0]) ? $matches[7][0] : null;
+		$fragment  = isset($matches[9][0]) ? $matches[9][0] : null;
 
-	/**
-	 * Generates an tag uri wich is often used in atom feeds as id
-	 *
-	 * @see http://www.ietf.org/rfc/rfc4151.txt
-	 * @return string
-	 */
-	public static function buildTag($authorityName, \DateTime $date, $specific, $fragment = null, $format = 'Y-m-d')
-	{
-		return 'tag:' . $authorityName . ',' . $date->format($format) . ':' . $specific . ($fragment !== null ? '#' . $fragment : '');
-	}
-
-	/**
-	 * @param string $relativePath
-	 * @return string
-	 */
-	public static function removeDotSegments($relativePath)
-	{
-		if(strpos($relativePath, '/') === false)
+		if(!empty($scheme))
 		{
-			return $relativePath;
+			$this->setScheme($scheme);
 		}
 
-		$parts = explode('/', $relativePath);
-		$path  = array();
-
-		foreach($parts as $part)
+		if(!empty($authority))
 		{
-			$part = trim($part);
+			$this->setAuthority($authority);
+		}
+		
+		if(!empty($path))
+		{
+			$this->setPath($path);
+		}
+		
+		if(!empty($query))
+		{
+			$this->setQuery($query);
+		}
+		
+		if(!empty($fragment))
+		{
+			$this->setFragment($fragment);
+		}
+	}
 
-			if(empty($part) || $part == '.')
+	private function _splitAuthority($authority)
+	{
+		if(empty($authority))
+		{
+			return array(null, null, null);
+		}
+
+		$userInfo = strstr($authority, '@', true);
+		$part     = $userInfo === false ? $authority : substr(strstr($authority, '@'), 1);
+
+		if($part[0] == '[')
+		{
+			$pos = strpos($part, ']');
+
+			if($pos !== false)
 			{
-			}
-			else if($part == '..')
-			{
-				array_pop($path);
+				$host = substr($part, 0, $pos + 1);
+				$port = substr($part, $pos + 2);
 			}
 			else
 			{
-				$path[] = $part;
+				return array($userInfo, $part, null);
 			}
-		}
-
-		if(!empty($path))
-		{
-			$absolutePath = '/' . implode('/', $path);
 		}
 		else
 		{
-			$absolutePath = '/';
-		}
+			$host = strstr($part, ':', true);
 
-		return $absolutePath;
-	}
-
-	/**
-	 * Percent encodes an value
-	 *
-	 * @param string $value
-	 * @param boolean $preventDoubleEncode
-	 * @return string
-	 */
-	public static function percentEncode($value, $preventDoubleEncode = true)
-	{
-		$len = strlen($value);
-		$val = '';
-
-		for($i = 0; $i < $len; $i++)
-		{
-			$j = ord($value[$i]);
-
-			if($j <= 0xFF)
+			if($host === false)
 			{
-				// check for double encoding
-				if($preventDoubleEncode)
-				{
-					if($j == 0x25 && $i < $len - 2)
-					{
-						$hex = strtoupper(substr($value, $i + 1, 2));
-
-						if(ctype_xdigit($hex))
-						{
-							$val.= '%' . $hex;
-
-							$i+= 2;
-							continue;
-						}
-					}
-				}
-
-				// escape characters
-				if(($j >= 0x41 && $j <= 0x5A) || // alpha
-					($j >= 0x61 && $j <= 0x7A) || // alpha
-					($j >= 0x30 && $j <= 0x39) || // digit
-					$j == 0x2D || // hyphen
-					$j == 0x2E || // period
-					$j == 0x5F || // underscore
-					$j == 0x7E) // tilde
-				{
-					$val.= $value[$i];
-				}
-				else
-				{
-					$hex = dechex($j);
-					$hex = $j <= 0xF ? '0' . $hex : $hex;
-
-					$val.= '%' . strtoupper($hex);
-				}
+				$host = $part;
+				$port = null;
 			}
 			else
 			{
-				$val.= $value[$i];
+				$port = substr(strstr($part, ':'), 1);
 			}
 		}
 
-		return $val;
+		return array($userInfo, $host, $port);
+	}
+
+	private function _updateAuthority()
+	{
+		$authority = '';
+
+		if(!empty($this->userInfo))
+		{
+			$authority.= $this->userInfo . '@';
+		}
+
+		$authority.= $this->host;
+
+		if(!empty($this->port))
+		{
+			$authority.= ':' . $this->port;
+		}
+
+		$this->authority = $authority;
 	}
 }
-

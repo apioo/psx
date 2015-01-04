@@ -88,7 +88,7 @@ class Curl implements HandlerInterface
 		$this->header = array();
 		$this->body   = fopen('php://temp', 'r+');
 
-		$handle = curl_init($request->getUrl()->__toString());
+		$handle = curl_init($request->getUrl()->toString());
 
 		curl_setopt($handle, CURLOPT_HEADER, false);
 		curl_setopt($handle, CURLOPT_RETURNTRANSFER, false);
