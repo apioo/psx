@@ -78,11 +78,14 @@ class UriResolver
 			{
 				if(empty($path))
 				{
-					$targetUri->setPath($baseUri->getPath());
-
 					if(empty($query))
 					{
+						$targetUri->setPath($baseUri->getPath());
 						$targetUri->setQuery($baseUri->getQuery());
+					}
+					else
+					{
+						$targetUri->setPath(self::merge($baseUri->getPath(), ''));
 					}
 				}
 				else

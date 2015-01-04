@@ -55,7 +55,7 @@ class UriResolverTest extends \PHPUnit_Framework_TestCase
 			['g/', 'http://a/b/c/g/'],
 			['/g', 'http://a/g'],
 			['//g', 'http://g'],
-			['?y', 'http://a/b/c/d;p?y'], // http://a/b/c/?y -- RFC unconform
+			['?y', 'http://a/b/c/?y'],
 			['g?y', 'http://a/b/c/g?y'],
 			['#s', 'http://a/b/c/d;p?q#s'],
 			['g#s', 'http://a/b/c/g#s'],
