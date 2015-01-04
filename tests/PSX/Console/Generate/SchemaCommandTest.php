@@ -35,6 +35,16 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 class SchemaCommandTest extends CommandTestCase
 {
+	protected function setUp()
+	{
+		parent::setUp();
+
+		if(!hasConnection())
+		{
+			$this->markTestSkipped('Database connection not available');
+		}
+	}
+
 	public function testCommand()
 	{
 		$command = $this->getMockBuilder('PSX\Console\Generate\SchemaCommand')
