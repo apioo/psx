@@ -25,7 +25,9 @@ namespace PSX\Http;
 
 use PSX\Exception;
 use PSX\Http\Stream\StringStream;
+use PSX\Uri;
 use PSX\Url;
+use PSX\Util\UriResolver;
 
 /**
  * RequestParser
@@ -38,7 +40,7 @@ class RequestParser extends ParserAbstract
 {
 	protected $baseUrl;
 
-	public function __construct($baseUrl, $mode = self::MODE_STRICT)
+	public function __construct(Url $baseUrl = null, $mode = self::MODE_STRICT)
 	{
 		parent::__construct($mode);
 
@@ -57,7 +59,17 @@ class RequestParser extends ParserAbstract
 
 		list($method, $path, $scheme) = $this->getStatus($content);
 
-		$request = new Request(new Url($this->baseUrl . '/' . ltrim($path, '/')), $method);
+		// resolve uri path
+		if($this->baseUrl !== null)
+		{
+			$path = UriResolver::resolve($this->baseUrl, new Uri($path));
+		}
+		else
+		{
+			$path = new Uri($path);
+		}
+
+		$request = new Request($path, $method);
 		$request->setProtocolVersion($scheme);
 
 		list($header, $body) = $this->splitMessage($content);
