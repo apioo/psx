@@ -60,7 +60,7 @@ Connection: keep-alive
 foobar
 TEXT;
 
-			return Response::convert($response, ResponseParser::MODE_LOOSE)->toString();
+			return Response::parse($response, ResponseParser::MODE_LOOSE)->toString();
 
 		}));
 
@@ -95,7 +95,7 @@ Date: Sat, 04 Jan 2014 18:19:45 GMT
 foobar
 TEXT;
 
-			return Response::convert($response, ResponseParser::MODE_LOOSE)->toString();
+			return Response::parse($response, ResponseParser::MODE_LOOSE)->toString();
 
 		}));
 

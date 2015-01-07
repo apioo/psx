@@ -53,6 +53,7 @@ class Uri
 	protected $userInfo;
 	protected $host;
 	protected $port;
+	protected $parameters = array();
 
 	public function __construct($uri)
 	{
@@ -155,6 +156,11 @@ class Uri
 	public function setQuery($query)
 	{
 		$this->query = $query;
+
+		if(!empty($this->query))
+		{
+			parse_str($this->query, $this->parameters);
+		}
 	}
 
 	public function getFragment()
@@ -165,6 +171,45 @@ class Uri
 	public function setFragment($fragment)
 	{
 		$this->fragment = $fragment;
+	}
+
+	public function hasParameter($name)
+	{
+		return isset($this->parameters[$name]);
+	}
+
+	public function getParameter($name)
+	{
+		return isset($this->parameters[$name]) ? $this->parameters[$name] : null;
+	}
+
+	public function setParameter($name, $value)
+	{
+		$this->parameters[$name] = $value;
+
+		$this->_updateQuery();
+	}
+
+	public function removeParameter($name)
+	{
+		if(array_key_exists($name, $this->parameters))
+		{
+			unset($this->parameters[$name]);
+
+			$this->_updateQuery();
+		}
+	}
+
+	public function setParameters(array $parameters)
+	{
+		$this->parameters = $parameters;
+
+		$this->_updateQuery();
+	}
+
+	public function getParameters()
+	{
+		return $this->parameters;
 	}
 
 	public function isAbsolute()
@@ -341,5 +386,10 @@ class Uri
 		}
 
 		$this->authority = $authority;
+	}
+
+	private function _updateQuery()
+	{
+		$this->query = http_build_query($this->parameters);
 	}
 }

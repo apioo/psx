@@ -39,18 +39,6 @@ use InvalidArgumentException;
  */
 class Url extends Uri
 {
-	protected $parameters = array();
-
-	public function setQuery($query)
-	{
-		parent::setQuery($query);
-
-		if(!empty($this->query))
-		{
-			parse_str($this->query, $this->parameters);
-		}
-	}
-
 	public function setPort($port)
 	{
 		$port = (int) $port;
@@ -61,45 +49,6 @@ class Url extends Uri
 		}
 
 		parent::setPort($port);
-	}
-
-	public function hasParameter($name)
-	{
-		return isset($this->parameters[$name]);
-	}
-
-	public function getParameter($name)
-	{
-		return isset($this->parameters[$name]) ? $this->parameters[$name] : null;
-	}
-
-	public function setParameter($name, $value)
-	{
-		$this->parameters[$name] = $value;
-
-		$this->_updateQuery();
-	}
-
-	public function removeParameter($name)
-	{
-		if(array_key_exists($name, $this->parameters))
-		{
-			unset($this->parameters[$name]);
-
-			$this->_updateQuery();
-		}
-	}
-
-	public function setParameters(array $parameters)
-	{
-		$this->parameters = $parameters;
-
-		$this->_updateQuery();
-	}
-
-	public function getParameters()
-	{
-		return $this->parameters;
 	}
 
 	public function toString()
@@ -121,7 +70,9 @@ class Url extends Uri
 	{
 		$url = (string) $url;
 
-		// append http scheme for urls starting with //
+		// append http scheme for urls starting with //. Normally // means that
+		// we use the scheme from the base url but in this context there is no
+		// base url available
 		if(substr($url, 0, 2) == '//')
 		{
 			$url = 'http:' . $url;
@@ -134,20 +85,5 @@ class Url extends Uri
 		{
 			throw new InvalidArgumentException('Invalid url syntax');
 		}
-	}
-
-	private function _updateQuery()
-	{
-		$this->query = http_build_query($this->parameters);
-	}
-
-	public static function encode($encode)
-	{
-		return urlencode($encode);
-	}
-
-	public static function decode($decode)
-	{
-		return urldecode($decode);
 	}
 }

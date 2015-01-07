@@ -71,7 +71,7 @@ Pragma: no-cache
 TEXT;
 			}
 
-			return Response::convert($response, ResponseParser::MODE_LOOSE)->toString();
+			return Response::parse($response, ResponseParser::MODE_LOOSE)->toString();
 
 		}));
 

@@ -76,7 +76,7 @@ Pragma: no-cache
 TEXT;
 			}
 
-			return Response::convert($response, ResponseParser::MODE_LOOSE)->toString();
+			return Response::parse($response, ResponseParser::MODE_LOOSE)->toString();
 
 		}));
 		$oauth = new AuthorizationCode($http, new Url('http://127.0.0.1/api'), getContainer()->get('importer'));
