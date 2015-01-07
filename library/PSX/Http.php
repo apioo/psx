@@ -114,10 +114,16 @@ class Http
 	 * Sends the request through the given handler and returns the response
 	 *
 	 * @param PSX\Http\Request $request
+	 * @param PSX\Http\Options $request
 	 * @return PSX\Http\Response
 	 */
 	public function request(Request $request, Options $options = null, $count = 0)
 	{
+		if(!$request->getUrl()->isAbsolute())
+		{
+			throw new InvalidArgumentException('Request url must be absolute');
+		}
+
 		// set cookie headers
 		if($this->cookieStore !== null)
 		{
