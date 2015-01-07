@@ -69,7 +69,7 @@ class BrowserCache implements FilterInterface
 		$this->sMaxAge = $sMaxAge;
 	}
 
-	public function setExpires(\DateTime $expries)
+	public function setExpires(\DateTime $expires)
 	{
 		$this->expires = $expires;
 	}
