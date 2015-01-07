@@ -30,6 +30,7 @@ use PSX\Dispatch;
 use PSX\Http\RequestParser;
 use PSX\Http\Response;
 use PSX\Http\Stream\TempStream;
+use PSX\Url;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -72,11 +73,11 @@ class ServeCommand extends Command
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$scheme = parse_url($this->config['psx_url'], PHP_URL_SCHEME);
-		$host   = parse_url($this->config['psx_url'], PHP_URL_HOST);
-
 		// request
-		$parser   = new RequestParser($scheme . '://' . $host, RequestParser::MODE_LOOSE);
+		$baseUrl  = new Url($this->config['psx_url']);
+		$baseUrl->setPath(null);
+
+		$parser   = new RequestParser($baseUrl, RequestParser::MODE_LOOSE);
 		$request  = $parser->parse($this->reader->read());
 
 		// response
