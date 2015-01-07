@@ -26,6 +26,7 @@ namespace PSX\Http;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\StreamableInterface;
 use PSX\Http;
+use PSX\Uri;
 use PSX\Url;
 
 /**
@@ -46,13 +47,13 @@ class Request extends Message implements RequestInterface
 	/**
 	 * __construct
 	 *
-	 * @param PSX\Url $url
+	 * @param PSX\Uri $url
 	 * @param string $method
 	 * @param array $header
 	 * @param string $body
 	 * @param string $scheme
 	 */
-	public function __construct(Url $url, $method, array $header = array(), $body = null, $scheme = 'HTTP/1.1')
+	public function __construct(Uri $url, $method, array $header = array(), $body = null, $scheme = 'HTTP/1.1')
 	{
 		parent::__construct($header, $body, $scheme);
 
@@ -65,20 +66,24 @@ class Request extends Message implements RequestInterface
 	 * Sets the request url and automatically adds an "Host" header with the url
 	 * host
 	 *
-	 * @param PSX\Url $url
+	 * @param PSX\Uri $url
 	 * @return void
 	 */
 	public function setUrl($url)
 	{
-		$this->url = $url instanceof Url ? $url : new Url($url);
+		$this->url = $url instanceof Uri ? $url : new Uri($url);
 
-		$this->setHeader('Host', $this->url->getHost());
+		$host = $this->url->getHost();
+		if(!empty($host))
+		{
+			$this->setHeader('Host', $host);
+		}
 	}
 
 	/**
 	 * Returns the request url
 	 *
-	 * @return PSX\Url
+	 * @return PSX\Uri
 	 */
 	public function getUrl()
 	{
@@ -214,5 +219,20 @@ class Request extends Message implements RequestInterface
 	public function __toString()
 	{
 		return $this->toString();
+	}
+
+	/**
+	 * Parses an raw http request into an PSX\Http\Request object. Throws an
+	 * exception if the request has not an valid format
+	 *
+	 * @param string $content
+	 * @param PSX\Url $baseUrl
+	 * @return PSX\Http\Request
+	 */
+	public static function parse($content, Url $baseUrl = null, $mode = ParserAbstract::MODE_STRICT)
+	{
+		$parser = new RequestParser($baseUrl, $mode);
+
+		return $parser->parse($content);
 	}
 }

@@ -73,7 +73,7 @@ class Mock implements HandlerInterface
 			'method'  => $method,
 			'url'     => $url,
 			'handler' => $handler,
-		);;
+		);
 	}
 
 	public function request(Request $request, Options $options)
@@ -86,7 +86,7 @@ class Mock implements HandlerInterface
 			{
 				$response = $resource['handler']($request);
 
-				return Response::convert($response);
+				return Response::parse($response);
 			}
 		}
 

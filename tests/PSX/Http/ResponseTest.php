@@ -35,24 +35,6 @@ use PSX\Http\Stream\StringStream;
  */
 class ResponseTest extends \PHPUnit_Framework_TestCase
 {
-	public function testConvert()
-	{
-		$httpResponse = 'HTTP/1.1 200 OK' . Http::$newLine;
-		$httpResponse.= 'Content-type: text/html; charset=UTF-8' . Http::$newLine;
-		$httpResponse.= Http::$newLine;
-		$httpResponse.= 'foobar';
-
-		$response = Response::convert($httpResponse);
-
-		$this->assertEquals('HTTP/1.1', $response->getProtocolVersion());
-		$this->assertEquals(200, $response->getStatusCode());
-		$this->assertEquals('OK', $response->getReasonPhrase());
-		$this->assertEquals('foobar', $response->getBody());
-		$this->assertEquals('UTF-8', $response->getCharset());
-
-		$this->assertEquals('text/html; charset=UTF-8', (string) $response->getHeader('Content-Type'));
-	}
-
 	public function testGetCharset()
 	{
 		// normal charset
@@ -60,7 +42,7 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
 		$httpResponse.= 'Content-type: text/html; charset=UTF-8' . Http::$newLine;
 		$httpResponse.= Http::$newLine;
 
-		$response = Response::convert($httpResponse);
+		$response = Response::parse($httpResponse);
 
 		$this->assertEquals('UTF-8', $response->getCharset());
 
@@ -69,7 +51,7 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
 		$httpResponse.= 'Content-type: text/html; charset=utf-8' . Http::$newLine;
 		$httpResponse.= Http::$newLine;
 
-		$response = Response::convert($httpResponse);
+		$response = Response::parse($httpResponse);
 
 		$this->assertEquals('UTF-8', $response->getCharset());
 
@@ -78,7 +60,7 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
 		$httpResponse.= 'Content-type: text/html; charset=foo' . Http::$newLine;
 		$httpResponse.= Http::$newLine;
 
-		$response = Response::convert($httpResponse);
+		$response = Response::parse($httpResponse);
 
 		$this->assertEquals('FOO', $response->getCharset());
 
@@ -87,7 +69,7 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
 		$httpResponse.= 'Content-type: text/html' . Http::$newLine;
 		$httpResponse.= Http::$newLine;
 
-		$response = Response::convert($httpResponse);
+		$response = Response::parse($httpResponse);
 
 		$this->assertEquals(false, $response->getCharset());
 	}
@@ -99,7 +81,7 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
 		$httpResponse.= Http::$newLine;
 		$httpResponse.= chr(0xE2) . chr(0x82) . chr(0xAC);
 
-		$response = Response::convert($httpResponse);
+		$response = Response::parse($httpResponse);
 
 		$this->assertEquals('€', $response->getBodyAsString());
 		$this->assertEquals('EUR', $response->getBodyAsString('ISO-8859-1//TRANSLIT'));
@@ -120,5 +102,22 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
 		$httpResponse.= 'foobar';
 
 		$this->assertEquals($httpResponse, (string) $response);
+	}
+
+	public function testParse()
+	{
+		$httpResponse = 'HTTP/1.1 200 OK' . Http::$newLine;
+		$httpResponse.= 'Content-type: text/html; charset=UTF-8' . Http::$newLine;
+		$httpResponse.= Http::$newLine;
+		$httpResponse.= 'foobar';
+
+		$response = Response::parse($httpResponse);
+
+		$this->assertEquals('HTTP/1.1', $response->getProtocolVersion());
+		$this->assertEquals(200, $response->getStatusCode());
+		$this->assertEquals('OK', $response->getReasonPhrase());
+		$this->assertEquals('text/html; charset=UTF-8', (string) $response->getHeader('Content-Type'));
+		$this->assertEquals('foobar', $response->getBody());
+		$this->assertEquals('UTF-8', $response->getCharset());
 	}
 }

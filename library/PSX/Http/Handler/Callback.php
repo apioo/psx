@@ -58,7 +58,7 @@ class Callback implements HandlerInterface
 			}
 			else
 			{
-				return Response::convert((string) $response);
+				return Response::parse((string) $response);
 			}
 		}
 		catch(\PHPUnit_Framework_Exception $e)

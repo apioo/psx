@@ -66,4 +66,20 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals($httpRequest, $request->toString());
 	}
+
+	public function testParse()
+	{
+		$httpRequest = 'GET /foo/bar?foo=bar#test HTTP/1.1' . Http::$newLine;
+		$httpRequest.= 'Content-type: text/html; charset=UTF-8' . Http::$newLine;
+		$httpRequest.= Http::$newLine;
+		$httpRequest.= 'foobar';
+
+		$request = Request::parse($httpRequest, new Url('http://psx.dev'));
+
+		$this->assertEquals('http://psx.dev/foo/bar?foo=bar#test', $request->getUrl()->toString());
+		$this->assertEquals('GET', $request->getMethod());
+		$this->assertEquals('HTTP/1.1', $request->getProtocolVersion());
+		$this->assertEquals('text/html; charset=UTF-8', (string) $request->getHeader('Content-Type'));
+		$this->assertEquals('foobar', $request->getBody());
+	}
 }

@@ -222,13 +222,13 @@ class Response extends Message implements ResponseInterface
 	}
 
 	/**
-	 * Converts an raw http response into an PSX\Http\Response object. Throws an
-	 * exception if the response has not an valid status line
+	 * Parses an raw http response into an PSX\Http\Response object. Throws an
+	 * exception if the response has not an valid format
 	 *
 	 * @param string $content
 	 * @return PSX\Http\Response
 	 */
-	public static function convert($content, $mode = ResponseParser::MODE_STRICT)
+	public static function parse($content, $mode = ParserAbstract::MODE_STRICT)
 	{
 		$parser = new ResponseParser($mode);
 
