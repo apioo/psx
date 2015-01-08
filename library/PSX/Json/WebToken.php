@@ -32,64 +32,76 @@ use PSX\Json;
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
- * @see     http://tools.ietf.org/html/draft-jones-json-web-token-10
+ * @see     https://tools.ietf.org/html/draft-ietf-oauth-json-web-token-32
  */
-class WebToken
+abstract class WebToken
 {
-	/**
-	 * Contains the base64 decoded header
-	 *
-	 * @var string
-	 */
-	protected $header;
+	const CLAIM_ISSUER     = 'iss';
+	const CLAIM_SUBJECT    = 'sub';
+	const CLAIM_AUDIENCE   = 'aud';
+	const CLAIM_EXPIRATION = 'exp';
+	const CLAIM_NOT_BEFORE = 'nbf';
+	const CLAIM_ISSUED_AT  = 'iat';
+	const CLAIM_JWT_ID     = 'jti';
+
+	const TYPE             = 'typ';
+	const CONTENT_TYPE     = 'cty';
 
 	/**
-	 * Contains the base64 decoded payload
-	 *
-	 * @var string
+	 * @var array
 	 */
-	protected $payload;
+	protected $headers;
 
 	/**
-	 * Contains the base64 encoded signature
-	 *
+	 * @var string
+	 */
+	protected $claim;
+
+	/**
 	 * @var string
 	 */
 	protected $signature;
 
-	/**
-	 * Contains the json decoded header as array
-	 *
-	 * @var array
-	 */
-	protected $parameter = array();
-
-	public function __construct($token = null)
+	public function __construct(array $headers = array(), $claim = null, $signature = null)
 	{
-		if($token !== null)
-		{
-			$this->parse($token);
-		}
+		$this->setHeaders($headers);
+		$this->setClaim($claim);
+		$this->setSignature($signature);
 	}
 
-	public function setHeader($header)
+	public function setHeaders(array $headers)
 	{
-		$this->header = $header;
+		$this->headers = $headers;
 	}
 
-	public function getHeader()
+	public function getHeaders()
 	{
-		return $this->header;
+		return $this->headers;
 	}
 
-	public function setPayload($payload)
+	public function setHeader($key, $value)
 	{
-		$this->payload = $payload;
+		$this->headers[$key] = $value;
+	}
+
+	public function getHeader($key)
+	{
+		return isset($this->headers[$key]) ? $this->headers[$key] : null;
+	}
+
+	public function removeHeader($key)
+	{
+		unset($this->headers[$key]);
+	}
+
+	public function setClaim($claim)
+	{
+		$this->claim = $claim;
 	}
 	
-	public function getPayload()
+	public function getClaim()
 	{
-		return $this->payload;
+		return $this->claim;
 	}
 
 	public function setSignature($signature)
@@ -102,48 +114,13 @@ class WebToken
 		return $this->signature;
 	}
 
-	public function setParameter(array $parameter)
-	{
-		$this->parameter = array_change_key_case($parameter);
-	}
-
-	public function getParameter($key)
-	{
-		return isset($this->parameter[$key]) ? $this->parameter[$key] : null;
-	}
-
-	public function addParameter($key, $value)
-	{
-		$this->parameter[$key] = $value;
-	}
-
-	public function removeParameter($key)
-	{
-		unset($this->parameter[$key]);
-	}
-
-	public function __call($name, $args)
-	{
-		$type = substr($name, 0, 3);
-		$key  = strtolower(substr($name, 3));
-
-		if($type == 'get')
-		{
-			return $this->getParameter($key);
-		}
-		else if($type == 'set')
-		{
-			return $this->addParameter($key, $args[0]);
-		}
-	}
-
-	protected function parse($token)
+	public static function parse($token)
 	{
 		$data      = (string) $token;
-		$parts     = explode('.', $data);
+		$parts     = explode('.', $data, 3);
 
 		$header    = isset($parts[0]) ? $parts[0] : null;
-		$payload   = isset($parts[1]) ? $parts[1] : null;
+		$claim     = isset($parts[1]) ? $parts[1] : null;
 		$signature = isset($parts[2]) ? $parts[2] : null;
 
 		if(empty($header))
@@ -151,9 +128,9 @@ class WebToken
 			throw new Exception('JWT header not available');
 		}
 
-		if(empty($payload))
+		if(empty($claim))
 		{
-			throw new Exception('JWT payload not available');
+			throw new Exception('JWT claim not available');
 		}
 
 		if(empty($signature))
@@ -161,29 +138,31 @@ class WebToken
 			throw new Exception('JWT signature not available');
 		}
 
-		// set header
-		$this->setHeader($this->base64Decode($header));
+		// get typ from header
+		$header = Json::decode(self::base64Decode($header));
+		$claim  = self::base64Decode($claim);
+		$type   = isset($header[self::TYPE]) ? strtoupper($header[self::TYPE]) : 'JWT';
 
-		// set payload
-		$this->setPayload($this->base64Decode($payload));
-
-		// set signature
-		$this->setSignature($signature);
-
-		// parse json header
-		$parameter = Json::decode($this->getHeader());
-
-		if(is_array($parameter))
+		switch($type)
 		{
-			$this->setParameter($parameter);
-		}
-		else
-		{
-			throw new Exception('Invalid header format');
+			case 'JWS':
+				return new WebSignature($header, $claim, $signature);
+				break;
+
+			case 'JWE':
+				// @todo not implemented yet
+				return null;
+				break;
+
+			case 'JWT':
+			case 'urn:ietf:params:oauth:token-type:jwt':
+			default:
+				return new WebSignature($header, $claim, $signature);
+				break;
 		}
 	}
 
-	protected function base64Encode($data)
+	public static function base64Encode($data)
 	{
 		$data = base64_encode($data);
 		$data = strtr($data, '+/', '-_');
@@ -192,7 +171,7 @@ class WebToken
 		return $data;
 	}
 
-	protected function base64Decode($data)
+	public static function base64Decode($data)
 	{
 		$data = strtr($data, '-_', '+/');
 
@@ -211,39 +190,5 @@ class WebToken
 		}
 
 		return base64_decode($data);
-	}
-
-	public static function factory($token)
-	{
-		$data   = (string) $token;
-		$parts  = explode('.', $data);
-		$header = isset($parts[0]) ? $parts[0] : null;
-
-		if(empty($header))
-		{
-			throw new Exception('JWT header not available');
-		}
-
-		// get typ from header
-		$header = Json::decode($header);
-		$type   = isset($header['typ']) ? $header['typ'] : 'JWT';
-
-		switch($type)
-		{
-			case 'JWS':
-				return new WebSignature($token);
-				break;
-
-			case 'JWE':
-				// @todo not implemented yet
-				return new WebToken($token);
-				break;
-
-			case 'JWT':
-			case 'urn:ietf:params:oauth:token-type:jwt':
-			default:
-				return new WebToken($token);
-				break;
-		}
 	}
 }

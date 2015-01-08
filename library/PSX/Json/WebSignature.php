@@ -23,6 +23,7 @@
 
 namespace PSX\Json;
 
+use PSX\Exception;
 use PSX\Json;
 
 /**
@@ -31,54 +32,25 @@ use PSX\Json;
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
- * @see     http://tools.ietf.org/html/draft-ietf-jose-json-web-signature-11
+ * @see     http://tools.ietf.org/html/draft-ietf-jose-json-web-signature-39
  */
 class WebSignature extends WebToken
 {
-	protected $reservedHeaders = array('alg', 'jku', 'jwk', 'x5u', 'x5t', 'x5c', 'kid', 'typ', 'cty', 'crit');
+	const ALGORITHM          = 'alg';
+	const JWK_SET_URL        = 'jku';
+	const JSON_WEB_KEY       = 'jwk';
+	const KEY_ID             = 'kid';
+	const X_509_URL          = 'x5u';
+	const X_509_CERT_CHAIN   = 'x5c';
+	const X_509_CERT_SHA_1   = 'x5t';
+	const X_509_CERT_SHA_256 = 'x5t#S256';
+	const CRITICAL           = 'crit';
 
 	protected $algos = array(
 		'HS256' => 'sha256',
 		'HS384' => 'sha384',
 		'HS512' => 'sha512',
 	);
-
-	public function setParameter(array $parameter)
-	{
-		// lower case all keys
-		$parameter = array_change_key_case($parameter);
-
-		// add extension keys from the crit header
-		$extension = isset($parameter['crit']) ? $parameter['crit'] : null;
-
-		if(!empty($extension) && is_array($extension))
-		{
-			$this->reservedHeaders = array_merge($this->reservedHeaders, $extension);
-		}
-
-		// remove all unreserved header fields
-		$parameter = array_intersect_key($parameter, array_flip($this->reservedHeaders));
-
-		parent::setParameter($parameter);
-	}
-
-	/**
-	 * Sets the algorithm for this websignature. Throws an exception if the 
-	 * algorithm is not supported
-	 *
-	 * @param string
-	 */
-	public function setAlg($alg)
-	{
-		if(isset($this->algos[$alg]))
-		{
-			$this->parameter['alg'] = $alg;
-		}
-		else
-		{
-			throw new Exception('Unsupported signature algorithm');
-		}
-	}
 
 	/**
 	 * Validates the given signature using the $key. Returns true if the 
@@ -89,37 +61,58 @@ class WebSignature extends WebToken
 	 */
 	public function validate($key)
 	{
+		if(empty($this->signature))
+		{
+			throw new Exception('No foreign signature available');
+		}
+
 		return strcmp($this->signature, $this->getEncodedSignature($key)) === 0;
 	}
 
 	/**
 	 * Returns this signature in the JWS Compact Serialization format
 	 *
+	 * @see http://tools.ietf.org/html/draft-ietf-jose-json-web-signature-39#section-3.1
 	 * @param string $key
 	 * @return string
 	 */
 	public function getCompact($key)
 	{
-		$this->setHeader(Json::encode($this->parameter));
-		$this->setSignature($this->getEncodedSignature($key));
+		$headers   = self::base64Encode(Json::encode($this->headers));
+		$claim     = self::base64Encode($this->claim);
+		$signature = $this->getEncodedSignature($key);
 
-		$header  = $this->base64Encode($this->header);
-		$payload = $this->base64Encode($this->payload);
+		return $headers . '.' . $claim . '.' . $signature;
+	}
 
-		return $header . '.' . $payload . '.' . $this->signature;
+	/**
+	 * Returns this signature in the JWS JSON Serialization format
+	 *
+	 * @see http://tools.ietf.org/html/draft-ietf-jose-json-web-signature-39#section-3.2
+	 * @param string $key
+	 * @return string
+	 */
+	public function getJson($key)
+	{
+		$signature = array();
+		$signature['protected'] = self::base64Encode(Json::encode($this->headers));
+		$signature['payload']   = self::base64Encode($this->claim);
+		$signature['signature'] = $this->getEncodedSignature($key);
+
+		return Json::encode($signature);
 	}
 
 	protected function getEncodedSignature($key)
 	{
-		$alg = $this->getAlg();
+		$alg = strtoupper($this->getHeader(self::ALGORITHM));
 
 		if(isset($this->algos[$alg]))
 		{
-			$header    = $this->base64Encode($this->header);
-			$payload   = $this->base64Encode($this->payload);
+			$header    = self::base64Encode(json_encode($this->headers));
+			$claim     = self::base64Encode($this->claim);
 
-			$data      = $header . '.' . $payload;
-			$signature = $this->base64Encode(hash_hmac($this->algos[$alg], $data, $key, true));
+			$data      = $header . '.' . $claim;
+			$signature = self::base64Encode(hash_hmac($this->algos[$alg], $data, $key, true));
 
 			return $signature;
 		}
