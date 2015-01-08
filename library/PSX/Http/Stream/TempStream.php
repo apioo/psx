@@ -179,11 +179,7 @@ class TempStream implements StreamableInterface
 	{
 		if($this->resource)
 		{
-			$content = stream_get_contents($this->resource, -1, 0);
-
-			$this->close();
-
-			return $content;
+			return stream_get_contents($this->resource, -1, 0);
 		}
 
 		return '';

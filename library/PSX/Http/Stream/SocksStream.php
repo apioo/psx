@@ -149,8 +149,6 @@ class SocksStream extends TempStream
 			$body = $this->getContents();
 		}
 
-		$this->close();
-
 		return $body;
 	}
 }
