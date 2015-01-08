@@ -119,4 +119,40 @@ class ResponseParserTest extends \PHPUnit_Framework_TestCase
 			$this->assertEquals('Google is built by a large team of engineers, designers, researchers, robots, and others in many different sites across the globe. It is updated continuously, and built with more tools and technologies than we can shake a stick at. If you\'d like to help us out, see google.com/jobs.', $response->getBody());
 		}
 	}
+
+	public function testBuildResponseFromHeader()
+	{
+		$response = ResponseParser::buildResponseFromHeader(array(
+			'HTTP/1.1 200 OK',
+			'Vary: Accept-Encoding',
+			'Content-Type: text/plain',
+			'Last-Modified: Mon, 02 Apr 2012 02:13:37 GMT',
+			'Date: Sat, 07 Dec 2013 13:27:33 GMT',
+			'Expires: Sat, 07 Dec 2013 13:27:33 GMT',
+			'Cache-Control: public, max-age=0',
+			'X-Content-Type-Options: nosniff',
+			'Server: sffe',
+			'X-XSS-Protection: 1; mode=block',
+			'Alternate-Protocol: 80:quic',
+			'Transfer-Encoding: chunked',
+		));
+
+		$this->assertInstanceOf('PSX\Http\Response', $response);
+		$this->assertEquals('HTTP/1.1', $response->getProtocolVersion());
+		$this->assertEquals(200, $response->getStatusCode());
+		$this->assertEquals('OK', $response->getReasonPhrase());
+		$this->assertEquals(array(
+			'content-type'           => ['text/plain'],
+			'date'                   => ['Sat, 07 Dec 2013 13:27:33 GMT'],
+			'vary'                   => ['Accept-Encoding'],
+			'last-modified'          => ['Mon, 02 Apr 2012 02:13:37 GMT'],
+			'expires'                => ['Sat, 07 Dec 2013 13:27:33 GMT'],
+			'cache-control'          => ['public, max-age=0'],
+			'x-content-type-options' => ['nosniff'],
+			'server'                 => ['sffe'],
+			'x-xss-protection'       => ['1; mode=block'],
+			'alternate-protocol'     => ['80:quic'],
+			'transfer-encoding'      => ['chunked'],
+		), $response->getHeaders());
+	}
 }
