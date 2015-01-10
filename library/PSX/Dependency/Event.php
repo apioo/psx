@@ -62,7 +62,7 @@ trait Event
 
 		$eventDispatcher->addListener(EventName::REQUEST_INCOMING, function(RequestIncomingEvent $event) use ($logger){
 
-			$logger->info('Incomming request ' . $event->getRequest()->getMethod() . ' ' . $event->getRequest()->getUrl());
+			$logger->info('Incoming request ' . $event->getRequest()->getMethod() . ' ' . $event->getRequest()->getUrl());
 
 		});
 
@@ -119,6 +119,5 @@ trait Event
 			}
 
 		});
-
 	}
 }
