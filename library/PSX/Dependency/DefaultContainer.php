@@ -148,7 +148,7 @@ class DefaultContainer extends Container
 	 */
 	public function getLogger()
 	{
-		$handler = new MonologHandler\ErrorLogHandler(MonologHandler\ErrorLogHandler::OPERATING_SYSTEM, Logger::DEBUG, true, true);
+		$handler = new MonologHandler\ErrorLogHandler(MonologHandler\ErrorLogHandler::OPERATING_SYSTEM, Logger::ERROR, true, true);
 		$handler->setFormatter(new ErrorFormatter());
 
 		$logger = new Logger('psx');
