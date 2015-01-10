@@ -51,6 +51,12 @@ trait ContainerTestCaseTrait
 			getContainer()->set($serviceId, null);
 		}
 
+		// set void logger
+		$logger = new Logger('psx');
+		$logger->pushHandler(new NullHandler());
+
+		getContainer()->set('logger', $logger);
+
 		// we replace the routing parser
 		getContainer()->set('routing_parser', new RoutingParser\ArrayCollection($this->getPaths()));
 
@@ -76,12 +82,6 @@ trait ContainerTestCaseTrait
 			}
 
 		});
-
-		// set void logger
-		$logger = new Logger('psx');
-		$logger->pushHandler(new NullHandler());
-
-		getContainer()->set('logger', $logger);
 	}
 
 	protected function tearDown()

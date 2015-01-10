@@ -98,12 +98,18 @@ trait Event
 
 		$eventDispatcher->addListener(EventName::EXCEPTION_THROWN, function(ExceptionThrownEvent $event) use ($logger){
 
-			$logger->error($event->getException()->getMessage(), array(
-				'file'  => $event->getException()->getFile(),
-				'line'  => $event->getException()->getLine(),
-				'trace' => $event->getException()->getTraceAsString(),
+			$exception = $event->getException();
+			$severity  = $exception instanceof \ErrorException ? $exception->getSeverity() : null;
+
+			$logger->error($exception->getMessage(), array(
+				'file'     => $exception->getFile(),
+				'line'     => $exception->getLine(),
+				'trace'    => $exception->getTraceAsString(),
+				'code'     => $exception->getCode(),
+				'severity' => $severity,
 			));
 
 		});
+
 	}
 }

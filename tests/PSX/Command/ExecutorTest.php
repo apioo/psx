@@ -29,6 +29,7 @@ use PSX\Command\OutputInterface;
 use PSX\Command\Output\Void;
 use PSX\Command\ParameterParser\Map;
 use PSX\Loader\Location;
+use PSX\Test\CommandTestCase;
 
 /**
  * ExecutorTest
@@ -37,7 +38,7 @@ use PSX\Loader\Location;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class ExecutorTest extends \PHPUnit_Framework_TestCase
+class ExecutorTest extends CommandTestCase
 {
 	public function testRun()
 	{

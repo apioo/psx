@@ -35,6 +35,7 @@ use PSX\Base;
 use PSX\Cache;
 use PSX\Config;
 use PSX\Http;
+use PSX\Log\ErrorFormatter;
 use PSX\Session;
 use PSX\Sql\Logger as SqlLogger;
 use PSX\Sql\TableManager;
@@ -147,8 +148,12 @@ class DefaultContainer extends Container
 	 */
 	public function getLogger()
 	{
+		$handler = new MonologHandler\ErrorLogHandler();
+		$handler->setLevel(Logger::ERROR);
+		$handler->setFormatter(new ErrorFormatter());
+
 		$logger = new Logger('psx');
-		$logger->pushHandler(new MonologHandler\NullHandler());
+		$logger->pushHandler($handler);
 
 		return $logger;
 	}
