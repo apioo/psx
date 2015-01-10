@@ -23,6 +23,7 @@
 
 namespace PSX\Dependency;
 
+use PSX\DisplayException;
 use PSX\Event as EventName;
 use PSX\Event\RequestIncomingEvent;
 use PSX\Event\RouteMatchedEvent;
@@ -100,14 +101,22 @@ trait Event
 
 			$exception = $event->getException();
 			$severity  = $exception instanceof \ErrorException ? $exception->getSeverity() : null;
-
-			$logger->error($exception->getMessage(), array(
+			$context   = array(
 				'file'     => $exception->getFile(),
 				'line'     => $exception->getLine(),
 				'trace'    => $exception->getTraceAsString(),
 				'code'     => $exception->getCode(),
 				'severity' => $severity,
-			));
+			);
+
+			if($exception instanceof DisplayException)
+			{
+				$logger->notice($exception->getMessage(), $context);
+			}
+			else
+			{
+				$logger->error($exception->getMessage(), $context);
+			}
 
 		});
 
