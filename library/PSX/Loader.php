@@ -26,6 +26,7 @@ namespace PSX;
 use InvalidArgumentException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Log\LoggerInterface;
 use PSX\Dispatch\FilterInterface;
 use PSX\Event\ControllerExecuteEvent;
 use PSX\Event\ControllerProcessedEvent;
@@ -54,17 +55,18 @@ class Loader implements LoaderInterface
 
 	protected $locationFinder;
 	protected $callbackResolver;
-	protected $recursiveLoading;
+	protected $eventDispatcher;
+	protected $logger;
 
+	protected $recursiveLoading = false;
 	protected $loaded = array();
 
-	public function __construct(LocationFinderInterface $locationFinder, CallbackResolverInterface $callbackResolver, EventDispatcherInterface $eventDispatcher)
+	public function __construct(LocationFinderInterface $locationFinder, CallbackResolverInterface $callbackResolver, EventDispatcherInterface $eventDispatcher, LoggerInterface $logger)
 	{
 		$this->locationFinder   = $locationFinder;
 		$this->callbackResolver = $callbackResolver;
 		$this->eventDispatcher  = $eventDispatcher;
-
-		$this->recursiveLoading = false;
+		$this->logger           = $logger;
 	}
 
 	public function setRecursiveLoading($recursiveLoading)
@@ -137,6 +139,7 @@ class Loader implements LoaderInterface
 			$this->eventDispatcher->dispatch(Event::CONTROLLER_EXECUTE, new ControllerExecuteEvent($controller, $request, $response));
 
 			$filterChain = new FilterChain($controller->getApplicationStack());
+			$filterChain->setLogger($this->logger);
 			$filterChain->handle($request, $response);
 
 			$this->eventDispatcher->dispatch(Event::CONTROLLER_PROCESSED, new ControllerProcessedEvent($controller, $request, $response));

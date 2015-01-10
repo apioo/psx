@@ -25,6 +25,8 @@ namespace PSX\Dispatch;
 
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerInterface;
 use RuntimeException;
 
 /**
@@ -34,15 +36,21 @@ use RuntimeException;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class FilterChain implements FilterChainInterface
+class FilterChain implements FilterChainInterface, LoggerAwareInterface
 {
 	protected $filters;
 	protected $filterChain;
+	protected $logger;
 
 	public function __construct(array $filters, FilterChain $filterChain = null)
 	{
 		$this->filters     = $filters;
 		$this->filterChain = $filterChain;
+	}
+
+	public function setLogger(LoggerInterface $logger)
+	{
+		$this->logger = $logger;
 	}
 
 	public function handle(RequestInterface $request, ResponseInterface $response)
@@ -60,6 +68,11 @@ class FilterChain implements FilterChainInterface
 		}
 		else if($filter instanceof FilterInterface)
 		{
+			if($this->logger !== null)
+			{
+				$this->logger->info('Filter execute ' . get_class($filter));
+			}
+
 			$filter->handle($request, $response, $this);
 		}
 		else if(is_callable($filter))
