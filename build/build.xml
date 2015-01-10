@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="psx" default="build-release" basedir="..">
+<project name="psx" default="build" basedir="..">
 	<description>PSX build script</description>
 
 	<property name="build" location="build/psx" />
@@ -23,6 +23,10 @@
 	</target>
 
 	<!-- removes all files wich are not needed in the release -->
+	<target name="clean">
+		<delete dir="${build}" />
+	</target>
+
 	<target name="clean-git">
 		<delete dir="${build}/.git" />
 		<delete dir="${build}/build" />
@@ -62,6 +66,8 @@
 		</exec>
 	</target>
 
+	<target name="build" depends="clean,clean-git,build-init,compress-release" />
+
 	<!-- docs -->
 	<target name="build-doc" depends="clean-doc,manual-doc,api-doc" />
 
@@ -92,18 +98,11 @@
 	</target>
 
 	<!-- compress -->
-	<target name="build-release" depends="build-init">
+	<target name="compress-release" depends="build-init">
 		<tar destfile="build/psx_${version}.tar" basedir="${build}" />
 		<gzip destfile="build/psx_${version}.tar.gz" src="build/psx_${version}.tar" />
 		<delete file="build/psx_${version}.tar" />
 		<zip destfile="build/psx_${version}.zip" basedir="${build}" />
 	</target>
-
-	<!-- delete build folder -->
-	<target name="clean">
-		<delete dir="${build}" />
-	</target>
-
-	<target name="build-all" depends="clean,build-phar,build-doc,clean-git,build-release" />
 
 </project>
