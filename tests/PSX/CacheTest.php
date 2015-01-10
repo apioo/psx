@@ -56,7 +56,7 @@ class CacheTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(false, $item->exists());
 		$this->assertEquals(null, $item->get());
 
-		// create an item which expires does not expire
+		// create an item which does not expire
 		$item->set('foobar');
 
 		$cache->save($item);
@@ -112,7 +112,7 @@ class CacheTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(false, $item->exists());
 		$this->assertEquals(null, $item->get());
 
-		// create an item which expires in 1 second
+		// create an item which expires in 2 seconds
 		$item->set('foobar', 2);
 
 		$cache->save($item);
