@@ -23,7 +23,8 @@
 
 namespace PSX;
 
-use ReflectionClass;
+use Monolog\Logger;
+use Monolog\Handler\NullHandler;
 use PSX\Dispatch\Filter\BrowserCache;
 use PSX\Event\RouteMatchedEvent;
 use PSX\Event\ControllerExecuteEvent;
@@ -36,6 +37,7 @@ use PSX\Loader\FilterController;
 use PSX\Loader\Location;
 use PSX\Loader\LocationFinder\CallbackMethod;
 use PSX\Url;
+use ReflectionClass;
 
 /**
  * LoaderTest
@@ -99,7 +101,12 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 		getContainer()->get('event_dispatcher')->addListener(Event::CONTROLLER_EXECUTE, array($controllerExecuteListener, 'on'));
 		getContainer()->get('event_dispatcher')->addListener(Event::CONTROLLER_PROCESSED, array($controllerProcessedListener, 'on'));
 
-		$loader   = new Loader($locationFinder, getContainer()->get('loader_callback_resolver'), getContainer()->get('event_dispatcher'));
+		$loader   = new Loader(
+			$locationFinder, 
+			getContainer()->get('loader_callback_resolver'), 
+			getContainer()->get('event_dispatcher'), 
+			new Logger('psx', [new NullHandler()])
+		);
 		$request  = new Request(new Url('http://127.0.0.1/foobar'), 'GET');
 		$response = new Response();
 		$module   = $loader->load($request, $response);
@@ -132,7 +139,12 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 
 		});
 
-		$loader   = new Loader($locationFinder, getContainer()->get('loader_callback_resolver'), getContainer()->get('event_dispatcher'));
+		$loader   = new Loader(
+			$locationFinder, 
+			getContainer()->get('loader_callback_resolver'), 
+			getContainer()->get('event_dispatcher'), 
+			new Logger('psx', [new NullHandler()])
+		);
 		$request  = new Request(new Url('http://127.0.0.1/foobar/detail/12'), 'GET');
 		$response = new Response();
 		$module   = $loader->load($request, $response);
@@ -162,7 +174,12 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 
 		});
 
-		$loader   = new Loader($locationFinder, getContainer()->get('loader_callback_resolver'), getContainer()->get('event_dispatcher'));
+		$loader   = new Loader(
+			$locationFinder, 
+			getContainer()->get('loader_callback_resolver'), 
+			getContainer()->get('event_dispatcher'), 
+			new Logger('psx', [new NullHandler()])
+		);
 		$request  = new Request(new Url('http://127.0.0.1/foobar'), 'GET');
 		$response = new Response();
 
@@ -186,7 +203,12 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 			->will($this->returnValue($callback));
 
 		$loader = $this->getMockBuilder('PSX\Loader')
-			->setConstructorArgs(array($locationFinder, $resolver, getContainer()->get('event_dispatcher')))
+			->setConstructorArgs(array(
+				$locationFinder, 
+				$resolver, 
+				getContainer()->get('event_dispatcher'), 
+				new Logger('psx', [new NullHandler()])
+			))
 			->setMethods(array('runControllerLifecycle'))
 			->getMock();
 
@@ -220,7 +242,12 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 			->will($this->returnValue($callback));
 
 		$loader = $this->getMockBuilder('PSX\Loader')
-			->setConstructorArgs(array($locationFinder, $resolver, getContainer()->get('event_dispatcher')))
+			->setConstructorArgs(array(
+				$locationFinder, 
+				$resolver, 
+				getContainer()->get('event_dispatcher'),
+				new Logger('psx', [new NullHandler()])
+			))
 			->setMethods(array('runControllerLifecycle'))
 			->getMock();
 
@@ -268,7 +295,12 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 			->method('resolve')
 			->will($this->returnValue($callback));
 
-		$loader = new Loader($locationFinder, $resolver, getContainer()->get('event_dispatcher'));
+		$loader = new Loader(
+			$locationFinder, 
+			$resolver, 
+			getContainer()->get('event_dispatcher'), 
+			new Logger('psx', [new NullHandler()])
+		);
 
 		$this->assertEquals($controller, $loader->load($request, $response));
 	}
@@ -298,7 +330,12 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 			->method('resolve')
 			->will($this->returnValue($callback));
 
-		$loader = new Loader($locationFinder, $resolver, getContainer()->get('event_dispatcher'));
+		$loader = new Loader(
+			$locationFinder, 
+			$resolver, 
+			getContainer()->get('event_dispatcher'),
+			new Logger('psx', [new NullHandler()])
+		);
 		$loader->load($request, $response);
 	}
 
@@ -333,7 +370,12 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 			->method('resolve')
 			->will($this->returnValue($callback));
 
-		$loader = new Loader($locationFinder, $resolver, getContainer()->get('event_dispatcher'));
+		$loader = new Loader(
+			$locationFinder, 
+			$resolver, 
+			getContainer()->get('event_dispatcher'),
+			new Logger('psx', [new NullHandler()])
+		);
 
 		$this->assertEquals($controller, $loader->load($request, $response));
 	}
@@ -363,7 +405,12 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 			->method('resolve')
 			->will($this->returnValue($callback));
 
-		$loader = new Loader($locationFinder, $resolver, getContainer()->get('event_dispatcher'));
+		$loader = new Loader(
+			$locationFinder, 
+			$resolver, 
+			getContainer()->get('event_dispatcher'),
+			new Logger('psx', [new NullHandler()])
+		);
 		$loader->load($request, $response);
 	}
 
@@ -385,7 +432,12 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 			->method('resolve')
 			->will($this->returnValue($callback));
 
-		$loader   = new Loader($locationFinder, $resolver, getContainer()->get('event_dispatcher'));
+		$loader   = new Loader(
+			$locationFinder, 
+			$resolver, 
+			getContainer()->get('event_dispatcher'),
+			new Logger('psx', [new NullHandler()])
+		);
 		$request  = new Request(new Url('http://127.0.0.1/foobar'), 'GET');
 		$response = new Response();
 
