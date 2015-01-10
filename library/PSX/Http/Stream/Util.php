@@ -35,8 +35,9 @@ use Psr\Http\Message\StreamableInterface;
 class Util
 {
 	/**
-	 * Converts an stream into an string. Note this copies the complete content
-	 * of the stream into the memory
+	 * Converts an stream into an string and returns the result also the 
+	 * position of the pointer will not change. Note this copies the complete 
+	 * content of the stream into the memory
 	 *
 	 * @param Psr\Http\Message\StreamableInterface $stream
 	 * @return string
