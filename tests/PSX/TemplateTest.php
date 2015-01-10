@@ -66,7 +66,7 @@ class TemplateTest extends \PHPUnit_Framework_TestCase
 
 		$content = $template->transform();
 
-		preg_match('/^<body>(.*)<\/body>$/ims', $content, $matches);
+		preg_match('/<body>(.*)<\/body>/ims', $content, $matches);
 
 		$this->assertArrayHasKey(1, $matches);
 		$this->assertXmlStringEqualsXmlString($this->getExpectedFallbackTemplate(), $matches[1]);
