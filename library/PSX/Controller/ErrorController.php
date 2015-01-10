@@ -42,24 +42,6 @@ class ErrorController extends ViewAbstract
 {
 	const CONTEXT_SIZE = 4;
 
-	/**
-	 * @Inject
-	 * @var Psr\Log\LoggerInterface
-	 */
-	protected $logger;
-
-	public function onLoad()
-	{
-		parent::onLoad();
-
-		$exception = $this->location->getParameter(Location::KEY_EXCEPTION);
-
-		if($exception instanceof \Exception)
-		{
-			$this->logger->error($exception->getMessage());
-		}
-	}
-
 	public function processResponse()
 	{
 		$exception = $this->location->getParameter(Location::KEY_EXCEPTION);
