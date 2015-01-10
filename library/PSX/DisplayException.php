@@ -25,8 +25,9 @@ namespace PSX;
 
 /**
  * All exceptions which inherit from this exception will be displayed to the
- * user in the live environment. That means that the exception message is used 
- * for all other exceptions an general error message is shown
+ * user also in the live environment. For all other exceptions we display an 
+ * general error message. Also these errors are logged with an notice and not
+ * error level
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
