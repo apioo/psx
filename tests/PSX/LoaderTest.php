@@ -37,7 +37,6 @@ use PSX\Loader\FilterController;
 use PSX\Loader\Location;
 use PSX\Loader\LocationFinder\CallbackMethod;
 use PSX\Url;
-use ReflectionClass;
 
 /**
  * LoaderTest
