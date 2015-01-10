@@ -1,4 +1,21 @@
 
+0.9.4
+* Improved JWT implementation
+* Removed unused methods from Base class which now contains only the getVersion 
+  method
+* Added rfc3986 compatbile URI resolver class 
+* Improved URI/URL/URN classes. Changed URL parameter getter/setter methods from 
+  getParam to getParameter etc.
+* Removed output method from xml writer and improved atom writer/entry
+* Added http cookie parser class
+* Added http stream util class to simplify working with streams
+* Added application stack interface
+* Updated dbal to version 2.5
+* Added various middleware filter implementations
+* Improved tests
+* Add CurveArray class to nest or flatten an array
+* Updated api doc controller template
+
 0.9.3
 * Added commands to generate boilerplate source code for controller, commands 
   and schema
