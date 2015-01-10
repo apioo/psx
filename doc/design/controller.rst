@@ -28,7 +28,7 @@ Usage
 
         public function doIndex()
         {
-            // returns the request url as PSX\Url
+            // returns the request url as PSX\Uri
             $this->getUrl();
 
             // returns an request header

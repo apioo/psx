@@ -19,7 +19,7 @@ release from github
 
     https://github.com/k42b3/psx/releases
 
-install the PSX sample project via composer
+or install the PSX sample project via composer
 
     php composer.phar create-project psx/sample .
 

@@ -152,7 +152,7 @@ Writing responses
 
 PSX uses a data writer conecpt to transform the data which was produced by the
 controller into an fitting format for the client. What content is served depends
-on the Accept header and the GET parameter format.
+on the Accept header or the GET parameter format.
 
 Available data writer
 ---------------------

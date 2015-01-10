@@ -1,7 +1,0 @@
-
-Build
-=====
-
-.. toctree::
-
-   build/api
