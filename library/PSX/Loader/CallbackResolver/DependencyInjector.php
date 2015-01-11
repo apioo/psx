@@ -65,6 +65,6 @@ class DependencyInjector implements CallbackResolverInterface
 
 		$controller = $this->factory->getController($className, $location, $request, $response);
 
-		return new Callback($controller, $method, array($request, $response));
+		return new Callback($controller, $method);
 	}
 }
