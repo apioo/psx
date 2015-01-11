@@ -67,27 +67,14 @@ class Json
 				break;
 
 			case JSON_ERROR_DEPTH:
-				throw new Exception('Maximum stack depth exceeded');
+				throw new Exception('Invalid JSON structure');
 				break;
 
 			case JSON_ERROR_STATE_MISMATCH:
-				throw new Exception('Underflow or the modes mismatch');
-				break;
-
 			case JSON_ERROR_CTRL_CHAR:
-				throw new Exception('Unexpected control character found');
-				break;
-
 			case JSON_ERROR_SYNTAX:
-				throw new Exception('Syntax error, malformed JSON');
-				break;
-
-			case JSON_ERROR_UTF8:
-				throw new Exception('Malformed UTF-8 characters, possibly incorrectly encoded');
-				break;
-
 			default:
-				throw new Exception('Unknown error');
+				throw new Exception('Syntax error, malformed JSON');
 				break;
 		}
 	}
