@@ -51,21 +51,6 @@ class Url extends Uri
 		parent::setPort($port);
 	}
 
-	public function toString()
-	{
-		// remove port if known scheme
-		if($this->port == 80 && $this->scheme == 'http')
-		{
-			$this->port = null;
-		}
-		else if($this->port == 443 && $this->scheme == 'https')
-		{
-			$this->port = null;
-		}
-
-		return parent::toString();
-	}
-
 	protected function parse($url)
 	{
 		$url = (string) $url;
