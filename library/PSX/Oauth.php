@@ -58,7 +58,7 @@ class Oauth
 	 * $tokenSecret = $response->getTokenSecret();
 	 * </code>
 	 *
-	 * @see http://oauth.net/core/1.0a#rfc.section.6.1
+	 * @see http://tools.ietf.org/html/rfc5849#section-2.1
 	 * @param PSX\Url $url
 	 * @param string $consumerKey
 	 * @param string $consumerSecret
@@ -113,23 +113,6 @@ class Oauth
 	}
 
 	/**
-	 * Redirects the user to the $url. The $url must be a valid user
-	 * authorization endpoint. All values in $params are added to the url as
-	 * GET vars.
-	 *
-	 * @param PSX\Url $url
-	 * @param array $params
-	 * @return void
-	 */
-	public function userAuthorization(Url $url, array $params = array())
-	{
-		$url->addParams($params);
-
-		header('Location: ' . strval($url));
-		exit;
-	}
-
-	/**
 	 * Exchange an request token with an access token. We receive the "token"
 	 * and "verifier" from the service provider wich redirects the user to the
 	 * callback in this redirect are the $token and $verifier. Returns an access
@@ -141,7 +124,7 @@ class Oauth
 	 * $tokenSecret = $response->getTokenSecret();
 	 * </code>
 	 *
-	 * @see http://oauth.net/core/1.0a#rfc.section.6.3
+	 * @see http://tools.ietf.org/html/rfc5849#section-2.3
 	 * @param PSX\Url $url
 	 * @param string $consumerKey
 	 * @param string $consumerSecret
@@ -293,7 +276,7 @@ class Oauth
 	/**
 	 * Builds the basestring for the signature.
 	 *
-	 * @see http://oauth.net/core/1.0a#rfc.section.9.1
+	 * @see http://tools.ietf.org/html/rfc5849#section-3.4.1
 	 * @param string $method
 	 * @param PSX\Url $url
 	 * @param array $data
@@ -323,7 +306,7 @@ class Oauth
 	/**
 	 * Normalize the url like defined in
 	 *
-	 * @see http://oauth.net/core/1.0a#rfc.section.9.1.2
+	 * @see http://tools.ietf.org/html/rfc5849#section-3.4.1.2
 	 * @param PSX\Url $url
 	 * @return false|string
 	 */
@@ -386,7 +369,7 @@ class Oauth
 	/**
 	 * Encode values RFC3986
 	 *
-	 * @see http://oauth.net/core/1.0a#rfc.section.5.1
+	 * @see http://tools.ietf.org/html/rfc5849#section-3.6
 	 * @param string $data
 	 * @return string
 	 */
