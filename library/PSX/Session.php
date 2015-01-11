@@ -107,26 +107,41 @@ class Session
 		return $this->token;
 	}
 
+	/**
+	 * @codeCoverageIgnore
+	 */
 	public function setId($id)
 	{
 		session_id($id);
 	}
 
+	/**
+	 * @codeCoverageIgnore
+	 */
 	public function getId()
 	{
 		return session_id();
 	}
 
+	/**
+	 * @codeCoverageIgnore
+	 */
 	public function setSaveHandler(SessionHandlerInterface $handler)
 	{
 		session_set_save_handler($handler);
 	}
 
+	/**
+	 * @codeCoverageIgnore
+	 */
 	public function setSavePath($path)
 	{
 		session_save_path($path);
 	}
 
+	/**
+	 * @codeCoverageIgnore
+	 */
 	public function start()
 	{
 		session_start();
@@ -142,11 +157,17 @@ class Session
 		}
 	}
 
+	/**
+	 * @codeCoverageIgnore
+	 */
 	public function close()
 	{
 		session_write_close();
 	}
 
+	/**
+	 * @codeCoverageIgnore
+	 */
 	public function destroy()
 	{
 		$_SESSION = array();
