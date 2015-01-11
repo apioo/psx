@@ -265,6 +265,52 @@ XML;
 		$this->assertEquals('foo', $body);
 	}
 
+	/**
+	 * @dataProvider requestMethodProvider
+	 */
+	public function testAllRequestMethods($requestMethod)
+	{
+		$path     = '/controller/methods';
+		$request  = new Request(new Url('http://127.0.0.1' . $path), $requestMethod);
+		$response = new Response();
+		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
+
+		$controller = $this->loadController($request, $response);
+
+		$this->assertEquals('foobar', (string) $response->getBody());
+	}
+
+	public function requestMethodProvider()
+	{
+		return array(
+			['DELETE'],
+			['GET'],
+			['HEAD'],
+			['OPTIONS'],
+			['POST'],
+			['PUT'],
+			['TRACE'],
+			['PROPFIND'],
+		);
+	}
+
+	public function testUnknownLocation()
+	{
+		$path     = '/controller/foobar';
+		$request  = new Request(new Url('http://127.0.0.1' . $path), 'GET');
+		$response = new Response();
+		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
+
+		$controller = $this->loadController($request, $response);
+
+		$data = Json::decode($response->getBody());
+
+		$this->assertArrayHasKey('success', $data);
+		$this->assertArrayHasKey('title', $data);
+		$this->assertEquals(false, $data['success']);
+		$this->assertEquals('PSX\Loader\InvalidPathException', $data['title']);
+	}
+
 	protected function getPaths()
 	{
 		return array(
@@ -286,6 +332,7 @@ XML;
 			[['GET'], '/api', 'PSX\Controller\Foo\Application\TestApiController::doIndex'],
 			[['GET'], '/api/insert', 'PSX\Controller\Foo\Application\TestApiController::doInsert'],
 			[['GET'], '/api/inspect', 'PSX\Controller\Foo\Application\TestApiController::doInspect'],
+			[['DELETE','GET','HEAD','OPTIONS','POST','PUT','TRACE','PROPFIND'], '/controller/methods', 'PSX\Controller\Foo\Application\TestController::doIndex'],
 		);
 	}
 }
