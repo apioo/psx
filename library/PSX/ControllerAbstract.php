@@ -37,10 +37,11 @@ use PSX\Data\Record\ImporterInterface;
 use PSX\Data\Writer;
 use PSX\Data\WriterInterface;
 use PSX\Data\Record;
+use PSX\Data\ReaderInterface;
 use PSX\Data\TransformerInterface;
 use PSX\Dependency;
 use PSX\Dispatch\Filter\ControllerExecutor;
-use PSX\Http\Exception\TemporaryRedirectException;
+use PSX\Http\Exception as StatusCode;
 use PSX\Http\Stream\TempStream;
 use PSX\Loader\Location;
 use PSX\Url;
@@ -258,7 +259,7 @@ abstract class ControllerAbstract implements ControllerInterface, ApplicationSta
 			$url = $this->reverseRouter->getUrl($source, $parameters);
 		}
 
-		throw new TemporaryRedirectException($url);
+		throw new StatusCode\TemporaryRedirectException($url);
 	}
 
 	/**
@@ -549,15 +550,14 @@ abstract class ControllerAbstract implements ControllerInterface, ApplicationSta
 	}
 
 	/**
-	 * Returns the best reader for the given content type or the default reader
-	 * from the factory
+	 * Returns the best reader for the given content type or throws an 
+	 * unsupported media exception
 	 *
 	 * @param string $readerType
 	 * @return PSX\Data\ReaderInterface
 	 */
 	private function getRequestReader($readerType = null)
 	{
-		// find best reader type
 		if($readerType === null)
 		{
 			$reader = $this->getPreferredReader();
@@ -567,14 +567,9 @@ abstract class ControllerAbstract implements ControllerInterface, ApplicationSta
 			$reader = $this->readerFactory->getReaderByInstance($readerType);
 		}
 
-		if($reader === null)
+		if(!$reader instanceof ReaderInterface)
 		{
-			$reader = $this->readerFactory->getDefaultReader();
-		}
-
-		if($reader === null)
-		{
-			throw new NotFoundException('Could not find fitting data reader', 415);
+			throw new StatusCode\UnsupportedMediaTypeException('Could not find fitting data reader');
 		}
 
 		return $reader;
@@ -603,7 +598,7 @@ abstract class ControllerAbstract implements ControllerInterface, ApplicationSta
 
 		if(!$writer instanceof WriterInterface)
 		{
-			throw new NotFoundException('Could not find fitting data writer');
+			throw new StatusCode\NotAcceptableException('Could not find fitting data writer');
 		}
 
 		return $writer;
@@ -634,9 +629,7 @@ abstract class ControllerAbstract implements ControllerInterface, ApplicationSta
 		}
 		else
 		{
-			$contentType = $this->request->getHeader('Accept');
-
-			return $this->writerFactory->getWriterByContentType($contentType, $this->getSupportedWriter());
+			return $this->writerFactory->getWriterByContentType($this->request->getHeader('Accept'), $this->getSupportedWriter());
 		}
 	}
 }
