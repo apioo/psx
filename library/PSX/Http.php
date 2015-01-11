@@ -33,6 +33,7 @@ use PSX\Http\Options;
 use PSX\Http\RedirectException;
 use PSX\Http\Request;
 use PSX\Http\Response;
+use PSX\Util\UriResolver;
 
 /**
  * This class offers a simple way to make http requests. It can use either curl
@@ -204,23 +205,7 @@ class Http
 			{
 				if($options->getMaxRedirects() > $count)
 				{
-					if(strpos($location, '://') === false)
-					{
-						$port = $request->getUrl()->getPort();
-
-						if(empty($port) || 
-							($request->getUrl()->getScheme() == 'http' && $port == 80) || 
-							($request->getUrl()->getScheme() == 'https' && $port == 443))
-						{
-							$port = '';
-						}
-						else
-						{
-							$port = ':' . $port;
-						}
-
-						$location = $request->getUrl()->getScheme() . '://' . $request->getUrl()->getHost() . $port . '/' . ltrim($location, '/');
-					}
+					$location = UriResolver::resolve($request->getUrl(), new Uri($location));
 
 					return $this->request(new GetRequest($location), $options, ++$count);
 				}

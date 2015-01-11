@@ -104,5 +104,38 @@ TEXT;
 		$request  = new GetRequest(new Url('http://localhost.com'));
 		$response = $http->request($request);
 	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testRelativeUrl()
+	{
+		$http    = new Http();
+		$request = new GetRequest(new Uri('/foo/bar'));
+
+		$http->request($request);
+	}
+
+	public function testSetGetHandler()
+	{
+		$http = new Http();
+
+		$this->assertInstanceOf('PSX\Http\Handler\Curl', $http->getHandler());
+
+		$http->setHandler(new Handler\Socks());
+
+		$this->assertInstanceOf('PSX\Http\Handler\Socks', $http->getHandler());
+	}
+
+	public function testSetGetCookieStore()
+	{
+		$http = new Http();
+
+		$this->assertEmpty($http->getCookieStore());
+
+		$http->setCookieStore(new CookieStore\Memory());
+
+		$this->assertInstanceOf('PSX\Http\CookieStore\Memory', $http->getCookieStore());
+	}
 }
 
