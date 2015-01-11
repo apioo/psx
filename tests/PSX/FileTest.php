@@ -88,6 +88,12 @@ class FileTest extends \PHPUnit_Framework_TestCase
 		unset($file);
 	}
 
+	public function testPutGetContents()
+	{
+		$this->assertEquals(2, File::putContents($this->path, 'Oo'));
+		$this->assertEquals('Oo', File::getContents($this->path));
+	}
+
 	private function getFileName()
 	{
 		return 'FileTest.txt';
