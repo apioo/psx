@@ -86,15 +86,16 @@ class ControllerExecutor implements FilterInterface
 
 		if($callback instanceof Callback)
 		{
+			$class  = $callback->getClass();
 			$method = $callback->getMethod();
 
 			if(!empty($method))
 			{
-				call_user_func_array(array($this->controller, $method), array($request, $response));
+				call_user_func_array(array($class, $method), array($request, $response));
 			}
-
-			$this->controller->processResponse();
 		}
+
+		$this->controller->processResponse();
 
 		$filterChain->handle($request, $response);
 	}
