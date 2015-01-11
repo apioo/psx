@@ -77,14 +77,7 @@ class File extends SplFileInfo
 	 */
 	public static function exists($file)
 	{
-		if(true)
-		{
-			return is_file($file);
-		}
-		else
-		{
-			return true;
-		}
+		return is_file($file);
 	}
 
 	/**
