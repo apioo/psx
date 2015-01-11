@@ -82,7 +82,7 @@ class MediaTypeTest extends \PHPUnit_Framework_TestCase
 
 	public function testParseListQuality()
 	{
-		$mediaTypes = MediaType::parseList('text/plain; q=0.5, text/html, text/x-dvi; q=0.8, text/x-c');
+		$mediaTypes = MediaType::parseList('text/plain; q=0.5, text/html, text/x-dvi; q=0.8, text/x-c;q=0.9');
 		$actual     = array();
 
 		foreach($mediaTypes as $mediaType)
@@ -91,8 +91,8 @@ class MediaTypeTest extends \PHPUnit_Framework_TestCase
 		}
 
 		$expect = array(
-			'text/x-c',
 			'text/html',
+			'text/x-c',
 			'text/x-dvi',
 			'text/plain',
 		);
