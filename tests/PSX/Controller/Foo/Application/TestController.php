@@ -118,7 +118,7 @@ class TestController extends ControllerAbstract
 		// is reader
 		$this->testCase->assertTrue($this->isReader('PSX\Data\Reader\Json'));
 
-		// get preferred writer
+		// get supported writer
 		$this->testCase->assertEquals(null, $this->getSupportedWriter());
 
 		// test properties
