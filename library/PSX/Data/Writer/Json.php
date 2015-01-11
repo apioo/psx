@@ -25,6 +25,7 @@ namespace PSX\Data\Writer;
 
 use PSX\Data\RecordInterface;
 use PSX\Data\WriterInterface;
+use PSX\Http\MediaType;
 use PSX\Json as JsonParser;
 
 /**
@@ -43,9 +44,9 @@ class Json extends ArrayAbstract
 		return JsonParser::encode($this->export($record), JSON_PRETTY_PRINT);
 	}
 
-	public function isContentTypeSupported($contentType)
+	public function isContentTypeSupported(MediaType $contentType)
 	{
-		return stripos($contentType, self::$mime) !== false;
+		return $contentType->getName() == self::$mime;
 	}
 	
 	public function getContentType()

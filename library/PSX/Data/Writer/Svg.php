@@ -23,6 +23,8 @@
 
 namespace PSX\Data\Writer;
 
+use PSX\Http\MediaType;
+
 /**
  * Svg
  *
@@ -34,9 +36,9 @@ class Svg extends TemplateAbstract
 {
 	public static $mime = 'image/svg+xml';
 
-	public function isContentTypeSupported($contentType)
+	public function isContentTypeSupported(MediaType $contentType)
 	{
-		return stripos($contentType, self::$mime) !== false;
+		return $contentType->getName() == self::$mime;
 	}
 
 	public function getContentType()

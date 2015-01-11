@@ -24,6 +24,8 @@
 namespace PSX\Data;
 
 use PSX\Data\Writer;
+use PSX\Http\MediaType;
+use PSX\Http\Exception\NotAcceptableException;
 use PSX\Util\PriorityQueue;
 
 /**
@@ -67,18 +69,18 @@ class WriterFactory
 
 	public function getWriterByContentType($contentType, array $supportedWriter = null)
 	{
-		// @TODO we should sort the content types after the quality value
-		$contentTypes = explode(',', $contentType);
+		if(empty($contentType))
+		{
+			return null;
+		}
 
-		// first we check all content negotiation rules
+		$contentTypes = MediaType::parseList($contentType);
+
+		// first we check all custom content negotiation rules
 		if(!empty($this->contentNegotiation))
 		{
 			foreach($contentTypes as $contentType)
 			{
-				// remove quality
-				$qualityPos  = strpos(';', $contentType);
-				$contentType = $qualityPos !== false ? substr($contentType, 0, $qualityPos) : $contentType;
-
 				$writer = $this->getWriterFromContentNegotiation($contentType, $supportedWriter);
 
 				if($writer !== null)
@@ -88,7 +90,7 @@ class WriterFactory
 			}
 		}
 
-		// as fallback we ask every writer whether they support the content type
+		// then we ask every writer whether they support the content type
 		foreach($contentTypes as $contentType)
 		{
 			foreach($this->writers as $writer)
@@ -162,14 +164,12 @@ class WriterFactory
 	 *
 	 * @return PSX\Data\WriterInterface
 	 */
-	protected function getWriterFromContentNegotiation($contentType, array $supportedWriter = null)
+	protected function getWriterFromContentNegotiation(MediaType $contentType, array $supportedWriter = null)
 	{
 		if(empty($this->contentNegotiation))
 		{
 			return null;
 		}
-
-		list($type, $subType) = $this->getTypes($contentType);
 
 		foreach($this->contentNegotiation as $acceptedContentType => $writerClass)
 		{
@@ -178,13 +178,9 @@ class WriterFactory
 				continue;
 			}
 
-			list($acceptType, $acceptSubType) = $this->getTypes($acceptedContentType);
+			$acceptedContentType = MediaType::parse($acceptedContentType);
 
-			$match = ($acceptType == $type && $acceptSubType == $subType) || // we have an explicit match
-				($acceptType == $type && $acceptSubType == '*') || // the type matches and the sub type has an wildcard
-				($acceptType == '*' && $acceptSubType == '*'); // accepts all content types
-
-			if($match)
+			if($acceptedContentType->match($contentType))
 			{
 				$writer = $this->getWriterByInstance($writerClass);
 
@@ -196,14 +192,5 @@ class WriterFactory
 		}
 
 		return null;
-	}
-
-	protected function getTypes($contentType)
-	{
-		$parts   = explode('/', strtolower(trim($contentType)), 2);
-		$type    = $parts[0];
-		$subType = isset($parts[1]) ? $parts[1] : null;
-
-		return array($type, $subType);
 	}
 }

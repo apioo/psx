@@ -25,6 +25,7 @@ namespace PSX\Data\Writer;
 
 use PSX\Data\WriterTestCase;
 use PSX\Data\ExceptionRecord;
+use PSX\Http\MediaType;
 
 /**
  * SoapTest
@@ -141,8 +142,8 @@ TEXT;
 	{
 		$writer = new Soap('http://foo.bar');
 
-		$this->assertTrue($writer->isContentTypeSupported('application/soap+xml'));
-		$this->assertFalse($writer->isContentTypeSupported('text/html'));
+		$this->assertTrue($writer->isContentTypeSupported(MediaType::parse('application/soap+xml')));
+		$this->assertFalse($writer->isContentTypeSupported(MediaType::parse('text/html')));
 	}
 
 	public function testGetContentType()

@@ -25,6 +25,7 @@ namespace PSX\Data\Reader;
 
 use Psr\Http\Message\MessageInterface;
 use PSX\Data\ReaderAbstract;
+use PSX\Http\MediaType;
 
 /**
  * Form
@@ -44,9 +45,9 @@ class Form extends ReaderAbstract
 		return $form;
 	}
 
-	public function isContentTypeSupported($contentType)
+	public function isContentTypeSupported(MediaType $contentType)
 	{
-		return stripos($contentType, 'application/x-www-form-urlencoded') !== false;
+		return $contentType->getName() == 'application/x-www-form-urlencoded';
 	}
 }
 

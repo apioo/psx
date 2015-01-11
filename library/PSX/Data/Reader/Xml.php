@@ -26,6 +26,7 @@ namespace PSX\Data\Reader;
 use DOMDocument;
 use Psr\Http\Message\MessageInterface;
 use PSX\Data\ReaderAbstract;
+use PSX\Http\MediaType;
 
 /**
  * Xml
@@ -53,9 +54,11 @@ class Xml extends ReaderAbstract
 		return $dom;
 	}
 
-	public function isContentTypeSupported($contentType)
+	public function isContentTypeSupported(MediaType $contentType)
 	{
-		return self::isXmlMediaContentType($contentType);
+		return in_array($contentType->getName(), self::$mediaTypes) || 
+			substr($contentType->getSubType(), -4) == '+xml' || 
+			substr($contentType->getSubType(), -4) == '/xml';
 	}
 
 	public static function isXmlMediaContentType($contentType)

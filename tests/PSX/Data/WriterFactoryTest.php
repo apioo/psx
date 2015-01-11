@@ -81,13 +81,8 @@ class WriterFactoryTest extends \PHPUnit_Framework_TestCase
 
 	public function testGetWriterByContentTypeOrder()
 	{
-		$supportedWriter = array('PSX\Data\Writer\Html', 'PSX\Data\Writer\Xml');
-
-		$contentType = 'application/json,text/html,application/xml';
-
-		$this->assertInstanceOf('PSX\Data\Writer\Html', $this->writerFactory->getWriterByContentType($contentType, $supportedWriter));
-
-		$contentType = 'application/json,application/xml,text/html';
+		$supportedWriter = array('PSX\Data\Writer\Xml');
+		$contentType     = 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8';
 
 		$this->assertInstanceOf('PSX\Data\Writer\Xml', $this->writerFactory->getWriterByContentType($contentType, $supportedWriter));
 	}

@@ -26,6 +26,7 @@ namespace PSX\Data\Writer;
 use DateTime;
 use PSX\Data\Record;
 use PSX\Data\WriterTestCase;
+use PSX\Http\MediaType;
 use PSX\Rss as RssRecord;
 use PSX\Rss\Item;
 
@@ -124,8 +125,8 @@ TEXT;
 	{
 		$writer = new Rss();
 
-		$this->assertTrue($writer->isContentTypeSupported('application/rss+xml'));
-		$this->assertFalse($writer->isContentTypeSupported('text/html'));
+		$this->assertTrue($writer->isContentTypeSupported(MediaType::parse('application/rss+xml')));
+		$this->assertFalse($writer->isContentTypeSupported(MediaType::parse('text/html')));
 	}
 
 	public function testGetContentType()

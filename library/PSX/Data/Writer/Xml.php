@@ -25,6 +25,7 @@ namespace PSX\Data\Writer;
 
 use PSX\Data\RecordInterface;
 use PSX\Data\WriterInterface;
+use PSX\Http\MediaType;
 use PSX\Xml\Writer;
 use XMLWriter;
 
@@ -47,9 +48,9 @@ class Xml extends ArrayAbstract
 		return $writer->toString();
 	}
 
-	public function isContentTypeSupported($contentType)
+	public function isContentTypeSupported(MediaType $contentType)
 	{
-		return stripos($contentType, self::$mime) !== false;
+		return $contentType->getName() == self::$mime;
 	}
 
 	public function getContentType()

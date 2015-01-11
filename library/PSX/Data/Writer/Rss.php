@@ -27,11 +27,12 @@ use DateTime;
 use InvalidArgumentException;
 use PSX\Data\RecordInterface;
 use PSX\Data\ResultSet;
+use PSX\Data\WriterInterface;
+use PSX\Exception;
+use PSX\Http\MediaType;
 use PSX\Rss as RssRecord;
 use PSX\Rss\Item;
 use PSX\Rss\Writer;
-use PSX\Data\WriterInterface;
-use PSX\Exception;
 use XMLWriter;
 
 /**
@@ -78,9 +79,9 @@ class Rss implements WriterInterface
 		}
 	}
 
-	public function isContentTypeSupported($contentType)
+	public function isContentTypeSupported(MediaType $contentType)
 	{
-		return stripos($contentType, self::$mime) !== false;
+		return $contentType->getName() == self::$mime;
 	}
 
 	public function getContentType()

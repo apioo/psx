@@ -23,8 +23,9 @@
 
 namespace PSX\Data\Writer;
 
-use PSX\TemplateInterface;
+use PSX\Http\MediaType;
 use PSX\Loader\ReverseRouter;
+use PSX\TemplateInterface;
 
 /**
  * SvgTest
@@ -49,8 +50,8 @@ class SvgTest extends TemplateAbstractTestCase
 
 		$writer = new Svg($template, $router);
 
-		$this->assertTrue($writer->isContentTypeSupported('image/svg+xml'));
-		$this->assertFalse($writer->isContentTypeSupported('text/html'));
+		$this->assertTrue($writer->isContentTypeSupported(MediaType::parse('image/svg+xml')));
+		$this->assertFalse($writer->isContentTypeSupported(MediaType::parse('text/html')));
 	}
 
 	public function testGetContentType()

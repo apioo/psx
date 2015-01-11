@@ -24,6 +24,7 @@
 namespace PSX\Data\Writer;
 
 use PSX\Data\WriterTestCase;
+use PSX\Http\MediaType;
 
 /**
  * JsonpTest
@@ -150,8 +151,8 @@ TEXT;
 	{
 		$writer = new Jsonp();
 
-		$this->assertTrue($writer->isContentTypeSupported('application/javascript'));
-		$this->assertFalse($writer->isContentTypeSupported('text/html'));
+		$this->assertTrue($writer->isContentTypeSupported(MediaType::parse('application/javascript')));
+		$this->assertFalse($writer->isContentTypeSupported(MediaType::parse('text/html')));
 	}
 
 	public function testGetContentType()

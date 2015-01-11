@@ -24,6 +24,7 @@
 namespace PSX\Data\Writer;
 
 use PSX\Data\WriterTestCase;
+use PSX\Http\MediaType;
 
 /**
  * JsonTest
@@ -116,8 +117,8 @@ TEXT;
 	{
 		$writer = new Json();
 
-		$this->assertTrue($writer->isContentTypeSupported('application/json'));
-		$this->assertFalse($writer->isContentTypeSupported('text/html'));
+		$this->assertTrue($writer->isContentTypeSupported(MediaType::parse('application/json')));
+		$this->assertFalse($writer->isContentTypeSupported(MediaType::parse('text/html')));
 	}
 
 	public function testGetContentType()

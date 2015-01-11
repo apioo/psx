@@ -24,6 +24,7 @@
 namespace PSX\Data\Writer;
 
 use PSX\Data\WriterTestCase;
+use PSX\Http\MediaType;
 
 /**
  * FormTest
@@ -62,8 +63,8 @@ TEXT;
 	{
 		$writer = new Form();
 
-		$this->assertTrue($writer->isContentTypeSupported('application/x-www-form-urlencoded'));
-		$this->assertFalse($writer->isContentTypeSupported('application/xml'));
+		$this->assertTrue($writer->isContentTypeSupported(MediaType::parse('application/x-www-form-urlencoded')));
+		$this->assertFalse($writer->isContentTypeSupported(MediaType::parse('application/xml')));
 	}
 
 	public function testGetContentType()

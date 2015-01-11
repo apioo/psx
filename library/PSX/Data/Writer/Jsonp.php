@@ -25,6 +25,7 @@ namespace PSX\Data\Writer;
 
 use PSX\Data\RecordInterface;
 use PSX\Data\WriterInterface;
+use PSX\Http\MediaType;
 
 /**
  * Jsonp
@@ -53,9 +54,9 @@ class Jsonp extends Json
 		}
 	}
 
-	public function isContentTypeSupported($contentType)
+	public function isContentTypeSupported(MediaType $contentType)
 	{
-		return stripos($contentType, self::$mime) !== false;
+		return $contentType->getName() == self::$mime;
 	}
 
 	public function getContentType()

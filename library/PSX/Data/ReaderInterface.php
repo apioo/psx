@@ -24,6 +24,7 @@
 namespace PSX\Data;
 
 use Psr\Http\Message\MessageInterface;
+use PSX\Http\MediaType;
 
 /**
  * ReaderInterface
@@ -50,8 +51,8 @@ interface ReaderInterface
 	/**
 	 * Returns whether the content type is supported by this reader
 	 *
-	 * @param string $contentType
+	 * @param PSX\Http\MediaType $contentType
 	 * @return boolean
 	 */
-	public function isContentTypeSupported($contentType);
+	public function isContentTypeSupported(MediaType $contentType);
 }

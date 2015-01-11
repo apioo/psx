@@ -33,6 +33,7 @@ use PSX\Data\RecordInterface;
 use PSX\Data\ResultSet;
 use PSX\Data\WriterInterface;
 use PSX\Exception;
+use PSX\Http\MediaType;
 use XMLWriter;
 
 /**
@@ -82,9 +83,9 @@ class Atom extends Xml
 		}
 	}
 
-	public function isContentTypeSupported($contentType)
+	public function isContentTypeSupported(MediaType $contentType)
 	{
-		return stripos($contentType, self::$mime) !== false;
+		return $contentType->getName() == self::$mime;
 	}
 
 	public function getContentType()

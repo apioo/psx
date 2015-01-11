@@ -24,6 +24,7 @@
 namespace PSX\Data;
 
 use PSX\Data\Reader;
+use PSX\Http\MediaType;
 use PSX\Util\PriorityQueue;
 
 /**
@@ -54,21 +55,23 @@ class ReaderFactory
 
 	public function getReaderByContentType($contentType, array $supportedReader = null)
 	{
-		$contentTypes = explode(',', $contentType);
-
-		foreach($contentTypes as $contentType)
+		if(empty($contentType))
 		{
-			foreach($this->readers as $reader)
-			{
-				if($supportedReader !== null && !in_array(get_class($reader), $supportedReader))
-				{
-					continue;
-				}
+			return null;
+		}
 
-				if($reader->isContentTypeSupported($contentType))
-				{
-					return $reader;
-				}
+		$contentType = MediaType::parse($contentType);
+
+		foreach($this->readers as $reader)
+		{
+			if($supportedReader !== null && !in_array(get_class($reader), $supportedReader))
+			{
+				continue;
+			}
+
+			if($reader->isContentTypeSupported($contentType))
+			{
+				return $reader;
 			}
 		}
 

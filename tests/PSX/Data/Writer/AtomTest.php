@@ -33,6 +33,7 @@ use PSX\Atom\Person;
 use PSX\Atom\Text;
 use PSX\Data\WriterTestCase;
 use PSX\Data\WriterTestRecord;
+use PSX\Http\MediaType;
 
 /**
  * AtomTest
@@ -211,8 +212,8 @@ XML;
 	{
 		$writer = new Atom();
 
-		$this->assertTrue($writer->isContentTypeSupported('application/atom+xml'));
-		$this->assertFalse($writer->isContentTypeSupported('application/xml'));
+		$this->assertTrue($writer->isContentTypeSupported(MediaType::parse('application/atom+xml')));
+		$this->assertFalse($writer->isContentTypeSupported(MediaType::parse('application/xml')));
 	}
 
 	public function testGetContentType()

@@ -25,6 +25,7 @@ namespace PSX\Data\Reader;
 
 use Psr\Http\Message\MessageInterface;
 use PSX\Data\ReaderAbstract;
+use PSX\Http\MediaType;
 use PSX\Json as JsonParser;
 
 /**
@@ -43,8 +44,10 @@ class Json extends ReaderAbstract
 		return $json;
 	}
 
-	public function isContentTypeSupported($contentType)
+	public function isContentTypeSupported(MediaType $contentType)
 	{
-		return substr($contentType, -5) == '+json' || substr($contentType, -5) == '/json';
+		return $contentType->getSubType() == 'json' ||
+			substr($contentType->getSubType(), -5) == '+json' || 
+			substr($contentType->getSubType(), -5) == '/json';
 	}
 }

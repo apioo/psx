@@ -23,8 +23,9 @@
 
 namespace PSX\Data\Writer;
 
-use PSX\TemplateInterface;
+use PSX\Http\MediaType;
 use PSX\Loader\ReverseRouter;
+use PSX\TemplateInterface;
 
 /**
  * HtmlTest
@@ -49,8 +50,8 @@ class HtmlTest extends TemplateAbstractTestCase
 
 		$writer = new Html($template, $router);
 
-		$this->assertTrue($writer->isContentTypeSupported('text/html'));
-		$this->assertFalse($writer->isContentTypeSupported('application/xml'));
+		$this->assertTrue($writer->isContentTypeSupported(MediaType::parse('text/html')));
+		$this->assertFalse($writer->isContentTypeSupported(MediaType::parse('application/xml')));
 	}
 
 	public function testGetContentType()
