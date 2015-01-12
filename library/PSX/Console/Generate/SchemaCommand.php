@@ -225,11 +225,4 @@ PHP;
 				return 'string';
 		}
 	}
-
-	protected function getShortName($name)
-	{
-		$pos = strrpos($name, '_');
-
-		return $pos !== false ? substr($name, strrpos($name, '_') + 1) : $name;
-	}
 }
