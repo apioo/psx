@@ -24,7 +24,6 @@
 namespace PSX\Http;
 
 use InvalidArgumentException;
-use RuntimeException;
 use PSX\Http;
 
 /**
@@ -51,7 +50,14 @@ abstract class ParserAbstract
 	 */
 	public function __construct($mode = self::MODE_STRICT)
 	{
-		$this->mode = $mode;
+		if($mode == self::MODE_STRICT || $mode == self::MODE_LOOSE)
+		{
+			$this->mode = $mode;
+		}
+		else
+		{
+			throw new InvalidArgumentException('Invalid parse mode');
+		}
 	}
 
 	/**
@@ -103,10 +109,6 @@ abstract class ParserAbstract
 					$body.= $line . ($i < $count - 1 ? "\n" : '');
 				}
 			}
-		}
-		else
-		{
-			throw new RuntimeException('Invalid parse mode');
 		}
 
 		return array($header, $body);
