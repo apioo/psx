@@ -130,5 +130,6 @@ CREATE TABLE `psx_table_command_test` (
   `col_smallint` smallint NOT NULL, 
   `col_text` longtext NOT NULL, 
   `col_time` time NOT NULL, 
-  `col_string` varchar(255) NOT NULL
+  `col_string` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
