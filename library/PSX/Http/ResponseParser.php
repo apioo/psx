@@ -92,7 +92,7 @@ class ResponseParser extends ParserAbstract
 
 	public static function buildResponseFromHeader(array $headers)
 	{
-		$line = current($headers);
+		$line = array_shift($headers);
 
 		if(!empty($line))
 		{
