@@ -183,15 +183,30 @@ class MessageTest extends \PHPUnit_Framework_TestCase
 
 	public function testConstructor()
 	{
-		$message = new Message(array('foo' => 'bar'), new StringStream('foobar'));
+		$message = new Message(array('foo' => 'bar'), new StringStream('foobar'), 'HTTP/1.1');
 
-		$this->assertEquals('foobar', (string) $message->getBody());
+		$this->assertEquals('HTTP/1.1', $message->getProtocolVersion());
 		$this->assertEquals('bar', $message->getHeader('foo'));
 		$this->assertEquals(array('bar'), $message->getHeaderAsArray('foo'));
+		$this->assertEquals('foobar', (string) $message->getBody());
+
+		$message = new Message(array('foo' => 'bar'), 'foobar');
+
+		$this->assertEquals('bar', $message->getHeader('foo'));
+		$this->assertEquals(array('bar'), $message->getHeaderAsArray('foo'));
+		$this->assertEquals('foobar', (string) $message->getBody());
 
 		$message = new Message(array('foo' => 'bar'));
 
 		$this->assertEquals('bar', $message->getHeader('foo'));
 		$this->assertEquals(array('bar'), $message->getHeaderAsArray('foo'));
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testInvalidBody()
+	{
+		new Message(array('foo' => 'bar'), new \stdClass());
 	}
 }

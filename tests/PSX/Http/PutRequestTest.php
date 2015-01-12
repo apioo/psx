@@ -21,59 +21,43 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Http\Stream;
+namespace PSX\Http;
+
+use PSX\Url;
 
 /**
- * SocksStreamTest
+ * PutRequestTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class SocksStreamTest extends StreamTestCase
+class PutRequestTest extends \PHPUnit_Framework_TestCase
 {
-	protected function getStream()
+	public function testConstruct()
 	{
-		$resource = fopen('php://memory', 'r+');
-		fwrite($resource, 'foobar');
-		rewind($resource);
+		$request = new PutRequest(new Url('http://localhost.com/foo'), array('X-Foo' => 'bar'), 'foo');
 
-		return new SocksStream($resource, 6, false);
+		$this->assertEquals('PUT', $request->getMethod());
+		$this->assertEquals('localhost.com', $request->getHeader('Host'));
+		$this->assertEquals('bar', $request->getHeader('X-Foo'));
+		$this->assertEquals('foo', (string) $request->getBody());
 	}
 
-	public function testChunkedEncoding()
+	public function testConstructUrlHeader()
 	{
-		$data = '4' . "\r\n";
-		$data.= 'Wiki' . "\r\n";
-		$data.= '5' . "\r\n";
-		$data.= 'pedia' . "\r\n";
-		$data.= 'e' . "\r\n";
-		$data.= ' in' . "\r\n\r\n" . 'chunks.' . "\r\n";
-		$data.= '0' . "\r\n";
-		$data.= "\r\n";
+		$request = new PutRequest(new Url('http://localhost.com/foo'), array('X-Foo' => 'bar'));
 
-		$resource = fopen('php://memory', 'r+');
-		fwrite($resource, $data);
-		rewind($resource);
+		$this->assertEquals('PUT', $request->getMethod());
+		$this->assertEquals('localhost.com', $request->getHeader('Host'));
+		$this->assertEquals('bar', $request->getHeader('X-Foo'));
+	}
 
-		$stream  = new SocksStream($resource, 0, true);
-		$content = '';
+	public function testConstructUrl()
+	{
+		$request = new PutRequest(new Url('http://localhost.com/foo'));
 
-		$this->assertTrue($stream->isChunkEncoded());
-
-		do
-		{
-			$size    = $stream->getChunkSize();
-			$content.= $stream->getContents($size);
-
-			$stream->readLine();
-		}
-		while($size > 0);
-
-		$this->assertEquals('Wikipedia in' . "\r\n\r\n" . 'chunks.', $content);
-
-		$stream->seek(0);
-
-		$this->assertEquals('Wikipedia in' . "\r\n\r\n" . 'chunks.', (string) $stream);
+		$this->assertEquals('PUT', $request->getMethod());
+		$this->assertEquals('localhost.com', $request->getHeader('Host'));
 	}
 }

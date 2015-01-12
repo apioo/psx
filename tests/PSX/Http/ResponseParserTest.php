@@ -120,6 +120,53 @@ class ResponseParserTest extends \PHPUnit_Framework_TestCase
 		}
 	}
 
+	/**
+	 * @expectedException PSX\Http\ParseException
+	 */
+	public function testParseInvalidStatusLine()
+	{
+		$response = 'foobar' . Http::$newLine;
+		$response.= 'Vary: Accept-Encoding' . Http::$newLine;
+
+		$parser = new ResponseParser(ResponseParser::MODE_STRICT);
+		$parser->parse($response);
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testParseEmpty()
+	{
+		$response = '';
+
+		$parser = new ResponseParser(ResponseParser::MODE_STRICT);
+		$parser->parse($response);
+	}
+
+	/**
+	 * @expectedException PSX\Http\ParseException
+	 */
+	public function testParseNoLineEnding()
+	{
+		$response = 'HTTP/1.1 200 OK';
+		$response.= 'Vary: Accept-Encoding';
+
+		$parser = new ResponseParser(ResponseParser::MODE_STRICT);
+		$parser->parse($response);
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testParseInvalidMode()
+	{
+		$response = 'HTTP/1.1 200 OK' . Http::$newLine;
+		$response.= 'Vary: Accept-Encoding' . Http::$newLine;
+
+		$parser = new ResponseParser('foo');
+		$parser->parse($response);
+	}
+
 	public function testBuildResponseFromHeader()
 	{
 		$response = ResponseParser::buildResponseFromHeader(array(
@@ -154,5 +201,35 @@ class ResponseParserTest extends \PHPUnit_Framework_TestCase
 			'alternate-protocol'     => ['80:quic'],
 			'transfer-encoding'      => ['chunked'],
 		), $response->getHeaders());
+	}
+
+	/**
+	 * @expectedException PSX\Http\ParseException
+	 */
+	public function testBuildResponseFromHeaderInvalidStatusLine()
+	{
+		ResponseParser::buildResponseFromHeader(array(
+			'foobar',
+			'Vary: Accept-Encoding',
+		));
+	}
+
+	/**
+	 * @expectedException PSX\Http\ParseException
+	 */
+	public function testBuildResponseFromHeaderEmpty()
+	{
+		ResponseParser::buildResponseFromHeader(array());
+	}
+
+	/**
+	 * @expectedException PSX\Http\ParseException
+	 */
+	public function testBuildResponseFromHeaderEmptyStatusLine()
+	{
+		ResponseParser::buildResponseFromHeader(array(
+			'',
+			'Vary: Accept-Encoding',
+		));
 	}
 }

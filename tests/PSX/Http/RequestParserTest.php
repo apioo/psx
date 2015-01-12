@@ -43,8 +43,7 @@ class RequestParserTest extends \PHPUnit_Framework_TestCase
 		$request.= Http::$newLine;
 		$request.= 'Google is built by a large team of engineers, designers, researchers, robots, and others in many different sites across the globe. It is updated continuously, and built with more tools and technologies than we can shake a stick at. If you\'d like to help us out, see google.com/jobs.';
 
-		$parser = new RequestParser(new Url('http://localhost.com'), RequestParser::MODE_STRICT);
-
+		$parser  = new RequestParser(new Url('http://localhost.com'), RequestParser::MODE_STRICT);
 		$request = $parser->parse($request);
 
 		$this->assertInstanceOf('PSX\Http\Request', $request);
@@ -61,7 +60,7 @@ class RequestParserTest extends \PHPUnit_Framework_TestCase
 
 	public function testParseLooseMode()
 	{
-		$parser = new RequestParser(new Url('http://localhost.com'), ResponseParser::MODE_LOOSE);
+		$parser     = new RequestParser(new Url('http://localhost.com'), RequestParser::MODE_LOOSE);
 		$seperators = array("\r\n", "\n", "\r");
 
 		foreach($seperators as $newline)
@@ -85,5 +84,75 @@ class RequestParserTest extends \PHPUnit_Framework_TestCase
 			), $request->getHeaders());
 			$this->assertEquals('Google is built by a large team of engineers, designers, researchers, robots, and others in many different sites across the globe. It is updated continuously, and built with more tools and technologies than we can shake a stick at. If you\'d like to help us out, see google.com/jobs.', $request->getBody());
 		}
+	}
+
+	public function testParseNoBaseUrl()
+	{
+		$request = 'GET /foobar?foo=bar#fragment HTTP/1.1' . Http::$newLine;
+		$request.= 'Content-Type: text/plain' . Http::$newLine;
+		$request.= 'User-Agent: psx' . Http::$newLine;
+		$request.= Http::$newLine;
+		$request.= 'Google is built by a large team of engineers, designers, researchers, robots, and others in many different sites across the globe. It is updated continuously, and built with more tools and technologies than we can shake a stick at. If you\'d like to help us out, see google.com/jobs.';
+
+		$parser  = new RequestParser();
+		$request = $parser->parse($request);
+
+		$this->assertInstanceOf('PSX\Http\Request', $request);
+		$this->assertEquals('GET', $request->getMethod());
+		$this->assertEquals('/foobar?foo=bar#fragment', $request->getUrl()->toString());
+		$this->assertEquals('HTTP/1.1', $request->getProtocolVersion());
+		$this->assertEquals(array(
+			'content-type' => ['text/plain'],
+			'user-agent'   => ['psx'],
+		), $request->getHeaders());
+		$this->assertEquals('Google is built by a large team of engineers, designers, researchers, robots, and others in many different sites across the globe. It is updated continuously, and built with more tools and technologies than we can shake a stick at. If you\'d like to help us out, see google.com/jobs.', $request->getBody());
+
+	}
+
+	/**
+	 * @expectedException PSX\Http\ParseException
+	 */
+	public function testParseInvalidStatusLine()
+	{
+		$request = 'foobar' . Http::$newLine;
+		$request.= 'Vary: Accept-Encoding' . Http::$newLine;
+
+		$parser = new RequestParser(new Url('http://localhost.com'), RequestParser::MODE_STRICT);
+		$parser->parse($request);
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testParseEmpty()
+	{
+		$request = '';
+
+		$parser = new RequestParser(new Url('http://localhost.com'), RequestParser::MODE_STRICT);
+		$parser->parse($request);
+	}
+
+	/**
+	 * @expectedException PSX\Http\ParseException
+	 */
+	public function testParseNoLineEnding()
+	{
+		$request = 'GET /foobar?foo=bar#fragment HTTP/1.1';
+		$request.= 'Vary: Accept-Encoding';
+
+		$parser = new RequestParser(new Url('http://localhost.com'), RequestParser::MODE_STRICT);
+		$parser->parse($request);
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testParseInvalidMode()
+	{
+		$request = 'GET /foobar?foo=bar#fragment HTTP/1.1' . Http::$newLine;
+		$request.= 'Content-Type: text/plain' . Http::$newLine;
+
+		$parser = new RequestParser(new Url('http://localhost.com'), 'foo');
+		$parser->parse($request);
 	}
 }

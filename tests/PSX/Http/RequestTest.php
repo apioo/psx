@@ -52,6 +52,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 		$httpRequest.= 'foobar';
 
 		$this->assertEquals($httpRequest, $request->toString());
+		$this->assertEquals($httpRequest, (string) $request);
 	}
 
 	public function testFragmentEncoding()
@@ -81,5 +82,20 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('HTTP/1.1', $request->getProtocolVersion());
 		$this->assertEquals('text/html; charset=UTF-8', (string) $request->getHeader('Content-Type'));
 		$this->assertEquals('foobar', $request->getBody());
+	}
+
+	public function testGetSetAttributes()
+	{
+		$request = new Request(new Url('http://127.0.0.1'), 'POST');
+		$request->setAttributes(array('foo' => 'bar'));
+
+		$this->assertEquals('bar', $request->getAttribute('foo'));
+		$this->assertEquals(null, $request->getAttribute('bar'));
+		$this->assertEquals(array('foo' => 'bar'), $request->getAttributes());
+
+		$request->setAttribute('bar', 'foo');
+
+		$this->assertEquals('foo', $request->getAttribute('bar'));
+		$this->assertEquals(array('foo' => 'bar', 'bar' => 'foo'), $request->getAttributes());
 	}
 }

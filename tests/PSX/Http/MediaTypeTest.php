@@ -117,6 +117,14 @@ class MediaTypeTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testParseInvalidMediaType()
+	{
+		MediaType::parse('foo/bar');
+	}
+
+	/**
 	 * @dataProvider acceptHeaderProvider
 	 */
 	public function testParseList($accept, $mediaTypeCount)

@@ -45,6 +45,13 @@ class CookieTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('www.yahoo.com', $cookie->getDomain());
 	}
 
+	public function testParseSetCookieInvalid()
+	{
+		$cookie = CookieParser::parseSetCookie('');
+
+		$this->assertEquals(null, $cookie);
+	}
+
 	public function testParseCookie()
 	{
 		$raw = 'PREF=ID=b2213461059ce5aa:U=7e750f10b5443cbd:FF=0:LD=de:TM=1355057682:LM=1416137366:IG=1:S=iUo8jIwdvU1XETOk; OGPC=4061130-15:; NID=67=KH_6L9jakszp8JPerRzPmmDlE-6SWo8OBPNDRWybmglbBn1pRkxcZhLgT65ELl0j0nSCP4wodw0UKGsk2SAUp1bGhep2DYqn7dbMYumzmMax2GHl1Y-HzLK4-Ct-9W-yrAH_gRs6DoH25Hn7epA; FOO; BAR=';

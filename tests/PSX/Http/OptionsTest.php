@@ -21,31 +21,31 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Http\Stream;
+namespace PSX\Http;
 
 /**
- * TempStreamTest
+ * OptionsTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class TempStreamTest extends StreamTestCase
+class OptionsTest extends \PHPUnit_Framework_TestCase
 {
-	protected function getStream()
+	public function testOptions()
 	{
-		$resource = fopen('php://memory', 'r+');
-		fwrite($resource, 'foobar');
-		rewind($resource);
+		$callback = function(){};
+		$options  = new Options();
 
-		return new TempStream($resource);
-	}
+		$options->setCallback($callback);
+		$options->setTimeout(3);
+		$options->setFollowLocation(true, 4);
+		$options->setSsl(true);
 
-	/**
-	 * @expectedException InvalidArgumentException
-	 */
-	public function testConstructor()
-	{
-		new TempStream('foo');
+		$this->assertEquals($callback, $options->getCallback());
+		$this->assertEquals(3, $options->getTimeout());
+		$this->assertEquals(true, $options->getFollowLocation());
+		$this->assertEquals(4, $options->getMaxRedirects());
+		$this->assertEquals(true, $options->getSsl());
 	}
 }
