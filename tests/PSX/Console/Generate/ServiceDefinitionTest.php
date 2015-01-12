@@ -21,45 +21,32 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Console;
-
-use PSX\Test\ControllerTestCase;
-use Symfony\Component\Console\Tester\CommandTester;
+namespace PSX\Console\Generate;
 
 /**
- * RouteCommandTest
+ * ServiceDefinitionTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class RouteCommandTest extends ControllerTestCase
+class ServiceDefinitionTest extends \PHPUnit_Framework_TestCase
 {
-	public function testCommand()
+	public function testServiceDefinition()
 	{
-		$command = getContainer()->get('console')->find('route');
+		$service = new ServiceDefinition('Foo\Bar', 'Test', true);
 
-		$commandTester = new CommandTester($command);
-		$commandTester->execute(array(
-		));
+		$this->assertEquals('Foo\Bar', $service->getNamespace());
+		$this->assertEquals('Test', $service->getClassName());
+		$this->assertEquals(null, $service->getServices());
+		$this->assertTrue($service->isDryRun());
 
-		$collection = getContainer()->get('routing_parser')->getCollection();
-		$response   = $commandTester->getDisplay();
+		$service->setNamespace('Bar\Foo');
+		$service->setClassName('Foo');
+		$service->setServices(array('connection'));
 
-		foreach($collection as $route)
-		{
-			$methods = implode('|', $route[0]);
-
-			$this->assertTrue(strpos($response, $methods) !== false, $methods);
-			$this->assertTrue(strpos($response, $route[1]) !== false, $route[1]);
-			$this->assertTrue(strpos($response, $route[2]) !== false, $route[2]);
-		}
-	}
-
-	protected function getPaths()
-	{
-		return array(
-			[['GET'], '/controller', 'PSX\Controller\Foo\Application\TestController::doIndex'],
-		);
+		$this->assertEquals('Bar\Foo', $service->getNamespace());
+		$this->assertEquals('Foo', $service->getClassName());
+		$this->assertEquals(array('connection'), $service->getServices());
 	}
 }

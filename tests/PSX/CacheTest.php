@@ -153,5 +153,33 @@ class CacheTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(false, $item->exists());
 		$this->assertEquals(null, $item->get());
 	}
+
+	public function testClear()
+	{
+		$cache = new Cache($this->getHandler());
+
+		$item = $cache->getItem('key');
+		$item->set('foobar');
+
+		$cache->save($item);
+
+		$item = $cache->getItem('key');
+
+		$this->assertEquals('key', $item->getKey());
+		$this->assertInstanceOf('DateTime', $item->getExpiration());
+		$this->assertEquals(true, $item->isHit());
+		$this->assertEquals(true, $item->exists());
+		$this->assertEquals('foobar', $item->get());
+
+		$cache->clear();
+
+		$item = $cache->getItem('key');
+
+		$this->assertEquals('key', $item->getKey());
+		$this->assertInstanceOf('DateTime', $item->getExpiration());
+		$this->assertEquals(false, $item->isHit());
+		$this->assertEquals(false, $item->exists());
+		$this->assertEquals(null, $item->get());
+	}
 }
 

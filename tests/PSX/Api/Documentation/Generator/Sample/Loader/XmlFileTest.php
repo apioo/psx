@@ -68,4 +68,17 @@ class XmlFileTest extends \PHPUnit_Framework_TestCase
 		$this->assertEmpty($loader->get(View::METHOD_GET | View::TYPE_REQUEST, '/foo'));
 	}
 
+	public function testGetInvalidType()
+	{
+		$loader = new XmlFile(__DIR__ . '/sample.xml');
+
+		$this->assertEmpty($loader->get(View::METHOD_GET | View::TYPE_REQUEST, '/bar/type'));
+	}
+
+	public function testGetInvalidRequestMethod()
+	{
+		$loader = new XmlFile(__DIR__ . '/sample.xml');
+
+		$this->assertEmpty($loader->get(View::METHOD_GET | View::TYPE_REQUEST, '/bar/method'));
+	}
 }

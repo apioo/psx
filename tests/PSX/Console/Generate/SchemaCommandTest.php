@@ -65,7 +65,30 @@ class SchemaCommandTest extends CommandTestCase
 		$commandTester = new CommandTester($command);
 		$commandTester->execute(array(
 			'namespace' => 'Acme\Foo\Bar',
-			'table'     => 'psx_handler_comment'
+			'table'     => 'psx_table_command_test'
+		));
+	}
+
+	public function testCommandWithoutTable()
+	{
+		$command = $this->getMockBuilder('PSX\Console\Generate\SchemaCommand')
+			->setConstructorArgs(array(getContainer()->get('connection')))
+			->setMethods(array('makeDir', 'writeFile'))
+			->getMock();
+
+		$command->expects($this->once())
+			->method('writeFile')
+			->with(
+				$this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Bar.php'), 
+				$this->callback(function($source){
+					$this->assertSource($this->getExpectedSourceNoTable(), $source);
+					return true;
+				})
+			);
+
+		$commandTester = new CommandTester($command);
+		$commandTester->execute(array(
+			'namespace' => 'Acme\Foo\Bar',
 		));
 	}
 
@@ -104,7 +127,47 @@ class Bar extends SchemaAbstract
 	{
 		$sb = $this->getSchemaBuilder('bar');
 		$sb->integer('id');
-		$sb->integer('userId');
+		$sb->integer('col_bigint');
+		$sb->string('col_blob');
+		$sb->boolean('col_boolean');
+		$sb->dateTime('col_datetime');
+		$sb->dateTime('col_datetimetz');
+		$sb->string('col_date');
+		$sb->float('col_decimal');
+		$sb->float('col_float');
+		$sb->integer('col_integer');
+		$sb->integer('col_smallint');
+		$sb->string('col_text');
+		$sb->string('col_time');
+		$sb->string('col_string');
+
+		return $sb->getProperty();
+	}
+}
+
+PHP;
+	}
+
+	protected function getExpectedSourceNoTable()
+	{
+		return <<<'PHP'
+<?php
+
+namespace Acme\Foo;
+
+use PSX\Data\SchemaAbstract;
+
+/**
+ * Bar
+ *
+ * @see http://phpsx.org/doc/concept/schema.html
+ */
+class Bar extends SchemaAbstract
+{
+	public function getDefinition()
+	{
+		$sb = $this->getSchemaBuilder('bar');
+		$sb->integer('id');
 		$sb->string('title');
 		$sb->dateTime('date');
 

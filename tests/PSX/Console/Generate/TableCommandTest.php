@@ -23,6 +23,7 @@
 
 namespace PSX\Console\Generate;
 
+use Doctrine\DBAL\Types\Type;
 use PSX\Test\CommandTestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -65,7 +66,7 @@ class TableCommandTest extends CommandTestCase
 		$commandTester = new CommandTester($command);
 		$commandTester->execute(array(
 			'namespace' => 'Acme\Foo\Bar',
-			'table'     => 'psx_handler_comment'
+			'table'     => 'psx_table_command_test'
 		));
 	}
 
@@ -102,16 +103,26 @@ class Bar extends TableAbstract
 {
 	public function getName()
 	{
-		return 'psx_handler_comment';
+		return 'psx_table_command_test';
 	}
 
 	public function getColumns()
 	{
 		return array(
 			'id' => self::TYPE_INT | self::AUTO_INCREMENT | self::PRIMARY_KEY,
-			'userId' => self::TYPE_INT,
-			'title' => self::TYPE_VARCHAR,
-			'date' => self::TYPE_DATETIME,
+			'col_bigint' => self::TYPE_BIGINT,
+			'col_blob' => self::TYPE_BLOB,
+			'col_boolean' => self::TYPE_BOOLEAN,
+			'col_datetime' => self::TYPE_DATETIME,
+			'col_datetimetz' => self::TYPE_DATETIME,
+			'col_date' => self::TYPE_DATE,
+			'col_decimal' => self::TYPE_DECIMAL,
+			'col_float' => self::TYPE_FLOAT,
+			'col_integer' => self::TYPE_INT,
+			'col_smallint' => self::TYPE_SMALLINT,
+			'col_text' => self::TYPE_TEXT,
+			'col_time' => self::TYPE_TIME,
+			'col_string' => self::TYPE_VARCHAR,
 		);
 	}
 }
