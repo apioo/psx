@@ -163,7 +163,11 @@ class CacheTest extends \PHPUnit_Framework_TestCase
 
 		$cache->save($item);
 
-		$item = $cache->getItem('key');
+		$items = $cache->getItems(['key']);
+
+		$this->assertArrayHasKey(0, $items);
+
+		$item = $items[0];
 
 		$this->assertEquals('key', $item->getKey());
 		$this->assertInstanceOf('DateTime', $item->getExpiration());
