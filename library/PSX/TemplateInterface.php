@@ -24,9 +24,7 @@
 namespace PSX;
 
 /**
- * Interface wich describes an template engine. If your code uses these methods 
- * you can simply switch between template engines without changing the buisness 
- * logic
+ * Interface which describes an template engine
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
