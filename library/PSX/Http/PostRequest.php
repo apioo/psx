@@ -36,24 +36,22 @@ use PSX\Url;
 class PostRequest extends Request
 {
 	/**
-	 * __construct
-	 *
 	 * @param PSX\Url|string $url
-	 * @param array $header
+	 * @param array $headers
 	 * @param Psr\Http\Message\StreamableInterface|string|array $body
 	 */
-	public function __construct($url, array $header = array(), $body = null)
+	public function __construct($url, array $headers = array(), $body = null)
 	{
 		$url = $url instanceof Url ? $url : new Url((string) $url);
 
 		if(is_array($body))
 		{
-			$header['Content-Type'] = 'application/x-www-form-urlencoded';
+			$headers['Content-Type'] = 'application/x-www-form-urlencoded';
 
 			$body = http_build_query($body, '', '&');
 		}
 
-		parent::__construct($url, 'POST', $header, $body);
+		parent::__construct($url, 'POST', $headers, $body);
 
 		if(!$this->hasHeader('Host'))
 		{

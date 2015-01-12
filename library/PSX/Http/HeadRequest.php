@@ -35,17 +35,14 @@ use PSX\Url;
 class HeadRequest extends Request
 {
 	/**
-	 * __construct
-	 *
 	 * @param PSX\Url|string $url
-	 * @param array $header
+	 * @param array $headers
 	 */
-	public function __construct($url, array $header = array())
+	public function __construct($url, array $headers = array())
 	{
-		$url    = $url instanceof Url ? $url : new Url((string) $url);
-		$method = 'HEAD';
+		$url = $url instanceof Url ? $url : new Url((string) $url);
 
-		parent::__construct($url, $method, $header);
+		parent::__construct($url, 'HEAD', $headers);
 
 		if(!$this->hasHeader('Host'))
 		{
