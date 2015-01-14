@@ -1,5 +1,6 @@
 
 0.9.4
+* Sql table query methods return now an array instead of RecordInterface
 * Added media type class and improved content negotiation
 * Improved JWT implementation
 * Removed unused methods from Base class which now contains only the getVersion 
