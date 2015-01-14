@@ -300,14 +300,15 @@ trait TableTestCase
 
 		foreach($result as $row)
 		{
-			$this->assertInstanceOf('PSX\Data\Record', $row);
-			$this->assertEquals(true, $row->getId() != null);
-			$this->assertEquals(true, $row->getTitle() != null);
+			$this->assertArrayHasKey('id', $row);
+			$this->assertArrayHasKey('title', $row);
+			$this->assertEquals(true, $row['id'] != null);
+			$this->assertEquals(true, $row['title'] != null);
 		}
 
 		// check order
-		$this->assertEquals(4, $result[0]->getId());
-		$this->assertEquals(3, $result[1]->getId());
+		$this->assertEquals(4, $result[0]['id']);
+		$this->assertEquals(3, $result[1]['id']);
 	}
 
 	public function testGetAllSortAsc()
@@ -593,12 +594,12 @@ trait TableTestCase
 
 		$table->create($record);
 
-		$record = $table->getOneById(5);
+		$row = $table->getOneById(5);
 
-		$this->assertEquals(5, $record->getId());
-		$this->assertEquals(2, $record->getUserId());
-		$this->assertEquals('foobar', $record->getTitle());
-		$this->assertInstanceOf('DateTime', $record->getDate());
+		$this->assertEquals(5, $row['id']);
+		$this->assertEquals(2, $row['userId']);
+		$this->assertEquals('foobar', $row['title']);
+		$this->assertInstanceOf('DateTime', $row['date']);
 	}
 
 	public function testUpdate()
@@ -610,18 +611,18 @@ trait TableTestCase
 			$this->markTestSkipped('Table not an manipulation interface');
 		}
 
-		$record = $table->getOneById(1);
-		$record->setUserId(2);
-		$record->setTitle('foobar');
-		$record->setDate(new DateTime());
+		$row = $table->getOneById(1);
+		$row['userId'] = 2;
+		$row['title'] = 'foobar';
+		$row['date'] = new DateTime();
 
-		$table->update($record);
+		$table->update($row);
 
-		$record = $table->getOneById(1);
+		$row = $table->getOneById(1);
 
-		$this->assertEquals(2, $record->getUserId());
-		$this->assertEquals('foobar', $record->getTitle());
-		$this->assertInstanceOf('DateTime', $record->getDate());
+		$this->assertEquals(2, $row['userId']);
+		$this->assertEquals('foobar', $row['title']);
+		$this->assertInstanceOf('DateTime', $row['date']);
 	}
 
 	public function testDelete()
@@ -633,27 +634,29 @@ trait TableTestCase
 			$this->markTestSkipped('Table not an manipulation interface');
 		}
 
-		$record = $table->getOneById(1);
+		$row = $table->getOneById(1);
 
-		$table->delete($record);
+		$table->delete($row);
 
-		$record = $table->getOneById(1);
+		$row = $table->getOneById(1);
 
-		$this->assertEmpty($record);
+		$this->assertEmpty($row);
 	}
 
 	protected function assertResult($expect, $result)
 	{
 		foreach($result as $key => $row)
 		{
-			$this->assertInstanceOf('PSX\Data\Record', $row);
-			$this->assertEquals(array('id', 'userId', 'title', 'date'), array_keys($row->getRecordInfo()->getData()));
-			
-			$this->assertEquals($expect[$key]['id'], $row->getId());
-			$this->assertEquals($expect[$key]['userId'], $row->getUserId());
-			$this->assertEquals($expect[$key]['title'], $row->getTitle());
-			$this->assertInstanceOf('DateTime', $row->getDate());
-			$this->assertEquals($expect[$key]['date'], $row->getDate()->format('Y-m-d H:i:s'));
+			$this->assertArrayHasKey('id', $row);
+			$this->assertArrayHasKey('userId', $row);
+			$this->assertArrayHasKey('title', $row);
+			$this->assertArrayHasKey('date', $row);
+
+			$this->assertEquals($expect[$key]['id'], $row['id']);
+			$this->assertEquals($expect[$key]['userId'], $row['userId']);
+			$this->assertEquals($expect[$key]['title'], $row['title']);
+			$this->assertInstanceOf('DateTime', $row['date']);
+			$this->assertEquals($expect[$key]['date'], $row['date']->format('Y-m-d H:i:s'));
 		}
 	}
 }

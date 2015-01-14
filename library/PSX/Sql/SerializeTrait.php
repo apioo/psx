@@ -35,15 +35,29 @@ use Doctrine\DBAL\Types\Type;
  */
 trait SerializeTrait
 {
+	protected $mapping = array(
+		TableInterface::TYPE_SMALLINT => Type::SMALLINT,
+		TableInterface::TYPE_INT      => Type::INTEGER,
+		TableInterface::TYPE_BIGINT   => Type::BIGINT,
+		TableInterface::TYPE_BOOLEAN  => Type::BOOLEAN,
+		TableInterface::TYPE_DECIMAL  => Type::DECIMAL,
+		TableInterface::TYPE_FLOAT    => Type::FLOAT,
+		TableInterface::TYPE_DATE     => Type::DATE,
+		TableInterface::TYPE_DATETIME => Type::DATETIME,
+		TableInterface::TYPE_TIME     => Type::TIME,
+		TableInterface::TYPE_VARCHAR  => Type::STRING,
+		TableInterface::TYPE_TEXT     => Type::TEXT,
+		TableInterface::TYPE_BLOB     => Type::BLOB,
+	);
+
 	protected function unserializeType($value, $type)
 	{
 		$type     = (($type >> 20) & 0xFF) << 20;
 		$platform = $this->connection->getDatabasePlatform();
-		$mapping  = $this->getDbalTableMapping();
 
-		if(isset($mapping[$type]))
+		if(isset($this->mapping[$type]))
 		{
-			return Type::getType($mapping[$type])->convertToPHPValue($value, $platform);
+			return Type::getType($this->mapping[$type])->convertToPHPValue($value, $platform);
 		}
 		else
 		{
@@ -55,33 +69,14 @@ trait SerializeTrait
 	{
 		$type     = (($type >> 20) & 0xFF) << 20;
 		$platform = $this->connection->getDatabasePlatform();
-		$mapping  = $this->getDbalTableMapping();
 
-		if(isset($mapping[$type]))
+		if(isset($this->mapping[$type]))
 		{
-			return Type::getType($mapping[$type])->convertToDatabaseValue($value, $platform);
+			return Type::getType($this->mapping[$type])->convertToDatabaseValue($value, $platform);
 		}
 		else
 		{
 			return Type::getType(Type::STRING)->convertToDatabaseValue($value, $platform);
 		}
-	}
-
-	protected function getDbalTableMapping()
-	{
-		return array(
-			TableInterface::TYPE_SMALLINT => Type::SMALLINT,
-			TableInterface::TYPE_INT      => Type::INTEGER,
-			TableInterface::TYPE_BIGINT   => Type::BIGINT,
-			TableInterface::TYPE_BOOLEAN  => Type::BOOLEAN,
-			TableInterface::TYPE_DECIMAL  => Type::DECIMAL,
-			TableInterface::TYPE_FLOAT    => Type::FLOAT,
-			TableInterface::TYPE_DATE     => Type::DATE,
-			TableInterface::TYPE_DATETIME => Type::DATETIME,
-			TableInterface::TYPE_TIME     => Type::TIME,
-			TableInterface::TYPE_VARCHAR  => Type::STRING,
-			TableInterface::TYPE_TEXT     => Type::TEXT,
-			TableInterface::TYPE_BLOB     => Type::BLOB,
-		);
 	}
 }

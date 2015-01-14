@@ -270,20 +270,19 @@ abstract class TableAbstract extends TableQueryAbstract implements TableInterfac
 
 	protected function project($sql, array $params = array(), array $columns = null)
 	{
-		$name    = $this->getDisplayName();
 		$columns = $columns === null ? $this->getColumns() : $columns;
 
-		return $this->connection->project($sql, $params, function(array $row) use ($name, $columns){
+		return $this->connection->project($sql, $params, function(array $row) use ($columns){
 
-			foreach($row as $key => $value)
+			foreach($columns as $name => $type)
 			{
-				if(isset($columns[$key]))
+				if(isset($row[$name]))
 				{
-					$row[$key] = $this->unserializeType($value, $columns[$key]);
+					$row[$name] = $this->unserializeType($row[$name], $type);
 				}
 			}
 
-			return new Record($name, $row);
+			return $row;
 
 		});
 	}

@@ -122,12 +122,12 @@ class TableTest extends DbTestCase
 
 		foreach($result as $key => $row)
 		{
-			$this->assertInstanceOf('PSX\Data\Record', $row);
-			$this->assertEquals(array('title', 'date'), array_keys($row->getRecordInfo()->getData()));
-			
-			$this->assertEquals($expect[$key]['title'], $row->getTitle());
-			$this->assertInstanceOf('DateTime', $row->getDate());
-			$this->assertEquals($expect[$key]['date'], $row->getDate()->format('Y-m-d H:i:s'));
+			$this->assertArrayHasKey('title', $row);
+			$this->assertArrayHasKey('date', $row);
+
+			$this->assertEquals($expect[$key]['title'], $row['title']);
+			$this->assertInstanceOf('DateTime', $row['date']);
+			$this->assertEquals($expect[$key]['date'], $row['date']->format('Y-m-d H:i:s'));
 		}
 	}
 
