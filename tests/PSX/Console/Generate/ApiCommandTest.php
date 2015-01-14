@@ -170,9 +170,11 @@ class ApiCommandTest extends CommandTestCase
 
 namespace Acme\Foo;
 
-use PSX\Controller\SchemaApiAbstract;
 use PSX\Api\Documentation;
+use PSX\Api\Version;
 use PSX\Api\View;
+use PSX\Controller\SchemaApiAbstract;
+use PSX\Data\RecordInterface;
 
 /**
  * Bar
@@ -199,7 +201,7 @@ class Bar extends SchemaApiAbstract
 	public function getDocumentation()
 	{
 		$view = new View();
-		$view->setGet($this->schemaManager->get('Acme\Foo\Schema\GetResponse'));
+		$view->setGet($this->schemaManager->getSchema('Acme\Foo\Schema\Collection'));
 
 		return new Documentation\Simple($view);
 	}
@@ -261,9 +263,11 @@ PHP;
 
 namespace Acme\Foo;
 
-use PSX\Controller\SchemaApiAbstract;
 use PSX\Api\Documentation;
+use PSX\Api\Version;
 use PSX\Api\View;
+use PSX\Controller\SchemaApiAbstract;
+use PSX\Data\RecordInterface;
 
 /**
  * Bar
@@ -284,7 +288,7 @@ class Bar extends SchemaApiAbstract
 	public function getDocumentation()
 	{
 		$view = new View();
-		$view->setGet($this->schemaManager->get('Acme\Foo\Schema\GetResponse'));
+		$view->setGet($this->schemaManager->getSchema('Acme\Foo\Schema\Collection'));
 
 		return new Documentation\Simple($view);
 	}
@@ -346,9 +350,11 @@ PHP;
 
 namespace Acme\Foo;
 
-use PSX\Controller\SchemaApiAbstract;
 use PSX\Api\Documentation;
+use PSX\Api\Version;
 use PSX\Api\View;
+use PSX\Controller\SchemaApiAbstract;
+use PSX\Data\RecordInterface;
 
 /**
  * Bar
@@ -369,7 +375,7 @@ class Bar extends SchemaApiAbstract
 	public function getDocumentation()
 	{
 		$view = new View();
-		$view->setGet($this->schemaManager->get('Acme\Foo\Schema\GetResponse'));
+		$view->setGet($this->schemaManager->getSchema('Acme\Foo\Schema\Collection'));
 
 		return new Documentation\Simple($view);
 	}
