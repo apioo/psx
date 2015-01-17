@@ -27,11 +27,10 @@ use InvalidArgumentException;
 
 /**
  * Represents an URL. A string is only an valid URL if it has an scheme and host
- * part. If the URL is not valid an exception gets thrown. Also the query 
- * parameters are parsed into an array. Note if you want display an URL you need 
- * to escape the URL according to the context. I.e. to display the URL in an 
- * HTML context it is nessacary to use htmlspecialchars since the URL could 
- * contain an XSS vector
+ * part. If the URL is not valid an exception gets thrown. Note if you want 
+ * display an URL you need to escape the URL according to the context. I.e. to 
+ * display the URL in an HTML context it is nessacary to use htmlspecialchars 
+ * since the URL could contain an XSS vector
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
