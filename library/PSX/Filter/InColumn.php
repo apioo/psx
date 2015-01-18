@@ -56,8 +56,14 @@ class InColumn extends FilterAbstract
 	 */
 	public function apply($value)
 	{
-		$sql   = 'SELECT COUNT(*) FROM `' . $this->tableName . '` WHERE `' . $this->columnName . '` = :value';
-		$count = (int) $this->connection->fetchColumn($sql, array('value' => $value));
+		$builder = $this->connection->createQueryBuilder()
+			->select($this->connection->getDatabasePlatform()->getCountExpression('*'))
+			->from($this->tableName, null)
+			->where($this->columnName . ' = :value');
+
+		$count = (int) $this->connection->fetchColumn($builder->getSQL(), array(
+			'value' => $value
+		));
 
 		return $count > 0;
 	}
