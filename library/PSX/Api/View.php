@@ -74,7 +74,7 @@ class View implements \IteratorAggregate
 		return $this->status;
 	}
 
-	public function setGet(SchemaInterface $responseSchema)
+	public function setGet(SchemaInterface $responseSchema = null)
 	{
 		$this->set(self::METHOD_GET | self::TYPE_RESPONSE, $responseSchema);
 	}
@@ -94,7 +94,7 @@ class View implements \IteratorAggregate
 		return $this->get(self::METHOD_GET | self::TYPE_RESPONSE);
 	}
 
-	public function setPost(SchemaInterface $requestSchema, SchemaInterface $responseSchema = null)
+	public function setPost(SchemaInterface $requestSchema = null, SchemaInterface $responseSchema = null)
 	{
 		$this->set(self::METHOD_POST | self::TYPE_REQUEST, $requestSchema);
 		$this->set(self::METHOD_POST | self::TYPE_RESPONSE, $responseSchema);
@@ -125,7 +125,7 @@ class View implements \IteratorAggregate
 		return $this->get(self::METHOD_POST | self::TYPE_RESPONSE);
 	}
 
-	public function setPut(SchemaInterface $requestSchema, SchemaInterface $responseSchema = null)
+	public function setPut(SchemaInterface $requestSchema = null, SchemaInterface $responseSchema = null)
 	{
 		$this->set(self::METHOD_PUT | self::TYPE_REQUEST, $requestSchema);
 		$this->set(self::METHOD_PUT | self::TYPE_RESPONSE, $responseSchema);
@@ -156,7 +156,7 @@ class View implements \IteratorAggregate
 		return $this->get(self::METHOD_PUT | self::TYPE_RESPONSE);
 	}
 
-	public function setDelete(SchemaInterface $requestSchema, SchemaInterface $responseSchema = null)
+	public function setDelete(SchemaInterface $requestSchema = null, SchemaInterface $responseSchema = null)
 	{
 		$this->set(self::METHOD_DELETE | self::TYPE_REQUEST, $requestSchema);
 		$this->set(self::METHOD_DELETE | self::TYPE_RESPONSE, $responseSchema);
