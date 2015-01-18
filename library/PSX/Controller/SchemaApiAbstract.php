@@ -28,6 +28,7 @@ use PSX\Api\DocumentedInterface;
 use PSX\Api\Version;
 use PSX\Api\InvalidVersionException;
 use PSX\ControllerAbstract;
+use PSX\Data\Record;
 use PSX\Data\RecordInterface;
 use PSX\Data\SchemaInterface;
 use PSX\Http\Exception as StatusCode;
@@ -74,7 +75,7 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 			throw new StatusCode\MethodNotAllowedException('Method is not allowed', $view->getAllowedMethods());
 		}
 
-		$record   = $this->import($view->getPostRequest());
+		$record   = $view->hasPostRequest() ? $this->import($view->getPostRequest()) : new Record();
 		$response = $this->doCreate($record, $version);
 
 		if($view->hasPostResponse())
@@ -100,7 +101,7 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 			throw new StatusCode\MethodNotAllowedException('Method is not allowed', $view->getAllowedMethods());
 		}
 
-		$record   = $this->import($view->getPutRequest());
+		$record   = $view->hasPutRequest() ? $this->import($view->getPutRequest()) : new Record();
 		$response = $this->doUpdate($record, $version);
 
 		if($view->hasPutResponse())
@@ -126,7 +127,7 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 			throw new StatusCode\MethodNotAllowedException('Method is not allowed', $view->getAllowedMethods());
 		}
 
-		$record   = $this->import($view->getDeleteRequest());
+		$record   = $view->hasDeleteRequest() ? $this->import($view->getDeleteRequest()) : new Record();
 		$response = $this->doDelete($record, $version);
 
 		if($view->hasDeleteResponse())
