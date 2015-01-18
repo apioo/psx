@@ -51,7 +51,13 @@ class RecordValidatorTest extends \PHPUnit_Framework_TestCase
 			new Property('date', Validate::TYPE_STRING, array(new Filter\DateTime())),
 		));
 
-		$validator->validate($record);
+		$result = $validator->validate($record);
+
+		$this->assertInstanceOf('PSX\Validate\ValidateTestRecord', $result);
+		$this->assertEquals(1, $result->getId());
+		$this->assertEquals('foo', $result->getTitle());
+		$this->assertInstanceOf('DateTime', $result->getDate());
+		$this->assertEquals('2013-12-10', $result->getDate()->format('Y-m-d'));
 	}
 
 	/**
@@ -126,9 +132,6 @@ class RecordValidatorTest extends \PHPUnit_Framework_TestCase
 		$validator->validate('foo');
 	}
 
-	/**
-	 * @expectedException PSX\DisplayException
-	 */
 	public function testValidateEmptyData()
 	{
 		$validator = new RecordValidator(new Validate(), array(
@@ -137,7 +140,12 @@ class RecordValidatorTest extends \PHPUnit_Framework_TestCase
 			new Property('date', Validate::TYPE_STRING, array(new Filter\DateTime())),
 		));
 
-		$validator->validate(new ValidateTestRecord());
+		$result = $validator->validate(new ValidateTestRecord());
+
+		$this->assertInstanceOf('PSX\Validate\ValidateTestRecord', $result);
+		$this->assertEquals(null, $result->getId());
+		$this->assertEquals(null, $result->getTitle());
+		$this->assertEquals(null, $result->getDate());
 	}
 }
 

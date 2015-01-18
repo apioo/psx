@@ -46,11 +46,19 @@ class ArrayValidatorTest extends \PHPUnit_Framework_TestCase
 			new Property('date', Validate::TYPE_STRING, array(new Filter\DateTime())),
 		));
 
-		$validator->validate(array(
+		$result = $validator->validate(array(
 			'id'    => 1,
 			'title' => 'foo',
 			'date'  => '2013-12-10 00:00:00',
 		));
+
+		$this->assertArrayHasKey('id', $result);
+		$this->assertEquals(1, $result['id']);
+		$this->assertArrayHasKey('title', $result);
+		$this->assertEquals('foo', $result['title']);
+		$this->assertArrayHasKey('date', $result);
+		$this->assertInstanceOf('DateTime', $result['date']);
+		$this->assertEquals('2013-12-10', $result['date']->format('Y-m-d'));
 	}
 
 	/**
@@ -117,9 +125,6 @@ class ArrayValidatorTest extends \PHPUnit_Framework_TestCase
 		$validator->validate('foo');
 	}
 
-	/**
-	 * @expectedException PSX\DisplayException
-	 */
 	public function testValidateEmptyData()
 	{
 		$validator = new ArrayValidator(new Validate(), array(
@@ -128,6 +133,13 @@ class ArrayValidatorTest extends \PHPUnit_Framework_TestCase
 			new Property('date', Validate::TYPE_STRING, array(new Filter\DateTime())),
 		));
 
-		$validator->validate(array());
+		$result = $validator->validate(array());
+
+		$this->assertArrayHasKey('id', $result);
+		$this->assertEquals(null, $result['id']);
+		$this->assertArrayHasKey('title', $result);
+		$this->assertEquals(null, $result['title']);
+		$this->assertArrayHasKey('date', $result);
+		$this->assertEquals(null, $result['date']);
 	}
 }

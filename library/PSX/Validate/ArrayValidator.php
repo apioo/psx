@@ -42,11 +42,6 @@ class ArrayValidator extends ValidatorAbstract
 			throw new InvalidArgumentException('Data must be an array');
 		}
 
-		if(empty($data))
-		{
-			throw new DisplayException('No valid data defined');
-		}
-
 		$cleanData = array();
 
 		foreach($data as $key => $value)

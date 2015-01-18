@@ -36,8 +36,11 @@ interface ValidatorInterface
 	const COLLECT_ERRORS = 2;
 
 	/**
-	 * Validates the given data against the defined field rules. Returns either
-	 * the clean data or throws an exception
+	 * Validates the given data against defined rules. The method should search
+	 * for each key in the $data array for an fitting rule. If such an rule does 
+	 * not exists or the value is not valid an exception shall be thrown. That 
+	 * means that the result will contain only valid values. If $data is empty 
+	 * the validation should pass
 	 *
 	 * @param mixed $data
 	 * @return mixed

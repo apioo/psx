@@ -45,11 +45,6 @@ class RecordValidator extends ValidatorAbstract
 
 		$data = $record->getRecordInfo()->getData();
 
-		if(empty($data))
-		{
-			throw new DisplayException('No valid data defined');
-		}
-
 		foreach($data as $key => $value)
 		{
 			$value  = $this->getPropertyValue($this->getProperty($key), $value, $key);

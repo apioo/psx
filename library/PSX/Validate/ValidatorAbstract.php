@@ -108,14 +108,6 @@ abstract class ValidatorAbstract implements ValidatorInterface
 	}
 
 	/**
-	 * Validates the given data against the defined field rules
-	 *
-	 * @param mixed $data
-	 * @return mixed
-	 */
-	abstract public function validate($data);
-
-	/**
 	 * Returns the validated value or throws an exception. If the flag 
 	 * COLLECT_ERRORS was set null gets returned on an invalid value
 	 *
