@@ -23,15 +23,7 @@
 
 namespace PSX\Dependency;
 
-use PSX\DisplayException;
-use PSX\Event as EventName;
-use PSX\Event\RequestIncomingEvent;
-use PSX\Event\RouteMatchedEvent;
-use PSX\Event\ControllerExecuteEvent;
-use PSX\Event\ControllerProcessedEvent;
-use PSX\Event\ResponseSendEvent;
-use PSX\Event\ExceptionThrownEvent;
-use PSX\Loader\Location;
+use PSX\Log\LogListener;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -58,66 +50,6 @@ trait Event
 
 	protected function appendDefaultListener(EventDispatcherInterface $eventDispatcher)
 	{
-		$logger = $this->get('logger');
-
-		$eventDispatcher->addListener(EventName::REQUEST_INCOMING, function(RequestIncomingEvent $event) use ($logger){
-
-			$logger->info('Incoming request ' . $event->getRequest()->getMethod() . ' ' . $event->getRequest()->getUrl());
-
-		});
-
-		$eventDispatcher->addListener(EventName::ROUTE_MATCHED, function(RouteMatchedEvent $event) use ($logger){
-
-			$path       = '/' . ltrim($event->getPath(), '/');
-			$controller = $event->getLocation()->getParameter(Location::KEY_SOURCE);
-
-			$logger->info('Route matched ' . $event->getRequestMethod() . ' ' . $path . ' -> ' . $controller);
-
-		});
-
-		$eventDispatcher->addListener(EventName::CONTROLLER_EXECUTE, function(ControllerExecuteEvent $event) use ($logger){
-
-			$controller = get_class($event->getController());
-
-			$logger->info('Controller execute ' . $controller);
-
-		});
-
-		$eventDispatcher->addListener(EventName::CONTROLLER_PROCESSED, function(ControllerProcessedEvent $event) use ($logger){
-
-			$controller = get_class($event->getController());
-
-			$logger->info('Controller processed ' . $controller);
-
-		});
-
-		$eventDispatcher->addListener(EventName::RESPONSE_SEND, function(ResponseSendEvent $event) use ($logger){
-
-			$logger->info('Send response');
-
-		});
-
-		$eventDispatcher->addListener(EventName::EXCEPTION_THROWN, function(ExceptionThrownEvent $event) use ($logger){
-
-			$exception = $event->getException();
-			$severity  = $exception instanceof \ErrorException ? $exception->getSeverity() : null;
-			$context   = array(
-				'file'     => $exception->getFile(),
-				'line'     => $exception->getLine(),
-				'trace'    => $exception->getTraceAsString(),
-				'code'     => $exception->getCode(),
-				'severity' => $severity,
-			);
-
-			if($exception instanceof DisplayException)
-			{
-				$logger->notice($exception->getMessage(), $context);
-			}
-			else
-			{
-				$logger->error($exception->getMessage(), $context);
-			}
-
-		});
+		$eventDispatcher->addSubscriber(new LogListener($this->get('logger')));
 	}
 }
