@@ -55,4 +55,29 @@ class StatusCodeException extends \PSX\Exception
 	{
 		return $this->statusCode;
 	}
+
+	public function isInformational()
+	{
+		return $this->statusCode >= 100 && $this->statusCode < 200;
+	}
+
+	public function isSuccessful()
+	{
+		return $this->statusCode >= 200 && $this->statusCode < 300;
+	}
+
+	public function isRedirection()
+	{
+		return $this->statusCode >= 300 && $this->statusCode < 400;
+	}
+
+	public function isClientError()
+	{
+		return $this->statusCode >= 400 && $this->statusCode < 500;
+	}
+
+	public function isServerError()
+	{
+		return $this->statusCode >= 500 && $this->statusCode < 600;
+	}
 }
