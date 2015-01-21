@@ -83,6 +83,9 @@ class DispatchTest extends ControllerTestCase
 
 		$this->loadController($request, $response);
 
+		getContainer()->get('event_dispatcher')->removeListener(Event::REQUEST_INCOMING, $requestIncomingListener);
+		getContainer()->get('event_dispatcher')->removeListener(Event::RESPONSE_SEND, $responseSendListener);
+
 		$this->assertEquals('foo', (string) $response->getBody());
 	}
 
