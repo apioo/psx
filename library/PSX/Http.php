@@ -58,6 +58,8 @@ class Http
 {
 	public static $newLine = "\r\n";
 	public static $codes   = array(
+		100 => 'Continue',
+		101 => 'Switching Protocols',
 		200 => 'OK',
 		201 => 'Created',
 		202 => 'Accepted',
