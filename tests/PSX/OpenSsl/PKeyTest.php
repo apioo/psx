@@ -32,6 +32,14 @@ namespace PSX\OpenSsl;
  */
 class PKeyTest extends \PHPUnit_Framework_TestCase
 {
+	protected function setUp()
+	{
+		if(!function_exists('openssl_pkey_new'))
+		{
+			$this->markTestSkipped('Openssl extension not installed');
+		}
+	}
+
 	public function testExport()
 	{
 		$pkey = new PKey();

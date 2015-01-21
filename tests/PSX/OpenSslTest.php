@@ -34,6 +34,14 @@ use PSX\OpenSsl\Pkey;
  */
 class OpenSslTest extends \PHPUnit_Framework_TestCase
 {
+	protected function setUp()
+	{
+		if(!function_exists('openssl_pkey_new'))
+		{
+			$this->markTestSkipped('Openssl extension not installed');
+		}
+	}
+
 	public function testEncryptDecrypt()
 	{
 		$data   = 'Secret text';
