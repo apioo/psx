@@ -58,6 +58,68 @@ class OpenSslTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals($data, $decrypt);
 	}
 
+	/**
+	 * This is essentially the openid association flow where two parties 
+	 * establish an shared secret. Only the server/client public key and mac key 
+	 * are transfered over the wire. The shared secret can then be used to 
+	 * encrypt or sign data
+	 */
+	public function testDhComputeKey()
+	{
+		if(!defined('OPENSSL_KEYTYPE_DH'))
+		{
+			$this->markTestSkipped('Key type DH not supported');
+		}
+
+		// both parties must know these parameters 
+		$p      = pack('H*', 'dcf93a0b883972ec0e19989ac5a2ce310e1d37717e8d9571bb7623731866e61ef75a2e27898b057f9891c2e27a639c3f29b60814581cd3b2ca3986d2683705577d45c2e7e52dc81c7a171876e5cea74b1448bfdfaf18828efd2519f14e45e3826634af1949e5b535cc829a483b8a76223e5d490a257f05bdff16f2fb22c583ab');
+		$g      = pack('H*', '02');
+		$dhFunc = 'SHA256';
+
+		// the client generates a new key
+		$clientKey = new PKey(array(
+			'private_key_type' => OPENSSL_KEYTYPE_DH,
+			'dh' => array(
+				'p' => $p, 
+				'g' => $g,
+			)
+		));
+
+		$details         = $clientKey->getDetails();
+		$clientPublicKey = $details['dh']['pub_key'];
+
+		// the server receives the public key of the client
+
+		// the server generates a random secret
+		$secret = OpenSsl::randomPseudoBytes(32);
+
+		// the server creates a new key
+		$serverKey = new PKey(array(
+			'private_key_type' => OPENSSL_KEYTYPE_DH,
+			'dh' => array(
+				'p' => $p,
+				'g' => $g,
+			)
+		));
+
+		$details         = $serverKey->getDetails();
+		$serverPublicKey = $details['dh']['pub_key'];
+
+		// the server generates the dh key
+		$dhKey  = OpenSsl::dhComputeKey($clientPublicKey, $serverKey);
+		$digest = OpenSsl::digest($dhKey, $dhFunc, true);
+		$macKey = $digest ^ $secret;
+
+		// the client receives the public key and mac key of the server
+		$dhKey  = OpenSsl::dhComputeKey($serverPublicKey, $clientKey);
+		$digest = OpenSsl::digest($dhKey, $dhFunc, true);
+		$result = $digest ^ $macKey;
+
+		// we have established a shared secret
+
+		$this->assertEquals($secret, $result);
+	}
+
 	public function testDigest()
 	{
 		$methods = OpenSsl::getMdMethods();
