@@ -39,23 +39,27 @@ interface TableInterface extends TableQueryInterface, TableManipulationInterface
 
 	// integer
 	const TYPE_SMALLINT   = 0x100000;
-	const TYPE_INT        = 0x400000;
-	const TYPE_BIGINT     = 0x500000;
-	const TYPE_BOOLEAN    = 0xB00000;
+	const TYPE_INT        = 0x200000;
+	const TYPE_BIGINT     = 0x300000;
+	const TYPE_BOOLEAN    = 0x400000;
 
 	// float
-	const TYPE_DECIMAL    = 0x600000;
-	const TYPE_FLOAT      = 0x700000;
+	const TYPE_DECIMAL    = 0x500000;
+	const TYPE_FLOAT      = 0x600000;
 
 	// date
-	const TYPE_DATE       = 0xD00000;
-	const TYPE_DATETIME   = 0xE00000;
-	const TYPE_TIME       = 0x1000000;
+	const TYPE_DATE       = 0x700000;
+	const TYPE_DATETIME   = 0x800000;
+	const TYPE_TIME       = 0x900000;
 
 	// string
-	const TYPE_VARCHAR    = 0x1300000;
-	const TYPE_TEXT       = 0x1700000;
-	const TYPE_BLOB       = 0x1C00000;
+	const TYPE_VARCHAR    = 0xA00000;
+	const TYPE_TEXT       = 0xB00000;
+	const TYPE_BLOB       = 0xC00000;
+
+	// formats
+	const TYPE_ARRAY      = 0xD00000;
+	const TYPE_OBJECT     = 0xE00000;
 
 	/**
 	 * Returns the name of the table

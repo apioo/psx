@@ -48,6 +48,8 @@ trait SerializeTrait
 		TableInterface::TYPE_VARCHAR  => Type::STRING,
 		TableInterface::TYPE_TEXT     => Type::TEXT,
 		TableInterface::TYPE_BLOB     => Type::BLOB,
+		TableInterface::TYPE_ARRAY    => Type::TARRAY,
+		TableInterface::TYPE_OBJECT   => Type::OBJECT,
 	);
 
 	protected function unserializeType($value, $type)

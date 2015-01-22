@@ -140,6 +140,8 @@ class Bar extends SchemaAbstract
 		$sb->string('col_text');
 		$sb->string('col_time');
 		$sb->string('col_string');
+		$sb->string('col_array');
+		$sb->string('col_object');
 
 		return $sb->getProperty();
 	}
