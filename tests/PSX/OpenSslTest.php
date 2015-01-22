@@ -66,9 +66,9 @@ class OpenSslTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testDhComputeKey()
 	{
-		if(!defined('OPENSSL_KEYTYPE_DH'))
+		if(getenv('TRAVIS_PHP_VERSION') == 'hhvm')
 		{
-			$this->markTestSkipped('Key type DH not supported');
+			$this->markTestSkipped('Key type DH is not supported');
 		}
 
 		// both parties must know these parameters 
