@@ -43,7 +43,7 @@ class TableManagerTest extends DbTestCase
 
 	public function testGetTable()
 	{
-		$reader = new Reader\MysqlDescribe($this->connection);
+		$reader = new Reader\Schema($this->connection);
 		$cache  = new Cache(new Cache\Handler\Memory());
 
 		$manager = new TableManager($this->connection);
@@ -56,7 +56,7 @@ class TableManagerTest extends DbTestCase
 
 		$columns = $table->getColumns();
 
-		$this->assertEquals(TableInterface::TYPE_INT | 10 | TableInterface::PRIMARY_KEY | TableInterface::AUTO_INCREMENT, $columns['id']);
+		$this->assertEquals(TableInterface::TYPE_INT | TableInterface::PRIMARY_KEY | TableInterface::AUTO_INCREMENT, $columns['id']);
 		$this->assertEquals(TableInterface::TYPE_VARCHAR | 32, $columns['title']);
 		$this->assertEquals(TableInterface::TYPE_DATETIME, $columns['date']);
 
@@ -67,7 +67,7 @@ class TableManagerTest extends DbTestCase
 
 		$columns = $table->getColumns();
 
-		$this->assertEquals(TableInterface::TYPE_INT | 10 | TableInterface::PRIMARY_KEY | TableInterface::AUTO_INCREMENT, $columns['id']);
+		$this->assertEquals(TableInterface::TYPE_INT | TableInterface::PRIMARY_KEY | TableInterface::AUTO_INCREMENT, $columns['id']);
 		$this->assertEquals(TableInterface::TYPE_VARCHAR | 32, $columns['title']);
 		$this->assertEquals(TableInterface::TYPE_DATETIME, $columns['date']);
 	}
