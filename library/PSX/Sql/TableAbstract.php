@@ -24,6 +24,7 @@
 namespace PSX\Sql;
 
 use Doctrine\DBAL\Connection;
+use InvalidArgumentException;
 use PSX\Data\Record;
 use PSX\Data\RecordInterface;
 use PSX\Exception;
@@ -42,6 +43,7 @@ abstract class TableAbstract extends TableQueryAbstract implements TableInterfac
 
 	protected $connection;
 	protected $select;
+	protected $lastInsertId;
 
 	public function __construct(Connection $connection)
 	{
@@ -139,6 +141,11 @@ abstract class TableAbstract extends TableQueryAbstract implements TableInterfac
 		return array_diff(array_keys($this->getColumns()), $this->getRestrictedFields());
 	}
 
+	public function getLastInsertId()
+	{
+		return $this->lastInsertId;
+	}
+
 	public function create($record)
 	{
 		$fields = $this->serializeFields($this->getArray($record));
@@ -147,16 +154,8 @@ abstract class TableAbstract extends TableQueryAbstract implements TableInterfac
 		{
 			$result = $this->connection->insert($this->getName(), $fields);
 
-			// set id to record
-			if($record instanceof RecordInterface)
-			{
-				$primarySetter = 'set' . ucfirst($this->getPrimaryKey());
-
-				if(is_callable($record, $primarySetter))
-				{
-					$record->$primarySetter($this->connection->lastInsertId());
-				}
-			}
+			// set last insert id
+			$this->lastInsertId = $this->connection->lastInsertId();
 
 			return $result;
 		}

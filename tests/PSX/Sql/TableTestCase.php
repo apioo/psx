@@ -594,12 +594,29 @@ trait TableTestCase
 
 		$table->create($record);
 
+		$this->assertEquals(5, $table->getLastInsertId());
+
 		$row = $table->getOneById(5);
 
 		$this->assertEquals(5, $row['id']);
 		$this->assertEquals(2, $row['userId']);
 		$this->assertEquals('foobar', $row['title']);
 		$this->assertInstanceOf('DateTime', $row['date']);
+	}
+
+	/**
+	 * @expectedException PSX\Exception
+	 */
+	public function testCreateEmpty()
+	{
+		$table = $this->getTable();
+
+		if(!$table instanceof TableManipulationInterface)
+		{
+			$this->markTestSkipped('Table not an manipulation interface');
+		}
+
+		$table->create(array());
 	}
 
 	public function testUpdate()
@@ -625,6 +642,21 @@ trait TableTestCase
 		$this->assertInstanceOf('DateTime', $row['date']);
 	}
 
+	/**
+	 * @expectedException PSX\Exception
+	 */
+	public function testUpdateEmpty()
+	{
+		$table = $this->getTable();
+
+		if(!$table instanceof TableManipulationInterface)
+		{
+			$this->markTestSkipped('Table not an manipulation interface');
+		}
+
+		$table->update(array());
+	}
+
 	public function testDelete()
 	{
 		$table = $this->getTable();
@@ -641,6 +673,21 @@ trait TableTestCase
 		$row = $table->getOneById(1);
 
 		$this->assertEmpty($row);
+	}
+
+	/**
+	 * @expectedException PSX\Exception
+	 */
+	public function testDeleteEmpty()
+	{
+		$table = $this->getTable();
+
+		if(!$table instanceof TableManipulationInterface)
+		{
+			$this->markTestSkipped('Table not an manipulation interface');
+		}
+
+		$table->delete(array());
 	}
 
 	protected function assertResult($expect, $result)

@@ -154,5 +154,50 @@ class TableAbstractTest extends DbTestCase
 	{
 		$this->getTable()->foobar();
 	}
+
+	/**
+	 * @expectedException PSX\Exception
+	 */
+	public function testUpdateNoPrimaryKey()
+	{
+		$table = new Table($this->connection, 'psx_handler_comment', array('foo' => TableInterface::TYPE_VARCHAR));
+		$table->update(array('foo' => 'bar'));
+	}
+
+	/**
+	 * @expectedException PSX\Exception
+	 */
+	public function testDeleteNoPrimaryKey()
+	{
+		$table = new Table($this->connection, 'psx_handler_comment', array('foo' => TableInterface::TYPE_VARCHAR));
+		$table->delete(array('foo' => 'bar'));
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testCreateInvalidData()
+	{
+		$table = new Table($this->connection, 'psx_handler_comment', array('foo' => TableInterface::TYPE_VARCHAR));
+		$table->create('foo');
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testUpdateInvalidData()
+	{
+		$table = new Table($this->connection, 'psx_handler_comment', array('foo' => TableInterface::TYPE_VARCHAR));
+		$table->update('foo');
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testDeleteInvalidData()
+	{
+		$table = new Table($this->connection, 'psx_handler_comment', array('foo' => TableInterface::TYPE_VARCHAR));
+		$table->delete('foo');
+	}
 }
 
