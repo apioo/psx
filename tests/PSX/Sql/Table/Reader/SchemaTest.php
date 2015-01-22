@@ -30,13 +30,13 @@ use PSX\Sql\Table;
 use PSX\Sql\TableInterface;
 
 /**
- * MysqlDescribeTest
+ * SchemaTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class MysqlDescribeTest extends DbTestCase
+class SchemaTest extends DbTestCase
 {
 	public function getDataSet()
 	{
@@ -56,14 +56,14 @@ class MysqlDescribeTest extends DbTestCase
 
 	public function testGetTableDefinition()
 	{
-		$reader = new MysqlDescribe($this->connection);
+		$reader = new Schema($this->connection);
 		$table  = $reader->getTableDefinition('psx_sql_table_test');
 
 		$this->assertEquals('psx_sql_table_test', $table->getName());
 
 		$columns = $table->getColumns();
 
-		$this->assertEquals(TableInterface::TYPE_INT | 10 | TableInterface::PRIMARY_KEY | TableInterface::AUTO_INCREMENT, $columns['id']);
+		$this->assertEquals(TableInterface::TYPE_INT | TableInterface::PRIMARY_KEY | TableInterface::AUTO_INCREMENT, $columns['id']);
 		$this->assertEquals(TableInterface::TYPE_VARCHAR | 32, $columns['title']);
 		$this->assertEquals(TableInterface::TYPE_DATETIME, $columns['date']);
 	}
