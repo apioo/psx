@@ -44,7 +44,7 @@ class DateRange extends DateTime
 
 		if($from === null && $to === null)
 		{
-			throw new InvalidArgumentException('You need to specify at least one argument');
+			throw new InvalidArgumentException('You need to specify a from or to date');
 		}
 
 		$this->from = $from;

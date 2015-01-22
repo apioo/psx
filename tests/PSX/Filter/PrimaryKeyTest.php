@@ -24,6 +24,8 @@
 namespace PSX\Filter;
 
 use PSX\Sql\DbTestCase;
+use PSX\Sql\Table;
+use PSX\Sql\TableInterface;
 
 /**
  * PrimaryKeyTest
@@ -49,5 +51,14 @@ class PrimaryKeyTest extends DbTestCase
 
 		// test error message
 		$this->assertEquals('%s does not exist in table', $filter->getErrorMessage());
+	}
+
+	public function testFilterTableWithoutPk()
+	{
+		$table  = new Table($this->connection, 'psx_handler_comment', array('name' => TableInterface::TYPE_VARCHAR));
+		$filter = new PrimaryKey($table);
+
+		$this->assertEquals(false, $filter->apply(1));
+		$this->assertEquals(false, $filter->apply(32));
 	}
 }

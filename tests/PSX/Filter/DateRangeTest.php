@@ -88,4 +88,21 @@ class DateRangeTest extends FilterTestCase
 		// test error message
 		$this->assertErrorMessage($filter->getErrorMessage());
 	}
+
+	public function testFilterInvalidValue()
+	{
+		$from   = new \DateTime('2010-10-10 06:00:00');
+		$to     = new \DateTime('2010-10-12 08:30:00');
+		$filter = new DateRange($from, $to);
+
+		$this->assertFalse($filter->apply('foo'));
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testEmptyConstructor()
+	{
+		new DateRange();
+	}
 }
