@@ -52,10 +52,5 @@ class PostRequest extends Request
 		}
 
 		parent::__construct($url, 'POST', $headers, $body);
-
-		if(!$this->hasHeader('Host'))
-		{
-			$this->setHeader('Host', $url->getHost());
-		}
 	}
 }

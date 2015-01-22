@@ -74,7 +74,7 @@ class Request extends Message implements RequestInterface
 		$this->url = $url instanceof Uri ? $url : new Uri($url);
 
 		$host = $this->url->getHost();
-		if(!empty($host))
+		if(!empty($host) && !$this->hasHeader('Host'))
 		{
 			$this->setHeader('Host', $host);
 		}

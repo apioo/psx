@@ -45,10 +45,5 @@ class DeleteRequest extends Request
 		$url = $url instanceof Url ? $url : new Url((string) $url);
 
 		parent::__construct($url, 'DELETE', $headers, $body);
-
-		if(!$this->hasHeader('Host'))
-		{
-			$this->setHeader('Host', $url->getHost());
-		}
 	}
 }
