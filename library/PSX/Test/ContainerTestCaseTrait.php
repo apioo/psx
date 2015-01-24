@@ -40,6 +40,8 @@ use PSX\Loader\RoutingParser;
  */
 trait ContainerTestCaseTrait
 {
+	protected $_protectedServices = array('connection');
+
 	protected function setUp()
 	{
 		parent::setUp();
@@ -48,7 +50,10 @@ trait ContainerTestCaseTrait
 		$serviceIds = getContainer()->getServiceIds();
 		foreach($serviceIds as $serviceId)
 		{
-			getContainer()->set($serviceId, null);
+			if(!in_array($serviceId, $this->_protectedServices))
+			{
+				getContainer()->set($serviceId, null);
+			}
 		}
 
 		// set void logger
@@ -92,7 +97,10 @@ trait ContainerTestCaseTrait
 		$serviceIds = getContainer()->getServiceIds();
 		foreach($serviceIds as $serviceId)
 		{
-			getContainer()->set($serviceId, null);
+			if(!in_array($serviceId, $this->_protectedServices))
+			{
+				getContainer()->set($serviceId, null);
+			}
 		}
 	}
 }

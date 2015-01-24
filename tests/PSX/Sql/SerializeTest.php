@@ -59,7 +59,7 @@ class SerializeTest extends DbTestCase
 		$this->assertEquals('UTC', $row['col_datetime']->getTimezone()->getName());
 		$this->assertInstanceOf('DateTime', $row['col_datetimetz']);
 		$this->assertEquals('2015-01-21 23:59:59', $row['col_datetimetz']->format('Y-m-d H:i:s'));
-		$this->assertEquals('UTC', $row['col_datetimetz']->getTimezone()->getName());
+		$this->assertEquals('+01:00', $row['col_datetimetz']->getTimezone()->getName());
 		$this->assertInstanceOf('DateTime', $row['col_date']);
 		$this->assertEquals('2015-01-21', $row['col_date']->format('Y-m-d'));
 		$this->assertInternalType('string', $row['col_decimal']);
