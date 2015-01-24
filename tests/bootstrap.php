@@ -25,23 +25,8 @@ function getContainer()
 	{
 		$container = require_once(__DIR__ . '/../container.php');
 
-		$config = $container->get('config');
-		$config['psx_url']          = 'http://127.0.0.1';
-		$config['psx_dispatch']     = '';
-		$config['psx_path_cache']   = 'cache';
-		$config['psx_path_library'] = 'library';
-
-		// check whether an SQL connection is available
-		try
-		{
-			$container->get('connection')->query('SELECT PI()');
-
-			define('PSX_CONNECTION', true);
-		}
-		catch(\Exception $e)
-		{
-			define('PSX_CONNECTION', false);
-		}
+		setUpConnection($container);
+		setUpConfig($container);
 	}
 
 	return $container;
@@ -50,4 +35,71 @@ function getContainer()
 function hasConnection()
 {
 	return PSX_CONNECTION === true;
+}
+
+function setUpConnection($container)
+{
+	$params = null;
+	switch(getenv('DB'))
+	{
+		case 'mysql':
+			$params = array(
+				'dbname'   => $container->get('config')->get('psx_sql_db'),
+				'user'     => $container->get('config')->get('psx_sql_user'),
+				'password' => $container->get('config')->get('psx_sql_pw'),
+				'host'     => $container->get('config')->get('psx_sql_host'),
+				'driver'   => 'pdo_mysql',
+			);
+			break;
+
+		case 'none':
+			$params = null;
+			break;
+
+		default:
+		case 'sqlite':
+			$params = array(
+				'url' => 'sqlite:///:memory:'
+			);
+			break;
+	}
+
+	if(!empty($params))
+	{
+		try
+		{
+			$config = new Doctrine\DBAL\Configuration();
+			$config->setSQLLogger(new PSX\Sql\Logger($container->get('logger')));
+
+			$connection = Doctrine\DBAL\DriverManager::getConnection($params, $config);
+			$fromSchema = $connection->getSchemaManager()->createSchema();
+			$toSchema   = PSX\Sql\TestSchema::getSchema();
+			$queries    = $fromSchema->getMigrateToSql($toSchema, $connection->getDatabasePlatform());
+
+			foreach($queries as $query)
+			{
+				$connection->query($query);
+			}
+
+			$container->set('connection', $connection);
+
+			define('PSX_CONNECTION', true);
+
+			return;
+		}
+		catch(Doctrine\DBAL\DBALException $e)
+		{
+		}
+	}
+
+	define('PSX_CONNECTION', false);
+}
+
+function setUpConfig($container)
+{
+	$config = $container->get('config');
+	$config['psx_url']          = 'http://127.0.0.1';
+	$config['psx_dispatch']     = '';
+	$config['psx_path_cache']   = 'cache';
+	$config['psx_path_library'] = 'library';
 }

@@ -10,4 +10,7 @@
 			<directory suffix=".php">./library/PSX</directory>
 		</whitelist>
 	</filter>
+	<php>
+		<!-- <env name="DB" value="sqlite" /> -->
+	</php>
 </phpunit>
