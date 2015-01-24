@@ -67,16 +67,23 @@ class Sql implements HandlerInterface
 
 	public function load($key)
 	{
+		$columnId      = $this->allocation->get(self::COLUMN_ID);
 		$columnContent = $this->allocation->get(self::COLUMN_CONTENT);
 		$columnDate    = $this->allocation->get(self::COLUMN_DATE);
 
-		$condition = new Condition();
-		$condition->add($this->allocation->get(self::COLUMN_ID), '=', $key, 'AND');
-		$condition->add($this->allocation->get(self::COLUMN_DATE), 'IS', 'NULL', 'OR', Condition::TYPE_RAW);
-		$condition->add($this->allocation->get(self::COLUMN_DATE), '>=', date(DateTime::SQL));
+		$builder = $this->connection->createQueryBuilder();
+		$builder = $builder->select(array($columnContent, $columnDate))
+			->from($this->tableName)
+			->where($builder->expr()->eq($columnId, ':id'))
+			->andWhere($builder->expr()->orX(
+				$builder->expr()->isNull($columnDate),
+				$builder->expr()->gte($columnDate, ':now')
+			));
 
-		$sql = 'SELECT ' . $columnContent . ', ' . $columnDate . ' FROM ' . $this->tableName . ' ' . $condition->getStatment();
-		$row = $this->connection->fetchAssoc($sql, $condition->getValues());
+		$row = $this->connection->fetchAssoc($builder->getSQL(), array(
+			'id'  => $key,
+			'now' => date(DateTime::SQL))
+		);
 
 		if(!empty($row))
 		{
@@ -115,7 +122,10 @@ class Sql implements HandlerInterface
 
 	public function removeAll()
 	{
-		$this->connection->query('DELETE FROM ' . $this->tableName . ' WHERE 1');
+		$builder = $this->connection->createQueryBuilder()
+			->delete($this->tableName);
+
+		$this->connection->executeUpdate($builder->getSQL());
 
 		return true;
 	}

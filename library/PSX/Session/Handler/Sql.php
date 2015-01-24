@@ -66,13 +66,12 @@ class Sql implements SessionHandlerInterface
 
 	public function read($id)
 	{
-		$columnId      = $this->allocation->get(self::COLUMN_ID);
-		$columnContent = $this->allocation->get(self::COLUMN_CONTENT);
+		$builder = $this->connection->createQueryBuilder()
+			->select($this->allocation->get(self::COLUMN_CONTENT))
+			->from($this->tableName)
+			->where($this->allocation->get(self::COLUMN_ID) . ' = :id');
 
-		$sql     = 'SELECT `' . $columnContent . '` FROM `' . $this->tableName . '` WHERE `' . $columnId . '` = :id';
-		$content = $this->connection->fetchColumn($sql, array('id' => $id));
-
-		return $content;
+		return $this->connection->fetchColumn($builder->getSQL(), array('id' => $id));
 	}
 
 	public function write($id, $data)
@@ -97,12 +96,13 @@ class Sql implements SessionHandlerInterface
 
 	public function gc($maxTime)
 	{
-		$columnDate = $this->allocation->get(self::COLUMN_DATE);
+		$dateAdd = $this->connection->getDatabasePlatform()->getDateAddSecondsExpression($this->allocation->get(self::COLUMN_DATE), (int) $maxTime);
+		$now     = $this->connection->getDatabasePlatform()->getNowExpression();
+		$builder = $this->connection->createQueryBuilder()
+			->delete($this->tableName)
+			->where($dateAdd . ' < ' . $now);
 
-		$maxTime = (int) $maxTime;
-		$sql     = 'DELETE FROM `' . $this->tableName . '` WHERE DATE_ADD(`' . $columnDate . '`, INTERVAL :maxTime SECOND) < NOW()';
-
-		$this->connection->executeUpdate($sql, array('maxTime' => $maxTime));
+		$this->connection->executeUpdate($builder->getSQL(), array('maxTime' => $maxTime));
 
 		return true;
 	}
