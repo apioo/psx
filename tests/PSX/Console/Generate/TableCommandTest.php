@@ -123,8 +123,8 @@ class Bar extends TableAbstract
 			'col_text' => self::TYPE_TEXT,
 			'col_time' => self::TYPE_TIME,
 			'col_string' => self::TYPE_VARCHAR,
-			'col_array' => self::TYPE_TEXT,
-			'col_object' => self::TYPE_TEXT,
+			'col_array' => self::TYPE_VARCHAR,
+			'col_object' => self::TYPE_VARCHAR,
 		);
 	}
 }

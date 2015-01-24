@@ -39,6 +39,7 @@ class TestSchema
 		$schema = new Schema();
 
 		self::addTableCacheHandlerSqlTest($schema);
+		self::addTableSessionHandlerSqlTest($schema);
 		self::addTableHandlerComment($schema);
 		self::addTableSqlTableTest($schema);
 		self::addTableCommandTest($schema);
@@ -49,9 +50,18 @@ class TestSchema
 	protected static function addTableCacheHandlerSqlTest(Schema $schema)
 	{
 		$table = $schema->createTable('psx_cache_handler_sql_test');
-		$table->addColumn('id', 'string', array('length' => 32, 'autoincrement' => true));
+		$table->addColumn('id', 'string', array('length' => 32));
 		$table->addColumn('content', 'blob');
 		$table->addColumn('date', 'datetime', array('notnull' => false, 'default' => null));
+		$table->setPrimaryKey(array('id'));
+	}
+
+	protected static function addTableSessionHandlerSqlTest(Schema $schema)
+	{
+		$table = $schema->createTable('psx_session_handler_sql_test');
+		$table->addColumn('id', 'string', array('length' => 32));
+		$table->addColumn('content', 'blob');
+		$table->addColumn('date', 'datetime');
 		$table->setPrimaryKey(array('id'));
 	}
 
