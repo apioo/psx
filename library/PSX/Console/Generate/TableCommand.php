@@ -31,6 +31,8 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use PSX\Sql\SerializeTrait;
+use PSX\Sql\TableInterface;
 
 /**
  * TableCommand
@@ -123,7 +125,7 @@ class TableCommand extends GenerateCommandAbstract
 				}
 			}
 
-			$properties[] = $this->convertDoctrinTypeToString($column, $isPrimary);
+			$properties[] = $this->convertDoctrineTypeToString($column, $isPrimary);
 		}
 
 		$columns = '';
@@ -165,81 +167,92 @@ class {$className} extends TableAbstract
 PHP;
 	}
 
-	protected function convertDoctrinTypeToString(Column $column, $isPrimary)
+	protected function convertDoctrineTypeToString(Column $column, $isPrimary)
 	{
-		$type = $column->getType();
+		$type = SerializeTrait::getTypeByDoctrineType($column->getType());
 		$name = $column->getName();
 
-		switch(true)
+		switch($type)
 		{
-			case $type instanceof Types\BigIntType:
+			case TableInterface::TYPE_BIGINT:
 				$result = <<<PHP
 			'{$name}' => self::TYPE_BIGINT
 PHP;
 				break;
 
-			case $type instanceof Types\BlobType:
+			case TableInterface::TYPE_BLOB:
 				$result = <<<PHP
 			'{$name}' => self::TYPE_BLOB
 PHP;
 				break;
 
-			case $type instanceof Types\BooleanType:
+			case TableInterface::TYPE_BOOLEAN:
 				$result = <<<PHP
 			'{$name}' => self::TYPE_BOOLEAN
 PHP;
 				break;
 
-			case $type instanceof Types\DateTimeType:
-			case $type instanceof Types\DateTimeTzType:
+			case TableInterface::TYPE_DATETIME:
 				$result = <<<PHP
 			'{$name}' => self::TYPE_DATETIME
 PHP;
 				break;
 
-			case $type instanceof Types\DateType:
+			case TableInterface::TYPE_DATE:
 				$result = <<<PHP
 			'{$name}' => self::TYPE_DATE
 PHP;
 				break;
 
-			case $type instanceof Types\DecimalType:
+			case TableInterface::TYPE_DECIMAL:
 				$result = <<<PHP
 			'{$name}' => self::TYPE_DECIMAL
 PHP;
 				break;
 
-			case $type instanceof Types\FloatType:
+			case TableInterface::TYPE_FLOAT:
 				$result = <<<PHP
 			'{$name}' => self::TYPE_FLOAT
 PHP;
 				break;
 
-			case $type instanceof Types\IntegerType:
+			case TableInterface::TYPE_INT:
 				$result = <<<PHP
 			'{$name}' => self::TYPE_INT
 PHP;
 				break;
 
-			case $type instanceof Types\SmallIntType:
+			case TableInterface::TYPE_SMALLINT:
 				$result = <<<PHP
 			'{$name}' => self::TYPE_SMALLINT
 PHP;
 				break;
 
-			case $type instanceof Types\TextType:
+			case TableInterface::TYPE_TEXT:
 				$result = <<<PHP
 			'{$name}' => self::TYPE_TEXT
 PHP;
 				break;
 
-			case $type instanceof Types\TimeType:
+			case TableInterface::TYPE_ARRAY:
+				$result = <<<PHP
+			'{$name}' => self::TYPE_ARRAY
+PHP;
+				break;
+
+			case TableInterface::TYPE_OBJECT:
+				$result = <<<PHP
+			'{$name}' => self::TYPE_OBJECT
+PHP;
+				break;
+
+			case TableInterface::TYPE_TIME:
 				$result = <<<PHP
 			'{$name}' => self::TYPE_TIME
 PHP;
 				break;
 
-			case $type instanceof Types\StringType:
+			case TableInterface::TYPE_VARCHAR:
 			default:
 				$result = <<<PHP
 			'{$name}' => self::TYPE_VARCHAR

@@ -24,6 +24,7 @@
 namespace PSX\Sql;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Types;
 use Doctrine\DBAL\Types\Type;
 
 /**
@@ -35,7 +36,7 @@ use Doctrine\DBAL\Types\Type;
  */
 trait SerializeTrait
 {
-	protected $mapping = array(
+	protected static $mapping = array(
 		TableInterface::TYPE_SMALLINT => Type::SMALLINT,
 		TableInterface::TYPE_INT      => Type::INTEGER,
 		TableInterface::TYPE_BIGINT   => Type::BIGINT,
@@ -57,9 +58,9 @@ trait SerializeTrait
 		$type     = (($type >> 20) & 0xFF) << 20;
 		$platform = $this->connection->getDatabasePlatform();
 
-		if(isset($this->mapping[$type]))
+		if(isset(self::$mapping[$type]))
 		{
-			return Type::getType($this->mapping[$type])->convertToPHPValue($value, $platform);
+			return Type::getType(self::$mapping[$type])->convertToPHPValue($value, $platform);
 		}
 		else
 		{
@@ -72,13 +73,27 @@ trait SerializeTrait
 		$type     = (($type >> 20) & 0xFF) << 20;
 		$platform = $this->connection->getDatabasePlatform();
 
-		if(isset($this->mapping[$type]))
+		if(isset(self::$mapping[$type]))
 		{
-			return Type::getType($this->mapping[$type])->convertToDatabaseValue($value, $platform);
+			return Type::getType(self::$mapping[$type])->convertToDatabaseValue($value, $platform);
 		}
 		else
 		{
 			return Type::getType(Type::STRING)->convertToDatabaseValue($value, $platform);
+		}
+	}
+
+	public static function getTypeByDoctrineType(Type $type)
+	{
+		$mapping = array_flip(self::$mapping);
+
+		if(isset($mapping[$type->getName()]))
+		{
+			return $mapping[$type->getName()];
+		}
+		else
+		{
+			return TableInterface::TYPE_VARCHAR;
 		}
 	}
 }
