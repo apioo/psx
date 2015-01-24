@@ -76,8 +76,8 @@ class DefaultContainerTest extends \PHPUnit_Framework_TestCase
 		$this->assertInstanceOf('PSX\Config', $container->get('config'));
 		$this->assertInstanceOf('PSX\Http', $container->get('http'));
 		$this->assertInstanceOf('PSX\Session', $container->get('session'));
-		
-		if(defined('PSX_CONNECTION') && PSX_CONNECTION === true)
+
+		if(hasConnection())
 		{
 			$this->assertInstanceOf('Doctrine\DBAL\Connection', $container->get('connection'));
 			$this->assertInstanceOf('PSX\Sql\TableManager', $container->get('table_manager'));
