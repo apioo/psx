@@ -27,6 +27,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Types\Type;
 use PSX\Sql;
+use PSX\Sql\SerializeTrait;
 use PSX\Sql\TableInterface;
 use PSX\Sql\Table\Definition;
 use PSX\Sql\Table\ReaderInterface;
@@ -41,23 +42,6 @@ use PSX\Sql\Table\ReaderInterface;
 class Schema implements ReaderInterface
 {
 	protected $connection;
-
-	protected $mapping = array(
-		Type::SMALLINT => TableInterface::TYPE_SMALLINT,
-		Type::INTEGER  => TableInterface::TYPE_INT,
-		Type::BIGINT   => TableInterface::TYPE_BIGINT,
-		Type::BOOLEAN  => TableInterface::TYPE_BOOLEAN,
-		Type::DECIMAL  => TableInterface::TYPE_DECIMAL,
-		Type::FLOAT    => TableInterface::TYPE_FLOAT,
-		Type::DATE     => TableInterface::TYPE_DATE,
-		Type::DATETIME => TableInterface::TYPE_DATETIME,
-		Type::TIME     => TableInterface::TYPE_TIME,
-		Type::STRING   => TableInterface::TYPE_VARCHAR,
-		Type::TEXT     => TableInterface::TYPE_TEXT,
-		Type::BLOB     => TableInterface::TYPE_BLOB,
-		Type::TARRAY   => TableInterface::TYPE_ARRAY,
-		Type::OBJECT   => TableInterface::TYPE_OBJECT,
-	);
 
 	public function __construct(Connection $connection)
 	{
@@ -116,10 +100,7 @@ class Schema implements ReaderInterface
 			$type+= $column->getLength();
 		}
 
-		if(isset($this->mapping[$column->getType()->getName()]))
-		{
-			$type = $type | $this->mapping[$column->getType()->getName()];
-		}
+		$type = $type | SerializeTrait::getTypeByDoctrineType($column->getType());
 
 		if(!$column->getNotnull())
 		{
