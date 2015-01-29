@@ -488,7 +488,7 @@ abstract class ControllerAbstract implements ControllerInterface, ApplicationSta
 	 */
 	protected function configureWriter(WriterInterface $writer)
 	{
-		if($writer instanceof Writer\Html)
+		if($writer instanceof Writer\TemplateAbstract)
 		{
 			if(!$writer->getBaseDir())
 			{
