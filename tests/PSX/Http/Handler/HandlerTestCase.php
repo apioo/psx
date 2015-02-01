@@ -30,6 +30,7 @@ use PSX\Http\HeadRequest;
 use PSX\Http\Options;
 use PSX\Http\PostRequest;
 use PSX\Http\PutRequest;
+use PSX\Http\ResponseInterface;
 use PSX\Http\Stream\TempStream;
 use PSX\Url;
 use PSX\Json;
@@ -264,15 +265,10 @@ abstract class HandlerTestCase extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('........', $body);
 	}
 
-	/**
-	 * This is not ideal but in order to test https requests we must send one.
-	 * So we use google as its most likely available
-	 */
-	public function testHttpsRequest()
+	public function testCallback()
 	{
 		$testCase = $this;
 		$options  = new Options();
-		$options->setTimeout(8);
 		$options->setCallback(function($resource, $request) use ($testCase){
 
 			$this->assertTrue(is_resource($resource));
@@ -280,10 +276,72 @@ abstract class HandlerTestCase extends \PHPUnit_Framework_TestCase
 
 		});
 
-		$request  = new GetRequest(new Url('https://www.google.com'));
+		$request  = new GetRequest(new Url(self::URL . '/get'));
+		$response = $this->http->request($request);
+
+		$this->assertEquals('HTTP/1.1', $response->getProtocolVersion());
+		$this->assertEquals(200, $response->getStatusCode());
+		$this->assertEquals('OK', $response->getReasonPhrase());
+
+		$body = Json::decode((string) $response->getBody());
+
+		$this->assertEquals(array('success' => true, 'method' => 'GET'), $body);
+	}
+
+	/**
+	 * We have an endpoint which sleeps 8 seconds after 2 seconds the timeout 
+	 * gets triggered
+	 *
+	 * @expectedException PSX\Http\HandlerException
+	 */
+	public function testTimeout()
+	{
+		$options = new Options();
+		$options->setTimeout(2);
+
+		$request  = new GetRequest(new Url(self::URL . '/timeout'));
 		$response = $this->http->request($request, $options);
 
+		$this->assertEquals('HTTP/1.1', $response->getProtocolVersion());
+		$this->assertEquals(200, $response->getStatusCode());
+		$this->assertEquals('OK', $response->getReasonPhrase());
+	}
+
+	/**
+	 * This is not ideal but in order to test https requests we must send one.
+	 * So we use google as its most likely available
+	 */
+	public function testHttpsRequest()
+	{
+		$request  = new GetRequest(new Url('https://www.google.com'));
+		$response = $this->http->request($request);
+
+		$this->assertGoogleResponse($response);
+	}
+
+	public function testHttpsRequestWithCertFile()
+	{
+		$options  = new Options();
+		$options->setSsl(true, __DIR__ . '/cacert.pem');
+
+		$request  = new GetRequest(new Url('https://google.com'));
+		$response = $this->http->request($request, $options);
+
+		$this->assertGoogleResponse($response);
+	}
+
+	/**
+	 * Method which checks whether this is an valid response from an google 
+	 * server
+	 */
+	protected function assertGoogleResponse(ResponseInterface $response)
+	{
+		$this->assertTrue($response->getStatusCode() >= 200 && $response->getStatusCode() < 400);
+
+		// google server always response with an Server header
 		$this->assertTrue($response->hasHeader('Server'));
+
+		// we assume that the response should be more the 128 bytes
 		$this->assertTrue(strlen((string) $response->getBody()) > 128);
 	}
 }

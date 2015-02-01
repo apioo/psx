@@ -103,13 +103,14 @@ class Server
 		{
 			header('Content-Type: text/plain');
 
-			// we create an 4 mb response in order to test streaming 
-			// capabilities
-			for($i = 0; $i < 4; $i++)
-			{
-				// send 1mb
-				echo str_repeat('..........', 100000);
-			}
+			// send 1mb
+			echo str_repeat('..........', 100000);
+		}
+		else if($path == '/timeout')
+		{
+			header('Content-Type: text/plain');
+
+			sleep(8);
 		}
 
 		exit;

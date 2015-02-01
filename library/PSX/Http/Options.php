@@ -37,6 +37,8 @@ class Options
 	protected $followLocation = false;
 	protected $maxRedirects   = 8;
 	protected $ssl;
+	protected $caPath;
+	protected $proxy;
 
 	/**
 	 * Sets an callback which is called before the request is made. The first
@@ -50,6 +52,9 @@ class Options
 		$this->callback = $callback;
 	}
 
+	/**
+	 * @return Closure
+	 */
 	public function getCallback()
 	{
 		return $this->callback;
@@ -113,10 +118,12 @@ class Options
 	 * Sets whether the request should be made through ssl
 	 *
 	 * @param boolean $ssl
+	 * @param string $caPath
 	 */
-	public function setSsl($ssl)
+	public function setSsl($ssl, $caPath = null)
 	{
-		$this->ssl = (bool) $ssl;
+		$this->ssl    = (bool) $ssl;
+		$this->caPath = $caPath;
 	}
 
 	/**
@@ -127,5 +134,36 @@ class Options
 	public function getSsl()
 	{
 		return $this->ssl;
+	}
+
+	/**
+	 * Returns the CA path
+	 *
+	 * @return string
+	 */
+	public function getCaPath()
+	{
+		return $this->caPath;
+	}
+
+	/**
+	 * Sets whether an specific proxy should be used. The proxy should be in the
+	 * format [ip]:[port]
+	 *
+	 * @param string $proxy
+	 */
+	public function setProxy($proxy)
+	{
+		$this->proxy = $proxy;
+	}
+
+	/**
+	 * Returns the given proxy
+	 *
+	 * @return string
+	 */
+	public function getProxy()
+	{
+		return $this->proxy;
 	}
 }

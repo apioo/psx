@@ -50,38 +50,14 @@ use PSX\Http\Stream\TempStream;
  */
 class Curl implements HandlerInterface
 {
-	protected $hasFollowLocation;
-	protected $caInfo;
-	protected $proxy;
-
 	protected $header;
 	protected $body;
 
-	public function __construct()
-	{
-		$this->hasFollowLocation = false;
-	}
+	protected $hasFollowLocation = false;
 
 	public function setFollowLocation($followLocation)
 	{
 		$this->hasFollowLocation = (bool) $followLocation;
-	}
-
-	public function setProxy($proxy)
-	{
-		$this->proxy = $proxy;
-	}
-
-	/**
-	 * Sets the name of a file holding one or more certificates to verify the
-	 * peer with
-	 *
-	 * @param string $path
-	 * @return void
-	 */
-	public function setCaInfo($path)
-	{
-		$this->caInfo = $path;
 	}
 
 	public function request(Request $request, Options $options)
@@ -96,11 +72,6 @@ class Curl implements HandlerInterface
 		curl_setopt($handle, CURLOPT_HEADERFUNCTION, array($this, 'header'));
 		curl_setopt($handle, CURLOPT_WRITEFUNCTION, array($this, 'write'));
 		curl_setopt($handle, CURLOPT_CUSTOMREQUEST, $request->getMethod());
-
-		if(!empty($this->proxy))
-		{
-			curl_setopt($handle, CURLOPT_PROXY, $this->proxy);
-		}
 
 		// set header
 		$headers = ResponseParser::buildHeaderFromMessage($request);
@@ -133,6 +104,14 @@ class Curl implements HandlerInterface
 			}
 		}
 
+		// set proxy
+		$proxy = $options->getProxy();
+
+		if(!empty($proxy))
+		{
+			curl_setopt($handle, CURLOPT_PROXY, $proxy);
+		}
+
 		// set follow location
 		if($options->getFollowLocation() && $this->hasFollowLocation)
 		{
@@ -143,15 +122,26 @@ class Curl implements HandlerInterface
 		// set ssl
 		if($options->getSsl() !== false && ($options->getSsl() === true || strcasecmp($request->getUri()->getScheme(), 'https') === 0))
 		{
-			if(!empty($this->caInfo))
+			$caPath = $options->getCaPath();
+
+			if(!empty($caPath))
 			{
-				curl_setopt($handle, CURLOPT_CAINFO, $this->caInfo);
 				curl_setopt($handle, CURLOPT_SSL_VERIFYPEER, true);
+				curl_setopt($handle, CURLOPT_SSL_VERIFYHOST, 2);
+
+				if(is_file($caPath))
+				{
+					curl_setopt($handle, CURLOPT_CAINFO, $caPath);
+				}
+				else if(is_dir($caPath))
+				{
+					curl_setopt($handle, CURLOPT_CAPATH, $caPath);
+				}
 			}
 			else
 			{
 				curl_setopt($handle, CURLOPT_SSL_VERIFYPEER, false);
-				curl_setopt($handle, CURLOPT_SSL_VERIFYHOST, false);
+				curl_setopt($handle, CURLOPT_SSL_VERIFYHOST, 0);
 			}
 		}
 
@@ -160,7 +150,7 @@ class Curl implements HandlerInterface
 
 		if(!empty($timeout))
 		{
-			curl_setopt($handle, CURLOPT_CONNECTTIMEOUT, $timeout);
+			curl_setopt($handle, CURLOPT_TIMEOUT, $timeout);
 		}
 
 		// callback

@@ -91,7 +91,9 @@ class Socks implements HandlerInterface
 		}
 
 		// open socket
-		$handle = @fsockopen($scheme . '://' . $request->getUri()->getHost(), $port, $errno, $errstr);
+		set_error_handler(__CLASS__ . '::handleError');
+		$handle = fsockopen($scheme . '://' . $request->getUri()->getHost(), $port, $errno, $errstr);
+		restore_error_handler();
 
 		if($handle !== false)
 		{
@@ -163,6 +165,14 @@ class Socks implements HandlerInterface
 			}
 			while(!empty($header));
 
+			// check for timeout
+			$meta = stream_get_meta_data($handle);
+
+			if($meta['timed_out'])
+			{
+				throw new HandlerException('Connection timeout');
+			}
+
 			// build response
 			$response = ResponseParser::buildResponseFromHeader($headers);
 
@@ -187,6 +197,11 @@ class Socks implements HandlerInterface
 		{
 			throw new HandlerException(!empty($errstr) ? $errstr : 'Could not open socket');
 		}
+	}
+
+	public static function handleError($errno, $errstr)
+	{
+		throw new HandlerException($errstr, $errno);
 	}
 }
 
