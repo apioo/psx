@@ -267,8 +267,8 @@ class Uri
 				}
 			}
 
-			$this->host     = $host;
-			$this->port     = $port;
+			$this->host = $host;
+			$this->port = $port;
 		}
 		
 		if(!empty($path))
