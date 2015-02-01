@@ -24,24 +24,25 @@
 namespace PSX\Http;
 
 /**
- * ResponseInterface
+ * This is a mutable version of the PSR HTTP message interface
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
+ * @see     https://github.com/php-fig/fig-standards/blob/master/proposed/http-message.md
  */
 interface ResponseInterface extends MessageInterface
 {
 	/**
-	 * Returns the status code of the response
+	 * Gets the response Status-Code
 	 *
 	 * @return integer
 	 */
 	public function getStatusCode();
 
 	/**
-	 * Returns the http response message. That means the last part of the status
-	 * line i.e. "OK" from an 200 response
+	 * Gets the response Reason-Phrase, a short textual description of the 
+	 * Status-Code
 	 *
 	 * @return string
 	 */
@@ -49,7 +50,8 @@ interface ResponseInterface extends MessageInterface
 
 	/**
 	 * Sets the status code and reason phrase. If no reason phrase is provided
-	 * the standard message according to the status code is used
+	 * the standard message according to the status code is used. If the status
+	 * code is unknown an reason phrase must be provided 
 	 *
 	 * @param integer $code
 	 * @param integer $reasonPhrase
