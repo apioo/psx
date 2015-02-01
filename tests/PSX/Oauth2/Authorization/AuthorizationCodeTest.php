@@ -29,6 +29,7 @@ use PSX\Http\GetRequest;
 use PSX\Http\Handler\Callback;
 use PSX\Http\Response;
 use PSX\Http\ResponseParser;
+use PSX\Http\Exception\TemporaryRedirectException;
 use PSX\Url;
 
 /**
@@ -82,5 +83,19 @@ TEXT;
 		$this->assertEquals('2YotnFZFEjr1zCsicMWpAA', $accessToken->getAccessToken());
 		$this->assertEquals('example', $accessToken->getTokenType());
 		$this->assertEquals(3600, $accessToken->getExpiresIn());
+	}
+
+	public function testRedirect()
+	{
+		try
+		{
+			AuthorizationCode::redirect(new Url('http://127.0.0.1/api'), self::CLIENT_ID, 'http://127.0.0.1/return', 'foo,bar', 'foo-state');
+
+			$this->fail('Must throw an redirect exception');
+		}
+		catch(TemporaryRedirectException $e)
+		{
+			$this->assertEquals('https://127.0.0.1/api?response_type=code&client_id=s6BhdRkqt3&redirect_uri=http%3A%2F%2F127.0.0.1%2Freturn&scope=foo%2Cbar&state=foo-state', $e->getLocation());
+		}
 	}
 }

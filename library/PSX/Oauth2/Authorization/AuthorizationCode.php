@@ -24,6 +24,7 @@
 namespace PSX\Oauth2\Authorization;
 
 use PSX\Base;
+use PSX\Http\Exception as StatusCode;
 use PSX\Oauth2\AuthorizationAbstract;
 use PSX\Url;
 
@@ -83,26 +84,28 @@ class AuthorizationCode extends AuthorizationAbstract
 	 */
 	public static function redirect(Url $url, $clientId, $redirectUri = null, $scope = null, $state = null)
 	{
-		$url->setScheme('https');
-		$url->addParam('response_type', 'code');
-		$url->addParam('client_id', $clientId);
+		$parameters = $url->getParameters();
+		$parameters['response_type'] = 'code';
+		$parameters['client_id']     = $clientId;
 
 		if(isset($redirectUri))
 		{
-			$url->addParam('redirect_uri', $redirectUri);
+			$parameters['redirect_uri'] = $redirectUri;
 		}
 
 		if(isset($scope))
 		{
-			$url->addParam('scope', $scope);
+			$parameters['scope'] = $scope;
 		}
 
 		if(isset($state))
 		{
-			$url->addParam('state', $state);
+			$parameters['state'] = $state;
 		}
 
-		header('Location: ' . strval($url));
-		exit;
+		$url->setScheme('https');
+		$url->setParameters($parameters);
+
+		throw new StatusCode\TemporaryRedirectException($url->toString());
 	}
 }
