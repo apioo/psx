@@ -38,22 +38,29 @@ class MessageTest extends \PHPUnit_Framework_TestCase
 {
 	public function testConstructor()
 	{
-		$message = new Message(array('foo' => 'bar'), new StringStream('foobar'));
+		$message = new Message(['foo' => 'bar'], new StringStream('foobar'));
 
-		$this->assertEquals('bar', $message->getHeader('foo'));
-		$this->assertEquals(array('bar'), $message->getHeaderLines('foo'));
+		$this->assertEquals(['foo' => ['bar']], $message->getHeaders());
+		$this->assertInstanceOf('Psr\Http\Message\StreamableInterface', $message->getBody());
 		$this->assertEquals('foobar', (string) $message->getBody());
 
-		$message = new Message(array('foo' => 'bar'), 'foobar');
+		$message = new Message(['foo' => 'bar'], 'foobar');
 
-		$this->assertEquals('bar', $message->getHeader('foo'));
-		$this->assertEquals(array('bar'), $message->getHeaderLines('foo'));
+		$this->assertEquals(['foo' => ['bar']], $message->getHeaders());
+		$this->assertInstanceOf('Psr\Http\Message\StreamableInterface', $message->getBody());
 		$this->assertEquals('foobar', (string) $message->getBody());
 
-		$message = new Message(array('foo' => 'bar'));
+		$message = new Message(['foo' => 'bar']);
 
-		$this->assertEquals('bar', $message->getHeader('foo'));
-		$this->assertEquals(array('bar'), $message->getHeaderLines('foo'));
+		$this->assertEquals(['foo' => ['bar']], $message->getHeaders());
+		$this->assertInstanceOf('Psr\Http\Message\StreamableInterface', $message->getBody());
+		$this->assertEquals('', (string) $message->getBody());
+
+		$message = new Message();
+
+		$this->assertEquals([], $message->getHeaders());
+		$this->assertInstanceOf('Psr\Http\Message\StreamableInterface', $message->getBody());
+		$this->assertEquals('', (string) $message->getBody());
 	}
 
 	public function testGetSetHeaders()
@@ -85,6 +92,28 @@ class MessageTest extends \PHPUnit_Framework_TestCase
 		$this->assertFalse($message->hasHeader('bar'));
 	}
 
+	/**
+	 * @expectedException ErrorException
+	 */
+	public function testSetHeadersObject()
+	{
+		$message = new Message();
+		$message->setHeaders(array(
+			'foo' => new \stdClass(),
+		));
+	}
+
+	/**
+	 * @expectedException ErrorException
+	 */
+	public function testSetHeadersArrayObject()
+	{
+		$message = new Message();
+		$message->setHeaders(array(
+			'foo' => [new \stdClass()],
+		));
+	}
+
 	public function testHasHeader()
 	{
 		$message = new Message();
@@ -94,6 +123,8 @@ class MessageTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertTrue($message->hasHeader('foo'));
 		$this->assertFalse($message->hasHeader('bar'));
+		$this->assertTrue($message->hasHeader('FOO'));
+		$this->assertFalse($message->hasHeader('BAR'));
 	}
 
 	public function testGetHeader()
@@ -105,6 +136,8 @@ class MessageTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals('bar', $message->getHeader('foo'));
 		$this->assertEquals(null, $message->getHeader('bar'));
+		$this->assertEquals('bar', $message->getHeader('FOO'));
+		$this->assertEquals(null, $message->getHeader('BAR'));
 	}
 
 	public function testGetHeaderLines()
@@ -116,6 +149,8 @@ class MessageTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals(array('bar'), $message->getHeaderLines('foo'));
 		$this->assertEquals(array(), $message->getHeaderLines('bar'));
+		$this->assertEquals(array('bar'), $message->getHeaderLines('FOO'));
+		$this->assertEquals(array(), $message->getHeaderLines('BAR'));
 	}
 
 	public function testSetHeader()
@@ -123,20 +158,25 @@ class MessageTest extends \PHPUnit_Framework_TestCase
 		$message = new Message();
 
 		$this->assertFalse($message->hasHeader('foo'));
+		$this->assertFalse($message->hasHeader('FOO'));
 
 		$message->setHeader('foo', 'bar');
 
 		$this->assertTrue($message->hasHeader('foo'));
+		$this->assertTrue($message->hasHeader('FOO'));
 	}
 
 	public function testAddHeader()
 	{
 		$message = new Message();
-
-		$message->addHeader('foo', 'bar');
+		$message->setHeaders(array(
+			'foo' => 'bar',
+		));
 
 		$this->assertEquals('bar', $message->getHeader('foo'));
 		$this->assertEquals(array('bar'), $message->getHeaderLines('foo'));
+		$this->assertEquals('bar', $message->getHeader('FOO'));
+		$this->assertEquals(array('bar'), $message->getHeaderLines('FOO'));
 
 		// now we add the same header again which must be added to the existing 
 		// header
@@ -144,8 +184,30 @@ class MessageTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals('bar, foo', $message->getHeader('foo'));
 		$this->assertEquals(array('bar', 'foo'), $message->getHeaderLines('foo'));
-		$this->assertEquals('bar', $message->getHeaderLines('foo')[0]);
-		$this->assertEquals('foo', $message->getHeaderLines('foo')[1]);
+		$this->assertEquals('bar, foo', $message->getHeader('FOO'));
+		$this->assertEquals(array('bar', 'foo'), $message->getHeaderLines('FOO'));
+	}
+
+	public function testAddHeaderCaseInsensitive()
+	{
+		$message = new Message();
+		$message->setHeaders(array(
+			'foo' => 'bar',
+		));
+
+		$this->assertEquals('bar', $message->getHeader('foo'));
+		$this->assertEquals(array('bar'), $message->getHeaderLines('foo'));
+		$this->assertEquals('bar', $message->getHeader('FOO'));
+		$this->assertEquals(array('bar'), $message->getHeaderLines('FOO'));
+
+		// now we add the same header again which must be added to the existing 
+		// header
+		$message->addHeader('FOO', 'foo');
+
+		$this->assertEquals('bar, foo', $message->getHeader('foo'));
+		$this->assertEquals(array('bar', 'foo'), $message->getHeaderLines('foo'));
+		$this->assertEquals('bar, foo', $message->getHeader('FOO'));
+		$this->assertEquals(array('bar', 'foo'), $message->getHeaderLines('FOO'));
 	}
 
 	public function testRemoveHeader()
@@ -156,10 +218,28 @@ class MessageTest extends \PHPUnit_Framework_TestCase
 		));
 
 		$this->assertTrue($message->hasHeader('foo'));
+		$this->assertTrue($message->hasHeader('FOO'));
 
 		$message->removeHeader('foo');
 
 		$this->assertFalse($message->hasHeader('foo'));
+		$this->assertFalse($message->hasHeader('FOO'));
+	}
+
+	public function testRemoveCaseInsensitive()
+	{
+		$message = new Message();
+		$message->setHeaders(array(
+			'foo' => 'bar',
+		));
+
+		$this->assertTrue($message->hasHeader('foo'));
+		$this->assertTrue($message->hasHeader('FOO'));
+
+		$message->removeHeader('FOO');
+
+		$this->assertFalse($message->hasHeader('foo'));
+		$this->assertFalse($message->hasHeader('FOO'));
 	}
 
 	public function testSetBody()
