@@ -179,6 +179,8 @@ class Stream implements HandlerInterface
 
 	public static function handleError($errno, $errstr)
 	{
+		restore_error_handler();
+
 		throw new HandlerException($errstr, $errno);
 	}
 }
