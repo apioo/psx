@@ -178,7 +178,21 @@ class TempStream implements StreamableInterface
 
 	public function getMetadata($key = null)
 	{
-		return null;
+		if($this->resource)
+		{
+			$meta = stream_get_meta_data($this->resource);
+
+			if($key === null)
+			{
+				return $meta;
+			}
+			else
+			{
+				return isset($meta[$key]) ? $meta[$key] : null;
+			}
+		}
+
+		return $key === null ? array() : null;
 	}
 
 	public function __toString()

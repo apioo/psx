@@ -191,7 +191,7 @@ class StringStream implements StreamableInterface
 
 	public function getMetadata($key = null)
 	{
-		return null;
+		return $key === null ? array() : null;
 	}
 
 	public function __toString()

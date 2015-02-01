@@ -104,6 +104,18 @@ abstract class StreamTestCase extends \PHPUnit_Framework_TestCase
 		}
 	}
 
+	public function testRewind()
+	{
+		if($this->stream->isSeekable())
+		{
+			$this->assertEquals(0, $this->stream->tell());
+			$this->stream->seek(2);
+			$this->assertEquals(2, $this->stream->tell());
+			$this->stream->rewind();
+			$this->assertEquals(0, $this->stream->tell());
+		}
+	}
+
 	public function testIsSeekable()
 	{
 		$result = $this->stream->isSeekable();
@@ -173,6 +185,31 @@ abstract class StreamTestCase extends \PHPUnit_Framework_TestCase
 
 			$this->assertEquals('obar', $this->stream->getContents());
 		}
+	}
+
+	public function testGetContentsOffset()
+	{
+		if($this->stream->isReadable() && $this->stream->isSeekable())
+		{
+			$this->assertEquals('foobar', $this->stream->getContents());
+
+			$this->stream->seek(2);
+
+			$this->assertEquals('ob', $this->stream->getContents(2));
+		}
+	}
+
+	public function testGetMetadata()
+	{
+		$this->assertTrue(is_array($this->stream->getMetadata()));
+	}
+
+	public function testGetMetadataKey()
+	{
+		$this->assertEmpty($this->stream->getMetadata('foo'));
+
+		// call an key which exists in the metadata
+		$uri = $this->stream->getMetadata('uri');
 	}
 
 	public function testToString()

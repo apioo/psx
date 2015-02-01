@@ -93,11 +93,6 @@ class SocksStream extends TempStream
 		}
 	}
 
-	public function getMetadata($key = null)
-	{
-		return null;
-	}
-
 	public function isChunkEncoded()
 	{
 		return $this->chunkedEncoding;
