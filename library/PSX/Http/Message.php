@@ -101,6 +101,8 @@ class Message implements MessageInterface
 
 	public function addHeader($name, $value)
 	{
+		$name = strtolower($name);
+
 		if($this->hasHeader($name))
 		{
 			$this->setHeader($name, array_merge($this->headers[$name], $this->normalizeHeaderValue($value)));
