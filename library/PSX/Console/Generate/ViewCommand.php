@@ -58,7 +58,7 @@ class ViewCommand extends ContainerGenerateCommandAbstract
 		$applicationPath = $path . DIRECTORY_SEPARATOR . 'Application';
 		$resourcePath    = $path . DIRECTORY_SEPARATOR . 'Resource';
 
-		if(!is_dir($applicationPath))
+		if(!$this->isDir($applicationPath))
 		{
 			$output->writeln('Create dir ' . $applicationPath);
 
@@ -68,7 +68,7 @@ class ViewCommand extends ContainerGenerateCommandAbstract
 			}
 		}
 
-		if(!is_dir($resourcePath))
+		if(!$this->isDir($resourcePath))
 		{
 			$output->writeln('Create dir ' . $resourcePath);
 
@@ -82,7 +82,7 @@ class ViewCommand extends ContainerGenerateCommandAbstract
 		$controllerFile = $applicationPath . DIRECTORY_SEPARATOR . $definition->getClassName() . '.php';
 		$templateFile   = $resourcePath . DIRECTORY_SEPARATOR . $this->underscore($definition->getClassName()) . '.html';
 
-		if(!is_file($controllerFile) && !is_file($templateFile))
+		if(!$this->isFile($controllerFile) && !$this->isFile($templateFile))
 		{
 			$definition->setNamespace($definition->getNamespace() . '\Application');
 
@@ -107,11 +107,11 @@ class ViewCommand extends ContainerGenerateCommandAbstract
 		}
 		else
 		{
-			if(is_file($controllerFile))
+			if($this->isFile($controllerFile))
 			{
 				throw new \RuntimeException('File ' . $controllerFile . ' already exists');
 			}
-			else if(is_file($templateFile))
+			else if($this->isFile($templateFile))
 			{
 				throw new \RuntimeException('File ' . $templateFile . ' already exists');
 			}

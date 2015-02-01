@@ -49,8 +49,22 @@ class SchemaCommandTest extends CommandTestCase
 	{
 		$command = $this->getMockBuilder('PSX\Console\Generate\SchemaCommand')
 			->setConstructorArgs(array(getContainer()->get('connection')))
-			->setMethods(array('makeDir', 'writeFile'))
+			->setMethods(array('makeDir', 'writeFile', 'isDir', 'isFile'))
 			->getMock();
+
+		$command->expects($this->once())
+			->method('isDir')
+			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo'))
+			->will($this->returnValue(false));
+
+		$command->expects($this->once())
+			->method('makeDir')
+			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo'));
+
+		$command->expects($this->once())
+			->method('isFile')
+			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Bar.php'))
+			->will($this->returnValue(false));
 
 		$command->expects($this->once())
 			->method('writeFile')
@@ -61,6 +75,40 @@ class SchemaCommandTest extends CommandTestCase
 					return true;
 				})
 			);
+
+		$commandTester = new CommandTester($command);
+		$commandTester->execute(array(
+			'namespace' => 'Acme\Foo\Bar',
+			'table'     => 'psx_table_command_test'
+		));
+	}
+
+	/**
+	 * @expectedException RuntimeException
+	 */
+	public function testCommandFileExists()
+	{
+		$command = $this->getMockBuilder('PSX\Console\Generate\SchemaCommand')
+			->setConstructorArgs(array(getContainer()->get('connection')))
+			->setMethods(array('makeDir', 'writeFile', 'isDir', 'isFile'))
+			->getMock();
+
+		$command->expects($this->once())
+			->method('isDir')
+			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo'))
+			->will($this->returnValue(false));
+
+		$command->expects($this->once())
+			->method('makeDir')
+			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo'));
+
+		$command->expects($this->once())
+			->method('isFile')
+			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Bar.php'))
+			->will($this->returnValue(true));
+
+		$command->expects($this->never())
+			->method('writeFile');
 
 		$commandTester = new CommandTester($command);
 		$commandTester->execute(array(

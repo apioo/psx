@@ -70,7 +70,7 @@ class SchemaCommand extends GenerateCommandAbstract
 		// create dir
 		$path = $definition->getPath();
 
-		if(!is_dir($path))
+		if(!$this->isDir($path))
 		{
 			$output->writeln('Create dir ' . $path);
 
@@ -83,7 +83,7 @@ class SchemaCommand extends GenerateCommandAbstract
 		// generate controller
 		$file = $path . DIRECTORY_SEPARATOR . $definition->getClassName() . '.php';
 
-		if(!is_file($file))
+		if(!$this->isFile($file))
 		{
 			$source = $this->getSchemaSource($definition, $table);
 

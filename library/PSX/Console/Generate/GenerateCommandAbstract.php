@@ -63,4 +63,14 @@ abstract class GenerateCommandAbstract extends Command
 	{
 		return file_put_contents($file, $content);
 	}
+
+	protected function isFile($path)
+	{
+		return is_file($path);
+	}
+
+	protected function isDir($path)
+	{
+		return is_dir($path);
+	}
 }

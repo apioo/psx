@@ -72,7 +72,7 @@ class TableCommand extends GenerateCommandAbstract
 		// create dir
 		$path = $definition->getPath();
 
-		if(!is_dir($path))
+		if(!$this->isDir($path))
 		{
 			$output->writeln('Create dir ' . $path);
 
@@ -85,7 +85,7 @@ class TableCommand extends GenerateCommandAbstract
 		// generate controller
 		$file = $path . DIRECTORY_SEPARATOR . $definition->getClassName() . '.php';
 
-		if(!is_file($file))
+		if(!$this->isFile($file))
 		{
 			$source = $this->getTableSource($definition, $table);
 
