@@ -69,6 +69,7 @@ class MediaTypeTest extends \PHPUnit_Framework_TestCase
 			['text/plain; q=0.5', 'text', 'plain', 0.5, ['q' => '0.5']],
 			['application/vnd.psx.v2+json', 'application', 'vnd.psx.v2+json', 1, []],
 			['application/atom+xml', 'application', 'atom+xml', 1, []],
+			['text/plain; q=2', 'text', 'plain', 1, ['q' => '2']],
 		);
 	}
 

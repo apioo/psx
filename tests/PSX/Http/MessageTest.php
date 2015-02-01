@@ -36,6 +36,26 @@ use PSX\Http\Stream\StringStream;
  */
 class MessageTest extends \PHPUnit_Framework_TestCase
 {
+	public function testConstructor()
+	{
+		$message = new Message(array('foo' => 'bar'), new StringStream('foobar'));
+
+		$this->assertEquals('bar', $message->getHeader('foo'));
+		$this->assertEquals(array('bar'), $message->getHeaderLines('foo'));
+		$this->assertEquals('foobar', (string) $message->getBody());
+
+		$message = new Message(array('foo' => 'bar'), 'foobar');
+
+		$this->assertEquals('bar', $message->getHeader('foo'));
+		$this->assertEquals(array('bar'), $message->getHeaderLines('foo'));
+		$this->assertEquals('foobar', (string) $message->getBody());
+
+		$message = new Message(array('foo' => 'bar'));
+
+		$this->assertEquals('bar', $message->getHeader('foo'));
+		$this->assertEquals(array('bar'), $message->getHeaderLines('foo'));
+	}
+
 	public function testGetSetHeaders()
 	{
 		$message = new Message();
@@ -142,7 +162,7 @@ class MessageTest extends \PHPUnit_Framework_TestCase
 		$this->assertFalse($message->hasHeader('foo'));
 	}
 
-	public function testSetGetBody()
+	public function testSetBody()
 	{
 		$message = new Message();
 		$message->setBody(new StringStream('foobar'));
@@ -150,24 +170,28 @@ class MessageTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('foobar', (string) $message->getBody());
 	}
 
-	public function testConstructor()
+	public function testSetBodyString()
 	{
-		$message = new Message(array('foo' => 'bar'), new StringStream('foobar'));
+		$message = new Message(array(), 'foobar');
 
-		$this->assertEquals('bar', $message->getHeader('foo'));
-		$this->assertEquals(array('bar'), $message->getHeaderLines('foo'));
 		$this->assertEquals('foobar', (string) $message->getBody());
+	}
 
-		$message = new Message(array('foo' => 'bar'), 'foobar');
+	public function testSetBodyNull()
+	{
+		$message = new Message(array(), null);
 
-		$this->assertEquals('bar', $message->getHeader('foo'));
-		$this->assertEquals(array('bar'), $message->getHeaderLines('foo'));
+		$this->assertEquals('', (string) $message->getBody());
+	}
+
+	public function testSetBodyResource()
+	{
+		$handle = fopen('php://memory', 'r+');
+		fwrite($handle, 'foobar');
+
+		$message = new Message(array(), $handle);
+
 		$this->assertEquals('foobar', (string) $message->getBody());
-
-		$message = new Message(array('foo' => 'bar'));
-
-		$this->assertEquals('bar', $message->getHeader('foo'));
-		$this->assertEquals(array('bar'), $message->getHeaderLines('foo'));
 	}
 
 	/**

@@ -35,6 +35,39 @@ use PSX\Http\Stream\StringStream;
  */
 class ResponseTest extends \PHPUnit_Framework_TestCase
 {
+	public function testGetLine()
+	{
+		$response = new Response(200);
+
+		$this->assertEquals('HTTP/1.1 200 OK', $response->getLine());
+	}
+
+	/**
+	 * @expectedException PSX\Exception
+	 */
+	public function testGetLineUnknownStausCode()
+	{
+		$response = new Response(0);
+		$response->getLine();
+	}
+
+	/**
+	 * @expectedException PSX\Exception
+	 */
+	public function testGetLineUnknownStausCodeWithNoReason()
+	{
+		$response = new Response(800);
+		$response->getLine();
+	}
+
+	public function testGetLineUnknownStausCodeWithReason()
+	{
+		$response = new Response();
+		$response->setStatus(800, 'Foo');
+
+		$this->assertEquals('HTTP/1.1 800 Foo', $response->getLine());
+	}
+
 	public function testToString()
 	{
 		$body = new StringStream();

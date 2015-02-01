@@ -263,4 +263,27 @@ abstract class HandlerTestCase extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals('........', $body);
 	}
+
+	/**
+	 * This is not ideal but in order to test https requests we must send one.
+	 * So we use google as its most likely available
+	 */
+	public function testHttpsRequest()
+	{
+		$testCase = $this;
+		$options  = new Options();
+		$options->setTimeout(8);
+		$options->setCallback(function($resource, $request) use ($testCase){
+
+			$this->assertTrue(is_resource($resource));
+			$this->assertInstanceOf('PSX\Http\RequestInterface', $request);
+
+		});
+
+		$request  = new GetRequest(new Url('https://www.google.com'));
+		$response = $this->http->request($request, $options);
+
+		$this->assertTrue($response->hasHeader('Server'));
+		$this->assertTrue(strlen((string) $response->getBody()) > 128);
+	}
 }
