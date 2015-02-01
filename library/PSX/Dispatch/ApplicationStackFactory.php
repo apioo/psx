@@ -24,8 +24,8 @@
 namespace PSX\Dispatch;
 
 use PSX\Dependency\ObjectBuilderInterface;
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
+use PSX\Http\RequestInterface;
+use PSX\Http\ResponseInterface;
 use PSX\Loader\Location;
 
 /**

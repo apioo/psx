@@ -39,6 +39,8 @@ class UriTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('ftp', $uri->getScheme());
 		$this->assertEquals('ftp.is.co.za', $uri->getAuthority());
 		$this->assertEquals(null, $uri->getUserInfo());
+		$this->assertEquals(null, $uri->getUser());
+		$this->assertEquals(null, $uri->getPassword());
 		$this->assertEquals('ftp.is.co.za', $uri->getHost());
 		$this->assertEquals(null, $uri->getPort());
 		$this->assertEquals('/rfc/rfc1808.txt', $uri->getPath());
@@ -54,6 +56,8 @@ class UriTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('http', $uri->getScheme());
 		$this->assertEquals('www.ietf.org', $uri->getAuthority());
 		$this->assertEquals(null, $uri->getUserInfo());
+		$this->assertEquals(null, $uri->getUser());
+		$this->assertEquals(null, $uri->getPassword());
 		$this->assertEquals('www.ietf.org', $uri->getHost());
 		$this->assertEquals(null, $uri->getPort());
 		$this->assertEquals('/rfc/rfc2396.txt', $uri->getPath());
@@ -69,6 +73,8 @@ class UriTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('ldap', $uri->getScheme());
 		$this->assertEquals('[2001:db8::7]', $uri->getAuthority());
 		$this->assertEquals(null, $uri->getUserInfo());
+		$this->assertEquals(null, $uri->getUser());
+		$this->assertEquals(null, $uri->getPassword());
 		$this->assertEquals('[2001:db8::7]', $uri->getHost());
 		$this->assertEquals(null, $uri->getPort());
 		$this->assertEquals('/c=GB', $uri->getPath());
@@ -84,6 +90,8 @@ class UriTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('ldap', $uri->getScheme());
 		$this->assertEquals('[2001:db8::7]:80', $uri->getAuthority());
 		$this->assertEquals(null, $uri->getUserInfo());
+		$this->assertEquals(null, $uri->getUser());
+		$this->assertEquals(null, $uri->getPassword());
 		$this->assertEquals('[2001:db8::7]', $uri->getHost());
 		$this->assertEquals(80, $uri->getPort());
 		$this->assertEquals('/c=GB', $uri->getPath());
@@ -99,6 +107,8 @@ class UriTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('mailto', $uri->getScheme());
 		$this->assertEquals(null, $uri->getAuthority());
 		$this->assertEquals(null, $uri->getUserInfo());
+		$this->assertEquals(null, $uri->getUser());
+		$this->assertEquals(null, $uri->getPassword());
 		$this->assertEquals(null, $uri->getHost());
 		$this->assertEquals(null, $uri->getPort());
 		$this->assertEquals('John.Doe@example.com', $uri->getPath());
@@ -114,6 +124,8 @@ class UriTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('mailto', $uri->getScheme());
 		$this->assertEquals('John.Doe@example.com', $uri->getAuthority());
 		$this->assertEquals('John.Doe', $uri->getUserInfo());
+		$this->assertEquals('John.Doe', $uri->getUser());
+		$this->assertEquals(null, $uri->getPassword());
 		$this->assertEquals('example.com', $uri->getHost());
 		$this->assertEquals(null, $uri->getPort());
 		$this->assertEquals(null, $uri->getPath());
@@ -129,6 +141,8 @@ class UriTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('news', $uri->getScheme());
 		$this->assertEquals(null, $uri->getAuthority());
 		$this->assertEquals(null, $uri->getUserInfo());
+		$this->assertEquals(null, $uri->getUser());
+		$this->assertEquals(null, $uri->getPassword());
 		$this->assertEquals(null, $uri->getHost());
 		$this->assertEquals(null, $uri->getPort());
 		$this->assertEquals('comp.infosystems.www.servers.unix', $uri->getPath());
@@ -144,6 +158,8 @@ class UriTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('tel', $uri->getScheme());
 		$this->assertEquals(null, $uri->getAuthority());
 		$this->assertEquals(null, $uri->getUserInfo());
+		$this->assertEquals(null, $uri->getUser());
+		$this->assertEquals(null, $uri->getPassword());
 		$this->assertEquals(null, $uri->getHost());
 		$this->assertEquals(null, $uri->getPort());
 		$this->assertEquals('+1-816-555-1212', $uri->getPath());
@@ -159,6 +175,8 @@ class UriTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('telnet', $uri->getScheme());
 		$this->assertEquals('192.0.2.16:80', $uri->getAuthority());
 		$this->assertEquals(null, $uri->getUserInfo());
+		$this->assertEquals(null, $uri->getUser());
+		$this->assertEquals(null, $uri->getPassword());
 		$this->assertEquals('192.0.2.16', $uri->getHost());
 		$this->assertEquals(80, $uri->getPort());
 		$this->assertEquals('/', $uri->getPath());
@@ -174,6 +192,8 @@ class UriTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('urn', $uri->getScheme());
 		$this->assertEquals(null, $uri->getAuthority());
 		$this->assertEquals(null, $uri->getUserInfo());
+		$this->assertEquals(null, $uri->getUser());
+		$this->assertEquals(null, $uri->getPassword());
 		$this->assertEquals(null, $uri->getHost());
 		$this->assertEquals(null, $uri->getPort());
 		$this->assertEquals('oasis:names:specification:docbook:dtd:xml:4.1.2', $uri->getPath());
@@ -189,6 +209,8 @@ class UriTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('foo', $uri->getScheme());
 		$this->assertEquals('user:password@example.com:8042', $uri->getAuthority());
 		$this->assertEquals('user:password', $uri->getUserInfo());
+		$this->assertEquals('user', $uri->getUser());
+		$this->assertEquals('password', $uri->getPassword());
 		$this->assertEquals('example.com', $uri->getHost());
 		$this->assertEquals(8042, $uri->getPort());
 		$this->assertEquals('/over/there', $uri->getPath());
@@ -300,25 +322,6 @@ class UriTest extends \PHPUnit_Framework_TestCase
 		);
 	}
 
-	public function testEquals()
-	{
-		$uris = array(
-			'http://abc.com:/~smith/home.html',
-			'http://ABC.com/%7Esmith/home.html',
-			'http://ABC.com:/%7esmith/home.html'
-		);
-
-		foreach($uris as $uri)
-		{
-			$sourceUri = new Uri($uri);
-
-			foreach($uris as $uri)
-			{
-				$this->assertTrue($sourceUri->equals($uri), $uri . ' == ' . $sourceUri);
-			}
-		}
-	}
-
 	public function testSetScheme()
 	{
 		$uri = new Uri('http://www.yahoo.com/');
@@ -331,18 +334,42 @@ class UriTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('https://www.yahoo.com/', $uri->toString());
 	}
 
-	public function testSetAuthority()
+	public function testSetUser()
 	{
 		$uri = new Uri('http://www.yahoo.com/');
 		
-		$this->assertEquals('www.yahoo.com', $uri->getAuthority());
+		$this->assertEquals(null, $uri->getUser());
 
-		$uri->setAuthority('yahoo.com:8080');
+		$uri->setUser('foo');
 
-		$this->assertEquals('yahoo.com:8080', $uri->getAuthority());
-		$this->assertEquals('yahoo.com', $uri->getHost());
-		$this->assertEquals(8080, $uri->getPort());
-		$this->assertEquals('http://yahoo.com:8080/', $uri->toString());
+		$this->assertEquals('foo', $uri->getUserInfo());
+		$this->assertEquals('foo', $uri->getUser());
+		$this->assertEquals('http://foo@www.yahoo.com/', $uri->toString());
+	}
+
+	public function testSetPassword()
+	{
+		$uri = new Uri('http://www.yahoo.com/');
+		
+		$this->assertEquals(null, $uri->getPassword());
+
+		$uri->setPassword('bar');
+
+		$this->assertEquals('bar', $uri->getPassword());
+		// no password gets set because we have no user
+		$this->assertEquals('http://www.yahoo.com/', $uri->toString());
+	}
+
+	public function testSetUserPassword()
+	{
+		$uri = new Uri('http://www.yahoo.com/');
+		$uri->setUser('foo');
+		$uri->setPassword('bar');
+
+		$this->assertEquals('foo:bar', $uri->getUserInfo());
+		$this->assertEquals('foo', $uri->getUser());
+		$this->assertEquals('bar', $uri->getPassword());
+		$this->assertEquals('http://foo:bar@www.yahoo.com/', $uri->toString());
 	}
 
 	public function testSetHost()

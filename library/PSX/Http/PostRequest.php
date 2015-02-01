@@ -23,7 +23,6 @@
 
 namespace PSX\Http;
 
-use Psr\Http\Message\StreamableInterface;
 use PSX\Url;
 
 /**
@@ -52,5 +51,7 @@ class PostRequest extends Request
 		}
 
 		parent::__construct($url, 'POST', $headers, $body);
+
+		$this->setHeader('Host', $url->getHost());
 	}
 }

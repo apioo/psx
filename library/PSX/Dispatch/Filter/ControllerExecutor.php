@@ -23,11 +23,11 @@
 
 namespace PSX\Dispatch\Filter;
 
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
 use PSX\ControllerInterface;
 use PSX\Dispatch\FilterChainInterface;
 use PSX\Dispatch\FilterInterface;
+use PSX\Http\RequestInterface;
+use PSX\Http\ResponseInterface;
 use PSX\Loader;
 use PSX\Loader\Callback;
 
@@ -91,7 +91,7 @@ class ControllerExecutor implements FilterInterface
 
 			if(!empty($method))
 			{
-				call_user_func_array(array($class, $method), array($request, $response));
+				call_user_func_array(array($class, $method), array());
 			}
 		}
 

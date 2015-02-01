@@ -39,7 +39,7 @@ class TestAuthorizationAbstract extends AuthorizationAbstract
 		// if the login was successful. In this case we use the get parameter
 		// for testing purpose
 
-		return $this->request->getUrl()->getParameter('has_grant');
+		return $this->getParameter('has_grant');
 	}
 
 	protected function generateCode(AccessRequest $request)
@@ -48,6 +48,6 @@ class TestAuthorizationAbstract extends AuthorizationAbstract
 		// the code was generated. In this case we use the get parameter for 
 		// testing purpose
 
-		return $this->request->getUrl()->getParameter('code');
+		return $this->getParameter('code');
 	}
 }

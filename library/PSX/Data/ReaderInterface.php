@@ -23,8 +23,8 @@
 
 namespace PSX\Data;
 
-use Psr\Http\Message\MessageInterface;
 use PSX\Http\MediaType;
+use PSX\Http\MessageInterface;
 
 /**
  * ReaderInterface
@@ -43,7 +43,7 @@ interface ReaderInterface
 	 * Transforms the $request into an parseable form this can be an array
 	 * or DOMDocument etc.
 	 *
-	 * @param Psr\Http\Message\MessageInterface $message
+	 * @param PSX\Http\MessageInterface $message
 	 * @return mixed
 	 */
 	public function read(MessageInterface $message);

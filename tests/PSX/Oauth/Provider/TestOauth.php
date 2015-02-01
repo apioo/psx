@@ -54,7 +54,7 @@ class TestOauth extends ControllerAbstract
 
 	public function doIndex()
 	{
-		$this->response->setStatusCode(200);
+		$this->response->setStatus(200);
 		$this->response->getBody()->write('SUCCESS');
 	}
 }

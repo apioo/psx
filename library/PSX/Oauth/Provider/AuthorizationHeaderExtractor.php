@@ -23,7 +23,7 @@
 
 namespace PSX\Oauth\Provider;
 
-use Psr\Http\Message\MessageInterface;
+use PSX\Http\MessageInterface;
 use InvalidArgumentException;
 use PSX\Data\InvalidDataException;
 use PSX\Data\RecordInterface;

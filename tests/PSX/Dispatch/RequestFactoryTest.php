@@ -57,7 +57,7 @@ class RequestFactoryTest extends \PHPUnit_Framework_TestCase
 		{
 			$request = $this->getRequest($env, $config);
 
-			$this->assertEquals($uri, (string) $request->getUrl());
+			$this->assertEquals($uri, (string) $request->getUri());
 		}
 	}
 
@@ -82,7 +82,7 @@ class RequestFactoryTest extends \PHPUnit_Framework_TestCase
 		{
 			$request = $this->getRequest($env, $config);
 
-			$this->assertEquals($uri, (string) $request->getUrl(), var_export($env, true));
+			$this->assertEquals($uri, (string) $request->getUri(), var_export($env, true));
 		}
 	}
 
@@ -108,7 +108,7 @@ class RequestFactoryTest extends \PHPUnit_Framework_TestCase
 		{
 			$request = $this->getRequest($env, $config);
 
-			$this->assertEquals($uri, (string) $request->getUrl());
+			$this->assertEquals($uri, (string) $request->getUri());
 		}
 	}
 
@@ -134,7 +134,7 @@ class RequestFactoryTest extends \PHPUnit_Framework_TestCase
 		{
 			$request = $this->getRequest($env, $config);
 
-			$this->assertEquals($uri, (string) $request->getUrl());
+			$this->assertEquals($uri, (string) $request->getUri());
 		}
 	}
 
@@ -155,7 +155,7 @@ class RequestFactoryTest extends \PHPUnit_Framework_TestCase
 
 		$_SERVER['argv'][1] = '/foo';
 
-		$this->assertEquals('http://foo.com/foo', (string) $factory->createRequest()->getUrl());
+		$this->assertEquals('http://foo.com/foo', (string) $factory->createRequest()->getUri());
 	}
 
 	/**

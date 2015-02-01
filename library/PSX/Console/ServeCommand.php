@@ -74,15 +74,15 @@ class ServeCommand extends Command
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
 		// request
-		$baseUrl  = new Url($this->config['psx_url']);
+		$baseUrl = new Url($this->config['psx_url']);
 		$baseUrl->setPath(null);
 
 		$parser   = new RequestParser($baseUrl, RequestParser::MODE_LOOSE);
 		$request  = $parser->parse($this->reader->read());
 
 		// response
-		$response = new Response('HTTP/1.1');
-		$response->addHeader('X-Powered-By', 'psx');
+		$response = new Response();
+		$response->setHeader('X-Powered-By', 'psx');
 		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
 
 		// dispatch request

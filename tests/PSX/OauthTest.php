@@ -53,7 +53,7 @@ class OauthTest extends \PHPUnit_Framework_TestCase
 		$http = new Http(new Callback(function($request) use ($testCase){
 
 			// request token
-			if($request->getUrl()->getPath() == '/requestToken')
+			if($request->getUri()->getPath() == '/requestToken')
 			{
 				$auth = Authentication::decodeParameters((string) $request->getHeader('Authorization'));
 
@@ -77,7 +77,7 @@ oauth_token={$tmpToken}&oauth_token_secret={$tmpTokenSecret}&oauth_callback_conf
 TEXT;
 			}
 			// access token
-			else if($request->getUrl()->getPath() == '/accessToken')
+			else if($request->getUri()->getPath() == '/accessToken')
 			{
 				$auth = Authentication::decodeParameters((string) $request->getHeader('Authorization'));
 
@@ -102,7 +102,7 @@ oauth_token={$token}&oauth_token_secret={$tokenSecret}
 TEXT;
 			}
 			// api request
-			else if($request->getUrl()->getPath() == '/api')
+			else if($request->getUri()->getPath() == '/api')
 			{
 				$auth = Authentication::decodeParameters((string) $request->getHeader('Authorization'));
 
@@ -123,7 +123,7 @@ SUCCESS
 TEXT;
 			}
 
-			return Response::parse($response, ResponseParser::MODE_LOOSE)->toString();
+			return ResponseParser::convert($response, ResponseParser::MODE_LOOSE)->toString();
 
 		}));
 
@@ -157,7 +157,7 @@ TEXT;
 		$request  = new GetRequest($url, array('Authorization' => $auth));
 		$response = $http->request($request);
 
-		$this->assertEquals(200, $response->getCode());
+		$this->assertEquals(200, $response->getStatusCode());
 		$this->assertEquals('SUCCESS', (string) $response->getBody());
 	}
 

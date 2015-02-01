@@ -49,7 +49,7 @@ class ClientCredentialsTest extends \PHPUnit_Framework_TestCase
 		$http = new Http(new Callback(function($request) use ($testCase){
 
 			// api request
-			if($request->getUrl()->getPath() == '/api')
+			if($request->getUri()->getPath() == '/api')
 			{
 				$testCase->assertEquals('Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW', (string) $request->getHeader('Authorization'));
 				$testCase->assertEquals('application/x-www-form-urlencoded', (string) $request->getHeader('Content-Type'));
@@ -70,7 +70,7 @@ Pragma: no-cache
 TEXT;
 			}
 
-			return Response::parse($response, ResponseParser::MODE_LOOSE)->toString();
+			return ResponseParser::convert($response, ResponseParser::MODE_LOOSE)->toString();
 
 		}));
 

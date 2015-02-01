@@ -24,14 +24,14 @@
 namespace PSX\Dispatch\Filter;
 
 use Closure;
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
 use PSX\Base;
 use PSX\Dispatch\FilterChainInterface;
 use PSX\Dispatch\FilterInterface;
 use PSX\Http\Authentication;
 use PSX\Http\Exception\BadRequestException;
 use PSX\Http\Exception\UnauthorizedException;
+use PSX\Http\RequestInterface;
+use PSX\Http\ResponseInterface;
 
 /**
  * BasicAuthentication

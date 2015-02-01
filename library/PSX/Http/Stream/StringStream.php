@@ -68,10 +68,6 @@ class StringStream implements StreamableInterface
 		return null;
 	}
 
-	public function attach($stream)
-	{
-	}
-
 	public function getSize()
 	{
 		return $this->length;
@@ -87,6 +83,16 @@ class StringStream implements StreamableInterface
 		if($this->data !== null)
 		{
 			return $this->_pointer >= $this->length;
+		}
+
+		return true;
+	}
+
+	public function rewind()
+	{
+		if($this->data !== null)
+		{
+			$this->_pointer = 0;
 		}
 
 		return true;

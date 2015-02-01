@@ -24,8 +24,6 @@
 namespace PSX;
 
 use DOMDocument;
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
 use PSX\Base;
 use PSX\Dispatch\ControllerFactoryInterface;
 use PSX\Dispatch\SenderInterface;
@@ -37,6 +35,8 @@ use PSX\Event\ResponseSendEvent;
 use PSX\Http;
 use PSX\Http\Authentication;
 use PSX\Http\Exception as StatusCode;
+use PSX\Http\RequestInterface;
+use PSX\Http\ResponseInterface;
 use PSX\Http\Stream\StringStream;
 use PSX\Loader\Callback;
 use PSX\Loader\Location;
@@ -79,14 +79,14 @@ class Dispatch
 		}
 		catch(StatusCode\NotModifiedException $e)
 		{
-			$response->setStatusCode($e->getStatusCode());
-			$response->setBody(null);
+			$response->setStatus($e->getStatusCode());
+			$response->setBody(new StringStream());
 		}
 		catch(StatusCode\RedirectionException $e)
 		{
-			$response->setStatusCode($e->getStatusCode());
+			$response->setStatus($e->getStatusCode());
 			$response->setHeader('Location', $e->getLocation());
-			$response->setBody(null);
+			$response->setBody(new StringStream());
 		}
 		catch(\Exception $e)
 		{
@@ -100,11 +100,11 @@ class Dispatch
 			{
 				if(isset(Http::$codes[$e->getCode()]))
 				{
-					$response->setStatusCode($e->getCode());
+					$response->setStatus($e->getCode());
 				}
 				else
 				{
-					$response->setStatusCode(500);
+					$response->setStatus(500);
 				}
 			}
 
@@ -126,7 +126,7 @@ class Dispatch
 
 	protected function handleHttpStatusCodeException(StatusCode\StatusCodeException $e, ResponseInterface $response)
 	{
-		$response->setStatusCode($e->getStatusCode());
+		$response->setStatus($e->getStatusCode());
 
 		if($e instanceof StatusCode\MethodNotAllowedException)
 		{

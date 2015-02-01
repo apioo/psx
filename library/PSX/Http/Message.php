@@ -24,9 +24,8 @@
 namespace PSX\Http;
 
 use InvalidArgumentException;
-use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\StreamableInterface;
-use PSX\Http\Stream\StringStream;
+use PSX\Http\Stream;
 
 /**
  * Message
@@ -39,74 +38,72 @@ class Message implements MessageInterface
 {
 	protected $headers;
 	protected $body;
-	protected $scheme;
+	protected $protocol;
 
 	/**
-	 * @param array $header
-	 * @param Psr\Http\Message\StreamableInterface|string $body
-	 * @param string $scheme
+	 * @param array $headers
+	 * @param Psr\Http\Message\StreamableInterface|string|resource $body
 	 */
-	public function __construct(array $header = array(), $body = null, $scheme = null)
+	public function __construct(array $headers = array(), $body = null)
 	{
-		$this->setHeaders($header);
-		$this->setBody($this->prepareBody($body));
-
-		$this->scheme = $scheme;
+		$this->headers = $this->prepareHeaders($headers);
+		$this->body    = $this->prepareBody($body);
 	}
 
 	public function getProtocolVersion()
 	{
-		return $this->scheme;
+		return $this->protocol;
+	}
+
+	public function setProtocolVersion($protocol)
+	{
+		$this->protocol = $protocol;
 	}
 
 	public function getHeaders()
 	{
-		$result = array();
-
-		foreach($this->headers as $name => $value)
-		{
-			$result[$name] = $value->getValue(true);
-		}
-
-		return $result;
-	}
-
-	public function hasHeader($name)
-	{
-		return isset($this->headers[strtolower($name)]);
-	}
-
-	public function getHeader($name)
-	{
-		return $this->hasHeader($name) ? $this->headers[strtolower($name)]->getValue(false) : null;
-	}
-
-	public function getHeaderAsArray($name)
-	{
-		return $this->hasHeader($name) ? $this->headers[strtolower($name)]->getValue(true) : array();
-	}
-
-	public function setHeader($name, $value)
-	{
-		if(!$value instanceof HeaderFieldValues)
-		{
-			$value = new HeaderFieldValues($value);
-		}
-
-		$this->headers[strtolower($name)] = $value;
+		return $this->headers;
 	}
 
 	public function setHeaders(array $headers)
 	{
-		$this->headers = array();
-		$this->addHeaders($headers);
+		$this->headers = $this->prepareHeaders($headers);
+	}
+
+	public function hasHeader($name)
+	{
+		return array_key_exists(strtolower($name), $this->headers);
+	}
+
+	public function getHeader($name)
+	{
+		$lines = $this->getHeaderLines($name);
+
+		return $lines ? implode(', ', $lines) : null;
+	}
+
+	public function getHeaderLines($name)
+	{
+		$name = strtolower($name);
+
+		if(!$this->hasHeader($name))
+		{
+			return array();
+		}
+
+		return $this->headers[$name];
+	}
+
+	public function setHeader($name, $value)
+	{
+		$this->headers[strtolower($name)] = $this->normalizeHeaderValue($value);
 	}
 
 	public function addHeader($name, $value)
 	{
 		if($this->hasHeader($name))
 		{
-			$this->headers[strtolower($name)]->append($value);
+			$this->setHeader($name, array_merge($this->headers[$name], $this->normalizeHeaderValue($value)));
 		}
 		else
 		{
@@ -114,17 +111,11 @@ class Message implements MessageInterface
 		}
 	}
 
-	public function addHeaders(array $headers)
-	{
-		foreach($headers as $name => $value)
-		{
-			$this->addHeader($name, $value);
-		}
-	}
-
 	public function removeHeader($name)
 	{
-		if(isset($this->headers[$name]))
+		$name = strtolower($name);
+
+		if($this->hasHeader($name))
 		{
 			unset($this->headers[$name]);
 		}
@@ -140,30 +131,42 @@ class Message implements MessageInterface
 		return $this->body;
 	}
 
-	/**
-	 * Sets the message body
-	 *
-	 * @param Psr\Http\StreamableInterface $body
-	 * @return void
-	 */
-	public function setBody(StreamableInterface $body = null)
+	public function setBody(StreamableInterface $body)
 	{
 		$this->body = $body;
 	}
 
+	protected function prepareHeaders(array $headers)
+	{
+		return array_map(array($this, 'normalizeHeaderValue'), array_change_key_case($headers));
+	}
+
+	protected function normalizeHeaderValue($value)
+	{
+		return is_array($value) ? array_map('strval', $value) : [(string) $value];
+	}
+
 	protected function prepareBody($body)
 	{
-		if($body === null || $body instanceof StreamableInterface)
+		if($body instanceof StreamableInterface)
 		{
 			return $body;
 		}
+		else if($body === null)
+		{
+			return new Stream\StringStream();
+		}
 		else if(is_string($body))
 		{
-			return new StringStream($body);
+			return new Stream\StringStream($body);
+		}
+		else if(is_resource($body))
+		{
+			return new Stream\TempStream($body);
 		}
 		else
 		{
-			throw new InvalidArgumentException('Body must be either an Psr\Http\Message\StreamableInterface or string');
+			throw new InvalidArgumentException('Body must be either an Psr\Http\Message\StreamableInterface, string or resource');
 		}
 	}
 }

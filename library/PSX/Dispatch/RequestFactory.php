@@ -50,7 +50,7 @@ class RequestFactory implements RequestFactoryInterface
 	 * removed from the request url. Because of this you can have an psx project
 	 * also in an sub folder
 	 *
-	 * @return Psr\Http\Message\RequestInterface
+	 * @return PSX\Http\RequestInterface
 	 */
 	public function createRequest()
 	{
@@ -103,7 +103,14 @@ class RequestFactory implements RequestFactoryInterface
 				}
 			}
 
-			return new Request($url, $method, $headers, $body);
+			$request = new Request($url, $method, $headers, $body);
+			$request->setBodyParams($_POST);
+			$request->setCookieParams($_COOKIE);
+			$request->setFileParams($_FILES);
+			$request->setQueryParams($_GET);
+			$request->setServerParams($_SERVER);
+
+			return $request;
 		}
 		else
 		{

@@ -79,10 +79,6 @@ class TempStream implements StreamableInterface
 		return $handle;
 	}
 
-	public function attach($stream)
-	{
-	}
-
 	public function getSize()
 	{
 		if($this->resource)
@@ -110,6 +106,16 @@ class TempStream implements StreamableInterface
 		if($this->resource)
 		{
 			return feof($this->resource);
+		}
+
+		return true;
+	}
+
+	public function rewind()
+	{
+		if($this->resource)
+		{
+			return rewind($this->resource);
 		}
 
 		return true;

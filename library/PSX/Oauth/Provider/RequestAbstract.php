@@ -72,8 +72,8 @@ abstract class RequestAbstract extends ApiAbstract
 			$signature = Oauth::getSignature($request->getSignatureMethod());
 
 			$method = $this->request->getMethod();
-			$url    = $this->request->getUrl();
-			$params = array_merge($request->getRecordInfo()->getData(), $this->request->getUrl()->getParameters());
+			$url    = $this->request->getUri();
+			$params = array_merge($request->getRecordInfo()->getData(), $this->request->getUri()->getParameters());
 
 			$baseString = Oauth::buildBasestring($method, $url, $params);
 

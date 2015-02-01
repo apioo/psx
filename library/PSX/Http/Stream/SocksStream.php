@@ -23,9 +23,6 @@
 
 namespace PSX\Http\Stream;
 
-use InvalidArgumentException;
-use Psr\Http\Message\StreamableInterface;
-
 /**
  * The socks stream is used by the socks http handler. When you read data from 
  * the stream data is transfered over the wire it gets not buffered into any 
@@ -55,10 +52,6 @@ class SocksStream extends TempStream
 		$this->chunkedEncoding = false;
 
 		return parent::detach();
-	}
-
-	public function attach($stream)
-	{
 	}
 
 	public function getSize()

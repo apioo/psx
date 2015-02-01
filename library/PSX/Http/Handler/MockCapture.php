@@ -78,7 +78,7 @@ class MockCapture extends Curl
 
 			if($method instanceof DOMElement && $url instanceof DOMElement)
 			{
-				if($method->nodeValue == $request->getMethod() && $url->nodeValue == $request->getUrl()->toString())
+				if($method->nodeValue == $request->getMethod() && $url->nodeValue == $request->getUri()->toString())
 				{
 					$element = $resource->getElementsByTagName('response')->item(0);
 
@@ -107,7 +107,7 @@ class MockCapture extends Curl
 			$resource->appendChild($element);
 
 			$element = $dom->createElement('url');
-			$element->appendChild($dom->createTextNode($request->getUrl()->toString()));
+			$element->appendChild($dom->createTextNode($request->getUri()->toString()));
 			$resource->appendChild($element);
 
 			$element = $dom->createElement('response');

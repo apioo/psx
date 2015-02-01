@@ -107,4 +107,19 @@ class RequestParser extends ParserAbstract
 			throw new ParseException('Couldnt find status line');
 		}
 	}
+
+	/**
+	 * Parses an raw http request into an PSX\Http\Request object. Throws an
+	 * exception if the request has not an valid format
+	 *
+	 * @param string $content
+	 * @param PSX\Url $baseUrl
+	 * @return PSX\Http\Request
+	 */
+	public static function convert($content, Url $baseUrl = null, $mode = ParserAbstract::MODE_STRICT)
+	{
+		$parser = new self($baseUrl, $mode);
+
+		return $parser->parse($content);
+	}
 }

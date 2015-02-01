@@ -43,7 +43,7 @@ class StaticCacheTest extends \PHPUnit_Framework_TestCase
 	public function testCache()
 	{
 		$request  = new Request(new Url('http://localhost.com/foo/bar'), 'GET');
-		$response = new Response('HTTP/1.1', 200, 'OK', array('X-Some' => 'Stuff', 'Content-Type' => 'text/plain'));
+		$response = new Response(200, array('X-Some' => 'Stuff', 'Content-Type' => 'text/plain'));
 		$response->setBody(new StringStream());
 
 		$filters = array();

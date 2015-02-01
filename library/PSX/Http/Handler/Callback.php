@@ -29,6 +29,7 @@ use PSX\Http\HandlerInterface;
 use PSX\Http\Options;
 use PSX\Http\Request;
 use PSX\Http\Response;
+use PSX\Http\ResponseParser;
 
 /**
  * Callback
@@ -58,7 +59,7 @@ class Callback implements HandlerInterface
 			}
 			else
 			{
-				return Response::parse((string) $response);
+				return ResponseParser::convert((string) $response);
 			}
 		}
 		catch(\PHPUnit_Framework_Exception $e)

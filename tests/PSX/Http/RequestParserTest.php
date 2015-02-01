@@ -48,12 +48,11 @@ class RequestParserTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertInstanceOf('PSX\Http\Request', $request);
 		$this->assertEquals('GET', $request->getMethod());
-		$this->assertEquals('http://localhost.com/foobar?foo=bar#fragment', $request->getUrl()->toString());
+		$this->assertEquals('http://localhost.com/foobar?foo=bar#fragment', $request->getUri()->toString());
 		$this->assertEquals('HTTP/1.1', $request->getProtocolVersion());
 		$this->assertEquals(array(
 			'content-type' => ['text/plain'],
 			'user-agent'   => ['psx'],
-			'host'         => ['localhost.com'],
 		), $request->getHeaders());
 		$this->assertEquals('Google is built by a large team of engineers, designers, researchers, robots, and others in many different sites across the globe. It is updated continuously, and built with more tools and technologies than we can shake a stick at. If you\'d like to help us out, see google.com/jobs.', $request->getBody());
 	}
@@ -75,12 +74,11 @@ class RequestParserTest extends \PHPUnit_Framework_TestCase
 
 			$this->assertInstanceOf('PSX\Http\Request', $request);
 			$this->assertEquals('GET', $request->getMethod());
-			$this->assertEquals('http://localhost.com/foobar?foo=bar#fragment', $request->getUrl()->toString());
+			$this->assertEquals('http://localhost.com/foobar?foo=bar#fragment', $request->getUri()->toString());
 			$this->assertEquals('HTTP/1.1', $request->getProtocolVersion());
 			$this->assertEquals(array(
 				'content-type' => ['text/plain'],
 				'user-agent'   => ['psx'],
-				'host'         => ['localhost.com'],
 			), $request->getHeaders());
 			$this->assertEquals('Google is built by a large team of engineers, designers, researchers, robots, and others in many different sites across the globe. It is updated continuously, and built with more tools and technologies than we can shake a stick at. If you\'d like to help us out, see google.com/jobs.', $request->getBody());
 		}
@@ -99,7 +97,7 @@ class RequestParserTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertInstanceOf('PSX\Http\Request', $request);
 		$this->assertEquals('GET', $request->getMethod());
-		$this->assertEquals('/foobar?foo=bar#fragment', $request->getUrl()->toString());
+		$this->assertEquals('/foobar?foo=bar#fragment', $request->getUri()->toString());
 		$this->assertEquals('HTTP/1.1', $request->getProtocolVersion());
 		$this->assertEquals(array(
 			'content-type' => ['text/plain'],
@@ -154,5 +152,21 @@ class RequestParserTest extends \PHPUnit_Framework_TestCase
 
 		$parser = new RequestParser(new Url('http://localhost.com'), 'foo');
 		$parser->parse($request);
+	}
+
+	public function testConvert()
+	{
+		$httpRequest = 'GET /foo/bar?foo=bar#test HTTP/1.1' . Http::$newLine;
+		$httpRequest.= 'Content-type: text/html; charset=UTF-8' . Http::$newLine;
+		$httpRequest.= Http::$newLine;
+		$httpRequest.= 'foobar';
+
+		$request = RequestParser::convert($httpRequest, new Url('http://psx.dev'));
+
+		$this->assertEquals('http://psx.dev/foo/bar?foo=bar#test', $request->getUri()->toString());
+		$this->assertEquals('GET', $request->getMethod());
+		$this->assertEquals('HTTP/1.1', $request->getProtocolVersion());
+		$this->assertEquals('text/html; charset=UTF-8', (string) $request->getHeader('Content-Type'));
+		$this->assertEquals('foobar', $request->getBody());
 	}
 }

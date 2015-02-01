@@ -78,7 +78,7 @@ class Mock implements HandlerInterface
 
 	public function request(Request $request, Options $options)
 	{
-		$url = $request->getUrl()->toString();
+		$url = $request->getUri()->toString();
 
 		foreach($this->resources as $resource)
 		{

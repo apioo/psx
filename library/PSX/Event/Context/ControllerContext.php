@@ -23,9 +23,9 @@
 
 namespace PSX\Event\Context;
 
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
 use PSX\Event\ContextInterface;
+use PSX\Http\RequestInterface;
+use PSX\Http\ResponseInterface;
 
 /**
  * ControllerContext

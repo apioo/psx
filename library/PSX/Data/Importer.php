@@ -23,13 +23,13 @@
 
 namespace PSX\Data;
 
-use Psr\Http\Message\MessageInterface;
 use PSX\Data\NotFoundException;
 use PSX\Data\ReaderFactory;
 use PSX\Data\Record\ImporterManager;
 use PSX\Data\Record\ImporterInterface;
 use PSX\Data\TransformerInterface;
 use PSX\Data\Transformer\TransformerManager;
+use PSX\Http\MessageInterface;
 
 /**
  * Reads data from an http message and imports them into an record
@@ -63,7 +63,7 @@ class Importer
 	 * simply pass the data from the reader to the importer
 	 *
 	 * @param mixed $source
-	 * @param Psr\Http\Message\MessageInterface $message
+	 * @param PSX\Http\MessageInterface $message
 	 * @param PSX\Data\Record\TransformerInterface $transformer
 	 * @param string $readerType
 	 * @return PSX\Data\RecordInterface

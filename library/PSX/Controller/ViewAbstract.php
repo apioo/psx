@@ -23,11 +23,7 @@
 
 namespace PSX\Controller;
 
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
 use PSX\ControllerAbstract;
-use PSX\Data\Writer;
-use PSX\Loader\Location;
 
 /**
  * ViewAbstract

@@ -23,7 +23,6 @@
 
 namespace PSX\Http;
 
-use Psr\Http\Message\StreamableInterface;
 use PSX\Url;
 
 /**
@@ -45,5 +44,7 @@ class DeleteRequest extends Request
 		$url = $url instanceof Url ? $url : new Url((string) $url);
 
 		parent::__construct($url, 'DELETE', $headers, $body);
+
+		$this->setHeader('Host', $url->getHost());
 	}
 }

@@ -108,8 +108,11 @@ abstract class AuthorizationAbstract extends ApiAbstract
 
 			if($redirectUri instanceof Url)
 			{
-				$redirectUri->setParameter('error', $e->getType());
-				$redirectUri->setParameter('error_description', $e->getMessage());
+				$parameters = $redirectUri->getParameters();
+				$parameters['error'] = $e->getType();
+				$parameters['error_description'] = $e->getMessage();
+
+				$redirectUri->setParameters($parameters);
 
 				$this->redirect($redirectUri->toString());
 			}
@@ -126,12 +129,15 @@ abstract class AuthorizationAbstract extends ApiAbstract
 
 		if($url instanceof Url)
 		{
-			$url->setParameter('code', $this->generateCode($request));
+			$parameters = $url->getParameters();
+			$parameters['code'] = $this->generateCode($request);
 
 			if($request->hasState())
 			{
-				$url->setParameter('state', $request->getState());
+				$parameters['state'] = $request->getState();
 			}
+
+			$url->setParameters($parameters);
 
 			$this->redirect($url->toString());
 		}

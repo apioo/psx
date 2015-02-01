@@ -23,11 +23,11 @@
 
 namespace PSX\Data;
 
-use Psr\Http\Message\MessageInterface;
 use PSX\Data\ReaderFactory;
 use PSX\Data\TransformerInterface;
 use PSX\Data\Transformer\TransformerManager;
 use PSX\Http\Exception\UnsupportedMediaTypeException;
+use PSX\Http\MessageInterface;
 
 /**
  * Extractor
@@ -58,7 +58,7 @@ class Extractor
 	 * Extracts the body from an http message and transforms the data into an 
 	 * array structure
 	 *
-	 * @param Psr\Http\Message\MessageInterface $message
+	 * @param PSX\Http\MessageInterface $message
 	 * @param PSX\Data\Record\TransformerInterface $transformer
 	 * @param string $readerType
 	 * @return array

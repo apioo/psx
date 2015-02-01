@@ -23,10 +23,10 @@
 
 namespace PSX\Dispatch;
 
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
+use PSX\Http\RequestInterface;
+use PSX\Http\ResponseInterface;
 use RuntimeException;
 
 /**

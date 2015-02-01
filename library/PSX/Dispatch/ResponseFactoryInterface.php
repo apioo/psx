@@ -35,7 +35,7 @@ interface ResponseFactoryInterface
 	/**
 	 * Returns the http response containing default values and the body stream
 	 *
-	 * @return Psr\Http\Message\ResponseInterface
+	 * @return PSX\Http\ResponseInterface
 	 */
 	public function createResponse();
 }

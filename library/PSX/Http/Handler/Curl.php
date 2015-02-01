@@ -32,6 +32,7 @@ use PSX\Http\RedirectException;
 use PSX\Http\Request;
 use PSX\Http\Response;
 use PSX\Http\ResponseParser;
+use PSX\Http\Stream\StringStream;
 use PSX\Http\Stream\TempStream;
 
 /**
@@ -88,7 +89,7 @@ class Curl implements HandlerInterface
 		$this->header = array();
 		$this->body   = fopen('php://temp', 'r+');
 
-		$handle = curl_init($request->getUrl()->toString());
+		$handle = curl_init($request->getUri()->toString());
 
 		curl_setopt($handle, CURLOPT_HEADER, false);
 		curl_setopt($handle, CURLOPT_RETURNTRANSFER, false);
@@ -140,7 +141,7 @@ class Curl implements HandlerInterface
 		}
 
 		// set ssl
-		if($options->getSsl() !== false && ($options->getSsl() === true || $request->isSSL()))
+		if($options->getSsl() !== false && ($options->getSsl() === true || strcasecmp($request->getUri()->getScheme(), 'https') === 0))
 		{
 			if(!empty($this->caInfo))
 			{
@@ -212,7 +213,7 @@ class Curl implements HandlerInterface
 		}
 		else
 		{
-			$response->setBody(null);
+			$response->setBody(new StringStream());
 		}
 
 		return $response;

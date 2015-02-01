@@ -24,10 +24,10 @@
 namespace PSX\Loader\CallbackResolver;
 
 use RuntimeException;
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
 use PSX\Dispatch\ControllerFactoryInterface;
 use PSX\Exception;
+use PSX\Http\RequestInterface;
+use PSX\Http\ResponseInterface;
 use PSX\Loader\Callback;
 use PSX\Loader\CallbackResolverInterface;
 use PSX\Loader\Location;

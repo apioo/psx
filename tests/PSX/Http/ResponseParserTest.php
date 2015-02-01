@@ -232,4 +232,20 @@ class ResponseParserTest extends \PHPUnit_Framework_TestCase
 			'Vary: Accept-Encoding',
 		));
 	}
+
+	public function testConvert()
+	{
+		$httpResponse = 'HTTP/1.1 200 OK' . Http::$newLine;
+		$httpResponse.= 'Content-type: text/html; charset=UTF-8' . Http::$newLine;
+		$httpResponse.= Http::$newLine;
+		$httpResponse.= 'foobar';
+
+		$response = ResponseParser::convert($httpResponse);
+
+		$this->assertEquals('HTTP/1.1', $response->getProtocolVersion());
+		$this->assertEquals(200, $response->getStatusCode());
+		$this->assertEquals('OK', $response->getReasonPhrase());
+		$this->assertEquals('text/html; charset=UTF-8', (string) $response->getHeader('Content-Type'));
+		$this->assertEquals('foobar', $response->getBody());
+	}
 }

@@ -122,7 +122,7 @@ class Http
 	 */
 	public function request(Request $request, Options $options = null, $count = 0)
 	{
-		if(!$request->getUrl()->isAbsolute())
+		if(!$request->getUri()->isAbsolute())
 		{
 			throw new InvalidArgumentException('Request url must be absolute');
 		}
@@ -130,7 +130,7 @@ class Http
 		// set cookie headers
 		if($this->cookieStore !== null)
 		{
-			$cookies = $this->cookieStore->load($request->getUrl()->getHost());
+			$cookies = $this->cookieStore->load($request->getUri()->getHost());
 
 			if(!empty($cookies))
 			{
@@ -142,9 +142,9 @@ class Http
 
 					if($cookie->getExpires() !== null && $cookie->getExpires()->getTimestamp() < time())
 					{
-						$this->cookieStore->remove($request->getUrl()->getHost(), $cookie);
+						$this->cookieStore->remove($request->getUri()->getHost(), $cookie);
 					}
-					else if($cookie->getPath() !== null && substr($request->getUrl()->getPath(), 0, strlen($path)) != $path)
+					else if($cookie->getPath() !== null && substr($request->getUri()->getPath(), 0, strlen($path)) != $path)
 					{
 						// path does not fit
 					}
@@ -183,7 +183,7 @@ class Http
 		// store cookies
 		if($this->cookieStore !== null)
 		{
-			$cookies = $response->getHeaderAsArray('Set-Cookie');
+			$cookies = $response->getHeaderLines('Set-Cookie');
 
 			foreach($cookies as $rawCookie)
 			{
@@ -191,7 +191,7 @@ class Http
 
 				if($cookie instanceof Cookie)
 				{
-					$domain = $cookie->getDomain() !== null ? $cookie->getDomain() : $request->getUrl()->getHost();
+					$domain = $cookie->getDomain() !== null ? $cookie->getDomain() : $request->getUri()->getHost();
 
 					$this->cookieStore->store($domain, $cookie);
 				}
@@ -203,11 +203,11 @@ class Http
 		{
 			$location = (string) $response->getHeader('Location');
 
-			if(!empty($location) && $location != $request->getUrl()->toString())
+			if(!empty($location) && $location != $request->getUri()->toString())
 			{
 				if($options->getMaxRedirects() > $count)
 				{
-					$location = UriResolver::resolve($request->getUrl(), new Uri($location));
+					$location = UriResolver::resolve($request->getUri(), new Uri($location));
 
 					return $this->request(new GetRequest($location), $options, ++$count);
 				}

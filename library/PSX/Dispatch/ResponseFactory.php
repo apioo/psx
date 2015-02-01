@@ -37,16 +37,11 @@ class ResponseFactory implements ResponseFactoryInterface
 {
 	public function createResponse()
 	{
-		$scheme   = isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.1';
-		$response = new Response($scheme);
-		$response->addHeader('X-Powered-By', 'psx');
-		/*
-		$response->addHeader('Expires', 'Thu, 09 Oct 1986 01:00:00 GMT');
-		$response->addHeader('Last-Modified', 'Thu, 09 Oct 1986 01:00:00 GMT');
-		$response->addHeader('Cache-Control: no-store, no-cache, must-revalidate');
-		$response->addHeader('Pragma: no-cache');
-		*/
-		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
+		$version  = isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.1';
+		$response = new Response();
+		$response->setProtocolVersion($version);
+		$response->setHeader('X-Powered-By', 'psx');
+		$response->setBody(new TempStream(fopen('php://temp', 'r+')));
 
 		return $response;
 	}

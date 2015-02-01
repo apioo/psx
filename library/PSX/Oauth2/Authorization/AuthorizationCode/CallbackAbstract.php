@@ -27,6 +27,7 @@ use PSX\Controller\ApiAbstract;
 use PSX\Oauth2\AccessToken;
 use PSX\Oauth2\AuthorizationAbstract;
 use PSX\Oauth2\Authorization\Exception\ErrorExceptionAbstract;
+use PSX\Exception;
 
 /**
  * CallbackAbstract
@@ -43,16 +44,16 @@ abstract class CallbackAbstract extends ApiAbstract
 
 		try
 		{
-			$error = $this->request->getUrl()->getParameter('error');
+			$error = $this->getParameter('error');
 
 			// error detection
 			if(!empty($error))
 			{
-				AuthorizationAbstract::throwErrorException($this->request->getUrl()->getParameters());
+				AuthorizationAbstract::throwErrorException($this->request->getUri()->getParameters());
 			}
 
-			$code  = $this->request->getUrl()->getParameter('code');
-			$state = $this->request->getUrl()->getParameter('state');
+			$code  = $this->getParameter('code');
+			$state = $this->getParameter('state');
 
 			if(empty($code))
 			{

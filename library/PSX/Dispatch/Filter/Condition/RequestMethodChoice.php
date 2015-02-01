@@ -23,10 +23,10 @@
 
 namespace PSX\Dispatch\Filter\Condition;
 
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
 use PSX\Dispatch\FilterChainInterface;
 use PSX\Dispatch\FilterInterface;
+use PSX\Http\RequestInterface;
+use PSX\Http\ResponseInterface;
 
 /**
  * Applies an filter only for specific request methods. This is useful if you 

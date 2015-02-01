@@ -46,7 +46,6 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 		$request->setBody($body);
 
 		$httpRequest = 'POST / HTTP/1.1' . Http::$newLine;
-		$httpRequest.= 'host: 127.0.0.1' . Http::$newLine;
 		$httpRequest.= 'content-type: text/html; charset=UTF-8' . Http::$newLine;
 		$httpRequest.= Http::$newLine;
 		$httpRequest.= 'foobar';
@@ -55,39 +54,10 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals($httpRequest, (string) $request);
 	}
 
-	public function testFragmentEncoding()
-	{
-		$request = new Request(new Url('http://127.0.0.1/foobar?bar=foo#!"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~'), 'POST');
-		$request->setHeader('Content-Type', 'text/html; charset=UTF-8');
-
-		$httpRequest = 'POST /foobar?bar=foo#!%22%23$%25&%27()*+,-./0123456789:;%3C=%3E?@ABCDEFGHIJKLMNOPQRSTUVWXYZ%5B\'%5D%5E_%60abcdefghijklmnopqrstuvwxyz%7B%7C%7D~ HTTP/1.1' . Http::$newLine;
-		$httpRequest.= 'host: 127.0.0.1' . Http::$newLine;
-		$httpRequest.= 'content-type: text/html; charset=UTF-8' . Http::$newLine;
-		$httpRequest.= Http::$newLine;
-
-		$this->assertEquals($httpRequest, $request->toString());
-	}
-
-	public function testParse()
-	{
-		$httpRequest = 'GET /foo/bar?foo=bar#test HTTP/1.1' . Http::$newLine;
-		$httpRequest.= 'Content-type: text/html; charset=UTF-8' . Http::$newLine;
-		$httpRequest.= Http::$newLine;
-		$httpRequest.= 'foobar';
-
-		$request = Request::parse($httpRequest, new Url('http://psx.dev'));
-
-		$this->assertEquals('http://psx.dev/foo/bar?foo=bar#test', $request->getUrl()->toString());
-		$this->assertEquals('GET', $request->getMethod());
-		$this->assertEquals('HTTP/1.1', $request->getProtocolVersion());
-		$this->assertEquals('text/html; charset=UTF-8', (string) $request->getHeader('Content-Type'));
-		$this->assertEquals('foobar', $request->getBody());
-	}
-
 	public function testGetSetAttributes()
 	{
 		$request = new Request(new Url('http://127.0.0.1'), 'POST');
-		$request->setAttributes(array('foo' => 'bar'));
+		$request->setAttribute('foo', 'bar');
 
 		$this->assertEquals('bar', $request->getAttribute('foo'));
 		$this->assertEquals(null, $request->getAttribute('bar'));

@@ -24,8 +24,8 @@
 namespace PSX;
 
 /**
- * Represents an URI. Provides getters and settes to modify parts of the URI.
- * The class tries to parse the given string into the URI specific components:
+ * Represents an URI. Provides getters to retrieve parts of the URI. The class 
+ * tries to parse the given string into the URI specific components:
  *
  *   foo://example.com:8042/over/there?name=ferret#nose
  *   \_/   \______________/\_________/ \_________/ \__/
@@ -39,21 +39,14 @@ namespace PSX;
  */
 class Uri
 {
-	const PATTERN_SCHEME     = 'A-z0-9\+\-\.';
-	const PATTERN_UNRESERVED = 'A-z0-9\-\.\_\~';
-	const PATTERN_GEN_DELIMS = '\:\/\?\#\[\]\@';
-	const PATTERN_SUB_DELIMS = '\!\$\&\\\'\(\)\*\+\,\;\=';
-
 	protected $scheme;
-	protected $authority;
 	protected $path;
 	protected $query;
 	protected $fragment;
-
-	protected $userInfo;
+	protected $user;
+	protected $password;
 	protected $host;
 	protected $port;
-	protected $parameters = array();
 
 	public function __construct($uri)
 	{
@@ -67,51 +60,59 @@ class Uri
 
 	public function setScheme($scheme)
 	{
-		if(!preg_match('/^[' . self::PATTERN_SCHEME . ']+$/', $scheme))
-		{
-			throw new \InvalidArgumentException('Scheme contains invalid characters');
-		}
-
 		$this->scheme = $scheme;
 	}
 
 	public function getAuthority()
 	{
-		return $this->authority;
-	}
-
-	public function setAuthority($authority)
-	{
-		$this->authority = $authority;
-
-		list($userInfo, $host, $port) = $this->_splitAuthority($authority);
+		$authority = '';
+		$userInfo  = $this->getUserInfo();
 
 		if(!empty($userInfo))
 		{
-			$this->setUserInfo($userInfo);
+			$authority.= $userInfo . '@';
 		}
 
-		if(!empty($host))
+		$authority.= $this->host;
+
+		if(!empty($this->port))
 		{
-			$this->setHost($host);
+			$authority.= ':' . $this->port;
 		}
 
-		if(!empty($port))
-		{
-			$this->setPort($port);
-		}
+		return $authority;
 	}
 
 	public function getUserInfo()
 	{
-		return $this->userInfo;
+		if(!empty($this->user))
+		{
+			return $this->user . ($this->password !== null ? ':' . $this->password : '');
+		}
+		else
+		{
+			return '';
+		}
 	}
 
-	public function setUserInfo($userInfo)
+	public function getUser()
 	{
-		$this->userInfo = $userInfo;
+		return $this->user;
+	}
 
-		$this->_updateAuthority();
+	public function setUser($user)
+	{
+		$this->user = $user;
+	}
+
+	public function getPassword()
+	{
+		return $this->password;
+	}
+
+	public function setPassword($password)
+	{
+		$this->password = $password;
 	}
 
 	public function getHost()
@@ -122,8 +123,6 @@ class Uri
 	public function setHost($host)
 	{
 		$this->host = $host;
-
-		$this->_updateAuthority();
 	}
 
 	public function getPort()
@@ -134,8 +133,6 @@ class Uri
 	public function setPort($port)
 	{
 		$this->port = $port;
-
-		$this->_updateAuthority();
 	}
 
 	public function getPath()
@@ -156,11 +153,6 @@ class Uri
 	public function setQuery($query)
 	{
 		$this->query = $query;
-
-		if(!empty($this->query))
-		{
-			parse_str($this->query, $this->parameters);
-		}
 	}
 
 	public function getFragment()
@@ -173,48 +165,21 @@ class Uri
 		$this->fragment = $fragment;
 	}
 
-	public function hasParameter($name)
+	public function isAbsolute()
 	{
-		return isset($this->parameters[$name]);
-	}
-
-	public function getParameter($name)
-	{
-		return isset($this->parameters[$name]) ? $this->parameters[$name] : null;
-	}
-
-	public function setParameter($name, $value)
-	{
-		$this->parameters[$name] = $value;
-
-		$this->_updateQuery();
-	}
-
-	public function removeParameter($name)
-	{
-		if(array_key_exists($name, $this->parameters))
-		{
-			unset($this->parameters[$name]);
-
-			$this->_updateQuery();
-		}
-	}
-
-	public function setParameters(array $parameters)
-	{
-		$this->parameters = $parameters;
-
-		$this->_updateQuery();
+		return !empty($this->scheme);
 	}
 
 	public function getParameters()
 	{
-		return $this->parameters;
+		parse_str($this->query, $parameters);
+
+		return $parameters;
 	}
 
-	public function isAbsolute()
+	public function setParameters(array $parameters)
 	{
-		return !empty($this->scheme);
+		$this->query = http_build_query($parameters, '', '&');
 	}
 
 	/**
@@ -232,9 +197,10 @@ class Uri
 			$result.= $this->scheme . ':';
 		}
 
-		if(!empty($this->authority))
+		$authority = $this->getAuthority();
+		if(!empty($authority))
 		{
-			$result.= '//' . $this->authority;
+			$result.= '//' . $authority;
 		}
 
 		$result.= $this->path;
@@ -250,28 +216,6 @@ class Uri
 		}
 
 		return $result;
-	}
-
-	/**
-	 * Compares this URI against another URI and returns whether they are equal
-	 *
-	 * @return boolean
-	 */
-	public function equals($uri)
-	{
-		if(is_string($uri))
-		{
-			$uri = new static($uri);
-		}
-		else if($uri instanceof Uri)
-		{
-		}
-		else
-		{
-			return false;
-		}
-
-		return strcasecmp($this->toString(), $uri->toString()) === 0;
 	}
 
 	/**
@@ -303,31 +247,47 @@ class Uri
 
 		if(!empty($scheme))
 		{
-			$this->setScheme($scheme);
+			$this->scheme = $scheme;
 		}
 
 		if(!empty($authority))
 		{
-			$this->setAuthority($authority);
+			list($userInfo, $host, $port) = $this->splitAuthority($authority);
+
+			if(!empty($userInfo))
+			{
+				if(strpos($userInfo, ':') !== false)
+				{
+					$this->user     = strstr($userInfo, ':', true);
+					$this->password = substr(strstr($userInfo, ':'), 1);
+				}
+				else
+				{
+					$this->user = $userInfo;
+				}
+			}
+
+			$this->host     = $host;
+			$this->port     = $port;
 		}
 		
 		if(!empty($path))
 		{
-			$this->setPath($path);
+			$this->path = $path;
 		}
 		
 		if(!empty($query))
 		{
-			$this->setQuery($query);
+			$this->query = $query;
 		}
 		
 		if(!empty($fragment))
 		{
-			$this->setFragment($fragment);
+			$this->fragment = $fragment;
 		}
 	}
 
-	private function _splitAuthority($authority)
+	private function splitAuthority($authority)
 	{
 		if(empty($authority))
 		{
@@ -337,6 +297,7 @@ class Uri
 		$userInfo = strstr($authority, '@', true);
 		$part     = $userInfo === false ? $authority : substr(strstr($authority, '@'), 1);
 
+		// in case of ipv6
 		if($part[0] == '[')
 		{
 			$pos = strpos($part, ']');
@@ -367,29 +328,5 @@ class Uri
 		}
 
 		return array($userInfo, $host, $port);
-	}
-
-	private function _updateAuthority()
-	{
-		$authority = '';
-
-		if(!empty($this->userInfo))
-		{
-			$authority.= $this->userInfo . '@';
-		}
-
-		$authority.= $this->host;
-
-		if(!empty($this->port))
-		{
-			$authority.= ':' . $this->port;
-		}
-
-		$this->authority = $authority;
-	}
-
-	private function _updateQuery()
-	{
-		$this->query = http_build_query($this->parameters);
 	}
 }

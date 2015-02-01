@@ -24,13 +24,13 @@
 namespace PSX;
 
 use InvalidArgumentException;
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 use PSX\Dispatch\FilterInterface;
 use PSX\Event\ControllerExecuteEvent;
 use PSX\Event\ControllerProcessedEvent;
 use PSX\Event\RouteMatchedEvent;
+use PSX\Http\RequestInterface;
+use PSX\Http\ResponseInterface;
 use PSX\Loader\Callback;
 use PSX\Loader\CallbackResolverInterface;
 use PSX\Loader\Location;
@@ -78,13 +78,13 @@ class Loader implements LoaderInterface
 	 * Loads the location of the controller through the defined location finder. 
 	 * Then uses the callback resolver to obtain an callback from the location
 	 *
-	 * @param Psr\Http\Message\RequestInterface $request
-	 * @param Psr\Http\Message\ResponseInterface $response
+	 * @param PSX\Http\RequestInterface $request
+	 * @param PSX\Http\ResponseInterface $response
 	 * @return PSX\ControllerAbstract
 	 */
 	public function load(RequestInterface $request, ResponseInterface $response)
 	{
-		$path     = $request->getUrl()->getPath();
+		$path     = $request->getUri()->getPath();
 		$location = $this->locationFinder->resolve($request->getMethod(), $path);
 
 		if($location instanceof Location)
@@ -119,8 +119,8 @@ class Loader implements LoaderInterface
 	 * Loads an specific controller direct without any routing
 	 *
 	 * @param PSX\Loader\Callback $callback
-	 * @param Psr\Http\Message\RequestInterface $request
-	 * @param Psr\Http\Message\ResponseInterface $response
+	 * @param PSX\Http\RequestInterface $request
+	 * @param PSX\Http\ResponseInterface $response
 	 * @return PSX\ControllerAbstract
 	 */
 	public function loadClass(Callback $callback, RequestInterface $request, ResponseInterface $response)

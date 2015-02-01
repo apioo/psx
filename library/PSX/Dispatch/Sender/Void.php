@@ -23,8 +23,8 @@
 
 namespace PSX\Dispatch\Sender;
 
-use Psr\Http\Message\ResponseInterface;
 use PSX\Dispatch\SenderInterface;
+use PSX\Http\ResponseInterface;
 
 /**
  * Void

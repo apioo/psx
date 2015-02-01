@@ -23,13 +23,13 @@
 
 namespace PSX\Dispatch\Filter;
 
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
 use PSX\Dispatch\FilterChain;
 use PSX\Dispatch\FilterChainInterface;
 use PSX\Dispatch\FilterInterface;
 use PSX\Http\Request;
+use PSX\Http\RequestInterface;
 use PSX\Http\Response;
+use PSX\Http\ResponseInterface;
 use PSX\Http\Stream\TempStream;
 use PSX\Url;
 

@@ -43,6 +43,8 @@ class HeadRequest extends Request
 		$url = $url instanceof Url ? $url : new Url((string) $url);
 
 		parent::__construct($url, 'HEAD', $headers);
+
+		$this->setHeader('Host', $url->getHost());
 	}
 }
 

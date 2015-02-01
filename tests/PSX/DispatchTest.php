@@ -61,7 +61,7 @@ class DispatchTest extends ControllerTestCase
 			->method('on')
 			->with($this->callback(function($event) use ($request, $testCase){
 				$testCase->assertInstanceOf('PSX\Event\RequestIncomingEvent', $event);
-				$testCase->assertInstanceOf('Psr\Http\Message\RequestInterface', $event->getRequest());
+				$testCase->assertInstanceOf('PSX\Http\RequestInterface', $event->getRequest());
 				$testCase->assertEquals($request, $event->getRequest());
 
 				return true;
@@ -72,7 +72,7 @@ class DispatchTest extends ControllerTestCase
 			->method('on')
 			->with($this->callback(function($event) use ($response, $testCase){
 				$testCase->assertInstanceOf('PSX\Event\ResponseSendEvent', $event);
-				$testCase->assertInstanceOf('Psr\Http\Message\ResponseInterface', $event->getResponse());
+				$testCase->assertInstanceOf('PSX\Http\ResponseInterface', $event->getResponse());
 				$testCase->assertEquals($response, $event->getResponse());
 
 				return true;
@@ -115,8 +115,8 @@ class DispatchTest extends ControllerTestCase
 			->with($this->callback(function($event) use ($request, $response, $testCase){
 				$testCase->assertInstanceOf('PSX\Event\ExceptionThrownEvent', $event);
 				$testCase->assertInstanceOf('PSX\Event\Context\ControllerContext', $event->getContext());
-				$testCase->assertInstanceOf('Psr\Http\Message\RequestInterface', $event->getContext()->getRequest());
-				$testCase->assertInstanceOf('Psr\Http\Message\ResponseInterface', $event->getContext()->getResponse());
+				$testCase->assertInstanceOf('PSX\Http\RequestInterface', $event->getContext()->getRequest());
+				$testCase->assertInstanceOf('PSX\Http\ResponseInterface', $event->getContext()->getResponse());
 				$testCase->assertEquals($request, $event->getContext()->getRequest());
 				$testCase->assertEquals($response, $event->getContext()->getResponse());
 
@@ -198,7 +198,7 @@ class DispatchTest extends ControllerTestCase
 
 		$this->assertEquals(302, $response->getStatusCode());
 		$this->assertEquals('http://google.com', $response->getHeader('Location'));
-		$this->assertEquals(null, $response->getBody());
+		$this->assertEquals('', (string) $response->getBody());
 	}
 
 	public function testGoneException()
@@ -248,7 +248,7 @@ class DispatchTest extends ControllerTestCase
 
 		$this->assertEquals(301, $response->getStatusCode());
 		$this->assertEquals('http://google.com', $response->getHeader('Location'));
-		$this->assertEquals(null, $response->getBody());
+		$this->assertEquals('', (string) $response->getBody());
 	}
 
 	public function testNotAcceptableException()
@@ -296,7 +296,7 @@ class DispatchTest extends ControllerTestCase
 		$this->loadController($request, $response);
 
 		$this->assertEquals(304, $response->getStatusCode());
-		$this->assertEquals(null, $response->getBody());
+		$this->assertEquals('', (string) $response->getBody());
 	}
 
 	public function testSeeOtherException()
@@ -309,7 +309,7 @@ class DispatchTest extends ControllerTestCase
 
 		$this->assertEquals(303, $response->getStatusCode());
 		$this->assertEquals('http://google.com', $response->getHeader('Location'));
-		$this->assertEquals(null, $response->getBody());
+		$this->assertEquals('', (string) $response->getBody());
 	}
 
 	public function testServiceUnavailableException()
@@ -334,7 +334,7 @@ class DispatchTest extends ControllerTestCase
 
 		$this->assertEquals(307, $response->getStatusCode());
 		$this->assertEquals('http://google.com', $response->getHeader('Location'));
-		$this->assertEquals(null, $response->getBody());
+		$this->assertEquals('', (string) $response->getBody());
 	}
 
 	public function testUnauthorizedException()

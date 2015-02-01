@@ -54,7 +54,7 @@ class LogListener implements EventSubscriberInterface
 
 	public function onRequestIncomming(RequestIncomingEvent $event)
 	{
-		$this->logger->info('Incoming request ' . $event->getRequest()->getMethod() . ' ' . $event->getRequest()->getUrl());
+		$this->logger->info('Incoming request ' . $event->getRequest()->getMethod() . ' ' . $event->getRequest()->getRequestTarget());
 	}
 
 	public function onRouteMatched(RouteMatchedEvent $event)

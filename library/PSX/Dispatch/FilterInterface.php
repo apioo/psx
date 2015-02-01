@@ -23,8 +23,8 @@
 
 namespace PSX\Dispatch;
 
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
+use PSX\Http\RequestInterface;
+use PSX\Http\ResponseInterface;
 
 /**
  * FilterInterface
@@ -36,8 +36,8 @@ use Psr\Http\Message\ResponseInterface;
 interface FilterInterface
 {
 	/**
-	 * @param Psr\Http\Message\RequestInterface $request
-	 * @param Psr\Http\Message\ResponseInterface $response
+	 * @param PSX\Http\RequestInterface $request
+	 * @param PSX\Http\ResponseInterface $response
 	 * @param PSX\Dispatch\FilterChainInterface $filterChain
 	 * @return void
 	 */

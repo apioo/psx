@@ -32,6 +32,7 @@ use PSX\Http\Request;
 use PSX\Http\Response;
 use PSX\Http\ResponseParser;
 use PSX\Http\Stream\SocksStream;
+use PSX\Http\Stream\StringStream;
 
 /**
  * Socks
@@ -59,7 +60,7 @@ class Socks implements HandlerInterface
 		// ssl
 		$scheme = null;
 
-		if($options->getSsl() !== false && ($options->getSsl() === true || $request->isSSL()))
+		if($options->getSsl() !== false && ($options->getSsl() === true || strcasecmp($request->getUri()->getScheme(), 'https') === 0))
 		{
 			$transports = stream_get_transports();
 
@@ -82,15 +83,15 @@ class Socks implements HandlerInterface
 		}
 
 		// port
-		$port = $request->getUrl()->getPort();
+		$port = $request->getUri()->getPort();
 
 		if(empty($port))
 		{
-			$port = getservbyname($request->getUrl()->getScheme(), 'tcp');
+			$port = getservbyname($request->getUri()->getScheme(), 'tcp');
 		}
 
 		// open socket
-		$handle = @fsockopen($scheme . '://' . $request->getUrl()->getHost(), $port, $errno, $errstr);
+		$handle = @fsockopen($scheme . '://' . $request->getUri()->getHost(), $port, $errno, $errstr);
 
 		if($handle !== false)
 		{
@@ -177,7 +178,7 @@ class Socks implements HandlerInterface
 			{
 				fclose($handle);
 
-				$response->setBody(null);
+				$response->setBody(new StringStream());
 			}
 
 			return $response;

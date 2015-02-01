@@ -23,11 +23,9 @@
 
 namespace PSX\Http;
 
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\StreamableInterface;
+use PSX\Exception;
 use PSX\Http;
 use PSX\Uri;
-use PSX\Url;
 
 /**
  * Request
@@ -38,67 +36,65 @@ use PSX\Url;
  */
 class Request extends Message implements RequestInterface
 {
-	protected $url;
+	use RequestServerTrait;
+
+	protected $requestTarget;
 	protected $method;
-	protected $scheme;
-
-	protected $attributes = array();
+	protected $uri;
 
 	/**
-	 * __construct
-	 *
-	 * @param PSX\Uri $url
+	 * @param PSX\Uri $uri
 	 * @param string $method
-	 * @param array $header
+	 * @param array $headers
 	 * @param string $body
-	 * @param string $scheme
 	 */
-	public function __construct(Uri $url, $method, array $header = array(), $body = null, $scheme = 'HTTP/1.1')
+	public function __construct(Uri $uri, $method, array $headers = array(), $body = null)
 	{
-		parent::__construct($header, $body, $scheme);
+		parent::__construct($headers, $body);
 
-		$this->setUrl($url);
-		$this->setMethod($method);
-		$this->setProtocolVersion($scheme);
-	}
-
-	/**
-	 * Sets the request url and automatically adds an "Host" header with the url
-	 * host
-	 *
-	 * @param PSX\Uri $url
-	 * @return void
-	 */
-	public function setUrl($url)
-	{
-		$this->url = $url instanceof Uri ? $url : new Uri($url);
-
-		$host = $this->url->getHost();
-		if(!empty($host) && !$this->hasHeader('Host'))
-		{
-			$this->setHeader('Host', $host);
-		}
-	}
-
-	/**
-	 * Returns the request url
-	 *
-	 * @return PSX\Uri
-	 */
-	public function getUrl()
-	{
-		return $this->url;
-	}
-
-	/**
-	 * Sets the request method
-	 *
-	 * @param string $method
-	 * @return void
-	 */
-	public function setMethod($method)
-	{
+		$this->uri    = $uri;
 		$this->method = $method;
+	}
+
+	/**
+	 * Returns the request target
+	 *
+	 * @return string
+	 */
+	public function getRequestTarget()
+	{
+		if($this->requestTarget !== null)
+		{
+			return $this->requestTarget;
+		}
+
+		if(!$this->uri)
+		{
+			return '/';
+		}
+
+		$target = $this->uri->getPath();
+		if(empty($target))
+		{
+			$target = '/';
+		}
+
+		if($this->uri->getQuery())
+		{
+			$target .= '?' . $this->uri->getQuery();
+		}
+
+		return $target;
+	}
+
+	/**
+	 * Sets the request target
+	 *
+	 * @param string $requestTarget
+	 */
+	public function setRequestTarget($requestTarget)
+	{
+		$this->requestTarget = $requestTarget;
 	}
 
 	/**
@@ -112,54 +108,33 @@ class Request extends Message implements RequestInterface
 	}
 
 	/**
-	 * Sets the request scheme
+	 * Sets the request method
 	 *
-	 * @param string $scheme
-	 * @return void
+	 * @param string $method
 	 */
-	public function setProtocolVersion($scheme)
+	public function setMethod($method)
 	{
-		$this->scheme = $scheme;
+		$this->method = $method;
 	}
 
 	/**
-	 * Returns the http scheme
+	 * Returns the request uri
 	 *
-	 * @return string
+	 * @return PSX\Uri
 	 */
-	public function getProtocolVersion()
+	public function getUri()
 	{
-		return $this->scheme;
+		return $this->uri;
 	}
 
 	/**
-	 * Returns whether the request url uses https
+	 * Sets the request uri
 	 *
-	 * @return boolean
+	 * @param PSX\Uri $uri
 	 */
-	public function isSSL()
+	public function setUri(Uri $uri)
 	{
-		return $this->getUrl()->getScheme() == 'https';
-	}
-
-	public function getAttributes()
-	{
-		return $this->attributes;
-	}
-
-	public function getAttribute($attribute, $default = null)
-	{
-		return isset($this->attributes[$attribute]) ? $this->attributes[$attribute] : $default;
-	}
-
-	public function setAttributes(array $attributes)
-	{
-		$this->attributes = $attributes;
-	}
-
-	public function setAttribute($attribute, $value)
-	{
-		$this->attributes[$attribute] = $value;
+		$this->uri = $uri;
 	}
 
 	/**
@@ -190,49 +165,23 @@ class Request extends Message implements RequestInterface
 	 */
 	public function getLine()
 	{
-		$path     = $this->getUrl()->getPath();
-		$path     = empty($path) ? '/' : $path;
-		$query    = $this->getUrl()->getParameters();
-		$fragment = $this->getUrl()->getFragment();
+		$method   = $this->getMethod();
+		$target   = $this->getRequestTarget();
+		$protocol = $this->getProtocolVersion();
 
-		$encodedChars = array('%2F', '%3A', '%40', '%7E', '%21', '%24', '%26', '%5C', '%28', '%29', '%2A', '%2B', '%2C', '%3B', '%3D');
-		$allowedChars = array('/', ':', '@', '~', '!', '$', '&', '\'', '(', ')', '*', '+', ',', ';', '=');
-		$path         = str_replace($encodedChars, $allowedChars, rawurlencode($path));
-
-		if(!empty($query))
+		if(empty($target))
 		{
-			$path.= '?' . http_build_query($query, '', '&');
+			throw new Exception('Target not set');
 		}
 
-		if(!empty($fragment))
-		{
-			$encodedChars = array('%2F', '%3F', '%3A', '%40', '%7E', '%21', '%24', '%26', '%5C', '%28', '%29', '%2A', '%2B', '%2C', '%3B', '%3D');
-			$allowedChars = array('/', '?', ':', '@', '~', '!', '$', '&', '\'', '(', ')', '*', '+', ',', ';', '=');
-			$fragment     = str_replace($encodedChars, $allowedChars, rawurlencode($fragment));
+		$method   = !empty($method) ? $method : 'GET';
+		$protocol = !empty($protocol) ? $protocol : 'HTTP/1.1';
 
-			$path.= '#' . $fragment;
-		}
-
-		return $this->getMethod() . ' ' . $path . ' ' . $this->getProtocolVersion();
+		return $method . ' ' . $target . ' ' . $protocol;
 	}
 
 	public function __toString()
 	{
 		return $this->toString();
-	}
-
-	/**
-	 * Parses an raw http request into an PSX\Http\Request object. Throws an
-	 * exception if the request has not an valid format
-	 *
-	 * @param string $content
-	 * @param PSX\Url $baseUrl
-	 * @return PSX\Http\Request
-	 */
-	public static function parse($content, Url $baseUrl = null, $mode = ParserAbstract::MODE_STRICT)
-	{
-		$parser = new RequestParser($baseUrl, $mode);
-
-		return $parser->parse($content);
 	}
 }

@@ -23,11 +23,12 @@
 
 namespace PSX\Dispatch\Sender;
 
-use Psr\Http\Message\ResponseInterface;
 use PSX\Dispatch\SenderInterface;
 use PSX\Http;
+use PSX\Http\ResponseInterface;
 use PSX\Http\ResponseParser;
 use PSX\Http\Stream\FileStream;
+use PSX\Http\Stream\StringStream;
 
 /**
  * Basic sender which handles file stream bodies, content encoding and transfer
@@ -56,12 +57,12 @@ class Basic implements SenderInterface
 		// remove body on specific status codes
 		if(in_array($response->getStatusCode(), array(100, 101, 204, 304)))
 		{
-			$response->setBody(null);
+			$response->setBody(new StringStream(''));
 		}
 		// if we have an location header we dont send any content
 		else if($response->hasHeader('Location'))
 		{
-			$response->setBody(null);
+			$response->setBody(new StringStream(''));
 		}
 
 		if(!$this->isCli())
@@ -115,7 +116,7 @@ class Basic implements SenderInterface
 			$scheme = 'HTTP/1.1';
 		}
 
-		$code = $response->getCode();
+		$code = $response->getStatusCode();
 		if(!isset(Http::$codes[$code]))
 		{
 			$code = 200;

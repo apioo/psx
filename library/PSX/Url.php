@@ -56,7 +56,7 @@ class Url extends Uri
 
 		// append http scheme for urls starting with //. Normally // means that
 		// we use the scheme from the base url but in this context there is no
-		// base url available
+		// base url available so we assume http
 		if(substr($url, 0, 2) == '//')
 		{
 			$url = 'http:' . $url;

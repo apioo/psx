@@ -24,8 +24,6 @@
 namespace PSX\Dispatch\Filter;
 
 use Closure;
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
 use PSX\Data\Record\StoreInterface;
 use PSX\Dispatch\FilterChainInterface;
 use PSX\Dispatch\FilterInterface;
@@ -34,6 +32,8 @@ use PSX\Exception;
 use PSX\Http\Authentication;
 use PSX\Http\Exception\BadRequestException;
 use PSX\Http\Exception\UnauthorizedException;
+use PSX\Http\RequestInterface;
+use PSX\Http\ResponseInterface;
 
 /**
  * Implementation of the http digest authentication. Note the digest
@@ -148,11 +148,11 @@ class DigestAccessAuthentication implements FilterInterface
 				// build ha2
 				if($qop == 'auth-int')
 				{
-					$ha2 = md5($request->getMethod() . ':' . $request->getUrl()->getPath() . ':' . md5($request->getBody()));
+					$ha2 = md5($request->getMethod() . ':' . $request->getUri()->getPath() . ':' . md5($request->getBody()));
 				}
 				else
 				{
-					$ha2 = md5($request->getMethod() . ':' . $request->getUrl()->getPath());
+					$ha2 = md5($request->getMethod() . ':' . $request->getUri()->getPath());
 				}
 
 				// build response

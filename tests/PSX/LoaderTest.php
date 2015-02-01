@@ -78,8 +78,8 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 			->with($this->callback(function($event) use ($testCase){
 				$testCase->assertInstanceOf('PSX\Event\ControllerExecuteEvent', $event);
 				$testCase->assertInstanceOf('PSX\ControllerInterface', $event->getController());
-				$testCase->assertInstanceOf('Psr\Http\Message\RequestInterface', $event->getRequest());
-				$testCase->assertInstanceOf('Psr\Http\Message\ResponseInterface', $event->getResponse());
+				$testCase->assertInstanceOf('PSX\Http\RequestInterface', $event->getRequest());
+				$testCase->assertInstanceOf('PSX\Http\ResponseInterface', $event->getResponse());
 
 				return true;
 			}));
@@ -90,8 +90,8 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 			->with($this->callback(function($event) use ($testCase){
 				$testCase->assertInstanceOf('PSX\Event\ControllerProcessedEvent', $event);
 				$testCase->assertInstanceOf('PSX\ControllerInterface', $event->getController());
-				$testCase->assertInstanceOf('Psr\Http\Message\RequestInterface', $event->getRequest());
-				$testCase->assertInstanceOf('Psr\Http\Message\ResponseInterface', $event->getResponse());
+				$testCase->assertInstanceOf('PSX\Http\RequestInterface', $event->getRequest());
+				$testCase->assertInstanceOf('PSX\Http\ResponseInterface', $event->getResponse());
 
 				return true;
 			}));

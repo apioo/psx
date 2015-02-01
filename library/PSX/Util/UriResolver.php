@@ -102,7 +102,10 @@ class UriResolver
 					}
 				}
 
-				$targetUri->setAuthority($baseUri->getAuthority());
+				$targetUri->setUser($baseUri->getUser());
+				$targetUri->setPassword($baseUri->getPassword());
+				$targetUri->setHost($baseUri->getHost());
+				$targetUri->setPort($baseUri->getPort());
 			}
 
 			$targetUri->setScheme($baseUri->getScheme());

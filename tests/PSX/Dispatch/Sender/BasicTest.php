@@ -51,7 +51,7 @@ class BasicTest extends SenderTestCase
 
 	public function testSendHeaders()
 	{
-		$response = new Response('HTTP/1.1');
+		$response = new Response();
 		$response->setHeader('Content-Type', 'application/xml');
 		$response->setHeader('X-Some-Header', 'foobar');
 		$response->setBody(new StringStream('<foo />'));
@@ -87,7 +87,7 @@ class BasicTest extends SenderTestCase
 	 */
 	public function testSendHeaderLocation()
 	{
-		$response = new Response('HTTP/1.1');
+		$response = new Response();
 		$response->setHeader('Content-Type', 'application/xml');
 		$response->setHeader('Location', 'http://localhost.com');
 		$response->setBody(new StringStream('<foo />'));
@@ -234,7 +234,7 @@ class BasicTest extends SenderTestCase
 
 		foreach($emptyCodes as $statusCode)
 		{
-			$response = new Response('HTTP/1.1', $statusCode);
+			$response = new Response($statusCode);
 			$response->setBody(new StringStream('foobar'));
 
 			$sender = $this->getMockBuilder('PSX\Dispatch\Sender\Basic')
@@ -253,7 +253,7 @@ class BasicTest extends SenderTestCase
 
 	public function testSendStatusCode()
 	{
-		$response = new Response('HTTP/1.1', 404);
+		$response = new Response(404);
 		$response->setBody(new StringStream('foobar'));
 
 		$sender = $this->getMockBuilder('PSX\Dispatch\Sender\Basic')

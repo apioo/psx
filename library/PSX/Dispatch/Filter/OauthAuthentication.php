@@ -24,14 +24,14 @@
 namespace PSX\Dispatch\Filter;
 
 use Closure;
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
 use PSX\Base;
 use PSX\Dispatch\FilterChainInterface;
 use PSX\Dispatch\FilterInterface;
 use PSX\Http\Authentication;
 use PSX\Http\Exception\BadRequestException;
 use PSX\Http\Exception\UnauthorizedException;
+use PSX\Http\RequestInterface;
+use PSX\Http\ResponseInterface;
 use PSX\Oauth;
 use PSX\Oauth\Provider\Data\Consumer;
 
@@ -123,8 +123,8 @@ class OauthAuthentication implements FilterInterface
 					$signature = Oauth::getSignature($params['oauth_signature_method']);
 
 					$method = $request->getMethod();
-					$url    = $request->getUrl();
-					$params = array_merge($params, $request->getUrl()->getParameters());
+					$url    = $request->getUri();
+					$params = array_merge($params, $request->getUri()->getParameters());
 
 					if(strpos($request->getHeader('Content-Type'), 'application/x-www-form-urlencoded') !== false)
 					{

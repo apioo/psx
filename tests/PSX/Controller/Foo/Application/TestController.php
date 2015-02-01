@@ -72,8 +72,8 @@ class TestController extends ControllerAbstract
 		// get method
 		$this->testCase->assertEquals('POST', $this->getMethod());
 
-		// get url
-		$this->testCase->assertInstanceOf('PSX\Url', $this->getUrl());
+		// get uri
+		$this->testCase->assertInstanceOf('PSX\Uri', $this->getUri());
 
 		// get header
 		$this->testCase->assertEquals(null, $this->getHeader('foo'));

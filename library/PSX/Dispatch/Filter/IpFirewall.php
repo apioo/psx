@@ -23,11 +23,11 @@
 
 namespace PSX\Dispatch\Filter;
 
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
 use PSX\Dispatch\FilterChainInterface;
 use PSX\Dispatch\FilterInterface;
 use PSX\Http\Exception\ForbiddenException;
+use PSX\Http\RequestInterface;
+use PSX\Http\ResponseInterface;
 
 /**
  * Filters an incomming request based on the request IP. Only IPs which are 

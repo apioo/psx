@@ -95,7 +95,7 @@ abstract class HandlerTestCase extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('HTTP/1.1', $response->getProtocolVersion());
 		$this->assertEquals(200, $response->getStatusCode());
 		$this->assertEquals('OK', $response->getReasonPhrase());
-		$this->assertEquals(null, $response->getBody());
+		$this->assertEquals('', (string) $response->getBody());
 	}
 
 	public function testGetRequest()

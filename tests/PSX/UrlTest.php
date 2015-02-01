@@ -69,14 +69,6 @@ class UrlTest extends \PHPUnit_Framework_TestCase
 	/**
 	 * @expectedException InvalidArgumentException
 	 */
-	public function testInvalidUrlScheme()
-	{
-		new Url('foo!bar://foobar');
-	}
-
-	/**
-	 * @expectedException InvalidArgumentException
-	 */
 	public function testInvalidUrlEmptyHost()
 	{
 		new Url('foo://');
@@ -143,43 +135,6 @@ class UrlTest extends \PHPUnit_Framework_TestCase
 		$url = new Url('//www.yahoo.com');
 
 		$this->assertEquals('http://www.yahoo.com', $url->__toString());
-	}
-
-	public function testGetParameters()
-	{
-		$url = new Url('http://foo.com?bar=foo&foo=bar');
-
-		$this->assertEquals(array('bar' => 'foo', 'foo' => 'bar'), $url->getParameters());
-	}
-
-	public function testGetParameter()
-	{
-		$url = new Url('http://foo.com?bar=foo&foo=bar');
-
-		$this->assertEquals('foo', $url->getParameter('bar'));
-	}
-
-	public function testSetParameter()
-	{
-		$url = new Url('http://foo.com?bar=foo&foo=bar');
-		$url->setParameter('bar', 'test');
-
-		$this->assertEquals('test', $url->getParameter('bar'));
-	}
-
-	public function testRemoveParameter()
-	{
-		$url = new Url('http://foo.com?bar=foo&foo=bar');
-		$url->removeParameter('bar');
-
-		$this->assertEquals(null, $url->getParameter('bar'));
-	}
-
-	public function testHasParameter()
-	{
-		$url = new Url('http://foo.com?bar=foo&foo=bar');
-
-		$this->assertTrue($url->hasParameter('bar'));
 	}
 
 	public function testUrlWithoutFile()

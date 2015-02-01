@@ -51,8 +51,7 @@ class ResponseParser extends ParserAbstract
 
 		$response = new Response();
 		$response->setProtocolVersion($scheme);
-		$response->setStatusCode($code);
-		$response->setReasonPhrase($message);
+		$response->setStatus($code, $message);
 
 		list($header, $body) = $this->splitMessage($content);
 
@@ -104,7 +103,9 @@ class ResponseParser extends ParserAbstract
 				$code    = intval($parts[1]);
 				$message = strval($parts[2]);
 
-				$response = new Response($scheme, $code, $message);
+				$response = new Response();
+				$response->setProtocolVersion($scheme);
+				$response->setStatus($code, $message);
 
 				// append header
 				foreach($headers as $line)
@@ -131,5 +132,19 @@ class ResponseParser extends ParserAbstract
 		{
 			throw new ParseException('Couldnt find status line');
 		}
+	}
+
+	/**
+	 * Parses an raw http response into an PSX\Http\Response object. Throws an
+	 * exception if the response has not an valid format
+	 *
+	 * @param string $content
+	 * @return PSX\Http\Response
+	 */
+	public static function convert($content, $mode = ParserAbstract::MODE_STRICT)
+	{
+		$parser = new self($mode);
+
+		return $parser->parse($content);
 	}
 }

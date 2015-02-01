@@ -55,7 +55,7 @@ class TestCallbackAbstract extends CallbackAbstract
 		$http = new Http(new Callback(function($request) use ($testCase){
 
 			// api request
-			if($request->getUrl()->getPath() == '/api')
+			if($request->getUri()->getPath() == '/api')
 			{
 				$testCase->assertEquals('Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW', (string) $request->getHeader('Authorization'));
 				$testCase->assertEquals('application/x-www-form-urlencoded', (string) $request->getHeader('Content-Type'));
@@ -76,7 +76,7 @@ Pragma: no-cache
 TEXT;
 			}
 
-			return Response::parse($response, ResponseParser::MODE_LOOSE)->toString();
+			return ResponseParser::convert($response, ResponseParser::MODE_LOOSE)->toString();
 
 		}));
 		$oauth = new AuthorizationCode($http, new Url('http://127.0.0.1/api'), getContainer()->get('importer'));
@@ -92,13 +92,13 @@ TEXT;
 		$this->testCase->assertEquals(3600, $accessToken->getExpiresIn());
 		$this->testCase->assertEquals('tGzv3JOkF0XG5Qx2TlKWIA', $accessToken->getRefreshToken());
 
-		$this->response->setStatusCode(200);
+		$this->response->setStatus(200);
 		$this->response->getBody()->write('SUCCESS');
 	}
 
 	protected function onError(\Exception $e)
 	{
-		$this->response->setStatusCode(500);
+		$this->response->setStatus(500);
 		$this->response->getBody()->write(get_class($e));
 	}
 }

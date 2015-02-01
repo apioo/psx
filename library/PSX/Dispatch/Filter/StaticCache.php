@@ -24,13 +24,13 @@
 namespace PSX\Dispatch\Filter;
 
 use Psr\Cache\CacheItemPoolInterface;
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
 use PSX\DateTime;
 use PSX\Dispatch\FilterChainInterface;
 use PSX\Dispatch\FilterInterface;
 use PSX\Http\Exception\BadRequestException;
 use PSX\Http\Stream\Util;
+use PSX\Http\RequestInterface;
+use PSX\Http\ResponseInterface;
 
 /**
  * StaticCache
@@ -117,12 +117,12 @@ class StaticCache implements FilterInterface
 	 * custom key generator function in the constructor to override this 
 	 * behaviour
 	 *
-	 * @param Psr\Http\Message\RequestInterface $request
+	 * @param PSX\Http\RequestInterface $request
 	 * @return string
 	 */
 	protected function getKeyDefaultImpl(RequestInterface $request)
 	{
-		$url      = $request->getUrl();
+		$url      = $request->getUri();
 		$query    = $url->getQuery();
 		$fragment = $url->getFragment();
 

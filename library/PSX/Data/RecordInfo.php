@@ -84,6 +84,11 @@ class RecordInfo
 		return array_diff(array_keys($this->fields), $fields);
 	}
 
+	public function isEmpty()
+	{
+		return empty($this->fields);
+	}
+
 	/**
 	 * Returns all fields wich are set
 	 *

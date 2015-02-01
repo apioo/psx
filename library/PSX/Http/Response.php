@@ -23,8 +23,6 @@
 
 namespace PSX\Http;
 
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\StreamableInterface;
 use PSX\Http;
 use PSX\Exception;
 
@@ -37,58 +35,19 @@ use PSX\Exception;
  */
 class Response extends Message implements ResponseInterface
 {
-	protected $scheme;
 	protected $code;
-	protected $message;
+	protected $reasonPhrase;
 
 	/**
-	 * __construct
-	 *
-	 * @param string $scheme
 	 * @param integer $code
-	 * @param string $message
-	 * @param array $header
+	 * @param array $headers
 	 * @param string $body
 	 */
-	public function __construct($scheme = null, $code = null, $message = null, array $header = array(), $body = null)
+	public function __construct($code = null, array $headers = array(), $body = null)
 	{
-		parent::__construct($header, $body, $scheme);
+		parent::__construct($headers, $body);
 
-		$this->setProtocolVersion($scheme);
-		$this->setStatusCode($code);
-		$this->setReasonPhrase($message);
-	}
-
-	/**
-	 * Sets the http scheme probably HTTP/1.0 or HTTP/1.1
-	 *
-	 * @param string $scheme
-	 * @return void
-	 */
-	public function setProtocolVersion($scheme)
-	{
-		$this->scheme = $scheme;
-	}
-
-	/**
-	 * Returns the http scheme
-	 *
-	 * @return string
-	 */
-	public function getProtocolVersion()
-	{
-		return $this->scheme;
-	}
-
-	/**
-	 * Sets the response code
-	 *
-	 * @param integer $code
-	 * @return void
-	 */
-	public function setStatusCode($code)
-	{
-		$this->code = (int) $code;
+		$this->code = $code;
 	}
 
 	/**
@@ -102,28 +61,6 @@ class Response extends Message implements ResponseInterface
 	}
 
 	/**
-	 * Deprecated infavor of getStatusCode
-	 *
-	 * @deprecated
-	 * @return integer
-	 */
-	public function getCode()
-	{
-		return $this->code;
-	}
-
-	/**
-	 * Sets the response message
-	 *
-	 * @param string $message
-	 * @return void
-	 */
-	public function setReasonPhrase($message)
-	{
-		$this->message = $message;
-	}
-
-	/**
 	 * Returns the http response message. That means the last part of the status
 	 * line i.e. "OK" from an 200 response
 	 *
@@ -131,58 +68,28 @@ class Response extends Message implements ResponseInterface
 	 */
 	public function getReasonPhrase()
 	{
-		return $this->message;
+		return $this->reasonPhrase;
 	}
 
 	/**
-	 * Tries to detect the character encoding of the body. Returns the detected 
-	 * charset or false
+	 * Sets the status code and reason phrase. If no reason phrase is provided
+	 * the standard message according to the status code is used
 	 *
-	 * @return string|false
+	 * @param integer $code
+	 * @param integer $reasonPhrase
 	 */
-	public function getCharset()
+	public function setStatus($code, $reasonPhrase = null)
 	{
-		// header
-		$contentType = $this->getHeader('Content-Type');
+		$this->code = (int) $code;
 
-		if(!empty($contentType))
+		if($reasonPhrase !== null)
 		{
-			$pos = strpos($contentType, 'charset=');
-
-			if($pos !== false)
-			{
-				return strtoupper(trim(substr($contentType, $pos + 8)));
-			}
+			$this->reasonPhrase = $reasonPhrase;
 		}
-
-		// @todo check the content type and determine based on this which 
-		// charset detection method we use if we have text/html we can search 
-		// for an meta tag if we have application/xml we can check the xml 
-		// declaration etc. this can be probably outsourced in a seperate  
-		// charset detection class ... as fallback we could try to guess the 
-		// encoding maybe with mb_detect_encoding
-
-		return false;
-	}
-
-	/**
-	 * Converts the body to the given outCharset if the encoding of the body 
-	 * could be detected
-	 *
-	 * @param string $outCharset
-	 * @return string
-	 */
-	public function getBodyAsString($outCharset = 'UTF-8//IGNORE')
-	{
-		$inCharset = $this->getCharset();
-		$body      = (string) $this->getBody();
-
-		if($inCharset !== false)
+		else if(isset(Http::$codes[$this->code]))
 		{
-			$body = iconv($inCharset, $outCharset, $body);
+			$this->reasonPhrase = Http::$codes[$this->code];
 		}
-
-		return $body;
 	}
 
 	/**
@@ -207,32 +114,38 @@ class Response extends Message implements ResponseInterface
 	}
 
 	/**
-	 * Returns the http request line
+	 * Returns the http response line
 	 *
 	 * @return string
 	 */
 	public function getLine()
 	{
-		return $this->getProtocolVersion() . ' ' . $this->getStatusCode() . ' ' . $this->getReasonPhrase();
+		$protocol = $this->getProtocolVersion();
+		$code     = $this->getStatusCode();
+		$phrase   = $this->getReasonPhrase();
+
+		if(empty($code))
+		{
+			throw new Exception('Status code not set');
+		}
+
+		$protocol = !empty($protocol) ? $protocol : 'HTTP/1.1';
+
+		if(empty($phrase) && isset(Http::$codes[$code]))
+		{
+			$phrase = Http::$codes[$code];
+		}
+
+		if(empty($phrase))
+		{
+			throw new Exception('No reason phrase provided');
+		}
+
+		return $protocol . ' ' . $code . ' ' . $phrase;
 	}
 
 	public function __toString()
 	{
 		return $this->toString();
 	}
-
-	/**
-	 * Parses an raw http response into an PSX\Http\Response object. Throws an
-	 * exception if the response has not an valid format
-	 *
-	 * @param string $content
-	 * @return PSX\Http\Response
-	 */
-	public static function parse($content, $mode = ParserAbstract::MODE_STRICT)
-	{
-		$parser = new ResponseParser($mode);
-
-		return $parser->parse($content);
-	}
 }
-

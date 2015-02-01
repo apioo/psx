@@ -23,13 +23,13 @@
 
 namespace PSX\Dispatch\Filter;
 
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
 use PSX\Dispatch\FilterChainInterface;
 use PSX\Dispatch\FilterInterface;
 use PSX\Exception;
 use PSX\Http\CookieParser;
 use PSX\Http\Exception\BadRequestException;
+use PSX\Http\RequestInterface;
+use PSX\Http\ResponseInterface;
 use PSX\Json;
 
 /**

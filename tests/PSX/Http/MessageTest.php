@@ -42,10 +42,6 @@ class MessageTest extends \PHPUnit_Framework_TestCase
 		$message->setHeaders(array(
 			'foo' => 'bar',
 			'bar' => array('foo', 'bar'),
-			'oof' => new HeaderFieldValues('foo'),
-			'rab' => new HeaderFieldValues(array('bar', 'foo')),
-			// datetime values are automatically formatted to RFC1123
-			'dat' => new DateTime('2014-02-24'),
 		));
 
 		$headers = $message->getHeaders();
@@ -54,12 +50,6 @@ class MessageTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(array('bar'), $headers['foo']);
 		$this->assertTrue(is_array($headers['bar']));
 		$this->assertEquals(array('foo', 'bar'), $headers['bar']);
-		$this->assertTrue(is_array($headers['oof']));
-		$this->assertEquals(array('foo'), $headers['oof']);
-		$this->assertTrue(is_array($headers['rab']));
-		$this->assertEquals(array('bar', 'foo'), $headers['rab']);
-		$this->assertTrue(is_array($headers['dat']));
-		$this->assertEquals(array('Mon, 24 Feb 2014 00:00:00 GMT'), $headers['dat']);
 
 		foreach($headers as $name => $value)
 		{
@@ -97,15 +87,15 @@ class MessageTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(null, $message->getHeader('bar'));
 	}
 
-	public function testGetHeaderAsArray()
+	public function testGetHeaderLines()
 	{
 		$message = new Message();
 		$message->setHeaders(array(
 			'foo' => 'bar',
 		));
 
-		$this->assertEquals(array('bar'), $message->getHeaderAsArray('foo'));
-		$this->assertEquals(array(), $message->getHeaderAsArray('bar'));
+		$this->assertEquals(array('bar'), $message->getHeaderLines('foo'));
+		$this->assertEquals(array(), $message->getHeaderLines('bar'));
 	}
 
 	public function testSetHeader()
@@ -126,37 +116,16 @@ class MessageTest extends \PHPUnit_Framework_TestCase
 		$message->addHeader('foo', 'bar');
 
 		$this->assertEquals('bar', $message->getHeader('foo'));
-		$this->assertEquals(array('bar'), $message->getHeaderAsArray('foo'));
+		$this->assertEquals(array('bar'), $message->getHeaderLines('foo'));
 
 		// now we add the same header again which must be added to the existing 
 		// header
 		$message->addHeader('foo', 'foo');
 
 		$this->assertEquals('bar, foo', $message->getHeader('foo'));
-		$this->assertEquals(array('bar', 'foo'), $message->getHeaderAsArray('foo'));
-		$this->assertEquals('bar', $message->getHeaderAsArray('foo')[0]);
-		$this->assertEquals('foo', $message->getHeaderAsArray('foo')[1]);
-	}
-
-	public function testAddHeaders()
-	{
-		$message = new Message();
-
-		$message->addHeaders(array(
-			'foo' => 'bar'
-		));
-
-		$this->assertEquals('bar', $message->getHeader('foo'));
-		$this->assertEquals(array('bar'), $message->getHeaderAsArray('foo'));
-
-		$message->addHeaders(array(
-			'foo' => 'foo'
-		));
-
-		$this->assertEquals('bar, foo', $message->getHeader('foo'));
-		$this->assertEquals(array('bar', 'foo'), $message->getHeaderAsArray('foo'));
-		$this->assertEquals('bar', $message->getHeaderAsArray('foo')[0]);
-		$this->assertEquals('foo', $message->getHeaderAsArray('foo')[1]);
+		$this->assertEquals(array('bar', 'foo'), $message->getHeaderLines('foo'));
+		$this->assertEquals('bar', $message->getHeaderLines('foo')[0]);
+		$this->assertEquals('foo', $message->getHeaderLines('foo')[1]);
 	}
 
 	public function testRemoveHeader()
@@ -183,23 +152,22 @@ class MessageTest extends \PHPUnit_Framework_TestCase
 
 	public function testConstructor()
 	{
-		$message = new Message(array('foo' => 'bar'), new StringStream('foobar'), 'HTTP/1.1');
+		$message = new Message(array('foo' => 'bar'), new StringStream('foobar'));
 
-		$this->assertEquals('HTTP/1.1', $message->getProtocolVersion());
 		$this->assertEquals('bar', $message->getHeader('foo'));
-		$this->assertEquals(array('bar'), $message->getHeaderAsArray('foo'));
+		$this->assertEquals(array('bar'), $message->getHeaderLines('foo'));
 		$this->assertEquals('foobar', (string) $message->getBody());
 
 		$message = new Message(array('foo' => 'bar'), 'foobar');
 
 		$this->assertEquals('bar', $message->getHeader('foo'));
-		$this->assertEquals(array('bar'), $message->getHeaderAsArray('foo'));
+		$this->assertEquals(array('bar'), $message->getHeaderLines('foo'));
 		$this->assertEquals('foobar', (string) $message->getBody());
 
 		$message = new Message(array('foo' => 'bar'));
 
 		$this->assertEquals('bar', $message->getHeader('foo'));
-		$this->assertEquals(array('bar'), $message->getHeaderAsArray('foo'));
+		$this->assertEquals(array('bar'), $message->getHeaderLines('foo'));
 	}
 
 	/**

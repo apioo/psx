@@ -23,9 +23,9 @@
 
 namespace PSX\Event;
 
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
 use PSX\ControllerInterface;
+use PSX\Http\RequestInterface;
+use PSX\Http\ResponseInterface;
 use Symfony\Component\EventDispatcher\Event;
 
 /**

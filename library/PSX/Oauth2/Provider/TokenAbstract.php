@@ -80,7 +80,7 @@ abstract class TokenAbstract extends ApiAbstract
 			// contains the available grant types
 			$accessToken = $this->grantTypeFactory->get($grantType)->generateAccessToken($credentials, $parameters);
 
-			$this->response->setStatusCode(200);
+			$this->response->setStatus(200);
 			$this->setBody($accessToken);
 		}
 		catch(ErrorException $e)
@@ -90,7 +90,7 @@ abstract class TokenAbstract extends ApiAbstract
 			$error->setErrorDescription($e->getMessage());
 			$error->setState(null);
 
-			$this->response->setStatusCode(400);
+			$this->response->setStatus(400);
 			$this->setBody($error);
 		}
 		catch(\Exception $e)
@@ -100,7 +100,7 @@ abstract class TokenAbstract extends ApiAbstract
 			$error->setErrorDescription($e->getMessage());
 			$error->setState(null);
 
-			$this->response->setStatusCode(400);
+			$this->response->setStatus(400);
 			$this->setBody($error);
 		}
 	}
