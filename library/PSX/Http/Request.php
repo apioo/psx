@@ -68,20 +68,16 @@ class Request extends Message implements RequestInterface
 			return $this->requestTarget;
 		}
 
-		if(!$this->uri)
-		{
-			return '/';
-		}
-
 		$target = $this->uri->getPath();
 		if(empty($target))
 		{
 			$target = '/';
 		}
 
-		if($this->uri->getQuery())
+		$query = $this->uri->getQuery();
+		if(!empty($query))
 		{
-			$target .= '?' . $this->uri->getQuery();
+			$target.= '?' . $query;
 		}
 
 		return $target;
