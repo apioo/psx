@@ -78,6 +78,9 @@ class TestController extends ControllerAbstract
 		// get header
 		$this->testCase->assertEquals(null, $this->getHeader('foo'));
 
+		// has header
+		$this->testCase->assertEquals(false, $this->hasHeader('foo'));
+
 		// get parameter
 		$this->testCase->assertEquals('bar', $this->getParameter('foo'));
 		$this->testCase->assertEquals('bar', $this->getParameter('foo', Validate::TYPE_STRING));
