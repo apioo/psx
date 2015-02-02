@@ -73,12 +73,17 @@ function setUpConnection($container)
 
 			$connection = Doctrine\DBAL\DriverManager::getConnection($params, $config);
 			$fromSchema = $connection->getSchemaManager()->createSchema();
-			$toSchema   = PSX\Sql\TestSchema::getSchema();
-			$queries    = $fromSchema->getMigrateToSql($toSchema, $connection->getDatabasePlatform());
 
-			foreach($queries as $query)
+			// we create the schema only if the table does not exist
+			if(!$fromSchema->hasTable('psx_cache_handler_sql_test'))
 			{
-				$connection->query($query);
+				$toSchema = PSX\Sql\TestSchema::getSchema();
+				$queries  = $fromSchema->getMigrateToSql($toSchema, $connection->getDatabasePlatform());
+
+				foreach($queries as $query)
+				{
+					$connection->query($query);
+				}
 			}
 
 			$container->set('connection', $connection);
