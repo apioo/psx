@@ -191,9 +191,13 @@ class Basic implements SenderInterface
 		while(!$body->eof())
 		{
 			$chunk = $body->read($this->chunkSize);
+			$len   = strlen($chunk);
 
-			echo dechex(strlen($chunk)) . "\r\n" . $chunk . "\r\n";
-			flush();
+			if($len > 0)
+			{
+				echo dechex($len) . "\r\n" . $chunk . "\r\n";
+				flush();
+			}
 		}
 
 		echo '0' . "\r\n" . "\r\n";
