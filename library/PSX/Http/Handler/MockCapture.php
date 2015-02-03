@@ -32,6 +32,7 @@ use PSX\Http;
 use PSX\Http\Options;
 use PSX\Http\Request;
 use PSX\Http\Response;
+use PSX\Http\HandlerInterface;
 
 /**
  * Handler wich captures all http requests into an xml file wich can be loaded 
@@ -41,25 +42,29 @@ use PSX\Http\Response;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class MockCapture extends Curl
+class MockCapture implements HandlerInterface
 {
 	protected $file;
+	protected $handler;
 
-	public function __construct($file)
+	public function __construct($file, HandlerInterface $handler = null)
 	{
-		parent::__construct();
-
-		$this->file = $file;
+		$this->file    = $file;
+		$this->handler = $handler ?: new Curl();
 	}
 
 	public function request(Request $request, Options $options)
 	{
-		$response = parent::request($request, $options);
+		$response = $this->handler->request($request, $options);
 
 		$dom = new DOMDocument();
 		$dom->formatOutput = true;
 		$dom->preserveWhiteSpace = false;
-		$dom->load($this->file);
+
+		if(is_file($this->file))
+		{
+			$dom->load($this->file);
+		}
 
 		$rootElement = $dom->documentElement;
 

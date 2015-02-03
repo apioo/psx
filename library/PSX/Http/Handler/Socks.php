@@ -35,7 +35,7 @@ use PSX\Http\Stream\SocksStream;
 use PSX\Http\Stream\StringStream;
 
 /**
- * Socks
+ * This handler writes the complete HTTP message by itself on the socket
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
@@ -57,6 +57,8 @@ class Socks implements HandlerInterface
 
 	public function request(Request $request, Options $options)
 	{
+		$context = stream_context_create();
+
 		// ssl
 		$scheme = null;
 
@@ -76,6 +78,8 @@ class Socks implements HandlerInterface
 			{
 				throw new NotSupportedException('https is not supported');
 			}
+
+			Stream::assignSslContext($context, $options);
 		}
 		else
 		{
@@ -92,7 +96,8 @@ class Socks implements HandlerInterface
 
 		// open socket
 		set_error_handler(__CLASS__ . '::handleError');
-		$handle = fsockopen($scheme . '://' . $request->getUri()->getHost(), $port, $errno, $errstr);
+		$timeout = ini_get('default_socket_timeout');
+		$handle  = stream_socket_client($scheme . '://' . $request->getUri()->getHost() . ':' . $port, $errno, $errstr, $timeout, STREAM_CLIENT_CONNECT, $context);
 		restore_error_handler();
 
 		if($handle !== false)
@@ -136,9 +141,13 @@ class Socks implements HandlerInterface
 					while(!$body->eof())
 					{
 						$chunk = $body->read($this->chunkSize);
+						$len   = strlen($chunk);
 
-						fwrite($handle, dechex(strlen($chunk)) . Http::$newLine . $chunk . Http::$newLine);
-						fflush($handle);
+						if($len > 0)
+						{
+							fwrite($handle, dechex($len) . Http::$newLine . $chunk . Http::$newLine);
+							fflush($handle);
+						}
 					}
 
 					fwrite($handle, '0' . Http::$newLine . Http::$newLine);

@@ -30,7 +30,7 @@ use PSX\Http\HandlerInterface;
 use PSX\Http\Options;
 use PSX\Http\RedirectException;
 use PSX\Http\Request;
-use PSX\Http\Response;
+use PSX\Http\ResponseParser;
 
 /**
  * Mock handler where you can register urls wich return a specific response on 
@@ -86,7 +86,7 @@ class Mock implements HandlerInterface
 			{
 				$response = $resource['handler']($request);
 
-				return Response::parse($response);
+				return ResponseParser::convert($response);
 			}
 		}
 

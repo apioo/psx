@@ -35,7 +35,7 @@ use PSX\Http\Stream\TempStream;
 use PSX\Http\Stream\StringStream;
 
 /**
- * Stream
+ * This handler uses the internal HTTP wrapper to send the HTTP request
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
@@ -52,106 +52,41 @@ class Stream implements HandlerInterface
 
 	public function request(Request $request, Options $options)
 	{
-		$sslOptions  = null;
-		$httpOptions = array(
-			'method' => $request->getMethod(),
-			'protocol_version' => 1.1,
-		);
-
-		// until chunked transfer encoding if fully implemented we remove the
-		// header
-		if($request->hasHeader('Transfer-Encoding'))
+		// check whether scheme is supported
+		if(!in_array($request->getUri()->getScheme(), stream_get_wrappers()))
 		{
-			$request->removeHeader('Transfer-Encoding');
+			throw new HandlerException('Unsupported stream wrapper');
 		}
 
-		// set header
-		$headers = implode(Http::$newLine, ResponseParser::buildHeaderFromMessage($request));
+		// create context
+		$context = stream_context_create();
 
-		$httpOptions['header'] = $headers;
+		// assign http context parameters
+		self::assignHttpContext($context, $request, $options);
 
-		// set body
-		$body = $request->getBody();
-
-		if($body !== null && !in_array($request->getMethod(), array('HEAD', 'GET')))
+		// disable follow location if not available
+		if(!$this->hasFollowLocation)
 		{
-			$httpOptions['content'] = (string) $body;
-		}
-
-		// set proxy
-		$proxy = $options->getProxy();
-		if(!empty($proxy))
-		{
-			$httpOptions['proxy'] = $proxy;
-		}
-
-		// set follow location
-		if($options->getFollowLocation() && $this->hasFollowLocation)
-		{
-			$httpOptions['follow_location'] = 1;
-			$httpOptions['max_redirects']   = $options->getMaxRedirects();
-		}
-		else
-		{
-			$httpOptions['follow_location'] = 0;
-			$httpOptions['max_redirects']   = $options->getMaxRedirects();
+			stream_context_set_option($context, 'http', 'follow_location', 0);
 		}
 
 		// set ssl
 		if($options->getSsl() !== false && ($options->getSsl() === true || strcasecmp($request->getUri()->getScheme(), 'https') === 0))
 		{
-			$caPath = $options->getCaPath();
-
-			if(!empty($caPath))
-			{
-				$sslOptions['verify_peer']       = true;
-				$sslOptions['allow_self_signed'] = true;
-
-				if(is_file($caPath))
-				{
-					$sslOptions['cafile'] = $caPath;
-				}
-				else if(is_dir($caPath))
-				{
-					$sslOptions['capath'] = $caPath;
-				}
-			}
-			else
-			{
-				$sslOptions['verify_peer']       = false;
-				$sslOptions['allow_self_signed'] = false;
-			}
+			self::assignSslContext($context, $options);
 		}
-
-		// set timeout
-		$timeout = $options->getTimeout();
-
-		if(!empty($timeout))
-		{
-			$httpOptions['timeout'] = $timeout;
-		}
-
-		// create context
-		$ctxOptions['http'] = $httpOptions;
-
-		if(!empty($sslOptions))
-		{
-			$ctxOptions['ssl'] = $sslOptions;
-		}
-
-		$ctx = stream_context_create($ctxOptions);
 
 		// callback
 		$callback = $options->getCallback();
 
 		if(!empty($callback))
 		{
-			call_user_func_array($callback, array($ctx, $request));
+			call_user_func_array($callback, array($context, $request));
 		}
 
 		// open socket
 		set_error_handler(__CLASS__ . '::handleError');
-		$handle = fopen($request->getUri()->toString(), 'r', false, $ctx);
+		$handle = fopen($request->getUri()->toString(), 'r', false, $context);
 		restore_error_handler();
 
 		// check for timeout
@@ -182,6 +117,78 @@ class Stream implements HandlerInterface
 		restore_error_handler();
 
 		throw new HandlerException($errstr, $errno);
+	}
+
+	public static function assignHttpContext($context, Request $request, Options $options = null)
+	{
+		stream_context_set_option($context, 'http', 'method', $request->getMethod());
+		stream_context_set_option($context, 'http', 'protocol_version', $request->getProtocolVersion() ?: 1.1);
+
+		// until chunked transfer encoding if fully implemented we remove the
+		// header
+		if($request->hasHeader('Transfer-Encoding'))
+		{
+			$request->removeHeader('Transfer-Encoding');
+		}
+
+		// set header
+		$headers = implode(Http::$newLine, ResponseParser::buildHeaderFromMessage($request));
+
+		stream_context_set_option($context, 'http', 'header', $headers);
+
+		// set body
+		$body = $request->getBody();
+
+		if($body !== null && !in_array($request->getMethod(), array('HEAD', 'GET')))
+		{
+			stream_context_set_option($context, 'http', 'content', (string) $body);
+		}
+
+		if($options !== null)
+		{
+			// set proxy
+			$proxy = $options->getProxy();
+
+			if(!empty($proxy))
+			{
+				stream_context_set_option($context, 'http', 'proxy', $proxy);
+			}
+
+			// set follow location
+			stream_context_set_option($context, 'http', 'follow_location', (int) $options->getFollowLocation());
+			stream_context_set_option($context, 'http', 'max_redirects', $options->getMaxRedirects());
+
+			// set timeout
+			$timeout = $options->getTimeout();
+
+			if(!empty($timeout))
+			{
+				stream_context_set_option($context, 'http', 'timeout', $timeout);
+			}
+		}
+	}
+
+	public static function assignSslContext($context, Options $options)
+	{
+		$caPath = $options->getCaPath();
+
+		if(!empty($caPath))
+		{
+			stream_context_set_option($context, 'ssl', 'verify_peer', true);
+
+			if(is_file($caPath))
+			{
+				stream_context_set_option($context, 'ssl', 'cafile', $caPath);
+			}
+			else if(is_dir($caPath))
+			{
+				stream_context_set_option($context, 'ssl', 'capath', $caPath);
+			}
+		}
+		else
+		{
+			stream_context_set_option($context, 'ssl', 'verify_peer', false);
+		}
 	}
 }
 

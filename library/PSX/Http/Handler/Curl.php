@@ -36,13 +36,7 @@ use PSX\Http\Stream\StringStream;
 use PSX\Http\Stream\TempStream;
 
 /**
- * The logic of following redirects is handeled in the PSX\Http class to avoid
- * that handlers have to deal with this. But because curl has an follow location
- * option wich is probably faster you can enable this in the handler. Note
- * CURLOPT_FOLLOWLOCATION throws an error if in safe mode or open_basedir is
- * set. If you use the curl redirection the redirect will not include any
- * cookies of the store. Because of these drawbacks the option is by default
- * disabled
+ * This handler uses the curl extension to send the HTTP request
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
@@ -113,11 +107,8 @@ class Curl implements HandlerInterface
 		}
 
 		// set follow location
-		if($options->getFollowLocation() && $this->hasFollowLocation)
-		{
-			curl_setopt($handle, CURLOPT_FOLLOWLOCATION, true);
-			curl_setopt($handle, CURLOPT_MAXREDIRS, $options->getMaxRedirects());
-		}
+		curl_setopt($handle, CURLOPT_FOLLOWLOCATION, $options->getFollowLocation() && $this->hasFollowLocation);
+		curl_setopt($handle, CURLOPT_MAXREDIRS, $options->getMaxRedirects());
 
 		// set ssl
 		if($options->getSsl() !== false && ($options->getSsl() === true || strcasecmp($request->getUri()->getScheme(), 'https') === 0))
