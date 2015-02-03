@@ -53,7 +53,9 @@ class Stream implements HandlerInterface
 	public function request(Request $request, Options $options)
 	{
 		// check whether scheme is supported
-		if(!in_array($request->getUri()->getScheme(), stream_get_wrappers()))
+		$supportedWrappers = array_intersect(array('http', 'https'), stream_get_wrappers());
+
+		if(!in_array($request->getUri()->getScheme(), $supportedWrappers))
 		{
 			throw new HandlerException('Unsupported stream wrapper');
 		}
