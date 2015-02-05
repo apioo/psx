@@ -91,14 +91,6 @@ class Stream implements HandlerInterface
 		$handle = fopen($request->getUri()->toString(), 'r', false, $context);
 		restore_error_handler();
 
-		// check for timeout
-		$meta = stream_get_meta_data($handle);
-
-		if($meta['timed_out'])
-		{
-			throw new HandlerException('Connection timeout');
-		}
-
 		// build response
 		$response = ResponseParser::buildResponseFromHeader($http_response_header);
 
