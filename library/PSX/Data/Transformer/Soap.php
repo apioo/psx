@@ -26,6 +26,7 @@ namespace PSX\Data\Transformer;
 use DOMDocument;
 use DOMElement;
 use InvalidArgumentException;
+use PSX\Http\MediaType;
 use PSX\Data\Reader\Xml;
 use PSX\Data\TransformerInterface;
 use RuntimeException;
@@ -46,9 +47,9 @@ class Soap extends XmlArray
 		$this->namespace = $namespace;
 	}
 
-	public function accept($contentType)
+	public function accept(MediaType $contentType)
 	{
-		return $contentType == 'application/soap+xml';
+		return $contentType->getName() == 'application/soap+xml';
 	}
 
 	public function transform($data)

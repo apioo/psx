@@ -26,6 +26,7 @@ namespace PSX\Data\Transformer;
 use DOMDocument;
 use DOMElement;
 use InvalidArgumentException;
+use PSX\Http\MediaType;
 use PSX\Data\TransformerInterface;
 
 /**
@@ -37,9 +38,9 @@ use PSX\Data\TransformerInterface;
  */
 class Rss implements TransformerInterface
 {
-	public function accept($contentType)
+	public function accept(MediaType $contentType)
 	{
-		return $contentType == 'application/rss+xml';
+		return $contentType->getName() == 'application/rss+xml';
 	}
 
 	public function transform($data)

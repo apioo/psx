@@ -23,6 +23,8 @@
 
 namespace PSX\Data\Transformer;
 
+use PSX\Http\MediaType;
+
 /**
  * AtomTest
  *
@@ -200,5 +202,19 @@ INPUT;
 	{
 		$transformer = new Atom();
 		$transformer->transform(array());
+	}
+
+	public function testAccept()
+	{
+		$transformer = new Atom();
+
+		$this->assertTrue($transformer->accept(MediaType::parse('application/atom+xml')));
+	}
+
+	public function testAcceptInvalid()
+	{
+		$transformer = new Atom();
+
+		$this->assertFalse($transformer->accept(MediaType::parse('text/plain')));
 	}
 }

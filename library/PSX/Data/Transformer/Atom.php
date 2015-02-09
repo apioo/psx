@@ -30,6 +30,7 @@ use InvalidArgumentException;
 use PSX\Atom as AtomRecord;
 use PSX\Data\Reader\Xml;
 use PSX\Data\TransformerInterface;
+use PSX\Http\MediaType;
 
 /**
  * Atom
@@ -40,9 +41,9 @@ use PSX\Data\TransformerInterface;
  */
 class Atom implements TransformerInterface
 {
-	public function accept($contentType)
+	public function accept(MediaType $contentType)
 	{
-		return $contentType == 'application/atom+xml';
+		return $contentType->getName() == 'application/atom+xml';
 	}
 
 	public function transform($data)

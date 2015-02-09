@@ -23,6 +23,8 @@
 
 namespace PSX\Data\Transformer;
 
+use PSX\Http\MediaType;
+
 /**
  * RssTest
  *
@@ -157,5 +159,19 @@ INPUT;
 	{
 		$transformer = new Rss();
 		$transformer->transform(array());
+	}
+
+	public function testAccept()
+	{
+		$transformer = new Rss();
+
+		$this->assertTrue($transformer->accept(MediaType::parse('application/rss+xml')));
+	}
+
+	public function testAcceptInvalid()
+	{
+		$transformer = new Rss();
+
+		$this->assertFalse($transformer->accept(MediaType::parse('text/plain')));
 	}
 }

@@ -25,6 +25,7 @@ namespace PSX\Data\Transformer;
 
 use DOMDocument;
 use DOMElement;
+use PSX\Http\MediaType;
 use PSX\Data\Reader\Xml;
 use PSX\Data\TransformerInterface;
 use InvalidArgumentException;
@@ -48,9 +49,11 @@ class XmlArray implements TransformerInterface
 		$this->namespace = $namespace;
 	}
 
-	public function accept($contentType)
+	public function accept(MediaType $contentType)
 	{
-		return in_array($contentType, Xml::$mediaTypes) || substr($contentType, -4) == '+xml' || substr($contentType, -4) == '/xml';
+		return in_array($contentType->getName(), Xml::$mediaTypes) || 
+			substr($contentType->getSubType(), -4) == '+xml' || 
+			substr($contentType->getSubType(), -4) == '/xml';
 	}
 
 	public function transform($data)

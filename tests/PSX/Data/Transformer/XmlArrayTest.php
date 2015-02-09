@@ -26,6 +26,7 @@ namespace PSX\Data\Transformer;
 use PSX\Rss;
 use PSX\Rss\Item;
 use PSX\Http\Message;
+use PSX\Http\MediaType;
 
 /**
  * XmlArrayTest
@@ -144,5 +145,20 @@ INPUT;
 
 		$this->assertTrue(is_array($data));
 		$this->assertEquals($expect, $data);
+	}
+
+	public function testAccept()
+	{
+		$transformer = new XmlArray();
+
+		$this->assertTrue($transformer->accept(MediaType::parse('application/xml')));
+		$this->assertTrue($transformer->accept(MediaType::parse('application/foo+xml')));
+	}
+
+	public function testAcceptInvalid()
+	{
+		$transformer = new XmlArray();
+
+		$this->assertFalse($transformer->accept(MediaType::parse('text/plain')));
 	}
 }

@@ -25,6 +25,7 @@ namespace PSX\Data\Transformer;
 
 use Closure;
 use PSX\Data\TransformerInterface;
+use PSX\Http\MediaType;
 
 /**
  * Callback
@@ -44,7 +45,7 @@ class Callback implements TransformerInterface
 		$this->contentType = $contentType;
 	}
 
-	public function accept($contentType)
+	public function accept(MediaType $contentType)
 	{
 		if($this->contentType === null)
 		{
@@ -52,7 +53,7 @@ class Callback implements TransformerInterface
 		}
 		else if(is_string($this->contentType))
 		{
-			return $this->contentType == $contentType;
+			return $this->contentType == $contentType->getName();
 		}
 		else if(is_callable($this->contentType))
 		{

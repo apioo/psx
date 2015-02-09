@@ -23,6 +23,8 @@
 
 namespace PSX\Data\Transformer;
 
+use PSX\Http\MediaType;
+
 /**
  * SoapTest
  *
@@ -137,5 +139,19 @@ INPUT;
 	{
 		$transformer = new Soap('http://phpsx.org/2014/data');
 		$transformer->transform(array());
+	}
+
+	public function testAccept()
+	{
+		$transformer = new Soap('http://phpsx.org/2014/data');
+
+		$this->assertTrue($transformer->accept(MediaType::parse('application/soap+xml')));
+	}
+
+	public function testAcceptInvalid()
+	{
+		$transformer = new Soap('http://phpsx.org/2014/data');
+
+		$this->assertFalse($transformer->accept(MediaType::parse('text/plain')));
 	}
 }

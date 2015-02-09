@@ -24,6 +24,7 @@
 namespace PSX\Data\Transformer;
 
 use PSX\Data\TransformerInterface;
+use PSX\Http\MediaType;
 use PSX\Util\PriorityQueue;
 
 /**
@@ -49,6 +50,13 @@ class TransformerManager
 
 	public function getTransformerByContentType($contentType)
 	{
+		if(empty($contentType))
+		{
+			return null;
+		}
+
+		$contentType = MediaType::parse($contentType);
+
 		foreach($this->transformers as $transformer)
 		{
 			if($transformer->accept($contentType))

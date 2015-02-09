@@ -65,7 +65,7 @@ class Extractor
 	 */
 	public function extract(MessageInterface $message, TransformerInterface $transformer = null, $readerType = null)
 	{
-		$contentType = strstr($message->getHeader('Content-Type') . ';', ';', true);
+		$contentType = $message->getHeader('Content-Type');
 		$reader      = $this->getRequestReader($contentType, $readerType);
 		$data        = $reader->read($message);
 

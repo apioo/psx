@@ -136,7 +136,7 @@ class MediaType
 		}
 
 		$type    = strtolower(strstr($name, '/', true));
-		$subType = strtolower(substr(strstr($name, '/'), 1));
+		$subType = strtolower(rtrim(substr(strstr($name, '/'), 1)));
 
 		if(empty($type) || empty($subType))
 		{
