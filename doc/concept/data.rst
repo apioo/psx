@@ -20,7 +20,7 @@ the xml reader returns an DOMDocument and the json reader returns an array.
 
 .. literalinclude:: ../../library/PSX/Data/ReaderInterface.php
    :language: php
-   :lines: 35-57
+   :lines: 36-58
    :prepend: <?php
 
 Since the importer needs an array structure we must apply an transformation in

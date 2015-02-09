@@ -47,12 +47,11 @@ container uses several traits which contains service methods
 
 .. literalinclude:: ../../library/PSX/Dependency/DefaultContainer.php
    :language: php
-   :lines: 44-50
+   :lines: 52-59
    :prepend: <?php
 
-The returned container must be compatible with the symfony DI container. In case 
-you want use a service definition file you could also use the following code in 
-your :file:`container.php`
+The returned container must be compatible with the symfony DI container. You 
+could also use i.e. the symfony DI container
 
 .. code-block:: php
 

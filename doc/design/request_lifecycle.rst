@@ -2,14 +2,11 @@
 Request lifecycle
 =================
 
-Http stream
------------
+Http request/response
+---------------------
 
-PSX uses the proposed HTTP `PSR standard <https://github.com/php-fig/fig-standards/blob/master/proposed/http-message.md>`_ 
-through the application. At the start of the PSX lifecycle an HTTP request and 
-response object is created. Each object is created in its own factory so you 
-can change the behavior. This can be useful if you want i.e. use another body 
-stream or get values from different environment sources.
+PSX uses an standard HTTP request and response interface. At the start of the 
+application lifecycle an HTTP request and response object will be created.
 
 .. literalinclude:: ../../library/PSX/Dispatch/RequestFactoryInterface.php
    :language: php
@@ -23,15 +20,16 @@ stream or get values from different environment sources.
 
 After the request and response objects are created the loader searches the 
 fitting controller based on the routing file. The controller must implement the
-ApplicationStackInterface
+ApplicationStackInterface.
 
 .. literalinclude:: ../../library/PSX/ApplicationStackInterface.php
    :language: php
    :lines: 33-43
    :prepend: <?php
 
-Then the loader executes the application stack which is simply an array 
-containing FilterInterface or callables
+Then the loader receives the application stack from the controller which is an
+array containing callable or FilterInterface. Each middleware can then read from 
+the request and write data to the response.
 
 .. literalinclude:: ../../library/PSX/Dispatch/FilterInterface.php
    :language: php
@@ -47,5 +45,35 @@ function and outputs the response body via "echo".
    :lines: 35-43
    :prepend: <?php
 
-If you want change this behavior i.e. you want to cache the response or make
-aditional security checks your class must only implement the SenderInterface.
+Middleware
+----------
+
+In PSX an middleware must be either an FilterInterface or callable i.e. the most 
+basic "hello world" example would be:
+
+.. code-block:: php
+
+    <?php
+
+    use PSX\ControllerAbstract;
+
+    class Controller extends ControllerAbstract
+    {
+        public function getApplicationStack()
+        {
+            return [function($request, $response){
+                $response->getBody()->write('Hello world');
+            }];
+        }
+    }
+
+By default the controller returns the ControllerExecutor middleware which simply
+calls the on* methods and optional the method which was set in the routes file.
+In adition you could also overwrite the getPreFilter or getPostFilter method
+which are merged together to the application stack i.e.:
+
+.. literalinclude:: ../../library/PSX/ControllerAbstract.php
+   :language: php
+   :lines: 94-103
+   :prepend: <?php
+
