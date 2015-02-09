@@ -1,6 +1,7 @@
 {
   "name": "psx/psx",
   "description": "PSX Framework",
+  "keywords": ["REST", "Api", "Framework", "Oauth"],
   "homepage": "http://phpsx.org",
   "license": "GPL-3.0",
   "authors": [
