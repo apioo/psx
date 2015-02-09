@@ -1,4 +1,16 @@
 
+0.9.6
+
+0.9.5
+* Added HTTP request/response interfaces and added an factory to convert PSX 
+  HTTP request/responses into PSR-7 request/responses
+* Added HTTP stream handler which uses the native HTTP stream wrapper
+* Added missing HTTP status codes
+* Add support for array and object sql table column types
+* Added primary key filter which checks whether an id exists in an table
+* Used dbal query builder in various places for better db vendor support
+* Added plain text writer
+
 0.9.4
 * Sql table query methods return now an array instead of RecordInterface
 * Added media type class and improved content negotiation
