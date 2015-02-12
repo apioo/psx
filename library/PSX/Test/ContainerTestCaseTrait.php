@@ -71,7 +71,7 @@ trait ContainerTestCaseTrait
 		// use void sender
 		getContainer()->set('dispatch_sender', new VoidSender());
 
-		// enables us to load the same controller method multiple times
+		// enables us to load the same controller multiple times
 		getContainer()->get('loader')->setRecursiveLoading(true);
 
 		// we replace the command output
