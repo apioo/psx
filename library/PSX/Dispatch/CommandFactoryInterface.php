@@ -23,7 +23,7 @@
 
 namespace PSX\Dispatch;
 
-use PSX\Loader\Location;
+use PSX\Loader\Context;
 
 /**
  * CommandFactoryInterface
@@ -34,5 +34,5 @@ use PSX\Loader\Location;
  */
 interface CommandFactoryInterface
 {
-	public function getCommand($className, Location $location);
+	public function getCommand($className, Context $context);
 }

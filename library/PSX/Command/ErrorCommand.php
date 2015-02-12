@@ -27,7 +27,7 @@ use PSX\CommandAbstract;
 use PSX\Command\Parameter;
 use PSX\Command\Parameters;
 use PSX\Command\OutputInterface;
-use PSX\Loader\Location;
+use PSX\Loader\Context;
 
 /**
  * ErrorCommand
@@ -46,7 +46,7 @@ class ErrorCommand extends CommandAbstract
 
 	public function onExecute(Parameters $parameters, OutputInterface $output)
 	{
-		$exception = $this->location->getParameter(Location::KEY_EXCEPTION);
+		$exception = $this->context->get(Context::KEY_EXCEPTION);
 
 		if($exception instanceof \Exception)
 		{

@@ -23,15 +23,11 @@
 
 namespace PSX\Loader\CallbackResolver;
 
-use RuntimeException;
 use PSX\Dispatch\ControllerFactoryInterface;
-use PSX\Exception;
 use PSX\Http\RequestInterface;
 use PSX\Http\ResponseInterface;
-use PSX\Loader\Callback;
 use PSX\Loader\CallbackResolverInterface;
-use PSX\Loader\Location;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use PSX\Loader\Context;
 
 /**
  * DependencyInjector
@@ -49,9 +45,9 @@ class DependencyInjector implements CallbackResolverInterface
 		$this->factory = $factory;
 	}
 
-	public function resolve(Location $location, RequestInterface $request, ResponseInterface $response)
+	public function resolve(RequestInterface $request, ResponseInterface $response, Context $context)
 	{
-		$source = $location->getParameter(Location::KEY_SOURCE);
+		$source = $context->get(Context::KEY_SOURCE);
 
 		if(strpos($source, '::') !== false)
 		{
@@ -63,8 +59,9 @@ class DependencyInjector implements CallbackResolverInterface
 			$method    = null;
 		}
 
-		$controller = $this->factory->getController($className, $location, $request, $response);
+		$context->set(Context::KEY_CLASS, $className);
+		$context->set(Context::KEY_METHOD, $method);
 
-		return new Callback($controller, $method);
+		return $this->factory->getController($className, $request, $response, $context);
 	}
 }

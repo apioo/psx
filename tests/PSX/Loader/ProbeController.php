@@ -26,7 +26,7 @@ namespace PSX\Loader;
 use PSX\ControllerAbstract;
 use PSX\Http\Request;
 use PSX\Http\Response;
-use PSX\Loader\Location;
+use PSX\Loader\Context;
 
 /**
  * ProbeController
@@ -39,9 +39,9 @@ class ProbeController extends ControllerAbstract
 {
 	protected $methodsCalled = array();
 
-	public function __construct(Location $location, Request $request, Response $response)
+	public function __construct(Request $request, Response $response, Context $context)
 	{
-		parent::__construct($location, $request, $response);
+		parent::__construct($request, $response, $context);
 
 		$this->methodsCalled[] = __METHOD__;
 	}

@@ -33,8 +33,8 @@ use PSX\Http\Request;
 use PSX\Http\Response;
 use PSX\Http\Stream\StringStream;
 use PSX\Loader\Callback;
+use PSX\Loader\Context;
 use PSX\Loader\FilterController;
-use PSX\Loader\Location;
 use PSX\Loader\LocationFinder\CallbackMethod;
 use PSX\Url;
 
@@ -50,11 +50,13 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 	public function testLoadIndexCall()
 	{
 		$testCase       = $this;
-		$locationFinder = new CallbackMethod(function($method, $path) use ($testCase){
+		$locationFinder = new CallbackMethod(function($request, $context) use ($testCase){
 
-			$testCase->assertEquals('/foobar', $path);
+			$testCase->assertEquals('/foobar', $request->getUri()->getPath());
 
-			return new Location(array(Location::KEY_SOURCE => 'PSX\Loader\ProbeController::doIndex'));
+			$context->set(Context::KEY_SOURCE, 'PSX\Loader\ProbeController::doIndex');
+
+			return $request;
 
 		});
 
@@ -64,10 +66,11 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 			->method('on')
 			->with($this->callback(function($event) use ($testCase){
 				$testCase->assertInstanceOf('PSX\Event\RouteMatchedEvent', $event);
-				$testCase->assertEquals('GET', $event->getRequestMethod());
-				$testCase->assertEquals('/foobar', $event->getPath());
-				$testCase->assertInstanceOf('PSX\Loader\Location', $event->getLocation());
-				$testCase->assertEquals('PSX\Loader\ProbeController::doIndex', $event->getLocation()->getParameter(Location::KEY_SOURCE));
+				$testCase->assertInstanceOf('PSX\Http\RequestInterface', $event->getRequest());
+				$testCase->assertEquals('GET', $event->getRequest()->getMethod());
+				$testCase->assertEquals('/foobar', $event->getRequest()->getUri()->getPath());
+				$testCase->assertInstanceOf('PSX\Loader\Context', $event->getContext());
+				$testCase->assertEquals('PSX\Loader\ProbeController::doIndex', $event->getContext()->get(Context::KEY_SOURCE));
 
 				return true;
 			}));
@@ -130,11 +133,14 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 	public function testLoadDetailCall()
 	{
 		$testCase       = $this;
-		$locationFinder = new CallbackMethod(function($method, $path) use ($testCase){
+		$locationFinder = new CallbackMethod(function($request, $context) use ($testCase){
 
-			$testCase->assertEquals('/foobar/detail/12', $path);
+			$testCase->assertEquals('/foobar/detail/12', $request->getUri()->getPath());
 
-			return new Location(array(Location::KEY_SOURCE => 'PSX\Loader\ProbeController::doShowDetails', Location::KEY_FRAGMENT => array('id' => 12)));
+			$context->set(Context::KEY_SOURCE, 'PSX\Loader\ProbeController::doShowDetails');
+			$context->set(Context::KEY_FRAGMENT, array('id' => 12));
+
+			return $request;
 
 		});
 
@@ -165,9 +171,9 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 	/**
 	 * @expectedException PSX\Loader\InvalidPathException
 	 */
-	public function testUnknownLocation()
+	public function testLoadUnknownLocation()
 	{
-		$locationFinder = new CallbackMethod(function($method, $path){
+		$locationFinder = new CallbackMethod(function($request, $context){
 
 			return null;
 
@@ -187,19 +193,20 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 
 	public function testLoadRecursiveOff()
 	{
-		$locationFinder = new CallbackMethod(function($method, $path){
+		$locationFinder = new CallbackMethod(function($request, $context){
 
-			return new Location(array(Location::KEY_SOURCE => 'stdClass'));
+			$context->set(Context::KEY_SOURCE, 'stdClass');
+
+			return $request;
 
 		});
 
 		$controller = new \stdClass();
-		$callback   = new Callback($controller, 'foo');
 		$resolver   = $this->getMock('PSX\Loader\CallbackResolverInterface');
 
 		$resolver
 			->method('resolve')
-			->will($this->returnValue($callback));
+			->will($this->returnValue($controller));
 
 		$loader = $this->getMockBuilder('PSX\Loader')
 			->setConstructorArgs(array(
@@ -208,14 +215,13 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 				getContainer()->get('event_dispatcher'), 
 				new Logger('psx', [new NullHandler()])
 			))
-			->setMethods(array('runControllerLifecycle'))
+			->setMethods(array('executeController'))
 			->getMock();
 
 		$loader->setRecursiveLoading(false);
 
 		$loader->expects($this->once())
-			->method('runControllerLifecycle')
-			->will($this->returnValue($controller));
+			->method('executeController');
 
 		$request  = new Request(new Url('http://127.0.0.1/foobar'), 'GET');
 		$response = new Response();
@@ -226,19 +232,20 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 
 	public function testLoadRecursiveOn()
 	{
-		$locationFinder = new CallbackMethod(function($method, $path){
+		$locationFinder = new CallbackMethod(function($request, $context){
 
-			return new Location(array(Location::KEY_SOURCE => 'stdClass'));
+			$context->set(Context::KEY_SOURCE, 'stdClass');
+
+			return $request;
 
 		});
 
 		$controller = new \stdClass();
-		$callback   = new Callback($controller, 'foo');
 		$resolver   = $this->getMock('PSX\Loader\CallbackResolverInterface');
 
 		$resolver
 			->method('resolve')
-			->will($this->returnValue($callback));
+			->will($this->returnValue($controller));
 
 		$loader = $this->getMockBuilder('PSX\Loader')
 			->setConstructorArgs(array(
@@ -247,14 +254,13 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 				getContainer()->get('event_dispatcher'),
 				new Logger('psx', [new NullHandler()])
 			))
-			->setMethods(array('runControllerLifecycle'))
+			->setMethods(array('executeController'))
 			->getMock();
 
 		$loader->setRecursiveLoading(true);
 
 		$loader->expects($this->exactly(2))
-			->method('runControllerLifecycle')
-			->will($this->returnValue($controller));
+			->method('executeController');
 
 		$request  = new Request(new Url('http://127.0.0.1/foobar'), 'GET');
 		$response = new Response();
@@ -265,13 +271,14 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 
 	public function testPreFilter()
 	{
-		$location = new Location(array(Location::KEY_SOURCE => 'PSX\Loader\FilterController'));
 		$request  = new Request(new Url('http://127.0.0.1/foobar'), 'GET');
 		$response = new Response();
 
-		$locationFinder = new CallbackMethod(function($method, $path) use ($location){
+		$locationFinder = new CallbackMethod(function($request, $context){
 
-			return $location;
+			$context->set(Context::KEY_SOURCE, 'PSX\Loader\FilterController');
+
+			return $request;
 
 		});
 
@@ -284,15 +291,14 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 			->method('on')
 			->with($request, $response);
 
-		$controller = new FilterController($location, $request, $response);
+		$controller = new FilterController($request, $response);
 		$controller->setPreFilter(array($filter1, array($filter2, 'on')));
 
-		$callback = new Callback($controller, null);
 		$resolver = $this->getMock('PSX\Loader\CallbackResolverInterface');
 
 		$resolver
 			->method('resolve')
-			->will($this->returnValue($callback));
+			->will($this->returnValue($controller));
 
 		$loader = new Loader(
 			$locationFinder, 
@@ -309,25 +315,25 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testPreFilterInvalid()
 	{
-		$location = new Location(array(Location::KEY_SOURCE => 'PSX\Loader\FilterController'));
 		$request  = new Request(new Url('http://127.0.0.1/foobar'), 'GET');
 		$response = new Response();
 
-		$locationFinder = new CallbackMethod(function($method, $path) use ($location){
+		$locationFinder = new CallbackMethod(function($request, $context){
 
-			return $location;
+			$context->set(Context::KEY_SOURCE, 'PSX\Loader\FilterController');
+
+			return $request;
 
 		});
 
-		$controller = new FilterController($location, $request, $response);
+		$controller = new FilterController($request, $response);
 		$controller->setPreFilter(array('foo'));
 
-		$callback = new Callback($controller, null);
 		$resolver = $this->getMock('PSX\Loader\CallbackResolverInterface');
 
 		$resolver
 			->method('resolve')
-			->will($this->returnValue($callback));
+			->will($this->returnValue($controller));
 
 		$loader = new Loader(
 			$locationFinder, 
@@ -340,13 +346,14 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 
 	public function testPostFilter()
 	{
-		$location = new Location(array(Location::KEY_SOURCE => 'PSX\Loader\FilterController'));
 		$request  = new Request(new Url('http://127.0.0.1/foobar'), 'GET');
 		$response = new Response();
 
-		$locationFinder = new CallbackMethod(function($method, $path) use ($location){
+		$locationFinder = new CallbackMethod(function($request, $context){
 
-			return $location;
+			$context->set(Context::KEY_SOURCE, 'PSX\Loader\FilterController');
+
+			return $request;
 
 		});
 
@@ -359,15 +366,14 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 			->method('on')
 			->with($request, $response);
 
-		$controller = new FilterController($location, $request, $response);
+		$controller = new FilterController($request, $response);
 		$controller->setPostFilter(array($filter1, array($filter2, 'on')));
 
-		$callback = new Callback($controller, null);
 		$resolver = $this->getMock('PSX\Loader\CallbackResolverInterface');
 
 		$resolver
 			->method('resolve')
-			->will($this->returnValue($callback));
+			->will($this->returnValue($controller));
 
 		$loader = new Loader(
 			$locationFinder, 
@@ -384,25 +390,25 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testPostFilterInvalid()
 	{
-		$location = new Location(array(Location::KEY_SOURCE => 'PSX\Loader\FilterController'));
 		$request  = new Request(new Url('http://127.0.0.1/foobar'), 'GET');
 		$response = new Response();
 
-		$locationFinder = new CallbackMethod(function($method, $path) use ($location){
+		$locationFinder = new CallbackMethod(function($request, $context){
 
-			return $location;
+			$context->set(Context::KEY_SOURCE, 'PSX\Loader\FilterController');
+
+			return $request;
 
 		});
 
-		$controller = new FilterController($location, $request, $response);
+		$controller = new FilterController($request, $response);
 		$controller->setPostFilter(array('foo'));
 
-		$callback = new Callback($controller, null);
 		$resolver = $this->getMock('PSX\Loader\CallbackResolverInterface');
 
 		$resolver
 			->method('resolve')
-			->will($this->returnValue($callback));
+			->will($this->returnValue($controller));
 
 		$loader = new Loader(
 			$locationFinder, 
@@ -418,18 +424,20 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testWrongCallbackClassType()
 	{
-		$locationFinder = new CallbackMethod(function($method, $path){
+		$locationFinder = new CallbackMethod(function($request, $context){
 
-			return new Location(array(Location::KEY_SOURCE => 'PSX\Loader\ProbeController::doIndex'));
+			$context->set(Context::KEY_SOURCE, 'PSX\Loader\ProbeController::doIndex');
+
+			return $request;
 
 		});
 
-		$callback = new Callback(new \stdClass(), null);
-		$resolver = $this->getMock('PSX\Loader\CallbackResolverInterface');
+		$controller = new \stdClass();
+		$resolver   = $this->getMock('PSX\Loader\CallbackResolverInterface');
 
 		$resolver
 			->method('resolve')
-			->will($this->returnValue($callback));
+			->will($this->returnValue($controller));
 
 		$loader   = new Loader(
 			$locationFinder, 

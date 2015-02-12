@@ -29,7 +29,6 @@ use PSX\Data\Record;
 use PSX\Http\Request;
 use PSX\Http\Response;
 use PSX\Http\Stream\TempStream;
-use PSX\Loader\Location;
 use PSX\Test\ControllerTestCase;
 use PSX\Url;
 

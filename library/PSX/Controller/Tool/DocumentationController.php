@@ -219,7 +219,7 @@ class DocumentationController extends ViewAbstract
 
 			if(class_exists($className))
 			{
-				$controller = $this->controllerFactory->getController($className, $this->location, $this->request, $this->response);
+				$controller = $this->controllerFactory->getController($className, $this->request, $this->response, $this->context);
 
 				if($controller instanceof DocumentedInterface)
 				{
@@ -248,7 +248,7 @@ class DocumentationController extends ViewAbstract
 
 			if(class_exists($className) && $sourcePath == ltrim($path, '/'))
 			{
-				$controller = $this->controllerFactory->getController($className, $this->location, $this->request, $this->response);
+				$controller = $this->controllerFactory->getController($className, $this->request, $this->response, $this->context);
 
 				if($controller instanceof DocumentedInterface)
 				{

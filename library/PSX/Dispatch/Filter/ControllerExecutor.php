@@ -28,8 +28,7 @@ use PSX\Dispatch\FilterChainInterface;
 use PSX\Dispatch\FilterInterface;
 use PSX\Http\RequestInterface;
 use PSX\Http\ResponseInterface;
-use PSX\Loader;
-use PSX\Loader\Callback;
+use PSX\Loader\Context;
 
 /**
  * ControllerExecutor
@@ -41,10 +40,12 @@ use PSX\Loader\Callback;
 class ControllerExecutor implements FilterInterface
 {
 	protected $controller;
+	protected $context;
 
-	public function __construct(ControllerInterface $controller)
+	public function __construct(ControllerInterface $controller, Context $context)
 	{
 		$this->controller = $controller;
+		$this->context    = $context;
 	}
 
 	public function handle(RequestInterface $request, ResponseInterface $response, FilterChainInterface $filterChain)
@@ -82,17 +83,11 @@ class ControllerExecutor implements FilterInterface
 				break;
 		}
 
-		$callback = $request->getAttribute(Loader::REQUEST_CALLBACK);
+		$method = $this->context->get(Context::KEY_METHOD);
 
-		if($callback instanceof Callback)
+		if(!empty($method) && is_callable([$this->controller, $method]))
 		{
-			$class  = $callback->getClass();
-			$method = $callback->getMethod();
-
-			if(!empty($method))
-			{
-				call_user_func_array(array($class, $method), array());
-			}
+			call_user_func_array([$this->controller, $method], array());
 		}
 
 		$this->controller->processResponse();

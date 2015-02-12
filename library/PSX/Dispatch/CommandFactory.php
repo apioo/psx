@@ -24,7 +24,7 @@
 namespace PSX\Dispatch;
 
 use PSX\Dependency\ObjectBuilderInterface;
-use PSX\Loader\Location;
+use PSX\Loader\Context;
 use PSX\Util\Annotation;
 use ReflectionClass;
 use RuntimeException;
@@ -46,8 +46,8 @@ class CommandFactory implements CommandFactoryInterface
 		$this->objectBuilder = $objectBuilder;
 	}
 
-	public function getCommand($className, Location $location)
+	public function getCommand($className, Context $context)
 	{
-		return $this->objectBuilder->getObject($className, array($location), 'PSX\CommandInterface');
+		return $this->objectBuilder->getObject($className, array($context), 'PSX\CommandInterface');
 	}
 }

@@ -31,7 +31,7 @@ use PSX\Event\Context\CommandContext;
 use PSX\Event\CommandExecuteEvent;
 use PSX\Event\CommandProcessedEvent;
 use PSX\Event\ExceptionThrownEvent;
-use PSX\Loader\Location;
+use PSX\Loader\Context;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -71,12 +71,11 @@ class Executor
 		return $this->aliases;
 	}
 
-	public function run(ParameterParserInterface $parser, Location $location = null)
+	public function run(ParameterParserInterface $parser, Context $context = null)
 	{
-		$location   = $location === null ? new Location() : $location;
+		$context    = $context ?: new Context();
 		$className  = $this->getClassName($parser->getClassName());
-
-		$command    = $this->factory->getCommand($className, $location);
+		$command    = $this->factory->getCommand($className, $context);
 		$parameters = $command->getParameters();
 
 		$parser->fillParameters($parameters);
@@ -91,11 +90,11 @@ class Executor
 		{
 			$this->eventDispatcher->dispatch(Event::EXCEPTION_THROWN, new ExceptionThrownEvent($e, new CommandContext($parameters)));
 
-			$class    = isset($this->config['psx_error_command']) ? $this->config['psx_error_command'] : 'PSX\Command\ErrorCommand';
-			$location = new Location();
-			$location->setParameter(Location::KEY_EXCEPTION, $e);
+			$context->set(Context::KEY_EXCEPTION, $e);
 
-			$this->factory->getCommand($class, $location)->onExecute(new Parameters(), $this->output);
+			$class = isset($this->config['psx_error_command']) ? $this->config['psx_error_command'] : 'PSX\Command\ErrorCommand';
+
+			$this->factory->getCommand($class, $context)->onExecute(new Parameters(), $this->output);
 		}
 
 		$this->eventDispatcher->dispatch(Event::COMMAND_PROCESSED, new CommandProcessedEvent($command, $parameters));

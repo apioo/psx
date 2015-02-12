@@ -38,7 +38,7 @@ use PSX\Http\Exception\NotFoundException;
 use PSX\Http\Exception\InternalServerErrorException;
 use PSX\Http\Exception\SeeOtherException;
 use PSX\Uri;
-use PSX\Loader\Location;
+use PSX\Loader\Context;
 use PSX\Test\ControllerTestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
@@ -72,12 +72,14 @@ class LogListenerTest extends ControllerTestCase
 			->method('info')
 			->with($this->equalTo('Route matched GET /foo.htm -> stdClass'));
 
-		$location = new Location();
-		$location->setParameter(Location::KEY_SOURCE, 'stdClass');
+		$context = new Context();
+		$context->set(Context::KEY_SOURCE, 'stdClass');
+
+		$request = new Request(new Uri('/foo.htm'), 'GET');
 
 		$eventDispatcher = new EventDispatcher();
 		$eventDispatcher->addSubscriber(new LogListener($logger));
-		$eventDispatcher->dispatch(Event::ROUTE_MATCHED, new RouteMatchedEvent('GET', '/foo.htm', $location));
+		$eventDispatcher->dispatch(Event::ROUTE_MATCHED, new RouteMatchedEvent($request, $context));
 	}
 
 	public function testEventControllerExecute()
@@ -87,10 +89,10 @@ class LogListenerTest extends ControllerTestCase
 			->method('info')
 			->with($this->equalTo('Controller execute PSX\Controller\Foo\Application\TestController'));
 
-		$location   = new Location();
+		$context    = new Context();
 		$request    = new Request(new Uri('/foo.htm'), 'GET');
 		$response   = new Response();
-		$controller = getContainer()->getControllerFactory()->getController('PSX\Controller\Foo\Application\TestController', $location, $request, $response);
+		$controller = getContainer()->getControllerFactory()->getController('PSX\Controller\Foo\Application\TestController', $request, $response, $context);
 
 		$eventDispatcher = new EventDispatcher();
 		$eventDispatcher->addSubscriber(new LogListener($logger));
@@ -104,10 +106,10 @@ class LogListenerTest extends ControllerTestCase
 			->method('info')
 			->with($this->equalTo('Controller processed PSX\Controller\Foo\Application\TestController'));
 
-		$location   = new Location();
+		$context    = new Context();
 		$request    = new Request(new Uri('/foo.htm'), 'GET');
 		$response   = new Response();
-		$controller = getContainer()->getControllerFactory()->getController('PSX\Controller\Foo\Application\TestController', $location, $request, $response);
+		$controller = getContainer()->getControllerFactory()->getController('PSX\Controller\Foo\Application\TestController', $request, $response, $context);
 
 		$eventDispatcher = new EventDispatcher();
 		$eventDispatcher->addSubscriber(new LogListener($logger));

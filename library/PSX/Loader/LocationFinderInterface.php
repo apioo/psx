@@ -23,6 +23,8 @@
 
 namespace PSX\Loader;
 
+use PSX\Http\RequestInterface;
+
 /**
  * LocationFinderInterface
  *
@@ -33,13 +35,14 @@ namespace PSX\Loader;
 interface LocationFinderInterface
 {
 	/**
-	 * Resolves the given method and path to an location. The location contains
-	 * all informations for an callback resolver to resolve it to an actually
-	 * callback
+	 * Resolves the incomming request to an source. An source is an string which
+	 * can be resolved to an callback. The source must be added to the context. 
+	 * If the request can not be resolved the method must return null else the 
+	 * given request
 	 *
-	 * @param string $method
-	 * @param string $pathInfo
-	 * @return PSX\Loader\Location
+	 * @param PSX\Http\RequestInterface $request
+	 * @param PSX\Loader\Context $context
+	 * @return PSX\Http\RequestInterface|null
 	 */
-	public function resolve($method, $pathInfo);
+	public function resolve(RequestInterface $request, Context $context);
 }

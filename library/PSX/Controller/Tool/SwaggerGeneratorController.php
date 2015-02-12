@@ -117,7 +117,7 @@ class SwaggerGeneratorController extends ViewAbstract
 
 			if(class_exists($className))
 			{
-				$controller = $this->controllerFactory->getController($className, $this->location, $this->request, $this->response);
+				$controller = $this->controllerFactory->getController($className, $this->request, $this->response, $this->context);
 
 				if($controller instanceof DocumentedInterface)
 				{
@@ -145,7 +145,7 @@ class SwaggerGeneratorController extends ViewAbstract
 
 			if(class_exists($className) && $matcher->match($path))
 			{
-				$controller = $this->controllerFactory->getController($className, $this->location, $this->request, $this->response);
+				$controller = $this->controllerFactory->getController($className, $this->request, $this->response, $this->context);
 
 				if($controller instanceof DocumentedInterface)
 				{

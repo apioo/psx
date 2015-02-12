@@ -23,12 +23,11 @@
 
 namespace PSX\Loader\LocationFinder;
 
-use PSX\Loader;
-use PSX\Loader\Location;
+use PSX\Loader\Context;
 use PSX\Loader\RoutingParser\RoutingFile;
 use PSX\Http\Request;
 use PSX\Http\Response;
-use PSX\Url;
+use PSX\Uri;
 
 /**
  * RoutingParserTest
@@ -41,78 +40,84 @@ class RoutingParserTest extends \PHPUnit_Framework_TestCase
 {
 	public function testNormalRoute()
 	{
-		$location = $this->resolve('GET', '');
-		$this->assertEquals('PSX\Loader\Foo1Controller', $location->getParameter(Location::KEY_SOURCE));
-		$this->assertEquals(array(), $location->getParameter(Location::KEY_FRAGMENT));
+		$context = $this->resolve('GET', '');
+		$this->assertEquals('PSX\Loader\Foo1Controller', $context->get(Context::KEY_SOURCE));
+		$this->assertEquals(array(), $context->get(Context::KEY_FRAGMENT));
 
-		$location = $this->resolve('GET', '/');
-		$this->assertEquals('PSX\Loader\Foo1Controller', $location->getParameter(Location::KEY_SOURCE));
-		$this->assertEquals(array(), $location->getParameter(Location::KEY_FRAGMENT));
+		$context = $this->resolve('GET', '/');
+		$this->assertEquals('PSX\Loader\Foo1Controller', $context->get(Context::KEY_SOURCE));
+		$this->assertEquals(array(), $context->get(Context::KEY_FRAGMENT));
 
-		$location = $this->resolve('GET', '/foo/bar');
-		$this->assertEquals('PSX\Loader\Foo2Controller', $location->getParameter(Location::KEY_SOURCE));
-		$this->assertEquals(array(), $location->getParameter(Location::KEY_FRAGMENT));
+		$context = $this->resolve('GET', '/foo/bar');
+		$this->assertEquals('PSX\Loader\Foo2Controller', $context->get(Context::KEY_SOURCE));
+		$this->assertEquals(array(), $context->get(Context::KEY_FRAGMENT));
 
-		$location = $this->resolve('GET', '/foo/test');
-		$this->assertEquals('PSX\Loader\Foo3Controller', $location->getParameter(Location::KEY_SOURCE));
-		$this->assertEquals(array('bar' => 'test'), $location->getParameter(Location::KEY_FRAGMENT));
+		$context = $this->resolve('GET', '/foo/test');
+		$this->assertEquals('PSX\Loader\Foo3Controller', $context->get(Context::KEY_SOURCE));
+		$this->assertEquals(array('bar' => 'test'), $context->get(Context::KEY_FRAGMENT));
 
-		$location = $this->resolve('GET', '/foo/test/bar');
-		$this->assertEquals('PSX\Loader\Foo4Controller', $location->getParameter(Location::KEY_SOURCE));
-		$this->assertEquals(array('bar' => 'test', 'foo' => 'bar'), $location->getParameter(Location::KEY_FRAGMENT));
+		$context = $this->resolve('GET', '/foo/test/bar');
+		$this->assertEquals('PSX\Loader\Foo4Controller', $context->get(Context::KEY_SOURCE));
+		$this->assertEquals(array('bar' => 'test', 'foo' => 'bar'), $context->get(Context::KEY_FRAGMENT));
 
-		$location = $this->resolve('GET', '/bar');
-		$this->assertEquals('PSX\Loader\Foo5Controller', $location->getParameter(Location::KEY_SOURCE));
-		$this->assertEquals(array(), $location->getParameter(Location::KEY_FRAGMENT));
+		$context = $this->resolve('GET', '/bar');
+		$this->assertEquals('PSX\Loader\Foo5Controller', $context->get(Context::KEY_SOURCE));
+		$this->assertEquals(array(), $context->get(Context::KEY_FRAGMENT));
 
-		$location = $this->resolve('GET', '/bar/foo');
-		$this->assertEquals('PSX\Loader\Foo6Controller', $location->getParameter(Location::KEY_SOURCE));
-		$this->assertEquals(array(), $location->getParameter(Location::KEY_FRAGMENT));
+		$context = $this->resolve('GET', '/bar/foo');
+		$this->assertEquals('PSX\Loader\Foo6Controller', $context->get(Context::KEY_SOURCE));
+		$this->assertEquals(array(), $context->get(Context::KEY_FRAGMENT));
 
-		$location = $this->resolve('GET', '/bar/14');
-		$this->assertEquals('PSX\Loader\Foo7Controller', $location->getParameter(Location::KEY_SOURCE));
-		$this->assertEquals(array('foo' => '14'), $location->getParameter(Location::KEY_FRAGMENT));
+		$context = $this->resolve('GET', '/bar/14');
+		$this->assertEquals('PSX\Loader\Foo7Controller', $context->get(Context::KEY_SOURCE));
+		$this->assertEquals(array('foo' => '14'), $context->get(Context::KEY_FRAGMENT));
 
-		$location = $this->resolve('GET', '/bar/14/16');
-		$this->assertEquals('PSX\Loader\Foo8Controller', $location->getParameter(Location::KEY_SOURCE));
-		$this->assertEquals(array('foo' => '14', 'bar' => '16'), $location->getParameter(Location::KEY_FRAGMENT));
+		$context = $this->resolve('GET', '/bar/14/16');
+		$this->assertEquals('PSX\Loader\Foo8Controller', $context->get(Context::KEY_SOURCE));
+		$this->assertEquals(array('foo' => '14', 'bar' => '16'), $context->get(Context::KEY_FRAGMENT));
 
-		$location = $this->resolve('POST', '/bar');
-		$this->assertEquals('PSX\Loader\Foo9Controller', $location->getParameter(Location::KEY_SOURCE));
-		$this->assertEquals(array(), $location->getParameter(Location::KEY_FRAGMENT));
+		$context = $this->resolve('POST', '/bar');
+		$this->assertEquals('PSX\Loader\Foo9Controller', $context->get(Context::KEY_SOURCE));
+		$this->assertEquals(array(), $context->get(Context::KEY_FRAGMENT));
 
-		$location = $this->resolve('GET', '/whitespace');
-		$this->assertEquals('PSX\Loader\Foo10Controller', $location->getParameter(Location::KEY_SOURCE));
-		$this->assertEquals(array(), $location->getParameter(Location::KEY_FRAGMENT));
+		$context = $this->resolve('GET', '/whitespace');
+		$this->assertEquals('PSX\Loader\Foo10Controller', $context->get(Context::KEY_SOURCE));
+		$this->assertEquals(array(), $context->get(Context::KEY_FRAGMENT));
 
-		$location = $this->resolve('GET', '/alias');
-		$this->assertEquals('PSX\Loader\Foo2Controller', $location->getParameter(Location::KEY_SOURCE));
-		$this->assertEquals(array(), $location->getParameter(Location::KEY_FRAGMENT));
+		$context = $this->resolve('GET', '/alias');
+		$this->assertEquals('PSX\Loader\Foo2Controller', $context->get(Context::KEY_SOURCE));
+		$this->assertEquals(array(), $context->get(Context::KEY_FRAGMENT));
 
-		$location = $this->resolve('GET', '/files/foo/bar/foo.htm');
-		$this->assertEquals('PSX\Loader\Foo12Controller', $location->getParameter(Location::KEY_SOURCE));
-		$this->assertEquals(array('path' => 'foo/bar/foo.htm'), $location->getParameter(Location::KEY_FRAGMENT));
+		$context = $this->resolve('GET', '/files/foo/bar/foo.htm');
+		$this->assertEquals('PSX\Loader\Foo12Controller', $context->get(Context::KEY_SOURCE));
+		$this->assertEquals(array('path' => 'foo/bar/foo.htm'), $context->get(Context::KEY_FRAGMENT));
 	}
 
 	public function testInvalidRoute()
 	{
-		$location = $this->resolve('/foo/baz', 'GET');
+		$context = $this->resolve('/foo/baz', 'GET');
 
-		$this->assertEquals(null, $location);
+		$this->assertEquals(null, $context->get(Context::KEY_SOURCE));
+		$this->assertEquals(null, $context->get(Context::KEY_FRAGMENT));
 	}
 
 	public function testRegexpRoute()
 	{
-		$location = $this->resolve('GET', '/bar/foo/16');
+		$context = $this->resolve('GET', '/bar/foo/16');
 
-		$this->assertEquals(null, $location);
+		$this->assertEquals(null, $context->get(Context::KEY_SOURCE));
+		$this->assertEquals(null, $context->get(Context::KEY_FRAGMENT));
 	}
 
 	protected function resolve($method, $path)
 	{
-		$locationFinder = new RoutingParser(new RoutingFile('tests/PSX/Loader/routes'));
+		$context = new Context();
+		$request = new Request(new Uri($path), $method);
 
-		return $locationFinder->resolve($method, $path);
+		$locationFinder = new RoutingParser(new RoutingFile('tests/PSX/Loader/routes'));
+		$locationFinder->resolve($request, $context);
+
+		return $context;
 	}
 }
 

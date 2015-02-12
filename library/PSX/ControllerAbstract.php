@@ -30,7 +30,7 @@ use PSX\Data\Record;
 use PSX\Dispatch\Filter\ControllerExecutor;
 use PSX\Http\RequestInterface;
 use PSX\Http\ResponseInterface;
-use PSX\Loader\Location;
+use PSX\Loader\Context;
 
 /**
  * ControllerAbstract
@@ -48,11 +48,6 @@ abstract class ControllerAbstract implements ControllerInterface, ApplicationSta
 	use Behaviour\RedirectTrait;
 
 	/**
-	 * @var PSX\Loader\Location
-	 */
-	protected $location;
-
-	/**
 	 * @var PSX\Http\RequestInterface
 	 */
 	protected $request;
@@ -61,6 +56,11 @@ abstract class ControllerAbstract implements ControllerInterface, ApplicationSta
 	 * @var PSX\Http\ResponseInterface
 	 */
 	protected $response;
+
+	/**
+	 * @var PSX\Loader\Context
+	 */
+	protected $context;
 
 	/**
 	 * @var array
@@ -80,23 +80,23 @@ abstract class ControllerAbstract implements ControllerInterface, ApplicationSta
 	protected $validate;
 
 	/**
-	 * @param PSX\Loader\Location $location
 	 * @param PSX\Http\RequestInterface $request
 	 * @param PSX\Http\ResponseInterface $response
+	 * @param PSX\Loader\Context $context
 	 */
-	public function __construct(Location $location, RequestInterface $request, ResponseInterface $response)
+	public function __construct(RequestInterface $request, ResponseInterface $response, Context $context = null)
 	{
-		$this->location     = $location;
 		$this->request      = $request;
 		$this->response     = $response;
-		$this->uriFragments = $location->getParameter(Location::KEY_FRAGMENT);
+		$this->context      = $context ?: new Context();
+		$this->uriFragments = $this->context->get(Context::KEY_FRAGMENT) ?: array();
 	}
 
 	public function getApplicationStack()
 	{
 		return array_merge(
 			$this->getPreFilter(), 
-			array(new ControllerExecutor($this)), 
+			array(new ControllerExecutor($this, $this->context)), 
 			$this->getPostFilter()
 		);
 	}

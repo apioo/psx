@@ -28,7 +28,7 @@ use PSX\CommandAbstract;
 use PSX\Command\OutputInterface;
 use PSX\Command\Output\Void;
 use PSX\Command\ParameterParser\Map;
-use PSX\Loader\Location;
+use PSX\Loader\Context;
 use PSX\Test\CommandTestCase;
 
 /**
@@ -219,7 +219,7 @@ class ExecutorTest extends CommandTestCase
 		$factory->expects($this->at(1))
 			->method('getCommand')
 			->with($this->identicalTo('PSX\Command\ErrorCommand'))
-			->will($this->returnValue(getContainer()->get('command_factory')->getCommand('PSX\Command\ErrorCommand', new Location())));
+			->will($this->returnValue(getContainer()->get('command_factory')->getCommand('PSX\Command\ErrorCommand', new Context())));
 
 		$executor = new Executor($factory, new Void(), getContainer()->get('event_dispatcher'));
 		$executor->run(new Map('Foo\Bar', array('r' => 'foo')));

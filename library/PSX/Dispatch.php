@@ -38,8 +38,7 @@ use PSX\Http\Exception as StatusCode;
 use PSX\Http\RequestInterface;
 use PSX\Http\ResponseInterface;
 use PSX\Http\Stream\StringStream;
-use PSX\Loader\Callback;
-use PSX\Loader\Location;
+use PSX\Loader\Context;
 use PSX\Url;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -68,14 +67,16 @@ class Dispatch
 		$this->eventDispatcher = $eventDispatcher;
 	}
 
-	public function route(RequestInterface $request, ResponseInterface $response)
+	public function route(RequestInterface $request, ResponseInterface $response, Context $context = null)
 	{
 		$this->eventDispatcher->dispatch(Event::REQUEST_INCOMING, new RequestIncomingEvent($request));
 
 		// load controller
+		$context = $context ?: new Context();
+
 		try
 		{
-			$this->loader->load($request, $response);
+			$this->loader->load($request, $response, $context);
 		}
 		catch(StatusCode\NotModifiedException $e)
 		{
@@ -108,14 +109,12 @@ class Dispatch
 				}
 			}
 
-			$class    = isset($this->config['psx_error_controller']) ? $this->config['psx_error_controller'] : 'PSX\Controller\ErrorController';
-			$location = new Location();
-			$location->setParameter(Location::KEY_EXCEPTION, $e);
+			$context->set(Context::KEY_EXCEPTION, $e);
 
-			$controller = $this->factory->getController($class, $location, $request, $response);
-			$callback   = new Callback($controller, null);
+			$class      = isset($this->config['psx_error_controller']) ? $this->config['psx_error_controller'] : 'PSX\Controller\ErrorController';
+			$controller = $this->factory->getController($class, $request, $response, $context);
 
-			$this->loader->loadClass($callback, $request, $response);
+			$this->loader->executeController($controller, $request, $response);
 		}
 
 		$this->eventDispatcher->dispatch(Event::RESPONSE_SEND, new ResponseSendEvent($response));

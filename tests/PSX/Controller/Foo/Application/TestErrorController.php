@@ -24,8 +24,8 @@
 namespace PSX\Controller\Foo\Application;
 
 use PSX\Controller\ErrorController;
-use PSX\Loader\Location;
 use PSX\DisplayException;
+use PSX\Loader\Context;
 
 /**
  * TestErrorController
@@ -44,7 +44,7 @@ class TestErrorController extends ErrorController
 		}
 		catch(\Exception $e)
 		{
-			$this->location->setParameter(Location::KEY_EXCEPTION, $e);
+			$this->context->set(Context::KEY_EXCEPTION, $e);
 		}
 	}
 
@@ -56,7 +56,7 @@ class TestErrorController extends ErrorController
 		}
 		catch(\Exception $e)
 		{
-			$this->location->setParameter(Location::KEY_EXCEPTION, $e);
+			$this->context->set(Context::KEY_EXCEPTION, $e);
 		}
 	}
 }

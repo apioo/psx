@@ -24,9 +24,10 @@
 namespace PSX\Loader;
 
 use PSX\Http\Exception\NotFoundException;
+use PSX\Http\RequestInterface;
 
 /**
- * Exception which gets thrown if an loader can not resolve the given path
+ * Exception which gets thrown if an loader can not resolve the given request
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
@@ -34,17 +35,17 @@ use PSX\Http\Exception\NotFoundException;
  */
 class InvalidPathException extends NotFoundException
 {
-	protected $path;
+	protected $request;
 
-	public function __construct($message, $path)
+	public function __construct($message, RequestInterface $request)
 	{
 		parent::__construct($message);
 
-		$this->path = $path;
+		$this->request = $request;
 	}
 
-	public function getPath()
+	public function getRequest()
 	{
-		return $this->path;
+		return $this->request;
 	}
 }

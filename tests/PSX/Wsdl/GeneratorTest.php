@@ -24,9 +24,9 @@
 namespace PSX\Wsdl;
 
 use DOMDocument;
-use PSX\Loader\Location;
 use PSX\Http\Request;
 use PSX\Http\Response;
+use PSX\Loader\Context;
 use PSX\Url;
 
 /**
@@ -73,7 +73,7 @@ class GeneratorTest extends \PHPUnit_Framework_TestCase
 		getContainer()->set('test_case', $this);
 
 		$controller = getContainer()->get('controller_factory')
-			->getController('PSX\Controller\Foo\Application\TestSchemaApiController', new Location(), $request, $response);
+			->getController('PSX\Controller\Foo\Application\TestSchemaApiController', $request, $response, new Context());
 
 		getContainer()->set('test_case', null);
 

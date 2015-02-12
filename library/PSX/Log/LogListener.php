@@ -33,7 +33,7 @@ use PSX\Event\ControllerProcessedEvent;
 use PSX\Event\ResponseSendEvent;
 use PSX\Event\ExceptionThrownEvent;
 use PSX\Http\Exception\StatusCodeException;
-use PSX\Loader\Location;
+use PSX\Loader\Context;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -59,10 +59,11 @@ class LogListener implements EventSubscriberInterface
 
 	public function onRouteMatched(RouteMatchedEvent $event)
 	{
-		$path       = '/' . ltrim($event->getPath(), '/');
-		$controller = $event->getLocation()->getParameter(Location::KEY_SOURCE);
+		$request    = $event->getRequest();
+		$path       = '/' . ltrim($request->getUri()->getPath(), '/');
+		$controller = $event->getContext()->get(Context::KEY_SOURCE);
 
-		$this->logger->info('Route matched ' . $event->getRequestMethod() . ' ' . $path . ' -> ' . $controller);
+		$this->logger->info('Route matched ' . $request->getMethod() . ' ' . $path . ' -> ' . $controller);
 	}
 
 	public function onControllerExecute(ControllerExecuteEvent $event)

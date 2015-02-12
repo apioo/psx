@@ -25,7 +25,7 @@ namespace PSX;
 
 use PSX\Command\ParameterBuilder;
 use PSX\Command\Parameters;
-use PSX\Loader\Location;
+use PSX\Loader\Context;
 
 /**
  * CommandAbstract
@@ -37,9 +37,9 @@ use PSX\Loader\Location;
 abstract class CommandAbstract implements CommandInterface
 {
 	/**
-	 * @var PSX\Loader\Location
+	 * @var PSX\Loader\Context
 	 */
-	protected $location;
+	protected $context;
 
 	/**
 	 * @Inject
@@ -47,9 +47,9 @@ abstract class CommandAbstract implements CommandInterface
 	 */
 	protected $config;
 
-	public function __construct(Location $location)
+	public function __construct(Context $context = null)
 	{
-		$this->location = $location;
+		$this->context = $context ?: new Context();
 	}
 
 	public function getParameters()

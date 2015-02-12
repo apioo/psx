@@ -24,11 +24,12 @@
 namespace PSX\Loader\LocationFinder;
 
 use Closure;
+use PSX\Http\RequestInterface;
+use PSX\Loader\Context;
 use PSX\Loader\LocationFinderInterface;
 
 /**
- * Calls an Closure method in order to resolve a path. The closure must return
- * an Location object
+ * Calls an Closure method in order to resolve a path
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
@@ -43,8 +44,8 @@ class CallbackMethod implements LocationFinderInterface
 		$this->callback = $callback;
 	}
 
-	public function resolve($method, $pathInfo)
+	public function resolve(RequestInterface $request, Context $context)
 	{
-		return call_user_func_array($this->callback, array($method, $pathInfo));
+		return call_user_func_array($this->callback, array($request, $context));
 	}
 }

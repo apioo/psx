@@ -45,7 +45,7 @@ class TestCommand extends CommandAbstract
 	public function onExecute(Parameters $parameters, OutputInterface $output)
 	{
 		// test properties
-		$this->testCase->assertInstanceOf('PSX\Loader\Location', $this->location);
+		$this->testCase->assertInstanceOf('PSX\Loader\Context', $this->context);
 		$this->testCase->assertInstanceOf('PSX\Config', $this->config);
 	}
 }

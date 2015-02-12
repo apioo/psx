@@ -23,17 +23,16 @@
 
 namespace PSX\Loader\LocationFinder;
 
-use PSX\Loader\InvalidPathException;
-use PSX\Loader\Location;
+use PSX\Http\RequestInterface;
+use PSX\Loader\Context;
 use PSX\Loader\LocationFinderInterface;
 use PSX\Loader\PathMatcher;
 use PSX\Loader\RoutingCollection;
 use PSX\Loader\RoutingParserInterface;
-use ReflectionClass;
+use PSX\Uri;
 
 /**
- * Location finder which gets a collection of routes from an routing parser. If
- * an cache handler is given the collection gets cached with the handler
+ * Location finder which gets a collection of routes from an routing parser
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
@@ -48,10 +47,11 @@ class RoutingParser implements LocationFinderInterface
 		$this->routingParser = $routingParser;
 	}
 
-	public function resolve($method, $pathInfo)
+	public function resolve(RequestInterface $request, Context $context)
 	{
 		$routingCollection = $this->routingParser->getCollection();
-		$pathMatcher       = new PathMatcher($pathInfo);
+		$method            = $request->getMethod();
+		$pathMatcher       = new PathMatcher($request->getUri()->getPath());
 
 		foreach($routingCollection as $routing)
 		{
@@ -64,15 +64,18 @@ class RoutingParser implements LocationFinderInterface
 
 				if($source[0] == '~')
 				{
-					return $this->resolve($method, substr($source, 1));
+					$request->setUri(new Uri(substr($source, 1)));
+
+					return $this->resolve($request, $context);
 				}
 
-				$location = new Location();
-				$location->setParameter(Location::KEY_FRAGMENT, $parameters);
-				$location->setParameter(Location::KEY_SOURCE, $source);
+				$context->set(Context::KEY_FRAGMENT, $parameters);
+				$context->set(Context::KEY_SOURCE, $source);
 
-				return $location;
+				return $request;
 			}
 		}
+
+		return null;
 	}
 }

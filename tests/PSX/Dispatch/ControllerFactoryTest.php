@@ -25,7 +25,7 @@ namespace PSX\Dispatch;
 
 use PSX\Http\Request;
 use PSX\Http\Response;
-use PSX\Loader\Location;
+use PSX\Loader\Context;
 use PSX\Url;
 
 /**
@@ -56,6 +56,6 @@ class ControllerFactoryTest extends \PHPUnit_Framework_TestCase
 	{
 		$factory = getContainer()->get('controller_factory');
 
-		return $factory->getController($className, new Location(), new Request(new Url('http://127.0.0.1'), 'GET'), new Response());
+		return $factory->getController($className, new Request(new Url('http://127.0.0.1'), 'GET'), new Response(), new Context());
 	}
 }

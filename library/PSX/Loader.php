@@ -31,9 +31,8 @@ use PSX\Event\ControllerProcessedEvent;
 use PSX\Event\RouteMatchedEvent;
 use PSX\Http\RequestInterface;
 use PSX\Http\ResponseInterface;
-use PSX\Loader\Callback;
 use PSX\Loader\CallbackResolverInterface;
-use PSX\Loader\Location;
+use PSX\Loader\Context;
 use PSX\Loader\LocationFinderInterface;
 use PSX\Loader\LocationFinder\RoutingFile;
 use PSX\Loader\InvalidPathException;
@@ -50,9 +49,6 @@ use UnexpectedValueException;
  */
 class Loader implements LoaderInterface
 {
-	const REQUEST_LOCATION = 'psx_request_location';
-	const REQUEST_CALLBACK = 'psx_request_callback';
-
 	protected $locationFinder;
 	protected $callbackResolver;
 	protected $eventDispatcher;
@@ -76,64 +72,51 @@ class Loader implements LoaderInterface
 
 	/**
 	 * Loads the location of the controller through the defined location finder. 
-	 * Then uses the callback resolver to obtain an callback from the location
+	 * Then uses the callback resolver to obtain the controller. After this the
+	 * controller gets executed
 	 *
 	 * @param PSX\Http\RequestInterface $request
 	 * @param PSX\Http\ResponseInterface $response
-	 * @return PSX\ControllerAbstract
+	 * @param PSX\Loader\Context $context
+	 * @return mixed
 	 */
-	public function load(RequestInterface $request, ResponseInterface $response)
+	public function load(RequestInterface $request, ResponseInterface $response, Context $context = null)
 	{
-		$path     = $request->getUri()->getPath();
-		$location = $this->locationFinder->resolve($request->getMethod(), $path);
+		$context = $context ?: new Context();
+		$result  = $this->locationFinder->resolve($request, $context);
 
-		if($location instanceof Location)
+		if($result instanceof RequestInterface)
 		{
-			$request->setAttribute(self::REQUEST_LOCATION, $location);
+			$this->eventDispatcher->dispatch(Event::ROUTE_MATCHED, new RouteMatchedEvent($result, $context));
 
-			$this->eventDispatcher->dispatch(Event::ROUTE_MATCHED, new RouteMatchedEvent($request->getMethod(), $path, $location));
-
-			$callback = $this->callbackResolver->resolve($location, $request, $response);
-			$id       = spl_object_hash($callback->getClass());
+			$controller = $this->callbackResolver->resolve($result, $response, $context);
+			$id         = spl_object_hash($controller);
 
 			if($this->recursiveLoading || !in_array($id, $this->loaded))
 			{
-				$controller = $this->runControllerLifecycle($callback, $request, $response);
+				$this->executeController($controller, $result, $response);
 
 				$this->loaded[] = $id;
-			}
-			else
-			{
-				$controller = $callback->getClass();
 			}
 
 			return $controller;
 		}
 		else
 		{
-			throw new InvalidPathException('Unkown location', $path);
+			throw new InvalidPathException('Unkown location', $request);
 		}
 	}
 
 	/**
-	 * Loads an specific controller direct without any routing
+	 * Executes an specific controller direct without any routing
 	 *
-	 * @param PSX\Loader\Callback $callback
+	 * @param mixed $controller
 	 * @param PSX\Http\RequestInterface $request
 	 * @param PSX\Http\ResponseInterface $response
-	 * @return PSX\ControllerAbstract
+	 * @return void
 	 */
-	public function loadClass(Callback $callback, RequestInterface $request, ResponseInterface $response)
+	public function executeController($controller, RequestInterface $request, ResponseInterface $response)
 	{
-		return $this->runControllerLifecycle($callback, $request, $response);
-	}
-
-	protected function runControllerLifecycle(Callback $callback, RequestInterface $request, ResponseInterface $response)
-	{
-		$request->setAttribute(self::REQUEST_CALLBACK, $callback);
-
-		$controller = $callback->getClass();
-
 		if($controller instanceof ApplicationStackInterface)
 		{
 			$this->eventDispatcher->dispatch(Event::CONTROLLER_EXECUTE, new ControllerExecuteEvent($controller, $request, $response));
@@ -143,12 +126,10 @@ class Loader implements LoaderInterface
 			$filterChain->handle($request, $response);
 
 			$this->eventDispatcher->dispatch(Event::CONTROLLER_PROCESSED, new ControllerProcessedEvent($controller, $request, $response));
-
-			return $controller;
 		}
 		else
 		{
-			throw new UnexpectedValueException('Controller must be an instance of PSX\ControllerInterface');
+			throw new UnexpectedValueException('Controller must be an instance of PSX\ApplicationStackInterface');
 		}
 	}
 }

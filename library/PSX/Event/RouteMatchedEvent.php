@@ -23,7 +23,8 @@
 
 namespace PSX\Event;
 
-use PSX\Loader\Location;
+use PSX\Loader\Context;
+use PSX\Http\RequestInterface;
 use Symfony\Component\EventDispatcher\Event;
 
 /**
@@ -36,29 +37,22 @@ use Symfony\Component\EventDispatcher\Event;
  */
 class RouteMatchedEvent extends Event
 {
-	protected $requestMethod;
-	protected $path;
-	protected $location;
+	protected $request;
+	protected $context;
 
-	public function __construct($requestMethod, $path, Location $location)
+	public function __construct(RequestInterface $request, Context $context)
 	{
-		$this->requestMethod = $requestMethod;
-		$this->path          = $path;
-		$this->location      = $location;
+		$this->request = $request;
+		$this->context = $context;
 	}
 
-	public function getRequestMethod()
+	public function getRequest()
 	{
-		return $this->requestMethod;
+		return $this->request;
 	}
 
-	public function getPath()
+	public function getContext()
 	{
-		return $this->path;
-	}
-
-	public function getLocation()
-	{
-		return $this->location;
+		return $this->context;
 	}
 }

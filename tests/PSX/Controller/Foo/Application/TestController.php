@@ -29,7 +29,7 @@ use PSX\Data\ReaderInterface;
 use PSX\Data\Record;
 use PSX\Filter;
 use PSX\Http\Stream\FileStream;
-use PSX\Loader\Location;
+use PSX\Loader\Context;
 use PSX\Url;
 use PSX\Validate;
 use SimpleXMLElement;
@@ -125,8 +125,8 @@ class TestController extends ControllerAbstract
 		$this->testCase->assertEquals(null, $this->getSupportedWriter());
 
 		// test properties
-		$this->testCase->assertInstanceOf('PSX\Loader\Location', $this->location);
-		$this->testCase->assertEquals('PSX\Controller\Foo\Application\TestController::doInspect', $this->location->getParameter(Location::KEY_SOURCE));
+		$this->testCase->assertInstanceOf('PSX\Loader\Context', $this->context);
+		$this->testCase->assertEquals('PSX\Controller\Foo\Application\TestController::doInspect', $this->context->get(Context::KEY_SOURCE));
 		$this->testCase->assertInstanceOf('PSX\Http\Request', $this->request);
 		$this->testCase->assertInstanceOf('PSX\Http\Response', $this->response);
 		$this->testCase->assertTrue(is_array($this->uriFragments));

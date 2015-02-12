@@ -24,7 +24,7 @@
 namespace PSX\Loader\CallbackResolver;
 
 use PSX\Dispatch\ControllerFactory;
-use PSX\Loader\Location;
+use PSX\Loader\Context;
 use PSX\Http\Request;
 use PSX\Http\Response;
 use PSX\Url;
@@ -40,15 +40,18 @@ class DependencyInjectorTest extends \PHPUnit_Framework_TestCase
 {
 	public function testResolve()
 	{
-		$location = new Location(array(Location::KEY_SOURCE => 'PSX\Loader\RoutingParser\Annotation\BarController::doIndex'));
+		$context  = new Context();
+		$context->set(Context::KEY_SOURCE, 'PSX\Loader\RoutingParser\Annotation\BarController::doIndex');
+
 		$request  = new Request(new Url('http://127.0.0.1'), 'GET');
 		$response = new Response();
 
-		$simple   = new DependencyInjector(getContainer()->get('controller_factory'));
-		$callback = $simple->resolve($location, $request, $response);
+		$simple     = new DependencyInjector(getContainer()->get('controller_factory'));
+		$controller = $simple->resolve($request, $response, $context);
 
-		$this->assertInstanceOf('PSX\Loader\RoutingParser\Annotation\BarController', $callback->getClass());
-		$this->assertEquals('doIndex', $callback->getMethod());
+		$this->assertInstanceOf('PSX\Loader\RoutingParser\Annotation\BarController', $controller);
+		$this->assertEquals('PSX\Loader\RoutingParser\Annotation\BarController', $context->get(Context::KEY_CLASS));
+		$this->assertEquals('doIndex', $context->get(Context::KEY_METHOD));
 	}
 
 	/**
@@ -56,12 +59,14 @@ class DependencyInjectorTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testInvalidSource()
 	{
-		$location = new Location(array(Location::KEY_SOURCE => 'foobar'));
+		$context  = new Context();
+		$context->set(Context::KEY_SOURCE, 'foobar');
+
 		$request  = new Request(new Url('http://127.0.0.1'), 'GET');
 		$response = new Response();
 
-		$simple   = new DependencyInjector(getContainer()->get('controller_factory'));
-		$callback = $simple->resolve($location, $request, $response);
+		$simple = new DependencyInjector(getContainer()->get('controller_factory'));
+		$simple->resolve($request, $response, $context);
 	}
 
 	/**
@@ -69,11 +74,13 @@ class DependencyInjectorTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testClassNotExist()
 	{
-		$location = new Location(array(Location::KEY_SOURCE => 'Foo::bar'));
+		$context  = new Context();
+		$context->set(Context::KEY_SOURCE, 'Foo::bar');
+
 		$request  = new Request(new Url('http://127.0.0.1'), 'GET');
 		$response = new Response();
 
-		$simple   = new DependencyInjector(getContainer()->get('controller_factory'));
-		$callback = $simple->resolve($location, $request, $response);
+		$simple = new DependencyInjector(getContainer()->get('controller_factory'));
+		$simple->resolve($request, $response, $context);
 	}
 }

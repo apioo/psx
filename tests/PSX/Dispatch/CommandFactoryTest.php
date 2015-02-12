@@ -25,7 +25,7 @@ namespace PSX\Dispatch;
 
 use PSX\Http\Request;
 use PSX\Http\Response;
-use PSX\Loader\Location;
+use PSX\Loader\Context;
 use PSX\Url;
 
 /**
@@ -56,6 +56,6 @@ class CommandFactoryTest extends \PHPUnit_Framework_TestCase
 	{
 		$factory = getContainer()->get('command_factory');
 
-		return $factory->getCommand($className, new Location());
+		return $factory->getCommand($className, new Context());
 	}
 }

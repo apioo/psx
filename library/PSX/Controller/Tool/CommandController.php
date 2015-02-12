@@ -25,7 +25,7 @@ namespace PSX\Controller\Tool;
 
 use PSX\Command\ParameterParser;
 use PSX\Controller\ViewAbstract;
-use PSX\Loader\Location;
+use PSX\Loader\Context;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
@@ -66,7 +66,7 @@ class CommandController extends ViewAbstract
 
 		if(!empty($commandClass))
 		{
-			$command    = $this->commandFactory->getCommand($commandClass, new Location());
+			$command    = $this->commandFactory->getCommand($commandClass, new Context());
 			$parameters = $command->getParameters();
 			$data       = array();
 

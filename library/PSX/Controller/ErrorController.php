@@ -28,7 +28,7 @@ use PSX\Controller\ViewAbstract;
 use PSX\Data\ExceptionRecord;
 use PSX\DisplayException;
 use PSX\Http;
-use PSX\Loader\Location;
+use PSX\Loader\Context;
 use PSX\Template\ErrorException;
 
 /**
@@ -44,7 +44,7 @@ class ErrorController extends ViewAbstract
 
 	public function processResponse()
 	{
-		$exception = $this->location->getParameter(Location::KEY_EXCEPTION);
+		$exception = $this->context->get(Context::KEY_EXCEPTION);
 
 		if($exception instanceof \Exception)
 		{

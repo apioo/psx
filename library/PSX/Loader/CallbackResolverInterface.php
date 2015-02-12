@@ -36,12 +36,13 @@ use PSX\Http\ResponseInterface;
 interface CallbackResolverInterface
 {
 	/**
-	 * The resolver returns an callback
+	 * The resolver takes the source parameter from context and creates the 
+	 * controller
 	 *
-	 * @param PSX\Loader\Location $location
 	 * @param PSX\Http\RequestInterface $request
 	 * @param PSX\Http\ResponseInterface $response
-	 * @return PSX\Loader\Callback
+	 * @param PSX\Loader\Context $context
+	 * @return mixed
 	 */
-	public function resolve(Location $location, RequestInterface $request, ResponseInterface $response);
+	public function resolve(RequestInterface $request, ResponseInterface $response, Context $context);
 }

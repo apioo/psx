@@ -29,7 +29,7 @@ use PSX\Http\Response;
 use PSX\Http\Stream\TempStream;
 use PSX\Url;
 use PSX\Loader;
-use PSX\Loader\Callback;
+use PSX\Loader\Context;
 
 /**
  * ControllerExecutorTest
@@ -70,7 +70,7 @@ class ControllerExecutorTest extends \PHPUnit_Framework_TestCase
 			->method('processResponse');
 
 		$filters = array();
-		$filters[] = new ControllerExecutor($controller);
+		$filters[] = new ControllerExecutor($controller, new Context());
 
 		$filterChain = new FilterChain($filters);
 		$filterChain->handle($request, $response);
@@ -116,25 +116,14 @@ class ControllerExecutorTest extends \PHPUnit_Framework_TestCase
 		$controller->expects($this->once())
 			->method('processResponse');
 
-		$callback = $this->getMockBuilder('PSX\Loader\Callback')
-			->disableOriginalConstructor()
-			->setMethods(array('getClass', 'getMethod'))
-			->getMock();
-
-		$callback->expects($this->once())
-			->method('getClass')
-			->will($this->returnValue($controller));
-
-		$callback->expects($this->once())
-			->method('getMethod')
-			->will($this->returnValue('doFoo'));
+		$context = new Context();
+		$context->set(Context::KEY_METHOD, 'doFoo');
 
 		$request  = new Request(new Url('http://localhost'), 'GET');
-		$request->setAttribute(Loader::REQUEST_CALLBACK, $callback);
 		$response = new Response();
 
 		$filters = array();
-		$filters[] = new ControllerExecutor($controller);
+		$filters[] = new ControllerExecutor($controller, $context);
 
 		$filterChain = new FilterChain($filters);
 		$filterChain->handle($request, $response);
