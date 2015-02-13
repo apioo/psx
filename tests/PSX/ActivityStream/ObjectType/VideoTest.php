@@ -58,5 +58,10 @@ class VideoTest extends SerializeTestAbstract
 JSON;
 
 		$this->assertRecordEqualsContent($video, $content);
+
+		$this->assertEquals('video', $video->getObjectType());
+		$this->assertEquals('Cute little kittens', $video->getDisplayName());
+		$this->assertEquals('<video width=\'320\' height=\'240\' controls=\'controls\'>...</video>', $video->getEmbedCode());
+		$this->assertEquals('http://example.org/my_video.mpg', $video->getStream()->getUrl());
 	}
 }

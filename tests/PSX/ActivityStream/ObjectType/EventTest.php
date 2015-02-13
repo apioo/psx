@@ -49,11 +49,16 @@ class EventTest extends SerializeTestAbstract
 		$event->setDisplayName('Meeting with Joe');
 		$event->setStartTime(new DateTime('2012-12-12T12:00:00Z'));
 		$event->setEndTime(new DateTime('2012-12-12T13:00:00Z'));
+		$event->setValidFrom(new DateTime('2012-12-12T13:00:00Z'));
+		$event->setValidAfter(new DateTime('2012-12-12T13:00:00Z'));
+		$event->setValidUntil(new DateTime('2012-12-12T13:00:00Z'));
+		$event->setValidBefore(new DateTime('2012-12-12T13:00:00Z'));
 		$event->setAttendedBy($persons);
 		$event->setAttending($persons);
 		$event->setInvited($persons);
 		$event->setMaybeAttending($persons);
 		$event->setNotAttendedBy($persons);
+		$event->setNotAttending($persons);
 
 		$content = <<<JSON
 {
@@ -78,7 +83,15 @@ class EventTest extends SerializeTestAbstract
         "objectType": "person",
         "displayName": "Joe"
       }]},
+  "notAttending": {"items": [{
+        "objectType": "person",
+        "displayName": "Joe"
+      }]},
   "startTime": "2012-12-12T12:00:00+00:00",
+  "validFrom": "2012-12-12T13:00:00+00:00",
+  "validAfter": "2012-12-12T13:00:00+00:00",
+  "validUntil": "2012-12-12T13:00:00+00:00",
+  "validBefore": "2012-12-12T13:00:00+00:00",
   "objectType": "event",
   "displayName": "Meeting with Joe"
 }
@@ -89,10 +102,15 @@ JSON;
 		$this->assertEquals('Meeting with Joe', $event->getDisplayName());
 		$this->assertEquals(new DateTime('2012-12-12T12:00:00Z'), $event->getStartTime());
 		$this->assertEquals(new DateTime('2012-12-12T13:00:00Z'), $event->getEndTime());
+		$this->assertEquals(new DateTime('2012-12-12T13:00:00Z'), $event->getValidFrom());
+		$this->assertEquals(new DateTime('2012-12-12T13:00:00Z'), $event->getValidAfter());
+		$this->assertEquals(new DateTime('2012-12-12T13:00:00Z'), $event->getValidUntil());
+		$this->assertEquals(new DateTime('2012-12-12T13:00:00Z'), $event->getValidBefore());
 		$this->assertEquals($persons, $event->getAttendedBy());
 		$this->assertEquals($persons, $event->getAttending());
 		$this->assertEquals($persons, $event->getInvited());
 		$this->assertEquals($persons, $event->getMaybeAttending());
 		$this->assertEquals($persons, $event->getNotAttendedBy());
+		$this->assertEquals($persons, $event->getNotAttending());
 	}
 }

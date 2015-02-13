@@ -25,6 +25,7 @@ namespace PSX\ActivityStream;
 
 use PSX\Data\Record\FactoryInterface;
 use PSX\Data\Record\ImporterInterface;
+use PSX\Util\CurveArray;
 
 /**
  * Object
@@ -39,7 +40,7 @@ class ObjectFactory implements FactoryInterface
 	{
 		if(is_array($data))
 		{
-			if(isset($data[0]))
+			if(!CurveArray::isAssoc($data))
 			{
 				$objects = array();
 
@@ -74,7 +75,7 @@ class ObjectFactory implements FactoryInterface
 		else
 		{
 			$object = new Object();
-			$object->setUrl($data);
+			$object->setUrl((string) $data);
 
 			return $data;
 		}

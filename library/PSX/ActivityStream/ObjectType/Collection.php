@@ -23,6 +23,7 @@
 
 namespace PSX\ActivityStream\ObjectType;
 
+use DateTime;
 use PSX\ActivityStream\Object;
 use PSX\Data\CollectionInterface;
 use PSX\Data\RecordAbstract;
@@ -80,7 +81,10 @@ class Collection extends Object implements CollectionInterface
 		return $this->items;
 	}
 
-	public function setItemsAfter($itemsAfter)
+	/**
+	 * @param DateTime $itemsAfter
+	 */
+	public function setItemsAfter(DateTime $itemsAfter)
 	{
 		$this->itemsAfter = $itemsAfter;
 	}
@@ -90,7 +94,10 @@ class Collection extends Object implements CollectionInterface
 		return $this->itemsAfter;
 	}
 
-	public function setItemsBefore($itemsBefore)
+	/**
+	 * @param DateTime $itemsAfter
+	 */
+	public function setItemsBefore(DateTime $itemsBefore)
 	{
 		$this->itemsBefore = $itemsBefore;
 	}
@@ -100,6 +107,9 @@ class Collection extends Object implements CollectionInterface
 		return $this->itemsBefore;
 	}
 
+	/**
+	 * @param integer $itemsAfter
+	 */
 	public function setItemsPerPage($itemsPerPage)
 	{
 		$this->itemsPerPage = $itemsPerPage;
@@ -110,6 +120,9 @@ class Collection extends Object implements CollectionInterface
 		return $this->itemsPerPage;
 	}
 
+	/**
+	 * @param integer $startIndex
+	 */
 	public function setStartIndex($startIndex)
 	{
 		$this->startIndex = $startIndex;
@@ -120,6 +133,9 @@ class Collection extends Object implements CollectionInterface
 		return $this->startIndex;
 	}
 
+	/**
+	 * @param PSX\ActivityStream\ObjectFactory $first
+	 */
 	public function setFirst($first)
 	{
 		$this->first = $first;
@@ -130,6 +146,9 @@ class Collection extends Object implements CollectionInterface
 		return $this->first;
 	}
 
+	/**
+	 * @param PSX\ActivityStream\ObjectFactory $last
+	 */
 	public function setLast($last)
 	{
 		$this->last = $last;
@@ -140,6 +159,9 @@ class Collection extends Object implements CollectionInterface
 		return $this->last;
 	}
 
+	/**
+	 * @param PSX\ActivityStream\ObjectFactory $prev
+	 */
 	public function setPrev($prev)
 	{
 		$this->prev = $prev;
@@ -150,6 +172,9 @@ class Collection extends Object implements CollectionInterface
 		return $this->prev;
 	}
 
+	/**
+	 * @param PSX\ActivityStream\ObjectFactory $next
+	 */
 	public function setNext($next)
 	{
 		$this->next = $next;
@@ -160,6 +185,9 @@ class Collection extends Object implements CollectionInterface
 		return $this->next;
 	}
 
+	/**
+	 * @param PSX\ActivityStream\ObjectFactory $current
+	 */
 	public function setCurrent($current)
 	{
 		$this->current = $current;
@@ -170,6 +198,9 @@ class Collection extends Object implements CollectionInterface
 		return $this->current;
 	}
 
+	/**
+	 * @param PSX\ActivityStream\ObjectFactory $self
+	 */
 	public function setSelf($self)
 	{
 		$this->self = $self;

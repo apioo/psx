@@ -24,6 +24,7 @@
 namespace PSX\ActivityStream;
 
 use DateTime;
+use PSX\ActivityStream\ObjectType\Collection;
 
 /**
  * AdditionalObjectPropertiesTrait
@@ -61,6 +62,7 @@ trait AdditionalObjectPropertiesTrait
 	protected $width;
 	protected $inReplyTo;
 	protected $scope;
+	protected $replies;
 
 	public function setAlias($alias)
 	{
@@ -403,5 +405,17 @@ trait AdditionalObjectPropertiesTrait
 	{
 		return $this->scope;
 	}
-}
+
+	/**
+	 * @param PSX\ActivityStream\ObjectType\Collection $replies
+	 */
+	public function setReplies(Collection $replies)
+	{
+		$this->replies = $replies;
+	}
 	
+	public function getReplies()
+	{
+		return $this->replies;
+	}
+}

@@ -56,6 +56,8 @@ class ObjectTest extends SerializeTestAbstract
 		$object->setLanguage('en');
 		$object->setDisplayName('foo');
 		$object->setUrl('http://localhost.com');
+		$object->setRel('self');
+		$object->setMediaType('text/plain');
 		$object->setAlias('@network');
 		$object->setAttachments(array($binary));
 		$object->setAuthor($laura);
@@ -87,6 +89,8 @@ class ObjectTest extends SerializeTestAbstract
   "language": "en",
   "displayName": "foo",
   "url": "http://localhost.com",
+  "rel": "self",
+  "mediaType": "text/plain",
   "alias": "@network",
   "attachments": [{
       "compression": "deflate",
@@ -134,6 +138,8 @@ JSON;
 		$this->assertEquals('en', $object->getLanguage());
 		$this->assertEquals('foo', $object->getDisplayName());
 		$this->assertEquals('http://localhost.com', $object->getUrl());
+		$this->assertEquals('self', $object->getRel());
+		$this->assertEquals('text/plain', $object->getMediaType());
 		$this->assertEquals('@network', $object->getAlias());
 		$this->assertEquals(array($binary), $object->getAttachments());
 		$this->assertEquals($laura, $object->getAuthor());
@@ -157,5 +163,6 @@ JSON;
 		$this->assertEquals(256, $object->getWidth());
 		$this->assertEquals('http://localhost.com#foo', $object->getInReplyTo());
 		$this->assertEquals('http://localhost.com', $object->getScope());
+		$this->assertEquals('http://localhost.com', $object->__toString());
 	}
 }
