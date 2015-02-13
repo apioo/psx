@@ -159,6 +159,16 @@ class OpenSslTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals($data, $opened);
 	}
 
+	/**
+	 * @expectedException PSX\OpenSsl\Exception
+	 */
+	public function testSealInvalidPubKeyType()
+	{
+		$data = 'Some content';
+
+		OpenSsl::seal($data, $sealed, $ekeys, array('foo'));
+	}
+
 	public function testSignVerify()
 	{
 		$pkey = $this->getKey();

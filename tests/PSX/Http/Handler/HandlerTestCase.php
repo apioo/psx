@@ -268,16 +268,19 @@ abstract class HandlerTestCase extends \PHPUnit_Framework_TestCase
 	public function testCallback()
 	{
 		$testCase = $this;
+		$called   = false;
 		$options  = new Options();
-		$options->setCallback(function($resource, $request) use ($testCase){
+		$options->setCallback(function($resource, $request) use ($testCase, &$called){
 
 			$this->assertTrue(is_resource($resource));
 			$this->assertInstanceOf('PSX\Http\RequestInterface', $request);
 
+			$called = true;
+
 		});
 
 		$request  = new GetRequest(new Url(self::URL . '/get'));
-		$response = $this->http->request($request);
+		$response = $this->http->request($request, $options);
 
 		$this->assertEquals('HTTP/1.1', $response->getProtocolVersion());
 		$this->assertEquals(200, $response->getStatusCode());
@@ -286,6 +289,7 @@ abstract class HandlerTestCase extends \PHPUnit_Framework_TestCase
 		$body = Json::decode((string) $response->getBody());
 
 		$this->assertEquals(array('success' => true, 'method' => 'GET'), $body);
+		$this->assertTrue($called, 'Callback option not called');
 	}
 
 	/**
@@ -317,6 +321,19 @@ abstract class HandlerTestCase extends \PHPUnit_Framework_TestCase
 
 		$request  = new GetRequest(new Url('https://www.google.com'));
 		$response = $this->http->request($request);
+
+		$this->assertGoogleResponse($response);
+	}
+
+	public function testHttpsRequestWithoutCertFile()
+	{
+		$this->markTestIncomplete('Doest not work at the moment on travis <= 5.5');
+
+		$options  = new Options();
+		$options->setSsl(true);
+
+		$request  = new GetRequest(new Url('https://google.com'));
+		$response = $this->http->request($request, $options);
 
 		$this->assertGoogleResponse($response);
 	}

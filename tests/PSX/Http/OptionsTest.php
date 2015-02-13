@@ -40,12 +40,28 @@ class OptionsTest extends \PHPUnit_Framework_TestCase
 		$options->setCallback($callback);
 		$options->setTimeout(3);
 		$options->setFollowLocation(true, 4);
-		$options->setSsl(true);
+		$options->setSsl(true, '/foo/bar.pem');
+		$options->setProxy('127.0.0.1:8080');
 
 		$this->assertEquals($callback, $options->getCallback());
 		$this->assertEquals(3, $options->getTimeout());
 		$this->assertEquals(true, $options->getFollowLocation());
 		$this->assertEquals(4, $options->getMaxRedirects());
 		$this->assertEquals(true, $options->getSsl());
+		$this->assertEquals('/foo/bar.pem', $options->getCaPath());
+		$this->assertEquals('127.0.0.1:8080', $options->getProxy());
+	}
+
+	public function testOptionsDefault()
+	{
+		$options = new Options();
+
+		$this->assertEquals(null, $options->getCallback());
+		$this->assertEquals(null, $options->getTimeout());
+		$this->assertEquals(false, $options->getFollowLocation());
+		$this->assertEquals(8, $options->getMaxRedirects());
+		$this->assertEquals(false, $options->getSsl());
+		$this->assertEquals(null, $options->getCaPath());
+		$this->assertEquals(null, $options->getProxy());
 	}
 }
