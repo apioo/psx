@@ -40,12 +40,27 @@ class Xml extends ArrayAbstract
 {
 	public static $mime = 'application/xml';
 
+	protected $writer;
+
+	/**
+	 *
+	 * If an writer is given the result gets written to the XMLWriter and the
+	 * write method returns null. Otherwise the write method returns the xml as
+	 * string
+	 *
+	 * @param XMLWriter $writer
+	 */
+	public function __construct(XMLWriter $writer = null)
+	{
+		$this->writer = $writer;
+	}
+
 	public function write(RecordInterface $record)
 	{
-		$writer = new Writer();
+		$writer = new Writer($this->writer);
 		$writer->setRecord($record->getRecordInfo()->getName(), $this->export($record));
 
-		return $writer->toString();
+		return $this->writer === null ? $writer->toString() : null;
 	}
 
 	public function isContentTypeSupported(MediaType $contentType)

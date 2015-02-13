@@ -27,7 +27,7 @@ use DateTime;
 use PSX\Atom\Writer as Atom;
 use PSX\Data\RecordInterface;
 use PSX\Data\Reader\Xml as XmlReader;
-use PSX\Xml\Writer as Xml;
+use PSX\Data\Writer\Xml;
 use PSX\Xml\WriterInterface;
 use XMLWriter;
 
@@ -107,11 +107,8 @@ class Entry implements WriterInterface
 					{
 						if($content instanceof RecordInterface)
 						{
-							$info = $content->getRecordInfo();
-
-							$xml = new Xml($this->writer);
-							$xml->setRecord($info->getName(), $info->getData());
-							$xml->close();
+							$writer = new Xml($this->writer);
+							$writer->write($content);
 						}
 						else
 						{
