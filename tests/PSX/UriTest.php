@@ -100,6 +100,26 @@ class UriTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('ldap://[2001:db8::7]:80/c=GB?objectClass?one', $uri->toString());
 	}
 
+	/**
+	 * In case we have no ending bracket in an ipv6 we can only extract the user
+	 */
+	public function testRfcExample3_2()
+	{
+		$uri = new Uri('ldap://foo@[2001:db8::7/c=GB?objectClass?one');
+
+		$this->assertEquals('ldap', $uri->getScheme());
+		$this->assertEquals('foo@[2001:db8::7', $uri->getAuthority());
+		$this->assertEquals('foo', $uri->getUserInfo());
+		$this->assertEquals('foo', $uri->getUser());
+		$this->assertEquals(null, $uri->getPassword());
+		$this->assertEquals('[2001:db8::7', $uri->getHost());
+		$this->assertEquals(null, $uri->getPort());
+		$this->assertEquals('/c=GB', $uri->getPath());
+		$this->assertEquals('objectClass?one', $uri->getQuery());
+		$this->assertEquals(null, $uri->getFragment());
+		$this->assertEquals('ldap://foo@[2001:db8::7/c=GB?objectClass?one', $uri->toString());
+	}
+
 	public function testRfcExample4()
 	{
 		$uri = new Uri('mailto:John.Doe@example.com');

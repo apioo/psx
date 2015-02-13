@@ -289,11 +289,6 @@ class Uri
 
 	private function splitAuthority($authority)
 	{
-		if(empty($authority))
-		{
-			return array(null, null, null);
-		}
-
 		$userInfo = strstr($authority, '@', true);
 		$part     = $userInfo === false ? $authority : substr(strstr($authority, '@'), 1);
 
