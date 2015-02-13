@@ -42,8 +42,11 @@ class TemplateTest extends \PHPUnit_Framework_TestCase
 		$template->setDir('tests/PSX/Template/files');
 		$template->set('foo.htm');
 
-		$this->assertTrue($template->hasFile());
+		$this->assertEquals('tests/PSX/Template/files', $template->getDir());
 		$this->assertEquals('foo.htm', $template->get());
+		$this->assertTrue($template->hasFile());
+		$this->assertFalse($template->fileExists());
+		$this->assertEquals('tests/PSX/Template/files/foo.htm', $template->getFile());
 
 		$template->assign('foo', 'bar');
 
