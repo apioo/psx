@@ -48,12 +48,12 @@ class Sample implements GeneratorInterface
 	public function generate($path, View $view)
 	{
 		$data    = new Data();
-		$methods = array(View::METHOD_GET, View::METHOD_POST, View::METHOD_PUT, View::METHOD_DELETE);
-		$types   = array(View::TYPE_REQUEST, View::TYPE_RESPONSE);
+		$methods = View::getMethods();
+		$types   = View::getTypes();
 
-		foreach($methods as $method)
+		foreach($methods as $method => $methodName)
 		{
-			foreach($types as $type)
+			foreach($types as $type => $typeName)
 			{
 				$modifier = $method | $type;
 				$result   = $this->loader->get($modifier, $path);

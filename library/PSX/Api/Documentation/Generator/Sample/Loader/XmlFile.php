@@ -59,7 +59,7 @@ class XmlFile implements LoaderInterface
 
 			if(!empty($samplePath) && !empty($sampleMethod) && !empty($sampleType) && !empty($sampleLang))
 			{
-				if($samplePath == $path && $sampleMethod == $this->getModifierMethod($modifier) && $sampleType == $this->getModifierType($modifier))
+				if($samplePath == $path && $sampleMethod == View::getMethodName($modifier) && $sampleType == strtolower(View::getTypeName($modifier)))
 				{
 					return '<pre><code class="' . $sampleLang . '">' . htmlspecialchars($sample->textContent) . '</code></pre>';
 				}
@@ -80,37 +80,5 @@ class XmlFile implements LoaderInterface
 		$this->_doc->load($this->file);
 
 		return $this->_doc;
-	}
-
-	protected function getModifierMethod($modifier)
-	{
-		if($modifier & View::METHOD_GET)
-		{
-			return 'GET';
-		}
-		else if($modifier & View::METHOD_POST)
-		{
-			return 'POST';
-		}
-		else if($modifier & View::METHOD_PUT)
-		{
-			return 'PUT';
-		}
-		else if($modifier & View::METHOD_DELETE)
-		{
-			return 'DELETE';
-		}
-	}
-
-	protected function getModifierType($modifier)
-	{
-		if($modifier & View::TYPE_REQUEST)
-		{
-			return 'request';
-		}
-		else if($modifier & View::TYPE_RESPONSE)
-		{
-			return 'response';
-		}
 	}
 }

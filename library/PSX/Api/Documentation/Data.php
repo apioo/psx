@@ -49,16 +49,8 @@ class Data
 	public function toArray()
 	{
 		$result  = array();
-		$methods = array(
-			View::METHOD_GET    => 'get', 
-			View::METHOD_POST   => 'post', 
-			View::METHOD_PUT    => 'put', 
-			View::METHOD_DELETE => 'delete');
-
-		$types   = array(
-			View::TYPE_REQUEST  => 'request', 
-			View::TYPE_RESPONSE => 'response'
-		);
+		$methods = View::getMethods();
+		$types   = View::getTypes();
 
 		foreach($methods as $method => $methodName)
 		{
@@ -71,13 +63,13 @@ class Data
 
 				if($data !== null)
 				{
-					$row[$typeName] = $data;
+					$row[strtolower($typeName)] = $data;
 				}
 			}
 
 			if(!empty($row))
 			{
-				$result[$methodName] = $row;
+				$result[strtolower($methodName)] = $row;
 			}
 		}
 

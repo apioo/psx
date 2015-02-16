@@ -42,22 +42,23 @@ class SampleTest extends \PHPUnit_Framework_TestCase
 		$view = $this->getMockBuilder('PSX\Api\View')
 			->getMock();
 
-		$values = array(
-			View::METHOD_GET | View::TYPE_REQUEST, View::METHOD_GET | View::TYPE_RESPONSE,
-			View::METHOD_POST | View::TYPE_REQUEST, View::METHOD_POST | View::TYPE_RESPONSE,
-			View::METHOD_PUT | View::TYPE_REQUEST, View::METHOD_PUT | View::TYPE_RESPONSE,
-			View::METHOD_DELETE | View::TYPE_REQUEST, View::METHOD_DELETE | View::TYPE_RESPONSE,
-		);
+		$methods = View::getMethods();
+		$types   = View::getTypes();
 
 		$c = 0;
-		foreach($values as $value)
+		foreach($methods as $method => $methodName)
 		{
-			$loader->expects($this->at($c))
-				->method('get')
-				->with($this->equalTo($value), $this->equalTo('/'))
-				->will($this->returnValue('data: ' . $value));
+			foreach($types as $type => $typeName)
+			{
+				$value = $method | $type;
 
-			$c++;
+				$loader->expects($this->at($c))
+					->method('get')
+					->with($this->equalTo($value), $this->equalTo('/'))
+					->will($this->returnValue($methodName . ' ' . $typeName));
+
+				$c++;
+			}
 		}
 
 		$sample = new Sample($loader);
@@ -65,20 +66,24 @@ class SampleTest extends \PHPUnit_Framework_TestCase
 
 		$expect = array(
 			'get' => array(
-				'request'  => 'data: 17',
-				'response' => 'data: 33',
+				'request'   => 'GET Request',
+				'response'  => 'GET Response',
+				'parameter' => 'GET Parameter',
 			),
 			'post' => array(
-				'request'  => 'data: 18',
-				'response' => 'data: 34',
+				'request'   => 'POST Request',
+				'response'  => 'POST Response',
+				'parameter' => 'POST Parameter',
 			),
 			'put' => array(
-				'request'  => 'data: 20',
-				'response' => 'data: 36',
+				'request'   => 'PUT Request',
+				'response'  => 'PUT Response',
+				'parameter' => 'PUT Parameter',
 			),
 			'delete' => array(
-				'request'  => 'data: 24',
-				'response' => 'data: 40',
+				'request'   => 'DELETE Request',
+				'response'  => 'DELETE Response',
+				'parameter' => 'DELETE Parameter',
 			),
 		);
 

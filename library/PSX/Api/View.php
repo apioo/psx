@@ -23,10 +23,14 @@
 
 namespace PSX\Api;
 
+use BadMethodCallException;
 use PSX\Data\SchemaInterface;
 
 /**
- * View
+ * A view is an abstract representation of an resource. It provides informations
+ * what methods the resource accepts and which request and response schemas
+ * are required. Based on an view we can validate incomming/outgoing data and
+ * create documentation and schema definitions
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
@@ -38,20 +42,44 @@ class View implements \IteratorAggregate
 	const STATUS_DEPRECATED = 0x1;
 	const STATUS_CLOSED     = 0x2;
 
-	const METHOD_GET    = 0x1;
-	const METHOD_POST   = 0x2;
-	const METHOD_PUT    = 0x4;
-	const METHOD_DELETE = 0x8;
+	const METHOD_GET        = 0x1;
+	const METHOD_POST       = 0x2;
+	const METHOD_PUT        = 0x4;
+	const METHOD_DELETE     = 0x8;
 
-	const TYPE_REQUEST  = 0x10;
-	const TYPE_RESPONSE = 0x20;
+	const TYPE_REQUEST      = 0x10;
+	const TYPE_RESPONSE     = 0x20;
+	const TYPE_PARAMETER    = 0x40;
+
+	protected static $methods = array(
+		self::METHOD_GET    => 'GET',
+		self::METHOD_POST   => 'POST',
+		self::METHOD_PUT    => 'PUT',
+		self::METHOD_DELETE => 'DELETE',
+	);
+
+	protected static $types = array(
+		self::TYPE_REQUEST   => 'Request',
+		self::TYPE_RESPONSE  => 'Response',
+		self::TYPE_PARAMETER => 'Parameter',
+	);
 
 	protected $status;
+	protected $path;
 	protected $container = array();
 
-	public function __construct($status = self::STATUS_ACTIVE)
+	/**
+	 * Provides the status of the view and optional the path to the resource. 
+	 * The path is the actual route to the resource so it may contains variable
+	 * path fragments i.e.: /foo/:bar
+	 *
+	 * @param integer $status
+	 * @param string $path
+	 */
+	public function __construct($status = self::STATUS_ACTIVE, $path = null)
 	{
 		$this->status = $status;
+		$this->path   = $path;
 	}
 
 	public function isActive()
@@ -74,117 +102,9 @@ class View implements \IteratorAggregate
 		return $this->status;
 	}
 
-	public function setGet(SchemaInterface $responseSchema = null)
+	public function getPath()
 	{
-		$this->set(self::METHOD_GET | self::TYPE_RESPONSE, $responseSchema);
-	}
-
-	public function hasGet()
-	{
-		return $this->has(self::METHOD_GET);
-	}
-
-	public function hasGetResponse()
-	{
-		return $this->has(self::METHOD_GET | self::TYPE_RESPONSE);
-	}
-
-	public function getGetResponse()
-	{
-		return $this->get(self::METHOD_GET | self::TYPE_RESPONSE);
-	}
-
-	public function setPost(SchemaInterface $requestSchema = null, SchemaInterface $responseSchema = null)
-	{
-		$this->set(self::METHOD_POST | self::TYPE_REQUEST, $requestSchema);
-		$this->set(self::METHOD_POST | self::TYPE_RESPONSE, $responseSchema);
-	}
-
-	public function hasPost()
-	{
-		return $this->has(self::METHOD_POST);
-	}
-
-	public function hasPostRequest()
-	{
-		return $this->has(self::METHOD_POST | self::TYPE_REQUEST);
-	}
-
-	public function getPostRequest()
-	{
-		return $this->get(self::METHOD_POST | self::TYPE_REQUEST);
-	}
-
-	public function hasPostResponse()
-	{
-		return $this->has(self::METHOD_POST | self::TYPE_RESPONSE);
-	}
-
-	public function getPostResponse()
-	{
-		return $this->get(self::METHOD_POST | self::TYPE_RESPONSE);
-	}
-
-	public function setPut(SchemaInterface $requestSchema = null, SchemaInterface $responseSchema = null)
-	{
-		$this->set(self::METHOD_PUT | self::TYPE_REQUEST, $requestSchema);
-		$this->set(self::METHOD_PUT | self::TYPE_RESPONSE, $responseSchema);
-	}
-
-	public function hasPut()
-	{
-		return $this->has(self::METHOD_PUT);
-	}
-
-	public function hasPutRequest()
-	{
-		return $this->has(self::METHOD_PUT | self::TYPE_REQUEST);
-	}
-
-	public function getPutRequest()
-	{
-		return $this->get(self::METHOD_PUT | self::TYPE_REQUEST);
-	}
-
-	public function hasPutResponse()
-	{
-		return $this->has(self::METHOD_PUT | self::TYPE_RESPONSE);
-	}
-
-	public function getPutResponse()
-	{
-		return $this->get(self::METHOD_PUT | self::TYPE_RESPONSE);
-	}
-
-	public function setDelete(SchemaInterface $requestSchema = null, SchemaInterface $responseSchema = null)
-	{
-		$this->set(self::METHOD_DELETE | self::TYPE_REQUEST, $requestSchema);
-		$this->set(self::METHOD_DELETE | self::TYPE_RESPONSE, $responseSchema);
-	}
-
-	public function hasDelete()
-	{
-		return $this->has(self::METHOD_DELETE);
-	}
-
-	public function hasDeleteRequest()
-	{
-		return $this->has(self::METHOD_DELETE | self::TYPE_REQUEST);
-	}
-
-	public function getDeleteRequest()
-	{
-		return $this->get(self::METHOD_DELETE | self::TYPE_REQUEST);
-	}
-
-	public function hasDeleteResponse()
-	{
-		return $this->has(self::METHOD_DELETE | self::TYPE_RESPONSE);
-	}
-
-	public function getDeleteResponse()
-	{
-		return $this->get(self::METHOD_DELETE | self::TYPE_RESPONSE);
+		return $this->path;
 	}
 
 	public function get($modifier)
@@ -198,16 +118,14 @@ class View implements \IteratorAggregate
 		{
 			return isset($this->container[$modifier]);
 		}
-		else
-		{
-			$result = 0;
-			foreach($this->container as $key => $view)
-			{
-				$result|= $key;
-			}
 
-			return (bool) ($result & $modifier);
+		$result = 0;
+		foreach($this->container as $key => $view)
+		{
+			$result|= $key;
 		}
+
+		return (bool) ($result & $modifier);
 	}
 
 	public function set($modifier, SchemaInterface $schema = null)
@@ -222,35 +140,44 @@ class View implements \IteratorAggregate
 		}
 	}
 
-	public function getAllowedMethods()
-	{
-		$methods = array();
-
-		foreach($this->container as $key => $view)
-		{
-			if($key & self::METHOD_GET)
-			{
-				$methods[] = 'GET';
-			}
-			else if($key & self::METHOD_POST)
-			{
-				$methods[] = 'POST';
-			}
-			else if($key & self::METHOD_PUT)
-			{
-				$methods[] = 'PUT';
-			}
-			else if($key & self::METHOD_DELETE)
-			{
-				$methods[] = 'DELETE';
-			}
-		}
-
-		return array_values(array_unique($methods));
-	}
-
 	public function getIterator()
 	{
 		return new \ArrayIterator($this->container);
+	}
+
+	public static function getMethods()
+	{
+		return self::$methods;
+	}
+
+	public static function getTypes()
+	{
+		return self::$types;
+	}
+
+	public static function getMethodName($modifier)
+	{
+		foreach(self::$methods as $value => $name)
+		{
+			if($modifier & $value)
+			{
+				return $name;
+			}
+		}
+
+		return null;
+	}
+
+	public static function getTypeName($modifier)
+	{
+		foreach(self::$types as $value => $name)
+		{
+			if($modifier & $value)
+			{
+				return $name;
+			}
+		}
+
+		return null;
 	}
 }
