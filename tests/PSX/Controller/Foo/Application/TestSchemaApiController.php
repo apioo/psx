@@ -27,6 +27,7 @@ use PSX\Api\Documentation;
 use PSX\Api\Version;
 use PSX\Api\View;
 use PSX\Data\RecordInterface;
+use PSX\Loader\Context;
 use PSX\Controller\SchemaApiAbstract;
 
 /**
@@ -54,13 +55,13 @@ class TestSchemaApiController extends SchemaApiAbstract
 	{
 		$responseSchema = $this->schemaManager->getSchema('PSX\Controller\Foo\Schema\SuccessMessage');
 
-		$view = new View();
-		$view->setGet($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Collection'));
-		$view->setPost($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Create'), $responseSchema);
-		$view->setPut($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Update'), $responseSchema);
-		$view->setDelete($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Delete'), $responseSchema);
+		$builder = new View\Builder(View::STATUS_ACTIVE, $this->context->get(Context::KEY_PATH));
+		$builder->setGet($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Collection'));
+		$builder->setPost($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Create'), $responseSchema);
+		$builder->setPut($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Update'), $responseSchema);
+		$builder->setDelete($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Delete'), $responseSchema);
 
-		return new Documentation\Simple($view);
+		return new Documentation\Simple($builder->getView());
 	}
 
 	protected function doGet(Version $version)

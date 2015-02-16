@@ -72,121 +72,6 @@ class ViewTest extends \PHPUnit_Framework_TestCase
 		$this->assertTrue($view->isClosed());
 	}
 
-	public function testGet()
-	{
-		$view = new View();
-
-		$this->assertFalse($view->hasGet());
-		$this->assertFalse($view->hasGetResponse());
-		$this->assertEquals(null, $view->getGetResponse());
-
-		$view->setGet($this->getDummySchema());
-
-		$this->assertTrue($view->hasGet());
-		$this->assertTrue($view->hasGetResponse());
-		$this->assertInstanceOf('PSX\Data\SchemaInterface', $view->getGetResponse());
-		$this->assertEquals(array('GET'), $view->getAllowedMethods());
-	}
-
-	public function testPost()
-	{
-		$view = new View();
-
-		$this->assertFalse($view->hasPost());
-		$this->assertFalse($view->hasPostRequest());
-		$this->assertFalse($view->hasPostResponse());
-		$this->assertEquals(null, $view->getPostRequest());
-		$this->assertEquals(null, $view->getPostResponse());
-
-		$view->setPost($this->getDummySchema(), $this->getDummySchema());
-
-		$this->assertTrue($view->hasPost());
-		$this->assertTrue($view->hasPostRequest());
-		$this->assertTrue($view->hasPostResponse());
-		$this->assertInstanceOf('PSX\Data\SchemaInterface', $view->getPostRequest());
-		$this->assertInstanceOf('PSX\Data\SchemaInterface', $view->getPostResponse());
-		$this->assertEquals(array('POST'), $view->getAllowedMethods());
-	}
-
-	public function testPostNoResponse()
-	{
-		$view = new View();
-		$view->setPost($this->getDummySchema());
-
-		$this->assertTrue($view->hasPost());
-		$this->assertTrue($view->hasPostRequest());
-		$this->assertFalse($view->hasPostResponse());
-		$this->assertInstanceOf('PSX\Data\SchemaInterface', $view->getPostRequest());
-		$this->assertEquals(null, $view->getPostResponse());
-		$this->assertEquals(array('POST'), $view->getAllowedMethods());
-	}
-
-	public function testPut()
-	{
-		$view = new View();
-
-		$this->assertFalse($view->hasPut());
-		$this->assertFalse($view->hasPutRequest());
-		$this->assertFalse($view->hasPutResponse());
-		$this->assertEquals(null, $view->getPutRequest());
-		$this->assertEquals(null, $view->getPutResponse());
-
-		$view->setPut($this->getDummySchema(), $this->getDummySchema());
-
-		$this->assertTrue($view->hasPut());
-		$this->assertTrue($view->hasPutRequest());
-		$this->assertTrue($view->hasPutResponse());
-		$this->assertInstanceOf('PSX\Data\SchemaInterface', $view->getPutRequest());
-		$this->assertInstanceOf('PSX\Data\SchemaInterface', $view->getPutResponse());
-		$this->assertEquals(array('PUT'), $view->getAllowedMethods());
-	}
-
-	public function testPutNoResponse()
-	{
-		$view = new View();
-		$view->setPut($this->getDummySchema());
-
-		$this->assertTrue($view->hasPut());
-		$this->assertTrue($view->hasPutRequest());
-		$this->assertFalse($view->hasPutResponse());
-		$this->assertInstanceOf('PSX\Data\SchemaInterface', $view->getPutRequest());
-		$this->assertEquals(null, $view->getPutResponse());
-		$this->assertEquals(array('PUT'), $view->getAllowedMethods());
-	}
-
-	public function testDelete()
-	{
-		$view = new View();
-
-		$this->assertFalse($view->hasDelete());
-		$this->assertFalse($view->hasDeleteRequest());
-		$this->assertFalse($view->hasDeleteResponse());
-		$this->assertEquals(null, $view->getDeleteRequest());
-		$this->assertEquals(null, $view->getDeleteResponse());
-
-		$view->setDelete($this->getDummySchema(), $this->getDummySchema());
-
-		$this->assertTrue($view->hasDelete());
-		$this->assertTrue($view->hasDeleteRequest());
-		$this->assertTrue($view->hasDeleteResponse());
-		$this->assertInstanceOf('PSX\Data\SchemaInterface', $view->getDeleteRequest());
-		$this->assertInstanceOf('PSX\Data\SchemaInterface', $view->getDeleteResponse());
-		$this->assertEquals(array('DELETE'), $view->getAllowedMethods());
-	}
-
-	public function testDeleteNoResponse()
-	{
-		$view = new View();
-		$view->setDelete($this->getDummySchema());
-
-		$this->assertTrue($view->hasDelete());
-		$this->assertTrue($view->hasDeleteRequest());
-		$this->assertFalse($view->hasDeleteResponse());
-		$this->assertInstanceOf('PSX\Data\SchemaInterface', $view->getDeleteRequest());
-		$this->assertEquals(null, $view->getDeleteResponse());
-		$this->assertEquals(array('DELETE'), $view->getAllowedMethods());
-	}
-
 	public function testSet()
 	{
 		$view = new View();
@@ -199,24 +84,15 @@ class ViewTest extends \PHPUnit_Framework_TestCase
 		$this->assertEmpty($view->get(1));
 	}
 
-	public function testGetAllowedMethods()
-	{
-		$view = new View();
-		$view->setGet($this->getDummySchema());
-		$view->setPost($this->getDummySchema(), $this->getDummySchema());
-		$view->setPut($this->getDummySchema(), $this->getDummySchema());
-		$view->setDelete($this->getDummySchema(), $this->getDummySchema());
-
-		$this->assertEquals(array('GET', 'POST', 'PUT', 'DELETE'), $view->getAllowedMethods());
-	}
-
 	public function testIterator()
 	{
-		$view = new View();
-		$view->setGet($this->getDummySchema());
-		$view->setPost($this->getDummySchema(), $this->getDummySchema());
-		$view->setPut($this->getDummySchema(), $this->getDummySchema());
-		$view->setDelete($this->getDummySchema(), $this->getDummySchema());
+		$builder = new View\Builder();
+		$builder->setGet($this->getDummySchema());
+		$builder->setPost($this->getDummySchema(), $this->getDummySchema());
+		$builder->setPut($this->getDummySchema(), $this->getDummySchema());
+		$builder->setDelete($this->getDummySchema(), $this->getDummySchema());
+
+		$view = $builder->getView();
 
 		foreach($view as $key => $value)
 		{

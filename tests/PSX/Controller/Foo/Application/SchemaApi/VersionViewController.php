@@ -56,29 +56,29 @@ class VersionViewController extends SchemaApiAbstract
 
 		$version = new Documentation\Version();
 
-		$view = new View(View::STATUS_CLOSED);
-		$view->setGet($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Collection'));
-		$view->setPost($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Create'), $responseSchema);
-		$view->setPut($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Update'), $responseSchema);
-		$view->setDelete($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Delete'), $responseSchema);
+		$builder = new View\Builder(View::STATUS_CLOSED);
+		$builder->setGet($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Collection'));
+		$builder->setPost($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Create'), $responseSchema);
+		$builder->setPut($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Update'), $responseSchema);
+		$builder->setDelete($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Delete'), $responseSchema);
 
-		$version->addView(1, $view);
+		$version->addView(1, $builder->getView());
 
-		$view = new View(View::STATUS_DEPRECATED);
-		$view->setGet($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Collection'));
-		$view->setPost($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Create'), $responseSchema);
-		$view->setPut($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Update'), $responseSchema);
-		$view->setDelete($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Delete'), $responseSchema);
+		$builder = new View\Builder(View::STATUS_DEPRECATED);
+		$builder->setGet($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Collection'));
+		$builder->setPost($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Create'), $responseSchema);
+		$builder->setPut($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Update'), $responseSchema);
+		$builder->setDelete($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Delete'), $responseSchema);
 
-		$version->addView(2, $view);
+		$version->addView(2, $builder->getView());
 
-		$view = new View();
-		$view->setGet($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Collection'));
-		$view->setPost($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Create'), $responseSchema);
-		$view->setPut($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Update'), $responseSchema);
-		$view->setDelete($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Delete'), $responseSchema);
+		$builder = new View\Builder();
+		$builder->setGet($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Collection'));
+		$builder->setPost($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Create'), $responseSchema);
+		$builder->setPut($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Update'), $responseSchema);
+		$builder->setDelete($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Delete'), $responseSchema);
 
-		$version->addView(3, $view);
+		$version->addView(3, $builder->getView());
 
 		return $version;
 	}

@@ -54,12 +54,12 @@ class NoResponseController extends SchemaApiAbstract
 	{
 		$responseSchema = $this->schemaManager->getSchema('PSX\Controller\Foo\Schema\SuccessMessage');
 
-		$view = new View();
-		$view->setPost($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Create'));
-		$view->setPut($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Update'));
-		$view->setDelete($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Delete'));
+		$builder = new View\Builder();
+		$builder->setPost($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Create'));
+		$builder->setPut($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Update'));
+		$builder->setDelete($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Delete'));
 
-		return new Documentation\Simple($view);
+		return new Documentation\Simple($builder->getView());
 	}
 
 	protected function doGet(Version $version)

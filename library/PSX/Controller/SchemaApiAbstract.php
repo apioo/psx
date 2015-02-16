@@ -26,6 +26,7 @@ namespace PSX\Controller;
 use PSX\Api\DocumentationInterface;
 use PSX\Api\DocumentedInterface;
 use PSX\Api\Version;
+use PSX\Api\View;
 use PSX\Api\InvalidVersionException;
 use PSX\ControllerAbstract;
 use PSX\Data\Record;
@@ -198,7 +199,7 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 			throw new StatusCode\GoneException('Version v' . $version->getVersion() . ' is not longer supported');
 		}
 
-		return $view;
+		return new View\Facade($view);
 	}
 
 	protected function getVersion(DocumentationInterface $doc)
