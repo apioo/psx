@@ -33,27 +33,32 @@ namespace PSX\Loader;
 class Context
 {
 	/**
+	 * This key holds the route which was used to resolve the controller
+	 */
+	const KEY_PATH = 'psx.path';
+
+	/**
 	 * This key holds the variable fragment values from the uri path. I.e. if
 	 * we have an path /foo/:bar the array would look like ['bar' => 'test']
 	 * where test is the value from the actual request uri
 	 */
-	const KEY_FRAGMENT  = 'psx.fragment';
+	const KEY_FRAGMENT = 'psx.fragment';
 
 	/**
 	 * This key contains the raw source like defined in the routing file i.e. 
 	 * Foo\Bar::doIndex
 	 */
-	const KEY_SOURCE    = 'psx.source';
+	const KEY_SOURCE = 'psx.source';
 
 	/**
 	 * This key contains the class name from the source
 	 */
-	const KEY_CLASS     = 'psx.class';
+	const KEY_CLASS = 'psx.class';
 
 	/**
 	 * This key contains the method name from the source
 	 */
-	const KEY_METHOD    = 'psx.method';
+	const KEY_METHOD = 'psx.method';
 
 	/**
 	 * This key contains an Exception if the error controller gets invoked

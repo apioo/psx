@@ -69,6 +69,7 @@ class RoutingParser implements LocationFinderInterface
 					return $this->resolve($request, $context);
 				}
 
+				$context->set(Context::KEY_PATH, $routing[RoutingCollection::ROUTING_PATH]);
 				$context->set(Context::KEY_FRAGMENT, $parameters);
 				$context->set(Context::KEY_SOURCE, $source);
 
