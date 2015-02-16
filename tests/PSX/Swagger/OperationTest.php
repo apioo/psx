@@ -38,7 +38,7 @@ class OperationTest extends SerializeTestAbstract
 	{
 		$operation = new Operation('PUT', 'updatePet', 'Update an existing pet');
 		$operation->addResponseMessage(new ResponseMessage(200, 'Return', 'News'));
-		$operation->addParameter(new Parameter\Query('count', 'Count parameter'));
+		$operation->addParameter(new Parameter('query', 'count', 'Count parameter'));
 
 		$content = <<<JSON
 {
