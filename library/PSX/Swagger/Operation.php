@@ -39,7 +39,6 @@ class Operation extends RecordAbstract
 	protected $nickname;
 	protected $summary;
 	protected $notes;
-	protected $type;
 
 	protected $parameters       = array();
 	protected $responseMessages = array();
@@ -98,16 +97,6 @@ class Operation extends RecordAbstract
 	public function getNotes()
 	{
 		return $this->notes;
-	}
-
-	public function setType($type)
-	{
-		$this->type = $type;
-	}
-	
-	public function getType()
-	{
-		return $this->type;
 	}
 
 	/**

@@ -50,14 +50,14 @@ class Parameter extends RecordAbstract
 
 	public function __construct($paramType = null, $name = null, $description = null, $required = null)
 	{
-		$this->name        = $name;
-		$this->description = $description;
-		$this->required    = $required;
-
 		if($paramType !== null)
 		{
 			$this->setParamType($paramType);
 		}
+
+		$this->name        = $name;
+		$this->description = $description;
+		$this->required    = $required;
 	}
 
 	public function setParamType($paramType)
