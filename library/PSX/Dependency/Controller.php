@@ -23,6 +23,7 @@
 
 namespace PSX\Dependency;
 
+use PSX\Api;
 use PSX\Dispatch;
 use PSX\Dispatch\ApplicationStackFactory;
 use PSX\Dispatch\ControllerFactory;
@@ -121,10 +122,18 @@ trait Controller
 	}
 
 	/**
-	 * @return Loader\ReverseRouter
+	 * @return PSX\Loader\ReverseRouter
 	 */
 	public function getReverseRouter()
 	{
 		return new Loader\ReverseRouter($this->get('routing_parser'), $this->get('config')->get('psx_url'), $this->get('config')->get('psx_dispatch'));
+	}
+
+	/**
+	 * @return PSX\Api\ResourceListing
+	 */
+	public function getResourceListing()
+	{
+		return new Api\ResourceListing($this->get('routing_parser'), $this->get('controller_factory'));
 	}
 }

@@ -27,6 +27,7 @@ use PSX\Api\DocumentedInterface;
 use PSX\Api\DocumentationInterface;
 use PSX\Api\Documentation\Generator;
 use PSX\Api\Documentation\Data;
+use PSX\Api\ResourceListing\Resource;
 use PSX\Api\View;
 use PSX\Controller\ViewAbstract;
 use PSX\Data\Schema\Generator as SchemaGenerator;
@@ -52,15 +53,9 @@ class DocumentationController extends ViewAbstract
 
 	/**
 	 * @Inject
-	 * @var PSX\Loader\RoutingParserInterface
+	 * @var PSX\Api\ResourceListing
 	 */
-	protected $routingParser;
-
-	/**
-	 * @Inject
-	 * @var PSX\Dispatch\ControllerFactory
-	 */
-	protected $controllerFactory;
+	protected $resourceListing;
 
 	/**
 	 * @Inject
@@ -68,6 +63,9 @@ class DocumentationController extends ViewAbstract
 	 */
 	protected $reverseRouter;
 
+	/**
+	 * @var array
+	 */
 	protected $supportedWriter;
 
 	public function doIndex()
@@ -104,16 +102,16 @@ class DocumentationController extends ViewAbstract
 		$method = $this->getParameter('method');
 		$type   = $this->getParameter('type');
 
-		$resource = $this->getResource($path);
+		$resource = $this->resourceListing->getResource($path, $this->request, $this->response, $this->context);
 
-		if(!$resource->doc instanceof DocumentationInterface)
+		if(!$resource instanceof Resource)
 		{
 			throw new HttpException\InternalServerErrorException('Controller provides no documentation informations');
 		}
 
 		if(!empty($export))
 		{
-			$view   = $resource->doc->getView($version);
+			$view   = $resource->getDocumentation()->getView($version);
 			$schema = $view->get($this->getViewModifier($method, $type));
 			$body   = null;
 
@@ -154,11 +152,11 @@ class DocumentationController extends ViewAbstract
 		{
 			$this->supportedWriter = array(WriterInterface::JSON, WriterInterface::XML);
 
-			$view = $resource->doc->getView($version);
+			$view = $resource->getDocumentation()->getView($version);
 
 			if($view instanceof View)
 			{
-				$views = $resource->doc->getViews();
+				$views = $resource->getDocumentation()->getViews();
 
 				krsort($views);
 
@@ -177,7 +175,7 @@ class DocumentationController extends ViewAbstract
 
 				foreach($generators as $name => $generator)
 				{
-					$result = $generator->generate($resource->routing->path, $view);
+					$result = $generator->generate($resource->getPath(), $view);
 
 					if($result instanceof Data)
 					{
@@ -186,12 +184,12 @@ class DocumentationController extends ViewAbstract
 				}
 
 				$this->setBody(array(
-					'method'      => $resource->routing->method,
-					'path'        => $resource->routing->path,
-					'controller'  => $resource->routing->controller,
-					'description' => $resource->doc->getDescription(),
+					'method'      => $resource->getMethods(),
+					'path'        => $resource->getPath(),
+					'controller'  => $resource->getSource(),
+					'description' => $resource->getDocumentation()->getDescription(),
 					'versions'    => $versions,
-					'see_others'  => $this->getSeeOthers($version, $resource->routing->path),
+					'see_others'  => $this->getSeeOthers($version, $resource->getPath()),
 					'view'        => array(
 						'version' => $version,
 						'status'  => $view->getStatus(),
@@ -208,49 +206,17 @@ class DocumentationController extends ViewAbstract
 
 	protected function getRoutings()
 	{
-		$collection = $this->routingParser->getCollection();
-		$routings   = array();
+		$resources = $this->resourceListing->getResources($this->request, $this->response, $this->context);
 
-		foreach($collection as $route)
+		foreach($resources as $resource)
 		{
-			$controller = $this->getControllerInstance($route);
-
-			if($controller instanceof DocumentedInterface)
-			{
-				$routings[] = array(
-					'path'    => $route[RoutingCollection::ROUTING_PATH], 
-					'version' => $controller->getDocumentation()->getLatestVersion(),
-				);
-			}
+			$routings[] = array(
+				'path'    => $resource->getPath(), 
+				'version' => $resource->getDocumentation()->getLatestVersion(),
+			);
 		}
 
 		return $routings;
-	}
-
-	protected function getResource($sourcePath)
-	{
-		$collection = $this->routingParser->getCollection();
-
-		foreach($collection as $route)
-		{
-			$controller = $this->getControllerInstance($route, $sourcePath);
-
-			if($controller instanceof DocumentedInterface)
-			{
-				$routing = new \stdClass();
-				$routing->method = $route[RoutingCollection::ROUTING_METHODS];
-				$routing->path = $route[RoutingCollection::ROUTING_PATH];
-				$routing->controller = $route[RoutingCollection::ROUTING_SOURCE];
-
-				$obj = new \stdClass();
-				$obj->routing = $routing;
-				$obj->doc = $controller->getDocumentation();
-
-				return $obj;
-			}
-		}
-
-		throw new HttpException\NotFoundException('Invalid api path');
 	}
 
 	protected function getSeeOthers($version, $path)
@@ -280,12 +246,7 @@ class DocumentationController extends ViewAbstract
 
 	protected function getMethodParameter($method)
 	{
-		$methodMap = array(
-			'GET'    => View::METHOD_GET,
-			'POST'   => View::METHOD_POST,
-			'PUT'    => View::METHOD_PUT,
-			'DELETE' => View::METHOD_DELETE,
-		);
+		$methodMap = array_flip(View::getMethods());
 
 		if(isset($methodMap[$method]))
 		{
@@ -312,26 +273,6 @@ class DocumentationController extends ViewAbstract
 		{
 			throw new HttpException\BadRequestException('Invalid type parameter');
 		}
-	}
-
-	protected function getControllerInstance(array $route, $sourcePath = null)
-	{
-		list($methods, $path, $source) = $route;
-
-		$parts     = explode('::', $source, 2);
-		$className = isset($parts[0]) ? $parts[0] : null;
-
-		if(class_exists($className) && ($sourcePath === null || $sourcePath == ltrim($path, '/')))
-		{
-			$controller = $this->controllerFactory->getController($className, $this->request, $this->response, $this->context);
-
-			if($controller instanceof DocumentedInterface)
-			{
-				return $controller;
-			}
-		}
-
-		return null;
 	}
 
 	protected function getHtmlTemplate($body)

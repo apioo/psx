@@ -23,13 +23,13 @@
 
 namespace PSX\Controller\Tool;
 
-use DOMDocument;
-use DOMElement;
 use PSX\Api\DocumentationInterface;
 use PSX\Api\DocumentedInterface;
+use PSX\Api\ResourceListing\Resource;
 use PSX\Api\View;
 use PSX\Controller\ViewAbstract;
 use PSX\Http\Exception as HttpException;
+use PSX\Loader\Context;
 use PSX\Loader\PathMatcher;
 use PSX\Wsdl\Generator;
 
@@ -44,15 +44,9 @@ class WsdlGeneratorController extends ViewAbstract
 {
 	/**
 	 * @Inject
-	 * @var PSX\Loader\RoutingParserInterface
+	 * @var PSX\Api\ResourceListing
 	 */
-	protected $routingParser;
-
-	/**
-	 * @Inject
-	 * @var PSX\Dispatch\ControllerFactory
-	 */
-	protected $controllerFactory;
+	protected $resourceListing;
 
 	public function onGet()
 	{
@@ -60,62 +54,31 @@ class WsdlGeneratorController extends ViewAbstract
 
 		$version  = $this->getUriFragment('version');
 		$path     = $this->getUriFragment('path');
-		$resource = $this->getEndpoint($path);
+		$resource = $this->resourceListing->getResource($path, $this->request, $this->response, $this->context);
 
-		if($resource->doc instanceof DocumentationInterface)
+		if($resource instanceof Resource)
 		{
-			$view = $resource->doc->getView($version);
+			$view = $resource->getDocumentation()->getView($version);
 
 			if(!$view instanceof View)
 			{
 				throw new HttpException\NotFoundException('Given version is not available');
 			}
+
+			$name            = $resource->getName();
+			$endpoint        = $this->config['psx_url'] . '/' . $this->config['psx_dispatch'] . ltrim($resource->getPath(), '/');
+			$targetNamespace = $this->config['psx_soap_namespace'];
+
+			$generator = new Generator($name, $endpoint, $targetNamespace);
+
+			$wsdl = $generator->generate($view);
+			$wsdl->formatOutput = true;
+
+			$this->setBody($wsdl);
 		}
 		else
 		{
-			throw new HttpException\InternalServerErrorException('Controller provides no documentation informations');
+			throw new HttpException\NotFoundException('Invalid resource');
 		}
-
-		$name            = $resource->name;
-		$endpoint        = $this->config['psx_url'] . '/' . $this->config['psx_dispatch'] . ltrim($path, '/');
-		$targetNamespace = $this->config['psx_soap_namespace'];
-
-		$generator = new Generator(Generator::VERSION_1, $name, $endpoint, $targetNamespace);
-
-		$wsdl = $generator->generate($view);
-		$wsdl->formatOutput = true;
-
-		$this->setBody($wsdl);
-	}
-
-	protected function getEndpoint($sourcePath)
-	{
-		$matcher     = new PathMatcher($sourcePath);
-		$collections = $this->routingParser->getCollection();
-
-		foreach($collections as $collection)
-		{
-			list($methods, $path, $source) = $collection;
-
-			$parts     = explode('::', $source, 2);
-			$className = isset($parts[0]) ? $parts[0] : null;
-
-			if(class_exists($className) && $matcher->match($path))
-			{
-				$controller = $this->controllerFactory->getController($className, $this->request, $this->response, $this->context);
-
-				if($controller instanceof DocumentedInterface)
-				{
-					$obj = new \stdClass();
-					$obj->name = substr(strrchr(get_class($controller), '\\'), 1);
-					$obj->routing = array($methods, $path, $className);
-					$obj->doc = $controller->getDocumentation();
-
-					return $obj;
-				}
-			}
-		}
-
-		throw new HttpException\NotFoundException('Invalid path');
 	}
 }
