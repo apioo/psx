@@ -31,7 +31,7 @@ use PSX\Api\View;
 use PSX\Data\Schema\Generator\Xsd as XsdGenerator;
 
 /**
- * WsdlGenerator
+ * Generates an WSDL 1.1 representation of an API view
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
@@ -39,43 +39,40 @@ use PSX\Data\Schema\Generator\Xsd as XsdGenerator;
  */
 class Generator
 {
-	const VERSION_1 = 0x1;
-
-	protected $version;
 	protected $name;
 	protected $endpoint;
 	protected $targetNamespace;
+	protected $generator;
 
 	protected $types = array();
 
-	public function __construct($version, $name, $endpoint, $targetNamespace)
+	public function __construct($name, $endpoint, $targetNamespace, GeneratorInterface $generator = null)
 	{
-		$this->version         = $version;
 		$this->name            = $name;
 		$this->endpoint        = $endpoint;
 		$this->targetNamespace = $targetNamespace;
+		$this->generator       = $generator ?: new Generator\Version1();
 	}
 
-	public function generate(View $views)
+	public function generate(View $view)
 	{
 		$this->types = array();
 
-		$generator  = $this->getGenerator();
-		$types      = $this->getTypes($views);
-		$operations = $this->getOperations($views);
+		$types      = $this->getTypes($view);
+		$operations = $this->getOperations($view);
 		
-		return $generator->generate($this->name, $this->endpoint, $this->targetNamespace, $types, $operations);
+		return $this->generator->generate($this->name, $this->endpoint, $this->targetNamespace, $types, $operations);
 	}
 
-	protected function getTypes(View $views)
+	protected function getTypes(View $view)
 	{
 		$xsdGenerator = new XsdGenerator($this->targetNamespace);
 		$types        = array();
 
-		foreach($views as $view)
+		foreach($view as $schema)
 		{
 			$dom = new DOMDocument();
-			$dom->loadXML($xsdGenerator->generate($view));
+			$dom->loadXML($xsdGenerator->generate($schema));
 
 			foreach($dom->documentElement->childNodes as $childNode)
 			{
@@ -136,25 +133,18 @@ class Generator
 
 		// create elements for each operation
 		$dom     = new DOMDocument();
-		$methods = array(View::METHOD_GET, View::METHOD_POST, View::METHOD_PUT, View::METHOD_DELETE);
+		$methods = View::getMethods();
 
-		foreach($methods as $method)
+		foreach($methods as $method => $methodName)
 		{
-			if($views->has($method))
+			if($view->has($method))
 			{
-				if($views->has($method | View::TYPE_REQUEST))
-				{
-					$name = $this->getMethodNameByModifier($method);
-				}
-				else if($views->has($method | View::TYPE_RESPONSE))
-				{
-					$name = $this->getMethodNameByModifier($method);
-				}
+				$name = strtolower($methodName);
 
 				// request
-				if($views->has($method | View::TYPE_REQUEST))
+				if($view->has($method | View::TYPE_REQUEST))
 				{
-					$type = $views->get($method | View::TYPE_REQUEST)->getDefinition()->getName();
+					$type = $view->get($method | View::TYPE_REQUEST)->getDefinition()->getName();
 				}
 				else
 				{
@@ -168,9 +158,9 @@ class Generator
 				$elements[$name . 'Request'] = $element;
 
 				// response
-				if($views->has($method | View::TYPE_RESPONSE))
+				if($view->has($method | View::TYPE_RESPONSE))
 				{
-					$type = $views->get($method | View::TYPE_RESPONSE)->getDefinition()->getName();
+					$type = $view->get($method | View::TYPE_RESPONSE)->getDefinition()->getName();
 				}
 				else
 				{
@@ -194,36 +184,35 @@ class Generator
 		return array_merge(array_values($elements), array_values($definedTypes));
 	}
 
-	protected function getOperations(View $views)
+	protected function getOperations(View $view)
 	{
 		$operations = array();
-		$methods    = array(View::METHOD_GET, View::METHOD_POST, View::METHOD_PUT, View::METHOD_DELETE);
+		$methods    = View::getMethods();
 
-		foreach($methods as $method)
+		foreach($methods as $method => $methodName)
 		{
-			if($views->has($method))
+			if($view->has($method))
 			{
-				if($views->has($method | View::TYPE_REQUEST))
+				if($view->has($method | View::TYPE_REQUEST))
 				{
-					$entityName = $views->get($method | View::TYPE_REQUEST)->getDefinition()->getName();
+					$entityName = $view->get($method | View::TYPE_REQUEST)->getDefinition()->getName();
 				}
-				else if($views->has($method | View::TYPE_RESPONSE))
+				else if($view->has($method | View::TYPE_RESPONSE))
 				{
-					$entityName = $views->get($method | View::TYPE_RESPONSE)->getDefinition()->getName();
-				}
-
-				$methodName = $this->getMethodNameByModifier($method);
-				$operation  = new Operation($methodName . ucfirst($entityName));
-				$operation->setMethod(strtoupper($methodName));
-
-				if($views->has($method | View::TYPE_REQUEST))
-				{
-					$operation->setIn($views->get($method | View::TYPE_REQUEST)->getDefinition()->getName());
+					$entityName = $view->get($method | View::TYPE_RESPONSE)->getDefinition()->getName();
 				}
 
-				if($views->has($method | View::TYPE_RESPONSE))
+				$operation = new Operation(strtolower($methodName) . ucfirst($entityName));
+				$operation->setMethod($methodName);
+
+				if($view->has($method | View::TYPE_REQUEST))
 				{
-					$operation->setOut($views->get($method | View::TYPE_RESPONSE)->getDefinition()->getName());
+					$operation->setIn($view->get($method | View::TYPE_REQUEST)->getDefinition()->getName());
+				}
+
+				if($view->has($method | View::TYPE_RESPONSE))
+				{
+					$operation->setOut($view->get($method | View::TYPE_RESPONSE)->getDefinition()->getName());
 				}
 
 				if($operation->hasOperation())
@@ -234,38 +223,6 @@ class Generator
 		}
 
 		return $operations;
-	}
-
-	protected function getMethodNameByModifier($modifier)
-	{
-		if($modifier & View::METHOD_GET)
-		{
-			return 'get';
-		}
-		else if($modifier & View::METHOD_POST)
-		{
-			return 'post';
-		}
-		else if($modifier & View::METHOD_PUT)
-		{
-			return 'put';
-		}
-		else if($modifier & View::METHOD_DELETE)
-		{
-			return 'delete';
-		}
-	}
-
-	protected function getGenerator()
-	{
-		if($this->version == self::VERSION_1)
-		{
-			return new Generator\Version1();
-		}
-		else
-		{
-			throw new InvalidArgumentException('Unknown version');
-		}
 	}
 
 	protected function getDefaultSchema()

@@ -43,7 +43,7 @@ class GeneratorTest extends \PHPUnit_Framework_TestCase
 		$endpoint        = 'http://127.0.0.1/foo/api';
 		$targetNamespace = 'http://127.0.0.1/wsdl/1/foo/api';
 
-		$generator = new Generator(Generator::VERSION_1, 'foo', $endpoint, $targetNamespace);
+		$generator = new Generator('foo', $endpoint, $targetNamespace);
 
 		$wsdl = $generator->generate($this->getView());
 		$wsdl->formatOutput = true;
@@ -54,15 +54,6 @@ class GeneratorTest extends \PHPUnit_Framework_TestCase
 		$result = $dom->schemaValidate(__DIR__ . '/wsdl1.xsd');
 
 		$this->assertTrue($result);
-	}
-
-	/**
-	 * @expectedException InvalidArgumentException
-	 */
-	public function testInvalidVersion()
-	{
-		$generator = new Generator(8, 'foo', 'http://127.0.0.1/foo/api', 'http://127.0.0.1/wsdl/1/foo/api');
-		$generator->generate($this->getView());
 	}
 
 	protected function getView()
