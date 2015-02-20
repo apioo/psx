@@ -38,11 +38,14 @@ use PSX\Data\Schema\PropertyInterface;
  */
 class JsonSchema implements GeneratorInterface
 {
-	protected $targetNamespace;
+	const SCHEMA = 'http://json-schema.org/draft-04/schema#';
 
-	public function __construct($targetNamespace)
+	protected $targetNamespace;
+	protected $definitions;
+
+	public function __construct($targetNamespace = null)
 	{
-		$this->targetNamespace = $targetNamespace;
+		$this->targetNamespace = $targetNamespace ?: 'urn:schema.phpsx.org#';
 	}
 
 	public function generate(SchemaInterface $schema)
@@ -52,9 +55,12 @@ class JsonSchema implements GeneratorInterface
 
 	protected function generateRootElement(Property\ComplexType $type)
 	{
-		$children   = $type->getChildren();
-		$properties = array();
-		$required   = array();
+		$children    = $type->getChildren();
+		$description = $type->getDescription();
+		$properties  = array();
+		$required    = array();
+
+		$this->definitions = array();
 
 		foreach($children as $child)
 		{
@@ -65,12 +71,25 @@ class JsonSchema implements GeneratorInterface
 				$required[] = $child->getName();
 			}
 		}
+		
+		$definitions = array();
+		foreach($this->definitions as $name => $type)
+		{
+			$definitions[$name] = $type;
+		}
 
 		$result = array(
-			'id'         => $this->targetNamespace,
-			'type'       => 'object',
-			'properties' => $properties,
+			'$schema'     => self::SCHEMA,
+			'id'          => $this->targetNamespace,
+			'type'        => 'object',
+			'definitions' => $definitions,
+			'properties'  => $properties,
 		);
+
+		if(!empty($description))
+		{
+			$result['description'] = $description;
+		}
 
 		if(!empty($required))
 		{
@@ -105,6 +124,12 @@ class JsonSchema implements GeneratorInterface
 				'properties' => $properties,
 			);
 
+			$description = $type->getDescription();
+			if(!empty($description))
+			{
+				$result['description'] = $description;
+			}
+
 			if(!empty($required))
 			{
 				$result['required'] = $required;
@@ -112,7 +137,11 @@ class JsonSchema implements GeneratorInterface
 
 			$result['additionalProperties'] = false;
 
-			return $result;
+			$key = 'ref' . $type->getId();
+
+			$this->definitions[$key] = $result;
+
+			return ['$ref' => '#/definitions/' . $key];
 		}
 		else if($type instanceof Property\ArrayType)
 		{
@@ -120,6 +149,12 @@ class JsonSchema implements GeneratorInterface
 				'type'  => 'array',
 				'items' => $this->generateType($type->getPrototype()),
 			);
+
+			$description = $type->getDescription();
+			if(!empty($description))
+			{
+				$result['description'] = $description;
+			}
 
 			$minLength = $type->getMinLength();
 			if($minLength)
@@ -139,6 +174,12 @@ class JsonSchema implements GeneratorInterface
 		{
 			$result = array();
 			$result['type'] = $this->getPropertyTypeName($type);
+
+			$description = $type->getDescription();
+			if(!empty($description))
+			{
+				$result['description'] = $description;
+			}
 
 			if($type instanceof Property\String)
 			{

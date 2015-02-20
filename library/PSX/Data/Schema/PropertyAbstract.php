@@ -119,6 +119,17 @@ abstract class PropertyAbstract implements PropertyInterface
 	}
 
 	/**
+	 * @return string
+	 */
+	public function getId()
+	{
+		return md5(
+			get_class($this) .
+			$this->required
+		);
+	}
+
+	/**
 	 * @return boolean
 	 */
 	public function validate($data)

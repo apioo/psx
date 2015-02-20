@@ -142,4 +142,11 @@ class StringTest extends \PHPUnit_Framework_TestCase
 
 		$property->validate('test');
 	}
+
+	public function testGetId()
+	{
+		$property = new String('test');
+
+		$this->assertEquals('4e089d32782b7d5d081230e97be69745', $property->getId());
+	}
 }

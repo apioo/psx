@@ -76,6 +76,16 @@ class ArrayType extends PropertyAbstract
 		return $this->maxLength;
 	}
 
+	public function getId()
+	{
+		return md5(
+			parent::getId() .
+			($this->prototype ? $this->prototype->getId() : '') .
+			$this->minLength .
+			$this->maxLength
+		);
+	}
+
 	public function validate($data)
 	{
 		parent::validate($data);

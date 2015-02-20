@@ -49,4 +49,11 @@ class DurationTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertTrue($property->validate('foo'));
 	}
+
+	public function testGetId()
+	{
+		$property = new Duration('test');
+
+		$this->assertEquals('cffce787052997e10fdeb1862eff4769', $property->getId());
+	}
 }

@@ -44,65 +44,59 @@ class XsdTest extends GeneratorTestCase
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element name="tags" type="xs:string" maxOccurs="unbounded" minOccurs="1"/>
-				<xs:element name="receiver" type="tns:author" maxOccurs="unbounded" minOccurs="1"/>
+				<xs:element name="receiver" type="tns:typec4ddf063f76e992fb7401c8cb36ab534" maxOccurs="unbounded" minOccurs="1"/>
 				<xs:element name="read" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
-				<xs:element name="author" type="tns:author" minOccurs="1" maxOccurs="1"/>
+				<xs:element name="author" type="tns:typec4ddf063f76e992fb7401c8cb36ab534" minOccurs="1" maxOccurs="1"/>
 				<xs:element name="sendDate" type="xs:date" minOccurs="0" maxOccurs="1"/>
 				<xs:element name="readDate" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 				<xs:element name="expires" type="xs:duration" minOccurs="0" maxOccurs="1"/>
-				<xs:element name="price" type="tns:price" minOccurs="1" maxOccurs="1"/>
-				<xs:element name="rating" type="tns:rating" minOccurs="0" maxOccurs="1"/>
-				<xs:element name="content" type="tns:content" minOccurs="1" maxOccurs="1"/>
-				<xs:element name="question" type="tns:question" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="price" type="tns:type41b5d91a7e5b6a356e679cc5fa5d64b6" minOccurs="1" maxOccurs="1"/>
+				<xs:element name="rating" type="tns:type442ba5164a6db9bc4be656bccda23328" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="content" type="tns:type6022b25ec119c5585bd9109efee01a3e" minOccurs="1" maxOccurs="1"/>
+				<xs:element name="question" type="tns:typeabbed36c306165ec45c99cbe9488a57f" minOccurs="0" maxOccurs="1"/>
 				<xs:element name="coffeeTime" type="xs:time" minOccurs="0" maxOccurs="1"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
-	<xs:complexType name="author">
+	<xs:complexType name="typec4ddf063f76e992fb7401c8cb36ab534">
 		<xs:sequence>
-			<xs:element name="title" type="tns:title" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="title" type="tns:typef385c15a0c06eeab4f4a007c40599064" minOccurs="1" maxOccurs="1"/>
 			<xs:element name="email" type="xs:string" minOccurs="0" maxOccurs="1"/>
 			<xs:element maxOccurs="unbounded" minOccurs="0" name="categories" type="xs:string"/>
-			<xs:element maxOccurs="unbounded" minOccurs="0" name="locations" type="tns:location"/>
-			<xs:element maxOccurs="1" minOccurs="0" name="origin" type="tns:origin"/>
+			<xs:element maxOccurs="unbounded" minOccurs="0" name="locations" type="tns:typeb534788702d7583a85337e047716e924"/>
+			<xs:element maxOccurs="1" minOccurs="0" name="origin" type="tns:typeb534788702d7583a85337e047716e924"/>
 		</xs:sequence>
 	</xs:complexType>
-	<xs:simpleType name="title">
+	<xs:simpleType name="typef385c15a0c06eeab4f4a007c40599064">
 		<xs:restriction base="xs:string">
 			<xs:pattern value="[A-z]{3,16}"/>
 		</xs:restriction>
 	</xs:simpleType>
-	<xs:complexType name="location">
+	<xs:complexType name="typeb534788702d7583a85337e047716e924">
 		<xs:sequence>
 			<xs:element maxOccurs="1" minOccurs="0" name="lat" type="xs:integer"/>
 			<xs:element maxOccurs="1" minOccurs="0" name="long" type="xs:integer"/>
 		</xs:sequence>
 	</xs:complexType>
-	<xs:complexType name="origin">
-		<xs:sequence>
-			<xs:element maxOccurs="1" minOccurs="0" name="lat" type="xs:integer"/>
-			<xs:element maxOccurs="1" minOccurs="0" name="long" type="xs:integer"/>
-		</xs:sequence>
-	</xs:complexType>
-	<xs:simpleType name="price">
+	<xs:simpleType name="type41b5d91a7e5b6a356e679cc5fa5d64b6">
 		<xs:restriction base="xs:float">
 			<xs:maxInclusive value="100"/>
 			<xs:minInclusive value="1"/>
 		</xs:restriction>
 	</xs:simpleType>
-	<xs:simpleType name="rating">
+	<xs:simpleType name="type442ba5164a6db9bc4be656bccda23328">
 		<xs:restriction base="xs:integer">
 			<xs:maxInclusive value="5"/>
 			<xs:minInclusive value="1"/>
 		</xs:restriction>
 	</xs:simpleType>
-	<xs:simpleType name="content">
+	<xs:simpleType name="type6022b25ec119c5585bd9109efee01a3e">
 		<xs:restriction base="xs:string">
 			<xs:minLength value="3"/>
 			<xs:maxLength value="512"/>
 		</xs:restriction>
 	</xs:simpleType>
-	<xs:simpleType name="question">
+	<xs:simpleType name="typeabbed36c306165ec45c99cbe9488a57f">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="foo"/>
 			<xs:enumeration value="bar"/>

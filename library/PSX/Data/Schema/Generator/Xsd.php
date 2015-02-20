@@ -306,7 +306,7 @@ class Xsd implements GeneratorInterface
 	{
 		if($this->hasConstraints($type))
 		{
-			return ($withNamespace ? 'tns:' : '') . $type->getName();
+			return ($withNamespace ? 'tns:' : '') . 'type' . $type->getId();
 		}
 		else
 		{

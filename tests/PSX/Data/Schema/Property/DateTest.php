@@ -59,4 +59,11 @@ class DateTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertTrue($property->validate('2000-01-01+25:00'));
 	}
+
+	public function testGetId()
+	{
+		$property = new Date('test');
+
+		$this->assertEquals('1d54780d0e68a1e4a55f276f2b987b3d', $property->getId());
+	}
 }

@@ -61,6 +61,14 @@ interface PropertyInterface
 	public function getReference();
 
 	/**
+	 * Returns an identifier which represents the property. Properties which 
+	 * have the same identifier have the same semantic meaning
+	 *
+	 * @return string
+	 */
+	public function getId();
+
+	/**
 	 * Validates the given data and throws an exception if the data is not valid
 	 *
 	 * @throws PSX\Data\Schema\ValidationException

@@ -50,4 +50,11 @@ class FloatTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertTrue($property->validate('foo'));
 	}
+
+	public function testGetId()
+	{
+		$property = new Float('test');
+
+		$this->assertEquals('fe4ded0fa29552b15aa3770177466033', $property->getId());
+	}
 }

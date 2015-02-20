@@ -60,4 +60,11 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertTrue($property->validate('2002-10-10T17:00:00+25:00'));
 	}
+
+	public function testGetId()
+	{
+		$property = new DateTime('test');
+
+		$this->assertEquals('8319e693891940b6a51823148dc49af1', $property->getId());
+	}
 }

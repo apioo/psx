@@ -61,4 +61,16 @@ abstract class Decimal extends PropertySimpleAbstract
 	{
 		return $this->min;
 	}
+
+	/**
+	 * @return string
+	 */
+	public function getId()
+	{
+		return md5(
+			parent::getId() .
+			$this->min .
+			$this->max
+		);
+	}
 }

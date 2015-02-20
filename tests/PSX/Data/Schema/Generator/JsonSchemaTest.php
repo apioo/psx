@@ -34,12 +34,62 @@ class JsonSchemaTest extends GeneratorTestCase
 {
 	public function testGenerate()
 	{
-		$generator = new JsonSchema('http://ns.foo.com');
+		$generator = new JsonSchema();
 		$result    = $generator->generate($this->getSchema());
 
 		$expect = <<<'JSON'
 {
-  "id": "http:\/\/ns.foo.com",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "urn:schema.phpsx.org#",
+  "description": "An general news entry",
+  "definitions": {
+    "refc4ddf063f76e992fb7401c8cb36ab534": {
+      "type": "object",
+      "description": "An simple author element with some description",
+      "properties": {
+        "title": {
+          "type": "string",
+          "pattern": "[A-z]{3,16}"
+        },
+        "email": {
+          "type": "string",
+          "description": "We will send no spam to this addresss"
+        },
+        "categories": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "locations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/refb534788702d7583a85337e047716e924"
+          }
+        },
+        "origin": {
+          "$ref": "#/definitions/refb534788702d7583a85337e047716e924"
+        }
+      },
+      "required": [
+        "title"
+      ],
+      "additionalProperties": false
+    },
+    "refb534788702d7583a85337e047716e924": {
+      "type": "object",
+      "description": "Location of the person",
+      "properties": {
+        "lat": {
+          "type": "integer"
+        },
+        "long": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
   "type": "object",
   "properties": {
     "tags": {
@@ -52,53 +102,7 @@ class JsonSchemaTest extends GeneratorTestCase
     "receiver": {
       "type": "array",
       "items": {
-        "type": "object",
-        "properties": {
-          "title": {
-            "type": "string",
-            "pattern": "[A-z]{3,16}"
-          },
-          "email": {
-            "type": "string"
-          },
-          "categories": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "locations": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "lat": {
-                  "type": "integer"
-                },
-                "long": {
-                  "type": "integer"
-                }
-              },
-              "additionalProperties": false
-            }
-          },
-          "origin": {
-            "type": "object",
-            "properties": {
-              "lat": {
-                "type": "integer"
-              },
-              "long": {
-                "type": "integer"
-              }
-            },
-            "additionalProperties": false
-          }
-        },
-        "required": [
-          "title"
-        ],
-        "additionalProperties": false
+        "$ref": "#/definitions/refc4ddf063f76e992fb7401c8cb36ab534"
       },
       "minItems": 1
     },
@@ -106,53 +110,7 @@ class JsonSchemaTest extends GeneratorTestCase
       "type": "boolean"
     },
     "author": {
-      "type": "object",
-      "properties": {
-        "title": {
-          "type": "string",
-          "pattern": "[A-z]{3,16}"
-        },
-        "email": {
-          "type": "string"
-        },
-        "categories": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "locations": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "lat": {
-                "type": "integer"
-              },
-              "long": {
-                "type": "integer"
-              }
-            },
-            "additionalProperties": false
-          }
-        },
-        "origin": {
-          "type": "object",
-          "properties": {
-            "lat": {
-              "type": "integer"
-            },
-            "long": {
-              "type": "integer"
-            }
-          },
-          "additionalProperties": false
-        }
-      },
-      "required": [
-        "title"
-      ],
-      "additionalProperties": false
+      "$ref": "#/definitions/refc4ddf063f76e992fb7401c8cb36ab534"
     },
     "sendDate": {
       "type": "string"
@@ -176,7 +134,8 @@ class JsonSchemaTest extends GeneratorTestCase
     "content": {
       "type": "string",
       "minLength": 3,
-      "maxLength": 512
+      "maxLength": 512,
+      "description": "Contains the main content of the news entry"
     },
     "question": {
       "type": "string",

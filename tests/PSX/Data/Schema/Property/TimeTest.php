@@ -49,4 +49,11 @@ class TimeTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertTrue($property->validate('foo'));
 	}
+
+	public function testGetId()
+	{
+		$property = new Time('test');
+
+		$this->assertEquals('3c6aef662b76a50263a19c4f3589414d', $property->getId());
+	}
 }

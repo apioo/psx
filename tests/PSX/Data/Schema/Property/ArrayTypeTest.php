@@ -102,4 +102,16 @@ class ArrayTypeTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals($prototype, $property->getPrototype());
 	}
+
+	public function testGetId()
+	{
+		$property = new ArrayType('test');
+
+		$this->assertEquals('79db27401a9ee86ee36d6c38ba1cd653', $property->getId());
+
+		$property = new ArrayType('test');
+		$property->setPrototype(new String('foo'));
+
+		$this->assertEquals('22f80b3e7b33b9430847a410fb4eea55', $property->getId());
+	}
 }

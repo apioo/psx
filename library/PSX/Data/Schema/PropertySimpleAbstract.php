@@ -55,7 +55,7 @@ abstract class PropertySimpleAbstract extends PropertyAbstract
 	}
 
 	/**
-	 * @param string $enumeration
+	 * @param array $enumeration
 	 * @return $this
 	 */
 	public function setEnumeration(array $enumeration)
@@ -71,6 +71,18 @@ abstract class PropertySimpleAbstract extends PropertyAbstract
 	public function getEnumeration()
 	{
 		return $this->enumeration;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getId()
+	{
+		return md5(
+			parent::getId() .
+			$this->pattern .
+			($this->enumeration ? implode(',', $this->enumeration) : '')
+		);
 	}
 
 	/**

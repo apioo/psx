@@ -50,16 +50,16 @@ class Html implements GeneratorInterface
 
 	protected function generateType(PropertyInterface $type)
 	{
-		if(in_array($type->getName(), $this->_types))
+		if(in_array($type->getId(), $this->_types))
 		{
 			return;
 		}
 
-		$this->_types[] = $type->getName();
+		$this->_types[] = $type->getId();
 
 		if($type instanceof Property\ComplexType)
 		{
-			$response = '<div id="type-' . $type->getName() . '" class="type">';
+			$response = '<div id="type-' . $type->getId() . '" class="type">';
 			$response.= '<h1>' . $type->getName() . '</h1>';
 			$response.= '<div class="type-description">' . $type->getDescription() . '</div>';
 			$response.= '<table class="table type-properties">';
@@ -130,7 +130,7 @@ class Html implements GeneratorInterface
 	{
 		if($type instanceof Property\ComplexType)
 		{
-			$span = '<span class="property-type type-object"><a href="#type-' . $type->getName() . '">' . $type->getName() . '</a></span>';
+			$span = '<span class="property-type type-object"><a href="#type-' . $type->getId() . '">' . $type->getName() . '</a></span>';
 
 			return [$span, null];
 		}

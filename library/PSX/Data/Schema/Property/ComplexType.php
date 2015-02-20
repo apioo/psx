@@ -74,6 +74,18 @@ class ComplexType extends PropertyAbstract
 		}
 	}
 
+	public function getId()
+	{
+		$id = parent::getId();
+
+		foreach($this->properties as $property)
+		{
+			$id.= $property->getName() . $property->getId();
+		}
+
+		return md5($id);
+	}
+
 	public function validate($data)
 	{
 		parent::validate($data);

@@ -62,6 +62,18 @@ class String extends PropertySimpleAbstract
 		return $this->maxLength;
 	}
 
+	/**
+	 * @return string
+	 */
+	public function getId()
+	{
+		return md5(
+			parent::getId() .
+			$this->minLength .
+			$this->maxLength
+		);
+	}
+
 	public function validate($data)
 	{
 		parent::validate($data);
