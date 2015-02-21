@@ -99,7 +99,7 @@ JSON;
 
 		$expect = array(
 			'success' => true,
-			'message' => 'Record successful created',
+			'message' => 'Comment successful created',
 		);
 
 		$this->assertEquals($expect, $body);
@@ -160,7 +160,7 @@ JSON;
 
 		$expect = array(
 			'success' => true,
-			'message' => 'Record successful updated',
+			'message' => 'Comment successful updated',
 		);
 
 		$this->assertEquals($expect, $body);
@@ -215,7 +215,7 @@ JSON;
 
 		$expect = array(
 			'success' => true,
-			'message' => 'Record successful deleted',
+			'message' => 'Comment successful deleted',
 		);
 
 		$this->assertEquals($expect, $body);

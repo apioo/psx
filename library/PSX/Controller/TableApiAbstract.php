@@ -99,7 +99,7 @@ abstract class TableApiAbstract extends SchemaApiAbstract
 
 		return array(
 			'success' => true,
-			'message' => 'Record successful created',
+			'message' => sprintf('%s successful created', ucfirst($table->getDisplayName())),
 		);
 	}
 
@@ -110,7 +110,7 @@ abstract class TableApiAbstract extends SchemaApiAbstract
 
 		return array(
 			'success' => true,
-			'message' => 'Record successful updated',
+			'message' => sprintf('%s successful updated', ucfirst($table->getDisplayName())),
 		);
 	}
 
@@ -121,7 +121,7 @@ abstract class TableApiAbstract extends SchemaApiAbstract
 
 		return array(
 			'success' => true,
-			'message' => 'Record successful deleted',
+			'message' => sprintf('%s successful deleted', ucfirst($table->getDisplayName())),
 		);
 	}
 
@@ -135,7 +135,7 @@ abstract class TableApiAbstract extends SchemaApiAbstract
 	protected function getTableSchema(TableInterface $table)
 	{
 		$columns = $table->getColumns();
-		$builder = new SchemaBuilder($table->getName());
+		$builder = new SchemaBuilder($table->getDisplayName());
 
 		foreach($columns as $column => $type)
 		{
