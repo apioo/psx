@@ -21,24 +21,24 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Controller\Foo\Schema;
+namespace PSX\Api\View;
 
-use PSX\Data\SchemaAbstract;
+use PSX\Api\View;
 
 /**
- * Collection
+ * GeneratorInterface
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Delete extends SchemaAbstract
+interface GeneratorInterface
 {
-	public function getDefinition()
-	{
-		$entry = $this->getSchema('PSX\Controller\Foo\Schema\Entry');
-		$entry->get('id')->setRequired(true);
-
-		return $entry;
-	}
+	/**
+	 * Generates an representation of the view in another format
+	 *
+	 * @param PSX\Api\View $view
+	 * @return string
+	 */
+	public function generate(View $view);
 }

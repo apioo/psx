@@ -21,89 +21,38 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Wsdl;
+namespace PSX\Api\View\Generator\Html;
+
+use PSX\Api\View;
+use PSX\Api\View\Generator\Html\Sample\LoaderInterface;
+use PSX\Api\View\Generator\HtmlAbstract;
+use PSX\Data\SchemaInterface;
 
 /**
- * Operation
+ * Sample
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Operation
+class Sample extends HtmlAbstract
 {
-	protected $name;
-	protected $method;
-	protected $in;
-	protected $out;
+	protected $modifier;
 
-	public function __construct($name)
+	public function __construct(LoaderInterface $loader, $modifier = null)
 	{
-		$this->name = $name;
+		parent::__construct($modifier);
+
+		$this->loader = $loader;
 	}
 
 	public function getName()
 	{
-		return $this->name;
+		return 'Example';
 	}
 
-	public function setMethod($method)
+	public function generateHtml($modifier, SchemaInterface $schema, $path)
 	{
-		$this->method = $method;
-	}
-	
-	public function getMethod()
-	{
-		return $this->method;
-	}
-
-	public function setIn($in)
-	{
-		$this->in = $in;
-	}
-
-	public function getIn()
-	{
-		return $this->in;
-	}
-
-	public function hasIn()
-	{
-		return !empty($this->in);
-	}
-
-	public function setOut($out)
-	{
-		$this->out = $out;
-	}
-	
-	public function getOut()
-	{
-		return $this->out;
-	}
-
-	public function hasOut()
-	{
-		return !empty($this->out);
-	}
-
-	public function hasOperation()
-	{
-		return !empty($this->in) || !empty($this->out);
-	}
-
-	public function isInOnly()
-	{
-		return !empty($this->in) && empty($this->out);
-	}
-
-	public function isOutOnly()
-	{
-		return empty($this->in) && !empty($this->out);
-	}
-
-	public function isInOut()
-	{
-		return !empty($this->in) && !empty($this->out);
+		return $this->loader->get($modifier, $path);
 	}
 }

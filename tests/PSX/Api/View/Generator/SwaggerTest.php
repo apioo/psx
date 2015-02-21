@@ -21,70 +21,34 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Controller\Tool;
+namespace PSX\Api\View\Generator;
 
-use PSX\Http\Stream\TempStream;
-use PSX\Http\Request;
-use PSX\Http\Response;
-use PSX\Json;
-use PSX\Test\ControllerTestCase;
-use PSX\Url;
+use DOMDocument;
+use PSX\Api\View;
 
 /**
- * SwaggerControllerTest
+ * SwaggerTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class SwaggerControllerTest extends ControllerTestCase
+class SwaggerTest extends GeneratorTestCase
 {
-	public function testIndex()
+	public function testGenerate()
 	{
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/swagger'), 'GET');
-		$request->addHeader('Accept', 'application/json');
-		$response = new Response();
-		$response->setBody($body);
+		$generator = new Swagger(1, 'http://api.phpsx.org', 'http://foo.phpsx.org');
+		$json      = $generator->generate($this->getView());
 
-		$controller = $this->loadController($request, $response);
-
-		$expect = <<<JSON
-{
-    "swaggerVersion": "1.2",
-    "apiVersion": "1.0",
-    "apis": [
-        {
-            "path": "\/1\/api"
-        }
-    ]
-}
-JSON;
-
-		$this->assertJsonStringEqualsJsonString($expect, (string) $body);
-	}
-
-	public function testDetail()
-	{
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/swagger/1/api'), 'GET');
-		$request->addHeader('Accept', 'application/json');
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-
-		$config   = getContainer()->getConfig();
-		$basePath = $config['psx_url'] . '/' . $config['psx_dispatch'];
-		$expect   = <<<JSON
+		$expect = <<<'JSON'
 {
     "swaggerVersion": "1.2",
     "apiVersion": 1,
-    "basePath": "http:\/\/127.0.0.1\/projects\/psx\/public\/index.php\/",
-    "resourcePath": "\/api",
+    "basePath": "http:\/\/api.phpsx.org",
+    "resourcePath": "\/foo\/bar",
     "apis": [
         {
-            "path": "\/api",
+            "path": "\/foo\/bar",
             "operations": [
                 {
                     "method": "GET",
@@ -165,7 +129,7 @@ JSON;
                 "entry": {
                     "type": "array",
                     "items": {
-                        "\$ref": "ref7738db4616810154ab42db61b65f74aa"
+                        "$ref": "ref7738db4616810154ab42db61b65f74aa"
                     }
                 }
             }
@@ -297,15 +261,6 @@ JSON;
 }
 JSON;
 
-		$this->assertJsonStringEqualsJsonString($expect, (string) $body);
-	}
-
-	protected function getPaths()
-	{
-		return array(
-			[['GET'], '/swagger', 'PSX\Controller\Tool\SwaggerGeneratorController'],
-			[['GET'], '/swagger/:version/*path', 'PSX\Controller\Tool\SwaggerGeneratorController'],
-			[['GET', 'POST', 'PUT', 'DELETE'], '/api', 'PSX\Controller\Foo\Application\TestSchemaApiController'],
-		);
+		$this->assertJsonStringEqualsJsonString($expect, $json);
 	}
 }

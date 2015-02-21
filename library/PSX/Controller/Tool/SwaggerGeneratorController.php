@@ -27,12 +27,12 @@ use PSX\Api\DocumentationInterface;
 use PSX\Api\DocumentedInterface;
 use PSX\Api\ResourceListing\Resource;
 use PSX\Api\View;
+use PSX\Api\View\Generator;
 use PSX\Controller\ViewAbstract;
 use PSX\Data\WriterInterface;
 use PSX\Http\Exception as HttpException;
 use PSX\Loader\Context;
 use PSX\Loader\PathMatcher;
-use PSX\Swagger\Generator;
 use PSX\Swagger\ResourceListing;
 use PSX\Swagger\ResourceObject;
 
@@ -65,7 +65,8 @@ class SwaggerGeneratorController extends ViewAbstract
 
 			foreach($resources as $resource)
 			{
-				$path = '/' . $resource->getDocumentation()->getLatestVersion() . Generator::transformRoute($resource->getPath());
+				$path = '/' . $resource->getDocumentation()->getLatestVersion();
+				$path.= Generator\Swagger::transformRoute($resource->getPath());
 
 				$resourceListing->addResource(new ResourceObject($path));
 			}
@@ -87,9 +88,11 @@ class SwaggerGeneratorController extends ViewAbstract
 					throw new HttpException\NotFoundException('Given version is not available');
 				}
 
-				$generator = new Generator($apiVersion, $this->config['psx_url'] . '/' . $this->config['psx_dispatch'], $this->config['psx_url']);
+				$this->response->setHeader('Content-Type', 'application/json');
 
-				$this->setBody($generator->generate($view), WriterInterface::JSON);
+				$generator = new Generator\Swagger($apiVersion, $this->config['psx_url'] . '/' . $this->config['psx_dispatch'], $this->config['psx_url']);
+
+				$this->setBody($generator->generate($view));
 			}
 			else
 			{

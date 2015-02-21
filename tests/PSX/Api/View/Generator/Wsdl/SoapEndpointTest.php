@@ -21,7 +21,7 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Wsdl;
+namespace PSX\Api\View\Generator\Wsdl;
 
 use PSX\Http\Request;
 use PSX\Http\Response;
@@ -45,7 +45,7 @@ class SoapEndpointTest extends ControllerDbTestCase
 {
 	public function getDataSet()
 	{
-		return $this->createFlatXMLDataSet(__DIR__ . '/../Sql/table_fixture.xml');
+		return $this->createFlatXMLDataSet(__DIR__ . '/../../../../Sql/table_fixture.xml');
 	}
 
 	public function testGetCollection()

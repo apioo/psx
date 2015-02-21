@@ -21,58 +21,35 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Api\Documentation;
+namespace PSX\Swagger;
 
-use PSX\Api\View;
+use PSX\Data\SerializeTestAbstract;
 
 /**
- * Data
+ * ParameterTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Data
+class ResponseMessageTest extends SerializeTestAbstract
 {
-	protected $data = array();
-
-	public function set($modifier, $data)
+	public function testSerialize()
 	{
-		$this->data[$modifier] = $data;
-	}
+		$responseMessage = new ResponseMessage(200, 'Success', 'Pet');
 
-	public function get($modifier)
-	{
-		return isset($this->data[$modifier]) ? $this->data[$modifier] : null;
-	}
+		$content = <<<JSON
+{
+  "code": 200,
+  "message": "Success",
+  "responseModel": "Pet"
+}
+JSON;
 
-	public function toArray()
-	{
-		$result  = array();
-		$methods = View::getMethods();
-		$types   = View::getTypes();
+		$this->assertRecordEqualsContent($responseMessage, $content);
 
-		foreach($methods as $method => $methodName)
-		{
-			$row = array();
-
-			foreach($types as $type => $typeName)
-			{
-				$modifier = $method | $type;
-				$data     = $this->get($modifier);
-
-				if($data !== null)
-				{
-					$row[strtolower($typeName)] = $data;
-				}
-			}
-
-			if(!empty($row))
-			{
-				$result[strtolower($methodName)] = $row;
-			}
-		}
-
-		return $result;
+		$this->assertEquals(200, $responseMessage->getCode());
+		$this->assertEquals('Success', $responseMessage->getMessage());
+		$this->assertEquals('Pet', $responseMessage->getResponseModel());
 	}
 }

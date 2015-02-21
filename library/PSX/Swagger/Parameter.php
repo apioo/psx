@@ -70,9 +70,19 @@ class Parameter extends RecordAbstract
 		$this->paramType = $paramType;
 	}
 
+	public function getParamType()
+	{
+		return $this->paramType;
+	}
+
 	public function setName($name)
 	{
 		$this->name = $name;
+	}
+
+	public function getName()
+	{
+		return $this->name;
 	}
 
 	public function setDescription($description)
@@ -80,9 +90,19 @@ class Parameter extends RecordAbstract
 		$this->description = $description;
 	}
 
+	public function getDescription()
+	{
+		return $this->description;
+	}
+
 	public function setRequired($required)
 	{
 		$this->required = $required;
+	}
+
+	public function getRequired()
+	{
+		return $this->required;
 	}
 
 	public function setAllowMultiple($allowMultiple)
@@ -90,8 +110,18 @@ class Parameter extends RecordAbstract
 		$this->allowMultiple = $allowMultiple;
 	}
 
+	public function getAllowMultiple()
+	{
+		return $this->allowMultiple;
+	}
+
 	public function setType($type)
 	{
 		$this->type = $type;
+	}
+
+	public function getType()
+	{
+		return $this->type;
 	}
 }

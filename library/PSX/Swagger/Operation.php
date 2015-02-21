@@ -39,7 +39,6 @@ class Operation extends RecordAbstract
 	protected $nickname;
 	protected $summary;
 	protected $notes;
-
 	protected $parameters       = array();
 	protected $responseMessages = array();
 

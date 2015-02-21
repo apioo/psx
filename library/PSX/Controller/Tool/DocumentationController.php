@@ -25,8 +25,8 @@ namespace PSX\Controller\Tool;
 
 use PSX\Api\DocumentedInterface;
 use PSX\Api\DocumentationInterface;
-use PSX\Api\Documentation\Generator;
-use PSX\Api\Documentation\Data;
+use PSX\Api\View\Generator;
+use PSX\Api\View\Generator\HtmlAbstract;
 use PSX\Api\ResourceListing\Resource;
 use PSX\Api\View;
 use PSX\Controller\ViewAbstract;
@@ -98,10 +98,6 @@ class DocumentationController extends ViewAbstract
 			throw new HttpException\BadRequestException('Version and path not provided');
 		}
 
-		$export = $this->getParameter('export');
-		$method = $this->getParameter('method');
-		$type   = $this->getParameter('type');
-
 		$resource = $this->resourceListing->getResource($path, $this->request, $this->response, $this->context);
 
 		if(!$resource instanceof Resource)
@@ -109,98 +105,64 @@ class DocumentationController extends ViewAbstract
 			throw new HttpException\InternalServerErrorException('Controller provides no documentation informations');
 		}
 
-		if(!empty($export))
+		$this->supportedWriter = array(WriterInterface::JSON, WriterInterface::XML);
+
+		$view = $resource->getDocumentation()->getView($version);
+
+		if($view instanceof View)
 		{
-			$view   = $resource->getDocumentation()->getView($version);
-			$schema = $view->get($this->getViewModifier($method, $type));
-			$body   = null;
+			$views = $resource->getDocumentation()->getViews();
 
-			if(!$schema instanceof SchemaInterface)
+			krsort($views);
+
+			$versions = array();
+			foreach($views as $key => $row)
 			{
-				throw new Exception('Schema not available');
+				$versions[] = array(
+					'version' => $key,
+					'status'  => $row->getStatus(),
+				);
 			}
 
-			if($export == self::EXPORT_XSD)
-			{
-				$this->response->setHeader('Content-Type', 'application/xml');
 
-				$generator = new SchemaGenerator\Xsd($this->config->get('psx_url'));
-				$body      = $generator->generate($schema);
-			}
-			else if($export == self::EXPORT_JSONSCHEMA)
-			{
-				$this->response->setHeader('Content-Type', 'application/json');
+			$generators = $this->getViewGenerators();
+			$methods    = View::getMethods();
+			$data       = array();
 
-				$generator = new SchemaGenerator\JsonSchema($this->config->get('psx_url'));
-				$body      = $generator->generate($schema);
-			}
-			else if($export == self::EXPORT_HTML)
+			foreach($generators as $name => $generator)
 			{
-				$this->response->setHeader('Content-Type', 'text/html');
+				if($generator instanceof HtmlAbstract)
+				{
+					$result = array();
 
-				$generator = new SchemaGenerator\Html($this->config->get('psx_url'));
-				$body      = $this->getHtmlTemplate($generator->generate($schema));
-			}
-			else
-			{
-				throw new HttpException\BadRequestException('Invalid export type');
+					foreach($methods as $method => $methodName)
+					{
+						$generator->setModifier($method);
+
+						$result[$methodName] = $generator->generate($view);
+					}
+
+					$data[$generator->getName()] = $result;
+				}
 			}
 
-			$this->setBody($body);
+			$this->setBody(array(
+				'method'      => $resource->getMethods(),
+				'path'        => $resource->getPath(),
+				'controller'  => $resource->getSource(),
+				'description' => $resource->getDocumentation()->getDescription(),
+				'versions'    => $versions,
+				'see_others'  => $this->getSeeOthers($version, $resource->getPath()),
+				'view'        => array(
+					'version' => $version,
+					'status'  => $view->getStatus(),
+					'data'    => $data,
+				),
+			));
 		}
 		else
 		{
-			$this->supportedWriter = array(WriterInterface::JSON, WriterInterface::XML);
-
-			$view = $resource->getDocumentation()->getView($version);
-
-			if($view instanceof View)
-			{
-				$views = $resource->getDocumentation()->getViews();
-
-				krsort($views);
-
-				$versions = array();
-				foreach($views as $key => $row)
-				{
-					$versions[] = array(
-						'version' => $key,
-						'status'  => $row->getStatus(),
-					);
-				}
-
-
-				$generators = $this->getViewGenerators();
-				$data       = array();
-
-				foreach($generators as $name => $generator)
-				{
-					$result = $generator->generate($resource->getPath(), $view);
-
-					if($result instanceof Data)
-					{
-						$data[$name] = $result->toArray();
-					}
-				}
-
-				$this->setBody(array(
-					'method'      => $resource->getMethods(),
-					'path'        => $resource->getPath(),
-					'controller'  => $resource->getSource(),
-					'description' => $resource->getDocumentation()->getDescription(),
-					'versions'    => $versions,
-					'see_others'  => $this->getSeeOthers($version, $resource->getPath()),
-					'view'        => array(
-						'version' => $version,
-						'status'  => $view->getStatus(),
-						'data'    => $data,
-					),
-				));
-			}
-			else
-			{
-				throw new HttpException\BadRequestException('Invalid api version');
-			}
+			throw new HttpException\BadRequestException('Invalid api version');
 		}
 	}
 
@@ -239,96 +201,6 @@ class DocumentationController extends ViewAbstract
 		return $result;
 	}
 
-	protected function getViewModifier($method, $type)
-	{
-		return $this->getMethodParameter($method) | $this->getTypeParameter($type);
-	}
-
-	protected function getMethodParameter($method)
-	{
-		$methodMap = array_flip(View::getMethods());
-
-		if(isset($methodMap[$method]))
-		{
-			return $methodMap[$method];
-		}
-		else
-		{
-			throw new HttpException\BadRequestException('Invalid method parameter');
-		}
-	}
-
-	protected function getTypeParameter($type)
-	{
-		$typeMap = array(
-			0 => View::TYPE_REQUEST,
-			1 => View::TYPE_RESPONSE,
-		);
-
-		if(isset($typeMap[$type]))
-		{
-			return $typeMap[$type];
-		}
-		else
-		{
-			throw new HttpException\BadRequestException('Invalid type parameter');
-		}
-	}
-
-	protected function getHtmlTemplate($body)
-	{
-		return <<<HTML
-<!DOCTYPE>
-<html>
-<head>
-	<title>Html</title>
-	<style type="text/css">
-	body
-	{
-		font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
-	}
-
-	h1
-	{
-		padding:10px;
-		background-color:#222;
-		color:#fff;
-		font-size:1.4em;
-	}
-
-	.table
-	{
-		width:100%;
-	}
-
-	.table th
-	{
-		border-bottom:2px solid #ccc;
-		text-align:left;
-		padding:6px;
-	}
-
-	.table td
-	{
-		padding:6px;
-		border-bottom:1px solid #eee;
-	}
-
-	.property-required
-	{
-		font-weight:bold;
-	}
-	</style>
-</head>
-<body>
-
-{$body}
-
-</body>
-</html>
-HTML;
-	}
-
 	protected function getTemplateFile()
 	{
 		return __DIR__ . '/../Resource/documentation_controller.tpl';
@@ -337,7 +209,7 @@ HTML;
 	protected function getViewGenerators()
 	{
 		return array(
-			'Schema' => new Generator\Schema(new SchemaGenerator\Html()),
+			'Schema' => new Generator\Html\Schema(new SchemaGenerator\Html()),
 		);
 	}
 

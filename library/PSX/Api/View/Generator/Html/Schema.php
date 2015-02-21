@@ -21,34 +21,36 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Wsdl;
+namespace PSX\Api\View\Generator\Html;
+
+use PSX\Api\View;
+use PSX\Api\View\Generator\HtmlAbstract;
+use PSX\Data\Schema\GeneratorInterface;
+use PSX\Data\SchemaInterface;
 
 /**
- * OperationTest
+ * Schema
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class OperationTest extends \PHPUnit_Framework_TestCase
+class Schema extends HtmlAbstract
 {
-	public function testIn()
+	public function __construct(GeneratorInterface $generator, $modifier = null)
 	{
-		$operation = new Operation('getEntry');
-		$operation->setMethod('GET');
-		$operation->setIn('void');
-		$operation->setOut('collection');
+		parent::__construct($modifier);
 
-		$this->assertEquals('getEntry', $operation->getName());
-		$this->assertEquals('GET', $operation->getMethod());
-		$this->assertEquals('void', $operation->getIn());
-		$this->assertTrue($operation->hasIn());
-		$this->assertEquals('collection', $operation->getOut());
-		$this->assertTrue($operation->hasOut());
+		$this->generator = $generator;
+	}
 
-		$this->assertTrue($operation->hasOperation());
-		$this->assertFalse($operation->isInOnly());
-		$this->assertFalse($operation->isOutOnly());
-		$this->assertTrue($operation->isInOut());
+	public function getName()
+	{
+		return 'Schema';
+	}
+
+	public function generateHtml($modifier, SchemaInterface $schema, $path)
+	{
+		return $this->generator->generate($schema);
 	}
 }

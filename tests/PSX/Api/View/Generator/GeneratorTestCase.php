@@ -21,26 +21,37 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Wsdl;
+namespace PSX\Api\View\Generator;
+
+use PSX\Loader\Context;
+use PSX\Test\ControllerTestCase;
 
 /**
- * GeneratorInterface
+ * GeneratorTestCase
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-interface GeneratorInterface
+abstract class GeneratorTestCase extends ControllerTestCase
 {
-	/**
-	 * Generates a WSDL schema
-	 *
-	 * @param string $name
-	 * @param string $endpoint
-	 * @param string $targetNamespace
-	 * @param array<DOMElement> $types
-	 * @param array<PSX\Wsdl\Operation> $operations
-	 * @return DOMDocument
-	 */
-	public function generate($name, $endpoint, $targetNamespace, array $types, array $operations);
+	protected function getView()
+	{
+		$request  = $this->getMock('PSX\Http\RequestInterface');
+		$response = $this->getMock('PSX\Http\ResponseInterface');
+
+		$context = new Context();
+		$context->set(Context::KEY_PATH, '/foo/bar');
+
+		$documentation = getContainer()->get('controller_factory')
+			->getController('PSX\Controller\Foo\Application\SchemaApi\VersionViewController', $request, $response, $context)
+			->getDocumentation();
+
+		return $documentation->getView($documentation->getLatestVersion());
+	}
+
+	protected function getPaths()
+	{
+		return array();
+	}
 }

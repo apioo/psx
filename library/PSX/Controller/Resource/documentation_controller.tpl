@@ -86,7 +86,7 @@
 		margin:12px 8px;
 	}
 
-	.psx-content > div > div > h4
+	.view > h4
 	{
 		margin:0px;
 		margin-top:8px;
@@ -97,7 +97,7 @@
 		color:#fff;
 	}
 
-	.psx-content > div > div > h5
+	.view-schema > h5
 	{
 		text-align:right;
 		background-color:#eee;
@@ -202,7 +202,7 @@
 
 				for (var i = 0; i < resp.method.length; i++) {
 
-					var method = resp.method[i].toLowerCase();
+					var method = resp.method[i].toUpperCase();
 
 					nav+= '<li role="presentation"><a href="#' + method + '">' + resp.method[i] + '</a></li>'
 
@@ -216,19 +216,8 @@
 						var dataType = resp.view.data[key];
 						var row = dataType[method];
 
-						if (row && (row['request'] || row['response'])) {
-
-							html+= '<h4>' + key + '</h4>';
-
-							if (row['request']) {
-								html+= '<h5>Request</h5>';
-								html+= row['request'];
-							}
-
-							if (row['response']) {
-								html+= '<h5>Response</h5>';
-								html+= row['response'];
-							}
+						if (row) {
+							html+= row;
 						}
 
 					}

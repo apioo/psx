@@ -36,15 +36,20 @@ class OperationTest extends SerializeTestAbstract
 {
 	public function testSerialize()
 	{
+		$parameter       = new Parameter('query', 'count', 'Count parameter');
+		$responseMessage = new ResponseMessage(200, 'Return', 'News');
+
 		$operation = new Operation('PUT', 'updatePet', 'Update an existing pet');
-		$operation->addResponseMessage(new ResponseMessage(200, 'Return', 'News'));
-		$operation->addParameter(new Parameter('query', 'count', 'Count parameter'));
+		$operation->setNotes('foobar');
+		$operation->addParameter($parameter);
+		$operation->addResponseMessage($responseMessage);
 
 		$content = <<<JSON
 {
   "method": "PUT",
   "nickname": "updatePet",
   "summary": "Update an existing pet",
+  "notes": "foobar",
   "parameters": [{
     "paramType": "query",
     "name": "count",
@@ -59,5 +64,12 @@ class OperationTest extends SerializeTestAbstract
 JSON;
 
 		$this->assertRecordEqualsContent($operation, $content);
+
+		$this->assertEquals('PUT', $operation->getMethod());
+		$this->assertEquals('updatePet', $operation->getNickname());
+		$this->assertEquals('Update an existing pet', $operation->getSummary());
+		$this->assertEquals('foobar', $operation->getNotes());
+		$this->assertEquals([$parameter], $operation->getParameters());
+		$this->assertEquals([$responseMessage], $operation->getResponseMessages());
 	}
 }

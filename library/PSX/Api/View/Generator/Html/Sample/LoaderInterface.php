@@ -21,50 +21,24 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Api\Documentation\Generator;
-
-use PSX\Api\Documentation\Data;
-use PSX\Api\Documentation\GeneratorInterface;
-use PSX\Api\Documentation\Generator\Sample\LoaderInterface;
-use PSX\Api\View;
-use PSX\Data\Schema\Generator;
+namespace PSX\Api\View\Generator\Html\Sample;
 
 /**
- * Sample
+ * LoaderInterface
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Sample implements GeneratorInterface
+interface LoaderInterface
 {
-	protected $loader;
-
-	public function __construct(LoaderInterface $loader)
-	{
-		$this->loader = $loader;
-	}
-
-	public function generate($path, View $view)
-	{
-		$data    = new Data();
-		$methods = View::getMethods();
-		$types   = View::getTypes();
-
-		foreach($methods as $method => $methodName)
-		{
-			foreach($types as $type => $typeName)
-			{
-				$modifier = $method | $type;
-				$result   = $this->loader->get($modifier, $path);
-
-				if(!empty($result))
-				{
-					$data->set($modifier, $result);
-				}
-			}
-		}
-
-		return $data;
-	}
+	/**
+	 * Returns an an sample code according to an specific request method, type
+	 * and path
+	 *
+	 * @param integer $modifier
+	 * @param string $path
+	 * @return string
+	 */
+	public function get($modifier, $path);
 }

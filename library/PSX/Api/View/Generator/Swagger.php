@@ -21,10 +21,18 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Swagger;
+namespace PSX\Api\View\Generator;
 
 use PSX\Api\View;
-use PSX\Data\Schema\Generator as DataGenerator;
+use PSX\Api\View\GeneratorAbstract;
+use PSX\Data\Writer\Json as JsonWriter;
+use PSX\Json;
+use PSX\Swagger\Api;
+use PSX\Swagger\Declaration;
+use PSX\Swagger\Model;
+use PSX\Swagger\Operation;
+use PSX\Swagger\Parameter;
+use PSX\Swagger\ResponseMessage;
 
 /**
  * Generates an Swagger 1.2 representation of an API view. Note this does not
@@ -34,7 +42,7 @@ use PSX\Data\Schema\Generator as DataGenerator;
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Generator
+class Swagger extends GeneratorAbstract
 {
 	protected $apiVersion;
 	protected $basePath;
@@ -55,7 +63,14 @@ class Generator
 		$declaration->setModels($this->getModels($view));
 		$declaration->setResourcePath(self::transformRoute($view->getPath()));
 
-		return $declaration;
+		$writer  = new JsonWriter();
+		$swagger = $writer->write($declaration);
+
+		// since swagger does not fully support the json schema spec we must 
+		// remove the $ref fragments
+		$swagger = str_replace('#\/definitions\/', '', $swagger);
+
+		return $swagger;
 	}
 
 	protected function getApis(View $view)
@@ -82,7 +97,7 @@ class Generator
 				if($view->has($method | View::TYPE_RESPONSE))
 				{
 					$definition = $view->get($method | View::TYPE_RESPONSE)->getDefinition();
-					$type       = $definition->getName();
+					$type       = $this->getPrefix($method | View::TYPE_RESPONSE);
 					$message    = $definition->getDescription() ?: 'Response';
 
 					$operation->addResponseMessage(new ResponseMessage(200, $message, $type));
@@ -90,8 +105,10 @@ class Generator
 
 				if($view->has($method | View::TYPE_REQUEST))
 				{
-					$parameter = new Parameter('body', 'body', null, true);
-					$parameter->setType($view->get($method | View::TYPE_REQUEST)->getDefinition()->getName());
+					$definition = $view->get($method | View::TYPE_REQUEST)->getDefinition();
+					$type       = $this->getPrefix($method | View::TYPE_REQUEST);
+					$parameter  = new Parameter('body', 'body', null, true);
+					$parameter->setType($type);
 
 					$operation->addParameter($parameter);
 				}
@@ -105,21 +122,31 @@ class Generator
 
 	protected function getModels(View $view)
 	{
-		$generator = new DataGenerator\JsonSchema($this->targetNamespace);
-		$models    = array();
+		$generator = new JsonSchema($this->targetNamespace);
+		$data      = json_decode($generator->generate($view), true);
 
-		foreach($view as $schema)
+		foreach($data['properties'] as $name => $property)
 		{
-			$data = json_decode($generator->generate($schema), true);
-			$name = $schema->getDefinition()->getName();
+			$description = isset($property['description']) ? $property['description'] : null;
+			$required    = isset($property['required']) ? $property['required'] : null;
+			$properties  = isset($property['properties']) ? $property['properties'] : array();
 
-			if(!isset($models[$name]))
-			{
-				$model = new Model($name);
-				$model->setProperties($data['properties']);
+			$model = new Model($name, $description, $required);
+			$model->setProperties($properties);
 
-				$models[$name] = $model;
-			}
+			$models[$name] = $model;
+		}
+
+		foreach($data['definitions'] as $name => $definition)
+		{
+			$description = isset($definition['description']) ? $definition['description'] : null;
+			$required    = isset($definition['required']) ? $definition['required'] : null;
+			$properties  = isset($definition['properties']) ? $definition['properties'] : array();
+
+			$model = new Model($name, $description, $required);
+			$model->setProperties($properties);
+
+			$models[$name] = $model;
 		}
 
 		return $models;

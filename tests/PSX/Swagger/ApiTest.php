@@ -56,5 +56,9 @@ class ApiTest extends SerializeTestAbstract
 JSON;
 
 		$this->assertRecordEqualsContent($api, $content);
+
+    $this->assertEquals('/foo', $api->getPath());
+    $this->assertEquals('Foobar', $api->getDescription());
+    $this->assertEquals([$operation], $api->getOperations());
 	}
 }

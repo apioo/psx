@@ -21,7 +21,7 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Api\Documentation\Generator\Sample\Loader;
+namespace PSX\Api\View\Generator\Html\Sample\Loader;
 
 use PSX\Api\View;
 
@@ -38,14 +38,14 @@ class XmlFileTest extends \PHPUnit_Framework_TestCase
 	{
 		$loader = new XmlFile(__DIR__ . '/sample.xml');
 
-		$this->assertEquals('<pre><code class="http">get-request</code></pre>', $loader->get(View::METHOD_GET | View::TYPE_REQUEST, '/population'));
-		$this->assertEquals('<pre><code class="http">get-response</code></pre>', $loader->get(View::METHOD_GET | View::TYPE_RESPONSE, '/population'));
-		$this->assertEquals('<pre><code class="http">post-request</code></pre>', $loader->get(View::METHOD_POST | View::TYPE_REQUEST, '/population'));
-		$this->assertEquals('<pre><code class="http">post-response</code></pre>', $loader->get(View::METHOD_POST | View::TYPE_RESPONSE, '/population'));
-		$this->assertEquals('<pre><code class="http">put-request</code></pre>', $loader->get(View::METHOD_PUT | View::TYPE_REQUEST, '/population'));
-		$this->assertEquals('<pre><code class="http">put-response</code></pre>', $loader->get(View::METHOD_PUT | View::TYPE_RESPONSE, '/population'));
-		$this->assertEquals('<pre><code class="http">delete-request</code></pre>', $loader->get(View::METHOD_DELETE | View::TYPE_REQUEST, '/population'));
-		$this->assertEquals('<pre><code class="http">delete-response</code></pre>', $loader->get(View::METHOD_DELETE | View::TYPE_RESPONSE, '/population'));
+		$this->assertEquals('<pre><code class="http">get-request</code></pre>', $loader->get(View::METHOD_GET | View::TYPE_REQUEST, '/foo/bar'));
+		$this->assertEquals('<pre><code class="http">get-response</code></pre>', $loader->get(View::METHOD_GET | View::TYPE_RESPONSE, '/foo/bar'));
+		$this->assertEquals('<pre><code class="http">post-request</code></pre>', $loader->get(View::METHOD_POST | View::TYPE_REQUEST, '/foo/bar'));
+		$this->assertEquals('<pre><code class="http">post-response</code></pre>', $loader->get(View::METHOD_POST | View::TYPE_RESPONSE, '/foo/bar'));
+		$this->assertEquals('<pre><code class="http">put-request</code></pre>', $loader->get(View::METHOD_PUT | View::TYPE_REQUEST, '/foo/bar'));
+		$this->assertEquals('<pre><code class="http">put-response</code></pre>', $loader->get(View::METHOD_PUT | View::TYPE_RESPONSE, '/foo/bar'));
+		$this->assertEquals('<pre><code class="http">delete-request</code></pre>', $loader->get(View::METHOD_DELETE | View::TYPE_REQUEST, '/foo/bar'));
+		$this->assertEquals('<pre><code class="http">delete-response</code></pre>', $loader->get(View::METHOD_DELETE | View::TYPE_RESPONSE, '/foo/bar'));
 
 		$this->assertEquals('<pre><code class="http">get-request-detail</code></pre>', $loader->get(View::METHOD_GET | View::TYPE_REQUEST, '/population/:id'));
 		$this->assertEquals('<pre><code class="http">get-response-detail</code></pre>', $loader->get(View::METHOD_GET | View::TYPE_RESPONSE, '/population/:id'));
@@ -55,9 +55,9 @@ class XmlFileTest extends \PHPUnit_Framework_TestCase
 	{
 		$loader = new XmlFile(__DIR__ . '/sample.xml');
 
-		$this->assertEmpty($loader->get(0, '/population'));
-		$this->assertEmpty($loader->get('', '/population'));
-		$this->assertEmpty($loader->get('GET', '/population'));
+		$this->assertEmpty($loader->get(0, '/foo/bar'));
+		$this->assertEmpty($loader->get('', '/foo/bar'));
+		$this->assertEmpty($loader->get('GET', '/foo/bar'));
 	}
 
 	public function testGetUnknownPath()

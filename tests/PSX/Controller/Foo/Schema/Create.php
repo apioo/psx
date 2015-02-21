@@ -37,8 +37,8 @@ class Create extends SchemaAbstract
 	public function getDefinition()
 	{
 		$entry = $this->getSchema('PSX\Controller\Foo\Schema\Entry');
-		$entry->getChild('title')->setRequired(true);
-		$entry->getChild('date')->setRequired(true);
+		$entry->get('title')->setRequired(true);
+		$entry->get('date')->setRequired(true);
 
 		return $entry;
 	}

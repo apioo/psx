@@ -21,24 +21,34 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Api\Documentation\Generator\Sample;
+namespace PSX\Api\View\Generator\Wsdl;
 
 /**
- * LoaderInterface
+ * OperationTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-interface LoaderInterface
+class OperationTest extends \PHPUnit_Framework_TestCase
 {
-	/**
-	 * Returns an an sample code according to an specific request method, type
-	 * and path
-	 *
-	 * @param integer $modifier
-	 * @param string $path
-	 * @return string
-	 */
-	public function get($modifier, $path);
+	public function testIn()
+	{
+		$operation = new Operation('getEntry');
+		$operation->setMethod('GET');
+		$operation->setIn('void');
+		$operation->setOut('collection');
+
+		$this->assertEquals('getEntry', $operation->getName());
+		$this->assertEquals('GET', $operation->getMethod());
+		$this->assertEquals('void', $operation->getIn());
+		$this->assertTrue($operation->hasIn());
+		$this->assertEquals('collection', $operation->getOut());
+		$this->assertTrue($operation->hasOut());
+
+		$this->assertTrue($operation->hasOperation());
+		$this->assertFalse($operation->isInOnly());
+		$this->assertFalse($operation->isOutOnly());
+		$this->assertTrue($operation->isInOut());
+	}
 }

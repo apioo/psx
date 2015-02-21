@@ -21,12 +21,12 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Api\Documentation\Generator\Sample\Loader;
+namespace PSX\Api\View\Generator\Html\Sample\Loader;
 
 use DOMDocument;
 use DOMXPath;
 use PSX\Api\View;
-use PSX\Api\Documentation\Generator\Sample\LoaderInterface;
+use PSX\Api\View\Generator\Html\Sample\LoaderInterface;
 
 /**
  * XmlFile

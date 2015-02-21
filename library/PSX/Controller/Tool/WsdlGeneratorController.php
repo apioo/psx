@@ -27,11 +27,11 @@ use PSX\Api\DocumentationInterface;
 use PSX\Api\DocumentedInterface;
 use PSX\Api\ResourceListing\Resource;
 use PSX\Api\View;
+use PSX\Api\View\Generator;
 use PSX\Controller\ViewAbstract;
 use PSX\Http\Exception as HttpException;
 use PSX\Loader\Context;
 use PSX\Loader\PathMatcher;
-use PSX\Wsdl\Generator;
 
 /**
  * WsdlGeneratorController
@@ -69,12 +69,11 @@ class WsdlGeneratorController extends ViewAbstract
 			$endpoint        = $this->config['psx_url'] . '/' . $this->config['psx_dispatch'] . ltrim($resource->getPath(), '/');
 			$targetNamespace = $this->config['psx_soap_namespace'];
 
-			$generator = new Generator($name, $endpoint, $targetNamespace);
+			$this->response->setHeader('Content-Type', 'text/xml');
 
-			$wsdl = $generator->generate($view);
-			$wsdl->formatOutput = true;
+			$generator = new Generator\Wsdl($name, $endpoint, $targetNamespace);
 
-			$this->setBody($wsdl);
+			$this->setBody($generator->generate($view));
 		}
 		else
 		{

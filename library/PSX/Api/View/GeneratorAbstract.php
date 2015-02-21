@@ -21,27 +21,26 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Api\Documentation;
+namespace PSX\Api\View;
 
 use PSX\Api\View;
 
 /**
- * An generator generates documentation data about an view. This can be i.e. a
- * html table containing all parameters or an sample call
+ * GeneratorAbstract
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-interface GeneratorInterface
+abstract class GeneratorAbstract implements GeneratorInterface
 {
 	/**
-	 * Returns an documentation data object for an view. Path is the route which
-	 * belongs to the api
+	 * Returns the key which gets appended to every type so it is unique
 	 *
-	 * @param string $path
-	 * @param PSX\Api\View $view
-	 * @return PSX\Api\Documentation\Data
+	 * @return string
 	 */
-	public function generate($path, View $view);
+	protected function getPrefix($key)
+	{
+		return strtolower(View::getMethodName($key)) . View::getTypeName($key);
+	}
 }

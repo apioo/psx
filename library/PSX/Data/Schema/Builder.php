@@ -32,12 +32,10 @@ namespace PSX\Data\Schema;
  */
 class Builder
 {
-	protected $parent;
 	protected $property;
 
-	public function __construct($name, $parent = null)
+	public function __construct($name)
 	{
-		$this->parent   = $parent;
 		$this->property = new Property\ComplexType($name);
 	}
 

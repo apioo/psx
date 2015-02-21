@@ -53,7 +53,7 @@ class WsdlControllerTest extends ControllerTestCase
 		$dom = new DOMDocument();
 		$dom->loadXML($wsdl);
 
-		$result = $dom->schemaValidate(__DIR__ . '/../../Wsdl/wsdl1.xsd');
+		$result = $dom->schemaValidate(__DIR__ . '/../../Api/View/Generator/Wsdl/wsdl1.xsd');
 
 		$this->assertTrue($result);
 	}

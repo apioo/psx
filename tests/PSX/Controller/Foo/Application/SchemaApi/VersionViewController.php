@@ -28,6 +28,7 @@ use PSX\Api\Version;
 use PSX\Api\View;
 use PSX\Data\RecordInterface;
 use PSX\Controller\SchemaApiAbstract;
+use PSX\Loader\Context;
 
 /**
  * VersionViewController
@@ -54,9 +55,10 @@ class VersionViewController extends SchemaApiAbstract
 	{
 		$responseSchema = $this->schemaManager->getSchema('PSX\Controller\Foo\Schema\SuccessMessage');
 
+		$path    = $this->context->get(Context::KEY_PATH);
 		$version = new Documentation\Version();
 
-		$builder = new View\Builder(View::STATUS_CLOSED);
+		$builder = new View\Builder(View::STATUS_CLOSED, $path);
 		$builder->setGet($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Collection'));
 		$builder->setPost($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Create'), $responseSchema);
 		$builder->setPut($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Update'), $responseSchema);
@@ -64,7 +66,7 @@ class VersionViewController extends SchemaApiAbstract
 
 		$version->addView(1, $builder->getView());
 
-		$builder = new View\Builder(View::STATUS_DEPRECATED);
+		$builder = new View\Builder(View::STATUS_DEPRECATED, $path);
 		$builder->setGet($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Collection'));
 		$builder->setPost($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Create'), $responseSchema);
 		$builder->setPut($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Update'), $responseSchema);
@@ -72,7 +74,7 @@ class VersionViewController extends SchemaApiAbstract
 
 		$version->addView(2, $builder->getView());
 
-		$builder = new View\Builder();
+		$builder = new View\Builder(View::STATUS_ACTIVE, $path);
 		$builder->setGet($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Collection'));
 		$builder->setPost($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Create'), $responseSchema);
 		$builder->setPut($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Update'), $responseSchema);

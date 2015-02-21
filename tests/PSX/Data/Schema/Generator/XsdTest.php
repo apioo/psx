@@ -173,6 +173,6 @@ XML;
 		$dom = new \DOMDocument();
 		$dom->loadXML($result);
 
-		$this->assertTrue($dom->schemaValidate(__DIR__ . '/../../../Wsdl/schema.xsd'));
+		$this->assertTrue($dom->schemaValidate(__DIR__ . '/../../../Api/View/Generator/Wsdl/schema.xsd'));
 	}
 }

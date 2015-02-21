@@ -21,50 +21,43 @@
  * along with psx. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace PSX\Api\Documentation\Generator;
+namespace PSX\Swagger;
 
-use PSX\Api\Documentation\Data;
-use PSX\Api\Documentation\GeneratorInterface;
-use PSX\Api\View;
-use PSX\Data\Schema\GeneratorInterface as SchemaGeneratorInterface;
-use PSX\Data\SchemaInterface;
+use PSX\Data\SerializeTestAbstract;
 
 /**
- * Schema
+ * ParameterTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3
  * @link    http://phpsx.org
  */
-class Schema implements GeneratorInterface
+class ParameterTest extends SerializeTestAbstract
 {
-	protected $generator;
-
-	public function __construct(SchemaGeneratorInterface $generator)
+	public function testSerialize()
 	{
-		$this->generator = $generator;
-	}
+		$parameter = new Parameter('query', 'count', 'Count parameter', true);
+		$parameter->setAllowMultiple(false);
+		$parameter->setType('Pet');
 
-	public function generate($path, View $view)
-	{
-		$data    = new Data();
-		$methods = View::getMethods();
-		$types   = View::getTypes();
+		$content = <<<JSON
+{
+  "paramType": "query",
+  "name": "count",
+  "description": "Count parameter",
+  "required": true,
+  "allowMultiple": false,
+  "type": "Pet"
+}
+JSON;
 
-		foreach($methods as $method => $methodName)
-		{
-			foreach($types as $type => $typeName)
-			{
-				$modifier = $method | $type;
-				$schema   = $view->get($modifier);
+		$this->assertRecordEqualsContent($parameter, $content);
 
-				if($schema instanceof SchemaInterface)
-				{
-					$data->set($modifier, $this->generator->generate($schema));
-				}
-			}
-		}
-
-		return $data;
+		$this->assertEquals('query', $parameter->getParamType());
+		$this->assertEquals('count', $parameter->getName());
+		$this->assertEquals('Count parameter', $parameter->getDescription());
+		$this->assertEquals(true, $parameter->getRequired());
+		$this->assertEquals(false, $parameter->getAllowMultiple());
+		$this->assertEquals('Pet', $parameter->getType());
 	}
 }

@@ -115,53 +115,10 @@ class DocumentationControllerTest extends ControllerTestCase
 
 		$schema = $data['Schema'];
 
-		$this->assertArrayHasKey('get', $schema);
-		$this->assertArrayHasKey('response', $schema['get']);
-
-		$this->assertArrayHasKey('post', $schema);
-		$this->assertArrayHasKey('request', $schema['post']);
-		$this->assertArrayHasKey('response', $schema['post']);
-
-		$this->assertArrayHasKey('put', $schema);
-		$this->assertArrayHasKey('request', $schema['put']);
-		$this->assertArrayHasKey('response', $schema['put']);
-
-		$this->assertArrayHasKey('delete', $schema);
-		$this->assertArrayHasKey('request', $schema['delete']);
-		$this->assertArrayHasKey('response', $schema['delete']);
-	}
-
-	public function testExportXsd()
-	{
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/doc/1/api?export=1&method=GET&type=1'), 'GET');
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-
-		$dom = new \DOMDocument();
-		$dom->loadXML((string) $body);
-
-		$elements = $dom->getElementsByTagNameNS('http://www.w3.org/2001/XMLSchema', 'element');
-
-		$this->assertEquals('collection', $elements->item(0)->getAttribute('name'));
-		$this->assertEquals('entry', $elements->item(1)->getAttribute('name'));
-		$this->assertEquals('id', $elements->item(2)->getAttribute('name'));
-	}
-
-	public function testExportJsonSchema()
-	{
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/doc/1/api?export=2&version=1&method=GET&type=1'), 'GET');
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-
-		$data = Json::decode((string) $body);
-
-		$this->assertEquals('entry', key($data['properties']));
+		$this->assertArrayHasKey('GET', $schema);
+		$this->assertArrayHasKey('POST', $schema);
+		$this->assertArrayHasKey('PUT', $schema);
+		$this->assertArrayHasKey('DELETE', $schema);
 	}
 
 	protected function getPaths()
