@@ -33,7 +33,6 @@ use PSX\Http\Request;
 use PSX\Http\Response;
 use PSX\Http\Stream\StringStream;
 use PSX\Loader;
-use PSX\Loader\Location;
 use PSX\Loader\LocationFinder\CallbackMethod;
 use PSX\ModuleAbstract;
 use PSX\Template;

@@ -23,7 +23,6 @@
 
 namespace PSX\Controller;
 
-use PSX\Loader\Location;
 use PSX\Loader\LocationFinder\CallbackMethod;
 use PSX\Loader\InvalidPathException;
 use PSX\Http\Stream\TempStream;

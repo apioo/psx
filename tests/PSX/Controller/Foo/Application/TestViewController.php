@@ -24,7 +24,6 @@
 namespace PSX\Controller\Foo\Application;
 
 use PSX\Controller\ViewAbstract;
-use PSX\Loader\Location;
 use PSX\Http\Request;
 use PSX\Http\Response;
 use Symfony\Component\DependencyInjection\ContainerInterface;

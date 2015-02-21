@@ -23,14 +23,10 @@
 
 namespace PSX\Controller;
 
-use PSX\Data\Writer;
-use PSX\Data\WriterInterface;
-use PSX\Data\Record;
 use PSX\Http\Request;
 use PSX\Http\Response;
 use PSX\Http\Stream\TempStream;
 use PSX\Json;
-use PSX\Loader\Location;
 use PSX\Test\ControllerDbTestCase;
 use PSX\Url;
 
@@ -107,8 +103,6 @@ JSON;
 		);
 
 		$this->assertEquals($expect, $body);
-
-		// @todo check database
 	}
 
 	public function testPostInvalidTitleLength()
@@ -172,8 +166,6 @@ JSON;
 		);
 
 		$this->assertEquals($expect, $body);
-
-		// @todo check database
 	}
 
 	public function testDelete()
@@ -193,8 +185,6 @@ JSON;
 		);
 
 		$this->assertEquals($expect, $body);
-
-		// @todo check database
 	}
 
 	protected function getPaths()

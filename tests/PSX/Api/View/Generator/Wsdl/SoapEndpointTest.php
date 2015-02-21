@@ -26,7 +26,6 @@ namespace PSX\Api\View\Generator\Wsdl;
 use PSX\Http\Request;
 use PSX\Http\Response;
 use PSX\Http\Stream\TempStream;
-use PSX\Loader\Location;
 use PSX\Test\ControllerDbTestCase;
 use PSX\Url;
 use SoapClient;
