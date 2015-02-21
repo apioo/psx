@@ -65,7 +65,7 @@ class Basic implements SenderInterface
 			$response->setBody(new StringStream(''));
 		}
 
-		if(!$this->isCli())
+		if($this->shouldSendHeader())
 		{
 			// if we have an file stream body set custom header
 			$this->prepareFileStream($response);
@@ -81,9 +81,9 @@ class Basic implements SenderInterface
 		$this->sendBody($response);
 	}
 
-	protected function isCli()
+	protected function shouldSendHeader()
 	{
-		return PHP_SAPI == 'cli';
+		return PHP_SAPI != 'cli' && !headers_sent();
 	}
 
 	protected function prepareFileStream(ResponseInterface $response)
@@ -127,8 +127,6 @@ class Basic implements SenderInterface
 
 	protected function sendHeaders(ResponseInterface $response)
 	{
-		// @TODO check whether header were already sent
-
 		$headers = ResponseParser::buildHeaderFromMessage($response);
 
 		foreach($headers as $header)

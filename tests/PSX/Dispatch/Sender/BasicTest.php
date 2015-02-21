@@ -57,12 +57,12 @@ class BasicTest extends SenderTestCase
 		$response->setBody(new StringStream('<foo />'));
 
 		$sender = $this->getMockBuilder('PSX\Dispatch\Sender\Basic')
-			->setMethods(array('isCli', 'sendHeader'))
+			->setMethods(array('shouldSendHeader', 'sendHeader'))
 			->getMock();
 
 		$sender->expects($this->once())
-			->method('isCli')
-			->will($this->returnValue(false));
+			->method('shouldSendHeader')
+			->will($this->returnValue(true));
 
 		$sender->expects($this->at(1))
 			->method('sendHeader')
@@ -93,12 +93,12 @@ class BasicTest extends SenderTestCase
 		$response->setBody(new StringStream('<foo />'));
 
 		$sender = $this->getMockBuilder('PSX\Dispatch\Sender\Basic')
-			->setMethods(array('isCli', 'sendHeader'))
+			->setMethods(array('shouldSendHeader', 'sendHeader'))
 			->getMock();
 
 		$sender->expects($this->once())
-			->method('isCli')
-			->will($this->returnValue(false));
+			->method('shouldSendHeader')
+			->will($this->returnValue(true));
 
 		$sender->expects($this->at(1))
 			->method('sendHeader')
@@ -124,12 +124,12 @@ class BasicTest extends SenderTestCase
 		$response->setBody(new StringStream('foobarfoobarfoobarfoobar'));
 
 		$sender = $this->getMockBuilder('PSX\Dispatch\Sender\Basic')
-			->setMethods(array('isCli', 'sendHeader'))
+			->setMethods(array('shouldSendHeader', 'sendHeader'))
 			->getMock();
 
 		$sender->expects($this->once())
-			->method('isCli')
-			->will($this->returnValue(false));
+			->method('shouldSendHeader')
+			->will($this->returnValue(true));
 
 		$sender->setChunkSize(16);
 
@@ -145,12 +145,12 @@ class BasicTest extends SenderTestCase
 		$response->setBody(new StringStream('foobar'));
 
 		$sender = $this->getMockBuilder('PSX\Dispatch\Sender\Basic')
-			->setMethods(array('isCli', 'sendHeader'))
+			->setMethods(array('shouldSendHeader', 'sendHeader'))
 			->getMock();
 
 		$sender->expects($this->once())
-			->method('isCli')
-			->will($this->returnValue(false));
+			->method('shouldSendHeader')
+			->will($this->returnValue(true));
 
 		$actual = $this->captureOutput($sender, $response);
 
@@ -164,12 +164,12 @@ class BasicTest extends SenderTestCase
 		$response->setBody(new StringStream('foobar'));
 
 		$sender = $this->getMockBuilder('PSX\Dispatch\Sender\Basic')
-			->setMethods(array('isCli', 'sendHeader'))
+			->setMethods(array('shouldSendHeader', 'sendHeader'))
 			->getMock();
 
 		$sender->expects($this->once())
-			->method('isCli')
-			->will($this->returnValue(false));
+			->method('shouldSendHeader')
+			->will($this->returnValue(true));
 
 		$actual = $this->captureOutput($sender, $response);
 
@@ -187,12 +187,12 @@ class BasicTest extends SenderTestCase
 		$response->setBody(new FileStream($handle, 'foo.txt', 'text/plain'));
 
 		$sender = $this->getMockBuilder('PSX\Dispatch\Sender\Basic')
-			->setMethods(array('isCli', 'sendHeader'))
+			->setMethods(array('shouldSendHeader', 'sendHeader'))
 			->getMock();
 
 		$sender->expects($this->once())
-			->method('isCli')
-			->will($this->returnValue(false));
+			->method('shouldSendHeader')
+			->will($this->returnValue(true));
 
 		$actual = $this->captureOutput($sender, $response);
 
@@ -213,12 +213,12 @@ class BasicTest extends SenderTestCase
 		$response->setBody(new FileStream($handle, 'foo.txt'));
 
 		$sender = $this->getMockBuilder('PSX\Dispatch\Sender\Basic')
-			->setMethods(array('isCli', 'sendHeader'))
+			->setMethods(array('shouldSendHeader', 'sendHeader'))
 			->getMock();
 
 		$sender->expects($this->once())
-			->method('isCli')
-			->will($this->returnValue(false));
+			->method('shouldSendHeader')
+			->will($this->returnValue(true));
 
 		$actual = $this->captureOutput($sender, $response);
 
@@ -238,12 +238,12 @@ class BasicTest extends SenderTestCase
 			$response->setBody(new StringStream('foobar'));
 
 			$sender = $this->getMockBuilder('PSX\Dispatch\Sender\Basic')
-				->setMethods(array('isCli', 'sendHeader'))
+				->setMethods(array('shouldSendHeader', 'sendHeader'))
 				->getMock();
 
 			$sender->expects($this->once())
-				->method('isCli')
-				->will($this->returnValue(false));
+				->method('shouldSendHeader')
+				->will($this->returnValue(true));
 
 			$actual = $this->captureOutput($sender, $response);
 
@@ -257,12 +257,12 @@ class BasicTest extends SenderTestCase
 		$response->setBody(new StringStream('foobar'));
 
 		$sender = $this->getMockBuilder('PSX\Dispatch\Sender\Basic')
-			->setMethods(array('isCli', 'sendHeader'))
+			->setMethods(array('shouldSendHeader', 'sendHeader'))
 			->getMock();
 
 		$sender->expects($this->once())
-			->method('isCli')
-			->will($this->returnValue(false));
+			->method('shouldSendHeader')
+			->will($this->returnValue(true));
 
 		$sender->expects($this->at(1))
 			->method('sendHeader')
