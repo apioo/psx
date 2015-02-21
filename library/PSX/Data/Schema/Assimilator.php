@@ -48,14 +48,14 @@ class Assimilator
 	 * @param PSX\Data\SchemaInterface $schema
 	 * @return array
 	 */
-	public function assimilate($data, SchemaInterface $schema)
+	public function assimilate(SchemaInterface $schema, $data)
 	{
-		return $this->recAssimilate($data, $schema->getDefinition());
+		return $this->recAssimilate($schema->getDefinition(), $data);
 	}
 
-	protected function recAssimilate($data, PropertyInterface $property)
+	protected function recAssimilate(PropertyInterface $type, $data)
 	{
-		if($property instanceof Property\ComplexType)
+		if($type instanceof Property\ComplexType)
 		{
 			if($data instanceof RecordInterface)
 			{
@@ -64,56 +64,56 @@ class Assimilator
 
 			if(!is_array($data))
 			{
-				throw new InvalidArgumentException('Value of ' . $property->getName() . ' must be an array');
+				throw new InvalidArgumentException('Value of ' . $type->getName() . ' must be an array');
 			}
 
-			$childs = $property->getChildren();
-			$result = array();
+			$properties = $type->getProperties();
+			$result     = array();
 
-			foreach($childs as $child)
+			foreach($properties as $name => $property)
 			{
-				if(isset($data[$child->getName()]))
+				if(isset($data[$name]))
 				{
-					$result[$child->getName()] = $this->recAssimilate($data[$child->getName()], $child);
+					$result[$name] = $this->recAssimilate($property, $data[$name]);
 				}
-				else if($child->isRequired())
+				else if($property->isRequired())
 				{
-					throw new InvalidArgumentException('Required parameter ' . $child->getName() . ' is missing');
+					throw new InvalidArgumentException('Required parameter ' . $property->getName() . ' is missing');
 				}
 			}
 
-			return new Record($property->getName(), $result);
+			return new Record($type->getName(), $result);
 		}
-		else if($property instanceof Property\ArrayType)
+		else if($type instanceof Property\ArrayType)
 		{
 			if(!is_array($data))
 			{
-				throw new InvalidArgumentException('Value of ' . $property->getName() . ' must be an array');
+				throw new InvalidArgumentException('Value of ' . $type->getName() . ' must be an array');
 			}
 
-			$prototype = $property->getPrototype();
+			$prototype = $type->getPrototype();
 			$result    = array();
 
 			foreach($data as $value)
 			{
-				$result[] = $this->recAssimilate($value, $prototype);
+				$result[] = $this->recAssimilate($prototype, $value);
 			}
 
 			return $result;
 		}
-		else if($property instanceof Property\Integer)
+		else if($type instanceof Property\Integer)
 		{
 			return (int) $data;
 		}
-		else if($property instanceof Property\Float)
+		else if($type instanceof Property\Float)
 		{
 			return (float) $data;
 		}
-		else if($property instanceof Property\Boolean)
+		else if($type instanceof Property\Boolean)
 		{
 			return (bool) $data;
 		}
-		else if($property instanceof Property\DateTime || $property instanceof Property\Date)
+		else if($type instanceof Property\DateTime || $type instanceof Property\Date)
 		{
 			return $data instanceof \DateTime ? $data : new \DateTime($data);
 		}

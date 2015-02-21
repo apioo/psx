@@ -69,7 +69,7 @@ class AssimilatorTest extends \PHPUnit_Framework_TestCase
 			'date' => '2014-08-07',
 		]];
 
-		$data = $this->assimilator->assimilate($data, $this->schema);
+		$data = $this->assimilator->assimilate($this->schema, $data);
 
 		$this->assertEquals('foo', $data[0]->getContent());
 		$this->assertEquals('foo', $data[0]->getAuthor()->getTitle());
@@ -92,7 +92,7 @@ class AssimilatorTest extends \PHPUnit_Framework_TestCase
 		$data = [[
 		]];
 
-		$data = $this->assimilator->assimilate($data, $this->schema);
+		$data = $this->assimilator->assimilate($this->schema, $data);
 	}
 
 	public function testAssimilateRemoveUnknownParameter()
@@ -102,7 +102,7 @@ class AssimilatorTest extends \PHPUnit_Framework_TestCase
 			'foo' => 'foo',
 		]];
 
-		$data = $this->assimilator->assimilate($data, $this->schema);
+		$data = $this->assimilator->assimilate($this->schema, $data);
 
 		$this->assertEquals(array('content' => 'foo'), $data[0]->getRecordInfo()->getFields());
 	}
@@ -117,7 +117,7 @@ class AssimilatorTest extends \PHPUnit_Framework_TestCase
 			'author' => 'foo',
 		]];
 
-		$data = $this->assimilator->assimilate($data, $this->schema);
+		$data = $this->assimilator->assimilate($this->schema, $data);
 	}
 
 	/**
@@ -130,7 +130,7 @@ class AssimilatorTest extends \PHPUnit_Framework_TestCase
 			'receiver' => 'foo',
 		]];
 
-		$data = $this->assimilator->assimilate($data, $this->schema);
+		$data = $this->assimilator->assimilate($this->schema, $data);
 	}
 
 	/**
@@ -142,7 +142,7 @@ class AssimilatorTest extends \PHPUnit_Framework_TestCase
 			'content' => array(),
 		]];
 
-		$data = $this->assimilator->assimilate($data, $this->schema);
+		$data = $this->assimilator->assimilate($this->schema, $data);
 	}
 
 	/**
@@ -154,7 +154,7 @@ class AssimilatorTest extends \PHPUnit_Framework_TestCase
 			'content' => new \stdClass(),
 		]];
 
-		$data = $this->assimilator->assimilate($data, $this->schema);
+		$data = $this->assimilator->assimilate($this->schema, $data);
 	}
 
 	public function testAssimilateCastStringToString()
@@ -163,7 +163,7 @@ class AssimilatorTest extends \PHPUnit_Framework_TestCase
 			'content' => 'foo',
 		]];
 
-		$data = $this->assimilator->assimilate($data, $this->schema);
+		$data = $this->assimilator->assimilate($this->schema, $data);
 
 		$this->assertEquals('foo', $data[0]->getContent());
 		$this->assertInternalType('string', $data[0]->getContent());
@@ -176,7 +176,7 @@ class AssimilatorTest extends \PHPUnit_Framework_TestCase
 			'rating' => '12',
 		]];
 
-		$data = $this->assimilator->assimilate($data, $this->schema);
+		$data = $this->assimilator->assimilate($this->schema, $data);
 
 		$this->assertEquals(12, $data[0]->getRating());
 		$this->assertInternalType('integer', $data[0]->getRating());
@@ -189,7 +189,7 @@ class AssimilatorTest extends \PHPUnit_Framework_TestCase
 			'price' => '13.37',
 		]];
 
-		$data = $this->assimilator->assimilate($data, $this->schema);
+		$data = $this->assimilator->assimilate($this->schema, $data);
 
 		$this->assertEquals(13.37, $data[0]->getPrice());
 		$this->assertInternalType('float', $data[0]->getPrice());
@@ -202,7 +202,7 @@ class AssimilatorTest extends \PHPUnit_Framework_TestCase
 			'read' => '1',
 		]];
 
-		$data = $this->assimilator->assimilate($data, $this->schema);
+		$data = $this->assimilator->assimilate($this->schema, $data);
 
 		$this->assertEquals(true, $data[0]->getRead());
 		$this->assertInternalType('boolean', $data[0]->getRead());

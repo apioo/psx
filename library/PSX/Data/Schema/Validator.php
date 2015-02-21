@@ -51,16 +51,17 @@ class Validator implements ValidatorInterface
 
 		if($type instanceof Property\ComplexType)
 		{
-			$children = $type->getChildren();
-			foreach($children as $child)
+			$properties = $type->getProperties();
+
+			foreach($properties as $name => $property)
 			{
-				if(isset($data[$child->getName()]))
+				if(isset($data[$name]))
 				{
-					$this->recValidate($child, $data[$child->getName()]);
+					$this->recValidate($property, $data[$name]);
 				}
-				else if($child->isRequired())
+				else if($property->isRequired())
 				{
-					throw new ValidationException('Required property "' . $child->getName() . '" not available');
+					throw new ValidationException('Required property "' . $property->getName() . '" not available');
 				}
 			}
 		}

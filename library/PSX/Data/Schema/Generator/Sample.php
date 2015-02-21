@@ -81,17 +81,18 @@ class Sample implements GeneratorInterface
 	{
 		if($type instanceof Property\ComplexType)
 		{
-			$fields = array();
+			$fields     = array();
+			$properties = $type->getProperties();
 
-			foreach($type->getChildren() as $child)
+			foreach($properties as $name => $property)
 			{
-				if(isset($data[$child->getName()]))
+				if(isset($data[$name]))
 				{
-					$fields[$child->getName()] = $this->generateType($child, $data[$child->getName()]);
+					$fields[$name] = $this->generateType($property, $data[$name]);
 				}
-				else if($child->isRequired())
+				else if($property->isRequired())
 				{
-					throw new RuntimeException('Missing sample data of required property ' . $child->getName());
+					throw new RuntimeException('Missing sample data of required property ' . $name);
 				}
 			}
 

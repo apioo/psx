@@ -42,61 +42,73 @@ class XsdTest extends GeneratorTestCase
 <xs:schema xmlns:tns="http://ns.foo.com" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://ns.foo.com">
 	<xs:element name="news">
 		<xs:complexType>
+			<xs:annotation>
+				<xs:documentation>An general news entry</xs:documentation>
+			</xs:annotation>
 			<xs:sequence>
 				<xs:element name="tags" type="xs:string" maxOccurs="unbounded" minOccurs="1"/>
-				<xs:element name="receiver" type="tns:typec4ddf063f76e992fb7401c8cb36ab534" maxOccurs="unbounded" minOccurs="1"/>
+				<xs:element name="receiver" type="tns:type80f95cf5fd279866b5859c275abd7fa2" maxOccurs="unbounded" minOccurs="1"/>
 				<xs:element name="read" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
-				<xs:element name="author" type="tns:typec4ddf063f76e992fb7401c8cb36ab534" minOccurs="1" maxOccurs="1"/>
+				<xs:element name="author" type="tns:type80f95cf5fd279866b5859c275abd7fa2" minOccurs="1" maxOccurs="1"/>
 				<xs:element name="sendDate" type="xs:date" minOccurs="0" maxOccurs="1"/>
 				<xs:element name="readDate" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 				<xs:element name="expires" type="xs:duration" minOccurs="0" maxOccurs="1"/>
-				<xs:element name="price" type="tns:type41b5d91a7e5b6a356e679cc5fa5d64b6" minOccurs="1" maxOccurs="1"/>
-				<xs:element name="rating" type="tns:type442ba5164a6db9bc4be656bccda23328" minOccurs="0" maxOccurs="1"/>
-				<xs:element name="content" type="tns:type6022b25ec119c5585bd9109efee01a3e" minOccurs="1" maxOccurs="1"/>
-				<xs:element name="question" type="tns:typeabbed36c306165ec45c99cbe9488a57f" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="price" type="tns:type1ca166360fdb85525e06be9b86ee18e9" minOccurs="1" maxOccurs="1"/>
+				<xs:element name="rating" type="tns:type52e8d9b0939a88014e059cd49d9a376a" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="content" type="tns:type040034bdc6b65d156732a453749aa5b8" minOccurs="1" maxOccurs="1"/>
+				<xs:element name="question" type="tns:typed73434c1994d3e6f3bc2fa7cc8178b89" minOccurs="0" maxOccurs="1"/>
 				<xs:element name="coffeeTime" type="xs:time" minOccurs="0" maxOccurs="1"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
-	<xs:complexType name="typec4ddf063f76e992fb7401c8cb36ab534">
+	<xs:complexType name="type80f95cf5fd279866b5859c275abd7fa2">
+		<xs:annotation>
+			<xs:documentation>An simple author element with some description</xs:documentation>
+		</xs:annotation>
 		<xs:sequence>
-			<xs:element name="title" type="tns:typef385c15a0c06eeab4f4a007c40599064" minOccurs="1" maxOccurs="1"/>
+			<xs:element maxOccurs="1" minOccurs="1" name="title" type="tns:typecf953ba6222cfc4017c889354fd489b4"/>
 			<xs:element name="email" type="xs:string" minOccurs="0" maxOccurs="1"/>
 			<xs:element maxOccurs="unbounded" minOccurs="0" name="categories" type="xs:string"/>
-			<xs:element maxOccurs="unbounded" minOccurs="0" name="locations" type="tns:typeb534788702d7583a85337e047716e924"/>
-			<xs:element maxOccurs="1" minOccurs="0" name="origin" type="tns:typeb534788702d7583a85337e047716e924"/>
+			<xs:element maxOccurs="unbounded" minOccurs="0" name="locations" type="tns:type93ef595df6d9e735702cba3611adba27"/>
+			<xs:element maxOccurs="1" minOccurs="0" name="origin" type="tns:type93ef595df6d9e735702cba3611adba27"/>
 		</xs:sequence>
 	</xs:complexType>
-	<xs:simpleType name="typef385c15a0c06eeab4f4a007c40599064">
+	<xs:simpleType name="typecf953ba6222cfc4017c889354fd489b4">
 		<xs:restriction base="xs:string">
 			<xs:pattern value="[A-z]{3,16}"/>
 		</xs:restriction>
 	</xs:simpleType>
-	<xs:complexType name="typeb534788702d7583a85337e047716e924">
+	<xs:complexType name="type93ef595df6d9e735702cba3611adba27">
+		<xs:annotation>
+			<xs:documentation>Location of the person</xs:documentation>
+		</xs:annotation>
 		<xs:sequence>
 			<xs:element maxOccurs="1" minOccurs="0" name="lat" type="xs:integer"/>
 			<xs:element maxOccurs="1" minOccurs="0" name="long" type="xs:integer"/>
 		</xs:sequence>
 	</xs:complexType>
-	<xs:simpleType name="type41b5d91a7e5b6a356e679cc5fa5d64b6">
+	<xs:simpleType name="type1ca166360fdb85525e06be9b86ee18e9">
 		<xs:restriction base="xs:float">
 			<xs:maxInclusive value="100"/>
 			<xs:minInclusive value="1"/>
 		</xs:restriction>
 	</xs:simpleType>
-	<xs:simpleType name="type442ba5164a6db9bc4be656bccda23328">
+	<xs:simpleType name="type52e8d9b0939a88014e059cd49d9a376a">
 		<xs:restriction base="xs:integer">
 			<xs:maxInclusive value="5"/>
 			<xs:minInclusive value="1"/>
 		</xs:restriction>
 	</xs:simpleType>
-	<xs:simpleType name="type6022b25ec119c5585bd9109efee01a3e">
+	<xs:simpleType name="type040034bdc6b65d156732a453749aa5b8">
+		<xs:annotation>
+			<xs:documentation>Contains the main content of the news entry</xs:documentation>
+		</xs:annotation>
 		<xs:restriction base="xs:string">
 			<xs:minLength value="3"/>
 			<xs:maxLength value="512"/>
 		</xs:restriction>
 	</xs:simpleType>
-	<xs:simpleType name="typeabbed36c306165ec45c99cbe9488a57f">
+	<xs:simpleType name="typed73434c1994d3e6f3bc2fa7cc8178b89">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="foo"/>
 			<xs:enumeration value="bar"/>

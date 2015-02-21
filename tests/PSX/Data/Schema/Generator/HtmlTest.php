@@ -39,7 +39,7 @@ class HtmlTest extends GeneratorTestCase
 
 		$expect = <<<'HTML'
 <div>
-	<div id="type-00b170dfda7e2315b2724a4bc6d414e3" class="type">
+	<div id="type-0181a2f995053a0c040d39abe18f6bc7" class="type">
 		<h1>news</h1>
 		<div class="type-description">An general news entry</div>
 		<table class="table type-properties">
@@ -76,7 +76,7 @@ class HtmlTest extends GeneratorTestCase
 					</td>
 					<td>
 						<span class="property-type type-array">Array&lt;<span class="property-type type-object">
-								<a href="#type-c4ddf063f76e992fb7401c8cb36ab534">author</a>
+								<a href="#type-80f95cf5fd279866b5859c275abd7fa2">author</a>
 							</span>&gt;</span>
 					</td>
 					<td>
@@ -102,7 +102,7 @@ class HtmlTest extends GeneratorTestCase
 					</td>
 					<td>
 						<span class="property-type type-object">
-							<a href="#type-c4ddf063f76e992fb7401c8cb36ab534">author</a>
+							<a href="#type-80f95cf5fd279866b5859c275abd7fa2">author</a>
 						</span>
 					</td>
 					<td>
@@ -264,7 +264,7 @@ class HtmlTest extends GeneratorTestCase
 			</tbody>
 		</table>
 	</div>
-	<div id="type-c4ddf063f76e992fb7401c8cb36ab534" class="type">
+	<div id="type-80f95cf5fd279866b5859c275abd7fa2" class="type">
 		<h1>author</h1>
 		<div class="type-description">An simple author element with some description</div>
 		<table class="table type-properties">
@@ -332,7 +332,7 @@ class HtmlTest extends GeneratorTestCase
 					</td>
 					<td>
 						<span class="property-type type-array">Array&lt;<span class="property-type type-object">
-								<a href="#type-b534788702d7583a85337e047716e924">location</a>
+								<a href="#type-93ef595df6d9e735702cba3611adba27">location</a>
 							</span>&gt;</span>
 					</td>
 					<td>
@@ -346,7 +346,7 @@ class HtmlTest extends GeneratorTestCase
 					</td>
 					<td>
 						<span class="property-type type-object">
-							<a href="#type-b534788702d7583a85337e047716e924">origin</a>
+							<a href="#type-93ef595df6d9e735702cba3611adba27">origin</a>
 						</span>
 					</td>
 					<td>
@@ -357,7 +357,7 @@ class HtmlTest extends GeneratorTestCase
 			</tbody>
 		</table>
 	</div>
-	<div id="type-b534788702d7583a85337e047716e924" class="type">
+	<div id="type-93ef595df6d9e735702cba3611adba27" class="type">
 		<h1>location</h1>
 		<div class="type-description">Location of the person</div>
 		<table class="table type-properties">

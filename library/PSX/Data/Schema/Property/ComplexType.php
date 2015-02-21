@@ -40,50 +40,47 @@ class ComplexType extends PropertyAbstract
 
 	public function add(PropertyInterface $property)
 	{
-		$this->properties[] = $property;
+		$this->properties[$property->getName()] = $property;
 
 		return $this;
 	}
 
-	public function getChildren()
+	public function get($name)
+	{
+		return isset($this->properties[$name]) ? $this->properties[$name] : null;
+	}
+
+	public function has($name)
+	{
+		return isset($this->properties[$name]);
+	}
+
+	public function remove($name)
+	{
+		if(isset($this->properties[$name]))
+		{
+			unset($this->properties[$name]);
+		}
+	}
+
+	public function getProperties()
 	{
 		return $this->properties;
 	}
 
-	public function getChild($name)
-	{
-		foreach($this->properties as $property)
-		{
-			if($property->getName() == $name)
-			{
-				return $property;
-			}
-		}
-
-		return null;
-	}
-
-	public function removeChild($name)
-	{
-		foreach($this->properties as $key => $property)
-		{
-			if($property->getName() == $name)
-			{
-				unset($this->properties[$key]);
-			}
-		}
-	}
-
 	public function getId()
 	{
-		$id = parent::getId();
+		$result     = parent::getId();
+		$properties = $this->properties;
 
-		foreach($this->properties as $property)
+		ksort($properties);
+
+		foreach($properties as $name => $property)
 		{
-			$id.= $property->getName() . $property->getId();
+			$result.= $name . $property->getId();
 		}
 
-		return md5($id);
+		return md5($result);
 	}
 
 	public function validate($data)

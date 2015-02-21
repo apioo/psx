@@ -62,7 +62,7 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 
 		$response = $this->doGet($version);
 
-		$this->setBody($this->schemaAssimilator->assimilate($response, $view->getGetResponse()));
+		$this->setBody($this->schemaAssimilator->assimilate($view->getGetResponse(), $response));
 	}
 
 	public function onPost()
@@ -82,7 +82,7 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 		if($view->hasPostResponse())
 		{
 			$this->setResponseCode(201);
-			$this->setBody($this->schemaAssimilator->assimilate($response, $view->getPostResponse()));
+			$this->setBody($this->schemaAssimilator->assimilate($view->getPostResponse(), $response));
 		}
 		else
 		{
@@ -108,7 +108,7 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 		if($view->hasPutResponse())
 		{
 			$this->setResponseCode(200);
-			$this->setBody($this->schemaAssimilator->assimilate($response, $view->getPutResponse()));
+			$this->setBody($this->schemaAssimilator->assimilate($view->getPutResponse(), $response));
 		}
 		else
 		{
@@ -134,7 +134,7 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 		if($view->hasDeleteResponse())
 		{
 			$this->setResponseCode(200);
-			$this->setBody($this->schemaAssimilator->assimilate($response, $view->getDeleteResponse()));
+			$this->setBody($this->schemaAssimilator->assimilate($view->getDeleteResponse(), $response));
 		}
 		else
 		{

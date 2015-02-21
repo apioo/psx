@@ -82,14 +82,14 @@ class Schema implements ImporterInterface
 
 		if($type instanceof Property\ComplexType)
 		{
-			$children = $type->getChildren();
-			$fields   = array();
+			$properties = $type->getProperties();
+			$fields     = array();
 
-			foreach($children as $child)
+			foreach($properties as $name => $property)
 			{
-				if(isset($data[$child->getName()]))
+				if(isset($data[$name]))
 				{
-					$fields[$child->getName()] = $this->recImport($child, $data[$child->getName()]);
+					$fields[$name] = $this->recImport($property, $data[$name]);
 				}
 			}
 

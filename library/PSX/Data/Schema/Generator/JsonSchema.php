@@ -55,20 +55,20 @@ class JsonSchema implements GeneratorInterface
 
 	protected function generateRootElement(Property\ComplexType $type)
 	{
-		$children    = $type->getChildren();
+		$properties  = $type->getProperties();
 		$description = $type->getDescription();
-		$properties  = array();
+		$props       = array();
 		$required    = array();
 
 		$this->definitions = array();
 
-		foreach($children as $child)
+		foreach($properties as $name => $property)
 		{
-			$properties[$child->getName()] = $this->generateType($child);
+			$props[$name] = $this->generateType($property);
 
-			if($child->isRequired())
+			if($property->isRequired())
 			{
-				$required[] = $child->getName();
+				$required[] = $name;
 			}
 		}
 		
@@ -83,7 +83,7 @@ class JsonSchema implements GeneratorInterface
 			'id'          => $this->targetNamespace,
 			'type'        => 'object',
 			'definitions' => $definitions,
-			'properties'  => $properties,
+			'properties'  => $props,
 		);
 
 		if(!empty($description))
@@ -105,23 +105,23 @@ class JsonSchema implements GeneratorInterface
 	{
 		if($type instanceof Property\ComplexType)
 		{
-			$children   = $type->getChildren();
-			$properties = array();
+			$properties = $type->getProperties();
+			$props      = array();
 			$required   = array();
 
-			foreach($children as $child)
+			foreach($properties as $property)
 			{
-				$properties[$child->getName()] = $this->generateType($child);
+				$props[$property->getName()] = $this->generateType($property);
 
-				if($child->isRequired())
+				if($property->isRequired())
 				{
-					$required[] = $child->getName();
+					$required[] = $property->getName();
 				}
 			}
 
 			$result = array(
 				'type'       => 'object',
-				'properties' => $properties,
+				'properties' => $props,
 			);
 
 			$description = $type->getDescription();

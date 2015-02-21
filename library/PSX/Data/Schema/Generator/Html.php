@@ -79,22 +79,22 @@ class Html implements GeneratorInterface
 			$response.= '</thead>';
 			$response.= '<tbody>';
 
-			$children = $type->getChildren();
+			$properties = $type->getProperties();
 
-			foreach($children as $child)
+			foreach($properties as $property)
 			{
-				list($type, $constraints) = $this->getValueDescription($child);
+				list($type, $constraints) = $this->getValueDescription($property);
 
 				// we dont add descriptions of complex types since we refer to
 				// the complex type which contains the description
 				$description = '';
-				if(!$child instanceof Property\ComplexType)
+				if(!$property instanceof Property\ComplexType)
 				{
-					$description.= $child->getDescription();
+					$description.= $property->getDescription();
 				}
 
 				$response.= '<tr>';
-				$response.= '<td><span class="property-name ' . ($child->isRequired() ? 'property-required' : 'property-optional') . '">' . $child->getName() . '</span></td>';
+				$response.= '<td><span class="property-name ' . ($property->isRequired() ? 'property-required' : 'property-optional') . '">' . $property->getName() . '</span></td>';
 				$response.= '<td>' . $type . '</td>';
 				$response.= '<td><span class="property-description">' . $description . '</span></td>';
 				$response.= '<td>' . $constraints . '</td>';
@@ -105,15 +105,15 @@ class Html implements GeneratorInterface
 			$response.= '</table>';
 			$response.= '</div>';
 
-			foreach($children as $child)
+			foreach($properties as $property)
 			{
-				if($child instanceof Property\ComplexType)
+				if($property instanceof Property\ComplexType)
 				{
-					$response.= $this->generateType($child);
+					$response.= $this->generateType($property);
 				}
-				else if($child instanceof Property\ArrayType)
+				else if($property instanceof Property\ArrayType)
 				{
-					$prototype = $child->getPrototype();
+					$prototype = $property->getPrototype();
 
 					if($prototype instanceof Property\ComplexType)
 					{
@@ -136,10 +136,10 @@ class Html implements GeneratorInterface
 		}
 		else if($type instanceof Property\ArrayType)
 		{
-			$child = $this->getValueDescription($type->getPrototype());
-			$span  = '<span class="property-type type-array">Array&lt;' . $child[0] . '&gt;</span>';
+			$property = $this->getValueDescription($type->getPrototype());
+			$span  = '<span class="property-type type-array">Array&lt;' . $property[0] . '&gt;</span>';
 
-			return [$span, $child[1]];
+			return [$span, $property[1]];
 		}
 		else if($type instanceof PropertySimpleAbstract)
 		{
