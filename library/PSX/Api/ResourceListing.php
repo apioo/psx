@@ -75,7 +75,7 @@ class ResourceListing
 				$ctx = clone $context;
 				$ctx->set(Context::KEY_PATH, $path);
 
-				$controller = $this->controllerFactory->getController($className, $request, $response, $ctx);
+				$controller = $this->getController($className, $request, $response, $ctx);
 
 				if($controller instanceof DocumentedInterface)
 				{
@@ -125,7 +125,7 @@ class ResourceListing
 				$ctx = clone $context;
 				$ctx->set(Context::KEY_PATH, $path);
 
-				$controller = $this->controllerFactory->getController($className, $request, $response, $ctx);
+				$controller = $this->getController($className, $request, $response, $ctx);
 
 				if($controller instanceof DocumentedInterface)
 				{
@@ -147,5 +147,17 @@ class ResourceListing
 		}
 
 		return null;
+	}
+
+	protected function getController($className, RequestInterface $request, ResponseInterface $response, Context $context)
+	{
+		try
+		{
+			return $this->controllerFactory->getController($className, $request, $response, $context);
+		}
+		catch(\Exception $e)
+		{
+			return null;
+		}
 	}
 }
