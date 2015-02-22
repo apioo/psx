@@ -86,7 +86,7 @@ class DefaultContainerTest extends \PHPUnit_Framework_TestCase
 		$this->assertInstanceOf('PSX\TemplateInterface', $container->get('template'));
 		$this->assertInstanceOf('PSX\Validate', $container->get('validate'));
 		$this->assertInstanceOf('PSX\Dependency\ObjectBuilderInterface', $container->get('object_builder'));
-		$this->assertInstanceOf('Psr\Cache\CacheItemPoolInterface', $container->get('cache'));
+		$this->assertInstanceOf('PSX\Cache\CacheItemPoolInterface', $container->get('cache'));
 		$this->assertInstanceOf('Psr\Log\LoggerInterface', $container->get('logger'));
 
 		// event

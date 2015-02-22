@@ -24,7 +24,7 @@
 namespace PSX\Sql;
 
 use Doctrine\DBAL\Connection;
-use Psr\Cache\CacheItemPoolInterface;
+use PSX\Cache\CacheItemPoolInterface;
 use PSX\Sql\Table\Definition;
 use PSX\Sql\Table\ReaderInterface;
 
@@ -48,7 +48,7 @@ class TableManager implements TableManagerInterface
 	protected $defaultReader;
 
 	/**
-	 * @var Psr\Cache\CacheItemPoolInterface
+	 * @var PSX\Cache\CacheItemPoolInterface
 	 */
 	protected $cache;
 
@@ -79,7 +79,7 @@ class TableManager implements TableManagerInterface
 	 * Note the cache doesnt expire so you have to delete the cache manually
 	 * if the definition has changed
 	 *
-	 * @param Psr\Cache\CacheItemPoolInterface $cache
+	 * @param PSX\Cache\CacheItemPoolInterface $cache
 	 * @param integer $expire
 	 */
 	public function setCache(CacheItemPoolInterface $cache, $expire = null)

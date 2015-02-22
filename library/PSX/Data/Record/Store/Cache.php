@@ -23,7 +23,7 @@
 
 namespace PSX\Data\Record\Store;
 
-use Psr\Cache\CacheItemPoolInterface;
+use PSX\Cache\CacheItemPoolInterface;
 use PSX\Data\RecordInterface;
 use PSX\Data\Record\StoreInterface;
 

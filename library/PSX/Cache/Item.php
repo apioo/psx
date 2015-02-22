@@ -23,7 +23,7 @@
 
 namespace PSX\Cache;
 
-use Psr\Cache\CacheItemInterface;
+use PSX\Cache\CacheItemInterface;
 
 /**
  * Item

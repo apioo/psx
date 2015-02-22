@@ -23,7 +23,7 @@
 
 namespace PSX\Dispatch\Filter;
 
-use Psr\Cache\CacheItemPoolInterface;
+use PSX\Cache\CacheItemPoolInterface;
 use PSX\DateTime;
 use PSX\Dispatch\FilterChainInterface;
 use PSX\Dispatch\FilterInterface;
@@ -46,7 +46,7 @@ class StaticCache implements FilterInterface
 	protected $ttl;
 
 	/**
-	 * @param Psr\Cache\CacheItemPoolInterface $cache
+	 * @param PSX\Cache\CacheItemPoolInterface $cache
 	 * @param callable $keyGenerator
 	 * @param integer $ttl
 	 */

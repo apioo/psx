@@ -136,7 +136,7 @@ class DefaultContainer extends Container
 	}
 
 	/**
-	 * @return Psr\Cache\CacheItemPoolInterface
+	 * @return PSX\Cache\CacheItemPoolInterface
 	 */
 	public function getCache()
 	{

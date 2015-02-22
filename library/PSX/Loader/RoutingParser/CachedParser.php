@@ -23,7 +23,7 @@
 
 namespace PSX\Loader\RoutingParser;
 
-use Psr\Cache\CacheItemPoolInterface;
+use PSX\Cache\CacheItemPoolInterface;
 use PSX\Loader\RoutingCollection;
 use PSX\Loader\RoutingParserInterface;
 

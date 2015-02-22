@@ -1,13 +1,12 @@
 <?php
 
-namespace Psr\Cache;
+namespace PSX\Cache;
 
 /**
  * \Psr\Cache\CacheItemPoolInterface generates Cache\CacheItem objects.
  */
 interface CacheItemPoolInterface
 {
-
     /**
      * Returns a Cache Item representing the specified key.
      *
@@ -83,5 +82,4 @@ interface CacheItemPoolInterface
      *   TRUE if all not-yet-saved items were successfully saved. FALSE otherwise.
      */
     public function commit();
-
 }

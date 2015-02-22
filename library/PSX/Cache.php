@@ -23,8 +23,8 @@
 
 namespace PSX;
 
-use Psr\Cache\CacheItemInterface;
-use Psr\Cache\CacheItemPoolInterface;
+use PSX\Cache\CacheItemInterface;
+use PSX\Cache\CacheItemPoolInterface;
 use PSX\Cache\Handler;
 use PSX\Cache\HandlerInterface;
 
