@@ -82,6 +82,6 @@ class JsonSchema extends GeneratorAbstract
 			'properties'  => $properties,
 		);
 
-		return Json::encode($result);
+		return Json::encode($result, JSON_PRETTY_PRINT);
 	}
 }

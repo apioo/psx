@@ -88,9 +88,12 @@ class SwaggerGeneratorController extends ViewAbstract
 					throw new HttpException\NotFoundException('Given version is not available');
 				}
 
+				$baseUri         = $this->config['psx_url'] . '/' . $this->config['psx_dispatch'];
+				$targetNamespace = $this->config['psx_json_namespace'];
+
 				$this->response->setHeader('Content-Type', 'application/json');
 
-				$generator = new Generator\Swagger($apiVersion, $this->config['psx_url'] . '/' . $this->config['psx_dispatch'], $this->config['psx_url']);
+				$generator = new Generator\Swagger($apiVersion, $baseUri, $targetNamespace);
 
 				$this->setBody($generator->generate($view));
 			}

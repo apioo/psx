@@ -80,7 +80,7 @@ JSON;
 {
     "swaggerVersion": "1.2",
     "apiVersion": 1,
-    "basePath": "http:\/\/127.0.0.1\/projects\/psx\/public\/index.php\/",
+    "basePath": "{$basePath}",
     "resourcePath": "\/api",
     "apis": [
         {

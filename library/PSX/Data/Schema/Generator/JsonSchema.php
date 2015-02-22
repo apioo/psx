@@ -27,6 +27,7 @@ use PSX\Data\SchemaInterface;
 use PSX\Data\Schema\GeneratorInterface;
 use PSX\Data\Schema\Property;
 use PSX\Data\Schema\PropertyInterface;
+use PSX\Json;
 
 /**
  * JsonSchema
@@ -50,7 +51,7 @@ class JsonSchema implements GeneratorInterface
 
 	public function generate(SchemaInterface $schema)
 	{
-		return json_encode($this->generateRootElement($schema->getDefinition()));
+		return Json::encode($this->generateRootElement($schema->getDefinition()), JSON_PRETTY_PRINT);
 	}
 
 	protected function generateRootElement(Property\ComplexType $type)
@@ -79,16 +80,24 @@ class JsonSchema implements GeneratorInterface
 		}
 
 		$result = array(
-			'$schema'     => self::SCHEMA,
-			'id'          => $this->targetNamespace,
-			'type'        => 'object',
-			'definitions' => $definitions,
-			'properties'  => $props,
+			'$schema' => self::SCHEMA,
+			'id'      => $this->targetNamespace,
+			'type'    => 'object',
 		);
 
 		if(!empty($description))
 		{
 			$result['description'] = $description;
+		}
+
+		if(!empty($definitions))
+		{
+			$result['definitions'] = $definitions;
+		}
+
+		if(!empty($props))
+		{
+			$result['properties'] = $props;
 		}
 
 		if(!empty($required))
