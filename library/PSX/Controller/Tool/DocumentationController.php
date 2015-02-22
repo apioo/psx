@@ -47,10 +47,6 @@ use PSX\Loader\RoutingCollection;
  */
 class DocumentationController extends ViewAbstract
 {
-	const EXPORT_XSD        = 1;
-	const EXPORT_JSONSCHEMA = 2;
-	const EXPORT_HTML       = 3;
-
 	/**
 	 * @Inject
 	 * @var PSX\Api\ResourceListing
@@ -196,6 +192,12 @@ class DocumentationController extends ViewAbstract
 		if($swaggerGeneratorPath !== null)
 		{
 			$result['Swagger'] = $swaggerGeneratorPath;
+		}
+
+		$ramlGeneratorPath = $this->reverseRouter->getAbsolutePath('PSX\Controller\Tool\RamlGeneratorController', array('version' => $version, 'path' => $path));
+		if($ramlGeneratorPath !== null)
+		{
+			$result['RAML'] = $ramlGeneratorPath;
 		}
 
 		return $result;
