@@ -16,9 +16,10 @@
     "psr/log": "~1.0",
     "psr/http-message": "~0.8.0",
     "monolog/monolog": "~1.0",
-    "symfony/event-dispatcher": "~2.5",
-    "symfony/dependency-injection": "~2.5",
-    "symfony/console": "~2.5",
+    "symfony/console": "~2.6",
+    "symfony/dependency-injection": "~2.6",
+    "symfony/event-dispatcher": "~2.6",
+    "symfony/yaml": "~2.6",
     "doctrine/annotations": "~1.2",
     "doctrine/dbal": "~2.5",
     "jms/serializer": "0.16.0",
@@ -31,8 +32,7 @@
   "bin": ["bin/psx"],
   "autoload": {
     "psr-0": {
-      "PSX\\": "library/",
-      "Psr\\Cache\\": "library/"
+      "PSX\\": "library/"
     }
   }
 }
