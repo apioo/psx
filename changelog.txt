@@ -1,5 +1,16 @@
 
 0.9.6
+* Improved documentation
+* Added raml generator
+* Added table api abstract controller
+* Improved and unified api view generators
+* Added Swagger generator and improved related data models
+* Added resource listing class and improved the api documentation, swagger and 
+  wsdl controller
+* Move generation of the fallback template into a seperate class
+* Improved activitystreams test and implementation
+* Removed location and added context class which holds parameters gathered 
+  around the controller/command
 
 0.9.5
 * Added HTTP request/response interfaces and added an factory to convert PSX 
