@@ -51,56 +51,52 @@ class SwaggerGeneratorController extends ViewAbstract
 	 */
 	protected $resourceListing;
 
-	public function onGet()
+	public function doIndex()
 	{
-		parent::onGet();
+		$resourceListing = new ResourceListing('1.0');
+		$resources       = $this->resourceListing->getResources($this->request, $this->response, $this->context);
 
+		foreach($resources as $resource)
+		{
+			$path = '/' . $resource->getDocumentation()->getLatestVersion();
+			$path.= Generator\Swagger::transformRoute($resource->getPath());
+
+			$resourceListing->addResource(new ResourceObject($path));
+		}
+
+		$this->setBody($resourceListing, WriterInterface::JSON);
+	}
+
+	public function doDetail()
+	{
 		$version = $this->getUriFragment('version');
 		$path    = $this->getUriFragment('path');
 
-		if(empty($version) && empty($path))
+		$resource   = $this->resourceListing->getResource($path, $this->request, $this->response, $this->context);
+		$apiVersion = 1;
+
+		if($resource instanceof Resource)
 		{
-			$resourceListing = new ResourceListing('1.0');
-			$resources       = $this->resourceListing->getResources($this->request, $this->response, $this->context);
+			$view       = $resource->getDocumentation()->getView($version);
+			$apiVersion = $resource->getDocumentation()->getLatestVersion();
 
-			foreach($resources as $resource)
+			if(!$view instanceof View)
 			{
-				$path = '/' . $resource->getDocumentation()->getLatestVersion();
-				$path.= Generator\Swagger::transformRoute($resource->getPath());
-
-				$resourceListing->addResource(new ResourceObject($path));
+				throw new HttpException\NotFoundException('Given version is not available');
 			}
 
-			$this->setBody($resourceListing, WriterInterface::JSON);
+			$baseUri         = $this->config['psx_url'] . '/' . $this->config['psx_dispatch'];
+			$targetNamespace = $this->config['psx_json_namespace'];
+
+			$this->response->setHeader('Content-Type', 'application/json');
+
+			$generator = new Generator\Swagger($apiVersion, $baseUri, $targetNamespace);
+
+			$this->setBody($generator->generate($view));
 		}
 		else
 		{
-			$resource   = $this->resourceListing->getResource($path, $this->request, $this->response, $this->context);
-			$apiVersion = 1;
-
-			if($resource instanceof Resource)
-			{
-				$view       = $resource->getDocumentation()->getView($version);
-				$apiVersion = $resource->getDocumentation()->getLatestVersion();
-
-				if(!$view instanceof View)
-				{
-					throw new HttpException\NotFoundException('Given version is not available');
-				}
-
-				$baseUri         = $this->config['psx_url'] . '/' . $this->config['psx_dispatch'];
-				$targetNamespace = $this->config['psx_json_namespace'];
-
-				$this->response->setHeader('Content-Type', 'application/json');
-
-				$generator = new Generator\Swagger($apiVersion, $baseUri, $targetNamespace);
-
-				$this->setBody($generator->generate($view));
-			}
-			else
-			{
-				throw new HttpException\NotFoundException('Invalid resource');
-			}
+			throw new HttpException\NotFoundException('Invalid resource');
 		}
 	}
 }
