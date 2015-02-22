@@ -48,7 +48,8 @@ class WsdlControllerTest extends ControllerTestCase
 		$response->setBody($body);
 
 		$controller = $this->loadController($request, $response);
-		$wsdl       = (string) $body;
+
+		$this->assertEquals('text/xml', $response->getHeader('Content-Type'));
 
 		$expect = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
@@ -262,7 +263,7 @@ class WsdlControllerTest extends ControllerTestCase
 </wsdl:definitions>
 XML;
 
-		$this->assertXmlStringEqualsXmlString($expect, $wsdl);
+		$this->assertXmlStringEqualsXmlString($expect, (string) $body);
 	}
 
 	public function testWsdlSchema()

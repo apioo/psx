@@ -49,6 +49,8 @@ class SwaggerControllerTest extends ControllerTestCase
 
 		$controller = $this->loadController($request, $response);
 
+		$this->assertEquals('application/json', $response->getHeader('Content-Type'));
+
 		$expect = <<<JSON
 {
     "swaggerVersion": "1.2",
@@ -73,6 +75,8 @@ JSON;
 		$response->setBody($body);
 
 		$controller = $this->loadController($request, $response);
+
+		$this->assertEquals('application/json', $response->getHeader('Content-Type'));
 
 		$config   = getContainer()->getConfig();
 		$basePath = $config['psx_url'] . '/' . $config['psx_dispatch'];
