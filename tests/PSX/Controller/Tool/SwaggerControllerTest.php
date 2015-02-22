@@ -307,8 +307,8 @@ JSON;
 	protected function getPaths()
 	{
 		return array(
-			[['GET'], '/swagger', 'PSX\Controller\Tool\SwaggerGeneratorController'],
-			[['GET'], '/swagger/:version/*path', 'PSX\Controller\Tool\SwaggerGeneratorController'],
+			[['GET'], '/swagger', 'PSX\Controller\Tool\SwaggerGeneratorController::doIndex'],
+			[['GET'], '/swagger/:version/*path', 'PSX\Controller\Tool\SwaggerGeneratorController::doDetail'],
 			[['GET', 'POST', 'PUT', 'DELETE'], '/api', 'PSX\Controller\Foo\Application\TestSchemaApiController'],
 		);
 	}
