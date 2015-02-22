@@ -189,7 +189,7 @@ class DocumentationController extends ViewAbstract
 			$result['WSDL'] = $wsdlGeneratorPath;
 		}
 
-		$swaggerGeneratorPath = $this->reverseRouter->getAbsolutePath('PSX\Controller\Tool\SwaggerGeneratorController', array('version' => $version, 'path' => $path));
+		$swaggerGeneratorPath = $this->reverseRouter->getAbsolutePath('PSX\Controller\Tool\SwaggerGeneratorController::doDetail', array('version' => $version, 'path' => $path));
 		if($swaggerGeneratorPath !== null)
 		{
 			$result['Swagger'] = $swaggerGeneratorPath;
