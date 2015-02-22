@@ -1,6 +1,6 @@
 
-Depndency injection
-===================
+Dependency injection
+====================
 
 Definition
 ----------

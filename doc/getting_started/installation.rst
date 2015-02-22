@@ -45,3 +45,19 @@ the :file:`composer.json` autoload key. Here an example route entry:
 
     GET|POST|PUT|DELETE /foo/bar Acme\Api\News\Endpoint
 
+Webserver
+---------
+
+If you dont have a local webserver you can use the build in HTTP server of PHP.
+You can start the server with the following command:
+
+.. code::
+
+    php -S 127.0.0.1:8000 public/index.php
+
+The configuration file should have the following entries:
+
+.. code::
+
+    'psx_url'                 => 'http://127.0.0.1:8000',
+    'psx_dispatch'            => '',

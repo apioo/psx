@@ -4,8 +4,9 @@ Tools
 
 PSX comes by default with a set of controllers which help you to generate 
 documentation or other data based on your defined APIs. The following chapter
-will help you to setup these tools. The paths in the routes are only a 
-suggestion you can easily change them how you like.
+explains all available controllers. To setup such an controller you have to add 
+a route entry. The paths in the routes are only a suggestion you can easily 
+change them how you like.
 
 Documentation
 -------------
