@@ -67,7 +67,7 @@ In the following a short example howto add versioning to an schema API
             $documentation  = new Documentation\Version();
             $responseSchema = $this->schemaManager->getSchema('Foo\Blog\Schema\SuccessMessage');
 
-            $view = new View(View::STATUS_DEPRECATED);
+            $view = new View(View::STATUS_DEPRECATED, $this->context->get('psx.path'));
             $view->setGet($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Collection'));
             $view->setPost($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Create'), $responseSchema);
             $view->setPut($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Update'), $responseSchema);

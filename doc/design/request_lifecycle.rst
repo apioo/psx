@@ -2,6 +2,9 @@
 Request lifecycle
 =================
 
+This chapter explains the request lifecycle of an PSX application which helps
+you to better understand how PSX works.
+
 Http request/response
 ---------------------
 
@@ -45,6 +48,34 @@ function and outputs the response body via "echo".
    :lines: 35-43
    :prepend: <?php
 
+Events
+------
+
+Through the request lifecycle there are some places where PSX triggers an event.
+The dependency event trait contains the default listeners. You can overload the 
+:code:`appendDefaultListener` method to add new listeners. In the following a 
+list of events with a short description.
+
++-----------------------------+-------------------------------------------------------+
+| Event name                  | Description                                           |
++-----------------------------+-------------------------------------------------------+
+| Event::REQUEST_INCOMING     | Triggered when an request arrives                     |
++-----------------------------+-------------------------------------------------------+
+| Event::ROUTE_MATCHED        | Triggered when an route was found for the request     |
++-----------------------------+-------------------------------------------------------+
+| Event::CONTROLLER_EXECUTE   | Triggered before an controller gets executed          |
++-----------------------------+-------------------------------------------------------+
+| Event::CONTROLLER_PROCESSED | Triggered after an controller was executed            |
++-----------------------------+-------------------------------------------------------+
+| Event::RESPONSE_SEND        | Triggered before the response gets send to the client |
++-----------------------------+-------------------------------------------------------+
+| Event::EXCEPTION_THROWN     | Triggered when an exception occurs                    |
++-----------------------------+-------------------------------------------------------+
+| Event::COMMAND_EXECUTE      | Triggered before an command gets executed             |
++-----------------------------+-------------------------------------------------------+
+| Event::COMMAND_PROCESSED    | Triggered after an command was executed               |
++-----------------------------+-------------------------------------------------------+
+
 Middleware
 ----------
 
@@ -69,8 +100,9 @@ basic "hello world" example would be:
 
 By default the controller returns the ControllerExecutor middleware which simply
 calls the on* methods and optional the method which was set in the routes file.
-In adition you could also overwrite the getPreFilter or getPostFilter method
-which are merged together to the application stack i.e.:
+In adition you could also overwrite the :code:`getPreFilter` or 
+:code:`getPostFilter` method which are merged together to the application 
+stack i.e.:
 
 .. literalinclude:: ../../library/PSX/ControllerAbstract.php
    :language: php

@@ -4,7 +4,7 @@ Routing
 
 Routing is the process to delegate the HTTP request to the fitting controller. 
 By default PSX uses a simple routing file wich contains all available routes. 
-The routing file was inspired by the java play framework
+The routing file was inspired by the java play framework.
 
 Routing file
 ------------
@@ -62,9 +62,9 @@ specific controller method
 
     <?php
 
-    $path = $this->getReverseRouter()->getPath('Foo\News\Application\Index::doFoo');
-    $url  = $this->getReverseRouter()->getUrl('Foo\News\Application\Index::doFoo');
-    $path = $this->getReverseRouter()->getPath('Foo\News\Application\News::doArchive', array('year' => 2014));
+    $path = $this->reverseRouter->getPath('Foo\News\Application\Index::doFoo');
+    $url  = $this->reverseRouter->getUrl('Foo\News\Application\Index::doFoo');
+    $path = $this->reverseRouter->getPath('Foo\News\Application\News::doArchive', array('year' => 2014));
 
 or in you template you can use
 
@@ -88,4 +88,12 @@ which contains all available routes.
    :prepend: <?php
 
 Your routing class has to implement this interface. Then you can overwrite the 
-method getRoutingParser() in your DI container.
+method :code:`getRoutingParser` in your DI container. Note in case you have a
+really huge amount of routes you should probably consider to write your own 
+location finder since the routing collection contains all available routes.
+A location finder has to implement the following interface.
+
+.. literalinclude:: ../../library/PSX/Loader/LocationFinderInterface.php
+   :language: php
+   :lines: 35-48
+   :prepend: <?php

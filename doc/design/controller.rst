@@ -6,8 +6,8 @@ Abstract
 --------
 
 This chapter gives a short overview of the most important methods which you need
-inside an controller. To simplify things take a look at the following source 
-code
+inside an controller. To simplify things take a look at the following source
+code.
 
 Usage
 -----
@@ -16,6 +16,8 @@ Usage
 
     <?php
     
+    namespace Foo\Bar;
+
     use PSX\ControllerAbstract;
 
     class Controller extends ControllerAbstract;
