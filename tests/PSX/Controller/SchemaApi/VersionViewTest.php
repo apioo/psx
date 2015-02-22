@@ -55,18 +55,38 @@ class VersionViewTest extends ControllerDbTestCase
 		$response->setBody($body);
 
 		$controller = $this->loadController($request, $response);
-		$body       = Json::decode((string) $response->getBody());
+		$body       = (string) $response->getBody();
 
-		$this->assertEquals(415, $response->getStatusCode());
+		$expect = <<<JSON
+{"entry": [
+    {
+      "id": 4,
+      "userId": 3,
+      "title": "blub",
+      "date": "2013-04-29T16:56:32+00:00"
+    },
+    {
+      "id": 3,
+      "userId": 2,
+      "title": "test",
+      "date": "2013-04-29T16:56:32+00:00"
+    },
+    {
+      "id": 2,
+      "userId": 1,
+      "title": "bar",
+      "date": "2013-04-29T16:56:32+00:00"
+    },
+    {
+      "id": 1,
+      "userId": 1,
+      "title": "foo",
+      "date": "2013-04-29T16:56:32+00:00"
+    }
+  ]}
+JSON;
 
-		$this->assertArrayHasKey('success', $body);
-		$this->assertArrayHasKey('title', $body);
-		$this->assertArrayHasKey('message', $body);
-		$this->assertArrayHasKey('trace', $body);
-		$this->assertArrayHasKey('context', $body);
-
-		$this->assertEquals(false, $body['success']);
-		$this->assertEquals('Requires an Accept header containing an explicit version', substr($body['message'], 0, 56));
+		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
 	}
 
 	public function testPostNoVersion()
@@ -80,16 +100,12 @@ class VersionViewTest extends ControllerDbTestCase
 		$controller = $this->loadController($request, $response);
 		$body       = Json::decode((string) $response->getBody());
 
-		$this->assertEquals(415, $response->getStatusCode());
+		$expect = array(
+			'success' => true,
+			'message' => 'You have successful create a record',
+		);
 
-		$this->assertArrayHasKey('success', $body);
-		$this->assertArrayHasKey('title', $body);
-		$this->assertArrayHasKey('message', $body);
-		$this->assertArrayHasKey('trace', $body);
-		$this->assertArrayHasKey('context', $body);
-
-		$this->assertEquals(false, $body['success']);
-		$this->assertEquals('Requires an Accept header containing an explicit version', substr($body['message'], 0, 56));
+		$this->assertEquals($expect, $body);
 	}
 
 	public function testPutNoVersion()
@@ -103,16 +119,12 @@ class VersionViewTest extends ControllerDbTestCase
 		$controller = $this->loadController($request, $response);
 		$body       = Json::decode((string) $response->getBody());
 
-		$this->assertEquals(415, $response->getStatusCode());
+		$expect = array(
+			'success' => true,
+			'message' => 'You have successful update a record',
+		);
 
-		$this->assertArrayHasKey('success', $body);
-		$this->assertArrayHasKey('title', $body);
-		$this->assertArrayHasKey('message', $body);
-		$this->assertArrayHasKey('trace', $body);
-		$this->assertArrayHasKey('context', $body);
-
-		$this->assertEquals(false, $body['success']);
-		$this->assertEquals('Requires an Accept header containing an explicit version', substr($body['message'], 0, 56));
+		$this->assertEquals($expect, $body);
 	}
 
 	public function testDeleteNoVersion()
@@ -126,16 +138,12 @@ class VersionViewTest extends ControllerDbTestCase
 		$controller = $this->loadController($request, $response);
 		$body       = Json::decode((string) $response->getBody());
 
-		$this->assertEquals(415, $response->getStatusCode());
+		$expect = array(
+			'success' => true,
+			'message' => 'You have successful delete a record',
+		);
 
-		$this->assertArrayHasKey('success', $body);
-		$this->assertArrayHasKey('title', $body);
-		$this->assertArrayHasKey('message', $body);
-		$this->assertArrayHasKey('trace', $body);
-		$this->assertArrayHasKey('context', $body);
-
-		$this->assertEquals(false, $body['success']);
-		$this->assertEquals('Requires an Accept header containing an explicit version', substr($body['message'], 0, 56));
+		$this->assertEquals($expect, $body);
 	}
 
 	public function testGetClosedVersion()
