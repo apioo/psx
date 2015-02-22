@@ -164,6 +164,7 @@ class DocumentationController extends ViewAbstract
 
 	protected function getRoutings()
 	{
+		$routings  = array();
 		$resources = $this->resourceListing->getResources($this->request, $this->response, $this->context);
 
 		foreach($resources as $resource)
