@@ -49,6 +49,12 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 	 */
 	protected $schemaAssimilator;
 
+	/**
+	 * @Inject
+	 * @var PSX\Data\Schema\SchemaManager
+	 */
+	protected $schemaManager;
+
 	public function onGet()
 	{
 		$doc     = $this->getDocumentation();
@@ -221,7 +227,13 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 			}
 			else
 			{
-				throw new StatusCode\UnsupportedMediaTypeException('Requires an Accept header containing an explicit version');
+				// its is strongly recommended that clients specify an explicit
+				// version but forcing that with an exception is not a good user
+				// experience therefore we use the latest version if nothing is 
+				// specified
+				return new Version($doc->getLatestVersion());
+
+				//throw new StatusCode\UnsupportedMediaTypeException('Requires an Accept header containing an explicit version');
 			}
 		}
 		else
