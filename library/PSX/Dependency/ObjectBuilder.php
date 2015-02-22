@@ -47,8 +47,16 @@ class ObjectBuilder implements ObjectBuilderInterface
 
 	public function getObject($className, array $constructorArguments = array(), $instanceOf = null)
 	{
-		$class  = new ReflectionClass($className);
-		$object = $class->newInstanceArgs($constructorArguments);
+		$class = new ReflectionClass($className);
+
+		if($class->getConstructor() === null)
+		{
+			$object = $class->newInstanceArgs([]);
+		}
+		else
+		{
+			$object = $class->newInstanceArgs($constructorArguments);
+		}
 
 		if($instanceOf !== null && !$object instanceof $instanceOf)
 		{

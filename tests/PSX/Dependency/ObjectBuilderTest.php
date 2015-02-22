@@ -110,6 +110,14 @@ class ObjectBuilderTest extends \PHPUnit_Framework_TestCase
 		$builder = new ObjectBuilder(new Container());
 		$builder->getObject('PSX\Dependency\InvalidService');
 	}
+
+	public function testGetObjectWithoutConstructor()
+	{
+		$builder  = new ObjectBuilder(new Container());
+		$stdClass = $builder->getObject('stdClass');
+
+		$this->assertInstanceof('stdClass', $stdClass);
+	}
 }
 
 class FooService
