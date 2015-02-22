@@ -188,6 +188,7 @@ class DefaultContainer extends Container
 			'psx_error_template'      => null,
 			'psx_annotation_autoload' => array('Doctrine\ORM\Mapping', 'JMS\Serializer\Annotation'),
 			'psx_soap_namespace'      => 'http://phpsx.org/2014/data',
+			'psx_json_namespace'      => 'urn:schema.phpsx.org#',
 		);
 	}
 }
