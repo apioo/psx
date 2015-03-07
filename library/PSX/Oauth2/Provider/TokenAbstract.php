@@ -27,6 +27,7 @@ use PSX\Controller\ApiAbstract;
 use PSX\Data\RecordAbstract;
 use PSX\Data\RecordInfo;
 use PSX\Data\ReaderInterface;
+use PSX\Data\WriterInterface;
 use PSX\Oauth2\Authorization\Exception\ErrorException;
 
 /**
@@ -81,7 +82,8 @@ abstract class TokenAbstract extends ApiAbstract
 			$accessToken = $this->grantTypeFactory->get($grantType)->generateAccessToken($credentials, $parameters);
 
 			$this->response->setStatus(200);
-			$this->setBody($accessToken);
+
+			$this->setBody($accessToken, WriterInterface::JSON);
 		}
 		catch(ErrorException $e)
 		{
@@ -91,7 +93,8 @@ abstract class TokenAbstract extends ApiAbstract
 			$error->setState(null);
 
 			$this->response->setStatus(400);
-			$this->setBody($error);
+
+			$this->setBody($error, WriterInterface::JSON);
 		}
 		catch(\Exception $e)
 		{
@@ -101,7 +104,8 @@ abstract class TokenAbstract extends ApiAbstract
 			$error->setState(null);
 
 			$this->response->setStatus(400);
-			$this->setBody($error);
+
+			$this->setBody($error, WriterInterface::JSON);
 		}
 	}
 }
