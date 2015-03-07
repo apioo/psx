@@ -3,7 +3,7 @@
   "description": "PSX Framework",
   "keywords": ["REST", "Api", "Framework", "Oauth"],
   "homepage": "http://phpsx.org",
-  "license": "GPL-3.0",
+  "license": "Apache-2.0",
   "authors": [
     {
       "name": "Christoph Kappestein",
