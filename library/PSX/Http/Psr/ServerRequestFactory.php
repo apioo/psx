@@ -56,7 +56,7 @@ class ServerRequestFactory
 		return $psrRequest
 			->withCookieParams($request->getCookieParams())
 			->withQueryParams($request->getQueryParams())
-			->withBodyParams($request->getBodyParams());
+			->withParsedBody($request->getParsedBody());
 	}
 
 	/**
@@ -74,7 +74,7 @@ class ServerRequestFactory
 			$psrRequest->getBody()
 		);
 
-		$request->setBodyParams($psrRequest->getBodyParams());
+		$request->setParsedBody($psrRequest->getParsedBody());
 		$request->setCookieParams($psrRequest->getCookieParams());
 		$request->setFileParams($psrRequest->getFileParams());
 		$request->setQueryParams($psrRequest->getQueryParams());

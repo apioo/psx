@@ -101,7 +101,7 @@ class RequestFactory implements RequestFactoryInterface
 			}
 
 			$request = new Request($url, $method, $headers, $body);
-			$request->setBodyParams($_POST);
+			$request->setParsedBody($_POST);
 			$request->setCookieParams($_COOKIE);
 			$request->setFileParams($_FILES);
 			$request->setQueryParams($_GET);

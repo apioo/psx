@@ -44,7 +44,7 @@ class ServerRequestFactoryTest extends \PHPUnit_Framework_TestCase
 			['User-Agent' => 'foo'], 
 			new StringStream('foobar')
 		);
-		$request->setBodyParams(['body' => 'foo']);
+		$request->setParsedBody(['body' => 'foo']);
 		$request->setCookieParams(['cookie' => 'foo']);
 		$request->setFileParams(['file' => 'foo']);
 		$request->setQueryParams(['query' => 'foo']);
@@ -61,7 +61,7 @@ class ServerRequestFactoryTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('bar=foo', $psrRequest->getUri()->getQuery());
 		$this->assertInstanceOf('Psr\Http\Message\StreamableInterface', $psrRequest->getBody());
 		$this->assertEquals('foobar', (string) $psrRequest->getBody());
-		$this->assertEquals(['body' => 'foo'], $psrRequest->getBodyParams());
+		$this->assertEquals(['body' => 'foo'], $psrRequest->getParsedBody());
 		$this->assertEquals(['cookie' => 'foo'], $psrRequest->getCookieParams());
 		$this->assertEquals(['file' => 'foo'], $psrRequest->getFileParams());
 		$this->assertEquals(['query' => 'foo'], $psrRequest->getQueryParams());
@@ -82,7 +82,7 @@ class ServerRequestFactoryTest extends \PHPUnit_Framework_TestCase
 		$psrRequest = $psrRequest
 			->withCookieParams(['cookie' => 'foo'])
 			->withQueryParams(['query' => 'foo'])
-			->withBodyParams(['body' => 'foo']);
+			->withParsedBody(['body' => 'foo']);
 
 		$request = ServerRequestFactory::fromPsr($psrRequest);
 
@@ -95,7 +95,7 @@ class ServerRequestFactoryTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('bar=foo', $request->getUri()->getQuery());
 		$this->assertInstanceOf('Psr\Http\Message\StreamableInterface', $request->getBody());
 		$this->assertEquals('foobar', (string) $request->getBody());
-		$this->assertEquals(['body' => 'foo'], $request->getBodyParams());
+		$this->assertEquals(['body' => 'foo'], $request->getParsedBody());
 		$this->assertEquals(['cookie' => 'foo'], $request->getCookieParams());
 		$this->assertEquals(['file' => 'foo'], $request->getFileParams());
 		$this->assertEquals(['query' => 'foo'], $request->getQueryParams());

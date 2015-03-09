@@ -30,9 +30,9 @@ namespace PSX\Http;
 trait RequestServerTrait
 {
 	/**
-	 * @var array
+	 * @var mixed
 	 */
-	protected $bodyParams;
+	protected $parsedBody;
 
 	/**
 	 * @var array
@@ -59,14 +59,14 @@ trait RequestServerTrait
 	 */
 	protected $attributes = array();
 
-	public function getBodyParams()
+	public function getParsedBody()
 	{
-		return $this->bodyParams;
+		return $this->parsedBody;
 	}
 
-	public function setBodyParams(array $bodyParams)
+	public function setParsedBody($parsedBody)
 	{
-		$this->bodyParams = $bodyParams;
+		$this->parsedBody = $parsedBody;
 	}
 
 	public function getCookieParams()
