@@ -62,6 +62,38 @@ class LogListenerTest extends ControllerTestCase
 		$eventDispatcher->dispatch(Event::REQUEST_INCOMING, new RequestIncomingEvent($request));
 	}
 
+	public function testEventRequestIncommingDebugWithRequestBody()
+	{
+		$logger = $this->getLogger();
+		$logger->expects($this->at(0))
+			->method('info')
+			->with($this->equalTo('Incoming request POST /foo.htm'));
+
+		$logger->expects($this->at(1))
+			->method('debug')
+			->with($this->equalTo('foobar'));
+
+		$request = new Request(new Uri('/foo.htm'), 'POST', array(), 'foobar');
+
+		$eventDispatcher = new EventDispatcher();
+		$eventDispatcher->addSubscriber(new LogListener($logger, true));
+		$eventDispatcher->dispatch(Event::REQUEST_INCOMING, new RequestIncomingEvent($request));
+	}
+
+	public function testEventRequestIncommingDebugWithoutRequestBody()
+	{
+		$logger = $this->getLogger();
+		$logger->expects($this->once())
+			->method('info')
+			->with($this->equalTo('Incoming request POST /foo.htm'));
+
+		$request = new Request(new Uri('/foo.htm'), 'POST');
+
+		$eventDispatcher = new EventDispatcher();
+		$eventDispatcher->addSubscriber(new LogListener($logger, true));
+		$eventDispatcher->dispatch(Event::REQUEST_INCOMING, new RequestIncomingEvent($request));
+	}
+
 	public function testEventRouteMatched()
 	{
 		$logger = $this->getLogger();
@@ -124,6 +156,38 @@ class LogListenerTest extends ControllerTestCase
 
 		$eventDispatcher = new EventDispatcher();
 		$eventDispatcher->addSubscriber(new LogListener($logger));
+		$eventDispatcher->dispatch(Event::RESPONSE_SEND, new ResponseSendEvent($response));
+	}
+
+	public function testEventResponseSendDebugWithResponseBody()
+	{
+		$logger = $this->getLogger();
+		$logger->expects($this->at(0))
+			->method('info')
+			->with($this->equalTo('Send response'));
+
+		$logger->expects($this->at(1))
+			->method('debug')
+			->with($this->equalTo('foobar'));
+
+		$response = new Response(200, array(), 'foobar');
+
+		$eventDispatcher = new EventDispatcher();
+		$eventDispatcher->addSubscriber(new LogListener($logger, true));
+		$eventDispatcher->dispatch(Event::RESPONSE_SEND, new ResponseSendEvent($response));
+	}
+
+	public function testEventResponseSendDebugWithoutResponseBody()
+	{
+		$logger = $this->getLogger();
+		$logger->expects($this->at(0))
+			->method('info')
+			->with($this->equalTo('Send response'));
+
+		$response = new Response(200);
+
+		$eventDispatcher = new EventDispatcher();
+		$eventDispatcher->addSubscriber(new LogListener($logger, true));
 		$eventDispatcher->dispatch(Event::RESPONSE_SEND, new ResponseSendEvent($response));
 	}
 

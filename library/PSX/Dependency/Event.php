@@ -47,6 +47,6 @@ trait Event
 
 	protected function appendDefaultListener(EventDispatcherInterface $eventDispatcher)
 	{
-		$eventDispatcher->addSubscriber(new LogListener($this->get('logger')));
+		$eventDispatcher->addSubscriber(new LogListener($this->get('logger'), $this->get('config')->get('psx_debug')));
 	}
 }

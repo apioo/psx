@@ -30,6 +30,7 @@ use PSX\Event\ControllerProcessedEvent;
 use PSX\Event\ResponseSendEvent;
 use PSX\Event\ExceptionThrownEvent;
 use PSX\Http\Exception\StatusCodeException;
+use PSX\Http\Stream\Util;
 use PSX\Loader\Context;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -43,15 +44,26 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class LogListener implements EventSubscriberInterface
 {
 	protected $logger;
+	protected $debug;
 
-	public function __construct(LoggerInterface $logger)
+	public function __construct(LoggerInterface $logger, $debug = false)
 	{
 		$this->logger = $logger;
+		$this->debug  = $debug;
 	}
 
 	public function onRequestIncomming(RequestIncomingEvent $event)
 	{
 		$this->logger->info('Incoming request ' . $event->getRequest()->getMethod() . ' ' . $event->getRequest()->getRequestTarget());
+
+		if($this->debug)
+		{
+			$body = Util::toString($event->getRequest()->getBody());
+			if(!empty($body))
+			{
+				$this->logger->debug($body);
+			}
+		}
 	}
 
 	public function onRouteMatched(RouteMatchedEvent $event)
@@ -80,6 +92,15 @@ class LogListener implements EventSubscriberInterface
 	public function onResponseSend(ResponseSendEvent $event)
 	{
 		$this->logger->info('Send response');
+
+		if($this->debug)
+		{
+			$body = Util::toString($event->getResponse()->getBody());
+			if(!empty($body))
+			{
+				$this->logger->debug($body);
+			}
+		}
 	}
 
 	public function onExceptionThrown(ExceptionThrownEvent $event)
