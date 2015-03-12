@@ -24,7 +24,7 @@ use DateTime;
 use InvalidArgumentException;
 use PSX\Atom as AtomRecord;
 use PSX\Atom\Entry;
-use PSX\Atom\Text;
+use PSX\Atom\Text as AtomText;
 use PSX\Atom\Writer;
 use PSX\Data\RecordInterface;
 use PSX\Data\ResultSet;
@@ -228,13 +228,13 @@ class Atom extends Xml
 		}
 
 		$content = $entry->getContent();
-		if($content instanceof Text)
+		if($content instanceof AtomText)
 		{
 			$writer->setContent($content->getContent(), $content->getType());
 		}
 
 		$summary = $entry->getSummary();
-		if($summary instanceof Text)
+		if($summary instanceof AtomText)
 		{
 			$writer->setSummary($summary->getContent(), $summary->getType());
 		}
