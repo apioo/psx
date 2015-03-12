@@ -54,8 +54,37 @@ class RequestFactoryTest extends \PHPUnit_Framework_TestCase
 		{
 			$request = $this->getRequest($env, $config);
 
-			$this->assertEquals($uri, (string) $request->getUri());
+			$this->assertEquals($uri, (string) $request->getUri(), var_export($env, true));
 		}
+
+		$this->assertCorrectRequestUriWorks($config);
+	}
+
+	public function testCreateRequestNoProtocolNoPathAndNoDispatch()
+	{
+		$config = new Config(array(
+			'psx_url'      => '//foo.com',
+			'psx_dispatch' => '',
+		));
+
+		$matrix = array(
+			'http://foo.com/' => array('REQUEST_URI' => null),
+			'http://foo.com/' => array('REQUEST_URI' => ''),
+			'http://foo.com/' => array('REQUEST_URI' => '/'),
+			'http://foo.com/bar' => array('REQUEST_URI' => '/bar'),
+			'http://foo.com/bar?bar=test' => array('REQUEST_URI' => '/bar?bar=test'),
+			'http://foo.com/?bar=test' => array('REQUEST_URI' => '/?bar=test'),
+			'http://foo.com/?bar=test' => array('REQUEST_URI' => '?bar=test'),
+		);
+
+		foreach($matrix as $uri => $env)
+		{
+			$request = $this->getRequest($env, $config);
+
+			$this->assertEquals($uri, (string) $request->getUri(), var_export($env, true));
+		}
+
+		$this->assertCorrectRequestUriWorks($config);
 	}
 
 	public function testCreateRequestNoPathAndDispatch()
@@ -81,6 +110,8 @@ class RequestFactoryTest extends \PHPUnit_Framework_TestCase
 
 			$this->assertEquals($uri, (string) $request->getUri(), var_export($env, true));
 		}
+
+		$this->assertCorrectRequestUriWorks($config);
 	}
 
 	public function testCreateRequestPathAndNoDispatch()
@@ -105,8 +136,10 @@ class RequestFactoryTest extends \PHPUnit_Framework_TestCase
 		{
 			$request = $this->getRequest($env, $config);
 
-			$this->assertEquals($uri, (string) $request->getUri());
+			$this->assertEquals($uri, (string) $request->getUri(), var_export($env, true));
 		}
+
+		$this->assertCorrectRequestUriWorks($config);
 	}
 
 	public function testCreateRequestPathAndDispatch()
@@ -131,7 +164,61 @@ class RequestFactoryTest extends \PHPUnit_Framework_TestCase
 		{
 			$request = $this->getRequest($env, $config);
 
-			$this->assertEquals($uri, (string) $request->getUri());
+			$this->assertEquals($uri, (string) $request->getUri(), var_export($env, true));
+		}
+
+		$this->assertCorrectRequestUriWorks($config);
+	}
+
+	public function testCreateRequestNoProtocol()
+	{
+		$config = new Config(array(
+			'psx_url'      => '//foo.com',
+			'psx_dispatch' => '',
+		));
+
+		$matrix = array(
+			'http://foo.com/' => array(),
+			'http://foo.com/' => array('HTTPS' => ''),
+			'http://foo.com/' => array('HTTPS' => '0'),
+			'https://foo.com/' => array('HTTPS' => '1'),
+			'https://foo.com/' => array('HTTPS' => 'on'),
+			'http://foo.com/' => array('HTTPS' => 'off'),
+			'https://foo.com/' => array('HTTPS' => 'ON'),
+			'http://foo.com/' => array('HTTPS' => 'OFF'),
+		);
+
+		foreach($matrix as $uri => $env)
+		{
+			$request = $this->getRequest($env, $config);
+
+			$this->assertEquals($uri, (string) $request->getUri(), var_export($env, true));
+		}
+	}
+
+	/**
+	 * This ensures that if an correct request uri arrives at our application we
+	 * get the correct uri even if we have setup an dispatch or path segment
+	 * in the url
+	 */
+	public function assertCorrectRequestUriWorks($config)
+	{
+		$matrix = array(
+			'http://foo.com/' => array('REQUEST_URI' => null),
+			'http://foo.com/' => array('REQUEST_URI' => ''),
+			'http://foo.com/' => array('REQUEST_URI' => '/'),
+			'http://foo.com/bar' => array('REQUEST_URI' => '/bar'),
+			'http://foo.com/bar/' => array('REQUEST_URI' => '/bar/'),
+			'http://foo.com/bar?bar=test' => array('REQUEST_URI' => '/bar?bar=test'),
+			'http://foo.com/?bar=test' => array('REQUEST_URI' => '/?bar=test'),
+			'http://foo.com/?bar=test' => array('REQUEST_URI' => '?bar=test'),
+		);
+
+		foreach($matrix as $uri => $env)
+		{
+			$request = $this->getRequest($env, $config);
+
+			$this->assertEquals($uri, (string) $request->getUri(), var_export($env, true));
 		}
 	}
 

@@ -22,6 +22,7 @@ namespace PSX\Dispatch;
 
 use PSX\Config;
 use PSX\Http\Request;
+use PSX\Http\Stream\BufferedStream;
 use PSX\Http\Stream\TempStream;
 use PSX\Url;
 use UnexpectedValueException;
@@ -53,15 +54,27 @@ class RequestFactory implements RequestFactoryInterface
 	{
 		$parts = parse_url($this->config['psx_url']);
 
-		if($parts !== false && isset($parts['scheme']) && isset($parts['host']))
+		if($parts !== false && isset($parts['host']))
 		{
+			$scheme = isset($parts['scheme']) ? $parts['scheme'] : null;
+			if(empty($scheme))
+			{
+				$https  = isset($_SERVER['HTTPS']) ? strtolower($_SERVER['HTTPS']) : null;
+				$scheme = !empty($https) && $https != 'off' ? 'https' : 'http';
+			}
+
 			$port = !empty($parts['port']) ? ':' . $parts['port'] : '';
 
 			if(!$this->isCli())
 			{
 				$path     = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
 				$skipPath = (isset($parts['path']) ? $parts['path'] : '') . '/' . $this->config['psx_dispatch'];
-				$path     = substr($path, strlen($skipPath) - 1);
+				$skipPath = rtrim($skipPath, '/');
+
+				if(!empty($skipPath) && strpos($path, $skipPath) === 0)
+				{
+					$path = substr($path, strlen($skipPath));
+				}
 			}
 			else
 			{
@@ -69,7 +82,7 @@ class RequestFactory implements RequestFactoryInterface
 			}
 
 			$path = '/' . ltrim($path, '/');
-			$self = $parts['scheme'] . '://' . $parts['host'] . $port . $path;
+			$self = $scheme . '://' . $parts['host'] . $port . $path;
 
 			// create request
 			$url     = new Url($self);
@@ -82,7 +95,7 @@ class RequestFactory implements RequestFactoryInterface
 
 			if(in_array($requestMethod, array('POST', 'PUT', 'DELETE')))
 			{
-				$body = new TempStream(fopen('php://input', 'r'));
+				$body = new BufferedStream(new TempStream(fopen('php://input', 'r')));
 			}
 
 			// soap handling
