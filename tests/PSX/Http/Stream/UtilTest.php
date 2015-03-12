@@ -33,6 +33,21 @@ class UtilTest extends \PHPUnit_Framework_TestCase
 	{
 		$handle = fopen('php://memory', 'r+');
 		fwrite($handle, 'foobar');
+		fseek($handle, 0);
+
+		$stream = new TempStream($handle);
+
+		$this->assertEquals(0, $stream->tell());
+		$this->assertEquals('foobar', Util::toString($stream));
+		$this->assertEquals(0, $stream->tell());
+		$this->assertEquals('foobar', $stream->getContents());
+		$this->assertEquals('foobar', (string) $stream);
+	}
+
+	public function testToStringSeeked()
+	{
+		$handle = fopen('php://memory', 'r+');
+		fwrite($handle, 'foobar');
 		fseek($handle, 4);
 
 		$stream = new TempStream($handle);
@@ -42,5 +57,18 @@ class UtilTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(4, $stream->tell());
 		$this->assertEquals('ar', $stream->getContents());
 		$this->assertEquals('foobar', (string) $stream);
+	}
+
+	public function testToStringNotReadable()
+	{
+		$handle = fopen(PSX_PATH_CACHE . '/StreamUtilTest.txt', 'w');
+		fwrite($handle, 'foobar');
+
+		$stream = new TempStream($handle);
+
+		$this->assertFalse($stream->isReadable());
+		$this->assertEquals(6, $stream->tell());
+		$this->assertEquals('', Util::toString($stream));
+		$this->assertEquals(6, $stream->tell());
 	}
 }

@@ -193,6 +193,8 @@ class StringStream implements StreamableInterface
 
 	public function __toString()
 	{
+		$this->_pointer = $this->length;
+
 		return $this->data === null ? '' : $this->data;
 	}
 }

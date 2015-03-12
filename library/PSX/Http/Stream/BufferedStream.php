@@ -20,50 +20,22 @@
 
 namespace PSX\Http\Stream;
 
+use InvalidArgumentException;
 use Psr\Http\Message\StreamableInterface;
 
 /**
- * Provides util methods to handle with streams
+ * Reads the complete content of the stream into an string and works from there 
+ * on with the buffered data. With this stream it is possible to read multiple 
+ * times from an read-only stream
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Util
+class BufferedStream extends StringStream
 {
-	/**
-	 * Converts an stream into an string and returns the result. The position of 
-	 * the pointer will not change if the stream is seekable. Note this copies 
-	 * the complete content of the stream into the memory
-	 *
-	 * @param Psr\Http\Message\StreamableInterface $stream
-	 * @return string
-	 */
-	public static function toString(StreamableInterface $stream)
+	public function __construct(StreamableInterface $stream)
 	{
-		if(!$stream->isReadable())
-		{
-			return '';
-		}
-
-		if($stream->isSeekable())
-		{
-			$pos = $stream->tell();
-
-			if($pos > 0)
-			{
-				$stream->seek(0);
-			}
-
-			$content = $stream->getContents();
-
-			$stream->seek($pos);
-		}
-		else
-		{
-			$content = $stream->getContents();
-		}
-
-		return $content;
+		parent::__construct(Util::toString($stream));
 	}
 }

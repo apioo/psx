@@ -21,9 +21,7 @@
 namespace PSX\Http\Stream;
 
 /**
- * The socks stream is used by the socks http handler. When you read data from 
- * the stream data is transfered over the wire it gets not buffered into any 
- * memory or file
+ * The socks stream is used by the socks http handler
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0

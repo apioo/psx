@@ -52,5 +52,6 @@ class FileStreamTest extends StreamTestCase
 		$file = new FileStream($resource, 'foo.txt');
 
 		$this->assertEquals('foo.txt', $file->getFileName());
+		$this->assertEquals(null, $file->getContentType());
 	}
 }

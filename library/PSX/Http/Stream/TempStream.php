@@ -24,10 +24,7 @@ use InvalidArgumentException;
 use Psr\Http\Message\StreamableInterface;
 
 /**
- * The curl handler writes the http body response into an php://temp stream 
- * which means that it will use a temporary file once the amount of data stored 
- * hits a predefined limit (the default is 2 MB). Then we read the data from 
- * this stream
+ * Stream which operates on an normal stream
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
