@@ -24,9 +24,10 @@ use InvalidArgumentException;
 use Psr\Http\Message\StreamableInterface;
 
 /**
- * Reads the complete content of the stream into an string and works from there 
- * on with the buffered data. With this stream it is possible to read multiple 
- * times from an read-only stream
+ * Buffers the complete content of the stream into an string and works from 
+ * there on with the buffered data. Fills the buffer only if someone attempts to
+ * read from the stream. With this stream it is possible to read multiple times 
+ * from read-only streams
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
@@ -34,8 +35,55 @@ use Psr\Http\Message\StreamableInterface;
  */
 class BufferedStream extends StringStream
 {
+	protected $source;
+	protected $isFilled = false;
+
 	public function __construct(StreamableInterface $stream)
 	{
-		parent::__construct(Util::toString($stream));
+		$this->data   = '';
+		$this->length = $stream->getSize();
+		$this->source = $stream;
+	}
+
+	public function detach()
+	{
+		$this->fill();
+
+		return parent::detach();
+	}
+
+	public function isWritable()
+	{
+		return false;
+	}
+
+	public function getContents($maxLength = -1)
+	{
+		$this->fill();
+
+		return parent::getContents($maxLength);
+	}
+
+	public function read($maxLength)
+	{
+		$this->fill();
+
+		return parent::read($maxLength);
+	}
+
+	public function __toString()
+	{
+		$this->fill();
+
+		return parent::__toString();
+	}
+
+	protected function fill()
+	{
+		if(!$this->isFilled)
+		{
+			$this->data     = Util::toString($this->source);
+			$this->isFilled = true;
+		}
 	}
 }
