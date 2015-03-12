@@ -87,7 +87,7 @@ class GenerateCommandAbstractTest extends \PHPUnit_Framework_TestCase
 
 	public function testWriteFile()
 	{
-		$path = PSX_PATH_CACHE . '/command_test.txt';
+		$path = PSX_PATH_CACHE . '/CommandTest.txt';
 
 		if(is_file($path))
 		{
