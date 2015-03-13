@@ -67,7 +67,6 @@ class RecordTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals('foo', $record->getRecordInfo()->getName());
 		$this->assertEquals($fields, $record->getRecordInfo()->getFields());
-		$this->assertEquals(1, $record->getRecordInfo()->hasFields(array('id', 'title')));
 		$this->assertEquals(true, $record->getRecordInfo()->hasField('id'));
 	}
 
@@ -98,5 +97,33 @@ class RecordTest extends \PHPUnit_Framework_TestCase
 		));
 
 		$record->foo();
+	}
+
+	public function testJsonSerialize()
+	{
+		$record = new Record('foo', array(
+			'key_1'  => 'bar',
+			'key_2'  => 1,
+			'key_3'  => 1.33,
+			'key_4'  => false,
+			'key_5'  => true,
+			'key_6'  => array(1, 2),
+			'key_7'  => array(new Record('foo', array('bar' => 'foo'))),
+			'key_8'  => new Record('foo', array('bar' => 'foo')),
+			'key_9'  => new \DateTime('2014-12-27'),
+			'key_10' => new StringObject(),
+			'key_11' => new \stdClass(),
+		));
+
+		$this->assertInstanceOf('JsonSerializable', $record);
+		$this->assertEquals('{"key_1":"bar","key_2":1,"key_3":1.33,"key_4":false,"key_5":true,"key_6":[1,2],"key_7":[{"bar":"foo"}],"key_8":{"bar":"foo"},"key_9":"2014-12-27T00:00:00+00:00","key_10":"foo","key_11":{}}', json_encode($record));
+	}
+}
+
+class StringObject
+{
+	public function __toString()
+	{
+		return 'foo';
 	}
 }

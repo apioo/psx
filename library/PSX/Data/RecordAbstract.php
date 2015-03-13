@@ -20,13 +20,9 @@
 
 namespace PSX\Data;
 
-use BadMethodCallException;
-use PSX\Exception;
-use PSX\Util\Annotation;
-use ReflectionClass;
-use ReflectionException;
-use ReflectionMethod;
+use DateTime;
 use Serializable;
+use JsonSerializable;
 
 /**
  * RecordAbstract
@@ -44,15 +40,43 @@ abstract class RecordAbstract implements RecordInterface, Serializable
 		$vars   = get_object_vars($this);
 		$fields = array();
 
-		foreach($vars as $k => $v)
+		foreach($vars as $key => $value)
 		{
-			if($k[0] != '_')
+			if($key[0] != '_')
 			{
-				$fields[$k] = $this->$k;
+				$fields[$key] = $value;
 			}
 		}
 
 		return new RecordInfo($name, $fields);
+	}
+
+	public function jsonSerialize()
+	{
+		$record = new \stdClass();
+		$data   = $this->getRecordInfo()->getData();
+
+		foreach($data as $key => $value)
+		{
+			if($value instanceof JsonSerializable || $value instanceof \stdClass)
+			{
+				$record->$key = $value;
+			}
+			else if($value instanceof DateTime)
+			{
+				$record->$key = $value->format(DateTime::RFC3339);
+			}
+			else if(is_object($value))
+			{
+				$record->$key = (string) $value;
+			}
+			else
+			{
+				$record->$key = $value;
+			}
+		}
+
+		return $record;
 	}
 
 	public function serialize()
@@ -60,11 +84,11 @@ abstract class RecordAbstract implements RecordInterface, Serializable
 		$vars = get_object_vars($this);
 		$data = array();
 
-		foreach($vars as $k => $v)
+		foreach($vars as $key => $value)
 		{
-			if($k[0] != '_')
+			if($key[0] != '_')
 			{
-				$data[$k] = $this->$k;
+				$data[$key] = $value;
 			}
 		}
 
@@ -77,11 +101,10 @@ abstract class RecordAbstract implements RecordInterface, Serializable
 
 		if(is_array($data))
 		{
-			foreach($data as $k => $v)
+			foreach($data as $key => $value)
 			{
-				$this->$k = $v;
+				$this->$key = $value;
 			}
 		}
 	}
 }
-

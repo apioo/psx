@@ -72,8 +72,6 @@ class ImmutableRecordTest extends \PHPUnit_Framework_TestCase
 		$record = new ImmutableRecord('foo', $fields);
 
 		$this->assertEquals('foo', $record->getRecordInfo()->getName());
-		$this->assertEquals($fields, $record->getRecordInfo()->getFields());
-		$this->assertEquals(1, $record->getRecordInfo()->hasFields(array('id', 'title')));
 		$this->assertEquals(true, $record->getRecordInfo()->hasField('id'));
 	}
 

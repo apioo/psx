@@ -37,10 +37,6 @@ class RecordInfoTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(array('title' => 'foo'), $info->getFields());
 		$this->assertTrue($info->hasField('title'));
 		$this->assertFalse($info->hasField('foo'));
-		$this->assertTrue($info->hasFields(['title']));
-		$this->assertFalse($info->hasFields(['foo']));
-		$this->assertEquals(array(), $info->getMissingFields(['title']));
-		$this->assertEquals(array('title'), $info->getMissingFields(['foo']));
 
 		$info->setName('bar');
 		$info->setFields(array('bar' => 'foo'));
