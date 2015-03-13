@@ -69,14 +69,19 @@ class Twig implements TemplateInterface
 		return !empty($this->file);
 	}
 
-	public function fileExists()
-	{
-		return is_file($this->file);
-	}
-
 	public function getFile()
 	{
 		return $this->dir != null ? $this->dir . '/' . $this->file : $this->file;
+	}
+
+	public function isFileAvailable()
+	{
+		return is_file($this->getFile());
+	}
+
+	public function isAbsoluteFile()
+	{
+		return is_file($this->file);
 	}
 
 	public function assign($key, $value)

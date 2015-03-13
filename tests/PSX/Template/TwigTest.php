@@ -45,6 +45,8 @@ class TwigTest extends \PHPUnit_Framework_TestCase
 		$template->set('foo.twig.html');
 
 		$this->assertTrue($template->hasFile());
+		$this->assertTrue($template->isFileAvailable());
+		$this->assertFalse($template->isAbsoluteFile());
 		$this->assertEquals('foo.twig.html', $template->get());
 
 		$template->assign('foo', 'bar');
