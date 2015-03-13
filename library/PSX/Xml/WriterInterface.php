@@ -23,7 +23,8 @@ namespace PSX\Xml;
 /**
  * Contract to all xml producing writer classes. The classes are designed to 
  * used either independently producing an complete xml document or used in an
- * context producing only an xml fragment
+ * context producing only an xml fragment. An writer has add* or set* methods 
+ * which write an element
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0

@@ -33,7 +33,7 @@ use XMLWriter;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Xml extends ArrayAbstract
+class Xml implements WriterInterface
 {
 	public static $mime = 'application/xml';
 
@@ -55,7 +55,7 @@ class Xml extends ArrayAbstract
 	public function write(RecordInterface $record)
 	{
 		$writer = new Writer($this->writer);
-		$writer->setRecord($record->getRecordInfo()->getName(), $this->export($record));
+		$writer->setRecord($record);
 
 		return $this->writer === null ? $writer->toString() : null;
 	}

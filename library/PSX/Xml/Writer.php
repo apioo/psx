@@ -20,7 +20,11 @@
 
 namespace PSX\Xml;
 
+use DateTime;
 use XMLWriter;
+use PSX\Data\RecordInterface;
+use PSX\Data\Record\GraphTraverser;
+use PSX\Data\Record\Visitor;
 use PSX\Util\CurveArray;
 
 /**
@@ -48,9 +52,10 @@ class Writer implements WriterInterface
 		}
 	}
 
-	public function setRecord($name, array $fields, $ns = null)
+	public function setRecord(RecordInterface $record, $ns = null)
 	{
-		$this->recXmlEncode($name, $fields, $ns);
+		$graph = new GraphTraverser();
+		$graph->traverse($record, new Visitor\XmlWriterVisitor($this->writer, $ns));
 	}
 
 	public function close()
@@ -61,60 +66,11 @@ class Writer implements WriterInterface
 	{
 		$this->writer->endDocument();
 
-		return $this->writer->outputMemory();	
+		return $this->writer->outputMemory();
 	}
 
 	public function getWriter()
 	{
 		return $this->writer;
-	}
-
-	protected function recXmlEncode($name, array $fields, $ns = null)
-	{
-		if(CurveArray::isAssoc($fields))
-		{
-			$this->writer->startElement($name);
-
-			if($ns !== null)
-			{
-				$this->writer->writeAttribute('xmlns', $ns);
-			}
-
-			foreach($fields as $k => $v)
-			{
-				if(is_array($v))
-				{
-					$this->recXmlEncode($k, $v);
-				}
-				else if(is_bool($v))
-				{
-					$this->writer->writeElement($k, $v ? 'true' : 'false');
-				}
-				else
-				{
-					$this->writer->writeElement($k, $v);
-				}
-			}
-
-			$this->writer->endElement();
-		}
-		else
-		{
-			foreach($fields as $k => $v)
-			{
-				if(is_array($v))
-				{
-					$this->recXmlEncode($name, $v);
-				}
-				else if(is_bool($v))
-				{
-					$this->writer->writeElement($name, $v ? 'true' : 'false');
-				}
-				else
-				{
-					$this->writer->writeElement($name, $v);
-				}
-			}
-		}
 	}
 }

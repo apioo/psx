@@ -62,4 +62,14 @@ class SvgTest extends TemplateAbstractTestCase
 
 		$this->assertEquals('image/svg+xml', $writer->getContentType());
 	}
+
+	/**
+	 * @expectedException PSX\Http\Exception\InternalServerErrorException
+	 */
+	public function testFallbackGenerator()
+	{
+		// we have no svg generator
+
+		parent::testFallbackGenerator();
+	}
 }

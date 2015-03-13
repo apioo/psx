@@ -20,6 +20,8 @@
 
 namespace PSX\Xml;
 
+use PSX\Data\Record;
+
 /**
  * WriterTest
  *
@@ -32,16 +34,16 @@ class WriterTest extends \PHPUnit_Framework_TestCase
 	public function testWriter()
 	{
 		$writer = new Writer();
-		$writer->setRecord('foo', array(
+		$writer->setRecord(new Record('foo', array(
 			'foo1' => 'bar',
-			'foo2' => array(
+			'foo2' => new Record('bar', array(
 				'bar1' => 'foo', 
 				'bar2' => 'foo',
-			),
+			)),
 			'foo3' => 'bar',
 			'foo4' => 'bar',
 			'foo5' => 'bar',
-		));
+		)));
 
 		$actual   = $writer->toString();
 		$expected = <<<XML

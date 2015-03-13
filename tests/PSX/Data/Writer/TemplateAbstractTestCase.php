@@ -48,50 +48,54 @@ abstract class TemplateAbstractTestCase extends WriterTestCase
 			->getMock();
 
 		$template->expects($this->at(3))
-				->method('assign')
-				->with($this->equalTo('self'));
+				->method('isFileAvailable')
+				->will($this->returnValue(true));
 
 		$template->expects($this->at(4))
 				->method('assign')
-				->with($this->equalTo('url'));
+				->with($this->equalTo('self'));
 
 		$template->expects($this->at(5))
 				->method('assign')
-				->with($this->equalTo('base'));
+				->with($this->equalTo('url'));
 
 		$template->expects($this->at(6))
 				->method('assign')
-				->with($this->equalTo('render'));
+				->with($this->equalTo('base'));
 
 		$template->expects($this->at(7))
 				->method('assign')
-				->with($this->equalTo('location'));
+				->with($this->equalTo('render'));
 
 		$template->expects($this->at(8))
 				->method('assign')
-				->with($this->equalTo('router'), $this->identicalTo($router));
+				->with($this->equalTo('location'));
 
 		$template->expects($this->at(9))
 				->method('assign')
-				->with($this->equalTo('id'), $this->equalTo(1));
+				->with($this->equalTo('router'), $this->identicalTo($router));
 
 		$template->expects($this->at(10))
 				->method('assign')
-				->with($this->equalTo('author'), $this->equalTo('foo'));
+				->with($this->equalTo('id'), $this->equalTo(1));
 
 		$template->expects($this->at(11))
 				->method('assign')
-				->with($this->equalTo('title'), $this->equalTo('bar'));
+				->with($this->equalTo('author'), $this->equalTo('foo'));
 
 		$template->expects($this->at(12))
 				->method('assign')
-				->with($this->equalTo('content'), $this->equalTo('foobar'));
+				->with($this->equalTo('title'), $this->equalTo('bar'));
 
 		$template->expects($this->at(13))
 				->method('assign')
+				->with($this->equalTo('content'), $this->equalTo('foobar'));
+
+		$template->expects($this->at(14))
+				->method('assign')
 				->with($this->equalTo('date'));
 
-		$template->expects($this->once())
+		$template->expects($this->at(15))
 				->method('transform')
 				->will($this->returnValue('foo'));
 
@@ -113,46 +117,50 @@ TEXT;
 			->getMock();
 
 		$template->expects($this->at(3))
-				->method('assign')
-				->with($this->equalTo('self'));
+				->method('isFileAvailable')
+				->will($this->returnValue(true));
 
 		$template->expects($this->at(4))
 				->method('assign')
-				->with($this->equalTo('url'));
+				->with($this->equalTo('self'));
 
 		$template->expects($this->at(5))
 				->method('assign')
-				->with($this->equalTo('base'));
+				->with($this->equalTo('url'));
 
 		$template->expects($this->at(6))
 				->method('assign')
-				->with($this->equalTo('render'));
+				->with($this->equalTo('base'));
 
 		$template->expects($this->at(7))
 				->method('assign')
-				->with($this->equalTo('location'));
+				->with($this->equalTo('render'));
 
 		$template->expects($this->at(8))
 				->method('assign')
-				->with($this->equalTo('router'), $this->identicalTo($router));
+				->with($this->equalTo('location'));
 
 		$template->expects($this->at(9))
 				->method('assign')
-				->with($this->equalTo('totalResults'), $this->equalTo(2));
+				->with($this->equalTo('router'), $this->identicalTo($router));
 
 		$template->expects($this->at(10))
 				->method('assign')
-				->with($this->equalTo('startIndex'), $this->equalTo(0));
+				->with($this->equalTo('totalResults'), $this->equalTo(2));
 
 		$template->expects($this->at(11))
 				->method('assign')
-				->with($this->equalTo('itemsPerPage'), $this->equalTo(8));
+				->with($this->equalTo('startIndex'), $this->equalTo(0));
 
 		$template->expects($this->at(12))
 				->method('assign')
+				->with($this->equalTo('itemsPerPage'), $this->equalTo(8));
+
+		$template->expects($this->at(13))
+				->method('assign')
 				->with($this->equalTo('entry'));
 
-		$template->expects($this->once())
+		$template->expects($this->at(14))
 				->method('transform')
 				->will($this->returnValue('foo'));
 
@@ -185,6 +193,10 @@ TEXT;
 				->method('setDir')
 				->with($this->equalTo('library/Foo/Resource'));
 
+		$template->expects($this->at(3))
+				->method('isFileAvailable')
+				->will($this->returnValue(true));
+
 		$writer = $this->getWriter($template, $router);
 		$writer->setControllerClass('Foo\Application\News\DetailDescription');
 
@@ -211,12 +223,16 @@ TEXT;
 				->will($this->returnValue(true));
 
 		$template->expects($this->at(1))
-				->method('fileExists')
+				->method('isAbsoluteFile')
 				->will($this->returnValue(false));
 
 		$template->expects($this->at(2))
 				->method('setDir')
 				->with($this->equalTo('library/Foo/Resource'));
+
+		$template->expects($this->at(3))
+				->method('isFileAvailable')
+				->will($this->returnValue(true));
 
 		$writer = $this->getWriter($template, $router);
 		$writer->setControllerClass('Foo\Application\News\DetailDescription');
@@ -240,16 +256,71 @@ TEXT;
 				->will($this->returnValue(true));
 
 		$template->expects($this->at(1))
-				->method('fileExists')
+				->method('isAbsoluteFile')
 				->will($this->returnValue(true));
 
 		$template->expects($this->at(2))
 				->method('setDir')
 				->with($this->equalTo(null));
 
+		$template->expects($this->at(3))
+				->method('isFileAvailable')
+				->will($this->returnValue(true));
+
 		$writer = $this->getWriter($template, $router);
 		$writer->setControllerClass('Foo\Application\News\DetailDescription');
 
 		$actual = $writer->write($this->getRecord());
+	}
+
+	/**
+	 * If the template engine cant resolve a template file we generate a 
+	 * presentation using an generator if available
+	 */
+	public function testFallbackGenerator()
+	{
+		$template = $this->getMock('PSX\TemplateInterface');
+		$router   = $this->getMockBuilder('PSX\Loader\ReverseRouter')
+			->disableOriginalConstructor()
+			->getMock();
+
+		$template->expects($this->at(0))
+				->method('hasFile')
+				->will($this->returnValue(true));
+
+		$template->expects($this->at(1))
+				->method('isAbsoluteFile')
+				->will($this->returnValue(true));
+
+		$template->expects($this->at(2))
+				->method('isFileAvailable')
+				->will($this->returnValue(false));
+
+		$writer = $this->getWriter($template, $router);
+		$writer->setControllerClass('Foo\Application\News\DetailDescription');
+
+		$actual = $writer->write($this->getRecord());
+
+		preg_match('/<body>(.*)<\/body>/ims', $actual, $matches);
+
+		$this->assertXmlStringEqualsXmlString($this->getExpectedFallbackTemplate(), $matches[1]);
+	}
+
+	protected function getExpectedFallbackTemplate()
+	{
+		return <<<HTML
+<dl data-name="record">
+	<dt>id</dt>
+	<dd>1</dd>
+	<dt>author</dt>
+	<dd>foo</dd>
+	<dt>title</dt>
+	<dd>bar</dd>
+	<dt>content</dt>
+	<dd>foobar</dd>
+	<dt>date</dt>
+	<dd>2012-03-11T13:37:21+00:00</dd>
+</dl>
+HTML;
 	}
 }

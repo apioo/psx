@@ -21,6 +21,7 @@
 namespace PSX\Data\Writer;
 
 use PSX\Data\ExceptionRecord;
+use PSX\Data\Record;
 use PSX\Data\RecordInterface;
 use PSX\Data\WriterInterface;
 use PSX\Http\MediaType;
@@ -79,7 +80,7 @@ class Soap extends Xml
 				$xmlWriter->startElement('detail');
 
 				$writer = new Writer($xmlWriter);
-				$writer->setRecord($record->getRecordInfo()->getName(), $this->export($record), $this->namespace);
+				$writer->setRecord($record, $this->namespace);
 
 				$xmlWriter->endElement();
 			}
@@ -91,8 +92,9 @@ class Soap extends Xml
 		{
 			$xmlWriter->startElement('soap:Body');
 
+			$record = new Record($this->requestMethod . 'Response', $record->getRecordInfo()->getFields());
 			$writer = new Writer($xmlWriter);
-			$writer->setRecord($this->requestMethod . 'Response', $this->export($record), $this->namespace);
+			$writer->setRecord($record, $this->namespace);
 
 			$xmlWriter->endElement();
 		}

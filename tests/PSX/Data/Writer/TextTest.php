@@ -62,4 +62,14 @@ class TextTest extends TemplateAbstractTestCase
 
 		$this->assertEquals('text/plain', $writer->getContentType());
 	}
+
+	/**
+	 * @expectedException PSX\Http\Exception\InternalServerErrorException
+	 */
+	public function testFallbackGenerator()
+	{
+		// we have no text generator
+
+		parent::testFallbackGenerator();
+	}
 }

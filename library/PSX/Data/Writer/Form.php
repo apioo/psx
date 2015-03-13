@@ -21,6 +21,8 @@
 namespace PSX\Data\Writer;
 
 use PSX\Data\RecordInterface;
+use PSX\Data\Record\GraphTraverser;
+use PSX\Data\Record\Visitor;
 use PSX\Data\WriterInterface;
 use PSX\Http\MediaType;
 
@@ -31,13 +33,17 @@ use PSX\Http\MediaType;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Form extends ArrayAbstract
+class Form implements WriterInterface
 {
 	public static $mime = 'application/x-www-form-urlencoded';
 
 	public function write(RecordInterface $record)
 	{
-		return http_build_query($this->export($record), '', '&');
+		$visitor = new Visitor\StdClassSerializeVisitor();
+		$graph   = new GraphTraverser();
+		$graph->traverse($record, $visitor);
+
+		return http_build_query($visitor->getObject(), '', '&');
 	}
 
 	public function isContentTypeSupported(MediaType $contentType)

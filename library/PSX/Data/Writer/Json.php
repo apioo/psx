@@ -32,13 +32,13 @@ use PSX\Json as JsonParser;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Json extends ArrayAbstract
+class Json implements WriterInterface
 {
 	public static $mime = 'application/json';
 
 	public function write(RecordInterface $record)
 	{
-		return JsonParser::encode($this->export($record), JSON_PRETTY_PRINT);
+		return JsonParser::encode($record, JSON_PRETTY_PRINT);
 	}
 
 	public function isContentTypeSupported(MediaType $contentType)
