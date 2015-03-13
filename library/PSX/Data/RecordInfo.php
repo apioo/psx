@@ -20,6 +20,9 @@
 
 namespace PSX\Data;
 
+use ArrayIterator;
+use IteratorAggregate;
+
 /**
  * RecordInfo
  *
@@ -27,7 +30,7 @@ namespace PSX\Data;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class RecordInfo
+class RecordInfo implements IteratorAggregate
 {
 	protected $name;
 	protected $fields;
@@ -38,7 +41,7 @@ class RecordInfo
 
 		if($parent !== null)
 		{
-			$this->fields = array_merge($fields, $parent->getFields());
+			$this->fields = array_merge($parent->getFields(), $fields);
 		}
 		else
 		{
@@ -71,14 +74,9 @@ class RecordInfo
 		return isset($this->fields[$key]);
 	}
 
-	public function hasFields(array $fields)
+	public function getField($key)
 	{
-		return count($this->getMissingFields($fields)) == 0;
-	}
-
-	public function getMissingFields(array $fields)
-	{
-		return array_diff(array_keys($this->fields), $fields);
+		return isset($this->fields[$key]) ? $this->fields[$key] : null;
 	}
 
 	public function isEmpty()
@@ -105,5 +103,9 @@ class RecordInfo
 
 		return $data;
 	}
-}
 
+	public function getIterator()
+	{
+		return new ArrayIterator($this->getData());
+	}
+}
