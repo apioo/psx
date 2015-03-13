@@ -35,15 +35,17 @@ use XMLWriter;
 class XmlWriterVisitor extends VisitorAbstract
 {
 	protected $writer;
+	protected $namespace;
 
 	protected $objectKey;
 	protected $level      = 0;
 	protected $arrayStart = false;
 	protected $arrayEnd   = false;
 
-	public function __construct(XMLWriter $writer)
+	public function __construct(XMLWriter $writer, $namespace = null)
 	{
-		$this->writer = $writer;
+		$this->writer    = $writer;
+		$this->namespace = $namespace;
 	}
 
 	public function visitObjectStart(RecordInterface $record)
@@ -51,6 +53,11 @@ class XmlWriterVisitor extends VisitorAbstract
 		if($this->level == 0)
 		{
 			$this->writer->startElement($record->getRecordInfo()->getName());
+
+			if($this->namespace !== null)
+			{
+				$this->writer->writeAttribute('xmlns', $this->namespace);
+			}
 		}
 
 		$this->level++;
