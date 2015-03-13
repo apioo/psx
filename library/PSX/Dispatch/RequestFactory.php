@@ -95,6 +95,8 @@ class RequestFactory implements RequestFactoryInterface
 
 			if(in_array($requestMethod, array('POST', 'PUT', 'DELETE')))
 			{
+				// as long as we support PHP < 5.6 we must use an BufferedStream
+				// since the php://input stream can only be read once
 				$body = new BufferedStream(new TempStream(fopen('php://input', 'r')));
 			}
 
