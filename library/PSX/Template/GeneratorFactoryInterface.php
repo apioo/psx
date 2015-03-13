@@ -20,22 +20,20 @@
 
 namespace PSX\Template;
 
-use PSX\Data\RecordInterface;
-
 /**
- * GeneratorInterface
+ * GeneratorFactoryInterface
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-interface GeneratorInterface
+interface GeneratorFactoryInterface
 {
 	/**
-	 * Generates a string representation from the given data
+	 * Returns an generator based on an content type
 	 *
-	 * @param PSX\Data\RecordInterface $data
-	 * @return string
+	 * @param string $contentType
+	 * @return PSX\Template\GeneratorInterface
 	 */
-	public function generate(RecordInterface $data);
+	public function getByContentType($contentType);
 }

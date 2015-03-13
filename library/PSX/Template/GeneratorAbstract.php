@@ -23,19 +23,57 @@ namespace PSX\Template;
 use PSX\Data\RecordInterface;
 
 /**
- * GeneratorInterface
+ * GeneratorAbstract
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-interface GeneratorInterface
+abstract class GeneratorAbstract implements GeneratorInterface
 {
-	/**
-	 * Generates a string representation from the given data
-	 *
-	 * @param PSX\Data\RecordInterface $data
-	 * @return string
-	 */
-	public function generate(RecordInterface $data);
+	protected function getData(RecordInterface $record)
+	{
+		$recordInfo = $record->getRecordInfo();
+		$data       = array();
+
+		foreach($recordInfo as $key => $value)
+		{
+			$data[$key] = $this->getValue($value);
+		}
+
+		return $data[$key];
+	}
+
+	protected function getValue($field)
+	{
+		if(is_array($field))
+		{
+			$data = array();
+			foreach($field as $value)
+			{
+				$data[] = $this->getValue($value);
+			}
+			return $data;
+		}
+		else if($field instanceof RecordInterface)
+		{
+			return $this->getData($v);
+		}
+		else if($field instanceof \DateTime)
+		{
+			return $v->format(\DateTime::RFC3339);
+		}
+		else if(is_object($field))
+		{
+			return (string) $v;
+		}
+		else if(is_bool($field))
+		{
+			return $field ? '1' : '0';
+		}
+		else
+		{
+			return $field;
+		}
+	}
 }
