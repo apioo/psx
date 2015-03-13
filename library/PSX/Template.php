@@ -20,10 +20,7 @@
 
 namespace PSX;
 
-use PSX\Data\RecordInterface;
 use PSX\Template\ErrorException;
-use PSX\Template\FallbackGenerator;
-use PSX\Template\GeneratorInterface;
 
 /**
  * Template
@@ -37,19 +34,6 @@ class Template implements TemplateInterface
 	protected $dir;
 	protected $file;
 	protected $data = array();
-
-	protected $generator;
-
-	/**
-	 * The fallback generator is used if the template engine has no template
-	 * file
-	 *
-	 * @param PSX\Template\GeneratorInterface $fallbackGenerator
-	 */
-	public function __construct(GeneratorInterface $fallbackGenerator = null)
-	{
-		$this->generator = $fallbackGenerator ?: new FallbackGenerator();
-	}
 
 	public function setDir($dir)
 	{
@@ -76,14 +60,19 @@ class Template implements TemplateInterface
 		return !empty($this->file);
 	}
 
-	public function fileExists()
-	{
-		return is_file($this->file);
-	}
-
 	public function getFile()
 	{
 		return $this->dir != null ? $this->dir . '/' . $this->file : $this->file;
+	}
+
+	public function isFileAvailable()
+	{
+		return is_file($this->getFile());
+	}
+
+	public function isAbsoluteFile()
+	{
+		return is_file($this->file);
 	}
 
 	public function assign($key, $value)
@@ -95,36 +84,18 @@ class Template implements TemplateInterface
 	{
 		$file = $this->getFile();
 
-		if(!is_file($file))
+		// parse template
+		try
 		{
-			// if we use the fallback template we dont want to expose the default 
-			// template values only the actual data set by the user
-			$reservedKeys = array(
-				'self'     => null, 
-				'url'      => null, 
-				'base'     => null, 
-				'render'   => null, 
-				'location' => null, 
-				'router'   => null,
-			);
+			ob_start();
 
-			$html = $this->generator->generate(array_diff_key($this->data, $reservedKeys));
+			includeTemplateScope($this->data, $file);
+
+			$html = ob_get_clean();
 		}
-		else
+		catch(\Exception $e)
 		{
-			// parse template
-			try
-			{
-				ob_start();
-
-				includeTemplateScope($this->data, $file);
-
-				$html = ob_get_clean();
-			}
-			catch(\Exception $e)
-			{
-				throw new ErrorException($e->getMessage(), $e, $this->getFile(), ob_get_clean());
-			}
+			throw new ErrorException($e->getMessage(), $e, $file, ob_get_clean());
 		}
 
 		return $html;

@@ -22,11 +22,17 @@ namespace PSX\Data\Writer;
 
 use PSX\Data\RecordInterface;
 use PSX\Data\WriterInterface;
+use PSX\Http\Exception as StatusCode;
 use PSX\Loader\ReverseRouter;
 use PSX\TemplateInterface;
+use PSX\Template\GeneratorFactory;
+use PSX\Template\GeneratorFactoryInterface;
+use PSX\Template\GeneratorInterface;
 
 /**
- * Abstract class to facilitate an template engine to produce the output
+ * Abstract class to facilitate an template engine to produce the output. If no
+ * template file was found we look for an generator which can produce this 
+ * content type
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
@@ -36,13 +42,15 @@ abstract class TemplateAbstract implements WriterInterface
 {
 	protected $template;
 	protected $reverseRouter;
+	protected $generatorFactory;
 	protected $className;
 
-	public function __construct(TemplateInterface $template, ReverseRouter $reverseRouter)
+	public function __construct(TemplateInterface $template, ReverseRouter $reverseRouter, GeneratorFactoryInterface $generatorFactory = null)
 	{
-		$this->template      = $template;
-		$this->reverseRouter = $reverseRouter;
-		$this->baseDir       = PSX_PATH_LIBRARY;
+		$this->template         = $template;
+		$this->reverseRouter    = $reverseRouter;
+		$this->generatorFactory = $generatorFactory ?: new GeneratorFactory();
+		$this->baseDir          = PSX_PATH_LIBRARY;
 	}
 
 	public function setBaseDir($baseDir)
@@ -82,29 +90,45 @@ abstract class TemplateAbstract implements WriterInterface
 		}
 		else
 		{
-			$this->template->setDir(!$this->template->fileExists() ? $path : null);
+			$this->template->setDir(!$this->template->isAbsoluteFile() ? $path : null);
 		}
 
-		// assign default values
-		$self   = isset($_SERVER['QUERY_STRING']) && !empty($_SERVER['QUERY_STRING']) ? $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING'] : $_SERVER['PHP_SELF'];
-		$render = round(microtime(true) - $GLOBALS['psx_benchmark'], 6);
-
-		$this->template->assign('self', htmlspecialchars($self));
-		$this->template->assign('url', $this->reverseRouter->getDispatchUrl());
-		$this->template->assign('base', $this->reverseRouter->getBasePath());
-		$this->template->assign('render', $render);
-		$this->template->assign('location', $path);
-		$this->template->assign('router', $this->reverseRouter);
-
-		// assign data
-		$fields = $record->getRecordInfo()->getFields();
-
-		foreach($fields as $key => $value)
+		if(!$this->template->isFileAvailable())
 		{
-			$this->template->assign($key, $value);
-		}
+			$generator = $this->generatorFactory->getByContentType($this->getContentType());
 
-		return $this->template->transform();
+			if($generator instanceof GeneratorInterface)
+			{
+				return $generator->generate($record);
+			}
+			else
+			{
+				throw new StatusCode\InternalServerErrorException('Template file not found');
+			}
+		}
+		else
+		{
+			// assign default values
+			$self   = isset($_SERVER['QUERY_STRING']) && !empty($_SERVER['QUERY_STRING']) ? $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING'] : $_SERVER['PHP_SELF'];
+			$render = round(microtime(true) - $GLOBALS['psx_benchmark'], 6);
+
+			$this->template->assign('self', htmlspecialchars($self));
+			$this->template->assign('url', $this->reverseRouter->getDispatchUrl());
+			$this->template->assign('base', $this->reverseRouter->getBasePath());
+			$this->template->assign('render', $render);
+			$this->template->assign('location', $path);
+			$this->template->assign('router', $this->reverseRouter);
+
+			// assign data
+			$fields = $record->getRecordInfo()->getFields();
+
+			foreach($fields as $key => $value)
+			{
+				$this->template->assign($key, $value);
+			}
+
+			return $this->template->transform();
+		}
 	}
 
 	/**

@@ -38,8 +38,8 @@ class ErrorException extends \Exception
 		parent::__construct($message);
 
 		$this->originException = $originException;
-		$this->templateFile = $templateFile;
-		$this->renderedHtml = $renderedHtml;
+		$this->templateFile    = $templateFile;
+		$this->renderedHtml    = $renderedHtml;
 	}
 
 	public function getOriginException()

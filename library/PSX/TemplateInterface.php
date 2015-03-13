@@ -66,18 +66,26 @@ interface TemplateInterface
 	public function hasFile();
 
 	/**
-	 * Returns whether the template file exists
-	 *
-	 * @return boolean
-	 */
-	public function fileExists();
-
-	/**
 	 * Returns the path of the template dir and file
 	 *
 	 * @return string
 	 */
 	public function getFile();
+
+	/**
+	 * Returns true if the template engine can resolve an template file with the
+	 * given dir and file parameters
+	 *
+	 * @return boolean
+	 */
+	public function isFileAvailable();
+
+	/**
+	 * Returns true if the given file is an absolute file path
+	 *
+	 * @return boolean
+	 */
+	public function isAbsoluteFile();
 
 	/**
 	 * Assigns an variable to the template
@@ -88,7 +96,7 @@ interface TemplateInterface
 	public function assign($key, $value);
 
 	/**
-	 * Transforms the template file
+	 * Transforms the template file 
 	 *
 	 * @return string
 	 */

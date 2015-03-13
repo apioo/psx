@@ -42,7 +42,8 @@ class TemplateTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('tests/PSX/Template/files', $template->getDir());
 		$this->assertEquals('foo.htm', $template->get());
 		$this->assertTrue($template->hasFile());
-		$this->assertFalse($template->fileExists());
+		$this->assertTrue($template->isFileAvailable());
+		$this->assertFalse($template->isAbsoluteFile());
 		$this->assertEquals('tests/PSX/Template/files/foo.htm', $template->getFile());
 
 		$template->assign('foo', 'bar');
@@ -50,26 +51,6 @@ class TemplateTest extends \PHPUnit_Framework_TestCase
 		$content = $template->transform();
 
 		$this->assertEquals('Hello bar', $content);
-	}
-
-	public function testFallbackTemplate()
-	{
-		$template = new Template();
-		$template->assign('key_1', 'bar');
-		$template->assign('key_2', array(1, 2));
-		$template->assign('key_3', array(new Record('foo', array('bar' => 'foo'))));
-		$template->assign('key_4', new Record('foo', array('bar' => 'foo')));
-		$template->assign('key_5', new \DateTime('2014-12-27'));
-		$template->assign('key_6', new StringObject());
-		$template->assign('key_7', false);
-		$template->assign('key_8', true);
-
-		$content = $template->transform();
-
-		preg_match('/<body>(.*)<\/body>/ims', $content, $matches);
-
-		$this->assertArrayHasKey(1, $matches);
-		$this->assertXmlStringEqualsXmlString($this->getExpectedFallbackTemplate(), $matches[1]);
 	}
 
 	public function testTransformException()
@@ -90,56 +71,5 @@ class TemplateTest extends \PHPUnit_Framework_TestCase
 			$this->assertEquals('tests/PSX/Template/files/error.htm', $e->getTemplateFile());
 			$this->assertEquals('foobar', $e->getRenderedHtml());
 		}
-	}
-
-	protected function getExpectedFallbackTemplate()
-	{
-		return <<<HTML
-<dl>
-	<dt>key_1</dt>
-	<dd class="scalar">bar</dd>
-	<dt>key_2</dt>
-	<dd class="array">
-		<ul>
-			<li>1</li>
-			<li>2</li>
-		</ul>
-	</dd>
-	<dt>key_3</dt>
-	<dd class="array">
-		<ul>
-			<li>
-				<dl>
-					<dt>bar</dt>
-					<dd class="scalar">foo</dd>
-				</dl>
-			</li>
-		</ul>
-	</dd>
-	<dt>key_4</dt>
-	<dd class="object">
-		<dl>
-			<dt>bar</dt>
-			<dd class="scalar">foo</dd>
-		</dl>
-	</dd>
-	<dt>key_5</dt>
-	<dd class="scalar">2014-12-27T00:00:00+00:00</dd>
-	<dt>key_6</dt>
-	<dd class="scalar">foo</dd>
-	<dt>key_7</dt>
-	<dd class="scalar">0</dd>
-	<dt>key_8</dt>
-	<dd class="scalar">1</dd>
-</dl>
-HTML;
-	}
-}
-
-class StringObject
-{
-	public function __toString()
-	{
-		return 'foo';
 	}
 }
