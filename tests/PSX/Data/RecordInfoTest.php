@@ -37,6 +37,8 @@ class RecordInfoTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(array('title' => 'foo'), $info->getFields());
 		$this->assertTrue($info->hasField('title'));
 		$this->assertFalse($info->hasField('foo'));
+		$this->assertEquals('foo', $info->getField('title'));
+		$this->assertFalse($info->isEmpty());
 
 		$info->setName('bar');
 		$info->setFields(array('bar' => 'foo'));
@@ -52,5 +54,16 @@ class RecordInfoTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals('record', $info->getName());
 		$this->assertEquals(array('title' => 'foo', 'bar' => 'foo'), $info->getFields());
+	}
+
+	public function testRecordInfoTraversable()
+	{
+		$info = new RecordInfo('record', array('title' => 'foo'));
+
+		foreach($info as $key => $value)
+		{
+			$this->assertEquals('title', $key);
+			$this->assertEquals('foo', $value);
+		}
 	}
 }
