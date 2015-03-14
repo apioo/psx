@@ -20,9 +20,7 @@
 
 namespace PSX\Data\Record;
 
-use JsonSerializable;
 use PSX\Data\RecordInterface;
-use Traversable;
 
 /**
  * GraphTraverser
@@ -50,10 +48,6 @@ class GraphTraverser
 		else if($object instanceof \stdClass)
 		{
 			$properties = (array) $object;
-		}
-		else if($object instanceof JsonSerializable)
-		{
-			$properties = $object->jsonSerialize();
 		}
 
 		if(empty($name))
