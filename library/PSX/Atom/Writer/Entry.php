@@ -25,7 +25,6 @@ use PSX\Atom\Writer as Atom;
 use PSX\Data\RecordInterface;
 use PSX\Data\Reader\Xml as XmlReader;
 use PSX\Data\Writer\Xml;
-use PSX\Xml\WriterInterface;
 use XMLWriter;
 
 /**
@@ -35,7 +34,7 @@ use XMLWriter;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Entry implements WriterInterface
+class Entry
 {
 	protected $writer;
 

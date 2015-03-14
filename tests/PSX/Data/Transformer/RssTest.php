@@ -67,50 +67,42 @@ INPUT;
 
 		$transformer = new Rss();
 
-		$expect = array(
-			'type' => 'rss',
-			'title' => 'Liftoff News',
-			'link' => 'http://liftoff.msfc.nasa.gov/',
-			'description' => 'Liftoff to Space Exploration.',
-			'language' => 'en-us',
-			'pubDate' => 'Tue, 10 Jun 2003 04:00:00 +0000',
-			'lastBuildDate' => 'Tue, 10 Jun 2003 09:41:01 +0000',
-			'docs' => 'http://blogs.law.harvard.edu/tech/rss',
-			'generator' => 'Weblog Editor 2.0',
-			'managingEditor' => 'editor@example.com',
-			'webMaster' => 'webmaster@example.com',
-			'category' => array(
-				'text' => 'News',
-				'domain' => null,
-			),
-			'item' => array(
-				array(
-					'type' => 'item',
-					'title' => 'Star City',
-					'link' => 'http://liftoff.msfc.nasa.gov/news/2003/news-starcity.asp',
-					'description' => 'How do Americans get ready to work with Russians aboard the International Space Station? They take a crash course in culture, language and protocol at Russia\'s <a href="http://howe.iki.rssi.ru/GCTC/gctc_e.htm">Star City</a>.',
-					'pubDate' => 'Tue, 03 Jun 2003 09:39:21 +0000',
-					'guid' => 'http://liftoff.msfc.nasa.gov/2003/06/03.html#item573',
-					'category' => array(
-						'text' => 'News',
-						'domain' => 'http://google.com',
-					),
-					'enclosure' => array(
-						'url' => 'http://www.scripting.com/mp3s/weatherReportSuite.mp3',
-						'length' => '12216320',
-						'type' => 'audio/mpeg',
-					),
-					'source' => array(
-						'url' => 'http://www.tomalak.org/links2.xml',
-						'text' => 'Tomalak\'s Realm',
-					),
-				)
-			),
-		);
+		$expect = new \stdClass();
+		$expect->type = 'rss';
+		$expect->title = 'Liftoff News';
+		$expect->link = 'http://liftoff.msfc.nasa.gov/';
+		$expect->description = 'Liftoff to Space Exploration.';
+		$expect->language = 'en-us';
+		$expect->pubDate = 'Tue, 10 Jun 2003 04:00:00 +0000';
+		$expect->lastBuildDate = 'Tue, 10 Jun 2003 09:41:01 +0000';
+		$expect->docs = 'http://blogs.law.harvard.edu/tech/rss';
+		$expect->generator = 'Weblog Editor 2.0';
+		$expect->managingEditor = 'editor@example.com';
+		$expect->webMaster = 'webmaster@example.com';
+		$expect->category = new \stdClass();
+		$expect->category->text = 'News';
+		$expect->item = [];
+		$expect->item[0] = new \stdClass();
+		$expect->item[0]->type = 'item';
+		$expect->item[0]->title = 'Star City';
+		$expect->item[0]->link = 'http://liftoff.msfc.nasa.gov/news/2003/news-starcity.asp';
+		$expect->item[0]->description = 'How do Americans get ready to work with Russians aboard the International Space Station? They take a crash course in culture, language and protocol at Russia\'s <a href="http://howe.iki.rssi.ru/GCTC/gctc_e.htm">Star City</a>.';
+		$expect->item[0]->pubDate = 'Tue, 03 Jun 2003 09:39:21 +0000';
+		$expect->item[0]->guid = 'http://liftoff.msfc.nasa.gov/2003/06/03.html#item573';
+		$expect->item[0]->category = new \stdClass();
+		$expect->item[0]->category->text = 'News';
+		$expect->item[0]->category->domain = 'http://google.com';
+		$expect->item[0]->enclosure = new \stdClass();
+		$expect->item[0]->enclosure->url = 'http://www.scripting.com/mp3s/weatherReportSuite.mp3';
+		$expect->item[0]->enclosure->length = '12216320';
+		$expect->item[0]->enclosure->type = 'audio/mpeg';
+		$expect->item[0]->source = new \stdClass();
+		$expect->item[0]->source->url = 'http://www.tomalak.org/links2.xml';
+		$expect->item[0]->source->text = 'Tomalak\'s Realm';
 
 		$data = $transformer->transform($dom);
 
-		$this->assertTrue(is_array($data));
+		$this->assertInstanceOf('stdClass', $data);
 		$this->assertEquals($expect, $data);
 	}
 

@@ -35,12 +35,12 @@ class ModelFactory implements FactoryInterface
 {
 	public function factory($data, ImporterInterface $importer)
 	{
-		if(!is_array($data))
+		if(!$data instanceof \stdClass)
 		{
-			throw new RuntimeException('Models must be an array');
+			throw new RuntimeException('Models must be an object');
 		}
 
-		$models = array();
+		$models = new \stdClass();
 
 		foreach($data as $name => $value)
 		{
@@ -48,7 +48,7 @@ class ModelFactory implements FactoryInterface
 			$model = $importer->import($model, $value);
 			$model->setId($name);
 
-			$models[$name] = $model;
+			$models->$name = $model;
 		}
 
 		return $models;

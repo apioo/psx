@@ -83,7 +83,7 @@ TEXT;
 			// based on the data we can return an different source for the 
 			// importer. This is useful if you want create different records
 			// based on i.e. an type value
-			switch($data['type'])
+			switch($data->type)
 			{
 				case 'page':
 					return new Page();

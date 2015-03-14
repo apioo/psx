@@ -46,7 +46,10 @@ TEXT;
 
 		$data = $extractor->extract($message);
 
-		$this->assertEquals(array('foo' => 'bar'), $data);
+		$expect = new \stdClass();
+		$expect->foo = 'bar';
+
+		$this->assertEquals($expect, $data);
 	}
 
 	public function testExtractXml()
@@ -65,7 +68,10 @@ TEXT;
 
 		$data = $extractor->extract($message);
 
-		$this->assertEquals(array('foo' => 'bar'), $data);
+		$expect = new \stdClass();
+		$expect->foo = 'bar';
+
+		$this->assertEquals($expect, $data);
 	}
 
 	public function testExtractXmlImplicitTransformer()
@@ -88,24 +94,20 @@ TEXT;
 
 		$data = $extractor->extract($message);
 
-		$this->assertEquals(array(
-			'entry' => array(
-				array(
-					'title' => 'Atom-Powered Robots Run Amok',
-					'id' => 'urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a',
-					'updated' => '2003-12-13T18:30:02+00:00',
-					'link' => array(
-						array(
-							'href' => 'http://example.org/2003/12/13/atom03',
-						)
-					),
-					'summary' => array(
-						'content' => 'Some text.',
-					),
-					'type' => 'entry',
-				)
-			)
-		), $data);
+		$expect = new \stdClass();
+		$expect->entry = [];
+		$expect->entry[0] = new \stdClass();
+		$expect->entry[0]->title = 'Atom-Powered Robots Run Amok';
+		$expect->entry[0]->id = 'urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a';
+		$expect->entry[0]->updated = '2003-12-13T18:30:02+00:00';
+		$expect->entry[0]->link = [];
+		$expect->entry[0]->link[0] = new \stdClass();
+		$expect->entry[0]->link[0]->href = 'http://example.org/2003/12/13/atom03';
+		$expect->entry[0]->summary = new \stdClass();
+		$expect->entry[0]->summary->content = 'Some text.';
+		$expect->entry[0]->type = 'entry';
+
+		$this->assertEquals($expect, $data);
 	}
 
 	public function testExtractXmlExplicitTransformer()
@@ -139,15 +141,17 @@ TEXT;
 				$titles[] = (string) $titleElement->nodeValue;
 			}
 
-			return array(
-				'titles' => $titles
-			);
+			$result = new \stdClass();
+			$result->titles = $titles;
+
+			return $result;
 
 		}));
 
-		$this->assertEquals(array(
-			'titles' => array('Atom-Powered Robots Run Amok')
-		), $data);
+		$expect = new \stdClass();
+		$expect->titles = array('Atom-Powered Robots Run Amok');
+
+		$this->assertEquals($expect, $data);
 	}
 
 	public function testExtractJsonExplicitReader()
@@ -164,6 +168,9 @@ TEXT;
 
 		$data = $extractor->extract($message, null, ReaderInterface::JSON);
 
-		$this->assertEquals(array('foo' => 'bar'), $data);
+		$expect = new \stdClass();
+		$expect->foo = 'bar';
+
+		$this->assertEquals($expect, $data);
 	}
 }

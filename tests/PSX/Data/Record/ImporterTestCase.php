@@ -179,49 +179,45 @@ trait ImporterTestCase
 
 	protected function getComplexPayload()
 	{
-		return array(
-			'id' => '1',
-			'title' => 'foobar',
-			'active' => 'true',
-			'disabled' => 'false',
-			'count' => '12',
-			'rating' => '12.45',
-			'foobar' => 'foo',
-			'date' => '2014-01-01T12:34:47+01:00',
-			'person' => array(
-				'title' => 'Foo',
-			),
-			'tags' => array('bar', 'foo', 'test'),
-			'entry' => array(
-				array(
-					'title' => 'bar'
-				),
-				array(
-					'title' => 'foo'
-				),
-				array(
-					'title' => 'test'
-				),
-			),
-			'token' => array(
-				'sig' => 'bar',
-				'alg' => 'foo',
-			),
-			'url' => 'http://google.com'
-		);
+		$record = new \stdClass();
+		$record->id = '1';
+		$record->title = 'foobar';
+		$record->active = 'true';
+		$record->disabled = 'false';
+		$record->count = '12';
+		$record->rating = '12.45';
+		$record->foobar = 'foo';
+		$record->date = '2014-01-01T12:34:47+01:00';
+		$record->person = new \stdClass();
+		$record->person->title = 'Foo';
+		$record->tags = ['bar', 'foo', 'test'];
+		$record->entry = [];
+		$record->entry[0] = new \stdClass();
+		$record->entry[0]->title = 'bar';
+		$record->entry[1] = new \stdClass();
+		$record->entry[1]->title = 'foo';
+		$record->entry[2] = new \stdClass();
+		$record->entry[2]->title = 'test';
+		$record->token = new \stdClass();
+		$record->token->sig = 'bar';
+		$record->token->alg = 'foo';
+		$record->url = 'http://google.com';
+
+		return $record;
 	}
 
 	protected function getSimplePayload()
 	{
-		return array(
-			'id' => '1',
-			'title' => 'foobar',
-			'active' => 'true',
-			'disabled' => 'false',
-			'count' => '12',
-			'rating' => '12.45',
-			'foobar' => 'foo',
-			'date' => '2014-01-01T12:34:47+01:00',
-		);
+		$record = new \stdClass();
+		$record->id = '1';
+		$record->title = 'foobar';
+		$record->active = 'true';
+		$record->disabled = 'false';
+		$record->count = '12';
+		$record->rating = '12.45';
+		$record->foobar = 'foo';
+		$record->date = '2014-01-01T12:34:47+01:00';
+
+		return $record;
 	}
 }

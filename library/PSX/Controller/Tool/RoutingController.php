@@ -23,9 +23,10 @@ namespace PSX\Controller\Tool;
 use PSX\Api\DocumentedInterface;
 use PSX\Api\View;
 use PSX\Controller\ViewAbstract;
+use PSX\Data\Object;
+use PSX\Data\Schema\Documentation;
 use PSX\Data\Schema\Generator;
 use PSX\Data\WriterInterface;
-use PSX\Data\Schema\Documentation;
 
 /**
  * RoutingController
@@ -62,11 +63,11 @@ class RoutingController extends ViewAbstract
 		{
 			list($methods, $path, $source) = $routing;
 
-			$result[] = array(
+			$result[] = new Object([
 				'methods' => $methods,
 				'path'    => $path,
 				'source'  => $source,
-			);
+			]);
 		}
 
 		return $result;

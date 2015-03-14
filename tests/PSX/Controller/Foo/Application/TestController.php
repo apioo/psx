@@ -86,11 +86,15 @@ class TestController extends ControllerAbstract
 		$this->testCase->assertEquals('bar', $this->getParameter('foo', Validate::TYPE_STRING, array(), 'Foo', true));
 
 		// get body
-		$data = array(
-			'foo' => 'bar',
-			'bar' => array('foo' => 'nested'),
-			'entries' => array(array('title' => 'bar'), array('title' => 'foo')),
-		);
+		$data = new \stdClass();
+		$data->foo = 'bar';
+		$data->bar = new \stdClass();
+		$data->bar->foo = 'nested';
+		$data->entries = [];
+		$data->entries[0] = new \stdClass();
+		$data->entries[0]->title = 'bar';
+		$data->entries[1] = new \stdClass();
+		$data->entries[1]->title = 'foo';
 
 		$this->testCase->assertEquals($data, $this->getBody());
 		$this->testCase->assertEquals($data, $this->getBody(ReaderInterface::JSON));
@@ -197,7 +201,7 @@ class TestController extends ControllerAbstract
 	 */
 	public function doSetInvalidBody()
 	{
-		$this->setBody(new \stdClass());
+		$this->setBody(new \DateTime());
 	}
 
 	/**

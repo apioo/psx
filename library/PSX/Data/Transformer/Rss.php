@@ -64,9 +64,10 @@ class Rss implements TransformerInterface
 		}
 		else if($name == 'item')
 		{
-			return array(
-				'item' => array($this->parseItemElement($data->documentElement))
-			);
+			$rss = new \stdClass();
+			$rss->item = array($this->parseItemElement($data->documentElement));
+
+			return $rss;
 		}
 		else
 		{
@@ -76,7 +77,9 @@ class Rss implements TransformerInterface
 
 	protected function parseChannelElement(DOMElement $channel)
 	{
-		$result     = array('type' => 'rss');
+		$result = new \stdClass();
+		$result->type = 'rss';
+
 		$childNodes = $channel->childNodes;
 
 		for($i = 0; $i < $childNodes->length; $i++)
@@ -102,31 +105,31 @@ class Rss implements TransformerInterface
 				case 'ttl':
 				case 'image':
 				case 'rating':
-					$result[$name] = $item->nodeValue;
+					$result->$name = $item->nodeValue;
 					break;
 
 				case 'managingeditor':
-					$result['managingEditor'] = $item->nodeValue;
+					$result->managingEditor = $item->nodeValue;
 					break;
 
 				case 'webmaster':
-					$result['webMaster'] = $item->nodeValue;
+					$result->webMaster = $item->nodeValue;
 					break;
 
 				case 'category':
-					$result['category'] = self::categoryConstruct($item);
+					$result->category = self::categoryConstruct($item);
 					break;
 
 				case 'pubdate':
-					$result['pubDate'] = $item->nodeValue;
+					$result->pubDate = $item->nodeValue;
 					break;
 
 				case 'lastbuilddate':
-					$result['lastBuildDate'] = $item->nodeValue;
+					$result->lastBuildDate = $item->nodeValue;
 					break;
 
 				case 'item':
-					$result['item'][] = $this->parseItemElement($item);
+					$result->item[] = $this->parseItemElement($item);
 					break;
 			}
 		}
@@ -136,7 +139,8 @@ class Rss implements TransformerInterface
 
 	protected function parseItemElement(DOMElement $element)
 	{
-		$result = array('type' => 'item');
+		$result = new \stdClass();
+		$result->type = 'item';
 
 		for($i = 0; $i < $element->childNodes->length; $i++)
 		{
@@ -157,30 +161,28 @@ class Rss implements TransformerInterface
 				case 'author':
 				case 'comments':
 				case 'guid':
-					$result[$name] = $item->nodeValue;
+					$result->$name = $item->nodeValue;
 					break;
 
 				case 'category':
-					$result[$name] = self::categoryConstruct($item);
+					$result->$name = self::categoryConstruct($item);
 					break;
 
 				case 'enclosure':
-					$result['enclosure'] = array(
-						'url'    => $item->getAttribute('url'),
-						'length' => $item->getAttribute('length'),
-						'type'   => $item->getAttribute('type'),
-					);
+					$result->enclosure = new \stdClass();
+					$result->enclosure->url = $item->getAttribute('url');
+					$result->enclosure->length = $item->getAttribute('length');
+					$result->enclosure->type = $item->getAttribute('type');
 					break;
 
 				case 'pubdate':
-					$result['pubDate'] = $item->nodeValue;
+					$result->pubDate = $item->nodeValue;
 					break;
 
 				case 'source':
-					$result['source'] = array(
-						'text' => $item->nodeValue,
-						'url'  => $item->getAttribute('url'),
-					);
+					$result->source = new \stdClass();
+					$result->source->text = $item->nodeValue;
+					$result->source->url = $item->getAttribute('url');
 					break;
 			}
 		}
@@ -190,9 +192,15 @@ class Rss implements TransformerInterface
 
 	public static function categoryConstruct(DOMElement $category)
 	{
-		return array(
-			'text'   => $category->nodeValue,
-			'domain' => $category->getAttribute('domain'),
-		);
+		$result = new \stdClass();
+		$result->text = $category->nodeValue;
+
+		$domain = $category->getAttribute('domain');
+		if(!empty($domain))
+		{
+			$result->domain = $domain;
+		}
+
+		return $result;
 	}
 }

@@ -53,15 +53,15 @@ INPUT;
 
 		$transformer = new Soap('http://phpsx.org/2014/data');
 
-		$expect = array(
-			'foo' => 'bar', 
-			'bar' => array('blub', 'bla'), 
-			'test' => array('foo' => 'bar'),
-		);
+		$expect = new \stdClass();
+		$expect->foo = 'bar';
+		$expect->bar = ['blub', 'bla'];
+		$expect->test = new \stdClass();
+		$expect->test->foo = 'bar';
 
 		$data = $transformer->transform($dom);
 
-		$this->assertTrue(is_array($data));
+		$this->assertInstanceOf('stdClass', $data);
 		$this->assertEquals($expect, $data);
 	}
 
@@ -102,11 +102,11 @@ INPUT;
 
 		$transformer = new Soap('http://phpsx.org/2014/data');
 
-		$expect = array();
+		$expect = new \stdClass();
 
 		$data = $transformer->transform($dom);
 
-		$this->assertTrue(is_array($data));
+		$this->assertInstanceOf('stdClass', $data);
 		$this->assertEquals($expect, $data);
 	}
 

@@ -33,7 +33,7 @@ class ComplexTypeTest extends \PHPUnit_Framework_TestCase
 	{
 		$property = new ComplexType('test');
 
-		$this->assertTrue($property->validate(array()));
+		$this->assertTrue($property->validate(new \stdClass()));
 	}
 
 	/**

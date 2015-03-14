@@ -18,59 +18,22 @@
  * limitations under the License.
  */
 
-namespace PSX\Xml;
+namespace PSX\Data;
 
-use DateTime;
-use XMLWriter;
-use PSX\Data\RecordInterface;
-use PSX\Data\Record\GraphTraverser;
-use PSX\Data\Record\Visitor;
-use PSX\Util\CurveArray;
+use BadMethodCallException;
 
 /**
- * Writer
+ * Object
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Writer implements WriterInterface
+class Object extends Record
 {
-	public static $mime  = 'application/xml';
-
-	protected $writer;
-
-	public function __construct(XMLWriter $writer = null)
+	public function __construct(array $fields = array())
 	{
-		$this->writer = $writer === null ? new XMLWriter() : $writer;
-
-		if($writer === null)
-		{
-			$this->writer->openMemory();
-			$this->writer->setIndent(true);
-			$this->writer->startDocument('1.0', 'UTF-8');
-		}
-	}
-
-	public function setRecord(RecordInterface $record, $ns = null)
-	{
-		$graph = new GraphTraverser();
-		$graph->traverse($record, new Visitor\XmlWriterVisitor($this->writer, $ns));
-	}
-
-	public function close()
-	{
-	}
-
-	public function toString()
-	{
-		$this->writer->endDocument();
-
-		return $this->writer->outputMemory();
-	}
-
-	public function getWriter()
-	{
-		return $this->writer;
+		parent::__construct('record', $fields);
 	}
 }
+

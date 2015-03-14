@@ -20,7 +20,6 @@
 
 namespace PSX\Data\Transformer;
 
-use DateTime;
 use DOMDocument;
 use DOMElement;
 use InvalidArgumentException;
@@ -58,9 +57,10 @@ class Atom implements TransformerInterface
 		}
 		else if($name == 'entry')
 		{
-			return array(
-				'entry' => array($this->parseEntryElement($data->documentElement))
-			);
+			$feed = new \stdClass();
+			$feed->entry = array($this->parseEntryElement($data->documentElement));
+
+			return $feed;
 		}
 		else
 		{
@@ -70,7 +70,8 @@ class Atom implements TransformerInterface
 
 	protected function parseFeedElement(DOMElement $feed)
 	{
-		$result = array('type' => 'feed');
+		$result = new \stdClass();
+		$result->type = 'feed';
 
 		for($i = 0; $i < $feed->childNodes->length; $i++)
 		{
@@ -86,23 +87,22 @@ class Atom implements TransformerInterface
 			switch($name)
 			{
 				case 'author':
-					$result['author'][] = self::personConstruct($item);
+					$result->author[] = self::personConstruct($item);
 					break;
 
 				case 'contributor':
-					$result['contributor'][] = self::personConstruct($item);
+					$result->contributor[] = self::personConstruct($item);
 					break;
 
 				case 'category':
-					$result['category'][] = self::categoryConstruct($item);
+					$result->category[] = self::categoryConstruct($item);
 					break;
 
 				case 'generator':
-					$result['generator'] = array(
-						'text'    => $item->nodeValue,
-						'uri'     => $item->getAttribute('uri'),
-						'version' => $item->getAttribute('version'),
-					);
+					$result->generator = new \stdClass();
+					$result->generator->text = $item->nodeValue;
+					$result->generator->uri = $item->getAttribute('uri');
+					$result->generator->version = $item->getAttribute('version');
 					break;
 
 				case 'icon':
@@ -110,20 +110,23 @@ class Atom implements TransformerInterface
 				case 'id':
 				case 'rights':
 				case 'title':
+					$result->$name = $item->nodeValue;
+					break;
+
 				case 'updated':
-					$result[$name] = $item->nodeValue;
+					$result->updated = $item->nodeValue;
 					break;
 
 				case 'link':
-					$result['link'][] = self::linkConstruct($item);
+					$result->link[] = self::linkConstruct($item);
 					break;
 
 				case 'subtitle':
-					$result['subTitle'] = self::textConstruct($item);
+					$result->subTitle = self::textConstruct($item);
 					break;
 
 				case 'entry':
-					$result['entry'][] = $this->parseEntryElement($item);
+					$result->entry[] = $this->parseEntryElement($item);
 					break;
 			}
 		}
@@ -133,7 +136,8 @@ class Atom implements TransformerInterface
 
 	protected function parseEntryElement(DOMElement $entry)
 	{
-		$result = array('type' => 'entry');
+		$result = new \stdClass();
+		$result->type = 'entry';
 
 		for($i = 0; $i < $entry->childNodes->length; $i++)
 		{
@@ -149,31 +153,34 @@ class Atom implements TransformerInterface
 			switch($name)
 			{
 				case 'author':
-					$result['author'][] = self::personConstruct($item);
+					$result->author[] = self::personConstruct($item);
 					break;
 
 				case 'contributor':
-					$result['contributor'][] = self::personConstruct($item);
+					$result->contributor[] = self::personConstruct($item);
 					break;
 
 				case 'category':
-					$result['category'][] = self::categoryConstruct($item);
+					$result->category[] = self::categoryConstruct($item);
 					break;
 
 				case 'content':
-					$result['content'] = self::textConstruct($item);
+					$result->content = self::textConstruct($item);
 					break;
 
 				case 'id':
 				case 'rights':
 				case 'title':
 				case 'published':
+					$result->$name = $item->nodeValue;
+					break;
+
 				case 'updated':
-					$result[$name] = $item->nodeValue;
+					$result->updated = $item->nodeValue;
 					break;
 
 				case 'link':
-					$result['link'][] = self::linkConstruct($item);
+					$result->link[] = self::linkConstruct($item);
 					break;
 
 				case 'source':
@@ -191,11 +198,11 @@ class Atom implements TransformerInterface
 
 					$dom->appendChild($feed);
 
-					$result['source'] = $this->parseFeedElement($dom->documentElement);
+					$result->source = $this->parseFeedElement($dom->documentElement);
 					break;
 
 				case 'summary':
-					$result['summary'] = self::textConstruct($item);
+					$result->summary = self::textConstruct($item);
 					break;
 			}
 		}
@@ -205,8 +212,8 @@ class Atom implements TransformerInterface
 
 	public static function textConstruct(DOMElement $el)
 	{
-		$result = array();
-		$type   = strtolower($el->getAttribute('type'));
+		$text = new \stdClass();
+		$type = strtolower($el->getAttribute('type'));
 
 		if(empty($type) || $type == 'text' || $type == 'html' || substr($type, 0, 5) == 'text/')
 		{
@@ -237,17 +244,17 @@ class Atom implements TransformerInterface
 
 		if(!empty($type))
 		{
-			$result['type'] = $type;
+			$text->type = $type;
 		}
 
-		$result['content'] = $content;
+		$text->content = $content;
 
-		return $result;
+		return $text;
 	}
 
 	public static function personConstruct(DOMElement $el)
 	{
-		$result = array();
+		$person = new \stdClass();
 
 		for($i = 0; $i < $el->childNodes->length; $i++)
 		{
@@ -265,70 +272,70 @@ class Atom implements TransformerInterface
 				case 'name':
 				case 'uri':
 				case 'email':
-					$result[$name] = $item->nodeValue;
+					$person->$name = $item->nodeValue;
 					break;
 			}
 		}
 
-		return $result;
+		return $person;
 	}
 
 	public static function categoryConstruct(DOMElement $el)
 	{
-		$result = array();
+		$category = new \stdClass();
 
 		if($el->hasAttribute('term'))
 		{
-			$result['term'] = $el->getAttribute('term');
+			$category->term = $el->getAttribute('term');
 		}
 
 		if($el->hasAttribute('scheme'))
 		{
-			$result['scheme'] = $el->getAttribute('scheme');
+			$category->scheme = $el->getAttribute('scheme');
 		}
 
 		if($el->hasAttribute('label'))
 		{
-			$result['label'] = $el->getAttribute('label');
+			$category->label = $el->getAttribute('label');
 		}
 
-		return $result;
+		return $category;
 	}
 
 	public static function linkConstruct(DOMElement $el)
 	{
-		$result = array();
+		$link = new \stdClass();
 
 		if($el->hasAttribute('href'))
 		{
-			$result['href'] = $el->getAttribute('href');
+			$link->href = $el->getAttribute('href');
 		}
 
 		if($el->hasAttribute('rel'))
 		{
-			$result['rel'] = $el->getAttribute('rel');
+			$link->rel = $el->getAttribute('rel');
 		}
 
 		if($el->hasAttribute('type'))
 		{
-			$result['type'] = $el->getAttribute('type');
+			$link->type = $el->getAttribute('type');
 		}
 
 		if($el->hasAttribute('hreflang'))
 		{
-			$result['hreflang'] = $el->getAttribute('hreflang');
+			$link->hreflang = $el->getAttribute('hreflang');
 		}
 
 		if($el->hasAttribute('title'))
 		{
-			$result['title'] = $el->getAttribute('title');
+			$link->title = $el->getAttribute('title');
 		}
 
 		if($el->hasAttribute('length'))
 		{
-			$result['length'] = $el->getAttribute('length');
+			$link->length = $el->getAttribute('length');
 		}
 
-		return $result;
+		return $link;
 	}
 }

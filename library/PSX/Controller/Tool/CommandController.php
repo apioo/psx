@@ -22,6 +22,7 @@ namespace PSX\Controller\Tool;
 
 use PSX\Command\ParameterParser;
 use PSX\Controller\ViewAbstract;
+use PSX\Data\Record;
 use PSX\Loader\Context;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
@@ -69,11 +70,11 @@ class CommandController extends ViewAbstract
 
 			foreach($parameters as $parameter)
 			{
-				$data[] = array(
+				$data[] = new Record('parameter', [
 					'name'        => $parameter->getName(),
 					'description' => $parameter->getDescription(),
 					'type'        => $parameter->getType(),
-				);
+				]);
 			}
 
 			$this->setBody(array(
@@ -85,7 +86,7 @@ class CommandController extends ViewAbstract
 		else
 		{
 			$this->setBody(array(
-				'commands' => $this->executor->getAliases(),
+				'commands' => (object) $this->executor->getAliases(),
 			));
 		}
 	}

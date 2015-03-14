@@ -46,9 +46,9 @@ class HtmlWriterVisitor extends VisitorAbstract
 		return $this->output;
 	}
 
-	public function visitObjectStart(RecordInterface $record)
+	public function visitObjectStart($name)
 	{
-		$this->write('<dl data-name="' . htmlspecialchars($record->getRecordInfo()->getName()) . '">');
+		$this->write('<dl data-name="' . htmlspecialchars($name) . '">');
 	}
 
 	public function visitObjectEnd()
@@ -66,7 +66,7 @@ class HtmlWriterVisitor extends VisitorAbstract
 		$this->write('</dd>');
 	}
 
-	public function visitArrayStart(array $array)
+	public function visitArrayStart($array)
 	{
 		$this->write('<ul>');
 	}

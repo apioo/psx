@@ -72,7 +72,7 @@ class Soap extends XmlArray
 				return $this->recToXml($root);
 			}
 
-			return array();
+			return new \stdClass();
 		}
 		else
 		{

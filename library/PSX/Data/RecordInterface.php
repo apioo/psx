@@ -20,8 +20,6 @@
 
 namespace PSX\Data;
 
-use JsonSerializable;
-
 /**
  * RecordInterface
  *
@@ -29,7 +27,7 @@ use JsonSerializable;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-interface RecordInterface extends JsonSerializable
+interface RecordInterface
 {
 	/**
 	 * Returns an RecordInfo object wich contains the name and all fields of the 

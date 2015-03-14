@@ -48,11 +48,11 @@ class XmlWriterVisitor extends VisitorAbstract
 		$this->namespace = $namespace;
 	}
 
-	public function visitObjectStart(RecordInterface $record)
+	public function visitObjectStart($name)
 	{
 		if($this->level == 0)
 		{
-			$this->writer->startElement($record->getRecordInfo()->getName());
+			$this->writer->startElement($name);
 
 			if($this->namespace !== null)
 			{
@@ -88,7 +88,7 @@ class XmlWriterVisitor extends VisitorAbstract
 		$this->arrayEnd = false;
 	}
 
-	public function visitArrayStart(array $array)
+	public function visitArrayStart($array)
 	{
 		$this->arrayStart = true;
 		$this->arrayKey   = $this->objectKey;

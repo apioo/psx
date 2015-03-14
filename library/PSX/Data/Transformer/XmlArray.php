@@ -65,7 +65,7 @@ class XmlArray implements TransformerInterface
 
 	protected function recToXml(DOMElement $element)
 	{
-		$result = array();
+		$result = new \stdClass();
 
 		foreach($element->childNodes as $node)
 		{
@@ -79,9 +79,9 @@ class XmlArray implements TransformerInterface
 				continue;
 			}
 
-			if(isset($result[$node->localName]) && (!isset($result[$node->localName][0]) || !is_array($result[$node->localName][0])))
+			if(isset($result->{$node->localName}) && !is_array($result->{$node->localName}))
 			{
-				$result[$node->localName] = array($result[$node->localName]);
+				$result->{$node->localName} = array($result->{$node->localName});
 			}
 
 			if($this->hasChildElements($node, $this->namespace))
@@ -103,13 +103,13 @@ class XmlArray implements TransformerInterface
 				}
 			}
 
-			if(isset($result[$node->localName]) && is_array($result[$node->localName]))
+			if(isset($result->{$node->localName}) && is_array($result->{$node->localName}))
 			{
-				$result[$node->localName][] = $value;
+				$result->{$node->localName}[] = $value;
 			}
 			else
 			{
-				$result[$node->localName] = $value;
+				$result->{$node->localName} = $value;
 			}
 		}
 

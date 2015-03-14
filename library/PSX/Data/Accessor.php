@@ -34,7 +34,7 @@ class Accessor
 	protected $validate;
 	protected $source;
 
-	public function __construct(Validate $validate, array $source)
+	public function __construct(Validate $validate, $source)
 	{
 		$this->validate = $validate;
 		$this->source   = $source;
@@ -53,13 +53,17 @@ class Accessor
 		return $this->validate->apply($value, $type, $filter, $key);
 	}
 
-	protected function searchArray(array $parts, array $value)
+	protected function searchArray(array $parts, $value)
 	{
 		foreach($parts as $part)
 		{
 			if(is_array($value))
 			{
 				$value = isset($value[$part]) ? $value[$part] : null;
+			}
+			else if($value instanceof \stdClass)
+			{
+				$value = isset($value->$part) ? $value->$part : null;
 			}
 			else
 			{

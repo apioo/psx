@@ -63,28 +63,28 @@ class CommandControllerTest extends ControllerTestCase
 		$response->setBody($body);
 
 		$controller = $this->loadController($request, $response);
-		$data       = Json::decode((string) $body);
+		$json       = (string) $body;
 
-		$this->assertArrayHasKey('command', $data);
-		$this->assertEquals('PSX\Command\Foo\Command\FooCommand', $data['command']);
-		$this->assertArrayHasKey('description', $data);
-		$this->assertEquals('Displays informations about an foo command', $data['description']);
-		$this->assertArrayHasKey('parameters', $data);
+		$expect = <<<'JSON'
+{
+    "command": "PSX\\Command\\Foo\\Command\\FooCommand",
+    "description": "Displays informations about an foo command",
+    "parameters": [
+        {
+            "name": "foo",
+            "description": "The foo parameter",
+            "type": 2
+        },
+        {
+            "name": "bar",
+            "description": "The bar parameter",
+            "type": 1
+        }
+    ]
+}
+JSON;
 
-		$expect = array(
-			array(
-				'name' => 'foo',
-				'description' => 'The foo parameter',
-				'type' => 2,
-			),
-			array(
-				'name' => 'bar',
-				'description' => 'The bar parameter',
-				'type' => 1,
-			)
-		);
-
-		$this->assertEquals($expect, $data['parameters']);
+		$this->assertJsonStringEqualsJsonString($expect, $json);
 	}
 
 	public function testExecute()

@@ -89,9 +89,9 @@ class ComplexType extends PropertyAbstract
 			return true;
 		}
 
-		if(!is_array($data))
+		if(!$data instanceof \stdClass)
 		{
-			throw new ValidationException($this->getName() . ' must be an array');
+			throw new ValidationException($this->getName() . ' must be an object');
 		}
 
 		return true;

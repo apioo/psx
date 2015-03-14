@@ -49,12 +49,140 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
 	"price": 13.37,
 	"rating": 4,
 	"content": "foobar",
-"question": "foo",
+	"question": "foo",
 	"coffeeTime": "16:00:00"
 }
 JSON;
 
-		$data = json_decode($json, true);
+		$data = json_decode($json);
+
+		$validator = new Validator();
+		$schema    = getContainer()->get('schema_manager')->getSchema('PSX\Data\Schema\Generator\TestSchema');
+
+		$this->assertTrue($validator->validate($schema, $data));
+	}
+
+	/**
+	 * @expectedException PSX\Data\Schema\ValidationException
+	 * @expectedExceptionMessage Data object expected at $.author
+	 */
+	public function testValidateInvalidObject()
+	{
+		$json = <<<'JSON'
+{
+	"tags": ["foo"],
+	"receiver": [{
+		"title": "bar"
+	}],
+	"read": true,
+	"author": [],
+	"sendDate": "2014-07-22",
+	"readDate": "2014-07-22T22:47:00",
+	"expires": "P1M",
+	"price": 13.37,
+	"rating": 4,
+	"content": "foobar",
+	"question": "foo",
+	"coffeeTime": "16:00:00"
+}
+JSON;
+
+		$data = json_decode($json);
+
+		$validator = new Validator();
+		$schema    = getContainer()->get('schema_manager')->getSchema('PSX\Data\Schema\Generator\TestSchema');
+
+		$this->assertTrue($validator->validate($schema, $data));
+	}
+
+	/**
+	 * @expectedException PSX\Data\Schema\ValidationException
+	 * @expectedExceptionMessage Required property $.author.title not available
+	 */
+	public function testValidateInvalidObjectKey()
+	{
+		$json = <<<'JSON'
+{
+	"tags": ["foo"],
+	"receiver": [{
+		"title": "bar"
+	}],
+	"read": true,
+	"author": {},
+	"sendDate": "2014-07-22",
+	"readDate": "2014-07-22T22:47:00",
+	"expires": "P1M",
+	"price": 13.37,
+	"rating": 4,
+	"content": "foobar",
+	"question": "foo",
+	"coffeeTime": "16:00:00"
+}
+JSON;
+
+		$data = json_decode($json);
+
+		$validator = new Validator();
+		$schema    = getContainer()->get('schema_manager')->getSchema('PSX\Data\Schema\Generator\TestSchema');
+
+		$this->assertTrue($validator->validate($schema, $data));
+	}
+
+	/**
+	 * @expectedException PSX\Data\Schema\ValidationException
+	 * @expectedExceptionMessage Data array expected at $.receiver
+	 */
+	public function testValidateInvalidArray()
+	{
+		$json = <<<'JSON'
+{
+	"tags": ["foo"],
+	"receiver": "foo",
+	"read": true,
+	"author": [],
+	"sendDate": "2014-07-22",
+	"readDate": "2014-07-22T22:47:00",
+	"expires": "P1M",
+	"price": 13.37,
+	"rating": 4,
+	"content": "foobar",
+	"question": "foo",
+	"coffeeTime": "16:00:00"
+}
+JSON;
+
+		$data = json_decode($json);
+
+		$validator = new Validator();
+		$schema    = getContainer()->get('schema_manager')->getSchema('PSX\Data\Schema\Generator\TestSchema');
+
+		$this->assertTrue($validator->validate($schema, $data));
+	}
+
+	/**
+	 * @expectedException PSX\Data\Schema\ValidationException
+	 * @expectedExceptionMessage Data object expected at $.receiver[0]
+	 */
+	public function testValidateInvalidArrayKey()
+	{
+		$json = <<<'JSON'
+{
+	"tags": ["foo"],
+	"receiver": ["foo"],
+	"read": true,
+	"author": [],
+	"sendDate": "2014-07-22",
+	"readDate": "2014-07-22T22:47:00",
+	"expires": "P1M",
+	"price": 13.37,
+	"rating": 4,
+	"content": "foobar",
+	"question": "foo",
+	"coffeeTime": "16:00:00"
+}
+JSON;
+
+		$data = json_decode($json);
 
 		$validator = new Validator();
 		$schema    = getContainer()->get('schema_manager')->getSchema('PSX\Data\Schema\Generator\TestSchema');

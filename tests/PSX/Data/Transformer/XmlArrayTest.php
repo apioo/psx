@@ -78,24 +78,35 @@ INPUT;
 
 		$transformer = new XmlArray();
 
-		$expect = array(
-			'empty' => '', 
-			'empty_2' => '', 
-			'foo' => 'bar', 
-			'bar' => array('blub', 'bla'), 
-			'test' => array('foo' => 'bar'),
-			'foooo' => array('test' => array('title' => 'blub'), 'bar' => array('title' => 'foo')),
-			'item' => array(
-				array('title' => 'foo', 'text' => 'bar'), 
-				array('title' => 'foo', 'text' => 'bar'), 
-				array('title' => 'foo', 'text' => 'bar'), 
-				array('title' => 'foo', 'text' => 'bar')
-			),
-		);
+		$expect = new \stdClass();
+		$expect->empty = '';
+		$expect->empty_2 = '';
+		$expect->foo = 'bar';
+		$expect->bar = ['blub', 'bla'];
+		$expect->test = new \stdClass();
+		$expect->test->foo = 'bar';
+		$expect->foooo = new \stdClass();
+		$expect->foooo->test = new \stdClass();
+		$expect->foooo->test->title = 'blub';
+		$expect->foooo->bar = new \stdClass();
+		$expect->foooo->bar->title = 'foo';
+		$expect->item = [];
+		$expect->item[0] = new \stdClass();
+		$expect->item[0]->title = 'foo';
+		$expect->item[0]->text = 'bar';
+		$expect->item[1] = new \stdClass();
+		$expect->item[1]->title = 'foo';
+		$expect->item[1]->text = 'bar';
+		$expect->item[2] = new \stdClass();
+		$expect->item[2]->title = 'foo';
+		$expect->item[2]->text = 'bar';
+		$expect->item[3] = new \stdClass();
+		$expect->item[3]->title = 'foo';
+		$expect->item[3]->text = 'bar';
 
 		$data = $transformer->transform($dom);
 
-		$this->assertTrue(is_array($data));
+		$this->assertInstanceOf('stdClass', $data);
 		$this->assertEquals($expect, $data);
 	}
 
@@ -131,16 +142,16 @@ INPUT;
 		$transformer = new XmlArray();
 		$transformer->setNamespace('http://foo.com');
 
-		$expect = array(
-			'foo' => 'bar', 
-			'bar' => 'blub', 
-			'test' => array('foo' => 'bar'),
-			'foooo' => $dom->getElementsByTagName('foooo')->item(0),
-		);
+		$expect = new \stdClass();
+		$expect->foo = 'bar';
+		$expect->bar = 'blub';
+		$expect->test = new \stdClass();
+		$expect->test->foo = 'bar';
+		$expect->foooo = $dom->getElementsByTagName('foooo')->item(0);
 
 		$data = $transformer->transform($dom);
 
-		$this->assertTrue(is_array($data));
+		$this->assertInstanceOf('stdClass', $data);
 		$this->assertEquals($expect, $data);
 	}
 

@@ -20,6 +20,8 @@
 
 namespace PSX\Util;
 
+use InvalidArgumentException;
+
 /**
  * CurveArray
  *
@@ -30,15 +32,15 @@ namespace PSX\Util;
 class CurveArray
 {
 	/**
-	 * Converts an flat array into a nested using an seperator
+	 * Converts an flat array into a nested object using an seperator
 	 *
 	 * @param array $data
 	 * @param string $seperator
-	 * @return array
+	 * @return stdClass
 	 */
 	public static function nest(array $data, $seperator = '_')
 	{
-		$result = array();
+		$result = new \stdClass();
 
 		foreach($data as $key => $value)
 		{
@@ -47,21 +49,14 @@ class CurveArray
 				$subKey = substr($key, 0, $pos);
 				$name   = substr($key, $pos + 1);
 
-				if(!isset($result[$subKey]))
+				if(!isset($result->$subKey))
 				{
-					$result[$subKey] = self::nest(self::getParts($data, $subKey . $seperator), $seperator);
+					$result->$subKey = self::nest(self::getParts($data, $subKey . $seperator), $seperator);
 				}
 			}
 			else
 			{
-				if(is_array($value))
-				{
-					$result[$key] = self::nest($value);
-				}
-				else
-				{
-					$result[$key] = $value;
-				}
+				$result->$key = $value;
 			}
 		}
 
@@ -77,16 +72,25 @@ class CurveArray
 	 * @param string $seperator
 	 * @return array
 	 */
-	public static function flatten(array $data, $seperator = '_', $prefix = null, array &$result = null)
+	public static function flatten($data, $seperator = '_', $prefix = null, array &$result = null)
 	{
 		if($result === null)
 		{
 			$result = array();
 		}
 
+		if($data instanceof \stdClass)
+		{
+			$data = (array) $data;
+		}
+		else if(!is_array($data))
+		{
+			throw new InvalidArgumentException('Data must be either an stdClass or array');
+		}
+
 		foreach($data as $key => $value)
 		{
-			if(is_array($value))
+			if($value instanceof \stdClass || is_array($value))
 			{
 				self::flatten($value, $seperator, $prefix . $key . $seperator, $result);
 			}

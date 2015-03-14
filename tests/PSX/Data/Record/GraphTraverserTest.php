@@ -144,7 +144,7 @@ class GraphTraverserTest extends Visitor\VisitorTestCase
 
 		$visitor->expects($this->at(0))
 			->method('visitObjectStart')
-			->with($this->equalTo($record));
+			->with($this->equalTo('record'));
 
 		$visitor->expects($this->at(1))
 			->method('visitObjectValueStart')
@@ -209,7 +209,7 @@ class GraphTraverserTest extends Visitor\VisitorTestCase
 
 		$visitor->expects($this->at(23))
 			->method('visitObjectStart')
-			->with($this->equalTo($record->getPerson()));
+			->with($this->equalTo('person'));
 
 		$visitor->expects($this->at(24))
 			->method('visitObjectValueStart')
@@ -226,7 +226,7 @@ class GraphTraverserTest extends Visitor\VisitorTestCase
 
 		$visitor->expects($this->at(30))
 			->method('visitObjectStart')
-			->with($this->equalTo($record->getCategory()));
+			->with($this->equalTo('category'));
 
 		$visitor->expects($this->at(31))
 			->method('visitObjectValueStart')
@@ -234,7 +234,7 @@ class GraphTraverserTest extends Visitor\VisitorTestCase
 
 		$visitor->expects($this->at(32))
 			->method('visitObjectStart')
-			->with($this->equalTo($record->getCategory()->getGeneral()));
+			->with($this->equalTo('category'));
 
 		$visitor->expects($this->at(33))
 			->method('visitObjectValueStart')
@@ -242,7 +242,7 @@ class GraphTraverserTest extends Visitor\VisitorTestCase
 
 		$visitor->expects($this->at(34))
 			->method('visitObjectStart')
-			->with($this->equalTo($record->getCategory()->getGeneral()->getNews()));
+			->with($this->equalTo('category'));
 
 		$visitor->expects($this->at(35))
 			->method('visitObjectValueStart')
@@ -300,7 +300,7 @@ class GraphTraverserTest extends Visitor\VisitorTestCase
 
 		$visitor->expects($this->at(60))
 			->method('visitObjectStart')
-			->with($this->equalTo($record->getEntry()[0]));
+			->with($this->equalTo('entry'));
 
 		$visitor->expects($this->at(61))
 			->method('visitObjectValueStart')
@@ -316,7 +316,7 @@ class GraphTraverserTest extends Visitor\VisitorTestCase
 
 		$visitor->expects($this->at(67))
 			->method('visitObjectStart')
-			->with($this->equalTo($record->getEntry()[1]));
+			->with($this->equalTo('entry'));
 
 		$visitor->expects($this->at(68))
 			->method('visitObjectValueStart')
@@ -340,7 +340,7 @@ class SpyVisitor implements VisitorInterface
 		return $this->stack;
 	}
 
-	public function visitObjectStart(RecordInterface $record)
+	public function visitObjectStart($name)
 	{
 		$this->stack[] = $this->i++ . ' ' . __METHOD__;
 	}
@@ -360,7 +360,7 @@ class SpyVisitor implements VisitorInterface
 		$this->stack[] = $this->i++ . ' ' . __METHOD__;
 	}
 
-	public function visitArrayStart(array $array)
+	public function visitArrayStart($array)
 	{
 		$this->stack[] = $this->i++ . ' ' . __METHOD__;
 	}

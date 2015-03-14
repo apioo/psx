@@ -34,20 +34,17 @@ class CurveArrayTest extends \PHPUnit_Framework_TestCase
 
 	protected function setUp()
 	{
-		$this->nestArray = array(
-			'id' => null,
-			'title' => null,
-			'author' => array(
-				'name' => null,
-				'title' => null,
-				'group' => array(
-					'id' => null,
-					'name' => null,
-				),
-			),
-			'content' => null,
-			'date' => null,
-		);
+		$this->nestArray = new \stdClass();
+		$this->nestArray->id = null;
+		$this->nestArray->title = null;
+		$this->nestArray->author = new \stdClass();
+		$this->nestArray->author->name = null;
+		$this->nestArray->author->title = null;
+		$this->nestArray->author->group = new \stdClass();
+		$this->nestArray->author->group->id = null;
+		$this->nestArray->author->group->name = null;
+		$this->nestArray->content = null;
+		$this->nestArray->date = null;
 
 		$this->flattenArray = array(
 			'id' => null,
@@ -71,6 +68,32 @@ class CurveArrayTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals($this->flattenArray, CurveArray::flatten($this->nestArray));
 	}
 
+	public function testFlattenAssocArray()
+	{
+		$this->assertEquals($this->flattenArray, CurveArray::flatten(array(
+			'id' => null,
+			'title' => null,
+			'author' => array(
+				'name' => null,
+				'title' => null,
+				'group' => array(
+					'id' => null,
+					'name' => null,
+				),
+			),
+			'content' => null,
+			'date' => null,
+		)));
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testFlattenInvalidData()
+	{
+		CurveArray::flatten('foo');
+	}
+
 	public function testInverseNest()
 	{
 		$this->assertEquals($this->nestArray, CurveArray::nest(CurveArray::flatten($this->nestArray)));
@@ -79,31 +102,6 @@ class CurveArrayTest extends \PHPUnit_Framework_TestCase
 	public function testInverseFlatten()
 	{
 		$this->assertEquals($this->flattenArray, CurveArray::flatten(CurveArray::nest($this->flattenArray)));
-	}
-
-	public function testNestWrongInput()
-	{
-		$data = array(
-			'' => null, 
-			'_' => null, 
-			'__' => null, 
-			'___' => null, 
-			'foo' => null,
-			0 => null, 
-		);
-
-		$expect = array(
-			0 => null,
-			'' => array(
-				'' => array(
-					'' => array(
-					),
-				),
-			),
-			'foo' => null,
-		);
-
-		$this->assertEquals($expect, CurveArray::nest($data));
 	}
 
 	public function testIsAssoc()

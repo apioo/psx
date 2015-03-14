@@ -31,7 +31,7 @@ use PSX\Data\RecordInterface;
  */
 abstract class VisitorAbstract implements VisitorInterface
 {
-	public function visitObjectStart(RecordInterface $record)
+	public function visitObjectStart($name)
 	{
 	}
 
@@ -47,7 +47,7 @@ abstract class VisitorAbstract implements VisitorInterface
 	{
 	}
 
-	public function visitArrayStart(array $array)
+	public function visitArrayStart($array)
 	{
 	}
 

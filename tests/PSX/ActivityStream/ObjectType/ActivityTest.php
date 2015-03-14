@@ -224,14 +224,15 @@ JSON;
 		$objectType->setId('http://example.org/PhotoAlbum');
 		$objectType->setDisplayName('Photo-Album');
 
+		$displayName = new \stdClass();
+		$displayName->en = 'Martin\'s Photo Album';
+		$displayName->ga = 'Grianghraif Mairtin';
+
 		$target = new Object();
 		$target->setUrl('http://example.org/album/');
 		$target->setObjectType($objectType);
 		$target->setId('urn:example.org:album:abc123');
-		$target->setDisplayName(array(
-			'en' => 'Martin\'s Photo Album',
-			'ga' => 'Grianghraif Mairtin',
-		));
+		$target->setDisplayName($displayName);
 		$target->setImage($image);
 
 		$activity = new Activity();
@@ -240,10 +241,12 @@ JSON;
 		$activity->setPublished(new DateTime('2011-02-10T15:04:55Z'));
 		$activity->setGenerator('http://example.org/activities-app');
 		$activity->setProvider('http://example.org/activity-stream');
-		$activity->setDisplayName(array(
-			'en' => 'Martin posted a new video to his album.',
-			'ga' => 'Martin phost le fisean nua a albam.',
-		));
+
+		$displayName = new \stdClass();
+		$displayName->en = 'Martin posted a new video to his album.';
+		$displayName->ga = 'Martin phost le fisean nua a albam.';
+
+		$activity->setDisplayName($displayName);
 		$activity->setActor($actor);
 		$activity->setObject($object);
 		$activity->setTarget($target);

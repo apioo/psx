@@ -21,7 +21,6 @@
 namespace PSX\Rss;
 
 use DateTime;
-use PSX\Xml\WriterInterface;
 use XMLWriter;
 
 /**
@@ -31,7 +30,7 @@ use XMLWriter;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Writer implements WriterInterface
+class Writer
 {
 	public static $mime = 'application/rss+xml';
 

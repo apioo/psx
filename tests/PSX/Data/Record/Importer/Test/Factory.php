@@ -35,7 +35,7 @@ class Factory implements FactoryInterface
 	public function factory($data, ImporterInterface $importer)
 	{
 		$return = new \stdClass();
-		$return->value = isset($data['sig']) ? $data['sig'] : null;
+		$return->value = isset($data->sig) ? $data->sig : null;
 
 		return $return;
 	}

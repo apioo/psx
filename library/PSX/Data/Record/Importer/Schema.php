@@ -63,9 +63,9 @@ class Schema implements ImporterInterface
 			throw new InvalidArgumentException('Schema must be an instanceof PSX\Data\SchemaInterface');
 		}
 
-		if(!is_array($data))
+		if(!$data instanceof \stdClass)
 		{
-			throw new InvalidArgumentException('Data must be an array');
+			throw new InvalidArgumentException('Data must be an stdClass');
 		}
 
 		$this->validator->validate($schema, $data);
@@ -84,9 +84,9 @@ class Schema implements ImporterInterface
 
 			foreach($properties as $name => $property)
 			{
-				if(isset($data[$name]))
+				if(isset($data->$name))
 				{
-					$fields[$name] = $this->recImport($property, $data[$name]);
+					$fields[$name] = $this->recImport($property, $data->$name);
 				}
 			}
 
@@ -175,7 +175,7 @@ class Schema implements ImporterInterface
 		}
 		else if($class->implementsInterface('PSX\Data\Record\FactoryInterface'))
 		{
-			return $this->factory->getFactory($reference)->factory($fields, $this);
+			return $this->factory->getFactory($reference)->factory((object) $fields, $this);
 		}
 		else
 		{

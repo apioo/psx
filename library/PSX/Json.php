@@ -53,9 +53,9 @@ class Json
 	 * @param string $value
 	 * @return mixed
 	 */
-	public static function decode($value)
+	public static function decode($value, $assoc = true)
 	{
-		$data = json_decode((string) $value, true);
+		$data = json_decode((string) $value, $assoc);
 
 		switch(json_last_error())
 		{

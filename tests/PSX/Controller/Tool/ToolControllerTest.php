@@ -49,30 +49,38 @@ class ToolControllerTest extends ControllerTestCase
 		$controller = $this->loadController($request, $response);
 		$json       = (string) $body;
 
-		$expect = array(
-			'paths'   => array(
-				'general' => array(array(
-					'title' => 'Routing',
-					'path'  => $basePath . 'routing',
-				),array(
-					'title' => 'Command',
-					'path'  => $basePath . 'command',
-				)),
-				'api'     => array(array(
-					'title' => 'Console',
-					'path'  => $basePath . 'rest',
-				),array(
-					'title' => 'Documentation',
-					'path'  => $basePath . 'doc',
-				)),
-			),
-			'current' => array(
-				'title' => 'Routing',
-				'path'  => $basePath . 'routing',
-			),
-		);
+		$expect = <<<JSON
+{
+    "paths": {
+        "general": [
+            {
+                "title": "Routing",
+                "path ": "__BASE_PATH__routing"
+            },
+            {
+                "title": "Command",
+                "path ": "__BASE_PATH__command"
+            }
+        ],
+        "api": [
+            {
+                "title": "Console",
+                "path ": "__BASE_PATH__rest"
+            },
+            {
+                "title": "Documentation",
+                "path ": "__BASE_PATH__doc"
+            }
+        ]
+    },
+    "current": {
+        "title": "Routing",
+        "path ": "__BASE_PATH__routing"
+    }
+}
+JSON;
 
-		$this->assertJsonStringEqualsJsonString(json_encode($expect), $json);
+		$this->assertJsonStringEqualsJsonString(str_replace('__BASE_PATH__', $basePath, $expect), $json);
 	}
 
 	protected function getPaths()

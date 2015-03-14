@@ -69,68 +69,50 @@ INPUT;
 
 		$transformer = new Atom();
 
-		$expect = array(
-			'type' => 'feed',
-			'title' => 'Example Feed',
-			'id' => 'urn:uuid:60a76c80-d399-11d9-b93C-0003939e0af6',
-			'updated' => '2003-12-13T18:30:02+00:00',
-			'link' => array(
-				array(
-					'href' => 'http://example.org/',
-				)
-			),
-			'author' => array(
-				array(
-					'name' => 'John Doe',
-				),
-				array(
-					'name' => 'John Doe',
-				)
-			),
-			'contributor' => array(
-				array(
-					'name' => 'John Doe',
-				),
-				array(
-					'name' => 'John Doe',
-				)
-			),
-			'category' => array(
-				array(
-					'term' => 'news',
-					'scheme' => 'urn:foo:bar',
-					'label' => 'News',
-				),
-			),
-			'entry' => array(
-				array(
-					'type' => 'entry',
-					'title' => 'Atom-Powered Robots Run Amok',
-					'id' => 'urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a',
-					'updated' => '2003-12-13T18:30:02+00:00',
-					'link' => array(
-						array(
-							'href' => 'http://example.org/2003/12/13/atom03',
-							'title' => 'Website',
-						)
-					),
-					'category' => array(
-						array(
-							'term' => 'news',
-							'scheme' => 'urn:foo:bar',
-							'label' => 'News',
-						),
-					),
-					'summary' => array(
-						'content' => 'Some text.'
-					),
-				)
-			),
-		);
+		$expect = new \stdClass();
+		$expect->type = 'feed';
+		$expect->title = 'Example Feed';
+		$expect->id = 'urn:uuid:60a76c80-d399-11d9-b93C-0003939e0af6';
+		$expect->updated = '2003-12-13T18:30:02+00:00';
+		$expect->link = [];
+		$expect->link[0] = new \stdClass();
+		$expect->link[0]->href = 'http://example.org/';
+		$expect->author = [];
+		$expect->author[0] = new \stdClass();
+		$expect->author[0]->name = 'John Doe';
+		$expect->author[1] = new \stdClass();
+		$expect->author[1]->name = 'John Doe';
+		$expect->contributor = [];
+		$expect->contributor[0] = new \stdClass();
+		$expect->contributor[0]->name = 'John Doe';
+		$expect->contributor[1] = new \stdClass();
+		$expect->contributor[1]->name = 'John Doe';
+		$expect->category = [];
+		$expect->category[0] = new \stdClass();
+		$expect->category[0]->term = 'news';
+		$expect->category[0]->scheme = 'urn:foo:bar';
+		$expect->category[0]->label = 'News';
+		$expect->entry = [];
+		$expect->entry[0] = new \stdClass();
+		$expect->entry[0]->type = 'entry';
+		$expect->entry[0]->title = 'Atom-Powered Robots Run Amok';
+		$expect->entry[0]->id = 'urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a';
+		$expect->entry[0]->updated = '2003-12-13T18:30:02+00:00';
+		$expect->entry[0]->link = [];
+		$expect->entry[0]->link[0] = new \stdClass();
+		$expect->entry[0]->link[0]->href = 'http://example.org/2003/12/13/atom03';
+		$expect->entry[0]->link[0]->title = 'Website';
+		$expect->entry[0]->category = [];
+		$expect->entry[0]->category[0] = new \stdClass();
+		$expect->entry[0]->category[0]->term = 'news';
+		$expect->entry[0]->category[0]->scheme = 'urn:foo:bar';
+		$expect->entry[0]->category[0]->label = 'News';
+		$expect->entry[0]->summary = new \stdClass();
+		$expect->entry[0]->summary->content = 'Some text.';
 
 		$data = $transformer->transform($dom);
 
-		$this->assertTrue(is_array($data));
+		$this->assertInstanceOf('stdClass', $data);
 		$this->assertEquals($expect, $data);
 	}
 
@@ -153,25 +135,21 @@ INPUT;
 
 		$transformer = new Atom();
 
-		$expect = array(
-			'type' => 'feed',
-			'entry' => array(
-				array(
-					'type' => 'entry',
-					'title' => 'Atom-Powered Robots Run Amok',
-					'id' => 'urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a',
-					'updated' => '2003-12-13T18:30:02+00:00',
-					'content' => array(
-						'type' => 'application/octet-stream',
-						'content' => 'foobar',
-					),
-				)
-			),
-		);
+		$expect = new \stdClass();
+		$expect->type = 'feed';
+		$expect->entry = [];
+		$expect->entry[0] = new \stdClass();
+		$expect->entry[0]->type = 'entry';
+		$expect->entry[0]->title = 'Atom-Powered Robots Run Amok';
+		$expect->entry[0]->id = 'urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a';
+		$expect->entry[0]->updated = '2003-12-13T18:30:02+00:00';
+		$expect->entry[0]->content = new \stdClass();
+		$expect->entry[0]->content->type = 'application/octet-stream';
+		$expect->entry[0]->content->content = 'foobar';
 
 		$data = $transformer->transform($dom);
 
-		$this->assertTrue(is_array($data));
+		$this->assertInstanceOf('stdClass', $data);
 		$this->assertEquals($expect, $data);
 	}
 

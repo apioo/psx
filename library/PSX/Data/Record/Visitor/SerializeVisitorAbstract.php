@@ -21,6 +21,7 @@
 namespace PSX\Data\Record\Visitor;
 
 use PSX\Data\RecordInterface;
+use PSX\Data\Record\GraphTraverser;
 use PSX\Data\Record\VisitorAbstract;
 use RuntimeException;
 use XMLWriter;
@@ -50,7 +51,7 @@ abstract class SerializeVisitorAbstract extends VisitorAbstract
 		return $this->lastObject;
 	}
 
-	public function visitObjectStart(RecordInterface $record)
+	public function visitObjectStart($name)
 	{
 		$this->objectStack[] = $this->newObject();
 
@@ -76,7 +77,7 @@ abstract class SerializeVisitorAbstract extends VisitorAbstract
 		$this->addObjectValue($key, $this->getValue($value), $this->objectStack[$this->objectCount]);
 	}
 
-	public function visitArrayStart(array $array)
+	public function visitArrayStart($array)
 	{
 		$this->arrayStack[] = $this->newArray();
 
@@ -139,6 +140,10 @@ abstract class SerializeVisitorAbstract extends VisitorAbstract
 		{
 			return $value->format(\DateTime::RFC3339);
 		}
+		else if(is_scalar($value))
+		{
+			return $value;
+		}
 		else
 		{
 			return (string) $value;
@@ -147,11 +152,11 @@ abstract class SerializeVisitorAbstract extends VisitorAbstract
 
 	protected function getValue($value)
 	{
-		if($value instanceof RecordInterface)
+		if(GraphTraverser::isObject($value))
 		{
 			return $this->lastObject;
 		}
-		else if(is_array($value))
+		else if(GraphTraverser::isArray($value))
 		{
 			return $this->lastArray;
 		}

@@ -35,7 +35,7 @@ class Model extends RecordAbstract
 	protected $description;
 	protected $required;
 	protected $discriminator;
-	protected $properties = array();
+	protected $properties;
 	protected $subTypes;
 
 	public function __construct($id = null, $description = null, array $required = null)
@@ -43,6 +43,7 @@ class Model extends RecordAbstract
 		$this->id          = $id;
 		$this->description = $description;
 		$this->required    = $required;
+		$this->properties  = new \stdClass();
 	}
 
 	public function setId($id)
@@ -97,7 +98,7 @@ class Model extends RecordAbstract
 
 	public function addProperty(Property $property)
 	{
-		$this->properties[$property->getId()] = $property;
+		$this->properties->{$property->getId()} = $property;
 	}
 
 	public function setSubTypes($subTypes)

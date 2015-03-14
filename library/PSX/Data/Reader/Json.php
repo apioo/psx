@@ -36,7 +36,7 @@ class Json extends ReaderAbstract
 {
 	public function read(MessageInterface $message)
 	{
-		$json = JsonParser::decode((string) $message->getBody());
+		$json = JsonParser::decode((string) $message->getBody(), false);
 
 		return $json;
 	}

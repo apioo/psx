@@ -37,10 +37,10 @@ class Map implements ParameterParserInterface
 	protected $className;
 	protected $argv;
 
-	public function __construct($className, array $argv = array())
+	public function __construct($className, $argv = array())
 	{
 		$this->className = $className;
-		$this->argv      = $argv;
+		$this->argv      = (array) $argv;
 	}
 
 	public function getClassName()

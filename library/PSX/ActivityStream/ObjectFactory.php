@@ -35,54 +35,48 @@ class ObjectFactory implements FactoryInterface
 {
 	public function factory($data, ImporterInterface $importer)
 	{
-		if(is_array($data))
+		if($data instanceof \stdClass)
 		{
-			if(!CurveArray::isAssoc($data))
+			$class = null;
+
+			if(isset($data->objectType) && !empty($data->objectType))
 			{
-				$objects = array();
+				$class = $this->resolveType($data->objectType);
+			}
 
-				foreach($data as $row)
-				{
-					$objects[] = $this->factory($row, $importer);
-				}
-
-				return $objects;
+			if($class !== null && class_exists($class))
+			{
+				$object = new $class();
 			}
 			else
 			{
-				$class = null;
-
-				if(isset($data['objectType']) && !empty($data['objectType']))
-				{
-					$class = $this->resolveType($data['objectType']);
-				}
-
-				if($class !== null && class_exists($class))
-				{
-					$object = new $class();
-				}
-				else
-				{
-					$object = new Object();
-				}
-
-				return $importer->import($object, $data);
+				$object = new Object();
 			}
+
+			return $importer->import($object, $data);
+		}
+		else if(is_array($data))
+		{
+			$objects = array();
+
+			foreach($data as $row)
+			{
+				$objects[] = $this->factory($row, $importer);
+			}
+
+			return $objects;
 		}
 		else
 		{
-			$object = new Object();
-			$object->setUrl((string) $data);
-
 			return $data;
 		}
 	}
 
 	protected function resolveType($type)
 	{
-		if(is_array($type))
+		if($type instanceof \stdClass)
 		{
-			$type = isset($type['id']) ? $type['id'] : null;
+			$type = isset($type->id) ? $type->id : null;
 		}
 		else
 		{

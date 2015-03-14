@@ -61,48 +61,48 @@ class Record implements ImporterInterface
 			throw new InvalidArgumentException('Record must be an instanceof PSX\Data\RecordInterface');
 		}
 
-		if(!is_array($data))
+		if(!$data instanceof \stdClass)
 		{
-			throw new InvalidArgumentException('Data must be an array');
+			throw new InvalidArgumentException('Data must be an stdClass');
 		}
 
-		$data = array_intersect_key($data, $record->getRecordInfo()->getFields());
+		$properties = array_intersect_key(
+			(array) $data, 
+			$record->getRecordInfo()->getFields()
+		);
 
-		foreach($data as $k => $v)
+		foreach($properties as $key => $value)
 		{
-			if(isset($v))
+			// convert to camelcase if underscore is in name
+			if(strpos($key, '_') !== false)
 			{
-				// convert to camelcase if underscore is in name
-				if(strpos($k, '_') !== false)
-				{
-					$k = implode('', array_map('ucfirst', explode('_', $k)));
-				}
+				$key = implode('', array_map('ucfirst', explode('_', $key)));
+			}
 
-				$methodName = 'set' . ucfirst($k);
+			$methodName = 'set' . ucfirst($key);
 
-				// if we have an PSX\Data\Record instance and no concrete 
-				// RecordAbstract implementation we have an magic __call method 
-				// therefore we can not look at the annotation of the methods
-				if($record instanceof DataRecord)
+			// if we have an PSX\Data\Record instance and no concrete 
+			// RecordAbstract implementation we have an magic __call method 
+			// therefore we can not look at the annotation of the methods
+			if($record instanceof DataRecord)
+			{
+				$record->$methodName($value);
+			}
+			else
+			{
+				try
 				{
-					$record->$methodName($v);
-				}
-				else
-				{
-					try
+					$class  = new ReflectionClass($record);
+					$method = $class->getMethod($methodName);
+
+					if($method instanceof ReflectionMethod)
 					{
-						$class  = new ReflectionClass($record);
-						$method = $class->getMethod($methodName);
-
-						if($method instanceof ReflectionMethod)
-						{
-							$method->invokeArgs($record, array($this->getMethodValue($method, $v)));
-						}
+						$method->invokeArgs($record, array($this->getMethodValue($method, $value)));
 					}
-					catch(ReflectionException $e)
-					{
-						// method does not exist
-					}
+				}
+				catch(ReflectionException $e)
+				{
+					// method does not exist
 				}
 			}
 		}
@@ -147,7 +147,7 @@ class Record implements ImporterInterface
 
 	protected function getMethodType($type, $value)
 	{
-		if(is_object($value))
+		if(!$value instanceof \stdClass && is_object($value))
 		{
 			return $value;
 		}

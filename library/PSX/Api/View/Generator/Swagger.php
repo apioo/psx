@@ -120,30 +120,33 @@ class Swagger extends GeneratorAbstract
 	protected function getModels(View $view)
 	{
 		$generator = new JsonSchema($this->targetNamespace);
-		$data      = json_decode($generator->generate($view), true);
+		$data      = json_decode($generator->generate($view));
+		$models    = new \stdClass();
 
-		foreach($data['properties'] as $name => $property)
+		$properties = (array) $data->properties;
+		foreach($properties as $name => $property)
 		{
-			$description = isset($property['description']) ? $property['description'] : null;
-			$required    = isset($property['required']) ? $property['required'] : null;
-			$properties  = isset($property['properties']) ? $property['properties'] : array();
+			$description = isset($property->description) ? $property->description : null;
+			$required    = isset($property->required) ? $property->required : null;
+			$properties  = isset($property->properties) ? $property->properties : new \stdClass();
 
 			$model = new Model($name, $description, $required);
 			$model->setProperties($properties);
 
-			$models[$name] = $model;
+			$models->$name = $model;
 		}
 
-		foreach($data['definitions'] as $name => $definition)
+		$definitions = (array) $data->definitions;
+		foreach($definitions as $name => $definition)
 		{
-			$description = isset($definition['description']) ? $definition['description'] : null;
-			$required    = isset($definition['required']) ? $definition['required'] : null;
-			$properties  = isset($definition['properties']) ? $definition['properties'] : array();
+			$description = isset($definition->description) ? $definition->description : null;
+			$required    = isset($definition->required) ? $definition->required : null;
+			$properties  = isset($definition->properties) ? $definition->properties : new \stdClass();
 
 			$model = new Model($name, $description, $required);
 			$model->setProperties($properties);
 
-			$models[$name] = $model;
+			$models->$name = $model;
 		}
 
 		return $models;

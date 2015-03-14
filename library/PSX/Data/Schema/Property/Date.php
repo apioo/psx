@@ -33,14 +33,14 @@ class Date extends String
 {
 	public function validate($data)
 	{
-		parent::validate($data);
-
-		if($data === null)
+		if($data instanceof \DateTime)
 		{
 			return true;
 		}
 
-		if($data instanceof \DateTime)
+		parent::validate($data);
+
+		if($data === null)
 		{
 			return true;
 		}

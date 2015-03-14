@@ -20,7 +20,9 @@
 
 namespace PSX\Data\Record;
 
+use JsonSerializable;
 use PSX\Data\RecordInterface;
+use Traversable;
 
 /**
  * GraphTraverser
@@ -31,13 +33,37 @@ use PSX\Data\RecordInterface;
  */
 class GraphTraverser
 {
-	public function traverse(RecordInterface $record, VisitorInterface $visitor)
+	public function traverse($record, VisitorInterface $visitor)
 	{
-		$recordInfo = $record->getRecordInfo();
+		$this->traverseObject($record, $visitor);
+	}
 
-		$visitor->visitObjectStart($record);
+	protected function traverseObject($object, VisitorInterface $visitor)
+	{
+		$name = null;
 
-		foreach($recordInfo as $key => $value)
+		if($object instanceof RecordInterface)
+		{
+			$properties = $object->getRecordInfo();
+			$name       = $properties->getName();
+		}
+		else if($object instanceof \stdClass)
+		{
+			$properties = (array) $object;
+		}
+		else if($object instanceof JsonSerializable)
+		{
+			$properties = $object->jsonSerialize();
+		}
+
+		if(empty($name))
+		{
+			$name = 'record';
+		}
+
+		$visitor->visitObjectStart($name);
+
+		foreach($properties as $key => $value)
 		{
 			$visitor->visitObjectValueStart($key, $value);
 
@@ -51,7 +77,7 @@ class GraphTraverser
 
 	protected function traverseValue($value, VisitorInterface $visitor)
 	{
-		if(is_array($value))
+		if(self::isArray($value))
 		{
 			$visitor->visitArrayStart($value);
 
@@ -66,13 +92,23 @@ class GraphTraverser
 
 			$visitor->visitArrayEnd();
 		}
-		else if($value instanceof RecordInterface)
+		else if(self::isObject($value))
 		{
-			$this->traverse($value, $visitor);
+			$this->traverseObject($value, $visitor);
 		}
 		else
 		{
 			$visitor->visitValue($value);
 		}
+	}
+
+	public static function isObject($value)
+	{
+		return $value instanceof RecordInterface || $value instanceof \stdClass || $value instanceof JsonSerializable;
+	}
+
+	public static function isArray($value)
+	{
+		return is_array($value);
 	}
 }

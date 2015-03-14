@@ -52,10 +52,8 @@ class TextWriterVisitor extends VisitorAbstract
 		return $this->output;
 	}
 
-	public function visitObjectStart(RecordInterface $record)
+	public function visitObjectStart($name)
 	{
-		$name = $record->getRecordInfo()->getName();
-
 		$this->writeLn('Object(' . $name . '){', $this->nested != -1 && $this->types[$this->nested] == self::IN_ARRAY);
 
 		$this->nested++;
@@ -75,7 +73,7 @@ class TextWriterVisitor extends VisitorAbstract
 		$this->write($key . ' = ');
 	}
 
-	public function visitArrayStart(array $array)
+	public function visitArrayStart($array)
 	{
 		$this->writeLn('Array[', $this->types[$this->nested] == self::IN_ARRAY);
 

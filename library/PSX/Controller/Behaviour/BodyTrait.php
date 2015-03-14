@@ -85,6 +85,10 @@ trait BodyTrait
 		{
 			$this->setResponse(new Record('record', $data), $writerType);
 		}
+		else if($data instanceof \stdClass)
+		{
+			$this->setResponse(new Record('record', (array) $data), $writerType);
+		}
 		else if($data instanceof RecordInterface)
 		{
 			$this->setResponse($data, $writerType);

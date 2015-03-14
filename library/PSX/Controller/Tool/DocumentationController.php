@@ -27,10 +27,11 @@ use PSX\Api\View\Generator\HtmlAbstract;
 use PSX\Api\ResourceListing\Resource;
 use PSX\Api\View;
 use PSX\Controller\ViewAbstract;
+use PSX\Data\Record;
 use PSX\Data\Schema\Generator as SchemaGenerator;
-use PSX\Data\WriterInterface;
 use PSX\Data\Schema\Documentation;
 use PSX\Data\SchemaInterface;
+use PSX\Data\WriterInterface;
 use PSX\Exception;
 use PSX\Http\Exception as HttpException;
 use PSX\Loader\RoutingCollection;
@@ -65,20 +66,20 @@ class DocumentationController extends ViewAbstract
 	{
 		$this->template->set($this->getTemplateFile());
 
-		$this->setBody(array(
+		$this->setBody([
 			'metas'    => $this->getMetaLinks(),
 			'routings' => $this->getRoutings(),
-			'links'    => array(
-				array(
+			'links'    => [
+				new Record('link', [
 					'rel'  => 'self',
 					'href' => $this->reverseRouter->getUrl(get_class($this) . '::doIndex'),
-				),
-				array(
+				]),
+				new Record('link', [
 					'rel'  => 'detail',
 					'href' => $this->reverseRouter->getUrl(get_class($this) . '::doDetail', array('{version}', '{path}')),
-				)
-			)
-		));
+				]),
+			]
+		]);
 	}
 
 	public function doDetail()
@@ -111,12 +112,11 @@ class DocumentationController extends ViewAbstract
 			$versions = array();
 			foreach($views as $key => $row)
 			{
-				$versions[] = array(
+				$versions[] = new Record('version', [
 					'version' => $key,
 					'status'  => $row->getStatus(),
-				);
+				]);
 			}
-
 
 			$generators = $this->getViewGenerators();
 			$methods    = View::getMethods();
@@ -126,13 +126,13 @@ class DocumentationController extends ViewAbstract
 			{
 				if($generator instanceof HtmlAbstract)
 				{
-					$result = array();
+					$result = new \stdClass();
 
 					foreach($methods as $method => $methodName)
 					{
 						$generator->setModifier($method);
 
-						$result[$methodName] = $generator->generate($view);
+						$result->$methodName = $generator->generate($view);
 					}
 
 					$data[$generator->getName()] = $result;
@@ -146,11 +146,11 @@ class DocumentationController extends ViewAbstract
 				'description' => $resource->getDocumentation()->getDescription(),
 				'versions'    => $versions,
 				'see_others'  => $this->getSeeOthers($version, $resource->getPath()),
-				'view'        => array(
+				'view'        => new Record('view', [
 					'version' => $version,
 					'status'  => $view->getStatus(),
-					'data'    => $data,
-				),
+					'data'    => new Record('data', $data),
+				]),
 			));
 		}
 		else
@@ -166,10 +166,10 @@ class DocumentationController extends ViewAbstract
 
 		foreach($resources as $resource)
 		{
-			$routings[] = array(
+			$routings[] = new Record('routing', [
 				'path'    => $resource->getPath(), 
 				'version' => $resource->getDocumentation()->getLatestVersion(),
-			);
+			]);
 		}
 
 		return $routings;
@@ -178,24 +178,24 @@ class DocumentationController extends ViewAbstract
 	protected function getSeeOthers($version, $path)
 	{
 		$path   = ltrim($path, '/');
-		$result = array();
+		$result = new \stdClass();
 
 		$wsdlGeneratorPath = $this->reverseRouter->getAbsolutePath('PSX\Controller\Tool\WsdlGeneratorController', array('version' => $version, 'path' => $path));
 		if($wsdlGeneratorPath !== null)
 		{
-			$result['WSDL'] = $wsdlGeneratorPath;
+			$result->WSDL = $wsdlGeneratorPath;
 		}
 
 		$swaggerGeneratorPath = $this->reverseRouter->getAbsolutePath('PSX\Controller\Tool\SwaggerGeneratorController::doDetail', array('version' => $version, 'path' => $path));
 		if($swaggerGeneratorPath !== null)
 		{
-			$result['Swagger'] = $swaggerGeneratorPath;
+			$result->Swagger = $swaggerGeneratorPath;
 		}
 
 		$ramlGeneratorPath = $this->reverseRouter->getAbsolutePath('PSX\Controller\Tool\RamlGeneratorController', array('version' => $version, 'path' => $path));
 		if($ramlGeneratorPath !== null)
 		{
-			$result['RAML'] = $ramlGeneratorPath;
+			$result->RAML = $ramlGeneratorPath;
 		}
 
 		return $result;

@@ -20,7 +20,6 @@
 
 namespace PSX\Data\Schema;
 
-use InvalidArgumentException;
 use PSX\Data\RecordInterface;
 use PSX\Data\SchemaInterface;
 use PSX\Data\Schema\Property;
@@ -42,34 +41,50 @@ class Validator implements ValidatorInterface
 		return true;
 	}
 
-	protected function recValidate(PropertyInterface $type, $data)
+	protected function recValidate(PropertyInterface $type, $data, $path = '$')
 	{
-		$type->validate($data);
-
 		if($type instanceof Property\ComplexType)
 		{
+			if(!$data instanceof \stdClass)
+			{
+				throw new ValidationException('Data object expected at ' . $path);
+			}
+
+			$type->validate($data);
+
 			$properties = $type->getProperties();
 
 			foreach($properties as $name => $property)
 			{
-				if(isset($data[$name]))
+				if(isset($data->$name))
 				{
-					$this->recValidate($property, $data[$name]);
+					$this->recValidate($property, $data->$name, $path . '.' . $name);
 				}
 				else if($property->isRequired())
 				{
-					throw new ValidationException('Required property "' . $property->getName() . '" not available');
+					throw new ValidationException('Required property ' . $path . '.' . $property->getName() . ' not available');
 				}
 			}
 		}
 		else if($type instanceof Property\ArrayType)
 		{
+			if(!is_array($data))
+			{
+				throw new ValidationException('Data array expected at ' . $path);
+			}
+
+			$type->validate($data);
+
 			$prototype = $type->getPrototype();
 
-			foreach($data as $value)
+			foreach($data as $key => $value)
 			{
-				$this->recValidate($prototype, $value);
+				$this->recValidate($prototype, $value, $path . '[' . $key . ']');
 			}
+		}
+		else
+		{
+			$type->validate($data);
 		}
 	}
 }

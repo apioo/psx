@@ -51,34 +51,6 @@ abstract class RecordAbstract implements RecordInterface, Serializable
 		return new RecordInfo($name, $fields);
 	}
 
-	public function jsonSerialize()
-	{
-		$record = new \stdClass();
-		$data   = $this->getRecordInfo()->getData();
-
-		foreach($data as $key => $value)
-		{
-			if($value instanceof JsonSerializable || $value instanceof \stdClass)
-			{
-				$record->$key = $value;
-			}
-			else if($value instanceof DateTime)
-			{
-				$record->$key = $value->format(DateTime::RFC3339);
-			}
-			else if(is_object($value))
-			{
-				$record->$key = (string) $value;
-			}
-			else
-			{
-				$record->$key = $value;
-			}
-		}
-
-		return $record;
-	}
-
 	public function serialize()
 	{
 		$vars = get_object_vars($this);

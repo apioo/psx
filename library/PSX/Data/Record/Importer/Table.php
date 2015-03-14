@@ -48,13 +48,13 @@ class Table implements ImporterInterface
 			throw new InvalidArgumentException('Table must be an instanceof PSX\Sql\TableInterface');
 		}
 
-		if(!is_array($data))
+		if(!$data instanceof \stdClass)
 		{
-			throw new InvalidArgumentException('Data must be an array');
+			throw new InvalidArgumentException('Data must be an stdClass');
 		}
 
 		$columns = $table->getColumns();
-		$data    = array_intersect_key($data, $columns);
+		$data    = array_intersect_key((array) $data, $columns);
 		$fields  = array();
 
 		foreach($data as $key => $value)
@@ -94,7 +94,7 @@ class Table implements ImporterInterface
 
 			case TableInterface::TYPE_DATE:
 			case TableInterface::TYPE_DATETIME:
-				return new \DateTime($data);
+				return $data instanceof \DateTime ? $data : new \DateTime($data);
 				break;
 
 			default:

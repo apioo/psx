@@ -23,9 +23,10 @@ namespace PSX\Controller\Tool;
 use PSX\Api\DocumentedInterface;
 use PSX\Api\View;
 use PSX\Controller\ViewAbstract;
+use PSX\Data\Object;
 use PSX\Data\Schema\Generator;
-use PSX\Data\WriterInterface;
 use PSX\Data\Schema\Documentation;
+use PSX\Data\WriterInterface;
 
 /**
  * ToolController
@@ -48,50 +49,76 @@ class ToolController extends ViewAbstract
 
 		$this->template->set(__DIR__ . '/../Resource/tool_controller.tpl');
 
-		$paths = array(
-			'general' => array(),
-			'api'     => array(),
-		);
+		$current = null;
+		$paths   = new \stdClass();
+		$paths->general = array();
+		$paths->api     = array();
 
 		$routingPath = $this->reverseRouter->getAbsolutePath('PSX\Controller\Tool\RoutingController');
 		if($routingPath !== null)
 		{
-			$paths['general'][] = array(
+			$routing = new Object([
 				'title' => 'Routing',
-				'path'  => $routingPath,
-			);
+				'path ' => $routingPath,
+			]);
+
+			$paths->general[] = $routing;
+
+			$current = $routing;
 		}
 
 		$commandPath = $this->reverseRouter->getAbsolutePath('PSX\Controller\Tool\CommandController');
 		if($commandPath !== null)
 		{
-			$paths['general'][] = array(
+			$command = new Object([
 				'title' => 'Command',
-				'path'  => $commandPath,
-			);
+				'path ' => $commandPath,
+			]);
+
+			$paths->general[] = $command;
+
+			if($current === null)
+			{
+				$current = $command;
+			}
 		}
 
 		$restPath = $this->reverseRouter->getAbsolutePath('PSX\Controller\Tool\RestController');
 		if($restPath !== null)
 		{
-			$paths['api'][] = array(
+			$console = new Object([
 				'title' => 'Console',
-				'path'  => $restPath,
-			);
+				'path ' => $restPath,
+			]);
+
+			$paths->api[] = $console;
+
+			if($current === null)
+			{
+				$current = $console;
+			}
 		}
 
 		$documentationPath = $this->reverseRouter->getAbsolutePath('PSX\Controller\Tool\DocumentationController::doIndex');
 		if($documentationPath !== null)
 		{
-			$paths['api'][] = array(
+			$documentation = new Object([
 				'title' => 'Documentation',
-				'path'  => $documentationPath,
-			);
+				'path ' => $documentationPath,
+			]);
+
+			$paths->api[] = $documentation;
+
+			if($current === null)
+			{
+				$current = $documentation;
+			}
 		}
 
-		$this->setBody(array(
-			'paths'   => $paths,
-			'current' => current(current($paths)),
-		));
+		$body = new \stdClass();
+		$body->paths = $paths;
+		$body->current = $current;
+
+		$this->setBody($body);
 	}
 }

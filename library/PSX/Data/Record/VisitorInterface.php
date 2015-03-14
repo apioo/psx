@@ -34,9 +34,9 @@ interface VisitorInterface
 	/**
 	 * Visited if an object begins
 	 *
-	 * @param PSX\Data\RecordInterface $record
+	 * @param string $name
 	 */
-	public function visitObjectStart(RecordInterface $record);
+	public function visitObjectStart($name);
 
 	/**
 	 * Visited if an object ends
@@ -61,7 +61,7 @@ interface VisitorInterface
 	 *
 	 * @param array $array
 	 */
-	public function visitArrayStart(array $array);
+	public function visitArrayStart($array);
 
 	/**
 	 * Visited if an array ends

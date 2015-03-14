@@ -62,15 +62,25 @@ INPUT;
 		$message = new Message(array(), $body);
 		$json    = $reader->read($message);
 
-		$expect = array(
-			'foo' => 'bar', 
-			'bar' => array('blub', 'bla'), 
-			'test' => array('foo' => 'bar'),
-			'item' => array('foo' => array('bar' => array('title' => 'foo'))),
-			'items' => array('item' => array(array('title' => 'foo', 'text' => 'bar'), array('title' => 'foo', 'text' => 'bar'))),
-		);
+		$expect = new \stdClass();
+		$expect->foo = 'bar';
+		$expect->bar = ['blub', 'bla'];
+		$expect->test = new \stdClass();
+		$expect->test->foo = 'bar';
+		$expect->item = new \stdClass();
+		$expect->item->foo = new \stdClass();
+		$expect->item->foo->bar = new \stdClass();
+		$expect->item->foo->bar->title = 'foo';
+		$expect->items = new \stdClass();
+		$expect->items->item = [];
+		$expect->items->item[0] = new \stdClass();
+		$expect->items->item[0]->title = 'foo';
+		$expect->items->item[0]->text = 'bar';
+		$expect->items->item[1] = new \stdClass();
+		$expect->items->item[1]->title = 'foo';
+		$expect->items->item[1]->text = 'bar';
 
-		$this->assertEquals(true, is_array($json));
+		$this->assertInstanceOf('stdClass', $json);
 		$this->assertEquals($expect, $json);
 	}
 }

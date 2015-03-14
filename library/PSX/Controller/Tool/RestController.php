@@ -23,9 +23,10 @@ namespace PSX\Controller\Tool;
 use PSX\Api\DocumentedInterface;
 use PSX\Api\View;
 use PSX\Controller\ViewAbstract;
+use PSX\Data\Record;
 use PSX\Data\Schema\Generator;
-use PSX\Data\WriterInterface;
 use PSX\Data\Schema\Documentation;
+use PSX\Data\WriterInterface;
 
 /**
  * RestController
@@ -49,16 +50,16 @@ class RestController extends ViewAbstract
 		$this->template->set(__DIR__ . '/../Resource/rest_controller.tpl');
 
 		$this->setBody(array(
-			'links' => array(
-				array(
+			'links' => [
+				new Record('link', [
 					'rel'  => 'self',
 					'href' => $this->reverseRouter->getAbsolutePath('PSX\Controller\Tool\RestController'),
-				),
-				array(
+				]),
+				new Record('link', [
 					'rel'  => 'router',
 					'href' => $this->reverseRouter->getAbsolutePath('PSX\Controller\Tool\RoutingController'),
-				)
-			)
+				]),
+			]
 		));
 	}
 }

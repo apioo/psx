@@ -35,14 +35,16 @@ class Declaration extends RecordAbstract
 	protected $apiVersion;
 	protected $basePath;
 	protected $resourcePath;
-	protected $apis = array();
-	protected $models = array();
+	protected $apis;
+	protected $models;
 
 	public function __construct($apiVersion = null, $basePath = null, $resourcePath = null)
 	{
 		$this->swaggerVersion = Swagger::VERSION;
 		$this->apiVersion     = $apiVersion;
 		$this->basePath       = $basePath;
+		$this->apis           = array();
+		$this->models         = new \stdClass();
 
 		if($resourcePath !== null)
 		{
@@ -101,7 +103,7 @@ class Declaration extends RecordAbstract
 	/**
 	 * @param PSX\Swagger\ModelFactory $models
 	 */
-	public function setModels(array $models)
+	public function setModels(\stdClass $models)
 	{
 		$this->models = $models;
 	}
@@ -113,6 +115,6 @@ class Declaration extends RecordAbstract
 
 	public function addModel(Model $model)
 	{
-		$this->models[$model->getId()] = $model;
+		$this->models->{$model->getId()} = $model;
 	}
 }

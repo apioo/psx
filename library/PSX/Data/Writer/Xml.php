@@ -21,9 +21,10 @@
 namespace PSX\Data\Writer;
 
 use PSX\Data\RecordInterface;
+use PSX\Data\Record\GraphTraverser;
+use PSX\Data\Record\Visitor;
 use PSX\Data\WriterInterface;
 use PSX\Http\MediaType;
-use PSX\Xml\Writer;
 use XMLWriter;
 
 /**
@@ -38,9 +39,9 @@ class Xml implements WriterInterface
 	public static $mime = 'application/xml';
 
 	protected $writer;
+	protected $hasWriter;
 
 	/**
-	 *
 	 * If an writer is given the result gets written to the XMLWriter and the
 	 * write method returns null. Otherwise the write method returns the xml as
 	 * string
@@ -49,15 +50,32 @@ class Xml implements WriterInterface
 	 */
 	public function __construct(XMLWriter $writer = null)
 	{
-		$this->writer = $writer;
+		$this->writer    = $writer === null ? new XMLWriter() : $writer;
+		$this->hasWriter = $writer !== null;
+
+		if(!$this->hasWriter)
+		{
+			$this->writer->openMemory();
+			$this->writer->setIndent(true);
+			$this->writer->startDocument('1.0', 'UTF-8');
+		}
 	}
 
 	public function write(RecordInterface $record)
 	{
-		$writer = new Writer($this->writer);
-		$writer->setRecord($record);
+		$graph = new GraphTraverser();
+		$graph->traverse($record, new Visitor\XmlWriterVisitor($this->writer));
 
-		return $this->writer === null ? $writer->toString() : null;
+		if(!$this->hasWriter)
+		{
+			$this->writer->endDocument();
+
+			return $this->writer->outputMemory();
+		}
+		else
+		{
+			return null;
+		}
 	}
 
 	public function isContentTypeSupported(MediaType $contentType)
