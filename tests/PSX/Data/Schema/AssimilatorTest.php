@@ -43,13 +43,14 @@ class AssimilatorTest extends \PHPUnit_Framework_TestCase
 
 	public function testAssimilate()
 	{
-		$data = [[
+		$data = [
 			'content' => 'foo',
-			'author' => [
-				'title' => 'foo',
-				'email' => 'foo@foo.com',
-			],
+			'rating' => 12,
+			'price' => 12.23,
+			'read' => false,
 			'location' => [
+				'lat' => 40.711485,
+				'long' => -74.013624,
 			],
 			'receiver' => [[
 				'title' => 'foo',
@@ -57,28 +58,61 @@ class AssimilatorTest extends \PHPUnit_Framework_TestCase
 			],[
 				'title' => 'bar',
 				'email' => 'foo@bar.com',
-				'location' => [
-					'lat' => 40.711485,
-					'long' => -74.013624,
-				]
 			]],
 			'tags' => ['foo', 'bar'],
 			'date' => '2014-08-07',
-		]];
+		];
 
 		$data = $this->assimilator->assimilate($this->schema, $data);
 
-		$this->assertEquals('foo', $data[0]->getContent());
-		$this->assertEquals('foo', $data[0]->getAuthor()->getTitle());
-		$this->assertEquals('foo@foo.com', $data[0]->getAuthor()->getEmail());
-		$this->assertEquals('foo', $data[0]->getReceiver()[0]->getTitle());
-		$this->assertEquals('foo@foo.com', $data[0]->getReceiver()[0]->getEmail());
-		$this->assertEquals('bar', $data[0]->getReceiver()[1]->getTitle());
-		$this->assertEquals('foo@bar.com', $data[0]->getReceiver()[1]->getEmail());
-		$this->assertEquals('40.711485', $data[0]->getReceiver()[1]->getLocation()->getLat());
-		$this->assertEquals('-74.013624', $data[0]->getReceiver()[1]->getLocation()->getLong());
-		$this->assertEquals(['foo', 'bar'], $data[0]->getTags());
-		$this->assertInstanceOf('DateTime', $data[0]->getDate());
+		$this->assertEquals('foo', $data->getContent());
+		$this->assertEquals(12, $data->getRating());
+		$this->assertEquals(12.23, $data->getPrice());
+		$this->assertEquals(false, $data->getRead());
+		$this->assertEquals(40.711485, $data->getLocation()->getLat());
+		$this->assertEquals(-74.013624, $data->getLocation()->getLong());
+		$this->assertEquals('foo', $data->getReceiver()[0]->getTitle());
+		$this->assertEquals('foo@foo.com', $data->getReceiver()[0]->getEmail());
+		$this->assertEquals('bar', $data->getReceiver()[1]->getTitle());
+		$this->assertEquals('foo@bar.com', $data->getReceiver()[1]->getEmail());
+		$this->assertEquals(['foo', 'bar'], $data->getTags());
+		$this->assertInstanceOf('DateTime', $data->getDate());
+	}
+
+	public function testAssimilateObject()
+	{
+		$data = new \stdClass();
+		$data->content = 'foo';
+		$data->rating = 12;
+		$data->price = 12.23;
+		$data->read = false;
+		$data->location = new \stdClass();
+		$data->location->lat = 40.711485;
+		$data->location->long = -74.013624;
+		$data->receiver = [];
+		$data->receiver[0] = new \stdClass();
+		$data->receiver[0]->title = 'foo';
+		$data->receiver[0]->email = 'foo@foo.com';
+		$data->receiver[1] = new \stdClass();
+		$data->receiver[1]->title = 'bar';
+		$data->receiver[1]->email = 'foo@bar.com';
+		$data->tags = ['foo', 'bar'];
+		$data->date = '2014-08-07';
+
+		$data = $this->assimilator->assimilate($this->schema, $data);
+
+		$this->assertEquals('foo', $data->getContent());
+		$this->assertEquals(12, $data->getRating());
+		$this->assertEquals(12.23, $data->getPrice());
+		$this->assertEquals(false, $data->getRead());
+		$this->assertEquals(40.711485, $data->getLocation()->getLat());
+		$this->assertEquals(-74.013624, $data->getLocation()->getLong());
+		$this->assertEquals('foo', $data->getReceiver()[0]->getTitle());
+		$this->assertEquals('foo@foo.com', $data->getReceiver()[0]->getEmail());
+		$this->assertEquals('bar', $data->getReceiver()[1]->getTitle());
+		$this->assertEquals('foo@bar.com', $data->getReceiver()[1]->getEmail());
+		$this->assertEquals(['foo', 'bar'], $data->getTags());
+		$this->assertInstanceOf('DateTime', $data->getDate());
 	}
 
 	/**
@@ -86,22 +120,22 @@ class AssimilatorTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testAssimilateMissingRequired()
 	{
-		$data = [[
-		]];
+		$data = [
+		];
 
 		$data = $this->assimilator->assimilate($this->schema, $data);
 	}
 
 	public function testAssimilateRemoveUnknownParameter()
 	{
-		$data = [[
+		$data = [
 			'content' => 'foo',
 			'foo' => 'foo',
-		]];
+		];
 
 		$data = $this->assimilator->assimilate($this->schema, $data);
 
-		$this->assertEquals(array('content' => 'foo'), $data[0]->getRecordInfo()->getFields());
+		$this->assertEquals(array('content' => 'foo'), $data->getRecordInfo()->getFields());
 	}
 
 	/**
@@ -109,10 +143,10 @@ class AssimilatorTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testAssimilateComplexTypeString()
 	{
-		$data = [[
+		$data = [
 			'content' => 'foo',
-			'author' => 'foo',
-		]];
+			'location' => 'foo',
+		];
 
 		$data = $this->assimilator->assimilate($this->schema, $data);
 	}
@@ -122,10 +156,10 @@ class AssimilatorTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testAssimilateArrayTypeString()
 	{
-		$data = [[
+		$data = [
 			'content' => 'foo',
 			'receiver' => 'foo',
-		]];
+		];
 
 		$data = $this->assimilator->assimilate($this->schema, $data);
 	}
@@ -135,9 +169,9 @@ class AssimilatorTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testAssimilateCastArrayToString()
 	{
-		$data = [[
+		$data = [
 			'content' => array(),
-		]];
+		];
 
 		$data = $this->assimilator->assimilate($this->schema, $data);
 	}
@@ -147,62 +181,62 @@ class AssimilatorTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testAssimilateCastObjectToString()
 	{
-		$data = [[
+		$data = [
 			'content' => new \stdClass(),
-		]];
+		];
 
 		$data = $this->assimilator->assimilate($this->schema, $data);
 	}
 
 	public function testAssimilateCastStringToString()
 	{
-		$data = [[
+		$data = [
 			'content' => 'foo',
-		]];
+		];
 
 		$data = $this->assimilator->assimilate($this->schema, $data);
 
-		$this->assertEquals('foo', $data[0]->getContent());
-		$this->assertInternalType('string', $data[0]->getContent());
+		$this->assertEquals('foo', $data->getContent());
+		$this->assertInternalType('string', $data->getContent());
 	}
 
 	public function testAssimilateCastStringToInteger()
 	{
-		$data = [[
+		$data = [
 			'content' => 'foo',
 			'rating' => '12',
-		]];
+		];
 
 		$data = $this->assimilator->assimilate($this->schema, $data);
 
-		$this->assertEquals(12, $data[0]->getRating());
-		$this->assertInternalType('integer', $data[0]->getRating());
+		$this->assertEquals(12, $data->getRating());
+		$this->assertInternalType('integer', $data->getRating());
 	}
 
 	public function testAssimilateCastStringToFloat()
 	{
-		$data = [[
+		$data = [
 			'content' => 'foo',
 			'price' => '13.37',
-		]];
+		];
 
 		$data = $this->assimilator->assimilate($this->schema, $data);
 
-		$this->assertEquals(13.37, $data[0]->getPrice());
-		$this->assertInternalType('float', $data[0]->getPrice());
+		$this->assertEquals(13.37, $data->getPrice());
+		$this->assertInternalType('float', $data->getPrice());
 	}
 
 	public function testAssimilateCastStringToBoolean()
 	{
-		$data = [[
+		$data = [
 			'content' => 'foo',
 			'read' => '1',
-		]];
+		];
 
 		$data = $this->assimilator->assimilate($this->schema, $data);
 
-		$this->assertEquals(true, $data[0]->getRead());
-		$this->assertInternalType('boolean', $data[0]->getRead());
+		$this->assertEquals(true, $data->getRead());
+		$this->assertInternalType('boolean', $data->getRead());
 	}
 }
 
@@ -226,18 +260,13 @@ class AssimilatorSchema extends SchemaAbstract
 		$sb->integer('rating');
 		$sb->float('price');
 		$sb->boolean('read');
-		$sb->complexType($author);
 		$sb->complexType($location);
 		$sb->arrayType('receiver')
 			->setPrototype($author);
 		$sb->arrayType('tags')
 			->setPrototype(new Property\String('tag'));
 		$sb->dateTime('date');
-		$news = $sb->getProperty();
 
-		$root = new Property\ArrayType('entries');
-		$root->setPrototype($news);
-
-		return $root;
+		return $sb->getProperty();
 	}
 }

@@ -58,10 +58,14 @@ class Assimilator
 			{
 				$data = $data->getRecordInfo()->getData();
 			}
+			else if($data instanceof \stdClass)
+			{
+				$data = (array) $data;
+			}
 
 			if(!is_array($data))
 			{
-				throw new InvalidArgumentException('Value of ' . $type->getName() . ' must be an array');
+				throw new InvalidArgumentException('Value of ' . $type->getName() . ' must be an object');
 			}
 
 			$properties = $type->getProperties();
