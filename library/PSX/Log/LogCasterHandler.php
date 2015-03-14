@@ -44,14 +44,16 @@ class LogCasterHandler extends AbstractProcessingHandler
 		$this->connect($host, $port);
 	}
 
-	public function __destruct()
+	public function close()
 	{
+		parent::close();
+
 		$this->disconnect();
 	}
 
 	protected function write(array $record)
 	{
-		if(!$this->isAvailable)
+		if(!$this->isAvailable())
 		{
 			return;
 		}
@@ -90,7 +92,7 @@ class LogCasterHandler extends AbstractProcessingHandler
 
 	protected function disconnect()
 	{
-		if(!$this->isAvailable)
+		if(!$this->isAvailable())
 		{
 			return;
 		}
@@ -107,6 +109,11 @@ class LogCasterHandler extends AbstractProcessingHandler
 		));
 
 		socket_write($this->socket, $body . "\n");
+	}
+
+	protected function isAvailable()
+	{
+		return $this->isAvailable;
 	}
 
 	protected function getLevelColor($level)
