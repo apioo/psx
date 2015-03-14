@@ -139,7 +139,7 @@ JSON;
 
 		$expect = array(
 			'success' => false,
-			'message' => 'Required property "title" not available',
+			'message' => 'Required property $.title not available',
 			'title'   => 'Internal Server Error'
 		);
 

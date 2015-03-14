@@ -60,13 +60,13 @@ class Entity implements ImporterInterface
 			throw new InvalidArgumentException('Entity must be an entity');
 		}
 
-		if(!is_array($data))
+		if(!$data instanceof \stdClass)
 		{
-			throw new InvalidArgumentException('Data must be an array');
+			throw new InvalidArgumentException('Data must be an stdClass');
 		}
 
 		$metaData = $this->em->getMetadataFactory()->getMetadataFor($this->getClassName($entity));
-		$fields   = $this->getEntityFields($metaData, $data);
+		$fields   = $this->getEntityFields($metaData, (array) $data);
 
 		return new DataRecord($metaData->getTableName(), $fields);
 	}
