@@ -42,6 +42,26 @@ class TextWriterVisitorTest extends VisitorTestCase
 		$this->assertEquals($this->getExpected(), $visitor->getOutput());
 	}
 
+    public function testTraverseTextLong()
+    {
+        $visitor = new TextWriterVisitor();
+        $record  = new Record('foo', array(
+            'title' => 'Lorem ipsum dolor' . "\n" . 'sit amet, consetetur sadipscin'
+        ));
+
+        $graph = new GraphTraverser();
+        $graph->traverse($record, $visitor);
+
+        $except = <<<TEXT
+Object(foo){
+    title = Lorem ipsum dolor sit amet, cons (...)
+}
+
+TEXT;
+
+        $this->assertEquals($except, $visitor->getOutput());
+    }
+
 	protected function getExpected()
 	{
 		return <<<TEXT
