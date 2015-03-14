@@ -73,7 +73,7 @@ class TextWriterVisitor extends VisitorAbstract
 		$this->write($key . ' = ');
 	}
 
-	public function visitArrayStart($array)
+	public function visitArrayStart()
 	{
 		$this->writeLn('Array[', $this->types[$this->nested] == self::IN_ARRAY);
 

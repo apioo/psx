@@ -88,7 +88,7 @@ class XmlWriterVisitor extends VisitorAbstract
 		$this->arrayEnd = false;
 	}
 
-	public function visitArrayStart($array)
+	public function visitArrayStart()
 	{
 		$this->arrayStart = true;
 		$this->arrayKey   = $this->objectKey;

@@ -73,7 +73,7 @@ class GraphTraverser
 	{
 		if(self::isArray($value))
 		{
-			$visitor->visitArrayStart($value);
+			$visitor->visitArrayStart();
 
 			foreach($value as $val)
 			{

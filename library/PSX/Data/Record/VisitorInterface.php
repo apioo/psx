@@ -61,7 +61,7 @@ interface VisitorInterface
 	 *
 	 * @param array $array
 	 */
-	public function visitArrayStart($array);
+	public function visitArrayStart();
 
 	/**
 	 * Visited if an array ends

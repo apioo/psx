@@ -77,7 +77,7 @@ abstract class SerializeVisitorAbstract extends VisitorAbstract
 		$this->addObjectValue($key, $this->getValue($value), $this->objectStack[$this->objectCount]);
 	}
 
-	public function visitArrayStart($array)
+	public function visitArrayStart()
 	{
 		$this->arrayStack[] = $this->newArray();
 

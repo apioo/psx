@@ -257,10 +257,6 @@ class GraphTraverserTest extends Visitor\VisitorTestCase
 			->method('visitObjectValueStart')
 			->with($this->equalTo('tags'), $this->equalTo($record->getTags()));
 
-		$visitor->expects($this->at(45))
-			->method('visitArrayStart')
-			->with($this->equalTo($record->getTags()));
-
 		$visitor->expects($this->at(46))
 			->method('visitArrayValueStart')
 			->with($this->equalTo('bar'));
@@ -289,10 +285,6 @@ class GraphTraverserTest extends Visitor\VisitorTestCase
 		$visitor->expects($this->at(57))
 			->method('visitObjectValueStart')
 			->with($this->equalTo('entry'), $this->equalTo($record->getEntry()));
-
-		$visitor->expects($this->at(58))
-			->method('visitArrayStart')
-			->with($this->equalTo($record->getEntry()));
 
 		$visitor->expects($this->at(59))
 			->method('visitArrayValueStart')
@@ -360,7 +352,7 @@ class SpyVisitor implements VisitorInterface
 		$this->stack[] = $this->i++ . ' ' . __METHOD__;
 	}
 
-	public function visitArrayStart($array)
+	public function visitArrayStart()
 	{
 		$this->stack[] = $this->i++ . ' ' . __METHOD__;
 	}

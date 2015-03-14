@@ -66,7 +66,7 @@ class HtmlWriterVisitor extends VisitorAbstract
 		$this->write('</dd>');
 	}
 
-	public function visitArrayStart($array)
+	public function visitArrayStart()
 	{
 		$this->write('<ul>');
 	}

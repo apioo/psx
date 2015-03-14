@@ -47,7 +47,7 @@ abstract class VisitorAbstract implements VisitorInterface
 	{
 	}
 
-	public function visitArrayStart($array)
+	public function visitArrayStart()
 	{
 	}
 
