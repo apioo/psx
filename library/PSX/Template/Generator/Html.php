@@ -24,7 +24,6 @@ use PSX\Data\RecordInterface;
 use PSX\Data\Record\GraphTraverser;
 use PSX\Data\Record\Visitor;
 use PSX\Template\GeneratorAbstract;
-use PSX\Util\CurveArray;
 
 /**
  * Html

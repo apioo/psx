@@ -22,7 +22,6 @@ namespace PSX\ActivityStream;
 
 use PSX\Data\Record\FactoryInterface;
 use PSX\Data\Record\ImporterInterface;
-use PSX\Util\CurveArray;
 
 /**
  * Object
