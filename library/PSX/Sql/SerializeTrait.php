@@ -52,31 +52,29 @@ trait SerializeTrait
 
 	protected function unserializeType($value, $type)
 	{
-		$type     = (($type >> 20) & 0xFF) << 20;
-		$platform = $this->connection->getDatabasePlatform();
+		$type = (($type >> 20) & 0xFF) << 20;
 
 		if(isset(self::$mapping[$type]))
 		{
-			return Type::getType(self::$mapping[$type])->convertToPHPValue($value, $platform);
+			return $this->connection->convertToPHPValue($value, self::$mapping[$type]);
 		}
 		else
 		{
-			return Type::getType(Type::STRING)->convertToPHPValue($value, $platform);
+			return $value;
 		}
 	}
 
 	protected function serializeType($value, $type)
 	{
-		$type     = (($type >> 20) & 0xFF) << 20;
-		$platform = $this->connection->getDatabasePlatform();
+		$type = (($type >> 20) & 0xFF) << 20;
 
 		if(isset(self::$mapping[$type]))
 		{
-			return Type::getType(self::$mapping[$type])->convertToDatabaseValue($value, $platform);
+			return $this->connection->convertToDatabaseValue($value, self::$mapping[$type]);
 		}
 		else
 		{
-			return Type::getType(Type::STRING)->convertToDatabaseValue($value, $platform);
+			return $value;
 		}
 	}
 
