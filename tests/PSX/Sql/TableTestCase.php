@@ -21,6 +21,7 @@
 namespace PSX\Sql;
 
 use PSX\DateTime;
+use PSX\Data\Record;
 use PSX\Sql;
 use PSX\Sql\Condition;
 
@@ -81,33 +82,33 @@ trait TableTestCase
 		$this->assertEquals(4, count($result));
 
 		$expect = array(
-			array(
+			new Record('comment', array(
 				'id' => 4,
 				'userId' => 3,
 				'title' => 'blub',
-				'date' => '2013-04-29 16:56:32',
-			),
-			array(
+				'date' => new \DateTime('2013-04-29 16:56:32'),
+			)),
+			new Record('comment', array(
 				'id' => 3,
 				'userId' => 2,
 				'title' => 'test',
-				'date' => '2013-04-29 16:56:32',
-			),
-			array(
+				'date' => new \DateTime('2013-04-29 16:56:32'),
+			)),
+			new Record('comment', array(
 				'id' => 2,
 				'userId' => 1,
 				'title' => 'bar',
-				'date' => '2013-04-29 16:56:32',
-			),
-			array(
+				'date' => new \DateTime('2013-04-29 16:56:32'),
+			)),
+			new Record('comment', array(
 				'id' => 1,
 				'userId' => 1,
 				'title' => 'foo',
-				'date' => '2013-04-29 16:56:32',
-			),
+				'date' => new \DateTime('2013-04-29 16:56:32'),
+			)),
 		);
 
-		$this->assertResult($expect, $result);
+		$this->assertEquals($expect, $result);
 	}
 
 	public function testGetAllStartIndex()
@@ -125,15 +126,15 @@ trait TableTestCase
 		$this->assertEquals(1, count($result));
 
 		$expect = array(
-			array(
+			new Record('comment', array(
 				'id' => 1,
 				'userId' => 1,
 				'title' => 'foo',
-				'date' => '2013-04-29 16:56:32',
-			),
+				'date' => new \DateTime('2013-04-29 16:56:32'),
+			)),
 		);
 
-		$this->assertResult($expect, $result);
+		$this->assertEquals($expect, $result);
 	}
 
 	public function testGetAllCount()
@@ -151,21 +152,21 @@ trait TableTestCase
 		$this->assertEquals(2, count($result));
 
 		$expect = array(
-			array(
+			new Record('comment', array(
 				'id' => 4,
 				'userId' => 3,
 				'title' => 'blub',
-				'date' => '2013-04-29 16:56:32',
-			),
-			array(
+				'date' => new \DateTime('2013-04-29 16:56:32'),
+			)),
+			new Record('comment', array(
 				'id' => 3,
 				'userId' => 2,
 				'title' => 'test',
-				'date' => '2013-04-29 16:56:32',
-			),
+				'date' => new \DateTime('2013-04-29 16:56:32'),
+			)),
 		);
 
-		$this->assertResult($expect, $result);
+		$this->assertEquals($expect, $result);
 	}
 
 	public function testGetAllStartIndexAndCountDefault()
@@ -183,21 +184,21 @@ trait TableTestCase
 		$this->assertEquals(2, count($result));
 
 		$expect = array(
-			array(
+			new Record('comment', array(
 				'id' => 2,
 				'userId' => 1,
 				'title' => 'bar',
-				'date' => '2013-04-29 16:56:32',
-			),
-			array(
+				'date' => new \DateTime('2013-04-29 16:56:32'),
+			)),
+			new Record('comment', array(
 				'id' => 1,
 				'userId' => 1,
 				'title' => 'foo',
-				'date' => '2013-04-29 16:56:32',
-			),
+				'date' => new \DateTime('2013-04-29 16:56:32'),
+			)),
 		);
 
-		$this->assertResult($expect, $result);
+		$this->assertEquals($expect, $result);
 	}
 
 	public function testGetAllStartIndexAndCountDesc()
@@ -215,21 +216,21 @@ trait TableTestCase
 		$this->assertEquals(2, count($result));
 
 		$expect = array(
-			array(
+			new Record('comment', array(
 				'id' => 2,
 				'userId' => 1,
 				'title' => 'bar',
-				'date' => '2013-04-29 16:56:32',
-			),
-			array(
+				'date' => new \DateTime('2013-04-29 16:56:32'),
+			)),
+			new Record('comment', array(
 				'id' => 1,
 				'userId' => 1,
 				'title' => 'foo',
-				'date' => '2013-04-29 16:56:32',
-			),
+				'date' => new \DateTime('2013-04-29 16:56:32'),
+			)),
 		);
 
-		$this->assertResult($expect, $result);
+		$this->assertEquals($expect, $result);
 	}
 
 	public function testGetAllStartIndexAndCountAsc()
@@ -247,21 +248,21 @@ trait TableTestCase
 		$this->assertEquals(2, count($result));
 
 		$expect = array(
-			array(
+			new Record('comment', array(
 				'id' => 3,
 				'userId' => 2,
 				'title' => 'test',
-				'date' => '2013-04-29 16:56:32',
-			),
-			array(
+				'date' => new \DateTime('2013-04-29 16:56:32'),
+			)),
+			new Record('comment', array(
 				'id' => 4,
 				'userId' => 3,
 				'title' => 'blub',
-				'date' => '2013-04-29 16:56:32',
-			),
+				'date' => new \DateTime('2013-04-29 16:56:32'),
+			)),
 		);
 
-		$this->assertResult($expect, $result);
+		$this->assertEquals($expect, $result);
 	}
 
 	public function testGetAllSortDesc()
@@ -279,33 +280,31 @@ trait TableTestCase
 		$this->assertEquals(2, count($result));
 
 		$expect = array(
-			array(
+			new Record('comment', array(
 				'id' => 4,
 				'userId' => 3,
 				'title' => 'blub',
-				'date' => '2013-04-29 16:56:32',
-			),
-			array(
+				'date' => new \DateTime('2013-04-29 16:56:32'),
+			)),
+			new Record('comment', array(
 				'id' => 3,
 				'userId' => 2,
 				'title' => 'test',
-				'date' => '2013-04-29 16:56:32',
-			),
+				'date' => new \DateTime('2013-04-29 16:56:32'),
+			)),
 		);
 
-		$this->assertResult($expect, $result);
+		$this->assertEquals($expect, $result);
 
 		foreach($result as $row)
 		{
-			$this->assertArrayHasKey('id', $row);
-			$this->assertArrayHasKey('title', $row);
-			$this->assertEquals(true, $row['id'] != null);
-			$this->assertEquals(true, $row['title'] != null);
+			$this->assertTrue($row->getId() != null);
+			$this->assertTrue($row->getTitle() != null);
 		}
 
 		// check order
-		$this->assertEquals(4, $result[0]['id']);
-		$this->assertEquals(3, $result[1]['id']);
+		$this->assertEquals(4, $result[0]->getId());
+		$this->assertEquals(3, $result[1]->getId());
 	}
 
 	public function testGetAllSortAsc()
@@ -323,21 +322,21 @@ trait TableTestCase
 		$this->assertEquals(2, count($result));
 
 		$expect = array(
-			array(
+			new Record('comment', array(
 				'id' => 1,
 				'userId' => 1,
 				'title' => 'foo',
-				'date' => '2013-04-29 16:56:32',
-			),
-			array(
+				'date' => new \DateTime('2013-04-29 16:56:32'),
+			)),
+			new Record('comment', array(
 				'id' => 2,
 				'userId' => 1,
 				'title' => 'bar',
-				'date' => '2013-04-29 16:56:32',
-			),
+				'date' => new \DateTime('2013-04-29 16:56:32'),
+			)),
 		);
 
-		$this->assertResult($expect, $result);
+		$this->assertEquals($expect, $result);
 	}
 
 	public function testGetAllCondition()
@@ -356,21 +355,21 @@ trait TableTestCase
 		$this->assertEquals(2, count($result));
 
 		$expect = array(
-			array(
+			new Record('comment', array(
 				'id' => 2,
 				'userId' => 1,
 				'title' => 'bar',
-				'date' => '2013-04-29 16:56:32',
-			),
-			array(
+				'date' => new \DateTime('2013-04-29 16:56:32'),
+			)),
+			new Record('comment', array(
 				'id' => 1,
 				'userId' => 1,
 				'title' => 'foo',
-				'date' => '2013-04-29 16:56:32',
-			),
+				'date' => new \DateTime('2013-04-29 16:56:32'),
+			)),
 		);
 
-		$this->assertResult($expect, $result);
+		$this->assertEquals($expect, $result);
 	}
 
 	public function testGetAllConditionAndConjunction()
@@ -400,15 +399,15 @@ trait TableTestCase
 		$this->assertEquals(1, count($result));
 
 		$expect = array(
-			array(
+			new Record('comment', array(
 				'id' => 1,
 				'userId' => 1,
 				'title' => 'foo',
-				'date' => '2013-04-29 16:56:32',
-			),
+				'date' => new \DateTime('2013-04-29 16:56:32'),
+			)),
 		);
 
-		$this->assertResult($expect, $result);
+		$this->assertEquals($expect, $result);
 	}
 
 	public function testGetAllConditionOrConjunction()
@@ -429,27 +428,27 @@ trait TableTestCase
 		$this->assertEquals(3, count($result));
 
 		$expect = array(
-			array(
+			new Record('comment', array(
 				'id' => 4,
 				'userId' => 3,
 				'title' => 'blub',
-				'date' => '2013-04-29 16:56:32',
-			),
-			array(
+				'date' => new \DateTime('2013-04-29 16:56:32'),
+			)),
+			new Record('comment', array(
 				'id' => 2,
 				'userId' => 1,
 				'title' => 'bar',
-				'date' => '2013-04-29 16:56:32',
-			),
-			array(
+				'date' => new \DateTime('2013-04-29 16:56:32'),
+			)),
+			new Record('comment', array(
 				'id' => 1,
 				'userId' => 1,
 				'title' => 'foo',
-				'date' => '2013-04-29 16:56:32',
-			),
+				'date' => new \DateTime('2013-04-29 16:56:32'),
+			)),
 		);
 
-		$this->assertResult($expect, $result);
+		$this->assertEquals($expect, $result);
 	}
 
 	public function testGetBy()
@@ -467,21 +466,21 @@ trait TableTestCase
 		$this->assertEquals(2, count($result));
 
 		$expect = array(
-			array(
+			new Record('comment', array(
 				'id' => 2,
 				'userId' => 1,
 				'title' => 'bar',
-				'date' => '2013-04-29 16:56:32',
-			),
-			array(
+				'date' => new \DateTime('2013-04-29 16:56:32'),
+			)),
+			new Record('comment', array(
 				'id' => 1,
 				'userId' => 1,
 				'title' => 'foo',
-				'date' => '2013-04-29 16:56:32',
-			),
+				'date' => new \DateTime('2013-04-29 16:56:32'),
+			)),
 		);
 
-		$this->assertResult($expect, $result);
+		$this->assertEquals($expect, $result);
 	}
 
 	public function testGetOneBy()
@@ -496,15 +495,15 @@ trait TableTestCase
 		$row = $table->getOneById(1);
 
 		$expect = array(
-			array(
+			new Record('comment', array(
 				'id' => 1,
 				'userId' => 1,
 				'title' => 'foo',
-				'date' => '2013-04-29 16:56:32',
-			),
+				'date' => new \DateTime('2013-04-29 16:56:32'),
+			)),
 		);
 
-		$this->assertResult($expect, array($row));
+		$this->assertEquals($expect, array($row));
 	}
 
 	public function testGet()
@@ -519,15 +518,15 @@ trait TableTestCase
 		$row = $table->get(1);
 
 		$expect = array(
-			array(
+			new Record('comment', array(
 				'id' => 1,
 				'userId' => 1,
 				'title' => 'foo',
-				'date' => '2013-04-29 16:56:32',
-			),
+				'date' => new \DateTime('2013-04-29 16:56:32'),
+			)),
 		);
 
-		$this->assertResult($expect, array($row));
+		$this->assertEquals($expect, array($row));
 	}
 
 	public function testGetSupportedFields()
@@ -595,10 +594,11 @@ trait TableTestCase
 
 		$row = $table->getOneById(5);
 
-		$this->assertEquals(5, $row['id']);
-		$this->assertEquals(2, $row['userId']);
-		$this->assertEquals('foobar', $row['title']);
-		$this->assertInstanceOf('DateTime', $row['date']);
+		$this->assertInstanceOf('PSX\Data\RecordInterface', $row);
+		$this->assertEquals(5, $row->getId());
+		$this->assertEquals(2, $row->getUserId());
+		$this->assertEquals('foobar', $row->getTitle());
+		$this->assertInstanceOf('DateTime', $row->getDate());
 	}
 
 	/**
@@ -626,17 +626,17 @@ trait TableTestCase
 		}
 
 		$row = $table->getOneById(1);
-		$row['userId'] = 2;
-		$row['title'] = 'foobar';
-		$row['date'] = new DateTime();
+		$row->setUserId(2);
+		$row->setTitle('foobar');
+		$row->setDate(new DateTime());
 
 		$table->update($row);
 
 		$row = $table->getOneById(1);
 
-		$this->assertEquals(2, $row['userId']);
-		$this->assertEquals('foobar', $row['title']);
-		$this->assertInstanceOf('DateTime', $row['date']);
+		$this->assertEquals(2, $row->getUserId());
+		$this->assertEquals('foobar', $row->getTitle());
+		$this->assertInstanceOf('DateTime', $row->getDate());
 	}
 
 	/**
@@ -685,22 +685,5 @@ trait TableTestCase
 		}
 
 		$table->delete(array());
-	}
-
-	protected function assertResult($expect, $result)
-	{
-		foreach($result as $key => $row)
-		{
-			$this->assertArrayHasKey('id', $row);
-			$this->assertArrayHasKey('userId', $row);
-			$this->assertArrayHasKey('title', $row);
-			$this->assertArrayHasKey('date', $row);
-
-			$this->assertEquals($expect[$key]['id'], $row['id']);
-			$this->assertEquals($expect[$key]['userId'], $row['userId']);
-			$this->assertEquals($expect[$key]['title'], $row['title']);
-			$this->assertInstanceOf('DateTime', $row['date']);
-			$this->assertEquals($expect[$key]['date'], $row['date']->format('Y-m-d H:i:s'));
-		}
 	}
 }

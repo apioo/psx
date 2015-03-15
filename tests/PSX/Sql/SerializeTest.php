@@ -45,44 +45,44 @@ class SerializeTest extends DbTestCase
 		$table = getContainer()->get('table_manager')->getTable('PSX\Sql\TestTableCommand');
 		$row   = $table->get(1);
 
-		$this->assertInternalType('string', $row['col_bigint']);
-		$this->assertEquals('68719476735', $row['col_bigint']);
-		$this->assertInternalType('resource', $row['col_blob']);
-		$this->assertEquals('foobar', stream_get_contents($row['col_blob']));
-		$this->assertInternalType('boolean', $row['col_boolean']);
-		$this->assertEquals(true, $row['col_boolean']);
-		$this->assertInstanceOf('DateTime', $row['col_datetime']);
-		$this->assertEquals('2015-01-21 23:59:59', $row['col_datetime']->format('Y-m-d H:i:s'));
-		$this->assertEquals('UTC', $row['col_datetime']->getTimezone()->getName());
-		$this->assertInstanceOf('DateTime', $row['col_datetimetz']);
-		$this->assertEquals('2015-01-21 23:59:59', $row['col_datetimetz']->format('Y-m-d H:i:s'));
+		$this->assertInternalType('string', $row->getCol_bigint());
+		$this->assertEquals('68719476735', $row->getCol_bigint());
+		$this->assertInternalType('resource', $row->getCol_blob());
+		$this->assertEquals('foobar', stream_get_contents($row->getCol_blob()));
+		$this->assertInternalType('boolean', $row->getCol_boolean());
+		$this->assertEquals(true, $row->getCol_boolean());
+		$this->assertInstanceOf('DateTime', $row->getCol_datetime());
+		$this->assertEquals('2015-01-21 23:59:59', $row->getCol_datetime()->format('Y-m-d H:i:s'));
+		$this->assertEquals('UTC', $row->getCol_datetime()->getTimezone()->getName());
+		$this->assertInstanceOf('DateTime', $row->getCol_datetimetz());
+		$this->assertEquals('2015-01-21 23:59:59', $row->getCol_datetimetz()->format('Y-m-d H:i:s'));
 		// mysql does not support timezones
-		//$this->assertEquals('+01:00', $row['col_datetimetz']->getTimezone()->getName());
-		$this->assertInstanceOf('DateTime', $row['col_date']);
-		$this->assertEquals('2015-01-21', $row['col_date']->format('Y-m-d'));
-		$this->assertInternalType('string', $row['col_decimal']);
-		$this->assertEquals('10', $row['col_decimal']);
-		$this->assertInternalType('float', $row['col_float']);
-		$this->assertEquals(10.37, $row['col_float']);
-		$this->assertInternalType('integer', $row['col_integer']);
-		$this->assertEquals(2147483647, $row['col_integer']);
-		$this->assertInternalType('integer', $row['col_smallint']);
-		$this->assertEquals(255, $row['col_smallint']);
-		$this->assertInternalType('string', $row['col_text']);
-		$this->assertEquals('foobar', $row['col_text']);
-		$this->assertInstanceOf('DateTime', $row['col_time']);
-		$this->assertEquals('23:59:59', $row['col_time']->format('H:i:s'));
-		$this->assertInternalType('string', $row['col_string']);
-		$this->assertEquals('foobar', $row['col_string']);
+		//$this->assertEquals('+01:00', $row->getCol_datetimetz())>getTimezone()->getName());
+		$this->assertInstanceOf('DateTime', $row->getCol_date());
+		$this->assertEquals('2015-01-21', $row->getCol_date()->format('Y-m-d'));
+		$this->assertInternalType('string', $row->getCol_decimal());
+		$this->assertEquals('10', $row->getCol_decimal());
+		$this->assertInternalType('float', $row->getCol_float());
+		$this->assertEquals(10.37, $row->getCol_float());
+		$this->assertInternalType('integer', $row->getCol_integer());
+		$this->assertEquals(2147483647, $row->getCol_integer());
+		$this->assertInternalType('integer', $row->getCol_smallint());
+		$this->assertEquals(255, $row->getCol_smallint());
+		$this->assertInternalType('string', $row->getCol_text());
+		$this->assertEquals('foobar', $row->getCol_text());
+		$this->assertInstanceOf('DateTime', $row->getCol_time());
+		$this->assertEquals('23:59:59', $row->getCol_time()->format('H:i:s'));
+		$this->assertInternalType('string', $row->getCol_string());
+		$this->assertEquals('foobar', $row->getCol_string());
 
 		$array  = array('foo' => 'bar');
 		$object = new \stdClass();
 		$object->foo = 'bar';
 
-		$this->assertInternalType('array', $row['col_array']);
-		$this->assertEquals($array, $row['col_array']);
-		$this->assertInstanceOf('stdClass', $row['col_object']);
-		$this->assertEquals($object, $row['col_object']);
+		$this->assertInternalType('array', $row->getCol_array());
+		$this->assertEquals($array, $row->getCol_array());
+		$this->assertInstanceOf('stdClass', $row->getCol_object());
+		$this->assertEquals($object, $row->getCol_object());
 	}
 }
 

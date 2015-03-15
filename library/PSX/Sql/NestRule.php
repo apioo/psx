@@ -20,45 +20,31 @@
 
 namespace PSX\Sql;
 
-use PSX\Sql\TableAbstract;
-use PSX\Sql\TableInterface;
+use Psr\Log\LoggerInterface;
+use Doctrine\DBAL\Logging\SQLLogger;
 
 /**
- * TestTable
+ * NestRule
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
+ * @author  Fabien Potencier <fabien@symfony.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class TestTable extends TableAbstract
+class NestRule
 {
-	public function getName()
+	protected $rules = array();
+
+	public function add($parentKey, array $keys)
 	{
-		return 'psx_handler_comment';
+		foreach($keys as $key)
+		{
+			$this->rules[$key] = $parentKey;
+		}
 	}
 
-	public function getColumns()
+	public function getParent($key)
 	{
-		return array(
-			'id'     => TableInterface::TYPE_INT | 10 | TableInterface::PRIMARY_KEY | TableInterface::AUTO_INCREMENT,
-			'userId' => TableInterface::TYPE_INT | 10,
-			'title'  => TableInterface::TYPE_VARCHAR | 32,
-			'date'   => TableInterface::TYPE_DATETIME,
-		);
-	}
-
-	public function getNestedResult()
-	{
-		$sql = '  SELECT id, 
-				         userId, 
-				         title, 
-				         date 
-				    FROM psx_handler_comment 
-				ORDER BY id DESC';
-
-		$nest = new NestRule();
-		$nest->add('author', ['userId', 'date']);
-
-		return $this->project($sql, array(), null, $nest);
+		return isset($this->rules[$key]) ? $this->rules[$key] : null;
 	}
 }

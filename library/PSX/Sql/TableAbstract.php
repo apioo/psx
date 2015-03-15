@@ -264,23 +264,54 @@ abstract class TableAbstract extends TableQueryAbstract implements TableInterfac
 		return null;
 	}
 
-	protected function project($sql, array $params = array(), array $columns = null)
+	protected function project($sql, array $params = array(), array $columns = null, NestRule $nestRule = null)
 	{
+		$result  = array();
 		$columns = $columns === null ? $this->getColumns() : $columns;
+		$stmt    = $this->connection->executeQuery($sql, $params ?: array());
+		$name    = $this->getDisplayName();
 
-		return $this->connection->project($sql, $params, function(array $row) use ($columns){
-
-			foreach($columns as $name => $type)
+		while($row = $stmt->fetch(\PDO::FETCH_ASSOC))
+		{
+			foreach($row as $key => $value)
 			{
-				if(isset($row[$name]))
+				if(isset($columns[$key]))
 				{
-					$row[$name] = $this->unserializeType($row[$name], $type);
+					$value = $this->unserializeType($value, $columns[$key]);
+				}
+
+				if($nestRule !== null)
+				{
+					$parentKey = $nestRule->getParent($key);
+
+					if($parentKey !== null)
+					{
+						if(!isset($row[$parentKey]))
+						{
+							$row[$parentKey] = new \stdClass();
+						}
+
+						$row[$parentKey]->$key = $value;
+
+						unset($row[$key]);
+					}
+					else
+					{
+						$row[$key] = $value;
+					}
+				}
+				else
+				{
+					$row[$key] = $value;
 				}
 			}
 
-			return $row;
+			$result[] = new Record($name, $row);
+		}
 
-		});
+		$stmt->closeCursor();
+
+		return $result;
 	}
 
 	protected function getArray($record)
@@ -288,6 +319,10 @@ abstract class TableAbstract extends TableQueryAbstract implements TableInterfac
 		if($record instanceof RecordInterface)
 		{
 			return $record->getRecordInfo()->getData();
+		}
+		else if($record instanceof \stdClass)
+		{
+			return (array) $record;
 		}
 		else if(is_array($record))
 		{

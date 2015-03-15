@@ -99,33 +99,55 @@ class TableAbstractTest extends DbTestCase
 		$table->setRestrictedFields(array());
 
 		$expect = array(
-			array(
+			new Record('comment', array(
 				'title' => 'blub',
-				'date' => '2013-04-29 16:56:32',
-			),
-			array(
+				'date' => new \DateTime('2013-04-29 16:56:32'),
+			)),
+			new Record('comment', array(
 				'title' => 'test',
-				'date' => '2013-04-29 16:56:32',
-			),
-			array(
+				'date' => new \DateTime('2013-04-29 16:56:32'),
+			)),
+			new Record('comment', array(
 				'title' => 'bar',
-				'date' => '2013-04-29 16:56:32',
-			),
-			array(
+				'date' => new \DateTime('2013-04-29 16:56:32'),
+			)),
+			new Record('comment', array(
 				'title' => 'foo',
-				'date' => '2013-04-29 16:56:32',
-			),
+				'date' => new \DateTime('2013-04-29 16:56:32'),
+			)),
 		);
 
-		foreach($result as $key => $row)
-		{
-			$this->assertArrayHasKey('title', $row);
-			$this->assertArrayHasKey('date', $row);
+		$this->assertEquals($expect, $result);
+	}
 
-			$this->assertEquals($expect[$key]['title'], $row['title']);
-			$this->assertInstanceOf('DateTime', $row['date']);
-			$this->assertEquals($expect[$key]['date'], $row['date']->format('Y-m-d H:i:s'));
-		}
+	public function testNestedResult()
+	{
+		$result = $this->getTable()->getNestedResult();
+
+		$expect = array(
+			new Record('comment', array(
+				'id' => 4,
+				'author' => (object) array('userId' => 3, 'date' => new \DateTime('2013-04-29 16:56:32')),
+				'title' => 'blub',
+			)),
+			new Record('comment', array(
+				'id' => 3,
+				'author' => (object) array('userId' => 2, 'date' => new \DateTime('2013-04-29 16:56:32')),
+				'title' => 'test',
+			)),
+			new Record('comment', array(
+				'id' => 2,
+				'author' => (object) array('userId' => 1, 'date' => new \DateTime('2013-04-29 16:56:32')),
+				'title' => 'bar',
+			)),
+			new Record('comment', array(
+				'id' => 1,
+				'author' => (object) array('userId' => 1, 'date' => new \DateTime('2013-04-29 16:56:32')),
+				'title' => 'foo',
+			)),
+		);
+
+		$this->assertEquals($expect, $result);
 	}
 
 	/**
