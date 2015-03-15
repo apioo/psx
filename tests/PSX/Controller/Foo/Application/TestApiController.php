@@ -22,9 +22,11 @@ namespace PSX\Controller\Foo\Application;
 
 use PSX\Data\Record;
 use PSX\Data\RecordAbstract;
+use PSX\Data\Object;
 use PSX\Controller\ApiAbstract;
 use PSX\Sql;
 use PSX\Util\Api\FilterParameter;
+use PSX\Util\CurveArray;
 
 /**
  * TestApiController
