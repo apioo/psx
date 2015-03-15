@@ -98,7 +98,7 @@ class GraphTraverser
 
 	public static function isObject($value)
 	{
-		return $value instanceof RecordInterface || $value instanceof \stdClass || $value instanceof JsonSerializable;
+		return $value instanceof RecordInterface || $value instanceof \stdClass;
 	}
 
 	public static function isArray($value)
