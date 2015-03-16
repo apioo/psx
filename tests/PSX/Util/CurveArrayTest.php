@@ -111,4 +111,25 @@ class CurveArrayTest extends \PHPUnit_Framework_TestCase
 		$this->assertTrue(CurveArray::isAssoc(array('foo' => null, 'bar' => null)));
 		$this->assertTrue(CurveArray::isAssoc(array(0 => 'foo', 'foo' => null, 'bar' => null)));
 	}
+
+	public function testObjectify()
+	{
+		$data = array(
+			'foo' => 'bar', 
+			'bar' => array(
+				'test' => 1, 
+				'foo' => 2,
+			),
+			'tags' => array('foo', 'bar')
+		);
+
+		$expect = new \stdClass();
+		$expect->foo = 'bar';
+		$expect->bar = new \stdClass();
+		$expect->bar->test = 1;
+		$expect->bar->foo = 2;
+		$expect->tags = array('foo', 'bar');
+
+		$this->assertEquals($expect, CurveArray::objectify($data));
+	}
 }

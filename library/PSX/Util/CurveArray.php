@@ -104,6 +104,39 @@ class CurveArray
 	}
 
 	/**
+	 * Replaces all associative arrays with stdClass in an arbitrary array 
+	 * structure
+	 *
+	 * @param array $data
+	 * @return stdClass|array
+	 */
+	public static function objectify(array $data)
+	{
+		if(self::isAssoc($data))
+		{
+			$result = new \stdClass();
+
+			foreach($data as $key => $value)
+			{
+				$result->$key = is_array($value) ? self::objectify($value) : $value;
+			}
+
+			return $result;
+		}
+		else
+		{
+			$result = array();
+
+			foreach($data as $value)
+			{
+				$result[] = is_array($value) ? self::objectify($value) : $value;
+			}
+
+			return $result;
+		}
+	}
+
+	/**
 	 * Returns whether an array is index based or associative
 	 *
 	 * @param array $array

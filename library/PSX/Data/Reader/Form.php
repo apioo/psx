@@ -23,6 +23,7 @@ namespace PSX\Data\Reader;
 use PSX\Data\ReaderAbstract;
 use PSX\Http\MediaType;
 use PSX\Http\MessageInterface;
+use PSX\Util\CurveArray;
 
 /**
  * Form
@@ -39,7 +40,7 @@ class Form extends ReaderAbstract
 
 		parse_str((string) $message->getBody(), $form);
 
-		return $form;
+		return CurveArray::objectify($form);
 	}
 
 	public function isContentTypeSupported(MediaType $contentType)
