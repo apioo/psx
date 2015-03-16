@@ -144,6 +144,11 @@ class CurveArray
 	 */
 	public static function isAssoc(array $array)
 	{
+		if(empty($array))
+		{
+			return false;
+		}
+
 		if(isset($array[0]))
 		{
 			$n = count($array) - 1;

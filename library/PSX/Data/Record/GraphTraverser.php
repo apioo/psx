@@ -21,6 +21,7 @@
 namespace PSX\Data\Record;
 
 use PSX\Data\RecordInterface;
+use PSX\Util\CurveArray;
 
 /**
  * GraphTraverser
@@ -45,7 +46,7 @@ class GraphTraverser
 			$properties = $object->getRecordInfo();
 			$name       = $properties->getName();
 		}
-		else if($object instanceof \stdClass)
+		else
 		{
 			$properties = (array) $object;
 		}
@@ -98,7 +99,7 @@ class GraphTraverser
 
 	public static function isObject($value)
 	{
-		return $value instanceof RecordInterface || $value instanceof \stdClass;
+		return $value instanceof RecordInterface || $value instanceof \stdClass || (is_array($value) && CurveArray::isAssoc($value));
 	}
 
 	public static function isArray($value)
