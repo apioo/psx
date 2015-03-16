@@ -41,7 +41,7 @@ class Extractor
 	protected $readerFactory;
 
 	/**
-	 * @var PSX\Data\Record\TransformerManager
+	 * @var PSX\Data\Transformer\TransformerManager
 	 */
 	protected $transformerManager;
 
@@ -56,7 +56,7 @@ class Extractor
 	 * array structure
 	 *
 	 * @param PSX\Http\MessageInterface $message
-	 * @param PSX\Data\Record\TransformerInterface $transformer
+	 * @param PSX\Data\TransformerInterface $transformer
 	 * @param string $readerType
 	 * @return array
 	 */
