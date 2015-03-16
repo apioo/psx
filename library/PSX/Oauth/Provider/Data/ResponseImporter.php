@@ -37,25 +37,25 @@ class ResponseImporter
 {
 	public function import(RecordInterface $record, $data)
 	{
-		if(!is_array($data))
+		if(!is_array($data) && !$data instanceof \stdClass)
 		{
-			throw new InvalidArgumentException('Data must be an array');
+			throw new InvalidArgumentException('Received invalid data');
 		}
 
-		foreach($data as $k => $v)
+		foreach($data as $key => $value)
 		{
-			switch($k)
+			switch($key)
 			{
 				case 'oauth_token':
-					$record->setToken($v);
+					$record->setToken($value);
 					break;
 
 				case 'oauth_token_secret':
-					$record->setTokenSecret($v);
+					$record->setTokenSecret($value);
 					break;
 
 				default:
-					$record->addParam($k, $v);
+					$record->addParam($key, $value);
 					break;
 			}
 		}

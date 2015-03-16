@@ -71,8 +71,10 @@ class TokenAbstractTest extends ControllerTestCase
 }
 JSON;
 
-		$this->assertEquals(200, $response->getStatusCode());
-		$this->assertJsonStringEqualsJsonString($expect, (string) $response->getBody());
+		$body = (string) $response->getBody();
+
+		$this->assertEquals(200, $response->getStatusCode(), $body);
+		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
 	}
 
 	public function testClientCredentialsGrant()
@@ -90,8 +92,10 @@ JSON;
 }
 JSON;
 
-		$this->assertEquals(200, $response->getStatusCode());
-		$this->assertJsonStringEqualsJsonString($expect, (string) $response->getBody());
+		$body = (string) $response->getBody();
+
+		$this->assertEquals(200, $response->getStatusCode(), $body);
+		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
 	}
 
 	public function testPasswordGrant()
@@ -111,8 +115,10 @@ JSON;
 }
 JSON;
 
-		$this->assertEquals(200, $response->getStatusCode());
-		$this->assertJsonStringEqualsJsonString($expect, (string) $response->getBody());
+		$body = (string) $response->getBody();
+
+		$this->assertEquals(200, $response->getStatusCode(), $body);
+		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
 	}
 
 	public function testRefreshTokenGrant()
@@ -131,8 +137,10 @@ JSON;
 }
 JSON;
 
-		$this->assertEquals(200, $response->getStatusCode());
-		$this->assertJsonStringEqualsJsonString($expect, (string) $response->getBody());
+		$body = (string) $response->getBody();
+
+		$this->assertEquals(200, $response->getStatusCode(), $body);
+		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
 	}
 
 	public function testInvalidGrant()
@@ -148,8 +156,10 @@ JSON;
 }
 JSON;
 
-		$this->assertEquals(400, $response->getStatusCode());
-		$this->assertJsonStringEqualsJsonString($expect, (string) $response->getBody());
+		$body = (string) $response->getBody();
+
+		$this->assertEquals(400, $response->getStatusCode(), $body);
+		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
 	}
 
 	protected function callEndpoint($clientId, $clientSecret, array $params)

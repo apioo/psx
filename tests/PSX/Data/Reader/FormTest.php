@@ -42,13 +42,13 @@ INPUT;
 		$message = new Message(array(), $body);
 		$form    = $reader->read($message);
 
-		$expect = array(
-			'foo' => 'bar', 
-			'bar' => array('blub', 'bla'), 
-			'test' => array('foo' => 'bar')
-		);
+		$expect = new \stdClass();
+		$expect->foo = 'bar';
+		$expect->bar = array('blub', 'bla');
+		$expect->test = new \stdClass();
+		$expect->test->foo = 'bar';
 
-		$this->assertEquals(true, is_array($form));
+		$this->assertInstanceOf('stdClass', $form);
 		$this->assertEquals($expect, $form);
 	}
 }

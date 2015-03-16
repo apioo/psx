@@ -54,7 +54,7 @@ abstract class TokenAbstract extends ApiAbstract
 
 	protected function doHandle()
 	{
-		$parameters  = $this->getBody(ReaderInterface::FORM);
+		$parameters  = (array) $this->getBody(ReaderInterface::FORM);
 		$grantType   = isset($parameters['grant_type']) ? $parameters['grant_type'] : null;
 		$scope       = isset($parameters['scope']) ? $parameters['scope'] : null;
 		$credentials = null;
