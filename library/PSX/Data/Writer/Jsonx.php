@@ -26,15 +26,15 @@ use PSX\Http\MediaType;
 use XMLWriter;
 
 /**
- * Xml
+ * Jsonx
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Xml extends XmlWriterAbstract
+class Jsonx extends XmlWriterAbstract
 {
-	public static $mime = 'application/xml';
+	public static $mime = 'application/jsonx+xml';
 
 	public function isContentTypeSupported(MediaType $contentType)
 	{
@@ -48,6 +48,6 @@ class Xml extends XmlWriterAbstract
 
 	protected function getVisitor(XMLWriter $writer)
 	{
-		return new Visitor\XmlWriterVisitor($writer);
+		return new Visitor\JsonxWriterVisitor($writer);
 	}
 }

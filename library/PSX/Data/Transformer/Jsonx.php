@@ -28,28 +28,18 @@ use PSX\Data\TransformerInterface;
 use InvalidArgumentException;
 
 /**
- * Takes an DOMDocument and formats it into an stdClass structure which can be 
- * used by an importer. It takes the approach that if XML child elements have 
- * the same name they become an array
+ * Jsonx
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
+ * @see     https://tools.ietf.org/html/draft-rsalz-jsonx-00
  */
-class XmlArray implements TransformerInterface
+class Jsonx implements TransformerInterface
 {
-	protected $namespace;
-
-	public function setNamespace($namespace)
-	{
-		$this->namespace = $namespace;
-	}
-
 	public function accept(MediaType $contentType)
 	{
-		return in_array($contentType->getName(), Xml::$mediaTypes) || 
-			substr($contentType->getSubType(), -4) == '+xml' || 
-			substr($contentType->getSubType(), -4) == '/xml';
+		return $contentType->getName() == 'application/jsonx+xml';
 	}
 
 	public function transform($data)
@@ -64,6 +54,40 @@ class XmlArray implements TransformerInterface
 
 	protected function recToXml(DOMElement $element)
 	{
+		if($element->localName != 'object')
+		{
+			throw new InvalidArgumentException('Root element must be an object');
+		}
+
+		return $this->getValue($element);
+	}
+
+	protected function getValue(DOMElement $node)
+	{
+		switch($node->localName)
+		{
+			case 'object':
+				return $this->getObject($node);
+
+			case 'array':
+				return $this->getArray($node);
+
+			case 'boolean':
+				return $node->textContent == 'false' ? false : (boolean) $node->textContent;
+
+			case 'string':
+				return $node->textContent;
+
+			case 'number':
+				return strpos($node->textContent, '.') !== false ? (float) $node->textContent : (int) $node->textContent;
+
+			case 'null':
+				return null;
+		}
+	}
+
+	protected function getObject(DOMElement $element)
+	{
 		$result = new \stdClass();
 
 		foreach($element->childNodes as $node)
@@ -73,58 +97,31 @@ class XmlArray implements TransformerInterface
 				continue;
 			}
 
-			if($this->namespace !== null && $node->namespaceURI != $this->namespace)
-			{
-				continue;
-			}
+			$name = $node->getAttribute('name');
 
-			if(isset($result->{$node->localName}) && !is_array($result->{$node->localName}))
+			if(!empty($name))
 			{
-				$result->{$node->localName} = array($result->{$node->localName});
-			}
-
-			if($this->hasChildElements($node, $this->namespace))
-			{
-				$value = $this->recToXml($node);
-			}
-			else
-			{
-				if($this->namespace !== null && $this->hasChildElements($node, null))
-				{
-					// if we need an specific namespace and the node has child
-					// elements add the complete node as value since we have no
-					// idea howto handle the data
-					$value = $node;
-				}
-				else
-				{
-					$value = $node->textContent;
-				}
-			}
-
-			if(isset($result->{$node->localName}) && is_array($result->{$node->localName}))
-			{
-				$result->{$node->localName}[] = $value;
-			}
-			else
-			{
-				$result->{$node->localName} = $value;
+				$result->$name = $this->getValue($node);
 			}
 		}
 
 		return $result;
 	}
 
-	protected function hasChildElements(DOMElement $element, $namespace)
+	protected function getArray(DOMElement $element)
 	{
+		$result = array();
+
 		foreach($element->childNodes as $node)
 		{
-			if($node->nodeType === XML_ELEMENT_NODE && ($namespace === null || $node->namespaceURI == $namespace))
+			if($node->nodeType !== XML_ELEMENT_NODE)
 			{
-				return true;
+				continue;
 			}
+
+			$result[] = $this->getValue($node);
 		}
 
-		return false;
+		return $result;
 	}
 }
