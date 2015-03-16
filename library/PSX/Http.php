@@ -149,7 +149,7 @@ class Http
 	 * Sends the request through the given handler and returns the response
 	 *
 	 * @param PSX\Http\Request $request
-	 * @param PSX\Http\Options $request
+	 * @param PSX\Http\Options $options
 	 * @return PSX\Http\Response
 	 */
 	public function request(Request $request, Options $options = null, $count = 0)
