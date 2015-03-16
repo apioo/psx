@@ -34,34 +34,56 @@ class SerializerTest extends \PHPUnit_Framework_TestCase
 {
 	public function testSerialize()
 	{
+		$author = new Serializer\TestAuthor();
+		$author->setName('bar');
+
 		$object = new Serializer\TestObject();
-		$object->setName('foo');
-		$object->setAuthor('bar');
+		$object->setTitle('foo');
+		$object->setAuthor($author);
 
 		$return = getContainer()->get('serializer')->serialize($object);
 
-		$this->assertEquals(array('name' => 'foo', 'author' => 'bar'), $return);
+		$expect = new \stdClass();
+		$expect->title = 'foo';
+		$expect->author = new \stdClass();
+		$expect->author->name = 'bar';
+
+		$this->assertEquals($expect, $return);
 	}
 
 	public function testSerializeVersioned()
 	{
+		$author = new Serializer\TestAuthor();
+		$author->setName('bar');
+
 		$object = new Serializer\TestObjectVersioned();
-		$object->setName('foo');
-		$object->setAuthor('bar');
+		$object->setTitle('foo');
+		$object->setAuthor($author);
 
 		$return = getContainer()->get('serializer')->serialize($object, new Version(1));
 
-		$this->assertEquals(array('name' => 'foo'), $return);
+		$expect = new \stdClass();
+		$expect->title = 'foo';
+
+		$this->assertEquals($expect, $return);
 	}
 
 	public function testSerializeVersionedGreater()
 	{
+		$author = new Serializer\TestAuthor();
+		$author->setName('bar');
+
 		$object = new Serializer\TestObjectVersioned();
-		$object->setName('foo');
-		$object->setAuthor('bar');
+		$object->setTitle('foo');
+		$object->setAuthor($author);
 
 		$return = getContainer()->get('serializer')->serialize($object, new Version(2));
 
-		$this->assertEquals(array('name' => 'foo', 'author' => 'bar'), $return);
+		$expect = new \stdClass();
+		$expect->title = 'foo';
+		$expect->author = new \stdClass();
+		$expect->author->name = 'bar';
+
+		$this->assertEquals($expect, $return);
 	}
 }

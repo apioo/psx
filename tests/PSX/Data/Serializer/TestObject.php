@@ -33,20 +33,20 @@ use JMS\Serializer\Annotation as JMS;
  */
 class TestObject
 {
-	private $name;
+	private $title;
 	private $author;
 
-	public function setName($name)
+	public function setTitle($title)
 	{
-		$this->name = $name;
+		$this->title = $title;
 	}
 	
-	public function getName()
+	public function getTitle()
 	{
-		return $this->name;
+		return $this->title;
 	}
 
-	public function setAuthor($author)
+	public function setAuthor(TestAuthor $author)
 	{
 		$this->author = $author;
 	}

@@ -20,20 +20,28 @@
 
 namespace PSX\Data\Serializer;
 
-use JMS\Serializer\Exception\RuntimeException;
-use JMS\Serializer\GenericDeserializationVisitor;
+use JMS\Serializer\Annotation as JMS;
 
 /**
- * ArrayDeserializationVisitor
+ * TestAuthor
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
+ *
+ * @JMS\ExclusionPolicy("none")
  */
-class ArrayDeserializationVisitor extends GenericDeserializationVisitor
+class TestAuthor
 {
-	protected function decode($array)
+	private $name;
+
+	public function setName($name)
 	{
-		return $array;
+		$this->name = $name;
+	}
+	
+	public function getName()
+	{
+		return $this->name;
 	}
 }

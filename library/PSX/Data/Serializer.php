@@ -23,6 +23,7 @@ namespace PSX\Data;
 use JMS\Serializer\Serializer as JMSSerializer;
 use JMS\Serializer\SerializationContext;
 use PSX\Api\Version;
+use PSX\Data\Serializer\StdClassSerializationVisitor;
 
 /**
  * Serializer
@@ -45,11 +46,11 @@ class Serializer implements SerializerInterface
 		if($version !== null)
 		{
 			$context  = SerializationContext::create()->setVersion($version->getVersion());
-			$response = $this->serializer->serialize($data, 'array', $context);
+			$response = $this->serializer->serialize($data, StdClassSerializationVisitor::NAME, $context);
 		}
 		else
 		{
-			$response = $this->serializer->serialize($data, 'array');
+			$response = $this->serializer->serialize($data, StdClassSerializationVisitor::NAME);
 		}
 
 		return $response;
