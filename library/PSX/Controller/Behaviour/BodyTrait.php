@@ -170,7 +170,17 @@ trait BodyTrait
 		}
 		else if($writer instanceof Writer\Soap)
 		{
-			$writer->setRequestMethod($this->request->getMethod());
+			if(!$writer->getRequestMethod())
+			{
+				$writer->setRequestMethod($this->request->getMethod());
+			}
+		}
+		else if($writer instanceof Writer\Jsonp)
+		{
+			if(!$writer->getCallbackName())
+			{
+				$writer->setCallbackName($this->getParameter('callback'));
+			}
 		}
 	}
 

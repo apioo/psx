@@ -63,16 +63,6 @@ class Jsonp extends Json
 
 	public function getCallbackName()
 	{
-		if($this->callbackName === null)
-		{
-			$callbackName = isset($_GET['callback']) ? $_GET['callback'] : null;
-
-			if(!empty($callbackName))
-			{
-				$this->setCallbackName($callbackName);
-			}
-		}
-
 		return $this->callbackName;
 	}
 
