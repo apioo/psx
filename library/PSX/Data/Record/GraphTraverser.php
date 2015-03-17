@@ -72,7 +72,11 @@ class GraphTraverser
 
 	protected function traverseValue($value, VisitorInterface $visitor)
 	{
-		if(self::isArray($value))
+		if(self::isObject($value))
+		{
+			$this->traverseObject($value, $visitor);
+		}
+		else if(self::isArray($value))
 		{
 			$visitor->visitArrayStart();
 
@@ -86,10 +90,6 @@ class GraphTraverser
 			}
 
 			$visitor->visitArrayEnd();
-		}
-		else if(self::isObject($value))
-		{
-			$this->traverseObject($value, $visitor);
 		}
 		else
 		{
