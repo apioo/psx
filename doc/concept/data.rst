@@ -23,7 +23,7 @@ the xml reader returns an DOMDocument and the json reader returns an array.
    :lines: 36-58
    :prepend: <?php
 
-Since the importer needs an array structure we must apply an transformation in
+Since we need a uniform structure of the data we must apply an transformation in
 some cases. The transformation depends also on the content type. If we receive
 an application/xml content type the XmlArray transformer gets applied.
 
@@ -32,9 +32,9 @@ an application/xml content type the XmlArray transformer gets applied.
    :lines: 34-50
    :prepend: <?php
 
-The data gets then imported into an record through an importer class. In 
-abstract an importer class takes meta informations from an source and returns an 
-record class containing the data.
+Then it is possible to import the data into an record through an importer class. 
+In abstract an importer class takes meta informations from an source and returns 
+an record class containing the data.
 
 .. literalinclude:: ../../library/PSX/Data/Record/ImporterInterface.php
    :language: php
@@ -49,9 +49,9 @@ PSX comes with the following data reader:
 +--------------------------+-----------------------------------+-------------+
 | Class                    | Content-Type                      | Return-Type |
 +==========================+===================================+=============+
-| PSX\\Data\\Reader\\Form  | application/x-www-form-urlencoded | array       |
+| PSX\\Data\\Reader\\Form  | application/x-www-form-urlencoded | stdClass    |
 +--------------------------+-----------------------------------+-------------+
-| PSX\\Data\\Reader\\Json  | application/json                  | array       |
+| PSX\\Data\\Reader\\Json  | application/json                  | stdClass    |
 +--------------------------+-----------------------------------+-------------+
 | PSX\\Data\\Reader\\Xml   | application/xml                   | DOMDocument |
 +--------------------------+-----------------------------------+-------------+
@@ -83,7 +83,7 @@ Importer
 
 Which importer gets used depends on the source. You can pass different objects 
 to the import method which in the end provides meta informations how the 
-incomming request data looks. If you pass to the source an 
+incoming request data looks. If you pass to the source an 
 PSX\\Data\\RecordInterface the annotations of the record class gets parsed. I.e. 
 if you want import an atom xml format you could use the following controller
 
@@ -107,7 +107,7 @@ if you want import an atom xml format you could use the following controller
     }
 
 The content type application/atom+xml has also an transformer registered which
-builds an array structure from the DOMDocument which then gets imported into the 
+builds an data structure from the DOMDocument which then gets imported into the 
 Atom record.
 
 It is also possible to pass an schema definition to the import method. The data
@@ -150,9 +150,10 @@ More detailed informations about data importing at :doc:`import_data`
 Writing responses
 -----------------
 
-PSX uses a data writer conecpt to transform the data which was produced by the
-controller into an fitting format for the client. What content is served depends
-on the Accept header or the GET parameter format.
+PSX analyzes the object graph which was produced by the controller and uses an
+writer to produce the fitting data format for the client. What content is served 
+depends on the Accept header or the GET parameter format. More informations 
+about the object graph at :doc:`object_graph`
 
 Available data writer
 ---------------------
