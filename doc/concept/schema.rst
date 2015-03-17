@@ -131,56 +131,42 @@ XSD
 .. code-block:: xml
 
     <?xml version="1.0" encoding="UTF-8"?>
-    <xs:schema xmlns="http://acme.com/schema" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://acme.com/schema" elementFormDefault="qualified">
+    <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://acme.com/schema" targetNamespace="http://acme.com/schema" elementFormDefault="qualified">
         <xs:element name="product">
             <xs:complexType>
                 <xs:sequence>
                     <xs:element name="id" type="xs:integer" minOccurs="0" maxOccurs="1"/>
-                    <xs:element name="title" type="title" minOccurs="1" maxOccurs="1"/>
-                    <xs:element name="price" type="price" minOccurs="1" maxOccurs="1"/>
-                    <xs:element name="customer" type="customer" minOccurs="1" maxOccurs="1"/>
-                    <xs:element name="options" type="options" minOccurs="0" maxOccurs="1"/>
-                    <xs:element name="tags" type="tags" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="title" type="tns:type49f11e3b13c41b5bda2c83f4f5ee5bd2" minOccurs="1" maxOccurs="1"/>
+                    <xs:element name="price" type="tns:type48604a07011c0d27dba74bc0df93c602" minOccurs="1" maxOccurs="1"/>
+                    <xs:element name="customer" type="tns:type044c12e289e7c3e50cefeb524544bc8d" minOccurs="1" maxOccurs="1"/>
+                    <xs:element name="options" type="tns:type6697819882c5c09cfdd3cb1fea39a9fc" minOccurs="0" maxOccurs="unbounded"/>
+                    <xs:element name="tags" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
                     <xs:element name="duration" type="xs:duration" minOccurs="0" maxOccurs="1"/>
                     <xs:element name="created" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
                 </xs:sequence>
             </xs:complexType>
         </xs:element>
-        <xs:simpleType name="title">
+        <xs:simpleType name="type49f11e3b13c41b5bda2c83f4f5ee5bd2">
             <xs:restriction base="xs:string">
                 <xs:pattern value="[A-z]+"/>
             </xs:restriction>
         </xs:simpleType>
-        <xs:simpleType name="price">
+        <xs:simpleType name="type48604a07011c0d27dba74bc0df93c602">
             <xs:restriction base="xs:float"/>
         </xs:simpleType>
-        <xs:complexType name="customer">
+        <xs:complexType name="type044c12e289e7c3e50cefeb524544bc8d">
             <xs:sequence>
-                <xs:element name="name" type="name" minOccurs="1" maxOccurs="1"/>
+                <xs:element name="name" type="tns:type49f11e3b13c41b5bda2c83f4f5ee5bd2" minOccurs="1" maxOccurs="1"/>
             </xs:sequence>
         </xs:complexType>
-        <xs:simpleType name="name">
-            <xs:restriction base="xs:string">
-                <xs:pattern value="[A-z]+"/>
-            </xs:restriction>
-        </xs:simpleType>
-        <xs:complexType name="options">
+        <xs:complexType name="type6697819882c5c09cfdd3cb1fea39a9fc">
             <xs:sequence>
-                <xs:element name="option" type="option" minOccurs="0" maxOccurs="unbounded"/>
-            </xs:sequence>
-        </xs:complexType>
-        <xs:complexType name="option">
-            <xs:sequence>
-                <xs:element name="name" type="name" minOccurs="1" maxOccurs="1"/>
-                <xs:element name="price" type="price" minOccurs="1" maxOccurs="1"/>
-            </xs:sequence>
-        </xs:complexType>
-        <xs:complexType name="tags">
-            <xs:sequence>
-                <xs:element name="tag" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="name" type="tns:type49f11e3b13c41b5bda2c83f4f5ee5bd2" minOccurs="1" maxOccurs="1"/>
+                <xs:element name="price" type="tns:type48604a07011c0d27dba74bc0df93c602" minOccurs="1" maxOccurs="1"/>
             </xs:sequence>
         </xs:complexType>
     </xs:schema>
+
 
 JsonSchema
 ^^^^^^^^^^
@@ -188,69 +174,78 @@ JsonSchema
 .. code-block:: json
 
     {
-      "id": "http:\/\/acme.com\/schema",
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "integer"
-        },
-        "title": {
-          "type": "string",
-          "pattern": "[A-z]+"
-        },
-        "price": {
-          "type": "number"
-        },
-        "customer": {
-          "type": "object",
-          "properties": {
-            "name": {
-              "type": "string",
-              "pattern": "[A-z]+"
+        "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
+        "id": "http:\/\/acme.com\/schema",
+        "type": "object",
+        "definitions": {
+            "ref044c12e289e7c3e50cefeb524544bc8d": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "pattern": "[A-z]+"
+                    }
+                },
+                "required": [
+                    "name"
+                ],
+                "additionalProperties": false
+            },
+            "ref6697819882c5c09cfdd3cb1fea39a9fc": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "pattern": "[A-z]+"
+                    },
+                    "price": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "name",
+                    "price"
+                ],
+                "additionalProperties": false
             }
-          },
-          "required": [
-            "name"
-          ],
-          "additionalProperties": false
         },
-        "options": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "name": {
+        "properties": {
+            "id": {
+                "type": "integer"
+            },
+            "title": {
                 "type": "string",
                 "pattern": "[A-z]+"
-              },
-              "price": {
-                "type": "number"
-              }
             },
-            "required": [
-              "name",
-              "price"
-            ],
-            "additionalProperties": false
-          }
+            "price": {
+                "type": "number"
+            },
+            "customer": {
+                "$ref": "#\/definitions\/ref044c12e289e7c3e50cefeb524544bc8d"
+            },
+            "options": {
+                "type": "array",
+                "items": {
+                    "$ref": "#\/definitions\/ref6697819882c5c09cfdd3cb1fea39a9fc"
+                }
+            },
+            "tags": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "duration": {
+                "type": "string"
+            },
+            "created": {
+                "type": "string"
+            }
         },
-        "tags": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "duration": {
-          "type": "string"
-        },
-        "created": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "title",
-        "price",
-        "customer"
-      ],
-      "additionalProperties": false
+        "required": [
+            "title",
+            "price",
+            "customer"
+        ],
+        "additionalProperties": false
     }
