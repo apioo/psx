@@ -20,21 +20,20 @@
 
 namespace PSX\Http\Psr;
 
-use Phly\Http\Request as PsrRequest;
-use Phly\Http\Uri as PsrUri;
 use Psr\Http\Message\RequestInterface as PsrRequestInterface;
-use PSX\Http\Request;
+use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
+use Psr\Http\Message\ServerRequestInterface as PsrServerRequestInterface;
 use PSX\Http\RequestInterface;
-use PSX\Uri;
+use PSX\Http\ResponseInterface;
 
 /**
- * RequestFactory
+ * FactoryInterface
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class RequestFactory
+interface FactoryInterface
 {
 	/**
 	 * Converts an PSX request into an PSR request
@@ -42,15 +41,23 @@ class RequestFactory
 	 * @param PSX\Http\RequestInterface
 	 * @return Psr\Http\Message\RequestInterface
 	 */
-	public static function toPsr(RequestInterface $request)
-	{
-		return new PsrRequest(
-			new PsrUri($request->getUri()->toString()),
-			$request->getMethod(),
-			$request->getBody(),
-			$request->getHeaders()
-		);
-	}
+	public function getPsrRequest(RequestInterface $request);
+
+	/**
+	 * Converts an PSX request into an PSR server request
+	 *
+	 * @param PSX\Http\RequestInterface
+	 * @return Psr\Http\Message\ServerRequestInterface
+	 */
+	public function getPsrServerRequest(RequestInterface $request);
+
+	/**
+	 * Converts an PSX response into an PSR response
+	 *
+	 * @param PSX\Http\ResponseInterface
+	 * @return Psr\Http\Message\ResponseInterface
+	 */
+	public function getPsrResponse(ResponseInterface $response);
 
 	/**
 	 * Converts an PSR request into an PSX request
@@ -58,13 +65,22 @@ class RequestFactory
 	 * @param Psr\Http\Message\RequestInterface
 	 * @return PSX\Http\RequestInterface
 	 */
-	public static function fromPsr(PsrRequestInterface $psrRequest)
-	{
-		return new Request(
-			new Uri($psrRequest->getUri()),
-			$psrRequest->getMethod(),
-			$psrRequest->getHeaders(),
-			$psrRequest->getBody()
-		);
-	}
+	public function getNativeRequest(PsrRequestInterface $psrRequest);
+
+	/**
+	 * Converts an PSR server request into an PSX server request
+	 *
+	 * @param Psr\Http\Message\ServerRequestInterface
+	 * @return PSX\Http\RequestInterface
+	 */
+	public function getNativeServerRequest(PsrServerRequestInterface $psrRequest);
+
+	/**
+	 * Converts an PSR response into an PSX response
+	 *
+	 * @param Psr\Http\Message\ResponseInterface
+	 * @return PSX\Http\ResponseInterface
+	 */
+	public function getNativeResponse(PsrResponseInterface $psrResponse);
 }
+

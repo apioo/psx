@@ -20,52 +20,59 @@
 
 namespace PSX\Http\Psr;
 
-use Phly\Http\ServerRequest as PsrServerRequest;
-use Phly\Http\Uri as PsrUri;
+use Psr\Http\Message\RequestInterface as PsrRequestInterface;
+use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as PsrServerRequestInterface;
 use PSX\Http\Request;
 use PSX\Http\RequestInterface;
+use PSX\Http\Response;
+use PSX\Http\ResponseInterface;
 use PSX\Uri;
 
 /**
- * ServerRequestFactory
+ * Factory
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class ServerRequestFactory
+class Factory implements FactoryInterface
 {
-	/**
-	 * Converts an PSX server request into an PSR server request
-	 *
-	 * @param PSX\Http\RequestInterface
-	 * @return Psr\Http\Message\ServerRequestInterface
-	 */
-	public static function toPsr(RequestInterface $request)
+	public function getPsrRequest(RequestInterface $request)
 	{
-		$psrRequest = new PsrServerRequest(
-			$request->getServerParams(), 
-			$request->getFileParams(), 
-			new PsrUri($request->getUri()->toString()), 
-			$request->getMethod(), 
-			$request->getBody(), 
-			$request->getHeaders()
-		);
+		// @TODO wait until the PSR gets accepted and use an open-source 
+		// implementation
 
-		return $psrRequest
-			->withCookieParams($request->getCookieParams())
-			->withQueryParams($request->getQueryParams())
-			->withParsedBody($request->getParsedBody());
+		return null;
 	}
 
-	/**
-	 * Converts an PSR server request into an PSX server request
-	 *
-	 * @param Psr\Http\Message\ServerRequestInterface
-	 * @return PSX\Http\RequestInterface
-	 */
-	public static function fromPsr(PsrServerRequestInterface $psrRequest)
+	public function getPsrServerRequest(RequestInterface $request)
+	{
+		// @TODO wait until the PSR gets accepted and use an open-source 
+		// implementation
+
+		return null;
+	}
+
+	public function getPsrResponse(ResponseInterface $response)
+	{
+		// @TODO wait until the PSR gets accepted and use an open-source 
+		// implementation
+
+		return null;
+	}
+
+	public function getNativeRequest(PsrRequestInterface $psrRequest)
+	{
+		return new Request(
+			new Uri($psrRequest->getUri()),
+			$psrRequest->getMethod(),
+			$psrRequest->getHeaders(),
+			$psrRequest->getBody()
+		);
+	}
+
+	public function getNativeServerRequest(PsrServerRequestInterface $psrRequest)
 	{
 		$request = new Request(
 			new Uri($psrRequest->getUri()),
@@ -81,5 +88,14 @@ class ServerRequestFactory
 		$request->setServerParams($psrRequest->getServerParams());
 
 		return $request;
+	}
+
+	public function getNativeResponse(PsrResponseInterface $psrResponse)
+	{
+		return new Response(
+			$psrResponse->getStatusCode(),
+			$psrResponse->getHeaders(),
+			$psrResponse->getBody()
+		);
 	}
 }
