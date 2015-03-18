@@ -40,13 +40,19 @@ class SerializerTest extends \PHPUnit_Framework_TestCase
 		$object = new Serializer\TestObject();
 		$object->setTitle('foo');
 		$object->setAuthor($author);
+		$object->setContributors([$author, $author]);
+		$object->setTags(['foo', 'bar']);
 
 		$return = getContainer()->get('serializer')->serialize($object);
 
-		$expect = new \stdClass();
-		$expect->title = 'foo';
-		$expect->author = new \stdClass();
-		$expect->author->name = 'bar';
+		$author = array();
+		$author['name'] = 'bar';
+
+		$expect = array();
+		$expect['title'] = 'foo';
+		$expect['author'] = $author;
+		$expect['contributors'] = [$author, $author];
+		$expect['tags'] = ['foo', 'bar'];
 
 		$this->assertEquals($expect, $return);
 	}
@@ -62,8 +68,8 @@ class SerializerTest extends \PHPUnit_Framework_TestCase
 
 		$return = getContainer()->get('serializer')->serialize($object, new Version(1));
 
-		$expect = new \stdClass();
-		$expect->title = 'foo';
+		$expect = array();
+		$expect['title'] = 'foo';
 
 		$this->assertEquals($expect, $return);
 	}
@@ -79,10 +85,10 @@ class SerializerTest extends \PHPUnit_Framework_TestCase
 
 		$return = getContainer()->get('serializer')->serialize($object, new Version(2));
 
-		$expect = new \stdClass();
-		$expect->title = 'foo';
-		$expect->author = new \stdClass();
-		$expect->author->name = 'bar';
+		$expect = array();
+		$expect['title'] = 'foo';
+		$expect['author'] = array();
+		$expect['author']['name'] = 'bar';
 
 		$this->assertEquals($expect, $return);
 	}

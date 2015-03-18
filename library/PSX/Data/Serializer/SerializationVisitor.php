@@ -20,62 +20,28 @@
 
 namespace PSX\Data\Serializer;
 
-use JMS\Serializer\Annotation as JMS;
+use JMS\Serializer\AbstractVisitor;
+use JMS\Serializer\Context;
+use JMS\Serializer\Exception\InvalidArgumentException;
+use JMS\Serializer\GenericSerializationVisitor;
+use JMS\Serializer\GraphNavigator;
+use JMS\Serializer\Metadata\ClassMetadata;
+use JMS\Serializer\Metadata\PropertyMetadata;
 
 /**
- * TestObject
+ * SerializationVisitor
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
+ * @author  Johannes M. Schmitt <schmittjoh@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
- *
- * @JMS\ExclusionPolicy("none")
  */
-class TestObject
+class SerializationVisitor extends GenericSerializationVisitor
 {
-	private $title;
-	private $author;
-	private $contributors;
-	private $tags;
+	const NAME = 'psx';
 
-	public function setTitle($title)
-	{
-		$this->title = $title;
-	}
-	
-	public function getTitle()
-	{
-		return $this->title;
-	}
-
-	public function setAuthor(TestAuthor $author)
-	{
-		$this->author = $author;
-	}
-	
-	public function getAuthor()
-	{
-		return $this->author;
-	}
-
-	public function setContributors(array $contributors)
-	{
-		$this->contributors = $contributors;
-	}
-	
-	public function getContributors()
-	{
-		return $this->contributors;
-	}
-
-	public function setTags($tags)
-	{
-		$this->tags = $tags;
-	}
-	
-	public function getTags()
-	{
-		return $this->tags;
-	}
+    public function getResult()
+    {
+        return $this->getRoot();
+    }
 }
-

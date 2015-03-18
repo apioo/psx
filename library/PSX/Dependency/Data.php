@@ -164,7 +164,7 @@ trait Data
 		$serializer = SerializerBuilder::create()
 			->setCacheDir(PSX_PATH_CACHE)
 			->setDebug($this->get('config')->get('psx_debug'))
-			->setSerializationVisitor(Serializer\StdClassSerializationVisitor::NAME, new Serializer\StdClassSerializationVisitor($propertyNamingStrategy))
+			->setSerializationVisitor(Serializer\SerializationVisitor::NAME, new Serializer\SerializationVisitor($propertyNamingStrategy))
 			->build();
 
 		return new Serializer($serializer);
