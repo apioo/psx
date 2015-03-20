@@ -42,6 +42,7 @@ class VisitorTestCase extends \PHPUnit_Framework_TestCase
 			'active' => true,
 			'disabled' => false,
 			'rating' => 12.45,
+			'age' => null,
 			'date' => new DateTime('2014-01-01T12:34:47+01:00'),
 			'href' => new Uri('http://foo.com'),
 			'person' => new Record('person', array(

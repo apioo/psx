@@ -46,6 +46,31 @@ class JsonxWriterVisitorTest extends VisitorTestCase
 		$this->assertXmlStringEqualsXmlString($this->getExpected(), $writer->outputMemory());
 	}
 
+	public function testTraverseNullValue()
+	{
+		$writer = new XMLWriter();
+		$writer->openMemory();
+		$writer->setIndent(true);
+		$writer->startDocument('1.0', 'UTF-8');
+
+		$data = new \stdClass();
+		$data->foo = 'bar';
+		$data->bar = null;
+
+		$graph = new GraphTraverser();
+		$graph->traverse($data, new JsonxWriterVisitor($writer));
+
+		$expect = <<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<json:object xmlns:json="http://www.ibm.com/xmlns/prod/2009/jsonx">
+ <json:string name="foo">bar</json:string>
+ <json:null name="bar" />
+</json:object>
+XML;
+
+		$this->assertXmlStringEqualsXmlString($expect, $writer->outputMemory());
+	}
+
 	protected function getExpected()
 	{
 		return <<<XML
