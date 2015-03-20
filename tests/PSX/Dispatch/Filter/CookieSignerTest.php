@@ -82,7 +82,7 @@ class CookieSignerTest extends \PHPUnit_Framework_TestCase
 	public function testDecryptModifiedPayload()
 	{
 		$request  = new Request(new Url('http://localhost'), 'GET', array(
-			'Cookie' => 'psx_cookie=eyJmb28iOiJkYXRhIn0=.2IwNbitA6b1VccgR1pGVIRzro4AwYN1IqNXvNHYebog=')
+			'Cookie' => 'psx_cookie=eyJiYXIiOiJkYXRhIn0=.2IwNbitA6b1VccgR1pGVIRzro4AwYN1IqNXvNHYebog=')
 		);
 		$response = new Response();
 
@@ -105,7 +105,7 @@ class CookieSignerTest extends \PHPUnit_Framework_TestCase
 	public function testDecryptModifiedSignature()
 	{
 		$request  = new Request(new Url('http://localhost'), 'GET', array(
-			'Cookie' => 'psx_cookie=eyJzZWNyZXQiOiJkYXRhIn0=.5+5rtZGLqN/2w4zUxPZ2FRmVPcskwyQNlSy0n5yfcI=')
+			'Cookie' => 'psx_cookie=eyJzZWNyZXQiOiJkYXRhIn0=.5+5rtZGLqN/2w4zUxPZ3FRmVPcskwyQNlSy0n5yfcI=')
 		);
 		$response = new Response();
 
@@ -128,7 +128,7 @@ class CookieSignerTest extends \PHPUnit_Framework_TestCase
 	public function testDecryptCookieDataChanged()
 	{
 		$request  = new Request(new Url('http://localhost'), 'GET', array(
-			'Cookie' => 'psx_cookie=eyJmb28iOiJmb28ifQ==.lUT+fW1P+JlRv1+v0MtN7mQ9cx/OK5Jevt3wn/HXsj0=')
+			'Cookie' => 'psx_cookie=eyJmb28iOiJkYXRhIn0=.2IwNbitA6b1VccgR1pGVIRzro4AwYN1IqNXvNHYebog=')
 		);
 		$response = new Response();
 
@@ -147,7 +147,8 @@ class CookieSignerTest extends \PHPUnit_Framework_TestCase
 		$filterChain = new FilterChain($filters);
 		$filterChain->handle($request, $response);
 
-		$this->assertEquals('psx_cookie=eyJzZWNyZXQiOiJmb28ifQ==.svZSGy320yFVfClv0HH6HP+QNtZx4Ipl6Xwg3BXlcx0=', $response->getHeader('Set-Cookie'));
+		$this->assertEquals('psx_cookie=eyJmb28iOiJmb28ifQ==.lUT+fW1P+JlRv1+v0MtN7mQ9cx/OK5Jevt3wn/HXsj0=', $response->getHeader('Set-Cookie'));
+		$this->assertEquals(array('foo' => 'foo'), $request->getAttribute(CookieSigner::COOKIE_NAME));
 	}
 
 }
