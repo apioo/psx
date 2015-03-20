@@ -30,13 +30,16 @@ use PSX\Http\ResponseInterface;
 use PSX\Json;
 
 /**
- * CookieEncryption
+ * The cookie signer adds an signature to the cookie so that you can verify that
+ * the value which was set by the server has not changed. Note it does not 
+ * encrypt the values so everybody can still read the data like in an normal 
+ * cookie but you can verify that the data was not modified
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class CookieEncryption implements FilterInterface
+class CookieSigner implements FilterInterface
 {
 	const COOKIE_NAME = 'psx_cookie';
 

@@ -27,13 +27,13 @@ use PSX\Http\Stream\TempStream;
 use PSX\Url;
 
 /**
- * CookieEncryptionTest
+ * CookieSignerTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class CookieEncryptionTest extends \PHPUnit_Framework_TestCase
+class CookieSignerTest extends \PHPUnit_Framework_TestCase
 {
 	public function testEncryptCookie()
 	{
@@ -41,10 +41,10 @@ class CookieEncryptionTest extends \PHPUnit_Framework_TestCase
 		$response = new Response();
 
 		$filters = array();
-		$filters[] = new CookieEncryption('secret_key');
+		$filters[] = new CookieSigner('secret_key');
 		$filters[] = function($request, $response, $filterChain){
 
-			$request->setAttribute(CookieEncryption::COOKIE_NAME, array('secret' => 'data'));
+			$request->setAttribute(CookieSigner::COOKIE_NAME, array('foo' => 'data'));
 
 			$filterChain->handle($request, $response);
 
@@ -53,21 +53,21 @@ class CookieEncryptionTest extends \PHPUnit_Framework_TestCase
 		$filterChain = new FilterChain($filters);
 		$filterChain->handle($request, $response);
 
-		$this->assertEquals('psx_cookie=eyJzZWNyZXQiOiJkYXRhIn0=.5+5rtZGLqN/2w4zUxPZ2FRmVPcskvwyQNlSy0n5yfcI=', $response->getHeader('Set-Cookie'));
+		$this->assertEquals('psx_cookie=eyJmb28iOiJkYXRhIn0=.2IwNbitA6b1VccgR1pGVIRzro4AwYN1IqNXvNHYebog=', $response->getHeader('Set-Cookie'));
 	}
 
 	public function testDecryptCookie()
 	{
 		$request  = new Request(new Url('http://localhost'), 'GET', array(
-			'Cookie' => 'psx_cookie=eyJzZWNyZXQiOiJkYXRhIn0=.5+5rtZGLqN/2w4zUxPZ2FRmVPcskvwyQNlSy0n5yfcI=')
+			'Cookie' => 'psx_cookie=eyJmb28iOiJkYXRhIn0=.2IwNbitA6b1VccgR1pGVIRzro4AwYN1IqNXvNHYebog=')
 		);
 		$response = new Response();
 
 		$filters = array();
-		$filters[] = new CookieEncryption('secret_key');
+		$filters[] = new CookieSigner('secret_key');
 		$filters[] = function($request, $response, $filterChain){
 
-			$this->assertEquals(array('secret' => 'data'), $request->getAttribute(CookieEncryption::COOKIE_NAME));
+			$this->assertEquals(array('foo' => 'data'), $request->getAttribute(CookieSigner::COOKIE_NAME));
 
 			$filterChain->handle($request, $response);
 
@@ -82,15 +82,15 @@ class CookieEncryptionTest extends \PHPUnit_Framework_TestCase
 	public function testDecryptModifiedPayload()
 	{
 		$request  = new Request(new Url('http://localhost'), 'GET', array(
-			'Cookie' => 'psx_cookie=eyJzZWNyZXQiOJkYXRhIn0=.5+5rtZGLqN/2w4zUxPZ2FRmVPcskvwyQNlSy0n5yfcI=')
+			'Cookie' => 'psx_cookie=eyJmb28iOiJkYXRhIn0=.2IwNbitA6b1VccgR1pGVIRzro4AwYN1IqNXvNHYebog=')
 		);
 		$response = new Response();
 
 		$filters = array();
-		$filters[] = new CookieEncryption('secret_key');
+		$filters[] = new CookieSigner('secret_key');
 		$filters[] = function($request, $response, $filterChain){
 
-			$this->assertEmpty($request->getAttribute(CookieEncryption::COOKIE_NAME));
+			$this->assertEmpty($request->getAttribute(CookieSigner::COOKIE_NAME));
 
 			$filterChain->handle($request, $response);
 
@@ -110,10 +110,10 @@ class CookieEncryptionTest extends \PHPUnit_Framework_TestCase
 		$response = new Response();
 
 		$filters = array();
-		$filters[] = new CookieEncryption('secret_key');
+		$filters[] = new CookieSigner('secret_key');
 		$filters[] = function($request, $response, $filterChain){
 
-			$this->assertEmpty($request->getAttribute(CookieEncryption::COOKIE_NAME));
+			$this->assertEmpty($request->getAttribute(CookieSigner::COOKIE_NAME));
 
 			$filterChain->handle($request, $response);
 
@@ -128,17 +128,17 @@ class CookieEncryptionTest extends \PHPUnit_Framework_TestCase
 	public function testDecryptCookieDataChanged()
 	{
 		$request  = new Request(new Url('http://localhost'), 'GET', array(
-			'Cookie' => 'psx_cookie=eyJzZWNyZXQiOiJkYXRhIn0=.5+5rtZGLqN/2w4zUxPZ2FRmVPcskvwyQNlSy0n5yfcI=')
+			'Cookie' => 'psx_cookie=eyJmb28iOiJmb28ifQ==.lUT+fW1P+JlRv1+v0MtN7mQ9cx/OK5Jevt3wn/HXsj0=')
 		);
 		$response = new Response();
 
 		$filters = array();
-		$filters[] = new CookieEncryption('secret_key');
+		$filters[] = new CookieSigner('secret_key');
 		$filters[] = function($request, $response, $filterChain){
 
-			$this->assertEquals(array('secret' => 'data'), $request->getAttribute(CookieEncryption::COOKIE_NAME));
+			$this->assertEquals(array('foo' => 'data'), $request->getAttribute(CookieSigner::COOKIE_NAME));
 
-			$request->setAttribute(CookieEncryption::COOKIE_NAME, array('secret' => 'foo'));
+			$request->setAttribute(CookieSigner::COOKIE_NAME, array('foo' => 'foo'));
 
 			$filterChain->handle($request, $response);
 
