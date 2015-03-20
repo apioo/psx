@@ -41,6 +41,7 @@ abstract class StoreTestCase extends \PHPUnit_Framework_TestCase
 
 		$this->assertInstanceOf('PSX\Data\RecordInterface', $record);
 		$this->assertEquals('bar', $record->getFoo());
+		$this->assertEquals(null, $store->load('bar'));
 	}
 
 	abstract public function getStore();
