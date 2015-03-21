@@ -29,6 +29,7 @@ use PSX\Event\ControllerExecuteEvent;
 use PSX\Event\ControllerProcessedEvent;
 use PSX\Event\ResponseSendEvent;
 use PSX\Event\ExceptionThrownEvent;
+use PSX\Http;
 use PSX\Http\Exception\StatusCodeException;
 use PSX\Http\Stream\Util;
 use PSX\Loader\Context;
@@ -91,7 +92,10 @@ class LogListener implements EventSubscriberInterface
 
 	public function onResponseSend(ResponseSendEvent $event)
 	{
-		$this->logger->info('Send response');
+		$code = $event->getResponse()->getStatusCode();
+		$code = isset(Http::$codes[$code]) ? $code : 200;
+
+		$this->logger->info('Send response ' . $code);
 
 		if($this->debug)
 		{

@@ -150,7 +150,7 @@ class LogListenerTest extends ControllerTestCase
 		$logger = $this->getLogger();
 		$logger->expects($this->once())
 			->method('info')
-			->with($this->equalTo('Send response'));
+			->with($this->equalTo('Send response 200'));
 
 		$response = new Response();
 
@@ -164,7 +164,7 @@ class LogListenerTest extends ControllerTestCase
 		$logger = $this->getLogger();
 		$logger->expects($this->at(0))
 			->method('info')
-			->with($this->equalTo('Send response'));
+			->with($this->equalTo('Send response 200'));
 
 		$logger->expects($this->at(1))
 			->method('debug')
@@ -182,12 +182,40 @@ class LogListenerTest extends ControllerTestCase
 		$logger = $this->getLogger();
 		$logger->expects($this->at(0))
 			->method('info')
-			->with($this->equalTo('Send response'));
+			->with($this->equalTo('Send response 200'));
 
 		$response = new Response(200);
 
 		$eventDispatcher = new EventDispatcher();
-		$eventDispatcher->addSubscriber(new LogListener($logger, true));
+		$eventDispatcher->addSubscriber(new LogListener($logger, false));
+		$eventDispatcher->dispatch(Event::RESPONSE_SEND, new ResponseSendEvent($response));
+	}
+
+	public function testEventResponseWithErrorStatusCode()
+	{
+		$logger = $this->getLogger();
+		$logger->expects($this->at(0))
+			->method('info')
+			->with($this->equalTo('Send response 500'));
+
+		$response = new Response(500);
+
+		$eventDispatcher = new EventDispatcher();
+		$eventDispatcher->addSubscriber(new LogListener($logger, false));
+		$eventDispatcher->dispatch(Event::RESPONSE_SEND, new ResponseSendEvent($response));
+	}
+
+	public function testEventResponseWithUnknownStatusCode()
+	{
+		$logger = $this->getLogger();
+		$logger->expects($this->at(0))
+			->method('info')
+			->with($this->equalTo('Send response 200'));
+
+		$response = new Response(299);
+
+		$eventDispatcher = new EventDispatcher();
+		$eventDispatcher->addSubscriber(new LogListener($logger, false));
 		$eventDispatcher->dispatch(Event::RESPONSE_SEND, new ResponseSendEvent($response));
 	}
 
