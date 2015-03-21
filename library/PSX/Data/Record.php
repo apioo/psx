@@ -20,6 +20,7 @@
 
 namespace PSX\Data;
 
+use ArrayAccess;
 use BadMethodCallException;
 
 /**
@@ -29,7 +30,7 @@ use BadMethodCallException;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Record extends RecordAbstract
+class Record extends RecordAbstract implements ArrayAccess
 {
 	protected $name;
 	protected $fields;
@@ -45,6 +46,49 @@ class Record extends RecordAbstract
 		return new RecordInfo($this->name, $this->fields);
 	}
 
+	public function getProperty($name)
+	{
+		return isset($this->fields[$name]) ? $this->fields[$name] : null;
+	}
+
+	public function setProperty($name, $value)
+	{
+		$this->fields[$name] = $value;
+	}
+
+	public function removeProperty($name)
+	{
+		if(isset($this->fields[$name]))
+		{
+			unset($this->fields[$name]);
+		}
+	}
+
+	public function hasProperty($name)
+	{
+		return array_key_exists($name, $this->fields);
+	}
+
+	public function offsetSet($offset, $value)
+	{
+		$this->setProperty($offset, $value);
+	}
+
+	public function offsetExists($offset)
+	{
+		return $this->hasProperty($offset);
+	}
+
+	public function offsetUnset($offset)
+	{
+		$this->removeProperty($offset);
+	}
+
+	public function offsetGet($offset)
+	{
+		return $this->getProperty($offset);
+	}
+
 	public function __call($method, array $args)
 	{
 		$type = substr($method, 0, 3);
@@ -52,14 +96,11 @@ class Record extends RecordAbstract
 
 		if($type == 'set')
 		{
-			if(array_key_exists($key, $this->fields))
-			{
-				$this->fields[$key] = current($args);
-			}
+			$this->setProperty($key, current($args));
 		}
 		elseif($type == 'get')
 		{
-			return isset($this->fields[$key]) ? $this->fields[$key] : null;
+			return $this->getProperty($key);
 		}
 		else
 		{

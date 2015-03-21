@@ -29,6 +29,93 @@ namespace PSX\Data;
  */
 class RecordTest extends \PHPUnit_Framework_TestCase
 {
+	public function testGetProperty()
+	{
+		$record = new Record('foo', array(
+			'id'    => 1,
+			'title' => 'bar',
+		));
+
+		$this->assertEquals(1, $record->getProperty('id'));
+		$this->assertEquals('bar', $record->getProperty('title'));
+	}
+
+	public function testSetProperty()
+	{
+		$record = new Record('foo', array(
+			'id'    => 1,
+			'title' => 'bar',
+		));
+
+		$this->assertEquals(1, $record->getProperty('id'));
+
+		$record->setProperty('id', 2);
+
+		$this->assertEquals(2, $record->getProperty('id'));
+	}
+
+	public function testRemoveProperty()
+	{
+		$record = new Record('foo', array(
+			'id'    => 1,
+			'title' => 'bar',
+		));
+
+		$this->assertTrue($record->hasProperty('id'));
+
+		$record->removeProperty('id');
+
+		$this->assertFalse($record->hasProperty('id'));
+	}
+
+	public function testHasProperty()
+	{
+		$record = new Record('foo', array(
+			'id'    => 1,
+			'title' => 'bar',
+		));
+
+		$this->assertTrue($record->hasProperty('id'));
+	}
+
+	public function testOffsetSet()
+	{
+		$record = new Record('foo', array(
+			'id'    => 1,
+			'title' => 'bar',
+		));
+
+		$this->assertEquals(1, $record['id']);
+
+		$record['id'] = 2;
+
+		$this->assertEquals(2, $record['id']);
+	}
+
+	public function testOffsetExists()
+	{
+		$record = new Record('foo', array(
+			'id'    => 1,
+			'title' => 'bar',
+		));
+
+		$this->assertTrue(isset($record['id']));
+	}
+
+	public function testOffsetUnset()
+	{
+		$record = new Record('foo', array(
+			'id'    => 1,
+			'title' => 'bar',
+		));
+
+		$this->assertTrue(isset($record['id']));
+
+		unset($record['id']);
+
+		$this->assertFalse(isset($record['id']));
+	}
+
 	public function testGetMagicMethods()
 	{
 		$record = new Record('foo', array(
@@ -38,6 +125,17 @@ class RecordTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals(1, $record->getId());
 		$this->assertEquals('bar', $record->getTitle());
+	}
+
+	public function testOffsetGet()
+	{
+		$record = new Record('foo', array(
+			'id'    => 1,
+			'title' => 'bar',
+		));
+
+		$this->assertEquals(1, $record['id']);
+		$this->assertEquals('bar', $record['title']);
 	}
 
 	public function testSetMagicMethods()
