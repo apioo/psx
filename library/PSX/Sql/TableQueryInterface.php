@@ -36,7 +36,7 @@ interface TableQueryInterface
 	 *
 	 * @param integer $startIndex
 	 * @param integer $count
-	 * @param integer $sortBy
+	 * @param string $sortBy
 	 * @param integer $sortOrder
 	 * @param PSX\Sql\Condition $condition
 	 * @return array
@@ -55,14 +55,14 @@ interface TableQueryInterface
 	 * Returns an record by the condition
 	 *
 	 * @param PSX\Sql\Condition $condition
-	 * @return array
+	 * @return PSX\Data\RecordInterface
 	 */
 	public function getOneBy(Condition $condition);
 
 	/**
 	 * Returns an record by the primary key
 	 *
-	 * @return array
+	 * @return PSX\Data\RecordInterface
 	 */
 	public function get($id);
 
