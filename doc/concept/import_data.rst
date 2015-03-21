@@ -249,7 +249,7 @@ meta data from the source.
 
 .. literalinclude:: ../../library/PSX/Data/Record/ImporterInterface.php
    :language: php
-   :lines: 34-55
+   :lines: 31-52
    :prepend: <?php
 
 The importer must be added to the importer manager in the DI container. After

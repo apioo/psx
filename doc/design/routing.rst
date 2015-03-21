@@ -84,7 +84,7 @@ which contains all available routes.
 
 .. literalinclude:: ../../library/PSX/Loader/RoutingParserInterface.php
    :language: php
-   :lines: 33-39
+   :lines: 30-36
    :prepend: <?php
 
 Your routing class has to implement this interface. Then you can overwrite the 
@@ -95,5 +95,5 @@ A location finder has to implement the following interface.
 
 .. literalinclude:: ../../library/PSX/Loader/LocationFinderInterface.php
    :language: php
-   :lines: 35-48
+   :lines: 32-45
    :prepend: <?php

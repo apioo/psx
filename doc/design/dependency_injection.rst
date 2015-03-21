@@ -47,7 +47,7 @@ container uses several traits which contains service methods
 
 .. literalinclude:: ../../library/PSX/Dependency/DefaultContainer.php
    :language: php
-   :lines: 52-59
+   :lines: 49-56
    :prepend: <?php
 
 The returned container must be compatible with the symfony DI container. You 

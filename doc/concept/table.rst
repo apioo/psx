@@ -5,10 +5,12 @@ Table
 Abstract
 --------
 
-The PSX table classes offern an alternative to an ORM. Each table class
-represents an sql table. The table class contains the table name and all 
-available columns. It is also the place where you can put all complex business 
-queries like in an repository. To get an first impression here an example:
+The PSX table class provides an simple repository pattern which can be used as 
+alternative to an ORM. It works with plain SQL queries. Each table class 
+represents an sql table which contains the table name and all available columns.
+A table class returns record objects which are filled with the values from the 
+query. It is also the place where you can put all complex business queries. To 
+get an first impression here an example:
 
 .. code-block:: php
 
@@ -65,6 +67,19 @@ entries
     	}
     }
 
+Each table has automatically some standard query methods to query and manipulate
+the table
+
+.. literalinclude:: ../../library/PSX/Sql/TableQueryInterface.php
+   :language: php
+   :lines: 32-82
+   :prepend: <?php
+
+.. literalinclude:: ../../library/PSX/Sql/TableManipulationInterface.php
+   :language: php
+   :lines: 32-57
+   :prepend: <?php
+
 If you have complex queries it is best practice to put such queries inside the 
 table class where you can reuse the method across your application. Here an
 fictional method which returns the best comments
@@ -89,11 +104,16 @@ fictional method which returns the best comments
                      ORDER BY rating.value DESC
                         LIMIT 8';
 
-            return $this->connection->fetchAll($sql, array(
+            return $this->project($sql, array(
             	'user_id' => $userId,
             ));
         }
     }
+
+PSX does not force you to use the table classes. If you want use an ORM or any
+other database abstraction layer you only have to add the fitting service to the
+dependency container in order to use them in your controller. See the chapter
+:doc:`/design/dependency_injection` for more informations.
 
 Generation
 ----------

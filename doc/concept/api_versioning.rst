@@ -14,7 +14,7 @@ Motivation
 If your API has consumers they rely on an specific request/response format. If 
 this format changes they probably wont work anymore. In order to be able to make 
 changes to an API you have to give the consumers the chance to upgrade there 
-code to the new format. This is where versioning comes into play. Each consumers
+code to the new format. This is where versioning comes into play. Each consumer
 specifies an specific version when requesting the API. If you want to change the
 API format you have to create a new version and deprecate the old one. You 
 should communicate to your users that the API will be deprecated in an specific
@@ -104,5 +104,5 @@ In the following a short example howto add versioning to an schema API
     }
 
 If the consumer requests version 1 an "Warning" header will be added that this
-version is deprecated. If no version is specified in the Accept header field an 
-415 (Unsupported Media Type) status code gets returned
+version is deprecated. If no version is specified the latest API version gets
+used but it is _strongly_ recommended that users specify an concret version.

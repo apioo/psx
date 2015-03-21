@@ -13,12 +13,12 @@ application lifecycle an HTTP request and response object will be created.
 
 .. literalinclude:: ../../library/PSX/Dispatch/RequestFactoryInterface.php
    :language: php
-   :lines: 33-42
+   :lines: 30-38
    :prepend: <?php
 
 .. literalinclude:: ../../library/PSX/Dispatch/ResponseFactoryInterface.php
    :language: php
-   :lines: 33-42
+   :lines: 30-38
    :prepend: <?php
 
 After the request and response objects are created the loader searches the 
@@ -27,7 +27,7 @@ ApplicationStackInterface.
 
 .. literalinclude:: ../../library/PSX/ApplicationStackInterface.php
    :language: php
-   :lines: 33-43
+   :lines: 30-40
    :prepend: <?php
 
 Then the loader receives the application stack from the controller which is an
@@ -36,7 +36,7 @@ the request and write data to the response.
 
 .. literalinclude:: ../../library/PSX/Dispatch/FilterInterface.php
    :language: php
-   :lines: 36-45
+   :lines: 33-42
    :prepend: <?php
 
 After the stack was executed the response must be send to the client. This is 
@@ -45,7 +45,7 @@ function and outputs the response body via "echo".
 
 .. literalinclude:: ../../library/PSX/Dispatch/SenderInterface.php
    :language: php
-   :lines: 35-43
+   :lines: 32-40
    :prepend: <?php
 
 Events
@@ -106,6 +106,6 @@ stack i.e.:
 
 .. literalinclude:: ../../library/PSX/ControllerAbstract.php
    :language: php
-   :lines: 94-103
+   :lines: 92-99
    :prepend: <?php
 

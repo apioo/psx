@@ -16,11 +16,11 @@ request body. PSX uses the content type header to determine which reader should
 be used. I.e. if we have an application/xml content type we use the xml reader 
 and if we have an application/json content type we use the json reader. The 
 reader returns the request data in an form which can be easily used in php. I.e. 
-the xml reader returns an DOMDocument and the json reader returns an array.
+the xml reader returns an DOMDocument and the json reader returns an stdClass.
 
 .. literalinclude:: ../../library/PSX/Data/ReaderInterface.php
    :language: php
-   :lines: 36-58
+   :lines: 33-55
    :prepend: <?php
 
 Since we need a uniform structure of the data we must apply an transformation in
@@ -29,7 +29,7 @@ an application/xml content type the XmlArray transformer gets applied.
 
 .. literalinclude:: ../../library/PSX/Data/TransformerInterface.php
    :language: php
-   :lines: 34-50
+   :lines: 33-49
    :prepend: <?php
 
 Then it is possible to import the data into an record through an importer class. 
@@ -38,7 +38,7 @@ an record class containing the data.
 
 .. literalinclude:: ../../library/PSX/Data/Record/ImporterInterface.php
    :language: php
-   :lines: 34-55
+   :lines: 31-52
    :prepend: <?php
 
 Available data reader
@@ -57,7 +57,7 @@ PSX comes with the following data reader:
 +--------------------------+-----------------------------------+-------------+
 
 The result of the data reader can be obtained by using the getBody method inside
-the controller. Depending on the content type the response is either an array
+the controller. Depending on the content type the response is either an stdClass
 or DOMDocument.
 
 .. code-block:: php
@@ -111,7 +111,7 @@ builds an data structure from the DOMDocument which then gets imported into the
 Atom record.
 
 It is also possible to pass an schema definition to the import method. The data
-will be validate against this schema. This has also the advantage that you can 
+will be validated against this schema. This has also the advantage that you can 
 use the schema to generate great documentation about the API
 
 .. code-block:: php
@@ -142,10 +142,10 @@ Here an example schema from an test case
 
 .. literalinclude:: ../../tests/PSX/Controller/Foo/Schema/Entry.php
    :language: php
-   :lines: 35-50
+   :lines: 32-47
    :prepend: <?php
 
-More detailed informations about data importing at :doc:`import_data`
+More detailed informations about the process at :doc:`import_data`
 
 Writing responses
 -----------------
@@ -169,11 +169,13 @@ In the following an overview of available writer in PSX:
 +--------------------------+------------------------+------------------+
 | PSX\\Data\\Writer\\Jsonp | application/javascript | jsonp            |
 +--------------------------+------------------------+------------------+
-| PSX\\Data\\Writer\\Xml   | application/xml        | xml              |
+| PSX\\Data\\Writer\\Jsonx | application/jsonx+xml  | jsonx            |
 +--------------------------+------------------------+------------------+
 | PSX\\Data\\Writer\\Atom  | application/atom+xml   | atom             |
 +--------------------------+------------------------+------------------+
 | PSX\\Data\\Writer\\Soap  | application/soap+xml   | soap             |
++--------------------------+------------------------+------------------+
+| PSX\\Data\\Writer\\Xml   | application/xml        | xml              |
 +--------------------------+------------------------+------------------+
 
 Use case

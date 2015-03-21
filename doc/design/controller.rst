@@ -40,7 +40,7 @@ Usage
             $this->getParameter('id');
 
             // returns the request body. For x-www-form-urlencoded or json data
-            // this will be an array for xml an DOMDocument
+            // this will be an stdClass for xml an DOMDocument
             $body = $this->getBody();
 
             // returns the value for the key "title". This works with 
@@ -53,7 +53,7 @@ Usage
 
             // imports data from the request body into the record. See the 
             // data chapter for more informations
-            $record = $this->import(new Record('foo', array('field1' => null)));;
+            $record = $this->import($source);
 
             // set data to the response body. How this data is presented depends
             // on the Accept header or GET parameter "format"
