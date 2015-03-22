@@ -59,7 +59,7 @@ class ToolController extends ViewAbstract
 		{
 			$routing = new Object([
 				'title' => 'Routing',
-				'path ' => $routingPath,
+				'path'  => $routingPath,
 			]);
 
 			$paths->general[] = $routing;
@@ -72,7 +72,7 @@ class ToolController extends ViewAbstract
 		{
 			$command = new Object([
 				'title' => 'Command',
-				'path ' => $commandPath,
+				'path'  => $commandPath,
 			]);
 
 			$paths->general[] = $command;
@@ -83,12 +83,12 @@ class ToolController extends ViewAbstract
 			}
 		}
 
-		$restPath = $this->reverseRouter->getAbsolutePath('PSX\Controller\Tool\RestController');
-		if($restPath !== null)
+		$restClientPath = $this->reverseRouter->getAbsolutePath('PSX\Controller\Tool\RestClientController');
+		if($restClientPath !== null)
 		{
 			$console = new Object([
-				'title' => 'Console',
-				'path ' => $restPath,
+				'title' => 'Client',
+				'path'  => $restClientPath,
 			]);
 
 			$paths->api[] = $console;
@@ -104,7 +104,7 @@ class ToolController extends ViewAbstract
 		{
 			$documentation = new Object([
 				'title' => 'Documentation',
-				'path ' => $documentationPath,
+				'path'  => $documentationPath,
 			]);
 
 			$paths->api[] = $documentation;
