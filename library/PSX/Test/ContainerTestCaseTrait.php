@@ -22,6 +22,8 @@ namespace PSX\Test;
 
 use Monolog\Logger;
 use Monolog\Handler\NullHandler;
+use PSX\Cache;
+use PSX\Cache\Handler\Null as CacheHandler;
 use PSX\Command\Output\Void;
 use PSX\Dispatch\Sender\Void as VoidSender;
 use PSX\Event;
@@ -64,6 +66,9 @@ trait ContainerTestCaseTrait
 
 		// assign the phpunit test case
 		getContainer()->set('test_case', $this);
+
+		// use null cache
+		getContainer()->set('cache', new Cache(new CacheHandler()));
 
 		// use void sender
 		getContainer()->set('dispatch_sender', new VoidSender());

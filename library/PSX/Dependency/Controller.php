@@ -131,6 +131,6 @@ trait Controller
 	 */
 	public function getResourceListing()
 	{
-		return new Api\ResourceListing($this->get('routing_parser'), $this->get('controller_factory'));
+		return new Api\ResourceListing($this->get('routing_parser'), $this->get('controller_factory'), $this->get('cache'));
 	}
 }

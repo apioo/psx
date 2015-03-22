@@ -21,7 +21,9 @@
 namespace PSX\Api;
 
 use PSX\Api\ResourceListing\Resource;
-use PSX\Api\View;
+use PSX\Api\Documentation;
+use PSX\Cache;
+use PSX\Data\Schema;
 use PSX\Dispatch\ControllerFactoryInterface;
 use PSX\Loader\Context;
 use PSX\Loader\RoutingParserInterface;
@@ -40,11 +42,13 @@ class ResourceListing
 {
 	protected $routingParser;
 	protected $controllerFactory;
+	protected $cache;
 
-	public function __construct(RoutingParserInterface $routingParser, ControllerFactoryInterface $controllerFactory)
+	public function __construct(RoutingParserInterface $routingParser, ControllerFactoryInterface $controllerFactory, Cache $cache)
 	{
 		$this->routingParser     = $routingParser;
 		$this->controllerFactory = $controllerFactory;
+		$this->cache             = $cache;
 	}
 
 	/**
@@ -57,7 +61,63 @@ class ResourceListing
 	 */
 	public function getResources(RequestInterface $request, ResponseInterface $response, Context $context)
 	{
-		$collections = $this->routingParser->getCollection();
+		return $this->getCachedResources($request, $response, $context);
+	}
+
+	/**
+	 * Returns an specific API resource for the given path
+	 *
+	 * @param string $sourcePath
+	 * @param PSX\Http\RequestInterface $request
+	 * @param PSX\Http\ResponseInterface $response
+	 * @param PSX\Loader\Context $context
+	 * @return PSX\Api\Documentation\ResourceListing\Resource
+	 */
+	public function getResource($sourcePath, RequestInterface $request, ResponseInterface $response, Context $context)
+	{
+		$matcher   = new PathMatcher($sourcePath);
+		$resources = $this->getCachedResources($request, $response, $context);
+
+		foreach($resources as $resource)
+		{
+			if($matcher->match($resource->getPath()))
+			{
+				return $resource;
+			}
+		}
+
+		return null;
+	}
+
+	protected function getCachedResources(RequestInterface $request, ResponseInterface $response, Context $context)
+	{
+		$item = $this->cache->getItem('cached-resources');
+
+		if($item->isHit())
+		{
+			return $item->get();
+		}
+		else
+		{
+			$resources = $this->getActualResources($request, $response, $context);
+			$result    = array();
+
+			foreach($resources as $resource)
+			{
+				$result[] = $this->getMaterializedResource($resource);
+			}
+
+			$item->set($result);
+
+			$this->cache->save($item);
+
+			return $result;
+		}
+	}
+
+	protected function getActualResources(RequestInterface $request, ResponseInterface $response, Context $context)
+	{
+		$collections = $this->getCachedRouting();
 		$result      = array();
 
 		foreach($collections as $collection)
@@ -96,54 +156,46 @@ class ResourceListing
 		return $result;
 	}
 
-	/**
-	 * Returns an specific API resource for the given path
-	 *
-	 * @param string $sourcePath
-	 * @param PSX\Http\RequestInterface $request
-	 * @param PSX\Http\ResponseInterface $response
-	 * @param PSX\Loader\Context $context
-	 * @return PSX\Api\Documentation\ResourceListing\Resource
-	 */
-	public function getResource($sourcePath, RequestInterface $request, ResponseInterface $response, Context $context)
+	protected function getMaterializedResource(Resource $resource)
 	{
-		$matcher     = new PathMatcher($sourcePath);
-		$collections = $this->routingParser->getCollection();
+		$versions      = $resource->getDocumentation()->getViews();
+		$documentation = new Documentation\Version($resource->getDocumentation()->getDescription());
 
-		foreach($collections as $collection)
+		foreach($versions as $version => $views)
 		{
-			list($methods, $path, $source) = $collection;
+			$newView = new View($views->getStatus(), $views->getPath());
 
-			$parts     = explode('::', $source, 2);
-			$className = isset($parts[0]) ? $parts[0] : null;
-
-			if(class_exists($className) && $matcher->match($path))
+			foreach($views as $type => $view)
 			{
-				$ctx = clone $context;
-				$ctx->set(Context::KEY_PATH, $path);
-
-				$controller = $this->getController($className, $request, $response, $ctx);
-
-				if($controller instanceof DocumentedInterface)
-				{
-					$name = substr(strrchr(get_class($controller), '\\'), 1);
-					$doc  = $controller->getDocumentation();
-
-					if($doc instanceof DocumentationInterface)
-					{
-						return new Resource(
-							$name,
-							$methods,
-							$path,
-							$source,
-							$doc
-						);
-					}
-				}
+				$newView->set($type, new Schema($view->getDefinition()));
 			}
+
+			$documentation->addView($version, $newView);
 		}
 
-		return null;
+		$resource->setDocumentation($documentation);
+
+		return $resource;
+	}
+
+	protected function getCachedRouting()
+	{
+		$item = $this->cache->getItem('cached-routing');
+
+		if($item->isHit())
+		{
+			return $item->get();
+		}
+		else
+		{
+			$collections = $this->routingParser->getCollection();
+
+			$item->set($collections);
+
+			$this->cache->save($item);
+
+			return $collections;
+		}
 	}
 
 	protected function getController($className, RequestInterface $request, ResponseInterface $response, Context $context)

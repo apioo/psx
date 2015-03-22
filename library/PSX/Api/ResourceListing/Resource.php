@@ -51,9 +51,19 @@ class Resource
 		return $this->name;
 	}
 
+	public function setName($name)
+	{
+		$this->name = $name;
+	}
+
 	public function getMethods()
 	{
 		return $this->methods;
+	}
+
+	public function setMethods(array $methods)
+	{
+		$this->methods = $methods;
 	}
 
 	public function getPath()
@@ -61,14 +71,29 @@ class Resource
 		return $this->path;
 	}
 
+	public function setPath($path)
+	{
+		$this->path = $path;
+	}
+
 	public function getSource()
 	{
 		return $this->source;
 	}
 
+	public function setSource($source)
+	{
+		$this->source = $source;
+	}
+
 	public function getDocumentation()
 	{
 		return $this->documentation;
+	}
+
+	public function setDocumentation(DocumentationInterface $documentation)
+	{
+		$this->documentation = $documentation;
 	}
 }
 
