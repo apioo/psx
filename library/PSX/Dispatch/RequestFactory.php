@@ -67,14 +67,9 @@ class RequestFactory implements RequestFactoryInterface
 
 			if(!$this->isCli())
 			{
-				$path     = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
-				$skipPath = (isset($parts['path']) ? $parts['path'] : '') . '/' . $this->config['psx_dispatch'];
-				$skipPath = rtrim($skipPath, '/');
-
-				if(!empty($skipPath) && strpos($path, $skipPath) === 0)
-				{
-					$path = substr($path, strlen($skipPath));
-				}
+				$path = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+				$skip = (isset($parts['path']) ? $parts['path'] : '') . '/' . $this->config['psx_dispatch'];
+				$path = $this->skip($path, $skip);
 			}
 			else
 			{
@@ -206,5 +201,28 @@ class RequestFactory implements RequestFactoryInterface
 	protected function isCli()
 	{
 		return PHP_SAPI == 'cli';
+	}
+
+	/**
+	 * Removes the given $skipPath from the $srcPath as long as they have the 
+	 * same value
+	 *
+	 * @param string $srcPath
+	 * @param string $skipPath
+	 * @return string
+	 */
+	protected function skip($srcPath, $skipPath)
+	{
+		$len = strlen($srcPath);
+
+		for($i = 0; $i < $len; $i++)
+		{
+			if(!isset($skipPath[$i]) || $skipPath[$i] != $srcPath[$i])
+			{
+				break;
+			}
+		}
+
+		return substr($srcPath, $i);
 	}
 }

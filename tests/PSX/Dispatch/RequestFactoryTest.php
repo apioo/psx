@@ -41,17 +41,19 @@ class RequestFactoryTest extends \PHPUnit_Framework_TestCase
 		));
 
 		$matrix = array(
-			'http://foo.com/' => array('REQUEST_URI' => null),
-			'http://foo.com/' => array('REQUEST_URI' => ''),
-			'http://foo.com/' => array('REQUEST_URI' => '/'),
-			'http://foo.com/bar' => array('REQUEST_URI' => '/bar'),
-			'http://foo.com/bar?bar=test' => array('REQUEST_URI' => '/bar?bar=test'),
-			'http://foo.com/?bar=test' => array('REQUEST_URI' => '/?bar=test'),
-			'http://foo.com/?bar=test' => array('REQUEST_URI' => '?bar=test'),
+			['http://foo.com/', ['REQUEST_URI' => null]],
+			['http://foo.com/', ['REQUEST_URI' => '']],
+			['http://foo.com/', ['REQUEST_URI' => '/']],
+			['http://foo.com/bar', ['REQUEST_URI' => '/bar']],
+			['http://foo.com/bar?bar=test', ['REQUEST_URI' => '/bar?bar=test']],
+			['http://foo.com/?bar=test', ['REQUEST_URI' => '/?bar=test']],
+			['http://foo.com/?bar=test', ['REQUEST_URI' => '?bar=test']],
 		);
 
-		foreach($matrix as $uri => $env)
+		foreach($matrix as $data)
 		{
+			list($uri, $env) = $data;
+
 			$request = $this->getRequest($env, $config);
 
 			$this->assertEquals($uri, (string) $request->getUri(), var_export($env, true));
@@ -68,17 +70,19 @@ class RequestFactoryTest extends \PHPUnit_Framework_TestCase
 		));
 
 		$matrix = array(
-			'http://foo.com/' => array('REQUEST_URI' => null),
-			'http://foo.com/' => array('REQUEST_URI' => ''),
-			'http://foo.com/' => array('REQUEST_URI' => '/'),
-			'http://foo.com/bar' => array('REQUEST_URI' => '/bar'),
-			'http://foo.com/bar?bar=test' => array('REQUEST_URI' => '/bar?bar=test'),
-			'http://foo.com/?bar=test' => array('REQUEST_URI' => '/?bar=test'),
-			'http://foo.com/?bar=test' => array('REQUEST_URI' => '?bar=test'),
+			['http://foo.com/', ['REQUEST_URI' => null]],
+			['http://foo.com/', ['REQUEST_URI' => '']],
+			['http://foo.com/', ['REQUEST_URI' => '/']],
+			['http://foo.com/bar', ['REQUEST_URI' => '/bar']],
+			['http://foo.com/bar?bar=test', ['REQUEST_URI' => '/bar?bar=test']],
+			['http://foo.com/?bar=test', ['REQUEST_URI' => '/?bar=test']],
+			['http://foo.com/?bar=test', ['REQUEST_URI' => '?bar=test']],
 		);
 
-		foreach($matrix as $uri => $env)
+		foreach($matrix as $data)
 		{
+			list($uri, $env) = $data;
+
 			$request = $this->getRequest($env, $config);
 
 			$this->assertEquals($uri, (string) $request->getUri(), var_export($env, true));
@@ -95,17 +99,21 @@ class RequestFactoryTest extends \PHPUnit_Framework_TestCase
 		));
 
 		$matrix = array(
-			'http://foo.com/' => array('REQUEST_URI' => null),
-			'http://foo.com/' => array('REQUEST_URI' => '/index.php'),
-			'http://foo.com/' => array('REQUEST_URI' => '/index.php/'),
-			'http://foo.com/bar' => array('REQUEST_URI' => '/index.php/bar'),
-			'http://foo.com/bar?bar=test' => array('REQUEST_URI' => '/index.php/bar?bar=test'),
-			'http://foo.com/?bar=test' => array('REQUEST_URI' => '/index.php/?bar=test'),
-			'http://foo.com/?bar=test' => array('REQUEST_URI' => '/index.php?bar=test'),
+			['http://foo.com/', ['REQUEST_URI' => null]],
+			['http://foo.com/', ['REQUEST_URI' => '']],
+			['http://foo.com/', ['REQUEST_URI' => '/']],
+			['http://foo.com/', ['REQUEST_URI' => '/index.php']],
+			['http://foo.com/', ['REQUEST_URI' => '/index.php/']],
+			['http://foo.com/bar', ['REQUEST_URI' => '/index.php/bar']],
+			['http://foo.com/bar?bar=test', ['REQUEST_URI' => '/index.php/bar?bar=test']],
+			['http://foo.com/?bar=test', ['REQUEST_URI' => '/index.php/?bar=test']],
+			['http://foo.com/?bar=test', ['REQUEST_URI' => '/index.php?bar=test']],
 		);
 
-		foreach($matrix as $uri => $env)
+		foreach($matrix as $data)
 		{
+			list($uri, $env) = $data;
+
 			$request = $this->getRequest($env, $config);
 
 			$this->assertEquals($uri, (string) $request->getUri(), var_export($env, true));
@@ -122,18 +130,22 @@ class RequestFactoryTest extends \PHPUnit_Framework_TestCase
 		));
 
 		$matrix = array(
-			'http://foo.com/' => array('REQUEST_URI' => null),
-			'http://foo.com/' => array('REQUEST_URI' => '/sub/folder'),
-			'http://foo.com/' => array('REQUEST_URI' => '/sub/folder/'),
-			'http://foo.com/bar' => array('REQUEST_URI' => '/sub/folder/bar'),
-			'http://foo.com/bar/' => array('REQUEST_URI' => '/sub/folder/bar/'),
-			'http://foo.com/bar?bar=test' => array('REQUEST_URI' => '/sub/folder/bar?bar=test'),
-			'http://foo.com/?bar=test' => array('REQUEST_URI' => '/sub/folder/?bar=test'),
-			'http://foo.com/?bar=test' => array('REQUEST_URI' => '/sub/folder?bar=test'),
+			['http://foo.com/', ['REQUEST_URI' => null]],
+			['http://foo.com/', ['REQUEST_URI' => '/sub']],
+			['http://foo.com/', ['REQUEST_URI' => '/sub/']],
+			['http://foo.com/', ['REQUEST_URI' => '/sub/folder']],
+			['http://foo.com/', ['REQUEST_URI' => '/sub/folder/']],
+			['http://foo.com/bar', ['REQUEST_URI' => '/sub/folder/bar']],
+			['http://foo.com/bar/', ['REQUEST_URI' => '/sub/folder/bar/']],
+			['http://foo.com/bar?bar=test', ['REQUEST_URI' => '/sub/folder/bar?bar=test']],
+			['http://foo.com/?bar=test', ['REQUEST_URI' => '/sub/folder/?bar=test']],
+			['http://foo.com/?bar=test', ['REQUEST_URI' => '/sub/folder?bar=test']],
 		);
 
-		foreach($matrix as $uri => $env)
+		foreach($matrix as $data)
 		{
+			list($uri, $env) = $data;
+
 			$request = $this->getRequest($env, $config);
 
 			$this->assertEquals($uri, (string) $request->getUri(), var_export($env, true));
@@ -150,18 +162,24 @@ class RequestFactoryTest extends \PHPUnit_Framework_TestCase
 		));
 
 		$matrix = array(
-			'http://foo.com/' => array('REQUEST_URI' => null),
-			'http://foo.com/' => array('REQUEST_URI' => '/sub/folder/index.php'),
-			'http://foo.com/' => array('REQUEST_URI' => '/sub/folder/index.php/'),
-			'http://foo.com/bar' => array('REQUEST_URI' => '/sub/folder/index.php/bar'),
-			'http://foo.com/bar/' => array('REQUEST_URI' => '/sub/folder/index.php/bar/'),
-			'http://foo.com/bar?bar=test' => array('REQUEST_URI' => '/sub/folder/index.php/bar?bar=test'),
-			'http://foo.com/?bar=test' => array('REQUEST_URI' => '/sub/folder/index.php/?bar=test'),
-			'http://foo.com/?bar=test' => array('REQUEST_URI' => '/sub/folder/index.php?bar=test'),
+			['http://foo.com/', ['REQUEST_URI' => null]],
+			['http://foo.com/', ['REQUEST_URI' => '/sub']],
+			['http://foo.com/', ['REQUEST_URI' => '/sub/']],
+			['http://foo.com/', ['REQUEST_URI' => '/sub/folder']],
+			['http://foo.com/', ['REQUEST_URI' => '/sub/folder/']],
+			['http://foo.com/', ['REQUEST_URI' => '/sub/folder/index.php']],
+			['http://foo.com/', ['REQUEST_URI' => '/sub/folder/index.php/']],
+			['http://foo.com/bar', ['REQUEST_URI' => '/sub/folder/index.php/bar']],
+			['http://foo.com/bar/', ['REQUEST_URI' => '/sub/folder/index.php/bar/']],
+			['http://foo.com/bar?bar=test', ['REQUEST_URI' => '/sub/folder/index.php/bar?bar=test']],
+			['http://foo.com/?bar=test', ['REQUEST_URI' => '/sub/folder/index.php/?bar=test']],
+			['http://foo.com/?bar=test', ['REQUEST_URI' => '/sub/folder/index.php?bar=test']],
 		);
 
-		foreach($matrix as $uri => $env)
+		foreach($matrix as $data)
 		{
+			list($uri, $env) = $data;
+
 			$request = $this->getRequest($env, $config);
 
 			$this->assertEquals($uri, (string) $request->getUri(), var_export($env, true));
@@ -178,18 +196,20 @@ class RequestFactoryTest extends \PHPUnit_Framework_TestCase
 		));
 
 		$matrix = array(
-			'http://foo.com/' => array(),
-			'http://foo.com/' => array('HTTPS' => ''),
-			'http://foo.com/' => array('HTTPS' => '0'),
-			'https://foo.com/' => array('HTTPS' => '1'),
-			'https://foo.com/' => array('HTTPS' => 'on'),
-			'http://foo.com/' => array('HTTPS' => 'off'),
-			'https://foo.com/' => array('HTTPS' => 'ON'),
-			'http://foo.com/' => array('HTTPS' => 'OFF'),
+			['http://foo.com/', []],
+			['http://foo.com/', ['HTTPS' => '']],
+			['http://foo.com/', ['HTTPS' => '0']],
+			['https://foo.com/', ['HTTPS' => '1']],
+			['https://foo.com/', ['HTTPS' => 'on']],
+			['http://foo.com/', ['HTTPS' => 'off']],
+			['https://foo.com/', ['HTTPS' => 'ON']],
+			['http://foo.com/', ['HTTPS' => 'OFF']],
 		);
 
-		foreach($matrix as $uri => $env)
+		foreach($matrix as $data)
 		{
+			list($uri, $env) = $data;
+
 			$request = $this->getRequest($env, $config);
 
 			$this->assertEquals($uri, (string) $request->getUri(), var_export($env, true));
@@ -204,18 +224,20 @@ class RequestFactoryTest extends \PHPUnit_Framework_TestCase
 	public function assertCorrectRequestUriWorks($config)
 	{
 		$matrix = array(
-			'http://foo.com/' => array('REQUEST_URI' => null),
-			'http://foo.com/' => array('REQUEST_URI' => ''),
-			'http://foo.com/' => array('REQUEST_URI' => '/'),
-			'http://foo.com/bar' => array('REQUEST_URI' => '/bar'),
-			'http://foo.com/bar/' => array('REQUEST_URI' => '/bar/'),
-			'http://foo.com/bar?bar=test' => array('REQUEST_URI' => '/bar?bar=test'),
-			'http://foo.com/?bar=test' => array('REQUEST_URI' => '/?bar=test'),
-			'http://foo.com/?bar=test' => array('REQUEST_URI' => '?bar=test'),
+			['http://foo.com/', ['REQUEST_URI' => null]],
+			['http://foo.com/', ['REQUEST_URI' => '']],
+			['http://foo.com/', ['REQUEST_URI' => '/']],
+			['http://foo.com/bar', ['REQUEST_URI' => '/bar']],
+			['http://foo.com/bar/', ['REQUEST_URI' => '/bar/']],
+			['http://foo.com/bar?bar=test', ['REQUEST_URI' => '/bar?bar=test']],
+			['http://foo.com/?bar=test', ['REQUEST_URI' => '/?bar=test']],
+			['http://foo.com/?bar=test', ['REQUEST_URI' => '?bar=test']],
 		);
 
-		foreach($matrix as $uri => $env)
+		foreach($matrix as $data)
 		{
+			list($uri, $env) = $data;
+
 			$request = $this->getRequest($env, $config);
 
 			$this->assertEquals($uri, (string) $request->getUri(), var_export($env, true));
