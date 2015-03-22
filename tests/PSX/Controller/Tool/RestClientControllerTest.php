@@ -29,13 +29,13 @@ use PSX\Test\ControllerTestCase;
 use PSX\Url;
 
 /**
- * RestControllerTest
+ * RestClientControllerTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class RestControllerTest extends ControllerTestCase
+class RestClientControllerTest extends ControllerTestCase
 {
 	/**
 	 * The rest console is only an html template which makes AJAX to api 
@@ -85,7 +85,7 @@ class RestControllerTest extends ControllerTestCase
 	protected function getPaths()
 	{
 		return array(
-			[['GET'], '/rest', 'PSX\Controller\Tool\RestController'],
+			[['GET'], '/rest', 'PSX\Controller\Tool\RestClientController'],
 			[['GET'], '/routing', 'PSX\Controller\Tool\RoutingController'],
 		);
 	}

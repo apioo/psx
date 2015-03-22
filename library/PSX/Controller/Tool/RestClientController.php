@@ -29,13 +29,13 @@ use PSX\Data\Schema\Documentation;
 use PSX\Data\WriterInterface;
 
 /**
- * RestController
+ * RestClientController
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class RestController extends ViewAbstract
+class RestClientController extends ViewAbstract
 {
 	/**
 	 * @Inject
@@ -47,18 +47,18 @@ class RestController extends ViewAbstract
 	{
 		parent::onGet();
 
-		$this->template->set(__DIR__ . '/../Resource/rest_controller.tpl');
+		$this->template->set(__DIR__ . '/../Resource/rest_client_controller.tpl');
 
 		$this->setBody(array(
 			'links' => [
-				new Record('link', [
+				[
 					'rel'  => 'self',
-					'href' => $this->reverseRouter->getAbsolutePath('PSX\Controller\Tool\RestController'),
-				]),
-				new Record('link', [
+					'href' => $this->reverseRouter->getAbsolutePath('PSX\Controller\Tool\RestClientController'),
+				],
+				[
 					'rel'  => 'router',
 					'href' => $this->reverseRouter->getAbsolutePath('PSX\Controller\Tool\RoutingController'),
-				]),
+				],
 			]
 		));
 	}
