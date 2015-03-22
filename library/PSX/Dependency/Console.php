@@ -44,9 +44,9 @@ trait Console
 	public function getConsole()
 	{
 		$application = new Application('psx', Base::getVersion());
-		$application->setHelperSet(new HelperSet($this->appendHelpers()));
+		$application->setHelperSet(new HelperSet($this->appendConsoleHelpers()));
 
-		$this->appendCommands($application);
+		$this->appendConsoleCommands($application);
 
 		return $application;
 	}
@@ -59,7 +59,7 @@ trait Console
 		return new Reader\Stdin();
 	}
 
-	protected function appendCommands(Application $application)
+	protected function appendConsoleCommands(Application $application)
 	{
 		$application->add(new PSXCommand\CommandCommand($this->get('executor'), $this->get('console_reader')));
 		$application->add(new PSXCommand\ContainerCommand($this));
@@ -87,7 +87,7 @@ trait Console
 	/**
 	 * @return array
 	 */
-	protected function appendHelpers()
+	protected function appendConsoleHelpers()
 	{
 		return array(
 			'db' => new ConnectionHelper($this->get('connection')),

@@ -57,10 +57,17 @@
 
 	function submitCommand(command)
 	{
-		$.post('?format=json&command=' + encodeURIComponent(command), $('#form').serialize(), function(resp){
-
-			$('#command-output').html(resp.output);
-
+		$.ajax({
+			type: 'POST',
+			url: '?format=json&command=' + encodeURIComponent(command),
+			data: $('#form').serialize(),
+			success: function(resp){
+				$('#command-output').html(resp.output);
+			},
+			error: function(xhr, statusCode){
+				var resp = JSON.parse(xhr.responseText)
+				$('#command-output').html(resp.message);
+			}
 		});
 	}
 

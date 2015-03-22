@@ -56,6 +56,15 @@ trait Command
 	 */
 	public function getExecutor()
 	{
-		return new Executor($this->get('command_factory'), $this->get('command_output'), $this->get('event_dispatcher'));
+		$executor = new Executor($this->get('command_factory'), $this->get('command_output'), $this->get('event_dispatcher'));
+
+		$this->appendDefaultCommands($executor);
+
+		return $executor;
+	}
+
+	protected function appendDefaultCommands(Executor $executor)
+	{
+		return $executor;
 	}
 }
