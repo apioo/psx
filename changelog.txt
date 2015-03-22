@@ -1,4 +1,20 @@
 
+0.9.7
+* Added record graph traverser class and various visitor implementations which
+  are used to produce data from an object graph
+* Improved internal data representation for incoming and outgoing data
+* Added content type aware fallback template generator and move fallback 
+  generation to the html writer
+* Improved request factory added automatic protocol detection if "psx_url" is 
+  i.e. //foo.com and use buffered reader for request body
+* Table abstract returns now record classes instead of associative arrays
+* Log request and response body if in debug mode
+* Added jsonx support
+* Improved streams and added buffered stream implementation
+* Added logcaster monolog listener
+* Updated PSR http-message to the current version of the spec
+* Changed license from GPLv3 to Apache 2.0
+
 0.9.6
 * Improved documentation
 * Added raml generator
