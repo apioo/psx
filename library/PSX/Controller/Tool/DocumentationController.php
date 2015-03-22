@@ -70,14 +70,14 @@ class DocumentationController extends ViewAbstract
 			'metas'    => $this->getMetaLinks(),
 			'routings' => $this->getRoutings(),
 			'links'    => [
-				new Record('link', [
+				[
 					'rel'  => 'self',
 					'href' => $this->reverseRouter->getUrl(get_class($this) . '::doIndex'),
-				]),
-				new Record('link', [
+				],
+				[
 					'rel'  => 'detail',
 					'href' => $this->reverseRouter->getUrl(get_class($this) . '::doDetail', array('{version}', '{path}')),
-				]),
+				],
 			]
 		]);
 	}
