@@ -55,27 +55,27 @@ class ToolControllerTest extends ControllerTestCase
         "general": [
             {
                 "title": "Routing",
-                "path ": "__BASE_PATH__routing"
+                "path": "__BASE_PATH__routing"
             },
             {
                 "title": "Command",
-                "path ": "__BASE_PATH__command"
+                "path": "__BASE_PATH__command"
             }
         ],
         "api": [
             {
-                "title": "Console",
-                "path ": "__BASE_PATH__rest"
+                "title": "Client",
+                "path": "__BASE_PATH__rest_client"
             },
             {
                 "title": "Documentation",
-                "path ": "__BASE_PATH__doc"
+                "path": "__BASE_PATH__doc"
             }
         ]
     },
     "current": {
         "title": "Routing",
-        "path ": "__BASE_PATH__routing"
+        "path": "__BASE_PATH__routing"
     }
 }
 JSON;
@@ -89,7 +89,7 @@ JSON;
 			[['GET'], '/tool', 'PSX\Controller\Tool\ToolController'],
 			[['GET'], '/routing', 'PSX\Controller\Tool\RoutingController'],
 			[['GET', 'POST'], '/command', 'PSX\Controller\Tool\CommandController'],
-			[['GET'], '/rest', 'PSX\Controller\Tool\RestController'],
+			[['GET'], '/rest_client', 'PSX\Controller\Tool\RestClientController'],
 			[['GET'], '/doc', 'PSX\Controller\Tool\DocumentationController::doIndex'],
 			[['GET'], '/doc/:version/*path', 'PSX\Controller\Tool\DocumentationController::doDetail'],
 		);
