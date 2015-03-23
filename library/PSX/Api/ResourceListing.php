@@ -117,7 +117,7 @@ class ResourceListing
 
 	protected function getActualResources(RequestInterface $request, ResponseInterface $response, Context $context)
 	{
-		$collections = $this->getCachedRouting();
+		$collections = $this->routingParser->getCollection();
 		$result      = array();
 
 		foreach($collections as $collection)
@@ -176,26 +176,6 @@ class ResourceListing
 		$resource->setDocumentation($documentation);
 
 		return $resource;
-	}
-
-	protected function getCachedRouting()
-	{
-		$item = $this->cache->getItem('cached-routing');
-
-		if($item->isHit())
-		{
-			return $item->get();
-		}
-		else
-		{
-			$collections = $this->routingParser->getCollection();
-
-			$item->set($collections);
-
-			$this->cache->save($item);
-
-			return $collections;
-		}
 	}
 
 	protected function getController($className, RequestInterface $request, ResponseInterface $response, Context $context)
