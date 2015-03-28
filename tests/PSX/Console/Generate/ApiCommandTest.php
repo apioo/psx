@@ -212,10 +212,11 @@ class ApiCommandTest extends CommandTestCase
 namespace Acme\Foo;
 
 use PSX\Api\Documentation;
+use PSX\Api\Resource;
 use PSX\Api\Version;
-use PSX\Api\View;
 use PSX\Controller\SchemaApiAbstract;
 use PSX\Data\RecordInterface;
+use PSX\Loader\Context;
 
 /**
  * Bar
@@ -241,10 +242,12 @@ class Bar extends SchemaApiAbstract
 	 */
 	public function getDocumentation()
 	{
-		$view = new View();
-		$view->setGet($this->schemaManager->getSchema('Acme\Foo\Schema\Collection'));
+		$resource = new Resource(Resource::STATUS_ACTIVE, $this->context->get(Context::KEY_PATH));
 
-		return new Documentation\Simple($view);
+		$resource->addMethod(Resource\Factory::getMethod('GET')
+			->addResponse(200, $this->schemaManager->getSchema('Acme\Foo\Schema\Collection')));
+
+		return new Documentation\Simple($resource);
 	}
 
 	/**
@@ -305,10 +308,11 @@ PHP;
 namespace Acme\Foo;
 
 use PSX\Api\Documentation;
+use PSX\Api\Resource;
 use PSX\Api\Version;
-use PSX\Api\View;
 use PSX\Controller\SchemaApiAbstract;
 use PSX\Data\RecordInterface;
+use PSX\Loader\Context;
 
 /**
  * Bar
@@ -328,10 +332,12 @@ class Bar extends SchemaApiAbstract
 	 */
 	public function getDocumentation()
 	{
-		$view = new View();
-		$view->setGet($this->schemaManager->getSchema('Acme\Foo\Schema\Collection'));
+		$resource = new Resource(Resource::STATUS_ACTIVE, $this->context->get(Context::KEY_PATH));
 
-		return new Documentation\Simple($view);
+		$resource->addMethod(Resource\Factory::getMethod('GET')
+			->addResponse(200, $this->schemaManager->getSchema('Acme\Foo\Schema\Collection')));
+
+		return new Documentation\Simple($resource);
 	}
 
 	/**
@@ -392,10 +398,11 @@ PHP;
 namespace Acme\Foo;
 
 use PSX\Api\Documentation;
+use PSX\Api\Resource;
 use PSX\Api\Version;
-use PSX\Api\View;
 use PSX\Controller\SchemaApiAbstract;
 use PSX\Data\RecordInterface;
+use PSX\Loader\Context;
 
 /**
  * Bar
@@ -415,10 +422,12 @@ class Bar extends SchemaApiAbstract
 	 */
 	public function getDocumentation()
 	{
-		$view = new View();
-		$view->setGet($this->schemaManager->getSchema('Acme\Foo\Schema\Collection'));
+		$resource = new Resource(Resource::STATUS_ACTIVE, $this->context->get(Context::KEY_PATH));
 
-		return new Documentation\Simple($view);
+		$resource->addMethod(Resource\Factory::getMethod('GET')
+			->addResponse(200, $this->schemaManager->getSchema('Acme\Foo\Schema\Collection')));
+
+		return new Documentation\Simple($resource);
 	}
 
 	/**
