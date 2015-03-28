@@ -102,10 +102,11 @@ class ApiCommand extends ContainerGenerateCommandAbstract
 namespace {$namespace};
 
 use PSX\Api\Documentation;
+use PSX\Api\Resource;
 use PSX\Api\Version;
-use PSX\Api\View;
 use PSX\Controller\SchemaApiAbstract;
 use PSX\Data\RecordInterface;
+use PSX\Loader\Context;
 
 /**
  * {$className}
@@ -121,10 +122,12 @@ class {$className} extends SchemaApiAbstract
 	 */
 	public function getDocumentation()
 	{
-		\$view = new View();
-		\$view->setGet(\$this->schemaManager->getSchema('{$namespace}\Schema\Collection'));
+		\$resource = new Resource(Resource::STATUS_ACTIVE, \$this->context->get(Context::KEY_PATH));
 
-		return new Documentation\Simple(\$view);
+		\$resource->addMethod(Resource\Factory::getMethod('GET')
+			->addResponse(200, \$this->schemaManager->getSchema('{$namespace}\Schema\Collection')));
+
+		return new Documentation\Simple(\$resource);
 	}
 
 	/**
