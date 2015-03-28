@@ -22,13 +22,13 @@ namespace PSX\Controller;
 
 use PSX\Api\Documentation;
 use PSX\Api\Version;
-use PSX\Api\View;
-use PSX\Api\View\Builder;
+use PSX\Api\Resource;
 use PSX\Data\Schema;
 use PSX\Data\SchemaInterface;
 use PSX\Data\Schema\Property\ComplexType;
 use PSX\Data\RecordInterface;
 use PSX\Data\Schema\Builder as SchemaBuilder;
+use PSX\Data\Schema\Property;
 use PSX\Http\Exception as StatusCode;
 use PSX\Loader\Context;
 use PSX\Sql\TableInterface;
@@ -59,14 +59,36 @@ abstract class TableApiAbstract extends SchemaApiAbstract
 		$collection = $this->getCollectionSchema($table);
 		$message    = $this->getMessageSchema();
 
-		$path    = $this->context->get(Context::KEY_PATH);
-		$builder = new Builder(View::STATUS_ACTIVE, $path);
-		$builder->setGet($collection);
-		$builder->setPost($table, $message);
-		$builder->setPut($table, $message);
-		$builder->setDelete($table, $message);
+		$path       = $this->context->get(Context::KEY_PATH);
+		$resource   = new Resource(Resource::STATUS_ACTIVE, $path);
 
-		return new Documentation\Simple($builder->getView());
+		$method = new Resource\Get();
+		$method->addQueryParameter(new Property\Integer('startIndex'));
+		$method->addQueryParameter(new Property\Integer('count'));
+		$method->addQueryParameter(new Property\Integer('totalResults'));
+		$method->addResponse(200, $collection);
+
+		$resource->addMethod($method);
+
+		$method = new Resource\Post();
+		$method->setRequest($table);
+		$method->addResponse(200, $message);
+
+		$resource->addMethod($method);
+
+		$method = new Resource\Put();
+		$method->setRequest($table);
+		$method->addResponse(200, $message);
+
+		$resource->addMethod($method);
+
+		$method = new Resource\Delete();
+		$method->setRequest($table);
+		$method->addResponse(200, $message);
+
+		$resource->addMethod($method);
+
+		return new Documentation\Simple($resource);
 	}
 
 	protected function doGet(Version $version)

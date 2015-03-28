@@ -23,7 +23,7 @@ namespace PSX\Controller;
 use PSX\Api\DocumentationInterface;
 use PSX\Api\DocumentedInterface;
 use PSX\Api\Version;
-use PSX\Api\View;
+use PSX\Api\Resource;
 use PSX\Api\InvalidVersionException;
 use PSX\ControllerAbstract;
 use PSX\Data\Record;
@@ -52,40 +52,46 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 	 */
 	protected $schemaManager;
 
+	/**
+	 * @Inject
+	 * @var PSX\Api\ResourceListingInterface
+	 */
+	protected $resourceListing;
+
 	public function onGet()
 	{
-		$doc     = $this->getDocumentation();
-		$version = $this->getVersion($doc);
-		$view    = $this->getView($doc, $version);
+		$doc      = $this->getDocumentation();
+		$version  = $this->getVersion($doc);
+		$resource = $this->getResource($doc, $version);
 
-		if(!$view->hasGet())
+		if(!$resource->hasMethod('GET'))
 		{
-			throw new StatusCode\MethodNotAllowedException('Method is not allowed', $view->getAllowedMethods());
+			throw new StatusCode\MethodNotAllowedException('Method is not allowed', $resource->getAllowedMethods());
 		}
 
 		$response = $this->doGet($version);
 
-		$this->setBody($this->schemaAssimilator->assimilate($view->getGetResponse(), $response));
+		$this->setBody($this->schemaAssimilator->assimilate($resource->getMethod('GET')->getResponse(200), $response));
 	}
 
 	public function onPost()
 	{
-		$doc     = $this->getDocumentation();
-		$version = $this->getVersion($doc);
-		$view    = $this->getView($doc, $version);
+		$doc      = $this->getDocumentation();
+		$version  = $this->getVersion($doc);
+		$resource = $this->getResource($doc, $version);
 
-		if(!$view->hasPost())
+		if(!$resource->hasMethod('POST'))
 		{
-			throw new StatusCode\MethodNotAllowedException('Method is not allowed', $view->getAllowedMethods());
+			throw new StatusCode\MethodNotAllowedException('Method is not allowed', $resource->getAllowedMethods());
 		}
 
-		$record   = $view->hasPostRequest() ? $this->import($view->getPostRequest()) : new Record();
+		$record   = $resource->getMethod('POST')->hasRequest() ? $this->import($resource->getMethod('POST')->getRequest()) : new Record();
 		$response = $this->doCreate($record, $version);
 
-		if($view->hasPostResponse())
+		if($resource->getMethod('POST')->hasResponse(200))
 		{
 			$this->setResponseCode(201);
-			$this->setBody($this->schemaAssimilator->assimilate($view->getPostResponse(), $response));
+			$this->setBody($this->schemaAssimilator->assimilate($resource->getMethod('POST')->getResponse(200), $response));
 		}
 		else
 		{
@@ -96,22 +102,22 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 
 	public function onPut()
 	{
-		$doc     = $this->getDocumentation();
-		$version = $this->getVersion($doc);
-		$view    = $this->getView($doc, $version);
+		$doc      = $this->getDocumentation();
+		$version  = $this->getVersion($doc);
+		$resource = $this->getResource($doc, $version);
 
-		if(!$view->hasPut())
+		if(!$resource->hasMethod('PUT'))
 		{
-			throw new StatusCode\MethodNotAllowedException('Method is not allowed', $view->getAllowedMethods());
+			throw new StatusCode\MethodNotAllowedException('Method is not allowed', $resource->getAllowedMethods());
 		}
 
-		$record   = $view->hasPutRequest() ? $this->import($view->getPutRequest()) : new Record();
+		$record   = $resource->getMethod('PUT')->hasRequest() ? $this->import($resource->getMethod('PUT')->getRequest()) : new Record();
 		$response = $this->doUpdate($record, $version);
 
-		if($view->hasPutResponse())
+		if($resource->getMethod('PUT')->hasResponse(200))
 		{
 			$this->setResponseCode(200);
-			$this->setBody($this->schemaAssimilator->assimilate($view->getPutResponse(), $response));
+			$this->setBody($this->schemaAssimilator->assimilate($resource->getMethod('PUT')->getResponse(200), $response));
 		}
 		else
 		{
@@ -122,22 +128,22 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 
 	public function onDelete()
 	{
-		$doc     = $this->getDocumentation();
-		$version = $this->getVersion($doc);
-		$view    = $this->getView($doc, $version);
+		$doc      = $this->getDocumentation();
+		$version  = $this->getVersion($doc);
+		$resource = $this->getResource($doc, $version);
 
-		if(!$view->hasDelete())
+		if(!$resource->hasMethod('DELETE'))
 		{
-			throw new StatusCode\MethodNotAllowedException('Method is not allowed', $view->getAllowedMethods());
+			throw new StatusCode\MethodNotAllowedException('Method is not allowed', $resource->getAllowedMethods());
 		}
 
-		$record   = $view->hasDeleteRequest() ? $this->import($view->getDeleteRequest()) : new Record();
+		$record   = $resource->getMethod('DELETE')->hasRequest() ? $this->import($resource->getMethod('DELETE')->getRequest()) : new Record();
 		$response = $this->doDelete($record, $version);
 
-		if($view->hasDeleteResponse())
+		if($resource->getMethod('DELETE')->hasResponse(200))
 		{
 			$this->setResponseCode(200);
-			$this->setBody($this->schemaAssimilator->assimilate($view->getDeleteResponse(), $response));
+			$this->setBody($this->schemaAssimilator->assimilate($resource->getMethod('DELETE')->getResponse(200), $response));
 		}
 		else
 		{
@@ -181,28 +187,28 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 	 */
 	abstract protected function doDelete(RecordInterface $record, Version $version);
 
-	protected function getView(DocumentationInterface $doc, Version $version)
+	protected function getResource(DocumentationInterface $doc, Version $version)
 	{
-		if(!$doc->hasView($version->getVersion()))
+		if(!$doc->hasResource($version->getVersion()))
 		{
 			throw new StatusCode\NotAcceptableException('Version is not available');
 		}
 
-		$view = $doc->getView($version->getVersion());
+		$resource = $doc->getResource($version->getVersion());
 
-		if($view->isActive())
+		if($resource->isActive())
 		{
 		}
-		else if($view->isDeprecated())
+		else if($resource->isDeprecated())
 		{
 			$this->response->addHeader('Warning', '199 PSX "Version v' . $version->getVersion() . ' is deprecated"');
 		}
-		else if($view->isClosed())
+		else if($resource->isClosed())
 		{
 			throw new StatusCode\GoneException('Version v' . $version->getVersion() . ' is not longer supported');
 		}
 
-		return new View\Facade($view);
+		return $resource;
 	}
 
 	protected function getVersion(DocumentationInterface $doc)
@@ -224,7 +230,7 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 			}
 			else
 			{
-				// its is strongly recommended that clients specify an explicit
+				// it is strongly recommended that clients specify an explicit
 				// version but forcing that with an exception is not a good user
 				// experience therefore we use the latest version if nothing is 
 				// specified

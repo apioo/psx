@@ -65,6 +65,11 @@
 		font-family:monospace;
 	}
 
+	.psx-navigation a:active, a:focus
+	{
+		text-decoration:none;
+	}
+
 	.psx-navigation .nav-head
 	{
 		color:#55acee;
@@ -75,18 +80,23 @@
 		border-bottom:1px solid #55acee;
 	}
 
-	.psx-content
+	.psx-navigation-selected
+	{
+		color:#55acee!important;
+	}
+
+	#psx-content
 	{
 		background-color:#fff;
 		margin-bottom:64px;
 	}
 
-	.psx-content > h3
+	#psx-content > h3
 	{
 		margin:12px 8px;
 	}
 
-	.view > h4
+	.resource > h4
 	{
 		margin:0px;
 		margin-top:8px;
@@ -97,7 +107,7 @@
 		color:#fff;
 	}
 
-	.view-schema > h5
+	.resource-data > h5
 	{
 		text-align:right;
 		background-color:#eee;
@@ -145,20 +155,26 @@
 		border-radius:0px;
 	}
 
-	.type > h1
+	.alert
+	{
+		border-radius:0px;
+	}
+
+	.psx-complex-type > h1
 	{
 		font-family:monospace;
 		font-size:1.6em;
 		border-bottom:2px solid #222;
 		padding:8px;
+		margin-top:0px;
 	}
 
-	.property-required
+	.psx-property-required
 	{
 		font-weight:bold;
 	}
 
-	.property-constraint dt
+	.psx-property-constraint dt
 	{
 		font-size:0.9em;
 		float:left;
@@ -166,7 +182,7 @@
 		clear:left;
 	}
 
-	.property-constraint dd ul
+	.psx-property-constraint dd ul
 	{
 		list-style-type:none;
 		padding:0px;
@@ -174,7 +190,7 @@
 		padding-left:100px;
 	}
 
-	.type-description
+	.psx-type-description
 	{
 		margin:8px;
 	}
@@ -182,44 +198,62 @@
 	<script type="text/javascript">
 	var links = <?php echo json_encode($links); ?>;
 
-	function loadApi(path, version)
+	function loadApi(path, version, selectedTab)
 	{
+		// check whether we have this path
+		var hasPath = false;
+		$('.psx-navigation ul li a').each(function(){
+			if (!hasPath && $(this).attr('href').substr(1) == path) {
+				$(this).addClass('psx-navigation-selected');
+				hasPath = true;
+			} else {
+				$(this).removeClass('psx-navigation-selected');
+			}
+		});
+
+		if (!hasPath) {
+			return false;
+		}
+
+		// load api documentation
 		var html = '<div id="api-toolbar"></div>';
 		html+= '<h3 id="api-title"></h3>';
 		html+= '<div id="api-description"></div>';
 		html+= '<div id="api-nav"></div>';
 		html+= '<div id="api-doc" class="tab-content"><div id="api-loader"><img /></div></div>';
-		$('.psx-content').html(html);
+		$('#psx-content').html(html);
 
 		var successCallback = function(resp){
-			if (resp.path) {
-				$('#api-title').html(resp.path + ' (v' + resp.view.version + ')');
+			if (resp && typeof resp === 'object' && resp.path) {
+				$('#api-title').html(resp.path + ' (v' + resp.resource.version + ')');
 				$('#api-description').html(resp.description);
 				$('#api-toolbar').html(getToolbar(resp));
 
 				var html = '';
-				var nav = '<ul class="nav nav-tabs">';
+				var nav  = '<ul class="nav nav-tabs">';
 
 				for (var i = 0; i < resp.method.length; i++) {
 
 					var method = resp.method[i].toUpperCase();
 
-					nav+= '<li role="presentation"><a href="#' + method + '">' + resp.method[i] + '</a></li>'
-
-					var requestKey  = method + '_request';
-					var responseKey = method + '_response';
-
+					nav += '<li role="presentation"><a href="#' + method + '">' + resp.method[i] + '</a></li>'
 					html+= '<div role="tabpanel" class="tab-pane" id="' + method + '">';
 
-					for (var key in resp.view.data) {
+					for (var key in resp.resource.data) {
+						var data     = resp.resource.data[key];
+						var resource = '';
+						$(data).find('.psx-resource').each(function(){
+							if ($(this).data('method') == method) {
+								resource+= '<div class="resource-data">' + $(this).html() + '</div>';
+							}
+						});
 
-						var dataType = resp.view.data[key];
-						var row = dataType[method];
-
-						if (row) {
-							html+= row;
+						if (resource.length > 0) {
+							html+= '<div class="resource">';
+							html+= '<h4>' + key + '</h4>';
+							html+= resource;
+							html+= '</div>';
 						}
-
 					}
 
 					html+= '</div>';
@@ -232,6 +266,7 @@
 				$('#api-nav a').click(function(e){
 					e.preventDefault();
 					$(this).tab('show');
+					location.hash = resp.path + ':' + $(this).attr('href').substr(1);
 				});
 
 				// doc
@@ -239,14 +274,21 @@
 				$('#api-doc').find('pre code').each(function(i, block) {
 					hljs.highlightBlock(block);
 				});
-				$('#api-nav a:first').trigger('click');
+
+				// select tab
+				if (selectedTab == 'GET' || selectedTab == 'POST' || selectedTab == 'PUT' || selectedTab == 'DELETE') {
+					$('#api-nav a[href="#' + selectedTab + '"]').trigger('click');
+				} else {
+					$('#api-nav a:first').trigger('click');
+				}
 			} else {
-				$('#api-nav').html('');
-				$('#api-doc').html('<div class="alert alert-info" role="alert>No API documentation available</div>');
+				location.hash = '/' + path;
+				$('#api-doc').html('<div class="alert alert-info" role="alert">No API documentation available</div>');
 			}
 		};
 
 		var errorCallback = function(resp){
+			location.hash = '/' + path;
 			var data = resp.responseJSON;
 			if (data.hasOwnProperty('success') && data.success === false) {
 				$('#api-doc').html('<div class="alert alert-danger" role="alert">' + data.message + '</div><pre>' + data.trace + '</pre>');
@@ -269,20 +311,22 @@
 				success: successCallback,
 				error: errorCallback
 			});
-		} else {
-			alert('Found no detail link');
+
+			return true;
 		}
+
+		return false;
 	}
 
 	function loadPage(url)
 	{
-		$('.psx-content').html('<div id="api-loader"><img /></div>');
+		$('#psx-content').html('<div id="api-loader"><img /></div>');
 
 		$.ajax({
 			url: url,
 			dataType: 'html',
 			success: function(resp){
-				$('.psx-content').html(resp);
+				$('#psx-content').html(resp);
 			}
 		});
 	}
@@ -316,7 +360,29 @@
 	}
 
 	$(document).ready(function(){
-		$('.psx-navigation ul li a:first').trigger('click');
+		if (location.hash) {
+			var path = location.hash.substr(1);
+			var selectedTab = false;
+			if (path.indexOf(':') !== -1) {
+				selectedTab = path.substr(path.lastIndexOf(':') + 1);
+				path = path.substr(0, path.lastIndexOf(':'));
+			}
+
+			var hasPath = false;
+			$('.psx-navigation ul li a').each(function(){
+				if (!hasPath && $(this).attr('href').substr(1) == path) {
+					hasPath = true;
+				}
+			});
+
+			if (hasPath) {
+				loadApi(path, '*', selectedTab);
+			} else {
+				$('.psx-navigation ul li a:first').trigger('click');
+			}
+		} else {
+			$('.psx-navigation ul li a:first').trigger('click');
+		}
 	});
 	</script>
 </head>
@@ -336,14 +402,14 @@
 					<?php if(!empty($routings)): ?>
 					<li class="nav-head">Endpoints</li>
 					<?php foreach($routings as $routing): ?>
-					<li><a href="#" onclick="loadApi('<?php echo $routing['path']; ?>', <?php echo $routing['version']; ?>);return false"><?php echo $routing['path']; ?></a></li>
+					<li><a href="#<?php echo $routing['path']; ?>" onclick="loadApi('<?php echo $routing['path']; ?>', '<?php echo $routing['version']; ?>');return false"><?php echo $routing['path']; ?></a></li>
 					<?php endforeach; ?>
 					<?php endif; ?>
 				</ul>
 			</nav>
 		</div>
 		<div class="col-md-10 col-md-offset-2 content">
-			<div class="psx-content">
+			<div id="psx-content">
 				<div id="api-toolbar"></div>
 				<h3 id="api-title"></h3>
 				<div id="api-description"></div>
