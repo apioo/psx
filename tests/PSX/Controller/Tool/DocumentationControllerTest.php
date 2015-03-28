@@ -77,7 +77,7 @@ class DocumentationControllerTest extends ControllerTestCase
 }
 JSON;
 
-		$this->assertJsonStringEqualsJsonString(str_replace('__BASE_PATH__', $basePath, $expect), $json);
+		$this->assertJsonStringEqualsJsonString(str_replace('__BASE_PATH__', $basePath, $expect), $json, $json);
 	}
 
 	public function testDetail()
@@ -120,7 +120,7 @@ JSON;
 }
 JSON;
 
-		$this->assertJsonStringEqualsJsonString(str_replace('__BASE_PATH__', $basePath, $expect), $json);
+		$this->assertJsonStringEqualsJsonString(str_replace('__BASE_PATH__', $basePath, $expect), $json, $json);
 	}
 
 	protected function getPaths()
