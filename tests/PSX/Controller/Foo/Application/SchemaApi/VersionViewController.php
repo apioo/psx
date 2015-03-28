@@ -22,7 +22,7 @@ namespace PSX\Controller\Foo\Application\SchemaApi;
 
 use PSX\Api\Documentation;
 use PSX\Api\Version;
-use PSX\Api\View;
+use PSX\Api\Resource;
 use PSX\Data\RecordInterface;
 use PSX\Controller\SchemaApiAbstract;
 use PSX\Loader\Context;
@@ -50,36 +50,65 @@ class VersionViewController extends SchemaApiAbstract
 
 	public function getDocumentation()
 	{
-		$responseSchema = $this->schemaManager->getSchema('PSX\Controller\Foo\Schema\SuccessMessage');
+		$doc      = new Documentation\Version();
+		$resource = new Resource(Resource::STATUS_CLOSED, $this->context->get(Context::KEY_PATH));
 
-		$path    = $this->context->get(Context::KEY_PATH);
-		$version = new Documentation\Version();
+		$resource->addMethod(Resource\Factory::getMethod('GET')
+			->addResponse(200, $this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Collection')));
 
-		$builder = new View\Builder(View::STATUS_CLOSED, $path);
-		$builder->setGet($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Collection'));
-		$builder->setPost($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Create'), $responseSchema);
-		$builder->setPut($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Update'), $responseSchema);
-		$builder->setDelete($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Delete'), $responseSchema);
+		$resource->addMethod(Resource\Factory::getMethod('POST')
+			->setRequest($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Create'))
+			->addResponse(200, $this->schemaManager->getSchema('PSX\Controller\Foo\Schema\SuccessMessage')));
 
-		$version->addView(1, $builder->getView());
+		$resource->addMethod(Resource\Factory::getMethod('PUT')
+			->setRequest($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Update'))
+			->addResponse(200, $this->schemaManager->getSchema('PSX\Controller\Foo\Schema\SuccessMessage')));
 
-		$builder = new View\Builder(View::STATUS_DEPRECATED, $path);
-		$builder->setGet($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Collection'));
-		$builder->setPost($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Create'), $responseSchema);
-		$builder->setPut($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Update'), $responseSchema);
-		$builder->setDelete($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Delete'), $responseSchema);
+		$resource->addMethod(Resource\Factory::getMethod('DELETE')
+			->setRequest($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Delete'))
+			->addResponse(200, $this->schemaManager->getSchema('PSX\Controller\Foo\Schema\SuccessMessage')));
 
-		$version->addView(2, $builder->getView());
+		$doc->addResource(1, $resource);
 
-		$builder = new View\Builder(View::STATUS_ACTIVE, $path);
-		$builder->setGet($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Collection'));
-		$builder->setPost($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Create'), $responseSchema);
-		$builder->setPut($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Update'), $responseSchema);
-		$builder->setDelete($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Delete'), $responseSchema);
+		$resource = new Resource(Resource::STATUS_DEPRECATED, $this->context->get(Context::KEY_PATH));
 
-		$version->addView(3, $builder->getView());
+		$resource->addMethod(Resource\Factory::getMethod('GET')
+			->addResponse(200, $this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Collection')));
 
-		return $version;
+		$resource->addMethod(Resource\Factory::getMethod('POST')
+			->setRequest($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Create'))
+			->addResponse(200, $this->schemaManager->getSchema('PSX\Controller\Foo\Schema\SuccessMessage')));
+
+		$resource->addMethod(Resource\Factory::getMethod('PUT')
+			->setRequest($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Update'))
+			->addResponse(200, $this->schemaManager->getSchema('PSX\Controller\Foo\Schema\SuccessMessage')));
+
+		$resource->addMethod(Resource\Factory::getMethod('DELETE')
+			->setRequest($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Delete'))
+			->addResponse(200, $this->schemaManager->getSchema('PSX\Controller\Foo\Schema\SuccessMessage')));
+
+		$doc->addResource(2, $resource);
+
+		$resource = new Resource(Resource::STATUS_ACTIVE, $this->context->get(Context::KEY_PATH));
+
+		$resource->addMethod(Resource\Factory::getMethod('GET')
+			->addResponse(200, $this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Collection')));
+
+		$resource->addMethod(Resource\Factory::getMethod('POST')
+			->setRequest($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Create'))
+			->addResponse(200, $this->schemaManager->getSchema('PSX\Controller\Foo\Schema\SuccessMessage')));
+
+		$resource->addMethod(Resource\Factory::getMethod('PUT')
+			->setRequest($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Update'))
+			->addResponse(200, $this->schemaManager->getSchema('PSX\Controller\Foo\Schema\SuccessMessage')));
+
+		$resource->addMethod(Resource\Factory::getMethod('DELETE')
+			->setRequest($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Delete'))
+			->addResponse(200, $this->schemaManager->getSchema('PSX\Controller\Foo\Schema\SuccessMessage')));
+
+		$doc->addResource(3, $resource);
+
+		return $doc;
 	}
 
 	protected function doGet(Version $version)

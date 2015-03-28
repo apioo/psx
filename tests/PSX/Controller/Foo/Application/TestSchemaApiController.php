@@ -22,7 +22,7 @@ namespace PSX\Controller\Foo\Application;
 
 use PSX\Api\Documentation;
 use PSX\Api\Version;
-use PSX\Api\View;
+use PSX\Api\Resource;
 use PSX\Data\RecordInterface;
 use PSX\Loader\Context;
 use PSX\Controller\SchemaApiAbstract;
@@ -50,15 +50,24 @@ class TestSchemaApiController extends SchemaApiAbstract
 
 	public function getDocumentation()
 	{
-		$responseSchema = $this->schemaManager->getSchema('PSX\Controller\Foo\Schema\SuccessMessage');
+		$resource = new Resource(Resource::STATUS_ACTIVE, $this->context->get(Context::KEY_PATH));
 
-		$builder = new View\Builder(View::STATUS_ACTIVE, $this->context->get(Context::KEY_PATH));
-		$builder->setGet($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Collection'));
-		$builder->setPost($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Create'), $responseSchema);
-		$builder->setPut($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Update'), $responseSchema);
-		$builder->setDelete($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Delete'), $responseSchema);
+		$resource->addMethod(Resource\Factory::getMethod('GET')
+			->addResponse(200, $this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Collection')));
 
-		return new Documentation\Simple($builder->getView());
+		$resource->addMethod(Resource\Factory::getMethod('POST')
+			->setRequest($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Create'))
+			->addResponse(200, $this->schemaManager->getSchema('PSX\Controller\Foo\Schema\SuccessMessage')));
+
+		$resource->addMethod(Resource\Factory::getMethod('PUT')
+			->setRequest($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Update'))
+			->addResponse(200, $this->schemaManager->getSchema('PSX\Controller\Foo\Schema\SuccessMessage')));
+
+		$resource->addMethod(Resource\Factory::getMethod('DELETE')
+			->setRequest($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Delete'))
+			->addResponse(200, $this->schemaManager->getSchema('PSX\Controller\Foo\Schema\SuccessMessage')));
+
+		return new Documentation\Simple($resource);
 	}
 
 	protected function doGet(Version $version)

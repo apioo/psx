@@ -22,7 +22,7 @@ namespace PSX\Controller\Foo\Application\SchemaApi;
 
 use PSX\Api\Documentation;
 use PSX\Api\Version;
-use PSX\Api\View;
+use PSX\Api\Resource;
 use PSX\Data\RecordInterface;
 use PSX\Controller\SchemaApiAbstract;
 
@@ -49,7 +49,7 @@ class NoViewController extends SchemaApiAbstract
 
 	public function getDocumentation()
 	{
-		return new Documentation\Simple(new View());
+		return new Documentation\Simple(new Resource(Resource::STATUS_ACTIVE, '/'));
 	}
 
 	protected function doGet(Version $version)

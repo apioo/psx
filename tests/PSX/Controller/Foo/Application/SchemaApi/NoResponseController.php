@@ -22,9 +22,10 @@ namespace PSX\Controller\Foo\Application\SchemaApi;
 
 use PSX\Api\Documentation;
 use PSX\Api\Version;
-use PSX\Api\View;
-use PSX\Data\RecordInterface;
+use PSX\Api\Resource;
 use PSX\Controller\SchemaApiAbstract;
+use PSX\Data\RecordInterface;
+use PSX\Loader\Context;
 
 /**
  * NoResponseController
@@ -49,14 +50,18 @@ class NoResponseController extends SchemaApiAbstract
 
 	public function getDocumentation()
 	{
-		$responseSchema = $this->schemaManager->getSchema('PSX\Controller\Foo\Schema\SuccessMessage');
+		$resource = new Resource(Resource::STATUS_ACTIVE, $this->context->get(Context::KEY_PATH));
 
-		$builder = new View\Builder();
-		$builder->setPost($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Create'));
-		$builder->setPut($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Update'));
-		$builder->setDelete($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Delete'));
+		$resource->addMethod(Resource\Factory::getMethod('POST')
+			->setRequest($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Create')));
 
-		return new Documentation\Simple($builder->getView());
+		$resource->addMethod(Resource\Factory::getMethod('PUT')
+			->setRequest($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Update')));
+
+		$resource->addMethod(Resource\Factory::getMethod('DELETE')
+			->setRequest($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Delete')));
+
+		return new Documentation\Simple($resource);
 	}
 
 	protected function doGet(Version $version)
