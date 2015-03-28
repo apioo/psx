@@ -33,7 +33,7 @@ use PSX\Loader\RoutingParserInterface;
  */
 class CachedParser implements RoutingParserInterface
 {
-	const CACHE_KEY = 'routing_file';
+	const CACHE_KEY = 'routing-collection';
 
 	protected $routingParser;
 	protected $cache;
