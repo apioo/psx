@@ -207,7 +207,6 @@ class DocumentationController extends ViewAbstract
 	{
 		return array(
 			'Schema' => new Generator\Html\Schema(new SchemaGenerator\Html()),
-			'Sample' => new Generator\Html\Sample(new Generator\Html\Sample\Loader\XmlFile(PSX_PATH_LIBRARY . '/Foo/Blog/Resource/sample.xml')),
 		);
 	}
 
