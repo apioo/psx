@@ -21,6 +21,7 @@
 namespace PSX\Api\Resource\Listing;
 
 use PSX\Api\Documentation;
+use PSX\Api\DocumentationInterface;
 use PSX\Api\DocumentedInterface;
 use PSX\Api\Resource;
 use PSX\Api\Resource\ListingInterface;
@@ -35,10 +36,8 @@ use PSX\Loader\PathMatcher;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class CachedListing extends ListingInterface
+class CachedListing implements ListingInterface
 {
-	const CACHE_KEY = ;
-
 	protected $listing;
 	protected $cache;
 	protected $expire;
@@ -60,7 +59,9 @@ class CachedListing extends ListingInterface
 		}
 		else
 		{
-			$item->set($this->listing->getResourceIndex(), $this->expire);
+			$result = $this->listing->getResourceIndex();
+
+			$item->set($result, $this->expire);
 
 			$this->cache->save($item);
 
@@ -78,32 +79,34 @@ class CachedListing extends ListingInterface
 		}
 		else
 		{
-			$resource = $this->listing->getDocumentation($sourcePath);
+			$doc = $this->listing->getDocumentation($sourcePath);
 
-			if($resource instanceof Resource)
+			if($doc instanceof DocumentationInterface)
 			{
-				$resource = $this->getMaterializedDocumentation($resource);
+				$this->materializeDocumentation($doc);
 
-				$item->set($resource, $this->expire);
+				$item->set($doc, $this->expire);
 
 				$this->cache->save($item);
 
-				return $resource;
+				return $doc;
 			}
 		}
+
+		return null;
 	}
 
 	/**
 	 * An resource can contain schema definitions which are only resolved if we
 	 * actual call the getDefinition method i.e. the schema is stored in an 
-	 * database. So before we cache the resource we must get the actual 
+	 * database. So before we cache the documentation we must get the actual 
 	 * definition object which we can serialize
 	 *
-	 * @return PSX\Api\Resource
+	 * @param PSX\Api\DocumentationInterface
 	 */
-	protected function getMaterializedDocumentation(DocumentedInterface $documentation)
+	protected function materializeDocumentation(DocumentationInterface $documentation)
 	{
-		$versions = $documentation->getDocumentation()->getResources();
+		$versions = $documentation->getResources();
 
 		foreach($versions as $version => $resource)
 		{
@@ -122,7 +125,5 @@ class CachedListing extends ListingInterface
 				}
 			}
 		}
-
-		return $documentation;
 	}
 }
