@@ -18,56 +18,28 @@
  * limitations under the License.
  */
 
-namespace PSX\Api\Documentation;
+namespace PSX\Api\Resource\Generator\Html\Sample;
 
-use PSX\Api\DocumentationInterface;
 use PSX\Api\Resource;
 
 /**
- * Simple
+ * LoaderInterface
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Simple implements DocumentationInterface
+interface LoaderInterface
 {
-	protected $resource;
-	protected $description;
-
-	public function __construct(Resource $resource, $description = null)
-	{
-		$this->resource    = $resource;
-		$this->description = $description;
-	}
-
-	public function hasResource($version)
-	{
-		return $version == 1;
-	}
-
-	public function getResource($version)
-	{
-		return $version == 1 ? $this->resource : null;
-	}
-
-	public function getResources()
-	{
-		return array(1 => $this->resource);
-	}
-
-	public function getLatestVersion()
-	{
-		return 1;
-	}
-
-	public function isVersionRequired()
-	{
-		return false;
-	}
-
-	public function getDescription()
-	{
-		return $this->description;
-	}
+	/**
+	 * Returns an an sample code according to an specific request type, method
+	 * and path
+	 *
+	 * @param integer $type
+	 * @param string $method
+	 * @param string $path
+	 * @param integer $statusCode
+	 * @return string
+	 */
+	public function get($type, $method, $path, $statusCode = null);
 }

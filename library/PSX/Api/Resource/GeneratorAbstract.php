@@ -18,56 +18,47 @@
  * limitations under the License.
  */
 
-namespace PSX\Api\Documentation;
+namespace PSX\Api\Resource;
 
-use PSX\Api\DocumentationInterface;
 use PSX\Api\Resource;
+use PSX\Api\Resource\MethodAbstract;
 
 /**
- * Simple
+ * GeneratorAbstract
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Simple implements DocumentationInterface
+abstract class GeneratorAbstract implements GeneratorInterface
 {
-	protected $resource;
-	protected $description;
-
-	public function __construct(Resource $resource, $description = null)
+	/**
+	 * Returns the key which gets appended to every type so it is unique
+	 *
+	 * @return string
+	 */
+	protected function getPrefix($key)
 	{
-		$this->resource    = $resource;
-		$this->description = $description;
+		return strtolower(Resource::getMethodName($key)) . Resource::getTypeName($key);
 	}
 
-	public function hasResource($version)
+	/**
+	 * Returns the successful response of an method or null if no is available
+	 *
+	 * @return PSX\Data\SchemaInterface
+	 */
+	protected function getSuccessfulResponse(MethodAbstract $method)
 	{
-		return $version == 1;
-	}
+		$responses = $method->getResponses();
 
-	public function getResource($version)
-	{
-		return $version == 1 ? $this->resource : null;
-	}
+		for($i = 200; $i < 300; $i++)
+		{
+			if(isset($responses[$i]))
+			{
+				return $responses[$i];
+			}
+		}
 
-	public function getResources()
-	{
-		return array(1 => $this->resource);
-	}
-
-	public function getLatestVersion()
-	{
-		return 1;
-	}
-
-	public function isVersionRequired()
-	{
-		return false;
-	}
-
-	public function getDescription()
-	{
-		return $this->description;
+		return null;
 	}
 }

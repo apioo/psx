@@ -20,7 +20,7 @@
 
 namespace PSX\Api\Documentation;
 
-use PSX\Api\View;
+use PSX\Api\Resource;
 
 /**
  * VersionTest
@@ -33,26 +33,26 @@ class VersionTest extends \PHPUnit_Framework_TestCase
 {
 	public function testVersion()
 	{
-		$view1   = new View();
-		$view2   = new View();
-		$version = new Version('foo');
+		$resource1 = new Resource(Resource::STATUS_ACTIVE, '/foo');
+		$resource2 = new Resource(Resource::STATUS_ACTIVE, '/foo');
+		$version   = new Version('foo');
 
-		$version->addView(1, $view1);
-		$version->addView(2, $view2);
+		$version->addResource(1, $resource1);
+		$version->addResource(2, $resource2);
 
-		$this->assertTrue($version->hasView(1));
-		$this->assertTrue($version->hasView(2));
-		$this->assertFalse($version->hasView(8));
-		$this->assertEquals($view1, $version->getView(1));
-		$this->assertEquals($view2, $version->getView(2));
-		$this->assertEquals(null, $version->getView(8));
-		$this->assertEquals(array(1 => $view1, 2 => $view2), $version->getViews());
+		$this->assertTrue($version->hasResource(1));
+		$this->assertTrue($version->hasResource(2));
+		$this->assertFalse($version->hasResource(8));
+		$this->assertEquals($resource1, $version->getResource(1));
+		$this->assertEquals($resource2, $version->getResource(2));
+		$this->assertEquals(null, $version->getResource(8));
+		$this->assertEquals(array(1 => $resource1, 2 => $resource2), $version->getResources());
 		$this->assertEquals(2, $version->getLatestVersion());
 		$this->assertTrue($version->isVersionRequired());
 		$this->assertEquals('foo', $version->getDescription());
 	}
 
-	public function testGetLatestVersionNoView()
+	public function testGetLatestVersionNoResource()
 	{
 		$version = new Version();
 

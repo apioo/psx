@@ -18,56 +18,43 @@
  * limitations under the License.
  */
 
-namespace PSX\Api\Documentation;
-
-use PSX\Api\DocumentationInterface;
-use PSX\Api\Resource;
+namespace PSX\Api\Resource;
 
 /**
- * Simple
+ * Factory
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
- * @link    http://phpsx.org
+ * @link	http://phpsx.org
  */
-class Simple implements DocumentationInterface
+class Factory
 {
-	protected $resource;
-	protected $description;
-
-	public function __construct(Resource $resource, $description = null)
+	public static function getMethod($methodName)
 	{
-		$this->resource    = $resource;
-		$this->description = $description;
-	}
+		switch($methodName)
+		{
+			case 'DELETE':
+				return new Delete();
+				break;
 
-	public function hasResource($version)
-	{
-		return $version == 1;
-	}
+			case 'GET':
+				return new Get();
+				break;
 
-	public function getResource($version)
-	{
-		return $version == 1 ? $this->resource : null;
-	}
+			case 'PATCH':
+				return new Patch();
+				break;
 
-	public function getResources()
-	{
-		return array(1 => $this->resource);
-	}
+			case 'POST':
+				return new Post();
+				break;
 
-	public function getLatestVersion()
-	{
-		return 1;
-	}
+			case 'PUT':
+				return new Put();
+				break;
 
-	public function isVersionRequired()
-	{
-		return false;
-	}
-
-	public function getDescription()
-	{
-		return $this->description;
+			default:
+				throw new InvalidArgumentException('Invalid request method');
+		}
 	}
 }

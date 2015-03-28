@@ -18,56 +18,35 @@
  * limitations under the License.
  */
 
-namespace PSX\Api\Documentation;
+namespace PSX\Api\Resource\Generator\Html;
 
-use PSX\Api\DocumentationInterface;
-use PSX\Api\Resource;
+use PSX\Api\Resource\Generator\HtmlAbstract;
+use PSX\Data\Schema\GeneratorInterface;
+use PSX\Data\SchemaInterface;
 
 /**
- * Simple
+ * Schema
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Simple implements DocumentationInterface
+class Schema extends HtmlAbstract
 {
-	protected $resource;
-	protected $description;
+	protected $generator;
 
-	public function __construct(Resource $resource, $description = null)
+	public function __construct(GeneratorInterface $generator)
 	{
-		$this->resource    = $resource;
-		$this->description = $description;
+		$this->generator = $generator;
 	}
 
-	public function hasResource($version)
+	public function getName()
 	{
-		return $version == 1;
+		return 'Schema';
 	}
 
-	public function getResource($version)
+	protected function generateHtml(SchemaInterface $schema, $type, $method, $path, $statusCode = null)
 	{
-		return $version == 1 ? $this->resource : null;
-	}
-
-	public function getResources()
-	{
-		return array(1 => $this->resource);
-	}
-
-	public function getLatestVersion()
-	{
-		return 1;
-	}
-
-	public function isVersionRequired()
-	{
-		return false;
-	}
-
-	public function getDescription()
-	{
-		return $this->description;
+		return $this->generator->generate($schema);
 	}
 }

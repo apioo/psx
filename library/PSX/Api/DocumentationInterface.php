@@ -32,25 +32,25 @@ use PSX\Data\SchemaInterface;
 interface DocumentationInterface
 {
 	/**
-	 * Returns whether an view exists for the given version
+	 * Returns whether an resource exists for the given version
 	 *
 	 * @return boolean
 	 */
-	public function hasView($version);
+	public function hasResource($version);
 
 	/**
-	 * Returns the view for the given version
+	 * Returns the resource for the given version
 	 *
-	 * @return PSX\Api\View
+	 * @return PSX\Api\Resource
 	 */
-	public function getView($version);
+	public function getResource($version);
 
 	/**
 	 * Returns an array containing all registered views on this documentation
 	 *
 	 * @return array
 	 */
-	public function getViews();
+	public function getResources();
 
 	/**
 	 * Returns the latest version number

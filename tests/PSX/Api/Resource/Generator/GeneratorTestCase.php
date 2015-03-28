@@ -18,56 +18,37 @@
  * limitations under the License.
  */
 
-namespace PSX\Api\Documentation;
+namespace PSX\Api\Resource\Generator;
 
-use PSX\Api\DocumentationInterface;
-use PSX\Api\Resource;
+use PSX\Loader\Context;
+use PSX\Test\ControllerTestCase;
 
 /**
- * Simple
+ * GeneratorTestCase
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Simple implements DocumentationInterface
+abstract class GeneratorTestCase extends ControllerTestCase
 {
-	protected $resource;
-	protected $description;
-
-	public function __construct(Resource $resource, $description = null)
+	protected function getResource()
 	{
-		$this->resource    = $resource;
-		$this->description = $description;
+		$request  = $this->getMock('PSX\Http\RequestInterface');
+		$response = $this->getMock('PSX\Http\ResponseInterface');
+
+		$context = new Context();
+		$context->set(Context::KEY_PATH, '/foo/bar');
+
+		$documentation = getContainer()->get('controller_factory')
+			->getController('PSX\Controller\Foo\Application\SchemaApi\VersionViewController', $request, $response, $context)
+			->getDocumentation();
+
+		return $documentation->getResource($documentation->getLatestVersion());
 	}
 
-	public function hasResource($version)
+	protected function getPaths()
 	{
-		return $version == 1;
-	}
-
-	public function getResource($version)
-	{
-		return $version == 1 ? $this->resource : null;
-	}
-
-	public function getResources()
-	{
-		return array(1 => $this->resource);
-	}
-
-	public function getLatestVersion()
-	{
-		return 1;
-	}
-
-	public function isVersionRequired()
-	{
-		return false;
-	}
-
-	public function getDescription()
-	{
-		return $this->description;
+		return array();
 	}
 }

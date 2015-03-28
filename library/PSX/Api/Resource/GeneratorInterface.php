@@ -18,56 +18,24 @@
  * limitations under the License.
  */
 
-namespace PSX\Api\Documentation;
+namespace PSX\Api\Resource;
 
-use PSX\Api\DocumentationInterface;
 use PSX\Api\Resource;
 
 /**
- * Simple
+ * GeneratorInterface
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Simple implements DocumentationInterface
+interface GeneratorInterface
 {
-	protected $resource;
-	protected $description;
-
-	public function __construct(Resource $resource, $description = null)
-	{
-		$this->resource    = $resource;
-		$this->description = $description;
-	}
-
-	public function hasResource($version)
-	{
-		return $version == 1;
-	}
-
-	public function getResource($version)
-	{
-		return $version == 1 ? $this->resource : null;
-	}
-
-	public function getResources()
-	{
-		return array(1 => $this->resource);
-	}
-
-	public function getLatestVersion()
-	{
-		return 1;
-	}
-
-	public function isVersionRequired()
-	{
-		return false;
-	}
-
-	public function getDescription()
-	{
-		return $this->description;
-	}
+	/**
+	 * Generates an representation of the resource in another format
+	 *
+	 * @param PSX\Api\Resource $resource
+	 * @return string
+	 */
+	public function generate(Resource $resource);
 }

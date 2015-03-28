@@ -21,7 +21,7 @@
 namespace PSX\Api\Documentation;
 
 use PSX\Api\DocumentationInterface;
-use PSX\Api\View;
+use PSX\Api\Resource;
 
 /**
  * Version
@@ -32,7 +32,7 @@ use PSX\Api\View;
  */
 class Version implements DocumentationInterface
 {
-	protected $views = array();
+	protected $resources = array();
 	protected $description;
 
 	public function __construct($description = null)
@@ -40,31 +40,31 @@ class Version implements DocumentationInterface
 		$this->description = $description;
 	}
 
-	public function addView($version, View $view)
+	public function addResource($version, Resource $view)
 	{
-		$this->views[$version] = $view;
+		$this->resources[$version] = $view;
 	}
 
-	public function hasView($version)
+	public function hasResource($version)
 	{
-		return isset($this->views[$version]);
+		return isset($this->resources[$version]);
 	}
 
-	public function getView($version)
+	public function getResource($version)
 	{
-		return isset($this->views[$version]) ? $this->views[$version] : null;
+		return isset($this->resources[$version]) ? $this->resources[$version] : null;
 	}
 
-	public function getViews()
+	public function getResources()
 	{
-		return $this->views;
+		return $this->resources;
 	}
 
 	public function getLatestVersion()
 	{
-		if(count($this->views) > 0)
+		if(count($this->resources) > 0)
 		{
-			return max(array_keys($this->views));
+			return max(array_keys($this->resources));
 		}
 		else
 		{

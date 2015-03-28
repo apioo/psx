@@ -18,56 +18,31 @@
  * limitations under the License.
  */
 
-namespace PSX\Api\Documentation;
-
-use PSX\Api\DocumentationInterface;
-use PSX\Api\Resource;
+namespace PSX\Api\Resource;
 
 /**
- * Simple
+ * ListingInterface
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
- * @link    http://phpsx.org
+ * @link	http://phpsx.org
  */
-class Simple implements DocumentationInterface
+interface ListingInterface
 {
-	protected $resource;
-	protected $description;
+	/**
+	 * Returns all available resources. Note the index does not contain any 
+	 * documentation it contains only the path and the available request methods
+	 *
+	 * @return array<PSX\Api\Resource>
+	 */
+	public function getResourceIndex();
 
-	public function __construct(Resource $resource, $description = null)
-	{
-		$this->resource    = $resource;
-		$this->description = $description;
-	}
-
-	public function hasResource($version)
-	{
-		return $version == 1;
-	}
-
-	public function getResource($version)
-	{
-		return $version == 1 ? $this->resource : null;
-	}
-
-	public function getResources()
-	{
-		return array(1 => $this->resource);
-	}
-
-	public function getLatestVersion()
-	{
-		return 1;
-	}
-
-	public function isVersionRequired()
-	{
-		return false;
-	}
-
-	public function getDescription()
-	{
-		return $this->description;
-	}
+	/**
+	 * Returns an specific resource with complete documentation or null if the 
+	 * resource was not found
+	 *
+	 * @param string $sourcePath
+	 * @return PSX\Api\DocumentationInterface
+	 */
+	public function getDocumentation($sourcePath);
 }

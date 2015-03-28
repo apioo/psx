@@ -18,56 +18,34 @@
  * limitations under the License.
  */
 
-namespace PSX\Api\Documentation;
-
-use PSX\Api\DocumentationInterface;
-use PSX\Api\Resource;
+namespace PSX\Api\Resource\Generator\Wsdl;
 
 /**
- * Simple
+ * OperationTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Simple implements DocumentationInterface
+class OperationTest extends \PHPUnit_Framework_TestCase
 {
-	protected $resource;
-	protected $description;
-
-	public function __construct(Resource $resource, $description = null)
+	public function testIn()
 	{
-		$this->resource    = $resource;
-		$this->description = $description;
-	}
+		$operation = new Operation('getEntry');
+		$operation->setMethod('GET');
+		$operation->setIn('void');
+		$operation->setOut('collection');
 
-	public function hasResource($version)
-	{
-		return $version == 1;
-	}
+		$this->assertEquals('getEntry', $operation->getName());
+		$this->assertEquals('GET', $operation->getMethod());
+		$this->assertEquals('void', $operation->getIn());
+		$this->assertTrue($operation->hasIn());
+		$this->assertEquals('collection', $operation->getOut());
+		$this->assertTrue($operation->hasOut());
 
-	public function getResource($version)
-	{
-		return $version == 1 ? $this->resource : null;
-	}
-
-	public function getResources()
-	{
-		return array(1 => $this->resource);
-	}
-
-	public function getLatestVersion()
-	{
-		return 1;
-	}
-
-	public function isVersionRequired()
-	{
-		return false;
-	}
-
-	public function getDescription()
-	{
-		return $this->description;
+		$this->assertTrue($operation->hasOperation());
+		$this->assertFalse($operation->isInOnly());
+		$this->assertFalse($operation->isOutOnly());
+		$this->assertTrue($operation->isInOut());
 	}
 }
