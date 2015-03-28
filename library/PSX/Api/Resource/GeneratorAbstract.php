@@ -33,16 +33,6 @@ use PSX\Api\Resource\MethodAbstract;
 abstract class GeneratorAbstract implements GeneratorInterface
 {
 	/**
-	 * Returns the key which gets appended to every type so it is unique
-	 *
-	 * @return string
-	 */
-	protected function getPrefix($key)
-	{
-		return strtolower(Resource::getMethodName($key)) . Resource::getTypeName($key);
-	}
-
-	/**
 	 * Returns the successful response of an method or null if no is available
 	 *
 	 * @return PSX\Data\SchemaInterface
