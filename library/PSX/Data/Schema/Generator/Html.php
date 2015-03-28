@@ -56,10 +56,10 @@ class Html implements GeneratorInterface
 
 		if($type instanceof Property\ComplexType)
 		{
-			$response = '<div id="type-' . $type->getId() . '" class="type">';
+			$response = '<div id="psx-type-' . $type->getId() . '" class="psx-complex-type">';
 			$response.= '<h1>' . $type->getName() . '</h1>';
-			$response.= '<div class="type-description">' . $type->getDescription() . '</div>';
-			$response.= '<table class="table type-properties">';
+			$response.= '<div class="psx-type-description">' . $type->getDescription() . '</div>';
+			$response.= '<table class="table psx-type-properties">';
 			$response.= '<colgroup>';
 			$response.= '<col width="20%" />';
 			$response.= '<col width="20%" />';
@@ -82,8 +82,6 @@ class Html implements GeneratorInterface
 			{
 				list($type, $constraints) = $this->getValueDescription($property);
 
-				// we dont add descriptions of complex types since we refer to
-				// the complex type which contains the description
 				$description = '';
 				if(!$property instanceof Property\ComplexType)
 				{
@@ -91,9 +89,9 @@ class Html implements GeneratorInterface
 				}
 
 				$response.= '<tr>';
-				$response.= '<td><span class="property-name ' . ($property->isRequired() ? 'property-required' : 'property-optional') . '">' . $property->getName() . '</span></td>';
+				$response.= '<td><span class="psx-property-name ' . ($property->isRequired() ? 'psx-property-required' : 'psx-property-optional') . '">' . $property->getName() . '</span></td>';
 				$response.= '<td>' . $type . '</td>';
-				$response.= '<td><span class="property-description">' . $description . '</span></td>';
+				$response.= '<td><span class="psx-property-description">' . $description . '</span></td>';
 				$response.= '<td>' . $constraints . '</td>';
 				$response.= '</tr>';
 			}
@@ -127,14 +125,14 @@ class Html implements GeneratorInterface
 	{
 		if($type instanceof Property\ComplexType)
 		{
-			$span = '<span class="property-type type-object"><a href="#type-' . $type->getId() . '">' . $type->getName() . '</a></span>';
+			$span = '<span class="psx-property-type psx-property-type-complex"><a href="#psx-type-' . $type->getId() . '">' . $type->getName() . '</a></span>';
 
 			return [$span, null];
 		}
 		else if($type instanceof Property\ArrayType)
 		{
 			$property = $this->getValueDescription($type->getPrototype());
-			$span  = '<span class="property-type type-array">Array&lt;' . $property[0] . '&gt;</span>';
+			$span  = '<span class="psx-property-type psx-property-type-array">Array&lt;' . $property[0] . '&gt;</span>';
 
 			return [$span, $property[1]];
 		}
@@ -147,19 +145,19 @@ class Html implements GeneratorInterface
 
 			if($type->getPattern() !== null)
 			{
-				$constraints['pattern'] = '<span class="constraint-pattern">' . $type->getPattern() .'</span>';
+				$constraints['pattern'] = '<span class="psx-constraint-pattern">' . $type->getPattern() .'</span>';
 			}
 
 			if($type->getEnumeration() !== null)
 			{
-				$enumeration = '<ul class="property-enumeration">';
+				$enumeration = '<ul class="psx-property-enumeration">';
 				foreach($type->getEnumeration() as $enum)
 				{
-					$enumeration.= '<li><span class="constraint-enumeration-value">' . $enum . '</span></li>';
+					$enumeration.= '<li><span class="psx-constraint-enumeration-value">' . $enum . '</span></li>';
 				}
 				$enumeration.= '</ul>';
 
-				$constraints['enumeration'] = '<span class="constraint-enumeration">' . $enumeration .'</span>';
+				$constraints['enumeration'] = '<span class="psx-constraint-enumeration">' . $enumeration .'</span>';
 			}
 
 			if($type instanceof Property\Decimal)
@@ -167,13 +165,13 @@ class Html implements GeneratorInterface
 				$min = $type->getMin();
 				if($min !== null)
 				{
-					$constraints['minimum'] = '<span class="constraint-minimum">' . $min . '</span>';
+					$constraints['minimum'] = '<span class="psx-constraint-minimum">' . $min . '</span>';
 				}
 
 				$max = $type->getMax();
 				if($max !== null)
 				{
-					$constraints['maximum'] = '<span class="constraint-maximum">' . $max . '</span>';
+					$constraints['maximum'] = '<span class="psx-constraint-maximum">' . $max . '</span>';
 				}
 			}
 			else if($type instanceof Property\String)
@@ -181,20 +179,20 @@ class Html implements GeneratorInterface
 				$min = $type->getMinLength();
 				if($min !== null)
 				{
-					$constraints['minimum'] = '<span class="constraint-minimum">' . $min . '</span>';
+					$constraints['minimum'] = '<span class="psx-constraint-minimum">' . $min . '</span>';
 				}
 
 				$max = $type->getMaxLength();
 				if($max !== null)
 				{
-					$constraints['maximum'] = '<span class="constraint-maximum">' . $max . '</span>';
+					$constraints['maximum'] = '<span class="psx-constraint-maximum">' . $max . '</span>';
 				}
 			}
 
 			$constraint = '';
 			if(!empty($constraints))
 			{
-				$constraint.= '<dl class="property-constraint">';
+				$constraint.= '<dl class="psx-property-constraint">';
 				foreach($constraints as $name => $con)
 				{
 					$constraint.= '<dt>' . ucfirst($name) . '</dt>';
@@ -203,7 +201,7 @@ class Html implements GeneratorInterface
 				$constraint.= '</dl>';
 			}
 
-			$cssClass = 'property-type-' . strtolower($typeName);
+			$cssClass = 'psx-property-type-' . strtolower($typeName);
 
 			if($type instanceof Property\Date)
 			{
@@ -222,7 +220,7 @@ class Html implements GeneratorInterface
 				$typeName = '<span title="ISO 8601">Duration</span>';
 			}
 
-			$span = '<span class="property-type ' . $cssClass . '">' . $typeName . '</span>';
+			$span = '<span class="psx-property-type ' . $cssClass . '">' . $typeName . '</span>';
 
 			return [$span, $constraint];
 		}
