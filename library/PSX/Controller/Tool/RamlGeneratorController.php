@@ -22,9 +22,8 @@ namespace PSX\Controller\Tool;
 
 use PSX\Api\DocumentationInterface;
 use PSX\Api\DocumentedInterface;
-use PSX\Api\ResourceListing\Resource;
-use PSX\Api\View;
-use PSX\Api\View\Generator;
+use PSX\Api\Resource;
+use PSX\Api\Resource\Generator;
 use PSX\Controller\ViewAbstract;
 use PSX\Http\Exception as HttpException;
 use PSX\Loader\Context;
@@ -49,29 +48,40 @@ class RamlGeneratorController extends ViewAbstract
 	{
 		parent::onGet();
 
-		$version  = $this->getUriFragment('version');
-		$path     = $this->getUriFragment('path');
-		$resource = $this->resourceListing->getResource($path, $this->request, $this->response, $this->context);
+		$version = $this->getUriFragment('version');
+		$path    = $this->getUriFragment('path');
+		$doc     = $this->resourceListing->getDocumentation($path);
 
-		if($resource instanceof Resource)
+		if($doc instanceof DocumentationInterface)
 		{
-			$view       = $resource->getDocumentation()->getView($version);
-			$apiVersion = $resource->getDocumentation()->getLatestVersion();
+			if($version == '*')
+			{
+				$version = $doc->getLatestVersion();
+			}
 
-			if(!$view instanceof View)
+			$resource = $doc->getResource($version);
+
+			if(!$resource instanceof Resource)
 			{
 				throw new HttpException\NotFoundException('Given version is not available');
 			}
 
-			$title           = $resource->getName();
+			$path  = ltrim($resource->getPath(), '/');
+			$title = $resource->getTitle();
+
+			if(empty($title))
+			{
+				$title = str_replace(' ', '', ucwords(str_replace('/', ' ', $path)));
+			}
+
 			$baseUri         = $this->config['psx_url'] . '/' . $this->config['psx_dispatch'];
 			$targetNamespace = $this->config['psx_json_namespace'];
 
 			$this->response->setHeader('Content-Type', 'application/raml+yaml');
 
-			$generator = new Generator\Raml($title, $apiVersion, $baseUri, $targetNamespace);
+			$generator = new Generator\Raml($title, $version, $baseUri, $targetNamespace);
 
-			$this->setBody($generator->generate($view));
+			$this->setBody($generator->generate($resource));
 		}
 		else
 		{

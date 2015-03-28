@@ -46,16 +46,16 @@ class RamlControllerTest extends ControllerTestCase
 
 		$controller = $this->loadController($request, $response);
 
-        $this->assertEquals('application/raml+yaml', $response->getHeader('Content-Type'));
+		$this->assertEquals('application/raml+yaml', $response->getHeader('Content-Type'));
 
-        $config   = getContainer()->getConfig();
-        $basePath = $config['psx_url'] . '/' . $config['psx_dispatch'];
+		$config   = getContainer()->getConfig();
+		$basePath = $config['psx_url'] . '/' . $config['psx_dispatch'];
 		$expect   = <<<RAML
 #%RAML 0.8
 ---
 baseUri: {$basePath}
 version: v1
-title: TestSchemaApiController
+title: Api
 /api:
   get:
     responses:

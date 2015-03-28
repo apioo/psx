@@ -54,7 +54,7 @@ class SwaggerControllerTest extends ControllerTestCase
     "apiVersion": "1.0",
     "apis": [
         {
-            "path": "\/1\/api"
+            "path": "\/*\/api"
         }
     ]
 }

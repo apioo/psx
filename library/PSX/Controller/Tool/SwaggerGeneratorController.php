@@ -22,9 +22,8 @@ namespace PSX\Controller\Tool;
 
 use PSX\Api\DocumentationInterface;
 use PSX\Api\DocumentedInterface;
-use PSX\Api\ResourceListing\Resource;
-use PSX\Api\View;
-use PSX\Api\View\Generator;
+use PSX\Api\Resource;
+use PSX\Api\Resource\Generator;
 use PSX\Controller\ViewAbstract;
 use PSX\Data\WriterInterface;
 use PSX\Http\Exception as HttpException;
@@ -51,11 +50,11 @@ class SwaggerGeneratorController extends ViewAbstract
 	public function doIndex()
 	{
 		$resourceListing = new ResourceListing('1.0');
-		$resources       = $this->resourceListing->getResources($this->request, $this->response, $this->context);
+		$resources       = $this->resourceListing->getResourceIndex();
 
 		foreach($resources as $resource)
 		{
-			$path = '/' . $resource->getDocumentation()->getLatestVersion();
+			$path = '/*';
 			$path.= Generator\Swagger::transformRoute($resource->getPath());
 
 			$resourceListing->addResource(new ResourceObject($path));
@@ -68,16 +67,18 @@ class SwaggerGeneratorController extends ViewAbstract
 	{
 		$version = $this->getUriFragment('version');
 		$path    = $this->getUriFragment('path');
+		$doc     = $this->resourceListing->getDocumentation($path);
 
-		$resource   = $this->resourceListing->getResource($path, $this->request, $this->response, $this->context);
-		$apiVersion = 1;
-
-		if($resource instanceof Resource)
+		if($doc instanceof DocumentationInterface)
 		{
-			$view       = $resource->getDocumentation()->getView($version);
-			$apiVersion = $resource->getDocumentation()->getLatestVersion();
+			if($version == '*')
+			{
+				$version = $doc->getLatestVersion();
+			}
 
-			if(!$view instanceof View)
+			$resource = $doc->getResource($version);
+
+			if(!$resource instanceof Resource)
 			{
 				throw new HttpException\NotFoundException('Given version is not available');
 			}
@@ -87,9 +88,9 @@ class SwaggerGeneratorController extends ViewAbstract
 
 			$this->response->setHeader('Content-Type', 'application/json');
 
-			$generator = new Generator\Swagger($apiVersion, $baseUri, $targetNamespace);
+			$generator = new Generator\Swagger($version, $baseUri, $targetNamespace);
 
-			$this->setBody($generator->generate($view));
+			$this->setBody($generator->generate($resource));
 		}
 		else
 		{

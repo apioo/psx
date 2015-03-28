@@ -50,9 +50,10 @@ class WsdlControllerTest extends ControllerTestCase
 
 		$expect = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
-<wsdl:definitions xmlns:xs="http://www.w3.org/2001/XMLSchema" name="TestSchemaApiController" targetNamespace="http://phpsx.org/2014/data" xmlns:tns="http://phpsx.org/2014/data" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+<wsdl:definitions xmlns:xs="http://www.w3.org/2001/XMLSchema" name="Api" targetNamespace="http://phpsx.org/2014/data" xmlns:tns="http://phpsx.org/2014/data" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
 	<wsdl:types xmlns:xs="http://www.w3.org/2001/XMLSchema">
 		<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://phpsx.org/2014/data" elementFormDefault="qualified" xmlns:tns="http://phpsx.org/2014/data">
+			<xs:element name="getRequest" type="tns:void"/>
 			<xs:element name="getResponse">
 				<xs:complexType>
 					<xs:sequence>
@@ -136,7 +137,6 @@ class WsdlControllerTest extends ControllerTestCase
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
-			<xs:element name="getRequest" type="tns:void"/>
 			<xs:complexType name="fault">
 				<xs:sequence>
 					<xs:element name="success" type="xs:boolean" minOccurs="1" maxOccurs="1"/>
@@ -179,7 +179,7 @@ class WsdlControllerTest extends ControllerTestCase
 	<wsdl:message name="faultOutput">
 		<wsdl:part name="body" element="tns:exceptionRecord"/>
 	</wsdl:message>
-	<wsdl:portType name="TestSchemaApiControllerPortType">
+	<wsdl:portType name="ApiPortType">
 		<wsdl:operation name="getCollection">
 			<wsdl:input message="tns:getCollectionInput"/>
 			<wsdl:output message="tns:getCollectionOutput"/>
@@ -201,7 +201,7 @@ class WsdlControllerTest extends ControllerTestCase
 			<wsdl:fault message="tns:faultOutput" name="SoapFaultException"/>
 		</wsdl:operation>
 	</wsdl:portType>
-	<wsdl:binding name="TestSchemaApiControllerBinding" type="tns:TestSchemaApiControllerPortType">
+	<wsdl:binding name="ApiBinding" type="tns:ApiPortType">
 		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
 		<wsdl:operation name="getCollection">
 			<soap:operation soapAction="http://phpsx.org/2014/data/getCollection#GET"/>
@@ -252,8 +252,8 @@ class WsdlControllerTest extends ControllerTestCase
 			</wsdl:fault>
 		</wsdl:operation>
 	</wsdl:binding>
-	<wsdl:service name="TestSchemaApiControllerService">
-		<wsdl:port name="TestSchemaApiControllerPort" binding="tns:TestSchemaApiControllerBinding">
+	<wsdl:service name="ApiService">
+		<wsdl:port name="ApiPort" binding="tns:ApiBinding">
 			<soap:address location="http://127.0.0.1/projects/psx/public/index.php/api"/>
 		</wsdl:port>
 	</wsdl:service>
@@ -276,7 +276,7 @@ XML;
 		$dom = new DOMDocument();
 		$dom->loadXML($wsdl);
 
-		$result = $dom->schemaValidate(__DIR__ . '/../../Api/View/Generator/Wsdl/wsdl1.xsd');
+		$result = $dom->schemaValidate(__DIR__ . '/../../Api/Resource/Generator/Wsdl/wsdl1.xsd');
 
 		$this->assertTrue($result);
 	}

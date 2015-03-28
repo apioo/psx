@@ -22,9 +22,8 @@ namespace PSX\Controller\Tool;
 
 use PSX\Api\DocumentationInterface;
 use PSX\Api\DocumentedInterface;
-use PSX\Api\ResourceListing\Resource;
-use PSX\Api\View;
-use PSX\Api\View\Generator;
+use PSX\Api\Resource;
+use PSX\Api\Resource\Generator;
 use PSX\Controller\ViewAbstract;
 use PSX\Http\Exception as HttpException;
 use PSX\Loader\Context;
@@ -49,28 +48,40 @@ class WsdlGeneratorController extends ViewAbstract
 	{
 		parent::onGet();
 
-		$version  = $this->getUriFragment('version');
-		$path     = $this->getUriFragment('path');
-		$resource = $this->resourceListing->getResource($path, $this->request, $this->response, $this->context);
+		$version = $this->getUriFragment('version');
+		$path    = $this->getUriFragment('path');
+		$doc     = $this->resourceListing->getDocumentation($path);
 
-		if($resource instanceof Resource)
+		if($doc instanceof DocumentationInterface)
 		{
-			$view = $resource->getDocumentation()->getView($version);
+			if($version == '*')
+			{
+				$version = $doc->getLatestVersion();
+			}
 
-			if(!$view instanceof View)
+			$resource = $doc->getResource($version);
+
+			if(!$resource instanceof Resource)
 			{
 				throw new HttpException\NotFoundException('Given version is not available');
 			}
 
-			$name            = $resource->getName();
-			$endpoint        = $this->config['psx_url'] . '/' . $this->config['psx_dispatch'] . ltrim($resource->getPath(), '/');
+			$path  = ltrim($resource->getPath(), '/');
+			$title = $resource->getTitle();
+
+			if(empty($title))
+			{
+				$title = str_replace(' ', '', ucwords(str_replace('/', ' ', $path)));
+			}
+
+			$endpoint        = $this->config['psx_url'] . '/' . $this->config['psx_dispatch'] . $path;
 			$targetNamespace = $this->config['psx_soap_namespace'];
 
 			$this->response->setHeader('Content-Type', 'text/xml');
 
-			$generator = new Generator\Wsdl($name, $endpoint, $targetNamespace);
+			$generator = new Generator\Wsdl($title, $endpoint, $targetNamespace);
 
-			$this->setBody($generator->generate($view));
+			$this->setBody($generator->generate($resource));
 		}
 		else
 		{

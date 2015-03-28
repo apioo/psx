@@ -22,10 +22,9 @@ namespace PSX\Controller\Tool;
 
 use PSX\Api\DocumentedInterface;
 use PSX\Api\DocumentationInterface;
-use PSX\Api\View\Generator;
-use PSX\Api\View\Generator\HtmlAbstract;
-use PSX\Api\ResourceListing\Resource;
-use PSX\Api\View;
+use PSX\Api\Resource;
+use PSX\Api\Resource\Generator;
+use PSX\Api\Resource\Generator\HtmlAbstract;
 use PSX\Controller\ViewAbstract;
 use PSX\Data\Record;
 use PSX\Data\Schema\Generator as SchemaGenerator;
@@ -92,25 +91,33 @@ class DocumentationController extends ViewAbstract
 			throw new HttpException\BadRequestException('Version and path not provided');
 		}
 
-		$resource = $this->resourceListing->getResource($path, $this->request, $this->response, $this->context);
+		$documentation = $this->resourceListing->getDocumentation($path);
 
-		if(!$resource instanceof Resource)
+		if(!$documentation instanceof DocumentationInterface)
 		{
 			throw new HttpException\InternalServerErrorException('Controller provides no documentation informations');
 		}
 
 		$this->supportedWriter = array(WriterInterface::JSON, WriterInterface::XML);
 
-		$view = $resource->getDocumentation()->getView($version);
-
-		if($view instanceof View)
+		if($version == '*')
 		{
-			$views = $resource->getDocumentation()->getViews();
+			$version  = $documentation->getLatestVersion();
+			$resource = $documentation->getResource($version);
+		}
+		else
+		{
+			$resource = $documentation->getResource($version);
+		}
 
-			krsort($views);
+		if($resource instanceof Resource)
+		{
+			$resources = $documentation->getResources();
+
+			krsort($resources);
 
 			$versions = array();
-			foreach($views as $key => $row)
+			foreach($resources as $key => $row)
 			{
 				$versions[] = new Record('version', [
 					'version' => $key,
@@ -119,36 +126,25 @@ class DocumentationController extends ViewAbstract
 			}
 
 			$generators = $this->getViewGenerators();
-			$methods    = View::getMethods();
 			$data       = array();
 
 			foreach($generators as $name => $generator)
 			{
 				if($generator instanceof HtmlAbstract)
 				{
-					$result = new \stdClass();
-
-					foreach($methods as $method => $methodName)
-					{
-						$generator->setModifier($method);
-
-						$result->$methodName = $generator->generate($view);
-					}
-
-					$data[$generator->getName()] = $result;
+					$data[$generator->getName()] = $generator->generate($resource);
 				}
 			}
 
 			$this->setBody(array(
-				'method'      => $resource->getMethods(),
+				'method'      => $resource->getAllowedMethods(),
 				'path'        => $resource->getPath(),
-				'controller'  => $resource->getSource(),
-				'description' => $resource->getDocumentation()->getDescription(),
+				'description' => $resource->getDescription(),
 				'versions'    => $versions,
 				'see_others'  => $this->getSeeOthers($version, $resource->getPath()),
-				'view'        => new Record('view', [
+				'resource'    => new Record('resource', [
 					'version' => $version,
-					'status'  => $view->getStatus(),
+					'status'  => $resource->getStatus(),
 					'data'    => new Record('data', $data),
 				]),
 			));
@@ -162,13 +158,14 @@ class DocumentationController extends ViewAbstract
 	protected function getRoutings()
 	{
 		$routings  = array();
-		$resources = $this->resourceListing->getResources($this->request, $this->response, $this->context);
+		$resources = $this->resourceListing->getResourceIndex();
 
 		foreach($resources as $resource)
 		{
 			$routings[] = new Record('routing', [
 				'path'    => $resource->getPath(), 
-				'version' => $resource->getDocumentation()->getLatestVersion(),
+				'methods' => $resource->getAllowedMethods(), 
+				'version' => '*',
 			]);
 		}
 
@@ -210,6 +207,7 @@ class DocumentationController extends ViewAbstract
 	{
 		return array(
 			'Schema' => new Generator\Html\Schema(new SchemaGenerator\Html()),
+			'Sample' => new Generator\Html\Sample(new Generator\Html\Sample\Loader\XmlFile(PSX_PATH_LIBRARY . '/Foo/Blog/Resource/sample.xml')),
 		);
 	}
 

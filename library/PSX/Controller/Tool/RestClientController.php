@@ -20,13 +20,7 @@
 
 namespace PSX\Controller\Tool;
 
-use PSX\Api\DocumentedInterface;
-use PSX\Api\View;
 use PSX\Controller\ViewAbstract;
-use PSX\Data\Record;
-use PSX\Data\Schema\Generator;
-use PSX\Data\Schema\Documentation;
-use PSX\Data\WriterInterface;
 
 /**
  * RestClientController
