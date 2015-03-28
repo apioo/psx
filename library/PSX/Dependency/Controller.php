@@ -127,10 +127,10 @@ trait Controller
 	}
 
 	/**
-	 * @return PSX\Api\ResourceListing
+	 * @return PSX\Api\Resource\ListingInterface
 	 */
 	public function getResourceListing()
 	{
-		return new Api\ResourceListing($this->get('routing_parser'), $this->get('controller_factory'), $this->get('cache'));
+		return new Api\Resource\Listing\ControllerDocumentation($this->get('routing_parser'), $this->get('controller_factory'));
 	}
 }
