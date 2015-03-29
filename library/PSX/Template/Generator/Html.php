@@ -23,7 +23,7 @@ namespace PSX\Template\Generator;
 use PSX\Data\RecordInterface;
 use PSX\Data\Record\GraphTraverser;
 use PSX\Data\Record\Visitor;
-use PSX\Template\GeneratorAbstract;
+use PSX\Template\GeneratorInterface;
 
 /**
  * Html
@@ -32,7 +32,7 @@ use PSX\Template\GeneratorAbstract;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Html extends GeneratorAbstract
+class Html implements GeneratorInterface
 {
 	public function generate(RecordInterface $data)
 	{
