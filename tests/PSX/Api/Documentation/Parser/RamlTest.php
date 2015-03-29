@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-namespace PSX\Api\Resource\Parser;
+namespace PSX\Api\Documentation\Parser;
 
 /**
  * RamlTest
@@ -31,8 +31,14 @@ class RamlTest extends \PHPUnit_Framework_TestCase
 {
 	public function testParse()
 	{
-		$parser   = new Raml();
-		$resource = $parser->parse(__DIR__ . '/test.raml', '/foo');
+		$parser = new Raml();
+		$doc    = $parser->parse(__DIR__ . '/test.raml', '/foo');
+
+		$this->assertInstanceOf('PSX\Api\DocumentationInterface', $doc);
+		$this->assertEquals('World Music API', $doc->getDescription());
+		$this->assertEquals(2, $doc->getLatestVersion());
+
+		$resource = $doc->getResource(2);
 
 		$this->assertInstanceOf('PSX\Api\Resource', $resource);
 		$this->assertEquals(array('GET', 'POST'), $resource->getAllowedMethods());

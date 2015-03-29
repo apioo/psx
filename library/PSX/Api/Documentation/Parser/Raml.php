@@ -18,10 +18,11 @@
  * limitations under the License.
  */
 
-namespace PSX\Api\Resource\Parser;
+namespace PSX\Api\Documentation\Parser;
 
+use PSX\Api\Documentation;
+use PSX\Api\Documentation\ParserInterface;
 use PSX\Api\Resource;
-use PSX\Api\Resource\ParserInterface;
 use PSX\Data\Schema\Property;
 use PSX\Data\Schema\Parser\JsonSchema;
 use PSX\Data\SchemaInterface;
@@ -90,7 +91,18 @@ class Raml implements ParserInterface
 			}
 		}
 
-		return $resource;
+		$version = $this->getNormalizedVersion($data);
+		$title   = null;
+
+		if(isset($data['title']))
+		{
+			$title = $data['title'];
+		}
+
+		$doc = new Documentation\Version($title);
+		$doc->addResource($version, $resource);
+
+		return $doc;
 	}
 
 	protected function getTrait(array $data, $name)
@@ -250,5 +262,20 @@ class Raml implements ParserInterface
 			default:
 				return new Property\String($name);
 		}
+	}
+
+	protected function getNormalizedVersion(array $data)
+	{
+		if(isset($data['version']))
+		{
+			$version = (int) ltrim($data['version'], 'v');
+		}
+
+		if(empty($version))
+		{
+			$version = 1;
+		}
+
+		return $version;
 	}
 }

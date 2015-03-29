@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-namespace PSX\Api\Resource;
+namespace PSX\Api\Documentation;
 
 /**
  * ParserInterface
@@ -30,12 +30,12 @@ namespace PSX\Api\Resource;
 interface ParserInterface
 {
 	/**
-	 * Parses an given file containing an definition of resources and returns
-	 * an resource object for the given path
+	 * Parses an file containing an specification of resources and returns
+	 * an documentation for the given path
 	 *
 	 * @param string $file
 	 * @param string $path
-	 * @return PSX\Api\Resource
+	 * @return PSX\Api\DocumentationInterface
 	 */
 	public function parse($file, $path);
 }
