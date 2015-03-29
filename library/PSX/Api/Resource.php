@@ -21,6 +21,8 @@
 namespace PSX\Api;
 
 use PSX\Api\Resource\MethodAbstract;
+use PSX\Data\Schema;
+use PSX\Data\Schema\Property;
 use PSX\Data\Schema\PropertySimpleAbstract;
 
 /**
@@ -46,7 +48,6 @@ class Resource implements \IteratorAggregate
 	protected $path;
 	protected $title;
 	protected $description;
-	protected $queryParameters;
 	protected $pathParameters;
 	protected $methods;
 
@@ -54,8 +55,7 @@ class Resource implements \IteratorAggregate
 	{
 		$this->status          = $status;
 		$this->path            = $path;
-		$this->queryParameters = array();
-		$this->pathParameters  = array();
+		$this->pathParameters  = new Property\ComplexType('path');
 		$this->methods         = array();
 	}
 
@@ -104,24 +104,16 @@ class Resource implements \IteratorAggregate
 		return $this->description;
 	}
 
-	public function addQueryParameter(PropertySimpleAbstract $property)
-	{
-		$this->queryParameters[] = $property;
-	}
-
-	public function getQueryParameters()
-	{
-		return $this->queryParameters;
-	}
-
 	public function addPathParameter(PropertySimpleAbstract $property)
 	{
-		$this->pathParameters[] = $property;
+		$this->pathParameters->add($property);
+
+		return $this;
 	}
 
 	public function getPathParameters()
 	{
-		return $this->pathParameters;
+		return new Schema($this->pathParameters);
 	}
 
 	public function addMethod(MethodAbstract $method)

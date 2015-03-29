@@ -44,7 +44,16 @@ class RamlTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(array('GET', 'POST'), $resource->getAllowedMethods());
 		$this->assertEquals('Some description', $resource->getDescription());
 
+		// check GET
+		$this->assertInstanceOf('PSX\Data\Schema\Property\ComplexType', $resource->getMethod('GET')->getQueryParameters()->getDefinition());
+		$this->assertEquals('The number of pages to return', $resource->getMethod('GET')->getQueryParameters()->getDefinition()->get('pages')->getDescription());
+		$this->assertEquals('Sets the start index', $resource->getMethod('GET')->getQueryParameters()->getDefinition()->get('startIndex')->getDescription());
+
+		// check POST
 		$this->assertInstanceOf('PSX\Api\Resource\Post', $resource->getMethod('POST'));
+
+		$this->assertInstanceOf('PSX\Data\Schema\Property\ComplexType', $resource->getMethod('POST')->getQueryParameters()->getDefinition());
+
 		$this->assertInstanceOf('PSX\Data\SchemaInterface', $resource->getMethod('POST')->getResponse(200));
 
 		$property = $resource->getMethod('POST')->getRequest()->getDefinition();
@@ -55,6 +64,34 @@ class RamlTest extends \PHPUnit_Framework_TestCase
 		$this->assertInstanceOf('PSX\Data\Schema\Property\String', $property->get('artist'));
 
 		$property = $resource->getMethod('POST')->getResponse(200)->getDefinition();
+
+		$this->assertInstanceOf('PSX\Data\Schema\Property\ComplexType', $property);
+		$this->assertEquals('A canonical song', $property->getDescription());
+		$this->assertInstanceOf('PSX\Data\Schema\Property\String', $property->get('title'));
+		$this->assertInstanceOf('PSX\Data\Schema\Property\String', $property->get('artist'));
+	}
+
+	public function testParsePath()
+	{
+		$parser = new Raml();
+		$doc    = $parser->parse(__DIR__ . '/test.raml', '/bar/:bar_id');
+
+		$this->assertInstanceOf('PSX\Api\DocumentationInterface', $doc);
+		$this->assertEquals('World Music API', $doc->getDescription());
+		$this->assertEquals(2, $doc->getLatestVersion());
+
+		$resource = $doc->getResource(2);
+
+		$this->assertInstanceOf('PSX\Api\Resource', $resource);
+		$this->assertEquals(array('GET'), $resource->getAllowedMethods());
+		$this->assertEquals('Returns details about bar', $resource->getDescription());
+
+		$this->assertInstanceOf('PSX\Data\Schema\Property\ComplexType', $resource->getPathParameters()->getDefinition());
+		$this->assertEquals('The id of bar', $resource->getPathParameters()->getDefinition()->get('bar_id')->getDescription());
+
+		$this->assertInstanceOf('PSX\Data\SchemaInterface', $resource->getMethod('GET')->getResponse(200));
+
+		$property = $resource->getMethod('GET')->getResponse(200)->getDefinition();
 
 		$this->assertInstanceOf('PSX\Data\Schema\Property\ComplexType', $property);
 		$this->assertEquals('A canonical song', $property->getDescription());

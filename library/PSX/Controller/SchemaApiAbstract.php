@@ -26,9 +26,12 @@ use PSX\Api\Version;
 use PSX\Api\Resource;
 use PSX\Api\InvalidVersionException;
 use PSX\ControllerAbstract;
+use PSX\Data\Object;
 use PSX\Data\Record;
 use PSX\Data\RecordInterface;
 use PSX\Data\SchemaInterface;
+use PSX\Data\Schema\Validator;
+use PSX\Data\Schema\Assimilator;
 use PSX\Http\Exception as StatusCode;
 
 /**
@@ -58,40 +61,70 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 	 */
 	protected $resourceListing;
 
+	/**
+	 * @var PSX\Data\Record
+	 */
+	protected $queryParameters;
+
+	/**
+	 * @var PSX\Data\Record
+	 */
+	protected $pathParameters;
+
+	/**
+	 * @var PSX\Api\Resource
+	 */
+	protected $resource;
+
+	/**
+	 * @var PSX\Api\Version
+	 */
+	protected $version;
+
+	public function onLoad()
+	{
+		$doc = $this->getDocumentation();
+
+		$this->version  = $this->getVersion($doc);
+		$this->resource = $this->getResource($doc, $this->version);
+
+		$this->pathParameters = $this->schemaAssimilator->assimilate($this->resource->getPathParameters(), $this->uriFragments);
+	}
+
 	public function onGet()
 	{
-		$doc      = $this->getDocumentation();
-		$version  = $this->getVersion($doc);
-		$resource = $this->getResource($doc, $version);
-
-		if(!$resource->hasMethod('GET'))
+		if(!$this->resource->hasMethod('GET'))
 		{
-			throw new StatusCode\MethodNotAllowedException('Method is not allowed', $resource->getAllowedMethods());
+			throw new StatusCode\MethodNotAllowedException('Method is not allowed', $this->resource->getAllowedMethods());
 		}
 
-		$response = $this->doGet($version);
+		$method = $this->resource->getMethod('GET');
 
-		$this->setBody($this->schemaAssimilator->assimilate($resource->getMethod('GET')->getResponse(200), $response));
+		$this->queryParameters = $this->schemaAssimilator->assimilate($method->getQueryParameters(), $this->request->getQueryParams());
+
+		$response = $this->doGet($this->version);
+
+		$this->setBody($this->schemaAssimilator->assimilate($method->getResponse(200), $response));
 	}
 
 	public function onPost()
 	{
-		$doc      = $this->getDocumentation();
-		$version  = $this->getVersion($doc);
-		$resource = $this->getResource($doc, $version);
-
-		if(!$resource->hasMethod('POST'))
+		if(!$this->resource->hasMethod('POST'))
 		{
-			throw new StatusCode\MethodNotAllowedException('Method is not allowed', $resource->getAllowedMethods());
+			throw new StatusCode\MethodNotAllowedException('Method is not allowed', $this->resource->getAllowedMethods());
 		}
 
-		$record   = $resource->getMethod('POST')->hasRequest() ? $this->import($resource->getMethod('POST')->getRequest()) : new Record();
-		$response = $this->doCreate($record, $version);
+		$method = $this->resource->getMethod('POST');
 
-		if($resource->getMethod('POST')->hasResponse(200))
+		$this->queryParameters = $this->schemaAssimilator->assimilate($method->getQueryParameters(), $this->request->getQueryParams());
+
+		$record   = $method->hasRequest() ? $this->import($method->getRequest()) : new Record();
+		$response = $this->doCreate($record, $this->version);
+
+		if($method->hasResponse(200))
 		{
 			$this->setResponseCode(201);
-			$this->setBody($this->schemaAssimilator->assimilate($resource->getMethod('POST')->getResponse(200), $response));
+			$this->setBody($this->schemaAssimilator->assimilate($method->getResponse(200), $response));
 		}
 		else
 		{
@@ -102,22 +135,22 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 
 	public function onPut()
 	{
-		$doc      = $this->getDocumentation();
-		$version  = $this->getVersion($doc);
-		$resource = $this->getResource($doc, $version);
-
-		if(!$resource->hasMethod('PUT'))
+		if(!$this->resource->hasMethod('PUT'))
 		{
-			throw new StatusCode\MethodNotAllowedException('Method is not allowed', $resource->getAllowedMethods());
+			throw new StatusCode\MethodNotAllowedException('Method is not allowed', $this->resource->getAllowedMethods());
 		}
 
-		$record   = $resource->getMethod('PUT')->hasRequest() ? $this->import($resource->getMethod('PUT')->getRequest()) : new Record();
-		$response = $this->doUpdate($record, $version);
+		$method = $this->resource->getMethod('PUT');
 
-		if($resource->getMethod('PUT')->hasResponse(200))
+		$this->queryParameters = $this->schemaAssimilator->assimilate($method->getQueryParameters(), $this->request->getQueryParams());
+
+		$record   = $method->hasRequest() ? $this->import($method->getRequest()) : new Record();
+		$response = $this->doUpdate($record, $this->version);
+
+		if($method->hasResponse(200))
 		{
 			$this->setResponseCode(200);
-			$this->setBody($this->schemaAssimilator->assimilate($resource->getMethod('PUT')->getResponse(200), $response));
+			$this->setBody($this->schemaAssimilator->assimilate($method->getResponse(200), $response));
 		}
 		else
 		{
@@ -128,22 +161,22 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 
 	public function onDelete()
 	{
-		$doc      = $this->getDocumentation();
-		$version  = $this->getVersion($doc);
-		$resource = $this->getResource($doc, $version);
-
-		if(!$resource->hasMethod('DELETE'))
+		if(!$this->resource->hasMethod('DELETE'))
 		{
-			throw new StatusCode\MethodNotAllowedException('Method is not allowed', $resource->getAllowedMethods());
+			throw new StatusCode\MethodNotAllowedException('Method is not allowed', $this->resource->getAllowedMethods());
 		}
 
-		$record   = $resource->getMethod('DELETE')->hasRequest() ? $this->import($resource->getMethod('DELETE')->getRequest()) : new Record();
-		$response = $this->doDelete($record, $version);
+		$method = $this->resource->getMethod('DELETE');
 
-		if($resource->getMethod('DELETE')->hasResponse(200))
+		$this->queryParameters = $this->schemaAssimilator->assimilate($method->getQueryParameters(), $this->request->getQueryParams());
+
+		$record   = $method->hasRequest() ? $this->import($method->getRequest()) : new Record();
+		$response = $this->doDelete($record, $this->version);
+
+		if($method->hasResponse(200))
 		{
 			$this->setResponseCode(200);
-			$this->setBody($this->schemaAssimilator->assimilate($resource->getMethod('DELETE')->getResponse(200), $response));
+			$this->setBody($this->schemaAssimilator->assimilate($method->getResponse(200), $response));
 		}
 		else
 		{

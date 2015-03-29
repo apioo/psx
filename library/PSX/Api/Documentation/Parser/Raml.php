@@ -23,6 +23,7 @@ namespace PSX\Api\Documentation\Parser;
 use PSX\Api\Documentation;
 use PSX\Api\Documentation\ParserInterface;
 use PSX\Api\Resource;
+use PSX\Api\Resource\Generator\Swagger;
 use PSX\Data\Schema\Property;
 use PSX\Data\Schema\Parser\JsonSchema;
 use PSX\Data\SchemaInterface;
@@ -39,6 +40,7 @@ class Raml implements ParserInterface
 {
 	public function parse($file, $path)
 	{
+		$path     = Swagger::transformRoute($path);
 		$resource = new Resource(Resource::STATUS_ACTIVE, $path);
 		$parser   = new Parser();
 		$data     = $parser->parse(file_get_contents($file));
@@ -58,35 +60,34 @@ class Raml implements ParserInterface
 				}
 			}
 
-			if(isset($data[$path]))
+			if(isset($data[$path]['displayName']))
 			{
-				if(isset($data[$path]['displayName']))
-				{
-					$resource->setTitle($data[$path]['displayName']);
-				}
+				$resource->setTitle($data[$path]['displayName']);
+			}
 
-				if(isset($data[$path]['description']))
-				{
-					$resource->setDescription($data[$path]['description']);
-				}
+			if(isset($data[$path]['description']))
+			{
+				$resource->setDescription($data[$path]['description']);
+			}
 
-				foreach($data[$path] as $methodName => $row)
+			$this->parseUriParameters($resource, $data[$path]);
+
+			foreach($data[$path] as $methodName => $row)
+			{
+				if(in_array($methodName, ['get', 'post', 'put', 'delete']) && is_array($row))
 				{
-					if(in_array($methodName, ['get', 'post', 'put', 'delete']) && is_array($row))
+					if(!empty($mergedTrait))
 					{
-						if(!empty($mergedTrait))
-						{
-							$row = array_merge_recursive($row, $mergedTrait);
-						}
-
-						$method = Resource\Factory::getMethod(strtoupper($methodName));
-
-						$this->parseQueryParameters($method, $row);
-						$this->parseRequest($method, $row, $file);
-						$this->parseResponses($method, $row, $file);
-
-						$resource->addMethod($method);
+						$row = array_merge_recursive($row, $mergedTrait);
 					}
+
+					$method = Resource\Factory::getMethod(strtoupper($methodName));
+
+					$this->parseQueryParameters($method, $row);
+					$this->parseRequest($method, $row, $file);
+					$this->parseResponses($method, $row, $file);
+
+					$resource->addMethod($method);
 				}
 			}
 		}
@@ -121,58 +122,80 @@ class Raml implements ParserInterface
 		return null;
 	}
 
+	protected function parseUriParameters(Resource $resource, array $data)
+	{
+		if(isset($data['uriParameters']) && is_array($data['uriParameters']))
+		{
+			foreach($data['uriParameters'] as $name => $definition)
+			{
+				if(!empty($name) && is_array($definition))
+				{
+					$resource->addPathParameter($this->getParameter($name, $definition));
+				}
+			}
+		}
+	}
+
 	protected function parseQueryParameters(Resource\MethodAbstract $method, array $data)
 	{
 		if(isset($data['queryParameters']) && is_array($data['queryParameters']))
 		{
 			foreach($data['queryParameters'] as $name => $definition)
 			{
-				$type     = isset($definition['type']) ? $definition['type'] : 'string';
-				$property = $this->getPropertyType($type, $name);
-
-				if(isset($definition['description']))
+				if(!empty($name) && is_array($definition))
 				{
-					$property->setDescription($definition['description']);
+					$method->addQueryParameter($this->getParameter($name, $definition));
 				}
-
-				if(isset($definition['required']))
-				{
-					$property->setRequired((bool) $definition['required']);
-				}
-
-				if(isset($definition['enum']) && is_array($definition['enum']))
-				{
-					$property->setEnumeration($definition['enum']);
-				}
-
-				if(isset($definition['pattern']))
-				{
-					$property->setPattern($definition['pattern']);
-				}
-
-				if(isset($definition['minLength']))
-				{
-					$property->setMinLength($definition['minLength']);
-				}
-
-				if(isset($definition['maxLength']))
-				{
-					$property->setMaxLength($definition['maxLength']);
-				}
-
-				if(isset($definition['minimum']))
-				{
-					$property->setMin($definition['minimum']);
-				}
-
-				if(isset($definition['maximum']))
-				{
-					$property->setMax($definition['maximum']);
-				}
-
-				$method->addQueryParameter($property);
 			}
 		}
+	}
+
+	protected function getParameter($name, array $definition)
+	{
+		$type     = isset($definition['type']) ? $definition['type'] : 'string';
+		$property = $this->getPropertyType($type, $name);
+
+		if(isset($definition['description']))
+		{
+			$property->setDescription($definition['description']);
+		}
+
+		if(isset($definition['required']))
+		{
+			$property->setRequired((bool) $definition['required']);
+		}
+
+		if(isset($definition['enum']) && is_array($definition['enum']))
+		{
+			$property->setEnumeration($definition['enum']);
+		}
+
+		if(isset($definition['pattern']))
+		{
+			$property->setPattern($definition['pattern']);
+		}
+
+		if(isset($definition['minLength']))
+		{
+			$property->setMinLength($definition['minLength']);
+		}
+
+		if(isset($definition['maxLength']))
+		{
+			$property->setMaxLength($definition['maxLength']);
+		}
+
+		if(isset($definition['minimum']))
+		{
+			$property->setMin($definition['minimum']);
+		}
+
+		if(isset($definition['maximum']))
+		{
+			$property->setMax($definition['maximum']);
+		}
+
+		return $property;
 	}
 
 	protected function parseRequest(Resource\MethodAbstract $method, array $data, $file)

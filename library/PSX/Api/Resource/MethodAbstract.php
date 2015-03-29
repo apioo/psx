@@ -20,7 +20,9 @@
 
 namespace PSX\Api\Resource;
 
+use PSX\Data\Schema;
 use PSX\Data\SchemaInterface;
+use PSX\Data\Schema\Property;
 use PSX\Data\Schema\PropertySimpleAbstract;
 
 /**
@@ -33,39 +35,25 @@ use PSX\Data\Schema\PropertySimpleAbstract;
 abstract class MethodAbstract
 {
 	protected $queryParameters;
-	protected $pathParameters;
 	protected $request;
 	protected $responses;
 
 	public function __construct()
 	{
-		$this->queryParameters = array();
-		$this->pathParameters  = array();
+		$this->queryParameters = new Property\ComplexType('query');
 		$this->responses       = array();
 	}
 
 	public function addQueryParameter(PropertySimpleAbstract $property)
 	{
-		$this->queryParameters[] = $property;
+		$this->queryParameters->add($property);
 
 		return $this;
 	}
 
 	public function getQueryParameters()
 	{
-		return $this->queryParameters;
-	}
-
-	public function addPathParameter(PropertySimpleAbstract $property)
-	{
-		$this->pathParameters[] = $property;
-
-		return $this;
-	}
-
-	public function getPathParameters()
-	{
-		return $this->pathParameters;
+		return new Schema($this->queryParameters);
 	}
 
 	public function setRequest(SchemaInterface $schema)
