@@ -35,8 +35,7 @@ connection which you can use in your application.
 Routing
 -------
 
-The following chapters explain howto work with an specific controller. In order 
-to make an controller accessible you have to define a route in your 
+In order to make an controller accessible you have to define a route in your 
 :file:`routes` file which invokes the controller class. Note PSX tries to 
 autoload the given class name so the namespace must be therefor defined in 
 the :file:`composer.json` autoload key. Here an example route entry:
