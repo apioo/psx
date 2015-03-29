@@ -33,6 +33,8 @@ use PSX\Data\SchemaInterface;
 use PSX\Data\Schema\Validator;
 use PSX\Data\Schema\Assimilator;
 use PSX\Http\Exception as StatusCode;
+use PSX\Loader\Context;
+use RuntimeException;
 
 /**
  * SchemaApiAbstract
@@ -48,6 +50,12 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 	 * @var PSX\Data\Schema\Assimilator
 	 */
 	protected $schemaAssimilator;
+
+	/**
+	 * @Inject
+	 * @var PSX\Api\Resource\ListingInterface
+	 */
+	protected $resourceListing;
 
 	/**
 	 * @var PSX\Data\Record
@@ -71,7 +79,12 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 
 	public function onLoad()
 	{
-		$doc = $this->getDocumentation();
+		$doc = $this->resourceListing->getDocumentation($this->context->get(Context::KEY_PATH));
+
+		if(!$doc instanceof DocumentationInterface)
+		{
+			throw new RuntimeException('No documentation available');
+		}
 
 		$this->version  = $this->getVersion($doc);
 		$this->resource = $this->getResource($doc, $this->version);

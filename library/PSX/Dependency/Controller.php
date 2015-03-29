@@ -115,7 +115,16 @@ trait Controller
 	 */
 	public function getRoutingParser()
 	{
-		return new Loader\RoutingParser\RoutingFile($this->get('config')->get('psx_routing'));
+		$routingParser = new Loader\RoutingParser\RoutingFile($this->get('config')->get('psx_routing'));
+
+		if($this->get('config')->get('psx_debug'))
+		{
+			return $routingParser;
+		}
+		else
+		{
+			return new Loader\RoutingParser\CachedParser($routingParser, $this->get('cache'));
+		}
 	}
 
 	/**
@@ -131,6 +140,15 @@ trait Controller
 	 */
 	public function getResourceListing()
 	{
-		return new Api\Resource\Listing\ControllerDocumentation($this->get('routing_parser'), $this->get('controller_factory'));
+		$resourceListing = new Api\Resource\Listing\ControllerDocumentation($this->get('routing_parser'), $this->get('controller_factory'));
+
+		if($this->get('config')->get('psx_debug'))
+		{
+			return $resourceListing;
+		}
+		else
+		{
+			return new Api\Resource\Listing\CachedListing($resourceListing, $this->get('cache'));
+		}
 	}
 }
