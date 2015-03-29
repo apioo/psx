@@ -22,6 +22,7 @@ namespace PSX\Data\Schema\Parser;
 
 use PSX\Data\Schema;
 use PSX\Data\Schema\Property;
+use PSX\Data\Schema\PropertyInterface;
 use PSX\Data\Schema\PropertySimpleAbstract;
 use PSX\Data\Schema\ParserInterface;
 use PSX\Data\Schema\Parser\JsonSchema\UnsupportedVersionException;
