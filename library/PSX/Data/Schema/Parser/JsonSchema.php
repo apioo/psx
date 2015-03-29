@@ -49,7 +49,8 @@ class JsonSchema implements ParserInterface
 
 		$this->assertVersion($data);
 
-		$this->baseUri = new Uri(isset($data['id']) ? $data['id'] : '');
+		$this->baseUri     = new Uri(isset($data['id']) ? $data['id'] : '');
+		$this->definitions = array();
 
 		if(isset($data['definitions']))
 		{
