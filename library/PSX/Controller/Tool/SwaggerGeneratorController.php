@@ -31,6 +31,7 @@ use PSX\Loader\Context;
 use PSX\Loader\PathMatcher;
 use PSX\Swagger\ResourceListing;
 use PSX\Swagger\ResourceObject;
+use PSX\Util\ApiGeneration;
 
 /**
  * SwaggerGeneratorController
@@ -55,7 +56,7 @@ class SwaggerGeneratorController extends ViewAbstract
 		foreach($resources as $resource)
 		{
 			$path = '/*';
-			$path.= Generator\Swagger::transformRoute($resource->getPath());
+			$path.= ApiGeneration::transformRoutePlaceholder($resource->getPath());
 
 			$resourceListing->addResource(new ResourceObject($path));
 		}

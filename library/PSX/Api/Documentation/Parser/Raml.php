@@ -27,6 +27,7 @@ use PSX\Api\Resource\Generator\Swagger;
 use PSX\Data\Schema\Property;
 use PSX\Data\Schema\Parser\JsonSchema;
 use PSX\Data\SchemaInterface;
+use PSX\Util\ApiGeneration;
 use Symfony\Component\Yaml\Parser;
 
 /**
@@ -40,8 +41,8 @@ class Raml implements ParserInterface
 {
 	public function parse($file, $path)
 	{
-		$path     = Swagger::transformRoute($path);
 		$resource = new Resource(Resource::STATUS_ACTIVE, $path);
+		$path     = ApiGeneration::transformRoutePlaceholder($path);
 		$parser   = new Parser();
 		$data     = $parser->parse(file_get_contents($file));
 

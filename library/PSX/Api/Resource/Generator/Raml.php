@@ -23,6 +23,7 @@ namespace PSX\Api\Resource\Generator;
 use PSX\Api\Resource;
 use PSX\Api\Resource\GeneratorAbstract;
 use PSX\Data\Schema\Generator as SchemaGenerator;
+use PSX\Util\ApiGeneration;
 
 /**
  * Raml
@@ -48,12 +49,14 @@ class Raml extends GeneratorAbstract
 
 	public function generate(Resource $resource)
 	{
+		$path = ApiGeneration::transformRoutePlaceholder($resource->getPath() ?: '/');
+
 		$raml = '#%RAML 0.8' . "\n";
 		$raml.= '---' . "\n";
 		$raml.= 'baseUri: ' . $this->baseUri . "\n";
 		$raml.= 'version: v' . $this->version . "\n";
 		$raml.= 'title: ' . $this->title . "\n";
-		$raml.= ($resource->getPath() ?: '/') . ':' . "\n";
+		$raml.= $path . ':' . "\n";
 
 		$generator = new SchemaGenerator\JsonSchema($this->targetNamespace);
 		$methods   = $resource->getMethods();

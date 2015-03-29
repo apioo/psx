@@ -28,6 +28,7 @@ use PSX\Controller\ViewAbstract;
 use PSX\Http\Exception as HttpException;
 use PSX\Loader\Context;
 use PSX\Loader\PathMatcher;
+use PSX\Util\ApiGeneration;
 
 /**
  * WsdlGeneratorController
@@ -71,7 +72,7 @@ class WsdlGeneratorController extends ViewAbstract
 
 			if(empty($title))
 			{
-				$title = str_replace(' ', '', ucwords(str_replace('/', ' ', $path)));
+				$title = ApiGeneration::generateTitleFromRoute($path);
 			}
 
 			$endpoint        = $this->config['psx_url'] . '/' . $this->config['psx_dispatch'] . $path;

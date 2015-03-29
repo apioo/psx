@@ -31,6 +31,7 @@ use PSX\Swagger\Model;
 use PSX\Swagger\Operation;
 use PSX\Swagger\Parameter;
 use PSX\Swagger\ResponseMessage;
+use PSX\Util\ApiGeneration;
 
 /**
  * Generates an Swagger 1.2 representation of an API resource. Note this does 
@@ -59,7 +60,7 @@ class Swagger extends GeneratorAbstract
 		$declaration->setBasePath($this->basePath);
 		$declaration->setApis($this->getApis($resource));
 		$declaration->setModels($this->getModels($resource));
-		$declaration->setResourcePath(self::transformRoute($resource->getPath()));
+		$declaration->setResourcePath(ApiGeneration::transformRoutePlaceholder($resource->getPath()));
 
 		$writer  = new JsonWriter();
 		$swagger = $writer->write($declaration);
@@ -73,7 +74,7 @@ class Swagger extends GeneratorAbstract
 
 	protected function getApis(Resource $resource)
 	{
-		$api     = new Api(self::transformRoute($resource->getPath()));
+		$api     = new Api(ApiGeneration::transformRoutePlaceholder($resource->getPath()));
 		$methods = $resource->getMethods();
 
 		foreach($methods as $method)
