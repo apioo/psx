@@ -1,0 +1,17 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "description": "A canonical song",
+    "properties": {
+        "artist": {
+            "type": "string"
+        },
+        "title": {
+            "type": "string"
+        }
+    },
+    "required": [
+        "title",
+        "artist"
+    ],
+    "type": "object"
+}

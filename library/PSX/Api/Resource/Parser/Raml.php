@@ -81,8 +81,8 @@ class Raml implements ParserInterface
 						$method = Resource\Factory::getMethod(strtoupper($methodName));
 
 						$this->parseQueryParameters($method, $row);
-						$this->parseRequest($method, $row);
-						$this->parseResponses($method, $row);
+						$this->parseRequest($method, $row, $file);
+						$this->parseResponses($method, $row, $file);
 
 						$resource->addMethod($method);
 					}
@@ -163,11 +163,11 @@ class Raml implements ParserInterface
 		}
 	}
 
-	protected function parseRequest(Resource\MethodAbstract $method, array $data)
+	protected function parseRequest(Resource\MethodAbstract $method, array $data, $file)
 	{
 		if(isset($data['body']) && is_array($data['body']))
 		{
-			$schema = $this->getBodySchema($data['body']);
+			$schema = $this->getBodySchema($data['body'], $file);
 
 			if($schema instanceof SchemaInterface)
 			{
@@ -176,7 +176,7 @@ class Raml implements ParserInterface
 		}
 	}
 
-	protected function parseResponses(Resource\MethodAbstract $method, array $data)
+	protected function parseResponses(Resource\MethodAbstract $method, array $data, $file)
 	{
 		if(isset($data['responses']) && is_array($data['responses']))
 		{
@@ -184,7 +184,7 @@ class Raml implements ParserInterface
 			{
 				if(isset($row['body']) && is_array($row['body']))
 				{
-					$schema = $this->getBodySchema($row['body']);
+					$schema = $this->getBodySchema($row['body'], $file);
 
 					if($schema instanceof SchemaInterface)
 					{
@@ -195,15 +195,35 @@ class Raml implements ParserInterface
 		}
 	}
 
-	protected function getBodySchema(array $body)
+	protected function getBodySchema(array $body, $file)
 	{
 		$parser = new JsonSchema();
 
 		foreach($body as $contentType => $row)
 		{
-			if($contentType == 'application/json' && isset($row['schema']))
+			if($contentType == 'application/json' && isset($row['schema']) && is_string($row['schema']))
 			{
-				return $parser->parse($row['schema']);
+				if(substr($row['schema'], 0, 8) == '!include')
+				{
+					$dir    = pathinfo($file, PATHINFO_DIRNAME);
+					$file   = trim(substr($row['schema'], 8));
+					$path   = $dir . DIRECTORY_SEPARATOR . $file;
+
+					if(is_file($path))
+					{
+						$schema = file_get_contents($dir . DIRECTORY_SEPARATOR . $file);
+					}
+					else
+					{
+						throw new \RuntimeException('Can not import file ' . $path);
+					}
+				}
+				else
+				{
+					$schema = $row['schema'];
+				}
+
+				return $parser->parse($schema);
 			}
 		}
 

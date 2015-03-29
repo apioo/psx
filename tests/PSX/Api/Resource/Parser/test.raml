@@ -23,16 +23,7 @@ traits:
   post:
     body:
       application/json:
-        schema: |
-          { "$schema": "http://json-schema.org/draft-04/schema#",
-            "type": "object",
-            "description": "A canonical song",
-            "properties": {
-              "title":  { "type": "string" },
-              "artist": { "type": "string" }
-            },
-            "required": [ "title", "artist" ]
-          }
+        schema: !include schema.json
     responses:
       200:
         body:

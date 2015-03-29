@@ -41,6 +41,13 @@ class RamlTest extends \PHPUnit_Framework_TestCase
 		$this->assertInstanceOf('PSX\Api\Resource\Post', $resource->getMethod('POST'));
 		$this->assertInstanceOf('PSX\Data\SchemaInterface', $resource->getMethod('POST')->getResponse(200));
 
+		$property = $resource->getMethod('POST')->getRequest()->getDefinition();
+
+		$this->assertInstanceOf('PSX\Data\Schema\Property\ComplexType', $property);
+		$this->assertEquals('A canonical song', $property->getDescription());
+		$this->assertInstanceOf('PSX\Data\Schema\Property\String', $property->get('title'));
+		$this->assertInstanceOf('PSX\Data\Schema\Property\String', $property->get('artist'));
+
 		$property = $resource->getMethod('POST')->getResponse(200)->getDefinition();
 
 		$this->assertInstanceOf('PSX\Data\Schema\Property\ComplexType', $property);
