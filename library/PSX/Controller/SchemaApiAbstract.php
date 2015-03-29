@@ -50,18 +50,6 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 	protected $schemaAssimilator;
 
 	/**
-	 * @Inject
-	 * @var PSX\Data\Schema\SchemaManager
-	 */
-	protected $schemaManager;
-
-	/**
-	 * @Inject
-	 * @var PSX\Api\ResourceListingInterface
-	 */
-	protected $resourceListing;
-
-	/**
 	 * @var PSX\Data\Record
 	 */
 	protected $queryParameters;
