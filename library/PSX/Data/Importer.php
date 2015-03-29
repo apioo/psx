@@ -27,6 +27,7 @@ use PSX\Data\Record\ImporterInterface;
 use PSX\Data\TransformerInterface;
 use PSX\Data\Transformer\TransformerManager;
 use PSX\Http\MessageInterface;
+use RuntimeException;
 
 /**
  * Reads data from an http message and imports them into an record
@@ -78,6 +79,11 @@ class Importer
 
 		if($importer instanceof ImporterInterface)
 		{
+			if(empty($data))
+			{
+				throw new RuntimeException('No data available');
+			}
+
 			return $importer->import($source, $data);
 		}
 		else
