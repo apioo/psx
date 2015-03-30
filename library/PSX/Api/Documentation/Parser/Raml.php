@@ -84,6 +84,11 @@ class Raml implements ParserInterface
 
 					$method = Resource\Factory::getMethod(strtoupper($methodName));
 
+					if(isset($row['description']))
+					{
+						$method->setDescription($row['description']);
+					}
+
 					$this->parseQueryParameters($method, $row);
 					$this->parseRequest($method, $row, $file);
 					$this->parseResponses($method, $row, $file);

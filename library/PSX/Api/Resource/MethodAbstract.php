@@ -34,6 +34,7 @@ use PSX\Data\Schema\PropertySimpleAbstract;
  */
 abstract class MethodAbstract
 {
+	protected $description;
 	protected $queryParameters;
 	protected $request;
 	protected $responses;
@@ -42,6 +43,16 @@ abstract class MethodAbstract
 	{
 		$this->queryParameters = new Property\ComplexType('query');
 		$this->responses       = array();
+	}
+
+	public function setDescription($description)
+	{
+		$this->description = $description;
+	}
+
+	public function getDescription()
+	{
+		return $this->description;
 	}
 
 	public function addQueryParameter(PropertySimpleAbstract $property)
