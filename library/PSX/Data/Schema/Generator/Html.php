@@ -56,6 +56,13 @@ class Html implements GeneratorInterface
 
 		if($type instanceof Property\ComplexType)
 		{
+			$properties = $type->getProperties();
+
+			if(empty($properties))
+			{
+				return;
+			}
+
 			$response = '<div id="psx-type-' . $type->getId() . '" class="psx-complex-type">';
 			$response.= '<h1>' . $type->getName() . '</h1>';
 			$response.= '<div class="psx-type-description">' . $type->getDescription() . '</div>';
@@ -75,8 +82,6 @@ class Html implements GeneratorInterface
 			$response.= '</tr>';
 			$response.= '</thead>';
 			$response.= '<tbody>';
-
-			$properties = $type->getProperties();
 
 			foreach($properties as $property)
 			{
