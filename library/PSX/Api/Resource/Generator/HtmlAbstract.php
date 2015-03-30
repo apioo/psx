@@ -35,8 +35,9 @@ use PSX\Http;
  */
 abstract class HtmlAbstract implements GeneratorInterface
 {
-	const TYPE_REQUEST  = 0x1;
-	const TYPE_RESPONSE = 0x2;
+	const TYPE_QUERY    = 0x1;
+	const TYPE_REQUEST  = 0x2;
+	const TYPE_RESPONSE = 0x3;
 
 	public function generate(Resource $resource)
 	{
@@ -54,6 +55,30 @@ abstract class HtmlAbstract implements GeneratorInterface
 		$methods = $resource->getMethods();
 		foreach($methods as $method)
 		{
+			$html.= '<div class="psx-resource-method" data-method="' . $method->getName() . '">';
+
+			$description = $method->getDescription();
+			if(!empty($description))
+			{
+				$html.= '<div class="psx-resource-method-description">' . $description . '</div>';
+			}
+
+			// query parameters
+			$queryParameters = $method->getQueryParameters();
+
+			if($queryParameters instanceof SchemaInterface)
+			{
+				$result = $this->generateHtml($queryParameters, self::TYPE_QUERY, $method->getName(), $resource->getPath());
+
+				if(!empty($result))
+				{
+					$html.= '<div class="psx-resource-data psx-resource-query">';
+					$html.= '<h5>' . $method->getName() . ' Query-Parameters</h5>';
+					$html.= '<div class="psx-resource-data-content">' . $result . '</div>';
+					$html.= '</div>';
+				}
+			}
+
 			// request
 			$request = $method->getRequest();
 
@@ -63,9 +88,9 @@ abstract class HtmlAbstract implements GeneratorInterface
 
 				if(!empty($result))
 				{
-					$html.= '<div class="psx-resource psx-resource-request" data-method="' . $method->getName() . '">';
+					$html.= '<div class="psx-resource-data psx-resource-request">';
 					$html.= '<h5>' . $method->getName() . ' Request</h5>';
-					$html.= '<div class="psx-resource-content">' . $result . '</div>';
+					$html.= '<div class="psx-resource-data-content">' . $result . '</div>';
 					$html.= '</div>';
 				}
 			}
@@ -81,12 +106,14 @@ abstract class HtmlAbstract implements GeneratorInterface
 				{
 					$message = isset(Http::$codes[$statusCode]) ? Http::$codes[$statusCode] : 'Unknown';
 
-					$html.= '<div class="psx-resource psx-resource-response" data-method="' . $method->getName() . '">';
+					$html.= '<div class="psx-resource-data psx-resource-response">';
 					$html.= '<h5>' . $method->getName() . ' Response - ' . $statusCode . ' ' . $message . '</h5>';
-					$html.= '<div class="psx-resource-content">' . $result . '</div>';
+					$html.= '<div class="psx-resource-data-content">' . $result . '</div>';
 					$html.= '</div>';
 				}
 			}
+
+			$html.= '</div>';
 		}
 
 		$html.= '</div>';
