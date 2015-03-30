@@ -45,6 +45,8 @@ class RamlTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('Some description', $resource->getDescription());
 
 		// check GET
+		$this->assertEquals('Informations about the method', $resource->getMethod('GET')->getDescription());
+
 		$this->assertInstanceOf('PSX\Data\Schema\Property\ComplexType', $resource->getMethod('GET')->getQueryParameters()->getDefinition());
 		$this->assertEquals('The number of pages to return', $resource->getMethod('GET')->getQueryParameters()->getDefinition()->get('pages')->getDescription());
 		$this->assertEquals('Sets the start index', $resource->getMethod('GET')->getQueryParameters()->getDefinition()->get('startIndex')->getDescription());
