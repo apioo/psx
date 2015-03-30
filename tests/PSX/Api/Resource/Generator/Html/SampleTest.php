@@ -40,60 +40,100 @@ class SampleTest extends GeneratorTestCase
 		$expect = <<<XML
 <div class="psx-resource psx-api-resource-generator-html-sample" data-path="/foo/bar" data-status="1">
 	<h4>Example</h4>
-	<div class="psx-resource psx-resource-response" data-method="GET">
-		<h5>GET Response - 200 OK</h5>
-		<div class="psx-resource-content">
-			<pre>
-				<code class="http">get-response</code>
-			</pre>
+	<div class="psx-resource-method" data-method="GET">
+		<div class="psx-resource-data psx-resource-query">
+			<h5>GET Query-Parameters</h5>
+			<div class="psx-resource-data-content">
+				<pre>
+					<code class="http">get-query</code>
+				</pre>
+			</div>
+		</div>
+		<div class="psx-resource-data psx-resource-response">
+			<h5>GET Response - 200 OK</h5>
+			<div class="psx-resource-data-content">
+				<pre>
+					<code class="http">get-response</code>
+				</pre>
+			</div>
 		</div>
 	</div>
-	<div class="psx-resource psx-resource-request" data-method="POST">
-		<h5>POST Request</h5>
-		<div class="psx-resource-content">
-			<pre>
-				<code class="http">post-request</code>
-			</pre>
+	<div class="psx-resource-method" data-method="POST">
+		<div class="psx-resource-data psx-resource-query">
+			<h5>POST Query-Parameters</h5>
+			<div class="psx-resource-data-content">
+				<pre>
+					<code class="http">get-query</code>
+				</pre>
+			</div>
+		</div>
+		<div class="psx-resource-data psx-resource-request">
+			<h5>POST Request</h5>
+			<div class="psx-resource-data-content">
+				<pre>
+					<code class="http">post-request</code>
+				</pre>
+			</div>
+		</div>
+		<div class="psx-resource-data psx-resource-response">
+			<h5>POST Response - 200 OK</h5>
+			<div class="psx-resource-data-content">
+				<pre>
+					<code class="http">post-response</code>
+				</pre>
+			</div>
 		</div>
 	</div>
-	<div class="psx-resource psx-resource-response" data-method="POST">
-		<h5>POST Response - 200 OK</h5>
-		<div class="psx-resource-content">
-			<pre>
-				<code class="http">post-response</code>
-			</pre>
+	<div class="psx-resource-method" data-method="PUT">
+		<div class="psx-resource-data psx-resource-query">
+			<h5>PUT Query-Parameters</h5>
+			<div class="psx-resource-data-content">
+				<pre>
+					<code class="http">get-query</code>
+				</pre>
+			</div>
+		</div>
+		<div class="psx-resource-data psx-resource-request">
+			<h5>PUT Request</h5>
+			<div class="psx-resource-data-content">
+				<pre>
+					<code class="http">put-request</code>
+				</pre>
+			</div>
+		</div>
+		<div class="psx-resource-data psx-resource-response">
+			<h5>PUT Response - 200 OK</h5>
+			<div class="psx-resource-data-content">
+				<pre>
+					<code class="http">put-response</code>
+				</pre>
+			</div>
 		</div>
 	</div>
-	<div class="psx-resource psx-resource-request" data-method="PUT">
-		<h5>PUT Request</h5>
-		<div class="psx-resource-content">
-			<pre>
-				<code class="http">put-request</code>
-			</pre>
+	<div class="psx-resource-method" data-method="DELETE">
+		<div class="psx-resource-data psx-resource-query">
+			<h5>DELETE Query-Parameters</h5>
+			<div class="psx-resource-data-content">
+				<pre>
+					<code class="http">get-query</code>
+				</pre>
+			</div>
 		</div>
-	</div>
-	<div class="psx-resource psx-resource-response" data-method="PUT">
-		<h5>PUT Response - 200 OK</h5>
-		<div class="psx-resource-content">
-			<pre>
-				<code class="http">put-response</code>
-			</pre>
+		<div class="psx-resource-data psx-resource-request">
+			<h5>DELETE Request</h5>
+			<div class="psx-resource-data-content">
+				<pre>
+					<code class="http">delete-request</code>
+				</pre>
+			</div>
 		</div>
-	</div>
-	<div class="psx-resource psx-resource-request" data-method="DELETE">
-		<h5>DELETE Request</h5>
-		<div class="psx-resource-content">
-			<pre>
-				<code class="http">delete-request</code>
-			</pre>
-		</div>
-	</div>
-	<div class="psx-resource psx-resource-response" data-method="DELETE">
-		<h5>DELETE Response - 200 OK</h5>
-		<div class="psx-resource-content">
-			<pre>
-				<code class="http">delete-response</code>
-			</pre>
+		<div class="psx-resource-data psx-resource-response">
+			<h5>DELETE Response - 200 OK</h5>
+			<div class="psx-resource-data-content">
+				<pre>
+					<code class="http">delete-response</code>
+				</pre>
+			</div>
 		</div>
 	</div>
 </div>
