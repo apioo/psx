@@ -68,6 +68,11 @@ class JsonSchema implements ParserInterface
 			$data = $this->resolveRef($data['$ref']);
 		}
 
+		if(isset($data['title']))
+		{
+			$name = $data['title'];
+		}
+
 		$type = isset($data['type']) ? $data['type'] : null;
 
 		switch($type)
