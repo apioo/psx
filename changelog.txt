@@ -1,4 +1,14 @@
 
+0.9.8
+* Added raml and json schema parser
+* Improved html output added psx- prefix for css classes
+* Renamed Api\View to Api\Resource and redesigned classes containing the schema. 
+  It is now possible to set an response schema for each status code
+* Add possibility to cache resource listing results
+* Improved tool controllers
+* Renamed RestController to RestClientController
+* Fixed bug in request factory where sub paths are not handeled correctly
+
 0.9.7
 * Added record graph traverser class and various visitor implementations which
   are used to produce data from an object graph
