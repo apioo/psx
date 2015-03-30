@@ -96,7 +96,7 @@
 		margin:12px 8px;
 	}
 
-	.resource > h4
+	.resource-method > h4
 	{
 		margin:0px;
 		margin-top:8px;
@@ -105,6 +105,12 @@
 		font-weight:bold;
 		background-color:#021c35;
 		color:#fff;
+	}
+
+	.resource-method-description
+	{
+		margin-top:8px;
+		padding:8px;
 	}
 
 	.resource-data > h5
@@ -130,17 +136,17 @@
 		content:url(data:image/gif;base64,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);
 	}
 
-	#api-toolbar
+	#resource-toolbar
 	{
 		float:right;
 	}
 
-	#api-toolbar button
+	#resource-toolbar button
 	{
 		margin-left:8px;
 	}
 
-	#api-description
+	#resource-description
 	{
 		margin:12px 8px
 	}
@@ -216,18 +222,18 @@
 		}
 
 		// load api documentation
-		var html = '<div id="api-toolbar"></div>';
-		html+= '<h3 id="api-title"></h3>';
-		html+= '<div id="api-description"></div>';
-		html+= '<div id="api-nav"></div>';
-		html+= '<div id="api-doc" class="tab-content"><div id="api-loader"><img /></div></div>';
+		var html = '<div id="resource-toolbar"></div>';
+		html+= '<h3 id="resource-title"></h3>';
+		html+= '<div id="resource-description"></div>';
+		html+= '<div id="resource-nav"></div>';
+		html+= '<div id="resource-doc" class="tab-content"><div id="api-loader"><img /></div></div>';
 		$('#psx-content').html(html);
 
 		var successCallback = function(resp){
 			if (resp && typeof resp === 'object' && resp.path) {
-				$('#api-title').html(resp.path + ' (v' + resp.resource.version + ')');
-				$('#api-description').html(resp.description);
-				$('#api-toolbar').html(getToolbar(resp));
+				$('#resource-title').html(resp.path + ' (v' + resp.resource.version + ')');
+				$('#resource-description').html(resp.description);
+				$('#resource-toolbar').html(getToolbar(resp));
 
 				var html = '';
 				var nav  = '<ul class="nav nav-tabs">';
@@ -240,18 +246,26 @@
 					html+= '<div role="tabpanel" class="tab-pane" id="' + method + '">';
 
 					for (var key in resp.resource.data) {
-						var data     = resp.resource.data[key];
-						var resource = '';
-						$(data).find('.psx-resource').each(function(){
+						var data        = resp.resource.data[key];
+						var description = '';
+						var content     = '';
+
+						$(data).find('.psx-resource-method').each(function(){
 							if ($(this).data('method') == method) {
-								resource+= '<div class="resource-data">' + $(this).html() + '</div>';
+								description = $(this).find('.psx-resource-method-description').html();
+								$(this).find('.psx-resource-data').each(function(){
+									content+= '<div class="resource-data">' + $(this).html() + '</div>';
+								});
 							}
 						});
 
-						if (resource.length > 0) {
-							html+= '<div class="resource">';
+						if (content) {
+							html+= '<div class="resource-method">';
+							if (description) {
+								html+= '<div class="resource-method-description">' + description + '</div>';
+							}
 							html+= '<h4>' + key + '</h4>';
-							html+= resource;
+							html+= content;
 							html+= '</div>';
 						}
 					}
@@ -262,28 +276,28 @@
 				nav+= '</ul>';
 
 				// nav
-				$('#api-nav').html(nav);
-				$('#api-nav a').click(function(e){
+				$('#resource-nav').html(nav);
+				$('#resource-nav a').click(function(e){
 					e.preventDefault();
 					$(this).tab('show');
 					location.hash = resp.path + ':' + $(this).attr('href').substr(1);
 				});
 
 				// doc
-				$('#api-doc').html(html);
-				$('#api-doc').find('pre code').each(function(i, block) {
+				$('#resource-doc').html(html);
+				$('#resource-doc').find('pre code').each(function(i, block) {
 					hljs.highlightBlock(block);
 				});
 
 				// select tab
 				if (selectedTab == 'GET' || selectedTab == 'POST' || selectedTab == 'PUT' || selectedTab == 'DELETE') {
-					$('#api-nav a[href="#' + selectedTab + '"]').trigger('click');
+					$('#resource-nav a[href="#' + selectedTab + '"]').trigger('click');
 				} else {
-					$('#api-nav a:first').trigger('click');
+					$('#resource-nav a:first').trigger('click');
 				}
 			} else {
 				location.hash = '/' + path;
-				$('#api-doc').html('<div class="alert alert-info" role="alert">No API documentation available</div>');
+				$('#resource-doc').html('<div class="alert alert-info" role="alert">No API documentation available</div>');
 			}
 		};
 
@@ -291,9 +305,9 @@
 			location.hash = '/' + path;
 			var data = resp.responseJSON;
 			if (data.hasOwnProperty('success') && data.success === false) {
-				$('#api-doc').html('<div class="alert alert-danger" role="alert">' + data.message + '</div><pre>' + data.trace + '</pre>');
+				$('#resource-doc').html('<div class="alert alert-danger" role="alert">' + data.message + '</div><pre>' + data.trace + '</pre>');
 			} else {
-				$('#api-doc').html('<div class="alert alert-danger" role="alert">An unknown error occured</div><pre>' + resp.responseText + '</pre>');
+				$('#resource-doc').html('<div class="alert alert-danger" role="alert">An unknown error occured</div><pre>' + resp.responseText + '</pre>');
 			}
 		};
 
@@ -410,11 +424,11 @@
 		</div>
 		<div class="col-md-10 col-md-offset-2 content">
 			<div id="psx-content">
-				<div id="api-toolbar"></div>
-				<h3 id="api-title"></h3>
-				<div id="api-description"></div>
-				<div id="api-nav"></div>
-				<div id="api-doc" class="tab-content"></div>
+				<div id="resource-toolbar"></div>
+				<h3 id="resource-title"></h3>
+				<div id="resource-description"></div>
+				<div id="resource-nav"></div>
+				<div id="resource-doc" class="tab-content"></div>
 			</div>
 		</div>
 	</div>
