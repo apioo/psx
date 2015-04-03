@@ -30,12 +30,12 @@ namespace PSX\Api\Documentation;
 interface ParserInterface
 {
 	/**
-	 * Parses an file containing an specification of resources and returns
+	 * Parses an schema containing an specification of resources and returns
 	 * an documentation for the given path
 	 *
-	 * @param string $file
+	 * @param string $schema
 	 * @param string $path
 	 * @return PSX\Api\DocumentationInterface
 	 */
-	public function parse($file, $path);
+	public function parse($schema, $path);
 }

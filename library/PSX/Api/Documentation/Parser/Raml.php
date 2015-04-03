@@ -39,12 +39,20 @@ use Symfony\Component\Yaml\Parser;
  */
 class Raml implements ParserInterface
 {
-	public function parse($file, $path)
+	protected $basePath;
+	protected $parser;
+
+	public function __construct($basePath = null, Parser $parser = null)
+	{
+		$this->basePath = $basePath;
+		$this->parser   = $parser ?: new Parser();
+	}
+
+	public function parse($schema, $path)
 	{
 		$resource = new Resource(Resource::STATUS_ACTIVE, $path);
 		$path     = ApiGeneration::transformRoutePlaceholder($path);
-		$parser   = new Parser();
-		$data     = $parser->parse(file_get_contents($file));
+		$data     = $this->parser->parse($schema);
 
 		if(isset($data[$path]) && is_array($data[$path]))
 		{
@@ -90,8 +98,8 @@ class Raml implements ParserInterface
 					}
 
 					$this->parseQueryParameters($method, $row);
-					$this->parseRequest($method, $row, $file);
-					$this->parseResponses($method, $row, $file);
+					$this->parseRequest($method, $row);
+					$this->parseResponses($method, $row);
 
 					$resource->addMethod($method);
 				}
@@ -204,11 +212,11 @@ class Raml implements ParserInterface
 		return $property;
 	}
 
-	protected function parseRequest(Resource\MethodAbstract $method, array $data, $file)
+	protected function parseRequest(Resource\MethodAbstract $method, array $data)
 	{
 		if(isset($data['body']) && is_array($data['body']))
 		{
-			$schema = $this->getBodySchema($data['body'], $file);
+			$schema = $this->getBodySchema($data['body']);
 
 			if($schema instanceof SchemaInterface)
 			{
@@ -217,7 +225,7 @@ class Raml implements ParserInterface
 		}
 	}
 
-	protected function parseResponses(Resource\MethodAbstract $method, array $data, $file)
+	protected function parseResponses(Resource\MethodAbstract $method, array $data)
 	{
 		if(isset($data['responses']) && is_array($data['responses']))
 		{
@@ -225,7 +233,7 @@ class Raml implements ParserInterface
 			{
 				if(isset($row['body']) && is_array($row['body']))
 				{
-					$schema = $this->getBodySchema($row['body'], $file);
+					$schema = $this->getBodySchema($row['body']);
 
 					if($schema instanceof SchemaInterface)
 					{
@@ -236,35 +244,29 @@ class Raml implements ParserInterface
 		}
 	}
 
-	protected function getBodySchema(array $body, $file)
+	protected function getBodySchema(array $body)
 	{
-		$parser = new JsonSchema();
-
 		foreach($body as $contentType => $row)
 		{
 			if($contentType == 'application/json' && isset($row['schema']) && is_string($row['schema']))
 			{
 				if(substr($row['schema'], 0, 8) == '!include')
 				{
-					$dir    = pathinfo($file, PATHINFO_DIRNAME);
-					$file   = trim(substr($row['schema'], 8));
-					$path   = $dir . DIRECTORY_SEPARATOR . $file;
+					$file = trim(substr($row['schema'], 8));
 
-					if(is_file($path))
+					if(!is_file($file))
 					{
-						$schema = file_get_contents($dir . DIRECTORY_SEPARATOR . $file);
+						$file = $this->basePath !== null ? $this->basePath . DIRECTORY_SEPARATOR . $file : $file;
 					}
-					else
-					{
-						throw new \RuntimeException('Can not import file ' . $path);
-					}
+
+					return JsonSchema::fromFile($file);
 				}
 				else
 				{
-					$schema = $row['schema'];
-				}
+					$parser = new JsonSchema($this->basePath);
 
-				return $parser->parse($schema);
+					return $parser->parse($row['schema']);
+				}
 			}
 		}
 
@@ -293,7 +295,7 @@ class Raml implements ParserInterface
 		}
 	}
 
-	protected function getNormalizedVersion(array $data)
+	protected function getNormalizedVersion($data)
 	{
 		if(isset($data['version']))
 		{
@@ -306,5 +308,20 @@ class Raml implements ParserInterface
 		}
 
 		return $version;
+	}
+
+	public static function fromFile($file, $path)
+	{
+		if(!empty($file) && is_file($file))
+		{
+			$basePath = pathinfo($file, PATHINFO_DIRNAME);
+			$parser   = new Raml($basePath);
+
+			return $parser->parse(file_get_contents($file), $path);
+		}
+		else
+		{
+			throw new \RuntimeException('Could not load raml schema ' . $file);
+		}
 	}
 }
