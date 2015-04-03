@@ -28,6 +28,7 @@ use PSX\Http\Options;
 use PSX\Http\RedirectException;
 use PSX\Http\Request;
 use PSX\Http\ResponseParser;
+use PSX\Url;
 
 /**
  * Mock handler where you can register urls wich return a specific response on 
@@ -75,11 +76,16 @@ class Mock implements HandlerInterface
 
 	public function request(Request $request, Options $options)
 	{
-		$url = $request->getUri()->toString();
+		$url = $request->getUri();
 
 		foreach($this->resources as $resource)
 		{
-			if($resource['method'] == $request->getMethod() && $resource['url'] == $url)
+			$resourceUrl = new Url($resource['url']);
+
+			if($resource['method'] == $request->getMethod() && 
+				$resourceUrl->getHost() == $url->getHost() && 
+				$resourceUrl->getPath() == $url->getPath() && 
+				$resourceUrl->getQuery() == $url->getQuery())
 			{
 				$response = $resource['handler']($request);
 
@@ -94,7 +100,7 @@ class Mock implements HandlerInterface
 	{
 		if(!is_file($file))
 		{
-			throw new Exception('Is not a file');
+			throw new Exception('Could not load mock xml definition ' . $file);
 		}
 
 		$mock = new self();
@@ -105,10 +111,9 @@ class Mock implements HandlerInterface
 			$method   = (string) $resource->method;
 			$url      = (string) $resource->url;
 			$response = (string) $resource->response;
-			$response = base64_decode($response);
 
 			$mock->add($method, $url, function($request) use ($response){
-				return $response;
+				return base64_decode($response);
 			});
 		}
 

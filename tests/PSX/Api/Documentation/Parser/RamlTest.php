@@ -31,8 +31,7 @@ class RamlTest extends \PHPUnit_Framework_TestCase
 {
 	public function testParse()
 	{
-		$parser = new Raml();
-		$doc    = $parser->parse(__DIR__ . '/test.raml', '/foo');
+		$doc = Raml::fromFile(__DIR__ . '/test.raml', '/foo');
 
 		$this->assertInstanceOf('PSX\Api\DocumentationInterface', $doc);
 		$this->assertEquals('World Music API', $doc->getDescription());
@@ -75,8 +74,7 @@ class RamlTest extends \PHPUnit_Framework_TestCase
 
 	public function testParsePath()
 	{
-		$parser = new Raml();
-		$doc    = $parser->parse(__DIR__ . '/test.raml', '/bar/:bar_id');
+		$doc = Raml::fromFile(__DIR__ . '/test.raml', '/bar/:bar_id');
 
 		$this->assertInstanceOf('PSX\Api\DocumentationInterface', $doc);
 		$this->assertEquals('World Music API', $doc->getDescription());

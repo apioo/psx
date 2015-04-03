@@ -1,0 +1,70 @@
+{
+    "id": "http://schema.org/foo#",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "description": "Some schema",
+    "type": "object",
+    "properties": {
+        "id": {
+            "$ref": "file:///other_schema.json#/definitions/foo"
+        },
+        "bar": {
+            "$ref": "file:///other_schema.json#"
+        },
+        "value": {
+            "$ref": "http://json-schema.org/draft-04/schema#/definitions/positiveInteger"
+        },
+        "object": {
+            "type": "object",
+            "description": "description",
+            "properties": {
+                "foo": {
+                    "type": "string"
+                }
+            }
+        },
+        "array": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 9,
+            "items": {
+                "type": "string"
+            }
+        },
+        "boolean": {
+            "type": "boolean"
+        },
+        "integer": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 4
+        },
+        "number": {
+            "type": "number"
+        },
+        "string": {
+            "type": "string",
+            "pattern": "[A-z]+",
+            "enum": ["foo", "bar"],
+            "minLength": 2,
+            "maxLength": 4
+        },
+        "date": {
+            "type": "string",
+            "format": "date"
+        },
+        "datetime": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "duration": {
+            "type": "string",
+            "format": "duration"
+        },
+        "time": {
+            "type": "string",
+            "format": "time"
+        },
+        "unknown": {
+        }
+    }
+}

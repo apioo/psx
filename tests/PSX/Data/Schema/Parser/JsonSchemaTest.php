@@ -20,6 +20,8 @@
 
 namespace PSX\Data\Schema\Parser;
 
+use PSX\Http;
+
 /**
  * JsonSchemaTest
  *
@@ -29,12 +31,56 @@ namespace PSX\Data\Schema\Parser;
  */
 class JsonSchemaTest extends \PHPUnit_Framework_TestCase
 {
-	public function testParse()
+	/**
+	 * The offical json schema is recursive so we check whether we can parse it
+	 * without a problem
+	 */
+	public function testParseRecursion()
 	{
-		$parser   = new JsonSchema();
-		$schema   = $parser->parse(file_get_contents(__DIR__ . '/schema.json'));
+		$schema   = JsonSchema::fromFile(__DIR__ . '/schema.json');
 		$property = $schema->getDefinition();
 
 		$this->assertInstanceOf('PSX\Data\Schema\PropertyInterface', $property);
+	}
+
+	public function testParseExternalResource()
+	{
+		$handler  = Http\Handler\Mock::getByXmlDefinition(__DIR__ . '/http_mock.xml');
+		$http     = new Http($handler);
+		$resolver = new JsonSchema\RefResolver($http);
+
+		$parser   = new JsonSchema(__DIR__, $resolver);
+		$schema   = $parser->parse(file_get_contents(__DIR__ . '/test_schema.json'));
+		$property = $schema->getDefinition();
+
+		$this->assertInstanceOf('PSX\Data\Schema\PropertyInterface', $property);
+		$this->assertInstanceOf('PSX\Data\Schema\Property\Integer', $property->get('id'));
+		$this->assertInstanceOf('PSX\Data\Schema\Property\ComplexType', $property->get('bar'));
+		$this->assertInstanceOf('PSX\Data\Schema\Property\ArrayType', $property->get('bar')->get('number'));
+		$this->assertInstanceOf('PSX\Data\Schema\Property\Integer', $property->get('bar')->get('number')->getPrototype());
+		$this->assertEquals(4, $property->get('bar')->get('number')->getPrototype()->getMin());
+		$this->assertInstanceOf('PSX\Data\Schema\Property\Integer', $property->get('value'));
+		$this->assertEquals(0, $property->get('value')->getMin());
+
+		$this->assertInstanceOf('PSX\Data\Schema\Property\ComplexType', $property->get('object'));
+		$this->assertEquals('description', $property->get('object')->getDescription());
+		$this->assertInstanceOf('PSX\Data\Schema\Property\ArrayType', $property->get('array'));
+		$this->assertEquals(1, $property->get('array')->getMinLength());
+		$this->assertEquals(9, $property->get('array')->getMaxLength());
+		$this->assertInstanceOf('PSX\Data\Schema\Property\Boolean', $property->get('boolean'));
+		$this->assertInstanceOf('PSX\Data\Schema\Property\Integer', $property->get('integer'));
+		$this->assertEquals(1, $property->get('integer')->getMin());
+		$this->assertEquals(4, $property->get('integer')->getMax());
+		$this->assertInstanceOf('PSX\Data\Schema\Property\Float', $property->get('number'));
+		$this->assertInstanceOf('PSX\Data\Schema\Property\String', $property->get('string'));
+		$this->assertEquals('[A-z]+', $property->get('string')->getPattern());
+		$this->assertEquals(['foo', 'bar'], $property->get('string')->getEnumeration());
+		$this->assertEquals(2, $property->get('string')->getMinLength());
+		$this->assertEquals(4, $property->get('string')->getMaxLength());
+		$this->assertInstanceOf('PSX\Data\Schema\Property\Date', $property->get('date'));
+		$this->assertInstanceOf('PSX\Data\Schema\Property\DateTime', $property->get('datetime'));
+		$this->assertInstanceOf('PSX\Data\Schema\Property\Duration', $property->get('duration'));
+		$this->assertInstanceOf('PSX\Data\Schema\Property\Time', $property->get('time'));
+		$this->assertInstanceOf('PSX\Data\Schema\Property\String', $property->get('unknown'));
 	}
 }
