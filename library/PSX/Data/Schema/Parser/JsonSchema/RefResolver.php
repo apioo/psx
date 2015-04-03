@@ -47,10 +47,22 @@ class RefResolver
 		$this->resolver = $uriResolver ?: new UriResolver();
 	}
 
+	public function setRootDocument(Document $document)
+	{
+		$this->documents = [$document];
+	}
+
+	/**
+	 * Resolves an $ref to an property
+	 *
+	 * @param PSX\Data\Schema\Parser\JsonSchema\Document $document
+	 * @param PSX\Uri $ref
+	 * @param string $name
+	 * @param integer $depth
+	 * @return PSX\Data\Schema\PropertyInterface
+	 */
 	public function resolve(Document $document, Uri $ref, $name, $depth)
 	{
-		$uri = $this->resolver->resolve($document->getBaseUri(), $ref);
-
 		// recursion detection
 		$count = count($this->recursionPath);
 
@@ -69,73 +81,122 @@ class RefResolver
 			$this->recursionPath = array_slice($this->recursionPath, 0, $depth);
 		}
 
+		$uri = $this->resolver->resolve($document->getBaseUri(), $ref);
+		$doc = $this->getDocument($uri, $document);
+
 		$this->recursionPath[$depth] = $uri->toString();
 
-		if($document->canResolve($uri))
+		return $doc->getProperty($uri->getFragment(), $name, $depth);
+	}
+
+	/**
+	 * Extracts an array part from the document
+	 *
+	 * @param PSX\Data\Schema\Parser\JsonSchema\Document $document
+	 * @param PSX\Uri $ref
+	 * @return array
+	 */
+	public function extract(Document $document, Uri $ref)
+	{
+		$uri     = $this->resolver->resolve($document->getBaseUri(), $ref);
+		$doc     = $this->getDocument($uri, $document);
+		$result  = $doc->pointer($uri->getFragment());
+		$baseUri = $doc->getBaseUri();
+
+		// the extracted fragment gets merged into the root document so we must
+		// resolve all $ref keys to the base uri so that the root document knows
+		// where to find the $ref values
+		array_walk_recursive($result, function(&$item, $key) use ($baseUri){
+
+			if($key == '$ref')
+			{
+				$item = $this->resolver->resolve($baseUri, new Uri($item))->toString();
+			}
+
+		});
+
+		return $result;
+	}
+
+	protected function getDocument(Uri $uri, Document $sourceDocument)
+	{
+		// check whether we have already a document assigned to the base path
+		$document = $this->getDocumentById($uri);
+
+		if($document instanceof Document && $document->canResolve($uri))
 		{
-			// we resolve the $ref on the current document
-			return $document->pointer($uri->getFragment(), $name, $depth);
+			return $document;
 		}
-		else
+
+		// load the remote document
+		if($uri->getScheme() == 'file' && !$sourceDocument->isRemote())
 		{
-			// check whether we have already fetched a document which can
-			// resolve the $ref
-			foreach($this->documents as $document)
+			$path = str_replace('/', DIRECTORY_SEPARATOR, ltrim($uri->getPath(), '/'));
+			$path = $sourceDocument->getBasePath() !== null ? $sourceDocument->getBasePath() . DIRECTORY_SEPARATOR . $path : $path;
+
+			if(is_file($path))
 			{
-				if($document->canResolve($uri))
-				{
-					return $document->pointer($uri->getFragment(), $name, $depth);
-				}
-			}
+				$basePath = pathinfo($path, PATHINFO_DIRNAME);
+				$schema   = file_get_contents($path);
+				$data     = Json::decode($schema);
+				$document = new Document($data, $this, $basePath, $uri);
 
-			// load the remote document
-			if($uri->getScheme() == 'file' && !$document->isRemote())
-			{
-				$path = str_replace('/', DIRECTORY_SEPARATOR, ltrim($uri->getPath(), '/'));
-				$path = $document->getBasePath() !== null ? $document->getBasePath() . DIRECTORY_SEPARATOR . $path : $path;
+				$this->documents[] = $document;
 
-				if(!empty($path) && is_file($path))
-				{
-					$basePath = pathinfo($path, PATHINFO_DIRNAME);
-					$schema   = file_get_contents($path);
-					$data     = Json::decode($schema);
-					$document = new Document($data, $this, $basePath);
-
-					$this->documents[] = $document;
-
-					return $document->pointer($uri->getFragment(), $name, $depth);
-				}
-				else
-				{
-					throw new \RuntimeException('Could not load external schema ' . $path);
-				}
-			}
-			else if(in_array($uri->getScheme(), ['http', 'https']))
-			{
-				$request  = new GetRequest($uri, array('Accept' => 'application/schema+json'));
-				$response = $this->http->request($request);
-
-				if($response->getStatusCode() == 200)
-				{
-					$schema   = (string) $response->getBody();
-					$data     = Json::decode($schema);
-					$document = new Document($data, $this);
-
-					$this->documents[] = $document;
-
-					return $document->pointer($uri->getFragment(), $name, $depth);
-				}
-				else
-				{
-					throw new \RuntimeException('Could not load external schema ' . $uri->toString() . ' received ' . $response->getStatusCode());
-				}
+				return $document;
 			}
 			else
 			{
-				throw new \RuntimeException('Unknown protocol ' . $uri->getScheme() . ' for external resource');
+				throw new \RuntimeException('Could not load external schema ' . $path);
+			}
+		}
+		else if(in_array($uri->getScheme(), ['http', 'https']))
+		{
+			$request  = new GetRequest($uri, array('Accept' => 'application/schema+json'));
+			$response = $this->http->request($request);
+
+			if($response->getStatusCode() == 200)
+			{
+				$schema   = (string) $response->getBody();
+				$data     = Json::decode($schema);
+				$document = new Document($data, $this, null, $uri);
+
+				$this->documents[] = $document;
+
+				return $document;
+			}
+			else
+			{
+				throw new \RuntimeException('Could not load external schema ' . $uri->toString() . ' received ' . $response->getStatusCode());
+			}
+		}
+		else
+		{
+			throw new \RuntimeException('Unknown protocol for external resource ' . $uri->getScheme());
+		}
+	}
+
+	protected function getDocumentById(Uri $uri)
+	{
+		$key = $this->getKey($uri);
+
+		foreach($this->documents as $document)
+		{
+			if($key == $this->getKey($document->getBaseUri()))
+			{
+				return $document;
+			}
+			else if($document->getSource() != null && $key == $this->getKey($document->getSource()))
+			{
+				return $document;
 			}
 		}
 
-		return array();
+		return null;
+	}
+
+	protected function getKey(Uri $uri)
+	{
+		return $uri->getScheme() . '-' . $uri->getHost() . '-' . $uri->getPath();
 	}
 }

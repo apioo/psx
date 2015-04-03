@@ -10,8 +10,19 @@
         "bar": {
             "$ref": "file:///other_schema.json#"
         },
+        "foo": {
+            "extends": "file:///other_schema.json#/definitions/foo",
+            "maximum": 12
+        },
         "value": {
             "$ref": "http://json-schema.org/draft-04/schema#/definitions/positiveInteger"
+        },
+        "test": {
+            "extends": "file:///other_schema.json#/definitions/obj",
+            "required": ["index", "foo"]
+        },
+        "normal": {
+            "$ref": "file:///other_schema.json#/definitions/obj"
         },
         "object": {
             "type": "object",

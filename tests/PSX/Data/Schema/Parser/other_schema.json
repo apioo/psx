@@ -6,6 +6,17 @@
         "foo": {
             "type": "integer",
             "minimum": 4
+        },
+        "obj": {
+            "type": "object",
+            "properties": {
+                "index": {
+                    "$ref": "#/definitions/foo"
+                },
+                "foo": {
+                    "type": "string"
+                }
+            }
         }
     },
     "type": "object",

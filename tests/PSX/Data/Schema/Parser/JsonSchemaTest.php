@@ -59,8 +59,21 @@ class JsonSchemaTest extends \PHPUnit_Framework_TestCase
 		$this->assertInstanceOf('PSX\Data\Schema\Property\ArrayType', $property->get('bar')->get('number'));
 		$this->assertInstanceOf('PSX\Data\Schema\Property\Integer', $property->get('bar')->get('number')->getPrototype());
 		$this->assertEquals(4, $property->get('bar')->get('number')->getPrototype()->getMin());
+		$this->assertInstanceOf('PSX\Data\Schema\Property\Integer', $property->get('foo'));
+		$this->assertEquals(4, $property->get('foo')->getMin());
+		$this->assertEquals(12, $property->get('foo')->getMax());
 		$this->assertInstanceOf('PSX\Data\Schema\Property\Integer', $property->get('value'));
 		$this->assertEquals(0, $property->get('value')->getMin());
+		$this->assertInstanceOf('PSX\Data\Schema\Property\ComplexType', $property->get('test'));
+		$this->assertEquals(true, $property->get('test')->get('index')->isRequired());
+		$this->assertInstanceOf('PSX\Data\Schema\Property\Integer', $property->get('test')->get('index'));
+		$this->assertEquals(true, $property->get('test')->get('foo')->isRequired());
+		$this->assertInstanceOf('PSX\Data\Schema\Property\String', $property->get('test')->get('foo'));
+		$this->assertInstanceOf('PSX\Data\Schema\Property\ComplexType', $property->get('normal'));
+		$this->assertEquals(false, $property->get('normal')->get('index')->isRequired());
+		$this->assertInstanceOf('PSX\Data\Schema\Property\Integer', $property->get('normal')->get('index'));
+		$this->assertEquals(false, $property->get('normal')->get('foo')->isRequired());
+		$this->assertInstanceOf('PSX\Data\Schema\Property\String', $property->get('normal')->get('foo'));
 
 		$this->assertInstanceOf('PSX\Data\Schema\Property\ComplexType', $property->get('object'));
 		$this->assertEquals('description', $property->get('object')->getDescription());

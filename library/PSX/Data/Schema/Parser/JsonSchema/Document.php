@@ -41,13 +41,15 @@ class Document
 	protected $data;
 	protected $resolver;
 	protected $basePath;
+	protected $source;
 	protected $baseUri;
 
-	public function __construct(array $data, RefResolver $resolver, $basePath = null)
+	public function __construct(array $data, RefResolver $resolver, $basePath = null, Uri $source = null)
 	{
 		$this->data     = $data;
 		$this->resolver = $resolver;
 		$this->basePath = $basePath;
+		$this->source   = $source;
 		$this->baseUri  = new Uri(isset($data['id']) ? $data['id'] : '');
 	}
 
@@ -62,13 +64,23 @@ class Document
 	}
 
 	/**
-	 * Tells whether the resource was fetched from a remote source
+	 * Returns the source from where the document was obtained 
+	 *
+	 * @return PSX\Uri
+	 */
+	public function getSource()
+	{
+		return $this->source;
+	}
+
+	/**
+	 * Returns whether the document was fetched from a remote or local source
 	 *
 	 * @return boolean
 	 */
 	public function isRemote()
 	{
-		return $this->basePath === null;
+		return $this->source !== null && in_array($this->source->getScheme(), ['http', 'https']);
 	}
 
 	/**
@@ -80,22 +92,31 @@ class Document
 	}
 
 	/**
-	 * @return PSX\Data\Schema\PropertyInterface
-	 */
-	public function getProperty()
-	{
-		return $this->getRecProperty($this->data, null, 0);
-	}
-
-	/**
-	 * Resolves an json pointer on the document
-	 *
 	 * @param string $pointer
 	 * @param string $name
 	 * @param integer $depth
 	 * @return PSX\Data\Schema\PropertyInterface
 	 */
-	public function pointer($pointer, $name = null, $depth = 0)
+	public function getProperty($pointer = null, $name = null, $depth = 0)
+	{
+		if($pointer === null)
+		{
+			return $this->getRecProperty($this->data, $name, $depth);
+		}
+		else
+		{
+			return $this->getRecProperty($this->pointer($pointer), $name, $depth);
+		}
+	}
+
+	/**
+	 * Resolves an json pointer on the document and returns the fitting array 
+	 * fragment
+	 *
+	 * @param string $pointer
+	 * @return array
+	 */
+	public function pointer($pointer)
 	{
 		$pointer = ltrim($pointer, '/');
 		$pointer = str_replace('~0', '~', $pointer);
@@ -115,7 +136,7 @@ class Document
 			}
 		}
 
-		return $this->getRecProperty($data, $name, $depth);
+		return $data;
 	}
 
 	/**
@@ -132,6 +153,12 @@ class Document
 		if(isset($data['$ref']))
 		{
 			return $this->resolver->resolve($this, new Uri($data['$ref']), $name, $depth);
+		}
+
+		if(isset($data['extends']))
+		{
+			$part = $this->resolver->extract($this, new Uri($data['extends']));
+			$data = array_replace_recursive($data, $part);
 		}
 
 		if(isset($data['title']))

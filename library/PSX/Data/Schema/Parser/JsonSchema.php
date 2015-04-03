@@ -57,6 +57,8 @@ class JsonSchema implements ParserInterface
 		$data     = Json::decode($schema);
 		$document = new Document($data, $this->resolver, $this->basePath);
 
+		$this->resolver->setRootDocument($document);
+
 		return new Schema($document->getProperty());
 	}
 
