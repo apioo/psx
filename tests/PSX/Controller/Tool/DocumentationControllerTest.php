@@ -51,7 +51,6 @@ class DocumentationControllerTest extends ControllerTestCase
 
 		$expect = <<<JSON
 {
-    "metas": [],
     "routings": [
         {
             "path": "\/api",

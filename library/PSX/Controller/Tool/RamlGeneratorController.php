@@ -24,7 +24,7 @@ use PSX\Api\DocumentationInterface;
 use PSX\Api\DocumentedInterface;
 use PSX\Api\Resource;
 use PSX\Api\Resource\Generator;
-use PSX\Controller\ViewAbstract;
+use PSX\ControllerAbstract;
 use PSX\Http\Exception as HttpException;
 use PSX\Loader\Context;
 use PSX\Loader\PathMatcher;
@@ -36,7 +36,7 @@ use PSX\Loader\PathMatcher;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class RamlGeneratorController extends ViewAbstract
+class RamlGeneratorController extends ControllerAbstract
 {
 	/**
 	 * @Inject

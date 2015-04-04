@@ -25,7 +25,7 @@ use PSX\Api\DocumentationInterface;
 use PSX\Api\Resource;
 use PSX\Api\Resource\Generator;
 use PSX\Api\Resource\Generator\HtmlAbstract;
-use PSX\Controller\ViewAbstract;
+use PSX\Controller\ApiAbstract;
 use PSX\Data\Record;
 use PSX\Data\Schema\Generator as SchemaGenerator;
 use PSX\Data\Schema\Documentation;
@@ -42,7 +42,7 @@ use PSX\Loader\RoutingCollection;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class DocumentationController extends ViewAbstract
+class DocumentationController extends ApiAbstract
 {
 	/**
 	 * @Inject
@@ -63,10 +63,7 @@ class DocumentationController extends ViewAbstract
 
 	public function doIndex()
 	{
-		$this->template->set($this->getTemplateFile());
-
 		$this->setBody([
-			'metas'    => $this->getMetaLinks(),
 			'routings' => $this->getRoutings(),
 			'links'    => [
 				[
@@ -208,11 +205,6 @@ class DocumentationController extends ViewAbstract
 		return array(
 			'Schema' => new Generator\Html\Schema(new SchemaGenerator\Html()),
 		);
-	}
-
-	protected function getMetaLinks()
-	{
-		return array();
 	}
 
 	protected function getSupportedWriter()

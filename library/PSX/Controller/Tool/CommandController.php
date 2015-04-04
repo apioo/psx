@@ -21,7 +21,7 @@
 namespace PSX\Controller\Tool;
 
 use PSX\Command\ParameterParser;
-use PSX\Controller\ViewAbstract;
+use PSX\Controller\ApiAbstract;
 use PSX\Data\Record;
 use PSX\Loader\Context;
 use Monolog\Logger;
@@ -34,7 +34,7 @@ use Monolog\Handler\StreamHandler;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class CommandController extends ViewAbstract
+class CommandController extends ApiAbstract
 {
 	/**
 	 * @Inject
@@ -57,8 +57,6 @@ class CommandController extends ViewAbstract
 	public function onGet()
 	{
 		parent::onGet();
-
-		$this->template->set(__DIR__ . '/../Resource/command_controller.tpl');
 
 		$commandClass = $this->getParameter('command');
 

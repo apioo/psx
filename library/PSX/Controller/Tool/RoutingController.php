@@ -20,7 +20,7 @@
 
 namespace PSX\Controller\Tool;
 
-use PSX\Controller\ViewAbstract;
+use PSX\Controller\ApiAbstract;
 use PSX\Data\Object;
 
 /**
@@ -30,7 +30,7 @@ use PSX\Data\Object;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class RoutingController extends ViewAbstract
+class RoutingController extends ApiAbstract
 {
 	/**
 	 * @Inject
@@ -41,8 +41,6 @@ class RoutingController extends ViewAbstract
 	public function onGet()
 	{
 		parent::onGet();
-
-		$this->template->set(__DIR__ . '/../Resource/routing_controller.tpl');
 
 		$this->setBody(array(
 			'routings' => $this->getRoutings(),
