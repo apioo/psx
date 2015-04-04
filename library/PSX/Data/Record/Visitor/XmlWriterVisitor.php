@@ -38,6 +38,7 @@ class XmlWriterVisitor extends VisitorAbstract
 	protected $namespace;
 
 	protected $objectKey;
+	protected $arrayKey   = array();
 	protected $level      = 0;
 	protected $arrayStart = false;
 	protected $arrayEnd   = false;
@@ -91,20 +92,22 @@ class XmlWriterVisitor extends VisitorAbstract
 	public function visitArrayStart()
 	{
 		$this->arrayStart = true;
-		$this->arrayKey   = $this->objectKey;
+
+		array_push($this->arrayKey, $this->objectKey);
 	}
 
 	public function visitArrayEnd()
 	{
 		$this->arrayEnd = true;
-		$this->arrayKey = null;
+
+		array_pop($this->arrayKey);
 	}
 
 	public function visitArrayValueStart($value)
 	{
 		if(!$this->arrayStart)
 		{
-			$this->writer->startElement($this->arrayKey);
+			$this->writer->startElement(end($this->arrayKey));
 		}
 
 		$this->arrayStart = false;
