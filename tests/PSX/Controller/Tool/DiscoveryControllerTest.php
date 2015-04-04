@@ -29,54 +29,58 @@ use PSX\Test\ControllerTestCase;
 use PSX\Url;
 
 /**
- * ToolControllerTest
+ * DiscoveryControllerTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class ToolControllerTest extends ControllerTestCase
+class DiscoveryControllerTest extends ControllerTestCase
 {
 	public function testIndex()
 	{
 		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/tool'), 'GET');
+		$request  = new Request(new Url('http://127.0.0.1/discovery'), 'GET');
 		$response = new Response();
 		$response->setBody($body);
 
 		$config     = getContainer()->get('config');
-		$basePath   = rtrim(parse_url($config['psx_url'], PHP_URL_PATH), '/') . '/' . $config['psx_dispatch'];
+		$basePath   = $config['psx_url'] . '/' . $config['psx_dispatch'];
 		$controller = $this->loadController($request, $response);
 		$json       = (string) $body;
 
 		$expect = <<<JSON
 {
-    "paths": {
-        "general": [
-            {
-                "title": "Routing",
-                "path": "__BASE_PATH__routing"
-            },
-            {
-                "title": "Command",
-                "path": "__BASE_PATH__command"
-            }
-        ],
-        "api": [
-            {
-                "title": "Client",
-                "path": "__BASE_PATH__rest_client"
-            },
-            {
-                "title": "Documentation",
-                "path": "__BASE_PATH__doc"
-            }
-        ]
-    },
-    "current": {
-        "title": "Routing",
-        "path": "__BASE_PATH__routing"
-    }
+    "links": [
+        {
+            "rel": "api",
+            "href": "__BASE_PATH__"
+        },
+        {
+            "rel": "routing",
+            "href": "__BASE_PATH__routing"
+        },
+        {
+            "rel": "command",
+            "href": "__BASE_PATH__command"
+        },
+        {
+            "rel": "documentation",
+            "href": "__BASE_PATH__doc"
+        },
+        {
+            "rel": "raml",
+            "href": "__BASE_PATH__raml"
+        },
+        {
+            "rel": "wsdl",
+            "href": "__BASE_PATH__wsdl"
+        },
+        {
+            "rel": "swagger",
+            "href": "__BASE_PATH__swagger"
+        }
+    ]
 }
 JSON;
 
@@ -86,12 +90,15 @@ JSON;
 	protected function getPaths()
 	{
 		return array(
-			[['GET'], '/tool', 'PSX\Controller\Tool\ToolController'],
+			[['GET'], '/discovery', 'PSX\Controller\Tool\DiscoveryController'],
 			[['GET'], '/routing', 'PSX\Controller\Tool\RoutingController'],
 			[['GET', 'POST'], '/command', 'PSX\Controller\Tool\CommandController'],
 			[['GET'], '/rest_client', 'PSX\Controller\Tool\RestClientController'],
 			[['GET'], '/doc', 'PSX\Controller\Tool\DocumentationController::doIndex'],
 			[['GET'], '/doc/:version/*path', 'PSX\Controller\Tool\DocumentationController::doDetail'],
+            [['GET'], '/raml', 'PSX\Controller\Tool\RamlGeneratorController'],
+            [['GET'], '/wsdl', 'PSX\Controller\Tool\WsdlGeneratorController'],
+            [['GET'], '/swagger', 'PSX\Controller\Tool\SwaggerGeneratorController::doDetail'],
 		);
 	}
 }
