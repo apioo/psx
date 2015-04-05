@@ -21,7 +21,7 @@
 namespace PSX\Controller\Tool;
 
 use PSX\Base;
-use PSX\Controller\ViewAbstract;
+use PSX\Controller\ApiAbstract;
 
 /**
  * DefaultController
@@ -30,13 +30,11 @@ use PSX\Controller\ViewAbstract;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class DefaultController extends ViewAbstract
+class DefaultController extends ApiAbstract
 {
 	public function onLoad()
 	{
 		parent::onLoad();
-
-		$this->template->set(__DIR__ . '/../Resource/default_controller.tpl');
 
 		$this->setBody(array(
 			'message' => 'This is the default controller of PSX',
