@@ -57,7 +57,7 @@ class TestSchemaApiController extends SchemaApiAbstract
 
 		$resource->addMethod(Resource\Factory::getMethod('POST')
 			->setRequest($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Create'))
-			->addResponse(200, $this->schemaManager->getSchema('PSX\Controller\Foo\Schema\SuccessMessage')));
+			->addResponse(201, $this->schemaManager->getSchema('PSX\Controller\Foo\Schema\SuccessMessage')));
 
 		$resource->addMethod(Resource\Factory::getMethod('PUT')
 			->setRequest($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Update'))
