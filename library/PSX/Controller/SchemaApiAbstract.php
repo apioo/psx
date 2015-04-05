@@ -24,6 +24,7 @@ use PSX\Api\DocumentationInterface;
 use PSX\Api\DocumentedInterface;
 use PSX\Api\Version;
 use PSX\Api\Resource;
+use PSX\Api\Resource\MethodAbstract;
 use PSX\Api\InvalidVersionException;
 use PSX\ControllerAbstract;
 use PSX\Data\Object;
@@ -104,8 +105,18 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 		$this->queryParameters = $this->schemaAssimilator->assimilate($method->getQueryParameters(), $this->request->getQueryParams());
 
 		$response = $this->doGet($this->version);
+		$schema   = $this->getSuccessfulResponse($method, $statusCode);
 
-		$this->setBody($this->schemaAssimilator->assimilate($method->getResponse(200), $response));
+		if($schema instanceof SchemaInterface)
+		{
+			$this->setResponseCode($statusCode);
+			$this->setBody($this->schemaAssimilator->assimilate($schema, $response));
+		}
+		else
+		{
+			$this->setResponseCode(204);
+			$this->setBody('');
+		}
 	}
 
 	public function onPost()
@@ -121,11 +132,12 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 
 		$record   = $method->hasRequest() ? $this->import($method->getRequest()) : new Record();
 		$response = $this->doCreate($record, $this->version);
+		$schema   = $this->getSuccessfulResponse($method, $statusCode);
 
-		if($method->hasResponse(200))
+		if($schema instanceof SchemaInterface)
 		{
-			$this->setResponseCode(201);
-			$this->setBody($this->schemaAssimilator->assimilate($method->getResponse(200), $response));
+			$this->setResponseCode($statusCode);
+			$this->setBody($this->schemaAssimilator->assimilate($schema, $response));
 		}
 		else
 		{
@@ -147,11 +159,12 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 
 		$record   = $method->hasRequest() ? $this->import($method->getRequest()) : new Record();
 		$response = $this->doUpdate($record, $this->version);
+		$schema   = $this->getSuccessfulResponse($method, $statusCode);
 
-		if($method->hasResponse(200))
+		if($schema instanceof SchemaInterface)
 		{
-			$this->setResponseCode(200);
-			$this->setBody($this->schemaAssimilator->assimilate($method->getResponse(200), $response));
+			$this->setResponseCode($statusCode);
+			$this->setBody($this->schemaAssimilator->assimilate($schema, $response));
 		}
 		else
 		{
@@ -173,11 +186,12 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 
 		$record   = $method->hasRequest() ? $this->import($method->getRequest()) : new Record();
 		$response = $this->doDelete($record, $this->version);
+		$schema   = $this->getSuccessfulResponse($method, $statusCode);
 
-		if($method->hasResponse(200))
+		if($schema instanceof SchemaInterface)
 		{
-			$this->setResponseCode(200);
-			$this->setBody($this->schemaAssimilator->assimilate($method->getResponse(200), $response));
+			$this->setResponseCode($statusCode);
+			$this->setBody($this->schemaAssimilator->assimilate($schema, $response));
 		}
 		else
 		{
@@ -277,5 +291,29 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 		{
 			return new Version(1);
 		}
+	}
+
+	/**
+	 * Returns the successful response of an method or null if no is available
+	 *
+	 * @param PSX\Api\Resource\MethodAbstract $method
+	 * @param integer $statusCode
+	 * @return PSX\Data\SchemaInterface
+	 */
+	protected function getSuccessfulResponse(MethodAbstract $method, &$statusCode)
+	{
+		$responses = $method->getResponses();
+
+		for($i = 200; $i < 210; $i++)
+		{
+			if(isset($responses[$i]))
+			{
+				$statusCode = $i;
+
+				return $responses[$i];
+			}
+		}
+
+		return null;
 	}
 }
