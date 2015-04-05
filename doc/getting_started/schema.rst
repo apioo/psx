@@ -13,9 +13,8 @@ Definition
 
 The easiest way to provide these informations for our API endpoint is to use
 a RAML file. RAML (http://raml.org/) is a general specification to describe an
-API endpoint. In the following a sample API with their fitting RAML 
-specification. You can copy this example and play with the API to test the 
-behaviour.
+API endpoint. In the following a sample API with the fitting RAML specification. 
+You can copy this example and play with the API to test the behaviour.
 
 .. code-block:: php
 
@@ -23,7 +22,7 @@ behaviour.
 
     namespace Foo;
 
-    use PSX\Api\Documentation;
+    use PSX\Api\Documentation\Parser\Raml;
     use PSX\Api\Version;
     use PSX\Controller\SchemaApiAbstract;
     use PSX\Data\RecordInterface;
@@ -33,10 +32,7 @@ behaviour.
     {
         public function getDocumentation()
         {
-            $parser = new Documentation\Parser\Raml();
-            $doc    = $parser->parse(__DIR__ . '/endpoint.raml', $this->context->get(Context::KEY_PATH));
-
-            return $doc;
+            return Raml::fromFile(__DIR__ . '/endpoint.raml', $this->context->get(Context::KEY_PATH));
         }
 
         protected function doGet(Version $Version)
@@ -82,6 +78,8 @@ behaviour.
         }
     }
 
+RAML definition (endpoint.raml)
+
 .. code-block:: yaml
 
     #%RAML 0.8
@@ -96,62 +94,55 @@ behaviour.
           200:
             body:
               application/json:
-                schema: |
-                  {
-                      "$schema": "http://json-schema.org/draft-04/schema#",
-                      "description": "A canonical song",
-                      "type": "object",
-                      "properties": {
-                          "artist": {
-                              "type": "string"
-                          },
-                          "title": {
-                              "type": "string"
-                          }
-                      }
-                  }
+                schema: !include schema/song.json
       post:
         body:
           application/json:
-            schema: |
-              {
-                  "$schema": "http://json-schema.org/draft-04/schema#",
-                  "description": "A canonical song",
-                  "type": "object",
-                  "properties": {
-                      "artist": {
-                          "type": "string"
-                      },
-                      "title": {
-                          "type": "string"
-                      }
-                  },
-                  "required": [
-                      "title",
-                      "artist"
-                  ]
-              }
+            schema: !include schema/song.json
         responses:
           200:
             body:
               application/json:
-                schema: |
-                  {
-                      "$schema": "http://json-schema.org/draft-04/schema#",
-                      "description": "A status message",
-                      "properties": {
-                          "message": {
-                              "type": "string"
-                          },
-                          "success": {
-                              "type": "boolean"
-                          }
-                      },
-                      "type": "object"
-                  }
+                schema: !include schema/message.json
 
-If you dont want use a parser like RAML you can simply build the resources by 
-hand.
+JSON schema (song.json)
+
+.. code-block:: json
+
+    {
+        "$schema": "http://json-schema.org/draft-04/schema#",
+        "description": "A canonical song",
+        "type": "object",
+        "properties": {
+            "artist": {
+                "type": "string"
+            },
+            "title": {
+                "type": "string"
+            }
+        }
+    }
+
+JSON schema (message.json)
+
+.. code-block:: json
+
+    {
+        "$schema": "http://json-schema.org/draft-04/schema#",
+        "description": "A status message",
+        "type": "object",
+        "properties": {
+            "message": {
+                "type": "string"
+            },
+            "success": {
+                "type": "boolean"
+            }
+        }
+    }
+
+Internally the RAML parser creates resource objects which you can also produce 
+manually. In the following an schema API which defines the resources in PHP.
 
 .. code-block:: php
 
@@ -181,19 +172,11 @@ hand.
 
             $resource->addMethod(Resource\Factory::getMethod('GET')
                 ->addQueryParameter(new Property\Integer('count'))
-                ->addResponse(200, $this->schemaManager->getSchema('Acme\Schema\Collection')));
+                ->addResponse(200, $this->schemaManager->getSchema('Acme\Schema\Song')));
 
             $resource->addMethod(Resource\Factory::getMethod('POST')
-                ->setRequest($this->schemaManager->getSchema('Acme\Schema\Create'))
-                ->addResponse(200, $this->schemaManager->getSchema('Acme\Schema\ResponseMessage')));
-
-            $resource->addMethod(Resource\Factory::getMethod('PUT')
-                ->setRequest($this->schemaManager->getSchema('Acme\Schema\Update'))
-                ->addResponse(200, $this->schemaManager->getSchema('Acme\Schema\ResponseMessage')));
-
-            $resource->addMethod(Resource\Factory::getMethod('DELETE')
-                ->setRequest($this->schemaManager->getSchema('Acme\Schema\Delete'))
-                ->addResponse(200, $this->schemaManager->getSchema('Acme\Schema\ResponseMessage')));
+                ->setRequest($this->schemaManager->getSchema('Acme\Schema\Song'))
+                ->addResponse(200, $this->schemaManager->getSchema('Acme\Schema\Message')));
 
             return new Documentation\Simple($resource, 'Sample API');
         }

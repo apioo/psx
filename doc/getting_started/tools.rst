@@ -11,7 +11,12 @@ change them how you like.
 Documentation
 -------------
 
-Generates an enduser API documentation based on your defined API controllers. 
+PSX provides an controller which can generate automatically a documentation for
+your defined APIs. The controller provides only an API which can be used by any
+client. You can use i.e. evid (https://github.com/k42b3/evid) which is a
+html/javascript client which uses the API to provide a clean API documentation.
+Also it is very easy to customize the documentation for your own needs by 
+i.e. providing custom pages or change the style according to your needs.
 
 .. code::
 
@@ -49,25 +54,16 @@ Generates an RAML representation for the given API.
 Routing
 -------
 
-Provides a simple user interface to browse all existing routes
+Provides an API to publish all available API paths
 
 .. code::
 
     GET /routing PSX\Controller\Tool\RoutingController
 
-Rest console
-------------
-
-A javascript based rest console to test your API endpoints
-
-.. code::
-
-    GET /rest PSX\Controller\Tool\RestController
-
 Command
 -------
 
-A web interface to execute commands
+Provides an API to execute commands
 
 .. code::
 
