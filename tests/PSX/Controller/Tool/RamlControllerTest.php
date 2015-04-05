@@ -132,7 +132,7 @@ title: Api
               "additionalProperties": false
           }
     responses:
-      200:
+      201:
         body:
           application/json:
             schema: |

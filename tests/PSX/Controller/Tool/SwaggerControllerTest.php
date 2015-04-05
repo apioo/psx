@@ -112,7 +112,7 @@ JSON;
                     ],
                     "responseMessages": [
                         {
-                            "code": 200,
+                            "code": 201,
                             "message": "Response",
                             "responseModel": "postResponse"
                         }
