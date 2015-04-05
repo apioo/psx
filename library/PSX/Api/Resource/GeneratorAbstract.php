@@ -41,7 +41,7 @@ abstract class GeneratorAbstract implements GeneratorInterface
 	{
 		$responses = $method->getResponses();
 
-		for($i = 200; $i < 300; $i++)
+		for($i = 200; $i < 210; $i++)
 		{
 			if(isset($responses[$i]))
 			{
