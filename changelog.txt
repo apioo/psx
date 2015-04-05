@@ -1,4 +1,14 @@
 
+0.9.9
+* Handle different successful status codes in schema api
+* Updated manual
+* Removed html presentations from tool controllers
+* Fixed xml writer nested array definitions
+* Removed rest client controller since it contains no logic
+* Improved raml parser
+* Improved json schema parse resolve external resources. Supports file:// and
+  http:// protocol
+
 0.9.8
 * Added raml and json schema parser
 * Improved html output added psx- prefix for css classes
