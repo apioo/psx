@@ -103,12 +103,10 @@ class ControllerDocumentation implements ListingInterface
 
 			if(class_exists($className) && $matcher->match($path))
 			{
-				$request  = new Request(new Uri('/'), 'GET');
-				$response = new Response();
-				$context  = new Context();
-				$context->set(Context::KEY_PATH, $path);
-
-				$controller = $this->getController($className, $request, $response, $context);
+				$request    = new Request(new Uri('/'), 'GET');
+				$response   = new Response();
+				$context    = $this->newContext($collection);
+				$controller = $this->newController($className, $request, $response, $context);
 
 				if($controller instanceof DocumentedInterface)
 				{
@@ -125,7 +123,7 @@ class ControllerDocumentation implements ListingInterface
 		return null;
 	}
 
-	protected function getController($className, RequestInterface $request, ResponseInterface $response, Context $context)
+	protected function newController($className, RequestInterface $request, ResponseInterface $response, Context $context)
 	{
 		try
 		{
@@ -135,5 +133,13 @@ class ControllerDocumentation implements ListingInterface
 		{
 			return null;
 		}
+	}
+
+	protected function newContext(array $route)
+	{
+		$context = new Context();
+		$context->set(Context::KEY_PATH, $route[1]);
+
+		return $context;
 	}
 }
