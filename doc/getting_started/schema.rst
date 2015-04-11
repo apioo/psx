@@ -35,7 +35,7 @@ You can copy this example and play with the API to test the behaviour.
             return Raml::fromFile(__DIR__ . '/endpoint.raml', $this->context->get(Context::KEY_PATH));
         }
 
-        protected function doGet(Version $Version)
+        protected function doGet(Version $version)
         {
             $count = $this->queryParameters->getProperty('count');
 
@@ -47,7 +47,7 @@ You can copy this example and play with the API to test the behaviour.
             ];
         }
 
-        protected function doCreate(RecordInterface $record, Version $Version)
+        protected function doCreate(RecordInterface $record, Version $version)
         {
             // @TODO work with the record
 
@@ -57,7 +57,7 @@ You can copy this example and play with the API to test the behaviour.
             ];
         }
 
-        protected function doUpdate(RecordInterface $record, Version $Version)
+        protected function doUpdate(RecordInterface $record, Version $version)
         {
             // @TODO work with the record
 
@@ -67,7 +67,7 @@ You can copy this example and play with the API to test the behaviour.
             ];
         }
 
-        protected function doDelete(RecordInterface $record, Version $Version)
+        protected function doDelete(RecordInterface $record, Version $version)
         {
             // @TODO work with the record
 

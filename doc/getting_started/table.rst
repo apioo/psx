@@ -2,9 +2,9 @@
 Table
 =====
 
-The table API extends the schema API but gets all needed schema informations 
-from an sql table. So this is useful to quickly generate a CRUD API based on an
-sql table.
+PSX provides a table controller which can create an REST endpoint to CRUD data
+on an table. The table API extends the schema API but gets all needed schema 
+informations from an sql table.
 
 Definition
 ----------

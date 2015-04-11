@@ -8,7 +8,7 @@ https://getcomposer.org/. In case you cant install composer PSX has also an
 pre-packaged release which already includes all dependencies which you can 
 download at https://github.com/k42b3/psx/releases.
 
-Then you can install the sample project with the following command: 
+You can install the sample project with the following command: 
 
 .. code::
 
