@@ -38,13 +38,6 @@ use PSX\Config\NotFoundException;
  */
 class Config extends ArrayIterator
 {
-	/**
-	 * The container for the config array
-	 *
-	 * @var array
-	 */
-	private $container = array();
-
 	public function __construct(array $config)
 	{
 		parent::__construct($config);
