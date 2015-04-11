@@ -37,7 +37,6 @@ use XMLWriter;
 abstract class XmlWriterAbstract implements WriterInterface
 {
 	protected $writer;
-	protected $hasWriter;
 
 	/**
 	 * If an writer is given the result gets written to the XMLWriter and the
@@ -48,27 +47,29 @@ abstract class XmlWriterAbstract implements WriterInterface
 	 */
 	public function __construct(XMLWriter $writer = null)
 	{
-		$this->writer    = $writer === null ? new XMLWriter() : $writer;
-		$this->hasWriter = $writer !== null;
-
-		if(!$this->hasWriter)
-		{
-			$this->writer->openMemory();
-			$this->writer->setIndent(true);
-			$this->writer->startDocument('1.0', 'UTF-8');
-		}
+		$this->writer = $writer;
 	}
 
 	public function write(RecordInterface $record)
 	{
-		$graph = new GraphTraverser();
-		$graph->traverse($record, $this->getVisitor($this->writer));
+		$hasWriter = $this->writer !== null;
+		$writer    = $this->writer ?: new XMLWriter();
 
-		if(!$this->hasWriter)
+		if(!$hasWriter)
 		{
-			$this->writer->endDocument();
+			$writer->openMemory();
+			$writer->setIndent(true);
+			$writer->startDocument('1.0', 'UTF-8');
+		}
 
-			return $this->writer->outputMemory();
+		$graph = new GraphTraverser();
+		$graph->traverse($record, $this->getVisitor($writer));
+
+		if(!$hasWriter)
+		{
+			$writer->endDocument();
+
+			return $writer->outputMemory();
 		}
 		else
 		{
