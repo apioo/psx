@@ -24,13 +24,13 @@ use PSX\Data\Schema;
 use PSX\Data\Schema\Property;
 
 /**
- * FactoryTest
+ * MethodAbstractTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class FactoryTest extends \PHPUnit_Framework_TestCase
+class MethodAbstractTest extends \PHPUnit_Framework_TestCase
 {
 	public function testMethod()
 	{
