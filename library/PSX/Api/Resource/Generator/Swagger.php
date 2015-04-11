@@ -155,15 +155,4 @@ class Swagger extends GeneratorAbstract
 
 		return $models;
 	}
-
-	/**
-	 * Tansforms an PSX route into an Swagger-Style route
-	 *
-	 * @param string $path
-	 * @return string
-	 */
-	public static function transformRoute($path)
-	{
-		return preg_replace('/(\:|\*)(\w+)/i', '{$2}', $path);
-	}
 }
