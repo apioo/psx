@@ -20,6 +20,8 @@
 
 namespace PSX\Api\Resource;
 
+use InvalidArgumentException;
+
 /**
  * Factory
  *
