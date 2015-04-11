@@ -27,6 +27,7 @@ use PSX\Data\Schema;
 use PSX\Data\SchemaInterface;
 use PSX\Data\Schema\Property\ComplexType;
 use PSX\Data\RecordInterface;
+use PSX\Data\Record\Merger;
 use PSX\Data\Schema\Builder as SchemaBuilder;
 use PSX\Data\Schema\Property;
 use PSX\Http\Exception as StatusCode;
@@ -125,7 +126,14 @@ abstract class TableApiAbstract extends SchemaApiAbstract
 	protected function doUpdate(RecordInterface $record, Version $version)
 	{
 		$table = $this->getTable();
-		$table->update($record);
+		$data  = $table->get($record->getRecordInfo()->getField($table->getPrimaryKey()));
+
+		if(empty($data))
+		{
+			throw new StatusCode\NotFoundException('Record not found');
+		}
+
+		$table->update(Merger::merge($data, $record));
 
 		return array(
 			'success' => true,
@@ -136,6 +144,13 @@ abstract class TableApiAbstract extends SchemaApiAbstract
 	protected function doDelete(RecordInterface $record, Version $version)
 	{
 		$table = $this->getTable();
+		$data  = $table->get($record->getRecordInfo()->getField($table->getPrimaryKey()));
+
+		if(empty($data))
+		{
+			throw new StatusCode\NotFoundException('Record not found');
+		}
+
 		$table->delete($record);
 
 		return array(
