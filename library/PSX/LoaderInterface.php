@@ -33,7 +33,7 @@ use PSX\Http\ResponseInterface;
 interface LoaderInterface
 {
 	/**
-	 * The loader takes the incomming request and returns an controller. The 
+	 * The loader takes the incoming request and returns an controller. The 
 	 * loader should pass the response to the controller so that the controller
 	 * can write data to the response
 	 *
