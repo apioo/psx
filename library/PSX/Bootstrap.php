@@ -24,9 +24,7 @@ use Doctrine\Common\Annotations\AnnotationRegistry;
 use ErrorException;
 
 /**
- * This class provides an easy way to setup a psx enviroment. If psx_autoload is
- * true an PSR-0 autoloader is registered . If psx_include_path is true the
- * library folder is added to the include path
+ * Setup an environment for PSX according to the provided configuration
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
@@ -78,7 +76,7 @@ class Bootstrap
 
 	public static function errorHandler($errno, $errstr, $errfile, $errline)
 	{
-		// if someone add an @ to the function call to supress an error message
+		// if someone adds an @ to the function call to supress an error message
 		// the error reporting is 0 so in this case we dont throw an exception
 		if(error_reporting() == 0)
 		{
