@@ -24,6 +24,7 @@ use PSX\Data\Schema;
 use PSX\Data\SchemaInterface;
 use PSX\Data\Schema\Property;
 use PSX\Data\Schema\PropertySimpleAbstract;
+use RuntimeException;
 
 /**
  * MethodAbstract
@@ -104,7 +105,7 @@ abstract class MethodAbstract
 		}
 		else
 		{
-			throw new \RuntimeException('Status code response ' . $statusCode . ' is not available for this resource');
+			throw new RuntimeException('Status code response ' . $statusCode . ' is not available for this resource');
 		}
 	}
 
