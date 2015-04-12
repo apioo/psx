@@ -47,12 +47,28 @@ class TableManager implements TableManagerInterface
 
 	protected $_container;
 
+	/**
+	 * @param Doctrine\DBAL\Connection $connection
+	 * @param PSX\Sql\Table\ReaderInterface $reader
+	 */
 	public function __construct(Connection $connection, ReaderInterface $reader = null)
 	{
 		$this->connection = $connection;
 		$this->reader     = $reader;
 	}
 
+	/**
+	 * @return Doctrine\DBAL\Connection
+	 */
+	public function getConnection()
+	{
+		return $this->connection;
+	}
+
+	/**
+	 * @param string $tableName
+	 * @return PSX\Sql\TableInterface
+	 */
 	public function getTable($tableName)
 	{
 		if(isset($this->_container[$tableName]))

@@ -68,4 +68,11 @@ class TableManagerTest extends DbTestCase
 		$manager = new TableManager($this->connection);
 		$manager->getTable('PSX\Sql\FooTable');
 	}
+
+	public function testGetConnection()
+	{
+		$manager = new TableManager($this->connection);
+
+		$this->assertInstanceOf('Doctrine\DBAL\Connection', $manager->getConnection());
+	}
 }
