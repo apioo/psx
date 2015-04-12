@@ -38,7 +38,7 @@ use XMLWriter;
  */
 class Soap extends Xml
 {
-	public static $mime = 'application/soap+xml';
+	protected static $mime = 'application/soap+xml';
 
 	protected $namespace;
 	protected $requestMethod;

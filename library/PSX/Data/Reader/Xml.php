@@ -34,14 +34,6 @@ use PSX\Http\MessageInterface;
  */
 class Xml extends ReaderAbstract
 {
-	public static $mediaTypes = array(
-		'text/xml',
-		'application/xml',
-		'text/xml-external-parsed-entity',
-		'application/xml-external-parsed-entity',
-		'application/xml-dtd'
-	);
-
 	public function read(MessageInterface $message)
 	{
 		$dom = new DOMDocument();
@@ -53,13 +45,6 @@ class Xml extends ReaderAbstract
 
 	public function isContentTypeSupported(MediaType $contentType)
 	{
-		return in_array($contentType->getName(), self::$mediaTypes) || 
-			substr($contentType->getSubType(), -4) == '+xml' || 
-			substr($contentType->getSubType(), -4) == '/xml';
-	}
-
-	public static function isXmlMediaContentType($contentType)
-	{
-		return in_array($contentType, self::$mediaTypes) || substr($contentType, -4) == '+xml' || substr($contentType, -4) == '/xml';
+		return MediaType\Xml::isMediaType($contentType);
 	}
 }

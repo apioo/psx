@@ -219,7 +219,7 @@ class Atom implements TransformerInterface
 		{
 			$content = $el->nodeValue;
 		}
-		else if($type == 'xhtml' || in_array($type, Xml::$mediaTypes) || substr($type, -4) == '+xml' || substr($type, -4) == '/xml')
+		else if($type == 'xhtml' || in_array($type, MediaType\Xml::getMediaTypes()) || substr($type, -4) == '+xml' || substr($type, -4) == '/xml')
 		{
 			// get first child element
 			$child = null;

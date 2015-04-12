@@ -33,7 +33,7 @@ use PSX\Http\MediaType;
  */
 class Jsonp extends Json
 {
-	public static $mime = 'application/javascript';
+	protected static $mime = 'application/javascript';
 
 	protected $callbackName;
 

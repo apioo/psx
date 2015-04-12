@@ -42,7 +42,7 @@ use XMLWriter;
  */
 class Atom extends Xml
 {
-	public static $mime = 'application/atom+xml';
+	protected static $mime = 'application/atom+xml';
 
 	public function write(RecordInterface $record)
 	{

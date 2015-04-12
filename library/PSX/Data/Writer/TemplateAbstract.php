@@ -90,7 +90,33 @@ abstract class TemplateAbstract implements WriterInterface
 		}
 		else
 		{
-			$this->template->setDir(!$this->template->isAbsoluteFile() ? $path : null);
+			// if we have an absolute file we must check whether the file 
+			// extension is the same as the given writer needs. If not we set
+			// the right extension
+			if($this->template->isAbsoluteFile())
+			{
+				$ext  = $this->getFileExtension();
+				$file = $this->template->get();
+				$pos  = strrpos($file, '.');
+
+				if($pos !== false)
+				{
+					if(substr($file, $pos + 1) != $ext)
+					{
+						$this->template->set(substr($file, 0, $pos) . '.' . $ext);
+					}
+				}
+				else
+				{
+					$this->template->set($file . '.' . $ext);
+				}
+
+				$this->template->setDir(null);
+			}
+			else
+			{
+				$this->template->setDir($path);
+			}
 		}
 
 		if(!$this->template->isFileAvailable())
@@ -103,7 +129,7 @@ abstract class TemplateAbstract implements WriterInterface
 			}
 			else
 			{
-				throw new StatusCode\InternalServerErrorException('Template file not found');
+				throw new StatusCode\UnsupportedMediaTypeException('Content is not available in the requested media type');
 			}
 		}
 		else

@@ -34,11 +34,11 @@ use XMLWriter;
  */
 class Xml extends XmlWriterAbstract
 {
-	public static $mime = 'application/xml';
+	protected static $mime = 'application/xml';
 
 	public function isContentTypeSupported(MediaType $contentType)
 	{
-		return $contentType->getName() == self::$mime;
+		return MediaType\Xml::isMediaType($contentType);
 	}
 
 	public function getContentType()

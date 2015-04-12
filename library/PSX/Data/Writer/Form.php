@@ -35,7 +35,7 @@ use PSX\Http\MediaType;
  */
 class Form implements WriterInterface
 {
-	public static $mime = 'application/x-www-form-urlencoded';
+	protected static $mime = 'application/x-www-form-urlencoded';
 
 	public function write(RecordInterface $record)
 	{

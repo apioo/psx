@@ -43,8 +43,6 @@ class Json extends ReaderAbstract
 
 	public function isContentTypeSupported(MediaType $contentType)
 	{
-		return $contentType->getSubType() == 'json' ||
-			substr($contentType->getSubType(), -5) == '+json' || 
-			substr($contentType->getSubType(), -5) == '/json';
+		return MediaType\Json::isMediaType($contentType);
 	}
 }

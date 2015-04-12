@@ -36,7 +36,7 @@ use PSX\Json as JsonParser;
  */
 class Json implements WriterInterface
 {
-	public static $mime = 'application/json';
+	protected static $mime = 'application/json';
 
 	public function write(RecordInterface $record)
 	{
@@ -49,9 +49,9 @@ class Json implements WriterInterface
 
 	public function isContentTypeSupported(MediaType $contentType)
 	{
-		return $contentType->getName() == self::$mime;
+		return MediaType\Json::isMediaType($contentType);
 	}
-	
+
 	public function getContentType()
 	{
 		return self::$mime;

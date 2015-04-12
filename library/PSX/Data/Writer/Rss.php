@@ -41,7 +41,7 @@ use XMLWriter;
  */
 class Rss implements WriterInterface
 {
-	public static $mime = 'application/rss+xml';
+	protected static $mime = 'application/rss+xml';
 
 	public function write(RecordInterface $record)
 	{

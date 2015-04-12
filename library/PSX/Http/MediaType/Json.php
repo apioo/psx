@@ -18,33 +18,23 @@
  * limitations under the License.
  */
 
-namespace PSX\Data\Writer;
+namespace PSX\Http\MediaType;
 
 use PSX\Http\MediaType;
 
 /**
- * Svg
+ * Json
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Svg extends TemplateAbstract
+class Json
 {
-	protected static $mime = 'image/svg+xml';
-
-	public function isContentTypeSupported(MediaType $contentType)
+	public static function isMediaType(MediaType $mediaType)
 	{
-		return $contentType->getName() == self::$mime;
-	}
-
-	public function getContentType()
-	{
-		return self::$mime;
-	}
-
-	public function getFileExtension()
-	{
-		return 'svg';
+		return $mediaType->getSubType() == 'json' ||
+			substr($mediaType->getSubType(), -5) == '+json' || 
+			substr($mediaType->getSubType(), -5) == '/json';
 	}
 }

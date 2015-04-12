@@ -32,7 +32,7 @@ use XMLWriter;
  */
 class Writer
 {
-	public static $mime = 'application/atom+xml';
+	public static $mime  = 'application/atom+xml';
 	public static $xmlns = 'http://www.w3.org/2005/Atom';
 
 	protected $writer;

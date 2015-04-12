@@ -21,10 +21,12 @@
 namespace PSX\Atom\Writer;
 
 use DateTime;
+use InvalidArgumentException;
 use PSX\Atom\Writer as Atom;
 use PSX\Data\RecordInterface;
 use PSX\Data\Reader\Xml as XmlReader;
 use PSX\Data\Writer\Xml;
+use PSX\Http\MediaType;
 use XMLWriter;
 
 /**
@@ -81,41 +83,51 @@ class Entry
 			{
 				case 'text':
 				case 'html':
-
 					$this->writer->writeAttribute('type', $type);
 					$this->writer->text($content);
 					break;
 
 				case 'xhtml':
-
 					$this->writer->writeAttribute('type', $type);
 					$this->writer->writeRaw($content);
 					break;
 
 				default:
-
 					if(!empty($type))
 					{
 						$this->writer->writeAttribute('type', $type);
-					}
 
-					if(XmlReader::isXmlMediaContentType($type))
-					{
-						if($content instanceof RecordInterface)
+						try
 						{
-							$writer = new Xml($this->writer);
-							$writer->write($content);
+							$mediaType = MediaType::parse($type);
+
+							if(MediaType\Xml::isMediaType($mediaType))
+							{
+								if($content instanceof RecordInterface)
+								{
+									$writer = new Xml($this->writer);
+									$writer->write($content);
+								}
+								else
+								{
+									$this->writer->writeRaw($content);
+								}
+							}
+							else
+							{
+								$this->writer->text($content);
+							}
 						}
-						else
+						catch(InvalidArgumentException $e)
 						{
-							$this->writer->writeRaw($content);
+							// invalid media type
+							$this->writer->text($content);
 						}
 					}
 					else
 					{
 						$this->writer->text($content);
 					}
-
 					break;
 			}
 		}

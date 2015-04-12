@@ -34,7 +34,7 @@ use XMLWriter;
  */
 class Jsonx extends XmlWriterAbstract
 {
-	public static $mime = 'application/jsonx+xml';
+	protected static $mime = 'application/jsonx+xml';
 
 	public function isContentTypeSupported(MediaType $contentType)
 	{

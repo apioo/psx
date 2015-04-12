@@ -31,7 +31,7 @@ use PSX\Http\MediaType;
  */
 class Text extends TemplateAbstract
 {
-	public static $mime = 'text/plain';
+	protected static $mime = 'text/plain';
 
 	public function isContentTypeSupported(MediaType $contentType)
 	{
