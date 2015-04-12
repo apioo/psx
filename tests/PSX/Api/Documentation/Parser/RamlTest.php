@@ -20,6 +20,8 @@
 
 namespace PSX\Api\Documentation\Parser;
 
+use PSX\Data\SchemaInterface;
+
 /**
  * RamlTest
  *
@@ -41,14 +43,16 @@ class RamlTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertInstanceOf('PSX\Api\Resource', $resource);
 		$this->assertEquals(array('GET', 'POST'), $resource->getAllowedMethods());
+		$this->assertEquals('Bar', $resource->getTitle());
 		$this->assertEquals('Some description', $resource->getDescription());
 
 		// check GET
 		$this->assertEquals('Informations about the method', $resource->getMethod('GET')->getDescription());
 
+		$this->assertInstanceOf('PSX\Data\SchemaInterface', $resource->getMethod('GET')->getQueryParameters());
 		$this->assertInstanceOf('PSX\Data\Schema\Property\ComplexType', $resource->getMethod('GET')->getQueryParameters()->getDefinition());
 		$this->assertEquals('The number of pages to return', $resource->getMethod('GET')->getQueryParameters()->getDefinition()->get('pages')->getDescription());
-		$this->assertEquals('Sets the start index', $resource->getMethod('GET')->getQueryParameters()->getDefinition()->get('startIndex')->getDescription());
+		$this->assertParameters($resource->getMethod('GET')->getQueryParameters());
 
 		// check POST
 		$this->assertInstanceOf('PSX\Api\Resource\Post', $resource->getMethod('POST'));
@@ -86,8 +90,9 @@ class RamlTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(array('GET'), $resource->getAllowedMethods());
 		$this->assertEquals('Returns details about bar', $resource->getDescription());
 
+		$this->assertInstanceOf('PSX\Data\SchemaInterface', $resource->getPathParameters());
 		$this->assertInstanceOf('PSX\Data\Schema\Property\ComplexType', $resource->getPathParameters()->getDefinition());
-		$this->assertEquals('The id of bar', $resource->getPathParameters()->getDefinition()->get('bar_id')->getDescription());
+		$this->assertParameters($resource->getPathParameters());
 
 		$this->assertInstanceOf('PSX\Data\SchemaInterface', $resource->getMethod('GET')->getResponse(200));
 
@@ -97,5 +102,38 @@ class RamlTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('A canonical song', $property->getDescription());
 		$this->assertInstanceOf('PSX\Data\Schema\Property\String', $property->get('title'));
 		$this->assertInstanceOf('PSX\Data\Schema\Property\String', $property->get('artist'));
+	}
+
+	/**
+	 * @expectedException RuntimeException
+	 */
+	public function testFromFileInvalid()
+	{
+		Raml::fromFile(__DIR__ . '/foo.raml', '/bar/:bar_id');
+	}
+
+	protected function assertParameters(SchemaInterface $parameters)
+	{
+		$this->assertInstanceOf('PSX\Data\Schema\Property\Integer', $parameters->getDefinition()->get('param_integer'));
+		$this->assertEquals(true, $parameters->getDefinition()->get('param_integer')->isRequired());
+		$this->assertEquals(8, $parameters->getDefinition()->get('param_integer')->getMin());
+		$this->assertEquals(16, $parameters->getDefinition()->get('param_integer')->getMax());
+
+		$this->assertInstanceOf('PSX\Data\Schema\Property\Float', $parameters->getDefinition()->get('param_number'));
+		$this->assertEquals(false, $parameters->getDefinition()->get('param_number')->isRequired());
+		$this->assertEquals('The number', $parameters->getDefinition()->get('param_number')->getDescription());
+
+		$this->assertInstanceOf('PSX\Data\Schema\Property\DateTime', $parameters->getDefinition()->get('param_date'));
+		$this->assertEquals(false, $parameters->getDefinition()->get('param_date')->isRequired());
+
+		$this->assertInstanceOf('PSX\Data\Schema\Property\Boolean', $parameters->getDefinition()->get('param_boolean'));
+		$this->assertEquals(true, $parameters->getDefinition()->get('param_boolean')->isRequired());
+
+		$this->assertInstanceOf('PSX\Data\Schema\Property\String', $parameters->getDefinition()->get('param_string'));
+		$this->assertEquals(false, $parameters->getDefinition()->get('param_string')->isRequired());
+		$this->assertEquals(8, $parameters->getDefinition()->get('param_string')->getMinLength());
+		$this->assertEquals(16, $parameters->getDefinition()->get('param_string')->getMaxLength());
+		$this->assertEquals('[A-z]+', $parameters->getDefinition()->get('param_string')->getPattern());
+		$this->assertEquals(['foo', 'bar'], $parameters->getDefinition()->get('param_string')->getEnumeration());
 	}
 }

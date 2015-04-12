@@ -11,9 +11,25 @@ traits:
 /bar/{bar_id}:
   description: Returns details about bar
   uriParameters:
-    bar_id:
+    param_integer:
       type: integer
-      description: The id of bar
+      required: true
+      minimum: 8
+      maximum: 16
+    param_number:
+      description: The number
+      type: number
+    param_date:
+      type: date
+    param_boolean:
+      type: boolean
+      required: true
+    param_string:
+      type: string
+      pattern: "[A-z]+"
+      minLength: 8
+      maxLength: 16
+      enum: ["foo", "bar"]
   get:
     responses:
       200:
@@ -30,13 +46,31 @@ traits:
                 "required": [ "title", "artist" ]
               }
 /foo:
-  is: [ paged ]
+  displayName: Bar
   description: Some description
+  is: [ paged, not_existing ]
   get:
     description: Informations about the method
     queryParameters:
-      startIndex:
-        description: Sets the start index
+      param_integer:
+        type: integer
+        required: true
+        minimum: 8
+        maximum: 16
+      param_number:
+        description: The number
+        type: number
+      param_date:
+        type: date
+      param_boolean:
+        type: boolean
+        required: true
+      param_string:
+        type: string
+        pattern: "[A-z]+"
+        minLength: 8
+        maxLength: 16
+        enum: ["foo", "bar"]
   post:
     body:
       application/json:

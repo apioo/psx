@@ -28,6 +28,7 @@ use PSX\Data\Schema\Property;
 use PSX\Data\Schema\Parser\JsonSchema;
 use PSX\Data\SchemaInterface;
 use PSX\Util\ApiGeneration;
+use RuntimeException;
 use Symfony\Component\Yaml\Parser;
 
 /**
@@ -321,7 +322,7 @@ class Raml implements ParserInterface
 		}
 		else
 		{
-			throw new \RuntimeException('Could not load raml schema ' . $file);
+			throw new RuntimeException('Could not load raml schema ' . $file);
 		}
 	}
 }
