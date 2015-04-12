@@ -56,6 +56,7 @@ abstract class ApiAbstract extends ControllerAbstract
 			WriterInterface::ATOM,
 			WriterInterface::JSON,
 			WriterInterface::JSONP,
+			WriterInterface::JSONX,
 			WriterInterface::SOAP,
 			WriterInterface::XML,
 		);
