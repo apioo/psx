@@ -96,5 +96,18 @@ class File extends SplFileInfo
 	{
 		return file_put_contents($file, $content, $flags, $context);
 	}
+
+	/**
+	 * Removes all chars from the string which are not allowed in an file name
+	 *
+	 * @return string
+	 */
+	public static function normalizeName($fileName)
+	{
+		$fileName = str_replace(' ', '-', $fileName);
+		$fileName = preg_replace('/[^A-Za-z0-9\.\_\-]/', '', $fileName);
+
+		return $fileName;
+	}
 }
 

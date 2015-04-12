@@ -40,32 +40,32 @@ class TableManagerTest extends DbTestCase
 
 	public function testGetTable()
 	{
-		$reader = new Reader\Schema($this->connection);
-		$cache  = new Cache(new Cache\Handler\Memory());
-
 		$manager = new TableManager($this->connection);
-		$manager->setDefaultReader($reader);
-		$manager->setCache($cache);
+
+		$table = $manager->getTable('PSX\Sql\TestTable');
+
+		$this->assertInstanceOf('PSX\Sql\TableInterface', $table);
+		$this->assertEquals('psx_handler_comment', $table->getName());
+		$this->assertEquals(['id', 'userId', 'title', 'date'], array_keys($table->getColumns()));
+	}
+
+	public function testGetTableWithReader()
+	{
+		$manager = new TableManager($this->connection, new Reader\Schema($this->connection));
 
 		$table = $manager->getTable('psx_handler_comment');
 
+		$this->assertInstanceOf('PSX\Sql\TableInterface', $table);
 		$this->assertEquals('psx_handler_comment', $table->getName());
+		$this->assertEquals(['id', 'userId', 'title', 'date'], array_keys($table->getColumns()));
+	}
 
-		$columns = $table->getColumns();
-
-		$this->assertEquals(TableInterface::TYPE_INT | TableInterface::PRIMARY_KEY | TableInterface::AUTO_INCREMENT, $columns['id']);
-		$this->assertEquals(TableInterface::TYPE_VARCHAR | 32, $columns['title']);
-		$this->assertEquals(TableInterface::TYPE_DATETIME, $columns['date']);
-
-		// next call should go through the cache
-		$table = $manager->getTable('psx_handler_comment');
-
-		$this->assertEquals('psx_handler_comment', $table->getName());
-
-		$columns = $table->getColumns();
-
-		$this->assertEquals(TableInterface::TYPE_INT | TableInterface::PRIMARY_KEY | TableInterface::AUTO_INCREMENT, $columns['id']);
-		$this->assertEquals(TableInterface::TYPE_VARCHAR | 32, $columns['title']);
-		$this->assertEquals(TableInterface::TYPE_DATETIME, $columns['date']);
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testGetTableInvalidTable()
+	{
+		$manager = new TableManager($this->connection);
+		$manager->getTable('PSX\Sql\FooTable');
 	}
 }
