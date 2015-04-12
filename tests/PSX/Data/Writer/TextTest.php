@@ -64,7 +64,7 @@ class TextTest extends TemplateAbstractTestCase
 	}
 
 	/**
-	 * @expectedException PSX\Http\Exception\InternalServerErrorException
+	 * @expectedException PSX\Http\Exception\UnsupportedMediaTypeException
 	 */
 	public function testFallbackGenerator()
 	{

@@ -54,14 +54,16 @@ class Dispatch
 	protected $sender;
 	protected $factory;
 	protected $eventDispatcher;
+	protected $exceptionConverter;
 
-	public function __construct(Config $config, LoaderInterface $loader, ControllerFactoryInterface $factory, SenderInterface $sender, EventDispatcherInterface $eventDispatcher)
+	public function __construct(Config $config, LoaderInterface $loader, ControllerFactoryInterface $factory, SenderInterface $sender, EventDispatcherInterface $eventDispatcher, Exception\Converter $exceptionConverter)
 	{
-		$this->config          = $config;
-		$this->loader          = $loader;
-		$this->sender          = $sender;
-		$this->factory         = $factory;
-		$this->eventDispatcher = $eventDispatcher;
+		$this->config             = $config;
+		$this->loader             = $loader;
+		$this->sender             = $sender;
+		$this->factory            = $factory;
+		$this->eventDispatcher    = $eventDispatcher;
+		$this->exceptionConverter = $exceptionConverter;
 	}
 
 	public function route(RequestInterface $request, ResponseInterface $response, Context $context = null)
@@ -90,28 +92,30 @@ class Dispatch
 		{
 			$this->eventDispatcher->dispatch(Event::EXCEPTION_THROWN, new ExceptionThrownEvent($e, new ControllerContext($request, $response)));
 
-			if($e instanceof StatusCode\StatusCodeException)
+			$this->handleException($e, $response);
+
+			try
 			{
-				$this->handleHttpStatusCodeException($e, $response);
+				$context->set(Context::KEY_EXCEPTION, $e);
+
+				$class      = isset($this->config['psx_error_controller']) ? $this->config['psx_error_controller'] : 'PSX\Controller\ErrorController';
+				$controller = $this->factory->getController($class, $request, $response, $context);
+
+				$this->loader->executeController($controller, $request, $response);
 			}
-			else if($response->getStatusCode() == null)
+			catch(\Exception $e)
 			{
-				if(isset(Http::$codes[$e->getCode()]))
-				{
-					$response->setStatus($e->getCode());
-				}
-				else
-				{
-					$response->setStatus(500);
-				}
+				// in this case the error controller has thrown an exception. 
+				// This can happen i.e. if we can not represent the error in an
+				// fitting media type. In this case we send json to the client
+
+				$this->handleException($e, $response);
+
+				$record = $this->exceptionConverter->convert($e);
+
+				$response->setHeader('Content-Type', 'application/json');
+				$response->setBody(new StringStream(Json::encode($record->getRecordInfo()->getData(), JSON_PRETTY_PRINT)));
 			}
-
-			$context->set(Context::KEY_EXCEPTION, $e);
-
-			$class      = isset($this->config['psx_error_controller']) ? $this->config['psx_error_controller'] : 'PSX\Controller\ErrorController';
-			$controller = $this->factory->getController($class, $request, $response, $context);
-
-			$this->loader->executeController($controller, $request, $response);
 		}
 
 		$this->eventDispatcher->dispatch(Event::RESPONSE_SEND, new ResponseSendEvent($response));
@@ -120,7 +124,26 @@ class Dispatch
 		$this->sender->send($response);
 	}
 
-	protected function handleHttpStatusCodeException(StatusCode\StatusCodeException $e, ResponseInterface $response)
+	protected function handleException(\Exception $e, ResponseInterface $response)
+	{
+		if($e instanceof StatusCode\StatusCodeException)
+		{
+			$this->handleStatusCodeException($e, $response);
+		}
+		else if($response->getStatusCode() == null)
+		{
+			if(isset(Http::$codes[$e->getCode()]))
+			{
+				$response->setStatus($e->getCode());
+			}
+			else
+			{
+				$response->setStatus(500);
+			}
+		}
+	}
+
+	protected function handleStatusCodeException(StatusCode\StatusCodeException $e, ResponseInterface $response)
 	{
 		$response->setStatus($e->getStatusCode());
 
@@ -150,5 +173,10 @@ class Dispatch
 				}
 			}
 		}
+	}
+
+	protected function get()
+	{
+		
 	}
 }

@@ -25,13 +25,13 @@ use PSX\Atom\Writer;
 use PSX\Data\Record;
 
 /**
- * WriterTest
+ * EntryTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class WriterTest extends \PHPUnit_Framework_TestCase
+class EntryTest extends \PHPUnit_Framework_TestCase
 {
 	public function testSetContentXmlRecord()
 	{

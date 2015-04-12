@@ -242,7 +242,8 @@ TEXT;
 
 	/**
 	 * If a template file was set which exists we simply use this file and dont 
-	 * set any dir
+	 * set any dir. The template file must have an file extension which is 
+	 * supported by the writer
 	 */
 	public function testSetExistingTemplateFile()
 	{
@@ -250,6 +251,9 @@ TEXT;
 		$router   = $this->getMockBuilder('PSX\Loader\ReverseRouter')
 			->disableOriginalConstructor()
 			->getMock();
+
+		$writer = $this->getWriter($template, $router);
+		$writer->setControllerClass('Foo\Application\News\DetailDescription');
 
 		$template->expects($this->at(0))
 				->method('hasFile')
@@ -260,15 +264,90 @@ TEXT;
 				->will($this->returnValue(true));
 
 		$template->expects($this->at(2))
+				->method('get')
+				->will($this->returnValue('/foo/template.' . $writer->getFileExtension()));
+
+		$template->expects($this->at(3))
 				->method('setDir')
 				->with($this->equalTo(null));
 
-		$template->expects($this->at(3))
+		$template->expects($this->at(4))
 				->method('isFileAvailable')
 				->will($this->returnValue(true));
 
+		$actual = $writer->write($this->getRecord());
+	}
+
+	public function testSetExistingTemplateFileWrongFileExtension()
+	{
+		$template = $this->getMock('PSX\TemplateInterface');
+		$router   = $this->getMockBuilder('PSX\Loader\ReverseRouter')
+			->disableOriginalConstructor()
+			->getMock();
+
 		$writer = $this->getWriter($template, $router);
 		$writer->setControllerClass('Foo\Application\News\DetailDescription');
+
+		$template->expects($this->at(0))
+				->method('hasFile')
+				->will($this->returnValue(true));
+
+		$template->expects($this->at(1))
+				->method('isAbsoluteFile')
+				->will($this->returnValue(true));
+
+		$template->expects($this->at(2))
+				->method('get')
+				->will($this->returnValue('/foo/template.foo'));
+
+		$template->expects($this->at(3))
+				->method('set')
+				->with($this->equalTo('/foo/template.' . $writer->getFileExtension()));
+
+		$template->expects($this->at(4))
+				->method('setDir')
+				->with($this->equalTo(null));
+
+		$template->expects($this->at(5))
+				->method('isFileAvailable')
+				->will($this->returnValue(true));
+
+		$actual = $writer->write($this->getRecord());
+	}
+
+	public function testSetExistingTemplateFileNoFileExtension()
+	{
+		$template = $this->getMock('PSX\TemplateInterface');
+		$router   = $this->getMockBuilder('PSX\Loader\ReverseRouter')
+			->disableOriginalConstructor()
+			->getMock();
+
+		$writer = $this->getWriter($template, $router);
+		$writer->setControllerClass('Foo\Application\News\DetailDescription');
+
+		$template->expects($this->at(0))
+				->method('hasFile')
+				->will($this->returnValue(true));
+
+		$template->expects($this->at(1))
+				->method('isAbsoluteFile')
+				->will($this->returnValue(true));
+
+		$template->expects($this->at(2))
+				->method('get')
+				->will($this->returnValue('/foo/template'));
+
+		$template->expects($this->at(3))
+				->method('set')
+				->with($this->equalTo('/foo/template.' . $writer->getFileExtension()));
+
+		$template->expects($this->at(4))
+				->method('setDir')
+				->with($this->equalTo(null));
+
+		$template->expects($this->at(5))
+				->method('isFileAvailable')
+				->will($this->returnValue(true));
 
 		$actual = $writer->write($this->getRecord());
 	}
@@ -290,9 +369,13 @@ TEXT;
 
 		$template->expects($this->at(1))
 				->method('isAbsoluteFile')
-				->will($this->returnValue(true));
+				->will($this->returnValue(false));
 
 		$template->expects($this->at(2))
+				->method('setDir')
+				->with($this->equalTo('library/Foo/Resource'));
+
+		$template->expects($this->at(3))
 				->method('isFileAvailable')
 				->will($this->returnValue(false));
 

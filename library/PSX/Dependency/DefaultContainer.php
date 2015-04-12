@@ -31,6 +31,7 @@ use Monolog\Processor as MonologProcessor;
 use PSX\Base;
 use PSX\Cache;
 use PSX\Config;
+use PSX\Exception;
 use PSX\Http;
 use PSX\Log\ErrorFormatter;
 use PSX\Session;
@@ -130,6 +131,14 @@ class DefaultContainer extends Container
 	public function getObjectBuilder()
 	{
 		return new ObjectBuilder($this);
+	}
+
+	/**
+	 * @return PSX\Exception\ConverterInterface
+	 */
+	public function getExceptionConverter()
+	{
+		return new Exception\Converter($this->get('config')->get('psx_debug'));
 	}
 
 	/**

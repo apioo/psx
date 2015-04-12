@@ -22,7 +22,7 @@ namespace PSX\Controller;
 
 use DOMDocument;
 use PSX\Controller\ViewAbstract;
-use PSX\Data\ExceptionRecord;
+use PSX\Data\Record\Converter;
 use PSX\DisplayException;
 use PSX\Http;
 use PSX\Loader\Context;
@@ -37,7 +37,11 @@ use PSX\Template\ErrorException;
  */
 class ErrorController extends ViewAbstract
 {
-	const CONTEXT_SIZE = 4;
+	/**
+	 * @Inject
+	 * @var PSX\Exception\Converter
+	 */
+	protected $exceptionConverter;
 
 	public function processResponse()
 	{
@@ -58,7 +62,7 @@ class ErrorController extends ViewAbstract
 		{
 			$path = PSX_PATH_LIBRARY . '/' . strstr($class, '/Application/', true) . '/Resource';
 			$file = substr(strstr($class, 'Application'), 12);
-			$file = $this->underscore($file) . '.tpl';
+			$file = $this->underscore($file) . '.html';
 
 			if(!is_file($path . '/' . $file))
 			{
@@ -71,67 +75,7 @@ class ErrorController extends ViewAbstract
 		}
 
 		// build message
-		if($this->config['psx_debug'] === true)
-		{
-			if($exception instanceof ErrorException)
-			{
-				$exception = $exception->getOriginException();
-			}
-
-			$title   = get_class($exception);
-			$message = $exception->getMessage() . ' in ' . $exception->getFile() . ' on line ' . $exception->getLine();
-			$trace   = $exception->getTraceAsString();
-			$context = '';
-
-			if(is_file($exception->getFile()))
-			{
-				$offset = $exception->getLine() - (self::CONTEXT_SIZE + 1);
-				$length = (self::CONTEXT_SIZE * 2) + 1;
-				$length = $offset < 0 ? $length + $offset : $length;
-				$offset = $offset < 0 ? 0 : $offset;
-
-				$lines  = file($exception->getFile());
-				$lines  = array_slice($lines, $offset, $length);
-
-				foreach($lines as $number => $line)
-				{
-					$lineNo = $offset + $number + 1;
-
-					if($lineNo == $exception->getLine())
-					{
-						$context.= '<b>' . str_pad($lineNo, 4) . htmlspecialchars($line) . '</b>';
-					}
-					else
-					{
-						$context.= str_pad($lineNo, 4) . htmlspecialchars($line);
-					}
-				}
-			}
-		}
-		else
-		{
-			// if we have an display exception we can use the error message else
-			// we hide the message with an general error message
-			if($exception instanceof DisplayException)
-			{
-				$message = $exception->getMessage();
-			}
-			else
-			{
-				$message = 'The server encountered an internal error and was unable to complete your request.';
-			}
-
-			$title   = 'Internal Server Error';
-			$trace   = null;
-			$context = null;
-		}
-
-		$record = new ExceptionRecord();
-		$record->setSuccess(false);
-		$record->setTitle($title);
-		$record->setMessage($message);
-		$record->setTrace($trace);
-		$record->setContext($context);
+		$record = $this->exceptionConverter->convert($exception);
 
 		$this->setBody($record);
 	}
@@ -150,7 +94,7 @@ class ErrorController extends ViewAbstract
 		}
 		else
 		{
-			return __DIR__ . '/Resource/error_controller.tpl';
+			return __DIR__ . '/Resource/error_controller.html';
 		}
 	}
 

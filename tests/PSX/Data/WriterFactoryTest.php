@@ -41,13 +41,13 @@ class WriterFactoryTest extends \PHPUnit_Framework_TestCase
 			->getMock();
 
 		$this->writerFactory = new WriterFactory();
-		$this->writerFactory->addWriter(new Writer\Json());
-		$this->writerFactory->addWriter(new Writer\Html($template, $reverseRouter));
-		$this->writerFactory->addWriter(new Writer\Atom());
-		$this->writerFactory->addWriter(new Writer\Form());
-		$this->writerFactory->addWriter(new Writer\Jsonp());
-		$this->writerFactory->addWriter(new Writer\Soap('http://phpsx.org/2014/data'));
-		$this->writerFactory->addWriter(new Writer\Xml());
+		$this->writerFactory->addWriter(new Writer\Json(), 48);
+		$this->writerFactory->addWriter(new Writer\Html($template, $reverseRouter), 40);
+		$this->writerFactory->addWriter(new Writer\Atom(), 32);
+		$this->writerFactory->addWriter(new Writer\Form(), 24);
+		$this->writerFactory->addWriter(new Writer\Jsonp(), 16);
+		$this->writerFactory->addWriter(new Writer\Soap('http://phpsx.org/2014/data'), 8);
+		$this->writerFactory->addWriter(new Writer\Xml(), 0);
 	}
 
 	public function testGetDefaultWriter()

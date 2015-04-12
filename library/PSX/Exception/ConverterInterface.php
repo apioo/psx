@@ -18,43 +18,25 @@
  * limitations under the License.
  */
 
-namespace PSX\Controller\Foo\Application;
+namespace PSX\Exception;
 
-use PSX\Controller\ViewAbstract;
-use PSX\Http\Request;
-use PSX\Http\Response;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Exception;
 
 /**
- * TestViewController
+ * ConverterInterface
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class TestViewController extends ViewAbstract
+interface ConverterInterface
 {
-	public function onLoad()
-	{
-		parent::onLoad();
-
-		$this->writerFactory->getWriterByContentType('text/html')->setBaseDir('tests');
-	}
-
-	public function doIndex()
-	{
-		$this->template->assign('foo', 'bar');
-	}
-
-	public function doDetail()
-	{
-		$this->template->assign('foo', 'bar');
-		$this->template->set('detail.html');
-	}
-
-	public function doExplicit()
-	{
-		$this->template->assign('foo', 'bar');
-		$this->template->set(__DIR__ . '/../Resource/explicit.html');
-	}
+	/**
+	 * Converts an arbitrary exception into an record which gets displayed to
+	 * the user
+	 *
+	 * @param Exception $e
+	 * @return PSX\Data\RecordInterface
+	 */
+	public function convert(Exception $e);
 }

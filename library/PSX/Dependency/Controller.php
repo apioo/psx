@@ -107,7 +107,7 @@ trait Controller
 	 */
 	public function getDispatch()
 	{
-		return new Dispatch($this->get('config'), $this->get('loader'), $this->get('application_stack_factory'), $this->get('dispatch_sender'), $this->get('event_dispatcher'));
+		return new Dispatch($this->get('config'), $this->get('loader'), $this->get('application_stack_factory'), $this->get('dispatch_sender'), $this->get('event_dispatcher'), $this->get('exception_converter'));
 	}
 
 	/**
