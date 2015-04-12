@@ -20,6 +20,9 @@
 
 namespace PSX\Api;
 
+use PSX\Api\Resource\Factory;
+use PSX\Data\Schema\Property;
+
 /**
  * ResourceTest
  *
@@ -32,8 +35,32 @@ class ResourceTest extends \PHPUnit_Framework_TestCase
 	public function testResource()
 	{
 		$resource = new Resource(Resource::STATUS_ACTIVE, '/foo');
+		$resource->setTitle('foobar');
+		$resource->setDescription('foobar');
+		$resource->addPathParameter(new Property\String('foo'));
+		$resource->addMethod(Factory::getMethod('GET'));
 
 		$this->assertEquals(Resource::STATUS_ACTIVE, $resource->getStatus());
+		$this->assertTrue($resource->isActive());
+		$this->assertFalse($resource->isDeprecated());
+		$this->assertFalse($resource->isClosed());
 		$this->assertEquals('/foo', $resource->getPath());
+		$this->assertEquals('foobar', $resource->getTitle());
+		$this->assertEquals('foobar', $resource->getDescription());
+		$this->assertInstanceOf('PSX\Data\SchemaInterface', $resource->getPathParameters());
+		$this->assertInstanceOf('PSX\Api\Resource\MethodAbstract', $resource->getMethod('GET'));
+		$this->assertEquals(['GET' => $resource->getMethod('GET')], $resource->getMethods());
+		$this->assertEquals(['GET'], $resource->getAllowedMethods());
+		$this->assertTrue($resource->hasMethod('GET'));
+		$this->assertFalse($resource->hasMethod('POST'));
+	}
+
+	/**
+	 * @expectedException RuntimeException
+	 */
+	public function testGetMethodInvalid()
+	{
+		$resource = new Resource(Resource::STATUS_ACTIVE, '/foo');
+		$resource->getMethod('GET');
 	}
 }
