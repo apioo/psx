@@ -20,7 +20,7 @@
 
 namespace PSX\Http\Stream;
 
-use Psr\Http\Message\StreamableInterface;
+use PSX\Http\StreamInterface;
 
 /**
  * Provides util methods to handle with streams
@@ -36,10 +36,10 @@ class Util
 	 * the pointer will not change if the stream is seekable. Note this copies 
 	 * the complete content of the stream into the memory
 	 *
-	 * @param Psr\Http\Message\StreamableInterface $stream
+	 * @param PSX\Http\StreamInterface $stream
 	 * @return string
 	 */
-	public static function toString(StreamableInterface $stream)
+	public static function toString(StreamInterface $stream)
 	{
 		if(!$stream->isReadable())
 		{

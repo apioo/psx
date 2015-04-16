@@ -21,7 +21,7 @@
 namespace PSX\Http\Stream;
 
 use InvalidArgumentException;
-use Psr\Http\Message\StreamableInterface;
+use PSX\Http\StreamInterface;
 
 /**
  * Stream which operates on an normal stream
@@ -30,7 +30,7 @@ use Psr\Http\Message\StreamableInterface;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class TempStream implements StreamableInterface
+class TempStream implements StreamInterface
 {
 	protected $resource;
 	protected $seekable;

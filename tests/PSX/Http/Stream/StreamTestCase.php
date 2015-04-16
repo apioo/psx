@@ -42,7 +42,7 @@ abstract class StreamTestCase extends \PHPUnit_Framework_TestCase
 	/**
 	 * Returns the stream wich gets tested. Must contain the string foobar
 	 *
-	 * @return Psr\Http\StreamableInterface
+	 * @return PSX\Http\StreamInterface
 	 */
 	abstract protected function getStream();
 

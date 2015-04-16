@@ -34,7 +34,7 @@ class PostRequest extends Request
 	/**
 	 * @param PSX\Url|string $url
 	 * @param array $headers
-	 * @param Psr\Http\Message\StreamableInterface|string|array $body
+	 * @param PSX\Http\StreamInterface|string|array $body
 	 */
 	public function __construct($url, array $headers = array(), $body = null)
 	{

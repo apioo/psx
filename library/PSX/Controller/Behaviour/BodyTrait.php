@@ -21,9 +21,7 @@
 namespace PSX\Controller\Behaviour;
 
 use DOMDocument;
-use PSX\Http\Exception as StatusCode;
 use InvalidArgumentException;
-use Psr\Http\Message\StreamableInterface;
 use PSX\Data\NotFoundException;
 use PSX\Data\ReaderFactory;
 use PSX\Data\ReaderInterface;
@@ -32,6 +30,8 @@ use PSX\Data\RecordInterface;
 use PSX\Data\Record\ImporterInterface;
 use PSX\Data\Writer;
 use PSX\Data\WriterInterface;
+use PSX\Http\Exception as StatusCode;
+use PSX\Http\StreamInterface;
 use SimpleXMLElement;
 
 /**
@@ -115,7 +115,7 @@ trait BodyTrait
 		{
 			$this->response->getBody()->write($data);
 		}
-		else if($data instanceof StreamableInterface)
+		else if($data instanceof StreamInterface)
 		{
 			$this->response->setBody($data);
 		}
@@ -318,7 +318,7 @@ trait BodyTrait
 	 */
 	private function getPreferredWriter()
 	{
-		$parameters = $this->request->getQueryParams();
+		$parameters = $this->request->getUri()->getParameters();
 		$format     = isset($parameters['format']) ? $parameters['format'] : null;
 
 		if(!empty($format))

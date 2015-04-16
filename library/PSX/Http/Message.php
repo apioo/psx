@@ -21,8 +21,8 @@
 namespace PSX\Http;
 
 use InvalidArgumentException;
-use Psr\Http\Message\StreamableInterface;
 use PSX\Http\Stream;
+use PSX\Http\StreamInterface;
 
 /**
  * Message
@@ -39,7 +39,7 @@ class Message implements MessageInterface
 
 	/**
 	 * @param array $headers
-	 * @param Psr\Http\Message\StreamableInterface|string|resource $body
+	 * @param use PSX\Http\StreamInterface|string|resource $body
 	 */
 	public function __construct(array $headers = array(), $body = null)
 	{
@@ -120,17 +120,12 @@ class Message implements MessageInterface
 		}
 	}
 
-	/**
-	 * Returns the message body
-	 *
-	 * @return Psr\Http\StreamableInterface
-	 */
 	public function getBody()
 	{
 		return $this->body;
 	}
 
-	public function setBody(StreamableInterface $body)
+	public function setBody(StreamInterface $body)
 	{
 		$this->body = $body;
 	}
@@ -147,7 +142,7 @@ class Message implements MessageInterface
 
 	protected function prepareBody($body)
 	{
-		if($body instanceof StreamableInterface)
+		if($body instanceof StreamInterface)
 		{
 			return $body;
 		}
@@ -165,7 +160,7 @@ class Message implements MessageInterface
 		}
 		else
 		{
-			throw new InvalidArgumentException('Body must be either an Psr\Http\Message\StreamableInterface, string or resource');
+			throw new InvalidArgumentException('Body must be either an PSX\Http\StreamInterface, string or resource');
 		}
 	}
 }

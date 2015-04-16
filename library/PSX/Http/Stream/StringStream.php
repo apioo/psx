@@ -20,7 +20,7 @@
 
 namespace PSX\Http\Stream;
 
-use Psr\Http\Message\StreamableInterface;
+use PSX\Http\StreamInterface;
 
 /**
  * Stream wich works on an string therefore the size of the stream is limited to
@@ -30,7 +30,7 @@ use Psr\Http\Message\StreamableInterface;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class StringStream implements StreamableInterface
+class StringStream implements StreamInterface
 {
 	protected $data;
 	protected $length;

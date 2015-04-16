@@ -38,25 +38,25 @@ class MessageTest extends \PHPUnit_Framework_TestCase
 		$message = new Message(['foo' => 'bar'], new StringStream('foobar'));
 
 		$this->assertEquals(['foo' => ['bar']], $message->getHeaders());
-		$this->assertInstanceOf('Psr\Http\Message\StreamableInterface', $message->getBody());
+		$this->assertInstanceOf('PSX\Http\StreamInterface', $message->getBody());
 		$this->assertEquals('foobar', (string) $message->getBody());
 
 		$message = new Message(['foo' => 'bar'], 'foobar');
 
 		$this->assertEquals(['foo' => ['bar']], $message->getHeaders());
-		$this->assertInstanceOf('Psr\Http\Message\StreamableInterface', $message->getBody());
+		$this->assertInstanceOf('PSX\Http\StreamInterface', $message->getBody());
 		$this->assertEquals('foobar', (string) $message->getBody());
 
 		$message = new Message(['foo' => 'bar']);
 
 		$this->assertEquals(['foo' => ['bar']], $message->getHeaders());
-		$this->assertInstanceOf('Psr\Http\Message\StreamableInterface', $message->getBody());
+		$this->assertInstanceOf('PSX\Http\StreamInterface', $message->getBody());
 		$this->assertEquals('', (string) $message->getBody());
 
 		$message = new Message();
 
 		$this->assertEquals([], $message->getHeaders());
-		$this->assertInstanceOf('Psr\Http\Message\StreamableInterface', $message->getBody());
+		$this->assertInstanceOf('PSX\Http\StreamInterface', $message->getBody());
 		$this->assertEquals('', (string) $message->getBody());
 	}
 

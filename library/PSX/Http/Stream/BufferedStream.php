@@ -21,7 +21,7 @@
 namespace PSX\Http\Stream;
 
 use InvalidArgumentException;
-use Psr\Http\Message\StreamableInterface;
+use PSX\Http\StreamInterface;
 
 /**
  * Buffers the complete content of the stream into an string and works from 
@@ -38,7 +38,7 @@ class BufferedStream extends StringStream
 	protected $source;
 	protected $isFilled = false;
 
-	public function __construct(StreamableInterface $stream)
+	public function __construct(StreamInterface $stream)
 	{
 		$this->data   = '';
 		$this->length = $stream->getSize();
