@@ -25,6 +25,15 @@ use PSX\Uri;
 /**
  * This is a mutable version of the PSR HTTP message interface
  *
+ * Per the HTTP specification, this interface includes properties for
+ * each of the following:
+ *
+ * - Protocol version
+ * - HTTP method
+ * - URI
+ * - Headers
+ * - Message body
+ *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
@@ -33,16 +42,35 @@ use PSX\Uri;
 interface RequestInterface extends MessageInterface
 {
 	/**
-	 * Retrieves the message request target
+     * Retrieves the message's request target.
+     *
+     * Retrieves the message's request-target either as it will appear (for
+     * clients), as it appeared at request (for servers), or as it was
+     * specified for the instance (see withRequestTarget()).
+     *
+     * In most cases, this will be the origin-form of the composed URI,
+     * unless a value was provided to the concrete implementation (see
+     * withRequestTarget() below).
+     *
+     * If no URI is available, and no request-target has been specifically
+     * provided, this method MUST return the string "/".
 	 *
 	 * @return string
 	 */
 	public function getRequestTarget();
 
 	/**
-	 * Sets the message request target
-	 *
-	 * @param string $requestTarget
+     * Sets an specific request-target.
+     *
+     * If the request needs a non-origin-form request-target — e.g., for
+     * specifying an absolute-form, authority-form, or asterisk-form —
+     * this method may be used to create an instance with the specified
+     * request-target, verbatim.
+     *
+     * @link http://tools.ietf.org/html/rfc7230#section-2.7 (for the various
+     *     request-target forms allowed in request messages)
+     * @param mixed $requestTarget
+     * @return void
 	 */
 	public function setRequestTarget($requestTarget);
 
@@ -54,143 +82,86 @@ interface RequestInterface extends MessageInterface
 	public function getMethod();
 
 	/**
-	 * Sets the HTTP method of the request
-	 *
-	 * @param string $method
+     * Sets the provided HTTP method.
+     *
+     * While HTTP method names are typically all uppercase characters, HTTP
+     * method names are case-sensitive and thus implementations SHOULD NOT
+     * modify the given string.
+     *
+     * @param string $method Case-insensitive method.
+     * @return void
+     * @throws \InvalidArgumentException for invalid HTTP methods.
 	 */
 	public function setMethod($method);
 
 	/**
-	 * Retrieves the URI instance
-	 *
+     * Retrieves the URI instance.
+     *
+     * This method MUST return a PSX\Uri instance.
+     *
+     * @link http://tools.ietf.org/html/rfc3986#section-4.3
 	 * @return PSX\Uri
 	 */
 	public function getUri();
 
 	/**
-	 * Sets the URI instance
-	 *
-	 * @param PSX\Uri $uri
+     * Sets the provided URI.
+     *
+     * @link http://tools.ietf.org/html/rfc3986#section-4.3
+     * @param UriInterface $uri New request URI to use.
+     * @param bool $preserveHost Preserve the original state of the Host header.
+     * @return void
 	 */
 	public function setUri(Uri $uri);
 
 	/**
-	 * Retrieve any parameters provided in the request body.
-	 *
-	 * If the request Content-Type is either application/x-www-form-urlencoded
-	 * or multipart/form-data, and the request method is POST, this method MUST
-	 * return the contents of $_POST.
-	 *
-	 * Otherwise, this method may return any results of deserializing
-	 * the request body content; as parsing returns structured content, the
-	 * potential types MUST be arrays or objects only. A null value indicates
-	 * the absence of body content.
-	 *
-	 * @return null|array|object
-	 */
-	public function getParsedBody();
-
-	/**
-	 * Sets the body parameters
-	 *
-	 * @param array $bodyParams
-	 */
-	public function setParsedBody($parsedBody);
-
-	/**
-	 * Retrieves cookies sent by the client to the server. The data MUST be 
-	 * compatible with the structure of the $_COOKIE superglobal
-	 *
-	 * @return array
-	 */
-	public function getCookieParams();
-
-	/**
-	 * Sets the cookie parameters
-	 *
-	 * @param array $cookieParams
-	 */
-	public function setCookieParams(array $cookieParams);
-
-	/**
-	 * This method MUST return file upload metadata in the same structure as 
-	 * PHP's $_FILES superglobal. These values MUST remain immutable over the 
-	 * course of the incoming request. They SHOULD be injected during 
-	 * instantiation, such as from PHP's $_FILES superglobal, but MAY be derived 
-	 * from other sources
-	 *
-	 * @return array
-	 */
-	public function getFileParams();
-
-	/**
-	 * Sets the file parameters
-	 *
-	 * @param array $fileParams
-	 */
-	public function setFileParams(array $fileParams);
-
-	/**
-	 * Retrieves the deserialized query string arguments, if any. Note: the 
-	 * query params might not be in sync with the URL or server params. If you 
-	 * need to ensure you are only getting the original values, you may need to 
-	 * parse the composed URL or the `QUERY_STRING` composed in the server 
-	 * params
-	 *
-	 * @return array
-	 */
-	public function getQueryParams();
-
-	/**
-	 * Sets the quey parameters
-	 *
-	 * @param array $queryParams
-	 */
-	public function setQueryParams(array $queryParams);
-
-	/**
-	 * Retrieves data related to the incoming request environment typically 
-	 * derived from PHP's $_SERVER superglobal. The data IS NOT REQUIRED to 
-	 * originate from $_SERVER
-	 *
-	 * @return array
-	 */
-	public function getServerParams();
-
-	/**
-	 * Sets the server parameters
-	 *
-	 * @param array $serverParams
-	 */
-	public function setServerParams(array $serverParams);
-
-	/**
-	 * Retrieve attributes derived from the request
-	 *
-	 * @return array
+     * Retrieve attributes derived from the request.
+     *
+     * The request "attributes" may be used to allow injection of any
+     * parameters derived from the request: e.g., the results of path
+     * match operations; the results of decrypting cookies; the results of
+     * deserializing non-form-encoded message bodies; etc. Attributes
+     * will be application and request specific.
+     *
+     * @return array Attributes derived from the request.
 	 */
 	public function getAttributes();
 
 	/**
-	 * Retrieve a single derived request attribute
-	 *
-	 * @param string $name
-	 * @return mixed
+     * Retrieve a single derived request attribute.
+     *
+     * Retrieves a single derived request attribute as described in
+     * getAttributes(). If the attribute has not been previously set, returns
+     * NULL.
+     *
+     * @see getAttributes()
+     * @param string $name The attribute name.
+     * @return mixed
 	 */
 	public function getAttribute($name);
 
 	/**
-	 * Sets the specified derived request attribute
-	 *
-	 * @param string $name
-	 * @param mixed $value
+     * Sets the specified derived request attribute.
+     *
+     * This method allows setting a single derived request attribute as
+     * described in getAttributes().
+     *
+     * @see getAttributes()
+     * @param string $name The attribute name.
+     * @param mixed $value The value of the attribute.
+     * @return void
 	 */
 	public function setAttribute($name, $value);
 
 	/**
-	 * Removes the specified derived request attribute
+     * Removes the specified derived request attribute.
      *
-	 * @param string $name
+     * This method allows removing a single derived request attribute as
+     * described in getAttributes().
+     *
+     * @see getAttributes()
+     * @param string $name The attribute name.
+     * @return void
 	 */
 	public function removeAttribute($name);
 }

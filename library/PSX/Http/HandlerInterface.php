@@ -32,9 +32,9 @@ interface HandlerInterface
 	/**
 	 * Makes an http request and returns an http response object
 	 *
-	 * @param Psr\Http\RequestInterface $request
+	 * @param PSX\Http\RequestInterface $request
 	 * @param PSX\Http\Options $options
-	 * @return Psr\Http\ResponseInterface
+	 * @return PSX\Http\ResponseInterface
 	 */
 	public function request(Request $request, Options $options);
 }

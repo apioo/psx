@@ -20,59 +20,96 @@
 
 namespace PSX\Http;
 
-use Psr\Http\Message\StreamableInterface;
-
 /**
  * This is a mutable version of the PSR HTTP message interface
+ *
+ * HTTP messages consist of requests from a client to a server and responses
+ * from a server to a client. This interface defines the methods common to
+ * each.
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
+ * @link    http://www.ietf.org/rfc/rfc7230.txt
+ * @link    http://www.ietf.org/rfc/rfc7231.txt
  * @see     https://github.com/php-fig/fig-standards/blob/master/proposed/http-message.md
  */
 interface MessageInterface
 {
 	/**
-	 * Retrieves the HTTP protocol version as a string
-	 *
-	 * @return string
+     * Retrieves the HTTP protocol version as a string.
+     *
+     * The string MUST contain only the HTTP version number (e.g., "1.1", "1.0").
+     *
+     * @return string HTTP protocol version.
 	 */
 	public function getProtocolVersion();
 
 	/**
-	 * Sets the HTTP protocol version as a string
-	 *
-	 * @param string $protocol
+     * Sets the specified HTTP protocol version.
+     *
+     * The version string MUST contain only the HTTP version number (e.g.,
+     * "1.1", "1.0").
+     *
+     * @param string $version HTTP protocol version
+     * @return void
 	 */
 	public function setProtocolVersion($protocol);
 
 	/**
-	 * Retrieves all message headers
-	 *
-	 * @return array
+     * Retrieves all message header values.
+     *
+     * The keys represent the header name as it will be sent over the wire, and
+     * each value is an array of strings associated with the header.
+     *
+     *     // Represent the headers as a string
+     *     foreach ($message->getHeaders() as $name => $values) {
+     *         echo $name . ": " . implode(", ", $values);
+     *     }
+     *
+     *     // Emit headers iteratively:
+     *     foreach ($message->getHeaders() as $name => $values) {
+     *         foreach ($values as $value) {
+     *             header(sprintf('%s: %s', $name, $value), false);
+     *         }
+     *     }
+     *
+     * While header names are not case-sensitive, getHeaders() will preserve the
+     * exact case in which headers were originally specified.
+     *
+     * @return array Returns an associative array of the message's headers. Each
+     *     key MUST be a header name, and each value MUST be an array of strings
+     *     for that header.
 	 */
 	public function getHeaders();
 
 	/**
-	 * Sets all message headers
+	 * Sets all message headers which overwrites all existing headers
 	 *
 	 * @param array $headers
+     * @return void
 	 */
 	public function setHeaders(array $headers);
 
 	/**
-	 * Checks if a header exists by the given case-insensitive name
-	 *
-	 * @param string $name
-	 * @return boolean
+     * Checks if a header exists by the given case-insensitive name.
+     *
+     * @param string $name Case-insensitive header field name.
+     * @return bool Returns true if any header names match the given header
+     *     name using a case-insensitive string comparison. Returns false if
+     *     no matching header name is found in the message.
 	 */
 	public function hasHeader($name);
 
 	/**
-	 * Retrieve a header by the given case-insensitive name, as a string
-	 *
-	 * @param string $name
-	 * @return string
+     * Retrieves a message header value by the given case-insensitive name.
+     *
+     * This method returns an string. If an header has multiple values they will
+     * be concatenated with an comma. If the header does not appear in the 
+     * message, this method MUST return null
+     *
+     * @param string $name Case-insensitive header field name.
+     * @return string|null
 	 */
 	public function getHeader($name);
 
@@ -95,7 +132,8 @@ interface MessageInterface
 	public function setHeader($name, $value);
 
 	/**
-	 * Sets a new header, appended with the given value
+	 * Adds a new header, the value gets appended if such an header already 
+	 * exists
 	 *
 	 * @param string $name
 	 * @param string|array $value
@@ -105,14 +143,14 @@ interface MessageInterface
 	/**
 	 * Gets the body of the message
 	 *
-	 * @return Psr\Http\Message\StreamableInterface
+	 * @return PSX\Http\StreamInterface
 	 */
 	public function getBody();
 
 	/**
 	 * Sets the specified message body
 	 *
-	 * @param Psr\Http\Message\StreamableInterface $body
+	 * @param PSX\Http\StreamInterface $body
 	 */
-	public function setBody(StreamableInterface $body);
+	public function setBody(StreamInterface $body);
 }
