@@ -1,4 +1,19 @@
 
+0.9.10
+* Added getConnection method to table manager to enable easy transaction 
+  handling
+* Moved cache logic from table manager into seperate reader class
+* Added exception converter service which converts an exception into an record
+  which gets used to display error messages. This makes it easy to change the
+  global error response format
+* Send correct content type on exception or send 415 status code
+* Handle Accept headers with +json or +xml media types correctly 
+* Added jsonx format to default api controller
+* Added http StreamInterface and remove psr http dependency
+* Updated bootstrap cache generator file list
+* Resource listing controller documentation create context in seperate method 
+  which can be overloaded
+
 0.9.9
 * Handle different successful status codes in schema api
 * Updated manual
