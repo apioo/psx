@@ -45,6 +45,8 @@ class Uri
 	protected $host;
 	protected $port;
 
+	private $parameters;
+
 	public function __construct($uri)
 	{
 		$this->parse($uri);
@@ -169,14 +171,20 @@ class Uri
 
 	public function getParameters()
 	{
-		parse_str($this->query, $parameters);
+		if($this->parameters !== null)
+		{
+			return $this->parameters;
+		}
 
-		return $parameters;
+		parse_str($this->query, $this->parameters);
+
+		return $this->parameters;
 	}
 
 	public function setParameters(array $parameters)
 	{
-		$this->query = http_build_query($parameters, '', '&');
+		$this->query      = http_build_query($parameters, '', '&');
+		$this->parameters = $parameters;
 	}
 
 	/**

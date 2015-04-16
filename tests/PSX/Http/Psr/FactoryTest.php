@@ -57,7 +57,7 @@ class RequestFactoryTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('localhost.com', $psrRequest->getUri()->getHost());
 		$this->assertEquals('/foo', $psrRequest->getUri()->getPath());
 		$this->assertEquals('bar=foo', $psrRequest->getUri()->getQuery());
-		$this->assertInstanceOf('Psr\Http\Message\StreamableInterface', $psrRequest->getBody());
+		$this->assertInstanceOf('PSX\Http\StreamInterface', $psrRequest->getBody());
 		$this->assertEquals('foobar', (string) $psrRequest->getBody());
 		*/
 	}
@@ -70,11 +70,6 @@ class RequestFactoryTest extends \PHPUnit_Framework_TestCase
 			['User-Agent' => 'foo'], 
 			new StringStream('foobar')
 		);
-		$request->setParsedBody(['body' => 'foo']);
-		$request->setCookieParams(['cookie' => 'foo']);
-		$request->setFileParams(['file' => 'foo']);
-		$request->setQueryParams(['query' => 'foo']);
-		$request->setServerParams(['server' => 'foo']);
 
 		$factory    = new Factory();
 		$psrRequest = $factory->getPsrServerRequest($request);
@@ -89,7 +84,7 @@ class RequestFactoryTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('localhost.com', $psrRequest->getUri()->getHost());
 		$this->assertEquals('/foo', $psrRequest->getUri()->getPath());
 		$this->assertEquals('bar=foo', $psrRequest->getUri()->getQuery());
-		$this->assertInstanceOf('Psr\Http\Message\StreamableInterface', $psrRequest->getBody());
+		$this->assertInstanceOf('PSX\Http\StreamInterface', $psrRequest->getBody());
 		$this->assertEquals('foobar', (string) $psrRequest->getBody());
 		$this->assertEquals(['body' => 'foo'], $psrRequest->getParsedBody());
 		$this->assertEquals(['cookie' => 'foo'], $psrRequest->getCookieParams());
@@ -116,7 +111,7 @@ class RequestFactoryTest extends \PHPUnit_Framework_TestCase
 		$this->assertInstanceOf('Psr\Http\Message\ResponseInterface', $psrResponse);
 		$this->assertEquals(200, $psrResponse->getStatusCode());
 		$this->assertEquals('text/plain', $psrResponse->getHeader('Content-Type'));
-		$this->assertInstanceOf('Psr\Http\Message\StreamableInterface', $psrResponse->getBody());
+		$this->assertInstanceOf('PSX\Http\StreamInterface', $psrResponse->getBody());
 		$this->assertEquals('foobar', (string) $psrResponse->getBody());
 		*/
 	}
@@ -165,7 +160,7 @@ class RequestFactoryTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('localhost.com', $request->getUri()->getHost());
 		$this->assertEquals('/foo', $request->getUri()->getPath());
 		$this->assertEquals('bar=foo', $request->getUri()->getQuery());
-		$this->assertInstanceOf('Psr\Http\Message\StreamableInterface', $request->getBody());
+		$this->assertInstanceOf('PSX\Http\StreamInterface', $request->getBody());
 		$this->assertEquals('foobar', (string) $request->getBody());
 	}
 
@@ -240,13 +235,9 @@ class RequestFactoryTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('localhost.com', $request->getUri()->getHost());
 		$this->assertEquals('/foo', $request->getUri()->getPath());
 		$this->assertEquals('bar=foo', $request->getUri()->getQuery());
-		$this->assertInstanceOf('Psr\Http\Message\StreamableInterface', $request->getBody());
+		$this->assertEquals(['bar' => 'foo'], $request->getUri()->getParameters());
+		$this->assertInstanceOf('PSX\Http\StreamInterface', $request->getBody());
 		$this->assertEquals('foobar', (string) $request->getBody());
-		$this->assertEquals(['body' => 'foo'], $request->getParsedBody());
-		$this->assertEquals(['cookie' => 'foo'], $request->getCookieParams());
-		$this->assertEquals(['file' => 'foo'], $request->getFileParams());
-		$this->assertEquals(['query' => 'foo'], $request->getQueryParams());
-		$this->assertEquals(['server' => 'foo'], $request->getServerParams());
 	}
 
 	public function testGetNativeResponse()
@@ -283,7 +274,7 @@ class RequestFactoryTest extends \PHPUnit_Framework_TestCase
 		$this->assertInstanceOf('PSX\Http\ResponseInterface', $response);
 		$this->assertEquals(200, $response->getStatusCode());
 		$this->assertEquals('text/plain', $response->getHeader('Content-Type'));
-		$this->assertInstanceOf('Psr\Http\Message\StreamableInterface', $response->getBody());
+		$this->assertInstanceOf('PSX\Http\StreamInterface', $response->getBody());
 		$this->assertEquals('foobar', (string) $response->getBody());
 	}
 }

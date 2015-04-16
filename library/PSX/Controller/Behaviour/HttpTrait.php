@@ -107,7 +107,7 @@ trait HttpTrait
 	 */
 	protected function getParameter($key, $type = Validate::TYPE_STRING, array $filter = array(), $title = null, $required = true)
 	{
-		$parameters = $this->request->getQueryParams();
+		$parameters = $this->request->getUri()->getParameters();
 
 		if(isset($parameters[$key]))
 		{
@@ -126,6 +126,6 @@ trait HttpTrait
 	 */
 	protected function getParameters()
 	{
-		return $this->request->getQueryParams();
+		return $this->request->getUri()->getParameters();
 	}
 }

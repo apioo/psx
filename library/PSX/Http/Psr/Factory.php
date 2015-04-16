@@ -81,12 +81,6 @@ class Factory implements FactoryInterface
 			$psrRequest->getBody()
 		);
 
-		$request->setParsedBody($psrRequest->getParsedBody());
-		$request->setCookieParams($psrRequest->getCookieParams());
-		$request->setFileParams($psrRequest->getFileParams());
-		$request->setQueryParams($psrRequest->getQueryParams());
-		$request->setServerParams($psrRequest->getServerParams());
-
 		return $request;
 	}
 

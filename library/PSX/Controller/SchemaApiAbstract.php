@@ -102,7 +102,7 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 
 		$method = $this->resource->getMethod('GET');
 
-		$this->queryParameters = $this->schemaAssimilator->assimilate($method->getQueryParameters(), $this->request->getQueryParams());
+		$this->queryParameters = $this->schemaAssimilator->assimilate($method->getQueryParameters(), $this->request->getUri()->getParameters());
 
 		$response = $this->doGet($this->version);
 		$schema   = $this->getSuccessfulResponse($method, $statusCode);
@@ -128,7 +128,7 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 
 		$method = $this->resource->getMethod('POST');
 
-		$this->queryParameters = $this->schemaAssimilator->assimilate($method->getQueryParameters(), $this->request->getQueryParams());
+		$this->queryParameters = $this->schemaAssimilator->assimilate($method->getQueryParameters(), $this->request->getUri()->getParameters());
 
 		$record   = $method->hasRequest() ? $this->import($method->getRequest()) : new Record();
 		$response = $this->doCreate($record, $this->version);
@@ -155,7 +155,7 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 
 		$method = $this->resource->getMethod('PUT');
 
-		$this->queryParameters = $this->schemaAssimilator->assimilate($method->getQueryParameters(), $this->request->getQueryParams());
+		$this->queryParameters = $this->schemaAssimilator->assimilate($method->getQueryParameters(), $this->request->getUri()->getParameters());
 
 		$record   = $method->hasRequest() ? $this->import($method->getRequest()) : new Record();
 		$response = $this->doUpdate($record, $this->version);
@@ -182,7 +182,7 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 
 		$method = $this->resource->getMethod('DELETE');
 
-		$this->queryParameters = $this->schemaAssimilator->assimilate($method->getQueryParameters(), $this->request->getQueryParams());
+		$this->queryParameters = $this->schemaAssimilator->assimilate($method->getQueryParameters(), $this->request->getUri()->getParameters());
 
 		$record   = $method->hasRequest() ? $this->import($method->getRequest()) : new Record();
 		$response = $this->doDelete($record, $this->version);

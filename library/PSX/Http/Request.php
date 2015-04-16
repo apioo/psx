@@ -33,11 +33,10 @@ use PSX\Uri;
  */
 class Request extends Message implements RequestInterface
 {
-	use RequestServerTrait;
-
 	protected $requestTarget;
 	protected $method;
 	protected $uri;
+	protected $attributes;
 
 	/**
 	 * @param PSX\Uri $uri
@@ -171,6 +170,29 @@ class Request extends Message implements RequestInterface
 		$protocol = !empty($protocol) ? $protocol : 'HTTP/1.1';
 
 		return $method . ' ' . $target . ' ' . $protocol;
+	}
+
+	public function getAttributes()
+	{
+		return $this->attributes;
+	}
+
+	public function getAttribute($name)
+	{
+		return isset($this->attributes[$name]) ? $this->attributes[$name] : null;
+	}
+
+	public function setAttribute($name, $value)
+	{
+		$this->attributes[$name] = $value;
+	}
+
+	public function removeAttribute($name)
+	{
+		if(isset($this->attributes[$name]))
+		{
+			unset($this->attributes[$name]);
+		}
 	}
 
 	public function __toString()
