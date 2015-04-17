@@ -1,6 +1,6 @@
 {
   "name": "psx/psx",
-  "description": "PSX Framework",
+  "description": "PHP REST Framework",
   "keywords": ["REST", "Api", "Framework", "Oauth"],
   "homepage": "http://phpsx.org",
   "license": "Apache-2.0",
