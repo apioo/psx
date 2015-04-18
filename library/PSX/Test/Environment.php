@@ -47,8 +47,10 @@ class Environment
 	protected static $hasConnection = false;
 
 	/**
-	 * Setups the 
+	 * Setups the environment to run unit tests. Includes the DI container and
+	 * optional creates an database schema
 	 *
+	 * @codeCoverageIgnore
 	 * @param string $basePath
 	 * @param Closure $schemaSetup
 	 */
@@ -107,6 +109,9 @@ class Environment
 		return self::$hasConnection;
 	}
 
+	/**
+	 * @codeCoverageIgnore
+	 */
 	protected static function setupIni()
 	{
 		ini_set('session.use_cookies', 0);
@@ -120,6 +125,9 @@ class Environment
 		}
 	}
 
+	/**
+	 * @codeCoverageIgnore
+	 */
 	protected static function setupContainer()
 	{
 		$file = self::$basePath . '/container.php';
@@ -140,6 +148,9 @@ class Environment
 		self::$container->set('config', self::buildConfig(self::$container));
 	}
 
+	/**
+	 * @codeCoverageIgnore
+	 */
 	protected static function setupConnection(ContainerInterface $container, Closure $schemaSetup = null)
 	{
 		$params = null;
@@ -204,6 +215,9 @@ class Environment
 		}
 	}
 
+	/**
+	 * @codeCoverageIgnore
+	 */
 	protected static function buildConfig(ContainerInterface $container)
 	{
 		self::$config = $container->get('config')->getArrayCopy();
