@@ -9,7 +9,9 @@ informations from an sql table.
 Definition
 ----------
 
-Here an example how a simple table can look:
+In order to create an API PSX needs meta informations about the table. By 
+default PSX uses an simple table class which contains such informations. Here an 
+example how a simple table can look:
 
 .. code-block:: php
 

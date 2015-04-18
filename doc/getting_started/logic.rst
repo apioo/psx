@@ -9,10 +9,10 @@ creates an response.
 Using services
 --------------
 
-In order to use a service from the DI container you can use the "Inject" 
-annotation to include an service into your controller. In the following an 
-example controller which uses an doctrine DBAL connection to fetch data from
-an table.
+Services are the building blocks of our application. In order to use a service 
+from the DI container you can use the "Inject" annotation to include an service 
+into your controller. In the following an example controller which uses an 
+doctrine DBAL connection to fetch data from an table.
 
 .. code-block:: php
 

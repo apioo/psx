@@ -13,10 +13,11 @@ Documentation
 
 PSX provides an controller which can generate automatically a documentation for
 your defined APIs. The controller provides only an API which can be used by any
-client. You can use i.e. evid (https://github.com/k42b3/evid) which is a
-html/javascript client which uses the API to provide a clean API documentation.
-Also it is very easy to customize the documentation for your own needs by 
-i.e. providing custom pages or change the style according to your needs.
+client to display a documentation for end-users. You can use i.e. evid 
+(https://github.com/k42b3/evid) which is a html/javascript app which uses the 
+API to provide a clean API documentation. With evid it is also very easy to 
+customize the documentation for your own needs by i.e. providing custom pages or 
+change the style according to your needs.
 
 .. code::
 
@@ -63,7 +64,8 @@ Provides an API to publish all available API paths
 Command
 -------
 
-Provides an API to execute commands
+Provides an API to execute commands. Note you most likely have to add some sort
+of authentication so that only authorized users can trigger an specific command.
 
 .. code::
 
