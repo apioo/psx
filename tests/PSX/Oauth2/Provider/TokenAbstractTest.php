@@ -29,6 +29,7 @@ use PSX\Oauth2\Provider\GrantType\TestImplicit;
 use PSX\Oauth2\Provider\GrantType\TestPassword;
 use PSX\Oauth2\Provider\GrantType\TestRefreshToken;
 use PSX\Test\ControllerTestCase;
+use PSX\Test\Environment;
 use PSX\Url;
 
 /**
@@ -51,7 +52,7 @@ class TokenAbstractTest extends ControllerTestCase
 		$grantTypeFactory->add(new TestPassword());
 		$grantTypeFactory->add(new TestRefreshToken());
 
-		getContainer()->set('oauth2_grant_type_factory', $grantTypeFactory);
+		Environment::getContainer()->set('oauth2_grant_type_factory', $grantTypeFactory);
 	}
 
 	public function testAuthorizationCodeGrant()

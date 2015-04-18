@@ -22,6 +22,7 @@ namespace PSX\Data\Record\Importer;
 
 use PSX\Data\Record as DataRecord;
 use PSX\Data\Record\ImporterTestCase;
+use PSX\Test\Environment;
 
 /**
  * DefaultImporterAnonymousTest
@@ -36,7 +37,7 @@ class RecordAnonymousTest extends \PHPUnit_Framework_TestCase
 
 	protected function getImporter()
 	{
-		return new Record(getContainer()->get('record_factory_factory'));
+		return new Record(Environment::getService('record_factory_factory'));
 	}
 
 	protected function getRecord()

@@ -24,6 +24,7 @@ use PSX\Http\Request;
 use PSX\Http\Response;
 use PSX\Http\Stream\TempStream;
 use PSX\Test\ControllerDbTestCase;
+use PSX\Test\Environment;
 use PSX\Url;
 use SoapClient;
 use stdClass;
@@ -112,7 +113,7 @@ class SoapEndpointTest extends ControllerDbTestCase
 		$wsdl    = 'data://text/plain;base64,' . base64_encode($this->getWsdl());
 		$options = array(
 			'location' => 'http://127.0.0.1/api',
-			'uri'      => getContainer()->get('config')->get('psx_url'),
+			'uri'      => Environment::getService('config')->get('psx_url'),
 		);
 
 		return new TestSoapClient($wsdl, $options, $this);

@@ -24,6 +24,8 @@ use PSX\Config;
 use PSX\Data\Record;
 use PSX\DateTime;
 use PSX\Sql\TableInterface;
+use PSX\Test\Environment;
+use PSX\Test\DbTestCase;
 use PSX\Test\TableDataSet;
 
 /**
@@ -44,7 +46,7 @@ class TableAbstractTest extends DbTestCase
 
 	protected function getTable()
 	{
-		return getContainer()->get('table_manager')->getTable('PSX\Sql\TestTable');
+		return Environment::getService('table_manager')->getTable('PSX\Sql\TestTable');
 	}
 
 	public function testGetName()

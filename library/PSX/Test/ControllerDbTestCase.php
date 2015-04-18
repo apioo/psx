@@ -41,14 +41,14 @@ abstract class ControllerDbTestCase extends \PHPUnit_Extensions_Database_TestCas
 
 	public function getConnection()
 	{
-		if(!hasConnection())
+		if(!Environment::hasConnection())
 		{
-			$this->markTestSkipped('Database connection not available');
+			$this->markTestSkipped('No database connection available');
 		}
 
 		if(self::$con === null)
 		{
-			self::$con = getContainer()->get('connection');
+			self::$con = Environment::getService('connection');
 		}
 
 		if($this->connection === null)
@@ -56,7 +56,7 @@ abstract class ControllerDbTestCase extends \PHPUnit_Extensions_Database_TestCas
 			$this->connection = self::$con;
 		}
 
-		return $this->createDefaultDBConnection($this->connection->getWrappedConnection(), getContainer()->get('config')->get('psx_sql_db'));
+		return $this->createDefaultDBConnection($this->connection->getWrappedConnection(), Environment::getService('config')->get('psx_sql_db'));
 	}
 
 	/**
@@ -68,7 +68,7 @@ abstract class ControllerDbTestCase extends \PHPUnit_Extensions_Database_TestCas
 	 */
 	protected function loadController(Request $request, Response $response)
 	{
-		return getContainer()->get('dispatch')->route($request, $response);
+		return Environment::getService('dispatch')->route($request, $response);
 	}
 
 	/**

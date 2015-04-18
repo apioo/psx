@@ -22,9 +22,9 @@ namespace PSX\Session\Handler;
 
 use PDOException;
 use PSX\Sql\Table;
-use PSX\Sql\DbTestCase;
 use PSX\Sql\TableInterface;
 use PSX\Sql\Table\ColumnAllocation;
+use PSX\Test\DbTestCase;
 
 /**
  * SqlTest

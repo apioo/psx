@@ -20,9 +20,10 @@
 
 namespace PSX\Filter;
 
-use PSX\Sql\DbTestCase;
 use PSX\Sql\Table;
 use PSX\Sql\TableInterface;
+use PSX\Test\DbTestCase;
+use PSX\Test\Environment;
 
 /**
  * PrimaryKeyTest
@@ -40,7 +41,7 @@ class PrimaryKeyTest extends DbTestCase
 
 	public function testFilter()
 	{
-		$table  = getContainer()->get('table_manager')->getTable('PSX\Sql\TestTable');
+		$table  = Environment::getService('table_manager')->getTable('PSX\Sql\TestTable');
 		$filter = new PrimaryKey($table);
 
 		$this->assertEquals(true, $filter->apply(1));

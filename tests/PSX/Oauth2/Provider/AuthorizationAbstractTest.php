@@ -27,6 +27,7 @@ use PSX\Http\Stream\TempStream;
 use PSX\Json;
 use PSX\Oauth2\Provider\GrantType\TestImplicit;
 use PSX\Test\ControllerTestCase;
+use PSX\Test\Environment;
 use PSX\Url;
 
 /**
@@ -45,7 +46,7 @@ class AuthorizationAbstractTest extends ControllerTestCase
 		$grantTypeFactory = new GrantTypeFactory();
 		$grantTypeFactory->add(new TestImplicit());
 
-		getContainer()->set('oauth2_grant_type_factory', $grantTypeFactory);
+		Environment::getContainer()->set('oauth2_grant_type_factory', $grantTypeFactory);
 	}
 
 	public function testHandleCodeGrant()

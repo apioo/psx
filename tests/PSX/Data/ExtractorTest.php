@@ -22,6 +22,7 @@ namespace PSX\Data;
 
 use PSX\Http\Message;
 use PSX\Http\Stream\StringStream;
+use PSX\Test\Environment;
 
 /**
  * ExtractorTest
@@ -42,7 +43,7 @@ TEXT;
 		$message->addHeader('Content-Type', 'application/json');
 		$message->setBody(new StringStream($data));
 
-		$extractor = new Extractor(getContainer()->get('reader_factory'), getContainer()->get('transformer_manager'));
+		$extractor = new Extractor(Environment::getService('reader_factory'), Environment::getService('transformer_manager'));
 
 		$data = $extractor->extract($message);
 
@@ -64,7 +65,7 @@ TEXT;
 		$message->addHeader('Content-Type', 'application/xml');
 		$message->setBody(new StringStream($data));
 
-		$extractor = new Extractor(getContainer()->get('reader_factory'), getContainer()->get('transformer_manager'));
+		$extractor = new Extractor(Environment::getService('reader_factory'), Environment::getService('transformer_manager'));
 
 		$data = $extractor->extract($message);
 
@@ -90,7 +91,7 @@ TEXT;
 		$message->addHeader('Content-Type', 'application/atom+xml');
 		$message->setBody(new StringStream($data));
 
-		$extractor = new Extractor(getContainer()->get('reader_factory'), getContainer()->get('transformer_manager'));
+		$extractor = new Extractor(Environment::getService('reader_factory'), Environment::getService('transformer_manager'));
 
 		$data = $extractor->extract($message);
 
@@ -126,7 +127,7 @@ TEXT;
 		$message->addHeader('Content-Type', 'application/atom+xml');
 		$message->setBody(new StringStream($data));
 
-		$extractor = new Extractor(getContainer()->get('reader_factory'), getContainer()->get('transformer_manager'));
+		$extractor = new Extractor(Environment::getService('reader_factory'), Environment::getService('transformer_manager'));
 		$testCase  = $this;
 
 		$data = $extractor->extract($message, new Transformer\Callback(function($data) use ($testCase){
@@ -164,7 +165,7 @@ TEXT;
 		$message->addHeader('Content-Type', 'text/plain');
 		$message->setBody(new StringStream($data));
 
-		$extractor = new Extractor(getContainer()->get('reader_factory'), getContainer()->get('transformer_manager'));
+		$extractor = new Extractor(Environment::getService('reader_factory'), Environment::getService('transformer_manager'));
 
 		$data = $extractor->extract($message, null, ReaderInterface::JSON);
 

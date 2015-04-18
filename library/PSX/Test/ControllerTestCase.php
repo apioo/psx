@@ -44,7 +44,7 @@ abstract class ControllerTestCase extends \PHPUnit_Framework_TestCase
 	 */
 	protected function loadController(Request $request, Response $response)
 	{
-		return getContainer()->get('dispatch')->route($request, $response);
+		return Environment::getService('dispatch')->route($request, $response);
 	}
 
 	/**

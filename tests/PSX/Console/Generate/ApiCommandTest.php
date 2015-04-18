@@ -21,6 +21,7 @@
 namespace PSX\Console\Generate;
 
 use PSX\Test\CommandTestCase;
+use PSX\Test\Environment;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\DependencyInjection\Container;
 
@@ -36,7 +37,7 @@ class ApiCommandTest extends CommandTestCase
 	public function testCommand()
 	{
 		$command = $this->getMockBuilder('PSX\Console\Generate\ApiCommand')
-			->setConstructorArgs(array(getContainer()))
+			->setConstructorArgs(array(Environment::getContainer()))
 			->setMethods(array('makeDir', 'writeFile', 'isDir', 'isFile'))
 			->getMock();
 
@@ -77,7 +78,7 @@ class ApiCommandTest extends CommandTestCase
 	public function testCommandFileExists()
 	{
 		$command = $this->getMockBuilder('PSX\Console\Generate\ApiCommand')
-			->setConstructorArgs(array(getContainer()))
+			->setConstructorArgs(array(Environment::getContainer()))
 			->setMethods(array('makeDir', 'writeFile', 'isDir', 'isFile'))
 			->getMock();
 
@@ -107,7 +108,7 @@ class ApiCommandTest extends CommandTestCase
 
 	public function testCommandAvailable()
 	{
-		$command = getContainer()->get('console')->find('generate:api');
+		$command = Environment::getService('console')->find('generate:api');
 
 		$this->assertInstanceOf('PSX\Console\Generate\ApiCommand', $command);
 	}
@@ -118,7 +119,7 @@ class ApiCommandTest extends CommandTestCase
 	public function testCommandInvalidService()
 	{
 		$command = $this->getMockBuilder('PSX\Console\Generate\ApiCommand')
-			->setConstructorArgs(array(getContainer()))
+			->setConstructorArgs(array(Environment::getContainer()))
 			->setMethods(array('makeDir', 'writeFile'))
 			->getMock();
 
@@ -132,7 +133,7 @@ class ApiCommandTest extends CommandTestCase
 	public function testCommandEmptyService()
 	{
 		$command = $this->getMockBuilder('PSX\Console\Generate\ApiCommand')
-			->setConstructorArgs(array(getContainer()))
+			->setConstructorArgs(array(Environment::getContainer()))
 			->setMethods(array('makeDir', 'writeFile'))
 			->getMock();
 

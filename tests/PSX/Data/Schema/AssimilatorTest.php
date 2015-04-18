@@ -22,6 +22,7 @@ namespace PSX\Data\Schema;
 
 use PSX\Data\SchemaAbstract;
 use PSX\Data\Schema\Property;
+use PSX\Test\Environment;
 
 /**
  * AssimilatorTest
@@ -38,7 +39,7 @@ class AssimilatorTest extends \PHPUnit_Framework_TestCase
 	protected function setUp()
 	{
 		$this->assimilator = new Assimilator();
-		$this->schema      = getContainer()->get('schema_manager')->getSchema('PSX\Data\Schema\AssimilatorSchema');
+		$this->schema      = Environment::getService('schema_manager')->getSchema('PSX\Data\Schema\AssimilatorSchema');
 	}
 
 	public function testAssimilate()

@@ -21,6 +21,7 @@
 namespace PSX\Console;
 
 use PSX\Test\ControllerTestCase;
+use PSX\Test\Environment;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
@@ -34,13 +35,13 @@ class RouteCommandTest extends ControllerTestCase
 {
 	public function testCommand()
 	{
-		$command = getContainer()->get('console')->find('route');
+		$command = Environment::getService('console')->find('route');
 
 		$commandTester = new CommandTester($command);
 		$commandTester->execute(array(
 		));
 
-		$collection = getContainer()->get('routing_parser')->getCollection();
+		$collection = Environment::getService('routing_parser')->getCollection();
 		$response   = $commandTester->getDisplay();
 
 		foreach($collection as $route)

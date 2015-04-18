@@ -27,6 +27,7 @@ use PSX\Json;
 use PSX\Loader\LocationFinder\CallbackMethod;
 use PSX\Loader\InvalidPathException;
 use PSX\Test\ControllerTestCase;
+use PSX\Test\Environment;
 use PSX\Url;
 
 /**
@@ -40,7 +41,7 @@ class ErrorControllerTest extends ControllerTestCase
 {
 	public function testExceptionDebug()
 	{
-		getContainer()->get('config')->set('psx_debug', true);
+		Environment::getService('config')->set('psx_debug', true);
 
 		$body     = new TempStream(fopen('php://memory', 'r+'));
 		$request  = new Request(new Url('http://127.0.0.1/error'), 'GET');
@@ -57,7 +58,7 @@ class ErrorControllerTest extends ControllerTestCase
 
 	public function testExceptionNoDebug()
 	{
-		getContainer()->get('config')->set('psx_debug', false);
+		Environment::getService('config')->set('psx_debug', false);
 
 		$body     = new TempStream(fopen('php://memory', 'r+'));
 		$request  = new Request(new Url('http://127.0.0.1/error'), 'GET');
@@ -74,7 +75,7 @@ class ErrorControllerTest extends ControllerTestCase
 
 	public function testDisplayExceptionDebug()
 	{
-		getContainer()->get('config')->set('psx_debug', true);
+		Environment::getService('config')->set('psx_debug', true);
 
 		$body     = new TempStream(fopen('php://memory', 'r+'));
 		$request  = new Request(new Url('http://127.0.0.1/display_error'), 'GET');
@@ -91,7 +92,7 @@ class ErrorControllerTest extends ControllerTestCase
 
 	public function testDisplayExceptionNoDebug()
 	{
-		getContainer()->get('config')->set('psx_debug', false);
+		Environment::getService('config')->set('psx_debug', false);
 
 		$body     = new TempStream(fopen('php://memory', 'r+'));
 		$request  = new Request(new Url('http://127.0.0.1/display_error'), 'GET');
@@ -108,7 +109,7 @@ class ErrorControllerTest extends ControllerTestCase
 
 	public function testException()
 	{
-		getContainer()->get('config')->set('psx_debug', false);
+		Environment::getService('config')->set('psx_debug', false);
 
 		$body     = new TempStream(fopen('php://memory', 'r+'));
 		$request  = new Request(new Url('http://127.0.0.1/error'), 'GET');
@@ -130,8 +131,8 @@ JSON;
 
 	public function testExceptionHtml()
 	{
-		getContainer()->get('config')->set('psx_debug', false);
-		//getContainer()->get('template')->set(null);
+		Environment::getService('config')->set('psx_debug', false);
+		//Environment::getService('template')->set(null);
 
 		$body     = new TempStream(fopen('php://memory', 'r+'));
 		$request  = new Request(new Url('http://127.0.0.1/error'), 'GET');
@@ -224,7 +225,7 @@ HTML;
 
 	public function testExceptionXml()
 	{
-		getContainer()->get('config')->set('psx_debug', false);
+		Environment::getService('config')->set('psx_debug', false);
 
 		$body     = new TempStream(fopen('php://memory', 'r+'));
 		$request  = new Request(new Url('http://127.0.0.1/error'), 'GET');
@@ -248,7 +249,7 @@ XML;
 
 	public function testExceptionJson()
 	{
-		getContainer()->get('config')->set('psx_debug', false);
+		Environment::getService('config')->set('psx_debug', false);
 
 		$body     = new TempStream(fopen('php://memory', 'r+'));
 		$request  = new Request(new Url('http://127.0.0.1/error'), 'GET');
@@ -271,7 +272,7 @@ JSON;
 
 	public function testExceptionXhr()
 	{
-		getContainer()->get('config')->set('psx_debug', false);
+		Environment::getService('config')->set('psx_debug', false);
 
 		$body     = new TempStream(fopen('php://memory', 'r+'));
 		$request  = new Request(new Url('http://127.0.0.1/error'), 'GET');

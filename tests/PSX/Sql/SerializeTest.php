@@ -24,6 +24,8 @@ use PSX\Config;
 use PSX\Data\Record;
 use PSX\DateTime;
 use PSX\Sql\TableInterface;
+use PSX\Test\Environment;
+use PSX\Test\DbTestCase;
 use PSX\Test\TableDataSet;
 
 /**
@@ -42,7 +44,7 @@ class SerializeTest extends DbTestCase
 
 	public function testSerialize()
 	{
-		$table = getContainer()->get('table_manager')->getTable('PSX\Sql\TestTableCommand');
+		$table = Environment::getService('table_manager')->getTable('PSX\Sql\TestTableCommand');
 		$row   = $table->get(1);
 
 		$this->assertInternalType('string', $row->getCol_bigint());

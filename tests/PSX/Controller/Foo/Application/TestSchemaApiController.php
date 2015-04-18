@@ -23,9 +23,10 @@ namespace PSX\Controller\Foo\Application;
 use PSX\Api\Documentation;
 use PSX\Api\Version;
 use PSX\Api\Resource;
+use PSX\Controller\SchemaApiAbstract;
 use PSX\Data\RecordInterface;
 use PSX\Loader\Context;
-use PSX\Controller\SchemaApiAbstract;
+use PSX\Test\Environment;
 
 /**
  * TestSchemaApiController
@@ -73,7 +74,7 @@ class TestSchemaApiController extends SchemaApiAbstract
 	protected function doGet(Version $version)
 	{
 		return array(
-			'entry' => getContainer()->get('table_manager')->getTable('PSX\Sql\TestTable')->getAll()
+			'entry' => Environment::getService('table_manager')->getTable('PSX\Sql\TestTable')->getAll()
 		);
 	}
 

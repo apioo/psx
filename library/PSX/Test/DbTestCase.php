@@ -18,9 +18,7 @@
  * limitations under the License.
  */
 
-namespace PSX\Sql;
-
-use PDOException;
+namespace PSX\Test;
 
 /**
  * DbTestCase
@@ -37,14 +35,14 @@ abstract class DbTestCase extends \PHPUnit_Extensions_Database_TestCase
 
 	public function getConnection()
 	{
-		if(!hasConnection())
+		if(!Environment::hasConnection())
 		{
 			$this->markTestSkipped('Database connection not available');
 		}
 
 		if(self::$con === null)
 		{
-			self::$con = getContainer()->get('connection');
+			self::$con = Environment::getService('connection');
 		}
 
 		if($this->connection === null)
@@ -52,6 +50,6 @@ abstract class DbTestCase extends \PHPUnit_Extensions_Database_TestCase
 			$this->connection = self::$con;
 		}
 
-		return $this->createDefaultDBConnection($this->connection->getWrappedConnection(), getContainer()->get('config')->get('psx_sql_db'));
+		return $this->createDefaultDBConnection($this->connection->getWrappedConnection(), Environment::getService('config')->get('psx_sql_db'));
 	}
 }

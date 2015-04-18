@@ -33,6 +33,7 @@ use PSX\Loader\Callback;
 use PSX\Loader\Context;
 use PSX\Loader\FilterController;
 use PSX\Loader\LocationFinder\CallbackMethod;
+use PSX\Test\Environment;
 use PSX\Url;
 
 /**
@@ -96,14 +97,14 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 				return true;
 			}));
 
-		getContainer()->get('event_dispatcher')->addListener(Event::ROUTE_MATCHED, array($routeMatchedListener, 'on'));
-		getContainer()->get('event_dispatcher')->addListener(Event::CONTROLLER_EXECUTE, array($controllerExecuteListener, 'on'));
-		getContainer()->get('event_dispatcher')->addListener(Event::CONTROLLER_PROCESSED, array($controllerProcessedListener, 'on'));
+		Environment::getService('event_dispatcher')->addListener(Event::ROUTE_MATCHED, array($routeMatchedListener, 'on'));
+		Environment::getService('event_dispatcher')->addListener(Event::CONTROLLER_EXECUTE, array($controllerExecuteListener, 'on'));
+		Environment::getService('event_dispatcher')->addListener(Event::CONTROLLER_PROCESSED, array($controllerProcessedListener, 'on'));
 
 		$loader   = new Loader(
 			$locationFinder, 
-			getContainer()->get('loader_callback_resolver'), 
-			getContainer()->get('event_dispatcher'), 
+			Environment::getService('loader_callback_resolver'), 
+			Environment::getService('event_dispatcher'), 
 			new Logger('psx', [new NullHandler()])
 		);
 		$request  = new Request(new Url('http://127.0.0.1/foobar'), 'GET');
@@ -122,9 +123,9 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals($expect, $module->getMethodsCalled());
 
-		getContainer()->get('event_dispatcher')->removeListener(Event::REQUEST_INCOMING, $routeMatchedListener);
-		getContainer()->get('event_dispatcher')->removeListener(Event::CONTROLLER_EXECUTE, $controllerExecuteListener);
-		getContainer()->get('event_dispatcher')->removeListener(Event::CONTROLLER_PROCESSED, $controllerProcessedListener);
+		Environment::getService('event_dispatcher')->removeListener(Event::REQUEST_INCOMING, $routeMatchedListener);
+		Environment::getService('event_dispatcher')->removeListener(Event::CONTROLLER_EXECUTE, $controllerExecuteListener);
+		Environment::getService('event_dispatcher')->removeListener(Event::CONTROLLER_PROCESSED, $controllerProcessedListener);
 	}
 
 	public function testLoadDetailCall()
@@ -143,8 +144,8 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 
 		$loader   = new Loader(
 			$locationFinder, 
-			getContainer()->get('loader_callback_resolver'), 
-			getContainer()->get('event_dispatcher'), 
+			Environment::getService('loader_callback_resolver'), 
+			Environment::getService('event_dispatcher'), 
 			new Logger('psx', [new NullHandler()])
 		);
 		$request  = new Request(new Url('http://127.0.0.1/foobar/detail/12'), 'GET');
@@ -178,8 +179,8 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 
 		$loader   = new Loader(
 			$locationFinder, 
-			getContainer()->get('loader_callback_resolver'), 
-			getContainer()->get('event_dispatcher'), 
+			Environment::getService('loader_callback_resolver'), 
+			Environment::getService('event_dispatcher'), 
 			new Logger('psx', [new NullHandler()])
 		);
 		$request  = new Request(new Url('http://127.0.0.1/foobar'), 'GET');
@@ -209,7 +210,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 			->setConstructorArgs(array(
 				$locationFinder, 
 				$resolver, 
-				getContainer()->get('event_dispatcher'), 
+				Environment::getService('event_dispatcher'), 
 				new Logger('psx', [new NullHandler()])
 			))
 			->setMethods(array('executeController'))
@@ -248,7 +249,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 			->setConstructorArgs(array(
 				$locationFinder, 
 				$resolver, 
-				getContainer()->get('event_dispatcher'),
+				Environment::getService('event_dispatcher'),
 				new Logger('psx', [new NullHandler()])
 			))
 			->setMethods(array('executeController'))
@@ -300,7 +301,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 		$loader = new Loader(
 			$locationFinder, 
 			$resolver, 
-			getContainer()->get('event_dispatcher'), 
+			Environment::getService('event_dispatcher'), 
 			new Logger('psx', [new NullHandler()])
 		);
 
@@ -335,7 +336,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 		$loader = new Loader(
 			$locationFinder, 
 			$resolver, 
-			getContainer()->get('event_dispatcher'),
+			Environment::getService('event_dispatcher'),
 			new Logger('psx', [new NullHandler()])
 		);
 		$loader->load($request, $response);
@@ -375,7 +376,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 		$loader = new Loader(
 			$locationFinder, 
 			$resolver, 
-			getContainer()->get('event_dispatcher'),
+			Environment::getService('event_dispatcher'),
 			new Logger('psx', [new NullHandler()])
 		);
 
@@ -410,7 +411,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 		$loader = new Loader(
 			$locationFinder, 
 			$resolver, 
-			getContainer()->get('event_dispatcher'),
+			Environment::getService('event_dispatcher'),
 			new Logger('psx', [new NullHandler()])
 		);
 		$loader->load($request, $response);
@@ -439,7 +440,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 		$loader   = new Loader(
 			$locationFinder, 
 			$resolver, 
-			getContainer()->get('event_dispatcher'),
+			Environment::getService('event_dispatcher'),
 			new Logger('psx', [new NullHandler()])
 		);
 		$request  = new Request(new Url('http://127.0.0.1/foobar'), 'GET');

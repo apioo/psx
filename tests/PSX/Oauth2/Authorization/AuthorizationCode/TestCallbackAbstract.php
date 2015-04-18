@@ -29,6 +29,7 @@ use PSX\Http\ResponseParser;
 use PSX\Oauth2\Authorization\AuthorizationCode;
 use PSX\Oauth2\Authorization\ClientCredentialsTest;
 use PSX\Oauth2\AccessToken;
+use PSX\Test\Environment;
 use PSX\Url;
 
 /**
@@ -76,7 +77,7 @@ TEXT;
 			return ResponseParser::convert($response, ResponseParser::MODE_LOOSE)->toString();
 
 		}));
-		$oauth = new AuthorizationCode($http, new Url('http://127.0.0.1/api'), getContainer()->get('importer'));
+		$oauth = new AuthorizationCode($http, new Url('http://127.0.0.1/api'), Environment::getService('importer'));
 		$oauth->setClientPassword(ClientCredentialsTest::CLIENT_ID, ClientCredentialsTest::CLIENT_SECRET);
 
 		return $oauth;

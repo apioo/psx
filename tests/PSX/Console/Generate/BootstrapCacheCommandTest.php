@@ -21,6 +21,7 @@
 namespace PSX\Console\Generate;
 
 use PSX\Test\CommandTestCase;
+use PSX\Test\Environment;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
@@ -62,7 +63,7 @@ class BootstrapCacheCommandTest extends CommandTestCase
 
 	public function testCommandAvailable()
 	{
-		$command = getContainer()->get('console')->find('generate:bootstrap_cache');
+		$command = Environment::getService('console')->find('generate:bootstrap_cache');
 
 		$this->assertInstanceOf('PSX\Console\Generate\BootstrapCacheCommand', $command);
 	}

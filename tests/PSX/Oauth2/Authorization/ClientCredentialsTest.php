@@ -26,6 +26,7 @@ use PSX\Http\GetRequest;
 use PSX\Http\Handler\Callback;
 use PSX\Http\Response;
 use PSX\Http\ResponseParser;
+use PSX\Test\Environment;
 use PSX\Url;
 
 /**
@@ -71,7 +72,7 @@ TEXT;
 
 		}));
 
-		$oauth = new ClientCredentials($http, new Url('http://127.0.0.1/api'), getContainer()->get('importer'));
+		$oauth = new ClientCredentials($http, new Url('http://127.0.0.1/api'), Environment::getService('importer'));
 		$oauth->setClientPassword(self::CLIENT_ID, self::CLIENT_SECRET);
 
 		$accessToken = $oauth->getAccessToken();

@@ -21,10 +21,10 @@
 namespace PSX\Sql\Table\Reader;
 
 use PSX\DateTime;
-use PSX\Test\TableDataSet;
-use PSX\Sql\DbTestCase;
 use PSX\Sql\Table;
 use PSX\Sql\TableInterface;
+use PSX\Test\DbTestCase;
+use PSX\Test\TableDataSet;
 
 /**
  * SchemaTest

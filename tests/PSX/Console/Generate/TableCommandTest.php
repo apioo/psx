@@ -22,6 +22,7 @@ namespace PSX\Console\Generate;
 
 use Doctrine\DBAL\Types\Type;
 use PSX\Test\CommandTestCase;
+use PSX\Test\Environment;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
@@ -37,7 +38,7 @@ class TableCommandTest extends CommandTestCase
 	{
 		parent::setUp();
 
-		if(!hasConnection())
+		if(!Environment::hasConnection())
 		{
 			$this->markTestSkipped('Database connection not available');
 		}
@@ -46,7 +47,7 @@ class TableCommandTest extends CommandTestCase
 	public function testCommand()
 	{
 		$command = $this->getMockBuilder('PSX\Console\Generate\TableCommand')
-			->setConstructorArgs(array(getContainer()->get('connection')))
+			->setConstructorArgs(array(Environment::getService('connection')))
 			->setMethods(array('makeDir', 'writeFile', 'isDir', 'isFile'))
 			->getMock();
 
@@ -87,7 +88,7 @@ class TableCommandTest extends CommandTestCase
 	public function testCommandFileExists()
 	{
 		$command = $this->getMockBuilder('PSX\Console\Generate\TableCommand')
-			->setConstructorArgs(array(getContainer()->get('connection')))
+			->setConstructorArgs(array(Environment::getService('connection')))
 			->setMethods(array('makeDir', 'writeFile', 'isDir', 'isFile'))
 			->getMock();
 
@@ -117,7 +118,7 @@ class TableCommandTest extends CommandTestCase
 
 	public function testCommandAvailable()
 	{
-		$command = getContainer()->get('console')->find('generate:table');
+		$command = Environment::getService('console')->find('generate:table');
 
 		$this->assertInstanceOf('PSX\Console\Generate\TableCommand', $command);
 	}

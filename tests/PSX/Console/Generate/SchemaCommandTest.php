@@ -21,6 +21,7 @@
 namespace PSX\Console\Generate;
 
 use PSX\Test\CommandTestCase;
+use PSX\Test\Environment;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
@@ -36,7 +37,7 @@ class SchemaCommandTest extends CommandTestCase
 	{
 		parent::setUp();
 
-		if(!hasConnection())
+		if(!Environment::hasConnection())
 		{
 			$this->markTestSkipped('Database connection not available');
 		}
@@ -45,7 +46,7 @@ class SchemaCommandTest extends CommandTestCase
 	public function testCommand()
 	{
 		$command = $this->getMockBuilder('PSX\Console\Generate\SchemaCommand')
-			->setConstructorArgs(array(getContainer()->get('connection')))
+			->setConstructorArgs(array(Environment::getService('connection')))
 			->setMethods(array('makeDir', 'writeFile', 'isDir', 'isFile'))
 			->getMock();
 
@@ -86,7 +87,7 @@ class SchemaCommandTest extends CommandTestCase
 	public function testCommandFileExists()
 	{
 		$command = $this->getMockBuilder('PSX\Console\Generate\SchemaCommand')
-			->setConstructorArgs(array(getContainer()->get('connection')))
+			->setConstructorArgs(array(Environment::getService('connection')))
 			->setMethods(array('makeDir', 'writeFile', 'isDir', 'isFile'))
 			->getMock();
 
@@ -117,7 +118,7 @@ class SchemaCommandTest extends CommandTestCase
 	public function testCommandWithoutTable()
 	{
 		$command = $this->getMockBuilder('PSX\Console\Generate\SchemaCommand')
-			->setConstructorArgs(array(getContainer()->get('connection')))
+			->setConstructorArgs(array(Environment::getService('connection')))
 			->setMethods(array('makeDir', 'writeFile'))
 			->getMock();
 
@@ -139,7 +140,7 @@ class SchemaCommandTest extends CommandTestCase
 
 	public function testCommandAvailable()
 	{
-		$command = getContainer()->get('console')->find('generate:schema');
+		$command = Environment::getService('console')->find('generate:schema');
 
 		$this->assertInstanceOf('PSX\Console\Generate\SchemaCommand', $command);
 	}

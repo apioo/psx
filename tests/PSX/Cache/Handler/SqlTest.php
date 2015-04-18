@@ -23,6 +23,7 @@ namespace PSX\Cache\Handler;
 use PDOException;
 use PSX\CacheTest;
 use PSX\Sql\Table\ColumnAllocation;
+use PSX\Test\Environment;
 
 /**
  * SqlTest
@@ -39,12 +40,12 @@ class SqlTest extends CacheTest
 	{
 		parent::setUp();
 
-		if(!hasConnection())
+		if(!Environment::hasConnection())
 		{
 			$this->markTestSkipped('Database connection not available');
 		}
 
-		$this->connection = getContainer()->get('connection');
+		$this->connection = Environment::getService('connection');
 	}
 
 	protected function getHandler()

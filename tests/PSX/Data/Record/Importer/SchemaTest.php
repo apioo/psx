@@ -21,6 +21,7 @@
 namespace PSX\Data\Record\Importer;
 
 use PSX\Data\Record\ImporterTestCase;
+use PSX\Test\Environment;
 
 /**
  * SchemaTest
@@ -35,11 +36,11 @@ class SchemaTest extends \PHPUnit_Framework_TestCase
 	
 	protected function getImporter()
 	{
-		return new Schema(getContainer()->get('schema_validator'), getContainer()->get('record_factory_factory'));
+		return new Schema(Environment::getService('schema_validator'), Environment::getService('record_factory_factory'));
 	}
 
 	protected function getRecord()
 	{
-		return getContainer()->get('schema_manager')->getSchema('PSX\Data\Record\Importer\Test\Schema');
+		return Environment::getService('schema_manager')->getSchema('PSX\Data\Record\Importer\Test\Schema');
 	}
 }

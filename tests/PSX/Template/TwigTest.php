@@ -20,6 +20,8 @@
 
 namespace PSX\Template;
 
+use PSX\Test\Environment;
+
 /**
  * TwigTest
  *
@@ -39,7 +41,7 @@ class TwigTest extends \PHPUnit_Framework_TestCase
 
 	public function testTransform()
 	{
-		$template = new Twig(getContainer()->get('config'));
+		$template = new Twig(Environment::getService('config'));
 
 		$template->setDir('tests/PSX/Template/twig');
 		$template->set('foo.twig.html');

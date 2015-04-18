@@ -21,6 +21,7 @@
 namespace PSX\Data\Schema;
 
 use PSX\Data\Schema\Generator\TestSchema;
+use PSX\Test\Environment;
 
 /**
  * ValidatorTest
@@ -57,7 +58,7 @@ JSON;
 		$data = json_decode($json);
 
 		$validator = new Validator();
-		$schema    = getContainer()->get('schema_manager')->getSchema('PSX\Data\Schema\Generator\TestSchema');
+		$schema    = Environment::getService('schema_manager')->getSchema('PSX\Data\Schema\Generator\TestSchema');
 
 		$this->assertTrue($validator->validate($schema, $data));
 	}
@@ -90,7 +91,7 @@ JSON;
 		$data = json_decode($json);
 
 		$validator = new Validator();
-		$schema    = getContainer()->get('schema_manager')->getSchema('PSX\Data\Schema\Generator\TestSchema');
+		$schema    = Environment::getService('schema_manager')->getSchema('PSX\Data\Schema\Generator\TestSchema');
 
 		$this->assertTrue($validator->validate($schema, $data));
 	}
@@ -123,7 +124,7 @@ JSON;
 		$data = json_decode($json);
 
 		$validator = new Validator();
-		$schema    = getContainer()->get('schema_manager')->getSchema('PSX\Data\Schema\Generator\TestSchema');
+		$schema    = Environment::getService('schema_manager')->getSchema('PSX\Data\Schema\Generator\TestSchema');
 
 		$this->assertTrue($validator->validate($schema, $data));
 	}
@@ -154,7 +155,7 @@ JSON;
 		$data = json_decode($json);
 
 		$validator = new Validator();
-		$schema    = getContainer()->get('schema_manager')->getSchema('PSX\Data\Schema\Generator\TestSchema');
+		$schema    = Environment::getService('schema_manager')->getSchema('PSX\Data\Schema\Generator\TestSchema');
 
 		$this->assertTrue($validator->validate($schema, $data));
 	}
@@ -185,7 +186,7 @@ JSON;
 		$data = json_decode($json);
 
 		$validator = new Validator();
-		$schema    = getContainer()->get('schema_manager')->getSchema('PSX\Data\Schema\Generator\TestSchema');
+		$schema    = Environment::getService('schema_manager')->getSchema('PSX\Data\Schema\Generator\TestSchema');
 
 		$this->assertTrue($validator->validate($schema, $data));
 	}

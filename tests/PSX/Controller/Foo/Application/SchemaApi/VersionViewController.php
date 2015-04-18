@@ -26,6 +26,7 @@ use PSX\Api\Resource;
 use PSX\Data\RecordInterface;
 use PSX\Controller\SchemaApiAbstract;
 use PSX\Loader\Context;
+use PSX\Test\Environment;
 
 /**
  * VersionViewController
@@ -114,7 +115,7 @@ class VersionViewController extends SchemaApiAbstract
 	protected function doGet(Version $version)
 	{
 		return array(
-			'entry' => getContainer()->get('table_manager')->getTable('PSX\Sql\TestTable')->getAll()
+			'entry' => Environment::getService('table_manager')->getTable('PSX\Sql\TestTable')->getAll()
 		);
 	}
 

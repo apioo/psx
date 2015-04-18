@@ -22,6 +22,7 @@ namespace PSX\Api\Resource\Generator;
 
 use PSX\Loader\Context;
 use PSX\Test\ControllerTestCase;
+use PSX\Test\Environment;
 
 /**
  * GeneratorTestCase
@@ -40,7 +41,7 @@ abstract class GeneratorTestCase extends ControllerTestCase
 		$context = new Context();
 		$context->set(Context::KEY_PATH, '/foo/bar');
 
-		$documentation = getContainer()->get('controller_factory')
+		$documentation = Environment::getService('controller_factory')
 			->getController('PSX\Controller\Foo\Application\SchemaApi\VersionViewController', $request, $response, $context)
 			->getDocumentation();
 

@@ -21,6 +21,7 @@
 namespace PSX\Console;
 
 use PSX\Test\CommandTestCase;
+use PSX\Test\Environment;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
@@ -34,13 +35,13 @@ class ContainerCommandTest extends CommandTestCase
 {
 	public function testCommand()
 	{
-		$command = getContainer()->get('console')->find('container');
+		$command = Environment::getService('console')->find('container');
 
 		$commandTester = new CommandTester($command);
 		$commandTester->execute(array(
 		));
 
-		$serviceIds = getContainer()->getServiceIds();
+		$serviceIds = Environment::getContainer()->getServiceIds();
 		$response   = $commandTester->getDisplay();
 
 		foreach($serviceIds as $serviceId)

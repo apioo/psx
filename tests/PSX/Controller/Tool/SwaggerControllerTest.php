@@ -25,6 +25,7 @@ use PSX\Http\Request;
 use PSX\Http\Response;
 use PSX\Json;
 use PSX\Test\ControllerTestCase;
+use PSX\Test\Environment;
 use PSX\Url;
 
 /**
@@ -75,7 +76,7 @@ JSON;
 
 		$this->assertEquals('application/json', $response->getHeader('Content-Type'));
 
-		$config   = getContainer()->getConfig();
+		$config   = Environment::getService('config');
 		$basePath = $config['psx_url'] . '/' . $config['psx_dispatch'];
 		$expect   = <<<JSON
 {

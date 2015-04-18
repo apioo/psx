@@ -21,6 +21,7 @@
 namespace PSX\Console\Generate;
 
 use PSX\Test\CommandTestCase;
+use PSX\Test\Environment;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
@@ -35,7 +36,7 @@ class CommandCommandTest extends CommandTestCase
 	public function testCommand()
 	{
 		$command = $this->getMockBuilder('PSX\Console\Generate\CommandCommand')
-			->setConstructorArgs(array(getContainer()))
+			->setConstructorArgs(array(Environment::getContainer()))
 			->setMethods(array('makeDir', 'writeFile', 'isDir', 'isFile'))
 			->getMock();
 
@@ -76,7 +77,7 @@ class CommandCommandTest extends CommandTestCase
 	public function testCommandFileExists()
 	{
 		$command = $this->getMockBuilder('PSX\Console\Generate\CommandCommand')
-			->setConstructorArgs(array(getContainer()))
+			->setConstructorArgs(array(Environment::getContainer()))
 			->setMethods(array('makeDir', 'writeFile', 'isDir', 'isFile'))
 			->getMock();
 
@@ -106,7 +107,7 @@ class CommandCommandTest extends CommandTestCase
 
 	public function testCommandAvailable()
 	{
-		$command = getContainer()->get('console')->find('generate:command');
+		$command = Environment::getService('console')->find('generate:command');
 
 		$this->assertInstanceOf('PSX\Console\Generate\CommandCommand', $command);
 	}

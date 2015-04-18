@@ -40,16 +40,14 @@ abstract class CommandDbTestCase extends \PHPUnit_Extensions_Database_TestCase
 
 	public function getConnection()
 	{
+		if(!Environment::hasConnection())
+		{
+			$this->markTestSkipped('No database connection available');
+		}
+
 		if(self::$con === null)
 		{
-			try
-			{
-				self::$con = getContainer()->get('connection');
-			}
-			catch(PDOException $e)
-			{
-				$this->markTestSkipped($e->getMessage());
-			}
+			self::$con = Environment::getService('connection');
 		}
 
 		if($this->connection === null)
@@ -57,7 +55,7 @@ abstract class CommandDbTestCase extends \PHPUnit_Extensions_Database_TestCase
 			$this->connection = self::$con;
 		}
 
-		return $this->createDefaultDBConnection($this->connection->getWrappedConnection(), getContainer()->get('config')->get('psx_sql_db'));
+		return $this->createDefaultDBConnection($this->connection->getWrappedConnection(), Environment::getService('config')->get('psx_sql_db'));
 	}
 
 	/**
@@ -69,7 +67,7 @@ abstract class CommandDbTestCase extends \PHPUnit_Extensions_Database_TestCase
 	 */
 	protected function loadCommand($className, array $parameters)
 	{
-		return getContainer()->get('executor')->run(new Map($className, $parameters));
+		return Environment::getService('executor')->run(new Map($className, $parameters));
 	}
 
 	protected function getPaths()

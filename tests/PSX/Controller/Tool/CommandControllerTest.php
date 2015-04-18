@@ -26,6 +26,7 @@ use PSX\Http\Request;
 use PSX\Http\Response;
 use PSX\Json;
 use PSX\Test\ControllerTestCase;
+use PSX\Test\Environment;
 use PSX\Url;
 
 /**
@@ -45,7 +46,7 @@ class CommandControllerTest extends ControllerTestCase
 		$response = new Response();
 		$response->setBody($body);
 
-		getContainer()->get('executor')->addAlias('foo', 'PSX\Command\Foo\Command\FooCommand');
+		Environment::getService('executor')->addAlias('foo', 'PSX\Command\Foo\Command\FooCommand');
 
 		$controller = $this->loadController($request, $response);
 		$data       = Json::decode((string) $body);
@@ -98,9 +99,9 @@ JSON;
 		$response->setBody($body);
 
 		$memory = new Output\Memory();
-		$output = new Output\Composite(array($memory, new Output\Logger(getContainer()->get('logger'))));
+		$output = new Output\Composite(array($memory, new Output\Logger(Environment::getService('logger'))));
 
-		getContainer()->set('command_output', $output);
+		Environment::getContainer()->set('command_output', $output);
 
 		$controller = $this->loadController($request, $response);
 		$data       = Json::decode((string) $body);

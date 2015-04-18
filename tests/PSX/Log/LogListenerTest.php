@@ -37,6 +37,7 @@ use PSX\Http\Exception\SeeOtherException;
 use PSX\Uri;
 use PSX\Loader\Context;
 use PSX\Test\ControllerTestCase;
+use PSX\Test\Environment;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
@@ -121,7 +122,7 @@ class LogListenerTest extends ControllerTestCase
 		$context    = new Context();
 		$request    = new Request(new Uri('/foo.htm'), 'GET');
 		$response   = new Response();
-		$controller = getContainer()->getControllerFactory()->getController('PSX\Controller\Foo\Application\TestController', $request, $response, $context);
+		$controller = Environment::getService('controller_factory')->getController('PSX\Controller\Foo\Application\TestController', $request, $response, $context);
 
 		$eventDispatcher = new EventDispatcher();
 		$eventDispatcher->addSubscriber(new LogListener($logger));
@@ -138,7 +139,7 @@ class LogListenerTest extends ControllerTestCase
 		$context    = new Context();
 		$request    = new Request(new Uri('/foo.htm'), 'GET');
 		$response   = new Response();
-		$controller = getContainer()->getControllerFactory()->getController('PSX\Controller\Foo\Application\TestController', $request, $response, $context);
+		$controller = Environment::getService('controller_factory')->getController('PSX\Controller\Foo\Application\TestController', $request, $response, $context);
 
 		$eventDispatcher = new EventDispatcher();
 		$eventDispatcher->addSubscriber(new LogListener($logger));

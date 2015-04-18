@@ -24,6 +24,7 @@ use PSX\Dispatch\ControllerFactory;
 use PSX\Loader\Context;
 use PSX\Http\Request;
 use PSX\Http\Response;
+use PSX\Test\Environment;
 use PSX\Url;
 
 /**
@@ -43,7 +44,7 @@ class DependencyInjectorTest extends \PHPUnit_Framework_TestCase
 		$request  = new Request(new Url('http://127.0.0.1'), 'GET');
 		$response = new Response();
 
-		$simple     = new DependencyInjector(getContainer()->get('controller_factory'));
+		$simple     = new DependencyInjector(Environment::getService('controller_factory'));
 		$controller = $simple->resolve($request, $response, $context);
 
 		$this->assertInstanceOf('PSX\Loader\RoutingParser\Annotation\BarController', $controller);
@@ -62,7 +63,7 @@ class DependencyInjectorTest extends \PHPUnit_Framework_TestCase
 		$request  = new Request(new Url('http://127.0.0.1'), 'GET');
 		$response = new Response();
 
-		$simple = new DependencyInjector(getContainer()->get('controller_factory'));
+		$simple = new DependencyInjector(Environment::getService('controller_factory'));
 		$simple->resolve($request, $response, $context);
 	}
 
@@ -77,7 +78,7 @@ class DependencyInjectorTest extends \PHPUnit_Framework_TestCase
 		$request  = new Request(new Url('http://127.0.0.1'), 'GET');
 		$response = new Response();
 
-		$simple = new DependencyInjector(getContainer()->get('controller_factory'));
+		$simple = new DependencyInjector(Environment::getService('controller_factory'));
 		$simple->resolve($request, $response, $context);
 	}
 }

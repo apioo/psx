@@ -25,6 +25,7 @@ use PSX\Http\Request;
 use PSX\Http\Response;
 use PSX\Json;
 use PSX\Test\ControllerTestCase;
+use PSX\Test\Environment;
 use PSX\Url;
 
 /**
@@ -48,7 +49,7 @@ class RamlControllerTest extends ControllerTestCase
 
 		$this->assertEquals('application/raml+yaml', $response->getHeader('Content-Type'));
 
-		$config   = getContainer()->getConfig();
+		$config   = Environment::getService('config');
 		$basePath = $config['psx_url'] . '/' . $config['psx_dispatch'];
 		$expect   = <<<RAML
 #%RAML 0.8

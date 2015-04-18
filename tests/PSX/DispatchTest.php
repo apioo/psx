@@ -34,6 +34,7 @@ use PSX\Loader\LocationFinder\CallbackMethod;
 use PSX\ModuleAbstract;
 use PSX\Template;
 use PSX\Test\ControllerTestCase;
+use PSX\Test\Environment;
 
 /**
  * DispatchTest
@@ -74,13 +75,13 @@ class DispatchTest extends ControllerTestCase
 				return true;
 			}));
 
-		getContainer()->get('event_dispatcher')->addListener(Event::REQUEST_INCOMING, array($requestIncomingListener, 'on'));
-		getContainer()->get('event_dispatcher')->addListener(Event::RESPONSE_SEND, array($responseSendListener, 'on'));
+		Environment::getService('event_dispatcher')->addListener(Event::REQUEST_INCOMING, array($requestIncomingListener, 'on'));
+		Environment::getService('event_dispatcher')->addListener(Event::RESPONSE_SEND, array($responseSendListener, 'on'));
 
 		$this->loadController($request, $response);
 
-		getContainer()->get('event_dispatcher')->removeListener(Event::REQUEST_INCOMING, $requestIncomingListener);
-		getContainer()->get('event_dispatcher')->removeListener(Event::RESPONSE_SEND, $responseSendListener);
+		Environment::getService('event_dispatcher')->removeListener(Event::REQUEST_INCOMING, $requestIncomingListener);
+		Environment::getService('event_dispatcher')->removeListener(Event::RESPONSE_SEND, $responseSendListener);
 
 		$this->assertEquals('foo', (string) $response->getBody());
 	}
@@ -119,7 +120,7 @@ class DispatchTest extends ControllerTestCase
 				return true;
 			}));
 
-		getContainer()->get('event_dispatcher')->addListener(Event::EXCEPTION_THROWN, array($exceptionListener, 'on'));
+		Environment::getService('event_dispatcher')->addListener(Event::EXCEPTION_THROWN, array($exceptionListener, 'on'));
 
 		$this->loadController($request, $response);
 

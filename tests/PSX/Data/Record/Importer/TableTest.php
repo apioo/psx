@@ -21,7 +21,7 @@
 namespace PSX\Data\Record\Importer;
 
 use PSX\Data\Record\ImporterTestCase;
-use PSX\Sql\DbTestCase;
+use PSX\Test\DbTestCase;
 
 /**
  * TableTest

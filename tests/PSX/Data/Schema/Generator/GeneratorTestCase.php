@@ -20,6 +20,8 @@
 
 namespace PSX\Data\Schema\Generator;
 
+use PSX\Test\Environment;
+
 /**
  * GeneratorTestCase
  *
@@ -31,6 +33,6 @@ abstract class GeneratorTestCase extends \PHPUnit_Framework_TestCase
 {
 	protected function getSchema()
 	{
-		return getContainer()->get('schema_manager')->getSchema('PSX\Data\Schema\Generator\TestSchema');
+		return Environment::getService('schema_manager')->getSchema('PSX\Data\Schema\Generator\TestSchema');
 	}
 }

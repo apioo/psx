@@ -22,6 +22,7 @@ namespace PSX\Data\Importer;
 
 use PSX\Atom;
 use PSX\Http\Message;
+use PSX\Test\Environment;
 
 /**
  * AtomTest
@@ -73,7 +74,7 @@ class AtomTest extends \PHPUnit_Framework_TestCase
 XML;
 
 		$request = new Message(array('Content-Type' => 'application/atom+xml'), $body);
-		$atom    = getContainer()->get('importer')->import(new Atom(), $request);
+		$atom    = Environment::getService('importer')->import(new Atom(), $request);
 
 		$this->assertInstanceOf('PSX\Atom', $atom);
 		$this->assertEquals('dive into mark', $atom->getTitle());
@@ -197,7 +198,7 @@ HTML;
 XML;
 
 		$request = new Message(array('Content-Type' => 'application/atom+xml'), $body);
-		$atom    = getContainer()->get('importer')->import(new Atom(), $request);
+		$atom    = Environment::getService('importer')->import(new Atom(), $request);
 
 		$entry = $atom->current();
 
@@ -243,7 +244,7 @@ XML;
 XML;
 
 		$request = new Message(array('Content-Type' => 'application/atom+xml'), $body);
-		$atom    = getContainer()->get('importer')->import(new Atom(), $request);
+		$atom    = Environment::getService('importer')->import(new Atom(), $request);
 		$entry   = $atom->current();
 
 		$this->assertInstanceOf('PSX\Atom\Entry', $entry);

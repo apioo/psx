@@ -20,6 +20,8 @@
 
 namespace PSX\Dependency;
 
+use PSX\Test\Environment;
+
 /**
  * Check whether all default classes are available. We want fix this here becase
  * applications rely on these services
@@ -32,7 +34,7 @@ class DefaultContainerTest extends \PHPUnit_Framework_TestCase
 {
 	public function testGet()
 	{
-		$container = getContainer();
+		$container = Environment::getContainer();
 
 		// command
 		$this->assertInstanceOf('PSX\Dispatch\CommandFactoryInterface', $container->get('command_factory'));
@@ -74,7 +76,7 @@ class DefaultContainerTest extends \PHPUnit_Framework_TestCase
 		$this->assertInstanceOf('PSX\Http', $container->get('http'));
 		$this->assertInstanceOf('PSX\Session', $container->get('session'));
 
-		if(hasConnection())
+		if(Environment::hasConnection())
 		{
 			$this->assertInstanceOf('Doctrine\DBAL\Connection', $container->get('connection'));
 			$this->assertInstanceOf('PSX\Sql\TableManager', $container->get('table_manager'));

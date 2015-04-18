@@ -24,6 +24,7 @@ use PSX\Atom;
 use PSX\Data\RecordAbstract;
 use PSX\Http\Message;
 use PSX\Http\Stream\StringStream;
+use PSX\Test\Environment;
 
 /**
  * ImporterTest
@@ -50,7 +51,7 @@ TEXT;
 		$message->addHeader('Content-Type', 'application/atom+xml');
 		$message->setBody(new StringStream($data));
 
-		$importer = new Importer(getContainer()->get('extractor'), getContainer()->get('importer_manager'));
+		$importer = new Importer(Environment::getService('extractor'), Environment::getService('importer_manager'));
 
 		$atom  = $importer->import(new Atom(), $message);
 		$entry = $atom->current();
@@ -76,7 +77,7 @@ TEXT;
 		$message->addHeader('Content-Type', 'application/json');
 		$message->setBody(new StringStream($data));
 
-		$importer = new Importer(getContainer()->get('extractor'), getContainer()->get('importer_manager'));
+		$importer = new Importer(Environment::getService('extractor'), Environment::getService('importer_manager'));
 
 		$record = $importer->import(function($data){
 
@@ -120,7 +121,7 @@ TEXT;
 		$message->addHeader('Content-Type', 'application/atom+xml');
 		$message->setBody(new StringStream($data));
 
-		$importer = new Importer(getContainer()->get('extractor'), getContainer()->get('importer_manager'));
+		$importer = new Importer(Environment::getService('extractor'), Environment::getService('importer_manager'));
 		$importer->import('foobar', $message);
 	}
 }

@@ -20,10 +20,11 @@
 
 namespace PSX\Api\Resource\Listing;
 
-use PSX\Test\ControllerDbTestCase;
 use PSX\Http\Request;
 use PSX\Http\Response;
 use PSX\Loader\Context;
+use PSX\Test\ControllerDbTestCase;
+use PSX\Test\Environment;
 use PSX\Uri;
 
 /**
@@ -42,7 +43,7 @@ class CachedListingTest extends ControllerDbTestCase
 
 	public function testGetResourceIndex()
 	{
-		$listing   = new CachedListing(getContainer()->get('resource_listing'), getContainer()->get('cache'));
+		$listing   = new CachedListing(Environment::getService('resource_listing'), Environment::getService('cache'));
 		$resources = $listing->getResourceIndex();
 
 		$this->assertEquals(2, count($resources));
@@ -56,7 +57,7 @@ class CachedListingTest extends ControllerDbTestCase
 
 	public function testGetDocumentation()
 	{
-		$listing       = new CachedListing(getContainer()->get('resource_listing'), getContainer()->get('cache'));
+		$listing       = new CachedListing(Environment::getService('resource_listing'), Environment::getService('cache'));
 		$documentation = $listing->getDocumentation('/foo');
 
 		$this->assertInstanceOf('PSX\Api\DocumentationInterface', $documentation);

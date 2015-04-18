@@ -27,6 +27,7 @@ use PSX\Http\Handler\Callback;
 use PSX\Http\Response;
 use PSX\Http\ResponseParser;
 use PSX\Http\Exception\TemporaryRedirectException;
+use PSX\Test\Environment;
 use PSX\Url;
 
 /**
@@ -72,7 +73,7 @@ TEXT;
 
 		}));
 
-		$oauth = new AuthorizationCode($http, new Url('http://127.0.0.1/api'), getContainer()->get('importer'));
+		$oauth = new AuthorizationCode($http, new Url('http://127.0.0.1/api'), Environment::getService('importer'));
 		$oauth->setClientPassword(self::CLIENT_ID, self::CLIENT_SECRET);
 
 		$accessToken = $oauth->getAccessToken('SplxlOBeZQQYbYS6WxSbIA');

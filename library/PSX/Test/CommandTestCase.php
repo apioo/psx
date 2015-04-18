@@ -43,7 +43,7 @@ abstract class CommandTestCase extends \PHPUnit_Framework_TestCase
 	 */
 	protected function loadCommand($className, array $parameters)
 	{
-		return getContainer()->get('executor')->run(new Map($className, $parameters));
+		return Environment::getService('executor')->run(new Map($className, $parameters));
 	}
 
 	protected function getPaths()

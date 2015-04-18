@@ -26,6 +26,7 @@ use PSX\Http\Stream\TempStream;
 use PSX\Http\Request;
 use PSX\Http\Response;
 use PSX\Test\ControllerTestCase;
+use PSX\Test\Environment;
 use PSX\Url;
 
 /**
@@ -49,7 +50,7 @@ class ViewAbstractTest extends ControllerTestCase
 		$response   = simplexml_load_string((string) $body);
 
 		$render = (float) $response->render;
-		$config = getContainer()->get('config');
+		$config = Environment::getService('config');
 		$base   = (string) parse_url($config['psx_url'], PHP_URL_PATH);
 
 		$this->assertEquals('bar', $response->foo);
@@ -72,7 +73,7 @@ class ViewAbstractTest extends ControllerTestCase
 		$response   = simplexml_load_string((string) $body);
 
 		$render = (float) $response->render;
-		$config = getContainer()->get('config');
+		$config = Environment::getService('config');
 		$base   = (string) parse_url($config['psx_url'], PHP_URL_PATH);
 
 		$this->assertEquals('bar', $response->foo);
@@ -95,7 +96,7 @@ class ViewAbstractTest extends ControllerTestCase
 		$response   = simplexml_load_string((string) $body);
 
 		$render = (float) $response->render;
-		$config = getContainer()->get('config');
+		$config = Environment::getService('config');
 		$base   = (string) parse_url($config['psx_url'], PHP_URL_PATH);
 
 		$this->assertEquals('bar', $response->foo);

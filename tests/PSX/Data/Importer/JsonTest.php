@@ -23,6 +23,7 @@ namespace PSX\Data\Importer;
 use DateTime;
 use PSX\Data\RecordAbstract;
 use PSX\Http\Message;
+use PSX\Test\Environment;
 
 /**
  * JsonTest
@@ -44,7 +45,7 @@ class JsonTest extends \PHPUnit_Framework_TestCase
 JSON;
 
 		$request = new Message(array('Content-Type' => 'application/json'), $body);
-		$record  = getContainer()->get('importer')->import(new JsonRecord(), $request);
+		$record  = Environment::getService('importer')->import(new JsonRecord(), $request);
 
 		$this->assertEquals(1, $record->getId());
 		$this->assertEquals('foo', $record->getTitle());
@@ -67,7 +68,7 @@ JSON;
 JSON;
 
 		$request = new Message(array('Content-Type' => ''), $body);
-		$record  = getContainer()->get('importer')->import(new JsonRecord(), $request);
+		$record  = Environment::getService('importer')->import(new JsonRecord(), $request);
 
 		$this->assertEquals(1, $record->getId());
 		$this->assertEquals('foo', $record->getTitle());

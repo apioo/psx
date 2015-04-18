@@ -22,6 +22,7 @@ namespace PSX\Data;
 
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use PSX\Api\Version;
+use PSX\Test\Environment;
 
 /**
  * SerializerTest
@@ -43,7 +44,7 @@ class SerializerTest extends \PHPUnit_Framework_TestCase
 		$object->setContributors([$author, $author]);
 		$object->setTags(['foo', 'bar']);
 
-		$return = getContainer()->get('serializer')->serialize($object);
+		$return = Environment::getService('serializer')->serialize($object);
 
 		$author = array();
 		$author['name'] = 'bar';
@@ -66,7 +67,7 @@ class SerializerTest extends \PHPUnit_Framework_TestCase
 		$object->setTitle('foo');
 		$object->setAuthor($author);
 
-		$return = getContainer()->get('serializer')->serialize($object, new Version(1));
+		$return = Environment::getService('serializer')->serialize($object, new Version(1));
 
 		$expect = array();
 		$expect['title'] = 'foo';
@@ -83,7 +84,7 @@ class SerializerTest extends \PHPUnit_Framework_TestCase
 		$object->setTitle('foo');
 		$object->setAuthor($author);
 
-		$return = getContainer()->get('serializer')->serialize($object, new Version(2));
+		$return = Environment::getService('serializer')->serialize($object, new Version(2));
 
 		$expect = array();
 		$expect['title'] = 'foo';

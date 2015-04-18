@@ -25,6 +25,7 @@ use PSX\Http\Response;
 use PSX\Http\Stream\TempStream;
 use PSX\Json;
 use PSX\Test\ControllerDbTestCase;
+use PSX\Test\Environment;
 use PSX\Url;
 
 /**
@@ -106,7 +107,7 @@ JSON;
 
 	public function testPostInvalidTitleLength()
 	{
-		getContainer()->get('config')->set('psx_debug', false);
+		Environment::getService('config')->set('psx_debug', false);
 
 		$data     = json_encode(array('userId' => 3, 'title' => 'foobarfoobarfoobarfoobar', 'date' => '2013-05-29T16:56:32+00:00'));
 		$body     = new TempStream(fopen('php://memory', 'r+'));
@@ -129,7 +130,7 @@ JSON;
 
 	public function testPostInvalidFields()
 	{
-		getContainer()->get('config')->set('psx_debug', false);
+		Environment::getService('config')->set('psx_debug', false);
 
 		$data     = json_encode(array('foobar' => 'title'));
 		$body     = new TempStream(fopen('php://memory', 'r+'));

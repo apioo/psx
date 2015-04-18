@@ -45,42 +45,35 @@ trait ContainerTestCaseTrait
 	{
 		parent::setUp();
 
-		// we remove all used services so that our test has no side effects
-		$serviceIds = getContainer()->getServiceIds();
-		foreach($serviceIds as $serviceId)
-		{
-			if(!in_array($serviceId, $this->_protectedServices))
-			{
-				getContainer()->set($serviceId, null);
-			}
-		}
+		$this->clearServices();
 
 		// set void logger
 		$logger = new Logger('psx');
 		$logger->pushHandler(new NullHandler());
 
-		getContainer()->set('logger', $logger);
+		Environment::getContainer()->set('logger', $logger);
 
 		// we replace the routing parser
-		getContainer()->set('routing_parser', new RoutingParser\ArrayCollection($this->getPaths()));
+		Environment::getContainer()->set('routing_parser', new RoutingParser\ArrayCollection($this->getPaths()));
 
 		// assign the phpunit test case
-		getContainer()->set('test_case', $this);
+		Environment::getContainer()->set('test_case', $this);
 
 		// use null cache
-		getContainer()->set('cache', new Cache(new CacheHandler()));
+		Environment::getContainer()->set('cache', new Cache(new CacheHandler()));
 
 		// use void sender
-		getContainer()->set('dispatch_sender', new VoidSender());
+		Environment::getContainer()->set('dispatch_sender', new VoidSender());
 
 		// enables us to load the same controller multiple times
-		getContainer()->get('loader')->setRecursiveLoading(true);
+		Environment::getContainer()->get('loader')->setRecursiveLoading(true);
 
 		// we replace the command output
-		getContainer()->set('command_output', new Void());
+		Environment::getContainer()->set('command_output', new Void());
 
-		// add event listener which redirects PHPUnit exceptions
-		$eventDispatcher = getContainer()->get('event_dispatcher');
+		// add event listener which redirects PHPUnit exceptions. Because of 
+		// this we can make assertions inside an controller
+		$eventDispatcher = Environment::getContainer()->get('event_dispatcher');
 		$eventDispatcher->addListener(Event::EXCEPTION_THROWN, function(ExceptionThrownEvent $event){
 
 			if($event->getException() instanceof \PHPUnit_Framework_Exception)
@@ -95,13 +88,24 @@ trait ContainerTestCaseTrait
 	{
 		parent::tearDown();
 
-		// we remove all used services so that our test has no side effects
-		$serviceIds = getContainer()->getServiceIds();
+		$this->clearServices();
+	}
+
+	/**
+	 * Removes all used services so that a new instance of a service gets 
+	 * created. This ensures that our test has no side effects. This behaviour 
+	 * is for some services unwanted like i.e. the db connection since we dont
+	 * want to re-establish a db connection for every test. Such services can be
+	 * listed in the _protectedServices property
+	 */
+	protected function clearServices()
+	{
+		$serviceIds = Environment::getContainer()->getServiceIds();
 		foreach($serviceIds as $serviceId)
 		{
 			if(!in_array($serviceId, $this->_protectedServices))
 			{
-				getContainer()->set($serviceId, null);
+				Environment::getContainer()->set($serviceId, null);
 			}
 		}
 	}

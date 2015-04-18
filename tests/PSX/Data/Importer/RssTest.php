@@ -23,6 +23,7 @@ namespace PSX\Data\Importer;
 use PSX\Data\Transformer;
 use PSX\Rss;
 use PSX\Http\Message;
+use PSX\Test\Environment;
 
 /**
  * RssTest
@@ -39,14 +40,14 @@ class RssTest extends \PHPUnit_Framework_TestCase
 
 		// by default the rss transformer gets not added. We must set a higher
 		// priority because else the XmlArray transformer would be used
-		getContainer()->get('transformer_manager')->addTransformer(new Transformer\Rss(), 24);
+		Environment::getService('transformer_manager')->addTransformer(new Transformer\Rss(), 24);
 	}
 
 	protected function tearDown()
 	{
 		parent::tearDown();
 
-		getContainer()->set('transformer_manager', null);
+		Environment::getContainer()->set('transformer_manager', null);
 	}
 
 	public function testRss()
@@ -77,7 +78,7 @@ class RssTest extends \PHPUnit_Framework_TestCase
 XML;
 
 		$request = new Message(array('Content-Type' => 'application/rss+xml'), $body);
-		$rss     = getContainer()->get('importer')->import(new Rss(), $request);
+		$rss     = Environment::getService('importer')->import(new Rss(), $request);
 
 		$this->assertInstanceOf('PSX\Data\RecordInterface', $rss);
 		$this->assertEquals('Liftoff News', $rss->getTitle());
@@ -114,7 +115,7 @@ XML;
 XML;
 
 		$request = new Message(array('Content-Type' => 'application/rss+xml'), $body);
-		$rss     = getContainer()->get('importer')->import(new Rss(), $request);
+		$rss     = Environment::getService('importer')->import(new Rss(), $request);
 		$item    = $rss->current();
 
 		$this->assertInstanceOf('PSX\Data\RecordInterface', $item);

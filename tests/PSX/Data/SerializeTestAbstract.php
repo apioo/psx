@@ -23,6 +23,7 @@ namespace PSX\Data;
 use PSX\Data\Record\DefaultImporter;
 use PSX\Exception;
 use PSX\Http\Message;
+use PSX\Test\Environment;
 
 /**
  * SerializeTestAbstract
@@ -51,7 +52,7 @@ abstract class SerializeTestAbstract extends \PHPUnit_Framework_TestCase
 		// create a new record of the same class and import the content
 		$message   = new Message(array(), $content);
 		$class     = get_class($record);
-		$newRecord = getContainer()->get('importer')->import(new $class(), $message);
+		$newRecord = Environment::getService('importer')->import(new $class(), $message);
 
 		// get response
 		$newResponse = $this->getWriterResponse($newRecord);

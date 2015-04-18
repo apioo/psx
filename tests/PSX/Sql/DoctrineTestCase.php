@@ -20,6 +20,9 @@
 
 namespace PSX\Sql;
 
+use PSX\Test\DbTestCase;
+use PSX\Test\Environment;
+
 /**
  * DoctrineTestCase
  *
@@ -45,7 +48,7 @@ abstract class DoctrineTestCase extends DbTestCase
 	{
 		if(self::$em === null)
 		{
-			self::$em = getContainer()->get('entity_manager');
+			self::$em = Environment::getService('entity_manager');
 		}
 
 		return self::$em;

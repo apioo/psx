@@ -24,6 +24,7 @@ use PSX\Command\Executor;
 use PSX\Command\ParameterParser\Map;
 use PSX\Command\Output\Memory;
 use PSX\Test\CommandTestCase;
+use PSX\Test\Environment;
 
 /**
  * ErrorCommandTest
@@ -36,8 +37,8 @@ class ErrorCommandTest extends CommandTestCase
 {
 	public function testExecuteExceptionLive()
 	{
-		getContainer()->get('config')->set('psx_debug', false);
-		getContainer()->get('executor')->run(new Map('PSX\Command\Foo\Command\TestErrorCommand', array()));
+		Environment::getService('config')->set('psx_debug', false);
+		Environment::getService('executor')->run(new Map('PSX\Command\Foo\Command\TestErrorCommand', array()));
 	}
 
 	/**
@@ -45,7 +46,7 @@ class ErrorCommandTest extends CommandTestCase
 	 */
 	public function testExecuteExceptionDev()
 	{
-		getContainer()->get('config')->set('psx_debug', true);
-		getContainer()->get('executor')->run(new Map('PSX\Command\Foo\Command\TestErrorCommand', array()));
+		Environment::getService('config')->set('psx_debug', true);
+		Environment::getService('executor')->run(new Map('PSX\Command\Foo\Command\TestErrorCommand', array()));
 	}
 }

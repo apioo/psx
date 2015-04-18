@@ -27,6 +27,7 @@ use PSX\Controller\SchemaApiAbstract;
 use PSX\Data\RecordInterface;
 use PSX\Data\Schema\Property;
 use PSX\Loader\Context;
+use PSX\Test\Environment;
 
 /**
  * EntityController
@@ -78,7 +79,7 @@ class EntityController extends SchemaApiAbstract
 		$this->testCase->assertEmpty($this->pathParameters->getProperty('bar'));
 
 		return array(
-			'entry' => getContainer()->get('table_manager')->getTable('PSX\Sql\TestTable')->getAll()
+			'entry' => Environment::getService('table_manager')->getTable('PSX\Sql\TestTable')->getAll()
 		);
 	}
 

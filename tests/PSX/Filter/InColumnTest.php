@@ -20,7 +20,7 @@
 
 namespace PSX\Filter;
 
-use PSX\Sql\DbTestCase;
+use PSX\Test\DbTestCase;
 
 /**
  * InColumnTest

@@ -26,6 +26,7 @@ use PSX\Http\Request;
 use PSX\Http\Response;
 use PSX\Json;
 use PSX\Test\ControllerTestCase;
+use PSX\Test\Environment;
 use PSX\Url;
 
 /**
@@ -44,7 +45,7 @@ class DiscoveryControllerTest extends ControllerTestCase
 		$response = new Response();
 		$response->setBody($body);
 
-		$config     = getContainer()->get('config');
+		$config     = Environment::getService('config');
 		$basePath   = $config['psx_url'] . '/' . $config['psx_dispatch'];
 		$controller = $this->loadController($request, $response);
 		$json       = (string) $body;

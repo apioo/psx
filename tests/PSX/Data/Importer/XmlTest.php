@@ -23,6 +23,7 @@ namespace PSX\Data\Importer;
 use DateTime;
 use PSX\Data\RecordAbstract;
 use PSX\Http\Message;
+use PSX\Test\Environment;
 
 /**
  * XmlTest
@@ -45,7 +46,7 @@ class XmlTest extends \PHPUnit_Framework_TestCase
 XML;
 
 		$request = new Message(array('Content-Type' => 'application/xml'), $body);
-		$record  = getContainer()->get('importer')->import(new XmlRecord(), $request);
+		$record  = Environment::getService('importer')->import(new XmlRecord(), $request);
 
 		$this->assertEquals(1, $record->getId());
 		$this->assertEquals('foo', $record->getTitle());

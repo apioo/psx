@@ -22,6 +22,7 @@ namespace PSX\Console;
 
 use PSX\Command\Output;
 use PSX\Test\CommandTestCase;
+use PSX\Test\Environment;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
@@ -37,9 +38,9 @@ class CommandCommandTest extends CommandTestCase
 	{
 		$memory = new Output\Memory();
 
-		getContainer()->set('command_output', $memory);
+		Environment::getContainer()->set('command_output', $memory);
 
-		$command = getContainer()->get('console')->find('command');
+		$command = Environment::getService('console')->find('command');
 
 		$commandTester = new CommandTester($command);
 		$commandTester->execute(array(
@@ -61,9 +62,9 @@ class CommandCommandTest extends CommandTestCase
 	{
 		$memory = new Output\Memory();
 
-		getContainer()->set('command_output', $memory);
+		Environment::getContainer()->set('command_output', $memory);
 
-		$command = getContainer()->get('console')->find('command');
+		$command = Environment::getService('console')->find('command');
 
 		$commandTester = new CommandTester($command);
 		$commandTester->execute(array(
@@ -76,13 +77,13 @@ class CommandCommandTest extends CommandTestCase
 	{
 		$memory = new Output\Memory();
 
-		getContainer()->set('command_output', $memory);
+		Environment::getContainer()->set('command_output', $memory);
 
 		$stream = fopen('php://memory', 'r+');
 		fwrite($stream, '{"foo": "test"}');
 		rewind($stream);
 
-		$command = getContainer()->get('console')->find('command');
+		$command = Environment::getService('console')->find('command');
 		$command->setReader(new Reader\Stdin($stream));
 
 		$commandTester = new CommandTester($command);
@@ -107,7 +108,7 @@ class CommandCommandTest extends CommandTestCase
 		fwrite($stream, '');
 		rewind($stream);
 
-		$command = getContainer()->get('console')->find('command');
+		$command = Environment::getService('console')->find('command');
 		$command->setReader(new Reader\Stdin($stream));
 
 		$commandTester = new CommandTester($command);
@@ -126,7 +127,7 @@ class CommandCommandTest extends CommandTestCase
 		fwrite($stream, 'foobar');
 		rewind($stream);
 
-		$command = getContainer()->get('console')->find('command');
+		$command = Environment::getService('console')->find('command');
 		$command->setReader(new Reader\Stdin($stream));
 
 		$commandTester = new CommandTester($command);
