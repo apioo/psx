@@ -162,7 +162,7 @@ class Environment
 			default:
 			case 'sqlite':
 				$params = array(
-					'url' => 'sqlite:///:memory:'
+					'url' => 'sqlite::memory:'
 				);
 				break;
 		}
