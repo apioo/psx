@@ -39,7 +39,7 @@ use PSX\Loader\RoutingParser;
  */
 trait ContainerTestCaseTrait
 {
-	protected $_protectedServices = array('connection');
+	protected $_protectedServices = array('config', 'connection');
 
 	protected function setUp()
 	{
@@ -100,6 +100,10 @@ trait ContainerTestCaseTrait
 	 */
 	protected function clearServices()
 	{
+		// set original config
+		Environment::getContainer()->set('config', Environment::getConfig());
+
+		// remove services
 		$serviceIds = Environment::getContainer()->getServiceIds();
 		foreach($serviceIds as $serviceId)
 		{

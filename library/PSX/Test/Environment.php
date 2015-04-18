@@ -25,7 +25,9 @@ use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Schema\Schema;
 use PDOException;
+use PSX\Bootstrap;
 use PSX\Command\ParameterParser\Map;
+use PSX\Config;
 use PSX\Sql\Logger;
 use RuntimeException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -41,6 +43,7 @@ class Environment
 {
 	protected static $basePath;
 	protected static $container;
+	protected static $config;
 	protected static $hasConnection = false;
 
 	/**
@@ -53,24 +56,16 @@ class Environment
 	{
 		self::$basePath = $basePath;
 
-		// some PHP ini settings
-		ini_set('session.use_cookies', 0);
-		ini_set('session.use_only_cookies', 0);
-		ini_set('session.use_trans_sid', 1);
-		ini_set('session.cache_limiter', ''); // prevent sending header
+		// setup PHP ini settings
+		self::setupIni();
 
-		// test hhvm settings
-		if(getenv('TRAVIS_PHP_VERSION') == 'hhvm')
-		{
-			ini_set('hhvm.libxml.ext_entity_whitelist', 'file');
-		}
-
-		// setup
+		// setup container
 		self::setupContainer();
-		self::setupConfig(self::$container);
 
-		\PSX\Bootstrap::setupEnvironment(self::getContainer()->get('config'));
+		// bootstrap PSX environment
+		Bootstrap::setupEnvironment(self::getContainer()->get('config'));
 
+		// setup database connection
 		self::setupConnection(self::$container, $schemaSetup);
 	}
 
@@ -94,11 +89,35 @@ class Environment
 	}
 
 	/**
+	 * Returns a clean configuration which has the original values even if an
+	 * test has modified the config
+	 *
+	 * @return PSX\Config
+	 */
+	public static function getConfig()
+	{
+		return new Config(self::$config);
+	}
+
+	/**
 	 * @return boolean
 	 */
 	public static function hasConnection()
 	{
 		return self::$hasConnection;
+	}
+
+	protected static function setupIni()
+	{
+		ini_set('session.use_cookies', 0);
+		ini_set('session.use_only_cookies', 0);
+		ini_set('session.use_trans_sid', 1);
+		ini_set('session.cache_limiter', ''); // prevent sending header
+
+		if(getenv('TRAVIS_PHP_VERSION') == 'hhvm')
+		{
+			ini_set('hhvm.libxml.ext_entity_whitelist', 'file');
+		}
 	}
 
 	protected static function setupContainer()
@@ -116,6 +135,9 @@ class Environment
 		{
 			throw new RuntimeException('The container file "' . $file . '" must return an Symfony\Component\DependencyInjection\ContainerInterface');
 		}
+
+		// set test config
+		self::$container->set('config', self::buildConfig(self::$container));
 	}
 
 	protected static function setupConnection(ContainerInterface $container, Closure $schemaSetup = null)
@@ -182,18 +204,21 @@ class Environment
 		}
 	}
 
-	protected static function setupConfig(ContainerInterface $container)
+	protected static function buildConfig(ContainerInterface $container)
 	{
-		$config = $container->get('config');
+		self::$config = $container->get('config')->getArrayCopy();
 
-		// set the url fix
-		$config['psx_url']      = 'http://127.0.0.1';
-		$config['psx_dispatch'] = '';
+		// set an fix url and no dispatch
+		self::$config['psx_url']      = 'http://127.0.0.1';
+		self::$config['psx_dispatch'] = '';
+		self::$config['psx_debug']    = true;
 
-		// we dont want to have absolute paths here for easier testing we use
+		// we dont want to have absolute paths here. For easier testing we use
 		// relative paths
-		$config['psx_path_cache']   = 'cache';
-		$config['psx_path_library'] = 'library';
+		self::$config['psx_path_cache']   = 'cache';
+		self::$config['psx_path_library'] = 'library';
+
+		return new Config(self::$config);
 	}
 }
 
