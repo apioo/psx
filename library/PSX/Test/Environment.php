@@ -197,7 +197,7 @@ class Environment
 
 				self::$hasConnection = true;
 			}
-			catch(Doctrine\DBAL\DBALException $e)
+			catch(PDOException $e)
 			{
 				$container->get('logger')->error($e->getMessage());
 			}
