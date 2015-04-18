@@ -32,7 +32,7 @@ use PSX\Http\RequestInterface;
 interface LocationFinderInterface
 {
 	/**
-	 * Resolves the incomming request to an source. An source is an string which
+	 * Resolves the incoming request to an source. An source is an string which
 	 * can be resolved to an callback. The source must be added to the context. 
 	 * If the request can not be resolved the method must return null else the 
 	 * given request
