@@ -24,7 +24,7 @@ use Doctrine\Common\Annotations\AnnotationRegistry;
 use ErrorException;
 
 /**
- * Setup an environment for PSX according to the provided configuration
+ * Bootstrap
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
@@ -32,6 +32,12 @@ use ErrorException;
  */
 class Bootstrap
 {
+	/**
+	 * Setup an environment for PSX according to the provided configuration 
+	 *
+	 * @codeCoverageIgnore
+	 * @param PSX\Config $config
+	 */
 	public static function setupEnvironment(Config $config)
 	{
 		if(!defined('PSX'))
