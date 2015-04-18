@@ -22,9 +22,9 @@ namespace PSX\Test;
 
 use Closure;
 use Doctrine\DBAL\Configuration;
+use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Schema\Schema;
-use PDOException;
 use PSX\Bootstrap;
 use PSX\Command\ParameterParser\Map;
 use PSX\Config;
@@ -208,7 +208,7 @@ class Environment
 
 				self::$hasConnection = true;
 			}
-			catch(PDOException $e)
+			catch(DBALException $e)
 			{
 				$container->get('logger')->error($e->getMessage());
 			}
