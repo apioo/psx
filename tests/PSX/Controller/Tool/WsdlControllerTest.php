@@ -45,8 +45,7 @@ class WsdlControllerTest extends ControllerTestCase
 		$response->setBody($body);
 
 		$controller = $this->loadController($request, $response);
-
-		$this->assertEquals('text/xml', $response->getHeader('Content-Type'));
+		$xml        = (string) $body;
 
 		$expect = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
@@ -254,13 +253,15 @@ class WsdlControllerTest extends ControllerTestCase
 	</wsdl:binding>
 	<wsdl:service name="ApiService">
 		<wsdl:port name="ApiPort" binding="tns:ApiBinding">
-			<soap:address location="http://127.0.0.1/projects/psx/public/index.php/api"/>
+			<soap:address location="http://127.0.0.1/api"/>
 		</wsdl:port>
 	</wsdl:service>
 </wsdl:definitions>
 XML;
 
-		$this->assertXmlStringEqualsXmlString($expect, (string) $body);
+		$this->assertEquals(null, $response->getStatusCode(), $xml);
+		$this->assertEquals('text/xml', $response->getHeader('Content-Type'), $xml);
+		$this->assertXmlStringEqualsXmlString($expect, $xml, $xml);
 	}
 
 	public function testWsdlSchema()

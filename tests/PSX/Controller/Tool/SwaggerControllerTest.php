@@ -46,10 +46,9 @@ class SwaggerControllerTest extends ControllerTestCase
 		$response->setBody($body);
 
 		$controller = $this->loadController($request, $response);
+		$json       = (string) $body;
 
-		$this->assertEquals('application/json', $response->getHeader('Content-Type'));
-
-		$expect = <<<JSON
+		$expect = <<<'JSON'
 {
     "swaggerVersion": "1.2",
     "apiVersion": "1.0",
@@ -61,7 +60,9 @@ class SwaggerControllerTest extends ControllerTestCase
 }
 JSON;
 
-		$this->assertJsonStringEqualsJsonString($expect, (string) $body);
+		$this->assertEquals(null, $response->getStatusCode(), $json);
+		$this->assertEquals('application/json', $response->getHeader('Content-Type'), $json);
+		$this->assertJsonStringEqualsJsonString($expect, $json, $json);
 	}
 
 	public function testDetail()
@@ -73,16 +74,13 @@ JSON;
 		$response->setBody($body);
 
 		$controller = $this->loadController($request, $response);
+		$json       = (string) $body;
 
-		$this->assertEquals('application/json', $response->getHeader('Content-Type'));
-
-		$config   = Environment::getService('config');
-		$basePath = $config['psx_url'] . '/' . $config['psx_dispatch'];
-		$expect   = <<<JSON
+		$expect = <<<'JSON'
 {
     "swaggerVersion": "1.2",
     "apiVersion": 1,
-    "basePath": "{$basePath}",
+    "basePath": "http:\/\/127.0.0.1\/",
     "resourcePath": "\/api",
     "apis": [
         {
@@ -167,7 +165,7 @@ JSON;
                 "entry": {
                     "type": "array",
                     "items": {
-                        "\$ref": "ref7738db4616810154ab42db61b65f74aa"
+                        "$ref": "ref7738db4616810154ab42db61b65f74aa"
                     }
                 }
             }
@@ -299,7 +297,9 @@ JSON;
 }
 JSON;
 
-		$this->assertJsonStringEqualsJsonString($expect, (string) $body);
+		$this->assertEquals(null, $response->getStatusCode(), $json);
+		$this->assertEquals('application/json', $response->getHeader('Content-Type'), $json);
+		$this->assertJsonStringEqualsJsonString($expect, $json, $json);
 	}
 
 	protected function getPaths()

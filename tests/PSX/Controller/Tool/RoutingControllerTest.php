@@ -45,15 +45,24 @@ class RoutingControllerTest extends ControllerTestCase
 		$response->setBody($body);
 
 		$controller = $this->loadController($request, $response);
-		$data       = Json::decode((string) $body);
+		$json       = (string) $body;
 
-		$this->assertArrayHasKey('routings', $data);
+		$expect = <<<'JSON'
+{
+    "routings": [
+        {
+            "methods": [
+                "GET"
+            ],
+            "path": "\/routing",
+            "source": "PSX\\Controller\\Tool\\RoutingController"
+        }
+    ]
+}
+JSON;
 
-		$routing = current($data['routings']);
-
-		$this->assertEquals(array('GET'), $routing['methods']);
-		$this->assertEquals('/routing', $routing['path']);
-		$this->assertEquals('PSX\Controller\Tool\RoutingController', $routing['source']);
+		$this->assertEquals(null, $response->getStatusCode(), $json);
+		$this->assertJsonStringEqualsJsonString($expect, $json, $json);
 	}
 
 	protected function getPaths()

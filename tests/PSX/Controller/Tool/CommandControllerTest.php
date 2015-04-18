@@ -49,10 +49,18 @@ class CommandControllerTest extends ControllerTestCase
 		Environment::getService('executor')->addAlias('foo', 'PSX\Command\Foo\Command\FooCommand');
 
 		$controller = $this->loadController($request, $response);
-		$data       = Json::decode((string) $body);
+		$json       = (string) $body;
 
-		$this->assertArrayHasKey('commands', $data);
-		$this->assertEquals(array('foo' => 'PSX\Command\Foo\Command\FooCommand'), $data['commands']);
+		$expect = <<<'JSON'
+{
+    "commands": {
+        "foo": "PSX\\Command\\Foo\\Command\\FooCommand"
+    }
+}
+JSON;
+
+		$this->assertEquals(null, $response->getStatusCode(), $json);
+		$this->assertJsonStringEqualsJsonString($expect, $json, $json);
 	}
 
 	public function testDetail()
@@ -85,7 +93,8 @@ class CommandControllerTest extends ControllerTestCase
 }
 JSON;
 
-		$this->assertJsonStringEqualsJsonString($expect, $json);
+		$this->assertEquals(null, $response->getStatusCode(), $json);
+		$this->assertJsonStringEqualsJsonString($expect, $json, $json);
 	}
 
 	public function testExecute()

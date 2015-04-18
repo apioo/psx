@@ -45,47 +45,46 @@ class DiscoveryControllerTest extends ControllerTestCase
 		$response = new Response();
 		$response->setBody($body);
 
-		$config     = Environment::getService('config');
-		$basePath   = $config['psx_url'] . '/' . $config['psx_dispatch'];
 		$controller = $this->loadController($request, $response);
 		$json       = (string) $body;
 
-		$expect = <<<JSON
+		$expect = <<<'JSON'
 {
     "links": [
         {
             "rel": "api",
-            "href": "__BASE_PATH__"
+            "href": "http:\/\/127.0.0.1\/"
         },
         {
             "rel": "routing",
-            "href": "__BASE_PATH__routing"
+            "href": "http:\/\/127.0.0.1\/routing"
         },
         {
             "rel": "command",
-            "href": "__BASE_PATH__command"
+            "href": "http:\/\/127.0.0.1\/command"
         },
         {
             "rel": "documentation",
-            "href": "__BASE_PATH__doc"
+            "href": "http:\/\/127.0.0.1\/doc"
         },
         {
             "rel": "raml",
-            "href": "__BASE_PATH__raml"
+            "href": "http:\/\/127.0.0.1\/raml"
         },
         {
             "rel": "wsdl",
-            "href": "__BASE_PATH__wsdl"
+            "href": "http:\/\/127.0.0.1\/wsdl"
         },
         {
             "rel": "swagger",
-            "href": "__BASE_PATH__swagger"
+            "href": "http:\/\/127.0.0.1\/swagger"
         }
     ]
 }
 JSON;
 
-		$this->assertJsonStringEqualsJsonString(str_replace('__BASE_PATH__', $basePath, $expect), $json);
+		$this->assertEquals(null, $response->getStatusCode(), $json);
+		$this->assertJsonStringEqualsJsonString($expect, $json, $json);
 	}
 
 	protected function getPaths()
@@ -97,9 +96,9 @@ JSON;
 			[['GET'], '/rest_client', 'PSX\Controller\Tool\RestClientController'],
 			[['GET'], '/doc', 'PSX\Controller\Tool\DocumentationController::doIndex'],
 			[['GET'], '/doc/:version/*path', 'PSX\Controller\Tool\DocumentationController::doDetail'],
-            [['GET'], '/raml', 'PSX\Controller\Tool\RamlGeneratorController'],
-            [['GET'], '/wsdl', 'PSX\Controller\Tool\WsdlGeneratorController'],
-            [['GET'], '/swagger', 'PSX\Controller\Tool\SwaggerGeneratorController::doDetail'],
+			[['GET'], '/raml', 'PSX\Controller\Tool\RamlGeneratorController'],
+			[['GET'], '/wsdl', 'PSX\Controller\Tool\WsdlGeneratorController'],
+			[['GET'], '/swagger', 'PSX\Controller\Tool\SwaggerGeneratorController::doDetail'],
 		);
 	}
 }

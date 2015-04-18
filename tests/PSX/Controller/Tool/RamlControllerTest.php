@@ -46,15 +46,12 @@ class RamlControllerTest extends ControllerTestCase
 		$response->setBody($body);
 
 		$controller = $this->loadController($request, $response);
+		$raml       = (string) $body;
 
-		$this->assertEquals('application/raml+yaml', $response->getHeader('Content-Type'));
-
-		$config   = Environment::getService('config');
-		$basePath = $config['psx_url'] . '/' . $config['psx_dispatch'];
-		$expect   = <<<RAML
+		$expect = <<<'RAML'
 #%RAML 0.8
 ---
-baseUri: {$basePath}
+baseUri: http://127.0.0.1/
 version: v1
 title: Api
 /api:
@@ -65,7 +62,7 @@ title: Api
           application/json:
             schema: |
               {
-                  "\$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
+                  "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
                   "id": "urn:schema.phpsx.org#",
                   "type": "object",
                   "definitions": {
@@ -95,7 +92,7 @@ title: Api
                       "entry": {
                           "type": "array",
                           "items": {
-                              "\$ref": "#\/definitions\/ref7738db4616810154ab42db61b65f74aa"
+                              "$ref": "#\/definitions\/ref7738db4616810154ab42db61b65f74aa"
                           }
                       }
                   },
@@ -106,7 +103,7 @@ title: Api
       application/json:
         schema: |
           {
-              "\$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
+              "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
               "id": "urn:schema.phpsx.org#",
               "type": "object",
               "properties": {
@@ -138,7 +135,7 @@ title: Api
           application/json:
             schema: |
               {
-                  "\$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
+                  "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
                   "id": "urn:schema.phpsx.org#",
                   "type": "object",
                   "properties": {
@@ -156,7 +153,7 @@ title: Api
       application/json:
         schema: |
           {
-              "\$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
+              "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
               "id": "urn:schema.phpsx.org#",
               "type": "object",
               "properties": {
@@ -187,7 +184,7 @@ title: Api
           application/json:
             schema: |
               {
-                  "\$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
+                  "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
                   "id": "urn:schema.phpsx.org#",
                   "type": "object",
                   "properties": {
@@ -205,7 +202,7 @@ title: Api
       application/json:
         schema: |
           {
-              "\$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
+              "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
               "id": "urn:schema.phpsx.org#",
               "type": "object",
               "properties": {
@@ -236,7 +233,7 @@ title: Api
           application/json:
             schema: |
               {
-                  "\$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
+                  "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
                   "id": "urn:schema.phpsx.org#",
                   "type": "object",
                   "properties": {
@@ -252,7 +249,9 @@ title: Api
 
 RAML;
 
-		$this->assertEquals(str_replace(array("\r\n", "\r"), "\n", $expect), (string) $body);
+		$this->assertEquals(null, $response->getStatusCode(), $raml);
+		$this->assertEquals('application/raml+yaml', $response->getHeader('Content-Type'), $raml);
+		$this->assertEquals(str_replace(array("\r\n", "\r"), "\n", $expect), $raml, $raml);
 	}
 
 	protected function getPaths()

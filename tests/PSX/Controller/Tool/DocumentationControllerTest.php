@@ -45,12 +45,10 @@ class DocumentationControllerTest extends ControllerTestCase
 		$response = new Response();
 		$response->setBody($body);
 
-		$config     = Environment::getService('config');
-		$basePath   = $config['psx_url'] . '/' . $config['psx_dispatch'];
 		$controller = $this->loadController($request, $response);
 		$json       = (string) $body;
 
-		$expect = <<<JSON
+		$expect = <<<'JSON'
 {
     "routings": [
         {
@@ -67,17 +65,18 @@ class DocumentationControllerTest extends ControllerTestCase
     "links": [
         {
             "rel": "self",
-            "href": "__BASE_PATH__doc"
+            "href": "http:\/\/127.0.0.1\/doc"
         },
         {
             "rel": "detail",
-            "href": "__BASE_PATH__doc\/{version}\/{path}"
+            "href": "http:\/\/127.0.0.1\/doc\/{version}\/{path}"
         }
     ]
 }
 JSON;
 
-		$this->assertJsonStringEqualsJsonString(str_replace('__BASE_PATH__', $basePath, $expect), $json, $json);
+		$this->assertEquals(null, $response->getStatusCode(), $json);
+		$this->assertJsonStringEqualsJsonString($expect, $json, $json);
 	}
 
 	public function testDetail()
@@ -88,12 +87,10 @@ JSON;
 		$response = new Response();
 		$response->setBody($body);
 
-		$config     = Environment::getService('config');
-		$basePath   = $config['psx_url'] . '/' . $config['psx_dispatch'];
 		$controller = $this->loadController($request, $response);
 		$json       = (string) $body;
 
-		$expect = <<<JSON
+		$expect = <<<'JSON'
 {
     "method": [
         "GET",
@@ -119,7 +116,8 @@ JSON;
 }
 JSON;
 
-		$this->assertJsonStringEqualsJsonString(str_replace('__BASE_PATH__', $basePath, $expect), $json, $json);
+		$this->assertEquals(null, $response->getStatusCode(), $json);
+		$this->assertJsonStringEqualsJsonString($expect, $json, $json);
 	}
 
 	protected function getPaths()

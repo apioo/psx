@@ -45,13 +45,17 @@ class DefaultControllerTest extends ControllerTestCase
 		$response->setBody($body);
 
 		$controller = $this->loadController($request, $response);
-		$data       = Json::decode((string) $body);
+		$json       = (string) $body;
 
-		$this->assertArrayHasKey('message', $data);
-		$this->assertArrayHasKey('url', $data);
+		$expect = <<<'JSON'
+{
+    "message": "This is the default controller of PSX",
+    "url": "http:\/\/phpsx.org"
+}
+JSON;
 
-		$this->assertEquals('This is the default controller of PSX', $data['message']);
-		$this->assertEquals('http://phpsx.org', $data['url']);
+		$this->assertEquals(null, $response->getStatusCode(), $json);
+		$this->assertJsonStringEqualsJsonString($expect, $json, $json);
 	}
 
 	protected function getPaths()
