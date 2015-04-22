@@ -185,7 +185,6 @@ conditions of the following licenses.
 
 ################################################################################
 - psr/log
-- psr/http-message
 
 Copyright (c) 2013 PHP Framework Interop Group
 
