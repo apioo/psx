@@ -1,4 +1,10 @@
 
+1.0.0-RC1
+* Updated documentation
+* Improved controller tests
+* Container test case preserve config values between unit tests
+* Moved test bootstrap code into seperate class
+
 0.9.10
 * Added getConnection method to table manager to enable easy transaction 
   handling
