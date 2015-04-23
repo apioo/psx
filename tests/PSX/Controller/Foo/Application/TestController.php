@@ -166,6 +166,14 @@ class TestController extends ControllerAbstract
 		$this->setBody(array('foo' => array('bar')));
 	}
 
+	public function doSetStdClassBody()
+	{
+		$body = new \stdClass();
+		$body->foo = array('bar');
+
+		$this->setBody($body);
+	}
+
 	public function doSetRecordBody()
 	{
 		$this->setBody(new Record('record', array('foo' => array('bar'))));

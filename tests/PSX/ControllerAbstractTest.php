@@ -136,6 +136,22 @@ JSON;
 		$this->assertJsonStringEqualsJsonString($expect, (string) $response->getBody());
 	}
 
+	public function testSetStdClassBody()
+	{
+		$path     = '/controller/stdClass';
+		$request  = new Request(new Url('http://127.0.0.1' . $path), 'GET');
+		$response = new Response();
+		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
+
+		$controller = $this->loadController($request, $response);
+
+		$expect = <<<JSON
+{"foo":["bar"]}
+JSON;
+
+		$this->assertJsonStringEqualsJsonString($expect, (string) $response->getBody());
+	}
+
 	public function testSetRecordBody()
 	{
 		$path     = '/controller/record';
@@ -318,6 +334,7 @@ XML;
 			[['GET'], '/controller/absolute/string', 'PSX\Controller\Foo\Application\TestController::doRedirectAbsoluteString'],
 			[['GET'], '/controller/absolute/object', 'PSX\Controller\Foo\Application\TestController::doRedirectAbsoluteObject'],
 			[['GET'], '/controller/array', 'PSX\Controller\Foo\Application\TestController::doSetArrayBody'],
+			[['GET'], '/controller/stdClass', 'PSX\Controller\Foo\Application\TestController::doSetStdClassBody'],
 			[['GET'], '/controller/record', 'PSX\Controller\Foo\Application\TestController::doSetRecordBody'],
 			[['GET'], '/controller/dom', 'PSX\Controller\Foo\Application\TestController::doSetDomDocumentBody'],
 			[['GET'], '/controller/simplexml', 'PSX\Controller\Foo\Application\TestController::doSetSimpleXmlBody'],
