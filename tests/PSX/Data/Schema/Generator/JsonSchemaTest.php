@@ -40,7 +40,7 @@ class JsonSchemaTest extends GeneratorTestCase
   "id": "urn:schema.phpsx.org#",
   "description": "An general news entry",
   "definitions": {
-    "ref80f95cf5fd279866b5859c275abd7fa2": {
+    "ref0a566641a890b38b49f4aab138d55de6": {
       "type": "object",
       "description": "An simple author element with some description",
       "properties": {
@@ -54,6 +54,7 @@ class JsonSchemaTest extends GeneratorTestCase
         },
         "categories": {
           "type": "array",
+          "maxItems": 8,
           "items": {
             "type": "string"
           }
@@ -94,12 +95,13 @@ class JsonSchemaTest extends GeneratorTestCase
       "items": {
         "type": "string"
       },
-      "minItems": 1
+      "minItems": 1,
+      "maxItems": 6
     },
     "receiver": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/ref80f95cf5fd279866b5859c275abd7fa2"
+        "$ref": "#/definitions/ref0a566641a890b38b49f4aab138d55de6"
       },
       "minItems": 1
     },
@@ -107,7 +109,7 @@ class JsonSchemaTest extends GeneratorTestCase
       "type": "boolean"
     },
     "author": {
-      "$ref": "#/definitions/ref80f95cf5fd279866b5859c275abd7fa2"
+      "$ref": "#/definitions/ref0a566641a890b38b49f4aab138d55de6"
     },
     "sendDate": {
       "type": "string"

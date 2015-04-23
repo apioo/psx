@@ -193,39 +193,6 @@ class Xsd implements GeneratorInterface
 				}
 			}
 		}
-		else if($type instanceof Property\ArrayType)
-		{
-			$this->writer->startElement('xs:complexType');
-			$this->writer->writeAttribute('name', $typeName);
-
-			$documentation = $type->getDescription();
-			if(!empty($documentation))
-			{
-				$this->writer->startElement('xs:annotation');
-				$this->writer->writeElement('xs:documentation', $documentation);
-				$this->writer->endElement();
-			}
-
-			$this->writer->startElement('xs:sequence');
-
-			$prototype = $type->getPrototype();
-
-			$this->writer->startElement('xs:element');
-			$this->writer->writeAttribute('name', $prototype->getName());
-			$this->writer->writeAttribute('type', $this->getPropertyTypeName($prototype, true));
-
-			$this->generateTypeArray($type);
-
-			$this->writer->endElement();
-
-			$this->writer->endElement();
-			$this->writer->endElement();
-
-			if($this->hasConstraints($prototype))
-			{
-				$this->generateType($prototype);
-			}
-		}
 		else
 		{
 			$this->writer->startElement('xs:simpleType');
@@ -280,14 +247,19 @@ class Xsd implements GeneratorInterface
 		$minOccurs = $type->getMinLength();
 		$maxOccurs = $type->getMaxLength();
 
-		if($minOccurs)
+		if($minOccurs && $maxOccurs)
+		{
+			$this->writer->writeAttribute('minOccurs', $minOccurs);
+			$this->writer->writeAttribute('maxOccurs', $maxOccurs);
+		}
+		else if($minOccurs)
 		{
 			$this->writer->writeAttribute('minOccurs', $minOccurs);
 			$this->writer->writeAttribute('maxOccurs', 'unbounded');
 		}
 		else if($maxOccurs)
 		{
-			$this->writer->writeAttribute('minOccurs', 'unbounded');
+			$this->writer->writeAttribute('minOccurs', 0);
 			$this->writer->writeAttribute('maxOccurs', $maxOccurs);
 		}
 		else

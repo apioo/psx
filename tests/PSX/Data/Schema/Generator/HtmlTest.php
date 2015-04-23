@@ -36,7 +36,7 @@ class HtmlTest extends GeneratorTestCase
 
 		$expect = <<<'HTML'
 <div>
-	<div id="psx-type-0181a2f995053a0c040d39abe18f6bc7" class="psx-complex-type">
+	<div id="psx-type-3fff74b4d76206aba0bf83d8c480b407" class="psx-complex-type">
 		<h1>news</h1>
 		<div class="psx-type-description">An general news entry</div>
 		<table class="table psx-type-properties">
@@ -73,7 +73,7 @@ class HtmlTest extends GeneratorTestCase
 					</td>
 					<td>
 						<span class="psx-property-type psx-property-type-array">Array&lt;<span class="psx-property-type psx-property-type-complex">
-								<a href="#psx-type-80f95cf5fd279866b5859c275abd7fa2">author</a>
+								<a href="#psx-type-0a566641a890b38b49f4aab138d55de6">author</a>
 							</span>&gt;</span>
 					</td>
 					<td>
@@ -99,7 +99,7 @@ class HtmlTest extends GeneratorTestCase
 					</td>
 					<td>
 						<span class="psx-property-type psx-property-type-complex">
-							<a href="#psx-type-80f95cf5fd279866b5859c275abd7fa2">author</a>
+							<a href="#psx-type-0a566641a890b38b49f4aab138d55de6">author</a>
 						</span>
 					</td>
 					<td>
@@ -261,7 +261,7 @@ class HtmlTest extends GeneratorTestCase
 			</tbody>
 		</table>
 	</div>
-	<div id="psx-type-80f95cf5fd279866b5859c275abd7fa2" class="psx-complex-type">
+	<div id="psx-type-0a566641a890b38b49f4aab138d55de6" class="psx-complex-type">
 		<h1>author</h1>
 		<div class="psx-type-description">An simple author element with some description</div>
 		<table class="table psx-type-properties">

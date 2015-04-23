@@ -43,10 +43,10 @@ class XsdTest extends GeneratorTestCase
 				<xs:documentation>An general news entry</xs:documentation>
 			</xs:annotation>
 			<xs:sequence>
-				<xs:element name="tags" type="xs:string" maxOccurs="unbounded" minOccurs="1"/>
-				<xs:element name="receiver" type="tns:type80f95cf5fd279866b5859c275abd7fa2" maxOccurs="unbounded" minOccurs="1"/>
+				<xs:element name="tags" type="xs:string" maxOccurs="6" minOccurs="1"/>
+				<xs:element name="receiver" type="tns:type0a566641a890b38b49f4aab138d55de6" maxOccurs="unbounded" minOccurs="1"/>
 				<xs:element name="read" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
-				<xs:element name="author" type="tns:type80f95cf5fd279866b5859c275abd7fa2" minOccurs="1" maxOccurs="1"/>
+				<xs:element name="author" type="tns:type0a566641a890b38b49f4aab138d55de6" minOccurs="1" maxOccurs="1"/>
 				<xs:element name="sendDate" type="xs:date" minOccurs="0" maxOccurs="1"/>
 				<xs:element name="readDate" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 				<xs:element name="expires" type="xs:duration" minOccurs="0" maxOccurs="1"/>
@@ -58,14 +58,14 @@ class XsdTest extends GeneratorTestCase
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
-	<xs:complexType name="type80f95cf5fd279866b5859c275abd7fa2">
+	<xs:complexType name="type0a566641a890b38b49f4aab138d55de6">
 		<xs:annotation>
 			<xs:documentation>An simple author element with some description</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
 			<xs:element maxOccurs="1" minOccurs="1" name="title" type="tns:typecf953ba6222cfc4017c889354fd489b4"/>
 			<xs:element name="email" type="xs:string" minOccurs="0" maxOccurs="1"/>
-			<xs:element maxOccurs="unbounded" minOccurs="0" name="categories" type="xs:string"/>
+			<xs:element maxOccurs="8" minOccurs="0" name="categories" type="xs:string"/>
 			<xs:element maxOccurs="unbounded" minOccurs="0" name="locations" type="tns:type93ef595df6d9e735702cba3611adba27"/>
 			<xs:element maxOccurs="1" minOccurs="0" name="origin" type="tns:type93ef595df6d9e735702cba3611adba27"/>
 		</xs:sequence>
