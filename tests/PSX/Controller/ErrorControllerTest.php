@@ -237,11 +237,11 @@ HTML;
 
 		$expect = <<<XML
 <?xml version="1.0"?>
-<exceptionRecord>
+<error>
 	<success>false</success>
 	<title>Internal Server Error</title>
 	<message>The server encountered an internal error and was unable to complete your request.</message>
-</exceptionRecord>
+</error>
 XML;
 
 		$this->assertXmlStringEqualsXmlString($expect, (string) $response->getBody());
