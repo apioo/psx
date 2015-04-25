@@ -53,9 +53,17 @@ class Context
 	const KEY_CLASS = 'psx.class';
 
 	/**
-	 * This key contains the method name from the source
+	 * This key contains the method name from the source. This method gets then
+	 * executed on the controller
 	 */
 	const KEY_METHOD = 'psx.method';
+
+	/**
+	 * This key contains an array with all supported writers from an controller.
+	 * Gets used so that every controller has the same supported writers as the
+	 * origin controller
+	 */
+	const KEY_SUPPORTED_WRITER = 'psx.supported_writer';
 
 	/**
 	 * This key contains an Exception if the error controller gets invoked

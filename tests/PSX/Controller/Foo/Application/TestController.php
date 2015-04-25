@@ -24,6 +24,7 @@ use DOMDocument;
 use PSX\ControllerAbstract;
 use PSX\Data\ReaderInterface;
 use PSX\Data\Record;
+use PSX\Data\WriterInterface;
 use PSX\Filter;
 use PSX\Http\Stream\FileStream;
 use PSX\Loader\Context;
@@ -224,6 +225,18 @@ class TestController extends ControllerAbstract
 	public function doRedirectDestiniation()
 	{
 		$this->setBody($this->uriFragments);
+	}
+
+	/**
+	 * Tests whether the supported writer value was set by an origin controller
+	 */
+	public function doInheritSupportedWriter()
+	{
+		$this->testCase->assertEquals([WriterInterface::XML], $this->getSupportedWriter());
+
+		$this->setBody([
+			'bar' => 'foo'
+		]);
 	}
 
 	public function getPreFilter()

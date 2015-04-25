@@ -80,6 +80,8 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 
 	public function onLoad()
 	{
+		parent::onLoad();
+
 		$doc = $this->resourceListing->getDocumentation($this->context->get(Context::KEY_PATH));
 
 		if(!$doc instanceof DocumentationInterface)
