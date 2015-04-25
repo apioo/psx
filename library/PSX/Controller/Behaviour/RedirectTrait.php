@@ -58,7 +58,7 @@ trait RedirectTrait
 		$this->request->setMethod('GET');
 		$this->request->getUri()->setPath($path);
 
-		$this->loader->load($this->request, $this->response);
+		$this->loader->load($this->request, $this->response, $this->context);
 	}
 
 	/**
