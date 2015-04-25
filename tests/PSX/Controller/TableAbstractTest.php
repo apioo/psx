@@ -80,6 +80,7 @@ class TableApiAbstractTest extends ControllerDbTestCase
 }
 JSON;
 
+		$this->assertEquals(200, $response->getStatusCode());
 		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
 	}
 
@@ -99,6 +100,7 @@ JSON;
 			'message' => 'Comment successful created',
 		);
 
+		$this->assertEquals(200, $response->getStatusCode());
 		$this->assertEquals($expect, $body);
 
 		// check database
@@ -160,6 +162,7 @@ JSON;
 			'message' => 'Comment successful updated',
 		);
 
+		$this->assertEquals(200, $response->getStatusCode());
 		$this->assertEquals($expect, $body);
 
 		// check database
@@ -199,6 +202,28 @@ JSON;
 		$this->assertEquals($expect, $result);
 	}
 
+	public function testPutNotAvailable()
+	{
+		$data     = json_encode(array('id' => 12, 'title' => 'foobar'));
+		$body     = new TempStream(fopen('php://memory', 'r+'));
+		$request  = new Request(new Url('http://127.0.0.1/api'), 'PUT', array('Content-Type' => 'application/json'), $data);
+		$response = new Response();
+		$response->setBody($body);
+
+		$controller = $this->loadController($request, $response);
+		$body       = Json::decode((string) $response->getBody());
+
+		$this->assertArrayHasKey('success', $body);
+		$this->assertArrayHasKey('title', $body);
+		$this->assertArrayHasKey('message', $body);
+		$this->assertArrayHasKey('trace', $body);
+		$this->assertArrayHasKey('context', $body);
+
+		$this->assertEquals(404, $response->getStatusCode());
+		$this->assertEquals(false, $body['success']);
+		$this->assertEquals('Record not found', substr($body['message'], 0, 16));
+	}
+
 	public function testDelete()
 	{
 		$data     = json_encode(array('id' => 1));
@@ -215,6 +240,7 @@ JSON;
 			'message' => 'Comment successful deleted',
 		);
 
+		$this->assertEquals(200, $response->getStatusCode());
 		$this->assertEquals($expect, $body);
 
 		// check database
@@ -246,6 +272,28 @@ JSON;
 		);
 
 		$this->assertEquals($expect, $result);
+	}
+
+	public function testDeleteNotAvailable()
+	{
+		$data     = json_encode(array('id' => 12));
+		$body     = new TempStream(fopen('php://memory', 'r+'));
+		$request  = new Request(new Url('http://127.0.0.1/api'), 'DELETE', array('Content-Type' => 'application/json'), $data);
+		$response = new Response();
+		$response->setBody($body);
+
+		$controller = $this->loadController($request, $response);
+		$body       = Json::decode((string) $response->getBody());
+
+		$this->assertArrayHasKey('success', $body);
+		$this->assertArrayHasKey('title', $body);
+		$this->assertArrayHasKey('message', $body);
+		$this->assertArrayHasKey('trace', $body);
+		$this->assertArrayHasKey('context', $body);
+
+		$this->assertEquals(404, $response->getStatusCode());
+		$this->assertEquals(false, $body['success']);
+		$this->assertEquals('Record not found', substr($body['message'], 0, 16));
 	}
 
 	protected function getPaths()

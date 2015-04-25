@@ -31,13 +31,13 @@ use PSX\Test\ControllerTestCase;
 use PSX\Url;
 
 /**
- * NoViewTest
+ * NoDocumentationTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class NoViewTest extends ControllerTestCase
+class NoDocumentationTest extends ControllerTestCase
 {
 	public function testGet()
 	{
@@ -49,7 +49,7 @@ class NoViewTest extends ControllerTestCase
 		$controller = $this->loadController($request, $response);
 		$body       = Json::decode((string) $response->getBody());
 
-		$this->assertEquals(405, $response->getStatusCode());
+		$this->assertEquals(500, $response->getStatusCode());
 
 		$this->assertArrayHasKey('success', $body);
 		$this->assertArrayHasKey('title', $body);
@@ -58,7 +58,7 @@ class NoViewTest extends ControllerTestCase
 		$this->assertArrayHasKey('context', $body);
 
 		$this->assertEquals(false, $body['success']);
-		$this->assertEquals('Method is not allowed', substr($body['message'], 0, 21));
+		$this->assertEquals('No documentation available', substr($body['message'], 0, 26));
 	}
 
 	public function testPost()
@@ -72,7 +72,7 @@ class NoViewTest extends ControllerTestCase
 		$controller = $this->loadController($request, $response);
 		$body       = Json::decode((string) $response->getBody());
 
-		$this->assertEquals(405, $response->getStatusCode());
+		$this->assertEquals(500, $response->getStatusCode());
 
 		$this->assertArrayHasKey('success', $body);
 		$this->assertArrayHasKey('title', $body);
@@ -81,7 +81,7 @@ class NoViewTest extends ControllerTestCase
 		$this->assertArrayHasKey('context', $body);
 
 		$this->assertEquals(false, $body['success']);
-		$this->assertEquals('Method is not allowed', substr($body['message'], 0, 21));
+		$this->assertEquals('No documentation available', substr($body['message'], 0, 26));
 	}
 
 	public function testPut()
@@ -95,7 +95,7 @@ class NoViewTest extends ControllerTestCase
 		$controller = $this->loadController($request, $response);
 		$body       = Json::decode((string) $response->getBody());
 
-		$this->assertEquals(405, $response->getStatusCode());
+		$this->assertEquals(500, $response->getStatusCode());
 
 		$this->assertArrayHasKey('success', $body);
 		$this->assertArrayHasKey('title', $body);
@@ -104,7 +104,7 @@ class NoViewTest extends ControllerTestCase
 		$this->assertArrayHasKey('context', $body);
 
 		$this->assertEquals(false, $body['success']);
-		$this->assertEquals('Method is not allowed', substr($body['message'], 0, 21));
+		$this->assertEquals('No documentation available', substr($body['message'], 0, 26));
 	}
 
 	public function testDelete()
@@ -118,7 +118,7 @@ class NoViewTest extends ControllerTestCase
 		$controller = $this->loadController($request, $response);
 		$body       = Json::decode((string) $response->getBody());
 
-		$this->assertEquals(405, $response->getStatusCode());
+		$this->assertEquals(500, $response->getStatusCode());
 
 		$this->assertArrayHasKey('success', $body);
 		$this->assertArrayHasKey('title', $body);
@@ -127,13 +127,13 @@ class NoViewTest extends ControllerTestCase
 		$this->assertArrayHasKey('context', $body);
 
 		$this->assertEquals(false, $body['success']);
-		$this->assertEquals('Method is not allowed', substr($body['message'], 0, 21));
+		$this->assertEquals('No documentation available', substr($body['message'], 0, 26));
 	}
 
 	protected function getPaths()
 	{
 		return array(
-			[['GET', 'POST', 'PUT', 'DELETE'], '/api', 'PSX\Controller\Foo\Application\SchemaApi\NoViewController'],
+			[['GET', 'POST', 'PUT', 'DELETE'], '/api', 'PSX\Controller\Foo\Application\SchemaApi\NoDocumentationController'],
 		);
 	}
 }

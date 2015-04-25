@@ -28,20 +28,14 @@ use PSX\Data\RecordInterface;
 use PSX\Loader\Context;
 
 /**
- * NoResponseController
+ * RestrictMethodController
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class NoResponseController extends SchemaApiAbstract
+class RestrictMethodController extends SchemaApiAbstract
 {
-	/**
-	 * @Inject
-	 * @var PSX\Data\Schema\SchemaManager
-	 */
-	protected $schemaManager;
-
 	/**
 	 * @Inject
 	 * @var PHPUnit_Framework_TestCase
@@ -53,39 +47,27 @@ class NoResponseController extends SchemaApiAbstract
 		$resource = new Resource(Resource::STATUS_ACTIVE, $this->context->get(Context::KEY_PATH));
 
 		$resource->addMethod(Resource\Factory::getMethod('GET'));
-
-		$resource->addMethod(Resource\Factory::getMethod('POST')
-			->setRequest($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Create')));
-
-		$resource->addMethod(Resource\Factory::getMethod('PUT')
-			->setRequest($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Update')));
-
-		$resource->addMethod(Resource\Factory::getMethod('DELETE')
-			->setRequest($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Delete')));
+		$resource->addMethod(Resource\Factory::getMethod('DELETE'));
 
 		return new Documentation\Simple($resource);
 	}
 
 	protected function doGet(Version $version)
 	{
+		return array(
+			'foo' => 'bar'
+		);
 	}
 
 	protected function doCreate(RecordInterface $record, Version $version)
 	{
-		$this->testCase->assertEquals(3, $record->getUserId());
-		$this->testCase->assertEquals('test', $record->getTitle());
-		$this->testCase->assertInstanceOf('DateTime', $record->getDate());
 	}
 
 	protected function doUpdate(RecordInterface $record, Version $version)
 	{
-		$this->testCase->assertEquals(1, $record->getId());
-		$this->testCase->assertEquals(3, $record->getUserId());
-		$this->testCase->assertEquals('foobar', $record->getTitle());
 	}
 
 	protected function doDelete(RecordInterface $record, Version $version)
 	{
-		$this->testCase->assertEquals(1, $record->getId());
 	}
 }

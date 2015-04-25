@@ -23,18 +23,17 @@ namespace PSX\Controller\Foo\Application\SchemaApi;
 use PSX\Api\Documentation;
 use PSX\Api\Version;
 use PSX\Api\Resource;
-use PSX\Controller\SchemaApiAbstract;
 use PSX\Data\RecordInterface;
-use PSX\Loader\Context;
+use PSX\Controller\SchemaApiAbstract;
 
 /**
- * NoResponseController
+ * NoDocumentationController
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class NoResponseController extends SchemaApiAbstract
+class NoDocumentationController extends SchemaApiAbstract
 {
 	/**
 	 * @Inject
@@ -50,20 +49,7 @@ class NoResponseController extends SchemaApiAbstract
 
 	public function getDocumentation()
 	{
-		$resource = new Resource(Resource::STATUS_ACTIVE, $this->context->get(Context::KEY_PATH));
-
-		$resource->addMethod(Resource\Factory::getMethod('GET'));
-
-		$resource->addMethod(Resource\Factory::getMethod('POST')
-			->setRequest($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Create')));
-
-		$resource->addMethod(Resource\Factory::getMethod('PUT')
-			->setRequest($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Update')));
-
-		$resource->addMethod(Resource\Factory::getMethod('DELETE')
-			->setRequest($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Delete')));
-
-		return new Documentation\Simple($resource);
+		return null;
 	}
 
 	protected function doGet(Version $version)
@@ -72,20 +58,13 @@ class NoResponseController extends SchemaApiAbstract
 
 	protected function doCreate(RecordInterface $record, Version $version)
 	{
-		$this->testCase->assertEquals(3, $record->getUserId());
-		$this->testCase->assertEquals('test', $record->getTitle());
-		$this->testCase->assertInstanceOf('DateTime', $record->getDate());
 	}
 
 	protected function doUpdate(RecordInterface $record, Version $version)
 	{
-		$this->testCase->assertEquals(1, $record->getId());
-		$this->testCase->assertEquals(3, $record->getUserId());
-		$this->testCase->assertEquals('foobar', $record->getTitle());
 	}
 
 	protected function doDelete(RecordInterface $record, Version $version)
 	{
-		$this->testCase->assertEquals(1, $record->getId());
 	}
 }
