@@ -133,7 +133,7 @@ class XsdTest extends GeneratorTestCase
 	<xs:complexType name="void">
 		<xs:sequence/>
 	</xs:complexType>
-	<xs:element name="exceptionRecord" type="tns:fault"/>
+	<xs:element name="error" type="tns:fault"/>
 </xs:schema>
 XML;
 

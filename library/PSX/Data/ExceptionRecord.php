@@ -35,6 +35,17 @@ class ExceptionRecord extends RecordAbstract
 	protected $trace;
 	protected $context;
 
+	public function getRecordInfo()
+	{
+		return new RecordInfo('error', [
+			'success' => $this->success,
+			'title'   => $this->title,
+			'message' => $this->message,
+			'trace'   => $this->trace,
+			'context' => $this->context,
+		]);
+	}
+
 	public function setSuccess($success)
 	{
 		$this->success = $success;

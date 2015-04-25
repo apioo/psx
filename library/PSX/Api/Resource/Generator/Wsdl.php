@@ -166,7 +166,7 @@ class Wsdl extends GeneratorAbstract
 
 		$part = $element->ownerDocument->createElement('wsdl:part');
 		$part->setAttribute('name', 'body');
-		$part->setAttribute('element', 'tns:' . 'exceptionRecord');
+		$part->setAttribute('element', 'tns:' . 'error');
 
 		$interface->appendChild($part);
 

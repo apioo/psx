@@ -212,7 +212,7 @@ class Xsd extends GeneratorAbstract
 
 		// exception element
 		$el = $element->ownerDocument->createElementNS('http://www.w3.org/2001/XMLSchema', 'xs:element');
-		$el->setAttribute('name', 'exceptionRecord');
+		$el->setAttribute('name', 'error');
 		$el->setAttribute('type', 'tns:' . 'fault');
 		$element->appendChild($el);
 	}

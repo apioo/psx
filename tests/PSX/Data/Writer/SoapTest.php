@@ -172,13 +172,13 @@ TEXT;
 	  <faultcode>soap:Server</faultcode>
 	  <faultstring>Foobar</faultstring>
 	  <detail>
-	    <exceptionRecord xmlns="http://foo.bar">
+	    <error xmlns="http://foo.bar">
 	      <success>false</success>
 	      <title>An error occured</title>
 	      <message>Foobar</message>
 	      <trace>Foo</trace>
 	      <context>Bar</context>
-	    </exceptionRecord>
+	    </error>
 	  </detail>
 	</soap:Fault>
   </soap:Body>

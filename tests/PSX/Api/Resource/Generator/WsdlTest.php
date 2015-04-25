@@ -137,7 +137,7 @@ class WsdlTest extends GeneratorTestCase
 			<xs:complexType name="void">
 				<xs:sequence/>
 			</xs:complexType>
-			<xs:element name="exceptionRecord" type="tns:fault"/>
+			<xs:element name="error" type="tns:fault"/>
 		</xs:schema>
 	</wsdl:types>
 	<wsdl:message name="getCollectionInput">
@@ -165,7 +165,7 @@ class WsdlTest extends GeneratorTestCase
 		<wsdl:part name="body" element="tns:deleteResponse"/>
 	</wsdl:message>
 	<wsdl:message name="faultOutput">
-		<wsdl:part name="body" element="tns:exceptionRecord"/>
+		<wsdl:part name="body" element="tns:error"/>
 	</wsdl:message>
 	<wsdl:portType name="fooPortType">
 		<wsdl:operation name="getCollection">
