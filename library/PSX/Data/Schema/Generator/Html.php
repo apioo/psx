@@ -216,9 +216,9 @@ class Html implements GeneratorInterface
 			{
 				$typeName = '<a href="http://tools.ietf.org/html/rfc3339#section-5.6" title="RFC3339">DateTime</a>';
 			}
-			else if($type instanceof Property\DateTimeStamp)
+			else if($type instanceof Property\Time)
 			{
-				$typeName = '<a href="http://tools.ietf.org/html/rfc3339#section-5.6" title="RFC3339">DateTimeStamp</a>';
+				$typeName = '<a href="http://tools.ietf.org/html/rfc3339#section-5.6" title="RFC3339">Time</a>';
 			}
 			else if($type instanceof Property\Duration)
 			{
