@@ -23,6 +23,7 @@ namespace PSX\Data\Record\Visitor;
 use PSX\Data\RecordInterface;
 use PSX\Data\Record\GraphTraverser;
 use PSX\Data\Record\VisitorAbstract;
+use PSX\DateTime;
 use RuntimeException;
 use XMLWriter;
 
@@ -99,7 +100,7 @@ class JsonxWriterVisitor extends VisitorAbstract
 	{
 		if($value instanceof \DateTime)
 		{
-			$value = $value->format(\DateTime::ATOM);
+			$value = DateTime::getFormat($value);
 		}
 
 		if(is_int($value) || is_float($value))

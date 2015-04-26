@@ -23,6 +23,7 @@ namespace PSX\Data\Record\Visitor;
 use PSX\Data\RecordInterface;
 use PSX\Data\Record\GraphTraverser;
 use PSX\Data\Record\VisitorAbstract;
+use PSX\DateTime;
 use RuntimeException;
 use XMLWriter;
 
@@ -138,7 +139,7 @@ abstract class SerializeVisitorAbstract extends VisitorAbstract
 	{
 		if($value instanceof \DateTime)
 		{
-			return $value->format(\DateTime::RFC3339);
+			return DateTime::getFormat($value);
 		}
 		else if(is_scalar($value))
 		{
