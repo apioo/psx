@@ -31,19 +31,134 @@ use DateInterval;
  */
 class DateTimeTest extends \PHPUnit_Framework_TestCase
 {
-	public function testConvertIntervalToSeconds()
+	public function testDateTime()
 	{
-		$this->assertEquals(1, DateTime::convertIntervalToSeconds(new DateInterval('PT1S')));
-		$this->assertEquals(60, DateTime::convertIntervalToSeconds(new DateInterval('PT60S')));
-		$this->assertEquals(60, DateTime::convertIntervalToSeconds(new DateInterval('PT1M')));
-		$this->assertEquals(3600, DateTime::convertIntervalToSeconds(new DateInterval('PT60M')));
-		$this->assertEquals(3600, DateTime::convertIntervalToSeconds(new DateInterval('PT1H')));
-		$this->assertEquals(86400, DateTime::convertIntervalToSeconds(new DateInterval('PT24H')));
-		$this->assertEquals(86400, DateTime::convertIntervalToSeconds(new DateInterval('P1D')));
-		$this->assertEquals(2592000, DateTime::convertIntervalToSeconds(new DateInterval('P30D')));
-		$this->assertEquals(2592000, DateTime::convertIntervalToSeconds(new DateInterval('P1M')));
-		$this->assertEquals(31104000, DateTime::convertIntervalToSeconds(new DateInterval('P12M')));
-		$this->assertEquals(31536000, DateTime::convertIntervalToSeconds(new DateInterval('P1Y')));
+		$date = new DateTime('2015-04-25T19:35:20');
+
+		$this->assertEquals(2015, $date->getYear());
+		$this->assertEquals(4, $date->getMonth());
+		$this->assertEquals(25, $date->getDay());
+		$this->assertEquals(19, $date->getHour());
+		$this->assertEquals(35, $date->getMinute());
+		$this->assertEquals(20, $date->getSecond());
+		$this->assertEquals(0, $date->getMicroSecond());
+		$this->assertEquals(0, $date->getOffset());
+		$this->assertEquals('2015-04-25T19:35:20Z', $date->toString());
+	}
+
+	public function testDateTimeMicroSeconds()
+	{
+		$date = new DateTime('2015-04-25T19:35:20.1234');
+
+		$this->assertEquals(2015, $date->getYear());
+		$this->assertEquals(4, $date->getMonth());
+		$this->assertEquals(25, $date->getDay());
+		$this->assertEquals(19, $date->getHour());
+		$this->assertEquals(35, $date->getMinute());
+		$this->assertEquals(20, $date->getSecond());
+		$this->assertEquals(123400, $date->getMicroSecond());
+		$this->assertEquals(0, $date->getOffset());
+		$this->assertEquals('2015-04-25T19:35:20.123400Z', $date->toString());
+	}
+
+	public function testDateTimeOffset()
+	{
+		$date = new DateTime('2015-04-25T19:35:20+01:00');
+
+		$this->assertEquals(2015, $date->getYear());
+		$this->assertEquals(4, $date->getMonth());
+		$this->assertEquals(25, $date->getDay());
+		$this->assertEquals(19, $date->getHour());
+		$this->assertEquals(35, $date->getMinute());
+		$this->assertEquals(20, $date->getSecond());
+		$this->assertEquals(0, $date->getMicroSecond());
+		$this->assertEquals(3600, $date->getOffset());
+		$this->assertEquals('2015-04-25T19:35:20+01:00', $date->toString());
+	}
+
+	public function testDateTimeMicroSecondsAndOffset()
+	{
+		$date = new DateTime('2015-04-25T19:35:20.1234+01:00');
+
+		$this->assertEquals(2015, $date->getYear());
+		$this->assertEquals(4, $date->getMonth());
+		$this->assertEquals(25, $date->getDay());
+		$this->assertEquals(19, $date->getHour());
+		$this->assertEquals(35, $date->getMinute());
+		$this->assertEquals(20, $date->getSecond());
+		$this->assertEquals(123400, $date->getMicroSecond());
+		$this->assertEquals(3600, $date->getOffset());
+		$this->assertEquals('2015-04-25T19:35:20.123400+01:00', $date->toString());
+	}
+
+	/**
+	 * @dataProvider providerRfc
+	 */
+	public function testRfcExamples($data, $expected)
+	{
+		$date = new DateTime($data);
+
+		$this->assertEquals($expected, $date->toString());
+	}
+
+	public function providerRfc()
+	{
+		return [
+			['1985-04-12T23:20:50.52Z', '1985-04-12T23:20:50.520000Z'],
+			['1996-12-19T16:39:57-08:00', '1996-12-19T16:39:57-08:00'],
+			['1937-01-01T12:00:27.87+00:20', '1937-01-01T12:00:27.870000+00:20'],
+		];
+	}
+
+	public function testDateTimeNow()
+	{
+		$date = new DateTime();
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testDateTimeEmpty()
+	{
+		new DateTime('');
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testDateTimeInvalid()
+	{
+		new DateTime('foo');
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testDateTimeInvalidOffset()
+	{
+		new DateTime('2015-04-25T19:35:20+50:00');
+	}
+
+	public function testGetOffsetBySeconds()
+	{
+		$this->assertEquals('+00:00', DateTime::getOffsetBySeconds(0));
+		$this->assertEquals('+01:00', DateTime::getOffsetBySeconds(3600));
+		$this->assertEquals('-01:00', DateTime::getOffsetBySeconds(-3600));
+		$this->assertEquals('+01:30', DateTime::getOffsetBySeconds(5400));
+		$this->assertEquals('-01:30', DateTime::getOffsetBySeconds(-5400));
+		$this->assertEquals('+24:00', DateTime::getOffsetBySeconds(86400));
+		$this->assertEquals('-24:00', DateTime::getOffsetBySeconds(-86400));
+	}
+
+	public function testGetSecondsFromOffset()
+	{
+		$this->assertEquals(0, DateTime::getSecondsFromOffset('+', 0, 0));
+		$this->assertEquals(3600, DateTime::getSecondsFromOffset('+', 1, 0));
+		$this->assertEquals(-3600, DateTime::getSecondsFromOffset('-', 1, 0));
+		$this->assertEquals(5400, DateTime::getSecondsFromOffset('+', 1, 30));
+		$this->assertEquals(-5400, DateTime::getSecondsFromOffset('-', 1, 30));
+		$this->assertEquals(86400, DateTime::getSecondsFromOffset('+', 24, 0));
+		$this->assertEquals(-86400, DateTime::getSecondsFromOffset('-', 24, 0));
 	}
 }
 
