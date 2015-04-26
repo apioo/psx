@@ -54,8 +54,8 @@ class TestTableCommand extends TableAbstract
 			'col_text' => self::TYPE_TEXT,
 			'col_time' => self::TYPE_TIME,
 			'col_string' => self::TYPE_VARCHAR,
-			'col_array' => self::TYPE_ARRAY,
-			'col_object' => self::TYPE_OBJECT,
+			'col_array' => self::TYPE_ARRAY | self::IS_NULL,
+			'col_object' => self::TYPE_OBJECT | self::IS_NULL,
 		);
 	}
 }

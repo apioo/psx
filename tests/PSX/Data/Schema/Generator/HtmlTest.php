@@ -251,7 +251,9 @@ class HtmlTest extends GeneratorTestCase
 						<span class="psx-property-name psx-property-optional">coffeeTime</span>
 					</td>
 					<td>
-						<span class="psx-property-type psx-property-type-time">Time</span>
+						<span class="psx-property-type psx-property-type-time">
+							<a href="http://tools.ietf.org/html/rfc3339#section-5.6" title="RFC3339">Time</a>
+						</span>
 					</td>
 					<td>
 						<span class="psx-property-description"/>

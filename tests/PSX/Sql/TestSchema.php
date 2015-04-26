@@ -98,8 +98,8 @@ class TestSchema
 		$table->addColumn('col_text', 'text');
 		$table->addColumn('col_time', 'time');
 		$table->addColumn('col_string', 'string');
-		$table->addColumn('col_array', 'text');
-		$table->addColumn('col_object', 'text');
+		$table->addColumn('col_array', 'text', array('notnull' => false));
+		$table->addColumn('col_object', 'text', array('notnull' => false));
 		$table->setPrimaryKey(array('id'));
 	}
 }

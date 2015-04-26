@@ -33,6 +33,6 @@ class TestTableApiController extends TableApiAbstract
 {
 	public function getTable()
 	{
-		return $this->tableManager->getTable('PSX\Sql\TestTable');
+		return $this->tableManager->getTable('PSX\Sql\TestTableCommand');
 	}
 }
