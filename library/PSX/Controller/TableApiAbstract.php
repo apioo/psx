@@ -179,7 +179,6 @@ abstract class TableApiAbstract extends SchemaApiAbstract
 			{
 				case TableInterface::TYPE_SMALLINT:
 				case TableInterface::TYPE_INT:
-				case TableInterface::TYPE_BIGINT:
 					$builder->integer($column);
 					break;
 
@@ -204,6 +203,7 @@ abstract class TableApiAbstract extends SchemaApiAbstract
 					$builder->time($column);
 					break;
 
+				case TableInterface::TYPE_BIGINT:
 				case TableInterface::TYPE_VARCHAR:
 				case TableInterface::TYPE_TEXT:
 				case TableInterface::TYPE_BLOB:

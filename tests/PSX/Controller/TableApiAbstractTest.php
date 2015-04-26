@@ -58,7 +58,7 @@ class TableApiAbstractTest extends ControllerDbTestCase
 	"totalResults": 1,
 	"entry": [{
 		"id": 1,
-        "col_bigint": 2147483647,
+        "col_bigint": "68719476735",
         "col_blob": "Zm9vYmFy",
         "col_boolean": true,
         "col_datetime": "2015-01-21T23:59:59Z",
@@ -82,7 +82,7 @@ JSON;
 	public function testPost()
 	{
 		$data = json_encode(array(
-			'col_bigint' => '2147483647',
+			'col_bigint' => '68719476735',
 			'col_blob' => 'foobar',
 			'col_boolean' => 'true',
 			'col_datetime' => '2015-01-21T23:59:59+00:00',
@@ -141,7 +141,7 @@ JSON;
 			),
 			array(
 				'id' => '2',
-				'col_bigint' => '2147483647',
+				'col_bigint' => '68719476735',
 				'col_blob' => 'foobar',
 				'col_boolean' => '1',
 				'col_datetime' => '2015-01-21 23:59:59',
@@ -164,7 +164,7 @@ JSON;
 	{
 		$data = json_encode(array(
 			'id' => 1,
-			'col_bigint' => '2147483647',
+			'col_bigint' => '68719476735',
 			'col_blob' => 'foobar',
 			'col_boolean' => 'true',
 			'col_datetime' => '2015-01-21T23:59:59+00:00',
@@ -207,7 +207,7 @@ JSON;
 		$expect = array(
 			array(
 				'id' => '1',
-				'col_bigint' => '2147483647',
+				'col_bigint' => '68719476735',
 				'col_blob' => 'foobar',
 				'col_boolean' => '1',
 				'col_datetime' => '2015-01-21 23:59:59',
