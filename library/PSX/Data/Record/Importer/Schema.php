@@ -28,6 +28,10 @@ use PSX\Data\SchemaInterface;
 use PSX\Data\Schema\Property;
 use PSX\Data\Schema\PropertyInterface;
 use PSX\Data\Schema\ValidatorInterface;
+use PSX\DateTime;
+use PSX\DateTime\Date;
+use PSX\DateTime\Duration;
+use PSX\DateTime\Time;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
@@ -117,13 +121,21 @@ class Schema implements ImporterInterface
 
 			return empty($reference) ? $data : $this->getSimpleReference($reference, $data);
 		}
-		else if($type instanceof Property\Date || $type instanceof Property\DateTime)
+		else if($type instanceof Property\DateTime)
 		{
-			return empty($reference) ? new \DateTime($data) : $this->getSimpleReference($reference, $data);
+			return empty($reference) ? new DateTime($data) : $this->getSimpleReference($reference, $data);
+		}
+		else if($type instanceof Property\Date)
+		{
+			return empty($reference) ? new Date($data) : $this->getSimpleReference($reference, $data);
+		}
+		else if($type instanceof Property\Time)
+		{
+			return empty($reference) ? new Time($data) : $this->getSimpleReference($reference, $data);
 		}
 		else if($type instanceof Property\Duration)
 		{
-			return empty($reference) ? new \DateInterval($data) : $this->getSimpleReference($reference, $data);
+			return empty($reference) ? new Duration($data) : $this->getSimpleReference($reference, $data);
 		}
 		else if($type instanceof Property\Float)
 		{
