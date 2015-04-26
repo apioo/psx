@@ -35,18 +35,6 @@ use InvalidArgumentException;
  */
 class Url extends Uri
 {
-	public function setPort($port)
-	{
-		$port = (int) $port;
-
-		if($port < 1 || $port > 0xFFFF)
-		{
-			throw new InvalidArgumentException('Invalid port range');
-		}
-
-		parent::setPort($port);
-	}
-
 	protected function parse($url)
 	{
 		$url = (string) $url;
@@ -65,6 +53,15 @@ class Url extends Uri
 		if(empty($this->scheme) || empty($this->host))
 		{
 			throw new InvalidArgumentException('Invalid url syntax');
+		}
+
+		// check port if available
+		if($this->port !== null)
+		{
+			if($this->port < 1 || $this->port > 0xFFFF)
+			{
+				throw new InvalidArgumentException('Invalid port range');
+			}
 		}
 	}
 }

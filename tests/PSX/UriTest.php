@@ -341,89 +341,62 @@ class UriTest extends \PHPUnit_Framework_TestCase
 
 	public function testSetScheme()
 	{
-		$uri = new Uri('http://www.yahoo.com/');
-		
-		$this->assertEquals('http', $uri->getScheme());
-
-		$uri->setScheme('https');
+		$uri = new Uri('https', 'www.yahoo.com');
 
 		$this->assertEquals('https', $uri->getScheme());
-		$this->assertEquals('https://www.yahoo.com/', $uri->toString());
+		$this->assertEquals('https://www.yahoo.com', $uri->toString());
 	}
 
 	public function testSetUser()
 	{
-		$uri = new Uri('http://www.yahoo.com/');
-		
-		$this->assertEquals(null, $uri->getUser());
-
-		$uri->setUser('foo');
+		$uri = new Uri('http', 'foo@www.yahoo.com');
 
 		$this->assertEquals('foo', $uri->getUserInfo());
 		$this->assertEquals('foo', $uri->getUser());
-		$this->assertEquals('http://foo@www.yahoo.com/', $uri->toString());
+		$this->assertEquals('http://foo@www.yahoo.com', $uri->toString());
 	}
 
 	public function testSetPassword()
 	{
-		$uri = new Uri('http://www.yahoo.com/');
-		
+		$uri = new Uri('http', 'www.yahoo.com');
+
 		$this->assertEquals(null, $uri->getPassword());
-
-		$uri->setPassword('bar');
-
-		$this->assertEquals('bar', $uri->getPassword());
-		// no password gets set because we have no user
-		$this->assertEquals('http://www.yahoo.com/', $uri->toString());
+		$this->assertEquals('http://www.yahoo.com', $uri->toString());
 	}
 
 	public function testSetUserPassword()
 	{
-		$uri = new Uri('http://www.yahoo.com/');
-		$uri->setUser('foo');
-		$uri->setPassword('bar');
+		$uri = new Uri('http', 'foo:bar@www.yahoo.com');
 
 		$this->assertEquals('foo:bar', $uri->getUserInfo());
 		$this->assertEquals('foo', $uri->getUser());
 		$this->assertEquals('bar', $uri->getPassword());
-		$this->assertEquals('http://foo:bar@www.yahoo.com/', $uri->toString());
+		$this->assertEquals('http://foo:bar@www.yahoo.com', $uri->toString());
 	}
 
 	public function testSetHost()
 	{
-		$uri = new Uri('http://www.yahoo.com/');
-		
-		$this->assertEquals('www.yahoo.com', $uri->getHost());
-
-		$uri->setHost('google.com');
+		$uri = new Uri('http', 'google.com');
 
 		$this->assertEquals('google.com', $uri->getAuthority());
 		$this->assertEquals('google.com', $uri->getHost());
 		$this->assertEquals(null, $uri->getPort());
-		$this->assertEquals('http://google.com/', $uri->toString());
+		$this->assertEquals('http://google.com', $uri->toString());
 	}
 
 	public function testSetPort()
 	{
-		$uri = new Uri('http://www.yahoo.com/');
-		
-		$this->assertEquals(null, $uri->getPort());
-
-		$uri->setPort(8080);
+		$uri = new Uri('http', 'www.yahoo.com:8080');
 
 		$this->assertEquals('www.yahoo.com:8080', $uri->getAuthority());
 		$this->assertEquals('www.yahoo.com', $uri->getHost());
 		$this->assertEquals(8080, $uri->getPort());
-		$this->assertEquals('http://www.yahoo.com:8080/', $uri->toString());
+		$this->assertEquals('http://www.yahoo.com:8080', $uri->toString());
 	}
 
 	public function testSetPath()
 	{
-		$uri = new Uri('http://www.yahoo.com/');
-
-		$this->assertEquals('/', $uri->getPath());
-
-		$uri->setPath('/foo');
+		$uri = new Uri('http', 'www.yahoo.com', '/foo');
 
 		$this->assertEquals('/foo', $uri->getPath());
 		$this->assertEquals('http://www.yahoo.com/foo', $uri->toString());
@@ -431,26 +404,18 @@ class UriTest extends \PHPUnit_Framework_TestCase
 
 	public function testSetQuery()
 	{
-		$uri = new Uri('http://www.yahoo.com/');
-		
-		$this->assertEquals(null, $uri->getQuery());
-
-		$uri->setQuery('foo=bar&bar=foo');
+		$uri = new Uri('http', 'www.yahoo.com', '/', 'foo=bar&bar=foo');
 
 		$this->assertEquals('foo=bar&bar=foo', $uri->getQuery());
+		$this->assertEquals(['foo' => 'bar', 'bar' => 'foo'], $uri->getParameters());
 		$this->assertEquals('http://www.yahoo.com/?foo=bar&bar=foo', $uri->toString());
 	}
 
 	public function testSetFragment()
 	{
-		$uri = new Uri('http://www.yahoo.com/');
-
-		$this->assertEquals(null, $uri->getFragment());
-
-		$uri->setFragment('foo');
+		$uri = new Uri('http', 'www.yahoo.com', '/', null, 'foo');
 
 		$this->assertEquals('foo', $uri->getFragment());
 		$this->assertEquals('http://www.yahoo.com/#foo', $uri->toString());
 	}
 }
-

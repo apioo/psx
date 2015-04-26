@@ -95,18 +95,11 @@ class UrlTest extends \PHPUnit_Framework_TestCase
 		new Url('foo://#foo');
 	}
 
-	public function testSetPortValidRange()
+	public function testPort()
 	{
-		$uri = new Url('http://www.yahoo.com/');
+		$uri = new Url('http://www.yahoo.com:8080/');
 
-		for($i = 0; $i < 20; $i++)
-		{
-			$port = rand(1, 0xFFFF);
-
-			$uri->setPort($port);
-
-			$this->assertEquals('http://www.yahoo.com:' . $port . '/', $uri->__toString());
-		}
+		$this->assertEquals('http://www.yahoo.com:8080/', $uri->toString());
 	}
 
 	/**
@@ -114,8 +107,8 @@ class UrlTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testSetPortInvalidRangeMin()
 	{
-		$uri = new Url('http://www.yahoo.com/');
-		$uri->setPort(-1);
+		$port = -1;
+		$uri  = new Url('http://www.yahoo.com:' . $port . '/');
 	}
 
 	/**
@@ -123,15 +116,15 @@ class UrlTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testSetPortInvalidRangeMax()
 	{
-		$uri = new Url('http://www.yahoo.com/');
-		$uri->setPort(0xFFFF + 1);
+		$port = 0xFFFF + 1;
+		$uri  = new Url('http://www.yahoo.com:' . $port . '/');
 	}
 
 	public function testShortUrls()
 	{
 		$url = new Url('//www.yahoo.com');
 
-		$this->assertEquals('http://www.yahoo.com', $url->__toString());
+		$this->assertEquals('http://www.yahoo.com', $url->toString());
 	}
 
 	public function testUrlWithoutFile()

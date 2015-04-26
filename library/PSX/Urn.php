@@ -34,6 +34,9 @@ use InvalidArgumentException;
  */
 class Urn extends Uri
 {
+	protected $nid;
+	protected $nss;
+
 	/**
 	 * Returns the NID (Namespace Identifier)
 	 *
@@ -41,7 +44,7 @@ class Urn extends Uri
 	 */
 	public function getNid()
 	{
-		return strstr($this->path, ':', true);
+		return $this->nid;
 	}
 
 	/**
@@ -51,7 +54,7 @@ class Urn extends Uri
 	 */
 	public function getNss()
 	{
-		return substr(strstr($this->path, ':'), 1);
+		return $this->nss;
 	}
 
 	protected function parse($urn)
@@ -66,5 +69,17 @@ class Urn extends Uri
 		{
 			throw new InvalidArgumentException('Invalid urn syntax');
 		}
+
+		// parse
+		$this->nid = strstr($this->path, ':', true);
+		$this->nss = substr(strstr($this->path, ':'), 1);
+	}
+
+	protected function parseAuthority($authority)
+	{
+	}
+
+	protected function parseParameters($query)
+	{
 	}
 }

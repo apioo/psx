@@ -37,19 +37,34 @@ namespace PSX;
 class Uri
 {
 	protected $scheme;
+	protected $authority;
 	protected $path;
 	protected $query;
 	protected $fragment;
+
 	protected $user;
 	protected $password;
 	protected $host;
 	protected $port;
+	protected $parameters;
 
-	private $parameters;
-
-	public function __construct($uri)
+	public function __construct($uri, $authority = null, $path = null, $query = null, $fragment = null)
 	{
-		$this->parse($uri);
+		if(func_num_args() == 1)
+		{
+			$this->parse($uri);
+		}
+		else
+		{
+			$this->scheme    = $uri;
+			$this->authority = $authority;
+			$this->path      = $path;
+			$this->query     = $query;
+			$this->fragment  = $fragment;
+
+			$this->parseAuthority($authority);
+			$this->parseParameters($query);
+		}
 	}
 
 	public function getScheme()
@@ -57,29 +72,9 @@ class Uri
 		return $this->scheme;
 	}
 
-	public function setScheme($scheme)
-	{
-		$this->scheme = $scheme;
-	}
-
 	public function getAuthority()
 	{
-		$authority = '';
-		$userInfo  = $this->getUserInfo();
-
-		if(!empty($userInfo))
-		{
-			$authority.= $userInfo . '@';
-		}
-
-		$authority.= $this->host;
-
-		if(!empty($this->port))
-		{
-			$authority.= ':' . $this->port;
-		}
-
-		return $authority;
+		return $this->authority;
 	}
 
 	public function getUserInfo()
@@ -99,19 +94,9 @@ class Uri
 		return $this->user;
 	}
 
-	public function setUser($user)
-	{
-		$this->user = $user;
-	}
-
 	public function getPassword()
 	{
 		return $this->password;
-	}
-
-	public function setPassword($password)
-	{
-		$this->password = $password;
 	}
 
 	public function getHost()
@@ -119,19 +104,9 @@ class Uri
 		return $this->host;
 	}
 
-	public function setHost($host)
-	{
-		$this->host = $host;
-	}
-
 	public function getPort()
 	{
 		return $this->port;
-	}
-
-	public function setPort($port)
-	{
-		$this->port = $port;
 	}
 
 	public function getPath()
@@ -139,29 +114,14 @@ class Uri
 		return $this->path;
 	}
 
-	public function setPath($path)
-	{
-		$this->path = $path;
-	}
-
 	public function getQuery()
 	{
 		return $this->query;
 	}
 
-	public function setQuery($query)
-	{
-		$this->query = $query;
-	}
-
 	public function getFragment()
 	{
 		return $this->fragment;
-	}
-
-	public function setFragment($fragment)
-	{
-		$this->fragment = $fragment;
 	}
 
 	public function isAbsolute()
@@ -171,20 +131,67 @@ class Uri
 
 	public function getParameters()
 	{
-		if($this->parameters !== null)
-		{
-			return $this->parameters;
-		}
-
-		parse_str($this->query, $this->parameters);
-
 		return $this->parameters;
 	}
 
-	public function setParameters(array $parameters)
+	public function withScheme($scheme)
 	{
-		$this->query      = http_build_query($parameters, '', '&');
-		$this->parameters = $parameters;
+		return new static(
+			$scheme,
+			$this->authority,
+			$this->path,
+			$this->query,
+			$this->fragment
+		);
+	}
+
+	public function withAuthority($authority)
+	{
+		return new static(
+			$this->scheme,
+			$authority,
+			$this->path,
+			$this->query,
+			$this->fragment
+		);
+	}
+
+	public function withPath($path)
+	{
+		return new static(
+			$this->scheme,
+			$this->authority,
+			$path,
+			$this->query,
+			$this->fragment
+		);
+	}
+
+	public function withQuery($query)
+	{
+		return new static(
+			$this->scheme,
+			$this->authority,
+			$this->path,
+			$query,
+			$this->fragment
+		);
+	}
+
+	public function withFragment($fragment)
+	{
+		return new static(
+			$this->scheme,
+			$this->authority,
+			$this->path,
+			$this->query,
+			$fragment
+		);
+	}
+
+	public function withParameters(array $parameters)
+	{
+		return $this->withQuery(http_build_query($parameters, '', '&'));
 	}
 
 	/**
@@ -202,10 +209,9 @@ class Uri
 			$result.= $this->scheme . ':';
 		}
 
-		$authority = $this->getAuthority();
-		if(!empty($authority))
+		if(!empty($this->authority))
 		{
-			$result.= '//' . $authority;
+			$result.= '//' . $this->authority;
 		}
 
 		$result.= $this->path;
@@ -242,74 +248,47 @@ class Uri
 		$uri     = rawurldecode((string) $uri);
 		$matches = array();
 
-		preg_match_all('!^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?!', $uri, $matches);
+		preg_match('!' . self::getPattern() . '!', $uri, $matches);
 
-		$scheme    = isset($matches[2][0]) ? $matches[2][0] : null;
-		$authority = isset($matches[4][0]) ? $matches[4][0] : null;
-		$path      = isset($matches[5][0]) ? $matches[5][0] : null;
-		$query     = isset($matches[7][0]) ? $matches[7][0] : null;
-		$fragment  = isset($matches[9][0]) ? $matches[9][0] : null;
+		$scheme    = isset($matches[2]) ? $matches[2] : null;
+		$authority = isset($matches[4]) ? $matches[4] : null;
+		$path      = isset($matches[5]) ? $matches[5] : null;
+		$query     = isset($matches[7]) ? $matches[7] : null;
+		$fragment  = isset($matches[9]) ? $matches[9] : null;
 
-		if(!empty($scheme))
-		{
-			$this->scheme = $scheme;
-		}
+		$this->scheme    = $scheme;
+		$this->authority = $authority;
+		$this->path      = $path;
+		$this->query     = $query;
+		$this->fragment  = $fragment;
 
-		if(!empty($authority))
-		{
-			list($userInfo, $host, $port) = $this->splitAuthority($authority);
-
-			if(!empty($userInfo))
-			{
-				if(strpos($userInfo, ':') !== false)
-				{
-					$this->user     = strstr($userInfo, ':', true);
-					$this->password = substr(strstr($userInfo, ':'), 1);
-				}
-				else
-				{
-					$this->user = $userInfo;
-				}
-			}
-
-			$this->host = $host;
-			$this->port = $port;
-		}
-		
-		if(!empty($path))
-		{
-			$this->path = $path;
-		}
-		
-		if(!empty($query))
-		{
-			$this->query = $query;
-		}
-		
-		if(!empty($fragment))
-		{
-			$this->fragment = $fragment;
-		}
+		$this->parseAuthority($authority);
+		$this->parseParameters($query);
 	}
 
-	private function splitAuthority($authority)
+	protected function parseAuthority($authority)
 	{
+		if(empty($authority))
+		{
+			return;
+		}
+
 		$userInfo = strstr($authority, '@', true);
 		$part     = $userInfo === false ? $authority : substr(strstr($authority, '@'), 1);
 
 		// in case of ipv6
-		if($part[0] == '[')
+		if(isset($part[0]) && $part[0] == '[')
 		{
 			$pos = strpos($part, ']');
 
 			if($pos !== false)
 			{
-				$host = substr($part, 0, $pos + 1);
-				$port = substr($part, $pos + 2);
+				$this->host = substr($part, 0, $pos + 1);
+				$this->port = substr($part, $pos + 2);
 			}
 			else
 			{
-				return array($userInfo, $part, null);
+				$this->host = $part;
 			}
 		}
 		else
@@ -318,15 +297,46 @@ class Uri
 
 			if($host === false)
 			{
-				$host = $part;
-				$port = null;
+				$this->host = $part;
 			}
 			else
 			{
-				$port = substr(strstr($part, ':'), 1);
+				$this->host = $host;
+				$this->port = substr(strstr($part, ':'), 1);
 			}
 		}
 
-		return array($userInfo, $host, $port);
+		if(!empty($userInfo))
+		{
+			if(strpos($userInfo, ':') !== false)
+			{
+				$this->user     = strstr($userInfo, ':', true);
+				$this->password = substr(strstr($userInfo, ':'), 1);
+			}
+			else
+			{
+				$this->user     = $userInfo;
+			}
+		}
+	}
+
+	protected function parseParameters($query)
+	{
+		if(!empty($query))
+		{
+			parse_str($query, $this->parameters);
+		}
+		else
+		{
+			$this->parameters = array();
+		}
+	}
+
+	/**
+	 * @see https://tools.ietf.org/html/rfc3986#appendix-B
+	 */
+	public static function getPattern()
+	{
+		return '^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?';
 	}
 }

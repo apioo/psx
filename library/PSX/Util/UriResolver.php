@@ -51,12 +51,15 @@ class UriResolver
 		if($targetUri->isAbsolute())
 		{
 			$path = $targetUri->getPath();
+
 			if(!empty($path))
 			{
-				$targetUri->setPath(self::removeDotSegments($path));
+				return $targetUri->withPath(self::removeDotSegments($path));
 			}
-
-			return $targetUri;
+			else
+			{
+				return $targetUri;
+			}
 		}
 		else
 		{
@@ -68,7 +71,7 @@ class UriResolver
 			{
 				if(!empty($path))
 				{
-					$targetUri->setPath(self::removeDotSegments($path));
+					$path = self::removeDotSegments($path);
 				}
 			}
 			else
@@ -77,37 +80,37 @@ class UriResolver
 				{
 					if(empty($query))
 					{
-						$targetUri->setPath($baseUri->getPath());
-						$targetUri->setQuery($baseUri->getQuery());
+						$path  = $baseUri->getPath();
+						$query = $baseUri->getQuery();
 					}
 					else
 					{
-						$targetUri->setPath(self::merge($baseUri->getPath(), ''));
+						$path = self::merge($baseUri->getPath(), '');
 					}
 				}
 				else
 				{
 					if(substr($path, 0, 1) == '/')
 					{
-						$targetUri->setPath(self::removeDotSegments($path));
+						$path = self::removeDotSegments($path);
 					}
 					else
 					{
 						$path = self::merge($baseUri->getPath(), $path);
-
-						$targetUri->setPath(self::removeDotSegments($path));
+						$path = self::removeDotSegments($path);
 					}
 				}
 
-				$targetUri->setUser($baseUri->getUser());
-				$targetUri->setPassword($baseUri->getPassword());
-				$targetUri->setHost($baseUri->getHost());
-				$targetUri->setPort($baseUri->getPort());
+				$authority = $baseUri->getAuthority();
 			}
 
-			$targetUri->setScheme($baseUri->getScheme());
-
-			return $targetUri;
+			return new Uri(
+				$baseUri->getScheme(),
+				$authority,
+				$path,
+				$query,
+				$targetUri->getFragment()
+			);
 		}
 	}
 
