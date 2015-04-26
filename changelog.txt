@@ -1,4 +1,16 @@
 
+1.0.0-RC2
+* Fixed correct handling with date and time formats
+* Improved several value objects 
+* Improved controller schema api tests
+* Pass controller context when forwarding an request to another controller
+* The name of the exception record is now "error"
+* Add a new context value so that all controllers share the same supported 
+  writer value
+* Moved body trait methods into the controller abstract class 
+* Added controller set stdClass body test
+* Improved XSD generator and allow setting min max array length
+
 1.0.0-RC1
 * Updated documentation
 * Improved controller tests
