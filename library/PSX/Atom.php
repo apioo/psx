@@ -217,7 +217,7 @@ class Atom extends CollectionAbstract
 	}
 
 	/**
-	 * @param DateTime $updated
+	 * @param PSX\DateTime $updated
 	 */
 	public function setUpdated(\DateTime $updated)
 	{

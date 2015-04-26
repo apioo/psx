@@ -73,7 +73,7 @@ class Event extends Object
 	}
 
 	/**
-	 * @param DateTime $endTime
+	 * @param PSX\DateTime $endTime
 	 */
 	public function setEndTime(DateTime $endTime)
 	{
@@ -138,7 +138,7 @@ class Event extends Object
 	}
 
 	/**
-	 * @param DateTime $startTime
+	 * @param PSX\DateTime $startTime
 	 */
 	public function setStartTime(DateTime $startTime)
 	{

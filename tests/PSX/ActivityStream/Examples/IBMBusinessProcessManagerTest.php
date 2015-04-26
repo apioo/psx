@@ -95,7 +95,7 @@ class IBMBusinessProcessManagerTest extends SerializeTestAbstract
                 "id":"2078.3",
                 "objectType":"ibm.bpm.task"
             },
-            "published":"2012-01-09T09:58:00+00:00",
+            "published":"2012-01-09T09:58:00Z",
             "verb":"POST",
             "replies":{
                 "items":[
@@ -111,7 +111,7 @@ class IBMBusinessProcessManagerTest extends SerializeTestAbstract
                         },
                         "content":"tagging Internal TW Admin user user",
                         "objectType":"COMMENT",
-                        "published":"2012-01-09T16:18:44+00:00"
+                        "published":"2012-01-09T16:18:44Z"
                     }
                 ]
             }

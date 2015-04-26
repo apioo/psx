@@ -141,7 +141,7 @@ class IBMConnectionTest extends SerializeTestAbstract
     "itemsPerPage": 1,
     "items": [
         {
-        "published": "2011-11-21T15:14:06+00:00",
+        "published": "2011-11-21T15:14:06Z",
         "url": "http://www.example.org/connections/opensocial/rest/activitystreams/@me/@all/@all/86c62a05-61de-4658-97a7-16e7ccf72e78",
         "target": {
             "summary": "Top App Entry",
@@ -153,7 +153,7 @@ class IBMConnectionTest extends SerializeTestAbstract
                         "id": "12345678-8f0a-1028-xxxz-db07163b51b2",
                         "displayName": "Joe Blogs"
                     },
-                    "updated": "2011-11-21T15:13:59+00:00",
+                    "updated": "2011-11-21T15:13:59Z",
                     "id": "f8f0e93f-e462-4ede-92cc-f6e8a1b7eb36"
                  },
                  {
@@ -163,7 +163,7 @@ class IBMConnectionTest extends SerializeTestAbstract
                         "id": "12345678-8f0a-1028-xxxy-db07163b51b2",
                         "displayName": "Jane Doe"
                     },
-                    "updated": "2011-11-21T15:14:06+00:00",
+                    "updated": "2011-11-21T15:14:06Z",
                     "id": "5369ea82-d791-46cb-a87a-3696ff90d8f3"
                  }],
                 "totalItems": 0
@@ -173,10 +173,10 @@ class IBMConnectionTest extends SerializeTestAbstract
                 "id": "12345678-8f0a-1028-xxxx-db07163b51b2",
                 "displayName": "Joseph Bloggs"
             },
-            "updated": "2011-11-21T15:08:44+00:00",
+            "updated": "2011-11-21T15:08:44Z",
             "id": "87d7a7fb-af22-403b-ab0d-d101d9caac4f",
             "displayName": "Joseph Bloggs",
-            "published": "2011-11-21T15:08:44+00:00",
+            "published": "2011-11-21T15:08:44Z",
             "url": "http://www.example.org/topapp/1028-xxxx-db07163b51b2"
         },
         "provider": {
@@ -199,7 +199,7 @@ class IBMConnectionTest extends SerializeTestAbstract
         "title": "Joseph Bloggs commented on their own Top App entry.",
         "content": "<span class=\"vcard\"><a class=\"fn url\" title=\"This is a link to the profile of Joseph Bloggs.\" href=\"http://www.example.org/profiles/html/profileView.do?userid=12345678-8f0a-1028-xxxx-db07163b51b2\"><span class=\"photo\" src=\"http://www.example.org/profiles/photo.do?userid=12345678-8f0a-1028-xxxx-db07163b51b2\" alt=\"This is a photo of Joseph Bloggs.\" style=\"display : none\"></span>Joseph Bloggs</a><span class=\"x-lconn-userid\" style=\"display : none\">12345678-8f0a-1028-xxxx-db07163b51b2</span></span> commented on their own Top App entry.",
         "id": "urn:lsid:ibm.com:activitystreams:86c62a05-61de-4658-97a7-16e7ccf72e78",
-        "updated": "2011-11-21T15:14:07+00:00",
+        "updated": "2011-11-21T15:14:07Z",
         "object": {
             "summary": "This was my first comment",
             "objectType": "comment",

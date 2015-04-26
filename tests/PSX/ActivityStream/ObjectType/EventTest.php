@@ -67,7 +67,7 @@ class EventTest extends SerializeTestAbstract
         "objectType": "person",
         "displayName": "Joe"
       }]},
-  "endTime": "2012-12-12T13:00:00+00:00",
+  "endTime": "2012-12-12T13:00:00Z",
   "invited": {"items": [{
         "objectType": "person",
         "displayName": "Joe"
@@ -84,11 +84,11 @@ class EventTest extends SerializeTestAbstract
         "objectType": "person",
         "displayName": "Joe"
       }]},
-  "startTime": "2012-12-12T12:00:00+00:00",
-  "validFrom": "2012-12-12T13:00:00+00:00",
-  "validAfter": "2012-12-12T13:00:00+00:00",
-  "validUntil": "2012-12-12T13:00:00+00:00",
-  "validBefore": "2012-12-12T13:00:00+00:00",
+  "startTime": "2012-12-12T12:00:00Z",
+  "validFrom": "2012-12-12T13:00:00Z",
+  "validAfter": "2012-12-12T13:00:00Z",
+  "validUntil": "2012-12-12T13:00:00Z",
+  "validBefore": "2012-12-12T13:00:00Z",
   "objectType": "event",
   "displayName": "Meeting with Joe"
 }

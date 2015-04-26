@@ -163,7 +163,7 @@ trait AdditionalObjectPropertiesTrait
 	}
 
 	/**
-	 * @param DateTime $published
+	 * @param PSX\DateTime $published
 	 */
 	public function setPublished(DateTime $published)
 	{
@@ -215,7 +215,7 @@ trait AdditionalObjectPropertiesTrait
 	}
 
 	/**
-	 * @param DateTime $updated
+	 * @param PSX\DateTime $updated
 	 */
 	public function setUpdated(DateTime $updated)
 	{
@@ -228,7 +228,7 @@ trait AdditionalObjectPropertiesTrait
 	}
 
 	/**
-	 * @param DateTime $startTime
+	 * @param PSX\DateTime $startTime
 	 */
 	public function setStartTime(DateTime $startTime)
 	{
@@ -241,7 +241,7 @@ trait AdditionalObjectPropertiesTrait
 	}
 
 	/**
-	 * @param DateTime $endTime
+	 * @param PSX\DateTime $endTime
 	 */
 	public function setEndTime(DateTime $endTime)
 	{
@@ -254,7 +254,7 @@ trait AdditionalObjectPropertiesTrait
 	}
 
 	/**
-	 * @param DateTime $validFrom
+	 * @param PSX\DateTime $validFrom
 	 */
 	public function setValidFrom(DateTime $validFrom)
 	{
@@ -267,7 +267,7 @@ trait AdditionalObjectPropertiesTrait
 	}
 
 	/**
-	 * @param DateTime $validAfter
+	 * @param PSX\DateTime $validAfter
 	 */
 	public function setValidAfter(DateTime $validAfter)
 	{
@@ -280,7 +280,7 @@ trait AdditionalObjectPropertiesTrait
 	}
 
 	/**
-	 * @param DateTime $validUntil
+	 * @param PSX\DateTime $validUntil
 	 */
 	public function setValidUntil(DateTime $validUntil)
 	{
@@ -293,7 +293,7 @@ trait AdditionalObjectPropertiesTrait
 	}
 
 	/**
-	 * @param DateTime $validBefore
+	 * @param PSX\DateTime $validBefore
 	 */
 	public function setValidBefore(DateTime $validBefore)
 	{

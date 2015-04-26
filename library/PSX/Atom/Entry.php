@@ -178,7 +178,7 @@ class Entry extends RecordAbstract
 	}
 
 	/**
-	 * @param DateTime $published
+	 * @param PSX\DateTime $published
 	 */
 	public function setPublished(DateTime $published)
 	{
@@ -191,7 +191,7 @@ class Entry extends RecordAbstract
 	}
 
 	/**
-	 * @param DateTime $updated
+	 * @param PSX\DateTime $updated
 	 */
 	public function setUpdated(DateTime $updated)
 	{

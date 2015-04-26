@@ -71,14 +71,14 @@ class CollectionTest extends SerializeTestAbstract
     "items": [{
     	"id": "f8f0e93f-e462-4ede-92cc-f6e8a1b7eb36",
     	"content": "This was my first comment",
-    	"updated": "2011-11-21T15:13:59+00:00"
+    	"updated": "2011-11-21T15:13:59Z"
     },{
     	"id": "5369ea82-d791-46cb-a87a-3696ff90d8f3",
     	"content": "This was another comment",
-    	"updated": "2011-11-21T15:14:06+00:00"
+    	"updated": "2011-11-21T15:14:06Z"
     }],
-    "itemsAfter": "2011-11-21T15:13:59+00:00",
-    "itemsBefore": "2011-11-21T15:13:59+00:00",
+    "itemsAfter": "2011-11-21T15:13:59Z",
+    "itemsBefore": "2011-11-21T15:13:59Z",
     "itemsPerPage": 2,
     "startIndex": 0,
     "first": "urn:foo:page:1",

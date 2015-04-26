@@ -63,7 +63,7 @@ class TaskTest extends SerializeTestAbstract
     "objectType": "person",
     "displayName": "James"
   },
-  "by": "2012-12-12T12:12:12+00:00",
+  "by": "2012-12-12T12:12:12Z",
   "object": {
     "objectType": "file",
     "displayName": "A specification",

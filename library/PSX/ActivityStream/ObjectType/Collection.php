@@ -79,7 +79,7 @@ class Collection extends Object implements CollectionInterface
 	}
 
 	/**
-	 * @param DateTime $itemsAfter
+	 * @param PSX\DateTime $itemsAfter
 	 */
 	public function setItemsAfter(DateTime $itemsAfter)
 	{
@@ -92,7 +92,7 @@ class Collection extends Object implements CollectionInterface
 	}
 
 	/**
-	 * @param DateTime $itemsAfter
+	 * @param PSX\DateTime $itemsAfter
 	 */
 	public function setItemsBefore(DateTime $itemsBefore)
 	{

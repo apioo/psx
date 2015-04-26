@@ -157,7 +157,7 @@ class ActivityTest extends SerializeTestAbstract
     }
   },
   "language": "en",
-  "published": "2011-02-10T15:04:55+00:00"
+  "published": "2011-02-10T15:04:55Z"
 }
 JSON;
 
@@ -261,7 +261,7 @@ JSON;
   "items": [{
       "verb": "post",
       "language": "en",
-      "published": "2011-02-10T15:04:55+00:00",
+      "published": "2011-02-10T15:04:55Z",
       "generator": "http://example.org/activities-app",
       "provider": "http://example.org/activity-stream",
       "displayName": {
