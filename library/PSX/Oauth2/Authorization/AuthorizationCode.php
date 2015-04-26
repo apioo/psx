@@ -100,9 +100,6 @@ class AuthorizationCode extends AuthorizationAbstract
 			$parameters['state'] = $state;
 		}
 
-		$url->setScheme('https');
-		$url->setParameters($parameters);
-
-		throw new StatusCode\TemporaryRedirectException($url->toString());
+		throw new StatusCode\TemporaryRedirectException($url->withScheme('https')->withParameters($parameters)->toString());
 	}
 }

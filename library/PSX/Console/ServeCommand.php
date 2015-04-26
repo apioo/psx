@@ -72,7 +72,7 @@ class ServeCommand extends Command
 	{
 		// request
 		$baseUrl = new Url($this->config['psx_url']);
-		$baseUrl->setPath(null);
+		$baseUrl = $baseUrl->withPath(null);
 
 		$parser   = new RequestParser($baseUrl, RequestParser::MODE_LOOSE);
 		$request  = $parser->parse($this->reader->read());

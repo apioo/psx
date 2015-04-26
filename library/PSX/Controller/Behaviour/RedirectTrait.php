@@ -22,6 +22,7 @@ namespace PSX\Controller\Behaviour;
 
 use PSX\Http\Exception as StatusCode;
 use PSX\Url;
+use RuntimeException;
 
 /**
  * Provides methods to forward an request to another controller or redirect the
@@ -55,10 +56,16 @@ trait RedirectTrait
 	{
 		$path = $this->reverseRouter->getPath($source, $parameters);
 
-		$this->request->setMethod('GET');
-		$this->request->getUri()->setPath($path);
+		if($path !== null)
+		{
+			$this->request->setUri($this->request->getUri()->withPath($path));
 
-		$this->loader->load($this->request, $this->response, $this->context);
+			$this->loader->load($this->request, $this->response, $this->context);
+		}
+		else
+		{
+			throw new RuntimeException('Could not find route for source ' . $source);
+		}
 	}
 
 	/**
