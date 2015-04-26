@@ -60,25 +60,25 @@ class ApiAbstractTableTest extends ControllerDbTestCase
             "id": 4,
             "userId": 3,
             "title": "blub",
-            "date": "2013-04-29T16:56:32+00:00"
+            "date": "2013-04-29T16:56:32Z"
         },
         {
             "id": 3,
             "userId": 2,
             "title": "test",
-            "date": "2013-04-29T16:56:32+00:00"
+            "date": "2013-04-29T16:56:32Z"
         },
         {
             "id": 2,
             "userId": 1,
             "title": "bar",
-            "date": "2013-04-29T16:56:32+00:00"
+            "date": "2013-04-29T16:56:32Z"
         },
         {
             "id": 1,
             "userId": 1,
             "title": "foo",
-            "date": "2013-04-29T16:56:32+00:00"
+            "date": "2013-04-29T16:56:32Z"
         }
     ]
 }
@@ -102,7 +102,7 @@ JSON;
     "id": 1,
     "userId": 1,
     "title": "foo",
-    "date": "2013-04-29T16:56:32+00:00"
+    "date": "2013-04-29T16:56:32Z"
 }
 JSON;
 
@@ -127,7 +127,7 @@ JSON;
             "title": "blub",
             "author": {
                 "userId": 3,
-                "date": "2013-04-29T16:56:32+00:00"
+                "date": "2013-04-29T16:56:32Z"
             }
         },
         {
@@ -135,7 +135,7 @@ JSON;
             "title": "test",
             "author": {
                 "userId": 2,
-                "date": "2013-04-29T16:56:32+00:00"
+                "date": "2013-04-29T16:56:32Z"
             }
         },
         {
@@ -143,7 +143,7 @@ JSON;
             "title": "bar",
             "author": {
                 "userId": 1,
-                "date": "2013-04-29T16:56:32+00:00"
+                "date": "2013-04-29T16:56:32Z"
             }
         },
         {
@@ -151,7 +151,7 @@ JSON;
             "title": "foo",
             "author": {
                 "userId": 1,
-                "date": "2013-04-29T16:56:32+00:00"
+                "date": "2013-04-29T16:56:32Z"
             }
         }
     ]

@@ -57,25 +57,25 @@ class EntityTest extends ControllerDbTestCase
       "id": 4,
       "userId": 3,
       "title": "blub",
-      "date": "2013-04-29T16:56:32+00:00"
+      "date": "2013-04-29T16:56:32Z"
     },
     {
       "id": 3,
       "userId": 2,
       "title": "test",
-      "date": "2013-04-29T16:56:32+00:00"
+      "date": "2013-04-29T16:56:32Z"
     },
     {
       "id": 2,
       "userId": 1,
       "title": "bar",
-      "date": "2013-04-29T16:56:32+00:00"
+      "date": "2013-04-29T16:56:32Z"
     },
     {
       "id": 1,
       "userId": 1,
       "title": "foo",
-      "date": "2013-04-29T16:56:32+00:00"
+      "date": "2013-04-29T16:56:32Z"
     }
   ]}
 JSON;

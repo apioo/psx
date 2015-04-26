@@ -60,25 +60,25 @@ class VersionViewTest extends ControllerDbTestCase
       "id": 4,
       "userId": 3,
       "title": "blub",
-      "date": "2013-04-29T16:56:32+00:00"
+      "date": "2013-04-29T16:56:32Z"
     },
     {
       "id": 3,
       "userId": 2,
       "title": "test",
-      "date": "2013-04-29T16:56:32+00:00"
+      "date": "2013-04-29T16:56:32Z"
     },
     {
       "id": 2,
       "userId": 1,
       "title": "bar",
-      "date": "2013-04-29T16:56:32+00:00"
+      "date": "2013-04-29T16:56:32Z"
     },
     {
       "id": 1,
       "userId": 1,
       "title": "foo",
-      "date": "2013-04-29T16:56:32+00:00"
+      "date": "2013-04-29T16:56:32Z"
     }
   ]}
 JSON;
@@ -88,7 +88,7 @@ JSON;
 
 	public function testPostNoVersion()
 	{
-		$data     = json_encode(array('userId' => 3, 'title' => 'test', 'date' => '2013-05-29T16:56:32+00:00'));
+		$data     = json_encode(array('userId' => 3, 'title' => 'test', 'date' => '2013-05-29T16:56:32Z'));
 		$body     = new TempStream(fopen('php://memory', 'r+'));
 		$request  = new Request(new Url('http://127.0.0.1/api'), 'POST', array('Content-Type' => 'application/json'), $data);
 		$response = new Response();
@@ -167,7 +167,7 @@ JSON;
 
 	public function testPostClosedVersion()
 	{
-		$data     = json_encode(array('userId' => 3, 'title' => 'test', 'date' => '2013-05-29T16:56:32+00:00'));
+		$data     = json_encode(array('userId' => 3, 'title' => 'test', 'date' => '2013-05-29T16:56:32Z'));
 		$body     = new TempStream(fopen('php://memory', 'r+'));
 		$request  = new Request(new Url('http://127.0.0.1/api'), 'POST', array('Accept' => 'application/vnd.psx.v1+json', 'Content-Type' => 'application/json'), $data);
 		$response = new Response();
@@ -252,25 +252,25 @@ JSON;
       "id": 4,
       "userId": 3,
       "title": "blub",
-      "date": "2013-04-29T16:56:32+00:00"
+      "date": "2013-04-29T16:56:32Z"
     },
     {
       "id": 3,
       "userId": 2,
       "title": "test",
-      "date": "2013-04-29T16:56:32+00:00"
+      "date": "2013-04-29T16:56:32Z"
     },
     {
       "id": 2,
       "userId": 1,
       "title": "bar",
-      "date": "2013-04-29T16:56:32+00:00"
+      "date": "2013-04-29T16:56:32Z"
     },
     {
       "id": 1,
       "userId": 1,
       "title": "foo",
-      "date": "2013-04-29T16:56:32+00:00"
+      "date": "2013-04-29T16:56:32Z"
     }
   ]}
 JSON;
@@ -280,7 +280,7 @@ JSON;
 
 	public function testPostDeprecatedVersion()
 	{
-		$data     = json_encode(array('userId' => 3, 'title' => 'test', 'date' => '2013-05-29T16:56:32+00:00'));
+		$data     = json_encode(array('userId' => 3, 'title' => 'test', 'date' => '2013-05-29T16:56:32Z'));
 		$body     = new TempStream(fopen('php://memory', 'r+'));
 		$request  = new Request(new Url('http://127.0.0.1/api'), 'POST', array('Accept' => 'application/vnd.psx.v2+json', 'Content-Type' => 'application/json'), $data);
 		$response = new Response();
@@ -357,25 +357,25 @@ JSON;
       "id": 4,
       "userId": 3,
       "title": "blub",
-      "date": "2013-04-29T16:56:32+00:00"
+      "date": "2013-04-29T16:56:32Z"
     },
     {
       "id": 3,
       "userId": 2,
       "title": "test",
-      "date": "2013-04-29T16:56:32+00:00"
+      "date": "2013-04-29T16:56:32Z"
     },
     {
       "id": 2,
       "userId": 1,
       "title": "bar",
-      "date": "2013-04-29T16:56:32+00:00"
+      "date": "2013-04-29T16:56:32Z"
     },
     {
       "id": 1,
       "userId": 1,
       "title": "foo",
-      "date": "2013-04-29T16:56:32+00:00"
+      "date": "2013-04-29T16:56:32Z"
     }
   ]}
 JSON;
@@ -385,7 +385,7 @@ JSON;
 
 	public function testPostActiveVersion()
 	{
-		$data     = json_encode(array('userId' => 3, 'title' => 'test', 'date' => '2013-05-29T16:56:32+00:00'));
+		$data     = json_encode(array('userId' => 3, 'title' => 'test', 'date' => '2013-05-29T16:56:32Z'));
 		$body     = new TempStream(fopen('php://memory', 'r+'));
 		$request  = new Request(new Url('http://127.0.0.1/api'), 'POST', array('Accept' => 'application/vnd.psx.v3+json', 'Content-Type' => 'application/json'), $data);
 		$response = new Response();
@@ -464,7 +464,7 @@ JSON;
 
 	public function testPostUnknownVersion()
 	{
-		$data     = json_encode(array('userId' => 3, 'title' => 'test', 'date' => '2013-05-29T16:56:32+00:00'));
+		$data     = json_encode(array('userId' => 3, 'title' => 'test', 'date' => '2013-05-29T16:56:32Z'));
 		$body     = new TempStream(fopen('php://memory', 'r+'));
 		$request  = new Request(new Url('http://127.0.0.1/api'), 'POST', array('Accept' => 'application/vnd.psx.v4+json', 'Content-Type' => 'application/json'), $data);
 		$response = new Response();

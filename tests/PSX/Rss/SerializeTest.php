@@ -88,8 +88,8 @@ class SerializeTest extends SerializeTestAbstract
   "category": [{
   	"text": "Newspapers"
   }],
-  "pubDate": "2003-06-10T04:00:00+00:00",
-  "lastBuildDate": "2003-06-10T09:41:01+00:00",
+  "pubDate": "2003-06-10T04:00:00Z",
+  "lastBuildDate": "2003-06-10T09:41:01Z",
   "cloud": {
     "domain": "rpc.sys.com",
     "port": 80,
@@ -106,7 +106,7 @@ class SerializeTest extends SerializeTestAbstract
     	"text": "Newspapers"
     }],
     "guid": "http://liftoff.msfc.nasa.gov/2003/06/03.html#item573",
-    "pubDate": "2003-06-03T09:39:21+00:00",
+    "pubDate": "2003-06-03T09:39:21Z",
     "comments": "http://localhost.com#comments",
     "enclosure": {
       "url": "http://www.scripting.com/mp3s/weatherReportSuite.mp3",

@@ -57,7 +57,7 @@ class SoapEndpointTest extends ControllerDbTestCase
 		$entry = new stdClass();
 		$entry->userId = 3;
 		$entry->title = 'test';
-		$entry->date = '2013-04-29T16:56:32+00:00';
+		$entry->date = '2013-04-29T16:56:32Z';
 
 		$message = $this->getSoapClient()->postItem($entry);
 
@@ -73,7 +73,7 @@ class SoapEndpointTest extends ControllerDbTestCase
 		$entry = new stdClass();
 		$entry->userId = 3;
 		$entry->title = 'fo';
-		$entry->date = '2013-04-29T16:56:32+00:00';
+		$entry->date = '2013-04-29T16:56:32Z';
 
 		$this->getSoapClient()->postItem($entry);
 	}
@@ -84,7 +84,7 @@ class SoapEndpointTest extends ControllerDbTestCase
 		$entry->id = 1;
 		$entry->userId = 3;
 		$entry->title = 'foobar';
-		$entry->date = '2013-04-29T16:56:32+00:00';
+		$entry->date = '2013-04-29T16:56:32Z';
 
 		$message = $this->getSoapClient()->putItem($entry);
 
@@ -149,7 +149,7 @@ class SoapEndpointTest extends ControllerDbTestCase
 		$entry->id = 4;
 		$entry->userId = 3;
 		$entry->title = 'blub';
-		$entry->date = '2013-04-29T16:56:32+00:00';
+		$entry->date = '2013-04-29T16:56:32Z';
 
 		$collection->entry[] = $entry;
 
@@ -157,7 +157,7 @@ class SoapEndpointTest extends ControllerDbTestCase
 		$entry->id = 3;
 		$entry->userId = 2;
 		$entry->title = 'test';
-		$entry->date = '2013-04-29T16:56:32+00:00';
+		$entry->date = '2013-04-29T16:56:32Z';
 
 		$collection->entry[] = $entry;
 
@@ -165,7 +165,7 @@ class SoapEndpointTest extends ControllerDbTestCase
 		$entry->id = 2;
 		$entry->userId = 1;
 		$entry->title = 'bar';
-		$entry->date = '2013-04-29T16:56:32+00:00';
+		$entry->date = '2013-04-29T16:56:32Z';
 
 		$collection->entry[] = $entry;
 
@@ -173,7 +173,7 @@ class SoapEndpointTest extends ControllerDbTestCase
 		$entry->id = 1;
 		$entry->userId = 1;
 		$entry->title = 'foo';
-		$entry->date = '2013-04-29T16:56:32+00:00';
+		$entry->date = '2013-04-29T16:56:32Z';
 
 		$collection->entry[] = $entry;
 

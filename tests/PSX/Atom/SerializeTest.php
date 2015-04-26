@@ -102,7 +102,7 @@ class SerializeTest extends SerializeTestAbstract
   	"content": "And some more content"
   },
   "title": "Foo has bar",
-  "updated": "2003-06-10T04:00:00+00:00",
+  "updated": "2003-06-10T04:00:00Z",
   "entry": [{
     "author": [{
       "name": "foobar",
@@ -131,13 +131,13 @@ class SerializeTest extends SerializeTestAbstract
       "title": "Foobar",
       "length": 1337
     }],
-    "published": "2003-06-10T04:00:00+00:00",
+    "published": "2003-06-10T04:00:00Z",
     "rights": "foo",
     "summary": {
       "content": "lreom ipsum"
     },
     "title": "Star City",
-    "updated": "2003-06-10T04:00:00+00:00"
+    "updated": "2003-06-10T04:00:00Z"
   }]
 } 
 JSON;
