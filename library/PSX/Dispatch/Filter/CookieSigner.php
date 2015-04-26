@@ -23,7 +23,7 @@ namespace PSX\Dispatch\Filter;
 use PSX\Dispatch\FilterChainInterface;
 use PSX\Dispatch\FilterInterface;
 use PSX\Exception;
-use PSX\Http\CookieParser;
+use PSX\Http\Cookie;
 use PSX\Http\Exception\BadRequestException;
 use PSX\Http\RequestInterface;
 use PSX\Http\ResponseInterface;
@@ -56,7 +56,7 @@ class CookieSigner implements FilterInterface
 
 		if($request->hasHeader('Cookie'))
 		{
-			$cookies = CookieParser::parseCookie($request->getHeader('Cookie'));
+			$cookies = Cookie::parseList($request->getHeader('Cookie'));
 
 			foreach($cookies as $cookie)
 			{

@@ -29,11 +29,9 @@ namespace PSX\Http;
  */
 class CookieTest extends \PHPUnit_Framework_TestCase
 {
-	public function testParseSetCookie()
+	public function testCookie()
 	{
-		$raw = 'DNR=deleted; expires=Tue, 24-Dec-2013 11:39:14 GMT; path=/; domain=.www.yahoo.com';
-
-		$cookie = CookieParser::parseSetCookie($raw);
+		$cookie = new Cookie('DNR=deleted; expires=Tue, 24-Dec-2013 11:39:14 GMT; path=/; domain=.www.yahoo.com');
 
 		$this->assertEquals('DNR', $cookie->getName());
 		$this->assertEquals('deleted', $cookie->getValue());
@@ -42,18 +40,25 @@ class CookieTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('www.yahoo.com', $cookie->getDomain());
 	}
 
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
 	public function testParseSetCookieInvalid()
 	{
-		$cookie = CookieParser::parseSetCookie('');
+		new Cookie('');
+	}
 
-		$this->assertEquals(null, $cookie);
+	public function testConstructorFull()
+	{
+		$cookie = new Cookie('foo', 'bar', new \DateTime('2015-04-26'), '/', 'foo.com', true, true);
+
+		$this->assertEquals('foo=bar; Expires=Sun, 26 Apr 2015 00:00:00 GMT; Path=/; Domain=foo.com; Secure; HttpOnly', $cookie->toString());
 	}
 
 	public function testParseCookie()
 	{
-		$raw = 'PREF=ID=b2213461059ce5aa:U=7e750f10b5443cbd:FF=0:LD=de:TM=1355057682:LM=1416137366:IG=1:S=iUo8jIwdvU1XETOk; OGPC=4061130-15:; NID=67=KH_6L9jakszp8JPerRzPmmDlE-6SWo8OBPNDRWybmglbBn1pRkxcZhLgT65ELl0j0nSCP4wodw0UKGsk2SAUp1bGhep2DYqn7dbMYumzmMax2GHl1Y-HzLK4-Ct-9W-yrAH_gRs6DoH25Hn7epA; FOO; BAR=';
-
-		$cookies = CookieParser::parseCookie($raw);
+		$raw     = 'PREF=ID=b2213461059ce5aa:U=7e750f10b5443cbd:FF=0:LD=de:TM=1355057682:LM=1416137366:IG=1:S=iUo8jIwdvU1XETOk; OGPC=4061130-15:; NID=67=KH_6L9jakszp8JPerRzPmmDlE-6SWo8OBPNDRWybmglbBn1pRkxcZhLgT65ELl0j0nSCP4wodw0UKGsk2SAUp1bGhep2DYqn7dbMYumzmMax2GHl1Y-HzLK4-Ct-9W-yrAH_gRs6DoH25Hn7epA; FOO; BAR=';
+		$cookies = Cookie::parseList($raw);
 
 		$this->assertEquals(5, count($cookies));
 		$this->assertEquals('PREF', $cookies[0]->getName());

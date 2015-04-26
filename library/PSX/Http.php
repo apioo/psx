@@ -20,8 +20,8 @@
 
 namespace PSX;
 
+use InvalidArgumentException;
 use PSX\Http\Cookie;
-use PSX\Http\CookieParser;
 use PSX\Http\CookieStoreInterface;
 use PSX\Http\GetRequest;
 use PSX\Http\HandlerInterface;
@@ -219,13 +219,16 @@ class Http
 
 			foreach($cookies as $rawCookie)
 			{
-				$cookie = CookieParser::parseSetCookie($rawCookie);
-
-				if($cookie instanceof Cookie)
+				try
 				{
+					$cookie = new Cookie($rawCookie);
 					$domain = $cookie->getDomain() !== null ? $cookie->getDomain() : $request->getUri()->getHost();
 
 					$this->cookieStore->store($domain, $cookie);
+				}
+				catch(InvalidArgumentException $e)
+				{
+					// invalid cookies
 				}
 			}
 		}

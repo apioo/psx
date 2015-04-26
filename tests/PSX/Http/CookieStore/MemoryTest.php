@@ -20,7 +20,7 @@
 
 namespace PSX\Http\CookieStore;
 
-use PSX\Http\CookieParser;
+use PSX\Http\Cookie;
 
 /**
  * MemoryTest
@@ -39,7 +39,7 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEmpty($cookies);
 
-		$cookie = CookieParser::parseSetCookie('foo=bar');
+		$cookie = new Cookie('foo=bar');
 
 		$store->store('foo.com', $cookie);
 
