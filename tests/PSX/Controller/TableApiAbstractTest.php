@@ -55,27 +55,22 @@ class TableApiAbstractTest extends ControllerDbTestCase
 {
 	"startIndex": 0,
 	"count": 16,
-	"totalResults": 4,
+	"totalResults": 1,
 	"entry": [{
-		"id": 4,
-		"userId": 3,
-		"title": "blub",
-		"date": "2013-04-29T16:56:32+00:00"
-	},{
-		"id": 3,
-		"userId": 2,
-		"title": "test",
-		"date": "2013-04-29T16:56:32+00:00"
-	},{
-		"id": 2,
-		"userId": 1,
-		"title": "bar",
-		"date": "2013-04-29T16:56:32+00:00"
-	},{
 		"id": 1,
-		"userId": 1,
-		"title": "foo",
-		"date": "2013-04-29T16:56:32+00:00"
+        "col_bigint": 2147483647,
+        "col_blob": "Zm9vYmFy",
+        "col_boolean": true,
+        "col_datetime": "2015-01-21T23:59:59Z",
+        "col_datetimetz": "2015-01-21T23:59:59Z",
+        "col_date": "2015-01-21",
+        "col_decimal": 10,
+        "col_float": 10.37,
+        "col_integer": 2147483647,
+        "col_smallint": 255,
+        "col_text": "foobar",
+        "col_time": "23:59:59",
+        "col_string": "foobar"
 	}]
 }
 JSON;
@@ -86,60 +81,79 @@ JSON;
 
 	public function testPost()
 	{
-		$data     = json_encode(array('userId' => 3, 'title' => 'test', 'date' => '2013-05-29T16:56:32+00:00'));
+		$data = json_encode(array(
+			'col_bigint' => '2147483647',
+			'col_blob' => 'foobar',
+			'col_boolean' => 'true',
+			'col_datetime' => '2015-01-21T23:59:59+00:00',
+			'col_datetimetz' => '2015-01-21T23:59:59+01:00',
+			'col_date' => '2015-01-21',
+			'col_decimal' => '10',
+			'col_float' => '10.37',
+			'col_integer' => '2147483647',
+			'col_smallint' => '255',
+			'col_text' => 'foobar',
+			'col_time' => '23:59:59',
+			'col_string' => 'foobar',
+		));
+
 		$body     = new TempStream(fopen('php://memory', 'r+'));
 		$request  = new Request(new Url('http://127.0.0.1/api'), 'POST', array('Content-Type' => 'application/json'), $data);
 		$response = new Response();
 		$response->setBody($body);
 
 		$controller = $this->loadController($request, $response);
-		$body       = Json::decode((string) $response->getBody());
+		$body       = (string) $response->getBody();
 
-		$expect = array(
-			'success' => true,
-			'message' => 'Comment successful created',
-		);
+		$expect = <<<JSON
+{
+	"success": true,
+	"message": "Test successful created"
+}
+JSON;
 
-		$this->assertEquals(200, $response->getStatusCode());
-		$this->assertEquals($expect, $body);
+		$this->assertEquals(200, $response->getStatusCode(), $body);
+		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
 
 		// check database
 		$result = $this->connection->createQueryBuilder()
-			->select(array('id', 'userId', 'title', 'date'))
-			->from('psx_handler_comment')
+			->select(array('id', 'col_bigint', 'col_blob', 'col_boolean', 'col_datetime', 'col_datetimetz', 'col_date', 'col_decimal', 'col_float', 'col_integer', 'col_smallint', 'col_text', 'col_time', 'col_string'))
+			->from('psx_table_command_test')
 			->execute()
 			->fetchAll();
 
 		$expect = array(
 			array(
 				'id' => '1',
-				'userId' => '1',
-				'title' => 'foo',
-				'date' => '2013-04-29 16:56:32',
+				'col_bigint' => '68719476735',
+				'col_blob' => 'foobar',
+				'col_boolean' => '1',
+				'col_datetime' => '2015-01-21 23:59:59',
+				'col_datetimetz' => '2015-01-21 23:59:59',
+				'col_date' => '2015-01-21',
+				'col_decimal' => '10',
+				'col_float' => '10.37',
+				'col_integer' => '2147483647',
+				'col_smallint' => '255',
+				'col_text' => 'foobar',
+				'col_time' => '23:59:59',
+				'col_string' => 'foobar',
 			),
 			array(
 				'id' => '2',
-				'userId' => '1',
-				'title' => 'bar',
-				'date' => '2013-04-29 16:56:32',
-			),
-			array(
-				'id' => '3',
-				'userId' => '2',
-				'title' => 'test',
-				'date' => '2013-04-29 16:56:32',
-			),
-			array(
-				'id' => '4',
-				'userId' => '3',
-				'title' => 'blub',
-				'date' => '2013-04-29 16:56:32',
-			),
-			array(
-				'id' => '5',
-				'userId' => '3',
-				'title' => 'test',
-				'date' => '2013-05-29 16:56:32',
+				'col_bigint' => '2147483647',
+				'col_blob' => 'foobar',
+				'col_boolean' => '1',
+				'col_datetime' => '2015-01-21 23:59:59',
+				'col_datetimetz' => '2015-01-21 23:59:59',
+				'col_date' => '2015-01-21',
+				'col_decimal' => '10',
+				'col_float' => '10.37',
+				'col_integer' => '2147483647',
+				'col_smallint' => '255',
+				'col_text' => 'foobar',
+				'col_time' => '23:59:59',
+				'col_string' => 'foobar',
 			),
 		);
 
@@ -148,54 +162,64 @@ JSON;
 
 	public function testPut()
 	{
-		$data     = json_encode(array('id' => 1, 'userId' => 3, 'title' => 'foobar'));
+		$data = json_encode(array(
+			'id' => 1,
+			'col_bigint' => '2147483647',
+			'col_blob' => 'foobar',
+			'col_boolean' => 'true',
+			'col_datetime' => '2015-01-21T23:59:59+00:00',
+			'col_datetimetz' => '2015-01-21T23:59:59+01:00',
+			'col_date' => '2015-01-21',
+			'col_decimal' => '10',
+			'col_float' => '10.37',
+			'col_integer' => '2147483647',
+			'col_smallint' => '255',
+			'col_text' => 'foobar',
+			'col_time' => '23:59:59',
+			'col_string' => 'foo',
+		));
+
 		$body     = new TempStream(fopen('php://memory', 'r+'));
 		$request  = new Request(new Url('http://127.0.0.1/api'), 'PUT', array('Content-Type' => 'application/json'), $data);
 		$response = new Response();
 		$response->setBody($body);
 
 		$controller = $this->loadController($request, $response);
-		$body       = Json::decode((string) $response->getBody());
+		$body       = (string) $response->getBody();
 
-		$expect = array(
-			'success' => true,
-			'message' => 'Comment successful updated',
-		);
+		$expect = <<<JSON
+{
+	"success": true,
+	"message": "Test successful updated"
+}
+JSON;
 
-		$this->assertEquals(200, $response->getStatusCode());
-		$this->assertEquals($expect, $body);
+		$this->assertEquals(200, $response->getStatusCode(), $body);
+		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
 
 		// check database
 		$result = $this->connection->createQueryBuilder()
-			->select(array('id', 'userId', 'title', 'date'))
-			->from('psx_handler_comment')
+			->select(array('id', 'col_bigint', 'col_blob', 'col_boolean', 'col_datetime', 'col_datetimetz', 'col_date', 'col_decimal', 'col_float', 'col_integer', 'col_smallint', 'col_text', 'col_time', 'col_string'))
+			->from('psx_table_command_test')
 			->execute()
 			->fetchAll();
 
 		$expect = array(
 			array(
 				'id' => '1',
-				'userId' => '3',
-				'title' => 'foobar',
-				'date' => '2013-04-29 16:56:32',
-			),
-			array(
-				'id' => '2',
-				'userId' => '1',
-				'title' => 'bar',
-				'date' => '2013-04-29 16:56:32',
-			),
-			array(
-				'id' => '3',
-				'userId' => '2',
-				'title' => 'test',
-				'date' => '2013-04-29 16:56:32',
-			),
-			array(
-				'id' => '4',
-				'userId' => '3',
-				'title' => 'blub',
-				'date' => '2013-04-29 16:56:32',
+				'col_bigint' => '2147483647',
+				'col_blob' => 'foobar',
+				'col_boolean' => '1',
+				'col_datetime' => '2015-01-21 23:59:59',
+				'col_datetimetz' => '2015-01-21 23:59:59',
+				'col_date' => '2015-01-21',
+				'col_decimal' => '10',
+				'col_float' => '10.37',
+				'col_integer' => '2147483647',
+				'col_smallint' => '255',
+				'col_text' => 'foobar',
+				'col_time' => '23:59:59',
+				'col_string' => 'foo',
 			),
 		);
 
@@ -233,42 +257,26 @@ JSON;
 		$response->setBody($body);
 
 		$controller = $this->loadController($request, $response);
-		$body       = Json::decode((string) $response->getBody());
+		$body       = (string) $response->getBody();
 
-		$expect = array(
-			'success' => true,
-			'message' => 'Comment successful deleted',
-		);
+		$expect = <<<JSON
+{
+	"success": true,
+	"message": "Test successful deleted"
+}
+JSON;
 
-		$this->assertEquals(200, $response->getStatusCode());
-		$this->assertEquals($expect, $body);
+		$this->assertEquals(200, $response->getStatusCode(), $body);
+		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
 
 		// check database
 		$result = $this->connection->createQueryBuilder()
-			->select(array('id', 'userId', 'title', 'date'))
-			->from('psx_handler_comment')
+			->select(array('id', 'col_bigint', 'col_blob', 'col_boolean', 'col_datetime', 'col_datetimetz', 'col_date', 'col_decimal', 'col_float', 'col_integer', 'col_smallint', 'col_text', 'col_time', 'col_string'))
+			->from('psx_table_command_test')
 			->execute()
 			->fetchAll();
 
 		$expect = array(
-			array(
-				'id' => '2',
-				'userId' => '1',
-				'title' => 'bar',
-				'date' => '2013-04-29 16:56:32',
-			),
-			array(
-				'id' => '3',
-				'userId' => '2',
-				'title' => 'test',
-				'date' => '2013-04-29 16:56:32',
-			),
-			array(
-				'id' => '4',
-				'userId' => '3',
-				'title' => 'blub',
-				'date' => '2013-04-29 16:56:32',
-			),
 		);
 
 		$this->assertEquals($expect, $result);
