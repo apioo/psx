@@ -45,7 +45,7 @@ class Integer extends Decimal
 		}
 		else if(is_string($data))
 		{
-			$result = preg_match('/^([\-+]?[0-9]+){1}$/', $data);
+			$result = preg_match('/^[\-+]?[0-9]+$/', $data);
 
 			if($result)
 			{

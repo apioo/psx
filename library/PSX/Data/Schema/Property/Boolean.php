@@ -47,7 +47,7 @@ class Boolean extends PropertySimpleAbstract
 		}
 		else if(is_scalar($data))
 		{
-			$result = preg_match('/^(true|false|1|0){1}$/', $data);
+			$result = preg_match('/^true|false|1|0$/', $data);
 
 			if($result)
 			{

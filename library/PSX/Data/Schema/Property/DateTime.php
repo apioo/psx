@@ -46,7 +46,7 @@ class DateTime extends String
 		}
 		else if(is_string($data))
 		{
-			$result = preg_match('/^(-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\.[0-9]+)?|(24:00:00(\.0+)?))(Z|(\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?){1}$/', $data);
+			$result = preg_match('/^' . \PSX\DateTime::getPattern() . '$/', $data);
 
 			if($result)
 			{

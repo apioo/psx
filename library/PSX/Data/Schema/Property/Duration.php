@@ -46,7 +46,7 @@ class Duration extends String
 		}
 		else if(is_string($data))
 		{
-			$result = preg_match('/^(-?P((([0-9]+Y([0-9]+M)?([0-9]+D)?|([0-9]+M)([0-9]+D)?|([0-9]+D))(T(([0-9]+H)([0-9]+M)?([0-9]+(\.[0-9]+)?S)?|([0-9]+M)([0-9]+(\.[0-9]+)?S)?|([0-9]+(\.[0-9]+)?S)))?)|(T(([0-9]+H)([0-9]+M)?([0-9]+(\.[0-9]+)?S)?|([0-9]+M)([0-9]+(\.[0-9]+)?S)?|([0-9]+(\.[0-9]+)?S))))){1}$/', $data);
+			$result = preg_match('/^' . \PSX\DateTime\Duration::getPattern() . '$/', $data);
 
 			if($result)
 			{
