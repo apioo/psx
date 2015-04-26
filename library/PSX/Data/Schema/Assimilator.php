@@ -26,6 +26,9 @@ use PSX\Data\RecordInterface;
 use PSX\Data\SchemaInterface;
 use PSX\Data\Schema\Property;
 use PSX\Data\Schema\PropertyInterface;
+use PSX\DateTime;
+use PSX\DateTime\Date;
+use PSX\DateTime\Time;
 
 /**
  * Assimilator
@@ -114,13 +117,29 @@ class Assimilator
 		{
 			return (bool) $data;
 		}
-		else if($type instanceof Property\DateTime || $type instanceof Property\Date)
+		else if($type instanceof Property\DateTime)
 		{
-			return $data instanceof \DateTime ? $data : new \DateTime($data);
+			return $data instanceof \DateTime ? $data : new DateTime($data);
+		}
+		else if($type instanceof Property\Date)
+		{
+			return $data instanceof \DateTime ? Date::fromDateTime($data) : new Date($data);
+		}
+		else if($type instanceof Property\Time)
+		{
+			return $data instanceof \DateTime ? Time::fromDateTime($data) : new Time($data);
 		}
 		else
 		{
-			return (string) $data;
+			// data from an blob column gets returned as resource
+			if(is_resource($data))
+			{
+				return base64_encode(stream_get_contents($data, -1, 0));
+			}
+			else
+			{
+				return (string) $data;
+			}
 		}
 	}
 }
