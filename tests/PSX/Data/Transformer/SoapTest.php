@@ -142,13 +142,13 @@ INPUT;
 	{
 		$transformer = new Soap('http://phpsx.org/2014/data');
 
-		$this->assertTrue($transformer->accept(MediaType::parse('application/soap+xml')));
+		$this->assertTrue($transformer->accept(new MediaType('application/soap+xml')));
 	}
 
 	public function testAcceptInvalid()
 	{
 		$transformer = new Soap('http://phpsx.org/2014/data');
 
-		$this->assertFalse($transformer->accept(MediaType::parse('text/plain')));
+		$this->assertFalse($transformer->accept(new MediaType('text/plain')));
 	}
 }

@@ -47,8 +47,8 @@ class TextTest extends TemplateAbstractTestCase
 
 		$writer = new Text($template, $router);
 
-		$this->assertTrue($writer->isContentTypeSupported(MediaType::parse('text/plain')));
-		$this->assertFalse($writer->isContentTypeSupported(MediaType::parse('text/html')));
+		$this->assertTrue($writer->isContentTypeSupported(new MediaType('text/plain')));
+		$this->assertFalse($writer->isContentTypeSupported(new MediaType('text/html')));
 	}
 
 	public function testGetContentType()

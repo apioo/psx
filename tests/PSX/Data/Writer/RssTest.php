@@ -122,8 +122,8 @@ TEXT;
 	{
 		$writer = new Rss();
 
-		$this->assertTrue($writer->isContentTypeSupported(MediaType::parse('application/rss+xml')));
-		$this->assertFalse($writer->isContentTypeSupported(MediaType::parse('text/html')));
+		$this->assertTrue($writer->isContentTypeSupported(new MediaType('application/rss+xml')));
+		$this->assertFalse($writer->isContentTypeSupported(new MediaType('text/html')));
 	}
 
 	public function testGetContentType()

@@ -52,7 +52,7 @@ class CallbackTest extends \PHPUnit_Framework_TestCase
 	{
 		$transformer = new Callback(function(){}, 'text/plain');
 
-		$this->assertTrue($transformer->accept(MediaType::parse('text/plain')));
+		$this->assertTrue($transformer->accept(new MediaType('text/plain')));
 	}
 
 	public function testAcceptCallback()
@@ -66,20 +66,20 @@ class CallbackTest extends \PHPUnit_Framework_TestCase
 
 		});
 
-		$this->assertTrue($transformer->accept(MediaType::parse('text/plain')));
+		$this->assertTrue($transformer->accept(new MediaType('text/plain')));
 	}
 
 	public function testAcceptAll()
 	{
 		$transformer = new Callback(function(){});
 
-		$this->assertTrue($transformer->accept(MediaType::parse('text/plain')));
+		$this->assertTrue($transformer->accept(new MediaType('text/plain')));
 	}
 
 	public function testAcceptNone()
 	{
 		$transformer = new Callback(function(){}, false);
 
-		$this->assertFalse($transformer->accept(MediaType::parse('text/plain')));
+		$this->assertFalse($transformer->accept(new MediaType('text/plain')));
 	}
 }

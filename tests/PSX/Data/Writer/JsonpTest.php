@@ -44,7 +44,7 @@ foo({
     "author": "foo",
     "title": "bar",
     "content": "foobar",
-    "date": "2012-03-11T13:37:21+00:00"
+    "date": "2012-03-11T13:37:21Z"
 })
 TEXT;
 
@@ -68,14 +68,14 @@ foo({
             "author": "foo",
             "title": "bar",
             "content": "foobar",
-            "date": "2012-03-11T13:37:21+00:00"
+            "date": "2012-03-11T13:37:21Z"
         },
         {
             "id": 2,
             "author": "foo",
             "title": "bar",
             "content": "foobar",
-            "date": "2012-03-11T13:37:21+00:00"
+            "date": "2012-03-11T13:37:21Z"
         }
     ]
 })
@@ -109,7 +109,7 @@ foo({
         "displayName": "Martin's Blog",
         "url": "http:\/\/example.org\/blog\/"
     },
-    "published": "2011-02-10T15:04:55+00:00"
+    "published": "2011-02-10T15:04:55Z"
 })
 TEXT;
 
@@ -148,8 +148,8 @@ TEXT;
 	{
 		$writer = new Jsonp();
 
-		$this->assertTrue($writer->isContentTypeSupported(MediaType::parse('application/javascript')));
-		$this->assertFalse($writer->isContentTypeSupported(MediaType::parse('text/html')));
+		$this->assertTrue($writer->isContentTypeSupported(new MediaType('application/javascript')));
+		$this->assertFalse($writer->isContentTypeSupported(new MediaType('text/html')));
 	}
 
 	public function testGetContentType()
@@ -170,7 +170,7 @@ TEXT;
     "author": "foo",
     "title": "bar",
     "content": "foobar",
-    "date": "2012-03-11T13:37:21+00:00"
+    "date": "2012-03-11T13:37:21Z"
 }
 TEXT;
 

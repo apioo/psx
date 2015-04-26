@@ -34,7 +34,7 @@ class MediaTypeTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testParse($mime, $type, $subType, $quality, array $parameters)
 	{
-		$mediaType = MediaType::parse($mime);
+		$mediaType = new MediaType($mime);
 
 		$this->assertEquals($type, $mediaType->getType());
 		$this->assertEquals($subType, $mediaType->getSubType());
@@ -72,7 +72,7 @@ class MediaTypeTest extends \PHPUnit_Framework_TestCase
 
 	public function testGetParameter()
 	{
-		$mediaType = MediaType::parse('text/html; encoding=UTF-8');
+		$mediaType = new MediaType('text/html; encoding=UTF-8');
 
 		$this->assertEquals('UTF-8', $mediaType->getParameter('encoding'));
 		$this->assertEquals(null, $mediaType->getParameter('foo'));
@@ -103,7 +103,7 @@ class MediaTypeTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testParseEmpty()
 	{
-		MediaType::parse('');
+		new MediaType('');
 	}
 
 	/**
@@ -111,7 +111,7 @@ class MediaTypeTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testParseInvalid()
 	{
-		MediaType::parse('foo');
+		new MediaType('foo');
 	}
 
 	/**
@@ -119,7 +119,7 @@ class MediaTypeTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testParseInvalidMediaType()
 	{
-		MediaType::parse('foo/bar');
+		new MediaType('foo/bar');
 	}
 
 	/**
@@ -146,6 +146,13 @@ class MediaTypeTest extends \PHPUnit_Framework_TestCase
 		);
 	}
 
+	public function testFullConstructor()
+	{
+		$mediaType = new MediaType('text', 'plain', array('q' => 0.5, 'encoding' => 'UTF-8'));
+
+		$this->assertEquals('text/plain; q=0.5; encoding=UTF-8', $mediaType->toString());
+	}
+
 	/**
 	 * We check whether we can open all registered IANA content types
 	 */
@@ -160,7 +167,7 @@ class MediaTypeTest extends \PHPUnit_Framework_TestCase
 		{
 			if($element->getAttribute('type') == 'template')
 			{
-				$mediaType = MediaType::parse($element->textContent);
+				$mediaType = new MediaType($element->textContent);
 
 				$this->assertNotEmpty($mediaType->getType());
 				$this->assertNotEmpty($mediaType->getSubType());

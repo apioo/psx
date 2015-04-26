@@ -47,8 +47,8 @@ class SvgTest extends TemplateAbstractTestCase
 
 		$writer = new Svg($template, $router);
 
-		$this->assertTrue($writer->isContentTypeSupported(MediaType::parse('image/svg+xml')));
-		$this->assertFalse($writer->isContentTypeSupported(MediaType::parse('text/html')));
+		$this->assertTrue($writer->isContentTypeSupported(new MediaType('image/svg+xml')));
+		$this->assertFalse($writer->isContentTypeSupported(new MediaType('text/html')));
 	}
 
 	public function testGetContentType()

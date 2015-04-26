@@ -183,13 +183,13 @@ INPUT;
 	{
 		$transformer = new Atom();
 
-		$this->assertTrue($transformer->accept(MediaType::parse('application/atom+xml')));
+		$this->assertTrue($transformer->accept(new MediaType('application/atom+xml')));
 	}
 
 	public function testAcceptInvalid()
 	{
 		$transformer = new Atom();
 
-		$this->assertFalse($transformer->accept(MediaType::parse('text/plain')));
+		$this->assertFalse($transformer->accept(new MediaType('text/plain')));
 	}
 }

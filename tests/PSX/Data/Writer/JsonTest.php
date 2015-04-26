@@ -43,7 +43,7 @@ class JsonTest extends WriterTestCase
 	"author":"foo",
 	"title":"bar",
 	"content":"foobar",
-	"date":"2012-03-11T13:37:21+00:00"
+	"date":"2012-03-11T13:37:21Z"
 }
 TEXT;
 
@@ -65,13 +65,13 @@ TEXT;
 		"author":"foo",
 		"title":"bar",
 		"content":"foobar",
-		"date":"2012-03-11T13:37:21+00:00"
+		"date":"2012-03-11T13:37:21Z"
 	},{
 		"id":2,
 		"author":"foo",
 		"title":"bar",
 		"content":"foobar",
-		"date":"2012-03-11T13:37:21+00:00"
+		"date":"2012-03-11T13:37:21Z"
 	}]
 }
 TEXT;
@@ -86,7 +86,7 @@ TEXT;
 
 		$expect = <<<TEXT
 {
-	"published":"2011-02-10T15:04:55+00:00",
+	"published":"2011-02-10T15:04:55Z",
 	"actor":{
 		"displayName":"Martin Smith",
 		"id":"tag:example.org,2011:martin",
@@ -114,8 +114,8 @@ TEXT;
 	{
 		$writer = new Json();
 
-		$this->assertTrue($writer->isContentTypeSupported(MediaType::parse('application/json')));
-		$this->assertFalse($writer->isContentTypeSupported(MediaType::parse('text/html')));
+		$this->assertTrue($writer->isContentTypeSupported(new MediaType('application/json')));
+		$this->assertFalse($writer->isContentTypeSupported(new MediaType('text/html')));
 	}
 
 	public function testGetContentType()

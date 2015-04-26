@@ -154,13 +154,13 @@ INPUT;
 	{
 		$transformer = new Rss();
 
-		$this->assertTrue($transformer->accept(MediaType::parse('application/rss+xml')));
+		$this->assertTrue($transformer->accept(new MediaType('application/rss+xml')));
 	}
 
 	public function testAcceptInvalid()
 	{
 		$transformer = new Rss();
 
-		$this->assertFalse($transformer->accept(MediaType::parse('text/plain')));
+		$this->assertFalse($transformer->accept(new MediaType('text/plain')));
 	}
 }

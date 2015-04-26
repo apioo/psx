@@ -57,7 +57,7 @@ class ReaderFactory
 			return null;
 		}
 
-		$contentType = MediaType::parse($contentType);
+		$contentType = new MediaType($contentType);
 
 		foreach($this->readers as $reader)
 		{

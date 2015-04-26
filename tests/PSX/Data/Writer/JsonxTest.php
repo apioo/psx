@@ -44,7 +44,7 @@ class JsonxTest extends WriterTestCase
   <json:string name="author">foo</json:string>
   <json:string name="title">bar</json:string>
   <json:string name="content">foobar</json:string>
-  <json:string name="date">2012-03-11T13:37:21+00:00</json:string>
+  <json:string name="date">2012-03-11T13:37:21Z</json:string>
 </json:object>
 TEXT;
 
@@ -68,14 +68,14 @@ TEXT;
       <json:string name="author">foo</json:string>
       <json:string name="title">bar</json:string>
       <json:string name="content">foobar</json:string>
-      <json:string name="date">2012-03-11T13:37:21+00:00</json:string>
+      <json:string name="date">2012-03-11T13:37:21Z</json:string>
     </json:object>
     <json:object>
       <json:number name="id">2</json:number>
       <json:string name="author">foo</json:string>
       <json:string name="title">bar</json:string>
       <json:string name="content">foobar</json:string>
-      <json:string name="date">2012-03-11T13:37:21+00:00</json:string>
+      <json:string name="date">2012-03-11T13:37:21Z</json:string>
     </json:object>
   </json:array>
 </json:object>
@@ -109,7 +109,7 @@ TEXT;
     <json:string name="displayName">Martin's Blog</json:string>
     <json:string name="url">http://example.org/blog/</json:string>
   </json:object>
-  <json:string name="published">2011-02-10T15:04:55+00:00</json:string>
+  <json:string name="published">2011-02-10T15:04:55Z</json:string>
 </json:object>
 TEXT;
 
@@ -120,8 +120,8 @@ TEXT;
 	{
 		$writer = new Jsonx();
 
-		$this->assertTrue($writer->isContentTypeSupported(MediaType::parse('application/jsonx+xml')));
-		$this->assertFalse($writer->isContentTypeSupported(MediaType::parse('application/xml')));
+		$this->assertTrue($writer->isContentTypeSupported(new MediaType('application/jsonx+xml')));
+		$this->assertFalse($writer->isContentTypeSupported(new MediaType('application/xml')));
 	}
 
 	public function testGetContentType()

@@ -402,7 +402,7 @@ TEXT;
 	<dt>content</dt>
 	<dd>foobar</dd>
 	<dt>date</dt>
-	<dd>2012-03-11T13:37:21+00:00</dd>
+	<dd>2012-03-11T13:37:21Z</dd>
 </dl>
 HTML;
 	}

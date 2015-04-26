@@ -47,8 +47,8 @@ class HtmlTest extends TemplateAbstractTestCase
 
 		$writer = new Html($template, $router);
 
-		$this->assertTrue($writer->isContentTypeSupported(MediaType::parse('text/html')));
-		$this->assertFalse($writer->isContentTypeSupported(MediaType::parse('application/xml')));
+		$this->assertTrue($writer->isContentTypeSupported(new MediaType('text/html')));
+		$this->assertFalse($writer->isContentTypeSupported(new MediaType('application/xml')));
 	}
 
 	public function testGetContentType()

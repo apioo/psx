@@ -175,7 +175,7 @@ class WriterFactory
 				continue;
 			}
 
-			$acceptedContentType = MediaType::parse($acceptedContentType);
+			$acceptedContentType = new MediaType($acceptedContentType);
 
 			if($acceptedContentType->match($contentType))
 			{

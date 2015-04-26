@@ -122,13 +122,13 @@ INPUT;
 	{
 		$transformer = new Jsonx();
 
-		$this->assertTrue($transformer->accept(MediaType::parse('application/jsonx+xml')));
+		$this->assertTrue($transformer->accept(new MediaType('application/jsonx+xml')));
 	}
 
 	public function testAcceptInvalid()
 	{
 		$transformer = new Jsonx();
 
-		$this->assertFalse($transformer->accept(MediaType::parse('text/plain')));
+		$this->assertFalse($transformer->accept(new MediaType('text/plain')));
 	}
 }

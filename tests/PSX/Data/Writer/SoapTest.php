@@ -49,7 +49,7 @@ class SoapTest extends WriterTestCase
 	  <author>foo</author>
 	  <title>bar</title>
 	  <content>foobar</content>
-	  <date>2012-03-11T13:37:21+00:00</date>
+	  <date>2012-03-11T13:37:21Z</date>
 	</getResponse>
   </soap:Body>
 </soap:Envelope>
@@ -79,14 +79,14 @@ TEXT;
 	    <author>foo</author>
 	    <title>bar</title>
 	    <content>foobar</content>
-	    <date>2012-03-11T13:37:21+00:00</date>
+	    <date>2012-03-11T13:37:21Z</date>
 	  </entry>
 	  <entry>
 	    <id>2</id>
 	    <author>foo</author>
 	    <title>bar</title>
 	    <content>foobar</content>
-	    <date>2012-03-11T13:37:21+00:00</date>
+	    <date>2012-03-11T13:37:21Z</date>
 	  </entry>
 	</getResponse>
   </soap:Body>
@@ -126,7 +126,7 @@ TEXT;
 	    <displayName>Martin's Blog</displayName>
 	    <url>http://example.org/blog/</url>
 	  </target>
-	  <published>2011-02-10T15:04:55+00:00</published>
+	  <published>2011-02-10T15:04:55Z</published>
 	</getResponse>
   </soap:Body>
 </soap:Envelope>
@@ -139,8 +139,8 @@ TEXT;
 	{
 		$writer = new Soap('http://foo.bar');
 
-		$this->assertTrue($writer->isContentTypeSupported(MediaType::parse('application/soap+xml')));
-		$this->assertFalse($writer->isContentTypeSupported(MediaType::parse('text/html')));
+		$this->assertTrue($writer->isContentTypeSupported(new MediaType('application/soap+xml')));
+		$this->assertFalse($writer->isContentTypeSupported(new MediaType('text/html')));
 	}
 
 	public function testGetContentType()

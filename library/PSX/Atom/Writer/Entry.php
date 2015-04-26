@@ -99,7 +99,7 @@ class Entry
 
 						try
 						{
-							$mediaType = MediaType::parse($type);
+							$mediaType = new MediaType($type);
 
 							if(MediaType\Xml::isMediaType($mediaType))
 							{

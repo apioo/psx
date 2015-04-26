@@ -52,7 +52,7 @@ class TransformerManager
 			return null;
 		}
 
-		$contentType = MediaType::parse($contentType);
+		$contentType = new MediaType($contentType);
 
 		foreach($this->transformers as $transformer)
 		{

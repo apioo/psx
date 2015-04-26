@@ -209,8 +209,8 @@ XML;
 	{
 		$writer = new Atom();
 
-		$this->assertTrue($writer->isContentTypeSupported(MediaType::parse('application/atom+xml')));
-		$this->assertFalse($writer->isContentTypeSupported(MediaType::parse('application/xml')));
+		$this->assertTrue($writer->isContentTypeSupported(new MediaType('application/atom+xml')));
+		$this->assertFalse($writer->isContentTypeSupported(new MediaType('application/xml')));
 	}
 
 	public function testGetContentType()

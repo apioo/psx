@@ -38,7 +38,7 @@ class FormTest extends WriterTestCase
 		$actual = $writer->write($this->getRecord());
 
 		$expect = <<<TEXT
-id=1&author=foo&title=bar&content=foobar&date=2012-03-11T13%3A37%3A21%2B00%3A00
+id=1&author=foo&title=bar&content=foobar&date=2012-03-11T13%3A37%3A21Z
 TEXT;
 
 		$this->assertEquals($expect, $actual);
@@ -50,7 +50,7 @@ TEXT;
 		$actual = $writer->write($this->getResultSet());
 
 		$expect = <<<TEXT
-totalResults=2&startIndex=0&itemsPerPage=8&entry%5B0%5D%5Bid%5D=1&entry%5B0%5D%5Bauthor%5D=foo&entry%5B0%5D%5Btitle%5D=bar&entry%5B0%5D%5Bcontent%5D=foobar&entry%5B0%5D%5Bdate%5D=2012-03-11T13%3A37%3A21%2B00%3A00&entry%5B1%5D%5Bid%5D=2&entry%5B1%5D%5Bauthor%5D=foo&entry%5B1%5D%5Btitle%5D=bar&entry%5B1%5D%5Bcontent%5D=foobar&entry%5B1%5D%5Bdate%5D=2012-03-11T13%3A37%3A21%2B00%3A00
+totalResults=2&startIndex=0&itemsPerPage=8&entry%5B0%5D%5Bid%5D=1&entry%5B0%5D%5Bauthor%5D=foo&entry%5B0%5D%5Btitle%5D=bar&entry%5B0%5D%5Bcontent%5D=foobar&entry%5B0%5D%5Bdate%5D=2012-03-11T13%3A37%3A21Z&entry%5B1%5D%5Bid%5D=2&entry%5B1%5D%5Bauthor%5D=foo&entry%5B1%5D%5Btitle%5D=bar&entry%5B1%5D%5Bcontent%5D=foobar&entry%5B1%5D%5Bdate%5D=2012-03-11T13%3A37%3A21Z
 TEXT;
 
 		$this->assertEquals($expect, $actual);
@@ -60,8 +60,8 @@ TEXT;
 	{
 		$writer = new Form();
 
-		$this->assertTrue($writer->isContentTypeSupported(MediaType::parse('application/x-www-form-urlencoded')));
-		$this->assertFalse($writer->isContentTypeSupported(MediaType::parse('application/xml')));
+		$this->assertTrue($writer->isContentTypeSupported(new MediaType('application/x-www-form-urlencoded')));
+		$this->assertFalse($writer->isContentTypeSupported(new MediaType('application/xml')));
 	}
 
 	public function testGetContentType()

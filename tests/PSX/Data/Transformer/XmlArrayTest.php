@@ -159,14 +159,14 @@ INPUT;
 	{
 		$transformer = new XmlArray();
 
-		$this->assertTrue($transformer->accept(MediaType::parse('application/xml')));
-		$this->assertTrue($transformer->accept(MediaType::parse('application/foo+xml')));
+		$this->assertTrue($transformer->accept(new MediaType('application/xml')));
+		$this->assertTrue($transformer->accept(new MediaType('application/foo+xml')));
 	}
 
 	public function testAcceptInvalid()
 	{
 		$transformer = new XmlArray();
 
-		$this->assertFalse($transformer->accept(MediaType::parse('text/plain')));
+		$this->assertFalse($transformer->accept(new MediaType('text/plain')));
 	}
 }

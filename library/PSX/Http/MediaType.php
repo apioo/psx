@@ -45,14 +45,23 @@ class MediaType
 
 	protected $type;
 	protected $subType;
-	protected $quality;
 	protected $parameters;
+	protected $quality;
 
-	public function __construct($type, $subType, array $parameters = array())
+	public function __construct($mediaType, $subType = null, array $parameters = array())
 	{
-		$this->type       = $type;
-		$this->subType    = $subType;
-		$this->parameters = $parameters;
+		if(func_num_args() == 1)
+		{
+			$this->parse($mediaType);
+		}
+		else
+		{
+			$this->type       = $mediaType;
+			$this->subType    = $subType;
+			$this->parameters = $parameters;
+
+			$this->parseQuality(isset($parameters['q']) ? $parameters['q'] : null);
+		}
 	}
 
 	public function getType()
@@ -72,11 +81,6 @@ class MediaType
 
 	public function getQuality()
 	{
-		if($this->quality === null)
-		{
-			$this->quality = $this->_determineQuality();
-		}
-
 		return $this->quality;
 	}
 
@@ -88,6 +92,29 @@ class MediaType
 	public function getParameters()
 	{
 		return $this->parameters;
+	}
+
+	public function toString()
+	{
+		$mediaType = $this->getName();
+
+		if(!empty($this->parameters))
+		{
+			$arguments = array();
+			foreach($this->parameters as $key => $value)
+			{
+				$arguments[] = $key . '=' . $value;
+			}
+
+			$mediaType.= '; ' . implode('; ', $arguments);
+		}
+
+		return $mediaType;
+	}
+
+	public function __toString()
+	{
+		return $this->toString();
 	}
 
 	/**
@@ -102,38 +129,18 @@ class MediaType
 			($this->type == $mediaType->getType() && $this->subType == '*');
 	}
 
-	private function _determineQuality()
+	protected function parse($mime)
 	{
-		if(isset($this->parameters['q']))
-		{
-			$q = (float) $this->parameters['q'];
+		$mime   = (string) $mime;
+		$result = preg_match('/^' . self::getPattern() . '$/i', $mime, $matches);
 
-			if($q >= 0 && $q <= 1)
-			{
-				return $q;
-			}
+		if(!$result)
+		{
+			throw new InvalidArgumentException('Invalid media type given');
 		}
 
-		return 1;
-	}
-
-	public static function parse($mime)
-	{
-		$mime = (string) $mime;
-
-		if(strpos($mime, ';') !== false)
-		{
-			$name = strstr($mime, ';', true);
-			$rest = substr(strstr($mime, ';'), 1);
-		}
-		else
-		{
-			$name = $mime;
-			$rest = '';
-		}
-
-		$type    = strtolower(strstr($name, '/', true));
-		$subType = strtolower(rtrim(substr(strstr($name, '/'), 1)));
+		$type    = isset($matches[1]) ? strtolower($matches[1]) : null;
+		$subType = isset($matches[2]) ? strtolower($matches[2]) : null;
 
 		if(empty($type) || empty($subType))
 		{
@@ -145,6 +152,7 @@ class MediaType
 			throw new InvalidArgumentException('Invalid media type given');
 		}
 
+		$rest       = isset($matches[3]) ? $matches[3] : null;
 		$parameters = array();
 
 		if(!empty($rest))
@@ -167,7 +175,27 @@ class MediaType
 			}
 		}
 
-		return new self($type, $subType, $parameters);
+		$this->type       = $type;
+		$this->subType    = $subType;
+		$this->parameters = $parameters;
+
+		$this->parseQuality(isset($parameters['q']) ? $parameters['q'] : null);
+	}
+
+	protected function parseQuality($quality)
+	{
+		if(!empty($quality))
+		{
+			$q = (float) $quality;
+
+			if($q >= 0 && $q <= 1)
+			{
+				$this->quality = $q;
+				return;
+			}
+		}
+
+		$this->quality = 1;
 	}
 
 	public static function parseList($mimeList)
@@ -179,7 +207,7 @@ class MediaType
 		{
 			try
 			{
-				$result[] = self::parse(trim($mime));
+				$result[] = new self(trim($mime));
 			}
 			catch(InvalidArgumentException $e)
 			{
@@ -198,5 +226,10 @@ class MediaType
 		});
 
 		return $result;
+	}
+
+	public static function getPattern()
+	{
+		return '([A-z]+|x-[A-z\-\_]+|\*)\/([A-z0-9\-\_\.\+]+|\*);?\s?(.*)';
 	}
 }
