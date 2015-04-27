@@ -41,12 +41,16 @@ class Duration extends DateInterval
 		}
 		else
 		{
-			$this->y = (int) $duration;
-			$this->m = (int) $month;
-			$this->d = (int) $day;
-			$this->h = (int) $hour;
-			$this->i = (int) $minute;
-			$this->s = (int) $second;
+			$interval = 'P';
+			$interval.= ((int) $duration) . 'Y';
+			$interval.= ((int) $month) . 'M';
+			$interval.= ((int) $day) . 'D';
+			$interval.= 'T';
+			$interval.= ((int) $hour) . 'H';
+			$interval.= ((int) $minute) . 'M';
+			$interval.= ((int) $second) . 'S';
+
+			parent::__construct($interval);
 		}
 	}
 
@@ -82,8 +86,7 @@ class Duration extends DateInterval
 
 	public function toString()
 	{
-		$duration = $this->invert ? '-' : '';
-		$duration.= 'P';
+		$duration = 'P';
 
 		if($this->y > 0)
 		{
