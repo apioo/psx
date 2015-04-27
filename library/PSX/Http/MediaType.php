@@ -142,11 +142,6 @@ class MediaType
 		$type    = isset($matches[1]) ? strtolower($matches[1]) : null;
 		$subType = isset($matches[2]) ? strtolower($matches[2]) : null;
 
-		if(empty($type) || empty($subType))
-		{
-			throw new InvalidArgumentException('Invalid media type given');
-		}
-
 		if($type != '*' && !in_array($type, self::$topLevelMediaTypes))
 		{
 			throw new InvalidArgumentException('Invalid media type given');
