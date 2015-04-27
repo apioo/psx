@@ -153,6 +153,13 @@ class MediaTypeTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('text/plain; q=0.5; encoding=UTF-8', $mediaType->toString());
 	}
 
+	public function testToString()
+	{
+		$mediaType = new MediaType('text/plain');
+
+		$this->assertEquals('text/plain', (string) $mediaType);
+	}
+
 	/**
 	 * We check whether we can open all registered IANA content types
 	 */

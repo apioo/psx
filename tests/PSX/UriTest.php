@@ -418,4 +418,46 @@ class UriTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('foo', $uri->getFragment());
 		$this->assertEquals('http://www.yahoo.com/#foo', $uri->toString());
 	}
+
+	public function testWithScheme()
+	{
+		$uri = new Uri('http://www.yahoo.com');
+
+		$this->assertEquals('https://www.yahoo.com', $uri->withScheme('https')->toString());
+	}
+
+	public function testWithAuthority()
+	{
+		$uri = new Uri('http://www.yahoo.com');
+
+		$this->assertEquals('http://google.com', $uri->withAuthority('google.com')->toString());
+	}
+
+	public function testWithPath()
+	{
+		$uri = new Uri('http://www.yahoo.com/foo/bar');
+
+		$this->assertEquals('http://www.yahoo.com/bar', $uri->withPath('/bar')->toString());
+	}
+
+	public function testWithQuery()
+	{
+		$uri = new Uri('http://www.yahoo.com/?foo=bar');
+
+		$this->assertEquals('http://www.yahoo.com/?bar=foo', $uri->withQuery('bar=foo')->toString());
+	}
+
+	public function testWithFragment()
+	{
+		$uri = new Uri('http://www.yahoo.com/#foo');
+
+		$this->assertEquals('http://www.yahoo.com/#bar', $uri->withFragment('bar')->toString());
+	}
+
+	public function testWithParameters()
+	{
+		$uri = new Uri('http://www.yahoo.com/?foo=bar');
+
+		$this->assertEquals('http://www.yahoo.com/?bar=foo', $uri->withParameters(['bar' => 'foo'])->toString());
+	}
 }
