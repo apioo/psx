@@ -122,6 +122,37 @@ class DurationTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('PT20S', $duration->toString());
 	}
 
+	public function testConstructorFull()
+	{
+		$duration = new Duration(1, 1, 1, 1, 1, 1);
+
+		$this->assertEquals('P1Y1M1DT1H1M1S', $duration->toString());
+		$this->assertEquals('1.1.1.1.1.1', $duration->format('%y.%m.%d.%h.%i.%s'));
+	}
+
+	public function testToString()
+	{
+		$duration = new Duration(1, 1, 1, 1, 1, 1);
+
+		$this->assertEquals('P1Y1M1DT1H1M1S', (string) $duration);
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testDurationEmpty()
+	{
+		new Duration('');
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testDurationInvalid()
+	{
+		new Duration('foo');
+	}
+
 	public function testGetSecondsFromInterval()
 	{
 		$this->assertEquals(1, Duration::getSecondsFromInterval(new DateInterval('PT1S')));

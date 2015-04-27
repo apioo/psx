@@ -81,6 +81,20 @@ class TimeTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('19:35:20.123400+01:00', $time->toString());
 	}
 
+	public function testConstructorFull()
+	{
+		$time = new Time(13, 37, 12);
+
+		$this->assertEquals('13:37:12', $time->toString());
+	}
+
+	public function testToString()
+	{
+		$time = new Time(13, 37, 12);
+
+		$this->assertEquals('13:37:12', (string) $time);
+	}
+
 	/**
 	 * @expectedException InvalidArgumentException
 	 */

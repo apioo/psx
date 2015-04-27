@@ -53,6 +53,20 @@ class DateTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('2015-04-25+01:00', $date->toString());
 	}
 
+	public function testConstructorFull()
+	{
+		$date = new Date(2014, 1, 1);
+
+		$this->assertEquals('2014-01-01', $date->toString());
+	}
+
+	public function testToString()
+	{
+		$date = new Date(2014, 1, 1);
+
+		$this->assertEquals('2014-01-01', (string) $date);
+	}
+
 	/**
 	 * @expectedException InvalidArgumentException
 	 */

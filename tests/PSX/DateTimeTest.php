@@ -110,6 +110,20 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
 		];
 	}
 
+	public function testConstructorFull()
+	{
+		$date = new DateTime(2014, 1, 1, 13, 37, 12);
+
+		$this->assertEquals('2014-01-01T13:37:12Z', $date->toString());
+	}
+
+	public function testToString()
+	{
+		$date = new DateTime(2014, 1, 1, 13, 37, 12);
+
+		$this->assertEquals('2014-01-01T13:37:12Z', (string) $date);
+	}
+
 	public function testDateTimeNow()
 	{
 		$date = new DateTime();
