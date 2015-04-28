@@ -1,0 +1,49 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "id": "http://test.phpsx.org/test#",
+    "type": "object",
+    "properties": {
+        "array": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "boolean": {
+            "type": "boolean"
+        },
+        "complex": {
+            "type": "object",
+            "properties": {
+		        "foo": {
+		            "type": "string"
+		        }
+            }
+        },
+        "date": {
+            "type": "string",
+            "format": "date"
+        },
+        "dateTime": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "duration": {
+            "type": "string",
+            "format": "duration"
+        },
+        "float": {
+            "type": "number"
+        },
+        "integer": {
+            "type": "integer"
+        },
+        "string": {
+            "type": "string"
+        },
+        "time": {
+            "type": "string",
+            "format": "time"
+        }
+    }
+}
