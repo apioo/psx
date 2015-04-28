@@ -127,6 +127,8 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
 	public function testDateTimeNow()
 	{
 		$date = new DateTime();
+
+		$this->assertEquals(date('Y-m-d\TH:i:s\Z'), $date->toString());
 	}
 
 	/**
@@ -151,6 +153,13 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
 	public function testDateTimeInvalidOffset()
 	{
 		new DateTime('2015-04-25T19:35:20+50:00');
+	}
+
+	public function testFromDateTime()
+	{
+		$date = DateTime::fromDateTime(new \DateTime('2015-04-25T19:35:20'));
+
+		$this->assertEquals('2015-04-25T19:35:20Z', $date->toString());
 	}
 
 	public function testGetOffsetBySeconds()

@@ -40,7 +40,7 @@ class DateTime extends \DateTime
 
 	public function __construct($date = null, $month = null, $day = null, $hour = null, $minute = null, $second = null)
 	{
-		if(func_num_args() == 1)
+		if(func_num_args() <= 1)
 		{
 			parent::__construct($this->validate($date));
 		}
