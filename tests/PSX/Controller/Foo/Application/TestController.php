@@ -147,6 +147,14 @@ class TestController extends ControllerAbstract
 		$this->forward('PSX\Controller\Foo\Application\TestController::doRedirectDestiniation', array('foo' => 'bar'));
 	}
 
+	/**
+	 * Should throw an exception
+	 */
+	public function doForwardInvalidRoute()
+	{
+		$this->forward('Foo\Bar');
+	}
+
 	public function doRedirect()
 	{
 		$this->redirect('PSX\Controller\Foo\Application\TestController::doRedirectDestiniation', array('foo' => 'bar'));

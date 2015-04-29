@@ -50,10 +50,13 @@ class ErrorControllerTest extends ControllerTestCase
 		$response->setBody($body);
 
 		$controller = $this->loadController($request, $response);
-		$data       = Json::decode((string) $body);
 
-		$this->assertEquals(false, $data['success']);
-		$this->assertEquals('foo in', substr($data['message'], 0, 6));
+		$body = (string) $response->getBody();
+		$data = Json::decode($body);
+
+		$this->assertEquals(null, $response->getStatusCode(), $body);
+		$this->assertEquals(false, $data['success'], $body);
+		$this->assertEquals('foo in', substr($data['message'], 0, 6), $body);
 	}
 
 	public function testExceptionNoDebug()
@@ -67,8 +70,11 @@ class ErrorControllerTest extends ControllerTestCase
 		$response->setBody($body);
 
 		$controller = $this->loadController($request, $response);
-		$data       = Json::decode((string) $body);
 
+		$body = (string) $response->getBody();
+		$data = Json::decode($body);
+
+		$this->assertEquals(null, $response->getStatusCode(), $body);
 		$this->assertEquals(false, $data['success']);
 		$this->assertEquals('The server encountered an internal error and was unable to complete your request.', $data['message']);
 	}
@@ -84,8 +90,11 @@ class ErrorControllerTest extends ControllerTestCase
 		$response->setBody($body);
 
 		$controller = $this->loadController($request, $response);
-		$data       = Json::decode((string) $body);
 
+		$body = (string) $response->getBody();
+		$data = Json::decode($body);
+
+		$this->assertEquals(null, $response->getStatusCode(), $body);
 		$this->assertEquals(false, $data['success']);
 		$this->assertEquals('foo in', substr($data['message'], 0, 6));
 	}
@@ -101,8 +110,11 @@ class ErrorControllerTest extends ControllerTestCase
 		$response->setBody($body);
 
 		$controller = $this->loadController($request, $response);
-		$data       = Json::decode((string) $body);
 
+		$body = (string) $response->getBody();
+		$data = Json::decode($body);
+
+		$this->assertEquals(null, $response->getStatusCode(), $body);
 		$this->assertEquals(false, $data['success']);
 		$this->assertEquals('foo', $data['message']);
 	}
@@ -118,6 +130,8 @@ class ErrorControllerTest extends ControllerTestCase
 
 		$controller = $this->loadController($request, $response);
 
+		$body = (string) $response->getBody();
+
 		$expect = <<<JSON
 {
 	"success": false,
@@ -126,7 +140,8 @@ class ErrorControllerTest extends ControllerTestCase
 }
 JSON;
 
-		$this->assertJsonStringEqualsJsonString($expect, (string) $response->getBody());
+		$this->assertEquals(null, $response->getStatusCode(), $body);
+		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
 	}
 
 	public function testExceptionHtml()
@@ -141,6 +156,8 @@ JSON;
 		$response->setBody($body);
 
 		$controller = $this->loadController($request, $response);
+
+		$body = (string) $response->getBody();
 
 		$expect = <<<HTML
 <!DOCTYPE>
@@ -220,7 +237,8 @@ JSON;
 
 HTML;
 
-		$this->assertEquals($expect, (string) $response->getBody());
+		$this->assertEquals(null, $response->getStatusCode(), $body);
+		$this->assertEquals($expect, $body, $body);
 	}
 
 	public function testExceptionXml()
@@ -235,6 +253,8 @@ HTML;
 
 		$controller = $this->loadController($request, $response);
 
+		$body = (string) $response->getBody();
+
 		$expect = <<<XML
 <?xml version="1.0"?>
 <error>
@@ -244,7 +264,8 @@ HTML;
 </error>
 XML;
 
-		$this->assertXmlStringEqualsXmlString($expect, (string) $response->getBody());
+		$this->assertEquals(null, $response->getStatusCode(), $body);
+		$this->assertXmlStringEqualsXmlString($expect, $body, $body);
 	}
 
 	public function testExceptionJson()
@@ -259,6 +280,8 @@ XML;
 
 		$controller = $this->loadController($request, $response);
 
+		$body = (string) $response->getBody();
+
 		$expect = <<<JSON
 {
 	"success": false,
@@ -267,7 +290,8 @@ XML;
 }
 JSON;
 
-		$this->assertJsonStringEqualsJsonString($expect, (string) $response->getBody());
+		$this->assertEquals(null, $response->getStatusCode(), $body);
+		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
 	}
 
 	public function testExceptionXhr()
@@ -282,6 +306,8 @@ JSON;
 
 		$controller = $this->loadController($request, $response);
 
+		$body = (string) $response->getBody();
+
 		$expect = <<<JSON
 {
 	"success": false,
@@ -290,7 +316,8 @@ JSON;
 }
 JSON;
 
-		$this->assertJsonStringEqualsJsonString($expect, (string) $response->getBody());
+		$this->assertEquals(null, $response->getStatusCode(), $body);
+		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
 	}
 
 	protected function getPaths()

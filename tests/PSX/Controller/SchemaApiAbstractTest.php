@@ -81,7 +81,7 @@ class SchemaApiAbstractTest extends ControllerDbTestCase
   ]}
 JSON;
 
-		$this->assertEquals(200, $response->getStatusCode());
+		$this->assertEquals(200, $response->getStatusCode(), $body);
 		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
 	}
 
@@ -101,8 +101,8 @@ JSON;
 			'message' => 'You have successful create a record',
 		);
 
-		$this->assertEquals(201, $response->getStatusCode());
-		$this->assertEquals($expect, $body);
+		$this->assertEquals(201, $response->getStatusCode(), $body);
+		$this->assertEquals($expect, $body, $body);
 	}
 
 	public function testPostInvalidTitleLength()
@@ -124,8 +124,8 @@ JSON;
 			'title'   => 'Internal Server Error'
 		);
 
-		$this->assertEquals(500, $response->getStatusCode());
-		$this->assertEquals($expect, $body);
+		$this->assertEquals(500, $response->getStatusCode(), $body);
+		$this->assertEquals($expect, $body, $body);
 	}
 
 	public function testPostInvalidFields()
@@ -147,8 +147,8 @@ JSON;
 			'title'   => 'Internal Server Error'
 		);
 
-		$this->assertEquals(500, $response->getStatusCode());
-		$this->assertEquals($expect, $body);
+		$this->assertEquals(500, $response->getStatusCode(), $body);
+		$this->assertEquals($expect, $body, $body);
 	}
 
 	public function testPut()
@@ -167,8 +167,8 @@ JSON;
 			'message' => 'You have successful update a record',
 		);
 
-		$this->assertEquals(200, $response->getStatusCode());
-		$this->assertEquals($expect, $body);
+		$this->assertEquals(200, $response->getStatusCode(), $body);
+		$this->assertEquals($expect, $body, $body);
 	}
 
 	public function testDelete()
@@ -187,8 +187,8 @@ JSON;
 			'message' => 'You have successful delete a record',
 		);
 
-		$this->assertEquals(200, $response->getStatusCode());
-		$this->assertEquals($expect, $body);
+		$this->assertEquals(200, $response->getStatusCode(), $body);
+		$this->assertEquals($expect, $body, $body);
 	}
 
 	protected function getPaths()

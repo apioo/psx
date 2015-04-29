@@ -46,8 +46,10 @@ class ControllerAbstractTest extends ControllerTestCase
 		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
 
 		$controller = $this->loadController($request, $response);
+		$body       = (string) $response->getBody();
 
-		$this->assertEquals('foobar', (string) $response->getBody());
+		$this->assertEquals(null, $response->getStatusCode(), $body);
+		$this->assertEquals('foobar', $body, $body);
 	}
 
 	public function testInnerApi()
@@ -65,8 +67,10 @@ class ControllerAbstractTest extends ControllerTestCase
 		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
 
 		$controller = $this->loadController($request, $response);
+		$body       = (string) $response->getBody();
 
-		$this->assertJsonStringEqualsJsonString(json_encode(array('bar' => 'foo')), (string) $response->getBody());
+		$this->assertEquals(200, $response->getStatusCode(), $body);
+		$this->assertJsonStringEqualsJsonString('{"bar": "foo"}', $body, $body);
 	}
 
 	public function testForward()
@@ -77,8 +81,29 @@ class ControllerAbstractTest extends ControllerTestCase
 		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
 
 		$controller = $this->loadController($request, $response);
+		$body       = (string) $response->getBody();
 
-		$this->assertJsonStringEqualsJsonString(json_encode(array('foo' => 'bar')), (string) $response->getBody());
+		$this->assertEquals(null, $response->getStatusCode(), $body);
+		$this->assertJsonStringEqualsJsonString('{"foo": "bar"}', $body, $body);
+	}
+
+	public function testForwardInvalid()
+	{
+		$path     = '/controller/forward_invalid';
+		$request  = new Request(new Url('http://127.0.0.1' . $path), 'GET');
+		$response = new Response();
+		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
+
+		$controller = $this->loadController($request, $response);
+		$body       = (string) $response->getBody();
+		$data       = Json::decode($body);
+
+		$this->assertEquals(500, $response->getStatusCode(), $body);
+		$this->assertArrayHasKey('success', $data);
+		$this->assertArrayHasKey('title', $data);
+		$this->assertEquals(false, $data['success']);
+		$this->assertEquals('RuntimeException', $data['title']);
+		$this->assertEquals('Could not find route for source Foo\Bar', substr($data['message'], 0, 39));
 	}
 
 	public function testRedirect()
@@ -128,12 +153,14 @@ class ControllerAbstractTest extends ControllerTestCase
 		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
 
 		$controller = $this->loadController($request, $response);
+		$body       = (string) $response->getBody();
 
 		$expect = <<<JSON
 {"foo":["bar"]}
 JSON;
 
-		$this->assertJsonStringEqualsJsonString($expect, (string) $response->getBody());
+		$this->assertEquals(null, $response->getStatusCode(), $body);
+		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
 	}
 
 	public function testSetStdClassBody()
@@ -144,12 +171,14 @@ JSON;
 		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
 
 		$controller = $this->loadController($request, $response);
+		$body       = (string) $response->getBody();
 
 		$expect = <<<JSON
 {"foo":["bar"]}
 JSON;
 
-		$this->assertJsonStringEqualsJsonString($expect, (string) $response->getBody());
+		$this->assertEquals(null, $response->getStatusCode(), $body);
+		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
 	}
 
 	public function testSetRecordBody()
@@ -160,12 +189,14 @@ JSON;
 		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
 
 		$controller = $this->loadController($request, $response);
+		$body       = (string) $response->getBody();
 
 		$expect = <<<JSON
 {"foo":["bar"]}
 JSON;
 
-		$this->assertJsonStringEqualsJsonString($expect, (string) $response->getBody());
+		$this->assertEquals(null, $response->getStatusCode(), $body);
+		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
 	}
 
 	public function testSetDomDocumentBody()
@@ -176,13 +207,15 @@ JSON;
 		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
 
 		$controller = $this->loadController($request, $response);
+		$body       = (string) $response->getBody();
 
 		$expect = <<<XML
 <?xml version="1.0"?>
 <foo>bar</foo>
 XML;
 
-		$this->assertXmlStringEqualsXmlString($expect, (string) $response->getBody());
+		$this->assertEquals(null, $response->getStatusCode(), $body);
+		$this->assertXmlStringEqualsXmlString($expect, $body, $body);
 	}
 
 	public function testSetSimpleXmlBody()
@@ -193,13 +226,15 @@ XML;
 		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
 
 		$controller = $this->loadController($request, $response);
+		$body       = (string) $response->getBody();
 
 		$expect = <<<XML
 <?xml version="1.0"?>
 <foo>bar</foo>
 XML;
 
-		$this->assertXmlStringEqualsXmlString($expect, (string) $response->getBody());
+		$this->assertEquals(null, $response->getStatusCode(), $body);
+		$this->assertXmlStringEqualsXmlString($expect, $body, $body);
 	}
 
 	public function testSetStringBody()
@@ -210,12 +245,14 @@ XML;
 		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
 
 		$controller = $this->loadController($request, $response);
+		$body       = (string) $response->getBody();
 
 		$expect = <<<XML
 foobar
 XML;
 
-		$this->assertEquals($expect, (string) $response->getBody());
+		$this->assertEquals(null, $response->getStatusCode(), $body);
+		$this->assertEquals($expect, $body, $body);
 	}
 
 	public function testSetStreamBody()
@@ -225,9 +262,9 @@ XML;
 		$response = new Response();
 
 		$controller = $this->loadController($request, $response);
+		$body       = $response->getBody();
 
-		$body = $response->getBody();
-
+		$this->assertEquals(null, $response->getStatusCode(), $body);
 		$this->assertInstanceOf('PSX\Http\Stream\FileStream', $body);
 		$this->assertEquals('foo.txt', $body->getFileName());
 		$this->assertEquals('application/octet-stream', $body->getContentType());
@@ -236,7 +273,7 @@ XML;
 foobar
 XML;
 
-		$this->assertEquals($expect, (string) $response->getBody());
+		$this->assertEquals($expect, (string) $body);
 	}
 
 	public function testSetInvalidBody()
@@ -248,15 +285,16 @@ XML;
 
 		$this->loadController($request, $response);
 
-		$body     = (string) $response->getBody();
-		$response = Json::decode($body);
+		$body = (string) $response->getBody();
+		$data = Json::decode($body);
 
-		$this->assertArrayHasKey('success', $response);
-		$this->assertArrayHasKey('title', $response);
-		$this->assertArrayHasKey('message', $response);
-		$this->assertEquals(false, $response['success']);
-		$this->assertEquals('InvalidArgumentException', $response['title']);
-		$this->assertEquals('Invalid data type', substr($response['message'], 0, 17));
+		$this->assertEquals(500, $response->getStatusCode(), $body);
+		$this->assertArrayHasKey('success', $data);
+		$this->assertArrayHasKey('title', $data);
+		$this->assertArrayHasKey('message', $data);
+		$this->assertEquals(false, $data['success']);
+		$this->assertEquals('InvalidArgumentException', $data['title']);
+		$this->assertEquals('Invalid data type', substr($data['message'], 0, 17));
 	}
 
 	/**
@@ -275,7 +313,8 @@ XML;
 
 		$body = (string) $response->getBody();
 
-		$this->assertEquals('foo', $body);
+		$this->assertEquals(null, $response->getStatusCode(), $body);
+		$this->assertEquals('foo', $body, $body);
 	}
 
 	/**
@@ -290,7 +329,10 @@ XML;
 
 		$controller = $this->loadController($request, $response);
 
-		$this->assertEquals('foobar', (string) $response->getBody());
+		$body = (string) $response->getBody();
+
+		$this->assertEquals(null, $response->getStatusCode(), $body);
+		$this->assertEquals('foobar', $body, $body);
 	}
 
 	public function requestMethodProvider()
@@ -316,8 +358,10 @@ XML;
 
 		$controller = $this->loadController($request, $response);
 
-		$data = Json::decode($response->getBody());
+		$body = (string) $response->getBody();
+		$data = Json::decode($body);
 
+		$this->assertEquals(404, $response->getStatusCode(), $body);
 		$this->assertArrayHasKey('success', $data);
 		$this->assertArrayHasKey('title', $data);
 		$this->assertEquals(false, $data['success']);
@@ -330,6 +374,7 @@ XML;
 			[['GET'], '/controller', 'PSX\Controller\Foo\Application\TestController::doIndex'],
 			[['POST'], '/controller/inspect', 'PSX\Controller\Foo\Application\TestController::doInspect'],
 			[['GET'], '/controller/forward', 'PSX\Controller\Foo\Application\TestController::doForward'],
+			[['GET'], '/controller/forward_invalid', 'PSX\Controller\Foo\Application\TestController::doForwardInvalidRoute'],
 			[['GET'], '/controller/redirect', 'PSX\Controller\Foo\Application\TestController::doRedirect'],
 			[['GET'], '/controller/absolute/string', 'PSX\Controller\Foo\Application\TestController::doRedirectAbsoluteString'],
 			[['GET'], '/controller/absolute/object', 'PSX\Controller\Foo\Application\TestController::doRedirectAbsoluteObject'],

@@ -75,7 +75,7 @@ class TableApiAbstractTest extends ControllerDbTestCase
 }
 JSON;
 
-		$this->assertEquals(200, $response->getStatusCode());
+		$this->assertEquals(200, $response->getStatusCode(), $body);
 		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
 	}
 
@@ -243,7 +243,7 @@ JSON;
 		$this->assertArrayHasKey('trace', $body);
 		$this->assertArrayHasKey('context', $body);
 
-		$this->assertEquals(404, $response->getStatusCode());
+		$this->assertEquals(404, $response->getStatusCode(), $body);
 		$this->assertEquals(false, $body['success']);
 		$this->assertEquals('Record not found', substr($body['message'], 0, 16));
 	}
@@ -291,17 +291,19 @@ JSON;
 		$response->setBody($body);
 
 		$controller = $this->loadController($request, $response);
-		$body       = Json::decode((string) $response->getBody());
 
-		$this->assertArrayHasKey('success', $body);
-		$this->assertArrayHasKey('title', $body);
-		$this->assertArrayHasKey('message', $body);
-		$this->assertArrayHasKey('trace', $body);
-		$this->assertArrayHasKey('context', $body);
+		$body = (string) $response->getBody();
+		$data = Json::decode($body);
 
-		$this->assertEquals(404, $response->getStatusCode());
-		$this->assertEquals(false, $body['success']);
-		$this->assertEquals('Record not found', substr($body['message'], 0, 16));
+		$this->assertArrayHasKey('success', $data);
+		$this->assertArrayHasKey('title', $data);
+		$this->assertArrayHasKey('message', $data);
+		$this->assertArrayHasKey('trace', $data);
+		$this->assertArrayHasKey('context', $data);
+
+		$this->assertEquals(404, $response->getStatusCode(), $body);
+		$this->assertEquals(false, $data['success']);
+		$this->assertEquals('Record not found', substr($data['message'], 0, 16));
 	}
 
 	protected function getPaths()

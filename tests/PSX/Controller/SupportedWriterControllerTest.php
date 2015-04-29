@@ -48,7 +48,8 @@ class SupportedWriterControllerTest extends ControllerTestCase
 		$response->setBody($body);
 
 		$controller = $this->loadController($request, $response);
-		$data       = (string) $body;
+
+		$body = (string) $response->getBody();
 
 		$expect = <<<XML
 <record>
@@ -56,7 +57,8 @@ class SupportedWriterControllerTest extends ControllerTestCase
 </record>
 XML;
 
-		$this->assertXmlStringEqualsXmlString($expect, $data);
+		$this->assertEquals(null, $response->getStatusCode(), $body);
+		$this->assertXmlStringEqualsXmlString($expect, $body, $body);
 	}
 
 	public function testForward()
@@ -68,7 +70,8 @@ XML;
 		$response->setBody($body);
 
 		$controller = $this->loadController($request, $response);
-		$data       = (string) $body;
+
+		$body = (string) $response->getBody();
 
 		$expect = <<<XML
 <record>
@@ -76,7 +79,8 @@ XML;
 </record>
 XML;
 
-		$this->assertXmlStringEqualsXmlString($expect, $data);
+		$this->assertEquals(null, $response->getStatusCode(), $body);
+		$this->assertXmlStringEqualsXmlString($expect, $body, $body);
 	}
 
 	public function testError()
@@ -90,7 +94,8 @@ XML;
 		$response->setBody($body);
 
 		$controller = $this->loadController($request, $response);
-		$data       = (string) $body;
+
+		$body = (string) $response->getBody();
 
 		$expect = <<<XML
 <error>
@@ -100,7 +105,8 @@ XML;
 </error>
 XML;
 
-		$this->assertXmlStringEqualsXmlString($expect, $data);
+		$this->assertEquals(500, $response->getStatusCode(), $body);
+		$this->assertXmlStringEqualsXmlString($expect, $body, $body);
 	}
 
 	protected function getPaths()
