@@ -56,16 +56,7 @@ class PropertyRamlController extends SchemaApiAbstract
 
 	protected function doCreate(RecordInterface $record, Version $version)
 	{
-		$this->testCase->assertEquals(['bar'], $record->getArray());
-		$this->testCase->assertEquals(true, $record->getBoolean());
-		$this->testCase->assertEquals(['foo' => 'bar'], $record->getComplex()->getRecordInfo()->getFields());
-		$this->testCase->assertEquals('2015-05-01', $record->getDate()->format('Y-m-d'));
-		$this->testCase->assertEquals('2015-05-01T13:37:14Z', $record->getDateTime()->format('Y-m-d\TH:i:s\Z'));
-		$this->testCase->assertEquals('000100000000', $record->getDuration()->format('%Y%M%D%H%I%S'));
-		$this->testCase->assertEquals(13.37, $record->getFloat());
-		$this->testCase->assertEquals(7, $record->getInteger());
-		$this->testCase->assertEquals('bar', $record->getString());
-		$this->testCase->assertEquals('13:37:14', $record->getTime()->format('H:i:s'));
+		PropertyDocumentationTest::assertRecord($this->testCase, $record);
 
 		return $record;
 	}

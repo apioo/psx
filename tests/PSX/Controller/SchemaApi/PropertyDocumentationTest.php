@@ -23,6 +23,7 @@ namespace PSX\Controller\SchemaApi;
 use PSX\Data\Writer;
 use PSX\Data\WriterInterface;
 use PSX\Data\Record;
+use PSX\Data\RecordInterface;
 use PSX\DateTime;
 use PSX\DateTime\Date;
 use PSX\DateTime\Duration;
@@ -44,7 +45,7 @@ use PSX\Url;
 class PropertyDocumentationTest extends ControllerTestCase
 {
 	/**
-	 * @dataProvider providerTypes
+	 * @dataProvider getDataTypes
 	 */
 	public function testGet($type)
 	{
@@ -81,7 +82,43 @@ class PropertyDocumentationTest extends ControllerTestCase
 		);
 	}
 
-	public function providerTypes()
+	/**
+	 * Checks whether the data we received as post is converted to the right 
+	 * types
+	 *
+	 * @param PHPUnit_Framework_TestCase $testCase
+	 * @param PSX\Data\RecordInterface $record
+	 */
+	public static function assertRecord(\PHPUnit_Framework_TestCase $testCase, RecordInterface $record)
+	{
+		$testCase->assertInternalType('array', $record->getArray());
+		$testCase->assertEquals(['bar'], $record->getArray());
+		$testCase->assertInternalType('boolean', $record->getBoolean());
+		$testCase->assertEquals(true, $record->getBoolean());
+		$testCase->assertInstanceOf('PSX\Data\RecordInterface', $record->getComplex());
+		$testCase->assertEquals(['foo' => 'bar'], $record->getComplex()->getRecordInfo()->getFields());
+		$testCase->assertInstanceOf('PSX\DateTime\Date', $record->getDate());
+		$testCase->assertEquals('2015-05-01', $record->getDate()->format('Y-m-d'));
+		$testCase->assertInstanceOf('PSX\DateTime', $record->getDateTime());
+		$testCase->assertEquals('2015-05-01T13:37:14Z', $record->getDateTime()->format('Y-m-d\TH:i:s\Z'));
+		$testCase->assertInstanceOf('PSX\DateTime\Duration', $record->getDuration());
+		$testCase->assertEquals('000100000000', $record->getDuration()->format('%Y%M%D%H%I%S'));
+		$testCase->assertInternalType('float', $record->getFloat());
+		$testCase->assertEquals(13.37, $record->getFloat());
+		$testCase->assertInternalType('integer', $record->getInteger());
+		$testCase->assertEquals(7, $record->getInteger());
+		$testCase->assertInternalType('string', $record->getString());
+		$testCase->assertEquals('bar', $record->getString());
+		$testCase->assertInstanceOf('PSX\DateTime\Time', $record->getTime());
+		$testCase->assertEquals('13:37:14', $record->getTime()->format('H:i:s'));
+	}
+
+	/**
+	 * Returns all available data types which can be used as data provider
+	 * 
+	 * @return array
+	 */
+	public static function getDataTypes()
 	{
 		return [
 			[1],
@@ -90,6 +127,13 @@ class PropertyDocumentationTest extends ControllerTestCase
 		];
 	}
 
+	/**
+	 * Returns different response. The assimilator should convert all these 
+	 * types to the same response format
+	 *
+	 * @param integer $type
+	 * @return array
+	 */
 	public static function getDataByType($type)
 	{
 		switch($type)
@@ -150,6 +194,11 @@ class PropertyDocumentationTest extends ControllerTestCase
 		}
 	}
 
+	/**
+	 * The JSON format which we expect as response
+	 *
+	 * @return string
+	 */
 	public static function getExpected()
 	{
 		return <<<JSON

@@ -40,7 +40,7 @@ use PSX\Url;
 class PropertyRamlTest extends ControllerTestCase
 {
 	/**
-	 * @dataProvider providerTypes
+	 * @dataProvider PSX\Controller\SchemaApi\PropertyDocumentationTest::getDataTypes
 	 */
 	public function testGet($type)
 	{
@@ -75,14 +75,5 @@ class PropertyRamlTest extends ControllerTestCase
 		return array(
 			[['GET', 'POST', 'PUT', 'DELETE'], '/api', 'PSX\Controller\Foo\Application\SchemaApi\PropertyRamlController'],
 		);
-	}
-
-	public function providerTypes()
-	{
-		return [
-			[1],
-			[2],
-			[3],
-		];
 	}
 }
