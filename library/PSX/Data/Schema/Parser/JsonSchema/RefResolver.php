@@ -25,6 +25,7 @@ use PSX\Http\GetRequest;
 use PSX\Json;
 use PSX\Uri;
 use PSX\Util\UriResolver;
+use RuntimeException;
 
 /**
  * RefResolver
@@ -147,7 +148,7 @@ class RefResolver
 			}
 			else
 			{
-				throw new \RuntimeException('Could not load external schema ' . $path);
+				throw new RuntimeException('Could not load external schema ' . $path);
 			}
 		}
 		else if(in_array($uri->getScheme(), ['http', 'https']))
@@ -167,12 +168,12 @@ class RefResolver
 			}
 			else
 			{
-				throw new \RuntimeException('Could not load external schema ' . $uri->toString() . ' received ' . $response->getStatusCode());
+				throw new RuntimeException('Could not load external schema ' . $uri->toString() . ' received ' . $response->getStatusCode());
 			}
 		}
 		else
 		{
-			throw new \RuntimeException('Unknown protocol for external resource ' . $uri->getScheme());
+			throw new RuntimeException('Unknown protocol for external resource ' . $uri->getScheme());
 		}
 	}
 

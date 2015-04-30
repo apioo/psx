@@ -25,6 +25,7 @@ use PSX\Data\Schema\Property;
 use PSX\Data\Schema\PropertyInterface;
 use PSX\Data\Schema\PropertySimpleAbstract;
 use PSX\Data\Schema\ParserInterface;
+use PSX\Data\Schema\Parser\JsonSchema;
 use PSX\Data\Schema\Parser\JsonSchema\UnsupportedVersionException;
 use PSX\Json;
 use PSX\Uri;
@@ -46,6 +47,8 @@ class Document
 
 	public function __construct(array $data, RefResolver $resolver, $basePath = null, Uri $source = null)
 	{
+		$this->assertVersion($data);
+
 		$this->data     = $data;
 		$this->resolver = $resolver;
 		$this->basePath = $basePath;

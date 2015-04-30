@@ -31,6 +31,7 @@ use PSX\Data\Schema\Parser\JsonSchema\UnsupportedVersionException;
 use PSX\Json;
 use PSX\Uri;
 use PSX\Util\UriResolver;
+use RuntimeException;
 
 /**
  * JsonSchema
@@ -73,7 +74,7 @@ class JsonSchema implements ParserInterface
 		}
 		else
 		{
-			throw new \RuntimeException('Could not load json schema ' . $file);
+			throw new RuntimeException('Could not load json schema ' . $file);
 		}
 	}
 }
