@@ -63,6 +63,13 @@ class BooleanTest extends \PHPUnit_Framework_TestCase
 		$this->assertTrue($property->validate(4));
 	}
 
+	public function testValidateNull()
+	{
+		$property = new Boolean('test');
+
+		$this->assertTrue($property->validate(null));
+	}
+
 	public function testGetId()
 	{
 		$property = new Boolean('test');

@@ -46,10 +46,31 @@ class ComplexTypeTest extends \PHPUnit_Framework_TestCase
 		$this->assertTrue($property->validate('foo'));
 	}
 
+	public function testValidateNull()
+	{
+		$property = new ComplexType('test');
+
+		$this->assertTrue($property->validate(null));
+	}
+
 	public function testGetId()
 	{
 		$property = new ComplexType('test');
 
 		$this->assertEquals('aeadc8d940a294aeacf0ab2d3e7e4e4b', $property->getId());
+	}
+
+	public function testProperties()
+	{
+		$property = new ComplexType('test');
+		$property->add(new String('foo'));
+
+		$this->assertInstanceOf('PSX\Data\Schema\Property\String', $property->get('foo'));
+		$this->assertTrue($property->has('foo'));
+
+		$property->remove('foo');
+		$property->remove('foo'); // should not produce an error
+
+		$this->assertFalse($property->has('foo'));
 	}
 }

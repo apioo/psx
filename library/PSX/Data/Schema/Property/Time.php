@@ -33,20 +33,27 @@ class Time extends String
 {
 	public function validate($data)
 	{
+		if($data instanceof \DateTime)
+		{
+			return true;
+		}
+
 		parent::validate($data);
 
 		if($data === null)
 		{
 			return true;
 		}
-
-		$result = preg_match('/^' . \PSX\DateTime\Time::getPattern() . '$/', $data);
-
-		if($result)
+		else if(is_string($data))
 		{
-			return true;
+			$result = preg_match('/^' . \PSX\DateTime\Time::getPattern() . '$/', $data);
+
+			if($result)
+			{
+				return true;
+			}
 		}
 
-		throw new ValidationException($this->getName() . ' must be an valid time format');
+		throw new ValidationException($this->getName() . ' must be an valid full-time format (partial-time time-offset) [RFC3339]');
 	}
 }

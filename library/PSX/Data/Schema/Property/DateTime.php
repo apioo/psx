@@ -54,6 +54,6 @@ class DateTime extends String
 			}
 		}
 
-		throw new ValidationException($this->getName() . ' must be an valid ISO 8601 datetime format');
+		throw new ValidationException($this->getName() . ' must be an valid date-time format (full-date "T" full-time) [RFC3339]');
 	}
 }

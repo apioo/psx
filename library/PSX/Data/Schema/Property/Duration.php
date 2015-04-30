@@ -33,14 +33,14 @@ class Duration extends String
 {
 	public function validate($data)
 	{
-		parent::validate($data);
-
-		if($data === null)
+		if($data instanceof \DateInterval)
 		{
 			return true;
 		}
 
-		if($data instanceof \DateInterval)
+		parent::validate($data);
+
+		if($data === null)
 		{
 			return true;
 		}
@@ -54,6 +54,6 @@ class Duration extends String
 			}
 		}
 
-		throw new ValidationException($this->getName() . ' must be an valid ISO 8601 duration format');
+		throw new ValidationException($this->getName() . ' must be an valid duration format [ISO8601]');
 	}
 }

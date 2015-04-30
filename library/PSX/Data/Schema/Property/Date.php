@@ -56,6 +56,6 @@ class Date extends String
 			}
 		}
 
-		throw new ValidationException($this->getName() . ' must be an valid ISO 8601 date format');
+		throw new ValidationException($this->getName() . ' must be an valid full-date format (date-fullyear "-" date-month "-" date-mday) [RFC3339]');
 	}
 }

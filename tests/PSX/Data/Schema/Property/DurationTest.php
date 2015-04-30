@@ -47,6 +47,20 @@ class DurationTest extends \PHPUnit_Framework_TestCase
 		$this->assertTrue($property->validate('foo'));
 	}
 
+	public function testValidateNull()
+	{
+		$property = new Duration('test');
+
+		$this->assertTrue($property->validate(null));
+	}
+
+	public function testValidateDateTime()
+	{
+		$property = new Duration('test');
+
+		$this->assertTrue($property->validate(new \DateInterval('P1Y')));
+	}
+
 	public function testGetId()
 	{
 		$property = new Duration('test');
