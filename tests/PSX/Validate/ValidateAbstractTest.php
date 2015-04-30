@@ -45,4 +45,64 @@ class ValidateAbstractTest extends \PHPUnit_Framework_TestCase
 		$this->assertInstanceOf('PSX\Data\RecordInterface', $validator->getRecord());
 		$this->assertEquals(array('id' => null, 'title' => null), $validator->getRecord()->getRecordInfo()->getFields());
 	}
+
+	public function testThrowErrors()
+	{
+		try
+		{
+			$this->getValidator(ValidatorInterface::THROW_ERRORS)->validate(array(
+				'id' => 5,
+				'title' => 'foobar',
+			));
+		}
+		catch(ValidationException $e)
+		{
+			$this->assertEquals('id', $e->getTitle());
+			$this->assertEquals('id has an invalid length min 1 and max 2 signs', $e->getResult()->getFirstError());
+			$this->assertEquals(['id has an invalid length min 1 and max 2 signs'], $e->getResult()->getErrors());
+		}
+	}
+
+	public function testCollectErrors()
+	{
+		$validator = $this->getValidator(ValidatorInterface::COLLECT_ERRORS);
+		$result    = $validator->validate(array(
+			'id' => 5,
+			'title' => 'foobar',
+		));
+
+		$errors = $validator->getErrors();
+
+		$this->assertEquals(['id' => null, 'title' => null], $result);
+		$this->assertArrayHasKey('id', $errors);
+		$this->assertEquals('id has an invalid length min 1 and max 2 signs', $errors['id']->getFirstError());
+		$this->assertArrayHasKey('title', $errors);
+		$this->assertEquals('title has an invalid length min 1 and max 2 signs', $errors['title']->getFirstError());
+		$this->assertEquals(['title has an invalid length min 1 and max 2 signs'], $errors['title']->getErrors());
+		$this->assertEquals(false, $validator->isSuccessful());
+	}
+
+	/**
+	 * @expectedException PSX\Validate\ValidationException
+	 */
+	public function testSetFieldsAndFlag()
+	{
+		$validator = $this->getValidator(ValidatorInterface::COLLECT_ERRORS);
+		$validator->setFields([new Property('id', Validate::TYPE_INTEGER, array(new Filter\Length(1, 2)))]);
+		$validator->setFlag(ValidatorInterface::THROW_ERRORS);
+		$validator->validate(array(
+			'id' => 1,
+			'title' => 'foobar',
+		));
+	}
+
+	protected function getValidator($flag)
+	{
+		$properties = [
+			new Property('id', Validate::TYPE_INTEGER, array(new Filter\Length(1, 2))),
+			new Property('title', Validate::TYPE_STRING, array(new Filter\Length(1, 2))),
+		];
+
+		return new ArrayValidator(new Validate(), $properties, $flag);
+	}
 }
