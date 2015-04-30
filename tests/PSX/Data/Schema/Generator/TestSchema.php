@@ -51,7 +51,8 @@ class TestSchema extends SchemaAbstract
 			->setPrototype(new Property\String('category'))
 			->setMaxLength(8);
 		$sb->arrayType('locations')
-			->setPrototype($location);
+			->setPrototype($location)
+			->setDescription('Array of locations');
 		$sb->complexType('origin', $location);
 		$author = $sb->getProperty();
 

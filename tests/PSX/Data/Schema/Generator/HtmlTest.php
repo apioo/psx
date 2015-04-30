@@ -335,7 +335,7 @@ class HtmlTest extends GeneratorTestCase
 							</span>&gt;</span>
 					</td>
 					<td>
-						<span class="psx-property-description"/>
+						<span class="psx-property-description">Array of locations</span>
 					</td>
 					<td/>
 				</tr>

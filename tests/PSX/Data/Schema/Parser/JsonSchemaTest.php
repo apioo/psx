@@ -54,6 +54,7 @@ class JsonSchemaTest extends \PHPUnit_Framework_TestCase
 		$property = $schema->getDefinition();
 
 		$this->assertInstanceOf('PSX\Data\Schema\PropertyInterface', $property);
+		$this->assertEquals('record', $property->getName());
 		$this->assertInstanceOf('PSX\Data\Schema\Property\Integer', $property->get('id'));
 		$this->assertInstanceOf('PSX\Data\Schema\Property\ComplexType', $property->get('bar'));
 		$this->assertInstanceOf('PSX\Data\Schema\Property\ArrayType', $property->get('bar')->get('number'));
@@ -95,5 +96,50 @@ class JsonSchemaTest extends \PHPUnit_Framework_TestCase
 		$this->assertInstanceOf('PSX\Data\Schema\Property\Duration', $property->get('duration'));
 		$this->assertInstanceOf('PSX\Data\Schema\Property\Time', $property->get('time'));
 		$this->assertInstanceOf('PSX\Data\Schema\Property\String', $property->get('unknown'));
+	}
+
+	/**
+	 * @expectedException RuntimeException
+	 */
+	public function testParseInvalidFile()
+	{
+		JsonSchema::fromFile(__DIR__ . '/foo.json');
+	}
+
+	/**
+	 * @expectedException PSX\Data\Schema\Parser\JsonSchema\UnsupportedVersionException
+	 */
+	public function testParseInvalidVersion()
+	{
+		JsonSchema::fromFile(__DIR__ . '/wrong_version_schema.json');
+	}
+
+	/**
+	 * @expectedException RuntimeException
+	 */
+	public function testParseInvalidFileRef()
+	{
+		JsonSchema::fromFile(__DIR__ . '/invalid_file_ref_schema.json');
+	}
+
+	/**
+	 * @expectedException RuntimeException
+	 */
+	public function testParseInvalidHttpRef()
+	{
+		$handler  = Http\Handler\Mock::getByXmlDefinition(__DIR__ . '/http_mock.xml');
+		$http     = new Http($handler);
+		$resolver = new JsonSchema\RefResolver($http);
+
+		$parser   = new JsonSchema(__DIR__, $resolver);
+		$parser->parse(file_get_contents(__DIR__ . '/invalid_http_ref_schema.json'));
+	}
+
+	/**
+	 * @expectedException RuntimeException
+	 */
+	public function testParseInvalidSchemaRef()
+	{
+		JsonSchema::fromFile(__DIR__ . '/unknown_protocol_ref_schema.json');
 	}
 }

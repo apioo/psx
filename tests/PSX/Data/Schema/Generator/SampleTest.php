@@ -47,6 +47,7 @@ class SampleTest extends GeneratorTestCase
             "email": "foo@bar.com"
         }
     ],
+    "read": true,
     "author": {
         "title": "foo",
         "locations": [{
@@ -54,7 +55,7 @@ class SampleTest extends GeneratorTestCase
         	"long": -37
         }]
     },
-    "price": 4,
+    "price": 3.8,
     "content": "foo"
 }
 JSON;
@@ -76,6 +77,7 @@ JSON;
   <title>foo</title>
   <email>foo@bar.com</email>
  </receiver>
+ <read>true</read>
  <author>
   <title>foo</title>
   <locations>
@@ -83,12 +85,22 @@ JSON;
    <long>-37</long>
   </locations>
  </author>
- <price>4</price>
+ <price>3.8</price>
  <content>foo</content>
 </news>
 XML;
 
 		$this->assertXmlStringEqualsXmlString($expect, $result);
+	}
+
+	/**
+	 * @expectedException RuntimeException
+	 */
+	public function testGenerateMissingValue()
+	{
+		$generator = new Sample(Sample::FORMAT_JSON);
+		$generator->setData(array());
+		$generator->generate($this->getSchema());
 	}
 
 	protected function getSampleData()
@@ -110,8 +122,9 @@ XML;
 					),
 				)
 			),
-			'price' => 4,
+			'price' => 3.8,
 			'content' => 'foo',
+			'read' => true,
 		);
 	}
 }

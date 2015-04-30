@@ -67,6 +67,13 @@ class IntegerTest extends \PHPUnit_Framework_TestCase
 		$this->assertTrue($property->validate(1.2));
 	}
 
+	public function testValidateNull()
+	{
+		$property = new Integer('test');
+
+		$this->assertTrue($property->validate(null));
+	}
+	
 	public function testGetId()
 	{
 		$property = new Integer('test');

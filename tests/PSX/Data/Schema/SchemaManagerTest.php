@@ -18,47 +18,39 @@
  * limitations under the License.
  */
 
-namespace PSX\Data\Schema\Property;
+namespace PSX\Data\Schema;
 
 /**
- * FloatTest
+ * SchemaManagerTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class FloatTest extends \PHPUnit_Framework_TestCase
+class SchemaManagerTest extends \PHPUnit_Framework_TestCase
 {
-	public function testValidate()
+	public function testGetSchema()
 	{
-		$property = new Float('test');
+		$schemaManager = new SchemaManager();
 
-		$this->assertTrue($property->validate(1));
-		$this->assertTrue($property->validate(1.0));
-		$this->assertTrue($property->validate('1.0'));
+		$this->assertInstanceOf('PSX\Data\SchemaInterface', $schemaManager->getSchema('PSX\Data\Schema\Generator\TestSchema'));
 	}
 
 	/**
-	 * @expectedException PSX\Data\Schema\ValidationException
+	 * @expectedException PSX\Data\Schema\InvalidSchemaException
 	 */
-	public function testValidateInvalidFormat()
+	public function testGetSchemaInvalidClass()
 	{
-		$property = new Float('test');
-
-		$this->assertTrue($property->validate('foo'));
+		$schemaManager = new SchemaManager();
+		$schemaManager->getSchema('stdClass');
 	}
 
-	public function testValidateNull()
+	/**
+	 * @expectedException PSX\Data\Schema\InvalidSchemaException
+	 */
+	public function testGetSchemaNotExisting()
 	{
-		$property = new Float('test');
-
-		$this->assertTrue($property->validate(null));
-	}
-
-	public function testGetId()
-	{
-		$property = new Float('test');
-
-		$this->assertEquals('fe4ded0fa29552b15aa3770177466033', $property->getId());
+		$schemaManager = new SchemaManager();
+		$schemaManager->getSchema('foo');
 	}
 }

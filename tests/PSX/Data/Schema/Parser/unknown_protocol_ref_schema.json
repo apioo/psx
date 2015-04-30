@@ -1,0 +1,10 @@
+{
+    "id": "http://schema.org/foo#",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "properties": {
+        "foo": {
+            "$ref": "foo:///foo.json#/definitions/bar"
+        }
+    }
+}

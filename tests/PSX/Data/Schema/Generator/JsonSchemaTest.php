@@ -61,6 +61,7 @@ class JsonSchemaTest extends GeneratorTestCase
         },
         "locations": {
           "type": "array",
+          "description": "Array of locations",
           "items": {
             "$ref": "#/definitions/ref93ef595df6d9e735702cba3611adba27"
           }

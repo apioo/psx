@@ -140,6 +140,13 @@ class StringTest extends \PHPUnit_Framework_TestCase
 		$property->validate('test');
 	}
 
+	public function testValidateNull()
+	{
+		$property = new String('test');
+
+		$this->assertTrue($property->validate(null));
+	}
+	
 	public function testGetId()
 	{
 		$property = new String('test');
