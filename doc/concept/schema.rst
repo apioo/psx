@@ -40,7 +40,7 @@ create an schema
             $sb->arrayType('options')
                 ->setPrototype($this->getSchema('Acme\Schema\Option'));
             $sb->arrayType('tags')
-                ->setPrototype(new Property\String('tag'));
+                ->setPrototype(Property::getString('tag'));
             $sb->duration('duration');
             $sb->dateTime('created');
 

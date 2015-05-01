@@ -171,7 +171,7 @@ manually. In the following an schema API which defines the resources in PHP.
             $resource = new Resource(Resource::STATUS_ACTIVE, $this->context->get(Context::KEY_PATH));
 
             $resource->addMethod(Resource\Factory::getMethod('GET')
-                ->addQueryParameter(new Property\Integer('count'))
+                ->addQueryParameter(Property::getInteger('count'))
                 ->addResponse(200, $this->schemaManager->getSchema('Acme\Schema\Song')));
 
             $resource->addMethod(Resource\Factory::getMethod('POST')
