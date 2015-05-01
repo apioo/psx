@@ -23,37 +23,64 @@ namespace PSX\Data\Schema\Property;
 use PSX\Data\Schema\ValidationException;
 
 /**
- * Duration
+ * FloatType
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Duration extends String
+class FloatType extends DecimalType
 {
 	public function validate($data)
 	{
-		if($data instanceof \DateInterval)
-		{
-			return true;
-		}
-
 		parent::validate($data);
 
 		if($data === null)
 		{
 			return true;
 		}
+
+		if(is_float($data))
+		{
+		}
+		else if(is_int($data))
+		{
+			$data = (float) $data;
+		}
 		else if(is_string($data))
 		{
-			$result = preg_match('/^' . \PSX\DateTime\Duration::getPattern() . '$/', $data);
+			$result = preg_match('/^(\+|-)?([0-9]+(\.[0-9]*)?|\.[0-9]+)([Ee](\+|-)?[0-9]+)?$/', $data);
 
 			if($result)
 			{
-				return true;
+				$data = (float) $data;
+			}
+			else
+			{
+				throw new ValidationException($this->getName() . ' must be an float');
+			}
+		}
+		else
+		{
+			throw new ValidationException($this->getName() . ' must be an float');
+		}
+
+		if($this->max !== null)
+		{
+			if($data > $this->max)
+			{
+				throw new ValidationException($this->getName() . ' must be lower or equal then ' . $this->max);
 			}
 		}
 
-		throw new ValidationException($this->getName() . ' must be an valid duration format [ISO8601]');
+		if($this->min !== null)
+		{
+			if($data < $this->min)
+			{
+				throw new ValidationException($this->getName() . ' must be greater or equal then ' . $this->min);
+			}
+		}
+
+		return true;
 	}
 }

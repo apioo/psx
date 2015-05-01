@@ -209,11 +209,11 @@ class Xsd implements GeneratorInterface
 			$this->writer->startElement('xs:restriction');
 			$this->writer->writeAttribute('base', $this->getBasicType($type, true));
 
-			if($type instanceof Property\String)
+			if($type instanceof Property\StringType)
 			{
 				$this->generateTypeString($type);
 			}
-			else if($type instanceof Property\Decimal)
+			else if($type instanceof Property\DecimalType)
 			{
 				$this->generateTypeDecimal($type);
 			}
@@ -269,7 +269,7 @@ class Xsd implements GeneratorInterface
 		}
 	}
 
-	protected function generateTypeDecimal(Property\Decimal $type)
+	protected function generateTypeDecimal(Property\DecimalType $type)
 	{
 		$max = $type->getMax();
 		if($max)
@@ -288,7 +288,7 @@ class Xsd implements GeneratorInterface
 		}
 	}
 
-	protected function generateTypeString(Property\String $type)
+	protected function generateTypeString(Property\StringType $type)
 	{
 		$minLength = $type->getMinLength();
 		if($minLength)
@@ -321,9 +321,7 @@ class Xsd implements GeneratorInterface
 
 	protected function getBasicType(PropertyInterface $type, $withNamespace = false)
 	{
-		$parts = explode('\\', get_class($type));
-
-		return ($withNamespace ? 'xs:' : '') . lcfirst(end($parts));
+		return ($withNamespace ? 'xs:' : '') . $type->getTypeName();
 	}
 
 	protected function hasConstraints(PropertyInterface $type)
@@ -334,14 +332,14 @@ class Xsd implements GeneratorInterface
 		}
 		else if($type instanceof PropertySimpleAbstract)
 		{
-			if($type instanceof Property\Decimal)
+			if($type instanceof Property\DecimalType)
 			{
 				if($type->getMin() !== null || $type->getMax() !== null)
 				{
 					return true;
 				}
 			}
-			else if($type instanceof Property\String)
+			else if($type instanceof Property\StringType)
 			{
 				if($type->getMinLength() !== null || $type->getMaxLength() !== null)
 				{

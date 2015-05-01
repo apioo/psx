@@ -37,7 +37,7 @@ class ResourceTest extends \PHPUnit_Framework_TestCase
 		$resource = new Resource(Resource::STATUS_ACTIVE, '/foo');
 		$resource->setTitle('foobar');
 		$resource->setDescription('foobar');
-		$resource->addPathParameter(new Property\String('foo'));
+		$resource->addPathParameter(Property::getString('foo'));
 		$resource->addMethod(Factory::getMethod('GET'));
 
 		$this->assertEquals(Resource::STATUS_ACTIVE, $resource->getStatus());

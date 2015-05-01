@@ -165,7 +165,7 @@ JSON;
                 "entry": {
                     "type": "array",
                     "items": {
-                        "$ref": "ref7738db4616810154ab42db61b65f74aa"
+                        "$ref": "ref993f4bb37f524889fc963fedd6381458"
                     }
                 }
             }
@@ -273,8 +273,8 @@ JSON;
                 }
             }
         },
-        "ref7738db4616810154ab42db61b65f74aa": {
-            "id": "ref7738db4616810154ab42db61b65f74aa",
+        "ref993f4bb37f524889fc963fedd6381458": {
+            "id": "ref993f4bb37f524889fc963fedd6381458",
             "properties": {
                 "id": {
                     "type": "integer"

@@ -23,19 +23,20 @@ namespace PSX\Data\Schema\Property;
 use PSX\Data\Schema\Property;
 
 /**
- * ComplexTypeTest
+ * IntegerTypeTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class ComplexTypeTest extends \PHPUnit_Framework_TestCase
+class IntegerTypeTest extends \PHPUnit_Framework_TestCase
 {
 	public function testValidate()
 	{
-		$property = Property::getComplex('test');
+		$property = Property::getInteger('test');
 
-		$this->assertTrue($property->validate(new \stdClass()));
+		$this->assertTrue($property->validate(4));
+		$this->assertTrue($property->validate('4'));
 	}
 
 	/**
@@ -43,41 +44,47 @@ class ComplexTypeTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testValidateInvalidFormat()
 	{
-		$property = Property::getComplex('test');
+		$property = Property::getInteger('test');
 
 		$this->assertTrue($property->validate('foo'));
 	}
 
+	/**
+	 * @expectedException PSX\Data\Schema\ValidationException
+	 */
+	public function testValidateInvalidFormatFraction()
+	{
+		$property = Property::getInteger('test');
+
+		$this->assertTrue($property->validate('1.2'));
+	}
+
+	/**
+	 * @expectedException PSX\Data\Schema\ValidationException
+	 */
+	public function testValidateInvalidFormatType()
+	{
+		$property = Property::getInteger('test');
+
+		$this->assertTrue($property->validate(1.2));
+	}
+
 	public function testValidateNull()
 	{
-		$property = Property::getComplex('test');
+		$property = Property::getInteger('test');
 
 		$this->assertTrue($property->validate(null));
 	}
-
+	
 	public function testGetId()
 	{
-		$property = Property::getComplex('test');
+		$property = Property::getInteger('test');
 
-		$this->assertEquals('aeadc8d940a294aeacf0ab2d3e7e4e4b', $property->getId());
-	}
-
-	public function testProperties()
-	{
-		$property = Property::getComplex('test');
-		$property->add(Property::getString('foo'));
-
-		$this->assertInstanceOf('PSX\Data\Schema\Property\StringType', $property->get('foo'));
-		$this->assertTrue($property->has('foo'));
-
-		$property->remove('foo');
-		$property->remove('foo'); // should not produce an error
-
-		$this->assertFalse($property->has('foo'));
+		$this->assertEquals('6cf21bdd65cb914f8142978ecbb65568', $property->getId());
 	}
 
 	public function testGetTypeName()
 	{
-		$this->assertEquals('complex', Property::getComplex('test')->getTypeName());
+		$this->assertEquals('integer', Property::getInteger('test')->getTypeName());
 	}
 }

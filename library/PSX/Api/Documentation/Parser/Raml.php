@@ -279,20 +279,20 @@ class Raml implements ParserInterface
 		switch($type)
 		{
 			case 'integer':
-				return new Property\Integer($name);
+				return Property::getInteger($name);
 
 			case 'number':
-				return new Property\Float($name);
+				return Property::getFloat($name);
 
 			case 'date':
-				return new Property\DateTime($name);
+				return Property::getDateTime($name);
 
 			case 'boolean':
-				return new Property\Boolean($name);
+				return Property::getBoolean($name);
 
 			case 'string':
 			default:
-				return new Property\String($name);
+				return Property::getString($name);
 		}
 	}
 

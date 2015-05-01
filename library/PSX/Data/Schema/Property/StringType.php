@@ -24,13 +24,13 @@ use PSX\Data\Schema\PropertySimpleAbstract;
 use PSX\Data\Schema\ValidationException;
 
 /**
- * String
+ * StringType
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class String extends PropertySimpleAbstract
+class StringType extends PropertySimpleAbstract
 {
 	protected $minLength;
 	protected $maxLength;

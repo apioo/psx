@@ -45,7 +45,7 @@ class SchemaTest extends GeneratorTestCase
 		<div class="psx-resource-data psx-resource-response">
 			<h5>GET Response - 200 OK</h5>
 			<div class="psx-resource-data-content">
-				<div class="psx-complex-type" id="psx-type-9499a45cc2cb810ebcb38cc840bebf51">
+				<div class="psx-complex-type" id="psx-type-2e7db60cc6f1c321968ba23ce07b9eb5">
 					<h1>collection</h1>
 					<div class="psx-type-description"/>
 					<table class="table psx-type-properties">
@@ -69,7 +69,7 @@ class SchemaTest extends GeneratorTestCase
 									<span class="psx-property-name psx-property-optional">entry</span>
 								</td>
 								<td>
-									<span class="psx-property-type psx-property-type-array">Array&lt;<span class="psx-property-type psx-property-type-complex"><a href="#psx-type-7738db4616810154ab42db61b65f74aa">item</a></span>&gt;</span>
+									<span class="psx-property-type psx-property-type-array">Array&lt;<span class="psx-property-type psx-property-type-complex"><a href="#psx-type-993f4bb37f524889fc963fedd6381458">item</a></span>&gt;</span>
 								</td>
 								<td>
 									<span class="psx-property-description"/>
@@ -79,7 +79,7 @@ class SchemaTest extends GeneratorTestCase
 						</tbody>
 					</table>
 				</div>
-				<div class="psx-complex-type" id="psx-type-7738db4616810154ab42db61b65f74aa">
+				<div class="psx-complex-type" id="psx-type-993f4bb37f524889fc963fedd6381458">
 					<h1>item</h1>
 					<div class="psx-type-description"/>
 					<table class="table psx-type-properties">
@@ -173,7 +173,7 @@ class SchemaTest extends GeneratorTestCase
 		<div class="psx-resource-data psx-resource-request">
 			<h5>POST Request</h5>
 			<div class="psx-resource-data-content">
-				<div class="psx-complex-type" id="psx-type-5bd2953081685075d567417f01494700">
+				<div class="psx-complex-type" id="psx-type-3934915b538d8557d87031925d29ac0d">
 					<h1>item</h1>
 					<div class="psx-type-description"/>
 					<table class="table psx-type-properties">
@@ -265,7 +265,7 @@ class SchemaTest extends GeneratorTestCase
 		<div class="psx-resource-data psx-resource-response">
 			<h5>POST Response - 200 OK</h5>
 			<div class="psx-resource-data-content">
-				<div class="psx-complex-type" id="psx-type-a394c0a8d56c158f0f29acf97cbdc8f6">
+				<div class="psx-complex-type" id="psx-type-3a0bf597c698b671859e2c0ca2640825">
 					<h1>message</h1>
 					<div class="psx-type-description"/>
 					<table class="table psx-type-properties">
@@ -318,7 +318,7 @@ class SchemaTest extends GeneratorTestCase
 		<div class="psx-resource-data psx-resource-request">
 			<h5>PUT Request</h5>
 			<div class="psx-resource-data-content">
-				<div class="psx-complex-type" id="psx-type-cb65873d8f84681e263c50e2260d7bb9">
+				<div class="psx-complex-type" id="psx-type-3368bc12f3927997f38dc1bea49554be">
 					<h1>item</h1>
 					<div class="psx-type-description"/>
 					<table class="table psx-type-properties">
@@ -410,7 +410,7 @@ class SchemaTest extends GeneratorTestCase
 		<div class="psx-resource-data psx-resource-response">
 			<h5>PUT Response - 200 OK</h5>
 			<div class="psx-resource-data-content">
-				<div class="psx-complex-type" id="psx-type-a394c0a8d56c158f0f29acf97cbdc8f6">
+				<div class="psx-complex-type" id="psx-type-3a0bf597c698b671859e2c0ca2640825">
 					<h1>message</h1>
 					<div class="psx-type-description"/>
 					<table class="table psx-type-properties">
@@ -463,7 +463,7 @@ class SchemaTest extends GeneratorTestCase
 		<div class="psx-resource-data psx-resource-request">
 			<h5>DELETE Request</h5>
 			<div class="psx-resource-data-content">
-				<div class="psx-complex-type" id="psx-type-cb65873d8f84681e263c50e2260d7bb9">
+				<div class="psx-complex-type" id="psx-type-3368bc12f3927997f38dc1bea49554be">
 					<h1>item</h1>
 					<div class="psx-type-description"/>
 					<table class="table psx-type-properties">
@@ -555,7 +555,7 @@ class SchemaTest extends GeneratorTestCase
 		<div class="psx-resource-data psx-resource-response">
 			<h5>DELETE Response - 200 OK</h5>
 			<div class="psx-resource-data-content">
-				<div class="psx-complex-type" id="psx-type-a394c0a8d56c158f0f29acf97cbdc8f6">
+				<div class="psx-complex-type" id="psx-type-3a0bf597c698b671859e2c0ca2640825">
 					<h1>message</h1>
 					<div class="psx-type-description"/>
 					<table class="table psx-type-properties">

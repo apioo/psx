@@ -64,9 +64,9 @@ abstract class TableApiAbstract extends SchemaApiAbstract
 		$resource   = new Resource(Resource::STATUS_ACTIVE, $path);
 
 		$method = new Resource\Get();
-		$method->addQueryParameter(new Property\Integer('startIndex'));
-		$method->addQueryParameter(new Property\Integer('count'));
-		$method->addQueryParameter(new Property\Integer('totalResults'));
+		$method->addQueryParameter(Property::getInteger('startIndex'));
+		$method->addQueryParameter(Property::getInteger('count'));
+		$method->addQueryParameter(Property::getInteger('totalResults'));
 		$method->addResponse(200, $collection);
 
 		$resource->addMethod($method);

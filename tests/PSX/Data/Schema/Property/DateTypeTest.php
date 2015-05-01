@@ -20,35 +20,31 @@
 
 namespace PSX\Data\Schema\Property;
 
+use PSX\Data\Schema\Property;
+
 /**
- * BooleanTest
+ * DateTypeTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class BooleanTest extends \PHPUnit_Framework_TestCase
+class DateTypeTest extends \PHPUnit_Framework_TestCase
 {
 	public function testValidate()
 	{
-		$property = new Boolean('test');
+		$property = Property::getDate('test');
 
-		$this->assertTrue($property->validate(true));
-		$this->assertTrue($property->validate(false));
-		$this->assertTrue($property->validate(1));
-		$this->assertTrue($property->validate(0));
-		$this->assertTrue($property->validate('1'));
-		$this->assertTrue($property->validate('0'));
-		$this->assertTrue($property->validate('true'));
-		$this->assertTrue($property->validate('false'));
+		$this->assertTrue($property->validate('2000-01-01'));
+		$this->assertTrue($property->validate('2000-01-01+13:00'));
 	}
 
 	/**
 	 * @expectedException PSX\Data\Schema\ValidationException
 	 */
-	public function testValidateInvalidString()
+	public function testValidateInvalidFormat()
 	{
-		$property = new Boolean('test');
+		$property = Property::getDate('test');
 
 		$this->assertTrue($property->validate('foo'));
 	}
@@ -56,24 +52,36 @@ class BooleanTest extends \PHPUnit_Framework_TestCase
 	/**
 	 * @expectedException PSX\Data\Schema\ValidationException
 	 */
-	public function testValidateInvalidInteger()
+	public function testValidateInvalidTimezone()
 	{
-		$property = new Boolean('test');
+		$property = Property::getDate('test');
 
-		$this->assertTrue($property->validate(4));
+		$this->assertTrue($property->validate('2000-01-01+25:00'));
 	}
 
 	public function testValidateNull()
 	{
-		$property = new Boolean('test');
+		$property = Property::getDate('test');
 
 		$this->assertTrue($property->validate(null));
 	}
 
+	public function testValidateDateTime()
+	{
+		$property = Property::getDate('test');
+
+		$this->assertTrue($property->validate(new \DateTime()));
+	}
+
 	public function testGetId()
 	{
-		$property = new Boolean('test');
+		$property = Property::getDate('test');
 
-		$this->assertEquals('b68b84b0d51610192c0f73a5561495b9', $property->getId());
+		$this->assertEquals('f9dd14cdfa1dfdf83bae9aac01907504', $property->getId());
+	}
+
+	public function testGetTypeName()
+	{
+		$this->assertEquals('date', Property::getDate('test')->getTypeName());
 	}
 }

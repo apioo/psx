@@ -48,7 +48,7 @@ class TestSchema extends SchemaAbstract
 		$sb->string('email')
 			->setDescription('We will send no spam to this addresss');
 		$sb->arrayType('categories')
-			->setPrototype(new Property\String('category'))
+			->setPrototype(Property::getString('category'))
 			->setMaxLength(8);
 		$sb->arrayType('locations')
 			->setPrototype($location)
@@ -59,7 +59,7 @@ class TestSchema extends SchemaAbstract
 		$sb = $this->getSchemaBuilder('news')
 			->setDescription('An general news entry');
 		$sb->arrayType('tags')
-			->setPrototype(new Property\String('tag'))
+			->setPrototype(Property::getString('tag'))
 			->setMinLength(1)
 			->setMaxLength(6);
 		$sb->arrayType('receiver')

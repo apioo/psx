@@ -202,7 +202,7 @@ class Document
 
 	protected function parseComplexType(array $data, $name, $depth)
 	{
-		$complexType = new Property\ComplexType($name);
+		$complexType = Property::getComplex($name);
 		$properties  = isset($data['properties']) ? $data['properties'] : array();
 
 		foreach($properties as $name => $row)
@@ -241,7 +241,7 @@ class Document
 
 	protected function parseArrayType(array $data, $name, $depth)
 	{
-		$arrayType = new Property\ArrayType($name);
+		$arrayType = Property::getArray($name);
 
 		if(isset($data['minItems']))
 		{
@@ -268,7 +268,7 @@ class Document
 
 	protected function parseBoolean(array $data, $name)
 	{
-		$property = new Property\Boolean($name);
+		$property = Property::getBoolean($name);
 
 		$this->parseScalar($property, $data);
 
@@ -277,7 +277,7 @@ class Document
 
 	protected function parseInteger(array $data, $name)
 	{
-		$property = new Property\Integer($name);
+		$property = Property::getInteger($name);
 
 		$this->parseScalar($property, $data);
 
@@ -286,7 +286,7 @@ class Document
 
 	protected function parseFloat(array $data, $name)
 	{
-		$property = new Property\Float($name);
+		$property = Property::getFloat($name);
 
 		$this->parseScalar($property, $data);
 
@@ -300,25 +300,25 @@ class Document
 		{
 			if($data['format'] == 'date')
 			{
-				$property = new Property\Date($name);
+				$property = Property::getDate($name);
 			}
 			else if($data['format'] == 'date-time')
 			{
-				$property = new Property\DateTime($name);
+				$property = Property::getDateTime($name);
 			}
 			else if($data['format'] == 'duration')
 			{
-				$property = new Property\Duration($name);
+				$property = Property::getDuration($name);
 			}
 			else if($data['format'] == 'time')
 			{
-				$property = new Property\Time($name);
+				$property = Property::getTime($name);
 			}
 		}
 
 		if($property === null)
 		{
-			$property = new Property\String($name);
+			$property = Property::getString($name);
 		}
 
 		$this->parseScalar($property, $data);

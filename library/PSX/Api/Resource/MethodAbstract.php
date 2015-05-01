@@ -42,7 +42,7 @@ abstract class MethodAbstract
 
 	public function __construct()
 	{
-		$this->queryParameters = new Property\ComplexType('query');
+		$this->queryParameters = Property::getComplex('query');
 		$this->responses       = array();
 	}
 

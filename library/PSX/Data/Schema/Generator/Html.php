@@ -143,9 +143,7 @@ class Html implements GeneratorInterface
 		}
 		else if($type instanceof PropertySimpleAbstract)
 		{
-			$class    = explode('\\', get_class($type));
-			$typeName = end($class);
-
+			$typeName    = ucfirst($type->getTypeName());
 			$constraints = array();
 
 			if($type->getPattern() !== null)
@@ -165,7 +163,7 @@ class Html implements GeneratorInterface
 				$constraints['enumeration'] = '<span class="psx-constraint-enumeration">' . $enumeration .'</span>';
 			}
 
-			if($type instanceof Property\Decimal)
+			if($type instanceof Property\DecimalType)
 			{
 				$min = $type->getMin();
 				if($min !== null)
@@ -179,7 +177,7 @@ class Html implements GeneratorInterface
 					$constraints['maximum'] = '<span class="psx-constraint-maximum">' . $max . '</span>';
 				}
 			}
-			else if($type instanceof Property\String)
+			else if($type instanceof Property\StringType)
 			{
 				$min = $type->getMinLength();
 				if($min !== null)
@@ -208,19 +206,19 @@ class Html implements GeneratorInterface
 
 			$cssClass = 'psx-property-type-' . strtolower($typeName);
 
-			if($type instanceof Property\Date)
+			if($type instanceof Property\DateType)
 			{
 				$typeName = '<a href="http://tools.ietf.org/html/rfc3339#section-5.6" title="RFC3339">Date</a>';
 			}
-			else if($type instanceof Property\DateTime)
+			else if($type instanceof Property\DateTimeType)
 			{
 				$typeName = '<a href="http://tools.ietf.org/html/rfc3339#section-5.6" title="RFC3339">DateTime</a>';
 			}
-			else if($type instanceof Property\Time)
+			else if($type instanceof Property\TimeType)
 			{
 				$typeName = '<a href="http://tools.ietf.org/html/rfc3339#section-5.6" title="RFC3339">Time</a>';
 			}
-			else if($type instanceof Property\Duration)
+			else if($type instanceof Property\DurationType)
 			{
 				$typeName = '<span title="ISO 8601">Duration</span>';
 			}

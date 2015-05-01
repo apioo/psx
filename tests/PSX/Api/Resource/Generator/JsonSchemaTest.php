@@ -39,7 +39,7 @@ class JsonSchemaTest extends GeneratorTestCase
   "$schema": "http://json-schema.org/draft-04/schema#",
   "id": "foo",
   "type": "object",
-  "definitions": {"ref7738db4616810154ab42db61b65f74aa": {
+  "definitions": {"ref993f4bb37f524889fc963fedd6381458": {
       "type": "object",
       "properties": {
         "id": {"type": "integer"},
@@ -59,7 +59,7 @@ class JsonSchemaTest extends GeneratorTestCase
       "type": "object",
       "properties": {"entry": {
           "type": "array",
-          "items": {"$ref": "#/definitions/ref7738db4616810154ab42db61b65f74aa"}
+          "items": {"$ref": "#/definitions/ref993f4bb37f524889fc963fedd6381458"}
         }},
       "additionalProperties": false
     },

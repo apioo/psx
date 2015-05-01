@@ -127,6 +127,17 @@ abstract class PropertyAbstract implements PropertyInterface
 	}
 
 	/**
+	 * @return string
+	 */
+	public function getTypeName()
+	{
+		$class    = explode('\\', get_class($this));
+		$typeName = substr(end($class), 0, -4);
+
+		return lcfirst($typeName);
+	}
+
+	/**
 	 * @return boolean
 	 */
 	public function validate($data)

@@ -20,54 +20,40 @@
 
 namespace PSX\Data\Schema\Property;
 
-use PSX\Data\Schema\PropertySimpleAbstract;
 use PSX\Data\Schema\ValidationException;
 
 /**
- * Decimal
+ * TimeType
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-abstract class Decimal extends PropertySimpleAbstract
+class TimeType extends StringType
 {
-	protected $max;
-	protected $min;
-
-	public function setMax($max)
+	public function validate($data)
 	{
-		$this->max = $max;
+		if($data instanceof \DateTime)
+		{
+			return true;
+		}
 
-		return $this;
-	}
-	
-	public function getMax()
-	{
-		return $this->max;
-	}
+		parent::validate($data);
 
-	public function setMin($min)
-	{
-		$this->min = $min;
+		if($data === null)
+		{
+			return true;
+		}
+		else if(is_string($data))
+		{
+			$result = preg_match('/^' . \PSX\DateTime\Time::getPattern() . '$/', $data);
 
-		return $this;
-	}
-	
-	public function getMin()
-	{
-		return $this->min;
-	}
+			if($result)
+			{
+				return true;
+			}
+		}
 
-	/**
-	 * @return string
-	 */
-	public function getId()
-	{
-		return md5(
-			parent::getId() .
-			$this->min .
-			$this->max
-		);
+		throw new ValidationException($this->getName() . ' must be an valid full-time format (partial-time time-offset) [RFC3339]');
 	}
 }

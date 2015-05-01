@@ -65,15 +65,15 @@ class RamlTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertInstanceOf('PSX\Data\Schema\Property\ComplexType', $property);
 		$this->assertEquals('A canonical song', $property->getDescription());
-		$this->assertInstanceOf('PSX\Data\Schema\Property\String', $property->get('title'));
-		$this->assertInstanceOf('PSX\Data\Schema\Property\String', $property->get('artist'));
+		$this->assertInstanceOf('PSX\Data\Schema\Property\StringType', $property->get('title'));
+		$this->assertInstanceOf('PSX\Data\Schema\Property\StringType', $property->get('artist'));
 
 		$property = $resource->getMethod('POST')->getResponse(200)->getDefinition();
 
 		$this->assertInstanceOf('PSX\Data\Schema\Property\ComplexType', $property);
 		$this->assertEquals('A canonical song', $property->getDescription());
-		$this->assertInstanceOf('PSX\Data\Schema\Property\String', $property->get('title'));
-		$this->assertInstanceOf('PSX\Data\Schema\Property\String', $property->get('artist'));
+		$this->assertInstanceOf('PSX\Data\Schema\Property\StringType', $property->get('title'));
+		$this->assertInstanceOf('PSX\Data\Schema\Property\StringType', $property->get('artist'));
 	}
 
 	public function testParsePath()
@@ -100,8 +100,8 @@ class RamlTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertInstanceOf('PSX\Data\Schema\Property\ComplexType', $property);
 		$this->assertEquals('A canonical song', $property->getDescription());
-		$this->assertInstanceOf('PSX\Data\Schema\Property\String', $property->get('title'));
-		$this->assertInstanceOf('PSX\Data\Schema\Property\String', $property->get('artist'));
+		$this->assertInstanceOf('PSX\Data\Schema\Property\StringType', $property->get('title'));
+		$this->assertInstanceOf('PSX\Data\Schema\Property\StringType', $property->get('artist'));
 	}
 
 	/**
@@ -114,22 +114,22 @@ class RamlTest extends \PHPUnit_Framework_TestCase
 
 	protected function assertParameters(SchemaInterface $parameters)
 	{
-		$this->assertInstanceOf('PSX\Data\Schema\Property\Integer', $parameters->getDefinition()->get('param_integer'));
+		$this->assertInstanceOf('PSX\Data\Schema\Property\IntegerType', $parameters->getDefinition()->get('param_integer'));
 		$this->assertEquals(true, $parameters->getDefinition()->get('param_integer')->isRequired());
 		$this->assertEquals(8, $parameters->getDefinition()->get('param_integer')->getMin());
 		$this->assertEquals(16, $parameters->getDefinition()->get('param_integer')->getMax());
 
-		$this->assertInstanceOf('PSX\Data\Schema\Property\Float', $parameters->getDefinition()->get('param_number'));
+		$this->assertInstanceOf('PSX\Data\Schema\Property\FloatType', $parameters->getDefinition()->get('param_number'));
 		$this->assertEquals(false, $parameters->getDefinition()->get('param_number')->isRequired());
 		$this->assertEquals('The number', $parameters->getDefinition()->get('param_number')->getDescription());
 
-		$this->assertInstanceOf('PSX\Data\Schema\Property\DateTime', $parameters->getDefinition()->get('param_date'));
+		$this->assertInstanceOf('PSX\Data\Schema\Property\DateTimeType', $parameters->getDefinition()->get('param_date'));
 		$this->assertEquals(false, $parameters->getDefinition()->get('param_date')->isRequired());
 
-		$this->assertInstanceOf('PSX\Data\Schema\Property\Boolean', $parameters->getDefinition()->get('param_boolean'));
+		$this->assertInstanceOf('PSX\Data\Schema\Property\BooleanType', $parameters->getDefinition()->get('param_boolean'));
 		$this->assertEquals(true, $parameters->getDefinition()->get('param_boolean')->isRequired());
 
-		$this->assertInstanceOf('PSX\Data\Schema\Property\String', $parameters->getDefinition()->get('param_string'));
+		$this->assertInstanceOf('PSX\Data\Schema\Property\StringType', $parameters->getDefinition()->get('param_string'));
 		$this->assertEquals(false, $parameters->getDefinition()->get('param_string')->isRequired());
 		$this->assertEquals(8, $parameters->getDefinition()->get('param_string')->getMinLength());
 		$this->assertEquals(16, $parameters->getDefinition()->get('param_string')->getMaxLength());

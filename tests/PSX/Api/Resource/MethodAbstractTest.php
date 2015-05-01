@@ -36,9 +36,9 @@ class MethodAbstractTest extends \PHPUnit_Framework_TestCase
 	{
 		$method = Factory::getMethod('POST');
 		$method->setDescription('foobar');
-		$method->addQueryParameter(new Property\String('foo'));
-		$method->setRequest(new Schema(new Property\String('foo')));
-		$method->addResponse(200, new Schema(new Property\String('foo')));
+		$method->addQueryParameter(Property::getString('foo'));
+		$method->setRequest(new Schema(Property::getString('foo')));
+		$method->addResponse(200, new Schema(Property::getString('foo')));
 
 		$this->assertEquals('foobar', $method->getDescription());
 		$this->assertInstanceOf('PSX\Data\SchemaInterface', $method->getQueryParameters());

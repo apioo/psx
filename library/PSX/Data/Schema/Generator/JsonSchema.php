@@ -187,7 +187,7 @@ class JsonSchema implements GeneratorInterface
 				$result['description'] = $description;
 			}
 
-			if($type instanceof Property\String)
+			if($type instanceof Property\StringType)
 			{
 				$minLength = $type->getMinLength();
 				if($minLength)
@@ -207,7 +207,7 @@ class JsonSchema implements GeneratorInterface
 					$result['pattern'] = $pattern;
 				}
 			}
-			else if($type instanceof Property\Decimal)
+			else if($type instanceof Property\DecimalType)
 			{
 				$min = $type->getMin();
 				if($min)
@@ -234,18 +234,15 @@ class JsonSchema implements GeneratorInterface
 
 	protected function getPropertyTypeName(PropertyInterface $type)
 	{
-		$parts = explode('\\', get_class($type));
-		$end   = end($parts);
-
-		switch($end)
+		switch($type->getTypeName())
 		{
-			case 'Float':
+			case 'float':
 				return 'number';
 
-			case 'Integer':
+			case 'integer':
 				return 'integer';
 
-			case 'Boolean':
+			case 'boolean':
 				return 'boolean';
 
 			default:

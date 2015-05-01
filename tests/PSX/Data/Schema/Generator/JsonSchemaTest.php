@@ -40,7 +40,7 @@ class JsonSchemaTest extends GeneratorTestCase
   "id": "urn:schema.phpsx.org#",
   "description": "An general news entry",
   "definitions": {
-    "ref0a566641a890b38b49f4aab138d55de6": {
+    "ref6039818cbcfdcc20777fd8c74a5a392d": {
       "type": "object",
       "description": "An simple author element with some description",
       "properties": {
@@ -63,11 +63,11 @@ class JsonSchemaTest extends GeneratorTestCase
           "type": "array",
           "description": "Array of locations",
           "items": {
-            "$ref": "#/definitions/ref93ef595df6d9e735702cba3611adba27"
+            "$ref": "#/definitions/refe081a664cb5227a334bc5e0fa367f178"
           }
         },
         "origin": {
-          "$ref": "#/definitions/ref93ef595df6d9e735702cba3611adba27"
+          "$ref": "#/definitions/refe081a664cb5227a334bc5e0fa367f178"
         }
       },
       "required": [
@@ -75,7 +75,7 @@ class JsonSchemaTest extends GeneratorTestCase
       ],
       "additionalProperties": false
     },
-    "ref93ef595df6d9e735702cba3611adba27": {
+    "refe081a664cb5227a334bc5e0fa367f178": {
       "type": "object",
       "description": "Location of the person",
       "properties": {
@@ -102,7 +102,7 @@ class JsonSchemaTest extends GeneratorTestCase
     "receiver": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/ref0a566641a890b38b49f4aab138d55de6"
+        "$ref": "#/definitions/ref6039818cbcfdcc20777fd8c74a5a392d"
       },
       "minItems": 1
     },
@@ -110,7 +110,7 @@ class JsonSchemaTest extends GeneratorTestCase
       "type": "boolean"
     },
     "author": {
-      "$ref": "#/definitions/ref0a566641a890b38b49f4aab138d55de6"
+      "$ref": "#/definitions/ref6039818cbcfdcc20777fd8c74a5a392d"
     },
     "sendDate": {
       "type": "string"

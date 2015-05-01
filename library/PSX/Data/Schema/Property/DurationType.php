@@ -20,51 +20,40 @@
 
 namespace PSX\Data\Schema\Property;
 
+use PSX\Data\Schema\ValidationException;
+
 /**
- * DurationTest
+ * DurationType
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class DurationTest extends \PHPUnit_Framework_TestCase
+class DurationType extends StringType
 {
-	public function testValidate()
+	public function validate($data)
 	{
-		$property = new Duration('test');
+		if($data instanceof \DateInterval)
+		{
+			return true;
+		}
 
-		$this->assertTrue($property->validate('P1D'));
-		$this->assertTrue($property->validate('P1DT12H'));
-	}
+		parent::validate($data);
 
-	/**
-	 * @expectedException PSX\Data\Schema\ValidationException
-	 */
-	public function testValidateInvalidFormat()
-	{
-		$property = new Duration('test');
+		if($data === null)
+		{
+			return true;
+		}
+		else if(is_string($data))
+		{
+			$result = preg_match('/^' . \PSX\DateTime\Duration::getPattern() . '$/', $data);
 
-		$this->assertTrue($property->validate('foo'));
-	}
+			if($result)
+			{
+				return true;
+			}
+		}
 
-	public function testValidateNull()
-	{
-		$property = new Duration('test');
-
-		$this->assertTrue($property->validate(null));
-	}
-
-	public function testValidateDateTime()
-	{
-		$property = new Duration('test');
-
-		$this->assertTrue($property->validate(new \DateInterval('P1Y')));
-	}
-
-	public function testGetId()
-	{
-		$property = new Duration('test');
-
-		$this->assertEquals('cffce787052997e10fdeb1862eff4769', $property->getId());
+		throw new ValidationException($this->getName() . ' must be an valid duration format [ISO8601]');
 	}
 }

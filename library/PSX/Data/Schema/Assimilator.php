@@ -105,27 +105,27 @@ class Assimilator
 
 			return $result;
 		}
-		else if($type instanceof Property\Integer)
+		else if($type instanceof Property\IntegerType)
 		{
 			return (int) $data;
 		}
-		else if($type instanceof Property\Float)
+		else if($type instanceof Property\FloatType)
 		{
 			return (float) $data;
 		}
-		else if($type instanceof Property\Boolean)
+		else if($type instanceof Property\BooleanType)
 		{
 			return (bool) $data;
 		}
-		else if($type instanceof Property\DateTime)
+		else if($type instanceof Property\DateTimeType)
 		{
 			return $data instanceof \DateTime ? $data : new DateTime($data);
 		}
-		else if($type instanceof Property\Date)
+		else if($type instanceof Property\DateType)
 		{
 			return $data instanceof \DateTime ? Date::fromDateTime($data) : new Date($data);
 		}
-		else if($type instanceof Property\Time)
+		else if($type instanceof Property\TimeType)
 		{
 			return $data instanceof \DateTime ? Time::fromDateTime($data) : new Time($data);
 		}

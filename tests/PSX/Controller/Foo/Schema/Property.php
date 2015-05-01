@@ -39,7 +39,7 @@ class Property extends SchemaAbstract
 		$complex = $sb->getProperty();
 
 		$sb = $this->getSchemaBuilder('property');
-		$sb->arrayType('array')->setPrototype(new SchemaProperty\String('foo'));
+		$sb->arrayType('array')->setPrototype(SchemaProperty::getString('foo'));
 		$sb->boolean('boolean');
 		$sb->complexType($complex);
 		$sb->date('date');

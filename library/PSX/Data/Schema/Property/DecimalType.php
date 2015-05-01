@@ -20,63 +20,54 @@
 
 namespace PSX\Data\Schema\Property;
 
+use PSX\Data\Schema\PropertySimpleAbstract;
 use PSX\Data\Schema\ValidationException;
 
 /**
- * Integer
+ * DecimalType
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Integer extends Decimal
+abstract class DecimalType extends PropertySimpleAbstract
 {
-	public function validate($data)
+	protected $max;
+	protected $min;
+
+	public function setMax($max)
 	{
-		parent::validate($data);
+		$this->max = $max;
 
-		if($data === null)
-		{
-			return true;
-		}
+		return $this;
+	}
+	
+	public function getMax()
+	{
+		return $this->max;
+	}
 
-		if(is_int($data))
-		{
-		}
-		else if(is_string($data))
-		{
-			$result = preg_match('/^[\-+]?[0-9]+$/', $data);
+	public function setMin($min)
+	{
+		$this->min = $min;
 
-			if($result)
-			{
-				$data = (int) $data;
-			}
-			else
-			{
-				throw new ValidationException($this->getName() . ' must be an integer');
-			}
-		}
-		else
-		{
-			throw new ValidationException($this->getName() . ' must be an integer');
-		}
+		return $this;
+	}
+	
+	public function getMin()
+	{
+		return $this->min;
+	}
 
-		if($this->max !== null)
-		{
-			if($data > $this->max)
-			{
-				throw new ValidationException($this->getName() . ' must be lower or equal then ' . $this->max);
-			}
-		}
-
-		if($this->min !== null)
-		{
-			if($data < $this->min)
-			{
-				throw new ValidationException($this->getName() . ' must be greater or equal then ' . $this->min);
-			}
-		}
-
-		return true;
+	/**
+	 * @return string
+	 */
+	public function getId()
+	{
+		return md5(
+			parent::getId() .
+			$this->min .
+			$this->max
+		);
 	}
 }

@@ -56,19 +56,19 @@ class WsdlControllerTest extends ControllerTestCase
 			<xs:element name="getResponse">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="entry" type="tns:type7738db4616810154ab42db61b65f74aa" minOccurs="0" maxOccurs="unbounded"/>
+						<xs:element name="entry" type="tns:type993f4bb37f524889fc963fedd6381458" minOccurs="0" maxOccurs="unbounded"/>
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
-			<xs:complexType name="type7738db4616810154ab42db61b65f74aa">
+			<xs:complexType name="type993f4bb37f524889fc963fedd6381458">
 				<xs:sequence>
 					<xs:element name="id" type="xs:integer" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="userId" type="xs:integer" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="title" type="tns:type3a2f0337802e500f838d048e0887d7bb" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="title" type="tns:type69981114cb5d0f6f81cb98d20181187a" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="date" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:complexType>
-			<xs:simpleType name="type3a2f0337802e500f838d048e0887d7bb">
+			<xs:simpleType name="type69981114cb5d0f6f81cb98d20181187a">
 				<xs:restriction base="xs:string">
 					<xs:minLength value="3"/>
 					<xs:maxLength value="16"/>
@@ -80,12 +80,12 @@ class WsdlControllerTest extends ControllerTestCase
 					<xs:sequence>
 						<xs:element name="id" type="xs:integer" minOccurs="0" maxOccurs="1"/>
 						<xs:element name="userId" type="xs:integer" minOccurs="0" maxOccurs="1"/>
-						<xs:element name="title" type="tns:type54c3770f40b7eb1d79765a48c83ab29b" minOccurs="1" maxOccurs="1"/>
+						<xs:element name="title" type="tns:type25927bd8a7b80c1d8fc520de123ae19a" minOccurs="1" maxOccurs="1"/>
 						<xs:element name="date" type="xs:dateTime" minOccurs="1" maxOccurs="1"/>
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
-			<xs:simpleType name="type54c3770f40b7eb1d79765a48c83ab29b">
+			<xs:simpleType name="type25927bd8a7b80c1d8fc520de123ae19a">
 				<xs:restriction base="xs:string">
 					<xs:minLength value="3"/>
 					<xs:maxLength value="16"/>
@@ -105,7 +105,7 @@ class WsdlControllerTest extends ControllerTestCase
 					<xs:sequence>
 						<xs:element name="id" type="xs:integer" minOccurs="1" maxOccurs="1"/>
 						<xs:element name="userId" type="xs:integer" minOccurs="0" maxOccurs="1"/>
-						<xs:element name="title" type="tns:type3a2f0337802e500f838d048e0887d7bb" minOccurs="0" maxOccurs="1"/>
+						<xs:element name="title" type="tns:type69981114cb5d0f6f81cb98d20181187a" minOccurs="0" maxOccurs="1"/>
 						<xs:element name="date" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					</xs:sequence>
 				</xs:complexType>
@@ -123,7 +123,7 @@ class WsdlControllerTest extends ControllerTestCase
 					<xs:sequence>
 						<xs:element name="id" type="xs:integer" minOccurs="1" maxOccurs="1"/>
 						<xs:element name="userId" type="xs:integer" minOccurs="0" maxOccurs="1"/>
-						<xs:element name="title" type="tns:type3a2f0337802e500f838d048e0887d7bb" minOccurs="0" maxOccurs="1"/>
+						<xs:element name="title" type="tns:type69981114cb5d0f6f81cb98d20181187a" minOccurs="0" maxOccurs="1"/>
 						<xs:element name="date" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					</xs:sequence>
 				</xs:complexType>

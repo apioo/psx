@@ -20,6 +20,8 @@
 
 namespace PSX\Data\Schema\Property;
 
+use PSX\Data\Schema\Property;
+
 /**
  * ArrayTypeTest
  *
@@ -31,7 +33,7 @@ class ArrayTypeTest extends \PHPUnit_Framework_TestCase
 {
 	public function testValidate()
 	{
-		$property = new ArrayType('test');
+		$property = Property::getArray('test');
 
 		$this->assertTrue($property->validate(array()));
 		$this->assertTrue($property->validate(array('foo')));
@@ -42,14 +44,14 @@ class ArrayTypeTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testValidateInvalidFormat()
 	{
-		$property = new ArrayType('test');
+		$property = Property::getArray('test');
 
 		$this->assertTrue($property->validate('foo'));
 	}
 
 	public function testValidateNull()
 	{
-		$property = new ArrayType('test');
+		$property = Property::getArray('test');
 
 		$this->assertTrue($property->validate(null));
 	}
@@ -59,7 +61,7 @@ class ArrayTypeTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testValidateNullIsRequired()
 	{
-		$property = new ArrayType('test');
+		$property = Property::getArray('test');
 		$property->setRequired(true);
 
 		$this->assertTrue($property->validate(null));
@@ -71,7 +73,7 @@ class ArrayTypeTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testValidateMinLength()
 	{
-		$property = new ArrayType('test');
+		$property = Property::getArray('test');
 		$property->setMinLength(1);
 
 		$this->assertTrue($property->validate(array()));
@@ -83,7 +85,7 @@ class ArrayTypeTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testValidateMaxLength()
 	{
-		$property = new ArrayType('test');
+		$property = Property::getArray('test');
 		$property->setMaxLength(1);
 
 		$this->assertTrue($property->validate(array('foo', 'bar')));
@@ -92,9 +94,9 @@ class ArrayTypeTest extends \PHPUnit_Framework_TestCase
 
 	public function testSetPrototype()
 	{
-		$prototype = new String('foo');
+		$prototype = Property::getString('foo');
 
-		$property = new ArrayType('test');
+		$property = Property::getArray('test');
 		$property->setPrototype($prototype);
 
 		$this->assertEquals($prototype, $property->getPrototype());
@@ -102,13 +104,18 @@ class ArrayTypeTest extends \PHPUnit_Framework_TestCase
 
 	public function testGetId()
 	{
-		$property = new ArrayType('test');
+		$property = Property::getArray('test');
 
 		$this->assertEquals('79db27401a9ee86ee36d6c38ba1cd653', $property->getId());
 
-		$property = new ArrayType('test');
-		$property->setPrototype(new String('foo'));
+		$property = Property::getArray('test');
+		$property->setPrototype(Property::getString('foo'));
 
-		$this->assertEquals('22f80b3e7b33b9430847a410fb4eea55', $property->getId());
+		$this->assertEquals('c330bb41463721a2ad25a9585cf8c24e', $property->getId());
+	}
+
+	public function testGetTypeName()
+	{
+		$this->assertEquals('array', Property::getArray('test')->getTypeName());
 	}
 }

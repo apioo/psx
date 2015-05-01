@@ -55,7 +55,7 @@ class Resource implements \IteratorAggregate
 	{
 		$this->status          = $status;
 		$this->path            = $path;
-		$this->pathParameters  = new Property\ComplexType('path');
+		$this->pathParameters  = Property::getComplex('path');
 		$this->methods         = array();
 	}
 

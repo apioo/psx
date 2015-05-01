@@ -23,19 +23,21 @@ namespace PSX\Data\Schema\Property;
 use PSX\Data\Schema\Property;
 
 /**
- * ComplexTypeTest
+ * DateTimeTypeTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class ComplexTypeTest extends \PHPUnit_Framework_TestCase
+class DateTimeTypeTest extends \PHPUnit_Framework_TestCase
 {
 	public function testValidate()
 	{
-		$property = Property::getComplex('test');
+		$property = Property::getDateTime('test');
 
-		$this->assertTrue($property->validate(new \stdClass()));
+		$this->assertTrue($property->validate('2002-10-10T17:00:00'));
+		$this->assertTrue($property->validate('2002-10-10T17:00:00Z'));
+		$this->assertTrue($property->validate('2002-10-10T17:00:00+13:00'));
 	}
 
 	/**
@@ -43,41 +45,44 @@ class ComplexTypeTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testValidateInvalidFormat()
 	{
-		$property = Property::getComplex('test');
+		$property = Property::getDateTime('test');
 
 		$this->assertTrue($property->validate('foo'));
 	}
 
+	/**
+	 * @expectedException PSX\Data\Schema\ValidationException
+	 */
+	public function testValidateInvalidTimezone()
+	{
+		$property = Property::getDateTime('test');
+
+		$this->assertTrue($property->validate('2002-10-10T17:00:00+25:00'));
+	}
+
 	public function testValidateNull()
 	{
-		$property = Property::getComplex('test');
+		$property = Property::getDateTime('test');
 
 		$this->assertTrue($property->validate(null));
 	}
 
-	public function testGetId()
+	public function testValidateDateTime()
 	{
-		$property = Property::getComplex('test');
+		$property = Property::getDateTime('test');
 
-		$this->assertEquals('aeadc8d940a294aeacf0ab2d3e7e4e4b', $property->getId());
+		$this->assertTrue($property->validate(new \DateTime()));
 	}
 
-	public function testProperties()
+	public function testGetId()
 	{
-		$property = Property::getComplex('test');
-		$property->add(Property::getString('foo'));
+		$property = Property::getDateTime('test');
 
-		$this->assertInstanceOf('PSX\Data\Schema\Property\StringType', $property->get('foo'));
-		$this->assertTrue($property->has('foo'));
-
-		$property->remove('foo');
-		$property->remove('foo'); // should not produce an error
-
-		$this->assertFalse($property->has('foo'));
+		$this->assertEquals('274b95660c29f63c555ad918af2f38a5', $property->getId());
 	}
 
 	public function testGetTypeName()
 	{
-		$this->assertEquals('complex', Property::getComplex('test')->getTypeName());
+		$this->assertEquals('dateTime', Property::getDateTime('test')->getTypeName());
 	}
 }

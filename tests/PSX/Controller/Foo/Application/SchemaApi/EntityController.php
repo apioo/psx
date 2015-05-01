@@ -53,11 +53,11 @@ class EntityController extends SchemaApiAbstract
 	public function getDocumentation()
 	{
 		$resource = new Resource(Resource::STATUS_ACTIVE, $this->context->get(Context::KEY_PATH));
-		$resource->addPathParameter(new Property\Integer('fooId'));
+		$resource->addPathParameter(Property::getInteger('fooId'));
 
 		$resource->addMethod(Resource\Factory::getMethod('GET')
-			->addQueryParameter(new Property\Integer('startIndex'))
-			->addQueryParameter(new Property\Integer('count'))
+			->addQueryParameter(Property::getInteger('startIndex'))
+			->addQueryParameter(Property::getInteger('count'))
 			->addResponse(200, $this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Collection')));
 
 		$resource->addMethod(Resource\Factory::getMethod('PUT')

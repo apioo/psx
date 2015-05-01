@@ -52,7 +52,7 @@ title: foobar
                   "id": "urn:schema.phpsx.org#",
                   "type": "object",
                   "definitions": {
-                      "ref7738db4616810154ab42db61b65f74aa": {
+                      "ref993f4bb37f524889fc963fedd6381458": {
                           "type": "object",
                           "properties": {
                               "id": {
@@ -78,7 +78,7 @@ title: foobar
                       "entry": {
                           "type": "array",
                           "items": {
-                              "$ref": "#\/definitions\/ref7738db4616810154ab42db61b65f74aa"
+                              "$ref": "#\/definitions\/ref993f4bb37f524889fc963fedd6381458"
                           }
                       }
                   },

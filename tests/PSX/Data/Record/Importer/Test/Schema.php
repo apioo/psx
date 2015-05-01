@@ -59,7 +59,7 @@ class Schema extends SchemaAbstract
 		$sb->float('rating')->setMin(8)->setMax(14)->setRequired(true);
 		$sb->dateTime('date')->setRequired(true);
 		$sb->complexType($person);
-		$sb->arrayType('tags')->setPrototype(new Property\String('tag'))->setMinLength(0)->setMaxLength(4);
+		$sb->arrayType('tags')->setPrototype(Property::getString('tag'))->setMinLength(0)->setMaxLength(4);
 		$sb->arrayType('entry')->setPrototype($entry);
 		$sb->complexType($token);
 		$sb->string('url')->setReference('PSX\Url')->setRequired(true);

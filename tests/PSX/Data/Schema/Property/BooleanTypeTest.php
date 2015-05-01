@@ -20,29 +20,37 @@
 
 namespace PSX\Data\Schema\Property;
 
+use PSX\Data\Schema\Property;
+
 /**
- * IntegerTest
+ * BooleanTypeTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class IntegerTest extends \PHPUnit_Framework_TestCase
+class BooleanTypeTest extends \PHPUnit_Framework_TestCase
 {
 	public function testValidate()
 	{
-		$property = new Integer('test');
+		$property = Property::getBoolean('test');
 
-		$this->assertTrue($property->validate(4));
-		$this->assertTrue($property->validate('4'));
+		$this->assertTrue($property->validate(true));
+		$this->assertTrue($property->validate(false));
+		$this->assertTrue($property->validate(1));
+		$this->assertTrue($property->validate(0));
+		$this->assertTrue($property->validate('1'));
+		$this->assertTrue($property->validate('0'));
+		$this->assertTrue($property->validate('true'));
+		$this->assertTrue($property->validate('false'));
 	}
 
 	/**
 	 * @expectedException PSX\Data\Schema\ValidationException
 	 */
-	public function testValidateInvalidFormat()
+	public function testValidateInvalidString()
 	{
-		$property = new Integer('test');
+		$property = Property::getBoolean('test');
 
 		$this->assertTrue($property->validate('foo'));
 	}
@@ -50,34 +58,29 @@ class IntegerTest extends \PHPUnit_Framework_TestCase
 	/**
 	 * @expectedException PSX\Data\Schema\ValidationException
 	 */
-	public function testValidateInvalidFormatFraction()
+	public function testValidateInvalidInteger()
 	{
-		$property = new Integer('test');
+		$property = Property::getBoolean('test');
 
-		$this->assertTrue($property->validate('1.2'));
-	}
-
-	/**
-	 * @expectedException PSX\Data\Schema\ValidationException
-	 */
-	public function testValidateInvalidFormatType()
-	{
-		$property = new Integer('test');
-
-		$this->assertTrue($property->validate(1.2));
+		$this->assertTrue($property->validate(4));
 	}
 
 	public function testValidateNull()
 	{
-		$property = new Integer('test');
+		$property = Property::getBoolean('test');
 
 		$this->assertTrue($property->validate(null));
 	}
-	
+
 	public function testGetId()
 	{
-		$property = new Integer('test');
+		$property = Property::getBoolean('test');
 
-		$this->assertEquals('4d9bdb177d8b8be2a77e1290c82af29c', $property->getId());
+		$this->assertEquals('23ea6bea2cec4913f94999a6221dfe87', $property->getId());
+	}
+
+	public function testGetTypeName()
+	{
+		$this->assertEquals('boolean', Property::getBoolean('test')->getTypeName());
 	}
 }

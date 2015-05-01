@@ -20,22 +20,23 @@
 
 namespace PSX\Data\Schema\Property;
 
+use PSX\Data\Schema\Property;
+
 /**
- * DateTimeTest
+ * DurationTypeTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class DateTimeTest extends \PHPUnit_Framework_TestCase
+class DurationTypeTest extends \PHPUnit_Framework_TestCase
 {
 	public function testValidate()
 	{
-		$property = new DateTime('test');
+		$property = Property::getDuration('test');
 
-		$this->assertTrue($property->validate('2002-10-10T17:00:00'));
-		$this->assertTrue($property->validate('2002-10-10T17:00:00Z'));
-		$this->assertTrue($property->validate('2002-10-10T17:00:00+13:00'));
+		$this->assertTrue($property->validate('P1D'));
+		$this->assertTrue($property->validate('P1DT12H'));
 	}
 
 	/**
@@ -43,39 +44,34 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testValidateInvalidFormat()
 	{
-		$property = new DateTime('test');
+		$property = Property::getDuration('test');
 
 		$this->assertTrue($property->validate('foo'));
 	}
 
-	/**
-	 * @expectedException PSX\Data\Schema\ValidationException
-	 */
-	public function testValidateInvalidTimezone()
-	{
-		$property = new DateTime('test');
-
-		$this->assertTrue($property->validate('2002-10-10T17:00:00+25:00'));
-	}
-
 	public function testValidateNull()
 	{
-		$property = new DateTime('test');
+		$property = Property::getDuration('test');
 
 		$this->assertTrue($property->validate(null));
 	}
 
 	public function testValidateDateTime()
 	{
-		$property = new DateTime('test');
+		$property = Property::getDuration('test');
 
-		$this->assertTrue($property->validate(new \DateTime()));
+		$this->assertTrue($property->validate(new \DateInterval('P1Y')));
 	}
 
 	public function testGetId()
 	{
-		$property = new DateTime('test');
+		$property = Property::getDuration('test');
 
-		$this->assertEquals('8319e693891940b6a51823148dc49af1', $property->getId());
+		$this->assertEquals('60ec1fd4171b886b723c46b4b3fc75c3', $property->getId());
+	}
+
+	public function testGetTypeName()
+	{
+		$this->assertEquals('duration', Property::getDuration('test')->getTypeName());
 	}
 }

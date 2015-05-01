@@ -33,7 +33,7 @@ class Builder
 
 	public function __construct($name)
 	{
-		$this->property = new Property\ComplexType($name);
+		$this->property = Property::getComplex($name);
 	}
 
 	/**
@@ -92,7 +92,7 @@ class Builder
 		}
 		else
 		{
-			$this->add($property = new Property\ArrayType($name));
+			$this->add($property = Property::getArray($name));
 		}
 
 		return $property;
@@ -100,11 +100,11 @@ class Builder
 
 	/**
 	 * @param string $name
-	 * @return PSX\Data\Schema\Property\Boolean
+	 * @return PSX\Data\Schema\Property\BooleanType
 	 */
 	public function boolean($name)
 	{
-		$this->add($property = new Property\Boolean($name));
+		$this->add($property = Property::getBoolean($name));
 
 		return $property;
 	}
@@ -123,7 +123,7 @@ class Builder
 			}
 			else
 			{
-				$this->add($property = new Property\ComplexType($name));
+				$this->add($property = Property::getComplex($name));
 			}
 		}
 		else
@@ -139,77 +139,77 @@ class Builder
 
 	/**
 	 * @param string $name
-	 * @return PSX\Data\Schema\Property\Date
+	 * @return PSX\Data\Schema\Property\DateType
 	 */
 	public function date($name)
 	{
-		$this->add($property = new Property\Date($name));
+		$this->add($property = Property::getDate($name));
 
 		return $property;
 	}
 
 	/**
 	 * @param string $name
-	 * @return PSX\Data\Schema\Property\DateTime
+	 * @return PSX\Data\Schema\Property\DateTimeType
 	 */
 	public function dateTime($name)
 	{
-		$this->add($property = new Property\DateTime($name));
+		$this->add($property = Property::getDateTime($name));
 
 		return $property;
 	}
 
 	/**
 	 * @param string $name
-	 * @return PSX\Data\Schema\Property\Duration
+	 * @return PSX\Data\Schema\Property\DurationType
 	 */
 	public function duration($name)
 	{
-		$this->add($property = new Property\Duration($name));
+		$this->add($property = Property::getDuration($name));
 
 		return $property;
 	}
 
 	/**
 	 * @param string $name
-	 * @return PSX\Data\Schema\Property\Float
+	 * @return PSX\Data\Schema\Property\FloatType
 	 */
 	public function float($name)
 	{
-		$this->add($property = new Property\Float($name));
+		$this->add($property = Property::getFloat($name));
 
 		return $property;
 	}
 
 	/**
 	 * @param string $name
-	 * @return PSX\Data\Schema\Property\Integer
+	 * @return PSX\Data\Schema\Property\IntegerType
 	 */
 	public function integer($name)
 	{
-		$this->add($property = new Property\Integer($name));
+		$this->add($property = Property::getInteger($name));
 
 		return $property;
 	}
 
 	/**
 	 * @param string $name
-	 * @return PSX\Data\Schema\Property\String
+	 * @return PSX\Data\Schema\Property\StringType
 	 */
 	public function string($name)
 	{
-		$this->add($property = new Property\String($name));
+		$this->add($property = Property::getString($name));
 
 		return $property;
 	}
 
 	/**
 	 * @param string $name
-	 * @return PSX\Data\Schema\Property\Time
+	 * @return PSX\Data\Schema\Property\TimeType
 	 */
 	public function time($name)
 	{
-		$this->add($property = new Property\Time($name));
+		$this->add($property = Property::getTime($name));
 
 		return $property;
 	}

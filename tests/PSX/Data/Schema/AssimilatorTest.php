@@ -265,7 +265,7 @@ class AssimilatorSchema extends SchemaAbstract
 		$sb->arrayType('receiver')
 			->setPrototype($author);
 		$sb->arrayType('tags')
-			->setPrototype(new Property\String('tag'));
+			->setPrototype(Property::getString('tag'));
 		$sb->date('date');
 
 		return $sb->getProperty();

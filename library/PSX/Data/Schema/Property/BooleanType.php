@@ -20,51 +20,41 @@
 
 namespace PSX\Data\Schema\Property;
 
+use PSX\Data\Schema\PropertySimpleAbstract;
+use PSX\Data\Schema\ValidationException;
+
 /**
- * TimeTest
+ * BooleanType
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class TimeTest extends \PHPUnit_Framework_TestCase
+class BooleanType extends PropertySimpleAbstract
 {
-	public function testValidate()
+	public function validate($data)
 	{
-		$property = new Time('test');
+		parent::validate($data);
 
-		$this->assertTrue($property->validate('10:00:00'));
-		$this->assertTrue($property->validate('10:00:00+02:00'));
-	}
+		if($data === null)
+		{
+			return true;
+		}
 
-	/**
-	 * @expectedException PSX\Data\Schema\ValidationException
-	 */
-	public function testValidateInvalidFormat()
-	{
-		$property = new Time('test');
+		if(is_bool($data))
+		{
+			return true;
+		}
+		else if(is_scalar($data))
+		{
+			$result = preg_match('/^true|false|1|0$/', $data);
 
-		$this->assertTrue($property->validate('foo'));
-	}
+			if($result)
+			{
+				return true;
+			}
+		}
 
-	public function testValidateNull()
-	{
-		$property = new Time('test');
-
-		$this->assertTrue($property->validate(null));
-	}
-
-	public function testValidateDateTime()
-	{
-		$property = new Time('test');
-
-		$this->assertTrue($property->validate(new \DateTime()));
-	}
-
-	public function testGetId()
-	{
-		$property = new Time('test');
-
-		$this->assertEquals('3c6aef662b76a50263a19c4f3589414d', $property->getId());
+		throw new ValidationException($this->getName() . ' must be an boolean');
 	}
 }

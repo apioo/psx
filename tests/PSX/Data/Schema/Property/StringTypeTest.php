@@ -20,27 +20,28 @@
 
 namespace PSX\Data\Schema\Property;
 
+use PSX\Data\Schema\Property;
 use PSX\Url;
 
 /**
- * StringTest
+ * StringTypeTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class StringTest extends \PHPUnit_Framework_TestCase
+class StringTypeTest extends \PHPUnit_Framework_TestCase
 {
 	public function testValidate()
 	{
-		$property = new String('test');
+		$property = Property::getString('test');
 
 		$this->assertTrue($property->validate('foo'));
 	}
 
 	public function testValidateObjectToString()
 	{
-		$property = new String('test');
+		$property = Property::getString('test');
 		$property->setMinLength(3);
 
 		$property->validate(new Url('http://google.com'));
@@ -51,7 +52,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testValidateInvalidFormat()
 	{
-		$property = new String('test');
+		$property = Property::getString('test');
 		$property->validate(new \stdClass());
 	}
 
@@ -60,13 +61,13 @@ class StringTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testValidateInvalidFormatArray()
 	{
-		$property = new String('test');
+		$property = Property::getString('test');
 		$property->validate(array());
 	}
 
 	public function testMinLength()
 	{
-		$property = new String('test');
+		$property = Property::getString('test');
 		$property->setMinLength(3);
 
 		$this->assertTrue($property->validate('foo'));
@@ -77,7 +78,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testMinLengthInvalid()
 	{
-		$property = new String('test');
+		$property = Property::getString('test');
 		$property->setMinLength(3);
 
 		$property->validate('fo');
@@ -85,7 +86,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
 
 	public function testMaxLength()
 	{
-		$property = new String('test');
+		$property = Property::getString('test');
 		$property->setMaxLength(3);
 
 		$this->assertTrue($property->validate('foo'));
@@ -96,7 +97,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testMaxLengthInvalid()
 	{
-		$property = new String('test');
+		$property = Property::getString('test');
 		$property->setMaxLength(3);
 
 		$property->validate('fooo');
@@ -104,7 +105,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
 
 	public function testPattern()
 	{
-		$property = new String('test');
+		$property = Property::getString('test');
 		$property->setPattern('[A-z]+');
 
 		$this->assertTrue($property->validate('foo'));
@@ -115,7 +116,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testPatternInvalid()
 	{
-		$property = new String('test');
+		$property = Property::getString('test');
 		$property->setPattern('[A-z]');
 
 		$property->validate('123');
@@ -123,7 +124,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
 
 	public function testEnumeration()
 	{
-		$property = new String('test');
+		$property = Property::getString('test');
 		$property->setEnumeration(array('foo', 'bar'));
 
 		$this->assertTrue($property->validate('foo'));
@@ -134,7 +135,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testEnumerationInvalid()
 	{
-		$property = new String('test');
+		$property = Property::getString('test');
 		$property->setEnumeration(array('foo', 'bar'));
 
 		$property->validate('test');
@@ -142,15 +143,20 @@ class StringTest extends \PHPUnit_Framework_TestCase
 
 	public function testValidateNull()
 	{
-		$property = new String('test');
+		$property = Property::getString('test');
 
 		$this->assertTrue($property->validate(null));
 	}
 	
 	public function testGetId()
 	{
-		$property = new String('test');
+		$property = Property::getString('test');
 
-		$this->assertEquals('4e089d32782b7d5d081230e97be69745', $property->getId());
+		$this->assertEquals('39af8630a1fa0361bbad04cd0ec0e9d8', $property->getId());
+	}
+
+	public function testGetTypeName()
+	{
+		$this->assertEquals('string', Property::getString('test')->getTypeName());
 	}
 }

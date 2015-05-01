@@ -51,7 +51,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
 		$builder = new Builder('foo');
 
 		$builder->arrayType('foo');
-		$builder->arrayType(new Property\ArrayType('bar'));
+		$builder->arrayType(Property::getArray('bar'));
 
 		$property = $builder->getProperty();
 
@@ -67,7 +67,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
 
 		$property = $builder->getProperty();
 
-		$this->assertInstanceOf('PSX\Data\Schema\Property\Boolean', $property->get('foo'));
+		$this->assertInstanceOf('PSX\Data\Schema\Property\BooleanType', $property->get('foo'));
 	}
 
 	public function testComplexType()
@@ -75,8 +75,8 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
 		$builder = new Builder('foo');
 
 		$builder->complexType('foo');
-		$builder->complexType(new Property\ComplexType('bar'));
-		$builder->complexType('baz', new Property\ComplexType('foo'));
+		$builder->complexType(Property::getComplex('bar'));
+		$builder->complexType('baz', Property::getComplex('foo'));
 
 		$property = $builder->getProperty();
 
@@ -93,7 +93,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
 
 		$property = $builder->getProperty();
 
-		$this->assertInstanceOf('PSX\Data\Schema\Property\Date', $property->get('foo'));
+		$this->assertInstanceOf('PSX\Data\Schema\Property\DateType', $property->get('foo'));
 	}
 
 	public function testDateTime()
@@ -104,7 +104,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
 
 		$property = $builder->getProperty();
 
-		$this->assertInstanceOf('PSX\Data\Schema\Property\DateTime', $property->get('foo'));
+		$this->assertInstanceOf('PSX\Data\Schema\Property\DateTimeType', $property->get('foo'));
 	}
 
 	public function testDuration()
@@ -115,7 +115,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
 
 		$property = $builder->getProperty();
 
-		$this->assertInstanceOf('PSX\Data\Schema\Property\Duration', $property->get('foo'));
+		$this->assertInstanceOf('PSX\Data\Schema\Property\DurationType', $property->get('foo'));
 	}
 
 	public function testFloat()
@@ -126,7 +126,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
 
 		$property = $builder->getProperty();
 
-		$this->assertInstanceOf('PSX\Data\Schema\Property\Float', $property->get('foo'));
+		$this->assertInstanceOf('PSX\Data\Schema\Property\FloatType', $property->get('foo'));
 	}
 
 	public function testInteger()
@@ -137,7 +137,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
 
 		$property = $builder->getProperty();
 
-		$this->assertInstanceOf('PSX\Data\Schema\Property\Integer', $property->get('foo'));
+		$this->assertInstanceOf('PSX\Data\Schema\Property\IntegerType', $property->get('foo'));
 	}
 
 	public function testString()
@@ -148,7 +148,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
 
 		$property = $builder->getProperty();
 
-		$this->assertInstanceOf('PSX\Data\Schema\Property\String', $property->get('foo'));
+		$this->assertInstanceOf('PSX\Data\Schema\Property\StringType', $property->get('foo'));
 	}
 
 	public function testTime()
@@ -159,6 +159,6 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
 
 		$property = $builder->getProperty();
 
-		$this->assertInstanceOf('PSX\Data\Schema\Property\Time', $property->get('foo'));
+		$this->assertInstanceOf('PSX\Data\Schema\Property\TimeType', $property->get('foo'));
 	}
 }

@@ -112,15 +112,15 @@ class Sample implements GeneratorInterface
 				throw new RuntimeException('Missing sample data of required property ' . $type->getName());
 			}
 		}
-		else if($type instanceof Property\Boolean)
+		else if($type instanceof Property\BooleanType)
 		{
 			return (bool) $data;
 		}
-		else if($type instanceof Property\Integer)
+		else if($type instanceof Property\IntegerType)
 		{
 			return (int) $data;
 		}
-		else if($type instanceof Property\Float)
+		else if($type instanceof Property\FloatType)
 		{
 			return (float) $data;
 		}

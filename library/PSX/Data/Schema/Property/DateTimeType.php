@@ -23,64 +23,37 @@ namespace PSX\Data\Schema\Property;
 use PSX\Data\Schema\ValidationException;
 
 /**
- * Float
+ * DateTimeType
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Float extends Decimal
+class DateTimeType extends StringType
 {
 	public function validate($data)
 	{
+		if($data instanceof \DateTime)
+		{
+			return true;
+		}
+
 		parent::validate($data);
 
 		if($data === null)
 		{
 			return true;
 		}
-
-		if(is_float($data))
-		{
-		}
-		else if(is_int($data))
-		{
-			$data = (float) $data;
-		}
 		else if(is_string($data))
 		{
-			$result = preg_match('/^(\+|-)?([0-9]+(\.[0-9]*)?|\.[0-9]+)([Ee](\+|-)?[0-9]+)?$/', $data);
+			$result = preg_match('/^' . \PSX\DateTime::getPattern() . '$/', $data);
 
 			if($result)
 			{
-				$data = (float) $data;
-			}
-			else
-			{
-				throw new ValidationException($this->getName() . ' must be an float');
-			}
-		}
-		else
-		{
-			throw new ValidationException($this->getName() . ' must be an float');
-		}
-
-		if($this->max !== null)
-		{
-			if($data > $this->max)
-			{
-				throw new ValidationException($this->getName() . ' must be lower or equal then ' . $this->max);
+				return true;
 			}
 		}
 
-		if($this->min !== null)
-		{
-			if($data < $this->min)
-			{
-				throw new ValidationException($this->getName() . ' must be greater or equal then ' . $this->min);
-			}
-		}
-
-		return true;
+		throw new ValidationException($this->getName() . ' must be an valid date-time format (full-date "T" full-time) [RFC3339]');
 	}
 }

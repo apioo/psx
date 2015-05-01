@@ -20,21 +20,24 @@
 
 namespace PSX\Data\Schema\Property;
 
+use PSX\Data\Schema\Property;
+
 /**
- * DateTest
+ * FloatTypeTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class DateTest extends \PHPUnit_Framework_TestCase
+class FloatTypeTest extends \PHPUnit_Framework_TestCase
 {
 	public function testValidate()
 	{
-		$property = new Date('test');
+		$property = Property::getFloat('test');
 
-		$this->assertTrue($property->validate('2000-01-01'));
-		$this->assertTrue($property->validate('2000-01-01+13:00'));
+		$this->assertTrue($property->validate(1));
+		$this->assertTrue($property->validate(1.0));
+		$this->assertTrue($property->validate('1.0'));
 	}
 
 	/**
@@ -42,39 +45,27 @@ class DateTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testValidateInvalidFormat()
 	{
-		$property = new Date('test');
+		$property = Property::getFloat('test');
 
 		$this->assertTrue($property->validate('foo'));
 	}
 
-	/**
-	 * @expectedException PSX\Data\Schema\ValidationException
-	 */
-	public function testValidateInvalidTimezone()
-	{
-		$property = new Date('test');
-
-		$this->assertTrue($property->validate('2000-01-01+25:00'));
-	}
-
 	public function testValidateNull()
 	{
-		$property = new Date('test');
+		$property = Property::getFloat('test');
 
 		$this->assertTrue($property->validate(null));
 	}
 
-	public function testValidateDateTime()
-	{
-		$property = new Date('test');
-
-		$this->assertTrue($property->validate(new \DateTime()));
-	}
-
 	public function testGetId()
 	{
-		$property = new Date('test');
+		$property = Property::getFloat('test');
 
-		$this->assertEquals('1d54780d0e68a1e4a55f276f2b987b3d', $property->getId());
+		$this->assertEquals('d910a17e4a7a672df119e67b08b0f3cf', $property->getId());
+	}
+
+	public function testGetTypeName()
+	{
+		$this->assertEquals('float', Property::getFloat('test')->getTypeName());
 	}
 }

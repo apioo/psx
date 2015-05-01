@@ -20,45 +20,63 @@
 
 namespace PSX\Data\Schema\Property;
 
+use PSX\Data\Schema\ValidationException;
+
 /**
- * FloatTest
+ * IntegerType
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class FloatTest extends \PHPUnit_Framework_TestCase
+class IntegerType extends DecimalType
 {
-	public function testValidate()
+	public function validate($data)
 	{
-		$property = new Float('test');
+		parent::validate($data);
 
-		$this->assertTrue($property->validate(1));
-		$this->assertTrue($property->validate(1.0));
-		$this->assertTrue($property->validate('1.0'));
-	}
+		if($data === null)
+		{
+			return true;
+		}
 
-	/**
-	 * @expectedException PSX\Data\Schema\ValidationException
-	 */
-	public function testValidateInvalidFormat()
-	{
-		$property = new Float('test');
+		if(is_int($data))
+		{
+		}
+		else if(is_string($data))
+		{
+			$result = preg_match('/^[\-+]?[0-9]+$/', $data);
 
-		$this->assertTrue($property->validate('foo'));
-	}
+			if($result)
+			{
+				$data = (int) $data;
+			}
+			else
+			{
+				throw new ValidationException($this->getName() . ' must be an integer');
+			}
+		}
+		else
+		{
+			throw new ValidationException($this->getName() . ' must be an integer');
+		}
 
-	public function testValidateNull()
-	{
-		$property = new Float('test');
+		if($this->max !== null)
+		{
+			if($data > $this->max)
+			{
+				throw new ValidationException($this->getName() . ' must be lower or equal then ' . $this->max);
+			}
+		}
 
-		$this->assertTrue($property->validate(null));
-	}
+		if($this->min !== null)
+		{
+			if($data < $this->min)
+			{
+				throw new ValidationException($this->getName() . ' must be greater or equal then ' . $this->min);
+			}
+		}
 
-	public function testGetId()
-	{
-		$property = new Float('test');
-
-		$this->assertEquals('fe4ded0fa29552b15aa3770177466033', $property->getId());
+		return true;
 	}
 }

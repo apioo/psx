@@ -115,35 +115,35 @@ class Schema implements ImporterInterface
 
 			return $values;
 		}
-		else if($type instanceof Property\Boolean)
+		else if($type instanceof Property\BooleanType)
 		{
 			$data = $data === 'false' ? false : (bool) $data;
 
 			return empty($reference) ? $data : $this->getSimpleReference($reference, $data);
 		}
-		else if($type instanceof Property\DateTime)
+		else if($type instanceof Property\DateTimeType)
 		{
 			return empty($reference) ? new DateTime($data) : $this->getSimpleReference($reference, $data);
 		}
-		else if($type instanceof Property\Date)
+		else if($type instanceof Property\DateType)
 		{
 			return empty($reference) ? new Date($data) : $this->getSimpleReference($reference, $data);
 		}
-		else if($type instanceof Property\Time)
+		else if($type instanceof Property\TimeType)
 		{
 			return empty($reference) ? new Time($data) : $this->getSimpleReference($reference, $data);
 		}
-		else if($type instanceof Property\Duration)
+		else if($type instanceof Property\DurationType)
 		{
 			return empty($reference) ? new Duration($data) : $this->getSimpleReference($reference, $data);
 		}
-		else if($type instanceof Property\Float)
+		else if($type instanceof Property\FloatType)
 		{
 			$data = (float) $data;
 
 			return empty($reference) ? $data : $this->getSimpleReference($reference, $data);
 		}
-		else if($type instanceof Property\Integer)
+		else if($type instanceof Property\IntegerType)
 		{
 			$data = (int) $data;
 
