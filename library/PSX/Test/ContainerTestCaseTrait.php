@@ -23,7 +23,7 @@ namespace PSX\Test;
 use Monolog\Logger;
 use Monolog\Handler\NullHandler;
 use PSX\Cache;
-use PSX\Cache\Handler\Null as CacheHandler;
+use PSX\Cache\Handler\Void as CacheHandler;
 use PSX\Command\Output\Void;
 use PSX\Dispatch\Sender\Void as VoidSender;
 use PSX\Event;

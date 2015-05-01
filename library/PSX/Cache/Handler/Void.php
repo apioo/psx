@@ -24,13 +24,13 @@ use PSX\Cache\HandlerInterface;
 use PSX\Cache\Item;
 
 /**
- * Null
+ * Void
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Null implements HandlerInterface
+class Void implements HandlerInterface
 {
 	public function load($key)
 	{

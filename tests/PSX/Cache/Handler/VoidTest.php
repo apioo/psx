@@ -25,17 +25,17 @@ use PSX\CacheTest;
 use PSX\Sql\Table\ColumnAllocation;
 
 /**
- * NullTest
+ * VoidTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class NullTest extends \PHPUnit_Framework_TestCase
+class VoidTest extends \PHPUnit_Framework_TestCase
 {
 	public function testLoad()
 	{
-		$handler = new Null();
+		$handler = new Void();
 		$item    = $handler->load('key');
 
 		$this->assertInstanceOf('PSX\Cache\Item', $item);
@@ -46,7 +46,7 @@ class NullTest extends \PHPUnit_Framework_TestCase
 
 	public function testWrite()
 	{
-		$handler = new Null();
+		$handler = new Void();
 		$item    = $handler->load('key');
 
 		$item->set('foobar');
@@ -56,13 +56,13 @@ class NullTest extends \PHPUnit_Framework_TestCase
 
 	public function testRemove()
 	{
-		$handler = new Null();
+		$handler = new Void();
 		$handler->remove('foobar');
 	}
 
 	public function testRemoveAll()
 	{
-		$handler = new Null();
+		$handler = new Void();
 		$handler->removeAll();
 	}
 }
