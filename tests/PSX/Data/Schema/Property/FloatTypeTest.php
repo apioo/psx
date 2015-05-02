@@ -50,6 +50,40 @@ class FloatTypeTest extends \PHPUnit_Framework_TestCase
 		$this->assertTrue($property->validate('foo'));
 	}
 
+	/**
+	 * @expectedException PSX\Data\Schema\ValidationException
+	 */
+	public function testValidateInvalidType()
+	{
+		$property = Property::getFloat('test');
+
+		$this->assertTrue($property->validate(new \stdClass()));
+	}
+
+	/**
+	 * @expectedException PSX\Data\Schema\ValidationException
+	 */
+	public function testValidateMin()
+	{
+		$property = Property::getFloat('test')->setMin(2.4);
+
+		$this->assertTrue($property->validate(2.4));
+
+		$property->validate(2.3);
+	}
+
+	/**
+	 * @expectedException PSX\Data\Schema\ValidationException
+	 */
+	public function testValidateMax()
+	{
+		$property = Property::getFloat('test')->setMax(2.4);
+
+		$this->assertTrue($property->validate(2.4));
+
+		$property->validate(2.5);
+	}
+
 	public function testValidateNull()
 	{
 		$property = Property::getFloat('test');

@@ -69,6 +69,40 @@ class IntegerTypeTest extends \PHPUnit_Framework_TestCase
 		$this->assertTrue($property->validate(1.2));
 	}
 
+	/**
+	 * @expectedException PSX\Data\Schema\ValidationException
+	 */
+	public function testValidateInvalidType()
+	{
+		$property = Property::getInteger('test');
+
+		$this->assertTrue($property->validate(new \stdClass()));
+	}
+
+	/**
+	 * @expectedException PSX\Data\Schema\ValidationException
+	 */
+	public function testValidateMin()
+	{
+		$property = Property::getInteger('test')->setMin(2);
+
+		$this->assertTrue($property->validate(2));
+
+		$property->validate(1);
+	}
+
+	/**
+	 * @expectedException PSX\Data\Schema\ValidationException
+	 */
+	public function testValidateMax()
+	{
+		$property = Property::getInteger('test')->setMax(2);
+
+		$this->assertTrue($property->validate(2));
+
+		$property->validate(3);
+	}
+
 	public function testValidateNull()
 	{
 		$property = Property::getInteger('test');
