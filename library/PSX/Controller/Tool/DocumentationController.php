@@ -56,11 +56,6 @@ class DocumentationController extends ApiAbstract
 	 */
 	protected $reverseRouter;
 
-	/**
-	 * @var array
-	 */
-	protected $supportedWriter;
-
 	public function doIndex()
 	{
 		$this->setBody([
@@ -94,8 +89,6 @@ class DocumentationController extends ApiAbstract
 		{
 			throw new HttpException\InternalServerErrorException('Controller provides no documentation informations');
 		}
-
-		$this->supportedWriter = array(WriterInterface::JSON, WriterInterface::XML);
 
 		if($version == '*')
 		{
@@ -195,27 +188,10 @@ class DocumentationController extends ApiAbstract
 		return $result;
 	}
 
-	protected function getTemplateFile()
-	{
-		return __DIR__ . '/../Resource/documentation_controller.tpl';
-	}
-
 	protected function getViewGenerators()
 	{
 		return array(
 			'Schema' => new Generator\Html\Schema(new SchemaGenerator\Html()),
 		);
-	}
-
-	protected function getSupportedWriter()
-	{
-		if($this->supportedWriter === null)
-		{
-			return parent::getSupportedWriter();
-		}
-		else
-		{
-			return $this->supportedWriter;
-		}
 	}
 }
