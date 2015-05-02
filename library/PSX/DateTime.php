@@ -120,7 +120,14 @@ class DateTime extends \DateTime
 			return null;
 		}
 
-		$date   = (string) $date;
+		$date = (string) $date;
+
+		// fix so that we understand mysql date time formats
+		if(isset($date[10]) && $date[10] == ' ')
+		{
+			$date[10] = 'T';
+		}
+
 		$result = preg_match('/^' . self::getPattern() . '$/', $date);
 
 		if(!$result)

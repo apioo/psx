@@ -155,6 +155,13 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
 		new DateTime('2015-04-25T19:35:20+50:00');
 	}
 
+	public function testMysqlDateTimeFormat()
+	{
+		$date = new DateTime('2015-04-25 19:35:20');
+
+		$this->assertEquals('2015-04-25T19:35:20Z', $date->toString());
+	}
+
 	public function testFromDateTime()
 	{
 		$date = DateTime::fromDateTime(new \DateTime('2015-04-25T19:35:20'));
