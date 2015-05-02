@@ -26,7 +26,7 @@ install the PSX sample project via composer
 
 or require PSX as dependency in your composer.json
 
-    "psx/psx": "0.9.*@dev"
+    "psx/psx": "~1.0"
 
 ## Documentation
 
