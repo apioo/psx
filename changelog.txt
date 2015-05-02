@@ -1,4 +1,12 @@
 
+1.0.0
+* Removed unused methods in documentation controller
+* Added property type factory class
+* Gain php7 compatibility
+* Json schema parser add schema version check
+* Improved schema data, validation and api controller test cases
+* Fixed datetime wrong behaviour without constructor args
+
 1.0.0-RC2
 * Fixed correct handling with date and time formats
 * Improved several value objects 
