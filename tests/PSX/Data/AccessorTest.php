@@ -32,7 +32,7 @@ use PSX\Filter;
  */
 class AccessorTest extends \PHPUnit_Framework_TestCase
 {
-	public function testGet()
+	public function testGetArray()
 	{
 		$source = array(
 			'foo' => 'bar',
@@ -54,7 +54,25 @@ class AccessorTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('bar', $accessor->get('tes.0.foo'));
 	}
 
-	public function testGetFilter()
+	public function testGetStdClass()
+	{
+		$source = new \stdClass();
+		$source->foo = 'bar';
+		$source->bar = new \stdClass();
+		$source->bar->foo = 1;
+		$source->tes = array();
+		$source->tes[0] = new \stdClass();
+		$source->tes[0]->foo = 'bar';
+
+		$accessor = new Accessor(new Validate(), $source);
+
+		$this->assertEquals($source, $accessor->getSource());
+		$this->assertEquals('bar', $accessor->get('foo'));
+		$this->assertEquals(1, $accessor->get('bar.foo'));
+		$this->assertEquals('bar', $accessor->get('tes.0.foo'));
+	}
+
+	public function testGetFilterArray()
 	{
 		$source = array(
 			'foo' => 'bar',
@@ -67,6 +85,41 @@ class AccessorTest extends \PHPUnit_Framework_TestCase
 				),
 			),
 		);
+
+		$filter = new Filter\Length(3, 8);
+
+		$validate = $this->getMockBuilder('PSX\Validate')
+			->setMethods(array('apply'))
+			->getMock();
+
+		$validate->expects($this->at(0))
+			->method('apply')
+			->with($this->equalTo('bar'), $this->equalTo(Validate::TYPE_STRING), $this->equalTo(array()));
+
+		$validate->expects($this->at(1))
+			->method('apply')
+			->with($this->equalTo(1), $this->equalTo(Validate::TYPE_INTEGER), $this->equalTo(array()));
+
+		$validate->expects($this->at(2))
+			->method('apply')
+			->with($this->equalTo('bar'), $this->equalTo(Validate::TYPE_STRING), $this->equalTo(array($filter)));
+
+		$accessor = new Accessor($validate, $source);
+
+		$accessor->get('foo');
+		$accessor->get('bar.foo', Validate::TYPE_INTEGER);
+		$accessor->get('tes.0.foo', Validate::TYPE_STRING, array($filter));
+	}
+
+	public function testGetFilterStdClass()
+	{
+		$source = new \stdClass();
+		$source->foo = 'bar';
+		$source->bar = new \stdClass();
+		$source->bar->foo = 1;
+		$source->tes = array();
+		$source->tes[0] = new \stdClass();
+		$source->tes[0]->foo = 'bar';
 
 		$filter = new Filter\Length(3, 8);
 
