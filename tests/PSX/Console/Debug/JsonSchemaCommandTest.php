@@ -39,47 +39,15 @@ class JsonSchemaCommandTest extends CommandTestCase
 
 		$commandTester = new CommandTester($command);
 		$commandTester->execute(array(
-			'file' => __DIR__ . '/../../Api/Documentation/Parser/schema.json',
+			'file'   => __DIR__ . '/../../Api/Documentation/Parser/schema.json',
+			'format' => 'serialize',
 		));
 
-		$expect = <<<'PHP'
-PSX\Data\Schema::__set_state(array(
-   'property' => 
-  PSX\Data\Schema\Property\ComplexType::__set_state(array(
-     'properties' => 
-    array (
-      'artist' => 
-      PSX\Data\Schema\Property\StringType::__set_state(array(
-         'minLength' => NULL,
-         'maxLength' => NULL,
-         'pattern' => NULL,
-         'enumeration' => NULL,
-         'name' => 'artist',
-         'description' => NULL,
-         'required' => true,
-         'reference' => NULL,
-      )),
-      'title' => 
-      PSX\Data\Schema\Property\StringType::__set_state(array(
-         'minLength' => NULL,
-         'maxLength' => NULL,
-         'pattern' => NULL,
-         'enumeration' => NULL,
-         'name' => 'title',
-         'description' => NULL,
-         'required' => true,
-         'reference' => NULL,
-      )),
-    ),
-     'name' => NULL,
-     'description' => 'A canonical song',
-     'required' => NULL,
-     'reference' => NULL,
-  )),
-))
-PHP;
+		$schema = unserialize($commandTester->getDisplay());
 
-		$this->assertSource($expect, $commandTester->getDisplay());
+		$this->assertInstanceOf('PSX\Data\SchemaInterface', $schema);
+		$this->assertInstanceOf('PSX\Data\Schema\Property\StringType', $schema->getDefinition()->get('artist'));
+		$this->assertInstanceOf('PSX\Data\Schema\Property\StringType', $schema->getDefinition()->get('title'));
 	}
 
 	public function testCommandAvailable()
@@ -87,13 +55,5 @@ PHP;
 		$command = Environment::getService('console')->find('debug:jsonschema');
 
 		$this->assertInstanceOf('PSX\Console\Debug\JsonSchemaCommand', $command);
-	}
-
-	protected function assertSource($expect, $actual)
-	{
-		$expect = str_replace(array("\r\n", "\n", "\r"), "\n", $expect);
-		$actual = str_replace(array("\r\n", "\n", "\r"), "\n", $actual);
-
-		$this->assertEquals($expect, $actual);
 	}
 }

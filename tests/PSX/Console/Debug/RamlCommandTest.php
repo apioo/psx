@@ -39,8 +39,9 @@ class RamlCommandTest extends CommandTestCase
 
 		$commandTester = new CommandTester($command);
 		$commandTester->execute(array(
-			'file' => __DIR__ . '/../../Api/Documentation/Parser/test.raml',
-			'path' => '/foo'
+			'file'   => __DIR__ . '/../../Api/Documentation/Parser/test.raml',
+			'path'   => '/foo',
+			'format' => 'serialize',
 		));
 
 		$expect = <<<'PHP'
@@ -256,7 +257,14 @@ PSX\Api\Documentation\Version::__set_state(array(
 ))
 PHP;
 
-		$this->assertSource($expect, $commandTester->getDisplay());
+		$documentation = unserialize($commandTester->getDisplay());
+
+		$this->assertInstanceOf('PSX\Api\DocumentationInterface', $documentation);
+
+		$resource = $documentation->getResource($documentation->getLatestVersion());
+
+		$this->assertInstanceOf('PSX\Api\Resource', $resource);
+		$this->assertEquals(['GET', 'POST'], $resource->getAllowedMethods());
 	}
 
 	public function testCommandAvailable()
@@ -264,13 +272,5 @@ PHP;
 		$command = Environment::getService('console')->find('debug:raml');
 
 		$this->assertInstanceOf('PSX\Console\Debug\RamlCommand', $command);
-	}
-
-	protected function assertSource($expect, $actual)
-	{
-		$expect = str_replace(array("\r\n", "\n", "\r"), "\n", $expect);
-		$actual = str_replace(array("\r\n", "\n", "\r"), "\n", $actual);
-
-		$this->assertEquals($expect, $actual);
 	}
 }
