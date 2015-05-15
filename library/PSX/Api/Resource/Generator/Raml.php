@@ -23,7 +23,10 @@ namespace PSX\Api\Resource\Generator;
 use PSX\Api\Resource;
 use PSX\Api\Resource\GeneratorAbstract;
 use PSX\Data\Schema\Generator as SchemaGenerator;
+use PSX\Data\Schema\Property;
+use PSX\Data\Schema\PropertyInterface;
 use PSX\Util\ApiGeneration;
+use Symfony\Component\Yaml\Inline;
 
 /**
  * Raml
@@ -49,14 +52,35 @@ class Raml extends GeneratorAbstract
 
 	public function generate(Resource $resource)
 	{
-		$path = ApiGeneration::transformRoutePlaceholder($resource->getPath() ?: '/');
+		$path        = ApiGeneration::transformRoutePlaceholder($resource->getPath() ?: '/');
+		$description = $resource->getDescription();
 
 		$raml = '#%RAML 0.8' . "\n";
 		$raml.= '---' . "\n";
-		$raml.= 'baseUri: ' . $this->baseUri . "\n";
+		$raml.= 'baseUri: ' . Inline::dump($this->baseUri) . "\n";
 		$raml.= 'version: v' . $this->version . "\n";
-		$raml.= 'title: ' . $this->title . "\n";
+		$raml.= 'title: ' . Inline::dump($this->title) . "\n";
 		$raml.= $path . ':' . "\n";
+
+		if(!empty($description))
+		{
+			$raml.= '  description: ' . Inline::dump($description) . "\n";
+		}
+
+		// path parameter
+		$parameters = $resource->getPathParameters()->getDefinition();
+
+		if(count($parameters) > 0)
+		{
+			$raml.= '  uriParameters:' . "\n";
+
+			foreach($parameters as $parameter)
+			{
+				$raml.= '    ' . $parameter->getName() . ':' . "\n";
+
+				$this->setParameterType($parameter, $raml, 6);
+			}
+		}
 
 		$generator = new SchemaGenerator\JsonSchema($this->targetNamespace);
 		$methods   = $resource->getMethods();
@@ -65,6 +89,29 @@ class Raml extends GeneratorAbstract
 		{
 			$raml.= '  ' . strtolower($method->getName()) . ':' . "\n";
 
+			// description
+			$description = $method->getDescription();
+			if(!empty($description))
+			{
+				$raml.= '    description: ' . Inline::dump($description) . "\n";
+			}
+
+			// query parameter
+			$parameters = $method->getQueryParameters()->getDefinition();
+
+			if(count($parameters) > 0)
+			{
+				$raml.= '    queryParameters:' . "\n";
+
+				foreach($parameters as $parameter)
+				{
+					$raml.= '      ' . $parameter->getName() . ':' . "\n";
+
+					$this->setParameterType($parameter, $raml, 8);
+				}
+			}
+
+			// request body
 			if($method->hasRequest())
 			{
 				$schema = $generator->generate($method->getRequest());
@@ -76,6 +123,7 @@ class Raml extends GeneratorAbstract
 				$raml.= '          ' . $schema . "\n";
 			}
 
+			// response body
 			$raml.= '    responses:' . "\n";
 
 			$responses = $method->getResponses();
@@ -94,5 +142,86 @@ class Raml extends GeneratorAbstract
 		}
 
 		return $raml;
+	}
+
+	protected function setParameterType(PropertyInterface $parameter, &$raml, $indent)
+	{
+		$indent = str_repeat(' ', $indent);
+
+		switch(true)
+		{
+			case $parameter instanceof Property\IntegerType:
+				$raml.= $indent . 'type: integer' . "\n";
+				break;
+
+			case $parameter instanceof Property\FloatType:
+				$raml.= $indent . 'type: number' . "\n";
+				break;
+
+			case $parameter instanceof Property\BooleanType:
+				$raml.= $indent . 'type: boolean' . "\n";
+				break;
+
+			case $parameter instanceof Property\DateType:
+			case $parameter instanceof Property\DateTimeType:
+				$raml.= $indent . 'type: date' . "\n";
+				break;
+
+			default:
+				$raml.= $indent . 'type: string' . "\n";
+				break;
+		}
+
+		$description = $parameter->getDescription();
+
+		if(!empty($description))
+		{
+			$raml.= $indent . 'description: ' . Inline::dump($parameter->getDescription()) . "\n";
+		}
+
+		$raml.= $indent . 'required: ' . ($parameter->isRequired() ? 'true' : 'false') . "\n";
+
+		if($parameter instanceof Property\DecimalType)
+		{
+			$min = $parameter->getMin();
+			$max = $parameter->getMax();
+
+			if($min !== null)
+			{
+				$raml.= $indent . 'minimum: ' . $min . "\n";
+			}
+
+			if($max !== null)
+			{
+				$raml.= $indent . 'maximum: ' . $max . "\n";
+			}
+		}
+		else if($parameter instanceof Property\StringType)
+		{
+			$minLength   = $parameter->getMinLength();
+			$maxLength   = $parameter->getMaxLength();
+			$enumeration = $parameter->getEnumeration();
+			$pattern     = $parameter->getPattern();
+
+			if($minLength !== null)
+			{
+				$raml.= $indent . 'minLength: ' . $minLength . "\n";
+			}
+
+			if($maxLength !== null)
+			{
+				$raml.= $indent . 'maxLength: ' . $maxLength . "\n";
+			}
+
+			if(!empty($enumeration))
+			{
+				$raml.= $indent . 'enum: ' . Inline::dump($enumeration) . "\n";
+			}
+
+			if(!empty($pattern))
+			{
+				$raml.= $indent . 'pattern: ' . Inline::dump($pattern) . "\n";
+			}
+		}
 	}
 }

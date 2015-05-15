@@ -24,6 +24,7 @@ use PSX\Api\Documentation;
 use PSX\Api\Version;
 use PSX\Api\Resource;
 use PSX\Data\RecordInterface;
+use PSX\Data\Schema\Property;
 use PSX\Controller\SchemaApiAbstract;
 use PSX\Loader\Context;
 use PSX\Test\Environment;
@@ -91,8 +92,28 @@ class VersionViewController extends SchemaApiAbstract
 		$doc->addResource(2, $resource);
 
 		$resource = new Resource(Resource::STATUS_ACTIVE, $this->context->get(Context::KEY_PATH));
+		$resource->setTitle('foo');
+		$resource->setDescription('lorem ipsum');
+		$resource->addPathParameter(Property::getString('name')
+			->setDescription('Name parameter')
+			->setRequired(false)
+			->setMinLength(0)
+			->setMaxLength(16)
+			->setPattern('[A-z]+'));
+		$resource->addPathParameter(Property::getString('type')
+			->setEnumeration(['foo', 'bar']));
 
 		$resource->addMethod(Resource\Factory::getMethod('GET')
+			->setDescription('Returns a collection')
+			->addQueryParameter(Property::getInteger('startIndex')
+				->setDescription('startIndex parameter')
+				->setRequired(false)
+				->setMin(0)
+				->setMax(32))
+			->addQueryParameter(Property::getFloat('float'))
+			->addQueryParameter(Property::getBoolean('boolean'))
+			->addQueryParameter(Property::getDate('date'))
+			->addQueryParameter(Property::getDateTime('datetime'))
 			->addResponse(200, $this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Collection')));
 
 		$resource->addMethod(Resource\Factory::getMethod('POST')

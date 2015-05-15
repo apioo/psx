@@ -51,7 +51,7 @@ class RamlControllerTest extends ControllerTestCase
 		$expect = <<<'RAML'
 #%RAML 0.8
 ---
-baseUri: http://127.0.0.1/
+baseUri: 'http://127.0.0.1/'
 version: v1
 title: Api
 /api:

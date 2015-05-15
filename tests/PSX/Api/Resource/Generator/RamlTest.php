@@ -37,11 +37,44 @@ class RamlTest extends GeneratorTestCase
 		$expect = <<<'RAML'
 #%RAML 0.8
 ---
-baseUri: http://api.phpsx.org
+baseUri: 'http://api.phpsx.org'
 version: v1
 title: foobar
 /foo/bar:
+  description: 'lorem ipsum'
+  uriParameters:
+    name:
+      type: string
+      description: 'Name parameter'
+      required: false
+      minLength: 0
+      maxLength: 16
+      pattern: '[A-z]+'
+    type:
+      type: string
+      required: false
+      enum: [foo, bar]
   get:
+    description: 'Returns a collection'
+    queryParameters:
+      startIndex:
+        type: integer
+        description: 'startIndex parameter'
+        required: false
+        minimum: 0
+        maximum: 32
+      float:
+        type: number
+        required: false
+      boolean:
+        type: boolean
+        required: false
+      date:
+        type: date
+        required: false
+      datetime:
+        type: date
+        required: false
     responses:
       200:
         body:
