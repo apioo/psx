@@ -44,6 +44,7 @@ class Parameter extends RecordAbstract
 	protected $required;
 	protected $allowMultiple;
 	protected $type;
+	protected $format;
 
 	public function __construct($paramType = null, $name = null, $description = null, $required = null)
 	{
@@ -120,5 +121,15 @@ class Parameter extends RecordAbstract
 	public function getType()
 	{
 		return $this->type;
+	}
+
+	public function setFormat($format)
+	{
+		$this->format = $format;
+	}
+
+	public function getFormat()
+	{
+		return $this->format;
 	}
 }
