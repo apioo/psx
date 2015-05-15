@@ -20,6 +20,8 @@
 
 namespace PSX\Data\Schema\Property;
 
+use ArrayIterator;
+use IteratorAggregate;
 use PSX\Data\Schema\PropertyAbstract;
 use PSX\Data\Schema\PropertyInterface;
 use PSX\Data\Schema\ValidationException;
@@ -31,7 +33,7 @@ use PSX\Data\Schema\ValidationException;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class ComplexType extends PropertyAbstract
+class ComplexType extends PropertyAbstract implements IteratorAggregate
 {
 	protected $properties = array();
 
@@ -95,5 +97,10 @@ class ComplexType extends PropertyAbstract
 		}
 
 		return true;
+	}
+
+	public function getIterator()
+	{
+		return new ArrayIterator($this->properties);
 	}
 }
