@@ -21,6 +21,7 @@
 namespace PSX\Data\Schema\Property;
 
 use ArrayIterator;
+use Countable;
 use IteratorAggregate;
 use PSX\Data\Schema\PropertyAbstract;
 use PSX\Data\Schema\PropertyInterface;
@@ -33,7 +34,7 @@ use PSX\Data\Schema\ValidationException;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class ComplexType extends PropertyAbstract implements IteratorAggregate
+class ComplexType extends PropertyAbstract implements IteratorAggregate, Countable
 {
 	protected $properties = array();
 
@@ -102,5 +103,10 @@ class ComplexType extends PropertyAbstract implements IteratorAggregate
 	public function getIterator()
 	{
 		return new ArrayIterator($this->properties);
+	}
+
+	public function count()
+	{
+		return count($this->properties);
 	}
 }
