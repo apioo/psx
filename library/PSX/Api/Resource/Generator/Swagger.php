@@ -23,6 +23,8 @@ namespace PSX\Api\Resource\Generator;
 use PSX\Api\Resource;
 use PSX\Api\Resource\GeneratorAbstract;
 use PSX\Data\SchemaInterface;
+use PSX\Data\Schema\Property;
+use PSX\Data\Schema\PropertyInterface;
 use PSX\Data\Writer\Json as JsonWriter;
 use PSX\Json;
 use PSX\Swagger\Api;
@@ -74,15 +76,22 @@ class Swagger extends GeneratorAbstract
 
 	protected function getApis(Resource $resource)
 	{
-		$api     = new Api(ApiGeneration::transformRoutePlaceholder($resource->getPath()));
-		$methods = $resource->getMethods();
+		$api         = new Api(ApiGeneration::transformRoutePlaceholder($resource->getPath()));
+		$description = $resource->getDescription();
+		$methods     = $resource->getMethods();
+
+		if(!empty($description))
+		{
+			$api->setDescription($description);
+		}
 
 		foreach($methods as $method)
 		{
 			// get operation name
-			$request    = $method->getRequest();
-			$response   = $this->getSuccessfulResponse($method);
-			$entityName = '';
+			$request     = $method->getRequest();
+			$response    = $this->getSuccessfulResponse($method);
+			$description = $method->getDescription();
+			$entityName  = '';
 
 			if($request instanceof SchemaInterface)
 			{
@@ -96,15 +105,47 @@ class Swagger extends GeneratorAbstract
 			// create new operation
 			$operation = new Operation($method->getName(), strtolower($method->getName()) . ucfirst($entityName));
 
+			if(!empty($description))
+			{
+				$operation->setSummary($description);
+			}
+
+			// path parameter
+			$parameters = $resource->getPathParameters()->getDefinition();
+
+			foreach($parameters as $parameter)
+			{
+				$param = new Parameter('path', $parameter->getName(), $parameter->getDescription(), $parameter->isRequired());
+
+				$this->setParameterType($parameter, $param);
+
+				$operation->addParameter($param);
+			}
+
+			// query parameter
+			$parameters = $method->getQueryParameters()->getDefinition();
+
+			foreach($parameters as $parameter)
+			{
+				$param = new Parameter('query', $parameter->getName(), $parameter->getDescription(), $parameter->isRequired());
+
+				$this->setParameterType($parameter, $param);
+
+				$operation->addParameter($param);
+			}
+
+			// request body
 			if($request instanceof SchemaInterface)
 			{
-				$type       = strtolower($method->getName()) . 'Request';
-				$parameter  = new Parameter('body', 'body', null, true);
+				$description = $request->getDefinition()->getDescription();
+				$type        = strtolower($method->getName()) . 'Request';
+				$parameter   = new Parameter('body', 'body', $description, true);
 				$parameter->setType($type);
 
 				$operation->addParameter($parameter);
 			}
 
+			// response body
 			$responses = $method->getResponses();
 
 			foreach($responses as $statusCode => $response)
@@ -127,12 +168,12 @@ class Swagger extends GeneratorAbstract
 		$data      = json_decode($generator->generate($resource));
 		$models    = new \stdClass();
 
-		$properties = (array) $data->properties;
+		$properties = $data->properties;
 		foreach($properties as $name => $property)
 		{
 			$description = isset($property->description) ? $property->description : null;
-			$required    = isset($property->required) ? $property->required : null;
-			$properties  = isset($property->properties) ? $property->properties : new \stdClass();
+			$required    = isset($property->required)    ? $property->required    : null;
+			$properties  = isset($property->properties)  ? $property->properties  : null;
 
 			$model = new Model($name, $description, $required);
 			$model->setProperties($properties);
@@ -140,12 +181,12 @@ class Swagger extends GeneratorAbstract
 			$models->$name = $model;
 		}
 
-		$definitions = (array) $data->definitions;
+		$definitions = $data->definitions;
 		foreach($definitions as $name => $definition)
 		{
 			$description = isset($definition->description) ? $definition->description : null;
-			$required    = isset($definition->required) ? $definition->required : null;
-			$properties  = isset($definition->properties) ? $definition->properties : new \stdClass();
+			$required    = isset($definition->required)    ? $definition->required    : null;
+			$properties  = isset($definition->properties)  ? $definition->properties  : null;
 
 			$model = new Model($name, $description, $required);
 			$model->setProperties($properties);
@@ -154,5 +195,52 @@ class Swagger extends GeneratorAbstract
 		}
 
 		return $models;
+	}
+
+	protected function setParameterType(PropertyInterface $parameter, Parameter $param)
+	{
+		switch(true)
+		{
+			case $parameter instanceof Property\IntegerType:
+				$param->setType('integer');
+				break;
+
+			case $parameter instanceof Property\FloatType:
+				$param->setType('number');
+				break;
+
+			case $parameter instanceof Property\BooleanType:
+				$param->setType('boolean');
+				break;
+
+			case $parameter instanceof Property\DateType:
+				$param->setType('string');
+				$param->setFormat('date');
+				break;
+
+			case $parameter instanceof Property\DateTimeType:
+				$param->setType('string');
+				$param->setFormat('date-time');
+				break;
+
+			default:
+				$param->setType('string');
+				break;
+		}
+
+		$param->setDescription($parameter->getDescription());
+		$param->setRequired($parameter->isRequired());
+
+		if($parameter instanceof Property\DecimalType)
+		{
+			$param->setMinimum($parameter->getMin());
+			$param->setMaximum($parameter->getMax());
+		}
+		else if($parameter instanceof Property\StringType)
+		{
+			$param->setMinimum($parameter->getMinLength());
+			$param->setMaximum($parameter->getMaxLength());
+			$param->setEnum($parameter->getEnumeration());
+		}
 	}
 }

@@ -45,11 +45,60 @@ class SwaggerTest extends GeneratorTestCase
     "apis": [
         {
             "path": "\/foo\/bar",
+            "description": "lorem ipsum",
             "operations": [
                 {
                     "method": "GET",
                     "nickname": "getCollection",
-                    "parameters": [],
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "name",
+                            "type": "string",
+                            "description": "Name parameter",
+                            "required": false,
+                            "minimum": 0,
+                            "maximum": 16
+                        },
+                        {
+                            "paramType": "path",
+                            "name": "type",
+                            "type": "string",
+                            "enum": ["foo", "bar"]
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "startIndex",
+                            "type": "integer",
+                            "description": "startIndex parameter",
+                            "required": false,
+                            "minimum": 0,
+                            "maximum": 32
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "float",
+                            "type": "number"
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "boolean",
+                            "type": "boolean"
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "date",
+                            "type": "string",
+                            "format": "date"
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "datetime",
+                            "type": "string",
+                            "format": "date-time"
+                        }
+                    ],
+                    "summary": "Returns a collection",
                     "responseMessages": [
                         {
                             "code": 200,
@@ -62,6 +111,21 @@ class SwaggerTest extends GeneratorTestCase
                     "method": "POST",
                     "nickname": "postItem",
                     "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "name",
+                            "type": "string",
+                            "description": "Name parameter",
+                            "required": false,
+                            "minimum": 0,
+                            "maximum": 16
+                        },
+                        {
+                            "paramType": "path",
+                            "name": "type",
+                            "type": "string",
+                            "enum": ["foo", "bar"]
+                        },
                         {
                             "paramType": "body",
                             "name": "body",
@@ -82,6 +146,21 @@ class SwaggerTest extends GeneratorTestCase
                     "nickname": "putItem",
                     "parameters": [
                         {
+                            "paramType": "path",
+                            "name": "name",
+                            "type": "string",
+                            "description": "Name parameter",
+                            "required": false,
+                            "minimum": 0,
+                            "maximum": 16
+                        },
+                        {
+                            "paramType": "path",
+                            "name": "type",
+                            "type": "string",
+                            "enum": ["foo", "bar"]
+                        },
+                        {
                             "paramType": "body",
                             "name": "body",
                             "required": true,
@@ -100,6 +179,21 @@ class SwaggerTest extends GeneratorTestCase
                     "method": "DELETE",
                     "nickname": "deleteItem",
                     "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "name",
+                            "type": "string",
+                            "description": "Name parameter",
+                            "required": false,
+                            "minimum": 0,
+                            "maximum": 16
+                        },
+                        {
+                            "paramType": "path",
+                            "name": "type",
+                            "type": "string",
+                            "enum": ["foo", "bar"]
+                        },
                         {
                             "paramType": "body",
                             "name": "body",
