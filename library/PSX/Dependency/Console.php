@@ -66,6 +66,9 @@ trait Console
 		$application->add(new PSXCommand\RouteCommand($this->get('routing_parser')));
 		$application->add(new PSXCommand\ServeCommand($this->get('config'), $this->get('dispatch'), $this->get('console_reader')));
 
+		$application->add(new PSXCommand\Debug\JsonSchemaCommand());
+		$application->add(new PSXCommand\Debug\RamlCommand());
+
 		$application->add(new PSXCommand\Generate\ApiCommand($this));
 		$application->add(new PSXCommand\Generate\BootstrapCacheCommand());
 		$application->add(new PSXCommand\Generate\CommandCommand($this));
@@ -73,6 +76,12 @@ trait Console
 		$application->add(new PSXCommand\Generate\SchemaCommand($this->get('connection')));
 		$application->add(new PSXCommand\Generate\TableCommand($this->get('connection')));
 		$application->add(new PSXCommand\Generate\ViewCommand($this));
+
+		$application->add(new PSXCommand\Schema\JsonSchemaCommand($this->get('config'), $this->get('resource_listing')));
+		$application->add(new PSXCommand\Schema\RamlCommand($this->get('config'), $this->get('resource_listing')));
+		$application->add(new PSXCommand\Schema\SwaggerCommand($this->get('config'), $this->get('resource_listing')));
+		$application->add(new PSXCommand\Schema\WsdlCommand($this->get('config'), $this->get('resource_listing')));
+		$application->add(new PSXCommand\Schema\XsdCommand($this->get('config'), $this->get('resource_listing')));
 
 		// symfony commands
 		$application->add(new SymfonyCommand\HelpCommand());
