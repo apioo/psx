@@ -35,9 +35,10 @@ use PSX\Http;
  */
 abstract class HtmlAbstract implements GeneratorInterface
 {
-	const TYPE_QUERY    = 0x1;
-	const TYPE_REQUEST  = 0x2;
-	const TYPE_RESPONSE = 0x3;
+	const TYPE_PATH     = 0x1;
+	const TYPE_QUERY    = 0x2;
+	const TYPE_REQUEST  = 0x3;
+	const TYPE_RESPONSE = 0x4;
 
 	public function generate(Resource $resource)
 	{
@@ -61,6 +62,22 @@ abstract class HtmlAbstract implements GeneratorInterface
 			if(!empty($description))
 			{
 				$html.= '<div class="psx-resource-method-description">' . $description . '</div>';
+			}
+
+			// path parameters
+			$pathParameters = $resource->getPathParameters();
+
+			if($pathParameters instanceof SchemaInterface)
+			{
+				$result = $this->generateHtml($pathParameters, self::TYPE_PATH, $method->getName(), $resource->getPath());
+
+				if(!empty($result))
+				{
+					$html.= '<div class="psx-resource-data psx-resource-query">';
+					$html.= '<h5>' . $method->getName() . ' Path-Parameters</h5>';
+					$html.= '<div class="psx-resource-data-content">' . $result . '</div>';
+					$html.= '</div>';
+				}
 			}
 
 			// query parameters

@@ -56,7 +56,11 @@ class XmlFile implements LoaderInterface
 			if($sampleMethod == $method && $samplePath == $path)
 			{
 				$node = null;
-				if($type == HtmlAbstract::TYPE_QUERY)
+				if($type == HtmlAbstract::TYPE_PATH)
+				{
+					$node = $sample->getElementsByTagName('path')->item(0);
+				}
+				else if($type == HtmlAbstract::TYPE_QUERY)
 				{
 					$node = $sample->getElementsByTagName('query')->item(0);
 				}

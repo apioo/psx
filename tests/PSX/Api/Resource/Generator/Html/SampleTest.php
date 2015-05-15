@@ -40,7 +40,9 @@ class SampleTest extends GeneratorTestCase
 		$expect = <<<XML
 <div class="psx-resource psx-api-resource-generator-html-sample" data-path="/foo/bar" data-status="1">
 	<h4>Example</h4>
+	<div class="psx-resource-description">lorem ipsum</div>
 	<div class="psx-resource-method" data-method="GET">
+		<div class="psx-resource-method-description">Returns a collection</div>
 		<div class="psx-resource-data psx-resource-query">
 			<h5>GET Query-Parameters</h5>
 			<div class="psx-resource-data-content">
