@@ -45,6 +45,9 @@ class Parameter extends RecordAbstract
 	protected $allowMultiple;
 	protected $type;
 	protected $format;
+	protected $minimum;
+	protected $maximum;
+	protected $enum;
 
 	public function __construct($paramType = null, $name = null, $description = null, $required = null)
 	{
@@ -131,5 +134,35 @@ class Parameter extends RecordAbstract
 	public function getFormat()
 	{
 		return $this->format;
+	}
+
+	public function setMinimum($minimum)
+	{
+		$this->minimum = $minimum;
+	}
+
+	public function getMinimum()
+	{
+		return $this->minimum;
+	}
+
+	public function setMaximum($maximum)
+	{
+		$this->maximum = $maximum;
+	}
+
+	public function getMaximum()
+	{
+		return $this->maximum;
+	}
+
+	public function setEnum($enum)
+	{
+		$this->enum = $enum;
+	}
+
+	public function getEnum()
+	{
+		return $this->enum;
 	}
 }
