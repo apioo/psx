@@ -51,7 +51,14 @@ class RamlTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertInstanceOf('PSX\Data\SchemaInterface', $resource->getMethod('GET')->getQueryParameters());
 		$this->assertInstanceOf('PSX\Data\Schema\Property\ComplexType', $resource->getMethod('GET')->getQueryParameters()->getDefinition());
+		$this->assertInstanceOf('PSX\Data\Schema\Property\FloatType', $resource->getMethod('GET')->getQueryParameters()->getDefinition()->get('pages'));
 		$this->assertEquals('The number of pages to return', $resource->getMethod('GET')->getQueryParameters()->getDefinition()->get('pages')->getDescription());
+		$this->assertInstanceOf('PSX\Data\Schema\Property\IntegerType', $resource->getMethod('GET')->getQueryParameters()->getDefinition()->get('param_integer'));
+		$this->assertInstanceOf('PSX\Data\Schema\Property\FloatType', $resource->getMethod('GET')->getQueryParameters()->getDefinition()->get('param_number'));
+		$this->assertEquals('The number', $resource->getMethod('GET')->getQueryParameters()->getDefinition()->get('param_number')->getDescription());
+		$this->assertInstanceOf('PSX\Data\Schema\Property\DateTimeType', $resource->getMethod('GET')->getQueryParameters()->getDefinition()->get('param_date'));
+		$this->assertInstanceOf('PSX\Data\Schema\Property\BooleanType', $resource->getMethod('GET')->getQueryParameters()->getDefinition()->get('param_boolean'));
+		$this->assertInstanceOf('PSX\Data\Schema\Property\StringType', $resource->getMethod('GET')->getQueryParameters()->getDefinition()->get('param_string'));
 		$this->assertParameters($resource->getMethod('GET')->getQueryParameters());
 
 		// check POST
@@ -104,10 +111,49 @@ class RamlTest extends \PHPUnit_Framework_TestCase
 		$this->assertInstanceOf('PSX\Data\Schema\Property\StringType', $property->get('artist'));
 	}
 
+	public function testParseNested()
+	{
+		$doc = Raml::fromFile(__DIR__ . '/test.raml', '/foo/bar');
+
+		$this->assertInstanceOf('PSX\Api\DocumentationInterface', $doc);
+		$this->assertEquals('World Music API', $doc->getDescription());
+		$this->assertEquals(2, $doc->getLatestVersion());
+
+		$resource = $doc->getResource(2);
+
+		$this->assertInstanceOf('PSX\Api\Resource', $resource);
+		$this->assertEquals(array('GET'), $resource->getAllowedMethods());
+		$this->assertEquals('Some description', $resource->getDescription());
+	}
+
 	/**
 	 * @expectedException RuntimeException
 	 */
-	public function testFromFileInvalid()
+	public function testParseInvalidPath()
+	{
+		Raml::fromFile(__DIR__ . '/test.raml', '/test');
+	}
+
+	/**
+	 * @expectedException RuntimeException
+	 */
+	public function testParseInvalidSchema()
+	{
+		Raml::fromFile(__DIR__ . '/test.raml', '/invalid_schema');
+	}
+
+	/**
+	 * @expectedException RuntimeException
+	 */
+	public function testParseInvalidSchemaReference()
+	{
+		Raml::fromFile(__DIR__ . '/test.raml', '/invalid_reference');
+	}
+
+	/**
+	 * @expectedException RuntimeException
+	 */
+	public function testFromFileNotExistingFile()
 	{
 		Raml::fromFile(__DIR__ . '/foo.raml', '/bar/:bar_id');
 	}

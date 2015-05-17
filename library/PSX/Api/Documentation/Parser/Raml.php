@@ -42,6 +42,7 @@ class Raml implements ParserInterface
 {
 	protected $basePath;
 	protected $parser;
+	protected $data;
 
 	public function __construct($basePath = null, Parser $parser = null)
 	{
@@ -51,68 +52,49 @@ class Raml implements ParserInterface
 
 	public function parse($schema, $path)
 	{
-		$resource = new Resource(Resource::STATUS_ACTIVE, $path);
-		$path     = ApiGeneration::transformRoutePlaceholder($path);
-		$data     = $this->parser->parse($schema);
+		$this->data = $this->parser->parse($schema);
 
-		if(isset($data[$path]) && is_array($data[$path]))
+		$path = ApiGeneration::transformRoutePlaceholder($path);
+
+		if(isset($this->data[$path]) && is_array($this->data[$path]))
 		{
-			$mergedTrait = array();
-			if(isset($data[$path]['is']) && is_array($data[$path]['is']))
+			$resource = $this->parseResource($this->data[$path], $path);
+		}
+		else
+		{
+			// we check whether the path is nested
+			$parts = explode('/', trim($path, '/'));
+			$data  = $this->data;
+
+			foreach($parts as $part)
 			{
-				foreach($data[$path]['is'] as $traitName)
+				if(isset($data['/' . $part]))
 				{
-					$trait = $this->getTrait($data, $traitName);
-					if(is_array($trait))
-					{
-						$mergedTrait = array_merge($mergedTrait, $trait);
-					}
+					$data = $data['/' . $part];
+				}
+				else
+				{
+					$data = null;
+					break;
 				}
 			}
 
-			if(isset($data[$path]['displayName']))
+			if(!empty($data) && is_array($data))
 			{
-				$resource->setTitle($data[$path]['displayName']);
+				$resource = $this->parseResource($data, $path);
 			}
-
-			if(isset($data[$path]['description']))
+			else
 			{
-				$resource->setDescription($data[$path]['description']);
-			}
-
-			$this->parseUriParameters($resource, $data[$path]);
-
-			foreach($data[$path] as $methodName => $row)
-			{
-				if(in_array($methodName, ['get', 'post', 'put', 'delete']) && is_array($row))
-				{
-					if(!empty($mergedTrait))
-					{
-						$row = array_merge_recursive($row, $mergedTrait);
-					}
-
-					$method = Resource\Factory::getMethod(strtoupper($methodName));
-
-					if(isset($row['description']))
-					{
-						$method->setDescription($row['description']);
-					}
-
-					$this->parseQueryParameters($method, $row);
-					$this->parseRequest($method, $row);
-					$this->parseResponses($method, $row);
-
-					$resource->addMethod($method);
-				}
+				throw new RuntimeException('Could not find resource definition "' . $path . '" in RAML schema');
 			}
 		}
 
-		$version = $this->getNormalizedVersion($data);
+		$version = $this->getNormalizedVersion($this->data);
 		$title   = null;
 
-		if(isset($data['title']))
+		if(isset($this->data['title']))
 		{
-			$title = $data['title'];
+			$title = $this->data['title'];
 		}
 
 		$doc = new Documentation\Version($title);
@@ -121,15 +103,87 @@ class Raml implements ParserInterface
 		return $doc;
 	}
 
-	protected function getTrait(array $data, $name)
+	protected function parseResource(array $data, $path)
 	{
-		if(isset($data['traits']) && is_array($data['traits']))
+		$resource = new Resource(Resource::STATUS_ACTIVE, $path);
+
+		if(isset($data['displayName']))
 		{
-			foreach($data['traits'] as $row)
+			$resource->setTitle($data['displayName']);
+		}
+
+		if(isset($data['description']))
+		{
+			$resource->setDescription($data['description']);
+		}
+
+		$this->parseUriParameters($resource, $data);
+
+		$mergedTrait = array();
+		if(isset($data['is']) && is_array($data['is']))
+		{
+			foreach($data['is'] as $traitName)
 			{
-				if(isset($row[$name]))
+				$trait = $this->getTrait($traitName);
+				if(is_array($trait))
 				{
-					return $row[$name];
+					$mergedTrait = array_merge_recursive($mergedTrait, $trait);
+				}
+			}
+		}
+
+		foreach($data as $methodName => $row)
+		{
+			if(in_array($methodName, ['get', 'post', 'put', 'delete']) && is_array($row))
+			{
+				if(!empty($mergedTrait))
+				{
+					$row = array_merge_recursive($row, $mergedTrait);
+				}
+
+				$method = Resource\Factory::getMethod(strtoupper($methodName));
+
+				if(isset($row['description']))
+				{
+					$method->setDescription($row['description']);
+				}
+
+				$this->parseQueryParameters($method, $row);
+				$this->parseRequest($method, $row);
+				$this->parseResponses($method, $row);
+
+				$resource->addMethod($method);
+			}
+		}
+
+		return $resource;
+	}
+
+	protected function getTrait($name)
+	{
+		if(isset($this->data['traits']) && is_array($this->data['traits']))
+		{
+			foreach($this->data['traits'] as $trait)
+			{
+				if(is_array($trait) && isset($trait[$name]))
+				{
+					return $this->parseDefinition($trait[$name]);
+				}
+			}
+		}
+
+		return null;
+	}
+
+	protected function getSchema($name)
+	{
+		if(isset($this->data['schemas']) && is_array($this->data['schemas']))
+		{
+			foreach($this->data['schemas'] as $schema)
+			{
+				if(is_array($schema) && isset($schema[$name]))
+				{
+					return $this->parseSchema($schema[$name]);
 				}
 			}
 		}
@@ -251,27 +305,71 @@ class Raml implements ParserInterface
 		{
 			if($contentType == 'application/json' && isset($row['schema']) && is_string($row['schema']))
 			{
-				if(substr($row['schema'], 0, 8) == '!include')
+				if(ctype_alnum($row['schema']))
 				{
-					$file = trim(substr($row['schema'], 8));
+					$schema = $this->getSchema($row['schema']);
 
-					if(!is_file($file))
+					if($schema instanceof SchemaInterface)
 					{
-						$file = $this->basePath !== null ? $this->basePath . DIRECTORY_SEPARATOR . $file : $file;
+						return $schema;
 					}
-
-					return JsonSchema::fromFile($file);
+					else
+					{
+						throw new RuntimeException('Referenced schema "' . $row['schema'] . '" does not exist');
+					}
 				}
 				else
 				{
-					$parser = new JsonSchema($this->basePath);
-
-					return $parser->parse($row['schema']);
+					return $this->parseSchema($row['schema']);
 				}
 			}
 		}
 
 		return null;
+	}
+
+	protected function parseSchema($schema)
+	{
+		$schema = $this->parseDefinition($schema);
+
+		if(is_string($schema))
+		{
+			$parser = new JsonSchema($this->basePath);
+
+			return $parser->parse($schema);
+		}
+		else
+		{
+			throw new RuntimeException('Schema definition must be a string');
+		}
+	}
+
+	protected function parseDefinition($definition)
+	{
+		if(is_string($definition) && substr($definition, 0, 8) == '!include')
+		{
+			$file = trim(substr($definition, 8));
+
+			if(!is_file($file))
+			{
+				$file = $this->basePath !== null ? $this->basePath . DIRECTORY_SEPARATOR . $file : $file;
+			}
+
+			$extension = pathinfo($file, PATHINFO_EXTENSION);
+
+			if(in_array($extension, ['raml', 'yml', 'yaml']))
+			{
+				return $this->parser->parse(file_get_contents($file));
+			}
+			else
+			{
+				return file_get_contents($file);
+			}
+		}
+		else
+		{
+			return $definition;
+		}
 	}
 
 	protected function getPropertyType($type, $name)
@@ -298,9 +396,9 @@ class Raml implements ParserInterface
 
 	protected function getNormalizedVersion($data)
 	{
-		if(isset($data['version']))
+		if(isset($this->data['version']))
 		{
-			$version = (int) ltrim($data['version'], 'v');
+			$version = (int) ltrim($this->data['version'], 'v');
 		}
 
 		if(empty($version))

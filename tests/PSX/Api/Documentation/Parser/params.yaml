@@ -1,0 +1,20 @@
+queryParameters:
+  param_integer:
+    type: integer
+    required: true
+    minimum: 8
+    maximum: 16
+  param_number:
+    description: The number
+    type: number
+  param_date:
+    type: date
+  param_boolean:
+    type: boolean
+    required: true
+  param_string:
+    type: string
+    pattern: "[A-z]+"
+    minLength: 8
+    maxLength: 16
+    enum: ["foo", "bar"]
