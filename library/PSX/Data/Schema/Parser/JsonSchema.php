@@ -26,6 +26,7 @@ use PSX\Data\Schema\PropertyInterface;
 use PSX\Data\Schema\PropertySimpleAbstract;
 use PSX\Data\Schema\ParserInterface;
 use PSX\Data\Schema\Parser\JsonSchema\Document;
+use PSX\Data\Schema\Parser\JsonSchema\Resolver;
 use PSX\Data\Schema\Parser\JsonSchema\RefResolver;
 use PSX\Data\Schema\Parser\JsonSchema\UnsupportedVersionException;
 use PSX\Json;
@@ -50,7 +51,7 @@ class JsonSchema implements ParserInterface
 	public function __construct($basePath = null, RefResolver $resolver = null)
 	{
 		$this->basePath = $basePath;
-		$this->resolver = $resolver ?: new RefResolver();
+		$this->resolver = $resolver ?: RefResolver::createDefault();
 	}
 
 	public function parse($schema)

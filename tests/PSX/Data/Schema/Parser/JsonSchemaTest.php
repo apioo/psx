@@ -47,7 +47,7 @@ class JsonSchemaTest extends \PHPUnit_Framework_TestCase
 	{
 		$handler  = Http\Handler\Mock::getByXmlDefinition(__DIR__ . '/http_mock.xml');
 		$http     = new Http($handler);
-		$resolver = new JsonSchema\RefResolver($http);
+		$resolver = JsonSchema\RefResolver::createDefault($http);
 
 		$parser   = new JsonSchema(__DIR__, $resolver);
 		$schema   = $parser->parse(file_get_contents(__DIR__ . '/test_schema.json'));
@@ -129,7 +129,7 @@ class JsonSchemaTest extends \PHPUnit_Framework_TestCase
 	{
 		$handler  = Http\Handler\Mock::getByXmlDefinition(__DIR__ . '/http_mock.xml');
 		$http     = new Http($handler);
-		$resolver = new JsonSchema\RefResolver($http);
+		$resolver = JsonSchema\RefResolver::createDefault($http);
 
 		$parser   = new JsonSchema(__DIR__, $resolver);
 		$parser->parse(file_get_contents(__DIR__ . '/invalid_http_ref_schema.json'));

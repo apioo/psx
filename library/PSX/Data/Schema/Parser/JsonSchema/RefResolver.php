@@ -37,20 +37,24 @@ use RuntimeException;
 class RefResolver
 {
 	protected $resolver;
-	protected $http;
 	protected $documents = array();
+	protected $resolvers = array();
 
 	protected $recursionPath = array();
 
-	public function __construct(Http $http = null, UriResolver $uriResolver = null)
+	public function __construct(UriResolver $uriResolver = null)
 	{
-		$this->http     = $http ?: new Http();
 		$this->resolver = $uriResolver ?: new UriResolver();
 	}
 
 	public function setRootDocument(Document $document)
 	{
 		$this->documents = [$document];
+	}
+
+	public function addResolver($scheme, ResolverInterface $resolver)
+	{
+		$this->resolvers[$scheme] = $resolver;
 	}
 
 	/**
@@ -129,51 +133,24 @@ class RefResolver
 			return $document;
 		}
 
-		// load the remote document
-		if($uri->getScheme() == 'file' && !$sourceDocument->isRemote())
+		if(isset($this->resolvers[$uri->getScheme()]))
 		{
-			$path = str_replace('/', DIRECTORY_SEPARATOR, ltrim($uri->getPath(), '/'));
-			$path = $sourceDocument->getBasePath() !== null ? $sourceDocument->getBasePath() . DIRECTORY_SEPARATOR . $path : $path;
+			$document = $this->resolvers[$uri->getScheme()]->resolve($uri, $sourceDocument, $this);
 
-			if(is_file($path))
+			if($document instanceof Document)
 			{
-				$basePath = pathinfo($path, PATHINFO_DIRNAME);
-				$schema   = file_get_contents($path);
-				$data     = Json::decode($schema);
-				$document = new Document($data, $this, $basePath, $uri);
-
 				$this->documents[] = $document;
 
 				return $document;
 			}
 			else
 			{
-				throw new RuntimeException('Could not load external schema ' . $path);
-			}
-		}
-		else if(in_array($uri->getScheme(), ['http', 'https']))
-		{
-			$request  = new GetRequest($uri, array('Accept' => 'application/schema+json'));
-			$response = $this->http->request($request);
-
-			if($response->getStatusCode() == 200)
-			{
-				$schema   = (string) $response->getBody();
-				$data     = Json::decode($schema);
-				$document = new Document($data, $this, null, $uri);
-
-				$this->documents[] = $document;
-
-				return $document;
-			}
-			else
-			{
-				throw new RuntimeException('Could not load external schema ' . $uri->toString() . ' received ' . $response->getStatusCode());
+				throw new RuntimeException('Could not resolve uri ' . $uri->toString());
 			}
 		}
 		else
 		{
-			throw new RuntimeException('Unknown protocol for external resource ' . $uri->getScheme());
+			throw new RuntimeException('Unknown protocol scheme ' . $uri->getScheme());
 		}
 	}
 
@@ -199,5 +176,21 @@ class RefResolver
 	protected function getKey(Uri $uri)
 	{
 		return $uri->getScheme() . '-' . $uri->getHost() . '-' . $uri->getPath();
+	}
+
+	public static function createDefault(Http $httpClient = null)
+	{
+		$resolver = new self();
+		$resolver->addResolver('file', new Resolver\File());
+
+		if($httpClient !== null)
+		{
+			$httpResolver = new Resolver\Http($httpClient);
+
+			$resolver->addResolver('http', $httpResolver);
+			$resolver->addResolver('https', $httpResolver);
+		}
+
+		return $resolver;
 	}
 }
