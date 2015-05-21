@@ -53,7 +53,7 @@ class TableCommand extends GenerateCommandAbstract
 	{
 		$this
 			->setName('generate:table')
-			->setDescription('Generates a table class based on an sql table name')
+			->setDescription('Generates a new api controller based on an SQL table')
 			->addArgument('namespace', InputArgument::REQUIRED, 'Absolute class name of the class (i.e. Acme\Table\News)')
 			->addArgument('table', InputArgument::REQUIRED, 'Creates the table according to the given sql table name')
 			->addOption('dry-run', null, InputOption::VALUE_NONE, 'Executes no file operations if true');
