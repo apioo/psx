@@ -52,6 +52,9 @@ schemas:
     responses:
       200:
         body:
+          application/xml:
+            schema: |
+              <foo />
           application/json:
             schema: |
               { "$schema": "http://json-schema.org/draft-04/schema#",
@@ -63,6 +66,11 @@ schemas:
                 },
                 "required": [ "title", "artist" ]
               }
+      500:
+        body:
+          application/xml:
+            schema: |
+              <foo />
   /bar:
     displayName: Bar nested
     description: Some description
