@@ -39,7 +39,7 @@ class BootstrapCacheCommandTest extends CommandTestCase
 			->setMethods(array('makeDir', 'writeFile', 'getFiles'))
 			->getMock();
 
-		$command->expects($this->once())
+		$command->expects($this->at(0))
 			->method('writeFile')
 			->with(
 				$this->equalTo('cache/bootstrap.cache.php'), 
@@ -49,7 +49,7 @@ class BootstrapCacheCommandTest extends CommandTestCase
 				})
 			);
 
-		$command->expects($this->once())
+		$command->expects($this->at(1))
 			->method('getFiles')
 			->will($this->returnValue(array(
 				__DIR__ . '/BootstrapCache/Bar.php',

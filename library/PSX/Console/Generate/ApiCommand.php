@@ -20,6 +20,7 @@
 
 namespace PSX\Console\Generate;
 
+use RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -40,13 +41,15 @@ class ApiCommand extends ContainerGenerateCommandAbstract
 			->setName('generate:api')
 			->setDescription('Generates a new api controller')
 			->addArgument('namespace', InputArgument::REQUIRED, 'Absolute class name of the controller (i.e. Acme\News\Overview)')
-			->addArgument('services', InputArgument::OPTIONAL, 'Comma seperated list of service ids (i.e. connection,schemaManager)', 'connection,schemaManager')
+			->addArgument('services', InputArgument::OPTIONAL, 'Comma seperated list of service ids', 'connection,schemaManager')
+			->addOption('raml', null, InputOption::VALUE_OPTIONAL, 'Absolute path to an RAML specification (i.e. ./schema.raml)')
 			->addOption('dry-run', null, InputOption::VALUE_NONE, 'Executes no file operations if true');
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
 		$definition = $this->getServiceDefinition($input);
+		$ramlFile   = $input->getOption('raml');
 
 		$output->writeln('Generating api controller');
 
@@ -68,7 +71,7 @@ class ApiCommand extends ContainerGenerateCommandAbstract
 
 		if(!$this->isFile($file))
 		{
-			$source = $this->getControllerSource($definition);
+			$source = $this->getControllerSource($definition, $ramlFile);
 
 			$output->writeln('Write file ' . $file);
 
@@ -79,11 +82,11 @@ class ApiCommand extends ContainerGenerateCommandAbstract
 		}
 		else
 		{
-			throw new \RuntimeException('File ' . $file . ' already exists');
+			throw new RuntimeException('File ' . $file . ' already exists');
 		}
 	}
 
-	protected function getControllerSource(ServiceDefinition $definition)
+	protected function getControllerSource(ServiceDefinition $definition, $ramlFile)
 	{
 		$namespace = $definition->getNamespace();
 		$className = $definition->getClassName();
@@ -96,6 +99,32 @@ class ApiCommand extends ContainerGenerateCommandAbstract
 
 		$services = trim($services);
 
+		// documentation
+		$documentation = '';
+		if(!empty($ramlFile))
+		{
+			if(!$this->isFile($ramlFile))
+			{
+				throw new RuntimeException('RAML file "' . $ramlFile . '" does not exist');
+			}
+
+			$documentation = <<<PHP
+return Documentation\Parser\Raml::fromFile('{$ramlFile}', \$this->context->get(Context::KEY_PATH));
+PHP;
+		}
+		else
+		{
+			$documentation = <<<PHP
+\$resource = new Resource(Resource::STATUS_ACTIVE, \$this->context->get(Context::KEY_PATH));
+
+		\$resource->addMethod(Resource\Factory::getMethod('GET')
+			->addResponse(200, \$this->schemaManager->getSchema('{$namespace}\Schema\Collection')));
+
+		return new Documentation\Simple(\$resource);
+PHP;
+		}
+
+		// controller
 		return <<<PHP
 <?php
 
@@ -122,12 +151,7 @@ class {$className} extends SchemaApiAbstract
 	 */
 	public function getDocumentation()
 	{
-		\$resource = new Resource(Resource::STATUS_ACTIVE, \$this->context->get(Context::KEY_PATH));
-
-		\$resource->addMethod(Resource\Factory::getMethod('GET')
-			->addResponse(200, \$this->schemaManager->getSchema('{$namespace}\Schema\Collection')));
-
-		return new Documentation\Simple(\$resource);
+		{$documentation}
 	}
 
 	/**

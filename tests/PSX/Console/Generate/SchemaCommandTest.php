@@ -50,21 +50,21 @@ class SchemaCommandTest extends CommandTestCase
 			->setMethods(array('makeDir', 'writeFile', 'isDir', 'isFile'))
 			->getMock();
 
-		$command->expects($this->once())
+		$command->expects($this->at(0))
 			->method('isDir')
 			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo'))
 			->will($this->returnValue(false));
 
-		$command->expects($this->once())
+		$command->expects($this->at(1))
 			->method('makeDir')
 			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo'));
 
-		$command->expects($this->once())
+		$command->expects($this->at(2))
 			->method('isFile')
 			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Bar.php'))
 			->will($this->returnValue(false));
 
-		$command->expects($this->once())
+		$command->expects($this->at(3))
 			->method('writeFile')
 			->with(
 				$this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Bar.php'), 
@@ -91,16 +91,16 @@ class SchemaCommandTest extends CommandTestCase
 			->setMethods(array('makeDir', 'writeFile', 'isDir', 'isFile'))
 			->getMock();
 
-		$command->expects($this->once())
+		$command->expects($this->at(0))
 			->method('isDir')
 			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo'))
 			->will($this->returnValue(false));
 
-		$command->expects($this->once())
+		$command->expects($this->at(1))
 			->method('makeDir')
 			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo'));
 
-		$command->expects($this->once())
+		$command->expects($this->at(2))
 			->method('isFile')
 			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Bar.php'))
 			->will($this->returnValue(true));
@@ -122,7 +122,7 @@ class SchemaCommandTest extends CommandTestCase
 			->setMethods(array('makeDir', 'writeFile'))
 			->getMock();
 
-		$command->expects($this->once())
+		$command->expects($this->at(0))
 			->method('writeFile')
 			->with(
 				$this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Bar.php'), 

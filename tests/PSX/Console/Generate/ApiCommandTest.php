@@ -41,21 +41,21 @@ class ApiCommandTest extends CommandTestCase
 			->setMethods(array('makeDir', 'writeFile', 'isDir', 'isFile'))
 			->getMock();
 
-		$command->expects($this->once())
+		$command->expects($this->at(0))
 			->method('isDir')
 			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo'))
 			->will($this->returnValue(false));
 
-		$command->expects($this->once())
+		$command->expects($this->at(1))
 			->method('makeDir')
 			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo'));
 
-		$command->expects($this->once())
+		$command->expects($this->at(2))
 			->method('isFile')
 			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Bar.php'))
 			->will($this->returnValue(false));
 
-		$command->expects($this->once())
+		$command->expects($this->at(3))
 			->method('writeFile')
 			->with(
 				$this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Bar.php'), 
@@ -82,16 +82,16 @@ class ApiCommandTest extends CommandTestCase
 			->setMethods(array('makeDir', 'writeFile', 'isDir', 'isFile'))
 			->getMock();
 
-		$command->expects($this->once())
+		$command->expects($this->at(0))
 			->method('isDir')
 			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo'))
 			->will($this->returnValue(false));
 
-		$command->expects($this->once())
+		$command->expects($this->at(1))
 			->method('makeDir')
 			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo'));
 
-		$command->expects($this->once())
+		$command->expects($this->at(2))
 			->method('isFile')
 			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Bar.php'))
 			->will($this->returnValue(true));
@@ -111,6 +111,87 @@ class ApiCommandTest extends CommandTestCase
 		$command = Environment::getService('console')->find('generate:api');
 
 		$this->assertInstanceOf('PSX\Console\Generate\ApiCommand', $command);
+	}
+
+	public function testCommandRamlFile()
+	{
+		$command = $this->getMockBuilder('PSX\Console\Generate\ApiCommand')
+			->setConstructorArgs(array(Environment::getContainer()))
+			->setMethods(array('makeDir', 'writeFile', 'isDir', 'isFile'))
+			->getMock();
+
+		$command->expects($this->at(0))
+			->method('isDir')
+			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo'))
+			->will($this->returnValue(false));
+
+		$command->expects($this->at(1))
+			->method('makeDir')
+			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo'));
+
+		$command->expects($this->at(2))
+			->method('isFile')
+			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Bar.php'))
+			->will($this->returnValue(false));
+
+		$command->expects($this->at(3))
+			->method('isFile')
+			->with($this->equalTo('./test.raml'))
+			->will($this->returnValue(true));
+
+		$command->expects($this->at(4))
+			->method('writeFile')
+			->with(
+				$this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Bar.php'), 
+				$this->callback(function($source){
+					$this->assertSource($this->getExpectedRamlSource(), $source);
+					return true;
+				})
+			);
+
+		$commandTester = new CommandTester($command);
+		$commandTester->execute(array(
+			'--raml'    => './test.raml',
+			'namespace' => 'Acme\Foo\Bar',
+			'services'  => 'connection'
+		));
+	}
+
+	/**
+	 * @expectedException RuntimeException
+	 */
+	public function testCommandRamlFileNotExisting()
+	{
+		$command = $this->getMockBuilder('PSX\Console\Generate\ApiCommand')
+			->setConstructorArgs(array(Environment::getContainer()))
+			->setMethods(array('makeDir', 'writeFile', 'isDir', 'isFile'))
+			->getMock();
+
+		$command->expects($this->at(0))
+			->method('isDir')
+			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo'))
+			->will($this->returnValue(false));
+
+		$command->expects($this->at(1))
+			->method('makeDir')
+			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo'));
+
+		$command->expects($this->at(2))
+			->method('isFile')
+			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Bar.php'))
+			->will($this->returnValue(false));
+
+		$command->expects($this->at(3))
+			->method('isFile')
+			->with($this->equalTo('./test.raml'))
+			->will($this->returnValue(false));
+
+		$commandTester = new CommandTester($command);
+		$commandTester->execute(array(
+			'--raml'    => './test.raml',
+			'namespace' => 'Acme\Foo\Bar',
+			'services'  => 'connection'
+		));
 	}
 
 	/**
@@ -153,7 +234,7 @@ class ApiCommandTest extends CommandTestCase
 			->setMethods(array('makeDir', 'writeFile'))
 			->getMock();
 
-		$command->expects($this->once())
+		$command->expects($this->at(1))
 			->method('writeFile')
 			->with(
 				$this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Bar.php'), 
@@ -180,7 +261,7 @@ class ApiCommandTest extends CommandTestCase
 			->setMethods(array('makeDir', 'writeFile'))
 			->getMock();
 
-		$command->expects($this->once())
+		$command->expects($this->at(1))
 			->method('writeFile')
 			->with(
 				$this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Bar.php'), 
@@ -429,6 +510,91 @@ class Bar extends SchemaApiAbstract
 			->addResponse(200, $this->schemaManager->getSchema('Acme\Foo\Schema\Collection')));
 
 		return new Documentation\Simple($resource);
+	}
+
+	/**
+	 * Returns the GET response
+	 *
+	 * @param PSX\Api\Version $version
+	 * @return array|PSX\Data\RecordInterface
+	 */
+	protected function doGet(Version $version)
+	{
+		return array(
+			'message' => 'This is the default controller of PSX'
+		);
+	}
+
+	/**
+	 * Returns the POST response
+	 *
+	 * @param PSX\Data\RecordInterface $record
+	 * @param PSX\Api\Version $version
+	 * @return array|PSX\Data\RecordInterface
+	 */
+	protected function doCreate(RecordInterface $record, Version $version)
+	{
+	}
+
+	/**
+	 * Returns the PUT response
+	 *
+	 * @param PSX\Data\RecordInterface $record
+	 * @param PSX\Api\Version $version
+	 * @return array|PSX\Data\RecordInterface
+	 */
+	protected function doUpdate(RecordInterface $record, Version $version)
+	{
+	}
+
+	/**
+	 * Returns the DELETE response
+	 *
+	 * @param PSX\Data\RecordInterface $record
+	 * @param PSX\Api\Version $version
+	 * @return array|PSX\Data\RecordInterface
+	 */
+	protected function doDelete(RecordInterface $record, Version $version)
+	{
+	}
+}
+
+PHP;
+	}
+
+	protected function getExpectedRamlSource()
+	{
+		return <<<'PHP'
+<?php
+
+namespace Acme\Foo;
+
+use PSX\Api\Documentation;
+use PSX\Api\Resource;
+use PSX\Api\Version;
+use PSX\Controller\SchemaApiAbstract;
+use PSX\Data\RecordInterface;
+use PSX\Loader\Context;
+
+/**
+ * Bar
+ *
+ * @see http://phpsx.org/doc/design/controller.html
+ */
+class Bar extends SchemaApiAbstract
+{
+	/**
+	 * @Inject
+	 * @var Doctrine\DBAL\Connection
+	 */
+	protected $connection;
+
+	/**
+	 * @return PSX\Api\DocumentationInterface
+	 */
+	public function getDocumentation()
+	{
+		return Documentation\Parser\Raml::fromFile('./test.raml', $this->context->get(Context::KEY_PATH));
 	}
 
 	/**
