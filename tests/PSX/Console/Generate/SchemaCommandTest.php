@@ -122,7 +122,7 @@ class SchemaCommandTest extends CommandTestCase
 			->setMethods(array('makeDir', 'writeFile'))
 			->getMock();
 
-		$command->expects($this->at(0))
+		$command->expects($this->at(1))
 			->method('writeFile')
 			->with(
 				$this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Bar.php'), 

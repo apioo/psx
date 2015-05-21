@@ -40,6 +40,13 @@ class BootstrapCacheCommandTest extends CommandTestCase
 			->getMock();
 
 		$command->expects($this->at(0))
+			->method('getFiles')
+			->will($this->returnValue(array(
+				__DIR__ . '/BootstrapCache/Bar.php',
+				__DIR__ . '/BootstrapCache/Foo.php',
+			)));
+
+		$command->expects($this->at(1))
 			->method('writeFile')
 			->with(
 				$this->equalTo('cache/bootstrap.cache.php'), 
@@ -48,13 +55,6 @@ class BootstrapCacheCommandTest extends CommandTestCase
 					return true;
 				})
 			);
-
-		$command->expects($this->at(1))
-			->method('getFiles')
-			->will($this->returnValue(array(
-				__DIR__ . '/BootstrapCache/Bar.php',
-				__DIR__ . '/BootstrapCache/Foo.php',
-			)));
 
 		$commandTester = new CommandTester($command);
 		$commandTester->execute(array(
