@@ -30,7 +30,7 @@ or require PSX as dependency in your composer.json
 
 ## Documentation
 
-The official manual is at http://phpsx.org/doc/
+The official manual is available at http://psx.readthedocs.org/
 
 
 [![Build Status](https://travis-ci.org/k42b3/psx.png)](https://travis-ci.org/k42b3/psx)

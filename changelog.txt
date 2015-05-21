@@ -1,4 +1,14 @@
 
+1.0.1
+* Added raml file parameter for api generation command
+* Improved raml parser and tests
+* Add format key to swagger parameter record
+* Add iterator and countable interface to complex type
+* Improved raml and swagger generation
+* Add return $this to MethodAbstract::setDescription
+* Add debug commands to print an raml and jsonschema resource definition
+* Add console commands to generate different schema representations of the api
+
 1.0.0
 * Removed unused methods in documentation controller
 * Added property type factory class
