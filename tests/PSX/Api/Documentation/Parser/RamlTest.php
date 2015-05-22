@@ -83,19 +83,6 @@ class RamlTest extends \PHPUnit_Framework_TestCase
 		$this->assertInstanceOf('PSX\Data\Schema\Property\StringType', $property->get('artist'));
 	}
 
-	/**
-	 * @expectedException RuntimeException
-	 */
-	/*
-	public function testParseResponseWithoutSchema()
-	{
-		$doc      = Raml::fromFile(__DIR__ . '/test.raml', '/foo');
-		$resource = $doc->getResource(2);
-
-		$resource->getMethod('POST')->getResponse(500);
-	}
-	*/
-
 	public function testParsePath()
 	{
 		$doc = Raml::fromFile(__DIR__ . '/test.raml', '/bar/:bar_id');
@@ -195,4 +182,14 @@ class RamlTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('[A-z]+', $parameters->getDefinition()->get('param_string')->getPattern());
 		$this->assertEquals(['foo', 'bar'], $parameters->getDefinition()->get('param_string')->getEnumeration());
 	}
+
+	/*
+	public function testParseResponseWithoutSchema()
+	{
+		$doc      = Raml::fromFile(__DIR__ . '/test.raml', '/foo');
+		$resource = $doc->getResource(2);
+
+		$resource->getMethod('POST')->getResponse(500);
+	}
+	*/
 }
