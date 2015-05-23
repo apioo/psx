@@ -183,6 +183,15 @@ class RamlTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(['foo', 'bar'], $parameters->getDefinition()->get('param_string')->getEnumeration());
 	}
 
+	/**
+	 * This test procues an "3932 Segmentation fault" error on PHP 5.4 with db 
+	 * mysql. The same test with sqlite test passes also all other PHP versions 
+	 * > 5.4. I could not reproduce the error on an local machine with PHP 5.4.
+	 * At the moment it is not clear in which way the db engine has an influence
+	 * on this test
+	 *
+	 * @see https://travis-ci.org/k42b3/psx/builds/63677358
+	 */
 	/*
 	public function testParseResponseWithoutSchema()
 	{
