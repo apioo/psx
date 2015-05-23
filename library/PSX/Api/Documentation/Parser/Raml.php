@@ -330,13 +330,24 @@ class Raml implements ParserInterface
 
 	protected function parseSchema($schema)
 	{
-		$schema = $this->parseDefinition($schema);
-
 		if(is_string($schema))
 		{
-			$parser = new JsonSchema($this->basePath);
+			if(substr($schema, 0, 8) == '!include')
+			{
+				$file = trim(substr($schema, 8));
+				if(!is_file($file))
+				{
+					$file = $this->basePath . '/' . $file;
+				}
 
-			return $parser->parse($schema);
+				return JsonSchema::fromFile($file);
+			}
+			else
+			{
+				$parser = new JsonSchema($this->basePath);
+
+				return $parser->parse($schema);
+			}
 		}
 		else
 		{

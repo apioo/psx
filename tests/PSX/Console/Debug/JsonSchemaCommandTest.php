@@ -39,7 +39,7 @@ class JsonSchemaCommandTest extends CommandTestCase
 
 		$commandTester = new CommandTester($command);
 		$commandTester->execute(array(
-			'file'   => __DIR__ . '/../../Api/Documentation/Parser/schema.json',
+			'file'   => __DIR__ . '/../../Api/Documentation/Parser/schema/schema.json',
 			'format' => 'serialize',
 		));
 

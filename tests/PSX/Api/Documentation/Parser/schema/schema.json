@@ -1,12 +1,13 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
+    "id": "http://test.phpsx.org/schema#",
     "description": "A canonical song",
     "properties": {
         "artist": {
             "type": "string"
         },
         "title": {
-            "type": "string"
+            "$ref": "file:///other_schema.json#/definition/title"
         }
     },
     "required": [

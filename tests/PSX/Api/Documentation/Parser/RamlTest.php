@@ -135,7 +135,7 @@ class RamlTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException RuntimeException
+	 * @expectedException PSX\Exception
 	 */
 	public function testParseInvalidSchema()
 	{

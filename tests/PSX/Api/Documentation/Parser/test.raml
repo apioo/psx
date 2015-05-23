@@ -10,7 +10,7 @@ traits:
           description: The number of pages to return
           type: number
 schemas:
-  - body: !include schema.json
+  - body: !include schema/schema.json
 /bar/{bar_id}:
   description: Returns details about bar
   uriParameters:
@@ -48,7 +48,7 @@ schemas:
   post:
     body:
       application/json:
-        schema: !include schema.json
+        schema: !include schema/schema.json
     responses:
       200:
         body:
