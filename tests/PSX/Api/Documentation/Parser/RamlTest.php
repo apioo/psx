@@ -126,6 +126,9 @@ class RamlTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('Some description', $resource->getDescription());
 	}
 
+	/**
+	 * @expectedException RuntimeException
+	 */
 	public function testParseResponseWithoutSchema()
 	{
 		$doc      = Raml::fromFile(__DIR__ . '/test.raml', '/foo');
