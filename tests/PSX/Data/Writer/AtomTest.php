@@ -28,6 +28,7 @@ use PSX\Atom\Generator;
 use PSX\Atom\Link;
 use PSX\Atom\Person;
 use PSX\Atom\Text;
+use PSX\Data\Record;
 use PSX\Data\WriterTestCase;
 use PSX\Data\WriterTestRecord;
 use PSX\Http\MediaType;
@@ -146,6 +147,23 @@ XML;
   <rights>Copyright (c) 2003, Mark Pilgrim</rights>
   <generator uri="http://www.example.com/" version="1.0">Example Toolkit</generator>
  </source>
+</entry>
+XML;
+
+		$this->assertXmlStringEqualsXmlString($expect, $actual);
+	}
+
+	public function testWriteEmpty()
+	{
+		$writer = new Atom();
+		$actual = $writer->write(new Record('record', []));
+
+		$expect = <<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns="http://www.w3.org/2005/Atom">
+  <content type="application/xml">
+    <record />
+  </content>
 </entry>
 XML;
 

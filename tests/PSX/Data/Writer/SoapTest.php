@@ -135,6 +135,23 @@ TEXT;
 		$this->assertXmlStringEqualsXmlString($expect, $actual);
 	}
 
+	public function testWriteEmpty()
+	{
+		$writer = new Soap('http://foo.bar');
+		$actual = $writer->write($this->getEmptyRecord());
+
+		$expect = <<<TEXT
+<?xml version="1.0" encoding="UTF-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  <soap:Body>
+    <Response xmlns="http://foo.bar"/>
+  </soap:Body>
+</soap:Envelope>
+TEXT;
+
+		$this->assertXmlStringEqualsXmlString($expect, $actual);
+	}
+
 	public function testIsContentTypeSupported()
 	{
 		$writer = new Soap('http://foo.bar');

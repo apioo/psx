@@ -22,6 +22,7 @@ namespace PSX\Data;
 
 use DateTime;
 use PSX\ActivityStream;
+use PSX\Data\Record;
 use PSX\Data\ResultSet;
 
 /**
@@ -96,6 +97,11 @@ abstract class WriterTestCase extends \PHPUnit_Framework_TestCase
 		$activity->setTarget($target);
 
 		return $activity;
+	}
+
+	public function getEmptyRecord()
+	{
+		return new Record('record', array());
 	}
 
 	abstract public function testWrite();

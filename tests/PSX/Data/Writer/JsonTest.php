@@ -110,6 +110,18 @@ TEXT;
 		$this->assertJsonStringEqualsJsonString($expect, $actual);
 	}
 
+	public function testWriteEmpty()
+	{
+		$writer = new Json();
+		$actual = $writer->write($this->getEmptyRecord());
+
+		$expect = <<<TEXT
+{}
+TEXT;
+
+		$this->assertJsonStringEqualsJsonString($expect, $actual);
+	}
+
 	public function testIsContentTypeSupported()
 	{
 		$writer = new Json();

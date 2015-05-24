@@ -56,6 +56,17 @@ TEXT;
 		$this->assertEquals($expect, $actual);
 	}
 
+	public function testWriteEmpty()
+	{
+		$writer = new Form();
+		$actual = $writer->write($this->getEmptyRecord());
+
+		$expect = <<<TEXT
+TEXT;
+
+		$this->assertEquals($expect, $actual);
+	}
+
 	public function testIsContentTypeSupported()
 	{
 		$writer = new Form();

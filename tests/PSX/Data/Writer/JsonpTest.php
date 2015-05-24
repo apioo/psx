@@ -116,6 +116,19 @@ TEXT;
 		$this->assertJsonp($expect, $actual);
 	}
 
+	public function testWriteEmpty()
+	{
+		$writer = new Jsonp();
+		$writer->setCallbackName('foo');
+		$actual = $writer->write($this->getEmptyRecord());
+
+		$expect = <<<TEXT
+foo({})
+TEXT;
+
+		$this->assertJsonp($expect, $actual);
+	}
+
 	public function testSetCallbackName()
 	{
 		$writer = new Jsonp();

@@ -116,6 +116,19 @@ TEXT;
 		$this->assertXmlStringEqualsXmlString($expect, $actual);
 	}
 
+	public function testWriteEmpty()
+	{
+		$writer = new Jsonx();
+		$actual = $writer->write($this->getEmptyRecord());
+
+		$expect = <<<TEXT
+<?xml version="1.0" encoding="UTF-8"?>
+<json:object xmlns:json="http://www.ibm.com/xmlns/prod/2009/jsonx" />
+TEXT;
+
+		$this->assertXmlStringEqualsXmlString($expect, $actual);
+	}
+
 	public function testIsContentTypeSupported()
 	{
 		$writer = new Jsonx();
