@@ -98,7 +98,7 @@ class Date extends \DateTime
 
 	public static function fromDateTime(\DateTime $date)
 	{
-		return new self($date->format('Y-m-d'));
+		return new self($date->format('Y'), $date->format('m'), $date->format('d'));
 	}
 
 	/**

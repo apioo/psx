@@ -144,6 +144,11 @@ class Duration extends DateInterval
 		return $duration;
 	}
 
+	public static function fromDateInterval(\DateInterval $interval)
+	{
+		return new self($interval->y, $interval->m, $interval->d, $interval->h, $interval->i, $interval->s);
+	}
+
 	/**
 	 * Returns the seconds of an DateInterval recalculating years, months etc.
 	 *

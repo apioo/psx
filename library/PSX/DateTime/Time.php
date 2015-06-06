@@ -111,7 +111,7 @@ class Time extends \DateTime
 
 	public static function fromDateTime(\DateTime $date)
 	{
-		return new self($date->format('H:i:s'));
+		return new self($date->format('H'), $date->format('i'), $date->format('s'));
 	}
 
 	/**
