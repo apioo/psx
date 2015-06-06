@@ -20,6 +20,8 @@
 
 namespace PSX\Http;
 
+use Psr\Http\Message\StreamInterface;
+
 /**
  * This is a mutable version of the PSR HTTP message interface
  *
@@ -32,7 +34,7 @@ namespace PSX\Http;
  * @link    http://phpsx.org
  * @link    http://www.ietf.org/rfc/rfc7230.txt
  * @link    http://www.ietf.org/rfc/rfc7231.txt
- * @see     https://github.com/php-fig/fig-standards/blob/master/proposed/http-message.md
+ * @see     https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-7-http-message.md
  */
 interface MessageInterface
 {

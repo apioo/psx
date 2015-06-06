@@ -18,18 +18,43 @@
  * limitations under the License.
  */
 
-namespace PSX\Http;
+namespace PSX\Http\Factory;
 
-use Psr\Http\Message\StreamInterface as PsrStreamInterface;
+use Zend\Diactoros\Response as PsrResponse;
+use Zend\Diactoros\ServerRequestFactory;
+use PSX\Http\RequestInterface;
+use PSX\Http\ResponseInterface;
 
 /**
- * StreamInterface
+ * Psr7Factory
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
- * @see     https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-7-http-message.md
  */
-interface StreamInterface extends PsrStreamInterface
+class Psr7Factory
 {
+	public static function createRequest(RequestInterface $request)
+	{
+		$psrRequest = ServerRequestFactory::fromGlobals()
+			->withUri($request->getUri())
+			->withMethod($request->getMethod())
+			->withBody($request->getBody());
+
+		foreach($request->getHeaders() as $name => $values)
+		{
+			$psrRequest = $psrRequest->withHeader($name, $values);
+		}
+
+		return $psrRequest;
+	}
+
+	public static function createResponse(ResponseInterface $response)
+	{
+		return new PsrResponse(
+			$response->getBody(),
+			$response->getStatusCode(),
+			$response->getHeaders()
+		);
+	}
 }

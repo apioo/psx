@@ -20,6 +20,8 @@
 
 namespace PSX;
 
+use Psr\Http\Message\UriInterface;
+
 /**
  * Represents an URI. Provides getters to retrieve parts of the URI. The class 
  * tries to parse the given string into the URI specific components:
@@ -34,7 +36,7 @@ namespace PSX;
  * @link    http://phpsx.org
  * @see     http://www.ietf.org/rfc/rfc3986.txt
  */
-class Uri
+class Uri implements UriInterface
 {
 	protected $scheme;
 	protected $authority;
@@ -147,6 +149,91 @@ class Uri
 
 	public function withAuthority($authority)
 	{
+		return new static(
+			$this->scheme,
+			$authority,
+			$this->path,
+			$this->query,
+			$this->fragment
+		);
+	}
+
+	public function withUserInfo($user, $password = null)
+	{
+		if(!empty($user))
+		{
+			$userInfo  = $user . ($password !== null ? ':' . $password : '');
+			$authority = $userInfo . '@' . $this->host;
+		}
+		else
+		{
+			$authority = $this->host;
+		}
+
+		if(!empty($this->port))
+		{
+			$authority.= ':' . $this->port;
+		}
+
+		return new static(
+			$this->scheme,
+			$authority,
+			$this->path,
+			$this->query,
+			$this->fragment
+		);
+	}
+
+	public function withHost($host)
+	{
+		if(!empty($host))
+		{
+			$userInfo = $this->getUserInfo();
+			if(!empty($userInfo))
+			{
+				$authority = $userInfo . '@' . $host;
+			}
+			else
+			{
+				$authority = $host;
+			}
+
+			if(!empty($this->port))
+			{
+				$authority.= ':' . $this->port;
+			}
+		}
+		else
+		{
+			$authority = null;
+		}
+
+		return new static(
+			$this->scheme,
+			$authority,
+			$this->path,
+			$this->query,
+			$this->fragment
+		);
+	}
+
+	public function withPort($port)
+	{
+		$userInfo = $this->getUserInfo();
+		if(!empty($userInfo))
+		{
+			$authority = $userInfo . '@' . $this->host;
+		}
+		else
+		{
+			$authority = $this->host;
+		}
+
+		if(!empty($port))
+		{
+			$authority.= ':' . $port;
+		}
+
 		return new static(
 			$this->scheme,
 			$authority,

@@ -21,8 +21,8 @@
 namespace PSX\Http;
 
 use InvalidArgumentException;
+use Psr\Http\Message\StreamInterface;
 use PSX\Http\Stream;
-use PSX\Http\StreamInterface;
 
 /**
  * Message

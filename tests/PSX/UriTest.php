@@ -424,6 +424,10 @@ class UriTest extends \PHPUnit_Framework_TestCase
 		$uri = new Uri('http://www.yahoo.com');
 
 		$this->assertEquals('https://www.yahoo.com', $uri->withScheme('https')->toString());
+
+		$uri = new Uri('http://user:password@example.com:8042/over/there?name=ferret&foo=bar#nose');
+
+		$this->assertEquals('https://user:password@example.com:8042/over/there?name=ferret&foo=bar#nose', $uri->withScheme('https')->toString());
 	}
 
 	public function testWithAuthority()
@@ -431,6 +435,10 @@ class UriTest extends \PHPUnit_Framework_TestCase
 		$uri = new Uri('http://www.yahoo.com');
 
 		$this->assertEquals('http://google.com', $uri->withAuthority('google.com')->toString());
+
+		$uri = new Uri('http://user:password@example.com:8042/over/there?name=ferret&foo=bar#nose');
+
+		$this->assertEquals('http://google.com/over/there?name=ferret&foo=bar#nose', $uri->withAuthority('google.com')->toString());
 	}
 
 	public function testWithPath()
@@ -438,6 +446,10 @@ class UriTest extends \PHPUnit_Framework_TestCase
 		$uri = new Uri('http://www.yahoo.com/foo/bar');
 
 		$this->assertEquals('http://www.yahoo.com/bar', $uri->withPath('/bar')->toString());
+
+		$uri = new Uri('http://user:password@example.com:8042/over/there?name=ferret&foo=bar#nose');
+
+		$this->assertEquals('http://user:password@example.com:8042/bar?name=ferret&foo=bar#nose', $uri->withPath('/bar')->toString());
 	}
 
 	public function testWithQuery()
@@ -445,6 +457,10 @@ class UriTest extends \PHPUnit_Framework_TestCase
 		$uri = new Uri('http://www.yahoo.com/?foo=bar');
 
 		$this->assertEquals('http://www.yahoo.com/?bar=foo', $uri->withQuery('bar=foo')->toString());
+
+		$uri = new Uri('http://user:password@example.com:8042/over/there?name=ferret&foo=bar#nose');
+
+		$this->assertEquals('http://user:password@example.com:8042/over/there?bar=foo#nose', $uri->withQuery('bar=foo')->toString());
 	}
 
 	public function testWithFragment()
@@ -452,6 +468,10 @@ class UriTest extends \PHPUnit_Framework_TestCase
 		$uri = new Uri('http://www.yahoo.com/#foo');
 
 		$this->assertEquals('http://www.yahoo.com/#bar', $uri->withFragment('bar')->toString());
+
+		$uri = new Uri('http://user:password@example.com:8042/over/there?name=ferret&foo=bar#nose');
+
+		$this->assertEquals('http://user:password@example.com:8042/over/there?name=ferret&foo=bar#bar', $uri->withFragment('bar')->toString());
 	}
 
 	public function testWithParameters()
@@ -459,5 +479,45 @@ class UriTest extends \PHPUnit_Framework_TestCase
 		$uri = new Uri('http://www.yahoo.com/?foo=bar');
 
 		$this->assertEquals('http://www.yahoo.com/?bar=foo', $uri->withParameters(['bar' => 'foo'])->toString());
+
+		$uri = new Uri('http://user:password@example.com:8042/over/there?name=ferret&foo=bar#nose');
+
+		$this->assertEquals('http://user:password@example.com:8042/over/there?bar=foo#nose', $uri->withParameters(['bar' => 'foo'])->toString());
+	}
+
+	public function testWithUserInfo()
+	{
+		$uri = new Uri('http://www.yahoo.com/');
+
+		$this->assertEquals('http://foo@www.yahoo.com/', $uri->withUserInfo('foo')->toString());
+		$this->assertEquals('http://foo:bar@www.yahoo.com/', $uri->withUserInfo('foo', 'bar')->toString());
+
+		$uri = new Uri('http://user:password@example.com:8042/over/there?name=ferret&foo=bar#nose');
+
+		$this->assertEquals('http://example.com:8042/over/there?name=ferret&foo=bar#nose', $uri->withUserInfo('')->toString());
+		$this->assertEquals('http://foo@example.com:8042/over/there?name=ferret&foo=bar#nose', $uri->withUserInfo('foo')->toString());
+		$this->assertEquals('http://bar:foo@example.com:8042/over/there?name=ferret&foo=bar#nose', $uri->withUserInfo('bar', 'foo')->toString());
+	}
+
+	public function testWithHost()
+	{
+		$uri = new Uri('http://www.yahoo.com/');
+
+		$this->assertEquals('http://google.com/', $uri->withHost('google.com')->toString());
+
+		$uri = new Uri('http://user:password@example.com:8042/over/there?name=ferret&foo=bar#nose');
+
+		$this->assertEquals('http://user:password@google.com:8042/over/there?name=ferret&foo=bar#nose', $uri->withHost('google.com')->toString());
+	}
+
+	public function testWithPort()
+	{
+		$uri = new Uri('http://www.yahoo.com/');
+
+		$this->assertEquals('http://www.yahoo.com:8080/', $uri->withPort(8080)->toString());
+
+		$uri = new Uri('http://user:password@example.com:8042/over/there?name=ferret&foo=bar#nose');
+
+		$this->assertEquals('http://user:password@example.com:8080/over/there?name=ferret&foo=bar#nose', $uri->withPort(8080)->toString());
 	}
 }

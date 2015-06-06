@@ -34,7 +34,7 @@ namespace PSX\Http;
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
- * @see     https://github.com/php-fig/fig-standards/blob/master/proposed/http-message.md
+ * @see     https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-7-http-message.md
  */
 interface ResponseInterface extends MessageInterface
 {

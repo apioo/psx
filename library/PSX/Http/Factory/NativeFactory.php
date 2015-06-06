@@ -18,61 +18,24 @@
  * limitations under the License.
  */
 
-namespace PSX\Http\Psr;
+namespace PSX\Http\Factory;
 
-use Psr\Http\Message\RequestInterface as PsrRequestInterface;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as PsrServerRequestInterface;
 use PSX\Http\Request;
-use PSX\Http\RequestInterface;
 use PSX\Http\Response;
-use PSX\Http\ResponseInterface;
 use PSX\Uri;
 
 /**
- * Factory
+ * NativeFactory
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Factory implements FactoryInterface
+class NativeFactory
 {
-	public function getPsrRequest(RequestInterface $request)
-	{
-		// @TODO wait until the PSR gets accepted and use an open-source 
-		// implementation
-
-		return null;
-	}
-
-	public function getPsrServerRequest(RequestInterface $request)
-	{
-		// @TODO wait until the PSR gets accepted and use an open-source 
-		// implementation
-
-		return null;
-	}
-
-	public function getPsrResponse(ResponseInterface $response)
-	{
-		// @TODO wait until the PSR gets accepted and use an open-source 
-		// implementation
-
-		return null;
-	}
-
-	public function getNativeRequest(PsrRequestInterface $psrRequest)
-	{
-		return new Request(
-			new Uri($psrRequest->getUri()),
-			$psrRequest->getMethod(),
-			$psrRequest->getHeaders(),
-			$psrRequest->getBody()
-		);
-	}
-
-	public function getNativeServerRequest(PsrServerRequestInterface $psrRequest)
+	public static function createRequest(PsrServerRequestInterface $psrRequest)
 	{
 		$request = new Request(
 			new Uri($psrRequest->getUri()),
@@ -81,10 +44,16 @@ class Factory implements FactoryInterface
 			$psrRequest->getBody()
 		);
 
+		$attributes = $psrRequest->getAttributes();
+		foreach($attributes as $name => $value)
+		{
+			$request->setAttribute($name, $value);
+		}
+
 		return $request;
 	}
 
-	public function getNativeResponse(PsrResponseInterface $psrResponse)
+	public static function createResponse(PsrResponseInterface $psrResponse)
 	{
 		return new Response(
 			$psrResponse->getStatusCode(),
