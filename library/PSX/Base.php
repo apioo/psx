@@ -32,7 +32,7 @@ use UnexpectedValueException;
  */
 class Base
 {
-	const VERSION = '1.0.2';
+	const VERSION = '1.0.3';
 
 	/**
 	 * Returns the version of the framework
