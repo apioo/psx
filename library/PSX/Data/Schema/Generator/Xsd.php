@@ -83,38 +83,20 @@ class Xsd implements GeneratorInterface
 
 		$this->writer->startElement('xs:sequence');
 
-		$properties = $type->getProperties();
+		$this->generateProperties($type->getProperties());
 
+		$this->writer->endElement();
+		$this->writer->endElement();
+		$this->writer->endElement();
+
+		$this->generateTypes($type->getProperties());
+	}
+
+	protected function generateTypes(array $properties)
+	{
 		foreach($properties as $property)
 		{
-			if($property instanceof Property\ArrayType)
-			{
-				$this->writer->startElement('xs:element');
-				$this->writer->writeAttribute('name', $property->getName());
-				$this->writer->writeAttribute('type', $this->getPropertyTypeName($property->getPrototype(), true));
-
-				$this->generateTypeArray($property);
-
-				$this->writer->endElement();
-			}
-			else
-			{
-				$this->writer->startElement('xs:element');
-				$this->writer->writeAttribute('name', $property->getName());
-				$this->writer->writeAttribute('type', $this->getPropertyTypeName($property, true));
-				$this->writer->writeAttribute('minOccurs', $property->isRequired() ? 1 : 0);
-				$this->writer->writeAttribute('maxOccurs', 1);
-				$this->writer->endElement();
-			}
-		}
-
-		$this->writer->endElement();
-		$this->writer->endElement();
-		$this->writer->endElement();
-
-		foreach($properties as $property)
-		{
-			if($property instanceof Property\ArrayType)
+			if($property instanceof Property\ArrayType && !$property->getPrototype() instanceof Property\ChoiceType)
 			{
 				$property = $property->getPrototype();
 			}
@@ -137,7 +119,7 @@ class Xsd implements GeneratorInterface
 
 		$this->_types[] = $typeName;
 
-		if($type instanceof Property\ComplexType)
+		if($type instanceof Property\CompositeTypeAbstract)
 		{
 			$this->writer->startElement('xs:complexType');
 			$this->writer->writeAttribute('name', $typeName);
@@ -150,48 +132,14 @@ class Xsd implements GeneratorInterface
 				$this->writer->endElement();
 			}
 
-			$this->writer->startElement('xs:sequence');
+			$this->writer->startElement($type instanceof Property\ChoiceType ? 'xs:choice' : 'xs:sequence');
 
-			$properties = $type->getProperties();
-
-			foreach($properties as $property)
-			{
-				if($property instanceof Property\ArrayType)
-				{
-					$this->writer->startElement('xs:element');
-					$this->writer->writeAttribute('name', $property->getName());
-					$this->writer->writeAttribute('type', $this->getPropertyTypeName($property->getPrototype(), true));
-
-					$this->generateTypeArray($property);
-
-					$this->writer->endElement();
-				}
-				else
-				{
-					$this->writer->startElement('xs:element');
-					$this->writer->writeAttribute('name', $property->getName());
-					$this->writer->writeAttribute('type', $this->getPropertyTypeName($property, true));
-					$this->writer->writeAttribute('minOccurs', $property->isRequired() ? 1 : 0);
-					$this->writer->writeAttribute('maxOccurs', 1);
-					$this->writer->endElement();
-				}
-			}
+			$this->generateProperties($type->getProperties());
 
 			$this->writer->endElement();
 			$this->writer->endElement();
 
-			foreach($properties as $property)
-			{
-				if($property instanceof Property\ArrayType)
-				{
-					$property = $property->getPrototype();
-				}
-
-				if($this->hasConstraints($property))
-				{
-					$this->generateType($property);
-				}
-			}
+			$this->generateTypes($type->getProperties());
 		}
 		else
 		{
@@ -242,33 +190,6 @@ class Xsd implements GeneratorInterface
 		}
 	}
 
-	protected function generateTypeArray(Property\ArrayType $type)
-	{
-		$minOccurs = $type->getMinLength();
-		$maxOccurs = $type->getMaxLength();
-
-		if($minOccurs && $maxOccurs)
-		{
-			$this->writer->writeAttribute('minOccurs', $minOccurs);
-			$this->writer->writeAttribute('maxOccurs', $maxOccurs);
-		}
-		else if($minOccurs)
-		{
-			$this->writer->writeAttribute('minOccurs', $minOccurs);
-			$this->writer->writeAttribute('maxOccurs', 'unbounded');
-		}
-		else if($maxOccurs)
-		{
-			$this->writer->writeAttribute('minOccurs', 0);
-			$this->writer->writeAttribute('maxOccurs', $maxOccurs);
-		}
-		else
-		{
-			$this->writer->writeAttribute('minOccurs', 0);
-			$this->writer->writeAttribute('maxOccurs', 'unbounded');
-		}
-	}
-
 	protected function generateTypeDecimal(Property\DecimalType $type)
 	{
 		$max = $type->getMax();
@@ -307,6 +228,54 @@ class Xsd implements GeneratorInterface
 		}
 	}
 
+	protected function generateProperties(array $properties)
+	{
+		foreach($properties as $property)
+		{
+			if($property instanceof Property\ArrayType)
+			{
+				$this->writer->startElement('xs:element');
+				$this->writer->writeAttribute('name', $property->getName());
+				$this->writer->writeAttribute('type', $this->getPropertyTypeName($property->getPrototype(), true));
+
+				$minOccurs = $property->getMinLength();
+				$maxOccurs = $property->getMaxLength();
+
+				if($minOccurs && $maxOccurs)
+				{
+					$this->writer->writeAttribute('minOccurs', $minOccurs);
+					$this->writer->writeAttribute('maxOccurs', $maxOccurs);
+				}
+				else if($minOccurs)
+				{
+					$this->writer->writeAttribute('minOccurs', $minOccurs);
+					$this->writer->writeAttribute('maxOccurs', 'unbounded');
+				}
+				else if($maxOccurs)
+				{
+					$this->writer->writeAttribute('minOccurs', 0);
+					$this->writer->writeAttribute('maxOccurs', $maxOccurs);
+				}
+				else
+				{
+					$this->writer->writeAttribute('minOccurs', 0);
+					$this->writer->writeAttribute('maxOccurs', 'unbounded');
+				}
+
+				$this->writer->endElement();
+			}
+			else
+			{
+				$this->writer->startElement('xs:element');
+				$this->writer->writeAttribute('name', $property->getName());
+				$this->writer->writeAttribute('type', $this->getPropertyTypeName($property, true));
+				$this->writer->writeAttribute('minOccurs', $property->isRequired() ? 1 : 0);
+				$this->writer->writeAttribute('maxOccurs', 1);
+				$this->writer->endElement();
+			}
+		}
+	}
+
 	protected function getPropertyTypeName(PropertyInterface $type, $withNamespace = false)
 	{
 		if($this->hasConstraints($type))
@@ -326,7 +295,7 @@ class Xsd implements GeneratorInterface
 
 	protected function hasConstraints(PropertyInterface $type)
 	{
-		if($type instanceof Property\ComplexType || $type instanceof Property\ArrayType)
+		if($type instanceof Property\CompositeTypeAbstract)
 		{
 			return true;
 		}

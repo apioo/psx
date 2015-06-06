@@ -47,7 +47,7 @@ class DateTimeTypeTest extends \PHPUnit_Framework_TestCase
 	{
 		$property = Property::getDateTime('test');
 
-		$this->assertTrue($property->validate('foo'));
+		$property->validate('foo');
 	}
 
 	/**
@@ -57,7 +57,7 @@ class DateTimeTypeTest extends \PHPUnit_Framework_TestCase
 	{
 		$property = Property::getDateTime('test');
 
-		$this->assertTrue($property->validate('2002-10-10T17:00:00+25:00'));
+		$property->validate('2002-10-10T17:00:00+25:00');
 	}
 
 	public function testValidateNull()
@@ -72,6 +72,26 @@ class DateTimeTypeTest extends \PHPUnit_Framework_TestCase
 		$property = Property::getDateTime('test');
 
 		$this->assertTrue($property->validate(new \DateTime()));
+	}
+
+	public function testAssimilate()
+	{
+		$property = Property::getDateTime('test');
+
+		$this->assertInstanceOf('PSX\DateTime', $property->assimilate('2002-10-10 17:00:00')); // MySQL format
+		$this->assertInstanceOf('PSX\DateTime', $property->assimilate('2002-10-10T17:00:00'));
+		$this->assertInstanceOf('PSX\DateTime', $property->assimilate('2002-10-10T17:00:00+01:00'));
+		$this->assertInstanceOf('DateTime', $property->assimilate(new \DateTime()));
+	}
+
+	/**
+	 * @expectedException RuntimeException
+	 */
+	public function testAssimilateInvalidFormat()
+	{
+		$property = Property::getDateTime('test');
+
+		$property->assimilate('foo');
 	}
 
 	public function testGetId()

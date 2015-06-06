@@ -111,6 +111,25 @@ class Builder
 
 	/**
 	 * @param string $name
+	 * @return PSX\Data\Schema\Property\ChoiceType
+	 */
+	public function choiceType($name)
+	{
+		if($name instanceof Property\ChoiceType)
+		{
+			$this->add($property = $name);
+		}
+		else
+		{
+			$this->add($property = Property::getChoice($name));
+		}
+
+		return $property;
+	}
+
+	/**
+	 * @param string $name
+	 * @param PSX\Data\Schema\Property\ComplexType $template
 	 * @return PSX\Data\Schema\Property\ComplexType
 	 */
 	public function complexType($name, Property\ComplexType $template = null)

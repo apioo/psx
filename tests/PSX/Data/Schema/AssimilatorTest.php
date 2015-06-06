@@ -117,7 +117,7 @@ class AssimilatorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException RuntimeException
 	 */
 	public function testAssimilateMissingRequired()
 	{
@@ -140,7 +140,7 @@ class AssimilatorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException RuntimeException
 	 */
 	public function testAssimilateComplexTypeString()
 	{
@@ -153,7 +153,7 @@ class AssimilatorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException RuntimeException
 	 */
 	public function testAssimilateArrayTypeString()
 	{

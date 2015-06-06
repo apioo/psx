@@ -37,6 +37,8 @@ class IntegerTypeTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertTrue($property->validate(4));
 		$this->assertTrue($property->validate('4'));
+		$this->assertTrue($property->validate('+4'));
+		$this->assertTrue($property->validate('-4'));
 	}
 
 	/**
@@ -109,7 +111,25 @@ class IntegerTypeTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertTrue($property->validate(null));
 	}
-	
+
+	public function testAssimilate()
+	{
+		$property = Property::getInteger('test');
+
+		$this->assertInternalType('integer', $property->assimilate('4'));
+		$this->assertEquals(4, $property->assimilate(4));
+		$this->assertEquals(4, $property->assimilate('4'));
+		$this->assertEquals(4, $property->assimilate('+4'));
+		$this->assertEquals(-4, $property->assimilate('-4'));
+	}
+
+	public function testAssimilateInvalidFormat()
+	{
+		$property = Property::getInteger('test');
+
+		$this->assertEquals(0, $property->assimilate('foo'));
+	}
+
 	public function testGetId()
 	{
 		$property = Property::getInteger('test');

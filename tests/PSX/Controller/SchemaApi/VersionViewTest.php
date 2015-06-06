@@ -83,6 +83,7 @@ class VersionViewTest extends ControllerDbTestCase
   ]}
 JSON;
 
+		$this->assertEquals(200, $response->getStatusCode(), $body);
 		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
 	}
 
@@ -95,14 +96,17 @@ JSON;
 		$response->setBody($body);
 
 		$controller = $this->loadController($request, $response);
-		$body       = Json::decode((string) $response->getBody());
+		$body       = (string) $response->getBody();
 
-		$expect = array(
-			'success' => true,
-			'message' => 'You have successful create a record',
-		);
+		$expect = <<<JSON
+{
+	"success": true,
+	"message": "You have successful create a record"
+}
+JSON;
 
-		$this->assertEquals($expect, $body);
+		$this->assertEquals(200, $response->getStatusCode(), $body);
+		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
 	}
 
 	public function testPutNoVersion()
@@ -114,14 +118,17 @@ JSON;
 		$response->setBody($body);
 
 		$controller = $this->loadController($request, $response);
-		$body       = Json::decode((string) $response->getBody());
+		$body       = (string) $response->getBody();
 
-		$expect = array(
-			'success' => true,
-			'message' => 'You have successful update a record',
-		);
+		$expect = <<<JSON
+{
+	"success": true,
+	"message": "You have successful update a record"
+}
+JSON;
 
-		$this->assertEquals($expect, $body);
+		$this->assertEquals(200, $response->getStatusCode(), $body);
+		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
 	}
 
 	public function testDeleteNoVersion()
@@ -133,14 +140,17 @@ JSON;
 		$response->setBody($body);
 
 		$controller = $this->loadController($request, $response);
-		$body       = Json::decode((string) $response->getBody());
+		$body       = (string) $response->getBody();
 
-		$expect = array(
-			'success' => true,
-			'message' => 'You have successful delete a record',
-		);
+		$expect = <<<JSON
+{
+	"success": true,
+	"message": "You have successful delete a record"
+}
+JSON;
 
-		$this->assertEquals($expect, $body);
+		$this->assertEquals(200, $response->getStatusCode(), $body);
+		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
 	}
 
 	public function testGetClosedVersion()
@@ -287,16 +297,18 @@ JSON;
 		$response->setBody($body);
 
 		$controller = $this->loadController($request, $response);
-		$body       = Json::decode((string) $response->getBody());
+		$body       = (string) $response->getBody();
 
+		$expect = <<<JSON
+{
+	"success": true,
+	"message": "You have successful create a record"
+}
+JSON;
+
+		$this->assertEquals(200, $response->getStatusCode(), $body);
 		$this->assertEquals('199 PSX "Version v2 is deprecated"', $response->getHeader('Warning'));
-
-		$expect = array(
-			'success' => true,
-			'message' => 'You have successful create a record',
-		);
-
-		$this->assertEquals($expect, $body);
+		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
 	}
 
 	public function testPutDeprecatedVersion()
@@ -308,16 +320,18 @@ JSON;
 		$response->setBody($body);
 
 		$controller = $this->loadController($request, $response);
-		$body       = Json::decode((string) $response->getBody());
+		$body       = (string) $response->getBody();
 
+		$expect = <<<JSON
+{
+	"success": true,
+	"message": "You have successful update a record"
+}
+JSON;
+
+		$this->assertEquals(200, $response->getStatusCode(), $body);
 		$this->assertEquals('199 PSX "Version v2 is deprecated"', $response->getHeader('Warning'));
-
-		$expect = array(
-			'success' => true,
-			'message' => 'You have successful update a record',
-		);
-
-		$this->assertEquals($expect, $body);
+		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
 	}
 
 	public function testDeleteDeprecatedVersion()
@@ -329,16 +343,18 @@ JSON;
 		$response->setBody($body);
 
 		$controller = $this->loadController($request, $response);
-		$body       = Json::decode((string) $response->getBody());
+		$body       = (string) $response->getBody();
 
+		$expect = <<<JSON
+{
+	"success": true,
+	"message": "You have successful delete a record"
+}
+JSON;
+
+		$this->assertEquals(200, $response->getStatusCode(), $body);
 		$this->assertEquals('199 PSX "Version v2 is deprecated"', $response->getHeader('Warning'));
-
-		$expect = array(
-			'success' => true,
-			'message' => 'You have successful delete a record',
-		);
-
-		$this->assertEquals($expect, $body);
+		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
 	}
 
 	public function testGetActiveVersion()
@@ -380,6 +396,7 @@ JSON;
   ]}
 JSON;
 
+		$this->assertEquals(200, $response->getStatusCode(), $body);
 		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
 	}
 
@@ -392,14 +409,17 @@ JSON;
 		$response->setBody($body);
 
 		$controller = $this->loadController($request, $response);
-		$body       = Json::decode((string) $response->getBody());
+		$body       = (string) $response->getBody();
 
-		$expect = array(
-			'success' => true,
-			'message' => 'You have successful create a record',
-		);
+		$expect = <<<JSON
+{
+	"success": true,
+	"message": "You have successful create a record"
+}
+JSON;
 
-		$this->assertEquals($expect, $body);
+		$this->assertEquals(200, $response->getStatusCode(), $body);
+		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
 	}
 
 	public function testPutActiveVersion()
@@ -411,14 +431,17 @@ JSON;
 		$response->setBody($body);
 
 		$controller = $this->loadController($request, $response);
-		$body       = Json::decode((string) $response->getBody());
+		$body       = (string) $response->getBody();
 
-		$expect = array(
-			'success' => true,
-			'message' => 'You have successful update a record',
-		);
+		$expect = <<<JSON
+{
+	"success": true,
+	"message": "You have successful update a record"
+}
+JSON;
 
-		$this->assertEquals($expect, $body);
+		$this->assertEquals(200, $response->getStatusCode(), $body);
+		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
 	}
 
 	public function testDeleteActiveVersion()
@@ -430,14 +453,17 @@ JSON;
 		$response->setBody($body);
 
 		$controller = $this->loadController($request, $response);
-		$body       = Json::decode((string) $response->getBody());
+		$body       = (string) $response->getBody();
 
-		$expect = array(
-			'success' => true,
-			'message' => 'You have successful delete a record',
-		);
+		$expect = <<<JSON
+{
+	"success": true,
+	"message": "You have successful delete a record"
+}
+JSON;
 
-		$this->assertEquals($expect, $body);
+		$this->assertEquals(200, $response->getStatusCode(), $body);
+		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
 	}
 
 	public function testGetUnknownVersion()

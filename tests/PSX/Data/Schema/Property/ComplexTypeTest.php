@@ -33,7 +33,9 @@ class ComplexTypeTest extends \PHPUnit_Framework_TestCase
 {
 	public function testValidate()
 	{
-		$property = Property::getComplex('test');
+		$property = Property::getComplex('test')
+			->add(Property::getString('foo'))
+			->add(Property::getString('bar'));
 
 		$this->assertTrue($property->validate(new \stdClass()));
 	}
@@ -43,29 +45,92 @@ class ComplexTypeTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testValidateInvalidFormat()
 	{
-		$property = Property::getComplex('test');
+		$property = Property::getComplex('test')
+			->add(Property::getString('foo'))
+			->add(Property::getString('bar'));
 
 		$this->assertTrue($property->validate('foo'));
 	}
 
-	public function testValidateNull()
+	/**
+	 * @expectedException RuntimeException
+	 */
+	public function testValidateNoProperties()
 	{
 		$property = Property::getComplex('test');
+
+		$property->validate(new \stdClass());
+	}
+
+	public function testValidateNull()
+	{
+		$property = Property::getComplex('test')
+			->add(Property::getString('foo'))
+			->add(Property::getString('bar'));
 
 		$this->assertTrue($property->validate(null));
 	}
 
-	public function testGetId()
+	public function testAssimilate()
+	{
+		$property = Property::getComplex('test')
+			->add(Property::getString('foo'))
+			->add(Property::getString('bar'));
+
+		$record = $property->assimilate(array('foo' => 'bar', 'baz' => 'foo'));
+
+		$this->assertInstanceOf('PSX\Data\RecordInterface', $record);
+		$this->assertEquals(array('foo' => 'bar'), $record->getRecordInfo()->getData());
+	}
+
+	/**
+	 * @expectedException RuntimeException
+	 */
+	public function testAssimilateInvalidValue()
+	{
+		$property = Property::getComplex('test')
+			->add(Property::getString('foo'))
+			->add(Property::getString('bar'));
+
+		$property->assimilate('foo');
+	}
+
+	/**
+	 * @expectedException RuntimeException
+	 */
+	public function testAssimilateNoProperties()
 	{
 		$property = Property::getComplex('test');
 
-		$this->assertEquals('aeadc8d940a294aeacf0ab2d3e7e4e4b', $property->getId());
+		$property->assimilate('foo');
+	}
+
+	/**
+	 * @expectedException RuntimeException
+	 */
+	public function testAssimilateRequiredMissing()
+	{
+		$property = Property::getComplex('test')
+			->add(Property::getString('foo')->setRequired(true))
+			->add(Property::getString('bar')->setRequired(true));
+
+		$property->assimilate(array('foo' => 'bar', 'baz' => 'foo'));
+	}
+
+	public function testGetId()
+	{
+		$property = Property::getComplex('test')
+			->add(Property::getString('foo'))
+			->add(Property::getString('bar'));
+
+		$this->assertEquals('0a7a6f5aee11c41efce8cbd1a3ed0b1d', $property->getId());
 	}
 
 	public function testProperties()
 	{
-		$property = Property::getComplex('test');
-		$property->add(Property::getString('foo'));
+		$property = Property::getComplex('test')
+			->add(Property::getString('foo'))
+			->add(Property::getString('bar'));
 
 		$this->assertInstanceOf('PSX\Data\Schema\Property\StringType', $property->get('foo'));
 		$this->assertTrue($property->has('foo'));
@@ -79,5 +144,26 @@ class ComplexTypeTest extends \PHPUnit_Framework_TestCase
 	public function testGetTypeName()
 	{
 		$this->assertEquals('complex', Property::getComplex('test')->getTypeName());
+	}
+
+	public function testMatch()
+	{
+		$property = Property::getComplex('test')
+			->add(Property::getString('foo'))
+			->add(Property::getString('bar'));
+
+		$this->assertEquals(0, $property->match('foo'));
+		$this->assertEquals(0, $property->match(array()));
+		$this->assertEquals(0.5, $property->match(array('foo' => '')));
+		$this->assertEquals(1, $property->match(array('foo' => '', 'bar' => '')));
+
+		$property = Property::getComplex('test')
+			->add(Property::getString('foo')->setRequired(true))
+			->add(Property::getString('bar')->setRequired(true));
+
+		$this->assertEquals(0, $property->match('foo'));
+		$this->assertEquals(0, $property->match(array()));
+		$this->assertEquals(0, $property->match(array('foo' => '')));
+		$this->assertEquals(1, $property->match(array('foo' => '', 'bar' => '')));
 	}
 }

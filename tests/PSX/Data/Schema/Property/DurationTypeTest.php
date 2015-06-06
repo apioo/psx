@@ -46,7 +46,7 @@ class DurationTypeTest extends \PHPUnit_Framework_TestCase
 	{
 		$property = Property::getDuration('test');
 
-		$this->assertTrue($property->validate('foo'));
+		$property->validate('foo');
 	}
 
 	public function testValidateNull()
@@ -61,6 +61,25 @@ class DurationTypeTest extends \PHPUnit_Framework_TestCase
 		$property = Property::getDuration('test');
 
 		$this->assertTrue($property->validate(new \DateInterval('P1Y')));
+	}
+
+	public function testAssimilate()
+	{
+		$property = Property::getDuration('test');
+
+		$this->assertInstanceOf('PSX\DateTime\Duration', $property->assimilate('P1D'));
+		$this->assertInstanceOf('PSX\DateTime\Duration', $property->assimilate('P1DT12H'));
+		$this->assertInstanceOf('DateInterval', $property->assimilate(new \DateInterval('P1D')));
+	}
+
+	/**
+	 * @expectedException RuntimeException
+	 */
+	public function testAssimilateInvalidFormat()
+	{
+		$property = Property::getDuration('test');
+
+		$property->assimilate('foo');
 	}
 
 	public function testGetId()

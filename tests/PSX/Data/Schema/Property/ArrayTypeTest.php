@@ -20,6 +20,7 @@
 
 namespace PSX\Data\Schema\Property;
 
+use ArrayObject;
 use PSX\Data\Schema\Property;
 
 /**
@@ -33,7 +34,7 @@ class ArrayTypeTest extends \PHPUnit_Framework_TestCase
 {
 	public function testValidate()
 	{
-		$property = Property::getArray('test');
+		$property = Property::getArray('test')->setPrototype(Property::getString('foo'));
 
 		$this->assertTrue($property->validate(array()));
 		$this->assertTrue($property->validate(array('foo')));
@@ -44,14 +45,24 @@ class ArrayTypeTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testValidateInvalidFormat()
 	{
-		$property = Property::getArray('test');
+		$property = Property::getArray('test')->setPrototype(Property::getString('foo'));
 
 		$this->assertTrue($property->validate('foo'));
 	}
 
-	public function testValidateNull()
+	/**
+	 * @expectedException RuntimeException
+	 */
+	public function testValidateNoPrototype()
 	{
 		$property = Property::getArray('test');
+
+		$this->assertTrue($property->validate(array()));
+	}
+
+	public function testValidateNull()
+	{
+		$property = Property::getArray('test')->setPrototype(Property::getString('foo'));
 
 		$this->assertTrue($property->validate(null));
 	}
@@ -64,8 +75,9 @@ class ArrayTypeTest extends \PHPUnit_Framework_TestCase
 		$property = Property::getArray('test');
 		$property->setRequired(true);
 
-		$this->assertTrue($property->validate(null));
 		$this->assertTrue($property->isRequired());
+		
+		$property->validate(null);
 	}
 
 	/**
@@ -73,11 +85,12 @@ class ArrayTypeTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testValidateMinLength()
 	{
-		$property = Property::getArray('test');
+		$property = Property::getArray('test')->setPrototype(Property::getString('foo'));
 		$property->setMinLength(1);
 
-		$this->assertTrue($property->validate(array()));
 		$this->assertEquals(1, $property->getMinLength());
+
+		$property->validate(array());
 	}
 
 	/**
@@ -85,11 +98,43 @@ class ArrayTypeTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testValidateMaxLength()
 	{
-		$property = Property::getArray('test');
+		$property = Property::getArray('test')->setPrototype(Property::getString('foo'));
 		$property->setMaxLength(1);
 
-		$this->assertTrue($property->validate(array('foo', 'bar')));
 		$this->assertEquals(1, $property->getMaxLength());
+
+		$property->validate(array('foo', 'bar'));
+	}
+
+	public function testAssimilate()
+	{
+		$property = Property::getArray('test')->setPrototype(Property::getString('foo'));
+
+		$this->assertEquals(['10'], $property->assimilate([10]));
+	}
+
+	public function testAssimilateTraversable()
+	{
+		$property = Property::getArray('test')->setPrototype(Property::getString('foo'));
+
+		$this->assertEquals(['10'], $property->assimilate(new ArrayObject([10])));
+	}
+
+	/**
+	 * @expectedException RuntimeException
+	 */
+	public function testAssimilateInvalidFormat()
+	{
+		$property = Property::getArray('test')->setPrototype(Property::getString('foo'));
+
+		$property->assimilate('foo');
+	}
+
+	public function testAssimilateNoPrototype()
+	{
+		$property = Property::getArray('test');
+
+		$this->assertEquals(array(), $property->assimilate(array()));
 	}
 
 	public function testSetPrototype()
@@ -111,7 +156,7 @@ class ArrayTypeTest extends \PHPUnit_Framework_TestCase
 		$property = Property::getArray('test');
 		$property->setPrototype(Property::getString('foo'));
 
-		$this->assertEquals('c330bb41463721a2ad25a9585cf8c24e', $property->getId());
+		$this->assertEquals('b2968af7bc5a42f395857827093d77f6', $property->getId());
 	}
 
 	public function testGetTypeName()

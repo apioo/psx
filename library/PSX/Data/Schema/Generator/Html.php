@@ -37,22 +37,33 @@ use PSX\Data\Schema\PropertySimpleAbstract;
 class Html implements GeneratorInterface
 {
 	protected $_types;
+	protected $_renameType;
 
 	public function generate(SchemaInterface $schema)
 	{
 		$this->_types = array();
 
-		return $this->generateType($schema->getDefinition());
+		$html = $this->generateType($schema->getDefinition());
+
+		// this makes sure that we only reference objects which are actually 
+		// rendered
+		foreach($this->_types as $typeId => $typeName)
+		{
+			$name = '<a href="#psx-type-' . $typeId . '">' . $typeName . '</a>';
+			$html = preg_replace('/<a href=\"#psx-type-' . $typeId . '\">(\w+)<\/a>/ims', $name, $html);
+		}
+
+		return $html;
 	}
 
 	protected function generateType(PropertyInterface $type)
 	{
-		if(in_array($type->getId(), $this->_types))
+		if(isset($this->_types[$type->getId()]))
 		{
 			return;
 		}
 
-		$this->_types[] = $type->getId();
+		$this->_types[$type->getId()] = $type->getName();
 
 		if($type instanceof Property\ComplexType)
 		{
@@ -107,17 +118,11 @@ class Html implements GeneratorInterface
 
 			foreach($properties as $property)
 			{
-				if($property instanceof Property\ComplexType)
+				if($property instanceof Property\CompositeTypeAbstract)
 				{
-					$response.= $this->generateType($property);
-				}
-				else if($property instanceof Property\ArrayType)
-				{
-					$prototype = $property->getPrototype();
-
-					if($prototype instanceof Property\ComplexType)
+					foreach($property as $childProperty)
 					{
-						$response.= $this->generateType($prototype);
+						$response.= $this->generateType($childProperty);
 					}
 				}
 			}
@@ -136,10 +141,41 @@ class Html implements GeneratorInterface
 		}
 		else if($type instanceof Property\ArrayType)
 		{
-			$property = $this->getValueDescription($type->getPrototype());
-			$span  = '<span class="psx-property-type psx-property-type-array">Array&lt;' . $property[0] . '&gt;</span>';
+			$constraints = array();
 
-			return [$span, $property[1]];
+			$min = $type->getMinLength();
+			if($min !== null)
+			{
+				$constraints['minimum'] = '<span class="psx-constraint-minimum">' . $min . '</span>';
+			}
+
+			$max = $type->getMaxLength();
+			if($max !== null)
+			{
+				$constraints['maximum'] = '<span class="psx-constraint-maximum">' . $max . '</span>';
+			}
+
+			$constraint = $this->constraintToString($constraints);
+
+			$property = $this->getValueDescription($type->getPrototype());
+			$span     = '<span class="psx-property-type psx-property-type-array">Array&lt;' . $property[0] . '&gt;</span>';
+
+			return [$span, $constraint];
+		}
+		else if($type instanceof Property\ChoiceType)
+		{
+			$choice     = array();
+			$properties = $type->getProperties();
+
+			foreach($properties as $prop)
+			{
+				$property = $this->getValueDescription($prop);
+				$choice[] = $property[0];
+			}
+
+			$span = '<span class="psx-property-type psx-property-type-choice">' . implode('|', $choice) . '</span>';
+
+			return [$span, null];
 		}
 		else if($type instanceof PropertySimpleAbstract)
 		{
@@ -192,19 +228,8 @@ class Html implements GeneratorInterface
 				}
 			}
 
-			$constraint = '';
-			if(!empty($constraints))
-			{
-				$constraint.= '<dl class="psx-property-constraint">';
-				foreach($constraints as $name => $con)
-				{
-					$constraint.= '<dt>' . ucfirst($name) . '</dt>';
-					$constraint.= '<dd>' . $con . '</dd>';
-				}
-				$constraint.= '</dl>';
-			}
-
-			$cssClass = 'psx-property-type-' . strtolower($typeName);
+			$constraint = $this->constraintToString($constraints);
+			$cssClass   = 'psx-property-type-' . strtolower($typeName);
 
 			if($type instanceof Property\DateType)
 			{
@@ -227,5 +252,22 @@ class Html implements GeneratorInterface
 
 			return [$span, $constraint];
 		}
+	}
+
+	protected function constraintToString(array $constraints)
+	{
+		$constraint = '';
+		if(!empty($constraints))
+		{
+			$constraint.= '<dl class="psx-property-constraint">';
+			foreach($constraints as $name => $con)
+			{
+				$constraint.= '<dt>' . ucfirst($name) . '</dt>';
+				$constraint.= '<dd>' . $con . '</dd>';
+			}
+			$constraint.= '</dl>';
+		}
+
+		return $constraint;
 	}
 }

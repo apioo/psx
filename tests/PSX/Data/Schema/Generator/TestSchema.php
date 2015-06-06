@@ -40,6 +40,12 @@ class TestSchema extends SchemaAbstract
 		$sb->integer('long');
 		$location = $sb->getProperty();
 
+		$sb = $this->getSchemaBuilder('web')
+			->setDescription('An application');
+		$sb->string('name');
+		$sb->string('url');
+		$web = $sb->getProperty();
+
 		$sb = $this->getSchemaBuilder('author')
 			->setDescription('An simple author element with some description');
 		$sb->string('title')
@@ -66,7 +72,15 @@ class TestSchema extends SchemaAbstract
 			->setPrototype($author)
 			->setMinLength(1)
 			->setRequired(true);
+		$sb->arrayType('resources')
+			->setPrototype(Property::getChoice('resource')
+				->add($location)
+				->add($web)
+			);
 		$sb->boolean('read');
+		$sb->choiceType('source')
+			->add($author)
+			->add($web);
 		$sb->complexType($author)
 			->setRequired(true);
 		$sb->date('sendDate');

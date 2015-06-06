@@ -176,6 +176,28 @@ class JsonSchema implements GeneratorInterface
 
 			return $result;
 		}
+		else if($type instanceof Property\ChoiceType)
+		{
+			$properties = $type->getProperties();
+			$props      = array();
+
+			foreach($properties as $property)
+			{
+				$props[] = $this->generateType($property);
+			}
+
+			$result = array(
+				'oneOf' => $props,
+			);
+
+			$description = $type->getDescription();
+			if(!empty($description))
+			{
+				$result['description'] = $description;
+			}
+
+			return $result;
+		}
 		else
 		{
 			$result = array();

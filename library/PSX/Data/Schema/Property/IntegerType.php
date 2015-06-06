@@ -31,9 +31,9 @@ use PSX\Data\Schema\ValidationException;
  */
 class IntegerType extends DecimalType
 {
-	public function validate($data)
+	public function validate($data, $path = '/')
 	{
-		parent::validate($data);
+		parent::validate($data, $path);
 
 		if($data === null)
 		{
@@ -53,19 +53,19 @@ class IntegerType extends DecimalType
 			}
 			else
 			{
-				throw new ValidationException($this->getName() . ' must be an integer');
+				throw new ValidationException($path . ' must be an integer');
 			}
 		}
 		else
 		{
-			throw new ValidationException($this->getName() . ' must be an integer');
+			throw new ValidationException($path . ' must be an integer');
 		}
 
 		if($this->max !== null)
 		{
 			if($data > $this->max)
 			{
-				throw new ValidationException($this->getName() . ' must be lower or equal then ' . $this->max);
+				throw new ValidationException($path . ' must be lower or equal then ' . $this->max);
 			}
 		}
 
@@ -73,10 +73,17 @@ class IntegerType extends DecimalType
 		{
 			if($data < $this->min)
 			{
-				throw new ValidationException($this->getName() . ' must be greater or equal then ' . $this->min);
+				throw new ValidationException($path . ' must be greater or equal then ' . $this->min);
 			}
 		}
 
 		return true;
+	}
+
+	public function assimilate($data, $path = '/')
+	{
+		parent::assimilate($data, $path);
+
+		return (int) $data;
 	}
 }

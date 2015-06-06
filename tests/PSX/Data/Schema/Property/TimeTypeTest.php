@@ -63,6 +63,25 @@ class TimeTypeTest extends \PHPUnit_Framework_TestCase
 		$this->assertTrue($property->validate(new \DateTime()));
 	}
 
+	public function testAssimilate()
+	{
+		$property = Property::getTime('test');
+
+		$this->assertInstanceOf('PSX\DateTime\Time', $property->assimilate('10:00:00'));
+		$this->assertInstanceOf('PSX\DateTime\Time', $property->assimilate('10:00:00+02:00'));
+		$this->assertInstanceOf('DateTime', $property->assimilate(new \DateTime()));
+	}
+
+	/**
+	 * @expectedException RuntimeException
+	 */
+	public function testAssimilateInvalidFormat()
+	{
+		$property = Property::getTime('test');
+
+		$property->assimilate('foo');
+	}
+
 	public function testGetId()
 	{
 		$property = Property::getTime('test');

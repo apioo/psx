@@ -20,6 +20,8 @@
 
 namespace PSX\Data\Schema;
 
+use RuntimeException;
+
 /**
  * PropertyAbstract
  *
@@ -140,15 +142,23 @@ abstract class PropertyAbstract implements PropertyInterface
 	/**
 	 * @return boolean
 	 */
-	public function validate($data)
+	public function validate($data, $path = '/')
 	{
 		if($this->required && $data === null)
 		{
-			throw new ValidationException($this->getName() . ' is required');
+			throw new ValidationException($path . ' is required');
 		}
 		else if($data === null)
 		{
 			return true;
+		}
+	}
+
+	public function assimilate($data, $path = '/')
+	{
+		if($this->required && $data === null)
+		{
+			throw new RuntimeException('Property ' . $path . ' is required');
 		}
 	}
 }

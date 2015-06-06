@@ -65,6 +65,24 @@ class StringTypeTest extends \PHPUnit_Framework_TestCase
 		$property->validate(array());
 	}
 
+	public function testAssimilate()
+	{
+		$property = Property::getString('test');
+
+		$this->assertInternalType('string', $property->assimilate(4));
+		$this->assertEquals('4', $property->assimilate(4));
+	}
+
+	/**
+	 * @expectedException ErrorException
+	 */
+	public function testAssimilateInvalidFormat()
+	{
+		$property = Property::getString('test');
+
+		$property->assimilate(array());
+	}
+
 	public function testMinLength()
 	{
 		$property = Property::getString('test');

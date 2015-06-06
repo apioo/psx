@@ -51,6 +51,15 @@ abstract class Property
 
 	/**
 	 * @param string $name
+	 * @return PSX\Data\Schema\Property\ChoiceType
+	 */
+	public static function getChoice($name)
+	{
+		return new Property\ChoiceType($name);
+	}
+
+	/**
+	 * @param string $name
 	 * @return PSX\Data\Schema\Property\ComplexType
 	 */
 	public static function getComplex($name)

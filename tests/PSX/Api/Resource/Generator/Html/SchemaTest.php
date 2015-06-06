@@ -231,7 +231,7 @@ class SchemaTest extends GeneratorTestCase
 		<div class="psx-resource-data psx-resource-response">
 			<h5>GET Response - 200 OK</h5>
 			<div class="psx-resource-data-content">
-				<div id="psx-type-2e7db60cc6f1c321968ba23ce07b9eb5" class="psx-complex-type">
+				<div id="psx-type-e80c8b9e68244cea3401d3b7aff00733" class="psx-complex-type">
 					<h1>collection</h1>
 					<div class="psx-type-description"/>
 					<table class="table psx-type-properties">

@@ -20,61 +20,67 @@
 
 namespace PSX\Data\Schema\Property;
 
+use PSX\Data\Schema\PropertyAbstract;
+use PSX\Data\Schema\PropertyInterface;
 use PSX\Data\Schema\ValidationException;
-use PSX\DateTime\Time;
 use RuntimeException;
 
 /**
- * TimeType
+ * ChoiceType
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class TimeType extends StringType
+class ChoiceType extends CompositeTypeAbstract
 {
 	public function validate($data, $path = '/')
 	{
-		if($data instanceof \DateTime)
-		{
-			return true;
-		}
-
 		parent::validate($data, $path);
 
 		if($data === null)
 		{
 			return true;
 		}
-		else if(is_string($data))
-		{
-			$result = preg_match('/^' . \PSX\DateTime\Time::getPattern() . '$/', $data);
 
-			if($result)
+		foreach($this->properties as $property)
+		{
+			try
 			{
-				return true;
+				if($property->validate($data, $path) === true)
+				{
+					return true;
+				}
+			}
+			catch(ValidationException $e)
+			{
 			}
 		}
 
-		throw new ValidationException($path . ' must be an valid full-time format (partial-time time-offset) [RFC3339]');
+		throw new ValidationException($path . ' must be one of the following objects [' . implode(', ', array_keys($this->properties)) . ']');
 	}
 
 	public function assimilate($data, $path = '/')
 	{
-		if($data instanceof \DateTime)
-		{
-			return Time::fromDateTime($data);
-		}
-
 		parent::assimilate($data, $path);
 
-		try
+		$matches = array();
+		foreach($this->properties as $index => $property)
 		{
-			return new Time($data);
+			$value = $property->match($data);
+			if($value > 0)
+			{
+				$matches[$index] = $value;
+			}
 		}
-		catch(\Exception $e)
+
+		if(empty($matches))
 		{
-			throw new RuntimeException($path . ' must be an valid full-time format (partial-time time-offset) [RFC3339]');
+			throw new RuntimeException($path . ' must be one of the following objects [' . implode(', ', array_keys($this->properties)) . ']');
 		}
+
+		arsort($matches);
+
+		return $this->properties[key($matches)]->assimilate($data);
 	}
 }

@@ -36,8 +36,15 @@ class FloatTypeTest extends \PHPUnit_Framework_TestCase
 		$property = Property::getFloat('test');
 
 		$this->assertTrue($property->validate(1));
-		$this->assertTrue($property->validate(1.0));
-		$this->assertTrue($property->validate('1.0'));
+		$this->assertTrue($property->validate(1.2));
+		$this->assertTrue($property->validate(-1.2));
+		$this->assertTrue($property->validate('1'));
+		$this->assertTrue($property->validate('1.2'));
+		$this->assertTrue($property->validate('-1.2'));
+		$this->assertTrue($property->validate('1.2E4'));
+		$this->assertTrue($property->validate('1.2e4'));
+		$this->assertTrue($property->validate('1.2e+4'));
+		$this->assertTrue($property->validate('1.2e-4'));
 	}
 
 	/**
@@ -89,6 +96,30 @@ class FloatTypeTest extends \PHPUnit_Framework_TestCase
 		$property = Property::getFloat('test');
 
 		$this->assertTrue($property->validate(null));
+	}
+
+	public function testAssimilate()
+	{
+		$property = Property::getFloat('test');
+
+		$this->assertInternalType('float', $property->assimilate('1'));
+		$this->assertEquals(1, $property->assimilate(1));
+		$this->assertEquals(1.2, $property->assimilate(1.2));
+		$this->assertEquals(-1.2, $property->assimilate(-1.2));
+		$this->assertEquals(1, $property->assimilate('1'));
+		$this->assertEquals(1.2, $property->assimilate('1.2'));
+		$this->assertEquals(-1.2, $property->assimilate('-1.2'));
+		$this->assertEquals(12000.0, $property->assimilate('1.2E4'));
+		$this->assertEquals(12000.0, $property->assimilate('1.2e4'));
+		$this->assertEquals(12000.0, $property->assimilate('1.2e+4'));
+		$this->assertEquals(0.00012, $property->assimilate('1.2e-4'));
+	}
+
+	public function testAssimilateInvalidFormat()
+	{
+		$property = Property::getFloat('test');
+
+		$this->assertEquals(0, $property->assimilate('foo'));
 	}
 
 	public function testGetId()

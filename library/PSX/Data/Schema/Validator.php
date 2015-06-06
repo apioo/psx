@@ -36,55 +36,6 @@ class Validator implements ValidatorInterface
 {
 	public function validate(SchemaInterface $schema, $data)
 	{
-		$this->recValidate($schema->getDefinition(), $data);
-
-		return true;
-	}
-
-	protected function recValidate(PropertyInterface $type, $data, $path = '$')
-	{
-		if($type instanceof Property\ComplexType)
-		{
-			if(!$data instanceof \stdClass)
-			{
-				throw new ValidationException('Data object expected at ' . $path);
-			}
-
-			$type->validate($data);
-
-			$properties = $type->getProperties();
-
-			foreach($properties as $name => $property)
-			{
-				if(isset($data->$name))
-				{
-					$this->recValidate($property, $data->$name, $path . '.' . $name);
-				}
-				else if($property->isRequired())
-				{
-					throw new ValidationException('Required property ' . $path . '.' . $property->getName() . ' not available');
-				}
-			}
-		}
-		else if($type instanceof Property\ArrayType)
-		{
-			if(!is_array($data))
-			{
-				throw new ValidationException('Data array expected at ' . $path);
-			}
-
-			$type->validate($data);
-
-			$prototype = $type->getPrototype();
-
-			foreach($data as $key => $value)
-			{
-				$this->recValidate($prototype, $value, $path . '[' . $key . ']');
-			}
-		}
-		else
-		{
-			$type->validate($data);
-		}
+		return $schema->getDefinition()->validate($data);
 	}
 }

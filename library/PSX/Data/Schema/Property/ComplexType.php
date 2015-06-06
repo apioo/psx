@@ -23,9 +23,12 @@ namespace PSX\Data\Schema\Property;
 use ArrayIterator;
 use Countable;
 use IteratorAggregate;
+use PSX\Data\Record;
+use PSX\Data\RecordInterface;
 use PSX\Data\Schema\PropertyAbstract;
 use PSX\Data\Schema\PropertyInterface;
 use PSX\Data\Schema\ValidationException;
+use RuntimeException;
 
 /**
  * ComplexType
@@ -34,58 +37,11 @@ use PSX\Data\Schema\ValidationException;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class ComplexType extends PropertyAbstract implements IteratorAggregate, Countable
+class ComplexType extends CompositeTypeAbstract
 {
-	protected $properties = array();
-
-	public function add(PropertyInterface $property)
+	public function validate($data, $path = '/')
 	{
-		$this->properties[$property->getName()] = $property;
-
-		return $this;
-	}
-
-	public function get($name)
-	{
-		return isset($this->properties[$name]) ? $this->properties[$name] : null;
-	}
-
-	public function has($name)
-	{
-		return isset($this->properties[$name]);
-	}
-
-	public function remove($name)
-	{
-		if(isset($this->properties[$name]))
-		{
-			unset($this->properties[$name]);
-		}
-	}
-
-	public function getProperties()
-	{
-		return $this->properties;
-	}
-
-	public function getId()
-	{
-		$result     = parent::getId();
-		$properties = $this->properties;
-
-		ksort($properties);
-
-		foreach($properties as $name => $property)
-		{
-			$result.= $name . $property->getId();
-		}
-
-		return md5($result);
-	}
-
-	public function validate($data)
-	{
-		parent::validate($data);
+		parent::validate($data, $path);
 
 		if($data === null)
 		{
@@ -94,19 +50,93 @@ class ComplexType extends PropertyAbstract implements IteratorAggregate, Countab
 
 		if(!$data instanceof \stdClass)
 		{
-			throw new ValidationException($this->getName() . ' must be an object');
+			throw new ValidationException($path . ' must be an object');
+		}
+
+		foreach($this->properties as $name => $property)
+		{
+			$propertyPath = $path === '/' ? '/' : $path . '/';
+			$propertyPath.= $property->getName();
+
+			$property->validate(isset($data->$name) ? $data->$name : null, $propertyPath);
 		}
 
 		return true;
 	}
 
-	public function getIterator()
+	public function assimilate($data, $path = '/')
 	{
-		return new ArrayIterator($this->properties);
+		parent::assimilate($data, $path);
+
+		$data = $this->normalizeToArray($data);
+
+		if(!is_array($data))
+		{
+			throw new RuntimeException($path . ' must be an object');
+		}
+
+		$result = array();
+		foreach($this->properties as $name => $property)
+		{
+			$propertyPath = $path === '/' ? '/' : $path . '/';
+			$propertyPath.= $property->getName();
+
+			if(isset($data[$name]))
+			{
+				$result[$name] = $property->assimilate($data[$name], $propertyPath);
+			}
+			else if($property->isRequired())
+			{
+				throw new RuntimeException($propertyPath . ' is required');
+			}
+		}
+
+		return new Record($this->getName(), $result);
 	}
 
-	public function count()
+	/**
+	 * Returns an value indicating how much the given data structure matches 
+	 * this type
+	 *
+	 * @param mixed $data
+	 * @return integer
+	 */
+	public function match($data)
 	{
-		return count($this->properties);
+		$data = $this->normalizeToArray($data);
+
+		if(is_array($data))
+		{
+			$match = 0;
+			foreach($this->properties as $name => $property)
+			{
+				if(isset($data[$name]))
+				{
+					$match++;
+				}
+				else if($property->isRequired())
+				{
+					return 0;
+				}
+			}
+
+			return $match / count($this->properties);
+		}
+
+		return 0;
+	}
+
+	protected function normalizeToArray($data)
+	{
+		if($data instanceof RecordInterface)
+		{
+			$data = $data->getRecordInfo()->getData();
+		}
+		else if($data instanceof \stdClass)
+		{
+			$data = (array) $data;
+		}
+
+		return $data;
 	}
 }

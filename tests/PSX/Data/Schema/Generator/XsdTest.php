@@ -44,9 +44,11 @@ class XsdTest extends GeneratorTestCase
 			</xs:annotation>
 			<xs:sequence>
 				<xs:element name="tags" type="xs:string" maxOccurs="6" minOccurs="1"/>
-				<xs:element name="receiver" type="tns:type6039818cbcfdcc20777fd8c74a5a392d" maxOccurs="unbounded" minOccurs="1"/>
+				<xs:element name="receiver" type="tns:type11c55f48b558e06534c2dccf005c97cb" maxOccurs="unbounded" minOccurs="1"/>
+				<xs:element name="resources" type="tns:type7faa72cba86513503baa1411b67158f2" maxOccurs="unbounded" minOccurs="0"/>
 				<xs:element name="read" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
-				<xs:element name="author" type="tns:type6039818cbcfdcc20777fd8c74a5a392d" minOccurs="1" maxOccurs="1"/>
+				<xs:element name="source" type="tns:typeb54ac38d5d84a0e86a372e69fa388424" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="author" type="tns:type11c55f48b558e06534c2dccf005c97cb" minOccurs="1" maxOccurs="1"/>
 				<xs:element name="sendDate" type="xs:date" minOccurs="0" maxOccurs="1"/>
 				<xs:element name="readDate" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 				<xs:element name="expires" type="xs:duration" minOccurs="0" maxOccurs="1"/>
@@ -58,7 +60,7 @@ class XsdTest extends GeneratorTestCase
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
-	<xs:complexType name="type6039818cbcfdcc20777fd8c74a5a392d">
+	<xs:complexType name="type11c55f48b558e06534c2dccf005c97cb">
 		<xs:annotation>
 			<xs:documentation>An simple author element with some description</xs:documentation>
 		</xs:annotation>
@@ -83,6 +85,32 @@ class XsdTest extends GeneratorTestCase
 			<xs:element maxOccurs="1" minOccurs="0" name="lat" type="xs:integer"/>
 			<xs:element maxOccurs="1" minOccurs="0" name="long" type="xs:integer"/>
 		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="type35409692d70281177742627a9d6cd1bf">
+		<xs:sequence>
+			<xs:element maxOccurs="1" minOccurs="0" name="resource" type="tns:type7faa72cba86513503baa1411b67158f2"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="type7faa72cba86513503baa1411b67158f2">
+		<xs:choice>
+			<xs:element maxOccurs="1" minOccurs="0" name="location" type="tns:typee081a664cb5227a334bc5e0fa367f178"/>
+			<xs:element maxOccurs="1" minOccurs="0" name="web" type="tns:typeaf92365f86505945496a4ce039023ec6"/>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="typeaf92365f86505945496a4ce039023ec6">
+		<xs:annotation>
+			<xs:documentation>An application</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element maxOccurs="1" minOccurs="0" name="name" type="xs:string"/>
+			<xs:element maxOccurs="1" minOccurs="0" name="url" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="typeb54ac38d5d84a0e86a372e69fa388424">
+		<xs:choice>
+			<xs:element maxOccurs="1" minOccurs="1" name="author" type="tns:type11c55f48b558e06534c2dccf005c97cb"/>
+			<xs:element maxOccurs="1" minOccurs="0" name="web" type="tns:typeaf92365f86505945496a4ce039023ec6"/>
+		</xs:choice>
 	</xs:complexType>
 	<xs:simpleType name="type4e5a1e85b79b2425597aeb1990a51410">
 		<xs:restriction base="xs:float">
@@ -133,7 +161,25 @@ XML;
 	<receiver>
 		<title>bar</title>
 	</receiver>
+	<resources>
+		<web>
+			<name>foo</name>
+			<url>http://google.com</url>
+		</web>
+	</resources>
+	<resources>
+		<location>
+			<lat>13</lat>
+			<long>-37</long>
+		</location>
+	</resources>
 	<read>1</read>
+	<source>
+		<web>
+			<name>foo</name>
+			<url>http://google.com</url>
+		</web>
+	</source>
 	<author>
 		<title>test</title>
 		<categories>foo</categories>

@@ -32,9 +32,9 @@ use PSX\Data\Schema\ValidationException;
  */
 class BooleanType extends PropertySimpleAbstract
 {
-	public function validate($data)
+	public function validate($data, $path = '/')
 	{
-		parent::validate($data);
+		parent::validate($data, $path);
 
 		if($data === null)
 		{
@@ -55,6 +55,13 @@ class BooleanType extends PropertySimpleAbstract
 			}
 		}
 
-		throw new ValidationException($this->getName() . ' must be an boolean');
+		throw new ValidationException($path . ' must be boolean');
+	}
+
+	public function assimilate($data, $path = '/')
+	{
+		parent::assimilate($data, $path);
+
+		return $data === 'false' ? false : (bool) $data;
 	}
 }

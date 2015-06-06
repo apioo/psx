@@ -85,9 +85,9 @@ abstract class PropertySimpleAbstract extends PropertyAbstract
 	/**
 	 * @return boolean
 	 */
-	public function validate($data)
+	public function validate($data, $path = '/')
 	{
-		parent::validate($data);
+		parent::validate($data, $path);
 
 		if($data === null)
 		{
@@ -100,7 +100,7 @@ abstract class PropertySimpleAbstract extends PropertyAbstract
 
 			if(!$result)
 			{
-				throw new ValidationException($this->getName() . ' does not match pattern');
+				throw new ValidationException($path . ' does not match pattern [' . $this->pattern . ']');
 			}
 		}
 
@@ -108,7 +108,7 @@ abstract class PropertySimpleAbstract extends PropertyAbstract
 		{
 			if(!in_array($data, $this->enumeration))
 			{
-				throw new ValidationException($this->getName() . ' is not in enumeration');
+				throw new ValidationException($path . ' is not in enumeration [' . implode(', ', $this->enumeration) . ']');
 			}
 		}
 	}

@@ -21,6 +21,8 @@
 namespace PSX\Data\Schema\Property;
 
 use PSX\Data\Schema\ValidationException;
+use PSX\DateTime\Duration;
+use RuntimeException;
 
 /**
  * DurationType
@@ -31,14 +33,14 @@ use PSX\Data\Schema\ValidationException;
  */
 class DurationType extends StringType
 {
-	public function validate($data)
+	public function validate($data, $path = '/')
 	{
 		if($data instanceof \DateInterval)
 		{
 			return true;
 		}
 
-		parent::validate($data);
+		parent::validate($data, $path);
 
 		if($data === null)
 		{
@@ -54,6 +56,25 @@ class DurationType extends StringType
 			}
 		}
 
-		throw new ValidationException($this->getName() . ' must be an valid duration format [ISO8601]');
+		throw new ValidationException($path . ' must be an valid duration format [ISO8601]');
+	}
+
+	public function assimilate($data, $path = '/')
+	{
+		if($data instanceof \DateInterval)
+		{
+			return Duration::fromDateInterval($data);
+		}
+
+		parent::assimilate($data, $path);
+
+		try
+		{
+			return new Duration($data);
+		}
+		catch(\Exception $e)
+		{
+			throw new RuntimeException($path . ' must be an valid duration format [ISO8601]');
+		}
 	}
 }

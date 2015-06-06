@@ -92,14 +92,17 @@ JSON;
 		$response->setBody($body);
 
 		$controller = $this->loadController($request, $response);
-		$body       = Json::decode((string) $response->getBody());
+		$body       = (string) $response->getBody();
 
-		$expect = array(
-			'success' => true,
-			'message' => 'You have successful update a record',
-		);
+		$expect = <<<JSON
+{
+	"success": true,
+	"message": "You have successful update a record"
+}
+JSON;
 
-		$this->assertEquals($expect, $body);
+		$this->assertEquals(200, $response->getStatusCode(), $body);
+		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
 	}
 
 	public function testDelete()
@@ -111,14 +114,17 @@ JSON;
 		$response->setBody($body);
 
 		$controller = $this->loadController($request, $response);
-		$body       = Json::decode((string) $response->getBody());
+		$body       = (string) $response->getBody();
 
-		$expect = array(
-			'success' => true,
-			'message' => 'You have successful delete a record',
-		);
+		$expect = <<<JSON
+{
+	"success": true,
+	"message": "You have successful delete a record"
+}
+JSON;
 
-		$this->assertEquals($expect, $body);
+		$this->assertEquals(200, $response->getStatusCode(), $body);
+		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
 	}
 
 	protected function getPaths()

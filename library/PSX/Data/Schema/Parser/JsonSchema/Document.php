@@ -164,9 +164,14 @@ class Document
 			$data = array_replace_recursive($data, $part);
 		}
 
-		if(isset($data['title']))
+		if(empty($name))
 		{
-			$name = $data['title'];
+			$name = isset($data['title']) ? $data['title'] : null;
+		}
+
+		if(isset($data['oneOf']) && is_array($data['oneOf']))
+		{
+			return $this->parseOneOf($data, $name, $depth);
 		}
 
 		$type = isset($data['type']) ? $data['type'] : null;
@@ -357,6 +362,23 @@ class Document
 		{
 			$property->setMaxLength($data['maxLength']);
 		}
+	}
+
+	protected function parseOneOf(array $data, $name, $depth)
+	{
+		$choiceType = Property::getChoiceType($name);
+
+		foreach($data['oneOf'] as $row)
+		{
+			$property = $this->getRecProperty($row, $name, $depth);
+
+			if($property instanceof Property\ComplexType)
+			{
+				$choiceType->addElement($property);
+			}
+		}
+
+		return $choiceType;
 	}
 
 	protected function assertVersion(array $data)

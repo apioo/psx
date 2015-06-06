@@ -65,7 +65,7 @@ JSON;
 
 	/**
 	 * @expectedException PSX\Data\Schema\ValidationException
-	 * @expectedExceptionMessage Data object expected at $.author
+	 * @expectedExceptionMessage /author must be an object
 	 */
 	public function testValidateInvalidObject()
 	{
@@ -98,7 +98,7 @@ JSON;
 
 	/**
 	 * @expectedException PSX\Data\Schema\ValidationException
-	 * @expectedExceptionMessage Required property $.author.title not available
+	 * @expectedExceptionMessage /author/title is required
 	 */
 	public function testValidateInvalidObjectKey()
 	{
@@ -131,7 +131,7 @@ JSON;
 
 	/**
 	 * @expectedException PSX\Data\Schema\ValidationException
-	 * @expectedExceptionMessage Data array expected at $.receiver
+	 * @expectedExceptionMessage /receiver must be an array
 	 */
 	public function testValidateInvalidArray()
 	{
@@ -162,7 +162,7 @@ JSON;
 
 	/**
 	 * @expectedException PSX\Data\Schema\ValidationException
-	 * @expectedExceptionMessage Data object expected at $.receiver[0]
+	 * @expectedExceptionMessage /receiver/0 must be an object
 	 */
 	public function testValidateInvalidArrayKey()
 	{

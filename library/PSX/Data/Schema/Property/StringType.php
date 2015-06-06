@@ -71,9 +71,9 @@ class StringType extends PropertySimpleAbstract
 		);
 	}
 
-	public function validate($data)
+	public function validate($data, $path = '/')
 	{
-		parent::validate($data);
+		parent::validate($data, $path);
 
 		if($data === null)
 		{
@@ -90,14 +90,14 @@ class StringType extends PropertySimpleAbstract
 		}
 		else
 		{
-			throw new ValidationException($this->getName() . ' must be a string');
+			throw new ValidationException($path . ' must be a string');
 		}
 
 		if($this->minLength !== null)
 		{
 			if(strlen($data) < $this->minLength)
 			{
-				throw new ValidationException($this->getName() . ' must contain more then ' . $this->minLength . ' characters');
+				throw new ValidationException($path . ' must contain more then ' . $this->minLength . ' characters');
 			}
 		}
 
@@ -105,10 +105,25 @@ class StringType extends PropertySimpleAbstract
 		{
 			if(strlen($data) > $this->maxLength)
 			{
-				throw new ValidationException($this->getName() . ' must contain less then ' . $this->maxLength . ' characters');
+				throw new ValidationException($path . ' must contain less then ' . $this->maxLength . ' characters');
 			}
 		}
 
 		return true;
+	}
+
+	public function assimilate($data, $path = '/')
+	{
+		parent::assimilate($data, $path);
+
+		// data from an blob column gets returned as resource
+		if(is_resource($data))
+		{
+			return base64_encode(stream_get_contents($data, -1, 0));
+		}
+		else
+		{
+			return (string) $data;
+		}
 	}
 }

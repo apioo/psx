@@ -40,7 +40,7 @@ class JsonSchemaTest extends GeneratorTestCase
   "id": "urn:schema.phpsx.org#",
   "description": "An general news entry",
   "definitions": {
-    "ref6039818cbcfdcc20777fd8c74a5a392d": {
+    "ref11c55f48b558e06534c2dccf005c97cb": {
       "type": "object",
       "description": "An simple author element with some description",
       "properties": {
@@ -87,6 +87,19 @@ class JsonSchemaTest extends GeneratorTestCase
         }
       },
       "additionalProperties": false
+    },
+    "refaf92365f86505945496a4ce039023ec6": {
+      "type": "object",
+      "description": "An application",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
     }
   },
   "type": "object",
@@ -102,15 +115,32 @@ class JsonSchemaTest extends GeneratorTestCase
     "receiver": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/ref6039818cbcfdcc20777fd8c74a5a392d"
+        "$ref": "#/definitions/ref11c55f48b558e06534c2dccf005c97cb"
       },
       "minItems": 1
+    },
+    "resources": {
+      "type": "array",
+      "items": {
+        "oneOf": [{
+          "$ref": "#/definitions/refe081a664cb5227a334bc5e0fa367f178"
+        },{
+          "$ref": "#/definitions/refaf92365f86505945496a4ce039023ec6"
+        }]
+      }
     },
     "read": {
       "type": "boolean"
     },
+    "source": {
+      "oneOf": [{
+        "$ref": "#/definitions/ref11c55f48b558e06534c2dccf005c97cb"
+      },{
+        "$ref": "#/definitions/refaf92365f86505945496a4ce039023ec6"
+      }]
+    },
     "author": {
-      "$ref": "#/definitions/ref6039818cbcfdcc20777fd8c74a5a392d"
+      "$ref": "#/definitions/ref11c55f48b558e06534c2dccf005c97cb"
     },
     "sendDate": {
       "type": "string"

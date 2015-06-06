@@ -21,6 +21,8 @@
 namespace PSX\Data\Schema\Property;
 
 use PSX\Data\Schema\ValidationException;
+use PSX\DateTime\Date;
+use RuntimeException;
 
 /**
  * DateType
@@ -31,14 +33,14 @@ use PSX\Data\Schema\ValidationException;
  */
 class DateType extends StringType
 {
-	public function validate($data)
+	public function validate($data, $path = '/')
 	{
 		if($data instanceof \DateTime)
 		{
 			return true;
 		}
 
-		parent::validate($data);
+		parent::validate($data, $path);
 
 		if($data === null)
 		{
@@ -56,6 +58,25 @@ class DateType extends StringType
 			}
 		}
 
-		throw new ValidationException($this->getName() . ' must be an valid full-date format (date-fullyear "-" date-month "-" date-mday) [RFC3339]');
+		throw new ValidationException($path . ' must be an valid full-date format (date-fullyear "-" date-month "-" date-mday) [RFC3339]');
+	}
+
+	public function assimilate($data, $path = '/')
+	{
+		if($data instanceof \DateTime)
+		{
+			return Date::fromDateTime($data);
+		}
+
+		parent::assimilate($data, $path);
+
+		try
+		{
+			return new Date($data);
+		}
+		catch(\Exception $e)
+		{
+			throw new RuntimeException($path . ' must be an valid full-date format (date-fullyear "-" date-month "-" date-mday) [RFC3339]');
+		}
 	}
 }

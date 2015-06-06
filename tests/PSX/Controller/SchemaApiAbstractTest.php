@@ -94,15 +94,17 @@ JSON;
 		$response->setBody($body);
 
 		$controller = $this->loadController($request, $response);
-		$body       = Json::decode((string) $response->getBody());
+		$body       = (string) $response->getBody();
 
-		$expect = array(
-			'success' => true,
-			'message' => 'You have successful create a record',
-		);
+		$expect = <<<JSON
+{
+	"success": true,
+	"message": "You have successful create a record"
+}
+JSON;
 
 		$this->assertEquals(201, $response->getStatusCode(), $body);
-		$this->assertEquals($expect, $body, $body);
+		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
 	}
 
 	public function testPostInvalidTitleLength()
@@ -116,16 +118,18 @@ JSON;
 		$response->setBody($body);
 
 		$controller = $this->loadController($request, $response);
-		$body       = Json::decode((string) $response->getBody());
+		$body       = (string) $response->getBody();
 
-		$expect = array(
-			'success' => false,
-			'message' => 'title must contain less then 16 characters',
-			'title'   => 'Internal Server Error'
-		);
+		$expect = <<<JSON
+{
+	"success": false,
+	"message": "/title must contain less then 16 characters",
+	"title": "Internal Server Error"
+}
+JSON;
 
 		$this->assertEquals(500, $response->getStatusCode(), $body);
-		$this->assertEquals($expect, $body, $body);
+		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
 	}
 
 	public function testPostInvalidFields()
@@ -139,16 +143,18 @@ JSON;
 		$response->setBody($body);
 
 		$controller = $this->loadController($request, $response);
-		$body       = Json::decode((string) $response->getBody());
+		$body       = (string) $response->getBody();
 
-		$expect = array(
-			'success' => false,
-			'message' => 'Required property $.title not available',
-			'title'   => 'Internal Server Error'
-		);
+		$expect = <<<JSON
+{
+	"success": false,
+	"message": "/title is required",
+	"title": "Internal Server Error"
+}
+JSON;
 
 		$this->assertEquals(500, $response->getStatusCode(), $body);
-		$this->assertEquals($expect, $body, $body);
+		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
 	}
 
 	public function testPut()
@@ -160,15 +166,17 @@ JSON;
 		$response->setBody($body);
 
 		$controller = $this->loadController($request, $response);
-		$body       = Json::decode((string) $response->getBody());
+		$body       = (string) $response->getBody();
 
-		$expect = array(
-			'success' => true,
-			'message' => 'You have successful update a record',
-		);
+		$expect = <<<JSON
+{
+	"success": true,
+	"message": "You have successful update a record"
+}
+JSON;
 
 		$this->assertEquals(200, $response->getStatusCode(), $body);
-		$this->assertEquals($expect, $body, $body);
+		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
 	}
 
 	public function testDelete()
@@ -180,15 +188,17 @@ JSON;
 		$response->setBody($body);
 
 		$controller = $this->loadController($request, $response);
-		$body       = Json::decode((string) $response->getBody());
+		$body       = (string) $response->getBody();
 
-		$expect = array(
-			'success' => true,
-			'message' => 'You have successful delete a record',
-		);
+		$expect = <<<JSON
+{
+	"success": true,
+	"message": "You have successful delete a record"
+}
+JSON;
 
 		$this->assertEquals(200, $response->getStatusCode(), $body);
-		$this->assertEquals($expect, $body, $body);
+		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
 	}
 
 	protected function getPaths()

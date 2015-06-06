@@ -69,7 +69,16 @@ interface PropertyInterface
 	 * Validates the given data and throws an exception if the data is not valid
 	 *
 	 * @throws PSX\Data\Schema\ValidationException
+	 * @param mixed $data
 	 * @return boolean
 	 */
 	public function validate($data);
+
+	/**
+	 * Formats the incoming request data to the fitting type
+	 *
+	 * @param mixed $data
+	 * @return boolean
+	 */
+	public function assimilate($data);
 }

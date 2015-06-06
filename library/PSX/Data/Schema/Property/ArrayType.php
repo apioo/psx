@@ -23,6 +23,8 @@ namespace PSX\Data\Schema\Property;
 use PSX\Data\Schema\PropertyAbstract;
 use PSX\Data\Schema\PropertyInterface;
 use PSX\Data\Schema\ValidationException;
+use RuntimeException;
+use Traversable;
 
 /**
  * ArrayType
@@ -31,22 +33,26 @@ use PSX\Data\Schema\ValidationException;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class ArrayType extends PropertyAbstract
+class ArrayType extends CompositeTypeAbstract
 {
-	protected $prototype;
 	protected $minLength;
 	protected $maxLength;
 
+	public function add(PropertyInterface $property)
+	{
+		return $this->setPrototype($property);
+	}
+
 	public function setPrototype(PropertyInterface $prototype)
 	{
-		$this->prototype = $prototype;
+		$this->properties = array('prototype' => $prototype);
 
 		return $this;
 	}
 
 	public function getPrototype()
 	{
-		return $this->prototype;
+		return current($this->properties);
 	}
 
 	public function setMinLength($minLength)
@@ -73,19 +79,9 @@ class ArrayType extends PropertyAbstract
 		return $this->maxLength;
 	}
 
-	public function getId()
+	public function validate($data, $path = '/')
 	{
-		return md5(
-			parent::getId() .
-			($this->prototype ? $this->prototype->getId() : '') .
-			$this->minLength .
-			$this->maxLength
-		);
-	}
-
-	public function validate($data)
-	{
-		parent::validate($data);
+		parent::validate($data, $path);
 
 		if($data === null)
 		{
@@ -94,14 +90,14 @@ class ArrayType extends PropertyAbstract
 
 		if(!is_array($data))
 		{
-			throw new ValidationException($this->getName() . ' must be an array');
+			throw new ValidationException($path . ' must be an array');
 		}
 
 		if($this->minLength !== null)
 		{
 			if(count($data) < $this->minLength)
 			{
-				throw new ValidationException($this->getName() . ' must contain more then ' . $this->minLength . ' elements');
+				throw new ValidationException($path . ' must contain more then ' . $this->minLength . ' elements');
 			}
 		}
 
@@ -109,10 +105,36 @@ class ArrayType extends PropertyAbstract
 		{
 			if(count($data) > $this->maxLength)
 			{
-				throw new ValidationException($this->getName() . ' must contain less then ' . $this->maxLength . ' elements');
+				throw new ValidationException($path . ' must contain less then ' . $this->maxLength . ' elements');
 			}
 		}
 
+		$prototype = $this->getPrototype();
+		foreach($data as $key => $value)
+		{
+			$prototype->validate($value, $path . '/' . $key);
+		}
+
 		return true;
+	}
+
+	public function assimilate($data, $path = '/')
+	{
+		parent::assimilate($data, $path);
+
+		if(!is_array($data) && !$data instanceof Traversable)
+		{
+			throw new RuntimeException($path . ' must be an array');
+		}
+
+		$prototype = $this->getPrototype();
+		$result    = array();
+
+		foreach($data as $value)
+		{
+			$result[] = $prototype->assimilate($value);
+		}
+
+		return $result;
 	}
 }
