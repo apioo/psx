@@ -96,6 +96,13 @@ class JsonSchemaTest extends \PHPUnit_Framework_TestCase
 		$this->assertInstanceOf('PSX\Data\Schema\Property\DurationType', $property->get('duration'));
 		$this->assertInstanceOf('PSX\Data\Schema\Property\TimeType', $property->get('time'));
 		$this->assertInstanceOf('PSX\Data\Schema\Property\StringType', $property->get('unknown'));
+
+		$this->assertInstanceOf('PSX\Data\Schema\Property\ChoiceType', $property->get('choice'));
+		$this->assertEquals(2, count($property->get('choice')->getProperties()));
+		$this->assertInstanceOf('PSX\Data\Schema\Property\ComplexType', $property->get('choice')->get('foo'));
+		$this->assertInstanceOf('PSX\Data\Schema\Property\ComplexType', $property->get('choice')->get('bar'));
+		$this->assertInstanceOf('PSX\Data\Schema\Property\StringType', $property->get('choice')->get('foo')->get('foo'));
+		$this->assertInstanceOf('PSX\Data\Schema\Property\StringType', $property->get('choice')->get('bar')->get('bar'));
 	}
 
 	/**

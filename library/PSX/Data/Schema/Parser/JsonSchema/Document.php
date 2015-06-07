@@ -366,15 +366,18 @@ class Document
 
 	protected function parseOneOf(array $data, $name, $depth)
 	{
-		$choiceType = Property::getChoiceType($name);
+		$choiceType = Property::getChoice($name);
 
 		foreach($data['oneOf'] as $row)
 		{
-			$property = $this->getRecProperty($row, $name, $depth);
-
-			if($property instanceof Property\ComplexType)
+			if(isset($row['title']))
 			{
-				$choiceType->addElement($property);
+				$property = $this->getRecProperty($row, null, $depth);
+
+				if($property instanceof Property\ComplexType)
+				{
+					$choiceType->add($property);
+				}
 			}
 		}
 

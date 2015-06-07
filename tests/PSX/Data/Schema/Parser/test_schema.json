@@ -42,6 +42,25 @@
                 "type": "string"
             }
         },
+        "choice": {
+            "oneOf": [{
+                "title": "foo",
+                "type": "object",
+                "properties": {
+                    "foo": {
+                        "type": "string"
+                    }
+                }
+            },{
+                "title": "bar",
+                "type": "object",
+                "properties": {
+                    "bar": {
+                        "type": "string"
+                    }
+                }
+            }]
+        },
         "boolean": {
             "type": "boolean"
         },
