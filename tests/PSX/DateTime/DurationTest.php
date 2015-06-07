@@ -167,4 +167,10 @@ class DurationTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(31104000, Duration::getSecondsFromInterval(new DateInterval('P12M')));
 		$this->assertEquals(31536000, Duration::getSecondsFromInterval(new DateInterval('P1Y')));
 	}
+
+	public function testFromDateInterval()
+	{
+		$this->assertEquals('P2015Y4M25DT19H35M20S', Duration::fromDateInterval(new DateInterval('P2015Y4M25DT19H35M20S'))->toString());
+		$this->assertEquals('PT60S', Duration::fromDateInterval(new DateInterval('PT60S'))->toString());
+	}
 }
