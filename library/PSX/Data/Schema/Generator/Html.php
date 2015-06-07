@@ -37,7 +37,6 @@ use PSX\Data\Schema\PropertySimpleAbstract;
 class Html implements GeneratorInterface
 {
 	protected $_types;
-	protected $_renameType;
 
 	public function generate(SchemaInterface $schema)
 	{
