@@ -93,8 +93,16 @@ class PropertyDocumentationTest extends ControllerTestCase
 	{
 		$testCase->assertInternalType('array', $record->getArray());
 		$testCase->assertEquals(['bar'], $record->getArray());
+		$testCase->assertInternalType('array', $record->getArrayComplex());
+		$testCase->assertInstanceOf('PSX\Data\RecordInterface', $record->getArrayComplex()[0]);
+		$testCase->assertEquals(['foo' => 'bar'], $record->getArrayComplex()[0]->getRecordInfo()->getFields());
+		$testCase->assertInstanceOf('PSX\Data\RecordInterface', $record->getArrayComplex()[1]);
+		$testCase->assertEquals(['foo' => 'foo'], $record->getArrayComplex()[1]->getRecordInfo()->getFields());
+		$testCase->assertInternalType('array', $record->getArrayChoice());
 		$testCase->assertInternalType('boolean', $record->getBoolean());
 		$testCase->assertEquals(true, $record->getBoolean());
+		$testCase->assertInstanceOf('PSX\Data\RecordInterface', $record->getChoice());
+		$testCase->assertEquals(['foo' => 'bar'], $record->getComplex()->getRecordInfo()->getFields());
 		$testCase->assertInstanceOf('PSX\Data\RecordInterface', $record->getComplex());
 		$testCase->assertEquals(['foo' => 'bar'], $record->getComplex()->getRecordInfo()->getFields());
 		$testCase->assertInstanceOf('PSX\DateTime\Date', $record->getDate());
@@ -142,7 +150,22 @@ class PropertyDocumentationTest extends ControllerTestCase
 				// we return actual types
 				return array(
 					'array' => ['bar'],
+					'arrayComplex' => [[
+						'foo' => 'bar'
+					],[
+						'foo' => 'foo'
+					]],
+					'arrayChoice' => [[
+						'foo' => 'baz'
+					],[
+						'bar' => 'bar'
+					],[
+						'foo' => 'foo'
+					]],
 					'boolean' => true,
+					'choice' => [
+						'bar' => 'test'
+					],
 					'complex' => [
 						'foo' => 'bar'
 					],
@@ -160,7 +183,22 @@ class PropertyDocumentationTest extends ControllerTestCase
 				// we return only strings like from an database
 				return array(
 					'array' => ['bar'],
+					'arrayComplex' => [[
+						'foo' => 'bar'
+					],[
+						'foo' => 'foo'
+					]],
+					'arrayChoice' => [[
+						'foo' => 'baz'
+					],[
+						'bar' => 'bar'
+					],[
+						'foo' => 'foo'
+					]],
 					'boolean' => 'true',
+					'choice' => [
+						'bar' => 'test'
+					],
 					'complex' => [
 						'foo' => 'bar'
 					],
@@ -178,7 +216,22 @@ class PropertyDocumentationTest extends ControllerTestCase
 				// we return types which we get from the doctrine mapper
 				return array(
 					'array' => ['bar'],
+					'arrayComplex' => [[
+						'foo' => 'bar'
+					],[
+						'foo' => 'foo'
+					]],
+					'arrayChoice' => [[
+						'foo' => 'baz'
+					],[
+						'bar' => 'bar'
+					],[
+						'foo' => 'foo'
+					]],
 					'boolean' => true,
+					'choice' => [
+						'bar' => 'test'
+					],
 					'complex' => [
 						'foo' => 'bar'
 					],
@@ -206,7 +259,22 @@ class PropertyDocumentationTest extends ControllerTestCase
     "array": [
         "bar"
     ],
+    "arrayComplex": [{
+        "foo": "bar"
+    },{
+        "foo": "foo"
+    }],
+    "arrayChoice": [{
+        "foo": "baz"
+    },{
+        "bar": "bar"
+    },{
+        "foo": "foo"
+    }],
     "boolean": true,
+    "choice": {
+        "bar": "test"
+    },
     "complex": {
         "foo": "bar"
     },

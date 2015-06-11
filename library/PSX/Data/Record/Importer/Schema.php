@@ -21,20 +21,13 @@
 namespace PSX\Data\Record\Importer;
 
 use InvalidArgumentException;
-use PSX\Data\Record as DataRecord;
 use PSX\Data\Record\FactoryFactory;
 use PSX\Data\Record\ImporterInterface;
 use PSX\Data\SchemaInterface;
-use PSX\Data\Schema\Property;
-use PSX\Data\Schema\PropertyInterface;
+use PSX\Data\Schema\Assimilator;
+use PSX\Data\Schema\SchemaTraverser;
+use PSX\Data\Schema\Visitor\AssimilationVisitor;
 use PSX\Data\Schema\ValidatorInterface;
-use PSX\DateTime;
-use PSX\DateTime\Date;
-use PSX\DateTime\Duration;
-use PSX\DateTime\Time;
-use ReflectionClass;
-use ReflectionException;
-use ReflectionMethod;
 
 /**
  * Imports data based on an given schema. Validates also the data if an 
@@ -46,13 +39,11 @@ use ReflectionMethod;
  */
 class Schema implements ImporterInterface
 {
-	protected $validator;
-	protected $factory;
+	protected $assimilator;
 
-	public function __construct(ValidatorInterface $validator, FactoryFactory $factory)
+	public function __construct(Assimilator $assimilator)
 	{
-		$this->validator = $validator;
-		$this->factory   = $factory;
+		$this->assimilator = $assimilator;
 	}
 
 	public function accept($schema)
@@ -72,146 +63,6 @@ class Schema implements ImporterInterface
 			throw new InvalidArgumentException('Data must be an stdClass');
 		}
 
-		$this->validator->validate($schema, $data);
-
-		return $this->recImport($schema->getDefinition(), $data);
-	}
-
-	protected function recImport(PropertyInterface $type, $data)
-	{
-		$reference = $type->getReference();
-
-		if($type instanceof Property\ComplexType)
-		{
-			$properties = $type->getProperties();
-			$fields     = array();
-
-			foreach($properties as $name => $property)
-			{
-				if(isset($data->$name))
-				{
-					$fields[$name] = $this->recImport($property, $data->$name);
-				}
-			}
-
-			if(empty($reference))
-			{
-				return new DataRecord($type->getName(), $fields);
-			}
-			else
-			{
-				return $this->getComplexReference($reference, $fields);
-			}
-		}
-		else if($type instanceof Property\ArrayType)
-		{
-			$prototype = $type->getPrototype();
-			$values    = array();
-
-			foreach($data as $value)
-			{
-				$values[] = $this->recImport($prototype, $value);
-			}
-
-			return $values;
-		}
-		else if($type instanceof Property\BooleanType)
-		{
-			$data = $data === 'false' ? false : (bool) $data;
-
-			return empty($reference) ? $data : $this->getSimpleReference($reference, $data);
-		}
-		else if($type instanceof Property\DateTimeType)
-		{
-			return empty($reference) ? new DateTime($data) : $this->getSimpleReference($reference, $data);
-		}
-		else if($type instanceof Property\DateType)
-		{
-			return empty($reference) ? new Date($data) : $this->getSimpleReference($reference, $data);
-		}
-		else if($type instanceof Property\TimeType)
-		{
-			return empty($reference) ? new Time($data) : $this->getSimpleReference($reference, $data);
-		}
-		else if($type instanceof Property\DurationType)
-		{
-			return empty($reference) ? new Duration($data) : $this->getSimpleReference($reference, $data);
-		}
-		else if($type instanceof Property\FloatType)
-		{
-			$data = (float) $data;
-
-			return empty($reference) ? $data : $this->getSimpleReference($reference, $data);
-		}
-		else if($type instanceof Property\IntegerType)
-		{
-			$data = (int) $data;
-
-			return empty($reference) ? $data : $this->getSimpleReference($reference, $data);
-		}
-		else
-		{
-			$data = (string) $data;
-
-			return empty($reference) ? $data : $this->getSimpleReference($reference, $data);
-		}
-	}
-
-	protected function getComplexReference($reference, array $fields)
-	{
-		$class = new ReflectionClass($reference);
-
-		if($class->implementsInterface('PSX\Data\RecordInterface'))
-		{
-			$record = $class->newInstance();
-
-			foreach($fields as $key => $value)
-			{
-				try
-				{
-					$methodName = 'set' . ucfirst($key);
-					$method     = $class->getMethod($methodName);
-
-					if($method instanceof ReflectionMethod)
-					{
-						$method->invokeArgs($record, array($value));
-					}
-				}
-				catch(ReflectionException $e)
-				{
-					// method does not exist
-				}
-			}
-
-			return $record;
-		}
-		else if($class->implementsInterface('PSX\Data\Record\FactoryInterface'))
-		{
-			return $this->factory->getFactory($reference)->factory((object) $fields, $this);
-		}
-		else
-		{
-			return $class->newInstance($fields);
-		}
-	}
-
-	protected function getSimpleReference($reference, $value)
-	{
-		try
-		{
-			$class       = new ReflectionClass($reference);
-			$constructor = $class->getConstructor();
-
-			if($constructor instanceof ReflectionMethod && $constructor->getNumberOfRequiredParameters() == 1)
-			{
-				return $class->newInstance($value);
-			}
-		}
-		catch(ReflectionException $e)
-		{
-			// class does not exist
-		}
-
-		return $value;
+		return $this->assimilator->assimilate($schema, $data, true, SchemaTraverser::TYPE_INCOMING);
 	}
 }

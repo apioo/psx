@@ -18,28 +18,34 @@
  * limitations under the License.
  */
 
-namespace PSX\Data\Schema\Property;
-
-use PSX\Data\Schema\Property;
+namespace PSX\Data\Schema;
 
 /**
- * TimeTypeTest
+ * VisitorInterface
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class TimeTypeTest extends \PHPUnit_Framework_TestCase
+interface VisitorInterface
 {
-	public function testGetId()
-	{
-		$property = Property::getTime('test');
+	public function visitArray(array $data, Property\ArrayType $property, $path);
 
-		$this->assertEquals('47accd81ab154402a4d76b711a8b9ebd', $property->getId());
-	}
+	public function visitBoolean($data, Property\BooleanType $property, $path);
 
-	public function testGetTypeName()
-	{
-		$this->assertEquals('time', Property::getTime('test')->getTypeName());
-	}
+	public function visitComplex(\stdClass $data, Property\ComplexType $property, $path);
+
+	public function visitDateTime($data, Property\DateTimeType $property, $path);
+
+	public function visitDate($data, Property\DateType $property, $path);
+
+	public function visitDuration($data, Property\DurationType $property, $path);
+
+	public function visitFloat($data, Property\FloatType $property, $path);
+
+	public function visitInteger($data, Property\IntegerType $property, $path);
+
+	public function visitString($data, Property\StringType $property, $path);
+
+	public function visitTime($data, Property\TimeType $property, $path);
 }

@@ -32,36 +32,4 @@ use PSX\Data\Schema\ValidationException;
  */
 class BooleanType extends PropertySimpleAbstract
 {
-	public function validate($data, $path = '/')
-	{
-		parent::validate($data, $path);
-
-		if($data === null)
-		{
-			return true;
-		}
-
-		if(is_bool($data))
-		{
-			return true;
-		}
-		else if(is_scalar($data))
-		{
-			$result = preg_match('/^true|false|1|0$/', $data);
-
-			if($result)
-			{
-				return true;
-			}
-		}
-
-		throw new ValidationException($path . ' must be boolean');
-	}
-
-	public function assimilate($data, $path = '/')
-	{
-		parent::assimilate($data, $path);
-
-		return $data === 'false' ? false : (bool) $data;
-	}
 }

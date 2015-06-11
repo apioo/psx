@@ -31,67 +31,6 @@ use PSX\Data\Schema\Property;
  */
 class DateTypeTest extends \PHPUnit_Framework_TestCase
 {
-	public function testValidate()
-	{
-		$property = Property::getDate('test');
-
-		$this->assertTrue($property->validate('2000-01-01'));
-		$this->assertTrue($property->validate('2000-01-01+13:00'));
-	}
-
-	/**
-	 * @expectedException PSX\Data\Schema\ValidationException
-	 */
-	public function testValidateInvalidFormat()
-	{
-		$property = Property::getDate('test');
-
-		$property->validate('foo');
-	}
-
-	/**
-	 * @expectedException PSX\Data\Schema\ValidationException
-	 */
-	public function testValidateInvalidTimezone()
-	{
-		$property = Property::getDate('test');
-
-		$property->validate('2000-01-01+25:00');
-	}
-
-	public function testValidateNull()
-	{
-		$property = Property::getDate('test');
-
-		$this->assertTrue($property->validate(null));
-	}
-
-	public function testValidateDateTime()
-	{
-		$property = Property::getDate('test');
-
-		$this->assertTrue($property->validate(new \DateTime()));
-	}
-
-	public function testAssimilate()
-	{
-		$property = Property::getDate('test');
-
-		$this->assertInstanceOf('PSX\DateTime\Date', $property->assimilate('2000-01-01'));
-		$this->assertInstanceOf('PSX\DateTime\Date', $property->assimilate('2000-01-01+13:00'));
-		$this->assertInstanceOf('DateTime', $property->assimilate(new \DateTime()));
-	}
-
-	/**
-	 * @expectedException RuntimeException
-	 */
-	public function testAssimilateInvalidFormat()
-	{
-		$property = Property::getDate('test');
-
-		$property->assimilate('foo');
-	}
-
 	public function testGetId()
 	{
 		$property = Property::getDate('test');

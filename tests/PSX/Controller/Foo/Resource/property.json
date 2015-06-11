@@ -9,15 +9,68 @@
                 "type": "string"
             }
         },
+        "arrayComplex": {
+            "type": "array",
+            "items": {
+                "title": "a",
+                "type": "object",
+                "properties": {
+                    "foo": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "arrayChoice": {
+            "type": "array",
+            "items": {
+                "oneOf": [{
+                    "title": "a",
+                    "type": "object",
+                    "properties": {
+                        "foo": {
+                            "type": "string"
+                        }
+                    }
+                },{
+                    "title": "b",
+                    "type": "object",
+                    "properties": {
+                        "bar": {
+                            "type": "string"
+                        }
+                    }
+                }]
+            }
+        },
         "boolean": {
             "type": "boolean"
+        },
+        "choice": {
+            "oneOf": [{
+                "title": "a",
+                "type": "object",
+                "properties": {
+                    "foo": {
+                        "type": "string"
+                    }
+                }
+            },{
+                "title": "b",
+                "type": "object",
+                "properties": {
+                    "bar": {
+                        "type": "string"
+                    }
+                }
+            }]
         },
         "complex": {
             "type": "object",
             "properties": {
-		        "foo": {
-		            "type": "string"
-		        }
+                "foo": {
+                    "type": "string"
+                }
             }
         },
         "date": {

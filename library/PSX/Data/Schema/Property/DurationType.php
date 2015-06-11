@@ -33,48 +33,4 @@ use RuntimeException;
  */
 class DurationType extends StringType
 {
-	public function validate($data, $path = '/')
-	{
-		if($data instanceof \DateInterval)
-		{
-			return true;
-		}
-
-		parent::validate($data, $path);
-
-		if($data === null)
-		{
-			return true;
-		}
-		else if(is_string($data))
-		{
-			$result = preg_match('/^' . \PSX\DateTime\Duration::getPattern() . '$/', $data);
-
-			if($result)
-			{
-				return true;
-			}
-		}
-
-		throw new ValidationException($path . ' must be an valid duration format [ISO8601]');
-	}
-
-	public function assimilate($data, $path = '/')
-	{
-		if($data instanceof \DateInterval)
-		{
-			return Duration::fromDateInterval($data);
-		}
-
-		parent::assimilate($data, $path);
-
-		try
-		{
-			return new Duration($data);
-		}
-		catch(\Exception $e)
-		{
-			throw new RuntimeException($path . ' must be an valid duration format [ISO8601]');
-		}
-	}
 }

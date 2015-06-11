@@ -23,6 +23,7 @@ namespace PSX\Data\Schema;
 use InvalidArgumentException;
 use PSX\Data\Record;
 use PSX\Data\RecordInterface;
+use PSX\Data\Record\FactoryFactory;
 use PSX\Data\SchemaInterface;
 use PSX\Data\Schema\Property;
 use PSX\Data\Schema\PropertyInterface;
@@ -39,17 +40,27 @@ use PSX\DateTime\Time;
  */
 class Assimilator
 {
+	protected $factory;
+	protected $traverser;
+
+	public function __construct(FactoryFactory $factory)
+	{
+		$this->factory   = $factory;
+		$this->traverser = new SchemaTraverser();
+	}
+
 	/**
-	 * Takes an array and fits it accoring to the specification. Removes all 
-	 * unknown keys. If an value doesnt fit or an required parameter is missing 
-	 * it throws an exception
+	 * Takes an array and fits it accoring to the specification. If validate is 
+	 * true all values are also validated
 	 *
 	 * @param array $data
 	 * @param PSX\Data\SchemaInterface $schema
+	 * @param boolean $validate
+	 * @param integer $type
 	 * @return array
 	 */
-	public function assimilate(SchemaInterface $schema, $data)
+	public function assimilate(SchemaInterface $schema, $data, $validate = false, $type = SchemaTraverser::TYPE_OUTGOING)
 	{
-		return $schema->getDefinition()->assimilate($data);
+		return $this->traverser->traverse($data, $schema, new Visitor\AssimilationVisitor($validate, $this->factory), $type);
 	}
 }

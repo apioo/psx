@@ -38,7 +38,7 @@ class AssimilatorTest extends \PHPUnit_Framework_TestCase
 
 	protected function setUp()
 	{
-		$this->assimilator = new Assimilator();
+		$this->assimilator = Environment::getService('schema_assimilator');
 		$this->schema      = Environment::getService('schema_manager')->getSchema('PSX\Data\Schema\AssimilatorSchema');
 	}
 
@@ -117,7 +117,7 @@ class AssimilatorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException RuntimeException
+	 * @expectedException PSX\Data\Schema\ValidationException
 	 */
 	public function testAssimilateMissingRequired()
 	{
@@ -140,7 +140,7 @@ class AssimilatorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException RuntimeException
+	 * @expectedException PSX\Data\Schema\ValidationException
 	 */
 	public function testAssimilateComplexTypeString()
 	{
@@ -153,7 +153,7 @@ class AssimilatorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException RuntimeException
+	 * @expectedException PSX\Data\Schema\ValidationException
 	 */
 	public function testAssimilateArrayTypeString()
 	{

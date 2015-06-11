@@ -34,53 +34,13 @@ use RuntimeException;
  */
 class ChoiceType extends CompositeTypeAbstract
 {
-	public function validate($data, $path = '/')
+	public function add(PropertyInterface $property)
 	{
-		parent::validate($data, $path);
-
-		if($data === null)
+		if(!$property instanceof ComplexType)
 		{
-			return true;
+			throw new RuntimeException('Choice property accepts only complex types ' . get_class($property). ' given');
 		}
 
-		foreach($this->properties as $property)
-		{
-			try
-			{
-				if($property->validate($data, $path) === true)
-				{
-					return true;
-				}
-			}
-			catch(ValidationException $e)
-			{
-			}
-		}
-
-		throw new ValidationException($path . ' must be one of the following objects [' . implode(', ', array_keys($this->properties)) . ']');
-	}
-
-	public function assimilate($data, $path = '/')
-	{
-		parent::assimilate($data, $path);
-
-		$matches = array();
-		foreach($this->properties as $index => $property)
-		{
-			$value = $property->match($data);
-			if($value > 0)
-			{
-				$matches[$index] = $value;
-			}
-		}
-
-		if(empty($matches))
-		{
-			throw new RuntimeException($path . ' must be one of the following objects [' . implode(', ', array_keys($this->properties)) . ']');
-		}
-
-		arsort($matches);
-
-		return $this->properties[key($matches)]->assimilate($data);
+		return parent::add($property);
 	}
 }

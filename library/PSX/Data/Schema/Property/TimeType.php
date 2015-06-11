@@ -33,48 +33,4 @@ use RuntimeException;
  */
 class TimeType extends StringType
 {
-	public function validate($data, $path = '/')
-	{
-		if($data instanceof \DateTime)
-		{
-			return true;
-		}
-
-		parent::validate($data, $path);
-
-		if($data === null)
-		{
-			return true;
-		}
-		else if(is_string($data))
-		{
-			$result = preg_match('/^' . \PSX\DateTime\Time::getPattern() . '$/', $data);
-
-			if($result)
-			{
-				return true;
-			}
-		}
-
-		throw new ValidationException($path . ' must be an valid full-time format (partial-time time-offset) [RFC3339]');
-	}
-
-	public function assimilate($data, $path = '/')
-	{
-		if($data instanceof \DateTime)
-		{
-			return Time::fromDateTime($data);
-		}
-
-		parent::assimilate($data, $path);
-
-		try
-		{
-			return new Time($data);
-		}
-		catch(\Exception $e)
-		{
-			throw new RuntimeException($path . ' must be an valid full-time format (partial-time time-offset) [RFC3339]');
-		}
-	}
 }

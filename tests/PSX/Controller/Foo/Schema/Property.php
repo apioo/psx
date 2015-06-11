@@ -34,13 +34,28 @@ class Property extends SchemaAbstract
 {
 	public function getDefinition()
 	{
+		$sb = $this->getSchemaBuilder('a');
+		$sb->string('foo');
+		$complexA = $sb->getProperty();
+
+		$sb = $this->getSchemaBuilder('b');
+		$sb->string('bar');
+		$complexB = $sb->getProperty();
+
+		$choice = SchemaProperty::getChoice("choice")
+			->add($complexA)
+			->add($complexB);
+
 		$sb = $this->getSchemaBuilder('complex');
 		$sb->string('foo');
 		$complex = $sb->getProperty();
 
 		$sb = $this->getSchemaBuilder('property');
 		$sb->arrayType('array')->setPrototype(SchemaProperty::getString('foo'));
+		$sb->arrayType('arrayComplex')->setPrototype($complex);
+		$sb->arrayType('arrayChoice')->setPrototype($choice);
 		$sb->boolean('boolean');
+		$sb->choiceType($choice);
 		$sb->complexType($complex);
 		$sb->date('date');
 		$sb->dateTime('dateTime');

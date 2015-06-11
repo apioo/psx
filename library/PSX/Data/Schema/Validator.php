@@ -34,8 +34,15 @@ use PSX\Data\Schema\PropertyInterface;
  */
 class Validator implements ValidatorInterface
 {
-	public function validate(SchemaInterface $schema, $data)
+	protected $traverser;
+
+	public function __construct()
 	{
-		return $schema->getDefinition()->validate($data);
+		$this->traverser = new SchemaTraverser();
+	}
+
+	public function validate(SchemaInterface $schema, $data, $type = SchemaTraverser::TYPE_OUTGOING)
+	{
+		return $this->traverser->traverse($data, $schema, new Visitor\ValidationVisitor(), $type);
 	}
 }

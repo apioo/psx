@@ -31,69 +31,6 @@ use PSX\Data\Schema\Property;
  */
 class BooleanTypeTest extends \PHPUnit_Framework_TestCase
 {
-	public function testValidate()
-	{
-		$property = Property::getBoolean('test');
-
-		$this->assertTrue($property->validate(true));
-		$this->assertTrue($property->validate(false));
-		$this->assertTrue($property->validate(1));
-		$this->assertTrue($property->validate(0));
-		$this->assertTrue($property->validate('1'));
-		$this->assertTrue($property->validate('0'));
-		$this->assertTrue($property->validate('true'));
-		$this->assertTrue($property->validate('false'));
-	}
-
-	/**
-	 * @expectedException PSX\Data\Schema\ValidationException
-	 */
-	public function testValidateInvalidString()
-	{
-		$property = Property::getBoolean('test');
-
-		$property->validate('foo');
-	}
-
-	/**
-	 * @expectedException PSX\Data\Schema\ValidationException
-	 */
-	public function testValidateInvalidFormat()
-	{
-		$property = Property::getBoolean('test');
-
-		$property->validate(4);
-	}
-
-	public function testValidateNull()
-	{
-		$property = Property::getBoolean('test');
-
-		$this->assertTrue($property->validate(null));
-	}
-
-	public function testAssimilate()
-	{
-		$property = Property::getBoolean('test');
-
-		$this->assertInternalType('boolean', $property->assimilate(1));
-		$this->assertEquals(true, $property->assimilate(true));
-		$this->assertEquals(false, $property->assimilate(false));
-		$this->assertEquals(true, $property->assimilate(1));
-		$this->assertEquals(false, $property->assimilate(0));
-		$this->assertEquals(true, $property->assimilate('1'));
-		$this->assertEquals(false, $property->assimilate('0'));
-		$this->assertEquals(true, $property->assimilate('true'));
-		$this->assertEquals(false, $property->assimilate('false'));
-	}
-
-	public function testAssimilateInvalidFormat()
-	{
-		$property = Property::getBoolean('test');
-
-		$this->assertEquals(true, $property->assimilate(4));
-	}
-
 	public function testGetId()
 	{
 		$property = Property::getBoolean('test');
