@@ -21,7 +21,6 @@
 namespace PSX\Swagger;
 
 use PSX\Data\Record\FactoryInterface;
-use PSX\Data\Record\ImporterInterface;
 use RuntimeException;
 
 /**
@@ -33,14 +32,21 @@ use RuntimeException;
  */
 class ModelFactory implements FactoryInterface
 {
-	public function factory($data, ImporterInterface $importer)
+	/**
+	 * @Inject
+	 * @var PSX\Data\Record\ImporterManager
+	 */
+	protected $importerManager;
+
+	public function factory($data)
 	{
 		if(!$data instanceof \stdClass)
 		{
 			throw new RuntimeException('Models must be an object');
 		}
 
-		$models = new \stdClass();
+		$importer = $this->importerManager->getImporterByInstance('PSX\Data\Record\Importer\Record');
+		$models   = new \stdClass();
 
 		foreach($data as $name => $value)
 		{

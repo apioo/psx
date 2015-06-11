@@ -21,7 +21,6 @@
 namespace PSX\Data\Record\Importer\Test;
 
 use PSX\Data\Record\FactoryInterface;
-use PSX\Data\Record\ImporterInterface;
 
 /**
  * Factory
@@ -32,7 +31,7 @@ use PSX\Data\Record\ImporterInterface;
  */
 class Factory implements FactoryInterface
 {
-	public function factory($data, ImporterInterface $importer)
+	public function factory($data)
 	{
 		$return = new \stdClass();
 		$return->value = isset($data->sig) ? $data->sig : null;

@@ -192,7 +192,7 @@ class Record implements ImporterInterface
 		}
 		else if($class->implementsInterface('PSX\Data\Record\FactoryInterface'))
 		{
-			return $this->factory->getFactory($type)->factory($value, $this);
+			return $this->factory->getFactory($type)->factory($value);
 		}
 		else
 		{

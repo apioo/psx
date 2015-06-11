@@ -20,6 +20,8 @@
 
 namespace PSX\Data\Record;
 
+use PSX\Test\Environment;
+
 /**
  * FactoryFactoryTest
  *
@@ -31,10 +33,13 @@ class FactoryFactoryTest extends \PHPUnit_Framework_TestCase
 {
 	public function testGetFactory()
 	{
-		$factoryFactory = new FactoryFactory();
+		$factoryFactory = Environment::getService('record_factory_factory');
 		$factory = $factoryFactory->getFactory('PSX\Data\Record\FooFactory');
 
 		$this->assertInstanceOf('PSX\Data\Record\FooFactory', $factory);
+
+		// check whether the dependencies were injected
+		$this->assertInstanceOf('PSX\Data\Schema\SchemaManager', $factory->getSchemaManager());
 	}
 
 	/**
@@ -42,24 +47,34 @@ class FactoryFactoryTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testGetFactoryInvalidClass()
 	{
-		$factoryFactory = new FactoryFactory();
+		$factoryFactory = Environment::getService('record_factory_factory');
 		$factoryFactory->getFactory('stdClass');
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException ReflectionException
 	 */
 	public function testGetFactoryClassNotExist()
 	{
-		$factoryFactory = new FactoryFactory();
+		$factoryFactory = Environment::getService('record_factory_factory');
 		$factoryFactory->getFactory('foo');
 	}
 }
 
 class FooFactory implements FactoryInterface
 {
-	public function factory($data, ImporterInterface $importer)
+	/**
+	 * @Inject
+	 */
+	protected $schemaManager;
+
+	public function factory($data)
 	{
+	}
+
+	public function getSchemaManager()
+	{
+		return $this->schemaManager;
 	}
 }
 

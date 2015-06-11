@@ -21,13 +21,11 @@
 namespace PSX\Data\Record;
 
 use InvalidArgumentException;
+use PSX\Dependency\ObjectBuilderInterface;
 
 /**
- * This factory produces record factory classes. If you have an annotation in an 
- * record which points to an class which implements the FactoryInterface the
- * factory method will be called to create the factory class. If your factory 
- * has dependecies i.e. an database connection you can build your own factory
- * to provide such dependencies
+ * This factory produces record factory classes. A factory can use @Inject 
+ * annotations to get any needed dependencies from the DI container
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
@@ -35,29 +33,24 @@ use InvalidArgumentException;
  */
 class FactoryFactory
 {
+	protected $objectBuilder;
+
+	public function __construct(ObjectBuilderInterface $objectBuilder)
+	{
+		$this->objectBuilder = $objectBuilder;
+	}
+
 	public function getFactory($className)
 	{
-		if(class_exists($className))
-		{
-			$factory = $this->createInstance($className);
+		$factory = $this->objectBuilder->getObject($className);
 
-			if($factory instanceof FactoryInterface)
-			{
-				return $factory;
-			}
-			else
-			{
-				throw new InvalidArgumentException('Factory must be an instanceof PSX\Data\Record\FactoryInterface');
-			}
+		if($factory instanceof FactoryInterface)
+		{
+			return $factory;
 		}
 		else
 		{
-			throw new InvalidArgumentException('Factory class "' . $className . '" does not exist');
+			throw new InvalidArgumentException('Factory must be an instanceof PSX\Data\Record\FactoryInterface');
 		}
-	}
-
-	protected function createInstance($className)
-	{
-		return new $className();
 	}
 }

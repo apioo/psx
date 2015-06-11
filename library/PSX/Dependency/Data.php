@@ -100,7 +100,7 @@ trait Data
 	{
 		$manager = new ImporterManager();
 		$manager->addImporter(new Importer\Record($this->get('record_factory_factory')), 16);
-		$manager->addImporter(new Importer\Schema($this->get('schema_validator'), $this->get('record_factory_factory')), 8);
+		$manager->addImporter(new Importer\Schema($this->get('schema_assimilator')), 8);
 		$manager->addImporter(new Importer\Table(), 0);
 
 		return $manager;
@@ -127,7 +127,7 @@ trait Data
 	 */
 	public function getSchemaAssimilator()
 	{
-		return new Assimilator();
+		return new Assimilator($this->get('record_factory_factory'));
 	}
 
 	/**
@@ -135,7 +135,7 @@ trait Data
 	 */
 	public function getRecordFactoryFactory()
 	{
-		return new FactoryFactory();
+		return new FactoryFactory($this->get('object_builder'));
 	}
 
 	/**

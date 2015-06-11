@@ -21,10 +21,10 @@
 namespace PSX\ActivityStream;
 
 use PSX\Data\Record\FactoryInterface;
-use PSX\Data\Record\ImporterInterface;
+use PSX\Data\Record\Importer;
 
 /**
- * Object
+ * ObjectFactory
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
@@ -32,7 +32,13 @@ use PSX\Data\Record\ImporterInterface;
  */
 class ObjectFactory implements FactoryInterface
 {
-	public function factory($data, ImporterInterface $importer)
+	/**
+	 * @Inject
+	 * @var PSX\Data\Record\ImporterManager
+	 */
+	protected $importerManager;
+
+	public function factory($data)
 	{
 		if($data instanceof \stdClass)
 		{
@@ -52,6 +58,8 @@ class ObjectFactory implements FactoryInterface
 				$object = new Object();
 			}
 
+			$importer = $this->importerManager->getImporterByInstance('PSX\Data\Record\Importer\Record');
+
 			return $importer->import($object, $data);
 		}
 		else if(is_array($data))
@@ -60,7 +68,7 @@ class ObjectFactory implements FactoryInterface
 
 			foreach($data as $row)
 			{
-				$objects[] = $this->factory($row, $importer);
+				$objects[] = $this->factory($row);
 			}
 
 			return $objects;

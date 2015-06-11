@@ -36,7 +36,7 @@ class SchemaTest extends \PHPUnit_Framework_TestCase
 	
 	protected function getImporter()
 	{
-		return new Schema(Environment::getService('schema_validator'), Environment::getService('record_factory_factory'));
+		return new Schema(Environment::getService('schema_assimilator'), Environment::getService('record_factory_factory'));
 	}
 
 	protected function getRecord()

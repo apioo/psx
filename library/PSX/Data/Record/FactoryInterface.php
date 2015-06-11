@@ -34,9 +34,8 @@ interface FactoryInterface
 	 * Returns the object depending on the result
 	 *
 	 * @param mixed $data
-	 * @param PSX\Data\Record\ImporterInterface $importer
 	 * @return PSX\Data\RecordInterface
 	 */
-	public function factory($data, ImporterInterface $importer);
+	public function factory($data);
 }
 
