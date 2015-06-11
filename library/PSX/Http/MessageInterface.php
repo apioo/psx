@@ -20,7 +20,7 @@
 
 namespace PSX\Http;
 
-use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\StreamInterface as PsrStreamInterface;
 
 /**
  * This is a mutable version of the PSR HTTP message interface
@@ -145,14 +145,14 @@ interface MessageInterface
 	/**
 	 * Gets the body of the message
 	 *
-	 * @return PSX\Http\StreamInterface
+	 * @return Psr\Http\Message\StreamInterface
 	 */
 	public function getBody();
 
 	/**
 	 * Sets the specified message body
 	 *
-	 * @param PSX\Http\StreamInterface $body
+	 * @param Psr\Http\Message\StreamInterface $body
 	 */
-	public function setBody(StreamInterface $body);
+	public function setBody(PsrStreamInterface $body);
 }
