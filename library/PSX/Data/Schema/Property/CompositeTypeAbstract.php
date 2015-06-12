@@ -92,14 +92,4 @@ abstract class CompositeTypeAbstract extends PropertyAbstract implements Iterato
 	{
 		return count($this->properties);
 	}
-
-	public function validate($data, $path = '/')
-	{
-		parent::validate($data, $path);
-
-		if(empty($this->properties))
-		{
-			throw new RuntimeException($path . ' has no properties');
-		}
-	}
 }
