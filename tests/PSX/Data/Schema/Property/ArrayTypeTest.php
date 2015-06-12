@@ -42,6 +42,17 @@ class ArrayTypeTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals($prototype, $property->getPrototype());
 	}
 
+	public function testAdd()
+	{
+		$prototype = Property::getString('foo');
+
+		$property = Property::getArray('test');
+		$property->add($prototype);
+		$property->add($prototype);
+
+		$this->assertEquals($prototype, $property->getPrototype());
+	}
+
 	public function testGetId()
 	{
 		$property = Property::getArray('test');

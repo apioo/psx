@@ -43,6 +43,15 @@ class ChoiceTypeTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(['foo' => $complexFoo], $property->getProperties());
 	}
 
+	/**
+	 * @expectedException RuntimeException
+	 */
+	public function testAddElementInvalid()
+	{
+		Property::getChoice('foo')
+			->add(Property::getInteger('foo'));
+	}
+
 	public function testGetId()
 	{
 		$property = Property::getChoice('test');
