@@ -124,6 +124,19 @@ TEXT;
 		$importer = new Importer(Environment::getService('extractor'), Environment::getService('importer_manager'));
 		$importer->import('foobar', $message);
 	}
+
+	/**
+	 * @expectedException RuntimeException
+	 */
+	public function testImportEmptyBody()
+	{
+		$message = new Message();
+		$message->addHeader('Content-Type', 'application/json');
+		$message->setBody(new StringStream(''));
+
+		$importer = new Importer(Environment::getService('extractor'), Environment::getService('importer_manager'));
+		$importer->import(new Page(), $message);
+	}
 }
 
 class Page extends RecordAbstract

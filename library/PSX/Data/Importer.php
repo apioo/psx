@@ -79,7 +79,7 @@ class Importer
 
 		if($importer instanceof ImporterInterface)
 		{
-			if(empty($data))
+			if($data === null)
 			{
 				throw new RuntimeException('No data available');
 			}
