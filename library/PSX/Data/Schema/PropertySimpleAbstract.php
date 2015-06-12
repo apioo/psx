@@ -81,35 +81,4 @@ abstract class PropertySimpleAbstract extends PropertyAbstract
 			($this->enumeration ? implode(',', $this->enumeration) : '')
 		);
 	}
-
-	/**
-	 * @return boolean
-	 */
-	public function validate($data, $path = '/')
-	{
-		parent::validate($data, $path);
-
-		if($data === null)
-		{
-			return true;
-		}
-
-		if($this->pattern !== null)
-		{
-			$result = preg_match('/^(' . $this->pattern . '){1}$/', $data);
-
-			if(!$result)
-			{
-				throw new ValidationException($path . ' does not match pattern [' . $this->pattern . ']');
-			}
-		}
-
-		if($this->enumeration !== null)
-		{
-			if(!in_array($data, $this->enumeration))
-			{
-				throw new ValidationException($path . ' is not in enumeration [' . implode(', ', $this->enumeration) . ']');
-			}
-		}
-	}
 }
