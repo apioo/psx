@@ -36,9 +36,15 @@ class Xml extends ReaderAbstract
 {
 	public function read(MessageInterface $message)
 	{
+		$body = (string) $message->getBody();
+
 		$dom = new DOMDocument();
 		$dom->encoding = 'UTF-8';
-		$dom->loadXML((string) $message->getBody());
+
+		if(!empty($body))
+		{
+			$dom->loadXML($body);
+		}
 
 		return $dom;
 	}

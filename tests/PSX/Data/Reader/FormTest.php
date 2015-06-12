@@ -51,4 +51,11 @@ INPUT;
 		$this->assertInstanceOf('stdClass', $form);
 		$this->assertEquals($expect, $form);
 	}
+
+	public function testReadEmpty()
+	{
+		$reader  = new Form();
+		$message = new Message(array(), '');
+		$form    = $reader->read($message);
+	}
 }

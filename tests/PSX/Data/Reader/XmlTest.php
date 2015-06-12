@@ -49,4 +49,11 @@ INPUT;
 		$this->assertEquals(true, $dom instanceof DOMDocument);
 		$this->assertEquals('foo', $dom->documentElement->localName);
 	}
+
+	public function testReadEmpty()
+	{
+		$reader  = new Xml();
+		$message = new Message(array(), '');
+		$form    = $reader->read($message);
+	}
 }

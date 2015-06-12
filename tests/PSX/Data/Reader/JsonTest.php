@@ -83,4 +83,11 @@ INPUT;
 		$this->assertInstanceOf('stdClass', $json);
 		$this->assertEquals($expect, $json);
 	}
+
+	public function testReadEmpty()
+	{
+		$reader  = new Json();
+		$message = new Message(array(), '');
+		$form    = $reader->read($message);
+	}
 }
