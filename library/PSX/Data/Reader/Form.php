@@ -36,11 +36,19 @@ class Form extends ReaderAbstract
 {
 	public function read(MessageInterface $message)
 	{
+		$body = (string) $message->getBody();
 		$form = array();
 
-		parse_str((string) $message->getBody(), $form);
+		if(!empty($body))
+		{
+			parse_str($body, $form);
 
-		return CurveArray::objectify($form);
+			return CurveArray::objectify($form);
+		}
+		else
+		{
+			return null;
+		}
 	}
 
 	public function isContentTypeSupported(MediaType $contentType)

@@ -38,15 +38,18 @@ class Xml extends ReaderAbstract
 	{
 		$body = (string) $message->getBody();
 
-		$dom = new DOMDocument();
-		$dom->encoding = 'UTF-8';
-
 		if(!empty($body))
 		{
+			$dom = new DOMDocument();
+			$dom->encoding = 'UTF-8';
 			$dom->loadXML($body);
-		}
 
-		return $dom;
+			return $dom;
+		}
+		else
+		{
+			return null;
+		}
 	}
 
 	public function isContentTypeSupported(MediaType $contentType)

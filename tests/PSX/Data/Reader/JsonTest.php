@@ -88,6 +88,8 @@ INPUT;
 	{
 		$reader  = new Json();
 		$message = new Message(array(), '');
-		$form    = $reader->read($message);
+		$json    = $reader->read($message);
+
+		$this->assertNull($json);
 	}
 }

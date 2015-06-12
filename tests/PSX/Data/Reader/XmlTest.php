@@ -54,6 +54,8 @@ INPUT;
 	{
 		$reader  = new Xml();
 		$message = new Message(array(), '');
-		$form    = $reader->read($message);
+		$dom     = $reader->read($message);
+
+		$this->assertNull($dom);
 	}
 }

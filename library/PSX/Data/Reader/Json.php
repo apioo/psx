@@ -36,9 +36,16 @@ class Json extends ReaderAbstract
 {
 	public function read(MessageInterface $message)
 	{
-		$json = JsonParser::decode((string) $message->getBody(), false);
+		$body = (string) $message->getBody();
 
-		return $json;
+		if(!empty($body))
+		{
+			return JsonParser::decode($body, false);
+		}
+		else
+		{
+			return null;
+		}
 	}
 
 	public function isContentTypeSupported(MediaType $contentType)

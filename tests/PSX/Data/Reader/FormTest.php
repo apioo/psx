@@ -57,5 +57,7 @@ INPUT;
 		$reader  = new Form();
 		$message = new Message(array(), '');
 		$form    = $reader->read($message);
+
+		$this->assertNull($form);
 	}
 }
