@@ -70,7 +70,7 @@ class BootstrapCacheCommand extends GenerateCommandAbstract
 	 *
 	 * @codeCoverageIgnore
 	 */
-	protected function getFiles()
+	public function getFiles()
 	{
 		return array(
 			PSX_PATH_LIBRARY . '/../vendor/symfony/dependency-injection/Symfony/Component/DependencyInjection/ContainerInterface.php',
@@ -130,17 +130,17 @@ class BootstrapCacheCommand extends GenerateCommandAbstract
 			PSX_PATH_LIBRARY . '/PSX/Data/Schema/PropertyInterface.php',
 			PSX_PATH_LIBRARY . '/PSX/Data/Schema/PropertyAbstract.php',
 			PSX_PATH_LIBRARY . '/PSX/Data/Schema/PropertySimpleAbstract.php',
-			PSX_PATH_LIBRARY . '/PSX/Data/Schema/Property/Decimal.php',
-			PSX_PATH_LIBRARY . '/PSX/Data/Schema/Property/String.php',
+			PSX_PATH_LIBRARY . '/PSX/Data/Schema/Property/DecimalType.php',
+			PSX_PATH_LIBRARY . '/PSX/Data/Schema/Property/StringType.php',
 			PSX_PATH_LIBRARY . '/PSX/Data/Schema/Property/ArrayType.php',
 			PSX_PATH_LIBRARY . '/PSX/Data/Schema/Property/ComplexType.php',
-			PSX_PATH_LIBRARY . '/PSX/Data/Schema/Property/Boolean.php',
-			PSX_PATH_LIBRARY . '/PSX/Data/Schema/Property/Date.php',
-			PSX_PATH_LIBRARY . '/PSX/Data/Schema/Property/DateTime.php',
-			PSX_PATH_LIBRARY . '/PSX/Data/Schema/Property/Duration.php',
-			PSX_PATH_LIBRARY . '/PSX/Data/Schema/Property/Float.php',
-			PSX_PATH_LIBRARY . '/PSX/Data/Schema/Property/Integer.php',
-			PSX_PATH_LIBRARY . '/PSX/Data/Schema/Property/Time.php',
+			PSX_PATH_LIBRARY . '/PSX/Data/Schema/Property/BooleanType.php',
+			PSX_PATH_LIBRARY . '/PSX/Data/Schema/Property/DateType.php',
+			PSX_PATH_LIBRARY . '/PSX/Data/Schema/Property/DateTimeType.php',
+			PSX_PATH_LIBRARY . '/PSX/Data/Schema/Property/DurationType.php',
+			PSX_PATH_LIBRARY . '/PSX/Data/Schema/Property/FloatType.php',
+			PSX_PATH_LIBRARY . '/PSX/Data/Schema/Property/IntegerType.php',
+			PSX_PATH_LIBRARY . '/PSX/Data/Schema/Property/TimeType.php',
 			PSX_PATH_LIBRARY . '/PSX/Data/SchemaInterface.php',
 			PSX_PATH_LIBRARY . '/PSX/Data/SchemaAbstract.php',
 			PSX_PATH_LIBRARY . '/PSX/Data/Schema.php',
@@ -200,7 +200,6 @@ class BootstrapCacheCommand extends GenerateCommandAbstract
 			PSX_PATH_LIBRARY . '/PSX/Http/ResponseInterface.php',
 			PSX_PATH_LIBRARY . '/PSX/Http/Message.php',
 			PSX_PATH_LIBRARY . '/PSX/Http/Request.php',
-			PSX_PATH_LIBRARY . '/PSX/Http/RequestServerTrait.php',
 			PSX_PATH_LIBRARY . '/PSX/Http/Response.php',
 			PSX_PATH_LIBRARY . '/PSX/Http/ParserAbstract.php',
 			PSX_PATH_LIBRARY . '/PSX/Http/ResponseParser.php',

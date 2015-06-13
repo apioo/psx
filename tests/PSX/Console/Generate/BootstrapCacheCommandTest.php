@@ -68,6 +68,22 @@ class BootstrapCacheCommandTest extends CommandTestCase
 		$this->assertInstanceOf('PSX\Console\Generate\BootstrapCacheCommand', $command);
 	}
 
+	/**
+	 * Since our code base changes constantly it is possible that getFiles 
+	 * method is outdated. With this test we check that at least all files are 
+	 * available so no error occurs when generating the bootstrap cache
+	 */
+	public function testFilesAvailable()
+	{
+		$command = Environment::getService('console')->find('generate:bootstrap_cache');
+		$files   = $command->getFiles();
+
+		foreach($files as $file)
+		{
+			$this->assertTrue(is_file($file), $file);
+		}
+	}
+
 	protected function assertSource($expect, $actual)
 	{
 		$expect = str_replace(array("\r\n", "\n", "\r"), "\n", $expect);
