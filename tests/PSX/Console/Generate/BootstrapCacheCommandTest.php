@@ -80,6 +80,7 @@ class BootstrapCacheCommandTest extends CommandTestCase
 
 		foreach($files as $file)
 		{
+			$file = realpath($file);
 			$this->assertTrue(is_file($file), $file);
 		}
 	}
