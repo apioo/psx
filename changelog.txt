@@ -1,4 +1,14 @@
 
+1.0.3
+* Added new ChoiceType property which allows different kinds of objects as value
+* Use same logic for traversing incoming and outgoing data
+* Moved schema property methods assimilate and validate into seperate class
+* Improved record factory factory class which uses now the object build to get 
+  arbitrary dependencies
+* Implemented factory to convert requests into PSR-7 objects and vice versa
+* Improved schema types
+* Added writer tests for empty records
+
 1.0.2
 * Fixed bug that the wrong base path was used when an json schema was included 
   in an RAML file
