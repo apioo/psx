@@ -34,7 +34,7 @@ use PSX\Test\Environment;
  */
 class AssimilationVisitorTest extends \PHPUnit_Framework_TestCase
 {
-	public function testArrayAssimilate()
+	public function testVisitArray()
 	{
 		$visitor  = new AssimilationVisitor();
 		$property = Property::getArray('test')->setPrototype(Property::getString('foo'));
@@ -42,7 +42,7 @@ class AssimilationVisitorTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(['10'], $visitor->visitArray([10], $property, ''));
 	}
 
-	public function testArrayAssimilateNoPrototype()
+	public function testVisitArrayNoPrototype()
 	{
 		$visitor  = new AssimilationVisitor();
 		$property = Property::getArray('test');
@@ -50,7 +50,7 @@ class AssimilationVisitorTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(array(), $visitor->visitArray([], $property, ''));
 	}
 
-	public function testBooleanAssimilate()
+	public function testVisitBoolean()
 	{
 		$visitor  = new AssimilationVisitor();
 		$property = Property::getBoolean('test');
@@ -66,7 +66,7 @@ class AssimilationVisitorTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(false, $visitor->visitBoolean('false', $property, ''));
 	}
 
-	public function testBooleanAssimilateInvalidFormat()
+	public function testVisitBooleanInvalidFormat()
 	{
 		$visitor  = new AssimilationVisitor();
 		$property = Property::getBoolean('test');
@@ -74,7 +74,7 @@ class AssimilationVisitorTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(true, $visitor->visitBoolean(4, $property, ''));
 	}
 
-	public function testComplexAssimilate()
+	public function testVisitComplex()
 	{
 		$visitor  = new AssimilationVisitor();
 		$property = Property::getComplex('test')
@@ -87,7 +87,7 @@ class AssimilationVisitorTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(array('foo' => 'bar'), $record->getRecordInfo()->getData());
 	}
 
-	public function testComplexAssimilateNoProperties()
+	public function testVisitComplexNoProperties()
 	{
 		$visitor  = new AssimilationVisitor();
 		$property = Property::getComplex('test');
@@ -98,7 +98,7 @@ class AssimilationVisitorTest extends \PHPUnit_Framework_TestCase
 	/**
 	 * @expectedException PSX\Data\Schema\ValidationException
 	 */
-	public function testComplexAssimilateRequiredMissing()
+	public function testVisitComplexRequiredMissing()
 	{
 		$visitor  = new AssimilationVisitor();
 		$property = Property::getComplex('test')
@@ -108,7 +108,7 @@ class AssimilationVisitorTest extends \PHPUnit_Framework_TestCase
 		$visitor->visitComplex((object) ['foo' => 'bar', 'baz' => 'foo'], $property, '');
 	}
 
-	public function testDateTimeAssimilate()
+	public function testVisitDateTime()
 	{
 		$visitor  = new AssimilationVisitor();
 		$property = Property::getDateTime('test');
@@ -122,7 +122,7 @@ class AssimilationVisitorTest extends \PHPUnit_Framework_TestCase
 	/**
 	 * @expectedException PSX\Data\Schema\ValidationException
 	 */
-	public function testDateTimeAssimilateInvalidFormat()
+	public function testVisitDateTimeInvalidFormat()
 	{
 		$visitor  = new AssimilationVisitor();
 		$property = Property::getDateTime('test');
@@ -130,7 +130,7 @@ class AssimilationVisitorTest extends \PHPUnit_Framework_TestCase
 		$visitor->visitDateTime('foo', $property, '');
 	}
 
-	public function testDateAssimilate()
+	public function testVisitDate()
 	{
 		$visitor  = new AssimilationVisitor();
 		$property = Property::getDate('test');
@@ -143,7 +143,7 @@ class AssimilationVisitorTest extends \PHPUnit_Framework_TestCase
 	/**
 	 * @expectedException PSX\Data\Schema\ValidationException
 	 */
-	public function testDateAssimilateInvalidFormat()
+	public function testVisitDateInvalidFormat()
 	{
 		$visitor  = new AssimilationVisitor();
 		$property = Property::getDate('test');
@@ -151,7 +151,7 @@ class AssimilationVisitorTest extends \PHPUnit_Framework_TestCase
 		$visitor->visitDate('foo', $property, '');
 	}
 
-	public function testDurationAssimilate()
+	public function testVisitDuration()
 	{
 		$visitor  = new AssimilationVisitor();
 		$property = Property::getDuration('test');
@@ -164,7 +164,7 @@ class AssimilationVisitorTest extends \PHPUnit_Framework_TestCase
 	/**
 	 * @expectedException PSX\Data\Schema\ValidationException
 	 */
-	public function testDurationAssimilateInvalidFormat()
+	public function testVisitDurationInvalidFormat()
 	{
 		$visitor  = new AssimilationVisitor();
 		$property = Property::getDuration('test');
@@ -172,7 +172,7 @@ class AssimilationVisitorTest extends \PHPUnit_Framework_TestCase
 		$visitor->visitDuration('foo', $property, '');
 	}
 
-	public function testFloatAssimilate()
+	public function testVisitFloat()
 	{
 		$visitor  = new AssimilationVisitor();
 		$property = Property::getFloat('test');
@@ -190,7 +190,7 @@ class AssimilationVisitorTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(0.00012, $visitor->visitFloat('1.2e-4', $property, ''));
 	}
 
-	public function testFloatAssimilateInvalidFormat()
+	public function testVisitFloatInvalidFormat()
 	{
 		$visitor  = new AssimilationVisitor();
 		$property = Property::getFloat('test');
@@ -198,7 +198,7 @@ class AssimilationVisitorTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(0, $visitor->visitFloat('foo', $property, ''));
 	}
 
-	public function testIntegerAssimilate()
+	public function testVisitInteger()
 	{
 		$visitor  = new AssimilationVisitor();
 		$property = Property::getInteger('test');
@@ -210,7 +210,7 @@ class AssimilationVisitorTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(-4, $visitor->visitInteger('-4', $property, ''));
 	}
 
-	public function testIntegerAssimilateInvalidFormat()
+	public function testVisitIntegerInvalidFormat()
 	{
 		$visitor  = new AssimilationVisitor();
 		$property = Property::getInteger('test');
@@ -218,7 +218,7 @@ class AssimilationVisitorTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(0, $visitor->visitInteger('foo', $property, ''));
 	}
 
-	public function testStringAssimilate()
+	public function testVisitString()
 	{
 		$visitor  = new AssimilationVisitor();
 		$property = Property::getString('test');
@@ -230,7 +230,7 @@ class AssimilationVisitorTest extends \PHPUnit_Framework_TestCase
 	/**
 	 * @expectedException ErrorException
 	 */
-	public function testStringAssimilateInvalidFormat()
+	public function testVisitStringInvalidFormat()
 	{
 		$visitor  = new AssimilationVisitor();
 		$property = Property::getString('test');
@@ -238,7 +238,7 @@ class AssimilationVisitorTest extends \PHPUnit_Framework_TestCase
 		$visitor->visitString(array(), $property, '');
 	}
 
-	public function testTimeAssimilate()
+	public function testVisitTime()
 	{
 		$visitor  = new AssimilationVisitor();
 		$property = Property::getTime('test');
@@ -251,7 +251,7 @@ class AssimilationVisitorTest extends \PHPUnit_Framework_TestCase
 	/**
 	 * @expectedException PSX\Data\Schema\ValidationException
 	 */
-	public function testTimeAssimilateInvalidFormat()
+	public function testVisitTimeInvalidFormat()
 	{
 		$visitor  = new AssimilationVisitor();
 		$property = Property::getTime('test');

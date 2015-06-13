@@ -23,6 +23,7 @@ namespace PSX\Data\Schema\Visitor;
 use PSX\Data\SchemaAbstract;
 use PSX\Data\Schema\Property;
 use PSX\Test\Environment;
+use PSX\Uri;
 
 /**
  * ValidationVisitorTest
@@ -33,7 +34,7 @@ use PSX\Test\Environment;
  */
 class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 {
-	public function testArrayValidate()
+	public function testVisitArray()
 	{
 		$visitor  = new ValidationVisitor();
 		$property = Property::getArray('test')->setPrototype(Property::getString('foo'));
@@ -45,7 +46,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 	/**
 	 * @expectedException RuntimeException
 	 */
-	public function testArrayValidateNoPrototype()
+	public function testVisitArrayNoPrototype()
 	{
 		$visitor  = new ValidationVisitor();
 		$property = Property::getArray('test');
@@ -56,7 +57,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 	/**
 	 * @expectedException PSX\Data\Schema\ValidationException
 	 */
-	public function testArrayValidateMinLength()
+	public function testVisitArrayMinLength()
 	{
 		$visitor  = new ValidationVisitor();
 		$property = Property::getArray('test')->setPrototype(Property::getString('foo'));
@@ -70,7 +71,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 	/**
 	 * @expectedException PSX\Data\Schema\ValidationException
 	 */
-	public function testArrayValidateMaxLength()
+	public function testVisitArrayMaxLength()
 	{
 		$visitor  = new ValidationVisitor();
 		$property = Property::getArray('test')->setPrototype(Property::getString('foo'));
@@ -81,7 +82,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 		$visitor->visitArray(array('foo', 'bar'), $property, '');
 	}
 
-	public function testBooleanValidate()
+	public function testVisitBoolean()
 	{
 		$visitor  = new ValidationVisitor();
 		$property = Property::getBoolean('test');
@@ -99,7 +100,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 	/**
 	 * @expectedException PSX\Data\Schema\ValidationException
 	 */
-	public function testBooleanValidateInvalidString()
+	public function testVisitBooleanInvalidString()
 	{
 		$visitor  = new ValidationVisitor();
 		$property = Property::getBoolean('test');
@@ -110,7 +111,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 	/**
 	 * @expectedException PSX\Data\Schema\ValidationException
 	 */
-	public function testBooleanValidateInvalidFormat()
+	public function testVisitBooleanInvalidFormat()
 	{
 		$visitor  = new ValidationVisitor();
 		$property = Property::getBoolean('test');
@@ -118,7 +119,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 		$visitor->visitBoolean(4, $property, '');
 	}
 
-	public function testBooleanValidateNull()
+	public function testVisitBooleanNull()
 	{
 		$visitor  = new ValidationVisitor();
 		$property = Property::getBoolean('test');
@@ -126,7 +127,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 		$this->assertTrue($visitor->visitBoolean(null, $property, ''));
 	}
 
-	public function testComplexValidate()
+	public function testVisitComplex()
 	{
 		$visitor  = new ValidationVisitor();
 		$property = Property::getComplex('test')
@@ -139,7 +140,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 	/**
 	 * @expectedException RuntimeException
 	 */
-	public function testComplexValidateNoProperties()
+	public function testVisitComplexNoProperties()
 	{
 		$visitor  = new ValidationVisitor();
 		$property = Property::getComplex('test');
@@ -147,7 +148,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 		$visitor->visitComplex(new \stdClass(), $property, '');
 	}
 
-	public function testDateTimeValidate()
+	public function testVisitDateTime()
 	{
 		$visitor  = new ValidationVisitor();
 		$property = Property::getDateTime('test');
@@ -160,7 +161,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 	/**
 	 * @expectedException PSX\Data\Schema\ValidationException
 	 */
-	public function testDateTimeValidateInvalidFormat()
+	public function testVisitDateTimeInvalidFormat()
 	{
 		$visitor  = new ValidationVisitor();
 		$property = Property::getDateTime('test');
@@ -171,7 +172,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 	/**
 	 * @expectedException PSX\Data\Schema\ValidationException
 	 */
-	public function testDateTimeValidateInvalidTimezone()
+	public function testVisitDateTimeInvalidTimezone()
 	{
 		$visitor  = new ValidationVisitor();
 		$property = Property::getDateTime('test');
@@ -179,7 +180,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 		$visitor->visitDateTime('2002-10-10T17:00:00+25:00', $property, '');
 	}
 
-	public function testDateTimeValidateNull()
+	public function testVisitDateTimeNull()
 	{
 		$visitor  = new ValidationVisitor();
 		$property = Property::getDateTime('test');
@@ -187,7 +188,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 		$this->assertTrue($visitor->visitDateTime(null, $property, ''));
 	}
 
-	public function testDateTimeValidateDateTime()
+	public function testVisitDateTimeDateTime()
 	{
 		$visitor  = new ValidationVisitor();
 		$property = Property::getDateTime('test');
@@ -195,7 +196,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 		$this->assertTrue($visitor->visitDateTime(new \DateTime(), $property, ''));
 	}
 
-	public function testDateValidate()
+	public function testVisitDate()
 	{
 		$visitor  = new ValidationVisitor();
 		$property = Property::getDate('test');
@@ -207,7 +208,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 	/**
 	 * @expectedException PSX\Data\Schema\ValidationException
 	 */
-	public function testDateValidateInvalidFormat()
+	public function testVisitDateInvalidFormat()
 	{
 		$visitor  = new ValidationVisitor();
 		$property = Property::getDate('test');
@@ -218,7 +219,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 	/**
 	 * @expectedException PSX\Data\Schema\ValidationException
 	 */
-	public function testDateValidateInvalidTimezone()
+	public function testVisitDateInvalidTimezone()
 	{
 		$visitor  = new ValidationVisitor();
 		$property = Property::getDate('test');
@@ -226,7 +227,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 		$visitor->visitDate('2000-01-01+25:00', $property, '');
 	}
 
-	public function testDateValidateNull()
+	public function testVisitDateNull()
 	{
 		$visitor  = new ValidationVisitor();
 		$property = Property::getDate('test');
@@ -234,7 +235,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 		$this->assertTrue($visitor->visitDate(null, $property, ''));
 	}
 
-	public function testDateValidateDateTime()
+	public function testVisitDateDateTime()
 	{
 		$visitor  = new ValidationVisitor();
 		$property = Property::getDate('test');
@@ -242,7 +243,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 		$this->assertTrue($visitor->visitDate(new \DateTime(), $property, ''));
 	}
 
-	public function testDurationValidate()
+	public function testVisitDuration()
 	{
 		$visitor  = new ValidationVisitor();
 		$property = Property::getDuration('test');
@@ -254,7 +255,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 	/**
 	 * @expectedException PSX\Data\Schema\ValidationException
 	 */
-	public function testDurationValidateInvalidFormat()
+	public function testVisitDurationInvalidFormat()
 	{
 		$visitor  = new ValidationVisitor();
 		$property = Property::getDuration('test');
@@ -262,7 +263,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 		$visitor->visitDuration('foo', $property, '');
 	}
 
-	public function testDurationValidateNull()
+	public function testVisitDurationNull()
 	{
 		$visitor  = new ValidationVisitor();
 		$property = Property::getDuration('test');
@@ -270,7 +271,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 		$this->assertTrue($visitor->visitDuration(null, $property, ''));
 	}
 
-	public function testDurationValidateDateTime()
+	public function testVisitDurationDateTime()
 	{
 		$visitor  = new ValidationVisitor();
 		$property = Property::getDuration('test');
@@ -278,7 +279,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 		$this->assertTrue($visitor->visitDuration(new \DateInterval('P1Y'), $property, ''));
 	}
 
-	public function testFloatValidate()
+	public function testVisitFloat()
 	{
 		$visitor  = new ValidationVisitor();
 		$property = Property::getFloat('test');
@@ -298,7 +299,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 	/**
 	 * @expectedException PSX\Data\Schema\ValidationException
 	 */
-	public function testFloatValidateInvalidFormat()
+	public function testVisitFloatInvalidFormat()
 	{
 		$visitor  = new ValidationVisitor();
 		$property = Property::getFloat('test');
@@ -309,7 +310,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 	/**
 	 * @expectedException PSX\Data\Schema\ValidationException
 	 */
-	public function testFloatValidateInvalidType()
+	public function testVisitFloatInvalidType()
 	{
 		$visitor  = new ValidationVisitor();
 		$property = Property::getFloat('test');
@@ -320,7 +321,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 	/**
 	 * @expectedException PSX\Data\Schema\ValidationException
 	 */
-	public function testFloatValidateMin()
+	public function testVisitFloatMin()
 	{
 		$visitor  = new ValidationVisitor();
 		$property = Property::getFloat('test')->setMin(2.4);
@@ -333,7 +334,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 	/**
 	 * @expectedException PSX\Data\Schema\ValidationException
 	 */
-	public function testFloatValidateMax()
+	public function testVisitFloatMax()
 	{
 		$visitor  = new ValidationVisitor();
 		$property = Property::getFloat('test')->setMax(2.4);
@@ -343,7 +344,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 		$visitor->visitFloat(2.5, $property, '');
 	}
 
-	public function testFloatValidateNull()
+	public function testVisitFloatNull()
 	{
 		$visitor  = new ValidationVisitor();
 		$property = Property::getFloat('test');
@@ -351,7 +352,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 		$this->assertTrue($visitor->visitFloat(null, $property, ''));
 	}
 
-	public function testIntegerValidate()
+	public function testVisitInteger()
 	{
 		$visitor  = new ValidationVisitor();
 		$property = Property::getInteger('test');
@@ -365,7 +366,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 	/**
 	 * @expectedException PSX\Data\Schema\ValidationException
 	 */
-	public function testIntegerValidateInvalidFormat()
+	public function testVisitIntegerInvalidFormat()
 	{
 		$visitor  = new ValidationVisitor();
 		$property = Property::getInteger('test');
@@ -376,7 +377,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 	/**
 	 * @expectedException PSX\Data\Schema\ValidationException
 	 */
-	public function testIntegerValidateInvalidFormatFraction()
+	public function testVisitIntegerInvalidFormatFraction()
 	{
 		$visitor  = new ValidationVisitor();
 		$property = Property::getInteger('test');
@@ -387,7 +388,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 	/**
 	 * @expectedException PSX\Data\Schema\ValidationException
 	 */
-	public function testIntegerValidateInvalidFormatType()
+	public function testVisitIntegerInvalidFormatType()
 	{
 		$visitor  = new ValidationVisitor();
 		$property = Property::getInteger('test');
@@ -398,7 +399,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 	/**
 	 * @expectedException PSX\Data\Schema\ValidationException
 	 */
-	public function testIntegerValidateInvalidType()
+	public function testVisitIntegerInvalidType()
 	{
 		$visitor  = new ValidationVisitor();
 		$property = Property::getInteger('test');
@@ -409,7 +410,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 	/**
 	 * @expectedException PSX\Data\Schema\ValidationException
 	 */
-	public function testIntegerValidateMin()
+	public function testVisitIntegerMin()
 	{
 		$visitor  = new ValidationVisitor();
 		$property = Property::getInteger('test')->setMin(2);
@@ -422,7 +423,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 	/**
 	 * @expectedException PSX\Data\Schema\ValidationException
 	 */
-	public function testIntegerValidateMax()
+	public function testVisitIntegerMax()
 	{
 		$visitor  = new ValidationVisitor();
 		$property = Property::getInteger('test')->setMax(2);
@@ -432,11 +433,115 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 		$visitor->visitInteger(3, $property, '');
 	}
 
-	public function testIntegerValidateNull()
+	public function testVisitIntegerNull()
 	{
 		$visitor  = new ValidationVisitor();
 		$property = Property::getInteger('test');
 
 		$this->assertTrue($visitor->visitInteger(null, $property, ''));
+	}
+
+	public function testVisitString()
+	{
+		$visitor  = new ValidationVisitor();
+		$property = Property::getString('test');
+
+		$this->assertTrue($visitor->visitString('foo', $property, ''));
+		// __toString object validates to true
+		$this->assertTrue($visitor->visitString(new Uri('foo:bar'), $property, ''));
+	}
+
+	/**
+	 * @expectedException PSX\Data\Schema\ValidationException
+	 */
+	public function testVisitStringInvalidType()
+	{
+		$visitor  = new ValidationVisitor();
+		$property = Property::getString('test');
+
+		$visitor->visitString(array(), $property, '');
+	}
+
+	/**
+	 * @expectedException PSX\Data\Schema\ValidationException
+	 */
+	public function testVisitIntegerMinLength()
+	{
+		$visitor  = new ValidationVisitor();
+		$property = Property::getString('test')->setMinLength(2);
+
+		$this->assertTrue($visitor->visitString('fo', $property, ''));
+		$this->assertTrue($visitor->visitString('foo', $property, ''));
+
+		$visitor->visitString('f', $property, '');
+	}
+
+	/**
+	 * @expectedException PSX\Data\Schema\ValidationException
+	 */
+	public function testVisitIntegerMaxLength()
+	{
+		$visitor  = new ValidationVisitor();
+		$property = Property::getString('test')->setMaxLength(2);
+
+		$this->assertTrue($visitor->visitString('fo', $property, ''));
+		$this->assertTrue($visitor->visitString('f', $property, ''));
+
+		$visitor->visitString('foo', $property, '');
+	}
+
+	public function testVisitStringNull()
+	{
+		$visitor  = new ValidationVisitor();
+		$property = Property::getString('test');
+
+		$this->assertTrue($visitor->visitString(null, $property, ''));
+	}
+
+	public function testVisitTime()
+	{
+		$visitor  = new ValidationVisitor();
+		$property = Property::getTime('test');
+
+		$this->assertTrue($visitor->visitTime('13:37:00', $property, ''));
+		$this->assertTrue($visitor->visitTime('13:37:00+13:00', $property, ''));
+	}
+
+	/**
+	 * @expectedException PSX\Data\Schema\ValidationException
+	 */
+	public function testVisitTimeInvalidFormat()
+	{
+		$visitor  = new ValidationVisitor();
+		$property = Property::getTime('test');
+
+		$visitor->visitTime('foo', $property, '');
+	}
+
+	/**
+	 * @expectedException PSX\Data\Schema\ValidationException
+	 */
+	public function testVisitTimeInvalidTimezone()
+	{
+		$visitor  = new ValidationVisitor();
+		$property = Property::getTime('test');
+
+		$visitor->visitTime('13:37:00+25:00', $property, '');
+	}
+
+	public function testVisitTimeNull()
+	{
+		$visitor  = new ValidationVisitor();
+		$property = Property::getTime('test');
+
+		$this->assertTrue($visitor->visitTime(null, $property, ''));
+	}
+
+	public function testVisitTimeDateTime()
+	{
+		$visitor  = new ValidationVisitor();
+		$property = Property::getTime('test');
+
+		$this->assertTrue($visitor->visitTime(new \DateTime(), $property, ''));
 	}
 }
