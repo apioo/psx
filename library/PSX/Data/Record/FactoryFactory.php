@@ -42,15 +42,6 @@ class FactoryFactory
 
 	public function getFactory($className)
 	{
-		$factory = $this->objectBuilder->getObject($className);
-
-		if($factory instanceof FactoryInterface)
-		{
-			return $factory;
-		}
-		else
-		{
-			throw new InvalidArgumentException('Factory must be an instanceof PSX\Data\Record\FactoryInterface');
-		}
+		return $this->objectBuilder->getObject($className, [], 'PSX\Data\Record\FactoryInterface');
 	}
 }
