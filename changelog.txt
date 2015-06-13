@@ -6,8 +6,7 @@
 * Improved record factory factory class which uses now the object build to get 
   arbitrary dependencies
 * Implemented factory to convert requests into PSR-7 objects and vice versa
-* Improved schema types
-* Added writer tests for empty records
+* Improved many test cases
 
 1.0.2
 * Fixed bug that the wrong base path was used when an json schema was included 
