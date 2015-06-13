@@ -65,7 +65,7 @@ JSON;
 
 	/**
 	 * @expectedException PSX\Data\Schema\ValidationException
-	 * @expectedExceptionMessage /author/title is required
+	 * @expectedExceptionMessage /author must be an object
 	 */
 	public function testValidateInvalidObject()
 	{
