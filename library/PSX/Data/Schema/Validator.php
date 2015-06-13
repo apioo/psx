@@ -43,6 +43,8 @@ class Validator implements ValidatorInterface
 
 	public function validate(SchemaInterface $schema, $data, $type = SchemaTraverser::TYPE_OUTGOING)
 	{
-		return $this->traverser->traverse($data, $schema, new Visitor\ValidationVisitor(), $type);
+		$this->traverser->traverse($data, $schema, new Visitor\ValidationVisitor(), $type);
+
+		return true;
 	}
 }
