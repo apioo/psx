@@ -20,11 +20,7 @@
 
 namespace PSX\Data\Schema\Property;
 
-use PSX\Data\Schema\PropertyAbstract;
 use PSX\Data\Schema\PropertyInterface;
-use PSX\Data\Schema\ValidationException;
-use RuntimeException;
-use Traversable;
 
 /**
  * ArrayType

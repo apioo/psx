@@ -25,7 +25,6 @@ use Countable;
 use IteratorAggregate;
 use PSX\Data\Schema\PropertyAbstract;
 use PSX\Data\Schema\PropertyInterface;
-use RuntimeException;
 
 /**
  * CompositeTypeAbstract

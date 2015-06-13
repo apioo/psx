@@ -21,7 +21,6 @@
 namespace PSX\Data\Schema\Property;
 
 use PSX\Data\Schema\PropertySimpleAbstract;
-use PSX\Data\Schema\ValidationException;
 
 /**
  * DecimalType

@@ -20,8 +20,6 @@
 
 namespace PSX\Data\Schema\Property;
 
-use PSX\Data\Schema\ValidationException;
-
 /**
  * IntegerType
  *

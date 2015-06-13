@@ -20,10 +20,6 @@
 
 namespace PSX\Data\Schema\Property;
 
-use PSX\Data\Schema\ValidationException;
-use PSX\DateTime\Duration;
-use RuntimeException;
-
 /**
  * DurationType
  *

@@ -20,19 +20,6 @@
 
 namespace PSX\Data\Schema\Property;
 
-use ArrayIterator;
-use Countable;
-use IteratorAggregate;
-use PSX\Data\Record;
-use PSX\Data\RecordInterface;
-use PSX\Data\Schema\PropertyAbstract;
-use PSX\Data\Schema\PropertyInterface;
-use PSX\Data\Schema\ValidationException;
-use ReflectionClass;
-use ReflectionException;
-use ReflectionMethod;
-use RuntimeException;
-
 /**
  * ComplexType
  *
