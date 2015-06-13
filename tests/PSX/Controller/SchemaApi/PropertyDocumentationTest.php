@@ -92,13 +92,22 @@ class PropertyDocumentationTest extends ControllerTestCase
 	public static function assertRecord(\PHPUnit_Framework_TestCase $testCase, RecordInterface $record)
 	{
 		$testCase->assertInternalType('array', $record->getArray());
+		$testCase->assertEquals(1, count($record->getArray()));
 		$testCase->assertEquals(['bar'], $record->getArray());
 		$testCase->assertInternalType('array', $record->getArrayComplex());
+		$testCase->assertEquals(2, count($record->getArrayComplex()));
 		$testCase->assertInstanceOf('PSX\Data\RecordInterface', $record->getArrayComplex()[0]);
 		$testCase->assertEquals(['foo' => 'bar'], $record->getArrayComplex()[0]->getRecordInfo()->getFields());
 		$testCase->assertInstanceOf('PSX\Data\RecordInterface', $record->getArrayComplex()[1]);
 		$testCase->assertEquals(['foo' => 'foo'], $record->getArrayComplex()[1]->getRecordInfo()->getFields());
 		$testCase->assertInternalType('array', $record->getArrayChoice());
+		$testCase->assertEquals(3, count($record->getArrayChoice()));
+		$testCase->assertInstanceOf('PSX\Data\RecordInterface', $record->getArrayChoice()[0]);
+		$testCase->assertEquals(['foo' => 'baz'], $record->getArrayChoice()[0]->getRecordInfo()->getFields());
+		$testCase->assertInstanceOf('PSX\Data\RecordInterface', $record->getArrayChoice()[1]);
+		$testCase->assertEquals(['bar' => 'bar'], $record->getArrayChoice()[1]->getRecordInfo()->getFields());
+		$testCase->assertInstanceOf('PSX\Data\RecordInterface', $record->getArrayChoice()[2]);
+		$testCase->assertEquals(['foo' => 'foo'], $record->getArrayChoice()[2]->getRecordInfo()->getFields());
 		$testCase->assertInternalType('boolean', $record->getBoolean());
 		$testCase->assertEquals(true, $record->getBoolean());
 		$testCase->assertInstanceOf('PSX\Data\RecordInterface', $record->getChoice());
