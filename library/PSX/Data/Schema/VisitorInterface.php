@@ -29,23 +29,103 @@ namespace PSX\Data\Schema;
  */
 interface VisitorInterface
 {
+	/**
+	 * Visits an array value
+	 *
+	 * @param array $data
+	 * @param PSX\Data\Schema\Property\ArrayType $property
+	 * @param string $path
+	 * @return mixed
+	 */
 	public function visitArray(array $data, Property\ArrayType $property, $path);
 
+	/**
+	 * Visits an boolean value
+	 *
+	 * @param string $data
+	 * @param PSX\Data\Schema\Property\BooleanType $property
+	 * @param string $path
+	 * @return mixed
+	 */
 	public function visitBoolean($data, Property\BooleanType $property, $path);
 
+	/**
+	 * Visits an complex value
+	 *
+	 * @param stdClass $data
+	 * @param PSX\Data\Schema\Property\ComplexType $property
+	 * @param string $path
+	 * @return mixed
+	 */
 	public function visitComplex(\stdClass $data, Property\ComplexType $property, $path);
 
+	/**
+	 * Visits an date time value
+	 *
+	 * @param string $data
+	 * @param PSX\Data\Schema\Property\DateTimeType $property
+	 * @param string $path
+	 * @return mixed
+	 */
 	public function visitDateTime($data, Property\DateTimeType $property, $path);
 
+	/**
+	 * Visits an date value
+	 *
+	 * @param string $data
+	 * @param PSX\Data\Schema\Property\DateType $property
+	 * @param string $path
+	 * @return mixed
+	 */
 	public function visitDate($data, Property\DateType $property, $path);
 
+	/**
+	 * Visits an duration value
+	 *
+	 * @param string $data
+	 * @param PSX\Data\Schema\Property\DurationType $property
+	 * @param string $path
+	 * @return mixed
+	 */
 	public function visitDuration($data, Property\DurationType $property, $path);
 
+	/**
+	 * Visits an float value
+	 *
+	 * @param string $data
+	 * @param PSX\Data\Schema\Property\FloatType $property
+	 * @param string $path
+	 * @return mixed
+	 */
 	public function visitFloat($data, Property\FloatType $property, $path);
 
+	/**
+	 * Visits an integer value
+	 *
+	 * @param string $data
+	 * @param PSX\Data\Schema\Property\IntegerType $property
+	 * @param string $path
+	 * @return mixed
+	 */
 	public function visitInteger($data, Property\IntegerType $property, $path);
 
+	/**
+	 * Visits an string value
+	 *
+	 * @param string $data
+	 * @param PSX\Data\Schema\Property\StringType $property
+	 * @param string $path
+	 * @return mixed
+	 */
 	public function visitString($data, Property\StringType $property, $path);
 
+	/**
+	 * Visits an time value
+	 *
+	 * @param string $data
+	 * @param PSX\Data\Schema\Property\TimeType $property
+	 * @param string $path
+	 * @return mixed
+	 */
 	public function visitTime($data, Property\TimeType $property, $path);
 }
