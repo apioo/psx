@@ -51,13 +51,15 @@ class Assimilator
 
 	/**
 	 * Takes an array and fits it accoring to the specification. If validate is 
-	 * true all values are also validated
+	 * true all values are also validated. The type indicates whether we handle
+	 * incoming or outgoing data. Incoming data is handled more strict then 
+	 * outgoing data
 	 *
 	 * @param array $data
 	 * @param PSX\Data\SchemaInterface $schema
 	 * @param boolean $validate
 	 * @param integer $type
-	 * @return array
+	 * @return mixed
 	 */
 	public function assimilate(SchemaInterface $schema, $data, $validate = false, $type = SchemaTraverser::TYPE_OUTGOING)
 	{
