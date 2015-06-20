@@ -31,7 +31,7 @@ use JsonSerializable;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-abstract class RecordAbstract implements RecordInterface, Serializable
+abstract class RecordAbstract implements RecordInterface, Serializable, JsonSerializable
 {
 	public function getRecordInfo()
 	{
@@ -78,5 +78,10 @@ abstract class RecordAbstract implements RecordInterface, Serializable
 				$this->$key = $value;
 			}
 		}
+	}
+
+	public function jsonSerialize()
+	{
+		return $this->getRecordInfo()->getData();
 	}
 }
