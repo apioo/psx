@@ -50,7 +50,7 @@ class Annotation
 			$line = trim($line);
 			$line = substr($line, 2);
 
-			if($line[0] == '@')
+			if(isset($line[0]) && $line[0] == '@')
 			{
 				$line = substr($line, 1);
 				$sp   = strpos($line, ' ');
