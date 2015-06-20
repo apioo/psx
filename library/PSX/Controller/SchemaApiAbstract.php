@@ -92,114 +92,55 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 		$this->version  = $this->getVersion($doc);
 		$this->resource = $this->getResource($doc, $this->version);
 
-		$this->pathParameters = $this->schemaAssimilator->assimilate($this->resource->getPathParameters(), $this->uriFragments);
+		if(!$this->resource->hasMethod($this->getMethod()))
+		{
+			throw new StatusCode\MethodNotAllowedException('Method is not allowed', $this->resource->getAllowedMethods());
+		}
+
+		$this->pathParameters  = $this->schemaAssimilator->assimilate(
+			$this->resource->getPathParameters(), 
+			$this->uriFragments
+		);
+
+		$this->queryParameters = $this->schemaAssimilator->assimilate(
+			$this->resource->getMethod($this->getMethod())->getQueryParameters(), 
+			$this->request->getUri()->getParameters()
+		);
 	}
 
 	public function onGet()
 	{
-		if(!$this->resource->hasMethod('GET'))
-		{
-			throw new StatusCode\MethodNotAllowedException('Method is not allowed', $this->resource->getAllowedMethods());
-		}
-
-		$method = $this->resource->getMethod('GET');
-
-		$this->queryParameters = $this->schemaAssimilator->assimilate($method->getQueryParameters(), $this->request->getUri()->getParameters());
-
+		$method   = $this->resource->getMethod('GET');
 		$response = $this->doGet($this->version);
-		$schema   = $this->getSuccessfulResponse($method, $statusCode);
 
-		if($schema instanceof SchemaInterface)
-		{
-			$this->setResponseCode($statusCode);
-			$this->setBody($this->schemaAssimilator->assimilate($schema, $response));
-		}
-		else
-		{
-			$this->setResponseCode(204);
-			$this->setBody('');
-		}
+		$this->sendResponse($method, $response);
 	}
 
 	public function onPost()
 	{
-		if(!$this->resource->hasMethod('POST'))
-		{
-			throw new StatusCode\MethodNotAllowedException('Method is not allowed', $this->resource->getAllowedMethods());
-		}
-
-		$method = $this->resource->getMethod('POST');
-
-		$this->queryParameters = $this->schemaAssimilator->assimilate($method->getQueryParameters(), $this->request->getUri()->getParameters());
-
-		$record   = $method->hasRequest() ? $this->import($method->getRequest()) : new Record();
+		$method   = $this->resource->getMethod('POST');
+		$record   = $this->parseRequest($method);
 		$response = $this->doCreate($record, $this->version);
-		$schema   = $this->getSuccessfulResponse($method, $statusCode);
 
-		if($schema instanceof SchemaInterface)
-		{
-			$this->setResponseCode($statusCode);
-			$this->setBody($this->schemaAssimilator->assimilate($schema, $response));
-		}
-		else
-		{
-			$this->setResponseCode(204);
-			$this->setBody('');
-		}
+		$this->sendResponse($method, $response);
 	}
 
 	public function onPut()
 	{
-		if(!$this->resource->hasMethod('PUT'))
-		{
-			throw new StatusCode\MethodNotAllowedException('Method is not allowed', $this->resource->getAllowedMethods());
-		}
-
-		$method = $this->resource->getMethod('PUT');
-
-		$this->queryParameters = $this->schemaAssimilator->assimilate($method->getQueryParameters(), $this->request->getUri()->getParameters());
-
-		$record   = $method->hasRequest() ? $this->import($method->getRequest()) : new Record();
+		$method   = $this->resource->getMethod('PUT');
+		$record   = $this->parseRequest($method);
 		$response = $this->doUpdate($record, $this->version);
-		$schema   = $this->getSuccessfulResponse($method, $statusCode);
 
-		if($schema instanceof SchemaInterface)
-		{
-			$this->setResponseCode($statusCode);
-			$this->setBody($this->schemaAssimilator->assimilate($schema, $response));
-		}
-		else
-		{
-			$this->setResponseCode(204);
-			$this->setBody('');
-		}
+		$this->sendResponse($method, $response);
 	}
 
 	public function onDelete()
 	{
-		if(!$this->resource->hasMethod('DELETE'))
-		{
-			throw new StatusCode\MethodNotAllowedException('Method is not allowed', $this->resource->getAllowedMethods());
-		}
-
-		$method = $this->resource->getMethod('DELETE');
-
-		$this->queryParameters = $this->schemaAssimilator->assimilate($method->getQueryParameters(), $this->request->getUri()->getParameters());
-
-		$record   = $method->hasRequest() ? $this->import($method->getRequest()) : new Record();
+		$method   = $this->resource->getMethod('DELETE');
+		$record   = $this->parseRequest($method);
 		$response = $this->doDelete($record, $this->version);
-		$schema   = $this->getSuccessfulResponse($method, $statusCode);
 
-		if($schema instanceof SchemaInterface)
-		{
-			$this->setResponseCode($statusCode);
-			$this->setBody($this->schemaAssimilator->assimilate($schema, $response));
-		}
-		else
-		{
-			$this->setResponseCode(204);
-			$this->setBody('');
-		}
+		$this->sendResponse($method, $response);
 	}
 
 	/**
@@ -237,6 +178,56 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 	 */
 	abstract protected function doDelete(RecordInterface $record, Version $version);
 
+	/**
+	 * Imports the request data based on the schema if available
+	 *
+	 * @param PSX\Api\Resource\MethodAbstract $method
+	 * @return PSX\Data\RecordInterface
+	 */
+	protected function parseRequest(MethodAbstract $method)
+	{
+		return $method->hasRequest() ? $this->import($method->getRequest()) : new Record();
+	}
+
+	/**
+	 * Gets the schema for the status code and formats the response according to
+	 * the schema. If no status code was provided the schema of an successful
+	 * response is taken
+	 *
+	 * @param PSX\Api\Resource\MethodAbstract $method
+	 * @param mixed $response
+	 */
+	protected function sendResponse(MethodAbstract $method, $response)
+	{
+		$statusCode = $this->response->getStatusCode();
+		if(!empty($statusCode) && $method->hasResponse($statusCode))
+		{
+			$schema = $method->getResponse($statusCode);
+		}
+		else
+		{
+			$schema = $this->getSuccessfulResponse($method, $statusCode);
+		}
+
+		if($schema instanceof SchemaInterface)
+		{
+			$this->setResponseCode($statusCode);
+			$this->setBody($this->schemaAssimilator->assimilate($schema, $response));
+		}
+		else
+		{
+			$this->setResponseCode(204);
+			$this->setBody('');
+		}
+	}
+
+	/**
+	 * Returns the resource from the documentation for the given version. 
+	 *
+	 * @param PSX\Api\DocumentationInterface $doc
+	 * @param PSX\Api\Version $version
+	 * @return PSX\Api\Resource
+	 */
 	protected function getResource(DocumentationInterface $doc, Version $version)
 	{
 		if(!$doc->hasResource($version->getVersion()))
@@ -257,22 +248,26 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 		{
 			throw new StatusCode\GoneException('Version v' . $version->getVersion() . ' is not longer supported');
 		}
+		else if($resource->isDevelopment())
+		{
+			$this->response->addHeader('Warning', '199 PSX "Version v' . $version->getVersion() . ' is in development"');
+		}
 
 		return $resource;
 	}
 
+	/**
+	 * Returns the version which was provided by the user agent. If no version
+	 * was specified the latest version is used
+	 *
+	 * @param PSX\Api\DocumentationInterface $doc
+	 * @return PSX\Api\Version
+	 */
 	protected function getVersion(DocumentationInterface $doc)
 	{
 		if($doc->isVersionRequired())
 		{
-			$accept  = $this->getHeader('Accept');
-			$matches = array();
-
-			preg_match('/^application\/vnd\.([a-z.-_]+)\.v([\d]+)\+([a-z]+)$/', $accept, $matches);
-
-			$name    = isset($matches[1]) ? $matches[1] : null;
-			$version = isset($matches[2]) ? $matches[2] : null;
-			$format  = isset($matches[3]) ? $matches[3] : null;
+			$version = $this->getSubmittedVersionNumber();
 
 			if($version !== null)
 			{
@@ -304,18 +299,34 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 	 */
 	protected function getSuccessfulResponse(MethodAbstract $method, &$statusCode)
 	{
-		$responses = $method->getResponses();
+		$successCodes = [200, 201, 202, 203, 205, 207];
 
-		for($i = 200; $i < 210; $i++)
+		foreach($successCodes as $successCode)
 		{
-			if(isset($responses[$i]))
+			if($method->hasResponse($successCode))
 			{
-				$statusCode = $i;
+				$statusCode = $successCode;
 
-				return $responses[$i];
+				return $method->getResponse($successCode);
 			}
 		}
 
 		return null;
+	}
+
+	/**
+	 * Returns the version number which was submitted by the client in the
+	 * accept header field
+	 *
+	 * @return integer
+	 */
+	protected function getSubmittedVersionNumber()
+	{
+		$accept  = $this->getHeader('Accept');
+		$matches = array();
+
+		preg_match('/^application\/vnd\.([a-z.-_]+)\.v([\d]+)\+([a-z]+)$/', $accept, $matches);
+
+		return isset($matches[2]) ? $matches[2] : null;
 	}
 }
