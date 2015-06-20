@@ -140,8 +140,24 @@ class SchemaTraverser
 				{
 					$result->$key = $this->recTraverse($data[$key], $prop, $visitor, $type);
 				}
+				else if($prop->isRequired())
+				{
+					throw new ValidationException($this->getCurrentPath() . ' is required');
+				}
 
 				array_pop($this->pathStack);
+			}
+
+			if($type == self::TYPE_INCOMING)
+			{
+				// check whether there are fields which not exist in the schema
+				foreach($data as $key => $value)
+				{
+					if(!$property->has($key))
+					{
+						throw new ValidationException($this->getCurrentPath() . ' property "' . $key . '" does not exist');
+					}
+				}
 			}
 
 			return $visitor->visitComplex($result, $property, $this->getCurrentPath());

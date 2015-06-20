@@ -96,18 +96,6 @@ class AssimilationVisitor extends ValidationVisitor
 		{
 			parent::visitComplex($data, $property, $path);
 		}
-		else
-		{
-			foreach($property as $prop)
-			{
-				if($prop->isRequired() && !isset($data->{$prop->getName()}))
-				{
-					$path = $path == '/' ? '/' . $prop->getName() : $path . '/' . $prop->getName();
-
-					throw new ValidationException($path . ' is required');
-				}
-			}
-		}
 
 		$reference = $property->getReference();
 		if(!empty($reference))

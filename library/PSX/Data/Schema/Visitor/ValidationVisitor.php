@@ -98,16 +98,6 @@ class ValidationVisitor implements VisitorInterface
 	{
 		$this->assertCompositeProperties($property, $path);
 
-		foreach($property as $prop)
-		{
-			if($prop->isRequired() && !isset($data->{$prop->getName()}))
-			{
-				$path = $path == '/' ? '/' . $prop->getName() : $path . '/' . $prop->getName();
-
-				throw new ValidationException($path . ' is required');
-			}
-		}
-
 		return true;
 	}
 
