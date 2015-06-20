@@ -27,7 +27,7 @@ use PSX\Controller\SchemaApiAbstract;
 use PSX\Data\RecordInterface;
 use PSX\Data\Schema\Property;
 use PSX\Loader\Context;
-use PSX\Controller\SchemaApi\PropertyDocumentationTest;
+use PSX\Controller\SchemaApi\PropertyTestCase;
 
 /**
  * PropertyDocumentationController
@@ -36,19 +36,13 @@ use PSX\Controller\SchemaApi\PropertyDocumentationTest;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class PropertyDocumentationController extends SchemaApiAbstract
+class PropertyDocumentationController extends PropertyControllerAbstract
 {
 	/**
 	 * @Inject
 	 * @var PSX\Data\Schema\SchemaManager
 	 */
 	protected $schemaManager;
-
-	/**
-	 * @Inject
-	 * @var PHPUnit_Framework_TestCase
-	 */
-	protected $testCase;
 
 	public function getDocumentation()
 	{
@@ -65,25 +59,5 @@ class PropertyDocumentationController extends SchemaApiAbstract
 		);
 
 		return new Documentation\Simple($resource);
-	}
-
-	protected function doGet(Version $version)
-	{
-		return PropertyDocumentationTest::getDataByType($this->queryParameters->getProperty('type'));
-	}
-
-	protected function doCreate(RecordInterface $record, Version $version)
-	{
-		PropertyDocumentationTest::assertRecord($this->testCase, $record);
-
-		return $record;
-	}
-
-	protected function doUpdate(RecordInterface $record, Version $version)
-	{
-	}
-
-	protected function doDelete(RecordInterface $record, Version $version)
-	{
 	}
 }

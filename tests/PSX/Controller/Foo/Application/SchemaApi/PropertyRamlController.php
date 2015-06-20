@@ -27,7 +27,7 @@ use PSX\Api\Resource;
 use PSX\Controller\SchemaApiAbstract;
 use PSX\Data\RecordInterface;
 use PSX\Loader\Context;
-use PSX\Controller\SchemaApi\PropertyDocumentationTest;
+use PSX\Controller\SchemaApi\PropertyTestCase;
 
 /**
  * PropertyRamlController
@@ -36,36 +36,10 @@ use PSX\Controller\SchemaApi\PropertyDocumentationTest;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class PropertyRamlController extends SchemaApiAbstract
+class PropertyRamlController extends PropertyControllerAbstract
 {
-	/**
-	 * @Inject
-	 * @var PHPUnit_Framework_TestCase
-	 */
-	protected $testCase;
-
 	public function getDocumentation()
 	{
 		return Parser\Raml::fromFile(__DIR__ . '/../../Resource/property.raml', $this->context->get(Context::KEY_PATH));
-	}
-
-	protected function doGet(Version $version)
-	{
-		return PropertyDocumentationTest::getDataByType($this->queryParameters->getProperty('type'));
-	}
-
-	protected function doCreate(RecordInterface $record, Version $version)
-	{
-		PropertyDocumentationTest::assertRecord($this->testCase, $record);
-
-		return $record;
-	}
-
-	protected function doUpdate(RecordInterface $record, Version $version)
-	{
-	}
-
-	protected function doDelete(RecordInterface $record, Version $version)
-	{
 	}
 }

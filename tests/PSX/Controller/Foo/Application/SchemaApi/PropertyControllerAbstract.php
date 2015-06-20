@@ -18,36 +18,49 @@
  * limitations under the License.
  */
 
-namespace PSX\Controller\SchemaApi;
+namespace PSX\Controller\Foo\Application\SchemaApi;
 
-use PSX\Data\Writer;
-use PSX\Data\WriterInterface;
-use PSX\Data\Record;
+use PSX\Api\Documentation;
+use PSX\Api\Version;
+use PSX\Api\Resource;
+use PSX\Controller\SchemaApiAbstract;
 use PSX\Data\RecordInterface;
-use PSX\DateTime;
-use PSX\DateTime\Date;
-use PSX\DateTime\Duration;
-use PSX\DateTime\Time;
-use PSX\Http\Request;
-use PSX\Http\Response;
-use PSX\Http\Stream\TempStream;
-use PSX\Json;
-use PSX\Test\ControllerTestCase;
-use PSX\Url;
+use PSX\Data\Schema\Property;
+use PSX\Loader\Context;
+use PSX\Controller\SchemaApi\PropertyTestCase;
 
 /**
- * PropertyDocumentationTest
+ * PropertyControllerAbstract
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class PropertyDocumentationTest extends PropertyTestCase
+abstract class PropertyControllerAbstract extends SchemaApiAbstract
 {
-	protected function getPaths()
+	/**
+	 * @Inject
+	 * @var PHPUnit_Framework_TestCase
+	 */
+	protected $testCase;
+
+	protected function doGet(Version $version)
 	{
-		return array(
-			[['GET', 'POST', 'PUT', 'DELETE'], '/api', 'PSX\Controller\Foo\Application\SchemaApi\PropertyDocumentationController'],
-		);
+		return PropertyTestCase::getDataByType($this->queryParameters->getProperty('type'));
+	}
+
+	protected function doCreate(RecordInterface $record, Version $version)
+	{
+		PropertyTestCase::assertRecord($this->testCase, $record);
+
+		return $record;
+	}
+
+	protected function doUpdate(RecordInterface $record, Version $version)
+	{
+	}
+
+	protected function doDelete(RecordInterface $record, Version $version)
+	{
 	}
 }

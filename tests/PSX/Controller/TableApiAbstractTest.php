@@ -228,24 +228,26 @@ JSON;
 
 	public function testPutNotAvailable()
 	{
-		$data     = json_encode(array('id' => 12, 'title' => 'foobar'));
+		$data     = json_encode(array('id' => 12));
 		$body     = new TempStream(fopen('php://memory', 'r+'));
 		$request  = new Request(new Url('http://127.0.0.1/api'), 'PUT', array('Content-Type' => 'application/json'), $data);
 		$response = new Response();
 		$response->setBody($body);
 
 		$controller = $this->loadController($request, $response);
-		$body       = Json::decode((string) $response->getBody());
 
-		$this->assertArrayHasKey('success', $body);
-		$this->assertArrayHasKey('title', $body);
-		$this->assertArrayHasKey('message', $body);
-		$this->assertArrayHasKey('trace', $body);
-		$this->assertArrayHasKey('context', $body);
+		$body = (string) $response->getBody();
+		$data = Json::decode($body);
+
+		$this->assertArrayHasKey('success', $data);
+		$this->assertArrayHasKey('title', $data);
+		$this->assertArrayHasKey('message', $data);
+		$this->assertArrayHasKey('trace', $data);
+		$this->assertArrayHasKey('context', $data);
 
 		$this->assertEquals(404, $response->getStatusCode(), $body);
-		$this->assertEquals(false, $body['success']);
-		$this->assertEquals('Record not found', substr($body['message'], 0, 16));
+		$this->assertEquals(false, $data['success']);
+		$this->assertEquals('Record not found', substr($data['message'], 0, 16));
 	}
 
 	public function testDelete()

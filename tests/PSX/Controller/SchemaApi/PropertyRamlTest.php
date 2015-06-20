@@ -37,39 +37,8 @@ use PSX\Url;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class PropertyRamlTest extends ControllerTestCase
+class PropertyRamlTest extends PropertyTestCase
 {
-	/**
-	 * @dataProvider PSX\Controller\SchemaApi\PropertyDocumentationTest::getDataTypes
-	 */
-	public function testGet($type)
-	{
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api?type=' . $type), 'GET');
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
-
-		$this->assertEquals(200, $response->getStatusCode(), $body);
-		$this->assertJsonStringEqualsJsonString(PropertyDocumentationTest::getExpected(), $body, $body);
-	}
-
-	public function testPost()
-	{
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'POST', [], PropertyDocumentationTest::getExpected());
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
-
-		$this->assertEquals(200, $response->getStatusCode(), $body);
-		$this->assertJsonStringEqualsJsonString(PropertyDocumentationTest::getExpected(), $body, $body);
-	}
-
 	protected function getPaths()
 	{
 		return array(
