@@ -160,4 +160,15 @@ class AccessorTest extends \PHPUnit_Framework_TestCase
 		$accessor = new Accessor(new Validate(), $source);
 		$accessor->get('bar.bar');
 	}
+
+	/**
+	 * @expectedException PSX\Validate\ValidationException
+	 */
+	public function testGetUnknownKeyInvalidSource()
+	{
+		$source = 'foo';
+
+		$accessor = new Accessor(new Validate(), $source);
+		$accessor->get('bar.bar');
+	}
 }

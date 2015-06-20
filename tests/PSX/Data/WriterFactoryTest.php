@@ -55,6 +55,13 @@ class WriterFactoryTest extends \PHPUnit_Framework_TestCase
 		$this->assertInstanceOf('PSX\Data\Writer\Json', $this->writerFactory->getDefaultWriter());
 	}
 
+	public function testGetDefaultWriterEmpty()
+	{
+		$writerFactory = new WriterFactory();
+
+		$this->assertNull($writerFactory->getDefaultWriter());
+	}
+
 	public function testGetWriterByContentType()
 	{
 		$this->assertInstanceOf('PSX\Data\Writer\Json', $this->writerFactory->getWriterByContentType('application/json'));
@@ -64,6 +71,8 @@ class WriterFactoryTest extends \PHPUnit_Framework_TestCase
 		$this->assertInstanceOf('PSX\Data\Writer\Jsonp', $this->writerFactory->getWriterByContentType('application/javascript'));
 		$this->assertInstanceOf('PSX\Data\Writer\Soap', $this->writerFactory->getWriterByContentType('application/soap+xml'));
 		$this->assertInstanceOf('PSX\Data\Writer\Xml', $this->writerFactory->getWriterByContentType('application/xml'));
+		$this->assertNull($this->writerFactory->getWriterByContentType('application/foo'));
+		$this->assertNull($this->writerFactory->getWriterByContentType('application/json', array('PSX\Data\Writer\Xml')));
 	}
 
 	public function testGetWriterByContentTypeSupportedWriter()
@@ -73,7 +82,7 @@ class WriterFactoryTest extends \PHPUnit_Framework_TestCase
 		$this->assertInstanceOf('PSX\Data\Writer\Html', $this->writerFactory->getWriterByContentType($contentType));
 		$this->assertInstanceOf('PSX\Data\Writer\Html', $this->writerFactory->getWriterByContentType($contentType, array('PSX\Data\Writer\Html')));
 		$this->assertInstanceOf('PSX\Data\Writer\Xml', $this->writerFactory->getWriterByContentType($contentType, array('PSX\Data\Writer\Xml')));
-		$this->assertEquals(null, $this->writerFactory->getWriterByContentType($contentType, array('PSX\Data\Writer\Json')));
+		$this->assertNull($this->writerFactory->getWriterByContentType($contentType, array('PSX\Data\Writer\Json')));
 	}
 
 	public function testGetWriterByContentTypeOrder()
@@ -93,6 +102,8 @@ class WriterFactoryTest extends \PHPUnit_Framework_TestCase
 		$this->assertInstanceOf('PSX\Data\Writer\Jsonp', $this->writerFactory->getWriterByFormat('jsonp'));
 		$this->assertInstanceOf('PSX\Data\Writer\Soap', $this->writerFactory->getWriterByFormat('soap'));
 		$this->assertInstanceOf('PSX\Data\Writer\Xml', $this->writerFactory->getWriterByFormat('xml'));	
+		$this->assertNull($this->writerFactory->getWriterByFormat('foo'));
+		$this->assertNull($this->writerFactory->getWriterByFormat('json', array('PSX\Data\Writer\Xml')));
 	}
 
 	public function testGetWriterByInstance()
@@ -103,7 +114,8 @@ class WriterFactoryTest extends \PHPUnit_Framework_TestCase
 		$this->assertInstanceOf('PSX\Data\Writer\Form', $this->writerFactory->getWriterByInstance('PSX\Data\Writer\Form'));
 		$this->assertInstanceOf('PSX\Data\Writer\Jsonp', $this->writerFactory->getWriterByInstance('PSX\Data\Writer\Jsonp'));
 		$this->assertInstanceOf('PSX\Data\Writer\Soap', $this->writerFactory->getWriterByInstance('PSX\Data\Writer\Soap'));
-		$this->assertInstanceOf('PSX\Data\Writer\Xml', $this->writerFactory->getWriterByInstance('PSX\Data\Writer\Xml'));		
+		$this->assertInstanceOf('PSX\Data\Writer\Xml', $this->writerFactory->getWriterByInstance('PSX\Data\Writer\Xml'));
+		$this->assertNull($this->writerFactory->getWriterByInstance('PSX\Data\Writer\Foo'));
 	}
 
 	public function testContentNegotiationExplicit()

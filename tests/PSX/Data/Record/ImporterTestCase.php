@@ -186,7 +186,6 @@ trait ImporterTestCase
 		$record->disabled = 'false';
 		$record->count = '12';
 		$record->rating = '12.45';
-		$record->foobar = 'foo';
 		$record->date = '2014-01-01T12:34:47+01:00';
 		$record->person = new \stdClass();
 		$record->person->title = 'Foo';
@@ -215,7 +214,6 @@ trait ImporterTestCase
 		$record->disabled = 'false';
 		$record->count = '12';
 		$record->rating = '12.45';
-		$record->foobar = 'foo';
 		$record->date = '2014-01-01T12:34:47+01:00';
 
 		return $record;

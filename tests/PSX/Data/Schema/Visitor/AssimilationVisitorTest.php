@@ -95,19 +95,6 @@ class AssimilationVisitorTest extends \PHPUnit_Framework_TestCase
 		$this->assertInstanceOf('PSX\Data\RecordInterface', $visitor->visitComplex(new \stdClass(), $property, ''));
 	}
 
-	/**
-	 * @expectedException PSX\Data\Schema\ValidationException
-	 */
-	public function testVisitComplexRequiredMissing()
-	{
-		$visitor  = new AssimilationVisitor();
-		$property = Property::getComplex('test')
-			->add(Property::getString('foo')->setRequired(true))
-			->add(Property::getString('bar')->setRequired(true));
-
-		$visitor->visitComplex((object) ['foo' => 'bar', 'baz' => 'foo'], $property, '');
-	}
-
 	public function testVisitDateTime()
 	{
 		$visitor  = new AssimilationVisitor();

@@ -49,6 +49,7 @@ class ReaderFactoryTest extends \PHPUnit_Framework_TestCase
 		$this->assertInstanceOf('PSX\Data\Reader\Json', $this->readerFactory->getReaderByContentType('application/json'));
 		$this->assertInstanceOf('PSX\Data\Reader\Form', $this->readerFactory->getReaderByContentType('application/x-www-form-urlencoded'));
 		$this->assertInstanceOf('PSX\Data\Reader\Xml', $this->readerFactory->getReaderByContentType('application/xml'));
+		$this->assertNull($this->readerFactory->getReaderByContentType('application/foo'));
 	}
 
 	public function testGetReaderByContentTypeSupportedReader()

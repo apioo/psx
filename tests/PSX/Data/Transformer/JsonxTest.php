@@ -45,6 +45,7 @@ class JsonxTest extends \PHPUnit_Framework_TestCase
  <json:number name="rating">12.45</json:number>
  <json:string name="date">2014-01-01T12:34:47+01:00</json:string>
  <json:string name="href">http://foo.com</json:string>
+ <json:null name="empty" />
  <json:object name="person">
   <json:string name="title">Foo</json:string>
  </json:object>
@@ -102,6 +103,7 @@ INPUT;
 		$expect->category = $category;
 		$expect->tags = array('bar', 'foo', 'test');
 		$expect->entry = $entry;
+		$expect->empty = null;
 
 		$data = $transformer->transform($dom);
 
@@ -116,6 +118,20 @@ INPUT;
 	{
 		$transformer = new Jsonx();
 		$transformer->transform(array());
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testInvalidElementName()
+	{
+		$body = '<json:foo xmlns:json="http://www.ibm.com/xmlns/prod/2009/jsonx" />';
+
+		$dom = new \DOMDocument();
+		$dom->loadXML($body);
+
+		$transformer = new Jsonx();
+		$transformer->transform($dom);
 	}
 
 	public function testAccept()
