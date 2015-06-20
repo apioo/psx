@@ -37,6 +37,7 @@ class Resource implements \IteratorAggregate
 	const STATUS_ACTIVE      = 0x1;
 	const STATUS_DEPRECATED  = 0x2;
 	const STATUS_CLOSED      = 0x3;
+	const STATUS_DEVELOPMENT = 0x4;
 
 	const CODE_INFORMATIONAL = 199;
 	const CODE_SUCCESS       = 299;
@@ -72,6 +73,11 @@ class Resource implements \IteratorAggregate
 	public function isClosed()
 	{
 		return $this->status == self::STATUS_CLOSED;
+	}
+
+	public function isDevelopment()
+	{
+		return $this->status == self::STATUS_DEVELOPMENT;
 	}
 
 	public function getStatus()
