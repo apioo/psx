@@ -50,8 +50,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
 		$destination = new Destination();
 		$testCase    = $this;
 
-		$mapper = new Mapper();
-		$mapper->setRule(array(
+		Mapper::map($source, $destination, array(
 			'title'   => 'description',
 			'content' => new Rule('content'),
 			'rating'  => new Rule('level', 'no-rating'),
@@ -61,8 +60,6 @@ class MapperTest extends \PHPUnit_Framework_TestCase
 				return strtotime($value);
 			}),
 		));
-
-		$mapper->map($source, $destination);
 
 		$this->assertEquals($source->getId(), $destination->getId());
 		$this->assertEquals($source->getRight_level(), $destination->getRightLevel());
@@ -77,8 +74,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testMapInvalidDestination()
 	{
-		$mapper = new Mapper();
-		$mapper->map(new Source(), 'foo');
+		Mapper::map(new Source(), 'foo', array());
 	}
 }
 

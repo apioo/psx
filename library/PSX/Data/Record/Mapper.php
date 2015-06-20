@@ -25,8 +25,7 @@ use PSX\Data\RecordInterface;
 use PSX\Data\Record\Mapper\Rule;
 
 /**
- * Class wich can map all fields of an record to an arbitary class by calling
- * the fitting setter methods if available
+ * Mapper
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
@@ -34,14 +33,15 @@ use PSX\Data\Record\Mapper\Rule;
  */
 class Mapper
 {
-	protected $rule;
-
-	public function setRule(array $rule)
-	{
-		$this->rule = $rule;
-	}
-
-	public function map(RecordInterface $source, $destination)
+	/**
+	 * Method wich can map all fields of an record to an arbitary class by
+	 * calling the fitting setter methods if available
+	 *
+	 * @param PSX\Data\RecordInterface $source
+	 * @param object $destination
+	 * @param array $rules
+	 */
+	public static function map(RecordInterface $source, $destination, array $rules)
 	{
 		if(!is_object($destination))
 		{
@@ -58,16 +58,16 @@ class Mapper
 				$key = implode('', array_map('ucfirst', explode('_', $key)));
 			}
 
-			if(isset($this->rule[$key]))
+			if(isset($rules[$key]))
 			{
-				if(is_string($this->rule[$key]))
+				if(is_string($rules[$key]))
 				{
-					$method = 'set' . ucfirst($this->rule[$key]);
+					$method = 'set' . ucfirst($rules[$key]);
 				}
-				else if($this->rule[$key] instanceof Rule)
+				else if($rules[$key] instanceof Rule)
 				{
-					$method = 'set' . ucfirst($this->rule[$key]->getName());
-					$value  = $this->rule[$key]->getValue($value, $data);
+					$method = 'set' . ucfirst($rules[$key]->getName());
+					$value  = $rules[$key]->getValue($value, $data);
 				}
 			}
 			else
