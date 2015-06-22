@@ -46,6 +46,7 @@ class JsonSchemaCommandTest extends CommandTestCase
 		$schema = unserialize($commandTester->getDisplay());
 
 		$this->assertInstanceOf('PSX\Data\SchemaInterface', $schema);
+		$this->assertInstanceOf('PSX\Data\Schema\Property\ComplexType', $schema->getDefinition());
 		$this->assertInstanceOf('PSX\Data\Schema\Property\StringType', $schema->getDefinition()->get('artist'));
 		$this->assertInstanceOf('PSX\Data\Schema\Property\StringType', $schema->getDefinition()->get('title'));
 	}
