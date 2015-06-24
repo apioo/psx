@@ -66,30 +66,39 @@ class Record implements ImporterInterface
 			throw new InvalidArgumentException('Data must be an stdClass');
 		}
 
-		$properties = array_intersect_key(
-			(array) $data, 
-			$record->getRecordInfo()->getFields()
-		);
-
-		foreach($properties as $key => $value)
+		// if we have an PSX\Data\Record instance and no concrete RecordAbstract 
+		// we have no meta informations about the data therefore we can not 
+		// look at the annotation of the methods
+		if($record instanceof DataRecord)
 		{
-			// convert to camelcase if underscore is in name
-			if(strpos($key, '_') !== false)
+			foreach($data as $key => $value)
 			{
-				$key = implode('', array_map('ucfirst', explode('_', $key)));
-			}
+				// convert to camelcase if underscore is in name
+				if(strpos($key, '_') !== false)
+				{
+					$key = implode('', array_map('ucfirst', explode('_', $key)));
+				}
 
-			$methodName = 'set' . ucfirst($key);
-
-			// if we have an PSX\Data\Record instance and no concrete 
-			// RecordAbstract implementation we have an magic __call method 
-			// therefore we can not look at the annotation of the methods
-			if($record instanceof DataRecord)
-			{
-				$record->$methodName($value);
+				$record->setProperty($key, $value);
 			}
-			else
+		}
+		else
+		{
+			$properties = array_intersect_key(
+				(array) $data, 
+				$record->getRecordInfo()->getFields()
+			);
+
+			foreach($properties as $key => $value)
 			{
+				// convert to camelcase if underscore is in name
+				if(strpos($key, '_') !== false)
+				{
+					$key = implode('', array_map('ucfirst', explode('_', $key)));
+				}
+
+				$methodName = 'set' . ucfirst($key);
+
 				try
 				{
 					$class  = new ReflectionClass($record);

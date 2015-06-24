@@ -42,15 +42,7 @@ class RecordAnonymousTest extends \PHPUnit_Framework_TestCase
 
 	protected function getRecord()
 	{
-		return new DataRecord('news', array(
-			'id'       => null,
-			'title'    => null,
-			'active'   => null,
-			'disabled' => null,
-			'count'    => null,
-			'rating'   => null,
-			'date'     => null,
-		));
+		return new DataRecord('news', array());
 	}
 
 	protected function canImportComplexRecord()
