@@ -26,7 +26,7 @@ use PSX\Data\Record\ImporterInterface;
 use PSX\Sql\TableInterface;
 
 /**
- * Importer wich imports data into an record based on an sql table class. Note 
+ * Importer which imports data into an record based on an sql table class. Note 
  * this importer does not handle relations it simply uses all available columns
  * on the table
  *
