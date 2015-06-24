@@ -32,7 +32,7 @@ use ReflectionException;
 use ReflectionMethod;
 
 /**
- * Importer wich reads the annotations from an entity and creates an record 
+ * Importer which reads the annotations from an entity and creates an record 
  * based on the defined fields
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
