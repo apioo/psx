@@ -28,7 +28,7 @@ use PSX\Command\Output\Void;
 use PSX\Dispatch\Sender\Void as VoidSender;
 use PSX\Event;
 use PSX\Event\ExceptionThrownEvent;
-use PSX\Loader\RoutingParser;
+use PSX\Loader;
 
 /**
  * ContainerTestCaseTrait
@@ -53,8 +53,10 @@ trait ContainerTestCaseTrait
 
 		Environment::getContainer()->set('logger', $logger);
 
-		// we replace the routing parser
-		Environment::getContainer()->set('routing_parser', new RoutingParser\ArrayCollection($this->getPaths()));
+		// we replace the routing parser and location finder so that the test
+		// cases work with the routes deinfed in getPaths
+		Environment::getContainer()->set('routing_parser', new Loader\RoutingParser\ArrayCollection($this->getPaths()));
+		Environment::getContainer()->set('loader_location_finder', new Loader\LocationFinder\RoutingParser(Environment::getContainer()->get('routing_parser')));
 
 		// assign the phpunit test case
 		Environment::getContainer()->set('test_case', $this);
