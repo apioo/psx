@@ -20,6 +20,7 @@
 
 namespace PSX\Data;
 
+use PSX\Data\RecordInterface;
 use PSX\Validate;
 
 /**
@@ -64,6 +65,10 @@ class Accessor
 			else if($value instanceof \stdClass)
 			{
 				$value = isset($value->$part) ? $value->$part : null;
+			}
+			else if($value instanceof RecordInterface)
+			{
+				$value = $value->getRecordInfo()->getField($part);
 			}
 			else
 			{

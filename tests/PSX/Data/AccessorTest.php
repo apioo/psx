@@ -20,8 +20,9 @@
 
 namespace PSX\Data;
 
-use PSX\Validate;
 use PSX\Filter;
+use PSX\Data\Object;
+use PSX\Validate;
 
 /**
  * AccessorTest
@@ -32,20 +33,11 @@ use PSX\Filter;
  */
 class AccessorTest extends \PHPUnit_Framework_TestCase
 {
-	public function testGetArray()
+	/**
+	 * @dataProvider provideSources
+	 */
+	public function testGet($source)
 	{
-		$source = array(
-			'foo' => 'bar',
-			'bar' => array(
-				'foo' => '1',
-			),
-			'tes' => array(
-				array(
-					'foo' => 'bar'
-				),
-			),
-		);
-
 		$accessor = new Accessor(new Validate(), $source);
 
 		$this->assertEquals($source, $accessor->getSource());
@@ -54,38 +46,11 @@ class AccessorTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('bar', $accessor->get('tes.0.foo'));
 	}
 
-	public function testGetStdClass()
+	/**
+	 * @dataProvider provideSources
+	 */
+	public function testGetFilter($source)
 	{
-		$source = new \stdClass();
-		$source->foo = 'bar';
-		$source->bar = new \stdClass();
-		$source->bar->foo = 1;
-		$source->tes = array();
-		$source->tes[0] = new \stdClass();
-		$source->tes[0]->foo = 'bar';
-
-		$accessor = new Accessor(new Validate(), $source);
-
-		$this->assertEquals($source, $accessor->getSource());
-		$this->assertEquals('bar', $accessor->get('foo'));
-		$this->assertEquals(1, $accessor->get('bar.foo'));
-		$this->assertEquals('bar', $accessor->get('tes.0.foo'));
-	}
-
-	public function testGetFilterArray()
-	{
-		$source = array(
-			'foo' => 'bar',
-			'bar' => array(
-				'foo' => '1',
-			),
-			'tes' => array(
-				array(
-					'foo' => 'bar'
-				),
-			),
-		);
-
 		$filter = new Filter\Length(3, 8);
 
 		$validate = $this->getMockBuilder('PSX\Validate')
@@ -111,8 +76,26 @@ class AccessorTest extends \PHPUnit_Framework_TestCase
 		$accessor->get('tes.0.foo', Validate::TYPE_STRING, array($filter));
 	}
 
-	public function testGetFilterStdClass()
+	public function provideSources()
 	{
+		$sources = array();
+
+		// array
+		$source = array(
+			'foo' => 'bar',
+			'bar' => array(
+				'foo' => '1',
+			),
+			'tes' => array(
+				array(
+					'foo' => 'bar'
+				),
+			),
+		);
+
+		$sources[] = [$source];
+
+		// stdClass
 		$source = new \stdClass();
 		$source->foo = 'bar';
 		$source->bar = new \stdClass();
@@ -121,29 +104,24 @@ class AccessorTest extends \PHPUnit_Framework_TestCase
 		$source->tes[0] = new \stdClass();
 		$source->tes[0]->foo = 'bar';
 
-		$filter = new Filter\Length(3, 8);
+		$sources[] = [$source];
 
-		$validate = $this->getMockBuilder('PSX\Validate')
-			->setMethods(array('apply'))
-			->getMock();
+		// RecordInterface
+		$source = new Object([
+			'foo' => 'bar',
+			'bar' => new Object([
+				'foo' => '1'
+			]),
+			'tes' => [
+				new Object([
+					'foo' => 'bar'
+				])
+			]
+		]);
 
-		$validate->expects($this->at(0))
-			->method('apply')
-			->with($this->equalTo('bar'), $this->equalTo(Validate::TYPE_STRING), $this->equalTo(array()));
+		$sources[] = [$source];
 
-		$validate->expects($this->at(1))
-			->method('apply')
-			->with($this->equalTo(1), $this->equalTo(Validate::TYPE_INTEGER), $this->equalTo(array()));
-
-		$validate->expects($this->at(2))
-			->method('apply')
-			->with($this->equalTo('bar'), $this->equalTo(Validate::TYPE_STRING), $this->equalTo(array($filter)));
-
-		$accessor = new Accessor($validate, $source);
-
-		$accessor->get('foo');
-		$accessor->get('bar.foo', Validate::TYPE_INTEGER);
-		$accessor->get('tes.0.foo', Validate::TYPE_STRING, array($filter));
+		return $sources;
 	}
 
 	/**
