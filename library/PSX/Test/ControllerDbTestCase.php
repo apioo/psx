@@ -70,11 +70,4 @@ abstract class ControllerDbTestCase extends \PHPUnit_Extensions_Database_TestCas
 	{
 		return Environment::getService('dispatch')->route($request, $response);
 	}
-
-	/**
-	 * Returns the available modules for the testcase
-	 *
-	 * @return array
-	 */
-	abstract protected function getPaths();
 }

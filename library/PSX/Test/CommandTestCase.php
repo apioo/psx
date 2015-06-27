@@ -46,8 +46,14 @@ abstract class CommandTestCase extends \PHPUnit_Framework_TestCase
 		return Environment::getService('executor')->run(new Map($className, $parameters));
 	}
 
+	/**
+	 * Provides an array of available routes for this test case. Uses the system
+	 * routes if no paths are available
+	 *
+	 * @return array|null
+	 */
 	protected function getPaths()
 	{
-		return array();
+		return null;
 	}
 }

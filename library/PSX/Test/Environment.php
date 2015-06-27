@@ -182,9 +182,7 @@ class Environment
 		{
 			try
 			{
-				$config = new Configuration();
-				$config->setSQLLogger(new Logger($container->get('logger')));
-
+				$config     = new Configuration();
 				$connection = DriverManager::getConnection($params, $config);
 				$fromSchema = $connection->getSchemaManager()->createSchema();
 

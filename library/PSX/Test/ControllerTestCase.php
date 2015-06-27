@@ -46,11 +46,4 @@ abstract class ControllerTestCase extends \PHPUnit_Framework_TestCase
 	{
 		return Environment::getService('dispatch')->route($request, $response);
 	}
-
-	/**
-	 * Returns the available modules for the testcase
-	 *
-	 * @return array
-	 */
-	abstract protected function getPaths();
 }

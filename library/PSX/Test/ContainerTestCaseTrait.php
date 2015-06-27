@@ -55,8 +55,7 @@ trait ContainerTestCaseTrait
 
 		// we replace the routing parser and location finder so that the test
 		// cases work with the routes deinfed in getPaths
-		Environment::getContainer()->set('routing_parser', new Loader\RoutingParser\ArrayCollection($this->getPaths()));
-		Environment::getContainer()->set('loader_location_finder', new Loader\LocationFinder\RoutingParser(Environment::getContainer()->get('routing_parser')));
+		$this->setUpRoutes();
 
 		// assign the phpunit test case
 		Environment::getContainer()->set('test_case', $this);
@@ -70,7 +69,7 @@ trait ContainerTestCaseTrait
 		// enables us to load the same controller multiple times
 		Environment::getContainer()->get('loader')->setRecursiveLoading(true);
 
-		// we replace the command output
+		// use void output
 		Environment::getContainer()->set('command_output', new Void());
 
 		// add event listener which redirects PHPUnit exceptions. Because of 
@@ -84,6 +83,20 @@ trait ContainerTestCaseTrait
 			}
 
 		});
+	}
+
+	/**
+	 * Sets the routing parser and location finder so that the tests uses the
+	 * provided routes
+	 */
+	protected function setUpRoutes()
+	{
+		$paths = $this->getPaths();
+		if(!empty($paths))
+		{
+			Environment::getContainer()->set('routing_parser', new Loader\RoutingParser\ArrayCollection($this->getPaths()));
+			Environment::getContainer()->set('loader_location_finder', new Loader\LocationFinder\RoutingParser(Environment::getContainer()->get('routing_parser')));
+		}
 	}
 
 	protected function tearDown()
@@ -114,5 +127,16 @@ trait ContainerTestCaseTrait
 				Environment::getContainer()->set($serviceId, null);
 			}
 		}
+	}
+
+	/**
+	 * Provides an array of available routes for this test case. Uses the system
+	 * routes if no paths are available
+	 *
+	 * @return array|null
+	 */
+	protected function getPaths()
+	{
+		return null;
 	}
 }

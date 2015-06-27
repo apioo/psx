@@ -69,9 +69,4 @@ abstract class CommandDbTestCase extends \PHPUnit_Extensions_Database_TestCase
 	{
 		return Environment::getService('executor')->run(new Map($className, $parameters));
 	}
-
-	protected function getPaths()
-	{
-		return array();
-	}
 }
