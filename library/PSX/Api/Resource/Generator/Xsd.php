@@ -24,12 +24,11 @@ use DOMDocument;
 use DOMElement;
 use PSX\Api\Resource;
 use PSX\Api\Resource\GeneratorAbstract;
-use PSX\Data\SchemaInterface;
-use PSX\Data\Schema\GeneratorInterface;
+use PSX\Data\Schema\Generator\Xsd as XsdGenerator;
 use PSX\Data\Schema\Property;
 use PSX\Data\Schema\PropertyInterface;
 use PSX\Data\Schema\PropertySimpleAbstract;
-use PSX\Data\Schema\Generator\Xsd as XsdGenerator;
+use PSX\Data\SchemaInterface;
 
 /**
  * Xsd

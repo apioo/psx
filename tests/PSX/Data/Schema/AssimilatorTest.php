@@ -20,8 +20,8 @@
 
 namespace PSX\Data\Schema;
 
-use PSX\Data\SchemaAbstract;
 use PSX\Data\Schema\Property;
+use PSX\Data\SchemaAbstract;
 use PSX\Test\Environment;
 
 /**

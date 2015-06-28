@@ -21,15 +21,13 @@
 namespace PSX\Data\Record\Importer;
 
 use DateTime;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Persistence\Proxy;
 use Doctrine\ORM\EntityManager;
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use InvalidArgumentException;
 use PSX\Data\Record as DataRecord;
 use PSX\Data\Record\ImporterInterface;
-use ReflectionClass;
 use ReflectionException;
-use ReflectionMethod;
 
 /**
  * Importer which reads the annotations from an entity and creates an record 

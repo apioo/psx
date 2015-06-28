@@ -20,10 +20,8 @@
 
 namespace PSX\Data\Record;
 
-use DateTime;
-use PSX\Data\RecordAbstract;
 use PSX\Data\Record\Mapper\Rule;
-use PSX\Data\WriterTestRecord;
+use PSX\Data\RecordAbstract;
 
 /**
  * MapperTest

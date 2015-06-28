@@ -20,7 +20,6 @@
 
 namespace PSX\Console\Generate;
 
-use Doctrine\DBAL\Types\Type;
 use PSX\Test\CommandTestCase;
 use PSX\Test\Environment;
 use Symfony\Component\Console\Tester\CommandTester;

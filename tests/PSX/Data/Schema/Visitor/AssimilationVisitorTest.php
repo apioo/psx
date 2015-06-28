@@ -20,10 +20,8 @@
 
 namespace PSX\Data\Schema\Visitor;
 
-use ArrayObject;
-use PSX\Data\SchemaAbstract;
 use PSX\Data\Schema\Property;
-use PSX\Test\Environment;
+use PSX\Data\SchemaAbstract;
 
 /**
  * AssimilationVisitorTest

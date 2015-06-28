@@ -20,12 +20,11 @@
 
 namespace PSX\Data;
 
-use PSX\Data\NotFoundException;
 use PSX\Data\ReaderFactory;
-use PSX\Data\Record\ImporterManager;
 use PSX\Data\Record\ImporterInterface;
-use PSX\Data\TransformerInterface;
+use PSX\Data\Record\ImporterManager;
 use PSX\Data\Transformer\TransformerManager;
+use PSX\Data\TransformerInterface;
 use PSX\Http\MessageInterface;
 use RuntimeException;
 

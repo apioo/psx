@@ -20,10 +20,10 @@
 
 namespace PSX\Data\Schema\Generator;
 
-use PSX\Data\SchemaInterface;
 use PSX\Data\Schema\GeneratorInterface;
 use PSX\Data\Schema\Property;
 use PSX\Data\Schema\PropertyInterface;
+use PSX\Data\SchemaInterface;
 use PSX\Json;
 
 /**

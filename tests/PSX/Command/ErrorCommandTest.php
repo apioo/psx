@@ -20,9 +20,7 @@
 
 namespace PSX\Command;
 
-use PSX\Command\Executor;
 use PSX\Command\ParameterParser\Map;
-use PSX\Command\Output\Memory;
 use PSX\Test\CommandTestCase;
 use PSX\Test\Environment;
 

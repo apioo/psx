@@ -20,15 +20,15 @@
 
 namespace PSX\Controller\Tool;
 
-use PSX\Api\DocumentedInterface;
 use PSX\Api\DocumentationInterface;
+use PSX\Api\DocumentedInterface;
 use PSX\Api\Resource;
 use PSX\Api\Resource\Generator;
 use PSX\Api\Resource\Generator\HtmlAbstract;
 use PSX\Controller\ApiAbstract;
 use PSX\Data\Record;
-use PSX\Data\Schema\Generator as SchemaGenerator;
 use PSX\Data\Schema\Documentation;
+use PSX\Data\Schema\Generator as SchemaGenerator;
 use PSX\Data\SchemaInterface;
 use PSX\Data\WriterInterface;
 use PSX\Exception;

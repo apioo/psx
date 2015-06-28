@@ -20,9 +20,8 @@
 
 namespace PSX\Data;
 
-use DateTime;
-use Serializable;
 use JsonSerializable;
+use Serializable;
 
 /**
  * RecordAbstract

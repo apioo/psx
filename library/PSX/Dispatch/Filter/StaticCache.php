@@ -24,10 +24,9 @@ use PSX\Cache\CacheItemPoolInterface;
 use PSX\DateTime;
 use PSX\Dispatch\FilterChainInterface;
 use PSX\Dispatch\FilterInterface;
-use PSX\Http\Exception\BadRequestException;
-use PSX\Http\Stream\Util;
 use PSX\Http\RequestInterface;
 use PSX\Http\ResponseInterface;
+use PSX\Http\Stream\Util;
 
 /**
  * StaticCache

@@ -23,8 +23,6 @@ namespace PSX\Dispatch;
 use PSX\Dependency\ObjectBuilderInterface;
 use PSX\Loader\Context;
 use PSX\Util\Annotation;
-use ReflectionClass;
-use RuntimeException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**

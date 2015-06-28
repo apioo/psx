@@ -20,12 +20,11 @@
 
 namespace PSX\Sql\Table\Reader;
 
-use Doctrine\ORM\EntityManager;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
-use ReflectionClass;
-use PSX\Sql\TableInterface;
+use Doctrine\ORM\EntityManager;
 use PSX\Sql\Table\Definition;
 use PSX\Sql\Table\ReaderInterface;
+use PSX\Sql\TableInterface;
 
 /**
  * EntityAnnotation

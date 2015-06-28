@@ -23,11 +23,11 @@ namespace PSX\Data\Schema\Parser\JsonSchema\Resolver;
 use PSX\Data\Schema\Parser\JsonSchema\Document;
 use PSX\Data\Schema\Parser\JsonSchema\RefResolver;
 use PSX\Data\Schema\Parser\JsonSchema\ResolverInterface;
-use PSX\Uri;
-use PSX\Util\UriResolver;
 use PSX\Http as HttpClient;
 use PSX\Http\GetRequest;
 use PSX\Json;
+use PSX\Uri;
+use PSX\Util\UriResolver;
 use RuntimeException;
 
 /**

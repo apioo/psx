@@ -24,10 +24,7 @@ use Doctrine\DBAL\Connection;
 use PSX\Cache\HandlerInterface;
 use PSX\Cache\Item;
 use PSX\DateTime;
-use PSX\Sql\Condition;
-use PSX\Sql\TableInterface;
 use PSX\Sql\Table\ColumnAllocation;
-use UnexpectedValueException;
 
 /**
  * This handler stores cache entries in an simple sql table. The table must have

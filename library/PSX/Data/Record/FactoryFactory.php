@@ -20,7 +20,6 @@
 
 namespace PSX\Data\Record;
 
-use InvalidArgumentException;
 use PSX\Dependency\ObjectBuilderInterface;
 
 /**

@@ -20,8 +20,6 @@
 
 namespace PSX\ActivityStream;
 
-use DateTime;
-use PSX\ActivityStream\ObjectType\Binary;
 use PSX\Data\SerializeTestAbstract;
 
 /**

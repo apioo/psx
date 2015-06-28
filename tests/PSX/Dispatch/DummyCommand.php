@@ -20,9 +20,9 @@
 
 namespace PSX\Dispatch;
 
-use PSX\CommandAbstract;
 use PSX\Command\OutputInterface;
 use PSX\Command\Parameters;
+use PSX\CommandAbstract;
 
 /**
  * DummyCommand

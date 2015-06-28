@@ -31,8 +31,8 @@ use PSX\Http\RequestInterface;
 use PSX\Http\Response;
 use PSX\Http\ResponseInterface;
 use PSX\Loader\Context;
-use PSX\Loader\RoutingParserInterface;
 use PSX\Loader\PathMatcher;
+use PSX\Loader\RoutingParserInterface;
 use PSX\Uri;
 
 /**

@@ -29,7 +29,6 @@ use PSX\Atom\Link;
 use PSX\Atom\Person;
 use PSX\Atom\Text;
 use PSX\Data\Record;
-use PSX\Data\WriterTestCase;
 use PSX\Data\WriterTestRecord;
 use PSX\Http\MediaType;
 

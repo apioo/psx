@@ -20,10 +20,6 @@
 
 namespace PSX\Cache\Handler;
 
-use PDOException;
-use PSX\CacheTest;
-use PSX\Sql\Table\ColumnAllocation;
-
 /**
  * VoidTest
  *

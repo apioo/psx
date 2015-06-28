@@ -20,8 +20,6 @@
 
 namespace PSX\Command;
 
-use PSX\Command\Parameters;
-
 /**
  * ParameterParserInterface
  *

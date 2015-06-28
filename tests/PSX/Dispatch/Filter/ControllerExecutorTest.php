@@ -24,9 +24,9 @@ use PSX\Dispatch\FilterChain;
 use PSX\Http\Request;
 use PSX\Http\Response;
 use PSX\Http\Stream\TempStream;
-use PSX\Url;
 use PSX\Loader;
 use PSX\Loader\Context;
+use PSX\Url;
 
 /**
  * ControllerExecutorTest

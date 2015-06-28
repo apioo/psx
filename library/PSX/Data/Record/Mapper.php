@@ -21,8 +21,8 @@
 namespace PSX\Data\Record;
 
 use InvalidArgumentException;
-use PSX\Data\RecordInterface;
 use PSX\Data\Record\Mapper\Rule;
+use PSX\Data\RecordInterface;
 
 /**
  * Mapper

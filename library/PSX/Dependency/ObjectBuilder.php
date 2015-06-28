@@ -21,9 +21,9 @@
 namespace PSX\Dependency;
 
 use InvalidArgumentException;
-use RuntimeException;
-use ReflectionClass;
 use PSX\Util\Annotation;
+use ReflectionClass;
+use RuntimeException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**

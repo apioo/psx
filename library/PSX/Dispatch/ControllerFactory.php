@@ -24,7 +24,6 @@ use PSX\Dependency\ObjectBuilderInterface;
 use PSX\Http\RequestInterface;
 use PSX\Http\ResponseInterface;
 use PSX\Loader\Context;
-use RuntimeException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**

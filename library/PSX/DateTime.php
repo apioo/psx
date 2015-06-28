@@ -20,7 +20,6 @@
 
 namespace PSX;
 
-use DateInterval;
 use InvalidArgumentException;
 
 /**

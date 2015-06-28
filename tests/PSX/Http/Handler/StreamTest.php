@@ -20,8 +20,6 @@
 
 namespace PSX\Http\Handler;
 
-use PSX\HttpTest;
-
 /**
  * StreamTest
  *

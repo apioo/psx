@@ -20,8 +20,8 @@
 
 namespace PSX\Data\Record;
 
-use PSX\Data\RecordInterface;
 use PSX\Data\Record;
+use PSX\Data\RecordInterface;
 
 /**
  * StoreTestCase

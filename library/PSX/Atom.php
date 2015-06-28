@@ -20,9 +20,7 @@
 
 namespace PSX;
 
-use DOMElement;
 use PSX\Atom\Category;
-use PSX\Atom\Entry;
 use PSX\Atom\Generator;
 use PSX\Atom\Link;
 use PSX\Atom\Person;

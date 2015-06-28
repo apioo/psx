@@ -20,8 +20,8 @@
 
 namespace PSX\Data\Writer;
 
-use PSX\Data\WriterTestCase;
 use PSX\Data\ExceptionRecord;
+use PSX\Data\WriterTestCase;
 use PSX\Http\MediaType;
 
 /**

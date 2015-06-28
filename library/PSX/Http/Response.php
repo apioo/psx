@@ -20,8 +20,8 @@
 
 namespace PSX\Http;
 
-use PSX\Http;
 use PSX\Exception;
+use PSX\Http;
 
 /**
  * Response

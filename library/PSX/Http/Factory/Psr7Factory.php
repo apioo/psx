@@ -20,10 +20,10 @@
 
 namespace PSX\Http\Factory;
 
-use Zend\Diactoros\Response as PsrResponse;
-use Zend\Diactoros\ServerRequestFactory;
 use PSX\Http\RequestInterface;
 use PSX\Http\ResponseInterface;
+use Zend\Diactoros\Response as PsrResponse;
+use Zend\Diactoros\ServerRequestFactory;
 
 /**
  * Psr7Factory

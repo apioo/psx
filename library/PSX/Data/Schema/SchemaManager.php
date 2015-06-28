@@ -20,8 +20,8 @@
 
 namespace PSX\Data\Schema;
 
-use PSX\Data\SchemaInterface;
 use PSX\Data\Schema\Property;
+use PSX\Data\SchemaInterface;
 
 /**
  * SchemaManager

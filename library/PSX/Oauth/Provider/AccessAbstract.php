@@ -20,14 +20,14 @@
 
 namespace PSX\Oauth\Provider;
 
-use PSX\Exception;
 use PSX\Controller\ApiAbstract;
-use PSX\Oauth;
-use PSX\Oauth\Provider\Data\Request;
-use PSX\Oauth\Provider\Data\Response;
-use PSX\Oauth\Provider\Data\Consumer;
 use PSX\Data\ReaderInterface;
 use PSX\Data\WriterInterface;
+use PSX\Exception;
+use PSX\Oauth;
+use PSX\Oauth\Provider\Data\Consumer;
+use PSX\Oauth\Provider\Data\Request;
+use PSX\Oauth\Provider\Data\Response;
 use PSX\Url;
 
 /**

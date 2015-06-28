@@ -23,7 +23,6 @@ namespace PSX\Sql;
 use Doctrine\DBAL\Connection;
 use InvalidArgumentException;
 use PSX\Cache\CacheItemPoolInterface;
-use PSX\Sql\Table\Definition;
 use PSX\Sql\Table\ReaderInterface;
 
 /**

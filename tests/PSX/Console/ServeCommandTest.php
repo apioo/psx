@@ -20,10 +20,10 @@
 
 namespace PSX\Console;
 
-use Symfony\Component\Console\Tester\CommandTester;
 use PSX\Dispatch\Sender\Memory;
 use PSX\Test\ControllerTestCase;
 use PSX\Test\Environment;
+use Symfony\Component\Console\Tester\CommandTester;
 
 /**
  * ServeCommandTest

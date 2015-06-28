@@ -20,16 +20,10 @@
 
 namespace PSX\Dispatch\Filter;
 
-use Closure;
-use PSX\Dispatch\Filter\Exception\FailureException;
-use PSX\Dispatch\Filter\Exception\MissingException;
-use PSX\Dispatch\Filter\Exception\SuccessException;
 use PSX\Http;
+use PSX\Http\Exception\UnauthorizedException;
 use PSX\Http\Request;
 use PSX\Http\Response;
-use PSX\Http\Authentication;
-use PSX\Http\Exception\BadRequestException;
-use PSX\Http\Exception\UnauthorizedException;
 use PSX\Oauth;
 use PSX\Oauth\Provider\Data\Consumer;
 use PSX\Url;

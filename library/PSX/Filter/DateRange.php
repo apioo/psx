@@ -21,7 +21,6 @@
 namespace PSX\Filter;
 
 use InvalidArgumentException;
-use PSX\FilterAbstract;
 
 /**
  * Checks whether the given date is in an specific range

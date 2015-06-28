@@ -22,9 +22,9 @@ namespace PSX\Api\Resource\Generator;
 
 use PSX\Api\Resource;
 use PSX\Api\Resource\GeneratorAbstract;
-use PSX\Data\SchemaInterface;
 use PSX\Data\Schema\Property;
 use PSX\Data\Schema\PropertyInterface;
+use PSX\Data\SchemaInterface;
 use PSX\Data\Writer\Json as JsonWriter;
 use PSX\Json;
 use PSX\Swagger\Api;

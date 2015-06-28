@@ -20,11 +20,10 @@
 
 namespace PSX\Command;
 
-use PSX\Event;
-use PSX\CommandAbstract;
-use PSX\Command\OutputInterface;
 use PSX\Command\Output\Void;
 use PSX\Command\ParameterParser\Map;
+use PSX\CommandAbstract;
+use PSX\Event;
 use PSX\Loader\Context;
 use PSX\Test\CommandTestCase;
 use PSX\Test\Environment;

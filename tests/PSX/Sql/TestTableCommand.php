@@ -20,9 +20,6 @@
 
 namespace PSX\Sql;
 
-use PSX\Sql\TableAbstract;
-use PSX\Sql\TableInterface;
-
 /**
  * TestTableCommand
  *

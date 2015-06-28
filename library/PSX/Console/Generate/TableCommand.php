@@ -21,15 +21,14 @@
 namespace PSX\Console\Generate;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Types;
 use Doctrine\DBAL\Schema\Column;
-use Symfony\Component\Console\Command\Command;
+use Doctrine\DBAL\Types;
+use PSX\Sql\SerializeTrait;
+use PSX\Sql\TableInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use PSX\Sql\SerializeTrait;
-use PSX\Sql\TableInterface;
 
 /**
  * TableCommand

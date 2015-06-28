@@ -23,10 +23,8 @@ namespace PSX\Sql;
 use PSX\Config;
 use PSX\Data\Record;
 use PSX\DateTime;
-use PSX\Sql\TableInterface;
-use PSX\Test\Environment;
 use PSX\Test\DbTestCase;
-use PSX\Test\TableDataSet;
+use PSX\Test\Environment;
 
 /**
  * SerializeTest

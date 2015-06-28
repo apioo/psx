@@ -23,10 +23,6 @@ namespace PSX\Loader\RoutingParser;
 use PSX\Loader\RoutingCollection;
 use PSX\Loader\RoutingParserInterface;
 use PSX\Util\AnnotationParser;
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
-use ReflectionClass;
-use ReflectionException;
 
 /**
  * A simple routing parser which gets all informations from an array

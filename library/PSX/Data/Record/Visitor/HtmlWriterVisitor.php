@@ -20,11 +20,9 @@
 
 namespace PSX\Data\Record\Visitor;
 
-use PSX\Data\RecordInterface;
 use PSX\Data\Record\VisitorAbstract;
+use PSX\Data\RecordInterface;
 use PSX\DateTime;
-use RuntimeException;
-use XMLWriter;
 
 /**
  * HtmlWriterVisitor

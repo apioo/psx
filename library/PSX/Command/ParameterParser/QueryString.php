@@ -20,9 +20,6 @@
 
 namespace PSX\Command\ParameterParser;
 
-use PSX\Command\ParameterParserInterface;
-use PSX\Command\Parameters;
-
 /**
  * QueryString
  *

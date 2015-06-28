@@ -22,7 +22,6 @@ namespace PSX\Sql;
 
 use PSX\Cache;
 use PSX\Sql\Table\Reader;
-use PSX\Sql\TableInterface;
 use PSX\Test\DbTestCase;
 
 /**

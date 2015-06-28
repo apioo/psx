@@ -21,7 +21,6 @@
 namespace PSX\Oauth2\Provider\GrantType;
 
 use PSX\Oauth2\AccessToken;
-use PSX\Oauth2\Provider\Credentials;
 
 /**
  * TestImplicit

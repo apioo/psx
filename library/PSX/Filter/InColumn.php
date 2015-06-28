@@ -22,8 +22,6 @@ namespace PSX\Filter;
 
 use Doctrine\DBAL\Connection;
 use PSX\FilterAbstract;
-use PSX\Sql\Condition;
-use PSX\Sql\TableInterface;
 
 /**
  * Checks whether the value is in the column

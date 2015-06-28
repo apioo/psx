@@ -21,7 +21,6 @@
 namespace PSX\Dispatch\Filter;
 
 use Closure;
-use PSX\Base;
 use PSX\Dispatch\FilterChainInterface;
 use PSX\Dispatch\FilterInterface;
 use PSX\Http\Authentication;

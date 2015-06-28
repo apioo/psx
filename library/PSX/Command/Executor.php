@@ -20,13 +20,11 @@
 
 namespace PSX\Command;
 
-use InvalidArgumentException;
-use PSX\CommandInterface;
 use PSX\Dispatch\CommandFactoryInterface;
 use PSX\Event;
-use PSX\Event\Context\CommandContext;
 use PSX\Event\CommandExecuteEvent;
 use PSX\Event\CommandProcessedEvent;
+use PSX\Event\Context\CommandContext;
 use PSX\Event\ExceptionThrownEvent;
 use PSX\Loader\Context;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;

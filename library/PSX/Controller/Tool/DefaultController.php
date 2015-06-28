@@ -20,7 +20,6 @@
 
 namespace PSX\Controller\Tool;
 
-use PSX\Base;
 use PSX\Controller\ApiAbstract;
 
 /**

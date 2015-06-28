@@ -20,10 +20,10 @@
 
 namespace PSX\Command\Foo\Command;
 
-use PSX\CommandAbstract;
+use PSX\Command\OutputInterface;
 use PSX\Command\Parameter;
 use PSX\Command\Parameters;
-use PSX\Command\OutputInterface;
+use PSX\CommandAbstract;
 
 /**
  * FooCommand

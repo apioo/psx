@@ -20,8 +20,6 @@
 
 namespace PSX;
 
-use PSX\Base;
-
 /**
  * BaseTest
  *

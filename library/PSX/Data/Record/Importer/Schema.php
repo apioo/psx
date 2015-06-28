@@ -23,11 +23,10 @@ namespace PSX\Data\Record\Importer;
 use InvalidArgumentException;
 use PSX\Data\Record\FactoryFactory;
 use PSX\Data\Record\ImporterInterface;
-use PSX\Data\SchemaInterface;
 use PSX\Data\Schema\Assimilator;
 use PSX\Data\Schema\SchemaTraverser;
-use PSX\Data\Schema\Visitor\AssimilationVisitor;
 use PSX\Data\Schema\ValidatorInterface;
+use PSX\Data\SchemaInterface;
 
 /**
  * Imports data based on an given schema. Validates also the data if an 

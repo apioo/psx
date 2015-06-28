@@ -22,7 +22,6 @@ namespace PSX\Api\Resource\Generator;
 
 use PSX\Api\Resource;
 use PSX\Api\Resource\GeneratorInterface;
-use PSX\Data\Schema\Generator\Html as HtmlGenerator;
 use PSX\Data\SchemaInterface;
 use PSX\Http;
 

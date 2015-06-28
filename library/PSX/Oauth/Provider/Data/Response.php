@@ -20,10 +20,9 @@
 
 namespace PSX\Oauth\Provider\Data;
 
+use PSX\Data\ReaderInterface;
 use PSX\Data\RecordAbstract;
 use PSX\Data\RecordInfo;
-use PSX\Data\ReaderInterface;
-use PSX\Data\NotSupportedException;
 
 /**
  * Response

@@ -25,7 +25,6 @@ use PSX\Exception;
 use PSX\Http;
 use PSX\Http\HandlerInterface;
 use PSX\Http\Options;
-use PSX\Http\RedirectException;
 use PSX\Http\Request;
 use PSX\Http\ResponseParser;
 use PSX\Url;

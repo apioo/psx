@@ -20,8 +20,8 @@
 
 namespace PSX\Dependency;
 
-use Symfony\Component\DependencyInjection\Scope;
 use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
+use Symfony\Component\DependencyInjection\Scope;
 
 /**
  * Most tests are taken from the symfony di container test

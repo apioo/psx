@@ -22,8 +22,6 @@ namespace PSX\Session\Handler;
 
 use Doctrine\DBAL\Connection;
 use PSX\DateTime;
-use PSX\Sql\Condition;
-use PSX\Sql\TableInterface;
 use PSX\Sql\Table\ColumnAllocation;
 use SessionHandlerInterface;
 

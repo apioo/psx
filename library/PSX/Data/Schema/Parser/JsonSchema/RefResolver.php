@@ -21,7 +21,6 @@
 namespace PSX\Data\Schema\Parser\JsonSchema;
 
 use PSX\Http;
-use PSX\Http\GetRequest;
 use PSX\Json;
 use PSX\Uri;
 use PSX\Util\UriResolver;

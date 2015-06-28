@@ -21,8 +21,6 @@
 namespace PSX\Oauth2\Authorization;
 
 use PSX\Http;
-use PSX\Http\Authentication;
-use PSX\Http\GetRequest;
 use PSX\Http\Handler\Callback;
 use PSX\Http\Response;
 use PSX\Http\ResponseParser;

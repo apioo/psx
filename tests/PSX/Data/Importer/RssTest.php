@@ -21,8 +21,8 @@
 namespace PSX\Data\Importer;
 
 use PSX\Data\Transformer;
-use PSX\Rss;
 use PSX\Http\Message;
+use PSX\Rss;
 use PSX\Test\Environment;
 
 /**

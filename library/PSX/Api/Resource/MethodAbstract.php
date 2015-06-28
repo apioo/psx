@@ -21,9 +21,9 @@
 namespace PSX\Api\Resource;
 
 use PSX\Data\Schema;
-use PSX\Data\SchemaInterface;
 use PSX\Data\Schema\Property;
 use PSX\Data\Schema\PropertySimpleAbstract;
+use PSX\Data\SchemaInterface;
 use RuntimeException;
 
 /**

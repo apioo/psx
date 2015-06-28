@@ -20,9 +20,9 @@
 
 namespace PSX\Template\Generator;
 
-use PSX\Data\RecordInterface;
 use PSX\Data\Record\GraphTraverser;
 use PSX\Data\Record\Visitor;
+use PSX\Data\RecordInterface;
 use PSX\Template\GeneratorInterface;
 
 /**

@@ -20,10 +20,10 @@
 
 namespace PSX\Template;
 
-use Twig_Environment;
-use Twig_Loader_Filesystem;
 use PSX\Config;
 use PSX\TemplateInterface;
+use Twig_Environment;
+use Twig_Loader_Filesystem;
 
 /**
  * Twig

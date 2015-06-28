@@ -21,8 +21,8 @@
 namespace PSX\Data\Writer;
 
 use PSX\Data\WriterTestCase;
-use PSX\TemplateInterface;
 use PSX\Loader\ReverseRouter;
+use PSX\TemplateInterface;
 
 /**
  * TemplateAbstractTestCase

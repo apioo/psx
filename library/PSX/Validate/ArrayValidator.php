@@ -21,7 +21,6 @@
 namespace PSX\Validate;
 
 use InvalidArgumentException;
-use PSX\DisplayException;
 
 /**
  * ArrayValidator

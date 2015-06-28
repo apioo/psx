@@ -20,8 +20,8 @@
 
 namespace PSX;
 
-use SplFileInfo;
 use PSX\File\Object;
+use SplFileInfo;
 
 /**
  * Represents a file and offers a high-level object oriented interface for

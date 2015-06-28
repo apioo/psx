@@ -21,15 +21,15 @@
 namespace PSX\Controller;
 
 use PSX\Api\Documentation;
-use PSX\Api\Version;
 use PSX\Api\Resource;
-use PSX\Data\Schema;
-use PSX\Data\SchemaInterface;
-use PSX\Data\Schema\Property\ComplexType;
-use PSX\Data\RecordInterface;
+use PSX\Api\Version;
 use PSX\Data\Record\Merger;
+use PSX\Data\RecordInterface;
+use PSX\Data\Schema;
 use PSX\Data\Schema\Builder as SchemaBuilder;
 use PSX\Data\Schema\Property;
+use PSX\Data\Schema\Property\ComplexType;
+use PSX\Data\SchemaInterface;
 use PSX\Http\Exception as StatusCode;
 use PSX\Loader\Context;
 use PSX\Sql\TableInterface;

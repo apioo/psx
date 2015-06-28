@@ -21,14 +21,12 @@
 namespace PSX\Oauth2\Authorization\AuthorizationCode;
 
 use PSX\Http;
-use PSX\Http\Authentication;
-use PSX\Http\GetRequest;
 use PSX\Http\Handler\Callback;
 use PSX\Http\Response;
 use PSX\Http\ResponseParser;
+use PSX\Oauth2\AccessToken;
 use PSX\Oauth2\Authorization\AuthorizationCode;
 use PSX\Oauth2\Authorization\ClientCredentialsTest;
-use PSX\Oauth2\AccessToken;
 use PSX\Test\Environment;
 use PSX\Url;
 

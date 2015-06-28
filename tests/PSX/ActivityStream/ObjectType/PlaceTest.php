@@ -22,8 +22,8 @@ namespace PSX\ActivityStream\ObjectType;
 
 use PSX\ActivityStream\Address;
 use PSX\ActivityStream\Position;
-use PSX\DateTime;
 use PSX\Data\SerializeTestAbstract;
+use PSX\DateTime;
 
 /**
  * PlaceTest

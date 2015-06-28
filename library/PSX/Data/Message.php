@@ -20,9 +20,6 @@
 
 namespace PSX\Data;
 
-use DateTime;
-use PSX\Util\Uuid;
-
 /**
  * Message
  *

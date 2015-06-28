@@ -20,14 +20,10 @@
 
 namespace PSX\Oauth\Provider\Data;
 
+use PSX\Data\InvalidDataException;
+use PSX\Data\ReaderInterface;
 use PSX\Data\RecordAbstract;
 use PSX\Data\RecordInfo;
-use PSX\Data\ReaderInterface;
-use PSX\Data\InvalidDataException;
-use PSX\Data\NotSupportedException;
-use PSX\Filter\Digit;
-use PSX\Filter\Length;
-use PSX\Filter\Url;
 use PSX\Oauth;
 use PSX\Validate;
 

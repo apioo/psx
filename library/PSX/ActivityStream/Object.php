@@ -20,7 +20,6 @@
 
 namespace PSX\ActivityStream;
 
-use DateTime;
 use PSX\Data\RecordAbstract;
 
 /**

@@ -20,11 +20,9 @@
 
 namespace PSX;
 
-use DOMDocument;
-use PSX\Base;
 use PSX\Dispatch\ControllerFactoryInterface;
-use PSX\Dispatch\SenderInterface;
 use PSX\Dispatch\RedirectException;
+use PSX\Dispatch\SenderInterface;
 use PSX\Event\Context\ControllerContext;
 use PSX\Event\ExceptionThrownEvent;
 use PSX\Event\RequestIncomingEvent;

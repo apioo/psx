@@ -21,7 +21,6 @@
 namespace PSX\Dispatch\Sender;
 
 use PSX\Http\Response;
-use PSX\Http\Stream\FileStream;
 use PSX\Http\Stream\StringStream;
 
 /**

@@ -21,7 +21,6 @@
 namespace PSX\Oauth2\Provider;
 
 use PSX\Dispatch\RedirectException;
-use PSX\Http\GetRequest;
 use PSX\Http\Response;
 use PSX\Http\Stream\TempStream;
 use PSX\Json;

@@ -20,12 +20,11 @@
 
 namespace PSX\Oauth\Provider;
 
-use PSX\Http\MessageInterface;
-use InvalidArgumentException;
 use PSX\Data\InvalidDataException;
-use PSX\Data\RecordInterface;
 use PSX\Data\Record\ImporterInterface;
+use PSX\Data\RecordInterface;
 use PSX\Http\Message;
+use PSX\Http\MessageInterface;
 use PSX\Oauth;
 
 /**

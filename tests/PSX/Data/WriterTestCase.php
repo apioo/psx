@@ -23,7 +23,6 @@ namespace PSX\Data;
 use DateTime;
 use PSX\ActivityStream;
 use PSX\Data\Record;
-use PSX\Data\ResultSet;
 
 /**
  * WriterTestCase

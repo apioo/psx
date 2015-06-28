@@ -20,7 +20,6 @@
 
 namespace PSX\Data\Schema\Property;
 
-use ArrayObject;
 use PSX\Data\Schema\Property;
 
 /**

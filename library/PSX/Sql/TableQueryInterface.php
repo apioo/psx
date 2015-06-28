@@ -20,8 +20,6 @@
 
 namespace PSX\Sql;
 
-use PSX\Sql\Condition;
-
 /**
  * TableQueryInterface
  *

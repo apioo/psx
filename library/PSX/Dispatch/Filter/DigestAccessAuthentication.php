@@ -22,9 +22,9 @@ namespace PSX\Dispatch\Filter;
 
 use Closure;
 use PSX\Data\Record\StoreInterface;
+use PSX\Dispatch\Filter\DigestAccessAuthentication\Digest;
 use PSX\Dispatch\FilterChainInterface;
 use PSX\Dispatch\FilterInterface;
-use PSX\Dispatch\Filter\DigestAccessAuthentication\Digest;
 use PSX\Exception;
 use PSX\Http\Authentication;
 use PSX\Http\Exception\BadRequestException;

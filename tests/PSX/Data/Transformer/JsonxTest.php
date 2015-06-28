@@ -20,10 +20,9 @@
 
 namespace PSX\Data\Transformer;
 
-use PSX\Rss;
-use PSX\Rss\Item;
-use PSX\Http\Message;
 use PSX\Http\MediaType;
+use PSX\Http\Message;
+use PSX\Rss;
 
 /**
  * JsonxTest

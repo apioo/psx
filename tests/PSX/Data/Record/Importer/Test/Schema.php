@@ -20,8 +20,8 @@
 
 namespace PSX\Data\Record\Importer\Test;
 
-use PSX\Data\SchemaAbstract;
 use PSX\Data\Schema\Property;
+use PSX\Data\SchemaAbstract;
 
 /**
  * Schema

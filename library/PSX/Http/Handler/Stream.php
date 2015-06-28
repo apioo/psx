@@ -23,13 +23,12 @@ namespace PSX\Http\Handler;
 use PSX\Http;
 use PSX\Http\HandlerException;
 use PSX\Http\HandlerInterface;
-use PSX\Http\NotSupportedException;
 use PSX\Http\Options;
 use PSX\Http\Request;
 use PSX\Http\Response;
 use PSX\Http\ResponseParser;
-use PSX\Http\Stream\TempStream;
 use PSX\Http\Stream\StringStream;
+use PSX\Http\Stream\TempStream;
 
 /**
  * This handler uses the internal HTTP wrapper to send the HTTP request

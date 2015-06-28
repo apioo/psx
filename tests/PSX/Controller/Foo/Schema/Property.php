@@ -20,8 +20,8 @@
 
 namespace PSX\Controller\Foo\Schema;
 
-use PSX\Data\SchemaAbstract;
 use PSX\Data\Schema\Property as SchemaProperty;
+use PSX\Data\SchemaAbstract;
 
 /**
  * Property

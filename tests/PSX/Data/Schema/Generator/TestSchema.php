@@ -20,8 +20,8 @@
 
 namespace PSX\Data\Schema\Generator;
 
-use PSX\Data\SchemaAbstract;
 use PSX\Data\Schema\Property;
+use PSX\Data\SchemaAbstract;
 
 /**
  * TestSchema

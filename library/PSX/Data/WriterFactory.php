@@ -22,7 +22,6 @@ namespace PSX\Data;
 
 use PSX\Data\Writer;
 use PSX\Http\MediaType;
-use PSX\Http\Exception\NotAcceptableException;
 use PSX\Util\PriorityQueue;
 
 /**

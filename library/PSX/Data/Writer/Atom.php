@@ -21,17 +21,14 @@
 namespace PSX\Data\Writer;
 
 use DateTime;
-use InvalidArgumentException;
 use PSX\Atom as AtomRecord;
 use PSX\Atom\Entry;
 use PSX\Atom\Text as AtomText;
 use PSX\Atom\Writer;
 use PSX\Data\RecordInterface;
-use PSX\Data\ResultSet;
 use PSX\Data\WriterInterface;
 use PSX\Exception;
 use PSX\Http\MediaType;
-use XMLWriter;
 
 /**
  * Atom

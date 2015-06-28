@@ -20,7 +20,6 @@
 
 namespace PSX\Data\Record\Importer;
 
-use Closure;
 use InvalidArgumentException;
 use PSX\Data\ReaderInterface;
 use PSX\Data\Record as DataRecord;

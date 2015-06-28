@@ -20,8 +20,8 @@
 
 namespace PSX\Event;
 
-use PSX\CommandInterface;
 use PSX\Command\Parameters;
+use PSX\CommandInterface;
 use Symfony\Component\EventDispatcher\Event;
 
 /**

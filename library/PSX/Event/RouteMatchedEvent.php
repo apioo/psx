@@ -20,8 +20,8 @@
 
 namespace PSX\Event;
 
-use PSX\Loader\Context;
 use PSX\Http\RequestInterface;
+use PSX\Loader\Context;
 use Symfony\Component\EventDispatcher\Event;
 
 /**

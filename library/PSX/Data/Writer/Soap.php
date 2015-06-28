@@ -22,9 +22,9 @@ namespace PSX\Data\Writer;
 
 use PSX\Data\ExceptionRecord;
 use PSX\Data\Record;
-use PSX\Data\RecordInterface;
 use PSX\Data\Record\GraphTraverser;
 use PSX\Data\Record\Visitor;
+use PSX\Data\RecordInterface;
 use PSX\Data\WriterInterface;
 use PSX\Http\MediaType;
 use XMLWriter;

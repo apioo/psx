@@ -20,7 +20,6 @@
 
 namespace PSX\Controller\Foo\Application;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use PSX\Controller\ApiAbstract;
 use PSX\Data\Serializer;
 

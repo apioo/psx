@@ -24,7 +24,6 @@ use PSX\Dispatch\FilterChainInterface;
 use PSX\Dispatch\FilterInterface;
 use PSX\Exception;
 use PSX\Http\Cookie;
-use PSX\Http\Exception\BadRequestException;
 use PSX\Http\RequestInterface;
 use PSX\Http\ResponseInterface;
 use PSX\Json;

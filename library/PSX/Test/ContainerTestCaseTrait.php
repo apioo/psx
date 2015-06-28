@@ -20,8 +20,8 @@
 
 namespace PSX\Test;
 
-use Monolog\Logger;
 use Monolog\Handler\NullHandler;
+use Monolog\Logger;
 use PSX\Cache;
 use PSX\Cache\Handler\Void as CacheHandler;
 use PSX\Command\Output\Void;

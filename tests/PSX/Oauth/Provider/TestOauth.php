@@ -22,9 +22,8 @@ namespace PSX\Oauth\Provider;
 
 use PSX\ControllerAbstract;
 use PSX\Dispatch\Filter\OauthAuthentication;
-use PSX\OauthTest;
-use PSX\Oauth\Provider\Data\Response;
 use PSX\Oauth\Provider\Data\Consumer;
+use PSX\OauthTest;
 
 /**
  * TestOauth

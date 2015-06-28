@@ -23,8 +23,8 @@ namespace PSX\Data\Transformer;
 use DOMDocument;
 use DOMElement;
 use InvalidArgumentException;
-use PSX\Http\MediaType;
 use PSX\Data\TransformerInterface;
+use PSX\Http\MediaType;
 
 /**
  * Rss

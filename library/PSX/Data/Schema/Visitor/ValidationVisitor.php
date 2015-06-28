@@ -20,20 +20,13 @@
 
 namespace PSX\Data\Schema\Visitor;
 
-use InvalidArgumentException;
 use PSX\Data\Record;
-use PSX\Data\Record\FactoryInterface;
-use PSX\Data\SchemaInterface;
 use PSX\Data\Schema\Property;
 use PSX\Data\Schema\PropertyInterface;
 use PSX\Data\Schema\ValidationException;
 use PSX\Data\Schema\VisitorInterface;
+use PSX\Data\SchemaInterface;
 use PSX\DateTime;
-use PSX\DateTime\Date;
-use PSX\DateTime\Time;
-use ReflectionClass;
-use ReflectionException;
-use ReflectionMethod;
 use RuntimeException;
 
 /**

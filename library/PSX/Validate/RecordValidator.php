@@ -22,7 +22,6 @@ namespace PSX\Validate;
 
 use InvalidArgumentException;
 use PSX\Data\RecordInterface;
-use PSX\DisplayException;
 
 /**
  * RecordValidator

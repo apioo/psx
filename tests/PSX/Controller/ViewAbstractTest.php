@@ -20,11 +20,9 @@
 
 namespace PSX\Controller;
 
-use PSX\Loader\LocationFinder\CallbackMethod;
-use PSX\Loader\InvalidPathException;
-use PSX\Http\Stream\TempStream;
 use PSX\Http\Request;
 use PSX\Http\Response;
+use PSX\Http\Stream\TempStream;
 use PSX\Test\ControllerTestCase;
 use PSX\Test\Environment;
 use PSX\Url;

@@ -22,22 +22,22 @@ namespace PSX\Log;
 
 use PSX\DisplayException;
 use PSX\Event;
-use PSX\Event\RequestIncomingEvent;
-use PSX\Event\RouteMatchedEvent;
+use PSX\Event\Context\ControllerContext;
 use PSX\Event\ControllerExecuteEvent;
 use PSX\Event\ControllerProcessedEvent;
-use PSX\Event\ResponseSendEvent;
 use PSX\Event\ExceptionThrownEvent;
-use PSX\Event\Context\ControllerContext;
+use PSX\Event\RequestIncomingEvent;
+use PSX\Event\ResponseSendEvent;
+use PSX\Event\RouteMatchedEvent;
+use PSX\Http\Exception\InternalServerErrorException;
+use PSX\Http\Exception\NotFoundException;
+use PSX\Http\Exception\SeeOtherException;
 use PSX\Http\Request;
 use PSX\Http\Response;
-use PSX\Http\Exception\NotFoundException;
-use PSX\Http\Exception\InternalServerErrorException;
-use PSX\Http\Exception\SeeOtherException;
-use PSX\Uri;
 use PSX\Loader\Context;
 use PSX\Test\ControllerTestCase;
 use PSX\Test\Environment;
+use PSX\Uri;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**

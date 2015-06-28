@@ -20,7 +20,6 @@
 
 namespace PSX\Sql;
 
-use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types;
 use Doctrine\DBAL\Types\Type;
 

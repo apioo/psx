@@ -23,14 +23,12 @@ namespace PSX\Data\Writer;
 use DateTime;
 use InvalidArgumentException;
 use PSX\Data\RecordInterface;
-use PSX\Data\ResultSet;
 use PSX\Data\WriterInterface;
 use PSX\Exception;
 use PSX\Http\MediaType;
 use PSX\Rss as RssRecord;
 use PSX\Rss\Item;
 use PSX\Rss\Writer;
-use XMLWriter;
 
 /**
  * Rss

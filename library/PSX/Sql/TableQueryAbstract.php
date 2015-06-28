@@ -23,7 +23,6 @@ namespace PSX\Sql;
 use BadMethodCallException;
 use InvalidArgumentException;
 use PSX\Data\Record;
-use PSX\Sql\Condition;
 
 /**
  * TableQueryAbstract

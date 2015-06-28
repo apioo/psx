@@ -20,7 +20,6 @@
 
 namespace PSX\ActivityStream\ObjectType;
 
-use DateTime;
 use PSX\ActivityStream\AudienceTargetingTrait;
 use PSX\ActivityStream\Object;
 

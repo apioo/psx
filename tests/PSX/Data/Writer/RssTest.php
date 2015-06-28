@@ -22,7 +22,6 @@ namespace PSX\Data\Writer;
 
 use DateTime;
 use PSX\Data\Record;
-use PSX\Data\WriterTestCase;
 use PSX\Http\MediaType;
 use PSX\Rss as RssRecord;
 use PSX\Rss\Item;

@@ -22,7 +22,6 @@ namespace PSX\Console;
 
 use PSX\Command\Executor;
 use PSX\Command\ParameterParser;
-use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;

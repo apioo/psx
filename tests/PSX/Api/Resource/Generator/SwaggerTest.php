@@ -20,8 +20,6 @@
 
 namespace PSX\Api\Resource\Generator;
 
-use DOMDocument;
-
 /**
  * SwaggerTest
  *

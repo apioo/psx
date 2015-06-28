@@ -20,7 +20,6 @@
 
 namespace PSX\Http;
 
-use DateTime;
 use PSX\Http;
 use PSX\Http\Stream\StringStream;
 

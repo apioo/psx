@@ -23,7 +23,6 @@ namespace PSX\Dispatch\Filter;
 use Closure;
 use PSX\Dispatch\FilterChainInterface;
 use PSX\Dispatch\FilterInterface;
-use PSX\Http\Authentication;
 use PSX\Http\Exception\BadRequestException;
 use PSX\Http\Exception\UnauthorizedException;
 use PSX\Http\RequestInterface;

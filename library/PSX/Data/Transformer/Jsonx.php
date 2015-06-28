@@ -22,10 +22,10 @@ namespace PSX\Data\Transformer;
 
 use DOMDocument;
 use DOMElement;
-use PSX\Http\MediaType;
+use InvalidArgumentException;
 use PSX\Data\Reader\Xml;
 use PSX\Data\TransformerInterface;
-use InvalidArgumentException;
+use PSX\Http\MediaType;
 
 /**
  * Jsonx

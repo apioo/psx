@@ -20,7 +20,6 @@
 
 namespace PSX\Data\Schema;
 
-use PSX\Data\Schema\Generator\TestSchema;
 use PSX\Test\Environment;
 
 /**

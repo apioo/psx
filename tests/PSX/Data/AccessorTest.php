@@ -21,7 +21,6 @@
 namespace PSX\Data;
 
 use PSX\Filter;
-use PSX\Data\Object;
 use PSX\Validate;
 
 /**

@@ -20,7 +20,6 @@
 
 namespace PSX\DateTime;
 
-use DateTimeZone;
 use InvalidArgumentException;
 use PSX\DateTime;
 

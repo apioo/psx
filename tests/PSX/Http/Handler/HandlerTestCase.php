@@ -29,8 +29,8 @@ use PSX\Http\PostRequest;
 use PSX\Http\PutRequest;
 use PSX\Http\ResponseInterface;
 use PSX\Http\Stream\TempStream;
-use PSX\Url;
 use PSX\Json;
+use PSX\Url;
 
 /**
  * HandlerTestCase

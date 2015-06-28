@@ -20,10 +20,9 @@
 
 namespace PSX\Sql;
 
-use PSX\DateTime;
 use PSX\Data\Record;
+use PSX\DateTime;
 use PSX\Sql;
-use PSX\Sql\Condition;
 
 /**
  * TableTestCase

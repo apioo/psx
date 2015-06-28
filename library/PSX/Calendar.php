@@ -20,10 +20,10 @@
 
 namespace PSX;
 
+use Countable;
 use DateInterval;
 use DateTimeZone;
 use Iterator;
-use Countable;
 
 /**
  * Calendar

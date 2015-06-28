@@ -20,11 +20,11 @@
 
 namespace PSX\Data\Schema\Generator;
 
-use PSX\Data\SchemaInterface;
 use PSX\Data\Schema\GeneratorInterface;
 use PSX\Data\Schema\Property;
 use PSX\Data\Schema\PropertyInterface;
 use PSX\Data\Schema\PropertySimpleAbstract;
+use PSX\Data\SchemaInterface;
 
 /**
  * Can generate sample html request data from an schema which can be used for 

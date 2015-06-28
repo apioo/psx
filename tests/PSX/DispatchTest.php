@@ -21,16 +21,13 @@
 namespace PSX;
 
 use PSX\Dispatch;
-use PSX\Dispatch\Sender\Void as VoidSender;
 use PSX\Event\Context;
-use PSX\Event\ExceptionThrownEvent;
 use PSX\Event\RequestIncomingEvent;
 use PSX\Event\ResponseSendEvent;
 use PSX\Http\Request;
 use PSX\Http\Response;
 use PSX\Http\Stream\TempStream;
 use PSX\Loader;
-use PSX\Loader\LocationFinder\CallbackMethod;
 use PSX\ModuleAbstract;
 use PSX\Template;
 use PSX\Test\ControllerTestCase;

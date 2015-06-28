@@ -21,10 +21,10 @@
 namespace PSX\Oauth2\Authorization\AuthorizationCode;
 
 use PSX\Controller\ApiAbstract;
-use PSX\Oauth2\AccessToken;
-use PSX\Oauth2\AuthorizationAbstract;
-use PSX\Oauth2\Authorization\Exception\ErrorExceptionAbstract;
 use PSX\Exception;
+use PSX\Oauth2\AccessToken;
+use PSX\Oauth2\Authorization\Exception\ErrorExceptionAbstract;
+use PSX\Oauth2\AuthorizationAbstract;
 
 /**
  * CallbackAbstract

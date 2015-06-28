@@ -20,9 +20,6 @@
 
 namespace PSX;
 
-use PSX\Util\Uuid;
-use UnexpectedValueException;
-
 /**
  * Base
  *

@@ -20,7 +20,6 @@
 
 namespace PSX\Http\Stream;
 
-use InvalidArgumentException;
 use PSX\Http\StreamInterface;
 
 /**

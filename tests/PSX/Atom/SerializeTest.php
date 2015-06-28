@@ -21,9 +21,9 @@
 namespace PSX\Atom;
 
 use DateTime;
-use PSX\Data\Writer;
-use PSX\Data\SerializeTestAbstract;
 use PSX\Atom;
+use PSX\Data\SerializeTestAbstract;
+use PSX\Data\Writer;
 
 /**
  * SerializeTest

@@ -21,9 +21,8 @@
 namespace PSX\Data;
 
 use PSX\Data\ReaderFactory;
-use PSX\Data\TransformerInterface;
 use PSX\Data\Transformer\TransformerManager;
-use PSX\Http\Exception\UnsupportedMediaTypeException;
+use PSX\Data\TransformerInterface;
 use PSX\Http\MessageInterface;
 
 /**

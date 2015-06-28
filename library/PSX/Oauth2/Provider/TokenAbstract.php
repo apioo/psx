@@ -21,9 +21,9 @@
 namespace PSX\Oauth2\Provider;
 
 use PSX\Controller\ApiAbstract;
+use PSX\Data\ReaderInterface;
 use PSX\Data\RecordAbstract;
 use PSX\Data\RecordInfo;
-use PSX\Data\ReaderInterface;
 use PSX\Data\WriterInterface;
 use PSX\Oauth2\Authorization\Exception\ErrorException;
 

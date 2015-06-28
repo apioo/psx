@@ -20,12 +20,10 @@
 
 namespace PSX\Http\Handler;
 
-use InvalidArgumentException;
 use PSX\Http;
-use PSX\Http\HandlerInterface;
 use PSX\Http\HandlerException;
+use PSX\Http\HandlerInterface;
 use PSX\Http\Options;
-use PSX\Http\RedirectException;
 use PSX\Http\Request;
 use PSX\Http\Response;
 use PSX\Http\ResponseParser;

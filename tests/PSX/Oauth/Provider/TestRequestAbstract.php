@@ -20,10 +20,10 @@
 
 namespace PSX\Oauth\Provider;
 
-use PSX\OauthTest;
+use PSX\Oauth\Provider\Data\Consumer;
 use PSX\Oauth\Provider\Data\Request;
 use PSX\Oauth\Provider\Data\Response;
-use PSX\Oauth\Provider\Data\Consumer;
+use PSX\OauthTest;
 
 /**
  * TestRequestAbstract

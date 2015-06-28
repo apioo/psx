@@ -21,8 +21,8 @@
 namespace PSX\ActivityStream\ObjectType;
 
 use PSX\ActivityStream\Object;
-use PSX\DateTime;
 use PSX\Data\SerializeTestAbstract;
+use PSX\DateTime;
 
 /**
  * EventTest

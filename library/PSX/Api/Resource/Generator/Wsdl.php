@@ -23,10 +23,9 @@ namespace PSX\Api\Resource\Generator;
 use DOMDocument;
 use DOMElement;
 use PSX\Api\Resource;
-use PSX\Api\Resource\GeneratorAbstract;
 use PSX\Api\Resource\Generator\Wsdl\Operation;
+use PSX\Api\Resource\GeneratorAbstract;
 use PSX\Api\Resource\MethodAbstract;
-use PSX\Data\Schema\Generator\Xsd as XsdGenerator;
 use PSX\Data\SchemaInterface;
 
 /**

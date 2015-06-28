@@ -20,10 +20,10 @@
 
 namespace PSX\Controller\SchemaApi;
 
-use PSX\Data\Writer;
-use PSX\Data\WriterInterface;
 use PSX\Data\Record;
 use PSX\Data\RecordInterface;
+use PSX\Data\Writer;
+use PSX\Data\WriterInterface;
 use PSX\DateTime;
 use PSX\DateTime\Date;
 use PSX\DateTime\Duration;

@@ -22,10 +22,9 @@ namespace PSX\Data;
 
 use DateTime;
 use PSX\ActivityStream;
-use PSX\Data\NotSupportedException;
 use PSX\Data\RecordAbstract;
-use PSX\Data\WriterResult;
 use PSX\Data\WriterInterface;
+use PSX\Data\WriterResult;
 
 /**
  * WriterTestRecord

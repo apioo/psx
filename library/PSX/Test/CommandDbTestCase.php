@@ -20,7 +20,6 @@
 
 namespace PSX\Test;
 
-use PDOException;
 use PSX\Command\ParameterParser\Map;
 
 /**

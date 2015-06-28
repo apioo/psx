@@ -20,9 +20,9 @@
 
 namespace PSX\Command\Foo\Command;
 
-use PSX\CommandAbstract;
-use PSX\Command\Parameters;
 use PSX\Command\OutputInterface;
+use PSX\Command\Parameters;
+use PSX\CommandAbstract;
 
 /**
  * TestErrorCommand

@@ -20,13 +20,7 @@
 
 namespace PSX\Data\Serializer;
 
-use JMS\Serializer\AbstractVisitor;
-use JMS\Serializer\Context;
-use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\GenericSerializationVisitor;
-use JMS\Serializer\GraphNavigator;
-use JMS\Serializer\Metadata\ClassMetadata;
-use JMS\Serializer\Metadata\PropertyMetadata;
 
 /**
  * SerializationVisitor

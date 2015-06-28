@@ -20,11 +20,6 @@
 
 namespace PSX\Data\Schema;
 
-use ReflectionClass;
-use ReflectionException;
-use ReflectionMethod;
-use RuntimeException;
-
 /**
  * PropertyAbstract
  *

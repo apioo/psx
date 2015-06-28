@@ -20,9 +20,8 @@
 
 namespace PSX\Data\Schema\Visitor;
 
-use PSX\Data\SchemaAbstract;
 use PSX\Data\Schema\Property;
-use PSX\Test\Environment;
+use PSX\Data\SchemaAbstract;
 use PSX\Uri;
 
 /**

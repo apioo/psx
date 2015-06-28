@@ -20,12 +20,11 @@
 
 namespace PSX;
 
-use Monolog\Logger;
 use Monolog\Handler\NullHandler;
-use PSX\Dispatch\Filter\BrowserCache;
-use PSX\Event\RouteMatchedEvent;
+use Monolog\Logger;
 use PSX\Event\ControllerExecuteEvent;
 use PSX\Event\ControllerProcessedEvent;
+use PSX\Event\RouteMatchedEvent;
 use PSX\Http\Request;
 use PSX\Http\Response;
 use PSX\Http\Stream\StringStream;

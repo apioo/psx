@@ -20,17 +20,12 @@
 
 namespace PSX\Dispatch\Filter;
 
-use Closure;
-use PSX\Data\Record\StoreInterface;
 use PSX\Data\Record\Store\Memory;
-use PSX\Dispatch\Filter\Exception\FailureException;
-use PSX\Dispatch\Filter\Exception\MissingException;
-use PSX\Dispatch\Filter\Exception\SuccessException;
+use PSX\Data\Record\StoreInterface;
+use PSX\Http\Authentication;
+use PSX\Http\Exception\UnauthorizedException;
 use PSX\Http\Request;
 use PSX\Http\Response;
-use PSX\Http\Authentication;
-use PSX\Http\Exception\BadRequestException;
-use PSX\Http\Exception\UnauthorizedException;
 use PSX\Url;
 
 /**

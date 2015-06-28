@@ -25,8 +25,8 @@ use PSX\Util\Annotation;
 use ReflectionClass;
 use ReflectionException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\DependencyInjection\ScopeInterface;
 use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
+use Symfony\Component\DependencyInjection\ScopeInterface;
 
 /**
  * A simple and fast implementation of an dependency container. Note this 

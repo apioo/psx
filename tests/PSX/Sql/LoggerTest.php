@@ -23,8 +23,6 @@ namespace PSX\Sql;
 use PSX\Config;
 use PSX\Data\Record;
 use PSX\DateTime;
-use PSX\Sql\TableInterface;
-use PSX\Test\TableDataSet;
 
 /**
  * LoggerTest

@@ -26,9 +26,7 @@ use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Schema\Schema;
 use PSX\Bootstrap;
-use PSX\Command\ParameterParser\Map;
 use PSX\Config;
-use PSX\Sql\Logger;
 use RuntimeException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 

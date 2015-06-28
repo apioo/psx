@@ -20,8 +20,6 @@
 
 namespace PSX\Http;
 
-use DateTime;
-
 /**
  * Util class to handle Authentication header
  *

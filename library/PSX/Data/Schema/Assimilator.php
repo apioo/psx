@@ -20,16 +20,13 @@
 
 namespace PSX\Data\Schema;
 
-use InvalidArgumentException;
 use PSX\Data\Record;
-use PSX\Data\RecordInterface;
 use PSX\Data\Record\FactoryFactory;
-use PSX\Data\SchemaInterface;
+use PSX\Data\RecordInterface;
 use PSX\Data\Schema\Property;
 use PSX\Data\Schema\PropertyInterface;
+use PSX\Data\SchemaInterface;
 use PSX\DateTime;
-use PSX\DateTime\Date;
-use PSX\DateTime\Time;
 
 /**
  * Assimilator

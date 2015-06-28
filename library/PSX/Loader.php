@@ -20,8 +20,8 @@
 
 namespace PSX;
 
-use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
+use PSX\Dispatch\FilterChain;
 use PSX\Dispatch\FilterInterface;
 use PSX\Event\ControllerExecuteEvent;
 use PSX\Event\ControllerProcessedEvent;
@@ -30,10 +30,9 @@ use PSX\Http\RequestInterface;
 use PSX\Http\ResponseInterface;
 use PSX\Loader\CallbackResolverInterface;
 use PSX\Loader\Context;
-use PSX\Loader\LocationFinderInterface;
-use PSX\Loader\LocationFinder\RoutingFile;
 use PSX\Loader\InvalidPathException;
-use PSX\Dispatch\FilterChain;
+use PSX\Loader\LocationFinder\RoutingFile;
+use PSX\Loader\LocationFinderInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use UnexpectedValueException;
 

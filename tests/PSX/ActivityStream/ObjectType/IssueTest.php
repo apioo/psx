@@ -20,8 +20,8 @@
 
 namespace PSX\ActivityStream\ObjectType;
 
-use PSX\DateTime;
 use PSX\Data\SerializeTestAbstract;
+use PSX\DateTime;
 
 /**
  * IssueTest

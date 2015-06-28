@@ -24,10 +24,10 @@ use PSX\Data\RecordInterface;
 use PSX\Data\WriterInterface;
 use PSX\Http\Exception as StatusCode;
 use PSX\Loader\ReverseRouter;
-use PSX\TemplateInterface;
 use PSX\Template\GeneratorFactory;
 use PSX\Template\GeneratorFactoryInterface;
 use PSX\Template\GeneratorInterface;
+use PSX\TemplateInterface;
 
 /**
  * Abstract class to facilitate an template engine to produce the output. If no

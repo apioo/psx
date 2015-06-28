@@ -23,9 +23,9 @@ namespace PSX\Data\Transformer;
 use DOMDocument;
 use DOMElement;
 use InvalidArgumentException;
-use PSX\Http\MediaType;
 use PSX\Data\Reader\Xml;
 use PSX\Data\TransformerInterface;
+use PSX\Http\MediaType;
 use RuntimeException;
 
 /**

@@ -21,10 +21,6 @@
 namespace PSX\Rss;
 
 use DateTime;
-use DOMDocument;
-use DOMElement;
-use PSX\Data\InvalidDataException;
-use PSX\Data\NotSupportedException;
 use PSX\Data\ReaderInterface;
 use PSX\Data\RecordAbstract;
 use PSX\Data\RecordInfo;

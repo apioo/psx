@@ -20,19 +20,15 @@
 
 namespace PSX\Controller\SchemaApi;
 
-use PSX\Data\Writer;
-use PSX\Data\WriterInterface;
 use PSX\Data\Record;
 use PSX\Data\RecordInterface;
+use PSX\Data\Writer;
+use PSX\Data\WriterInterface;
 use PSX\DateTime;
-use PSX\DateTime\Date;
-use PSX\DateTime\Duration;
-use PSX\DateTime\Time;
 use PSX\Http\Request;
 use PSX\Http\Response;
 use PSX\Http\Stream\TempStream;
 use PSX\Json;
-use PSX\Test\ControllerTestCase;
 use PSX\Url;
 
 /**

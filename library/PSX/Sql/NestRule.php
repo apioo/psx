@@ -21,7 +21,6 @@
 namespace PSX\Sql;
 
 use Psr\Log\LoggerInterface;
-use Doctrine\DBAL\Logging\SQLLogger;
 
 /**
  * NestRule

@@ -20,9 +20,6 @@
 
 namespace PSX\Data;
 
-use Countable;
-use Iterator;
-
 /**
  * ResultSet
  *

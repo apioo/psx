@@ -20,8 +20,6 @@
 
 namespace PSX;
 
-use DateInterval;
-
 /**
  * DateTimeTest
  *

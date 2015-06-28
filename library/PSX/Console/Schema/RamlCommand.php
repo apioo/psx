@@ -22,8 +22,8 @@ namespace PSX\Console\Schema;
 
 use PSX\Api\DocumentationInterface;
 use PSX\Api\Resource;
-use PSX\Api\Resource\ListingInterface;
 use PSX\Api\Resource\Generator;
+use PSX\Api\Resource\ListingInterface;
 use PSX\Config;
 use RuntimeException;
 use Symfony\Component\Console\Command\Command;

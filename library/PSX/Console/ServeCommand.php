@@ -20,18 +20,15 @@
 
 namespace PSX\Console;
 
-use PSX\Config;
-use PSX\Command\Executor;
 use PSX\Command\ParameterParser;
+use PSX\Config;
 use PSX\Dispatch;
 use PSX\Http\RequestParser;
 use PSX\Http\Response;
 use PSX\Http\Stream\TempStream;
 use PSX\Url;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**

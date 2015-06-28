@@ -21,11 +21,11 @@
 namespace PSX\Controller\Foo\Application\SchemaApi;
 
 use PSX\Api\Documentation;
-use PSX\Api\Version;
 use PSX\Api\Resource;
+use PSX\Api\Version;
+use PSX\Controller\SchemaApiAbstract;
 use PSX\Data\RecordInterface;
 use PSX\Data\Schema\Property;
-use PSX\Controller\SchemaApiAbstract;
 use PSX\Loader\Context;
 use PSX\Test\Environment;
 

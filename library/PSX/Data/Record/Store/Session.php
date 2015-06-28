@@ -20,8 +20,8 @@
 
 namespace PSX\Data\Record\Store;
 
-use PSX\Data\RecordInterface;
 use PSX\Data\Record\StoreInterface;
+use PSX\Data\RecordInterface;
 
 /**
  * Session

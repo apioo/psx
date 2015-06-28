@@ -22,10 +22,10 @@ namespace PSX\Api\Resource\Generator;
 
 use PSX\Api\Resource;
 use PSX\Api\Resource\GeneratorAbstract;
-use PSX\Data\SchemaInterface;
+use PSX\Data\Schema\Generator\JsonSchema as JsonSchemaGenerator;
 use PSX\Data\Schema\Property;
 use PSX\Data\Schema\PropertyInterface;
-use PSX\Data\Schema\Generator\JsonSchema as JsonSchemaGenerator;
+use PSX\Data\SchemaInterface;
 use PSX\Json;
 
 /**

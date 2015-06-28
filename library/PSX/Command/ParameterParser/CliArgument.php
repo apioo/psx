@@ -20,10 +20,6 @@
 
 namespace PSX\Command\ParameterParser;
 
-use InvalidArgumentException;
-use PSX\Command\ParameterParserInterface;
-use PSX\Command\Parameters;
-
 /**
  * CliArgument
  *

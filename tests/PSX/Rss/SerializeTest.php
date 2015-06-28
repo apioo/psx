@@ -21,8 +21,8 @@
 namespace PSX\Rss;
 
 use DateTime;
-use PSX\Data\Writer;
 use PSX\Data\SerializeTestAbstract;
+use PSX\Data\Writer;
 use PSX\Rss;
 
 /**

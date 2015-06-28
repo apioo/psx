@@ -20,16 +20,14 @@
 
 namespace PSX\Http\Handler;
 
-use Closure;
 use DOMDocument;
 use DOMElement;
-use DOMCdataSection;
 use PSX\Exception;
 use PSX\Http;
+use PSX\Http\HandlerInterface;
 use PSX\Http\Options;
 use PSX\Http\Request;
 use PSX\Http\Response;
-use PSX\Http\HandlerInterface;
 
 /**
  * Handler wich captures all http requests into an xml file wich can be loaded 

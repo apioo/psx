@@ -20,12 +20,12 @@
 
 namespace PSX\Controller\Tool;
 
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 use PSX\Command\ParameterParser;
 use PSX\Controller\ApiAbstract;
 use PSX\Data\Record;
 use PSX\Loader\Context;
-use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
 
 /**
  * CommandController

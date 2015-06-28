@@ -20,13 +20,9 @@
 
 namespace PSX\Controller;
 
-use DOMDocument;
-use PSX\Controller\ViewAbstract;
 use PSX\Data\Record\Converter;
-use PSX\DisplayException;
 use PSX\Http;
 use PSX\Loader\Context;
-use PSX\Template\ErrorException;
 
 /**
  * ErrorController

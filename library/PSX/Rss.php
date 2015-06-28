@@ -22,7 +22,6 @@ namespace PSX;
 
 use PSX\Data\CollectionAbstract;
 use PSX\Data\RecordInfo;
-use PSX\Rss\Item;
 use PSX\Rss\Category;
 use PSX\Rss\Cloud;
 

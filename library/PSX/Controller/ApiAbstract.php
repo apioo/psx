@@ -20,8 +20,8 @@
 
 namespace PSX\Controller;
 
-use PSX\Data\WriterInterface;
 use PSX\ControllerAbstract;
+use PSX\Data\WriterInterface;
 use PSX\Util\Api\FilterParameter;
 
 /**

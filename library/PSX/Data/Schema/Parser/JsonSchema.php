@@ -21,17 +21,15 @@
 namespace PSX\Data\Schema\Parser;
 
 use PSX\Data\Schema;
+use PSX\Data\Schema\Parser\JsonSchema\Document;
+use PSX\Data\Schema\Parser\JsonSchema\RefResolver;
+use PSX\Data\Schema\Parser\JsonSchema\Resolver;
+use PSX\Data\Schema\ParserInterface;
 use PSX\Data\Schema\Property;
 use PSX\Data\Schema\PropertyInterface;
 use PSX\Data\Schema\PropertySimpleAbstract;
-use PSX\Data\Schema\ParserInterface;
-use PSX\Data\Schema\Parser\JsonSchema\Document;
-use PSX\Data\Schema\Parser\JsonSchema\Resolver;
-use PSX\Data\Schema\Parser\JsonSchema\RefResolver;
-use PSX\Data\Schema\Parser\JsonSchema\UnsupportedVersionException;
 use PSX\Json;
 use PSX\Uri;
-use PSX\Util\UriResolver;
 use RuntimeException;
 
 /**

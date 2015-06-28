@@ -20,10 +20,9 @@
 
 namespace PSX\Http;
 
-use RuntimeException;
+use PSX\Exception;
 use PSX\Http;
 use PSX\Http\Stream\StringStream;
-use PSX\Exception;
 
 /**
  * ResponseParser

@@ -20,8 +20,8 @@
 
 namespace PSX\Data;
 
-use JMS\Serializer\Serializer as JMSSerializer;
 use JMS\Serializer\SerializationContext;
+use JMS\Serializer\Serializer as JMSSerializer;
 use PSX\Api\Version;
 use PSX\Data\Serializer\SerializationVisitor;
 

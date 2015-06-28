@@ -21,10 +21,10 @@
 namespace PSX;
 
 use PSX\Http\CookieStore;
+use PSX\Http\GetRequest;
 use PSX\Http\Handler;
 use PSX\Http\Response;
 use PSX\Http\ResponseParser;
-use PSX\Http\GetRequest;
 
 /**
  * HttpTest
