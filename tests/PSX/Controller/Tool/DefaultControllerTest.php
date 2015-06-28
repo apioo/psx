@@ -38,14 +38,8 @@ class DefaultControllerTest extends ControllerTestCase
 {
 	public function testIndex()
 	{
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/'), 'GET');
-		$request->addHeader('Accept', 'application/json');
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$json       = (string) $body;
+		$response = $this->sendRequest('http://127.0.0.1/', 'GET', ['Accept' => 'application/json']);
+		$json     = (string) $response->getBody();
 
 		$expect = <<<'JSON'
 {

@@ -165,15 +165,7 @@ JSON;
 
 	protected function callEndpoint($clientId, $clientSecret, array $params)
 	{
-		$url      = new Url('http://127.0.0.1/token');
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new PostRequest($url, array('Authorization' => 'Basic ' . base64_encode($clientId . ':' . $clientSecret)), $params);
-		$response = new Response();
-		$response->setBody($body);
-
-		$this->loadController($request, $response);
-
-		return $response;
+		return $this->sendRequest('http://127.0.0.1/token', 'POST', ['Authorization' => 'Basic ' . base64_encode($clientId . ':' . $clientSecret)], http_build_query($params, '', '&'));
 	}
 
 	protected function getPaths()

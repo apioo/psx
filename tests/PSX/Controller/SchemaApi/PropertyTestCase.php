@@ -49,13 +49,8 @@ abstract class PropertyTestCase extends ControllerTestCase
 	 */
 	public function testGet($type)
 	{
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api?type=' . $type), 'GET');
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
+		$response = $this->sendRequest('http://127.0.0.1/api?type=' . $type, 'GET');
+		$body     = (string) $response->getBody();
 
 		$this->assertEquals(200, $response->getStatusCode(), $body);
 		$this->assertJsonStringEqualsJsonString(self::getExpected(), $body, $body);
@@ -63,13 +58,8 @@ abstract class PropertyTestCase extends ControllerTestCase
 
 	public function testPost()
 	{
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'POST', [], self::getExpected());
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
+		$response = $this->sendRequest('http://127.0.0.1/api', 'POST', [], self::getExpected());
+		$body     = (string) $response->getBody();
 
 		$this->assertEquals(200, $response->getStatusCode(), $body);
 		$this->assertJsonStringEqualsJsonString(self::getExpected(), $body, $body);
@@ -83,14 +73,9 @@ abstract class PropertyTestCase extends ControllerTestCase
 }
 JSON;
 
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'POST', [], $data);
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
-		$data       = json_decode($body);
+		$response = $this->sendRequest('http://127.0.0.1/api', 'POST', [], $data);
+		$body     = (string) $response->getBody();
+		$data     = json_decode($body);
 
 		$this->assertEquals(500, $response->getStatusCode(), $body);
 		$this->assertEquals('/array must be an array', substr($data->message, 0, 23), $body);
@@ -104,14 +89,9 @@ JSON;
 }
 JSON;
 
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'POST', [], $data);
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
-		$data       = json_decode($body);
+		$response = $this->sendRequest('http://127.0.0.1/api', 'POST', [], $data);
+		$body     = (string) $response->getBody();
+		$data     = json_decode($body);
 
 		$this->assertEquals(500, $response->getStatusCode(), $body);
 		$this->assertEquals('/arrayComplex must be an array', substr($data->message, 0, 30), $body);
@@ -131,14 +111,9 @@ JSON;
 }
 JSON;
 
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'POST', [], $data);
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
-		$data       = json_decode($body);
+		$response = $this->sendRequest('http://127.0.0.1/api', 'POST', [], $data);
+		$body     = (string) $response->getBody();
+		$data     = json_decode($body);
 
 		$this->assertEquals(500, $response->getStatusCode(), $body);
 		$this->assertEquals('/arrayChoice/1 must be one of the following objects [a, b]', substr($data->message, 0, 58), $body);
@@ -152,14 +127,9 @@ JSON;
 }
 JSON;
 
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'POST', [], $data);
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
-		$data       = json_decode($body);
+		$response = $this->sendRequest('http://127.0.0.1/api', 'POST', [], $data);
+		$body     = (string) $response->getBody();
+		$data     = json_decode($body);
 
 		$this->assertEquals(500, $response->getStatusCode(), $body);
 		$this->assertEquals('/boolean must be boolean', substr($data->message, 0, 24), $body);
@@ -175,14 +145,9 @@ JSON;
 }
 JSON;
 
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'POST', [], $data);
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
-		$data       = json_decode($body);
+		$response = $this->sendRequest('http://127.0.0.1/api', 'POST', [], $data);
+		$body     = (string) $response->getBody();
+		$data     = json_decode($body);
 
 		$this->assertEquals(500, $response->getStatusCode(), $body);
 		$this->assertEquals('/choice must be one of the following objects [a, b]', substr($data->message, 0, 51), $body);
@@ -198,14 +163,9 @@ JSON;
 }
 JSON;
 
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'POST', [], $data);
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
-		$data       = json_decode($body);
+		$response = $this->sendRequest('http://127.0.0.1/api', 'POST', [], $data);
+		$body     = (string) $response->getBody();
+		$data     = json_decode($body);
 
 		$this->assertEquals(500, $response->getStatusCode(), $body);
 		$this->assertEquals('/complex property "baz" does not exist', substr($data->message, 0, 38), $body);
@@ -219,14 +179,9 @@ JSON;
 }
 JSON;
 
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'POST', [], $data);
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
-		$data       = json_decode($body);
+		$response = $this->sendRequest('http://127.0.0.1/api', 'POST', [], $data);
+		$body     = (string) $response->getBody();
+		$data     = json_decode($body);
 
 		$this->assertEquals(500, $response->getStatusCode(), $body);
 		$this->assertEquals('/dateTime must be an valid date-time format (full-date "T" full-time) [RFC3339]', substr($data->message, 0, 79), $body);
@@ -240,14 +195,9 @@ JSON;
 }
 JSON;
 
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'POST', [], $data);
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
-		$data       = json_decode($body);
+		$response = $this->sendRequest('http://127.0.0.1/api', 'POST', [], $data);
+		$body     = (string) $response->getBody();
+		$data     = json_decode($body);
 
 		$this->assertEquals(500, $response->getStatusCode(), $body);
 		$this->assertEquals('/date must be an valid full-date format (date-fullyear "-" date-month "-" date-mday) [RFC3339]', substr($data->message, 0, 94), $body);
@@ -261,14 +211,9 @@ JSON;
 }
 JSON;
 
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'POST', [], $data);
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
-		$data       = json_decode($body);
+		$response = $this->sendRequest('http://127.0.0.1/api', 'POST', [], $data);
+		$body     = (string) $response->getBody();
+		$data     = json_decode($body);
 
 		$this->assertEquals(500, $response->getStatusCode(), $body);
 		$this->assertEquals('/duration must be an valid duration format [ISO8601]', substr($data->message, 0, 52), $body);
@@ -282,14 +227,9 @@ JSON;
 }
 JSON;
 
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'POST', [], $data);
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
-		$data       = json_decode($body);
+		$response = $this->sendRequest('http://127.0.0.1/api', 'POST', [], $data);
+		$body     = (string) $response->getBody();
+		$data     = json_decode($body);
 
 		$this->assertEquals(500, $response->getStatusCode(), $body);
 		$this->assertEquals('/float must be an float', substr($data->message, 0, 23), $body);
@@ -303,14 +243,9 @@ JSON;
 }
 JSON;
 
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'POST', [], $data);
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
-		$data       = json_decode($body);
+		$response = $this->sendRequest('http://127.0.0.1/api', 'POST', [], $data);
+		$body     = (string) $response->getBody();
+		$data     = json_decode($body);
 
 		$this->assertEquals(500, $response->getStatusCode(), $body);
 		$this->assertEquals('/integer must be an integer', substr($data->message, 0, 27), $body);
@@ -324,14 +259,9 @@ JSON;
 }
 JSON;
 
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'POST', [], $data);
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
-		$data       = json_decode($body);
+		$response = $this->sendRequest('http://127.0.0.1/api', 'POST', [], $data);
+		$body     = (string) $response->getBody();
+		$data     = json_decode($body);
 
 		$this->assertEquals(500, $response->getStatusCode(), $body);
 		$this->assertEquals('/string must be a string', substr($data->message, 0, 24), $body);
@@ -345,14 +275,9 @@ JSON;
 }
 JSON;
 
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'POST', [], $data);
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
-		$data       = json_decode($body);
+		$response = $this->sendRequest('http://127.0.0.1/api', 'POST', [], $data);
+		$body     = (string) $response->getBody();
+		$data     = json_decode($body);
 
 		$this->assertEquals(500, $response->getStatusCode(), $body);
 		$this->assertEquals('/time must be an valid full-time format (partial-time time-offset) [RFC3339]', substr($data->message, 0, 76), $body);

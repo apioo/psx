@@ -42,13 +42,7 @@ class CallbackAbstractTest extends ControllerTestCase
 {
 	public function testCallback()
 	{
-		$url      = new Url('http://foo.com/cb?code=SplxlOBeZQQYbYS6WxSbIA&state=xyz');
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new GetRequest($url, array());
-		$response = new Response();
-		$response->setBody($body);
-
-		$this->loadController($request, $response);
+		$response = $this->sendRequest('http://foo.com/cb?code=SplxlOBeZQQYbYS6WxSbIA&state=xyz', 'GET');
 
 		$this->assertEquals(200, $response->getStatusCode());
 		$this->assertEquals('SUCCESS', (string) $response->getBody());
@@ -68,13 +62,7 @@ class CallbackAbstractTest extends ControllerTestCase
 
 		foreach($errors as $error => $exceptionType)
 		{
-			$url      = new Url('http://foo.com/cb?error=' . $error . '&error_description=foobar');
-			$body     = new TempStream(fopen('php://memory', 'r+'));
-			$request  = new GetRequest($url, array());
-			$response = new Response();
-			$response->setBody($body);
-
-			$this->loadController($request, $response);
+			$response = $this->sendRequest('http://foo.com/cb?error=' . $error . '&error_description=foobar', 'GET');
 
 			$this->assertEquals(500, $response->getStatusCode());
 			$this->assertEquals($exceptionType, (string) $response->getBody());

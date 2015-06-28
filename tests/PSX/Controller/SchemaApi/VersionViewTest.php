@@ -46,13 +46,8 @@ class VersionViewTest extends ControllerDbTestCase
 
 	public function testGetNoVersion()
 	{
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'GET');
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
+		$response = $this->sendRequest('http://127.0.0.1/api', 'GET');
+		$body     = (string) $response->getBody();
 
 		$expect = <<<JSON
 {"entry": [
@@ -90,13 +85,8 @@ JSON;
 	public function testPostNoVersion()
 	{
 		$data     = json_encode(array('userId' => 3, 'title' => 'test', 'date' => '2013-05-29T16:56:32Z'));
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'POST', array('Content-Type' => 'application/json'), $data);
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
+		$response = $this->sendRequest('http://127.0.0.1/api', 'POST', ['Content-Type' => 'application/json'], $data);
+		$body     = (string) $response->getBody();
 
 		$expect = <<<JSON
 {
@@ -112,13 +102,8 @@ JSON;
 	public function testPutNoVersion()
 	{
 		$data     = json_encode(array('id' => 1, 'userId' => 3, 'title' => 'foobar'));
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'PUT', array('Content-Type' => 'application/json'), $data);
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
+		$response = $this->sendRequest('http://127.0.0.1/api', 'PUT', ['Content-Type' => 'application/json'], $data);
+		$body     = (string) $response->getBody();
 
 		$expect = <<<JSON
 {
@@ -134,13 +119,8 @@ JSON;
 	public function testDeleteNoVersion()
 	{
 		$data     = json_encode(array('id' => 1));
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'DELETE', array('Content-Type' => 'application/json'), $data);
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
+		$response = $this->sendRequest('http://127.0.0.1/api', 'DELETE', ['Content-Type' => 'application/json'], $data);
+		$body     = (string) $response->getBody();
 
 		$expect = <<<JSON
 {
@@ -155,13 +135,8 @@ JSON;
 
 	public function testGetClosedVersion()
 	{
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'GET', array('Accept' => 'application/vnd.psx.v1+json'));
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = Json::decode((string) $response->getBody());
+		$response = $this->sendRequest('http://127.0.0.1/api', 'GET', ['Accept' => 'application/vnd.psx.v1+json']);
+		$body     = Json::decode((string) $response->getBody());
 
 		$this->assertEquals(410, $response->getStatusCode());
 
@@ -178,13 +153,8 @@ JSON;
 	public function testPostClosedVersion()
 	{
 		$data     = json_encode(array('userId' => 3, 'title' => 'test', 'date' => '2013-05-29T16:56:32Z'));
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'POST', array('Accept' => 'application/vnd.psx.v1+json', 'Content-Type' => 'application/json'), $data);
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = Json::decode((string) $response->getBody());
+		$response = $this->sendRequest('http://127.0.0.1/api', 'POST', ['Accept' => 'application/vnd.psx.v1+json', 'Content-Type' => 'application/json'], $data);
+		$body     = Json::decode((string) $response->getBody());
 
 		$this->assertEquals(410, $response->getStatusCode());
 
@@ -201,13 +171,8 @@ JSON;
 	public function testPutClosedVersion()
 	{
 		$data     = json_encode(array('id' => 1, 'userId' => 3, 'title' => 'foobar'));
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'PUT', array('Accept' => 'application/vnd.psx.v1+json', 'Content-Type' => 'application/json'), $data);
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = Json::decode((string) $response->getBody());
+		$response = $this->sendRequest('http://127.0.0.1/api', 'PUT', ['Accept' => 'application/vnd.psx.v1+json', 'Content-Type' => 'application/json'], $data);
+		$body     = Json::decode((string) $response->getBody());
 
 		$this->assertEquals(410, $response->getStatusCode());
 
@@ -224,13 +189,8 @@ JSON;
 	public function testDeleteClosedVersion()
 	{
 		$data     = json_encode(array('id' => 1));
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'DELETE', array('Accept' => 'application/vnd.psx.v1+json', 'Content-Type' => 'application/json'), $data);
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = Json::decode((string) $response->getBody());
+		$response = $this->sendRequest('http://127.0.0.1/api', 'DELETE', ['Accept' => 'application/vnd.psx.v1+json', 'Content-Type' => 'application/json'], $data);
+		$body     = Json::decode((string) $response->getBody());
 
 		$this->assertEquals(410, $response->getStatusCode());
 
@@ -246,13 +206,8 @@ JSON;
 
 	public function testGetDeprecatedVersion()
 	{
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'GET', array('Accept' => 'application/vnd.psx.v2+json'));
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
+		$response = $this->sendRequest('http://127.0.0.1/api', 'GET', ['Accept' => 'application/vnd.psx.v2+json']);
+		$body     = (string) $response->getBody();
 
 		$this->assertEquals('199 PSX "Version v2 is deprecated"', $response->getHeader('Warning'));
 
@@ -291,13 +246,8 @@ JSON;
 	public function testPostDeprecatedVersion()
 	{
 		$data     = json_encode(array('userId' => 3, 'title' => 'test', 'date' => '2013-05-29T16:56:32Z'));
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'POST', array('Accept' => 'application/vnd.psx.v2+json', 'Content-Type' => 'application/json'), $data);
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
+		$response = $this->sendRequest('http://127.0.0.1/api', 'POST', ['Accept' => 'application/vnd.psx.v2+json', 'Content-Type' => 'application/json'], $data);
+		$body     = (string) $response->getBody();
 
 		$expect = <<<JSON
 {
@@ -314,13 +264,8 @@ JSON;
 	public function testPutDeprecatedVersion()
 	{
 		$data     = json_encode(array('id' => 1, 'userId' => 3, 'title' => 'foobar'));
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'PUT', array('Accept' => 'application/vnd.psx.v2+json', 'Content-Type' => 'application/json'), $data);
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
+		$response = $this->sendRequest('http://127.0.0.1/api', 'PUT', ['Accept' => 'application/vnd.psx.v2+json', 'Content-Type' => 'application/json'], $data);
+		$body     = (string) $response->getBody();
 
 		$expect = <<<JSON
 {
@@ -337,13 +282,8 @@ JSON;
 	public function testDeleteDeprecatedVersion()
 	{
 		$data     = json_encode(array('id' => 1));
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'DELETE', array('Accept' => 'application/vnd.psx.v2+json', 'Content-Type' => 'application/json'), $data);
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
+		$response = $this->sendRequest('http://127.0.0.1/api', 'DELETE', ['Accept' => 'application/vnd.psx.v2+json', 'Content-Type' => 'application/json'], $data);
+		$body     = (string) $response->getBody();
 
 		$expect = <<<JSON
 {
@@ -359,13 +299,8 @@ JSON;
 
 	public function testGetActiveVersion()
 	{
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'GET', array('Accept' => 'application/vnd.psx.v3+json'));
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
+		$response = $this->sendRequest('http://127.0.0.1/api', 'GET', ['Accept' => 'application/vnd.psx.v3+json']);
+		$body     = (string) $response->getBody();
 
 		$expect = <<<JSON
 {"entry": [
@@ -403,13 +338,8 @@ JSON;
 	public function testPostActiveVersion()
 	{
 		$data     = json_encode(array('userId' => 3, 'title' => 'test', 'date' => '2013-05-29T16:56:32Z'));
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'POST', array('Accept' => 'application/vnd.psx.v3+json', 'Content-Type' => 'application/json'), $data);
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
+		$response = $this->sendRequest('http://127.0.0.1/api', 'POST', ['Accept' => 'application/vnd.psx.v3+json', 'Content-Type' => 'application/json'], $data);
+		$body     = (string) $response->getBody();
 
 		$expect = <<<JSON
 {
@@ -425,13 +355,8 @@ JSON;
 	public function testPutActiveVersion()
 	{
 		$data     = json_encode(array('id' => 1, 'userId' => 3, 'title' => 'foobar'));
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'PUT', array('Accept' => 'application/vnd.psx.v3+json', 'Content-Type' => 'application/json'), $data);
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
+		$response = $this->sendRequest('http://127.0.0.1/api', 'PUT', ['Accept' => 'application/vnd.psx.v3+json', 'Content-Type' => 'application/json'], $data);
+		$body     = (string) $response->getBody();
 
 		$expect = <<<JSON
 {
@@ -447,13 +372,8 @@ JSON;
 	public function testDeleteActiveVersion()
 	{
 		$data     = json_encode(array('id' => 1));
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'DELETE', array('Accept' => 'application/vnd.psx.v3+json', 'Content-Type' => 'application/json'), $data);
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
+		$response = $this->sendRequest('http://127.0.0.1/api', 'DELETE', ['Accept' => 'application/vnd.psx.v3+json', 'Content-Type' => 'application/json'], $data);
+		$body     = (string) $response->getBody();
 
 		$expect = <<<JSON
 {
@@ -468,13 +388,8 @@ JSON;
 
 	public function testGetUnknownVersion()
 	{
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'GET', array('Accept' => 'application/vnd.psx.v4+json'));
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = Json::decode((string) $response->getBody());
+		$response = $this->sendRequest('http://127.0.0.1/api', 'GET', ['Accept' => 'application/vnd.psx.v4+json']);
+		$body     = Json::decode((string) $response->getBody());
 
 		$this->assertEquals(406, $response->getStatusCode());
 
@@ -491,13 +406,8 @@ JSON;
 	public function testPostUnknownVersion()
 	{
 		$data     = json_encode(array('userId' => 3, 'title' => 'test', 'date' => '2013-05-29T16:56:32Z'));
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'POST', array('Accept' => 'application/vnd.psx.v4+json', 'Content-Type' => 'application/json'), $data);
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = Json::decode((string) $response->getBody());
+		$response = $this->sendRequest('http://127.0.0.1/api', 'POST', ['Accept' => 'application/vnd.psx.v4+json', 'Content-Type' => 'application/json'], $data);
+		$body     = Json::decode((string) $response->getBody());
 
 		$this->assertEquals(406, $response->getStatusCode());
 
@@ -514,13 +424,8 @@ JSON;
 	public function testPutUnknownVersion()
 	{
 		$data     = json_encode(array('id' => 1, 'userId' => 3, 'title' => 'foobar'));
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'PUT', array('Accept' => 'application/vnd.psx.v4+json', 'Content-Type' => 'application/json'), $data);
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = Json::decode((string) $response->getBody());
+		$response = $this->sendRequest('http://127.0.0.1/api', 'PUT', ['Accept' => 'application/vnd.psx.v4+json', 'Content-Type' => 'application/json'], $data);
+		$body     = Json::decode((string) $response->getBody());
 
 		$this->assertEquals(406, $response->getStatusCode());
 
@@ -537,13 +442,8 @@ JSON;
 	public function testDeleteUnknownVersion()
 	{
 		$data     = json_encode(array('id' => 1));
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'DELETE', array('Accept' => 'application/vnd.psx.v4+json', 'Content-Type' => 'application/json'), $data);
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = Json::decode((string) $response->getBody());
+		$response = $this->sendRequest('http://127.0.0.1/api', 'DELETE', ['Accept' => 'application/vnd.psx.v4+json', 'Content-Type' => 'application/json'], $data);
+		$body     = Json::decode((string) $response->getBody());
 
 		$this->assertEquals(406, $response->getStatusCode());
 

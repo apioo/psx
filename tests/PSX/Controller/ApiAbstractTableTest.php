@@ -45,13 +45,8 @@ class ApiAbstractTableTest extends ControllerDbTestCase
 
 	public function testAll()
 	{
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'GET');
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
+		$response = $this->sendRequest('http://127.0.0.1/api', 'GET');
+		$body     = (string) $response->getBody();
 
 		$expect = <<<JSON
 {
@@ -89,13 +84,8 @@ JSON;
 
 	public function testRow()
 	{
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api/row'), 'GET');
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
+		$response = $this->sendRequest('http://127.0.0.1/api/row', 'GET');
+		$body     = (string) $response->getBody();
 
 		$expect = <<<JSON
 {
@@ -111,13 +101,8 @@ JSON;
 
 	public function testNested()
 	{
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api/nested'), 'GET');
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
+		$response = $this->sendRequest('http://127.0.0.1/api/nested', 'GET');
+		$body     = (string) $response->getBody();
 
 		$expect = <<<JSON
 {

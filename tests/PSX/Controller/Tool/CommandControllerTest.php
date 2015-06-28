@@ -40,16 +40,10 @@ class CommandControllerTest extends ControllerTestCase
 {
 	public function testIndex()
 	{
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/command'), 'GET');
-		$request->setHeader('Accept', 'application/json');
-		$response = new Response();
-		$response->setBody($body);
-
 		Environment::getService('executor')->addAlias('foo', 'PSX\Command\Foo\Command\FooCommand');
 
-		$controller = $this->loadController($request, $response);
-		$json       = (string) $body;
+		$response = $this->sendRequest('http://127.0.0.1/command', 'GET', ['Accept' => 'application/json']);
+		$json     = (string) $response->getBody();
 
 		$expect = <<<'JSON'
 {
@@ -65,14 +59,8 @@ JSON;
 
 	public function testDetail()
 	{
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/command?command=' . urlencode('PSX\Command\Foo\Command\FooCommand')), 'GET');
-		$request->setHeader('Accept', 'application/json');
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$json       = (string) $body;
+		$response = $this->sendRequest('http://127.0.0.1/command?command=' . urlencode('PSX\Command\Foo\Command\FooCommand'), 'GET', ['Accept' => 'application/json']);
+		$json     = (string) $response->getBody();
 
 		$expect = <<<'JSON'
 {
@@ -99,22 +87,17 @@ JSON;
 
 	public function testExecute()
 	{
-		$request  = new Request(new Url('http://127.0.0.1/command?command=' . urlencode('PSX\Command\Foo\Command\FooCommand')), 'POST', array(), '{"foo": "bar"}');
-		$request->setHeader('Content-Type', 'application/json');
-		$request->setHeader('Accept', 'application/json');
-
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$response = new Response();
-		$response->setBody($body);
-
 		$memory = new Output\Memory();
 		$output = new Output\Composite(array($memory, new Output\Logger(Environment::getService('logger'))));
 
 		Environment::getContainer()->set('command_output', $output);
 
-		$controller = $this->loadController($request, $response);
-		$data       = Json::decode((string) $body);
-		$messages   = $memory->getMessages();
+		$response = $this->sendRequest('http://127.0.0.1/command?command=' . urlencode('PSX\Command\Foo\Command\FooCommand'), 'POST', [
+			'Content-Type' => 'application/json',
+			'Accept'       => 'application/json',
+		], '{"foo": "bar"}');
+		$data     = Json::decode((string) $response->getBody());
+		$messages = $memory->getMessages();
 
 		$this->assertArrayHasKey('output', $data);
 		$this->assertEquals(2, count($messages));

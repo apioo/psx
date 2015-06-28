@@ -41,26 +41,16 @@ class RestrictMethodTest extends ControllerTestCase
 {
 	public function testGet()
 	{
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'GET', array('Content-Type' => 'application/json'));
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
+		$response = $this->sendRequest('http://127.0.0.1/api', 'GET', ['Content-Type' => 'application/json']);
+		$body     = (string) $response->getBody();
 
 		$this->assertEquals(204, $response->getStatusCode());
 	}
 
 	public function testPost()
 	{
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'POST', array('Content-Type' => 'application/json'));
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
+		$response = $this->sendRequest('http://127.0.0.1/api', 'POST', ['Content-Type' => 'application/json']);
+		$body     = (string) $response->getBody();
 
 		$this->assertEquals(405, $response->getStatusCode());
 		$this->assertEquals('GET, DELETE', $response->getHeader('Allow'));
@@ -68,13 +58,8 @@ class RestrictMethodTest extends ControllerTestCase
 
 	public function testPut()
 	{
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'PUT', array('Content-Type' => 'application/json'));
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
+		$response = $this->sendRequest('http://127.0.0.1/api', 'PUT', ['Content-Type' => 'application/json']);
+		$body     = (string) $response->getBody();
 
 		$this->assertEquals(405, $response->getStatusCode());
 		$this->assertEquals('GET, DELETE', $response->getHeader('Allow'));
@@ -82,13 +67,8 @@ class RestrictMethodTest extends ControllerTestCase
 
 	public function testDelete()
 	{
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'DELETE', array('Content-Type' => 'application/json'));
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
+		$response = $this->sendRequest('http://127.0.0.1/api', 'DELETE', ['Content-Type' => 'application/json']);
+		$body     = (string) $response->getBody();
 
 		$this->assertEquals(204, $response->getStatusCode());
 	}

@@ -39,13 +39,8 @@ class WsdlControllerTest extends ControllerTestCase
 {
 	public function testIndex()
 	{
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/wsdl/1/api'), 'GET');
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$xml        = (string) $body;
+		$response = $this->sendRequest('http://127.0.0.1/wsdl/1/api', 'GET');
+		$xml      = (string) $response->getBody();
 
 		$expect = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
@@ -266,13 +261,8 @@ XML;
 
 	public function testWsdlSchema()
 	{
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/wsdl/1/api'), 'GET');
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$wsdl       = (string) $body;
+		$response = $this->sendRequest('http://127.0.0.1/wsdl/1/api', 'GET');
+		$wsdl     = (string) $response->getBody();
 
 		$dom = new DOMDocument();
 		$dom->loadXML($wsdl);

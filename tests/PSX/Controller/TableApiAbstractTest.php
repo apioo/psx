@@ -43,13 +43,8 @@ class TableApiAbstractTest extends ControllerDbTestCase
 
 	public function testGet()
 	{
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'GET');
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
+		$response = $this->sendRequest('http://127.0.0.1/api', 'GET');
+		$body     = (string) $response->getBody();
 
 		$expect = <<<JSON
 {
@@ -97,13 +92,8 @@ JSON;
 			'col_string' => 'foobar',
 		));
 
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'POST', array('Content-Type' => 'application/json'), $data);
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
+		$response = $this->sendRequest('http://127.0.0.1/api', 'POST', ['Content-Type' => 'application/json'], $data);
+		$body     = (string) $response->getBody();
 
 		$expect = <<<JSON
 {
@@ -179,13 +169,8 @@ JSON;
 			'col_string' => 'foo',
 		));
 
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'PUT', array('Content-Type' => 'application/json'), $data);
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
+		$response = $this->sendRequest('http://127.0.0.1/api', 'PUT', ['Content-Type' => 'application/json'], $data);
+		$body     = (string) $response->getBody();
 
 		$expect = <<<JSON
 {
@@ -229,15 +214,9 @@ JSON;
 	public function testPutNotAvailable()
 	{
 		$data     = json_encode(array('id' => 12));
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'PUT', array('Content-Type' => 'application/json'), $data);
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-
-		$body = (string) $response->getBody();
-		$data = Json::decode($body);
+		$response = $this->sendRequest('http://127.0.0.1/api', 'PUT', ['Content-Type' => 'application/json'], $data);
+		$body     = (string) $response->getBody();
+		$data     = Json::decode($body);
 
 		$this->assertArrayHasKey('success', $data);
 		$this->assertArrayHasKey('title', $data);
@@ -253,13 +232,8 @@ JSON;
 	public function testDelete()
 	{
 		$data     = json_encode(array('id' => 1));
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'DELETE', array('Content-Type' => 'application/json'), $data);
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
+		$response = $this->sendRequest('http://127.0.0.1/api', 'DELETE', ['Content-Type' => 'application/json'], $data);
+		$body     = (string) $response->getBody();
 
 		$expect = <<<JSON
 {
@@ -287,15 +261,9 @@ JSON;
 	public function testDeleteNotAvailable()
 	{
 		$data     = json_encode(array('id' => 12));
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'DELETE', array('Content-Type' => 'application/json'), $data);
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-
-		$body = (string) $response->getBody();
-		$data = Json::decode($body);
+		$response = $this->sendRequest('http://127.0.0.1/api', 'DELETE', ['Content-Type' => 'application/json'], $data);
+		$body     = (string) $response->getBody();
+		$data     = Json::decode($body);
 
 		$this->assertArrayHasKey('success', $data);
 		$this->assertArrayHasKey('title', $data);

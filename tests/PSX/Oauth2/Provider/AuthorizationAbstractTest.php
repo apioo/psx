@@ -132,15 +132,7 @@ class AuthorizationAbstractTest extends ControllerTestCase
 
 	protected function callEndpoint(array $params)
 	{
-		$url      = new Url('http://127.0.0.1/auth?' . http_build_query($params, '', '&'));
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new GetRequest($url, array());
-		$response = new Response();
-		$response->setBody($body);
-
-		$this->loadController($request, $response);
-
-		return $response;
+		return $this->sendRequest('http://127.0.0.1/auth?' . http_build_query($params, '', '&'), 'GET');
 	}
 
 	protected function getPaths()

@@ -39,14 +39,8 @@ class RamlControllerTest extends ControllerTestCase
 {
 	public function testIndex()
 	{
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/raml/1/api'), 'GET');
-		$request->addHeader('Accept', 'application/json');
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$raml       = (string) $body;
+		$response = $this->sendRequest('http://127.0.0.1/raml/1/api', 'GET', ['Accept' => 'application/json']);
+		$raml     = (string) $response->getBody();
 
 		$expect = <<<'RAML'
 #%RAML 0.8

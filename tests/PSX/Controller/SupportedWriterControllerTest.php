@@ -41,15 +41,8 @@ class SupportedWriterControllerTest extends ControllerTestCase
 {
 	public function testIndex()
 	{
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/'), 'GET');
-		$request->addHeader('Accept', 'application/json');
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-
-		$body = (string) $response->getBody();
+		$response = $this->sendRequest('http://127.0.0.1/', 'GET', ['Accept' => 'application/json']);
+		$body     = (string) $response->getBody();
 
 		$expect = <<<XML
 <record>
@@ -63,15 +56,8 @@ XML;
 
 	public function testForward()
 	{
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/forward'), 'GET');
-		$request->addHeader('Accept', 'application/json');
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-
-		$body = (string) $response->getBody();
+		$response = $this->sendRequest('http://127.0.0.1/forward', 'GET', ['Accept' => 'application/json']);
+		$body     = (string) $response->getBody();
 
 		$expect = <<<XML
 <record>
@@ -87,15 +73,8 @@ XML;
 	{
 		Environment::getService('config')->set('psx_debug', false);
 
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/error'), 'GET');
-		$request->addHeader('Accept', 'application/json');
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-
-		$body = (string) $response->getBody();
+		$response = $this->sendRequest('http://127.0.0.1/error', 'GET', ['Accept', 'application/json']);
+		$body     = (string) $response->getBody();
 
 		$expect = <<<XML
 <error>

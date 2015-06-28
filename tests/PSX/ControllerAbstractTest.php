@@ -40,13 +40,8 @@ class ControllerAbstractTest extends ControllerTestCase
 {
 	public function testNormalRequest()
 	{
-		$path     = '/controller';
-		$request  = new Request(new Url('http://127.0.0.1' . $path), 'GET');
-		$response = new Response();
-		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
+		$response = $this->sendRequest('http://127.0.0.1/controller', 'GET');
+		$body     = (string) $response->getBody();
 
 		$this->assertEquals(null, $response->getStatusCode(), $body);
 		$this->assertEquals('foobar', $body, $body);
@@ -54,20 +49,18 @@ class ControllerAbstractTest extends ControllerTestCase
 
 	public function testInnerApi()
 	{
-		$data = array(
+		$data = json_encode(array(
 			'foo' => 'bar',
 			'bar' => array('foo' => 'nested'),
 			'entries' => array(array('title' => 'bar'), array('title' => 'foo')),
-		);
+		));
 
-		$path     = '/controller/inspect';
-		$request  = new Request(new Url('http://127.0.0.1' . $path . '?foo=bar'), 'POST', array('Content-Type' => 'application/json', 'Accept' => 'application/json'));
-		$request->setBody(new StringStream(json_encode($data)));
-		$response = new Response();
-		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
+		$response = $this->sendRequest('http://127.0.0.1/controller/inspect?foo=bar', 'POST', [
+			'Content-Type' => 'application/json', 
+			'Accept'       => 'application/json'
+		], $data);
 
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
+		$body = (string) $response->getBody();
 
 		$this->assertEquals(200, $response->getStatusCode(), $body);
 		$this->assertJsonStringEqualsJsonString('{"bar": "foo"}', $body, $body);
@@ -75,13 +68,8 @@ class ControllerAbstractTest extends ControllerTestCase
 
 	public function testForward()
 	{
-		$path     = '/controller/forward';
-		$request  = new Request(new Url('http://127.0.0.1' . $path), 'GET');
-		$response = new Response();
-		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
+		$response = $this->sendRequest('http://127.0.0.1/controller/forward', 'GET');
+		$body     = (string) $response->getBody();
 
 		$this->assertEquals(null, $response->getStatusCode(), $body);
 		$this->assertJsonStringEqualsJsonString('{"foo": "bar"}', $body, $body);
@@ -89,14 +77,9 @@ class ControllerAbstractTest extends ControllerTestCase
 
 	public function testForwardInvalid()
 	{
-		$path     = '/controller/forward_invalid';
-		$request  = new Request(new Url('http://127.0.0.1' . $path), 'GET');
-		$response = new Response();
-		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
-		$data       = Json::decode($body);
+		$response = $this->sendRequest('http://127.0.0.1/controller/forward_invalid', 'GET');
+		$body     = (string) $response->getBody();
+		$data     = Json::decode($body);
 
 		$this->assertEquals(500, $response->getStatusCode(), $body);
 		$this->assertArrayHasKey('success', $data);
@@ -108,12 +91,7 @@ class ControllerAbstractTest extends ControllerTestCase
 
 	public function testRedirect()
 	{
-		$path     = '/controller/redirect';
-		$request  = new Request(new Url('http://127.0.0.1' . $path), 'GET');
-		$response = new Response();
-		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
-
-		$controller = $this->loadController($request, $response);
+		$response = $this->sendRequest('http://127.0.0.1/controller/redirect', 'GET');
 
 		$this->assertEquals(307, $response->getStatusCode());
 		$this->assertEquals('/redirect/bar', substr($response->getHeader('Location'), -13));
@@ -121,12 +99,7 @@ class ControllerAbstractTest extends ControllerTestCase
 
 	public function testRedirectAbsoluteString()
 	{
-		$path     = '/controller/absolute/string';
-		$request  = new Request(new Url('http://127.0.0.1' . $path), 'GET');
-		$response = new Response();
-		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
-
-		$controller = $this->loadController($request, $response);
+		$response = $this->sendRequest('http://127.0.0.1/controller/absolute/string', 'GET');
 
 		$this->assertEquals(307, $response->getStatusCode());
 		$this->assertEquals('http://localhost.com/foobar', $response->getHeader('Location'));
@@ -134,12 +107,7 @@ class ControllerAbstractTest extends ControllerTestCase
 
 	public function testRedirectAbsoluteObject()
 	{
-		$path     = '/controller/absolute/object';
-		$request  = new Request(new Url('http://127.0.0.1' . $path), 'GET');
-		$response = new Response();
-		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
-
-		$controller = $this->loadController($request, $response);
+		$response = $this->sendRequest('http://127.0.0.1/controller/absolute/object', 'GET');
 
 		$this->assertEquals(307, $response->getStatusCode());
 		$this->assertEquals('http://localhost.com/foobar', $response->getHeader('Location'));
@@ -147,13 +115,8 @@ class ControllerAbstractTest extends ControllerTestCase
 
 	public function testSetArrayBody()
 	{
-		$path     = '/controller/array';
-		$request  = new Request(new Url('http://127.0.0.1' . $path), 'GET');
-		$response = new Response();
-		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
+		$response = $this->sendRequest('http://127.0.0.1/controller/array', 'GET');
+		$body     = (string) $response->getBody();
 
 		$expect = <<<JSON
 {"foo":["bar"]}
@@ -165,13 +128,8 @@ JSON;
 
 	public function testSetStdClassBody()
 	{
-		$path     = '/controller/stdClass';
-		$request  = new Request(new Url('http://127.0.0.1' . $path), 'GET');
-		$response = new Response();
-		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
+		$response = $this->sendRequest('http://127.0.0.1/controller/stdClass', 'GET');
+		$body     = (string) $response->getBody();
 
 		$expect = <<<JSON
 {"foo":["bar"]}
@@ -183,13 +141,8 @@ JSON;
 
 	public function testSetRecordBody()
 	{
-		$path     = '/controller/record';
-		$request  = new Request(new Url('http://127.0.0.1' . $path), 'GET');
-		$response = new Response();
-		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
+		$response = $this->sendRequest('http://127.0.0.1/controller/record', 'GET');
+		$body     = (string) $response->getBody();
 
 		$expect = <<<JSON
 {"foo":["bar"]}
@@ -201,13 +154,8 @@ JSON;
 
 	public function testSetDomDocumentBody()
 	{
-		$path     = '/controller/dom';
-		$request  = new Request(new Url('http://127.0.0.1' . $path), 'GET');
-		$response = new Response();
-		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
+		$response = $this->sendRequest('http://127.0.0.1/controller/dom', 'GET');
+		$body     = (string) $response->getBody();
 
 		$expect = <<<XML
 <?xml version="1.0"?>
@@ -220,13 +168,8 @@ XML;
 
 	public function testSetSimpleXmlBody()
 	{
-		$path     = '/controller/simplexml';
-		$request  = new Request(new Url('http://127.0.0.1' . $path), 'GET');
-		$response = new Response();
-		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
+		$response = $this->sendRequest('http://127.0.0.1/controller/simplexml', 'GET');
+		$body     = (string) $response->getBody();
 
 		$expect = <<<XML
 <?xml version="1.0"?>
@@ -239,13 +182,8 @@ XML;
 
 	public function testSetStringBody()
 	{
-		$path     = '/controller/string';
-		$request  = new Request(new Url('http://127.0.0.1' . $path), 'GET');
-		$response = new Response();
-		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
+		$response = $this->sendRequest('http://127.0.0.1/controller/string', 'GET');
+		$body     = (string) $response->getBody();
 
 		$expect = <<<XML
 foobar
@@ -257,12 +195,8 @@ XML;
 
 	public function testSetStreamBody()
 	{
-		$path     = '/controller/file';
-		$request  = new Request(new Url('http://127.0.0.1' . $path), 'GET');
-		$response = new Response();
-
-		$controller = $this->loadController($request, $response);
-		$body       = $response->getBody();
+		$response = $this->sendRequest('http://127.0.0.1/controller/file', 'GET');
+		$body     = $response->getBody();
 
 		$this->assertEquals(null, $response->getStatusCode(), $body);
 		$this->assertInstanceOf('PSX\Http\Stream\FileStream', $body);
@@ -278,15 +212,9 @@ XML;
 
 	public function testSetInvalidBody()
 	{
-		$path     = '/controller/invalid_body';
-		$request  = new Request(new Url('http://127.0.0.1' . $path), 'GET');
-		$response = new Response();
-		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
-
-		$this->loadController($request, $response);
-
-		$body = (string) $response->getBody();
-		$data = Json::decode($body);
+		$response = $this->sendRequest('http://127.0.0.1/controller/invalid_body', 'GET');
+		$body     = (string) $response->getBody();
+		$data     = Json::decode($body);
 
 		$this->assertEquals(500, $response->getStatusCode(), $body);
 		$this->assertArrayHasKey('success', $data);
@@ -304,14 +232,8 @@ XML;
 	 */
 	public function testSetDoubleBody()
 	{
-		$path     = '/controller/double_body';
-		$request  = new Request(new Url('http://127.0.0.1' . $path), 'GET');
-		$response = new Response();
-		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
-
-		$this->loadController($request, $response);
-
-		$body = (string) $response->getBody();
+		$response = $this->sendRequest('http://127.0.0.1/controller/double_body', 'GET');
+		$body     = (string) $response->getBody();
 
 		$this->assertEquals(null, $response->getStatusCode(), $body);
 		$this->assertEquals('foo', $body, $body);
@@ -322,14 +244,8 @@ XML;
 	 */
 	public function testAllRequestMethods($requestMethod)
 	{
-		$path     = '/controller/methods';
-		$request  = new Request(new Url('http://127.0.0.1' . $path), $requestMethod);
-		$response = new Response();
-		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
-
-		$controller = $this->loadController($request, $response);
-
-		$body = (string) $response->getBody();
+		$response = $this->sendRequest('http://127.0.0.1/controller/methods', $requestMethod);
+		$body     = (string) $response->getBody();
 
 		$this->assertEquals(null, $response->getStatusCode(), $body);
 		$this->assertEquals('foobar', $body, $body);
@@ -351,15 +267,9 @@ XML;
 
 	public function testUnknownLocation()
 	{
-		$path     = '/controller/foobar';
-		$request  = new Request(new Url('http://127.0.0.1' . $path), 'GET');
-		$response = new Response();
-		$response->setBody(new TempStream(fopen('php://memory', 'r+')));
-
-		$controller = $this->loadController($request, $response);
-
-		$body = (string) $response->getBody();
-		$data = Json::decode($body);
+		$response = $this->sendRequest('http://127.0.0.1/controller/foobar', 'GET');
+		$body     = (string) $response->getBody();
+		$data     = Json::decode($body);
 
 		$this->assertEquals(404, $response->getStatusCode(), $body);
 		$this->assertArrayHasKey('success', $data);

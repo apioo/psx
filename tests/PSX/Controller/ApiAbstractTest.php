@@ -40,36 +40,28 @@ class ApiAbstractTest extends ControllerTestCase
 {
 	public function testSetResponse()
 	{
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'GET');
-		$response = new Response();
-		$response->setBody($body);
+		$response = $this->sendRequest('http://127.0.0.1/api', 'GET');
+		$body     = (string) $response->getBody();
 
-		$controller = $this->loadController($request, $response);
-
-		$this->assertJsonStringEqualsJsonString(json_encode(array('bar' => 'foo')), (string) $response->getBody());
+		$this->assertEquals(null, $response->getStatusCode(), $body);
+		$this->assertJsonStringEqualsJsonString(json_encode(array('bar' => 'foo')), $body, $body);
 	}
 
 	public function testImport()
 	{
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api/insert'), 'POST', array('Content-Type' => 'application/json'), json_encode(array('title' => 'foo', 'user' => 'bar')));
-		$response = new Response();
-		$response->setBody($body);
+		$response = $this->sendRequest('http://127.0.0.1/api/insert', 'POST', ['Content-Type' => 'application/json'], json_encode(['title' => 'foo', 'user' => 'bar']));
+		$body     = (string) $response->getBody();
 
-		$controller = $this->loadController($request, $response);
-
-		$this->assertJsonStringEqualsJsonString(json_encode(array('title' => 'foo', 'user' => 'bar')), (string) $response->getBody());
+		$this->assertEquals(null, $response->getStatusCode(), $body);
+		$this->assertJsonStringEqualsJsonString(json_encode(array('title' => 'foo', 'user' => 'bar')), $body);
 	}
 
 	public function testInnerApi()
 	{
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api/inspect?format=json&fields=foo,bar&updatedSince=2014-01-26&count=8&filterBy=id&filterOp=equals&filterValue=12&sortBy=id&sortOrder=desc&startIndex=4'), 'GET');
-		$response = new Response();
-		$response->setBody($body);
+		$response = $this->sendRequest('http://127.0.0.1/api/inspect?format=json&fields=foo,bar&updatedSince=2014-01-26&count=8&filterBy=id&filterOp=equals&filterValue=12&sortBy=id&sortOrder=desc&startIndex=4', 'GET');
+		$body     = (string) $response->getBody();
 
-		$controller = $this->loadController($request, $response);
+		$this->assertEquals(null, $response->getStatusCode(), $body);
 	}
 
 	protected function getPaths()

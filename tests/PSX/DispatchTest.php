@@ -28,7 +28,7 @@ use PSX\Event\RequestIncomingEvent;
 use PSX\Event\ResponseSendEvent;
 use PSX\Http\Request;
 use PSX\Http\Response;
-use PSX\Http\Stream\StringStream;
+use PSX\Http\Stream\TempStream;
 use PSX\Loader;
 use PSX\Loader\LocationFinder\CallbackMethod;
 use PSX\ModuleAbstract;
@@ -47,19 +47,14 @@ class DispatchTest extends ControllerTestCase
 {
 	public function testRoute()
 	{
-		$request  = new Request(new Url('http://localhost.com/dummy'), 'GET');
-		$response = new Response();
-		$response->setBody(new StringStream());
-
 		$testCase = $this;
 
 		$requestIncomingListener = $this->getMock('PSX\Dispatch\TestListener', array('on'));
 		$requestIncomingListener->expects($this->once())
 			->method('on')
-			->with($this->callback(function($event) use ($request, $testCase){
+			->with($this->callback(function($event) use ($testCase){
 				$testCase->assertInstanceOf('PSX\Event\RequestIncomingEvent', $event);
 				$testCase->assertInstanceOf('PSX\Http\RequestInterface', $event->getRequest());
-				$testCase->assertEquals($request, $event->getRequest());
 
 				return true;
 			}));
@@ -67,10 +62,9 @@ class DispatchTest extends ControllerTestCase
 		$responseSendListener = $this->getMock('PSX\Dispatch\TestListener', array('on'));
 		$responseSendListener->expects($this->once())
 			->method('on')
-			->with($this->callback(function($event) use ($response, $testCase){
+			->with($this->callback(function($event) use ($testCase){
 				$testCase->assertInstanceOf('PSX\Event\ResponseSendEvent', $event);
 				$testCase->assertInstanceOf('PSX\Http\ResponseInterface', $event->getResponse());
-				$testCase->assertEquals($response, $event->getResponse());
 
 				return true;
 			}));
@@ -78,7 +72,7 @@ class DispatchTest extends ControllerTestCase
 		Environment::getService('event_dispatcher')->addListener(Event::REQUEST_INCOMING, array($requestIncomingListener, 'on'));
 		Environment::getService('event_dispatcher')->addListener(Event::RESPONSE_SEND, array($responseSendListener, 'on'));
 
-		$this->loadController($request, $response);
+		$response = $this->sendRequest('http://localhost.com/dummy', 'GET');
 
 		Environment::getService('event_dispatcher')->removeListener(Event::REQUEST_INCOMING, $requestIncomingListener);
 		Environment::getService('event_dispatcher')->removeListener(Event::RESPONSE_SEND, $responseSendListener);
@@ -88,11 +82,7 @@ class DispatchTest extends ControllerTestCase
 
 	public function testRouteRedirectException()
 	{
-		$request  = new Request(new Url('http://localhost.com/redirect'), 'GET');
-		$response = new Response();
-		$response->setBody(new StringStream());
-
-		$this->loadController($request, $response);
+		$response = $this->sendRequest('http://localhost.com/redirect', 'GET');
 
 		$this->assertEquals(307, $response->getStatusCode());
 		$this->assertEquals('http://localhost.com/foobar', $response->getHeader('Location'));
@@ -100,98 +90,68 @@ class DispatchTest extends ControllerTestCase
 
 	public function testRouteException()
 	{
-		$request  = new Request(new Url('http://localhost.com/exception'), 'GET');
-		$response = new Response();
-		$response->setBody(new StringStream());
-
 		$testCase = $this;
 
 		$exceptionListener = $this->getMock('PSX\Dispatch\TestListener', array('on'));
 		$exceptionListener->expects($this->once())
 			->method('on')
-			->with($this->callback(function($event) use ($request, $response, $testCase){
+			->with($this->callback(function($event) use ($testCase){
 				$testCase->assertInstanceOf('PSX\Event\ExceptionThrownEvent', $event);
 				$testCase->assertInstanceOf('PSX\Event\Context\ControllerContext', $event->getContext());
 				$testCase->assertInstanceOf('PSX\Http\RequestInterface', $event->getContext()->getRequest());
 				$testCase->assertInstanceOf('PSX\Http\ResponseInterface', $event->getContext()->getResponse());
-				$testCase->assertEquals($request, $event->getContext()->getRequest());
-				$testCase->assertEquals($response, $event->getContext()->getResponse());
 
 				return true;
 			}));
 
 		Environment::getService('event_dispatcher')->addListener(Event::EXCEPTION_THROWN, array($exceptionListener, 'on'));
 
-		$this->loadController($request, $response);
+		$response = $this->sendRequest('http://localhost.com/exception', 'GET');
 
 		$this->assertEquals(500, $response->getStatusCode());
 	}
 
 	public function testRouteStatusCodeException()
 	{
-		$request  = new Request(new Url('http://localhost.com/exception_code'), 'GET');
-		$response = new Response();
-		$response->setBody(new StringStream());
-
-		$this->loadController($request, $response);
+		$response = $this->sendRequest('http://localhost.com/exception_code', 'GET');
 
 		$this->assertEquals(501, $response->getStatusCode());
 	}
 
 	public function testRouteWrongStatusCodeException()
 	{
-		$request  = new Request(new Url('http://localhost.com/exception_wrong_code'), 'GET');
-		$response = new Response();
-		$response->setBody(new StringStream());
-
-		$this->loadController($request, $response);
+		$response = $this->sendRequest('http://localhost.com/exception_wrong_code', 'GET');
 
 		$this->assertEquals(500, $response->getStatusCode());
 	}
 
 	public function testBadRequestException()
 	{
-		$request  = new Request(new Url('http://localhost.com/400'), 'GET');
-		$response = new Response();
-		$response->setBody(new StringStream());
-
-		$this->loadController($request, $response);
+		$response = $this->sendRequest('http://localhost.com/400', 'GET');
 
 		$this->assertEquals(400, $response->getStatusCode());
-		$this->assertInstanceOf('PSX\Http\Stream\StringStream', $response->getBody());
+		$this->assertInstanceOf('PSX\Http\Stream\TempStream', $response->getBody());
 	}
 
 	public function testConflictException()
 	{
-		$request  = new Request(new Url('http://localhost.com/409'), 'GET');
-		$response = new Response();
-		$response->setBody(new StringStream());
-
-		$this->loadController($request, $response);
+		$response = $this->sendRequest('http://localhost.com/409', 'GET');
 
 		$this->assertEquals(409, $response->getStatusCode());
-		$this->assertInstanceOf('PSX\Http\Stream\StringStream', $response->getBody());
+		$this->assertInstanceOf('PSX\Http\Stream\TempStream', $response->getBody());
 	}
 
 	public function testForbiddenException()
 	{
-		$request  = new Request(new Url('http://localhost.com/403'), 'GET');
-		$response = new Response();
-		$response->setBody(new StringStream());
-
-		$this->loadController($request, $response);
+		$response = $this->sendRequest('http://localhost.com/403', 'GET');
 
 		$this->assertEquals(403, $response->getStatusCode());
-		$this->assertInstanceOf('PSX\Http\Stream\StringStream', $response->getBody());
+		$this->assertInstanceOf('PSX\Http\Stream\TempStream', $response->getBody());
 	}
 
 	public function testFoundException()
 	{
-		$request  = new Request(new Url('http://localhost.com/302'), 'GET');
-		$response = new Response();
-		$response->setBody(new StringStream());
-
-		$this->loadController($request, $response);
+		$response = $this->sendRequest('http://localhost.com/302', 'GET');
 
 		$this->assertEquals(302, $response->getStatusCode());
 		$this->assertEquals('http://google.com', $response->getHeader('Location'));
@@ -200,48 +160,32 @@ class DispatchTest extends ControllerTestCase
 
 	public function testGoneException()
 	{
-		$request  = new Request(new Url('http://localhost.com/410'), 'GET');
-		$response = new Response();
-		$response->setBody(new StringStream());
-
-		$this->loadController($request, $response);
+		$response = $this->sendRequest('http://localhost.com/410', 'GET');
 
 		$this->assertEquals(410, $response->getStatusCode());
-		$this->assertInstanceOf('PSX\Http\Stream\StringStream', $response->getBody());
+		$this->assertInstanceOf('PSX\Http\Stream\TempStream', $response->getBody());
 	}
 
 	public function testInternalServerErrorException()
 	{
-		$request  = new Request(new Url('http://localhost.com/500'), 'GET');
-		$response = new Response();
-		$response->setBody(new StringStream());
-
-		$this->loadController($request, $response);
+		$response = $this->sendRequest('http://localhost.com/500', 'GET');
 
 		$this->assertEquals(500, $response->getStatusCode());
-		$this->assertInstanceOf('PSX\Http\Stream\StringStream', $response->getBody());
+		$this->assertInstanceOf('PSX\Http\Stream\TempStream', $response->getBody());
 	}
 
 	public function testMethodNotAllowedException()
 	{
-		$request  = new Request(new Url('http://localhost.com/405'), 'GET');
-		$response = new Response();
-		$response->setBody(new StringStream());
-
-		$this->loadController($request, $response);
+		$response = $this->sendRequest('http://localhost.com/405', 'GET');
 
 		$this->assertEquals(405, $response->getStatusCode());
 		$this->assertEquals('GET, POST', $response->getHeader('Allow'));
-		$this->assertInstanceOf('PSX\Http\Stream\StringStream', $response->getBody());
+		$this->assertInstanceOf('PSX\Http\Stream\TempStream', $response->getBody());
 	}
 
 	public function testMovedPermanentlyException()
 	{
-		$request  = new Request(new Url('http://localhost.com/301'), 'GET');
-		$response = new Response();
-		$response->setBody(new StringStream());
-
-		$this->loadController($request, $response);
+		$response = $this->sendRequest('http://localhost.com/301', 'GET');
 
 		$this->assertEquals(301, $response->getStatusCode());
 		$this->assertEquals('http://google.com', $response->getHeader('Location'));
@@ -250,47 +194,31 @@ class DispatchTest extends ControllerTestCase
 
 	public function testNotAcceptableException()
 	{
-		$request  = new Request(new Url('http://localhost.com/406'), 'GET');
-		$response = new Response();
-		$response->setBody(new StringStream());
-
-		$this->loadController($request, $response);
+		$response = $this->sendRequest('http://localhost.com/406', 'GET');
 
 		$this->assertEquals(406, $response->getStatusCode());
-		$this->assertInstanceOf('PSX\Http\Stream\StringStream', $response->getBody());
+		$this->assertInstanceOf('PSX\Http\Stream\TempStream', $response->getBody());
 	}
 
 	public function testNotFoundException()
 	{
-		$request  = new Request(new Url('http://localhost.com/404'), 'GET');
-		$response = new Response();
-		$response->setBody(new StringStream());
-
-		$this->loadController($request, $response);
+		$response = $this->sendRequest('http://localhost.com/404', 'GET');
 
 		$this->assertEquals(404, $response->getStatusCode());
-		$this->assertInstanceOf('PSX\Http\Stream\StringStream', $response->getBody());
+		$this->assertInstanceOf('PSX\Http\Stream\TempStream', $response->getBody());
 	}
 
 	public function testNotImplementedException()
 	{
-		$request  = new Request(new Url('http://localhost.com/501'), 'GET');
-		$response = new Response();
-		$response->setBody(new StringStream());
-
-		$this->loadController($request, $response);
+		$response = $this->sendRequest('http://localhost.com/501', 'GET');
 
 		$this->assertEquals(501, $response->getStatusCode());
-		$this->assertInstanceOf('PSX\Http\Stream\StringStream', $response->getBody());
+		$this->assertInstanceOf('PSX\Http\Stream\TempStream', $response->getBody());
 	}
 
 	public function testNotModifiedException()
 	{
-		$request  = new Request(new Url('http://localhost.com/304'), 'GET');
-		$response = new Response();
-		$response->setBody(new StringStream());
-
-		$this->loadController($request, $response);
+		$response = $this->sendRequest('http://localhost.com/304', 'GET');
 
 		$this->assertEquals(304, $response->getStatusCode());
 		$this->assertEquals('', (string) $response->getBody());
@@ -298,11 +226,7 @@ class DispatchTest extends ControllerTestCase
 
 	public function testSeeOtherException()
 	{
-		$request  = new Request(new Url('http://localhost.com/303'), 'GET');
-		$response = new Response();
-		$response->setBody(new StringStream());
-
-		$this->loadController($request, $response);
+		$response = $this->sendRequest('http://localhost.com/303', 'GET');
 
 		$this->assertEquals(303, $response->getStatusCode());
 		$this->assertEquals('http://google.com', $response->getHeader('Location'));
@@ -311,23 +235,15 @@ class DispatchTest extends ControllerTestCase
 
 	public function testServiceUnavailableException()
 	{
-		$request  = new Request(new Url('http://localhost.com/503'), 'GET');
-		$response = new Response();
-		$response->setBody(new StringStream());
-
-		$this->loadController($request, $response);
+		$response = $this->sendRequest('http://localhost.com/503', 'GET');
 
 		$this->assertEquals(503, $response->getStatusCode());
-		$this->assertInstanceOf('PSX\Http\Stream\StringStream', $response->getBody());
+		$this->assertInstanceOf('PSX\Http\Stream\TempStream', $response->getBody());
 	}
 
 	public function testTemporaryRedirectException()
 	{
-		$request  = new Request(new Url('http://localhost.com/307'), 'GET');
-		$response = new Response();
-		$response->setBody(new StringStream());
-
-		$this->loadController($request, $response);
+		$response = $this->sendRequest('http://localhost.com/307', 'GET');
 
 		$this->assertEquals(307, $response->getStatusCode());
 		$this->assertEquals('http://google.com', $response->getHeader('Location'));
@@ -336,40 +252,28 @@ class DispatchTest extends ControllerTestCase
 
 	public function testUnauthorizedException()
 	{
-		$request  = new Request(new Url('http://localhost.com/401'), 'GET');
-		$response = new Response();
-		$response->setBody(new StringStream());
-
-		$this->loadController($request, $response);
+		$response = $this->sendRequest('http://localhost.com/401', 'GET');
 
 		$this->assertEquals(401, $response->getStatusCode());
 		$this->assertEquals('Basic realm="foo"', $response->getHeader('WWW-Authenticate'));
-		$this->assertInstanceOf('PSX\Http\Stream\StringStream', $response->getBody());
+		$this->assertInstanceOf('PSX\Http\Stream\TempStream', $response->getBody());
 	}
 
 	public function testUnauthorizedNoParameterException()
 	{
-		$request  = new Request(new Url('http://localhost.com/401_1'), 'GET');
-		$response = new Response();
-		$response->setBody(new StringStream());
-
-		$this->loadController($request, $response);
+		$response = $this->sendRequest('http://localhost.com/401_1', 'GET');
 
 		$this->assertEquals(401, $response->getStatusCode());
 		$this->assertEquals('Foo', $response->getHeader('WWW-Authenticate'));
-		$this->assertInstanceOf('PSX\Http\Stream\StringStream', $response->getBody());
+		$this->assertInstanceOf('PSX\Http\Stream\TempStream', $response->getBody());
 	}
 
 	public function testUnsupportedMediaTypeException()
 	{
-		$request  = new Request(new Url('http://localhost.com/415'), 'GET');
-		$response = new Response();
-		$response->setBody(new StringStream());
-
-		$this->loadController($request, $response);
+		$response = $this->sendRequest('http://localhost.com/415', 'GET');
 
 		$this->assertEquals(415, $response->getStatusCode());
-		$this->assertInstanceOf('PSX\Http\Stream\StringStream', $response->getBody());
+		$this->assertInstanceOf('PSX\Http\Stream\TempStream', $response->getBody());
 	}
 
 	protected function getPaths()

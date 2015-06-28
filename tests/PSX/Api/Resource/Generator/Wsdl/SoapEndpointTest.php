@@ -121,15 +121,7 @@ class SoapEndpointTest extends ControllerDbTestCase
 
 	protected function getWsdl()
 	{
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/wsdl/1/api'), 'GET');
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
-
-		return $body;
+		return (string) $this->sendRequest('http://127.0.0.1/wsdl/1/api', 'GET')->getBody();
 	}
 
 	protected function getPaths()

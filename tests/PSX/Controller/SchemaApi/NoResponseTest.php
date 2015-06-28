@@ -41,13 +41,8 @@ class NoResponseTest extends ControllerTestCase
 {
 	public function testGet()
 	{
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'GET');
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
+		$response = $this->sendRequest('http://127.0.0.1/api', 'GET');
+		$body     = (string) $response->getBody();
 
 		$this->assertEquals(204, $response->getStatusCode());
 		$this->assertEquals('', $body);
@@ -56,13 +51,8 @@ class NoResponseTest extends ControllerTestCase
 	public function testPost()
 	{
 		$data     = json_encode(array('userId' => 3, 'title' => 'test', 'date' => '2013-05-29T16:56:32+00:00'));
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'POST', array('Content-Type' => 'application/json'), $data);
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
+		$response = $this->sendRequest('http://127.0.0.1/api', 'POST', ['Content-Type' => 'application/json'], $data);
+		$body     = (string) $response->getBody();
 
 		$this->assertEquals(204, $response->getStatusCode());
 		$this->assertEquals('', $body);
@@ -71,13 +61,8 @@ class NoResponseTest extends ControllerTestCase
 	public function testPut()
 	{
 		$data     = json_encode(array('id' => 1, 'userId' => 3, 'title' => 'foobar'));
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'PUT', array('Content-Type' => 'application/json'), $data);
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
+		$response = $this->sendRequest('http://127.0.0.1/api', 'PUT', ['Content-Type' => 'application/json'], $data);
+		$body     = (string) $response->getBody();
 
 		$this->assertEquals(204, $response->getStatusCode());
 		$this->assertEquals('', $body);
@@ -86,13 +71,8 @@ class NoResponseTest extends ControllerTestCase
 	public function testDelete()
 	{
 		$data     = json_encode(array('id' => 1));
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/api'), 'DELETE', array('Content-Type' => 'application/json'), $data);
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-		$body       = (string) $response->getBody();
+		$response = $this->sendRequest('http://127.0.0.1/api', 'DELETE', ['Content-Type' => 'application/json'], $data);
+		$body     = (string) $response->getBody();
 
 		$this->assertEquals(204, $response->getStatusCode());
 		$this->assertEquals('', $body);

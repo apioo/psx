@@ -43,16 +43,9 @@ class ErrorControllerTest extends ControllerTestCase
 	{
 		Environment::getService('config')->set('psx_debug', true);
 
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/error'), 'GET');
-		$request->addHeader('Accept', 'application/json');
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-
-		$body = (string) $response->getBody();
-		$data = Json::decode($body);
+		$response = $this->sendRequest('http://127.0.0.1/error', 'GET', ['Accept' => 'application/json']);
+		$body     = (string) $response->getBody();
+		$data     = Json::decode($body);
 
 		$this->assertEquals(null, $response->getStatusCode(), $body);
 		$this->assertEquals(false, $data['success'], $body);
@@ -63,16 +56,9 @@ class ErrorControllerTest extends ControllerTestCase
 	{
 		Environment::getService('config')->set('psx_debug', false);
 
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/error'), 'GET');
-		$request->addHeader('Accept', 'application/json');
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-
-		$body = (string) $response->getBody();
-		$data = Json::decode($body);
+		$response = $this->sendRequest('http://127.0.0.1/error', 'GET', ['Accept' => 'application/json']);
+		$body     = (string) $response->getBody();
+		$data     = Json::decode($body);
 
 		$this->assertEquals(null, $response->getStatusCode(), $body);
 		$this->assertEquals(false, $data['success']);
@@ -83,16 +69,9 @@ class ErrorControllerTest extends ControllerTestCase
 	{
 		Environment::getService('config')->set('psx_debug', true);
 
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/display_error'), 'GET');
-		$request->addHeader('Accept', 'application/json');
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-
-		$body = (string) $response->getBody();
-		$data = Json::decode($body);
+		$response = $this->sendRequest('http://127.0.0.1/display_error', 'GET', ['Accept' => 'application/json']);
+		$body     = (string) $response->getBody();
+		$data     = Json::decode($body);
 
 		$this->assertEquals(null, $response->getStatusCode(), $body);
 		$this->assertEquals(false, $data['success']);
@@ -103,16 +82,9 @@ class ErrorControllerTest extends ControllerTestCase
 	{
 		Environment::getService('config')->set('psx_debug', false);
 
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/display_error'), 'GET');
-		$request->addHeader('Accept', 'application/json');
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-
-		$body = (string) $response->getBody();
-		$data = Json::decode($body);
+		$response = $this->sendRequest('http://127.0.0.1/display_error', 'GET', ['Accept' => 'application/json']);
+		$body     = (string) $response->getBody();
+		$data     = Json::decode($body);
 
 		$this->assertEquals(null, $response->getStatusCode(), $body);
 		$this->assertEquals(false, $data['success']);
@@ -123,14 +95,8 @@ class ErrorControllerTest extends ControllerTestCase
 	{
 		Environment::getService('config')->set('psx_debug', false);
 
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/error'), 'GET');
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-
-		$body = (string) $response->getBody();
+		$response = $this->sendRequest('http://127.0.0.1/error', 'GET');
+		$body     = (string) $response->getBody();
 
 		$expect = <<<JSON
 {
@@ -149,15 +115,8 @@ JSON;
 		Environment::getService('config')->set('psx_debug', false);
 		//Environment::getService('template')->set(null);
 
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/error'), 'GET');
-		$request->addHeader('Accept', 'text/html');
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-
-		$body = (string) $response->getBody();
+		$response = $this->sendRequest('http://127.0.0.1/error', 'GET', ['Accept' => 'text/html']);
+		$body     = (string) $response->getBody();
 
 		$expect = <<<HTML
 <!DOCTYPE>
@@ -245,15 +204,8 @@ HTML;
 	{
 		Environment::getService('config')->set('psx_debug', false);
 
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/error'), 'GET');
-		$request->addHeader('Accept', 'application/xml');
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-
-		$body = (string) $response->getBody();
+		$response = $this->sendRequest('http://127.0.0.1/error', 'GET', ['Accept' => 'application/xml']);
+		$body     = (string) $response->getBody();
 
 		$expect = <<<XML
 <?xml version="1.0"?>
@@ -272,15 +224,8 @@ XML;
 	{
 		Environment::getService('config')->set('psx_debug', false);
 
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/error'), 'GET');
-		$request->addHeader('Accept', 'application/json');
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-
-		$body = (string) $response->getBody();
+		$response = $this->sendRequest('http://127.0.0.1/error', 'GET', ['Accept' => 'application/json']);
+		$body     = (string) $response->getBody();
 
 		$expect = <<<JSON
 {
@@ -298,15 +243,8 @@ JSON;
 	{
 		Environment::getService('config')->set('psx_debug', false);
 
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/error'), 'GET');
-		$request->addHeader('X-Requested-With', 'XMLHttpRequest');
-		$response = new Response();
-		$response->setBody($body);
-
-		$controller = $this->loadController($request, $response);
-
-		$body = (string) $response->getBody();
+		$response = $this->sendRequest('http://127.0.0.1/error', 'GET', ['X-Requested-With' => 'XMLHttpRequest']);
+		$body     = (string) $response->getBody();
 
 		$expect = <<<JSON
 {

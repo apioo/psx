@@ -40,71 +40,53 @@ class ViewAbstractTest extends ControllerTestCase
 {
 	public function testAutomaticTemplateDetection()
 	{
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/view'), 'GET');
-		$request->addHeader('Accept', 'text/html');
-		$response = new Response();
-		$response->setBody($body);
+		$response = $this->sendRequest('http://127.0.0.1/view', 'GET', ['Accept' => 'text/html']);
+		$data     = simplexml_load_string((string) $response->getBody());
 
-		$controller = $this->loadController($request, $response);
-		$response   = simplexml_load_string((string) $body);
-
-		$render = (float) $response->render;
+		$render = (float) $data->render;
 		$config = Environment::getService('config');
 		$base   = (string) parse_url($config['psx_url'], PHP_URL_PATH);
 
-		$this->assertEquals('bar', $response->foo);
-		$this->assertTrue(!empty($response->self));
-		$this->assertEquals($config['psx_url'] . '/' . $config['psx_dispatch'], $response->url);
-		$this->assertEquals($base, $response->base);
+		$this->assertEquals('bar', $data->foo);
+		$this->assertTrue(!empty($data->self));
+		$this->assertEquals($config['psx_url'] . '/' . $config['psx_dispatch'], $data->url);
+		$this->assertEquals($base, $data->base);
 		$this->assertTrue($render > 0);
-		$this->assertEquals('tests/PSX/Controller/Foo/Resource', $response->location);
+		$this->assertEquals('tests/PSX/Controller/Foo/Resource', $data->location);
 	}
 
 	public function testImplicitTemplate()
 	{
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/view/detail'), 'GET');
-		$request->addHeader('Accept', 'text/html');
-		$response = new Response();
-		$response->setBody($body);
+		$response = $this->sendRequest('http://127.0.0.1/view/detail', 'GET', ['Accept' => 'text/html']);
+		$data     = simplexml_load_string((string) $response->getBody());
 
-		$controller = $this->loadController($request, $response);
-		$response   = simplexml_load_string((string) $body);
-
-		$render = (float) $response->render;
+		$render = (float) $data->render;
 		$config = Environment::getService('config');
 		$base   = (string) parse_url($config['psx_url'], PHP_URL_PATH);
 
-		$this->assertEquals('bar', $response->foo);
-		$this->assertTrue(!empty($response->self));
-		$this->assertEquals($config['psx_url'] . '/' . $config['psx_dispatch'], $response->url);
-		$this->assertEquals($base, $response->base);
+		$this->assertEquals('bar', $data->foo);
+		$this->assertTrue(!empty($data->self));
+		$this->assertEquals($config['psx_url'] . '/' . $config['psx_dispatch'], $data->url);
+		$this->assertEquals($base, $data->base);
 		$this->assertTrue($render > 0);
-		$this->assertEquals('tests/PSX/Controller/Foo/Resource', $response->location);
+		$this->assertEquals('tests/PSX/Controller/Foo/Resource', $data->location);
 	}
 
 	public function testExplicitTemplate()
 	{
-		$body     = new TempStream(fopen('php://memory', 'r+'));
-		$request  = new Request(new Url('http://127.0.0.1/view/explicit'), 'GET');
-		$request->addHeader('Accept', 'text/html');
-		$response = new Response();
-		$response->setBody($body);
+		$response = $this->sendRequest('http://127.0.0.1/view/explicit', 'GET', ['Accept' => 'text/html']);
+		$data     = simplexml_load_string((string) $response->getBody());
 
-		$controller = $this->loadController($request, $response);
-		$response   = simplexml_load_string((string) $body);
-
-		$render = (float) $response->render;
+		$render = (float) $data->render;
 		$config = Environment::getService('config');
 		$base   = (string) parse_url($config['psx_url'], PHP_URL_PATH);
 
-		$this->assertEquals('bar', $response->foo);
-		$this->assertTrue(!empty($response->self));
-		$this->assertEquals($config['psx_url'] . '/' . $config['psx_dispatch'], $response->url);
-		$this->assertEquals($base, $response->base);
+		$this->assertEquals('bar', $data->foo);
+		$this->assertTrue(!empty($data->self));
+		$this->assertEquals($config['psx_url'] . '/' . $config['psx_dispatch'], $data->url);
+		$this->assertEquals($base, $data->base);
 		$this->assertTrue($render > 0);
-		$this->assertEquals('tests/PSX/Controller/Foo/Resource', $response->location);
+		$this->assertEquals('tests/PSX/Controller/Foo/Resource', $data->location);
 	}
 
 	protected function getPaths()
