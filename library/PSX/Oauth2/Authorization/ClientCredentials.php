@@ -32,6 +32,9 @@ use PSX\Oauth2\AuthorizationAbstract;
  */
 class ClientCredentials extends AuthorizationAbstract
 {
+    /**
+     * @return \PSX\Oauth2\AccessToken
+     */
 	public function getAccessToken()
 	{
 		// request data

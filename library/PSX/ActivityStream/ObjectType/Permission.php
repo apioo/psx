@@ -40,7 +40,7 @@ class Permission extends Object
 	}
 
 	/**
-	 * @param PSX\ActivityStream\ObjectFactory $scope
+	 * @param \PSX\ActivityStream\ObjectFactory $scope
 	 */
 	public function setScope($scope)
 	{

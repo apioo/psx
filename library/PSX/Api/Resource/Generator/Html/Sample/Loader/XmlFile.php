@@ -89,6 +89,8 @@ class XmlFile implements LoaderInterface
 				}
 			}
 		}
+
+        return null;
 	}
 
 	protected function getDocument()

@@ -21,7 +21,6 @@
 namespace PSX\Data\Writer;
 
 use PSX\Data\RecordInterface;
-use PSX\Data\WriterInterface;
 use PSX\Http\MediaType;
 
 /**

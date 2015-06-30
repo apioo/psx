@@ -39,7 +39,7 @@ class TempStreamTest extends StreamTestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testConstructor()
 	{

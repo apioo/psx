@@ -316,6 +316,7 @@ class Markdown
 	 * If the content contains any block level element we do not parse the text
 	 * to avoid double encoding.
 	 *
+     * @param string $content
 	 * @return boolean
 	 */
 	protected static function shouldDecoded($content)

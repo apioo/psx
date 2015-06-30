@@ -23,7 +23,6 @@ namespace PSX\Oauth\Provider;
 use PSX\Http;
 use PSX\Http\GetRequest;
 use PSX\Http\Handler\Callback;
-use PSX\Http\Request;
 use PSX\Http\Response;
 use PSX\Http\Stream\TempStream;
 use PSX\Oauth;

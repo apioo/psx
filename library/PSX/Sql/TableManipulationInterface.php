@@ -20,8 +20,6 @@
 
 namespace PSX\Sql;
 
-use PSX\Data\RecordInterface;
-
 /**
  * TableManipulationInterface
  *
@@ -34,7 +32,7 @@ interface TableManipulationInterface
 	/**
 	 * Create the record
 	 *
-	 * @param PSX\Data\RecordInterface|array $record
+	 * @param \PSX\Data\RecordInterface|array $record
 	 * @return void
 	 */
 	public function create($record);
@@ -42,7 +40,7 @@ interface TableManipulationInterface
 	/**
 	 * Update the record
 	 *
-	 * @param PSX\Data\RecordInterface|array $record
+	 * @param \PSX\Data\RecordInterface|array $record
 	 * @return void
 	 */
 	public function update($record);
@@ -50,7 +48,7 @@ interface TableManipulationInterface
 	/**
 	 * Delete the record
 	 *
-	 * @param PSX\Data\RecordInterface|array $record
+	 * @param \PSX\Data\RecordInterface|array $record
 	 * @return void
 	 */
 	public function delete($record);

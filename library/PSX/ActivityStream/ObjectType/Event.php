@@ -47,7 +47,7 @@ class Event extends Object
 	}
 
 	/**
-	 * @param PSX\ActivityStream\ObjectType\Collection $attendedBy
+	 * @param \PSX\ActivityStream\ObjectType\Collection $attendedBy
 	 */
 	public function setAttendedBy(Collection $attendedBy)
 	{
@@ -60,7 +60,7 @@ class Event extends Object
 	}
 
 	/**
-	 * @param PSX\ActivityStream\ObjectType\Collection $attending
+	 * @param \PSX\ActivityStream\ObjectType\Collection $attending
 	 */
 	public function setAttending(Collection $attending)
 	{
@@ -73,7 +73,7 @@ class Event extends Object
 	}
 
 	/**
-	 * @param PSX\DateTime $endTime
+	 * @param \PSX\DateTime $endTime
 	 */
 	public function setEndTime(DateTime $endTime)
 	{
@@ -86,7 +86,7 @@ class Event extends Object
 	}
 
 	/**
-	 * @param PSX\ActivityStream\ObjectType\Collection $invited
+	 * @param \PSX\ActivityStream\ObjectType\Collection $invited
 	 */
  	public function setInvited(Collection $invited)
 	{
@@ -99,7 +99,7 @@ class Event extends Object
 	}
 
 	/**
-	 * @param PSX\ActivityStream\ObjectType\Collection $maybeAttending
+	 * @param \PSX\ActivityStream\ObjectType\Collection $maybeAttending
 	 */
 	public function setMaybeAttending(Collection $maybeAttending)
 	{
@@ -112,7 +112,7 @@ class Event extends Object
 	}
 
 	/**
-	 * @param PSX\ActivityStream\ObjectType\Collection $notAttendedBy
+	 * @param \PSX\ActivityStream\ObjectType\Collection $notAttendedBy
 	 */
 	public function setNotAttendedBy(Collection $notAttendedBy)
 	{
@@ -125,7 +125,7 @@ class Event extends Object
 	}
 
 	/**
-	 * @param PSX\ActivityStream\ObjectType\Collection $notAttending
+	 * @param \PSX\ActivityStream\ObjectType\Collection $notAttending
 	 */
 	public function setNotAttending(Collection $notAttending)
 	{
@@ -138,7 +138,7 @@ class Event extends Object
 	}
 
 	/**
-	 * @param PSX\DateTime $startTime
+	 * @param \PSX\DateTime $startTime
 	 */
 	public function setStartTime(DateTime $startTime)
 	{

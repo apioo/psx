@@ -36,9 +36,9 @@ interface CallbackResolverInterface
 	 * The resolver takes the source parameter from context and creates the 
 	 * controller
 	 *
-	 * @param PSX\Http\RequestInterface $request
-	 * @param PSX\Http\ResponseInterface $response
-	 * @param PSX\Loader\Context $context
+	 * @param \PSX\Http\RequestInterface $request
+	 * @param \PSX\Http\ResponseInterface $response
+	 * @param \PSX\Loader\Context $context
 	 * @return mixed
 	 */
 	public function resolve(RequestInterface $request, ResponseInterface $response, Context $context);

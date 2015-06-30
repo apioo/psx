@@ -56,7 +56,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testInvalidUrl()
 	{
@@ -64,7 +64,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testInvalidUrlEmptyHost()
 	{
@@ -72,7 +72,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testInvalidUrlEmptyHostButPath()
 	{
@@ -80,7 +80,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testInvalidUrlEmptyHostButQuery()
 	{
@@ -88,7 +88,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testInvalidUrlEmptyHostButFragment()
 	{
@@ -103,7 +103,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testSetPortInvalidRangeMin()
 	{
@@ -112,7 +112,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testSetPortInvalidRangeMax()
 	{

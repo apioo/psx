@@ -124,7 +124,7 @@ class Record extends RecordAbstract
 	}
 
 	/**
-	 * @param DateTime $date
+	 * @param \DateTime $date
 	 */
 	public function setDate($date)
 	{
@@ -137,7 +137,7 @@ class Record extends RecordAbstract
 	}
 
 	/**
-	 * @param PSX\Data\Record\Importer\Test\Person $person
+	 * @param \PSX\Data\Record\Importer\Test\Person $person
 	 */
 	public function setPerson(Person $person)
 	{
@@ -176,7 +176,7 @@ class Record extends RecordAbstract
 	}
 
 	/**
-	 * @param PSX\Data\Record\Importer\Test\Factory $token
+	 * @param \PSX\Data\Record\Importer\Test\Factory $token
 	 */
 	public function setToken(\stdClass $token)
 	{
@@ -189,7 +189,7 @@ class Record extends RecordAbstract
 	}
 
 	/**
-	 * @param PSX\Url $url
+	 * @param \PSX\Url $url
 	 */
 	public function setUrl(Url $url)
 	{

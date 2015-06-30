@@ -21,7 +21,6 @@
 namespace PSX\Atom;
 
 use PSX\Data\RecordAbstract;
-use PSX\Data\RecordInfo;
 
 /**
  * Link

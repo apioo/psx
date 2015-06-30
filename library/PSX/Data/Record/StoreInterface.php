@@ -35,7 +35,7 @@ interface StoreInterface
 	 * Saves an record under the given key
 	 *
 	 * @param string $key
-	 * @param PSX\Data\RecordInterface $record
+	 * @param \PSX\Data\RecordInterface $record
 	 */
 	public function save($key, RecordInterface $record);
 
@@ -43,7 +43,7 @@ interface StoreInterface
 	 * Returns the record from the given key or null
 	 *
 	 * @param string $key
-	 * @return PSX\Data\RecordInterface
+	 * @return \PSX\Data\RecordInterface
 	 */
 	public function load($key);
 }

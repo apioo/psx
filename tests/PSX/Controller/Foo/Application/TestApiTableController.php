@@ -22,7 +22,6 @@ namespace PSX\Controller\Foo\Application;
 
 use PSX\Controller\ApiAbstract;
 use PSX\Data\Record;
-use PSX\Data\RecordAbstract;
 use PSX\Sql;
 
 /**
@@ -36,13 +35,13 @@ class TestApiTableController extends ApiAbstract
 {
 	/**
 	 * @Inject
-	 * @var PHPUnit_Framework_TestCase
+	 * @var \PHPUnit_Framework_TestCase
 	 */
 	protected $testCase;
 
 	/**
 	 * @Inject
-	 * @var PSX\Sql\TableManager
+	 * @var \PSX\Sql\TableManager
 	 */
 	protected $tableManager;
 

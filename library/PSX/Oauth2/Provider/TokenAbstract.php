@@ -22,10 +22,8 @@ namespace PSX\Oauth2\Provider;
 
 use PSX\Controller\ApiAbstract;
 use PSX\Data\ReaderInterface;
-use PSX\Data\RecordAbstract;
-use PSX\Data\RecordInfo;
 use PSX\Data\WriterInterface;
-use PSX\Oauth2\Authorization\Exception\ErrorException;
+use PSX\Oauth2\Authorization\Exception\ErrorExceptionAbstract;
 
 /**
  * TokenAbstract
@@ -38,7 +36,7 @@ abstract class TokenAbstract extends ApiAbstract
 {
 	/**
 	 * @Inject oauth2_grant_type_factory
-	 * @var PSX\Oauth2\Provider\GrantTypeFactory
+	 * @var \PSX\Oauth2\Provider\GrantTypeFactory
 	 */
 	protected $grantTypeFactory;
 
@@ -82,7 +80,7 @@ abstract class TokenAbstract extends ApiAbstract
 
 			$this->setBody($accessToken, WriterInterface::JSON);
 		}
-		catch(ErrorException $e)
+		catch(ErrorExceptionAbstract $e)
 		{
 			$error = new Error();
 			$error->setError($e->getType());

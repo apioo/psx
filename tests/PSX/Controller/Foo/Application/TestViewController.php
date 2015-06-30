@@ -21,9 +21,6 @@
 namespace PSX\Controller\Foo\Application;
 
 use PSX\Controller\ViewAbstract;
-use PSX\Http\Request;
-use PSX\Http\Response;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * TestViewController

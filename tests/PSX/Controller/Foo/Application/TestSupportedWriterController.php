@@ -34,7 +34,7 @@ class TestSupportedWriterController extends ControllerAbstract
 {
 	/**
 	 * @Inject
-	 * @var PSX\Loader
+	 * @var \PSX\Loader
 	 */
 	protected $loader;
 

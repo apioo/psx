@@ -89,7 +89,7 @@ class MessageTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException ErrorException
+	 * @expectedException \ErrorException
 	 */
 	public function testSetHeadersObject()
 	{
@@ -100,7 +100,7 @@ class MessageTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException ErrorException
+	 * @expectedException \ErrorException
 	 */
 	public function testSetHeadersArrayObject()
 	{
@@ -271,7 +271,7 @@ class MessageTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testInvalidBody()
 	{

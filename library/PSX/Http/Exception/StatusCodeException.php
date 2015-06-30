@@ -21,6 +21,7 @@
 namespace PSX\Http\Exception;
 
 use InvalidArgumentException;
+use PSX\Exception;
 use PSX\Http;
 
 /**
@@ -30,7 +31,7 @@ use PSX\Http;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class StatusCodeException extends \PSX\Exception
+class StatusCodeException extends Exception
 {
 	protected $statusCode;
 

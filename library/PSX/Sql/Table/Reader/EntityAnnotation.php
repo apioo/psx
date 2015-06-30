@@ -35,6 +35,9 @@ use PSX\Sql\TableInterface;
  */
 class EntityAnnotation implements ReaderInterface
 {
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
 	protected $em;
 
 	public function __construct(EntityManager $em)

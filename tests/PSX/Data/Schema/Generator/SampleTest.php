@@ -94,7 +94,7 @@ XML;
 	}
 
 	/**
-	 * @expectedException RuntimeException
+	 * @expectedException \RuntimeException
 	 */
 	public function testGenerateMissingValue()
 	{

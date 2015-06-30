@@ -96,7 +96,7 @@ class ViewCommandTest extends CommandTestCase
 	}
 
 	/**
-	 * @expectedException RuntimeException
+	 * @expectedException \RuntimeException
 	 */
 	public function testCommandControllerFileExists()
 	{
@@ -144,7 +144,7 @@ class ViewCommandTest extends CommandTestCase
 	}
 
 	/**
-	 * @expectedException RuntimeException
+	 * @expectedException \RuntimeException
 	 */
 	public function testCommandTemplateFileExists()
 	{
@@ -234,13 +234,13 @@ class Bar extends ViewAbstract
 {
 	/**
 	 * @Inject
-	 * @var Doctrine\DBAL\Connection
+	 * @var \Doctrine\DBAL\Connection
 	 */
 	protected $connection;
 
 	/**
 	 * @Inject
-	 * @var PSX\TemplateInterface
+	 * @var \PSX\TemplateInterface
 	 */
 	protected $template;
 

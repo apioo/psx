@@ -23,7 +23,6 @@ namespace PSX\Dispatch\Filter;
 use PSX\Dispatch\FilterChain;
 use PSX\Http\Request;
 use PSX\Http\Response;
-use PSX\Http\Stream\TempStream;
 use PSX\Url;
 
 /**

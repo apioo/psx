@@ -70,7 +70,7 @@ class Builder
 	}
 
 	/**
-	 * @param PSX\Data\Schema\PropertyInteface $property
+	 * @param \PSX\Data\Schema\PropertyInterface $property
 	 * @return $this
 	 */
 	public function add(PropertyInterface $property)
@@ -82,7 +82,7 @@ class Builder
 
 	/**
 	 * @param string $name
-	 * @return PSX\Data\Schema\Property\ArrayType
+	 * @return \PSX\Data\Schema\Property\ArrayType
 	 */
 	public function arrayType($name)
 	{
@@ -100,7 +100,7 @@ class Builder
 
 	/**
 	 * @param string $name
-	 * @return PSX\Data\Schema\Property\BooleanType
+	 * @return \PSX\Data\Schema\Property\BooleanType
 	 */
 	public function boolean($name)
 	{
@@ -111,7 +111,7 @@ class Builder
 
 	/**
 	 * @param string $name
-	 * @return PSX\Data\Schema\Property\ChoiceType
+	 * @return \PSX\Data\Schema\Property\ChoiceType
 	 */
 	public function choiceType($name)
 	{
@@ -129,8 +129,8 @@ class Builder
 
 	/**
 	 * @param string $name
-	 * @param PSX\Data\Schema\Property\ComplexType $template
-	 * @return PSX\Data\Schema\Property\ComplexType
+	 * @param \PSX\Data\Schema\Property\ComplexType $template
+	 * @return \PSX\Data\Schema\Property\ComplexType
 	 */
 	public function complexType($name, Property\ComplexType $template = null)
 	{
@@ -158,7 +158,7 @@ class Builder
 
 	/**
 	 * @param string $name
-	 * @return PSX\Data\Schema\Property\DateType
+	 * @return \PSX\Data\Schema\Property\DateType
 	 */
 	public function date($name)
 	{
@@ -169,7 +169,7 @@ class Builder
 
 	/**
 	 * @param string $name
-	 * @return PSX\Data\Schema\Property\DateTimeType
+	 * @return \PSX\Data\Schema\Property\DateTimeType
 	 */
 	public function dateTime($name)
 	{
@@ -180,7 +180,7 @@ class Builder
 
 	/**
 	 * @param string $name
-	 * @return PSX\Data\Schema\Property\DurationType
+	 * @return \PSX\Data\Schema\Property\DurationType
 	 */
 	public function duration($name)
 	{
@@ -191,7 +191,7 @@ class Builder
 
 	/**
 	 * @param string $name
-	 * @return PSX\Data\Schema\Property\FloatType
+	 * @return \PSX\Data\Schema\Property\FloatType
 	 */
 	public function float($name)
 	{
@@ -202,7 +202,7 @@ class Builder
 
 	/**
 	 * @param string $name
-	 * @return PSX\Data\Schema\Property\IntegerType
+	 * @return \PSX\Data\Schema\Property\IntegerType
 	 */
 	public function integer($name)
 	{
@@ -213,7 +213,7 @@ class Builder
 
 	/**
 	 * @param string $name
-	 * @return PSX\Data\Schema\Property\StringType
+	 * @return \PSX\Data\Schema\Property\StringType
 	 */
 	public function string($name)
 	{
@@ -224,7 +224,7 @@ class Builder
 
 	/**
 	 * @param string $name
-	 * @return PSX\Data\Schema\Property\TimeType
+	 * @return \PSX\Data\Schema\Property\TimeType
 	 */
 	public function time($name)
 	{
@@ -234,7 +234,7 @@ class Builder
 	}
 
 	/**
-	 * @return PSX\Data\Schema\Property\ComplexType
+	 * @return \PSX\Data\Schema\Property\ComplexType
 	 */
 	public function getProperty()
 	{

@@ -63,7 +63,7 @@ abstract class PropertySimpleAbstract extends PropertyAbstract
 	}
 
 	/**
-	 * @return string
+	 * @return array
 	 */
 	public function getEnumeration()
 	{

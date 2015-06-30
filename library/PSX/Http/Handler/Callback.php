@@ -24,7 +24,7 @@ use Closure;
 use PSX\Http;
 use PSX\Http\HandlerInterface;
 use PSX\Http\Options;
-use PSX\Http\Request;
+use PSX\Http\RequestInterface;
 use PSX\Http\Response;
 use PSX\Http\ResponseParser;
 
@@ -44,7 +44,7 @@ class Callback implements HandlerInterface
 		$this->callback = $callback;
 	}
 
-	public function request(Request $request, Options $options)
+	public function request(RequestInterface $request, Options $options)
 	{
 		try
 		{

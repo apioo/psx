@@ -109,4 +109,11 @@ interface CacheItemInterface
      *   The timestamp at which this cache item will expire.
      */
     public function getExpiration();
+
+    /**
+     * Returns whether a expiration was set
+     *
+     * @return boolean
+     */
+    public function hasExpiration();
 }

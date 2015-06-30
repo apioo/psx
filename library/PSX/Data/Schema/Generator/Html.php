@@ -128,9 +128,11 @@ class Html implements GeneratorInterface
 
 			return $response;
 		}
+
+        return '';
 	}
 
-	protected function getValueDescription(PropertyInterface $type, $enclosed = true)
+	protected function getValueDescription(PropertyInterface $type)
 	{
 		if($type instanceof Property\ComplexType)
 		{

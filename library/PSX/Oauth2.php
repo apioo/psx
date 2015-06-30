@@ -68,7 +68,7 @@ class Oauth2
 	 * );
 	 * </code>
 	 *
-	 * @param PSX\Oauth2\AccessToken $accessToken
+	 * @param \PSX\Oauth2\AccessToken $accessToken
 	 * @return string
 	 */
 	public function getAuthorizationHeader(AccessToken $accessToken)

@@ -106,7 +106,7 @@ class JsonSchemaTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException RuntimeException
+	 * @expectedException \RuntimeException
 	 */
 	public function testParseInvalidFile()
 	{
@@ -114,7 +114,7 @@ class JsonSchemaTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Data\Schema\Parser\JsonSchema\UnsupportedVersionException
+	 * @expectedException \PSX\Data\Schema\Parser\JsonSchema\UnsupportedVersionException
 	 */
 	public function testParseInvalidVersion()
 	{
@@ -122,7 +122,7 @@ class JsonSchemaTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException RuntimeException
+	 * @expectedException \RuntimeException
 	 */
 	public function testParseInvalidFileRef()
 	{
@@ -130,7 +130,7 @@ class JsonSchemaTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException RuntimeException
+	 * @expectedException \RuntimeException
 	 */
 	public function testParseInvalidHttpRef()
 	{
@@ -143,7 +143,7 @@ class JsonSchemaTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException RuntimeException
+	 * @expectedException \RuntimeException
 	 */
 	public function testParseInvalidSchemaRef()
 	{

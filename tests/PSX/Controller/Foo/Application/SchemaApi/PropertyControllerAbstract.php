@@ -27,7 +27,6 @@ use PSX\Controller\SchemaApi\PropertyTestCase;
 use PSX\Controller\SchemaApiAbstract;
 use PSX\Data\RecordInterface;
 use PSX\Data\Schema\Property;
-use PSX\Loader\Context;
 
 /**
  * PropertyControllerAbstract
@@ -40,7 +39,7 @@ abstract class PropertyControllerAbstract extends SchemaApiAbstract
 {
 	/**
 	 * @Inject
-	 * @var PHPUnit_Framework_TestCase
+	 * @var \PHPUnit_Framework_TestCase
 	 */
 	protected $testCase;
 

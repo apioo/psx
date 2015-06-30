@@ -22,11 +22,9 @@ namespace PSX\Data\Schema\Visitor;
 
 use PSX\Data\Record;
 use PSX\Data\Record\FactoryFactory;
-use PSX\Data\Record\ImporterInterface;
 use PSX\Data\Schema\Property;
 use PSX\Data\Schema\PropertyInterface;
 use PSX\Data\Schema\ValidationException;
-use PSX\Data\SchemaInterface;
 use PSX\DateTime;
 use PSX\DateTime\Date;
 use PSX\DateTime\Duration;
@@ -54,7 +52,7 @@ class AssimilationVisitor extends ValidationVisitor
 	 * valid. In most cases we validate only incoming data
 	 *
 	 * @param boolean $validate
-	 * @param PSX\Data\Record\FactoryFactory $factory
+	 * @param \PSX\Data\Record\FactoryFactory $factory
 	 */
 	public function __construct($validate = false, FactoryFactory $factory = null)
 	{

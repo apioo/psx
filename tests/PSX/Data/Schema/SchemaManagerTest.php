@@ -37,7 +37,7 @@ class SchemaManagerTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Data\Schema\InvalidSchemaException
+	 * @expectedException \PSX\Data\Schema\InvalidSchemaException
 	 */
 	public function testGetSchemaInvalidClass()
 	{
@@ -46,7 +46,7 @@ class SchemaManagerTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Data\Schema\InvalidSchemaException
+	 * @expectedException \PSX\Data\Schema\InvalidSchemaException
 	 */
 	public function testGetSchemaNotExisting()
 	{

@@ -38,7 +38,7 @@ abstract class ApiAbstract extends ControllerAbstract
 	/**
 	 * Returns an parameter bag which contains common filter GET parameters
 	 *
-	 * @return PSX\Util\Api\FilterParameter
+	 * @return \PSX\Util\Api\FilterParameter
 	 */
 	protected function getFilterParameter()
 	{

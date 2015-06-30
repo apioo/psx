@@ -20,7 +20,6 @@
 
 namespace PSX\Oauth\Provider\Data;
 
-use PSX\Data\ReaderInterface;
 use PSX\Data\RecordAbstract;
 use PSX\Data\RecordInfo;
 

@@ -100,7 +100,7 @@ class ExecutorTest extends CommandTestCase
 	}
 
 	/**
-	 * @expectedException PSX\Command\MissingParameterException
+	 * @expectedException \PSX\Command\MissingParameterException
 	 */
 	public function testRunMissingRequiredParameter()
 	{

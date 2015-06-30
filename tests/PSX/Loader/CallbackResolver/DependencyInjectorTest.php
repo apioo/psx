@@ -20,7 +20,6 @@
 
 namespace PSX\Loader\CallbackResolver;
 
-use PSX\Dispatch\ControllerFactory;
 use PSX\Http\Request;
 use PSX\Http\Response;
 use PSX\Loader\Context;
@@ -53,7 +52,7 @@ class DependencyInjectorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException ReflectionException
+	 * @expectedException \ReflectionException
 	 */
 	public function testInvalidSource()
 	{
@@ -68,7 +67,7 @@ class DependencyInjectorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException ReflectionException
+	 * @expectedException \ReflectionException
 	 */
 	public function testClassNotExist()
 	{

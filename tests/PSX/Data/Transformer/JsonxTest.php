@@ -21,7 +21,6 @@
 namespace PSX\Data\Transformer;
 
 use PSX\Http\MediaType;
-use PSX\Http\Message;
 use PSX\Rss;
 
 /**
@@ -111,7 +110,7 @@ INPUT;
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testInvalidData()
 	{
@@ -120,7 +119,7 @@ INPUT;
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testInvalidElementName()
 	{

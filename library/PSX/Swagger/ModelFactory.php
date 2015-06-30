@@ -34,7 +34,7 @@ class ModelFactory implements FactoryInterface
 {
 	/**
 	 * @Inject
-	 * @var PSX\Data\Record\ImporterManager
+	 * @var \PSX\Data\Record\ImporterManager
 	 */
 	protected $importerManager;
 

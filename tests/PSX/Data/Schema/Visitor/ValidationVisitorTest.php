@@ -21,7 +21,6 @@
 namespace PSX\Data\Schema\Visitor;
 
 use PSX\Data\Schema\Property;
-use PSX\Data\SchemaAbstract;
 use PSX\Uri;
 
 /**
@@ -43,7 +42,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException RuntimeException
+	 * @expectedException \RuntimeException
 	 */
 	public function testVisitArrayNoPrototype()
 	{
@@ -54,7 +53,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Data\Schema\ValidationException
+	 * @expectedException \PSX\Data\Schema\ValidationException
 	 */
 	public function testVisitArrayMinLength()
 	{
@@ -68,7 +67,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Data\Schema\ValidationException
+	 * @expectedException \PSX\Data\Schema\ValidationException
 	 */
 	public function testVisitArrayMaxLength()
 	{
@@ -97,7 +96,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Data\Schema\ValidationException
+	 * @expectedException \PSX\Data\Schema\ValidationException
 	 */
 	public function testVisitBooleanInvalidString()
 	{
@@ -108,7 +107,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Data\Schema\ValidationException
+	 * @expectedException \PSX\Data\Schema\ValidationException
 	 */
 	public function testVisitBooleanInvalidFormat()
 	{
@@ -137,7 +136,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException RuntimeException
+	 * @expectedException \RuntimeException
 	 */
 	public function testVisitComplexNoProperties()
 	{
@@ -158,7 +157,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Data\Schema\ValidationException
+	 * @expectedException \PSX\Data\Schema\ValidationException
 	 */
 	public function testVisitDateTimeInvalidFormat()
 	{
@@ -169,7 +168,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Data\Schema\ValidationException
+	 * @expectedException \PSX\Data\Schema\ValidationException
 	 */
 	public function testVisitDateTimeInvalidTimezone()
 	{
@@ -205,7 +204,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Data\Schema\ValidationException
+	 * @expectedException \PSX\Data\Schema\ValidationException
 	 */
 	public function testVisitDateInvalidFormat()
 	{
@@ -216,7 +215,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Data\Schema\ValidationException
+	 * @expectedException \PSX\Data\Schema\ValidationException
 	 */
 	public function testVisitDateInvalidTimezone()
 	{
@@ -252,7 +251,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Data\Schema\ValidationException
+	 * @expectedException \PSX\Data\Schema\ValidationException
 	 */
 	public function testVisitDurationInvalidFormat()
 	{
@@ -296,7 +295,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Data\Schema\ValidationException
+	 * @expectedException \PSX\Data\Schema\ValidationException
 	 */
 	public function testVisitFloatInvalidFormat()
 	{
@@ -307,7 +306,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Data\Schema\ValidationException
+	 * @expectedException \PSX\Data\Schema\ValidationException
 	 */
 	public function testVisitFloatInvalidType()
 	{
@@ -318,7 +317,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Data\Schema\ValidationException
+	 * @expectedException \PSX\Data\Schema\ValidationException
 	 */
 	public function testVisitFloatMin()
 	{
@@ -331,7 +330,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Data\Schema\ValidationException
+	 * @expectedException \PSX\Data\Schema\ValidationException
 	 */
 	public function testVisitFloatMax()
 	{
@@ -363,7 +362,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Data\Schema\ValidationException
+	 * @expectedException \PSX\Data\Schema\ValidationException
 	 */
 	public function testVisitIntegerInvalidFormat()
 	{
@@ -374,7 +373,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Data\Schema\ValidationException
+	 * @expectedException \PSX\Data\Schema\ValidationException
 	 */
 	public function testVisitIntegerInvalidFormatFraction()
 	{
@@ -385,7 +384,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Data\Schema\ValidationException
+	 * @expectedException \PSX\Data\Schema\ValidationException
 	 */
 	public function testVisitIntegerInvalidFormatType()
 	{
@@ -396,7 +395,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Data\Schema\ValidationException
+	 * @expectedException \PSX\Data\Schema\ValidationException
 	 */
 	public function testVisitIntegerInvalidType()
 	{
@@ -407,7 +406,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Data\Schema\ValidationException
+	 * @expectedException \PSX\Data\Schema\ValidationException
 	 */
 	public function testVisitIntegerMin()
 	{
@@ -420,7 +419,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Data\Schema\ValidationException
+	 * @expectedException \PSX\Data\Schema\ValidationException
 	 */
 	public function testVisitIntegerMax()
 	{
@@ -451,7 +450,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Data\Schema\ValidationException
+	 * @expectedException \PSX\Data\Schema\ValidationException
 	 */
 	public function testVisitStringInvalidType()
 	{
@@ -462,7 +461,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Data\Schema\ValidationException
+	 * @expectedException \PSX\Data\Schema\ValidationException
 	 */
 	public function testVisitIntegerMinLength()
 	{
@@ -476,7 +475,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Data\Schema\ValidationException
+	 * @expectedException \PSX\Data\Schema\ValidationException
 	 */
 	public function testVisitIntegerMaxLength()
 	{
@@ -507,7 +506,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Data\Schema\ValidationException
+	 * @expectedException \PSX\Data\Schema\ValidationException
 	 */
 	public function testVisitTimeInvalidFormat()
 	{
@@ -518,7 +517,7 @@ class ValidationVisitorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Data\Schema\ValidationException
+	 * @expectedException \PSX\Data\Schema\ValidationException
 	 */
 	public function testVisitTimeInvalidTimezone()
 	{

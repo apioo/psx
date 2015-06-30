@@ -22,9 +22,7 @@ namespace PSX\Data\Schema;
 
 use PSX\Data\Record;
 use PSX\Data\Record\FactoryFactory;
-use PSX\Data\RecordInterface;
 use PSX\Data\Schema\Property;
-use PSX\Data\Schema\PropertyInterface;
 use PSX\Data\SchemaInterface;
 use PSX\DateTime;
 
@@ -52,8 +50,8 @@ class Assimilator
 	 * incoming or outgoing data. Incoming data is handled more strict then 
 	 * outgoing data
 	 *
-	 * @param array $data
-	 * @param PSX\Data\SchemaInterface $schema
+	 * @param \PSX\Data\SchemaInterface $schema
+     * @param array $data
 	 * @param boolean $validate
 	 * @param integer $type
 	 * @return mixed

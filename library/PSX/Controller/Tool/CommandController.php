@@ -38,19 +38,19 @@ class CommandController extends ApiAbstract
 {
 	/**
 	 * @Inject
-	 * @var PSX\Command\Executor
+	 * @var \PSX\Command\Executor
 	 */
 	protected $executor;
 
 	/**
 	 * @Inject
-	 * @var PSX\Dispatch\CommandFactoryInterface
+	 * @var \PSX\Dispatch\CommandFactoryInterface
 	 */
 	protected $commandFactory;
 
 	/**
 	 * @Inject
-	 * @var Monolog\Logger
+	 * @var \Monolog\Logger
 	 */
 	protected $logger;
 

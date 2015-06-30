@@ -21,7 +21,6 @@
 namespace PSX\Data;
 
 use PSX\Atom;
-use PSX\Data\RecordAbstract;
 use PSX\Http\Message;
 use PSX\Http\Stream\StringStream;
 use PSX\Test\Environment;
@@ -103,7 +102,7 @@ TEXT;
 	}
 
 	/**
-	 * @expectedException PSX\Data\NotFoundException
+	 * @expectedException \PSX\Data\NotFoundException
 	 */
 	public function testNoImporter()
 	{
@@ -126,7 +125,7 @@ TEXT;
 	}
 
 	/**
-	 * @expectedException RuntimeException
+	 * @expectedException \RuntimeException
 	 */
 	public function testImportEmptyBody()
 	{

@@ -21,11 +21,11 @@
 namespace PSX\Oauth2\Provider;
 
 use PSX\Controller\ApiAbstract;
-use PSX\Data\RecordAbstract;
-use PSX\Data\RecordInfo;
 use PSX\Oauth2\Authorization\Exception\ErrorExceptionAbstract;
 use PSX\Oauth2\Authorization\Exception\InvalidRequestException;
+use PSX\Oauth2\Authorization\Exception\ServerErrorException;
 use PSX\Oauth2\Authorization\Exception\UnauthorizedClientException;
+use PSX\Oauth2\Authorization\Exception\UnsupportedResponseTypeException;
 use PSX\Url;
 
 /**
@@ -39,7 +39,7 @@ abstract class AuthorizationAbstract extends ApiAbstract
 {
 	/**
 	 * @Inject oauth2_grant_type_factory
-	 * @var PSX\Oauth2\Provider\GrantTypeFactory
+	 * @var \PSX\Oauth2\Provider\GrantTypeFactory
 	 */
 	protected $grantTypeFactory;
 
@@ -63,20 +63,11 @@ abstract class AuthorizationAbstract extends ApiAbstract
 
 		try
 		{
-			$request = new AccessRequest($clientId, $redirectUri, $scope, $state);
+            $request = new AccessRequest($clientId, $redirectUri, $scope, $state);
 
 			if(empty($responseType) || empty($clientId) || empty($state))
 			{
 				throw new InvalidRequestException('Missing parameters');
-			}
-
-			if(!empty($redirectUri))
-			{
-				$redirectUri = new Url($redirectUri);
-			}
-			else
-			{
-				$redirectUri = null;
 			}
 
 			if(!$this->hasGrant($request))
@@ -101,10 +92,10 @@ abstract class AuthorizationAbstract extends ApiAbstract
 		}
 		catch(ErrorExceptionAbstract $e)
 		{
-			$redirectUri = $this->getRedirectUri($request);
+            if(!empty($redirectUri))
+            {
+                $redirectUri = new Url($redirectUri);
 
-			if($redirectUri instanceof Url)
-			{
 				$parameters = $redirectUri->getParameters();
 				$parameters['error'] = $e->getType();
 				$parameters['error_description'] = $e->getMessage();
@@ -186,7 +177,8 @@ abstract class AuthorizationAbstract extends ApiAbstract
 	 * This method is called if no redirect_uri was set you can overwrite this 
 	 * method if its possible to get an callback from another source
 	 *
-	 * @return PSX\Url
+     * @param string $clientId
+	 * @return \PSX\Url
 	 */
 	protected function getCallback($clientId)
 	{
@@ -198,6 +190,7 @@ abstract class AuthorizationAbstract extends ApiAbstract
 	 * redirect the user to an login form and display an form where the user can
 	 * grant the authorization request
 	 *
+     * @param \PSX\Oauth2\Provider\AccessRequest $request
 	 * @return boolean
 	 */
 	abstract protected function hasGrant(AccessRequest $request);
@@ -205,6 +198,7 @@ abstract class AuthorizationAbstract extends ApiAbstract
 	/**
 	 * Generates an authorization code which is assigned to the request
 	 *
+     * @param \PSX\Oauth2\Provider\AccessRequest $request
 	 * @return string
 	 */
 	abstract protected function generateCode(AccessRequest $request);

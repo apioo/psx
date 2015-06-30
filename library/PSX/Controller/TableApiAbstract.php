@@ -28,7 +28,6 @@ use PSX\Data\RecordInterface;
 use PSX\Data\Schema;
 use PSX\Data\Schema\Builder as SchemaBuilder;
 use PSX\Data\Schema\Property;
-use PSX\Data\Schema\Property\ComplexType;
 use PSX\Data\SchemaInterface;
 use PSX\Http\Exception as StatusCode;
 use PSX\Loader\Context;
@@ -50,7 +49,7 @@ abstract class TableApiAbstract extends SchemaApiAbstract
 {
 	/**
 	 * @Inject
-	 * @var PSX\Sql\TableManager
+	 * @var \PSX\Sql\TableManager
 	 */
 	protected $tableManager;
 
@@ -162,7 +161,7 @@ abstract class TableApiAbstract extends SchemaApiAbstract
 	/**
 	 * Returns the table on which the handler should operate
 	 *
-	 * @return PSX\Sql\TableInterface
+	 * @return \PSX\Sql\TableInterface
 	 */
 	abstract protected function getTable();
 

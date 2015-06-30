@@ -20,8 +20,6 @@
 
 namespace PSX\Sql;
 
-use Psr\Log\LoggerInterface;
-
 /**
  * NestRule
  *

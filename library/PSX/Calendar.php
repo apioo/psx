@@ -34,10 +34,15 @@ use Iterator;
  */
 class Calendar implements Iterator, Countable
 {
+    /**
+     * @var \DateTime
+     */
 	protected $date;
 
+    /**
+     * @var \DateTime
+     */
 	private $itDate;
-	private $pos;
 
 	public function __construct(\DateTime $date = null, DateTimeZone $timezone = null)
 	{
@@ -53,6 +58,7 @@ class Calendar implements Iterator, Countable
 	 * Sets the underlying datetime object and removes the timepart of the
 	 * datetime object
 	 *
+     * @param \DateTime $date
 	 * @return void
 	 */
 	public function setDate(\DateTime $date)
@@ -88,7 +94,7 @@ class Calendar implements Iterator, Countable
 	/**
 	 * Returns the easter date for the current year
 	 *
-	 * @return PSX\DateTime
+	 * @return \PSX\DateTime
 	 */
 	public function getEasterDate()
 	{

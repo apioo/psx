@@ -39,7 +39,7 @@ class Request extends Message implements RequestInterface
 	protected $attributes;
 
 	/**
-	 * @param PSX\Uri $uri
+	 * @param \PSX\Uri $uri
 	 * @param string $method
 	 * @param array $headers
 	 * @param string $body
@@ -112,7 +112,7 @@ class Request extends Message implements RequestInterface
 	/**
 	 * Returns the request uri
 	 *
-	 * @return PSX\Uri
+	 * @return \PSX\Uri
 	 */
 	public function getUri()
 	{
@@ -122,7 +122,7 @@ class Request extends Message implements RequestInterface
 	/**
 	 * Sets the request uri
 	 *
-	 * @param PSX\Uri $uri
+	 * @param \PSX\Uri $uri
 	 */
 	public function setUri(Uri $uri)
 	{
@@ -136,7 +136,7 @@ class Request extends Message implements RequestInterface
 	 */
 	public function toString()
 	{
-		$request = $this->getLine() . Http::$newLine;
+		$request = RequestParser::buildStatusLine($this) . Http::$newLine;
 		$headers = RequestParser::buildHeaderFromMessage($this);
 
 		foreach($headers as $header)
@@ -148,28 +148,6 @@ class Request extends Message implements RequestInterface
 		$request.= (string) $this->getBody();
 
 		return $request;
-	}
-
-	/**
-	 * Returns the http request line
-	 *
-	 * @return string
-	 */
-	public function getLine()
-	{
-		$method   = $this->getMethod();
-		$target   = $this->getRequestTarget();
-		$protocol = $this->getProtocolVersion();
-
-		if(empty($target))
-		{
-			throw new Exception('Target not set');
-		}
-
-		$method   = !empty($method) ? $method : 'GET';
-		$protocol = !empty($protocol) ? $protocol : 'HTTP/1.1';
-
-		return $method . ' ' . $target . ' ' . $protocol;
 	}
 
 	public function getAttributes()

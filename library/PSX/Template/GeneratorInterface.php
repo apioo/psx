@@ -34,7 +34,7 @@ interface GeneratorInterface
 	/**
 	 * Generates a string representation from the given data
 	 *
-	 * @param PSX\Data\RecordInterface $data
+	 * @param \PSX\Data\RecordInterface $data
 	 * @return string
 	 */
 	public function generate(RecordInterface $data);

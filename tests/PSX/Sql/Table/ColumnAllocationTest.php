@@ -41,7 +41,7 @@ class ColumnAllocationTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException UnexpectedValueException
+	 * @expectedException \UnexpectedValueException
 	 */
 	public function testAllocationInvalidColumn()
 	{

@@ -32,7 +32,7 @@ interface RequestFactoryInterface
 	/**
 	 * Returns the http request containing all values from the environment
 	 *
-	 * @return PSX\Http\RequestInterface
+	 * @return \PSX\Http\RequestInterface
 	 */
 	public function createRequest();
 }

@@ -43,7 +43,7 @@ class Base64
 
 		$len    = strlen($data);
 		$result = '';
-		$remove = $bits = 0;
+		$bits = $rest = 0;
 
 		for($i = 0; $i < $len; $i++)
 		{

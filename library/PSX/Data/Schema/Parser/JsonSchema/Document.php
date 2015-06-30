@@ -67,7 +67,7 @@ class Document
 	/**
 	 * Returns the source from where the document was obtained 
 	 *
-	 * @return PSX\Uri
+	 * @return \PSX\Uri
 	 */
 	public function getSource()
 	{
@@ -85,7 +85,7 @@ class Document
 	}
 
 	/**
-	 * @return PSX\Uri
+	 * @return \PSX\Uri
 	 */
 	public function getBaseUri()
 	{
@@ -96,7 +96,7 @@ class Document
 	 * @param string $pointer
 	 * @param string $name
 	 * @param integer $depth
-	 * @return PSX\Data\Schema\PropertyInterface
+	 * @return \PSX\Data\Schema\PropertyInterface
 	 */
 	public function getProperty($pointer = null, $name = null, $depth = 0)
 	{
@@ -141,7 +141,7 @@ class Document
 	}
 
 	/**
-	 * @param PSX\Uri $ref
+	 * @param \PSX\Uri $ref
 	 * @return boolean
 	 */
 	public function canResolve(Uri $ref)

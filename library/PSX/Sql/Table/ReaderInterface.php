@@ -35,7 +35,7 @@ interface ReaderInterface
 	 * Returns the table definition
 	 *
 	 * @param string $value
-	 * @return PSX\Sql\Table\Definition
+	 * @return \PSX\Sql\Table\Definition
 	 */
 	public function getTableDefinition($value);
 }

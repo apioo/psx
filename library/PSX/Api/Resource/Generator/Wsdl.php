@@ -25,7 +25,6 @@ use DOMElement;
 use PSX\Api\Resource;
 use PSX\Api\Resource\Generator\Wsdl\Operation;
 use PSX\Api\Resource\GeneratorAbstract;
-use PSX\Api\Resource\MethodAbstract;
 use PSX\Data\SchemaInterface;
 
 /**
@@ -66,7 +65,7 @@ class Wsdl extends GeneratorAbstract
 		$this->appendMessages($wsdl, $operations);
 		$this->appendPortTypes($wsdl, $operations);
 		$this->appendBindings($wsdl, $operations);
-		$this->appendServices($wsdl, $operations);
+		$this->appendServices($wsdl);
 
 		$dom->appendChild($wsdl);
 
@@ -263,7 +262,7 @@ class Wsdl extends GeneratorAbstract
 		$element->appendChild($binding);
 	}
 
-	public function appendServices(DOMElement $element, array $operations)
+	public function appendServices(DOMElement $element)
 	{
 		$service = $element->ownerDocument->createElement('wsdl:service');
 		$service->setAttribute('name', $this->name . 'Service');

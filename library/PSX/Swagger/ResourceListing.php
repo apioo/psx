@@ -54,7 +54,7 @@ class ResourceListing extends RecordAbstract
 	}
 
 	/**
-	 * @param PSX\Swagger\InfoObject $info
+	 * @param \PSX\Swagger\InfoObject $info
 	 */
 	public function setInfo(InfoObject $info)
 	{
@@ -67,7 +67,7 @@ class ResourceListing extends RecordAbstract
 	}
 
 	/**
-	 * @param array<PSX\Swagger\ResourceObject> $apis
+	 * @param \PSX\Swagger\ResourceObject[] $apis
 	 */
 	public function setApis(array $apis)
 	{

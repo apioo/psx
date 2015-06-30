@@ -104,6 +104,9 @@ class Template implements TemplateInterface
 
 /**
  * Includes the file without exposing the properties of the template object
+ *
+ * @param array $data
+ * @param string $file
  */
 function includeTemplateScope(array $data, $file)
 {

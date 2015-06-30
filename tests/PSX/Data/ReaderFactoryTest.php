@@ -29,6 +29,9 @@ namespace PSX\Data;
  */
 class ReaderFactoryTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var \PSX\Data\ReaderFactory
+     */
 	protected $readerFactory;
 
 	public function setUp()

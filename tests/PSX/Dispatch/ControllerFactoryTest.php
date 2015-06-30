@@ -43,7 +43,7 @@ class ControllerFactoryTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException ReflectionException
+	 * @expectedException \ReflectionException
 	 */
 	public function testGetControllerInvalid()
 	{

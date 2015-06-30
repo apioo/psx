@@ -22,7 +22,6 @@ namespace PSX\Loader\RoutingParser;
 
 use PSX\Loader\RoutingCollection;
 use PSX\Loader\RoutingParserInterface;
-use PSX\Util\AnnotationParser;
 
 /**
  * A simple routing parser which gets all informations from an array

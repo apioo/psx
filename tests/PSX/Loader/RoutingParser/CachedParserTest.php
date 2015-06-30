@@ -21,7 +21,6 @@
 namespace PSX\Loader\RoutingParser;
 
 use PSX\Cache;
-use PSX\Loader\RoutingCollection;
 
 /**
  * CachedParserTest

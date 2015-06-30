@@ -185,7 +185,7 @@ class RecordTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException BadMethodCallException
+	 * @expectedException \BadMethodCallException
 	 */
 	public function testBadMethodCall()
 	{

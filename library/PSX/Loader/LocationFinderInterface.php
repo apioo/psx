@@ -37,9 +37,9 @@ interface LocationFinderInterface
 	 * If the request can not be resolved the method must return null else the 
 	 * given request
 	 *
-	 * @param PSX\Http\RequestInterface $request
-	 * @param PSX\Loader\Context $context
-	 * @return PSX\Http\RequestInterface|null
+	 * @param \PSX\Http\RequestInterface $request
+	 * @param \PSX\Loader\Context $context
+	 * @return \PSX\Http\RequestInterface|null
 	 */
 	public function resolve(RequestInterface $request, Context $context);
 }

@@ -96,7 +96,7 @@ class TimeTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testTimeEmpty()
 	{
@@ -104,7 +104,7 @@ class TimeTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testTimeInvalid()
 	{
@@ -112,7 +112,7 @@ class TimeTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testTimeInvalidOffset()
 	{
@@ -120,7 +120,7 @@ class TimeTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testTimeInvalidMicroSeconds()
 	{

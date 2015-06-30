@@ -40,7 +40,7 @@ interface ReaderInterface
 	 * Transforms the $request into an parseable form this can be an array
 	 * or DOMDocument etc.
 	 *
-	 * @param PSX\Http\MessageInterface $message
+	 * @param \PSX\Http\MessageInterface $message
 	 * @return mixed
 	 */
 	public function read(MessageInterface $message);
@@ -48,7 +48,7 @@ interface ReaderInterface
 	/**
 	 * Returns whether the content type is supported by this reader
 	 *
-	 * @param PSX\Http\MediaType $contentType
+	 * @param \PSX\Http\MediaType $contentType
 	 * @return boolean
 	 */
 	public function isContentTypeSupported(MediaType $contentType);

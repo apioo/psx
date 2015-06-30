@@ -30,7 +30,7 @@ namespace PSX\Loader;
 interface RoutingParserInterface
 {
 	/**
-	 * @return PSX\Loader\RoutingCollection
+	 * @return \PSX\Loader\RoutingCollection
 	 */
 	public function getCollection();
 }

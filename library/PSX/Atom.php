@@ -26,7 +26,6 @@ use PSX\Atom\Link;
 use PSX\Atom\Person;
 use PSX\Atom\Text;
 use PSX\Data\CollectionAbstract;
-use PSX\Data\RecordAbstract;
 use PSX\Data\RecordInfo;
 
 /**
@@ -41,17 +40,64 @@ class Atom extends CollectionAbstract
 {
 	public static $xmlns = 'http://www.w3.org/2005/Atom';
 
+    /**
+     * @var \PSX\Atom\Person
+     */
 	protected $author;
+
+    /**
+     * @var \PSX\Atom\Category
+     */
 	protected $category;
+
+    /**
+     * @var \PSX\Atom\Person
+     */
 	protected $contributor;
+
+    /**
+     * @var \PSX\Atom\Generator
+     */
 	protected $generator;
+
+    /**
+     * @var string
+     */
 	protected $icon;
+
+    /**
+     * @var string
+     */
 	protected $logo;
+
+    /**
+     * @var string
+     */
 	protected $id;
+
+    /**
+     * @var \PSX\Atom\Link[]
+     */
 	protected $link;
+
+    /**
+     * @var string
+     */
 	protected $rights;
+
+    /**
+     * @var \PSX\Atom\Text
+     */
 	protected $subTitle;
+
+    /**
+     * @var string
+     */
 	protected $title;
+
+    /**
+     * @var \DateTime
+     */
 	protected $updated;
 
 	public function getRecordInfo()
@@ -74,7 +120,7 @@ class Atom extends CollectionAbstract
 	}
 
 	/**
-	 * @param PSX\Atom\Person $author
+	 * @param \PSX\Atom\Person $author
 	 */
 	public function addAuthor(Person $author)
 	{
@@ -87,7 +133,7 @@ class Atom extends CollectionAbstract
 	}
 
 	/**
-	 * @param array<PSX\Atom\Person> $author
+	 * @param \PSX\Atom\Person[] $author
 	 */
 	public function setAuthor(array $author)
 	{
@@ -100,7 +146,7 @@ class Atom extends CollectionAbstract
 	}
 
 	/**
-	 * @param PSX\Atom\Category $category
+	 * @param \PSX\Atom\Category $category
 	 */
 	public function addCategory(Category $category)
 	{
@@ -113,7 +159,7 @@ class Atom extends CollectionAbstract
 	}
 
 	/**
-	 * @param array<PSX\Atom\Category> $category
+	 * @param \PSX\Atom\Category[] $category
 	 */
 	public function setCategory(array $category)
 	{
@@ -126,7 +172,7 @@ class Atom extends CollectionAbstract
 	}
 
 	/**
-	 * @param PSX\Atom\Person $contributor
+	 * @param \PSX\Atom\Person $contributor
 	 */
 	public function addContributor(Person $contributor)
 	{
@@ -139,7 +185,7 @@ class Atom extends CollectionAbstract
 	}
 
 	/**
-	 * @param array<PSX\Atom\Person> $contributor
+	 * @param \PSX\Atom\Person[] $contributor
 	 */
 	public function setContributor(array $contributor)
 	{
@@ -152,7 +198,7 @@ class Atom extends CollectionAbstract
 	}
 
 	/**
-	 * @param PSX\Atom\Generator $generator
+	 * @param \PSX\Atom\Generator $generator
 	 */
 	public function setGenerator(Generator $generator)
 	{
@@ -215,7 +261,7 @@ class Atom extends CollectionAbstract
 	}
 
 	/**
-	 * @param PSX\DateTime $updated
+	 * @param \PSX\DateTime $updated
 	 */
 	public function setUpdated(\DateTime $updated)
 	{
@@ -228,7 +274,7 @@ class Atom extends CollectionAbstract
 	}
 
 	/**
-	 * @param PSX\Atom\Link $link
+	 * @param \PSX\Atom\Link $link
 	 */
 	public function addLink(Link $link)
 	{
@@ -241,7 +287,7 @@ class Atom extends CollectionAbstract
 	}
 
 	/**
-	 * @param array<PSX\Atom\Link> $link
+	 * @param \PSX\Atom\Link[] $link
 	 */
 	public function setLink(array $link)
 	{
@@ -254,7 +300,7 @@ class Atom extends CollectionAbstract
 	}
 
 	/**
-	 * @param PSX\Atom\Text $subTitle
+	 * @param \PSX\Atom\Text $subTitle
 	 */
 	public function setSubTitle(Text $subTitle)
 	{
@@ -267,7 +313,7 @@ class Atom extends CollectionAbstract
 	}
 
 	/**
-	 * @param array<PSX\Atom\Entry>
+	 * @param \PSX\Atom\Entry[]
 	 */
 	public function setEntry(array $entry)
 	{

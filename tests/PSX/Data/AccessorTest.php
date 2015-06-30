@@ -124,7 +124,7 @@ class AccessorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Validate\ValidationException
+	 * @expectedException \PSX\Validate\ValidationException
 	 */
 	public function testGetUnknownKey()
 	{
@@ -139,7 +139,7 @@ class AccessorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Validate\ValidationException
+	 * @expectedException \PSX\Validate\ValidationException
 	 */
 	public function testGetUnknownKeyInvalidSource()
 	{

@@ -20,8 +20,6 @@
 
 namespace PSX\Data\Record;
 
-use PSX\Data\RecordInterface;
-
 /**
  * VisitorAbstract
  *

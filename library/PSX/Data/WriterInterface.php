@@ -46,7 +46,7 @@ interface WriterInterface
 	/**
 	 * Returns the string representation of this record from the writer
 	 *
-	 * @param PSX\Data\RecordInterface
+	 * @param \PSX\Data\RecordInterface
 	 * @return string
 	 */
 	public function write(RecordInterface $record);
@@ -54,7 +54,7 @@ interface WriterInterface
 	/**
 	 * Returns whether the content type is supported by this writer
 	 *
-	 * @param PSX\Http\MediaType $contentType
+	 * @param \PSX\Http\MediaType $contentType
 	 * @return boolean
 	 */
 	public function isContentTypeSupported(MediaType $contentType);

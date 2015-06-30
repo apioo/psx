@@ -42,7 +42,7 @@ class TestEntity
 
 	/**
 	 * @Column(type="datetime")
-	 * @var DateTime
+	 * @var \DateTime
 	 */
 	protected $created;
 

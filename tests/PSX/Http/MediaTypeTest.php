@@ -100,7 +100,7 @@ class MediaTypeTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testParseEmpty()
 	{
@@ -108,7 +108,7 @@ class MediaTypeTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testParseInvalid()
 	{
@@ -116,7 +116,7 @@ class MediaTypeTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testParseInvalidMediaType()
 	{

@@ -46,10 +46,10 @@ class Validate
 	 * throws an exception if an error occured
 	 *
 	 * @param string $value
-	 * @param integer $type
-	 * @param array<PSX\FilterAbstract> $filters
+	 * @param string $type
+	 * @param \PSX\FilterInterface[] $filters
 	 * @param string $title
-	 * @param string $required
+	 * @param boolean $required
 	 * @return mixed
 	 */
 	public function apply($value, $type = self::TYPE_STRING, array $filters = array(), $title = null, $required = true)
@@ -64,6 +64,8 @@ class Validate
 		{
 			return $result->getValue();
 		}
+
+        return null;
 	}
 
 	/**
@@ -73,11 +75,11 @@ class Validate
 	 * is null
 	 *
 	 * @param string $value
-	 * @param integer $type
-	 * @param array<PSX\FilterInterface> $filters
+	 * @param string $type
+	 * @param \PSX\FilterInterface[] $filters
 	 * @param string $title
-	 * @param string $required
-	 * @return PSX\Validate\Result
+	 * @param boolean $required
+	 * @return \PSX\Validate\Result
 	 */
 	public function validate($value, $type = self::TYPE_STRING, array $filters = array(), $title = null, $required = true)
 	{

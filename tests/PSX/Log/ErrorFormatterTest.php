@@ -29,6 +29,11 @@ namespace PSX\Log;
  */
 class ErrorFormatterTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var \PSX\Log\ErrorFormatter
+     */
+    protected $formatter;
+
 	protected function setUp()
 	{
 		$this->formatter = new ErrorFormatter();

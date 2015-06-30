@@ -42,7 +42,7 @@ class Options
 	 * argument is the resource of the handler thus the client can configure 
 	 * i.e. the curl resource
 	 * 
-	 * @param Closure $callback
+	 * @param \Closure $callback
 	 */
 	public function setCallback(\Closure $callback)
 	{
@@ -50,7 +50,7 @@ class Options
 	}
 
 	/**
-	 * @return Closure
+	 * @return \Closure
 	 */
 	public function getCallback()
 	{

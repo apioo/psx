@@ -147,7 +147,7 @@ class {$className} extends SchemaApiAbstract
 	{$services}
 
 	/**
-	 * @return PSX\Api\DocumentationInterface
+	 * @return \PSX\Api\DocumentationInterface
 	 */
 	public function getDocumentation()
 	{
@@ -157,8 +157,8 @@ class {$className} extends SchemaApiAbstract
 	/**
 	 * Returns the GET response
 	 *
-	 * @param PSX\Api\Version \$version
-	 * @return array|PSX\Data\RecordInterface
+	 * @param \PSX\Api\Version \$version
+	 * @return array|\PSX\Data\RecordInterface
 	 */
 	protected function doGet(Version \$version)
 	{
@@ -170,9 +170,9 @@ class {$className} extends SchemaApiAbstract
 	/**
 	 * Returns the POST response
 	 *
-	 * @param PSX\Data\RecordInterface \$record
-	 * @param PSX\Api\Version \$version
-	 * @return array|PSX\Data\RecordInterface
+	 * @param \PSX\Data\RecordInterface \$record
+	 * @param \PSX\Api\Version \$version
+	 * @return array|\PSX\Data\RecordInterface
 	 */
 	protected function doCreate(RecordInterface \$record, Version \$version)
 	{
@@ -181,9 +181,9 @@ class {$className} extends SchemaApiAbstract
 	/**
 	 * Returns the PUT response
 	 *
-	 * @param PSX\Data\RecordInterface \$record
-	 * @param PSX\Api\Version \$version
-	 * @return array|PSX\Data\RecordInterface
+	 * @param \PSX\Data\RecordInterface \$record
+	 * @param \PSX\Api\Version \$version
+	 * @return array|\PSX\Data\RecordInterface
 	 */
 	protected function doUpdate(RecordInterface \$record, Version \$version)
 	{
@@ -192,9 +192,9 @@ class {$className} extends SchemaApiAbstract
 	/**
 	 * Returns the DELETE response
 	 *
-	 * @param PSX\Data\RecordInterface \$record
-	 * @param PSX\Api\Version \$version
-	 * @return array|PSX\Data\RecordInterface
+	 * @param \PSX\Data\RecordInterface \$record
+	 * @param \PSX\Api\Version \$version
+	 * @return array|\PSX\Data\RecordInterface
 	 */
 	protected function doDelete(RecordInterface \$record, Version \$version)
 	{

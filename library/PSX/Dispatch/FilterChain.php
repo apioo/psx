@@ -35,11 +35,22 @@ use RuntimeException;
  */
 class FilterChain implements FilterChainInterface, LoggerAwareInterface
 {
+    /**
+     * @var array
+     */
 	protected $filters;
+
+    /**
+     * @var \PSX\Dispatch\FilterChainInterface
+     */
 	protected $filterChain;
+
+    /**
+     * @var \Psr\Log\LoggerInterface
+     */
 	protected $logger;
 
-	public function __construct(array $filters, FilterChain $filterChain = null)
+	public function __construct(array $filters, FilterChainInterface $filterChain = null)
 	{
 		$this->filters     = $filters;
 		$this->filterChain = $filterChain;

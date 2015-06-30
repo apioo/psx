@@ -20,6 +20,8 @@
 
 namespace PSX\Data\Schema\Parser\JsonSchema;
 
+use PSX\Exception;
+
 /**
  * UnsupportedVersionException
  *
@@ -27,6 +29,6 @@ namespace PSX\Data\Schema\Parser\JsonSchema;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class UnsupportedVersionException extends \PSX\Exception
+class UnsupportedVersionException extends Exception
 {
 }

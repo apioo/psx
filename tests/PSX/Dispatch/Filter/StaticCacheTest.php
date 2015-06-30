@@ -23,8 +23,11 @@ namespace PSX\Dispatch\Filter;
 use PSX\Cache;
 use PSX\Cache\Handler as CacheHandler;
 use PSX\Dispatch\FilterChain;
+use PSX\Dispatch\FilterChainInterface;
 use PSX\Http\Request;
+use PSX\Http\RequestInterface;
 use PSX\Http\Response;
+use PSX\Http\ResponseInterface;
 use PSX\Http\Stream\StringStream;
 use PSX\Url;
 
@@ -44,7 +47,7 @@ class StaticCacheTest extends \PHPUnit_Framework_TestCase
 		$response->setBody(new StringStream());
 
 		$filters = array();
-		$filters[] = function($request, $response, $filterChain){
+		$filters[] = function(RequestInterface $request, ResponseInterface $response, FilterChainInterface $filterChain){
 			$response->getBody()->write('foobar');
 
 			$filterChain->handle($request, $response);

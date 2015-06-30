@@ -53,7 +53,7 @@ class GenerateCommandAbstractTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testGetServiceDefinitionNoNamespace()
 	{

@@ -33,6 +33,9 @@ use PSX\Util\PriorityQueue;
  */
 class ReaderFactory
 {
+    /**
+     * @var \PSX\Data\ReaderInterface[]
+     */
 	protected $readers;
 
 	public function __construct()
@@ -45,11 +48,19 @@ class ReaderFactory
 		$this->readers->insert($reader, $priority);
 	}
 
+    /**
+     * @return \PSX\Data\ReaderInterface
+     */
 	public function getDefaultReader()
 	{
 		return $this->readers->getIterator()->current();
 	}
 
+    /**
+     * @param string $contentType
+     * @param array $supportedReader
+     * @return \PSX\Data\ReaderInterface|null
+     */
 	public function getReaderByContentType($contentType, array $supportedReader = null)
 	{
 		if(empty($contentType))
@@ -75,6 +86,10 @@ class ReaderFactory
 		return null;
 	}
 
+    /**
+     * @param string $className
+     * @return \PSX\Data\ReaderInterface|null
+     */
 	public function getReaderByInstance($className)
 	{
 		foreach($this->readers as $reader)

@@ -51,6 +51,7 @@ class Json
 	 * if decoding the data is not possible
 	 *
 	 * @param string $value
+     * @param boolean $assoc
 	 * @return mixed
 	 */
 	public static function decode($value, $assoc = true)

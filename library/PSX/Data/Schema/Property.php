@@ -33,7 +33,7 @@ abstract class Property
 {
 	/**
 	 * @param string $name
-	 * @return PSX\Data\Schema\Property\ArrayType
+	 * @return \PSX\Data\Schema\Property\ArrayType
 	 */
 	public static function getArray($name)
 	{
@@ -42,7 +42,7 @@ abstract class Property
 
 	/**
 	 * @param string $name
-	 * @return PSX\Data\Schema\Property\BooleanType
+	 * @return \PSX\Data\Schema\Property\BooleanType
 	 */
 	public static function getBoolean($name)
 	{
@@ -51,7 +51,7 @@ abstract class Property
 
 	/**
 	 * @param string $name
-	 * @return PSX\Data\Schema\Property\ChoiceType
+	 * @return \PSX\Data\Schema\Property\ChoiceType
 	 */
 	public static function getChoice($name)
 	{
@@ -60,7 +60,7 @@ abstract class Property
 
 	/**
 	 * @param string $name
-	 * @return PSX\Data\Schema\Property\ComplexType
+	 * @return \PSX\Data\Schema\Property\ComplexType
 	 */
 	public static function getComplex($name)
 	{
@@ -69,7 +69,7 @@ abstract class Property
 
 	/**
 	 * @param string $name
-	 * @return PSX\Data\Schema\Property\DateTimeType
+	 * @return \PSX\Data\Schema\Property\DateTimeType
 	 */
 	public static function getDateTime($name)
 	{
@@ -78,7 +78,7 @@ abstract class Property
 
 	/**
 	 * @param string $name
-	 * @return PSX\Data\Schema\Property\DateType
+	 * @return \PSX\Data\Schema\Property\DateType
 	 */
 	public static function getDate($name)
 	{
@@ -87,7 +87,7 @@ abstract class Property
 
 	/**
 	 * @param string $name
-	 * @return PSX\Data\Schema\Property\DurationType
+	 * @return \PSX\Data\Schema\Property\DurationType
 	 */
 	public static function getDuration($name)
 	{
@@ -96,7 +96,7 @@ abstract class Property
 
 	/**
 	 * @param string $name
-	 * @return PSX\Data\Schema\Property\FloatType
+	 * @return \PSX\Data\Schema\Property\FloatType
 	 */
 	public static function getFloat($name)
 	{
@@ -105,7 +105,7 @@ abstract class Property
 
 	/**
 	 * @param string $name
-	 * @return PSX\Data\Schema\Property\IntegerType
+	 * @return \PSX\Data\Schema\Property\IntegerType
 	 */
 	public static function getInteger($name)
 	{
@@ -114,7 +114,7 @@ abstract class Property
 
 	/**
 	 * @param string $name
-	 * @return PSX\Data\Schema\Property\StringType
+	 * @return \PSX\Data\Schema\Property\StringType
 	 */
 	public static function getString($name)
 	{
@@ -123,7 +123,7 @@ abstract class Property
 
 	/**
 	 * @param string $name
-	 * @return PSX\Data\Schema\Property\TimeType
+	 * @return \PSX\Data\Schema\Property\TimeType
 	 */
 	public static function getTime($name)
 	{

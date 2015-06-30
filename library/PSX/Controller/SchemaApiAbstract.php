@@ -25,11 +25,8 @@ use PSX\Api\DocumentedInterface;
 use PSX\Api\Resource;
 use PSX\Api\Resource\MethodAbstract;
 use PSX\Api\Version;
-use PSX\ControllerAbstract;
 use PSX\Data\Record;
 use PSX\Data\RecordInterface;
-use PSX\Data\Schema\Assimilator;
-use PSX\Data\Schema\Validator;
 use PSX\Data\SchemaInterface;
 use PSX\Http\Exception as StatusCode;
 use PSX\Loader\Context;
@@ -46,33 +43,33 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 {
 	/**
 	 * @Inject
-	 * @var PSX\Data\Schema\Assimilator
+	 * @var \PSX\Data\Schema\Assimilator
 	 */
 	protected $schemaAssimilator;
 
 	/**
 	 * @Inject
-	 * @var PSX\Api\Resource\ListingInterface
+	 * @var \PSX\Api\Resource\ListingInterface
 	 */
 	protected $resourceListing;
 
 	/**
-	 * @var PSX\Data\Record
+	 * @var \PSX\Data\Record
 	 */
 	protected $queryParameters;
 
 	/**
-	 * @var PSX\Data\Record
+	 * @var \PSX\Data\Record
 	 */
 	protected $pathParameters;
 
 	/**
-	 * @var PSX\Api\Resource
+	 * @var \PSX\Api\Resource
 	 */
 	protected $resource;
 
 	/**
-	 * @var PSX\Api\Version
+	 * @var \PSX\Api\Version
 	 */
 	protected $version;
 
@@ -144,43 +141,43 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 	/**
 	 * Returns the GET response
 	 *
-	 * @param PSX\Api\Version $version
-	 * @return array|PSX\Data\RecordInterface
+	 * @param \PSX\Api\Version $version
+	 * @return array|\PSX\Data\RecordInterface
 	 */
 	abstract protected function doGet(Version $version);
 
 	/**
 	 * Returns the POST response
 	 *
-	 * @param PSX\Data\RecordInterface $record
-	 * @param PSX\Api\Version $version
-	 * @return array|PSX\Data\RecordInterface
+	 * @param \PSX\Data\RecordInterface $record
+	 * @param \PSX\Api\Version $version
+	 * @return array|\PSX\Data\RecordInterface
 	 */
 	abstract protected function doCreate(RecordInterface $record, Version $version);
 
 	/**
 	 * Returns the PUT response
 	 *
-	 * @param PSX\Data\RecordInterface $record
-	 * @param PSX\Api\Version $version
-	 * @return array|PSX\Data\RecordInterface
+	 * @param \PSX\Data\RecordInterface $record
+	 * @param \PSX\Api\Version $version
+	 * @return array|\PSX\Data\RecordInterface
 	 */
 	abstract protected function doUpdate(RecordInterface $record, Version $version);
 
 	/**
 	 * Returns the DELETE response
 	 *
-	 * @param PSX\Data\RecordInterface $record
-	 * @param PSX\Api\Version $version
-	 * @return array|PSX\Data\RecordInterface
+	 * @param \PSX\Data\RecordInterface $record
+	 * @param \PSX\Api\Version $version
+	 * @return array|\PSX\Data\RecordInterface
 	 */
 	abstract protected function doDelete(RecordInterface $record, Version $version);
 
 	/**
 	 * Imports the request data based on the schema if available
 	 *
-	 * @param PSX\Api\Resource\MethodAbstract $method
-	 * @return PSX\Data\RecordInterface
+	 * @param \PSX\Api\Resource\MethodAbstract $method
+	 * @return \PSX\Data\RecordInterface
 	 */
 	protected function parseRequest(MethodAbstract $method)
 	{
@@ -192,7 +189,7 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 	 * the schema. If no status code was provided the schema of an successful
 	 * response is taken
 	 *
-	 * @param PSX\Api\Resource\MethodAbstract $method
+	 * @param \PSX\Api\Resource\MethodAbstract $method
 	 * @param mixed $response
 	 */
 	protected function sendResponse(MethodAbstract $method, $response)
@@ -222,9 +219,9 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 	/**
 	 * Returns the resource from the documentation for the given version. 
 	 *
-	 * @param PSX\Api\DocumentationInterface $doc
-	 * @param PSX\Api\Version $version
-	 * @return PSX\Api\Resource
+	 * @param \PSX\Api\DocumentationInterface $doc
+	 * @param \PSX\Api\Version $version
+	 * @return \PSX\Api\Resource
 	 */
 	protected function getResource(DocumentationInterface $doc, Version $version)
 	{
@@ -258,8 +255,8 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 	 * Returns the version which was provided by the user agent. If no version
 	 * was specified the latest version is used
 	 *
-	 * @param PSX\Api\DocumentationInterface $doc
-	 * @return PSX\Api\Version
+	 * @param \PSX\Api\DocumentationInterface $doc
+	 * @return \PSX\Api\Version
 	 */
 	protected function getVersion(DocumentationInterface $doc)
 	{
@@ -291,9 +288,9 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 	/**
 	 * Returns the successful response of an method or null if no is available
 	 *
-	 * @param PSX\Api\Resource\MethodAbstract $method
+	 * @param \PSX\Api\Resource\MethodAbstract $method
 	 * @param integer $statusCode
-	 * @return PSX\Data\SchemaInterface
+	 * @return \PSX\Data\SchemaInterface
 	 */
 	protected function getSuccessfulResponse(MethodAbstract $method, &$statusCode)
 	{

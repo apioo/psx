@@ -36,7 +36,7 @@ abstract class TemplateAbstractTestCase extends WriterTestCase
 	/**
 	 * Returns the writer
 	 *
-	 * @return PSX\Data\WriterInterface
+	 * @return \PSX\Data\WriterInterface
 	 */
 	abstract protected function getWriter(TemplateInterface $template, ReverseRouter $router);
 

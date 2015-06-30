@@ -66,7 +66,7 @@ class SoapEndpointTest extends ControllerDbTestCase
 	}
 
 	/**
-	 * @expectedException SoapFault
+	 * @expectedException \SoapFault
 	 */
 	public function testPostItemInvalid()
 	{

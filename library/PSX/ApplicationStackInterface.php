@@ -34,7 +34,7 @@ interface ApplicationStackInterface
 	 * response object gets passed to each filter which then can produce the 
 	 * response
 	 *
-	 * @return array<PSX\Dispatch\FilterInterface|callable>
+	 * @return \PSX\Dispatch\FilterInterface[]|\Closure[]
 	 */
 	public function getApplicationStack();
 }

@@ -82,7 +82,7 @@ class SchemaCommandTest extends CommandTestCase
 	}
 
 	/**
-	 * @expectedException RuntimeException
+	 * @expectedException \RuntimeException
 	 */
 	public function testCommandFileExists()
 	{

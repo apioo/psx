@@ -55,7 +55,7 @@ class Activity extends Object
 	}
 
 	/**
-	 * @param PSX\ActivityStream\ObjectFactory $actor
+	 * @param \PSX\ActivityStream\ObjectFactory $actor
 	 */
 	public function setActor($actor)
 	{
@@ -68,7 +68,7 @@ class Activity extends Object
 	}
 
 	/**
-	 * @param PSX\ActivityStream\ObjectFactory $object
+	 * @param \PSX\ActivityStream\ObjectFactory $object
 	 */
 	public function setObject($object)
 	{
@@ -81,7 +81,7 @@ class Activity extends Object
 	}
 
 	/**
-	 * @param PSX\ActivityStream\ObjectFactory $target
+	 * @param \PSX\ActivityStream\ObjectFactory $target
 	 */
 	public function setTarget($target)
 	{
@@ -94,7 +94,7 @@ class Activity extends Object
 	}
 
 	/**
-	 * @param PSX\ActivityStream\ObjectFactory $result
+	 * @param \PSX\ActivityStream\ObjectFactory $result
 	 */
 	public function setResult($result)
 	{
@@ -108,7 +108,7 @@ class Activity extends Object
 
 
 	/**
-	 * @param PSX\ActivityStream\ObjectFactory $result
+	 * @param \PSX\ActivityStream\ObjectFactory $instrument
 	 */
 	public function setInstrument($instrument)
 	{
@@ -122,7 +122,7 @@ class Activity extends Object
 
 
 	/**
-	 * @param PSX\ActivityStream\ObjectFactory $result
+	 * @param \PSX\ActivityStream\ObjectFactory $participant
 	 */
 	public function setParticipant($participant)
 	{

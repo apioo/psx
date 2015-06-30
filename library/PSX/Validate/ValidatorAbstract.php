@@ -39,8 +39,8 @@ abstract class ValidatorAbstract implements ValidatorInterface
 	protected $errors = array();
 
 	/**
-	 * @param PSX\Validate $validate
-	 * @param array<PSX\Filter\Definition\Property> $fields
+	 * @param \PSX\Validate $validate
+	 * @param \PSX\Validate\Property[] $fields
 	 * @param integer $flag
 	 */
 	public function __construct(Validate $validate, array $fields = null, $flag = self::THROW_ERRORS)
@@ -51,7 +51,7 @@ abstract class ValidatorAbstract implements ValidatorInterface
 	}
 
 	/**
-	 * @param array<PSX\Filter\Definition\Property> $fields
+	 * @param \PSX\Validate\Property[] $fields
 	 */
 	public function setFields(array $fields)
 	{
@@ -90,7 +90,7 @@ abstract class ValidatorAbstract implements ValidatorInterface
 	/**
 	 * Returns an anonymous record based on the defined fields
 	 *
-	 * @return PSX\Data\RecordInterface
+	 * @return \PSX\Data\RecordInterface
 	 */
 	public function getRecord()
 	{
@@ -108,8 +108,9 @@ abstract class ValidatorAbstract implements ValidatorInterface
 	 * Returns the validated value or throws an exception. If the flag 
 	 * COLLECT_ERRORS was set null gets returned on an invalid value
 	 *
-	 * @param PSX\Validate\Property $property
+	 * @param \PSX\Validate\Property $property
 	 * @param mixed $value
+	 * @param string $key
 	 * @return mixed
 	 */
 	protected function getPropertyValue(Property $property = null, $value, $key)
@@ -157,7 +158,7 @@ abstract class ValidatorAbstract implements ValidatorInterface
 	 * Returns the property defined by the name
 	 *
 	 * @param string $name
-	 * @return PSX\Filter\Definition\Property
+	 * @return \PSX\Validate\Property
 	 */
 	protected function getProperty($name)
 	{

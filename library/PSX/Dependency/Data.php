@@ -49,7 +49,7 @@ use PSX\Data\WriterFactory;
 trait Data
 {
 	/**
-	 * @return PSX\Data\ReaderFactory
+	 * @return \PSX\Data\ReaderFactory
 	 */
 	public function getReaderFactory()
 	{
@@ -62,7 +62,7 @@ trait Data
 	}
 
 	/**
-	 * @return PSX\Data\WriterFactory
+	 * @return \PSX\Data\WriterFactory
 	 */
 	public function getWriterFactory()
 	{
@@ -80,7 +80,7 @@ trait Data
 	}
 
 	/**
-	 * @return PSX\Data\Transformer\TransformerManager
+	 * @return \PSX\Data\Transformer\TransformerManager
 	 */
 	public function getTransformerManager()
 	{
@@ -94,7 +94,7 @@ trait Data
 	}
 
 	/**
-	 * @return PSX\Data\Record\ImporterManager
+	 * @return \PSX\Data\Record\ImporterManager
 	 */
 	public function getImporterManager()
 	{
@@ -107,7 +107,7 @@ trait Data
 	}
 
 	/**
-	 * @return PSX\Data\Schema\SchemaManagerInterface
+	 * @return \PSX\Data\Schema\SchemaManagerInterface
 	 */
 	public function getSchemaManager()
 	{
@@ -115,7 +115,7 @@ trait Data
 	}
 
 	/**
-	 * @return PSX\Data\Schema\ValidatorInterface
+	 * @return \PSX\Data\Schema\ValidatorInterface
 	 */
 	public function getSchemaValidator()
 	{
@@ -123,7 +123,7 @@ trait Data
 	}
 
 	/**
-	 * @return PSX\Data\Schema\Assimilator
+	 * @return \PSX\Data\Schema\Assimilator
 	 */
 	public function getSchemaAssimilator()
 	{
@@ -131,7 +131,7 @@ trait Data
 	}
 
 	/**
-	 * @return PSX\Data\Record\FactoryFactory
+	 * @return \PSX\Data\Record\FactoryFactory
 	 */
 	public function getRecordFactoryFactory()
 	{
@@ -139,7 +139,7 @@ trait Data
 	}
 
 	/**
-	 * @return PSX\Data\Importer
+	 * @return \PSX\Data\Importer
 	 */
 	public function getImporter()
 	{
@@ -147,7 +147,7 @@ trait Data
 	}
 
 	/**
-	 * @return PSX\Data\Extractor
+	 * @return \PSX\Data\Extractor
 	 */
 	public function getExtractor()
 	{
@@ -155,7 +155,7 @@ trait Data
 	}
 
 	/**
-	 * @return PSX\Data\SerializerInterface
+	 * @return \PSX\Data\SerializerInterface
 	 */
 	public function getSerializer()
 	{

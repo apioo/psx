@@ -53,7 +53,7 @@ class TableTest extends DbTestCase
 	}
 
 	/**
-	 * @expectedException PSX\Exception
+	 * @expectedException \PSX\Exception
 	 */
 	public function testAddConnectionInvalidColumn()
 	{

@@ -34,7 +34,7 @@ interface GeneratorInterface
 	/**
 	 * Generates an representation of this schema in another schema format
 	 *
-	 * @return PSX\Data\RecordInterface $schema
+	 * @param \PSX\Data\SchemaInterface $schema
 	 * @return string
 	 */
 	public function generate(SchemaInterface $schema);

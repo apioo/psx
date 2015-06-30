@@ -56,7 +56,7 @@ class ResourceTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException RuntimeException
+	 * @expectedException \RuntimeException
 	 */
 	public function testGetMethodInvalid()
 	{

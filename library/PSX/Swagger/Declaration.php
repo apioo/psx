@@ -83,7 +83,7 @@ class Declaration extends RecordAbstract
 	}
 
 	/**
-	 * @param array<PSX\Swagger\Api> $api
+	 * @param \PSX\Swagger\Api[] $api
 	 */
 	public function setApis(array $api)
 	{
@@ -101,7 +101,7 @@ class Declaration extends RecordAbstract
 	}
 
 	/**
-	 * @param PSX\Swagger\ModelFactory $models
+	 * @param \PSX\Swagger\ModelFactory $models
 	 */
 	public function setModels(\stdClass $models)
 	{

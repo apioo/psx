@@ -21,9 +21,6 @@
 namespace PSX\Oauth\Provider\Data;
 
 use InvalidArgumentException;
-use PSX\Data\Record\ImporterInterface;
-use PSX\Data\RecordInterface;
-use PSX\Http\Message;
 
 /**
  * ResponseImporter
@@ -34,7 +31,7 @@ use PSX\Http\Message;
  */
 class ResponseImporter
 {
-	public function import(RecordInterface $record, $data)
+	public function import(Response $record, $data)
 	{
 		if(!is_array($data) && !$data instanceof \stdClass)
 		{

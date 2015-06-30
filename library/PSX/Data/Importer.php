@@ -20,11 +20,8 @@
 
 namespace PSX\Data;
 
-use PSX\Data\ReaderFactory;
 use PSX\Data\Record\ImporterInterface;
 use PSX\Data\Record\ImporterManager;
-use PSX\Data\Transformer\TransformerManager;
-use PSX\Data\TransformerInterface;
 use PSX\Http\MessageInterface;
 use RuntimeException;
 
@@ -38,12 +35,12 @@ use RuntimeException;
 class Importer
 {
 	/**
-	 * @var PSX\Data\Extractor
+	 * @var \PSX\Data\Extractor
 	 */
 	protected $extractor;
 
 	/**
-	 * @var PSX\Data\Record\ImporterManager
+	 * @var \PSX\Data\Record\ImporterManager
 	 */
 	protected $importerManager;
 
@@ -60,10 +57,10 @@ class Importer
 	 * simply pass the data from the reader to the importer
 	 *
 	 * @param mixed $source
-	 * @param PSX\Http\MessageInterface $message
-	 * @param PSX\Data\Record\TransformerInterface $transformer
+	 * @param \PSX\Http\MessageInterface $message
+	 * @param \PSX\Data\TransformerInterface $transformer
 	 * @param string $readerType
-	 * @return PSX\Data\RecordInterface
+	 * @return \PSX\Data\RecordInterface
 	 */
 	public function import($source, MessageInterface $message, TransformerInterface $transformer = null, $readerType = null)
 	{

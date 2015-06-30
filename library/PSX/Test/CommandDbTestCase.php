@@ -62,7 +62,7 @@ abstract class CommandDbTestCase extends \PHPUnit_Extensions_Database_TestCase
 	 *
 	 * @param string $className
 	 * @param array $parameters
-	 * @return PSX\CommandInterface
+	 * @return \PSX\CommandInterface
 	 */
 	protected function loadCommand($className, array $parameters)
 	{

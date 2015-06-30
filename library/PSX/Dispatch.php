@@ -21,7 +21,6 @@
 namespace PSX;
 
 use PSX\Dispatch\ControllerFactoryInterface;
-use PSX\Dispatch\RedirectException;
 use PSX\Dispatch\SenderInterface;
 use PSX\Event\Context\ControllerContext;
 use PSX\Event\ExceptionThrownEvent;
@@ -34,7 +33,6 @@ use PSX\Http\RequestInterface;
 use PSX\Http\ResponseInterface;
 use PSX\Http\Stream\StringStream;
 use PSX\Loader\Context;
-use PSX\Url;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**

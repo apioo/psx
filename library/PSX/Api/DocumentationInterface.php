@@ -20,8 +20,6 @@
 
 namespace PSX\Api;
 
-use PSX\Data\SchemaInterface;
-
 /**
  * DocumentationInterface
  *
@@ -34,6 +32,7 @@ interface DocumentationInterface
 	/**
 	 * Returns whether an resource exists for the given version
 	 *
+     * @param integer $version
 	 * @return boolean
 	 */
 	public function hasResource($version);
@@ -41,7 +40,8 @@ interface DocumentationInterface
 	/**
 	 * Returns the resource for the given version
 	 *
-	 * @return PSX\Api\Resource
+     * @param integer $version
+	 * @return \PSX\Api\Resource
 	 */
 	public function getResource($version);
 

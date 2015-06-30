@@ -34,7 +34,7 @@ class DiscoveryController extends ApiAbstract
 {
 	/**
 	 * @Inject
-	 * @var PSX\Loader\ReverseRouter
+	 * @var \PSX\Loader\ReverseRouter
 	 */
 	protected $reverseRouter;
 

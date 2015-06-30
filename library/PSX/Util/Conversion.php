@@ -122,8 +122,8 @@ class Conversion
 			}
 		}
 
-		$r = $value / end($this->si);
-		$u = key($this->si);
+		$r = $value / end(self::$si);
+		$u = key(self::$si);
 
 		return round($r, $decimalPlace) . ' ' . $u . $unit;
 	}

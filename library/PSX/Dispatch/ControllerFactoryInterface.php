@@ -37,10 +37,10 @@ interface ControllerFactoryInterface
 	 * Creates an instance of the given class name
 	 *
 	 * @param string $className
-	 * @param PSX\Http\RequestInterface $request
-	 * @param PSX\Http\ResponseInterface $response
-	 * @param PSX\Loader\Context $context
-	 * @return PSX\ControllerInterface
+	 * @param \PSX\Http\RequestInterface $request
+	 * @param \PSX\Http\ResponseInterface $response
+	 * @param \PSX\Loader\Context $context
+	 * @return \PSX\ControllerInterface
 	 */
 	public function getController($className, RequestInterface $request, ResponseInterface $response, Context $context);
 }

@@ -78,7 +78,7 @@ class ConditionTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException UnexpectedValueException
+	 * @expectedException \UnexpectedValueException
 	 */
 	public function testAddInvalidOperator()
 	{
@@ -87,7 +87,7 @@ class ConditionTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException UnexpectedValueException
+	 * @expectedException \UnexpectedValueException
 	 */
 	public function testAddInvalidConjunction()
 	{

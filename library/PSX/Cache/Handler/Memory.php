@@ -20,6 +20,7 @@
 
 namespace PSX\Cache\Handler;
 
+use PSX\Cache\CacheItemInterface;
 use PSX\Cache\HandlerInterface;
 use PSX\Cache\Item;
 
@@ -32,6 +33,9 @@ use PSX\Cache\Item;
  */
 class Memory implements HandlerInterface
 {
+    /**
+     * @var \PSX\Cache\Item[]
+     */
 	protected $_container = array();
 
 	public function load($key)
@@ -49,7 +53,7 @@ class Memory implements HandlerInterface
 		return new Item($key, null, false);
 	}
 
-	public function write(Item $item)
+	public function write(CacheItemInterface $item)
 	{
 		$this->_container[$item->getKey()] = $item;
 	}

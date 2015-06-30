@@ -20,13 +20,9 @@
 
 namespace PSX\Controller;
 
-use PSX\Http\Request;
-use PSX\Http\Response;
-use PSX\Http\Stream\TempStream;
 use PSX\Json;
 use PSX\Test\ControllerTestCase;
 use PSX\Test\Environment;
-use PSX\Url;
 
 /**
  * SupportedWriterControllerTest

@@ -39,7 +39,7 @@ use PSX\Loader;
 trait Controller
 {
 	/**
-	 * @return PSX\Dispatch\ControllerFactoryInterface
+	 * @return \PSX\Dispatch\ControllerFactoryInterface
 	 */
 	public function getApplicationStackFactory()
 	{
@@ -47,7 +47,7 @@ trait Controller
 	}
 
 	/**
-	 * @return PSX\Dispatch\ControllerFactoryInterface
+	 * @return \PSX\Dispatch\ControllerFactoryInterface
 	 */
 	public function getControllerFactory()
 	{
@@ -55,7 +55,7 @@ trait Controller
 	}
 
 	/**
-	 * @return PSX\Dispatch\SenderInterface
+	 * @return \PSX\Dispatch\SenderInterface
 	 */
 	public function getDispatchSender()
 	{
@@ -63,7 +63,7 @@ trait Controller
 	}
 
 	/**
-	 * @return PSX\Loader\LocationFinderInterface
+	 * @return \PSX\Loader\LocationFinderInterface
 	 */
 	public function getLoaderLocationFinder()
 	{
@@ -71,7 +71,7 @@ trait Controller
 	}
 
 	/**
-	 * @return PSX\Loader\CallbackResolverInterface
+	 * @return \PSX\Loader\CallbackResolverInterface
 	 */
 	public function getLoaderCallbackResolver()
 	{
@@ -79,7 +79,7 @@ trait Controller
 	}
 
 	/**
-	 * @return PSX\Loader
+	 * @return \PSX\Loader
 	 */
 	public function getLoader()
 	{
@@ -87,7 +87,7 @@ trait Controller
 	}
 
 	/**
-	 * @return PSX\Dispatch\RequestFactoryInterface
+	 * @return \PSX\Dispatch\RequestFactoryInterface
 	 */
 	public function getRequestFactory()
 	{
@@ -95,7 +95,7 @@ trait Controller
 	}
 
 	/**
-	 * @return PSX\Dispatch\ResponseFactoryInterface
+	 * @return \PSX\Dispatch\ResponseFactoryInterface
 	 */
 	public function getResponseFactory()
 	{
@@ -103,7 +103,7 @@ trait Controller
 	}
 
 	/**
-	 * @return PSX\Dispatch
+	 * @return \PSX\Dispatch
 	 */
 	public function getDispatch()
 	{
@@ -111,7 +111,7 @@ trait Controller
 	}
 
 	/**
-	 * @return PSX\Loader\RoutingParserInterface
+	 * @return \PSX\Loader\RoutingParserInterface
 	 */
 	public function getRoutingParser()
 	{
@@ -128,7 +128,7 @@ trait Controller
 	}
 
 	/**
-	 * @return PSX\Loader\ReverseRouter
+	 * @return \PSX\Loader\ReverseRouter
 	 */
 	public function getReverseRouter()
 	{
@@ -136,7 +136,7 @@ trait Controller
 	}
 
 	/**
-	 * @return PSX\Api\Resource\ListingInterface
+	 * @return \PSX\Api\Resource\ListingInterface
 	 */
 	public function getResourceListing()
 	{

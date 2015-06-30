@@ -36,7 +36,7 @@ interface ConverterInterface
 	 * the user
 	 *
 	 * @param Exception $e
-	 * @return PSX\Data\RecordInterface
+	 * @return \PSX\Data\RecordInterface
 	 */
 	public function convert(Exception $e);
 }

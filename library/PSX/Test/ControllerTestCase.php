@@ -39,9 +39,9 @@ abstract class ControllerTestCase extends \PHPUnit_Framework_TestCase
 	/**
 	 * Loads an specific controller
 	 *
-	 * @param PSX\Http\Request $request
-	 * @param PSX\Http\Response $response
-	 * @return PSX\ControllerInterface
+	 * @param \PSX\Http\Request $request
+	 * @param \PSX\Http\Response $response
+	 * @return \PSX\ControllerInterface
 	 */
 	protected function loadController(Request $request, Response $response)
 	{
@@ -55,6 +55,7 @@ abstract class ControllerTestCase extends \PHPUnit_Framework_TestCase
 	 * @param string $method
 	 * @param array $headers
 	 * @param string $body
+     * @return \PSX\Http\ResponseInterface
 	 */
 	protected function sendRequest($url, $method, $headers = array(), $body = null)
 	{

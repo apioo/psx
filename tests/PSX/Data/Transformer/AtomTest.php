@@ -154,7 +154,7 @@ INPUT;
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testNoFeedElement()
 	{
@@ -171,7 +171,7 @@ INPUT;
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testInvalidData()
 	{

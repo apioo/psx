@@ -127,7 +127,7 @@ class RamlTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException RuntimeException
+	 * @expectedException \RuntimeException
 	 */
 	public function testParseResponseWithoutSchema()
 	{
@@ -138,7 +138,7 @@ class RamlTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException RuntimeException
+	 * @expectedException \RuntimeException
 	 */
 	public function testParseInvalidPath()
 	{
@@ -146,7 +146,7 @@ class RamlTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Exception
+	 * @expectedException \PSX\Exception
 	 */
 	public function testParseInvalidSchema()
 	{
@@ -154,7 +154,7 @@ class RamlTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException RuntimeException
+	 * @expectedException \RuntimeException
 	 */
 	public function testParseInvalidSchemaReference()
 	{
@@ -162,7 +162,7 @@ class RamlTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException RuntimeException
+	 * @expectedException \RuntimeException
 	 */
 	public function testFromFileNotExistingFile()
 	{

@@ -32,7 +32,8 @@ interface TableManagerInterface
 	/**
 	 * Returns an table
 	 *
-	 * @return PSX\Sql\TableInterface
+     * @param string $tableName
+	 * @return \PSX\Sql\TableInterface
 	 */
 	public function getTable($tableName);
 }

@@ -72,7 +72,7 @@ class Condition implements Countable
 	 * @param string $value
 	 * @param string $conjunction
 	 * @param int $type
-	 * @return PSX\Sql\Condition
+	 * @return \PSX\Sql\Condition
 	 */
 	public function add($column, $operator, $value, $conjunction = 'AND', $type = self::TYPE_SCALAR)
 	{
@@ -115,8 +115,8 @@ class Condition implements Countable
 	/**
 	 * Merges an existing condition
 	 *
-	 * @param PSX\Sql\Condition $condition
-	 * @return PSX\Sql\Condition
+	 * @param \PSX\Sql\Condition $condition
+	 * @return \PSX\Sql\Condition
 	 */
 	public function merge(Condition $condition)
 	{
@@ -128,6 +128,7 @@ class Condition implements Countable
 	/**
 	 * Removes an condition containing an specific column
 	 *
+     * @param string $column
 	 * @return boolean
 	 */
 	public function remove($column)

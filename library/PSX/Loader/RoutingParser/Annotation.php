@@ -84,8 +84,8 @@ class Annotation implements RoutingParserInterface
 	}
 
 	/**
-	 * @param PSX\Loader\RoutingCollection $collection
-	 * @param ReflectionClass $class
+	 * @param \PSX\Loader\RoutingCollection $collection
+	 * @param \ReflectionClass $class
 	 */
 	protected function parseClass(RoutingCollection $collection, ReflectionClass $class)
 	{

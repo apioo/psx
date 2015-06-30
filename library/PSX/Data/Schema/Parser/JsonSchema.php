@@ -26,10 +26,7 @@ use PSX\Data\Schema\Parser\JsonSchema\RefResolver;
 use PSX\Data\Schema\Parser\JsonSchema\Resolver;
 use PSX\Data\Schema\ParserInterface;
 use PSX\Data\Schema\Property;
-use PSX\Data\Schema\PropertyInterface;
-use PSX\Data\Schema\PropertySimpleAbstract;
 use PSX\Json;
-use PSX\Uri;
 use RuntimeException;
 
 /**

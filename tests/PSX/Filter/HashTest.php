@@ -41,7 +41,7 @@ class HashTest extends FilterTestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testFilterUnknownHashAlgo()
 	{

@@ -21,7 +21,6 @@
 namespace PSX\Http\Factory;
 
 use PSX\Http\Request;
-use PSX\Http\RequestInterface;
 use PSX\Http\Response;
 use PSX\Http\Stream\StringStream;
 use PSX\Url;

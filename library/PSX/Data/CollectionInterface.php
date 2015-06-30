@@ -35,7 +35,7 @@ interface CollectionInterface extends RecordInterface, Iterator, Countable
 	/**
 	 * Adds an record to the collection
 	 *
-	 * @param PSX\Data\RecordInterface $record
+	 * @param \PSX\Data\RecordInterface $record
 	 */
 	public function add(RecordInterface $record);
 
@@ -57,7 +57,7 @@ interface CollectionInterface extends RecordInterface, Iterator, Countable
 	 * Returns the record with the specific key or null
 	 *
 	 * @param string $key
-	 * @return PSX\Data\RecordInterface
+	 * @return \PSX\Data\RecordInterface
 	 */
 	public function get($key);
 
@@ -65,14 +65,14 @@ interface CollectionInterface extends RecordInterface, Iterator, Countable
 	 * Sets the record for the specific field
 	 *
 	 * @param string $key
-	 * @param PSX\Data\RecordInterface $record
+	 * @param \PSX\Data\RecordInterface $record
 	 */
 	public function set($key, RecordInterface $record);
 
 	/**
 	 * Returns an array containing all record of the collection
 	 *
-	 * @return array<PSX\Data\RecordInterface>
+	 * @return \PSX\Data\RecordInterface[]
 	 */
 	public function toArray();
 }

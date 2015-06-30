@@ -31,6 +31,9 @@ use PSX\Data\Schema\PropertyInterface;
  */
 class Schema implements SchemaInterface
 {
+    /**
+     * @var \PSX\Data\Schema\PropertyInterface
+     */
 	protected $property;
 
 	public function __construct(PropertyInterface $property)

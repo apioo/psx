@@ -23,7 +23,6 @@ namespace PSX\Dependency;
 use PSX\Command\Executor;
 use PSX\Command\Output\Logger;
 use PSX\Command\Output\Stdout;
-use PSX\Command\StdinReader;
 use PSX\Dispatch\CommandFactory;
 
 /**
@@ -36,7 +35,7 @@ use PSX\Dispatch\CommandFactory;
 trait Command
 {
 	/**
-	 * @return PSX\Dispatch\CommandFactoryInterface
+	 * @return \PSX\Dispatch\CommandFactoryInterface
 	 */
 	public function getCommandFactory()
 	{
@@ -44,7 +43,7 @@ trait Command
 	}
 
 	/**
-	 * @return PSX\Command\OutputInterface
+	 * @return \PSX\Command\OutputInterface
 	 */
 	public function getCommandOutput()
 	{
@@ -52,7 +51,7 @@ trait Command
 	}
 
 	/**
-	 * @return PSX\Command\Executor
+	 * @return \PSX\Command\Executor
 	 */
 	public function getExecutor()
 	{

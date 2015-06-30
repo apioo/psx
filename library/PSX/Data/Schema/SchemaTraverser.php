@@ -45,8 +45,8 @@ class SchemaTraverser
 	 * outgoing data
 	 *
 	 * @param mixed $data
-	 * @param PSX\Data\SchemaInterface $schema
-	 * @param PSX\Data\Schema\VisitorInterface $visitor
+	 * @param \PSX\Data\SchemaInterface $schema
+	 * @param \PSX\Data\Schema\VisitorInterface $visitor
 	 * @param integer $type
 	 * @return mixed
 	 */
@@ -197,6 +197,7 @@ class SchemaTraverser
 	 * this type
 	 *
 	 * @param mixed $data
+     * @param \PSX\Data\Schema\Property\ComplexType $property
 	 * @return integer
 	 */
 	protected function match($data, Property\ComplexType $property)

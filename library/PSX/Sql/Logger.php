@@ -39,7 +39,7 @@ class Logger implements SQLLogger
 	protected $logger;
 
 	/**
-	 * @param Psr\Log\LoggerInterface $logger
+	 * @param \Psr\Log\LoggerInterface $logger
 	 */
 	public function __construct(LoggerInterface $logger)
 	{

@@ -21,7 +21,6 @@
 namespace PSX\Oauth\Provider\Data;
 
 use PSX\Data\InvalidDataException;
-use PSX\Data\ReaderInterface;
 use PSX\Data\RecordAbstract;
 use PSX\Data\RecordInfo;
 use PSX\Oauth;
@@ -190,11 +189,6 @@ class Request extends RecordAbstract
 	public function getVerifier()
 	{
 		return $this->verifier;
-	}
-
-	public function setRequiredFields(array $requiredFields)
-	{
-		$this->requiredFields = $requiredFields;
 	}
 }
 

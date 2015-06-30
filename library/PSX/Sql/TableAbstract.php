@@ -216,6 +216,7 @@ abstract class TableAbstract extends TableQueryAbstract implements TableInterfac
 	 * Returns an array which can be used by the dbal insert, update and delete
 	 * methods
 	 *
+     * @param array $row
 	 * @return array
 	 */
 	protected function serializeFields(array $row)

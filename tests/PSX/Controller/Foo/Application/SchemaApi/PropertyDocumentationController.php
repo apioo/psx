@@ -22,8 +22,6 @@ namespace PSX\Controller\Foo\Application\SchemaApi;
 
 use PSX\Api\Documentation;
 use PSX\Api\Resource;
-use PSX\Api\Version;
-use PSX\Data\RecordInterface;
 use PSX\Data\Schema\Property;
 use PSX\Loader\Context;
 
@@ -38,7 +36,7 @@ class PropertyDocumentationController extends PropertyControllerAbstract
 {
 	/**
 	 * @Inject
-	 * @var PSX\Data\Schema\SchemaManager
+	 * @var \PSX\Data\Schema\SchemaManager
 	 */
 	protected $schemaManager;
 

@@ -24,7 +24,6 @@ use PSX\Data\Record;
 use PSX\Data\Schema\GeneratorInterface;
 use PSX\Data\Schema\Property;
 use PSX\Data\Schema\PropertyInterface;
-use PSX\Data\Schema\PropertySimpleAbstract;
 use PSX\Data\SchemaInterface;
 use PSX\Data\Writer;
 use RuntimeException;

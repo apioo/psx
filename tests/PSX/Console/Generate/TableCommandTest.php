@@ -82,7 +82,7 @@ class TableCommandTest extends CommandTestCase
 	}
 
 	/**
-	 * @expectedException RuntimeException
+	 * @expectedException \RuntimeException
 	 */
 	public function testCommandFileExists()
 	{

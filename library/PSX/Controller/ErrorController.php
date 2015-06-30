@@ -20,7 +20,6 @@
 
 namespace PSX\Controller;
 
-use PSX\Data\Record\Converter;
 use PSX\Http;
 use PSX\Loader\Context;
 
@@ -35,7 +34,7 @@ class ErrorController extends ViewAbstract
 {
 	/**
 	 * @Inject
-	 * @var PSX\Exception\Converter
+	 * @var \PSX\Exception\Converter
 	 */
 	protected $exceptionConverter;
 
@@ -80,7 +79,7 @@ class ErrorController extends ViewAbstract
 	 * Returns the fallback template which is used if the template has no file
 	 * and the controller is not in an application structure
 	 *
-	 * @return string|Closure
+	 * @return string|\Closure
 	 */
 	protected function getFallbackTemplate()
 	{

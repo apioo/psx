@@ -44,7 +44,7 @@ class RomanTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException UnexpectedValueException
+	 * @expectedException \UnexpectedValueException
 	 */
 	public function testEncodeZero()
 	{
@@ -52,7 +52,7 @@ class RomanTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException UnexpectedValueException
+	 * @expectedException \UnexpectedValueException
 	 */
 	public function testEncodeNegativeNumber()
 	{
@@ -60,7 +60,7 @@ class RomanTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException UnexpectedValueException
+	 * @expectedException \UnexpectedValueException
 	 */
 	public function testDecodeInvalidInput()
 	{

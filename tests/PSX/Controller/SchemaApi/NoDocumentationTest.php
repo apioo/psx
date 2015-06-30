@@ -22,13 +22,8 @@ namespace PSX\Controller\SchemaApi;
 
 use PSX\Data\Record;
 use PSX\Data\Writer;
-use PSX\Data\WriterInterface;
-use PSX\Http\Request;
-use PSX\Http\Response;
-use PSX\Http\Stream\TempStream;
 use PSX\Json;
 use PSX\Test\ControllerTestCase;
-use PSX\Url;
 
 /**
  * NoDocumentationTest

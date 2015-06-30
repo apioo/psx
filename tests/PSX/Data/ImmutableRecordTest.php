@@ -21,7 +21,6 @@
 namespace PSX\Data;
 
 use PSX\Exception;
-use PSX\Http\Message;
 
 /**
  * ImmutableRecordTest
@@ -44,7 +43,7 @@ class ImmutableRecordTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException BadMethodCallException
+	 * @expectedException \BadMethodCallException
 	 */
 	public function testSetMagicMethods()
 	{

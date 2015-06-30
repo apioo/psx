@@ -158,7 +158,9 @@ class WriterFactory
 	 * Returns the fitting writer according to the content negotiation. If no
 	 * fitting writer could be found null gets returned
 	 *
-	 * @return PSX\Data\WriterInterface
+     * @param \PSX\Http\MediaType $contentType
+     * @param array $supportedWriter
+	 * @return \PSX\Data\WriterInterface
 	 */
 	protected function getWriterFromContentNegotiation(MediaType $contentType, array $supportedWriter = null)
 	{

@@ -184,6 +184,7 @@ class Container implements ContainerInterface
 	 * implementation. As fallback we get an instance of the service and return
 	 * the type
 	 *
+     * @param string $name
 	 * @return string
 	 */
 	public function getReturnType($name)

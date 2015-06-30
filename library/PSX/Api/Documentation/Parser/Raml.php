@@ -88,7 +88,7 @@ class Raml implements ParserInterface
 			}
 		}
 
-		$version = $this->getNormalizedVersion($this->data);
+		$version = $this->getNormalizedVersion();
 		$title   = null;
 
 		if(isset($this->data['title']))
@@ -404,7 +404,7 @@ class Raml implements ParserInterface
 		}
 	}
 
-	protected function getNormalizedVersion($data)
+	protected function getNormalizedVersion()
 	{
 		if(isset($this->data['version']))
 		{

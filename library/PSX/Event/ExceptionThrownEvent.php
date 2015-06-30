@@ -20,7 +20,6 @@
 
 namespace PSX\Event;
 
-use PSX\Http\RequestInterface;
 use Symfony\Component\EventDispatcher\Event;
 
 /**

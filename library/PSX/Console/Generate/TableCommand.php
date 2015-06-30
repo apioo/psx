@@ -102,7 +102,6 @@ class TableCommand extends GenerateCommandAbstract
 	{
 		$namespace = $definition->getNamespace();
 		$className = $definition->getClassName();
-		$name      = lcfirst($className);
 
 		$sm         = $this->connection->getSchemaManager();
 		$columns    = $sm->listTableColumns($table);

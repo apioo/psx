@@ -33,6 +33,9 @@ use PSX\Util\PriorityQueue;
  */
 class TransformerManager
 {
+    /**
+     * @var \PSX\Data\TransformerInterface[]
+     */
 	protected $transformers;
 
 	public function __construct()

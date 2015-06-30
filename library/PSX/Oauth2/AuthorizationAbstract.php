@@ -79,7 +79,8 @@ abstract class AuthorizationAbstract
 	 * Tries to refresh an access token if an refresh token is available.
 	 * Returns the new received access token or throws an excepion
 	 *
-	 * @return PSX\Oauth2\AccessToken
+	 * @param \PSX\Oauth2\AccessToken $accessToken
+     * @return \PSX\Oauth2\AccessToken
 	 */
 	public function refreshToken(AccessToken $accessToken)
 	{
@@ -160,11 +161,11 @@ abstract class AuthorizationAbstract
 	}
 
 	/**
-	 * Each class wich extends PSX\Oauth2\Authorization should have the method
+	 * Each class which extends PSX\Oauth2\Authorization should have the method
 	 * getAccessToken(). Since the method can have different arguments we can
 	 * not declare the method as abstract but it will stay here for reference
 	 *
-	 * @return PSX\Oauth2\AccessToken
+	 * @return \PSX\Oauth2\AccessToken
 	 */
 	//abstract public function getAccessToken();
 
@@ -172,7 +173,8 @@ abstract class AuthorizationAbstract
 	 * Parses the $data array for an error response and throws the most fitting
 	 * exception including also the error message and url if available
 	 *
-	 * @throws PSX\Oauth2\Authorization\Exception
+     * @param array $data
+	 * @throws \PSX\Oauth2\Authorization\Exception\ErrorExceptionAbstract
 	 */
 	public static function throwErrorException($data)
 	{

@@ -31,10 +31,13 @@ use PSX\FilterAbstract;
  */
 class Collection extends FilterAbstract
 {
+    /**
+     * @var \PSX\FilterInterface[]
+     */
 	protected $filters;
 
 	/**
-	 * @param array<PSX\FilterInterface>
+	 * @param \PSX\FilterInterface[] $filters
 	 */
 	public function __construct(array $filters)
 	{

@@ -29,12 +29,24 @@ namespace PSX\Data\Schema;
  */
 interface PropertyInterface
 {
+    /**
+     * @param string $name
+     * @return self
+     */
+    public function setName($name);
+
 	/**
 	 * Returns the name of the property
 	 *
 	 * @return string
 	 */
 	public function getName();
+
+    /**
+     * @param string $description
+     * @return self
+     */
+    public function setDescription($description);
 
 	/**
 	 * Returns an description of this property
@@ -43,12 +55,24 @@ interface PropertyInterface
 	 */
 	public function getDescription();
 
+    /**
+     * @param boolean $required
+     * @return self
+     */
+    public function setRequired($required);
+
 	/**
 	 * Returns whether this property is required
 	 *
 	 * @return boolean
 	 */
 	public function isRequired();
+
+    /**
+     * @param string $reference
+     * @return self
+     */
+    public function setReference($reference);
 
 	/**
 	 * Returns the class name which should be used to create this property

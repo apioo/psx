@@ -62,7 +62,7 @@ class Api extends RecordAbstract
 	}
 
 	/**
-	 * @param array<PSX\Swagger\Operation> $operations
+	 * @param \PSX\Swagger\Operation[] $operations
 	 */
 	public function setOperations(array $operations)
 	{

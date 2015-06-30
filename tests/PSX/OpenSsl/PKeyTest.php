@@ -84,7 +84,7 @@ TEXT;
 	}
 
 	/**
-	 * @expectedException PSX\OpenSsl\Exception
+	 * @expectedException \PSX\OpenSsl\Exception
 	 */
 	public function testGetPrivateInvalidPassword()
 	{
@@ -113,7 +113,7 @@ TEXT;
 	}
 
 	/**
-	 * @expectedException PSX\OpenSsl\Exception
+	 * @expectedException \PSX\OpenSsl\Exception
 	 */
 	public function testGetPrivateInvalidFormat()
 	{
@@ -163,7 +163,7 @@ TEXT;
 	}
 
 	/**
-	 * @expectedException PSX\OpenSsl\Exception
+	 * @expectedException \PSX\OpenSsl\Exception
 	 */
 	public function testGetPublicInvalidFormat()
 	{

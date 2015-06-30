@@ -42,6 +42,9 @@ class TableAbstractTest extends DbTestCase
 		return $this->createFlatXMLDataSet(__DIR__ . '/table_fixture.xml');
 	}
 
+    /**
+     * @return \PSX\Sql\TableInterface
+     */
 	protected function getTable()
 	{
 		return Environment::getService('table_manager')->getTable('PSX\Sql\TestTable');
@@ -151,7 +154,7 @@ class TableAbstractTest extends DbTestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testGetOneByXXXMethodNoValue()
 	{
@@ -159,7 +162,7 @@ class TableAbstractTest extends DbTestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testGetByXXXMethodNoValue()
 	{
@@ -167,7 +170,7 @@ class TableAbstractTest extends DbTestCase
 	}
 
 	/**
-	 * @expectedException BadMethodCallException
+	 * @expectedException \BadMethodCallException
 	 */
 	public function testInvalidMethodCall()
 	{
@@ -175,7 +178,7 @@ class TableAbstractTest extends DbTestCase
 	}
 
 	/**
-	 * @expectedException PSX\Exception
+	 * @expectedException \PSX\Exception
 	 */
 	public function testUpdateNoPrimaryKey()
 	{
@@ -184,7 +187,7 @@ class TableAbstractTest extends DbTestCase
 	}
 
 	/**
-	 * @expectedException PSX\Exception
+	 * @expectedException \PSX\Exception
 	 */
 	public function testDeleteNoPrimaryKey()
 	{
@@ -193,7 +196,7 @@ class TableAbstractTest extends DbTestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testCreateInvalidData()
 	{
@@ -202,7 +205,7 @@ class TableAbstractTest extends DbTestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testUpdateInvalidData()
 	{
@@ -211,7 +214,7 @@ class TableAbstractTest extends DbTestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testDeleteInvalidData()
 	{

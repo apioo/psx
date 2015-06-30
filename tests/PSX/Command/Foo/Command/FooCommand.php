@@ -36,7 +36,7 @@ class FooCommand extends CommandAbstract
 {
 	/**
 	 * @Inject
-	 * @var PSX\Command\Executor
+	 * @var \PSX\Command\Executor
 	 */
 	protected $executor;
 

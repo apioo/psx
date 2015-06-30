@@ -40,13 +40,13 @@ class VersionViewController extends SchemaApiAbstract
 {
 	/**
 	 * @Inject
-	 * @var PSX\Data\Schema\SchemaManager
+	 * @var \PSX\Data\Schema\SchemaManager
 	 */
 	protected $schemaManager;
 
 	/**
 	 * @Inject
-	 * @var PHPUnit_Framework_TestCase
+	 * @var \PHPUnit_Framework_TestCase
 	 */
 	protected $testCase;
 

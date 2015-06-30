@@ -22,7 +22,6 @@ namespace PSX\Sql;
 
 use Doctrine\DBAL\Connection;
 use InvalidArgumentException;
-use PSX\Cache\CacheItemPoolInterface;
 use PSX\Sql\Table\ReaderInterface;
 
 /**
@@ -35,20 +34,20 @@ use PSX\Sql\Table\ReaderInterface;
 class TableManager implements TableManagerInterface
 {
 	/**
-	 * @var Doctrine\DBAL\Connection
+	 * @var \Doctrine\DBAL\Connection
 	 */
 	protected $connection;
 
 	/**
-	 * @var PSX\Sql\Table\ReaderInterface
+	 * @var \PSX\Sql\Table\ReaderInterface
 	 */
 	protected $reader;
 
 	protected $_container;
 
 	/**
-	 * @param Doctrine\DBAL\Connection $connection
-	 * @param PSX\Sql\Table\ReaderInterface $reader
+	 * @param \Doctrine\DBAL\Connection $connection
+	 * @param \PSX\Sql\Table\ReaderInterface $reader
 	 */
 	public function __construct(Connection $connection, ReaderInterface $reader = null)
 	{
@@ -57,7 +56,7 @@ class TableManager implements TableManagerInterface
 	}
 
 	/**
-	 * @return Doctrine\DBAL\Connection
+	 * @return \Doctrine\DBAL\Connection
 	 */
 	public function getConnection()
 	{
@@ -66,7 +65,7 @@ class TableManager implements TableManagerInterface
 
 	/**
 	 * @param string $tableName
-	 * @return PSX\Sql\TableInterface
+	 * @return \PSX\Sql\TableInterface
 	 */
 	public function getTable($tableName)
 	{

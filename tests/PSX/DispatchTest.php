@@ -22,13 +22,10 @@ namespace PSX;
 
 use PSX\Dispatch;
 use PSX\Event\Context;
+use PSX\Event\ExceptionThrownEvent;
 use PSX\Event\RequestIncomingEvent;
 use PSX\Event\ResponseSendEvent;
-use PSX\Http\Request;
-use PSX\Http\Response;
-use PSX\Http\Stream\TempStream;
 use PSX\Loader;
-use PSX\ModuleAbstract;
 use PSX\Template;
 use PSX\Test\ControllerTestCase;
 use PSX\Test\Environment;
@@ -49,7 +46,7 @@ class DispatchTest extends ControllerTestCase
 		$requestIncomingListener = $this->getMock('PSX\Dispatch\TestListener', array('on'));
 		$requestIncomingListener->expects($this->once())
 			->method('on')
-			->with($this->callback(function($event) use ($testCase){
+			->with($this->callback(function(RequestIncomingEvent $event) use ($testCase){
 				$testCase->assertInstanceOf('PSX\Event\RequestIncomingEvent', $event);
 				$testCase->assertInstanceOf('PSX\Http\RequestInterface', $event->getRequest());
 
@@ -59,7 +56,7 @@ class DispatchTest extends ControllerTestCase
 		$responseSendListener = $this->getMock('PSX\Dispatch\TestListener', array('on'));
 		$responseSendListener->expects($this->once())
 			->method('on')
-			->with($this->callback(function($event) use ($testCase){
+			->with($this->callback(function(ResponseSendEvent $event) use ($testCase){
 				$testCase->assertInstanceOf('PSX\Event\ResponseSendEvent', $event);
 				$testCase->assertInstanceOf('PSX\Http\ResponseInterface', $event->getResponse());
 
@@ -92,7 +89,7 @@ class DispatchTest extends ControllerTestCase
 		$exceptionListener = $this->getMock('PSX\Dispatch\TestListener', array('on'));
 		$exceptionListener->expects($this->once())
 			->method('on')
-			->with($this->callback(function($event) use ($testCase){
+			->with($this->callback(function(ExceptionThrownEvent $event) use ($testCase){
 				$testCase->assertInstanceOf('PSX\Event\ExceptionThrownEvent', $event);
 				$testCase->assertInstanceOf('PSX\Event\Context\ControllerContext', $event->getContext());
 				$testCase->assertInstanceOf('PSX\Http\RequestInterface', $event->getContext()->getRequest());

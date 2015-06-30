@@ -21,7 +21,6 @@
 namespace PSX\Data\Schema\Property;
 
 use PSX\Data\Schema\Property;
-use PSX\Url;
 
 /**
  * StringTypeTest

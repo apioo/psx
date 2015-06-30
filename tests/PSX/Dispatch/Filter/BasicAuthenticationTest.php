@@ -59,7 +59,7 @@ class BasicAuthenticationTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Http\Exception\BadRequestException
+	 * @expectedException \PSX\Http\Exception\BadRequestException
 	 */
 	public function testFailure()
 	{

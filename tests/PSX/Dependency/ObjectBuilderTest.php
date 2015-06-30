@@ -45,7 +45,7 @@ class ObjectBuilderTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException RuntimeException
+	 * @expectedException \RuntimeException
 	 */
 	public function testGetObjectInjectUnknownService()
 	{
@@ -54,7 +54,7 @@ class ObjectBuilderTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException ReflectionException
+	 * @expectedException \ReflectionException
 	 */
 	public function testGetObjectUnknownClass()
 	{
@@ -75,7 +75,7 @@ class ObjectBuilderTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testGetObjectInstanceOfInvalid()
 	{
@@ -100,7 +100,7 @@ class ObjectBuilderTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException ErrorException
+	 * @expectedException \ErrorException
 	 */
 	public function testGetObjectConstructorArgumentsInvalid()
 	{

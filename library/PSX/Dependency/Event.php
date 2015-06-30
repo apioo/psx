@@ -34,7 +34,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 trait Event
 {
 	/**
-	 * @return Symfony\Component\EventDispatcher\EventDispatcherInterface
+	 * @return \Symfony\Component\EventDispatcher\EventDispatcherInterface
 	 */
 	public function getEventDispatcher()
 	{

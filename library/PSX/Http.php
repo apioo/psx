@@ -29,7 +29,6 @@ use PSX\Http\HandlerInterface;
 use PSX\Http\Options;
 use PSX\Http\RedirectException;
 use PSX\Http\Request;
-use PSX\Http\Response;
 use PSX\Util\UriResolver;
 
 /**
@@ -126,19 +125,19 @@ class Http
 	);
 
 	/**
-	 * @var PSX\Http\HandlerInterface
+	 * @var \PSX\Http\HandlerInterface
 	 */
 	protected $handler;
 
 	/**
-	 * @var PSX\Http\CookieStoreInterface
+	 * @var \PSX\Http\CookieStoreInterface
 	 */
 	protected $cookieStore;
 
 	/**
 	 * If no handler is defined the curl handler is used as fallback
 	 *
-	 * @param PSX\Http\HandlerInterface $handler
+	 * @param \PSX\Http\HandlerInterface $handler
 	 */
 	public function __construct(HandlerInterface $handler = null)
 	{
@@ -148,9 +147,10 @@ class Http
 	/**
 	 * Sends the request through the given handler and returns the response
 	 *
-	 * @param PSX\Http\Request $request
-	 * @param PSX\Http\Options $options
-	 * @return PSX\Http\Response
+	 * @param \PSX\Http\Request $request
+	 * @param \PSX\Http\Options $options
+     * @param integer $count
+	 * @return \PSX\Http\Response
 	 */
 	public function request(Request $request, Options $options = null, $count = 0)
 	{
@@ -259,7 +259,7 @@ class Http
 	/**
 	 * Sets the handler
 	 *
-	 * @param PSX\Http\HandlerInterface $handler
+	 * @param \PSX\Http\HandlerInterface $handler
 	 * @return void
 	 */
 	public function setHandler(HandlerInterface $handler)
@@ -270,7 +270,7 @@ class Http
 	/**
 	 * Returns the handler
 	 *
-	 * @return PSX\Http\HandlerInterface
+	 * @return \PSX\Http\HandlerInterface
 	 */
 	public function getHandler()
 	{
@@ -280,7 +280,7 @@ class Http
 	/**
 	 * Sets an cookie store
 	 *
-	 * @param PSX\Http\CookieStoreInterface
+	 * @param \PSX\Http\CookieStoreInterface
 	 */
 	public function setCookieStore(CookieStoreInterface $cookieStore)
 	{
@@ -290,7 +290,7 @@ class Http
 	/**
 	 * Returns the cookie store
 	 *
-	 * @return PSX\Http\CookieStoreInterface
+	 * @return \PSX\Http\CookieStoreInterface
 	 */
 	public function getCookieStore()
 	{

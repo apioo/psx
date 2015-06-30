@@ -21,7 +21,6 @@
 namespace PSX\Data\Schema\Visitor;
 
 use PSX\Data\Schema\Property;
-use PSX\Data\SchemaAbstract;
 
 /**
  * AssimilationVisitorTest
@@ -105,7 +104,7 @@ class AssimilationVisitorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Data\Schema\ValidationException
+	 * @expectedException \PSX\Data\Schema\ValidationException
 	 */
 	public function testVisitDateTimeInvalidFormat()
 	{
@@ -126,7 +125,7 @@ class AssimilationVisitorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Data\Schema\ValidationException
+	 * @expectedException \PSX\Data\Schema\ValidationException
 	 */
 	public function testVisitDateInvalidFormat()
 	{
@@ -147,7 +146,7 @@ class AssimilationVisitorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Data\Schema\ValidationException
+	 * @expectedException \PSX\Data\Schema\ValidationException
 	 */
 	public function testVisitDurationInvalidFormat()
 	{
@@ -213,7 +212,7 @@ class AssimilationVisitorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException ErrorException
+	 * @expectedException \ErrorException
 	 */
 	public function testVisitStringInvalidFormat()
 	{
@@ -234,7 +233,7 @@ class AssimilationVisitorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Data\Schema\ValidationException
+	 * @expectedException \PSX\Data\Schema\ValidationException
 	 */
 	public function testVisitTimeInvalidFormat()
 	{

@@ -35,6 +35,11 @@ class SqlTest extends CacheTest
 {
 	protected $table = 'psx_cache_handler_sql_test';
 
+    /**
+     * @var \Doctrine\DBAL\Connection
+     */
+    protected $connection;
+
 	protected function setUp()
 	{
 		parent::setUp();

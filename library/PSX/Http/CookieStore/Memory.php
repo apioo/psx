@@ -54,6 +54,10 @@ class Memory implements CookieStoreInterface
 		{
 			return $this->container[$key];
 		}
+        else
+        {
+            return null;
+        }
 	}
 
 	public function remove($domain, Cookie $cookie)

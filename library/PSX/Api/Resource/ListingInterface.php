@@ -33,7 +33,7 @@ interface ListingInterface
 	 * Returns all available resources. Note the index does not contain any 
 	 * documentation it contains only the path and the available request methods
 	 *
-	 * @return array<PSX\Api\Resource>
+	 * @return \PSX\Api\Resource[]
 	 */
 	public function getResourceIndex();
 
@@ -42,7 +42,7 @@ interface ListingInterface
 	 * resource was not found
 	 *
 	 * @param string $sourcePath
-	 * @return PSX\Api\DocumentationInterface
+	 * @return \PSX\Api\DocumentationInterface
 	 */
 	public function getDocumentation($sourcePath);
 }

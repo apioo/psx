@@ -118,7 +118,7 @@ class ResponseParserTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Http\ParseException
+	 * @expectedException \PSX\Http\ParseException
 	 */
 	public function testParseInvalidStatusLine()
 	{
@@ -130,7 +130,7 @@ class ResponseParserTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testParseEmpty()
 	{
@@ -141,7 +141,7 @@ class ResponseParserTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Http\ParseException
+	 * @expectedException \PSX\Http\ParseException
 	 */
 	public function testParseNoLineEnding()
 	{
@@ -153,7 +153,7 @@ class ResponseParserTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testParseInvalidMode()
 	{
@@ -201,7 +201,7 @@ class ResponseParserTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Http\ParseException
+	 * @expectedException \PSX\Http\ParseException
 	 */
 	public function testBuildResponseFromHeaderInvalidStatusLine()
 	{
@@ -212,7 +212,7 @@ class ResponseParserTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Http\ParseException
+	 * @expectedException \PSX\Http\ParseException
 	 */
 	public function testBuildResponseFromHeaderEmpty()
 	{
@@ -220,7 +220,7 @@ class ResponseParserTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Http\ParseException
+	 * @expectedException \PSX\Http\ParseException
 	 */
 	public function testBuildResponseFromHeaderEmptyStatusLine()
 	{
@@ -229,6 +229,41 @@ class ResponseParserTest extends \PHPUnit_Framework_TestCase
 			'Vary: Accept-Encoding',
 		));
 	}
+
+    public function testBuildStatusLine()
+    {
+        $response = new Response(200);
+
+        $this->assertEquals('HTTP/1.1 200 OK', ResponseParser::buildStatusLine($response));
+    }
+
+    /**
+     * @expectedException \PSX\Exception
+     */
+    public function testBuildStatusLineUnknownStausCode()
+    {
+        $response = new Response(0);
+
+        ResponseParser::buildStatusLine($response);
+    }
+
+    /**
+     * @expectedException \PSX\Exception
+     */
+    public function testBuildStatusLineUnknownStausCodeWithNoReason()
+    {
+        $response = new Response(800);
+
+        ResponseParser::buildStatusLine($response);
+    }
+
+    public function testBuildStatusLineUnknownStausCodeWithReason()
+    {
+        $response = new Response();
+        $response->setStatus(800, 'Foo');
+
+        $this->assertEquals('HTTP/1.1 800 Foo', ResponseParser::buildStatusLine($response));
+    }
 
 	public function testConvert()
 	{

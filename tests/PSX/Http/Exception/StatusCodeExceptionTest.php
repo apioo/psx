@@ -30,7 +30,7 @@ namespace PSX\Http\Exception;
 class StatusCodeExceptionTest extends \PHPUnit_Framework_TestCase
 {
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testInvalidStatusCode()
 	{

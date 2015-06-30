@@ -36,13 +36,13 @@ trait RedirectTrait
 {
 	/**
 	 * @Inject
-	 * @var PSX\Loader
+	 * @var \PSX\Loader
 	 */
 	protected $loader;
 
 	/**
 	 * @Inject
-	 * @var PSX\Loader\ReverseRouter
+	 * @var \PSX\Loader\ReverseRouter
 	 */
 	protected $reverseRouter;
 

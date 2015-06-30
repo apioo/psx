@@ -22,7 +22,7 @@ namespace PSX\Oauth2\Authorization\AuthorizationCode;
 
 use PSX\Http;
 use PSX\Http\Handler\Callback;
-use PSX\Http\Response;
+use PSX\Http\RequestInterface;
 use PSX\Http\ResponseParser;
 use PSX\Oauth2\AccessToken;
 use PSX\Oauth2\Authorization\AuthorizationCode;
@@ -41,14 +41,14 @@ class TestCallbackAbstract extends CallbackAbstract
 {
 	/**
 	 * @Inject
-	 * @var PHPUnit_Framework_TestCase
+	 * @var \PHPUnit_Framework_TestCase
 	 */
 	protected $testCase;
 
 	protected function getAuthorizationCode($code, $state)
 	{
 		$testCase = $this->testCase;
-		$http = new Http(new Callback(function($request) use ($testCase){
+		$http = new Http(new Callback(function(RequestInterface $request) use ($testCase){
 
 			// api request
 			if($request->getUri()->getPath() == '/api')
@@ -71,6 +71,10 @@ Pragma: no-cache
 }
 TEXT;
 			}
+            else
+            {
+                throw new \RuntimeException('Invalid path');
+            }
 
 			return ResponseParser::convert($response, ResponseParser::MODE_LOOSE)->toString();
 

@@ -39,7 +39,7 @@ use Symfony\Component\Console\Helper\HelperSet;
 trait Console
 {
 	/**
-	 * @return Symfony\Component\Console\Application
+	 * @return \Symfony\Component\Console\Application
 	 */
 	public function getConsole()
 	{
@@ -52,7 +52,7 @@ trait Console
 	}
 
 	/**
-	 * @return PSX\Console\ReaderInterface
+	 * @return \PSX\Console\ReaderInterface
 	 */
 	public function getConsoleReader()
 	{

@@ -205,7 +205,7 @@ class Cookie
 	 * Converts an Cookie header into an array of cookie objects
 	 *
 	 * @param string $cookieList
-	 * @return array<PSX\Http\Cookie>
+	 * @return \PSX\Http\Cookie[]
 	 */
 	public static function parseList($cookieList)
 	{

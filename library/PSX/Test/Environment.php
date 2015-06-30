@@ -70,7 +70,7 @@ class Environment
 	}
 
 	/**
-	 * @return Symfony\Component\DependencyInjection\ContainerInterface
+	 * @return \Symfony\Component\DependencyInjection\ContainerInterface
 	 */
 	public static function getContainer()
 	{
@@ -92,7 +92,7 @@ class Environment
 	 * Returns a clean configuration which has the original values even if an
 	 * test has modified the config
 	 *
-	 * @return PSX\Config
+	 * @return \PSX\Config
 	 */
 	public static function getConfig()
 	{
@@ -148,6 +148,8 @@ class Environment
 
 	/**
 	 * @codeCoverageIgnore
+     * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
+     * @param \Closure $schemaSetup
 	 */
 	protected static function setupConnection(ContainerInterface $container, Closure $schemaSetup = null)
 	{
@@ -213,6 +215,8 @@ class Environment
 
 	/**
 	 * @codeCoverageIgnore
+     * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
+     * @return \PSX\Config
 	 */
 	protected static function buildConfig(ContainerInterface $container)
 	{

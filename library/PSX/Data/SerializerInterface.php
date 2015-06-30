@@ -36,8 +36,8 @@ interface SerializerInterface
 	 * the given version to extract only specific fields
 	 *
 	 * @param mixed $data
-	 * @param PSX\Api\Version $version
+	 * @param \PSX\Api\Version $version
 	 * @return array
 	 */
-	public function serialize($data, Version $version);
+	public function serialize($data, Version $version = null);
 }

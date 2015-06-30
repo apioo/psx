@@ -32,7 +32,7 @@ use PSX\Exception;
 class AuthorizationAbstractTest extends \PHPUnit_Framework_TestCase
 {
 	/**
-	 * @expectedException PSX\Oauth2\Authorization\Exception\InvalidRequestException
+	 * @expectedException \PSX\Oauth2\Authorization\Exception\InvalidRequestException
 	 */
 	public function testNormalErrorException()
 	{
@@ -44,7 +44,7 @@ class AuthorizationAbstractTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Exception
+	 * @expectedException \PSX\Exception
 	 */
 	public function testEmptyErrorException()
 	{
@@ -52,7 +52,7 @@ class AuthorizationAbstractTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Exception
+	 * @expectedException \PSX\Exception
 	 */
 	public function testUnknownErrorException()
 	{
@@ -63,7 +63,7 @@ class AuthorizationAbstractTest extends \PHPUnit_Framework_TestCase
 
 	/**
 	 *
-	 * @expectedException PSX\Oauth2\Authorization\Exception\InvalidRequestException
+	 * @expectedException \PSX\Oauth2\Authorization\Exception\InvalidRequestException
 	 */
 	public function testFacebookErrorException()
 	{

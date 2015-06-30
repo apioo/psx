@@ -32,9 +32,9 @@ use PSX\Url;
 class PostRequest extends Request
 {
 	/**
-	 * @param PSX\Url|string $url
+	 * @param \PSX\Url|string $url
 	 * @param array $headers
-	 * @param PSX\Http\StreamInterface|string|array $body
+	 * @param \PSX\Http\StreamInterface|string|array $body
 	 */
 	public function __construct($url, array $headers = array(), $body = null)
 	{

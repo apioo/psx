@@ -15,9 +15,9 @@ interface CacheItemPoolInterface
      *
      * @param string $key
      *   The key for which to return the corresponding Cache Item.
-     * @return \Psr\Cache\CacheItemInterface
+     * @return \PSX\Cache\CacheItemInterface
      *   The corresponding Cache Item.
-     * @throws \Psr\Cache\InvalidArgumentException
+     * @throws \InvalidArgumentException
      *   If the $key string is not a legal value a \Psr\Cache\InvalidArgumentException
      *   MUST be thrown.
      */

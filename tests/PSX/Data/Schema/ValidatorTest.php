@@ -63,7 +63,7 @@ JSON;
 	}
 
 	/**
-	 * @expectedException PSX\Data\Schema\ValidationException
+	 * @expectedException \PSX\Data\Schema\ValidationException
 	 * @expectedExceptionMessage /author must be an object
 	 */
 	public function testValidateInvalidObject()
@@ -96,7 +96,7 @@ JSON;
 	}
 
 	/**
-	 * @expectedException PSX\Data\Schema\ValidationException
+	 * @expectedException \PSX\Data\Schema\ValidationException
 	 * @expectedExceptionMessage /author/title is required
 	 */
 	public function testValidateInvalidObjectKey()
@@ -129,7 +129,7 @@ JSON;
 	}
 
 	/**
-	 * @expectedException PSX\Data\Schema\ValidationException
+	 * @expectedException \PSX\Data\Schema\ValidationException
 	 * @expectedExceptionMessage /receiver must be an array
 	 */
 	public function testValidateInvalidArray()
@@ -160,7 +160,7 @@ JSON;
 	}
 
 	/**
-	 * @expectedException PSX\Data\Schema\ValidationException
+	 * @expectedException \PSX\Data\Schema\ValidationException
 	 * @expectedExceptionMessage /receiver/0 must be an object
 	 */
 	public function testValidateInvalidArrayKey()

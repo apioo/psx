@@ -23,7 +23,6 @@ namespace PSX;
 use PSX\Http\CookieStore;
 use PSX\Http\GetRequest;
 use PSX\Http\Handler;
-use PSX\Http\Response;
 use PSX\Http\ResponseParser;
 
 /**
@@ -103,7 +102,7 @@ TEXT;
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testRelativeUrl()
 	{

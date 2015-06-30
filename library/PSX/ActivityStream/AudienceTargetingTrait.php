@@ -35,7 +35,7 @@ trait AudienceTargetingTrait
 	protected $bcc;
 
 	/**
-	 * @param PSX\ActivityStream\ObjectFactory $to
+	 * @param \PSX\ActivityStream\ObjectFactory $to
 	 */
 	public function setTo($to)
 	{
@@ -48,7 +48,7 @@ trait AudienceTargetingTrait
 	}
 
 	/**
-	 * @param PSX\ActivityStream\ObjectFactory $cc
+	 * @param \PSX\ActivityStream\ObjectFactory $cc
 	 */
 	public function setCc($cc)
 	{
@@ -61,7 +61,7 @@ trait AudienceTargetingTrait
 	}
 
 	/**
-	 * @param PSX\ActivityStream\ObjectFactory $bto
+	 * @param \PSX\ActivityStream\ObjectFactory $bto
 	 */
 	public function setBto($bto)
 	{
@@ -74,7 +74,7 @@ trait AudienceTargetingTrait
 	}
 
 	/**
-	 * @param PSX\ActivityStream\ObjectFactory $bcc
+	 * @param \PSX\ActivityStream\ObjectFactory $bcc
 	 */
 	public function setBcc($bcc)
 	{

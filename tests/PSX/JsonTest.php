@@ -44,7 +44,7 @@ class JsonTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Exception
+	 * @expectedException \PSX\Exception
 	 */
 	public function testJsonDecodeMalformed()
 	{
@@ -54,7 +54,7 @@ class JsonTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Exception
+	 * @expectedException \PSX\Exception
 	 */
 	public function testJsonDecodeControlCharacter()
 	{

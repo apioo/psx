@@ -126,6 +126,7 @@ interface TableInterface extends TableQueryInterface, TableManipulationInterface
 	/**
 	 * Returns whether the table has the $column
 	 *
+     * @param string $column
 	 * @return boolean
 	 */
 	public function hasColumn($column);

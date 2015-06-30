@@ -36,7 +36,7 @@ class CurveArray
 	 *
 	 * @param array $data
 	 * @param string $seperator
-	 * @return stdClass
+	 * @return \stdClass
 	 */
 	public static function nest(array $data, $seperator = '_')
 	{
@@ -70,6 +70,8 @@ class CurveArray
 	 *
 	 * @param array $data
 	 * @param string $seperator
+     * @param string $prefix
+     * @param array $result
 	 * @return array
 	 */
 	public static function flatten($data, $seperator = '_', $prefix = null, array &$result = null)
@@ -108,7 +110,7 @@ class CurveArray
 	 * structure
 	 *
 	 * @param array $data
-	 * @return stdClass|array
+	 * @return \stdClass|array
 	 */
 	public static function objectify(array $data)
 	{

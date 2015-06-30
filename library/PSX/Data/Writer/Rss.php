@@ -27,6 +27,8 @@ use PSX\Data\WriterInterface;
 use PSX\Exception;
 use PSX\Http\MediaType;
 use PSX\Rss as RssRecord;
+use PSX\Rss\Cloud;
+use PSX\Rss\Enclosure;
 use PSX\Rss\Item;
 use PSX\Rss\Writer;
 
@@ -159,12 +161,6 @@ class Rss implements WriterInterface
 			$writer->setTtl($ttl);
 		}
 
-		$image = $rss->getImage();
-		if(!empty($image))
-		{
-			$writer->setImage($image);
-		}
-
 		$rating = $rss->getRating();
 		if(!empty($rating))
 		{
@@ -241,12 +237,6 @@ class Rss implements WriterInterface
 		if($pubDate instanceof DateTime)
 		{
 			$writer->setPubDate($pubDate);
-		}
-
-		$source = $item->getSource();
-		if(!empty($source))
-		{
-			$writer->setSource($source);
 		}
 	}
 }

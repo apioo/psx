@@ -22,7 +22,6 @@ namespace PSX;
 
 use Psr\Log\LoggerInterface;
 use PSX\Dispatch\FilterChain;
-use PSX\Dispatch\FilterInterface;
 use PSX\Event\ControllerExecuteEvent;
 use PSX\Event\ControllerProcessedEvent;
 use PSX\Event\RouteMatchedEvent;
@@ -31,7 +30,6 @@ use PSX\Http\ResponseInterface;
 use PSX\Loader\CallbackResolverInterface;
 use PSX\Loader\Context;
 use PSX\Loader\InvalidPathException;
-use PSX\Loader\LocationFinder\RoutingFile;
 use PSX\Loader\LocationFinderInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use UnexpectedValueException;
@@ -71,9 +69,9 @@ class Loader implements LoaderInterface
 	 * Then uses the callback resolver to obtain the controller. After this the
 	 * controller gets executed
 	 *
-	 * @param PSX\Http\RequestInterface $request
-	 * @param PSX\Http\ResponseInterface $response
-	 * @param PSX\Loader\Context $context
+	 * @param \PSX\Http\RequestInterface $request
+	 * @param \PSX\Http\ResponseInterface $response
+	 * @param \PSX\Loader\Context $context
 	 * @return mixed
 	 */
 	public function load(RequestInterface $request, ResponseInterface $response, Context $context = null)
@@ -107,8 +105,8 @@ class Loader implements LoaderInterface
 	 * Executes an specific controller direct without any routing
 	 *
 	 * @param mixed $controller
-	 * @param PSX\Http\RequestInterface $request
-	 * @param PSX\Http\ResponseInterface $response
+	 * @param \PSX\Http\RequestInterface $request
+	 * @param \PSX\Http\ResponseInterface $response
 	 * @return void
 	 */
 	public function executeController($controller, RequestInterface $request, ResponseInterface $response)

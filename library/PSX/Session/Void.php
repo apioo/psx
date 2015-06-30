@@ -20,6 +20,7 @@
 
 namespace PSX\Session;
 
+use PSX\Session;
 use SessionHandlerInterface;
 
 /**
@@ -30,7 +31,7 @@ use SessionHandlerInterface;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Void extends \PSX\Session
+class Void extends Session
 {
 	protected $container = array();
 

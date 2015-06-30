@@ -36,9 +36,9 @@ class Merger
 	 * Merges data from two record into a new record. The right record 
 	 * overwrites values from the left record
 	 *
-	 * @param PSX\Data\RecordInterface $left
-	 * @param PSX\Data\RecordInterface $right
-	 * @return PSX\Data\RecordInterface
+	 * @param \PSX\Data\RecordInterface $left
+	 * @param \PSX\Data\RecordInterface $right
+	 * @return \PSX\Data\RecordInterface
 	 */
 	public static function merge(RecordInterface $left, RecordInterface $right)
 	{

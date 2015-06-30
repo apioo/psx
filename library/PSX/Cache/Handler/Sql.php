@@ -21,6 +21,7 @@
 namespace PSX\Cache\Handler;
 
 use Doctrine\DBAL\Connection;
+use PSX\Cache\CacheItemInterface;
 use PSX\Cache\HandlerInterface;
 use PSX\Cache\Item;
 use PSX\DateTime;
@@ -92,7 +93,7 @@ class Sql implements HandlerInterface
 		}
 	}
 
-	public function write(Item $item)
+	public function write(CacheItemInterface $item)
 	{
 		$columnId      = $this->allocation->get(self::COLUMN_ID);
 		$columnContent = $this->allocation->get(self::COLUMN_CONTENT);

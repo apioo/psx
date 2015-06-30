@@ -113,7 +113,7 @@ class WebSignatureTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Exception
+	 * @expectedException \PSX\Exception
 	 */
 	public function testValidateNoSignature()
 	{

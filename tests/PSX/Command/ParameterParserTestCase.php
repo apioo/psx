@@ -81,7 +81,7 @@ abstract class ParameterParserTestCase extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Command\MissingParameterException
+	 * @expectedException \PSX\Command\MissingParameterException
 	 */
 	public function testFillParametersRequired()
 	{
@@ -122,5 +122,8 @@ abstract class ParameterParserTestCase extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(false, $parameters->has('test'));
 	}
 
+    /**
+     * @return \PSX\Command\ParameterParserInterface
+     */
 	abstract protected function getParameterParser();
 }

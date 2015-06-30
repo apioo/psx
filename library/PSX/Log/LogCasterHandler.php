@@ -22,7 +22,6 @@ namespace PSX\Log;
 
 use Monolog\Handler\AbstractProcessingHandler;
 use Monolog\Logger;
-use PSX\Util\ExceptionContext;
 
 /**
  * A monolog handler to send messages to an logcaster server. See

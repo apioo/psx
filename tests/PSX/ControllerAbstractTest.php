@@ -20,14 +20,8 @@
 
 namespace PSX;
 
-use PSX\Dispatch\RedirectException;
-use PSX\Http\Request;
-use PSX\Http\Response;
-use PSX\Http\Stream\StringStream;
-use PSX\Http\Stream\TempStream;
 use PSX\Json;
 use PSX\Test\ControllerTestCase;
-use PSX\Url;
 
 /**
  * ControllerAbstractTest
@@ -185,9 +179,9 @@ XML;
 		$response = $this->sendRequest('http://127.0.0.1/controller/string', 'GET');
 		$body     = (string) $response->getBody();
 
-		$expect = <<<XML
+		$expect = <<<TEXT
 foobar
-XML;
+TEXT;
 
 		$this->assertEquals(null, $response->getStatusCode(), $body);
 		$this->assertEquals($expect, $body, $body);
@@ -203,9 +197,9 @@ XML;
 		$this->assertEquals('foo.txt', $body->getFileName());
 		$this->assertEquals('application/octet-stream', $body->getContentType());
 
-		$expect = <<<XML
+		$expect = <<<TEXT
 foobar
-XML;
+TEXT;
 
 		$this->assertEquals($expect, (string) $body);
 	}

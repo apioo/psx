@@ -67,7 +67,7 @@ class DigestAccessAuthentication implements FilterInterface
 	 * default onMissing callback
 	 *
 	 * @param Closure $ha1Callback
-	 * @param PSX\Data\Record\StoreInterface $digestStore
+	 * @param \PSX\Data\Record\StoreInterface $digestStore
 	 */
 	public function __construct(Closure $ha1Callback, StoreInterface $digestStore)
 	{
@@ -84,7 +84,7 @@ class DigestAccessAuthentication implements FilterInterface
 
 		$this->onMissing(function(ResponseInterface $response) use ($digestStore) {
 			$digest = new Digest();
-			$digest->setNonce(sha1(time() + uniqid()));
+			$digest->setNonce(sha1(time() . uniqid()));
 			$digest->setOpaque(sha1(session_id()));
 
 			$digestStore->save('digest', $digest);

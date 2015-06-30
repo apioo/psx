@@ -76,7 +76,7 @@ abstract class CallbackAbstract extends ApiAbstract
 	 *
 	 * @param string $code
 	 * @param string $state
-	 * @return PSX\Oauth2\Authorization\AuthorizationCode
+	 * @return \PSX\Oauth2\Authorization\AuthorizationCode
 	 */
 	abstract protected function getAuthorizationCode($code, $state);
 
@@ -84,14 +84,14 @@ abstract class CallbackAbstract extends ApiAbstract
 	 * Is called if we have obtained an access token from the authorization 
 	 * server
 	 *
-	 * @param PSX\Oauth2\AccessToken $accessToken
+	 * @param \PSX\Oauth2\AccessToken $accessToken
 	 */
 	abstract protected function onAccessToken(AccessToken $accessToken);
 
 	/**
 	 * Is called if the client was redirected with an GET error parameter
 	 *
-	 * @param Exception $e
+	 * @param \Exception $e
 	 */
 	abstract protected function onError(\Exception $e);
 }

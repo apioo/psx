@@ -20,7 +20,6 @@
 
 namespace PSX\Data\Reader;
 
-use PSX\Data\ReaderInterface;
 use PSX\Http\Message;
 
 /**

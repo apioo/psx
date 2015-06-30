@@ -23,9 +23,9 @@ namespace PSX\Data\Schema\Visitor;
 use PSX\Data\Record;
 use PSX\Data\Schema\Property;
 use PSX\Data\Schema\PropertyInterface;
+use PSX\Data\Schema\PropertySimpleAbstract;
 use PSX\Data\Schema\ValidationException;
 use PSX\Data\Schema\VisitorInterface;
-use PSX\Data\SchemaInterface;
 use PSX\DateTime;
 use RuntimeException;
 
@@ -108,7 +108,7 @@ class ValidationVisitor implements VisitorInterface
 		}
 		else if(is_string($data))
 		{
-			$result = preg_match('/^' . \PSX\DateTime::getPattern() . '$/', $data);
+			$result = preg_match('/^' . DateTime::getPattern() . '$/', $data);
 
 			if($result)
 			{
@@ -133,7 +133,7 @@ class ValidationVisitor implements VisitorInterface
 		}
 		else if(is_string($data))
 		{
-			$result = preg_match('/^' . \PSX\DateTime\Date::getPattern() . '$/', $data);
+			$result = preg_match('/^' . DateTime\Date::getPattern() . '$/', $data);
 
 			if($result)
 			{
@@ -158,7 +158,7 @@ class ValidationVisitor implements VisitorInterface
 		}
 		else if(is_string($data))
 		{
-			$result = preg_match('/^' . \PSX\DateTime\Duration::getPattern() . '$/', $data);
+			$result = preg_match('/^' . DateTime\Duration::getPattern() . '$/', $data);
 
 			if($result)
 			{
@@ -297,7 +297,7 @@ class ValidationVisitor implements VisitorInterface
 		}
 		else if(is_string($data))
 		{
-			$result = preg_match('/^' . \PSX\DateTime\Time::getPattern() . '$/', $data);
+			$result = preg_match('/^' . DateTime\Time::getPattern() . '$/', $data);
 
 			if($result)
 			{
@@ -308,7 +308,7 @@ class ValidationVisitor implements VisitorInterface
 		throw new ValidationException($path . ' must be an valid full-time format (partial-time time-offset) [RFC3339]');
 	}
 
-	protected function assertCompositeProperties(PropertyInterface $property, $path)
+	protected function assertCompositeProperties(Property\CompositeTypeAbstract $property, $path)
 	{
 		if(count($property) == 0)
 		{
@@ -324,7 +324,7 @@ class ValidationVisitor implements VisitorInterface
 		}
 	}
 
-	protected function assertPropertySimpleConstraints($data, PropertyInterface $property, $path)
+	protected function assertPropertySimpleConstraints($data, PropertySimpleAbstract $property, $path)
 	{
 		if($property->getPattern() !== null)
 		{
@@ -345,7 +345,7 @@ class ValidationVisitor implements VisitorInterface
 		}
 	}
 
-	protected function assertDecimalConstraints($data, PropertyInterface $property, $path)
+	protected function assertDecimalConstraints($data, Property\DecimalType $property, $path)
 	{
 		if($property->getMax() !== null)
 		{

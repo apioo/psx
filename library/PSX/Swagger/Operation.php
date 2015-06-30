@@ -96,7 +96,7 @@ class Operation extends RecordAbstract
 	}
 
 	/**
-	 * @param array<PSX\Swagger\ResponseMessage> $responseMessages
+	 * @param \PSX\Swagger\ResponseMessage[] $responseMessages
 	 */
 	public function setResponseMessages($responseMessages)
 	{
@@ -114,7 +114,7 @@ class Operation extends RecordAbstract
 	}
 
 	/**
-	 * @param array<PSX\Swagger\Parameter> $parameters
+	 * @param \PSX\Swagger\Parameter[] $parameters
 	 */
 	public function setParameters($parameters)
 	{

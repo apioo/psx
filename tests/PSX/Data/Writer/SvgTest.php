@@ -64,7 +64,7 @@ class SvgTest extends TemplateAbstractTestCase
 	}
 
 	/**
-	 * @expectedException PSX\Http\Exception\UnsupportedMediaTypeException
+	 * @expectedException \PSX\Http\Exception\UnsupportedMediaTypeException
 	 */
 	public function testFallbackGenerator()
 	{

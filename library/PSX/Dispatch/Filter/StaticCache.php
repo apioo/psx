@@ -42,7 +42,7 @@ class StaticCache implements FilterInterface
 	protected $ttl;
 
 	/**
-	 * @param PSX\Cache\CacheItemPoolInterface $cache
+	 * @param \PSX\Cache\CacheItemPoolInterface $cache
 	 * @param callable $keyGenerator
 	 * @param integer $ttl
 	 */
@@ -113,7 +113,7 @@ class StaticCache implements FilterInterface
 	 * custom key generator function in the constructor to override this 
 	 * behaviour
 	 *
-	 * @param PSX\Http\RequestInterface $request
+	 * @param \PSX\Http\RequestInterface $request
 	 * @return string
 	 */
 	protected function getKeyDefaultImpl(RequestInterface $request)
@@ -134,6 +134,7 @@ class StaticCache implements FilterInterface
 	/**
 	 * Returns an array containing all headers which gets saved in the cache
 	 *
+     * @param \PSX\Http\ResponseInterface $response
 	 * @return array
 	 */
 	protected function getCacheHeaders(ResponseInterface $response)

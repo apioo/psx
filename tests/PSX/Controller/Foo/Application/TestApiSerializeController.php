@@ -34,13 +34,13 @@ class TestApiSerializeController extends ApiAbstract
 {
 	/**
 	 * @Inject
-	 * @var PHPUnit_Framework_TestCase
+	 * @var \PHPUnit_Framework_TestCase
 	 */
 	protected $testCase;
 
 	/**
 	 * @Inject
-	 * @var PSX\Data\SerializerInterface
+	 * @var \PSX\Data\SerializerInterface
 	 */
 	protected $serializer;
 

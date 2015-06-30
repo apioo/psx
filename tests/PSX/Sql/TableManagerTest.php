@@ -61,7 +61,7 @@ class TableManagerTest extends DbTestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testGetTableInvalidTable()
 	{

@@ -40,7 +40,7 @@ class Place extends Object
 	}
 
 	/**
-	 * @param PSX\ActivityStream\Position $position
+	 * @param \PSX\ActivityStream\Position $position
 	 */
 	public function setPosition($position)
 	{
@@ -53,7 +53,7 @@ class Place extends Object
 	}
 
 	/**
-	 * @param PSX\ActivityStream\Address $address
+	 * @param \PSX\ActivityStream\Address $address
 	 */
 	public function setAddress($address)
 	{

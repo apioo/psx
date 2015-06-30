@@ -21,14 +21,11 @@
 namespace PSX\Controller\Tool;
 
 use PSX\Api\DocumentationInterface;
-use PSX\Api\DocumentedInterface;
 use PSX\Api\Resource;
 use PSX\Api\Resource\Generator;
 use PSX\ControllerAbstract;
 use PSX\Data\WriterInterface;
 use PSX\Http\Exception as HttpException;
-use PSX\Loader\Context;
-use PSX\Loader\PathMatcher;
 use PSX\Swagger\ResourceListing;
 use PSX\Swagger\ResourceObject;
 use PSX\Util\ApiGeneration;
@@ -44,7 +41,7 @@ class SwaggerGeneratorController extends ControllerAbstract
 {
 	/**
 	 * @Inject
-	 * @var PSX\Api\ResourceListing
+	 * @var \PSX\Api\Resource\ListingInterface
 	 */
 	protected $resourceListing;
 

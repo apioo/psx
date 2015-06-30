@@ -20,8 +20,6 @@
 
 namespace PSX\ActivityStream;
 
-use PSX\Data\RecordAbstract;
-
 /**
  * Object
  *

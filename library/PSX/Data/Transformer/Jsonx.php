@@ -23,7 +23,6 @@ namespace PSX\Data\Transformer;
 use DOMDocument;
 use DOMElement;
 use InvalidArgumentException;
-use PSX\Data\Reader\Xml;
 use PSX\Data\TransformerInterface;
 use PSX\Http\MediaType;
 
@@ -83,6 +82,9 @@ class Jsonx implements TransformerInterface
 
 			case 'null':
 				return null;
+
+            default:
+                throw new InvalidArgumentException('Invalid element name');
 		}
 	}
 

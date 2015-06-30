@@ -21,7 +21,6 @@
 namespace PSX\Data\Writer;
 
 use PSX\Data\Record\Visitor;
-use PSX\Data\WriterInterface;
 use PSX\Http\MediaType;
 use XMLWriter;
 

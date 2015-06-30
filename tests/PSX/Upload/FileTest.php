@@ -65,7 +65,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Upload\Exception
+	 * @expectedException \PSX\Upload\Exception
 	 */
 	public function testFileIniSize()
 	{
@@ -73,7 +73,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Upload\Exception
+	 * @expectedException \PSX\Upload\Exception
 	 */
 	public function testFileFormSize()
 	{
@@ -81,7 +81,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Upload\Exception
+	 * @expectedException \PSX\Upload\Exception
 	 */
 	public function testFilePartial()
 	{
@@ -89,7 +89,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Upload\Exception
+	 * @expectedException \PSX\Upload\Exception
 	 */
 	public function testFileNoFile()
 	{
@@ -97,7 +97,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Upload\Exception
+	 * @expectedException \PSX\Upload\Exception
 	 */
 	public function testFileNoTmpDir()
 	{
@@ -105,7 +105,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
 	}
 	
 	/**
-	 * @expectedException PSX\Upload\Exception
+	 * @expectedException \PSX\Upload\Exception
 	 */
 	public function testFileCantWrite()
 	{
@@ -113,7 +113,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Upload\Exception
+	 * @expectedException \PSX\Upload\Exception
 	 */
 	public function testFileExtension()
 	{
@@ -121,7 +121,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Upload\Exception
+	 * @expectedException \PSX\Upload\Exception
 	 */
 	public function testFileUnknown()
 	{

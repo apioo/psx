@@ -59,7 +59,7 @@ trait TableTestCase
 	 * 	date = '2013-04-29 16:56:32'
 	 * </code>
 	 *
-	 * @return PSX\Table\TableInterface
+	 * @return \PSX\Sql\TableInterface
 	 */
 	protected function getTable()
 	{
@@ -601,7 +601,7 @@ trait TableTestCase
 	}
 
 	/**
-	 * @expectedException PSX\Exception
+	 * @expectedException \PSX\Exception
 	 */
 	public function testCreateEmpty()
 	{
@@ -639,7 +639,7 @@ trait TableTestCase
 	}
 
 	/**
-	 * @expectedException PSX\Exception
+	 * @expectedException \PSX\Exception
 	 */
 	public function testUpdateEmpty()
 	{
@@ -672,7 +672,7 @@ trait TableTestCase
 	}
 
 	/**
-	 * @expectedException PSX\Exception
+	 * @expectedException \PSX\Exception
 	 */
 	public function testDeleteEmpty()
 	{

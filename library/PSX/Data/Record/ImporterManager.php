@@ -31,6 +31,9 @@ use PSX\Util\PriorityQueue;
  */
 class ImporterManager
 {
+    /**
+     * @var \PSX\Data\Record\ImporterInterface[]
+     */
 	protected $importers;
 
 	public function __construct()
@@ -46,7 +49,8 @@ class ImporterManager
 	/**
 	 * Returns the fitting importer for the source
 	 *
-	 * @return PSX\Data\Record\ImporterInterface
+     * @param mixed $source
+	 * @return \PSX\Data\Record\ImporterInterface
 	 */
 	public function getImporterBySource($source)
 	{
@@ -64,7 +68,8 @@ class ImporterManager
 	/**
 	 * Returns the importer which is an instanceof the given class name
 	 *
-	 * @return PSX\Data\Record\ImporterInterface
+     * @param string $className
+	 * @return \PSX\Data\Record\ImporterInterface
 	 */
 	public function getImporterByInstance($className)
 	{

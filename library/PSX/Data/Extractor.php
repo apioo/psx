@@ -20,9 +20,7 @@
 
 namespace PSX\Data;
 
-use PSX\Data\ReaderFactory;
 use PSX\Data\Transformer\TransformerManager;
-use PSX\Data\TransformerInterface;
 use PSX\Http\MessageInterface;
 
 /**
@@ -35,12 +33,12 @@ use PSX\Http\MessageInterface;
 class Extractor
 {
 	/**
-	 * @var PSX\Data\ReaderFactory
+	 * @var \PSX\Data\ReaderFactory
 	 */
 	protected $readerFactory;
 
 	/**
-	 * @var PSX\Data\Transformer\TransformerManager
+	 * @var \PSX\Data\Transformer\TransformerManager
 	 */
 	protected $transformerManager;
 
@@ -54,8 +52,8 @@ class Extractor
 	 * Extracts the body from an http message and transforms the data into an 
 	 * array structure
 	 *
-	 * @param PSX\Http\MessageInterface $message
-	 * @param PSX\Data\TransformerInterface $transformer
+	 * @param \PSX\Http\MessageInterface $message
+	 * @param \PSX\Data\TransformerInterface $transformer
 	 * @param string $readerType
 	 * @return array
 	 */

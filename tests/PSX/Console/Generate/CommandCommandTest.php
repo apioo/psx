@@ -72,7 +72,7 @@ class CommandCommandTest extends CommandTestCase
 	}
 
 	/**
-	 * @expectedException RuntimeException
+	 * @expectedException \RuntimeException
 	 */
 	public function testCommandFileExists()
 	{
@@ -141,13 +141,13 @@ class Bar extends CommandAbstract
 {
 	/**
 	 * @Inject
-	 * @var Doctrine\DBAL\Connection
+	 * @var \Doctrine\DBAL\Connection
 	 */
 	protected $connection;
 
 	/**
 	 * @Inject
-	 * @var PSX\TemplateInterface
+	 * @var \PSX\TemplateInterface
 	 */
 	protected $template;
 

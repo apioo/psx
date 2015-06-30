@@ -20,8 +20,6 @@
 
 namespace PSX\Data\Record\Visitor;
 
-use PSX\Data\RecordInterface;
-
 /**
  * Creates a new object tree using an simple stdClass for object representation 
  *

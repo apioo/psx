@@ -20,7 +20,6 @@
 
 namespace PSX\Data;
 
-use PSX\Data\RecordInterface;
 use PSX\Validate;
 
 /**

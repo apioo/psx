@@ -120,6 +120,7 @@ class MediaType
 	/**
 	 * Checks whether the given media type would match
 	 *
+     * @param \PSX\Http\MediaType $mediaType
 	 * @return boolean
 	 */
 	public function match(MediaType $mediaType)

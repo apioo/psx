@@ -34,7 +34,7 @@ class ErrorCommand extends CommandAbstract
 {
 	/**
 	 * @Inject
-	 * @var Psr\Log\LoggerInterface
+	 * @var \Psr\Log\LoggerInterface
 	 */
 	protected $logger;
 

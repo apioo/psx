@@ -37,7 +37,7 @@ class Mapper
 	 * Method wich can map all fields of an record to an arbitary class by
 	 * calling the fitting setter methods if available
 	 *
-	 * @param PSX\Data\RecordInterface $source
+	 * @param \PSX\Data\RecordInterface $source
 	 * @param object $destination
 	 * @param array $rules
 	 */
@@ -58,6 +58,7 @@ class Mapper
 				$key = implode('', array_map('ucfirst', explode('_', $key)));
 			}
 
+            $method = null;
 			if(isset($rules[$key]))
 			{
 				if(is_string($rules[$key]))

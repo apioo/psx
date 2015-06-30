@@ -24,7 +24,6 @@ use PSX\Api\Resource;
 use PSX\Api\Resource\GeneratorAbstract;
 use PSX\Data\Schema\Generator\JsonSchema as JsonSchemaGenerator;
 use PSX\Data\Schema\Property;
-use PSX\Data\Schema\PropertyInterface;
 use PSX\Data\SchemaInterface;
 use PSX\Json;
 
@@ -47,7 +46,6 @@ class JsonSchema extends GeneratorAbstract
 
 	public function generate(Resource $resource)
 	{
-		$schemas = array();
 		$methods = $resource->getMethods();
 
 		$definitions = array();
@@ -102,7 +100,6 @@ class JsonSchema extends GeneratorAbstract
 		$generator   = new JsonSchemaGenerator($this->targetNamespace);
 		$data        = json_decode($generator->generate($schema), true);
 		$definitions = array();
-		$properties  = array();
 
 		unset($data['$schema']);
 		unset($data['id']);

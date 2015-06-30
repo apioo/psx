@@ -106,6 +106,7 @@ class Session
 
 	/**
 	 * @codeCoverageIgnore
+     * @param string $id
 	 */
 	public function setId($id)
 	{
@@ -122,6 +123,7 @@ class Session
 
 	/**
 	 * @codeCoverageIgnore
+     * @param \SessionHandlerInterface $handler
 	 */
 	public function setSaveHandler(SessionHandlerInterface $handler)
 	{
@@ -130,6 +132,7 @@ class Session
 
 	/**
 	 * @codeCoverageIgnore
+     * @param string $path
 	 */
 	public function setSavePath($path)
 	{

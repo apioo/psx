@@ -40,7 +40,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Config\NotFoundException
+	 * @expectedException \PSX\Config\NotFoundException
 	 */
 	public function testDefinitionConfig()
 	{
@@ -51,7 +51,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Config\NotFoundException
+	 * @expectedException \PSX\Config\NotFoundException
 	 */
 	public function testDefinitionConfigInvalidType()
 	{
@@ -67,7 +67,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Config\NotFoundException
+	 * @expectedException \PSX\Config\NotFoundException
 	 */
 	public function testReturnConfigInvalidType()
 	{
@@ -75,7 +75,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Config\NotFoundException
+	 * @expectedException \PSX\Config\NotFoundException
 	 */
 	public function testNoConfig()
 	{
@@ -83,7 +83,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException ErrorException
+	 * @expectedException \ErrorException
 	 */
 	public function testConfigFileNotExisting()
 	{

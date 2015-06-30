@@ -20,7 +20,6 @@
 
 namespace PSX\Data;
 
-use PSX\Data\Record\DefaultImporter;
 use PSX\Exception;
 use PSX\Http\Message;
 use PSX\Test\Environment;
@@ -38,7 +37,7 @@ abstract class SerializeTestAbstract extends \PHPUnit_Framework_TestCase
 	 * Checks whether the records can be serialzed to the content format and the
 	 * content format can be serialized to the record without loosing data
 	 *
-	 * @param PSX\Data\RecordInterface $record
+	 * @param \PSX\Data\RecordInterface $record
 	 * @param string $content
 	 */
 	protected function assertRecordEqualsContent(RecordInterface $record, $content)

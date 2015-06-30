@@ -22,12 +22,10 @@ namespace PSX\Api\Resource\Listing;
 
 use PSX\Api\Documentation;
 use PSX\Api\DocumentationInterface;
-use PSX\Api\DocumentedInterface;
 use PSX\Api\Resource;
 use PSX\Api\Resource\ListingInterface;
 use PSX\Cache;
 use PSX\Data\Schema;
-use PSX\Loader\PathMatcher;
 
 /**
  * CachedListing
@@ -102,7 +100,7 @@ class CachedListing implements ListingInterface
 	 * database. So before we cache the documentation we must get the actual 
 	 * definition object which we can serialize
 	 *
-	 * @param PSX\Api\DocumentationInterface
+	 * @param \PSX\Api\DocumentationInterface $documentation
 	 */
 	protected function materializeDocumentation(DocumentationInterface $documentation)
 	{

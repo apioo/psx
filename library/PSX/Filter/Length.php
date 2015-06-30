@@ -64,8 +64,6 @@ class Length extends FilterAbstract
 
 			return $this->compare(strlen($value));
 		}
-
-		return false;
 	}
 
 	public function getErrorMessage()
@@ -86,7 +84,7 @@ class Length extends FilterAbstract
 		{
 			return $len <= $this->min;
 		}
-		else if($this->max !== null)
+		else
 		{
 			return $len >= $this->min && $len <= $this->max;
 		}

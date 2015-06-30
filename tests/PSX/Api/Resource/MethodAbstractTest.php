@@ -50,7 +50,7 @@ class MethodAbstractTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException RuntimeException
+	 * @expectedException \RuntimeException
 	 */
 	public function testGetResponseInvalid()
 	{

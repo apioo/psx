@@ -23,7 +23,6 @@ namespace PSX\Loader;
 use PSX\ControllerAbstract;
 use PSX\Http\Request;
 use PSX\Http\Response;
-use PSX\Loader\Context;
 
 /**
  * ProbeController

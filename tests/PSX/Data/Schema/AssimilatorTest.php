@@ -117,7 +117,7 @@ class AssimilatorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Data\Schema\ValidationException
+	 * @expectedException \PSX\Data\Schema\ValidationException
 	 */
 	public function testAssimilateMissingRequired()
 	{
@@ -140,7 +140,7 @@ class AssimilatorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Data\Schema\ValidationException
+	 * @expectedException \PSX\Data\Schema\ValidationException
 	 */
 	public function testAssimilateComplexTypeString()
 	{
@@ -153,7 +153,7 @@ class AssimilatorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Data\Schema\ValidationException
+	 * @expectedException \PSX\Data\Schema\ValidationException
 	 */
 	public function testAssimilateArrayTypeString()
 	{
@@ -166,7 +166,7 @@ class AssimilatorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException ErrorException
+	 * @expectedException \ErrorException
 	 */
 	public function testAssimilateCastArrayToString()
 	{
@@ -178,7 +178,7 @@ class AssimilatorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException ErrorException
+	 * @expectedException \ErrorException
 	 */
 	public function testAssimilateCastObjectToString()
 	{

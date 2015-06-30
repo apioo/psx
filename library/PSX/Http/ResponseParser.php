@@ -37,7 +37,7 @@ class ResponseParser extends ParserAbstract
 	 * Converts an raw http response into an PSX\Http\Response object
 	 *
 	 * @param string $content
-	 * @return PSX\Http\Response
+	 * @return \PSX\Http\Response
 	 */
 	public function parse($content)
 	{
@@ -130,12 +130,43 @@ class ResponseParser extends ParserAbstract
 		}
 	}
 
+    /**
+     * @param \PSX\Http\ResponseInterface $response
+     * @return string
+     */
+    public static function buildStatusLine(ResponseInterface $response)
+    {
+        $protocol = $response->getProtocolVersion();
+        $code     = $response->getStatusCode();
+        $phrase   = $response->getReasonPhrase();
+
+        if(empty($code))
+        {
+            throw new Exception('Status code not set');
+        }
+
+        $protocol = !empty($protocol) ? $protocol : 'HTTP/1.1';
+
+        if(empty($phrase) && isset(Http::$codes[$code]))
+        {
+            $phrase = Http::$codes[$code];
+        }
+
+        if(empty($phrase))
+        {
+            throw new Exception('No reason phrase provided');
+        }
+
+        return $protocol . ' ' . $code . ' ' . $phrase;
+    }
+
 	/**
 	 * Parses an raw http response into an PSX\Http\Response object. Throws an
 	 * exception if the response has not an valid format
 	 *
 	 * @param string $content
-	 * @return PSX\Http\Response
+     * @param integer $mode
+	 * @return \PSX\Http\Response
 	 */
 	public static function convert($content, $mode = ParserAbstract::MODE_STRICT)
 	{

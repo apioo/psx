@@ -20,12 +20,8 @@
 
 namespace PSX\Controller\SchemaApi;
 
-use PSX\Http\Request;
-use PSX\Http\Response;
-use PSX\Http\Stream\TempStream;
 use PSX\Json;
 use PSX\Test\ControllerDbTestCase;
-use PSX\Url;
 
 /**
  * EntityTest

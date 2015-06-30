@@ -157,7 +157,7 @@ class OpenSslTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\OpenSsl\Exception
+	 * @expectedException \PSX\OpenSsl\Exception
 	 */
 	public function testSealInvalidPubKeyType()
 	{

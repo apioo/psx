@@ -35,7 +35,7 @@ interface ParserInterface
 	 *
 	 * @param string $schema
 	 * @param string $path
-	 * @return PSX\Api\DocumentationInterface
+	 * @return \PSX\Api\DocumentationInterface
 	 */
 	public function parse($schema, $path);
 }

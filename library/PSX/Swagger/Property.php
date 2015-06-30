@@ -22,7 +22,6 @@ namespace PSX\Swagger;
 
 use InvalidArgumentException;
 use PSX\Data\RecordAbstract;
-use PSX\Data\RecordInfo;
 
 /**
  * Property

@@ -33,9 +33,9 @@ use PSX\Http\ResponseInterface;
 interface FilterInterface
 {
 	/**
-	 * @param PSX\Http\RequestInterface $request
-	 * @param PSX\Http\ResponseInterface $response
-	 * @param PSX\Dispatch\FilterChainInterface $filterChain
+	 * @param \PSX\Http\RequestInterface $request
+	 * @param \PSX\Http\ResponseInterface $response
+	 * @param \PSX\Dispatch\FilterChainInterface $filterChain
 	 * @return void
 	 */
 	public function handle(RequestInterface $request, ResponseInterface $response, FilterChainInterface $filterChain);

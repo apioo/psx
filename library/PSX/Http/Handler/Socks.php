@@ -20,13 +20,14 @@
 
 namespace PSX\Http\Handler;
 
+use Doctrine\ORM\Query\Parser;
+use PSX\Exception;
 use PSX\Http;
 use PSX\Http\HandlerException;
 use PSX\Http\HandlerInterface;
 use PSX\Http\NotSupportedException;
 use PSX\Http\Options;
-use PSX\Http\Request;
-use PSX\Http\Response;
+use PSX\Http\RequestInterface;
 use PSX\Http\ResponseParser;
 use PSX\Http\Stream\SocksStream;
 use PSX\Http\Stream\StringStream;
@@ -52,7 +53,7 @@ class Socks implements HandlerInterface
 		$this->chunkSize = $chunkSize;
 	}
 
-	public function request(Request $request, Options $options)
+	public function request(RequestInterface $request, Options $options)
 	{
 		$context = stream_context_create();
 
@@ -118,7 +119,7 @@ class Socks implements HandlerInterface
 			// write header
 			$headers = ResponseParser::buildHeaderFromMessage($request);
 
-			fwrite($handle, $request->getLine() . Http::$newLine);
+			fwrite($handle, Http\ParserAbstract::buildStatusLine($request) . Http::$newLine);
 
 			foreach($headers as $header)
 			{

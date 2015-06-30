@@ -53,7 +53,7 @@ interface MessageInterface
      * The version string MUST contain only the HTTP version number (e.g.,
      * "1.1", "1.0").
      *
-     * @param string $version HTTP protocol version
+     * @param string $protocol HTTP protocol version
      * @return void
 	 */
 	public function setProtocolVersion($protocol);
@@ -142,17 +142,24 @@ interface MessageInterface
 	 */
 	public function addHeader($name, $value);
 
+    /**
+     * Removes the given header name
+     *
+     * @param string $name
+     */
+    public function removeHeader($name);
+
 	/**
 	 * Gets the body of the message
 	 *
-	 * @return Psr\Http\Message\StreamInterface
+	 * @return \Psr\Http\Message\StreamInterface
 	 */
 	public function getBody();
 
 	/**
 	 * Sets the specified message body
 	 *
-	 * @param Psr\Http\Message\StreamInterface $body
+	 * @param \Psr\Http\Message\StreamInterface $body
 	 */
 	public function setBody(PsrStreamInterface $body);
 }

@@ -33,7 +33,7 @@ abstract class ViewAbstract extends ControllerAbstract
 {
 	/**
 	 * @Inject
-	 * @var PSX\TemplateInterface
+	 * @var \PSX\TemplateInterface
 	 */
 	protected $template;
 }

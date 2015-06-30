@@ -20,9 +20,7 @@
 
 namespace PSX\Data\Schema;
 
-use PSX\Data\RecordInterface;
 use PSX\Data\Schema\Property;
-use PSX\Data\Schema\PropertyInterface;
 use PSX\Data\SchemaInterface;
 
 /**

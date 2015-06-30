@@ -96,7 +96,7 @@ class Response extends Message implements ResponseInterface
 	 */
 	public function toString()
 	{
-		$response = $this->getLine() . Http::$newLine;
+		$response = ResponseParser::buildStatusLine($this) . Http::$newLine;
 		$headers  = ResponseParser::buildHeaderFromMessage($this);
 
 		foreach($headers as $header)
@@ -108,37 +108,6 @@ class Response extends Message implements ResponseInterface
 		$response.= (string) $this->getBody();
 
 		return $response;
-	}
-
-	/**
-	 * Returns the http response line
-	 *
-	 * @return string
-	 */
-	public function getLine()
-	{
-		$protocol = $this->getProtocolVersion();
-		$code     = $this->getStatusCode();
-		$phrase   = $this->getReasonPhrase();
-
-		if(empty($code))
-		{
-			throw new Exception('Status code not set');
-		}
-
-		$protocol = !empty($protocol) ? $protocol : 'HTTP/1.1';
-
-		if(empty($phrase) && isset(Http::$codes[$code]))
-		{
-			$phrase = Http::$codes[$code];
-		}
-
-		if(empty($phrase))
-		{
-			throw new Exception('No reason phrase provided');
-		}
-
-		return $protocol . ' ' . $code . ' ' . $phrase;
 	}
 
 	public function __toString()

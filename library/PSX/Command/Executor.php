@@ -44,6 +44,11 @@ class Executor
 
 	protected $aliases = array();
 
+    /**
+     * @param \PSX\Dispatch\CommandFactoryInterface $factory
+     * @param \PSX\Command\OutputInterface $output
+     * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
+     */
 	public function __construct(CommandFactoryInterface $factory, OutputInterface $output, EventDispatcherInterface $eventDispatcher)
 	{
 		$this->factory         = $factory;
@@ -87,9 +92,7 @@ class Executor
 
 			$context->set(Context::KEY_EXCEPTION, $e);
 
-			$class = isset($this->config['psx_error_command']) ? $this->config['psx_error_command'] : 'PSX\Command\ErrorCommand';
-
-			$this->factory->getCommand($class, $context)->onExecute(new Parameters(), $this->output);
+			$this->factory->getCommand('PSX\Command\ErrorCommand', $context)->onExecute(new Parameters(), $this->output);
 		}
 
 		$this->eventDispatcher->dispatch(Event::COMMAND_PROCESSED, new CommandProcessedEvent($command, $parameters));

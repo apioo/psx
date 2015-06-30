@@ -35,8 +35,8 @@ interface FilterChainInterface
 	/**
 	 * Calls the next filter in the chain
 	 *
-	 * @param PSX\Http\RequestInterface $request
-	 * @param PSX\Http\ResponseInterface $response
+	 * @param \PSX\Http\RequestInterface $request
+	 * @param \PSX\Http\ResponseInterface $response
 	 */
 	public function handle(RequestInterface $request, ResponseInterface $response);
 }

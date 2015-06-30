@@ -29,6 +29,11 @@ namespace PSX\Http\Stream;
  */
 abstract class StreamTestCase extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var \PSX\Http\StreamInterface
+     */
+    protected $stream;
+
 	protected function setUp()
 	{
 		$this->stream = $this->getStream();
@@ -42,7 +47,7 @@ abstract class StreamTestCase extends \PHPUnit_Framework_TestCase
 	/**
 	 * Returns the stream wich gets tested. Must contain the string foobar
 	 *
-	 * @return PSX\Http\StreamInterface
+	 * @return \PSX\Http\StreamInterface
 	 */
 	abstract protected function getStream();
 

@@ -80,7 +80,7 @@ abstract class ObjectAbstract extends RecordAbstract
 	}
 
 	/**
-	 * @param PSX\ActivityStream\ObjectFactory $url
+	 * @param \PSX\ActivityStream\ObjectFactory $url
 	 */
 	public function setUrl($url)
 	{

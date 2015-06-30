@@ -35,7 +35,7 @@ class Annotation
 	 * Parses the annotations from the given doc block
 	 *
 	 * @param string $doc
-	 * @return PSX\Util\Annotation\DocBlock
+	 * @return \PSX\Util\Annotation\DocBlock
 	 */
 	public static function parse($doc)
 	{

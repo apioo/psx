@@ -34,7 +34,7 @@ trait AccessorTrait
 {
 	/**
 	 * @Inject
-	 * @var PSX\Data\Extractor
+	 * @var \PSX\Data\Extractor
 	 */
 	protected $extractor;
 
@@ -44,9 +44,9 @@ trait AccessorTrait
 	 * Returns an accessor object with that you can easily access values from
 	 * the request body
 	 *
-	 * @param PSX\Data\TransformerInterface $transformer
+	 * @param \PSX\Data\TransformerInterface $transformer
 	 * @param string $readerType
-	 * @return PSX\Data\Accessor
+	 * @return \PSX\Data\Accessor
 	 */
 	protected function getAccessor(TransformerInterface $transformer = null, $readerType = null)
 	{

@@ -22,13 +22,9 @@ namespace PSX;
 
 use DOMDocument;
 use InvalidArgumentException;
-use PSX\ApplicationStackInterface;
 use PSX\Controller\Behaviour;
-use PSX\ControllerInterface;
-use PSX\Data\ReaderFactory;
 use PSX\Data\ReaderInterface;
 use PSX\Data\Record;
-use PSX\Data\Record\ImporterInterface;
 use PSX\Data\RecordInterface;
 use PSX\Data\Writer;
 use PSX\Data\WriterInterface;
@@ -55,17 +51,17 @@ abstract class ControllerAbstract implements ControllerInterface, ApplicationSta
 	use Behaviour\RedirectTrait;
 
 	/**
-	 * @var PSX\Http\RequestInterface
+	 * @var \PSX\Http\RequestInterface
 	 */
 	protected $request;
 
 	/**
-	 * @var PSX\Http\ResponseInterface
+	 * @var \PSX\Http\ResponseInterface
 	 */
 	protected $response;
 
 	/**
-	 * @var PSX\Loader\Context
+	 * @var \PSX\Loader\Context
 	 */
 	protected $context;
 
@@ -76,34 +72,34 @@ abstract class ControllerAbstract implements ControllerInterface, ApplicationSta
 
 	/**
 	 * @Inject
-	 * @var PSX\Config
+	 * @var \PSX\Config
 	 */
 	protected $config;
 
 	/**
 	 * @Inject
-	 * @var PSX\Validate
+	 * @var \PSX\Validate
 	 */
 	protected $validate;
 
 	/**
 	 * @Inject
-	 * @var PSX\Data\ReaderFactory
+	 * @var \PSX\Data\ReaderFactory
 	 */
 	protected $readerFactory;
 
 	/**
 	 * @Inject
-	 * @var PSX\Data\WriterFactory
+	 * @var \PSX\Data\WriterFactory
 	 */
 	protected $writerFactory;
 
 	private $_responseWritten = false;
 
 	/**
-	 * @param PSX\Http\RequestInterface $request
-	 * @param PSX\Http\ResponseInterface $response
-	 * @param PSX\Loader\Context $context
+	 * @param \PSX\Http\RequestInterface $request
+	 * @param \PSX\Http\ResponseInterface $response
+	 * @param \PSX\Loader\Context $context
 	 */
 	public function __construct(RequestInterface $request, ResponseInterface $response, Context $context = null)
 	{
@@ -201,6 +197,7 @@ abstract class ControllerAbstract implements ControllerInterface, ApplicationSta
 	 * Method to set an response body
 	 *
 	 * @param mixed $data
+     * @param string $writerType
 	 */
 	protected function setBody($data, $writerType = null)
 	{
@@ -259,7 +256,7 @@ abstract class ControllerAbstract implements ControllerInterface, ApplicationSta
 	/**
 	 * Checks whether the preferred reader is an instance of the reader class
 	 *
-	 * @param string $writerClass
+	 * @param string $readerClass
 	 * @return boolean
 	 */
 	protected function isReader($readerClass)
@@ -281,7 +278,7 @@ abstract class ControllerAbstract implements ControllerInterface, ApplicationSta
 	/**
 	 * Configures the writer
 	 *
-	 * @param PSX\Data\WriterInterface $writer
+	 * @param \PSX\Data\WriterInterface $writer
 	 */
 	protected function configureWriter(WriterInterface $writer)
 	{
@@ -330,9 +327,8 @@ abstract class ControllerAbstract implements ControllerInterface, ApplicationSta
 	 * Writes the $record with the writer $writerType or depending on the get 
 	 * parameter format or of the mime type of the Accept header
 	 *
-	 * @param PSX\Data\RecordInterface $record
+	 * @param \PSX\Data\RecordInterface $record
 	 * @param string $writerType
-	 * @param integer $code
 	 * @return void
 	 */
 	private function setResponse(RecordInterface $record, $writerType = null)
@@ -381,7 +377,7 @@ abstract class ControllerAbstract implements ControllerInterface, ApplicationSta
 	 * unsupported media exception
 	 *
 	 * @param string $readerType
-	 * @return PSX\Data\ReaderInterface
+	 * @return \PSX\Data\ReaderInterface
 	 */
 	private function getRequestReader($readerType = null)
 	{
@@ -405,7 +401,8 @@ abstract class ControllerAbstract implements ControllerInterface, ApplicationSta
 	/**
 	 * Returns the fitting response writer
 	 *
-	 * @return PSX\Data\WriterInterface
+     * @param string $writerType
+	 * @return \PSX\Data\WriterInterface
 	 */
 	private function getResponseWriter($writerType = null)
 	{
@@ -434,7 +431,7 @@ abstract class ControllerAbstract implements ControllerInterface, ApplicationSta
 	/**
 	 * Returns the reader depending on the content type
 	 *
-	 * @return PSX\Data\ReaderInterface
+	 * @return \PSX\Data\ReaderInterface
 	 */
 	private function getPreferredReader()
 	{
@@ -444,7 +441,7 @@ abstract class ControllerAbstract implements ControllerInterface, ApplicationSta
 	/**
 	 * Returns the writer wich gets used if no writer was explicit selected
 	 *
-	 * @return PSX\Data\WriterInterface
+	 * @return \PSX\Data\WriterInterface
 	 */
 	private function getPreferredWriter()
 	{

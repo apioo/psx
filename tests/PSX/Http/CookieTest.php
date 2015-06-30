@@ -41,7 +41,7 @@ class CookieTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testParseSetCookieInvalid()
 	{

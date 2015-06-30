@@ -34,13 +34,13 @@ use PSX\Loader\Context;
 abstract class CommandAbstract implements CommandInterface
 {
 	/**
-	 * @var PSX\Loader\Context
+	 * @var \PSX\Loader\Context
 	 */
 	protected $context;
 
 	/**
 	 * @Inject
-	 * @var PSX\Config
+	 * @var \PSX\Config
 	 */
 	protected $config;
 

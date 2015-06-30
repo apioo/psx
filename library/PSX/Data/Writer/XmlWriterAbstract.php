@@ -78,8 +78,8 @@ abstract class XmlWriterAbstract implements WriterInterface
 	}
 
 	/**
-	 * @param XMLWriter $writer
-	 * @return PSX\Data\Record\VisitorInterface
+	 * @param \XMLWriter $writer
+	 * @return \PSX\Data\Record\VisitorInterface
 	 */
 	abstract protected function getVisitor(XMLWriter $writer);
 }

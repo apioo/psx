@@ -32,7 +32,7 @@ interface SchemaInterface
 	/**
 	 * Returns an schema definition
 	 *
-	 * @return PSX\Data\Schema\PropertyInterface
+	 * @return \PSX\Data\Schema\Property\ComplexType
 	 */
 	public function getDefinition();
 }

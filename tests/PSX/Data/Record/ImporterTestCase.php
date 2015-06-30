@@ -80,7 +80,7 @@ trait ImporterTestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testImportInvalidData()
 	{
@@ -90,7 +90,7 @@ trait ImporterTestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testImportInvalidSource()
 	{

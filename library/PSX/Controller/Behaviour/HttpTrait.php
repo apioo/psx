@@ -45,7 +45,7 @@ trait HttpTrait
 	/**
 	 * Returns the request uri
 	 *
-	 * @return PSX\Uri
+	 * @return \PSX\Uri
 	 */
 	protected function getUri()
 	{

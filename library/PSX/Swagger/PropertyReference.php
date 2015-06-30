@@ -20,7 +20,6 @@
 
 namespace PSX\Swagger;
 
-use PSX\Data\RecordAbstract;
 use PSX\Data\RecordInfo;
 
 /**

@@ -34,7 +34,7 @@ class RoutingController extends ApiAbstract
 {
 	/**
 	 * @Inject
-	 * @var PSX\Loader\RoutingParserInterface
+	 * @var \PSX\Loader\RoutingParserInterface
 	 */
 	protected $routingParser;
 

@@ -68,7 +68,7 @@ class ReverseRouterTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testGetPathMissingParameter()
 	{
@@ -79,7 +79,7 @@ class ReverseRouterTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testGetPathRegExpMissingParameter()
 	{

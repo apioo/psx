@@ -107,7 +107,7 @@ INPUT;
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testNoRssElement()
 	{
@@ -124,7 +124,7 @@ INPUT;
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testNoChannelElement()
 	{
@@ -142,7 +142,7 @@ INPUT;
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testInvalidData()
 	{

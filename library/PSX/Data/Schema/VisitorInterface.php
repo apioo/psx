@@ -33,7 +33,7 @@ interface VisitorInterface
 	 * Visits an array value
 	 *
 	 * @param array $data
-	 * @param PSX\Data\Schema\Property\ArrayType $property
+	 * @param \PSX\Data\Schema\Property\ArrayType $property
 	 * @param string $path
 	 * @return mixed
 	 */
@@ -43,7 +43,7 @@ interface VisitorInterface
 	 * Visits an boolean value
 	 *
 	 * @param string $data
-	 * @param PSX\Data\Schema\Property\BooleanType $property
+	 * @param \PSX\Data\Schema\Property\BooleanType $property
 	 * @param string $path
 	 * @return mixed
 	 */
@@ -52,8 +52,8 @@ interface VisitorInterface
 	/**
 	 * Visits an complex value
 	 *
-	 * @param stdClass $data
-	 * @param PSX\Data\Schema\Property\ComplexType $property
+	 * @param \stdClass $data
+	 * @param \PSX\Data\Schema\Property\ComplexType $property
 	 * @param string $path
 	 * @return mixed
 	 */
@@ -63,7 +63,7 @@ interface VisitorInterface
 	 * Visits an date time value
 	 *
 	 * @param string $data
-	 * @param PSX\Data\Schema\Property\DateTimeType $property
+	 * @param \PSX\Data\Schema\Property\DateTimeType $property
 	 * @param string $path
 	 * @return mixed
 	 */
@@ -73,7 +73,7 @@ interface VisitorInterface
 	 * Visits an date value
 	 *
 	 * @param string $data
-	 * @param PSX\Data\Schema\Property\DateType $property
+	 * @param \PSX\Data\Schema\Property\DateType $property
 	 * @param string $path
 	 * @return mixed
 	 */
@@ -83,7 +83,7 @@ interface VisitorInterface
 	 * Visits an duration value
 	 *
 	 * @param string $data
-	 * @param PSX\Data\Schema\Property\DurationType $property
+	 * @param \PSX\Data\Schema\Property\DurationType $property
 	 * @param string $path
 	 * @return mixed
 	 */
@@ -93,7 +93,7 @@ interface VisitorInterface
 	 * Visits an float value
 	 *
 	 * @param string $data
-	 * @param PSX\Data\Schema\Property\FloatType $property
+	 * @param \PSX\Data\Schema\Property\FloatType $property
 	 * @param string $path
 	 * @return mixed
 	 */
@@ -103,7 +103,7 @@ interface VisitorInterface
 	 * Visits an integer value
 	 *
 	 * @param string $data
-	 * @param PSX\Data\Schema\Property\IntegerType $property
+	 * @param \PSX\Data\Schema\Property\IntegerType $property
 	 * @param string $path
 	 * @return mixed
 	 */
@@ -113,7 +113,7 @@ interface VisitorInterface
 	 * Visits an string value
 	 *
 	 * @param string $data
-	 * @param PSX\Data\Schema\Property\StringType $property
+	 * @param \PSX\Data\Schema\Property\StringType $property
 	 * @param string $path
 	 * @return mixed
 	 */
@@ -123,7 +123,7 @@ interface VisitorInterface
 	 * Visits an time value
 	 *
 	 * @param string $data
-	 * @param PSX\Data\Schema\Property\TimeType $property
+	 * @param \PSX\Data\Schema\Property\TimeType $property
 	 * @param string $path
 	 * @return mixed
 	 */

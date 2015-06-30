@@ -97,7 +97,7 @@ abstract class PropertyAbstract implements PropertyInterface
 	}
 
 	/**
-	 * @param string $required
+	 * @param string $reference
 	 * @return $this
 	 */
 	public function setReference($reference)

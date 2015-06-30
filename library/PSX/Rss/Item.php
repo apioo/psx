@@ -21,7 +21,6 @@
 namespace PSX\Rss;
 
 use DateTime;
-use PSX\Data\ReaderInterface;
 use PSX\Data\RecordAbstract;
 use PSX\Data\RecordInfo;
 use PSX\Rss;
@@ -103,7 +102,7 @@ class Item extends RecordAbstract
 	}
 
 	/**
-	 * @param PSX\Rss\Category $category
+	 * @param \PSX\Rss\Category $category
 	 */
 	public function addCategory(Category $category)
 	{
@@ -116,7 +115,7 @@ class Item extends RecordAbstract
 	}
 
 	/**
-	 * @param array<PSX\Rss\Category> $category
+	 * @param \PSX\Rss\Category[] $category
 	 */
 	public function setCategory(array $category)
 	{
@@ -139,7 +138,7 @@ class Item extends RecordAbstract
 	}
 
 	/**
-	 * @param PSX\Rss\Enclosure $enclosure
+	 * @param \PSX\Rss\Enclosure $enclosure
 	 */
 	public function setEnclosure(Enclosure $enclosure)
 	{

@@ -57,8 +57,7 @@ class File extends SplFileInfo
 	 * @param string $file
 	 * @param string $mode
 	 * @param boolean $useIncludePath
-	 * @param resource $context
-	 * @return PSX\File\Object
+	 * @return \PSX\File\Object
 	 */
 	public static function open($file, $mode = 'r', $useIncludePath = false)
 	{
@@ -80,6 +79,7 @@ class File extends SplFileInfo
 	/**
 	 * Returns the complete content of the $file
 	 *
+     * @param string $file
 	 * @return string
 	 */
 	public static function getContents($file)
@@ -90,6 +90,10 @@ class File extends SplFileInfo
 	/**
 	 * Writes the $content into the $file
 	 *
+     * @param string $file
+     * @param string $content
+     * @param integer $flags
+     * @param resource $context
 	 * @return integer|false
 	 */
 	public static function putContents($file, $content, $flags = 0, $context = null)
@@ -100,6 +104,7 @@ class File extends SplFileInfo
 	/**
 	 * Removes all chars from the string which are not allowed in an file name
 	 *
+     * @param string $fileName
 	 * @return string
 	 */
 	public static function normalizeName($fileName)

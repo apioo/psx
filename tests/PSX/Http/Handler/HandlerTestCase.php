@@ -81,7 +81,7 @@ abstract class HandlerTestCase extends \PHPUnit_Framework_TestCase
 	/**
 	 * Returns the handler which gets tested
 	 *
-	 * @return PSX\Http\HandlerInterface
+	 * @return \PSX\Http\HandlerInterface
 	 */
 	abstract protected function getHandler();
 
@@ -293,7 +293,7 @@ abstract class HandlerTestCase extends \PHPUnit_Framework_TestCase
 	 * We have an endpoint which sleeps 8 seconds after 2 seconds the timeout 
 	 * gets triggered
 	 *
-	 * @expectedException PSX\Http\HandlerException
+	 * @expectedException \PSX\Http\HandlerException
 	 */
 	public function testTimeout()
 	{

@@ -39,7 +39,7 @@ interface ParameterParserInterface
 	/**
 	 * Fills up the parameters with values from an source
 	 *
-	 * @param PSX\Command\Parameters $parameters
+	 * @param \PSX\Command\Parameters $parameters
 	 */
 	public function fillParameters(Parameters $parameters);
 }

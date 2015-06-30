@@ -158,6 +158,7 @@ class Writer
 
 	/**
 	 * @see http://www.w3.org/PICS/
+     * @param string $rating
 	 */
 	public function setRating($rating)
 	{

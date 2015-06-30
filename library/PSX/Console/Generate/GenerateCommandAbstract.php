@@ -20,10 +20,8 @@
 
 namespace PSX\Console\Generate;
 
-use PSX\Dependency\Container as PSXContainer;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * GenerateCommandAbstract

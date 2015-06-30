@@ -38,7 +38,7 @@ abstract class CommandTestCase extends \PHPUnit_Framework_TestCase
 	 *
 	 * @param string $className
 	 * @param array $parameters
-	 * @return PSX\CommandInterface
+	 * @return \PSX\CommandInterface
 	 */
 	protected function loadCommand($className, array $parameters)
 	{

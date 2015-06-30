@@ -71,7 +71,7 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Validate\ValidationException
+	 * @expectedException \PSX\Validate\ValidationException
 	 */
 	public function testApplyFailure()
 	{
@@ -109,7 +109,7 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Validate\ValidationException
+	 * @expectedException \PSX\Validate\ValidationException
 	 */
 	public function testApplyTypeObjectNullRequired()
 	{
@@ -122,7 +122,7 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testApplyTypeObjectInvalid()
 	{
@@ -130,7 +130,7 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Validate\ValidationException
+	 * @expectedException \PSX\Validate\ValidationException
 	 */
 	public function testApplyRequired()
 	{
@@ -157,7 +157,7 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Validate\ValidationException
+	 * @expectedException \PSX\Validate\ValidationException
 	 */
 	public function testApplyFilterInvalid()
 	{
@@ -172,7 +172,7 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Validate\ValidationException
+	 * @expectedException \PSX\Validate\ValidationException
 	 */
 	public function testApplyFilterCallableInvalid()
 	{
@@ -182,7 +182,7 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testApplyInvalidFilterType()
 	{

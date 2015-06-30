@@ -26,8 +26,7 @@ use PSX\Exception;
 use PSX\Http;
 use PSX\Http\HandlerInterface;
 use PSX\Http\Options;
-use PSX\Http\Request;
-use PSX\Http\Response;
+use PSX\Http\RequestInterface;
 
 /**
  * Handler wich captures all http requests into an xml file wich can be loaded 
@@ -48,7 +47,7 @@ class MockCapture implements HandlerInterface
 		$this->handler = $handler ?: new Curl();
 	}
 
-	public function request(Request $request, Options $options)
+	public function request(RequestInterface $request, Options $options)
 	{
 		$response = $this->handler->request($request, $options);
 

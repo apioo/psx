@@ -56,11 +56,12 @@ class Oauth
 	 * </code>
 	 *
 	 * @see http://tools.ietf.org/html/rfc5849#section-2.1
-	 * @param PSX\Url $url
+	 * @param \PSX\Url $url
 	 * @param string $consumerKey
 	 * @param string $consumerSecret
 	 * @param string $method
-	 * @return PSX\Oauth\Provider\Data\Response
+	 * @param string $callback
+	 * @return \PSX\Oauth\Provider\Data\Response
 	 */
 	public function requestToken(Url $url, $consumerKey, $consumerSecret, $method = 'HMAC-SHA1', $callback = null)
 	{
@@ -122,14 +123,14 @@ class Oauth
 	 * </code>
 	 *
 	 * @see http://tools.ietf.org/html/rfc5849#section-2.3
-	 * @param PSX\Url $url
+	 * @param \PSX\Url $url
 	 * @param string $consumerKey
 	 * @param string $consumerSecret
 	 * @param string $token
 	 * @param string $tokenSecret
 	 * @param string $verifier
 	 * @param string $method
-	 * @return PSX\Oauth\Provider\Data\Response
+	 * @return \PSX\Oauth\Provider\Data\Response
 	 */
 	public function accessToken(Url $url, $consumerKey, $consumerSecret, $token, $tokenSecret, $verifier, $method = 'HMAC-SHA1')
 	{
@@ -180,7 +181,7 @@ class Oauth
 	 * );
 	 * </code>
 	 *
-	 * @param PSX\Url $url
+	 * @param \PSX\Url $url
 	 * @param string $consumerKey
 	 * @param string $consumerSecret
 	 * @param string $token
@@ -228,7 +229,7 @@ class Oauth
 	 * the method is not supported
 	 *
 	 * @param string $method
-	 * @return PSX\Oauth\SignatureAbstract
+	 * @return \PSX\Oauth\SignatureAbstract
 	 */
 	public static function getSignature($method)
 	{
@@ -275,11 +276,11 @@ class Oauth
 	 *
 	 * @see http://tools.ietf.org/html/rfc5849#section-3.4.1
 	 * @param string $method
-	 * @param PSX\Url $url
+	 * @param \PSX\Uri $url
 	 * @param array $data
 	 * @return string
 	 */
-	public static function buildBasestring($method, Url $url, array $data)
+	public static function buildBasestring($method, Uri $url, array $data)
 	{
 		$base = array();
 		$base[] = self::urlEncode(self::getNormalizedMethod($method));
@@ -304,7 +305,7 @@ class Oauth
 	 * Normalize the url like defined in
 	 *
 	 * @see http://tools.ietf.org/html/rfc5849#section-3.4.1.2
-	 * @param PSX\Url $url
+	 * @param \PSX\Url $url
 	 * @return false|string
 	 */
 	public static function getNormalizedUrl(Url $url)

@@ -50,6 +50,10 @@ class Version implements DocumentationInterface
 		return isset($this->resources[$version]);
 	}
 
+    /**
+     * @param integer $version
+     * @return \PSX\Api\Resource
+     */
 	public function getResource($version)
 	{
 		return isset($this->resources[$version]) ? $this->resources[$version] : null;

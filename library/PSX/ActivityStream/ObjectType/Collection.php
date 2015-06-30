@@ -23,7 +23,6 @@ namespace PSX\ActivityStream\ObjectType;
 use DateTime;
 use PSX\ActivityStream\Object;
 use PSX\Data\CollectionInterface;
-use PSX\Data\RecordAbstract;
 use PSX\Data\RecordInterface;
 
 /**
@@ -66,7 +65,7 @@ class Collection extends Object implements CollectionInterface
 	}
 
 	/**
-	 * @param array<PSX\ActivityStream\ObjectType\Activity>
+	 * @param \PSX\ActivityStream\ObjectType\Activity[] $items
 	 */
 	public function setItems(array $items)
 	{
@@ -79,7 +78,7 @@ class Collection extends Object implements CollectionInterface
 	}
 
 	/**
-	 * @param PSX\DateTime $itemsAfter
+	 * @param \PSX\DateTime $itemsAfter
 	 */
 	public function setItemsAfter(DateTime $itemsAfter)
 	{
@@ -92,7 +91,7 @@ class Collection extends Object implements CollectionInterface
 	}
 
 	/**
-	 * @param PSX\DateTime $itemsAfter
+	 * @param \PSX\DateTime $itemsBefore
 	 */
 	public function setItemsBefore(DateTime $itemsBefore)
 	{
@@ -105,7 +104,7 @@ class Collection extends Object implements CollectionInterface
 	}
 
 	/**
-	 * @param integer $itemsAfter
+	 * @param integer $itemsPerPage
 	 */
 	public function setItemsPerPage($itemsPerPage)
 	{
@@ -131,7 +130,7 @@ class Collection extends Object implements CollectionInterface
 	}
 
 	/**
-	 * @param PSX\ActivityStream\ObjectFactory $first
+	 * @param \PSX\ActivityStream\ObjectFactory $first
 	 */
 	public function setFirst($first)
 	{
@@ -144,7 +143,7 @@ class Collection extends Object implements CollectionInterface
 	}
 
 	/**
-	 * @param PSX\ActivityStream\ObjectFactory $last
+	 * @param \PSX\ActivityStream\ObjectFactory $last
 	 */
 	public function setLast($last)
 	{
@@ -157,7 +156,7 @@ class Collection extends Object implements CollectionInterface
 	}
 
 	/**
-	 * @param PSX\ActivityStream\ObjectFactory $prev
+	 * @param \PSX\ActivityStream\ObjectFactory $prev
 	 */
 	public function setPrev($prev)
 	{
@@ -170,7 +169,7 @@ class Collection extends Object implements CollectionInterface
 	}
 
 	/**
-	 * @param PSX\ActivityStream\ObjectFactory $next
+	 * @param \PSX\ActivityStream\ObjectFactory $next
 	 */
 	public function setNext($next)
 	{
@@ -183,7 +182,7 @@ class Collection extends Object implements CollectionInterface
 	}
 
 	/**
-	 * @param PSX\ActivityStream\ObjectFactory $current
+	 * @param \PSX\ActivityStream\ObjectFactory $current
 	 */
 	public function setCurrent($current)
 	{
@@ -196,7 +195,7 @@ class Collection extends Object implements CollectionInterface
 	}
 
 	/**
-	 * @param PSX\ActivityStream\ObjectFactory $self
+	 * @param \PSX\ActivityStream\ObjectFactory $self
 	 */
 	public function setSelf($self)
 	{

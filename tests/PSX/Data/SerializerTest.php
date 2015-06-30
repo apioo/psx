@@ -20,7 +20,6 @@
 
 namespace PSX\Data;
 
-use Doctrine\Common\Annotations\AnnotationRegistry;
 use PSX\Api\Version;
 use PSX\Test\Environment;
 

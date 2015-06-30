@@ -34,7 +34,7 @@ interface GeneratorInterface
 	/**
 	 * Generates an representation of the resource in another format
 	 *
-	 * @param PSX\Api\Resource $resource
+	 * @param \PSX\Api\Resource $resource
 	 * @return string
 	 */
 	public function generate(Resource $resource);

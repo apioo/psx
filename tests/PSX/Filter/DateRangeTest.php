@@ -96,7 +96,7 @@ class DateRangeTest extends FilterTestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testEmptyConstructor()
 	{

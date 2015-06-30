@@ -133,7 +133,7 @@ TEXT;
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testInvalidData()
 	{

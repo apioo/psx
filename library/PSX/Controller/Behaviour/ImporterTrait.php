@@ -33,7 +33,7 @@ trait ImporterTrait
 {
 	/**
 	 * @Inject
-	 * @var PSX\Data\Importer
+	 * @var \PSX\Data\Importer
 	 */
 	protected $importer;
 
@@ -41,9 +41,9 @@ trait ImporterTrait
 	 * Imports data from the current request into an record
 	 *
 	 * @param mixed $source
-	 * @param PSX\Data\TransformerInterface $transformer
+	 * @param \PSX\Data\TransformerInterface $transformer
 	 * @param string $readerType
-	 * @return PSX\Data\RecordInterface
+	 * @return \PSX\Data\RecordInterface
 	 */
 	protected function import($source, TransformerInterface $transformer = null, $readerType = null)
 	{

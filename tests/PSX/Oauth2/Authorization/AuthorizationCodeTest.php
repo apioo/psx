@@ -23,7 +23,7 @@ namespace PSX\Oauth2\Authorization;
 use PSX\Http;
 use PSX\Http\Exception\TemporaryRedirectException;
 use PSX\Http\Handler\Callback;
-use PSX\Http\Response;
+use PSX\Http\RequestInterface;
 use PSX\Http\ResponseParser;
 use PSX\Test\Environment;
 use PSX\Url;
@@ -43,7 +43,7 @@ class AuthorizationCodeTest extends \PHPUnit_Framework_TestCase
 	public function testRequest()
 	{
 		$testCase = $this;
-		$http = new Http(new Callback(function($request) use ($testCase){
+		$http = new Http(new Callback(function(RequestInterface $request) use ($testCase){
 
 			// api request
 			if($request->getUri()->getPath() == '/api')
@@ -66,6 +66,10 @@ Pragma: no-cache
 }
 TEXT;
 			}
+            else
+            {
+                throw new \RuntimeException('Invalid path');
+            }
 
 			return ResponseParser::convert($response, ResponseParser::MODE_LOOSE)->toString();
 

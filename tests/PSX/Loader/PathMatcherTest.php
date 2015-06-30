@@ -20,8 +20,6 @@
 
 namespace PSX\Loader;
 
-use PSX\Loader\RoutingCollection;
-
 /**
  * PathMatcherTest
  *

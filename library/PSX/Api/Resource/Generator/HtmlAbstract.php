@@ -147,7 +147,7 @@ abstract class HtmlAbstract implements GeneratorInterface
 	/**
 	 * Returns an html chunk for the specific schema
 	 *
-	 * @param PSX\Data\SchemaInterface $schema
+	 * @param \PSX\Data\SchemaInterface $schema
 	 * @param integer $type
 	 * @param string $method
 	 * @param string $path

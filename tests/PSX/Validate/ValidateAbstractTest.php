@@ -21,7 +21,6 @@
 namespace PSX\Validate;
 
 use PSX\Data\Record;
-use PSX\Data\RecordAbstract;
 use PSX\Filter;
 use PSX\Validate;
 
@@ -82,7 +81,7 @@ class ValidateAbstractTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Validate\ValidationException
+	 * @expectedException \PSX\Validate\ValidationException
 	 */
 	public function testSetFieldsAndFlag()
 	{

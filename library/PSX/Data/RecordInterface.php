@@ -33,7 +33,7 @@ interface RecordInterface
 	 * Returns an RecordInfo object wich contains the name and all fields of the 
 	 * record
 	 *
-	 * @return PSX\Data\RecordInfo
+	 * @return \PSX\Data\RecordInfo
 	 */
 	public function getRecordInfo();
 }

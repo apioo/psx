@@ -46,9 +46,9 @@ interface GrantTypeInterface
 	 * Returns an access token based on the credentials and request parameters.
 	 * In some grant types the credentials can be null
 	 *
-	 * @param PSX\Oauth2\Provider\Credentials $credentials
+	 * @param \PSX\Oauth2\Provider\Credentials $credentials
 	 * @param array $parameters
-	 * @return PSX\Oauth2\AccessToken
+	 * @return \PSX\Oauth2\AccessToken
 	 */
 	public function generateAccessToken(Credentials $credentials = null, array $parameters);
 }

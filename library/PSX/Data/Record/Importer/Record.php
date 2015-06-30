@@ -21,7 +21,6 @@
 namespace PSX\Data\Record\Importer;
 
 use InvalidArgumentException;
-use PSX\Data\ReaderInterface;
 use PSX\Data\Record as DataRecord;
 use PSX\Data\Record\FactoryFactory;
 use PSX\Data\Record\ImporterInterface;
@@ -143,6 +142,17 @@ class Record implements ImporterInterface
 						$value[] = $this->getMethodType($type, $row);
 					}
 				}
+                else if(substr($type, -2) == '[]')
+                {
+                    $type   = substr($type, 0, -2);
+                    $values = (array) $value;
+                    $value  = array();
+
+                    foreach($values as $row)
+                    {
+                        $value[] = $this->getMethodType($type, $row);
+                    }
+                }
 				else
 				{
 					$value = $this->getMethodType($type, $value);

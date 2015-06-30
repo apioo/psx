@@ -56,7 +56,7 @@ class CommandCommandTest extends CommandTestCase
 	}
 
 	/**
-	 * @expectedException PSX\Command\MissingParameterException
+	 * @expectedException \PSX\Command\MissingParameterException
 	 */
 	public function testCommandParameterEmpty()
 	{
@@ -100,7 +100,7 @@ class CommandCommandTest extends CommandTestCase
 	}
 
 	/**
-	 * @expectedException PSX\Command\MissingParameterException
+	 * @expectedException \PSX\Command\MissingParameterException
 	 */
 	public function testCommandStdinEmptyBody()
 	{
@@ -119,7 +119,7 @@ class CommandCommandTest extends CommandTestCase
 	}
 
 	/**
-	 * @expectedException PSX\Exception
+	 * @expectedException \PSX\Exception
 	 */
 	public function testCommandStdinInvalidJson()
 	{

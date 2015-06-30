@@ -21,14 +21,12 @@
 namespace PSX\Oauth\Provider;
 
 use PSX\Controller\ApiAbstract;
-use PSX\Data\ReaderInterface;
 use PSX\Data\WriterInterface;
 use PSX\Exception;
 use PSX\Oauth;
 use PSX\Oauth\Provider\Data\Consumer;
 use PSX\Oauth\Provider\Data\Request;
 use PSX\Oauth\Provider\Data\Response;
-use PSX\Url;
 
 /**
  * AccessAbstract
@@ -104,16 +102,16 @@ abstract class AccessAbstract extends ApiAbstract
 	 *
 	 * @param string $consumerKey
 	 * @param string $token
-	 * @return PSX\Oauth\Provider\Data\Consumer
+	 * @return \PSX\Oauth\Provider\Data\Consumer
 	 */
 	abstract protected function getConsumer($consumerKey, $token);
 
 	/**
 	 * Returns the response depending on the $consumer and $request
 	 *
-	 * @param PSX\Oauth\Provider\Data\Consumer $consumer
-	 * @param PSX\Oauth\Provider\Data\Request $request
-	 * @return PSX\Oauth\Provider\Data\Response
+	 * @param \PSX\Oauth\Provider\Data\Consumer $consumer
+	 * @param \PSX\Oauth\Provider\Data\Request $request
+	 * @return \PSX\Oauth\Provider\Data\Response
 	 */
 	abstract protected function getResponse(Consumer $consumer, Request $request);
 }

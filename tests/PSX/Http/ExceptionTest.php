@@ -101,9 +101,14 @@ class ExceptionTest extends \PHPUnit_Framework_TestCase
 		$class     = new \ReflectionClass($className);
 		$exception = $class->newInstanceArgs($arguments);
 
+        if(!$exception instanceof \Exception)
+        {
+            $this->fail('Class must be an exception');
+        }
+
 		try
 		{
-			throw $exception;
+            throw $exception;
 		}
 		catch(\Exception $e)
 		{

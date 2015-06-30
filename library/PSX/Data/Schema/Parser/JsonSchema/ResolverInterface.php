@@ -34,10 +34,10 @@ interface ResolverInterface
 	/**
 	 * Resolves the given uri and returns an JsonSchema document
 	 *
-	 * @param PSX\Uri $uri
-	 * @param PSX\Data\Schema\Parser\JsonSchema\Document $source
-	 * @param PSX\Data\Schema\Parser\JsonSchema\RefResolver $resolver
-	 * @return PSX\Data\Schema\Parser\JsonSchema\Document
+	 * @param \PSX\Uri $uri
+	 * @param \PSX\Data\Schema\Parser\JsonSchema\Document $source
+	 * @param \PSX\Data\Schema\Parser\JsonSchema\RefResolver $resolver
+	 * @return \PSX\Data\Schema\Parser\JsonSchema\Document
 	 */
 	public function resolve(Uri $uri, Document $source, RefResolver $resolver);
 }

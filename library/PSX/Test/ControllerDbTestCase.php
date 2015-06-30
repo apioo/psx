@@ -63,9 +63,9 @@ abstract class ControllerDbTestCase extends \PHPUnit_Extensions_Database_TestCas
 	/**
 	 * Loads an specific controller
 	 *
-	 * @param PSX\Http\Request $request
-	 * @param PSX\Http\Response $response
-	 * @return PSX\ControllerInterface
+	 * @param \PSX\Http\Request $request
+	 * @param \PSX\Http\Response $response
+	 * @return \PSX\ControllerInterface
 	 */
 	protected function loadController(Request $request, Response $response)
 	{
@@ -79,6 +79,7 @@ abstract class ControllerDbTestCase extends \PHPUnit_Extensions_Database_TestCas
 	 * @param string $method
 	 * @param array $headers
 	 * @param string $body
+     * @return \PSX\Http\ResponseInterface
 	 */
 	protected function sendRequest($url, $method, $headers = array(), $body = null)
 	{

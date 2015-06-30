@@ -34,7 +34,7 @@ interface ValidatorInterface
 	/**
 	 * Validates whether the given data follows the schema
 	 *
-	 * @param PSX\Data\SchemaInterface $schema
+	 * @param \PSX\Data\SchemaInterface $schema
 	 * @param mixed $data
 	 * @return boolean
 	 */

@@ -20,8 +20,6 @@
 
 namespace PSX\Data\Record;
 
-use PSX\Data\RecordInterface;
-
 /**
  * VisitorInterface
  *
@@ -58,8 +56,6 @@ interface VisitorInterface
 
 	/**
 	 * Visited if an array begins
-	 *
-	 * @param array $array
 	 */
 	public function visitArrayStart();
 
@@ -82,6 +78,8 @@ interface VisitorInterface
 
 	/**
 	 * Visited for each value in the tree which is not an object or array
+     *
+     * @param mixed $value
 	 */
 	public function visitValue($value);
 }

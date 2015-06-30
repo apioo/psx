@@ -39,7 +39,7 @@ class Message implements MessageInterface
 
 	/**
 	 * @param array $headers
-	 * @param Psr\Http\Message\StreamInterface|string|resource $body
+	 * @param \Psr\Http\Message\StreamInterface|string|resource $body
 	 */
 	public function __construct(array $headers = array(), $body = null)
 	{

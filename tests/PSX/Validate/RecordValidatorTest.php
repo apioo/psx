@@ -57,7 +57,7 @@ class RecordValidatorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Validate\ValidationException
+	 * @expectedException \PSX\Validate\ValidationException
 	 */
 	public function testValidateFieldNotDefined()
 	{
@@ -73,7 +73,7 @@ class RecordValidatorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Validate\ValidationException
+	 * @expectedException \PSX\Validate\ValidationException
 	 */
 	public function testValidateValidationError()
 	{
@@ -115,7 +115,7 @@ class RecordValidatorTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testValidateInvalidData()
 	{

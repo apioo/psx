@@ -32,6 +32,12 @@ use PSX\Oauth2\AuthorizationAbstract;
  */
 class PasswordCredentials extends AuthorizationAbstract
 {
+    /**
+     * @param string $username
+     * @param string $password
+     * @param string $scope
+     * @return \PSX\Oauth2\AccessToken
+     */
 	public function getAccessToken($username, $password, $scope = null)
 	{
 		// request data

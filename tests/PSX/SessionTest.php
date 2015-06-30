@@ -29,6 +29,9 @@ namespace PSX;
  */
 class SessionTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var \PSX\Session
+     */
 	protected $sess;
 
 	protected function setUp()

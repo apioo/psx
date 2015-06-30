@@ -23,7 +23,6 @@ namespace PSX\Atom;
 use DateTime;
 use PSX\Atom;
 use PSX\Data\RecordAbstract;
-use PSX\Data\RecordInfo;
 
 /**
  * Entry
@@ -48,7 +47,7 @@ class Entry extends RecordAbstract
 	protected $updated;
 
 	/**
-	 * @param PSX\Atom\Person $author
+	 * @param \PSX\Atom\Person $author
 	 */
 	public function addAuthor(Person $author)
 	{
@@ -61,7 +60,7 @@ class Entry extends RecordAbstract
 	}
 
 	/**
-	 * @param array<PSX\Atom\Person> $author
+	 * @param \PSX\Atom\Person[] $author
 	 */
 	public function setAuthor(array $author)
 	{
@@ -74,7 +73,7 @@ class Entry extends RecordAbstract
 	}
 
 	/**
-	 * @param PSX\Atom\Category $author
+	 * @param \PSX\Atom\Category $category
 	 */
 	public function addCategory(Category $category)
 	{
@@ -87,7 +86,7 @@ class Entry extends RecordAbstract
 	}
 
 	/**
-	 * @param array<PSX\Atom\Category> $category
+	 * @param \PSX\Atom\Category[] $category
 	 */
 	public function setCategory(array $category)
 	{
@@ -100,7 +99,7 @@ class Entry extends RecordAbstract
 	}
 
 	/**
-	 * @param PSX\Atom\Text $content
+	 * @param \PSX\Atom\Text $content
 	 */
 	public function setContent(Text $content)
 	{
@@ -113,7 +112,7 @@ class Entry extends RecordAbstract
 	}
 
 	/**
-	 * @param PSX\Atom\Person $contributor
+	 * @param \PSX\Atom\Person $contributor
 	 */
 	public function addContributor(Person $contributor)
 	{
@@ -126,7 +125,7 @@ class Entry extends RecordAbstract
 	}
 
 	/**
-	 * @param array<PSX\Atom\Person> $contributor
+	 * @param \PSX\Atom\Person[] $contributor
 	 */
 	public function setContributor($contributor)
 	{
@@ -152,7 +151,7 @@ class Entry extends RecordAbstract
 	}
 
 	/**
-	 * @param string $id
+	 * @param string $rights
 	 */
 	public function setRights($rights)
 	{
@@ -165,7 +164,7 @@ class Entry extends RecordAbstract
 	}
 
 	/**
-	 * @param string $id
+	 * @param string $title
 	 */
 	public function setTitle($title)
 	{
@@ -178,7 +177,7 @@ class Entry extends RecordAbstract
 	}
 
 	/**
-	 * @param PSX\DateTime $published
+	 * @param \PSX\DateTime $published
 	 */
 	public function setPublished(DateTime $published)
 	{
@@ -191,7 +190,7 @@ class Entry extends RecordAbstract
 	}
 
 	/**
-	 * @param PSX\DateTime $updated
+	 * @param \PSX\DateTime $updated
 	 */
 	public function setUpdated(DateTime $updated)
 	{
@@ -214,7 +213,7 @@ class Entry extends RecordAbstract
 	}
 
 	/**
-	 * @param array<PSX\Atom\Link> $link
+	 * @param \PSX\Atom\Link[] $link
 	 */
 	public function setLink(array $link)
 	{
@@ -227,7 +226,7 @@ class Entry extends RecordAbstract
 	}
 
 	/**
-	 * @param PSX\Atom $source
+	 * @param \PSX\Atom $source
 	 */
 	public function setSource(Atom $source)
 	{
@@ -240,7 +239,7 @@ class Entry extends RecordAbstract
 	}
 
 	/**
-	 * @param PSX\Atom\Text $summary
+	 * @param \PSX\Atom\Text $summary
 	 */
 	public function setSummary(Text $summary)
 	{

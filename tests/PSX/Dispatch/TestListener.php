@@ -29,6 +29,11 @@ namespace PSX\Dispatch;
  */
 class TestListener
 {
+    /**
+     * @param \PSX\Http\RequestInterface $request
+     * @param \PSX\Http\ResponseInterface $response
+     * @param \PSX\Dispatch\FilterChainInterface $filterChain
+     */
 	public function on($request, $response, $filterChain)
 	{
 		$filterChain->handle($request, $response);

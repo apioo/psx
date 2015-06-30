@@ -46,7 +46,7 @@ interface ImporterInterface
 	/**
 	 * @param mixed $source
 	 * @param mixed $data
-	 * @return PSX\Data\RecordInterface
+	 * @return \PSX\Data\RecordInterface
 	 */
 	public function import($source, $data);
 }

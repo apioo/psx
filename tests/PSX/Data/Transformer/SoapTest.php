@@ -66,7 +66,7 @@ INPUT;
 	}
 
 	/**
-	 * @expectedException RuntimeException
+	 * @expectedException \RuntimeException
 	 */
 	public function testNoEnvelope()
 	{
@@ -111,7 +111,7 @@ INPUT;
 	}
 
 	/**
-	 * @expectedException RuntimeException
+	 * @expectedException \RuntimeException
 	 */
 	public function testBodyWrongNamespace()
 	{
@@ -130,7 +130,7 @@ INPUT;
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testInvalidData()
 	{

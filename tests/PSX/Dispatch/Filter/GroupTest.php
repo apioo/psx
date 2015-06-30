@@ -27,7 +27,6 @@ use PSX\Http\Request;
 use PSX\Http\RequestInterface;
 use PSX\Http\Response;
 use PSX\Http\ResponseInterface;
-use PSX\Http\Stream\TempStream;
 use PSX\Url;
 
 /**

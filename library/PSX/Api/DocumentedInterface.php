@@ -34,7 +34,7 @@ interface DocumentedInterface
 	 * this api. The method is public so that we can get the object for 
 	 * automatic api doc generation
 	 *
-	 * @return PSX\Api\DocumentationInterface
+	 * @return \PSX\Api\DocumentationInterface
 	 */
 	public function getDocumentation();
 }

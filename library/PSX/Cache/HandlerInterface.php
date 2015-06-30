@@ -34,17 +34,17 @@ interface HandlerInterface
 	 * an empty item
 	 *
 	 * @param string $key
-	 * @return PSX\Cache\Item
+	 * @return \PSX\Cache\CacheItemInterface
 	 */
 	public function load($key);
 
 	/**
 	 * Writes the cache item
 	 *
-	 * @param PSX\Cache\Item $item
+	 * @param \PSX\Cache\CacheItemInterface $item
 	 * @return void
 	 */
-	public function write(Item $item);
+	public function write(CacheItemInterface $item);
 
 	/**
 	 * Removes the cache item associated with the key

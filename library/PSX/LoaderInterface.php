@@ -37,9 +37,9 @@ interface LoaderInterface
 	 * loader should pass the response to the controller so that the controller
 	 * can write data to the response
 	 *
-	 * @param PSX\Http\RequestInterface $request
-	 * @param PSX\Http\ResponseInterface $response
-	 * @return PSX\ControllerInterface
+	 * @param \PSX\Http\RequestInterface $request
+	 * @param \PSX\Http\ResponseInterface $response
+	 * @return \PSX\ControllerInterface
 	 */
 	public function load(RequestInterface $request, ResponseInterface $response);
 }

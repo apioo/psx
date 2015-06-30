@@ -25,7 +25,7 @@ use PSX\Exception;
 use PSX\Http;
 use PSX\Http\HandlerInterface;
 use PSX\Http\Options;
-use PSX\Http\Request;
+use PSX\Http\RequestInterface;
 use PSX\Http\ResponseParser;
 use PSX\Url;
 
@@ -73,7 +73,7 @@ class Mock implements HandlerInterface
 		);
 	}
 
-	public function request(Request $request, Options $options)
+	public function request(RequestInterface $request, Options $options)
 	{
 		$url = $request->getUri();
 

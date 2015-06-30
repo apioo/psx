@@ -33,7 +33,7 @@ interface ParserInterface
 	 * Parses the given schema
 	 *
 	 * @param string $schema
-	 * @return PSX\Data\SchemaInterface
+	 * @return \PSX\Data\SchemaInterface
 	 */
 	public function parse($schema);
 }

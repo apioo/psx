@@ -23,7 +23,6 @@ namespace PSX\Atom\Writer;
 use DateTime;
 use InvalidArgumentException;
 use PSX\Atom\Writer as Atom;
-use PSX\Data\Reader\Xml as XmlReader;
 use PSX\Data\RecordInterface;
 use PSX\Data\Writer\Xml;
 use PSX\Http\MediaType;

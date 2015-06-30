@@ -22,7 +22,6 @@ namespace PSX\Data\Record\Visitor;
 
 use DateTime;
 use PSX\Data\Record;
-use PSX\Data\RecordInterface;
 use PSX\Uri;
 
 /**

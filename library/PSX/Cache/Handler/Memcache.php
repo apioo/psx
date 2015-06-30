@@ -21,6 +21,7 @@
 namespace PSX\Cache\Handler;
 
 use Memcache as Mem;
+use PSX\Cache\CacheItemInterface;
 use PSX\Cache\HandlerInterface;
 use PSX\Cache\Item;
 
@@ -54,7 +55,7 @@ class Memcache implements HandlerInterface
 		}
 	}
 
-	public function write(Item $item)
+	public function write(CacheItemInterface $item)
 	{
 		if($item->hasExpiration())
 		{

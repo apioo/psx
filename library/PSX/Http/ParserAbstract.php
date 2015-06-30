@@ -21,6 +21,7 @@
 namespace PSX\Http;
 
 use InvalidArgumentException;
+use PSX\Exception;
 use PSX\Http;
 
 /**
@@ -61,7 +62,7 @@ abstract class ParserAbstract
 	 * Converts an raw http message into an PSX\Http\Message object
 	 *
 	 * @param string $content
-	 * @return PSX\Http\Message
+	 * @return \PSX\Http\Message
 	 */
 	abstract public function parse($content);
 
@@ -133,9 +134,9 @@ abstract class ParserAbstract
 	/**
 	 * Parses an raw http header string into an Message object
 	 *
-	 * @param PSX\Http\Message $message
+	 * @param \PSX\Http\Message $message
 	 * @param string $header
-	 * @return array<string, string>
+	 * @return array
 	 */
 	protected function headerToArray(Message $message, $header)
 	{
@@ -169,7 +170,11 @@ abstract class ParserAbstract
 		return $pos !== false ? substr($message, 0, $pos) : false;
 	}
 
-	public static function buildHeaderFromMessage(Message $message)
+    /**
+     * @param \PSX\Http\MessageInterface $message
+     * @return array
+     */
+	public static function buildHeaderFromMessage(MessageInterface $message)
 	{
 		$headers = $message->getHeaders();
 		$result  = array();

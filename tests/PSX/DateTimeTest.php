@@ -130,7 +130,7 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testDateTimeEmpty()
 	{
@@ -138,7 +138,7 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testDateTimeInvalid()
 	{
@@ -146,7 +146,7 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testDateTimeInvalidOffset()
 	{

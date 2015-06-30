@@ -34,6 +34,11 @@ use PSX\Url;
  */
 class AuthorizationCode extends AuthorizationAbstract
 {
+    /**
+     * @param string $code
+     * @param string $redirectUri
+     * @return \PSX\Oauth2\AccessToken
+     */
 	public function getAccessToken($code, $redirectUri = null)
 	{
 		// request data
@@ -73,7 +78,7 @@ class AuthorizationCode extends AuthorizationAbstract
 	 * authentication server. The getAccessToken method must be used when the 
 	 * server redirects the user back to the redirect uri
 	 *
-	 * @param PSX\Url $url
+	 * @param \PSX\Url $url
 	 * @param string $clientId
 	 * @param string $redirectUri
 	 * @param string $scope

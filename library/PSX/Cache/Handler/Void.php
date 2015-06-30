@@ -20,6 +20,7 @@
 
 namespace PSX\Cache\Handler;
 
+use PSX\Cache\CacheItemInterface;
 use PSX\Cache\HandlerInterface;
 use PSX\Cache\Item;
 
@@ -37,7 +38,7 @@ class Void implements HandlerInterface
 		return new Item($key, null, false);
 	}
 
-	public function write(Item $item)
+	public function write(CacheItemInterface $item)
 	{
 	}
 

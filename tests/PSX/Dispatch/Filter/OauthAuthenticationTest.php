@@ -72,7 +72,7 @@ class OauthAuthenticationTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Http\Exception\BadRequestException
+	 * @expectedException \PSX\Http\Exception\BadRequestException
 	 */
 	public function testFailureEmptyCredentials()
 	{
@@ -99,7 +99,7 @@ class OauthAuthenticationTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Http\Exception\BadRequestException
+	 * @expectedException \PSX\Http\Exception\BadRequestException
 	 */
 	public function testFailureWrongConsumerKey()
 	{
@@ -126,7 +126,7 @@ class OauthAuthenticationTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Http\Exception\BadRequestException
+	 * @expectedException \PSX\Http\Exception\BadRequestException
 	 */
 	public function testFailureWrongConsumerSecret()
 	{
@@ -153,7 +153,7 @@ class OauthAuthenticationTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Http\Exception\BadRequestException
+	 * @expectedException \PSX\Http\Exception\BadRequestException
 	 */
 	public function testFailureWrongToken()
 	{
@@ -180,7 +180,7 @@ class OauthAuthenticationTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Http\Exception\BadRequestException
+	 * @expectedException \PSX\Http\Exception\BadRequestException
 	 */
 	public function testFailureWrongTokenSecret()
 	{

@@ -39,7 +39,7 @@ class Issue extends Object
 	}
 
 	/**
-	 * @param array<string> $types
+	 * @param array $types
 	 */
 	public function setTypes(array $types)
 	{

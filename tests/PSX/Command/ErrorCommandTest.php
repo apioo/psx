@@ -40,7 +40,7 @@ class ErrorCommandTest extends CommandTestCase
 	}
 
 	/**
-	 * @expectedException RuntimeException
+	 * @expectedException \RuntimeException
 	 */
 	public function testExecuteExceptionDev()
 	{

@@ -35,8 +35,15 @@ use PSX\Data\Schema\PropertyInterface;
  */
 abstract class CompositeTypeAbstract extends PropertyAbstract implements IteratorAggregate, Countable
 {
+    /**
+     * @var \PSX\Data\Schema\PropertyInterface[]
+     */
 	protected $properties = array();
 
+    /**
+     * @param \PSX\Data\Schema\PropertyInterface $property
+     * @return $this
+     */
 	public function add(PropertyInterface $property)
 	{
 		$this->properties[$property->getName()] = $property;
@@ -44,11 +51,19 @@ abstract class CompositeTypeAbstract extends PropertyAbstract implements Iterato
 		return $this;
 	}
 
+    /**
+     * @param string $name
+     * @return \PSX\Data\Schema\PropertyInterface
+     */
 	public function get($name)
 	{
 		return isset($this->properties[$name]) ? $this->properties[$name] : null;
 	}
 
+    /**
+     * @param string $name
+     * @return boolean
+     */
 	public function has($name)
 	{
 		return isset($this->properties[$name]);

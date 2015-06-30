@@ -59,11 +59,11 @@ class RefResolver
 	/**
 	 * Resolves an $ref to an property
 	 *
-	 * @param PSX\Data\Schema\Parser\JsonSchema\Document $document
-	 * @param PSX\Uri $ref
+	 * @param \PSX\Data\Schema\Parser\JsonSchema\Document $document
+	 * @param \PSX\Uri $ref
 	 * @param string $name
 	 * @param integer $depth
-	 * @return PSX\Data\Schema\PropertyInterface
+	 * @return \PSX\Data\Schema\PropertyInterface
 	 */
 	public function resolve(Document $document, Uri $ref, $name, $depth)
 	{
@@ -96,8 +96,8 @@ class RefResolver
 	/**
 	 * Extracts an array part from the document
 	 *
-	 * @param PSX\Data\Schema\Parser\JsonSchema\Document $document
-	 * @param PSX\Uri $ref
+	 * @param \PSX\Data\Schema\Parser\JsonSchema\Document $document
+	 * @param \PSX\Uri $ref
 	 * @return array
 	 */
 	public function extract(Document $document, Uri $ref)
@@ -122,6 +122,11 @@ class RefResolver
 		return $result;
 	}
 
+    /**
+     * @param \PSX\Uri $uri
+     * @param \PSX\Data\Schema\Parser\JsonSchema\Document $sourceDocument
+     * @return \PSX\Data\Schema\Parser\JsonSchema\Document
+     */
 	protected function getDocument(Uri $uri, Document $sourceDocument)
 	{
 		// check whether we have already a document assigned to the base path

@@ -36,7 +36,7 @@ interface TableQueryInterface
 	 * @param integer $count
 	 * @param string $sortBy
 	 * @param integer $sortOrder
-	 * @param PSX\Sql\Condition $condition
+	 * @param \PSX\Sql\Condition $condition
 	 * @return array
 	 */
 	public function getAll($startIndex = null, $count = null, $sortBy = null, $sortOrder = null, Condition $condition = null);
@@ -44,7 +44,7 @@ interface TableQueryInterface
 	/**
 	 * Returns an array of records matching the condition
 	 *
-	 * @param PSX\Sql\Condition $condition
+	 * @param \PSX\Sql\Condition $condition
 	 * @return array
 	 */
 	public function getBy(Condition $condition);
@@ -52,15 +52,16 @@ interface TableQueryInterface
 	/**
 	 * Returns an record by the condition
 	 *
-	 * @param PSX\Sql\Condition $condition
-	 * @return PSX\Data\RecordInterface
+	 * @param \PSX\Sql\Condition $condition
+	 * @return \PSX\Data\RecordInterface
 	 */
 	public function getOneBy(Condition $condition);
 
 	/**
 	 * Returns an record by the primary key
 	 *
-	 * @return PSX\Data\RecordInterface
+     * @param string $id
+	 * @return \PSX\Data\RecordInterface
 	 */
 	public function get($id);
 
@@ -74,6 +75,7 @@ interface TableQueryInterface
 	/**
 	 * Returns the number of rows matching the given condition in the resultset
 	 *
+     * @param \PSX\Sql\Condition $condition
 	 * @return integer
 	 */
 	public function getCount(Condition $condition = null);

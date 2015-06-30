@@ -22,7 +22,7 @@ namespace PSX\Filter;
 
 use PSX\FilterAbstract;
 use PSX\Sql\Condition;
-use PSX\Sql\TableQueryInterface;
+use PSX\Sql\TableInterface;
 
 /**
  * Checks whether the value is an primary key of the given table
@@ -35,7 +35,7 @@ class PrimaryKey extends FilterAbstract
 {
 	protected $table;
 
-	public function __construct(TableQueryInterface $table)
+	public function __construct(TableInterface $table)
 	{
 		$this->table = $table;
 	}

@@ -22,7 +22,6 @@ namespace PSX\Dispatch\Filter;
 
 use PSX\Http\Request;
 use PSX\Http\Response;
-use PSX\Http\Stream\TempStream;
 use PSX\Url;
 
 /**
@@ -61,7 +60,7 @@ class IpFirewallTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Http\Exception\ForbiddenException
+	 * @expectedException \PSX\Http\Exception\ForbiddenException
 	 */
 	public function testInvalidIp()
 	{

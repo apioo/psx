@@ -72,7 +72,7 @@ trait AdditionalObjectPropertiesTrait
 	}
 
 	/**
-	 * @param PSX\ActivityStream\ObjectFactory $attachments
+	 * @param \PSX\ActivityStream\ObjectFactory $attachments
 	 */
 	public function setAttachments($attachments)
 	{
@@ -85,7 +85,7 @@ trait AdditionalObjectPropertiesTrait
 	}
 
 	/**
-	 * @param PSX\ActivityStream\ObjectFactory $author
+	 * @param \PSX\ActivityStream\ObjectFactory $author
 	 */
 	public function setAuthor($author)
 	{
@@ -98,7 +98,7 @@ trait AdditionalObjectPropertiesTrait
 	}
 
 	/**
-	 * @param PSX\ActivityStream\Language $content
+	 * @param \PSX\ActivityStream\Language $content
 	 */
 	public function setContent($content)
 	{
@@ -111,7 +111,7 @@ trait AdditionalObjectPropertiesTrait
 	}
 
 	/**
-	 * @param PSX\ActivityStream\ObjectFactory $duplicates
+	 * @param \PSX\ActivityStream\ObjectFactory $duplicates
 	 */
 	public function setDuplicates($duplicates)
 	{
@@ -124,7 +124,7 @@ trait AdditionalObjectPropertiesTrait
 	}
 
 	/**
-	 * @param PSX\ActivityStream\ObjectFactory $icon
+	 * @param \PSX\ActivityStream\ObjectFactory $icon
 	 */
 	public function setIcon($icon)
 	{
@@ -137,7 +137,7 @@ trait AdditionalObjectPropertiesTrait
 	}
 
 	/**
-	 * @param PSX\ActivityStream\ObjectFactory $image
+	 * @param \PSX\ActivityStream\ObjectFactory $image
 	 */
 	public function setImage($image)
 	{
@@ -150,7 +150,7 @@ trait AdditionalObjectPropertiesTrait
 	}
 
 	/**
-	 * @param PSX\ActivityStream\ObjectFactory $location
+	 * @param \PSX\ActivityStream\ObjectFactory $location
 	 */
 	public function setLocation($location)
 	{
@@ -163,7 +163,7 @@ trait AdditionalObjectPropertiesTrait
 	}
 
 	/**
-	 * @param PSX\DateTime $published
+	 * @param \PSX\DateTime $published
 	 */
 	public function setPublished(DateTime $published)
 	{
@@ -176,7 +176,7 @@ trait AdditionalObjectPropertiesTrait
 	}
 
 	/**
-	 * @param PSX\ActivityStream\ObjectFactory $generator
+	 * @param \PSX\ActivityStream\ObjectFactory $generator
 	 */
 	public function setGenerator($generator)
 	{
@@ -189,7 +189,7 @@ trait AdditionalObjectPropertiesTrait
 	}
 
 	/**
-	 * @param PSX\ActivityStream\ObjectFactory $provider
+	 * @param \PSX\ActivityStream\ObjectFactory $provider
 	 */
 	public function setProvider($provider)
 	{
@@ -202,7 +202,7 @@ trait AdditionalObjectPropertiesTrait
 	}
 
 	/**
-	 * @param PSX\ActivityStream\Language $summary
+	 * @param \PSX\ActivityStream\Language $summary
 	 */
 	public function setSummary($summary)
 	{
@@ -215,7 +215,7 @@ trait AdditionalObjectPropertiesTrait
 	}
 
 	/**
-	 * @param PSX\DateTime $updated
+	 * @param \PSX\DateTime $updated
 	 */
 	public function setUpdated(DateTime $updated)
 	{
@@ -228,7 +228,7 @@ trait AdditionalObjectPropertiesTrait
 	}
 
 	/**
-	 * @param PSX\DateTime $startTime
+	 * @param \PSX\DateTime $startTime
 	 */
 	public function setStartTime(DateTime $startTime)
 	{
@@ -241,7 +241,7 @@ trait AdditionalObjectPropertiesTrait
 	}
 
 	/**
-	 * @param PSX\DateTime $endTime
+	 * @param \PSX\DateTime $endTime
 	 */
 	public function setEndTime(DateTime $endTime)
 	{
@@ -254,7 +254,7 @@ trait AdditionalObjectPropertiesTrait
 	}
 
 	/**
-	 * @param PSX\DateTime $validFrom
+	 * @param \PSX\DateTime $validFrom
 	 */
 	public function setValidFrom(DateTime $validFrom)
 	{
@@ -267,7 +267,7 @@ trait AdditionalObjectPropertiesTrait
 	}
 
 	/**
-	 * @param PSX\DateTime $validAfter
+	 * @param \PSX\DateTime $validAfter
 	 */
 	public function setValidAfter(DateTime $validAfter)
 	{
@@ -280,7 +280,7 @@ trait AdditionalObjectPropertiesTrait
 	}
 
 	/**
-	 * @param PSX\DateTime $validUntil
+	 * @param \PSX\DateTime $validUntil
 	 */
 	public function setValidUntil(DateTime $validUntil)
 	{
@@ -293,7 +293,7 @@ trait AdditionalObjectPropertiesTrait
 	}
 
 	/**
-	 * @param PSX\DateTime $validBefore
+	 * @param \PSX\DateTime $validBefore
 	 */
 	public function setValidBefore(DateTime $validBefore)
 	{
@@ -316,7 +316,7 @@ trait AdditionalObjectPropertiesTrait
 	}
 
 	/**
-	 * @param PSX\ActivityStream\ObjectFactory $tags
+	 * @param \PSX\ActivityStream\ObjectFactory $tags
 	 */
 	public function setTags($tags)
 	{
@@ -329,7 +329,7 @@ trait AdditionalObjectPropertiesTrait
 	}
 
 	/**
-	 * @param PSX\ActivityStream\Language $title
+	 * @param \PSX\ActivityStream\Language $title
 	 */
 	public function setTitle($title)
 	{
@@ -378,7 +378,7 @@ trait AdditionalObjectPropertiesTrait
 	}
 
 	/**
-	 * @param PSX\ActivityStream\ObjectFactory $inReplyTo
+	 * @param \PSX\ActivityStream\ObjectFactory $inReplyTo
 	 */
 	public function setInReplyTo($inReplyTo)
 	{
@@ -391,7 +391,7 @@ trait AdditionalObjectPropertiesTrait
 	}
 
 	/**
-	 * @param PSX\ActivityStream\ObjectFactory $scope
+	 * @param \PSX\ActivityStream\ObjectFactory $scope
 	 */
 	public function setScope($scope)
 	{
@@ -404,7 +404,7 @@ trait AdditionalObjectPropertiesTrait
 	}
 
 	/**
-	 * @param PSX\ActivityStream\ObjectType\Collection $replies
+	 * @param \PSX\ActivityStream\ObjectType\Collection $replies
 	 */
 	public function setReplies(Collection $replies)
 	{

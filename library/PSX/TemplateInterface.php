@@ -90,8 +90,8 @@ interface TemplateInterface
 	/**
 	 * Assigns an variable to the template
 	 *
-	 * @param string $name
-	 * @return void
+	 * @param string $key
+	 * @param mixed $value
 	 */
 	public function assign($key, $value);
 

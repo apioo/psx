@@ -35,7 +35,7 @@ interface TransformerInterface
 	/**
 	 * Returns whether the transformer can handle the given content type
 	 *
-	 * @param string $contentType
+	 * @param \PSX\Http\MediaType $contentType
 	 * @return boolean
 	 */
 	public function accept(MediaType $contentType);
@@ -43,6 +43,7 @@ interface TransformerInterface
 	/**
 	 * Transforms the data into an readable state
 	 *
+     * @param string $data
 	 * @return array
 	 */
 	public function transform($data);

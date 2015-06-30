@@ -39,7 +39,7 @@ class Group extends Object
 	}
 
 	/**
-	 * @param PSX\ActivityStream\ObjectType\Collection $members
+	 * @param \PSX\ActivityStream\ObjectType\Collection $members
 	 */
 	public function setMembers(Collection $members)
 	{

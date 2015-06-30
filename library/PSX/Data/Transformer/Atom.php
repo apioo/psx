@@ -24,7 +24,6 @@ use DOMDocument;
 use DOMElement;
 use InvalidArgumentException;
 use PSX\Atom as AtomRecord;
-use PSX\Data\Reader\Xml;
 use PSX\Data\TransformerInterface;
 use PSX\Http\MediaType;
 
@@ -236,6 +235,10 @@ class Atom implements TransformerInterface
 			{
 				$content = $el->ownerDocument->saveXML($child);
 			}
+            else
+            {
+                $content = null;
+            }
 		}
 		else
 		{

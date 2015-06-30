@@ -35,7 +35,7 @@ class TestCommand extends CommandAbstract
 {
 	/**
 	 * @Inject
-	 * @var PHPUnit_Framework_TestCase
+	 * @var \PHPUnit_Framework_TestCase
 	 */
 	protected $testCase;
 

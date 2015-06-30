@@ -60,7 +60,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException
+	 * @expectedException \Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException
 	 */
 	public function testGetThrowServiceNotFoundException()
 	{
@@ -83,7 +83,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testInvalidGetParameter()
 	{
@@ -188,7 +188,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 		$sc = new ProjectServiceContainer();
 
 		$this->assertEquals('stdClass', $sc->getReturnType('bar'));
-		$this->assertEquals('Foo\BarInterface', $sc->getReturnType('foo_bar'));
+		$this->assertEquals('\stdClass', $sc->getReturnType('foo_bar'));
 		$this->assertEquals('array', $sc->getReturnType('scalar'));
 	}
 }
@@ -211,7 +211,7 @@ class ProjectServiceContainer extends Container
 	}
 
 	/**
-	 * @return Foo\BarInterface
+	 * @return \stdClass
 	 */
 	protected function getFooBar()
 	{

@@ -20,11 +20,8 @@
 
 namespace PSX\Dispatch;
 
-use PSX\Http\Request;
-use PSX\Http\Response;
 use PSX\Loader\Context;
 use PSX\Test\Environment;
-use PSX\Url;
 
 /**
  * CommandFactoryTest
@@ -43,7 +40,7 @@ class CommandFactoryTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException ReflectionException
+	 * @expectedException \ReflectionException
 	 */
 	public function testGetCommandInvalid()
 	{

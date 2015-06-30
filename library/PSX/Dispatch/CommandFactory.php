@@ -23,7 +23,6 @@ namespace PSX\Dispatch;
 use PSX\Dependency\ObjectBuilderInterface;
 use PSX\Loader\Context;
 use PSX\Util\Annotation;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * CommandFactory

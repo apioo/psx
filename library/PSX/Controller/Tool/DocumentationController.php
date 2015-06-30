@@ -21,19 +21,14 @@
 namespace PSX\Controller\Tool;
 
 use PSX\Api\DocumentationInterface;
-use PSX\Api\DocumentedInterface;
 use PSX\Api\Resource;
 use PSX\Api\Resource\Generator;
 use PSX\Api\Resource\Generator\HtmlAbstract;
 use PSX\Controller\ApiAbstract;
 use PSX\Data\Record;
-use PSX\Data\Schema\Documentation;
 use PSX\Data\Schema\Generator as SchemaGenerator;
-use PSX\Data\SchemaInterface;
-use PSX\Data\WriterInterface;
 use PSX\Exception;
 use PSX\Http\Exception as HttpException;
-use PSX\Loader\RoutingCollection;
 
 /**
  * DocumentationController
@@ -46,13 +41,13 @@ class DocumentationController extends ApiAbstract
 {
 	/**
 	 * @Inject
-	 * @var PSX\Api\ResourceListing
+	 * @var \PSX\Api\Resource\ListingInterface
 	 */
 	protected $resourceListing;
 
 	/**
 	 * @Inject
-	 * @var PSX\Loader\ReverseRouter
+	 * @var \PSX\Loader\ReverseRouter
 	 */
 	protected $reverseRouter;
 

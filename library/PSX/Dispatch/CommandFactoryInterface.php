@@ -31,5 +31,10 @@ use PSX\Loader\Context;
  */
 interface CommandFactoryInterface
 {
+    /**
+     * @param $className
+     * @param Context $context
+     * @return \PSX\CommandInterface
+     */
 	public function getCommand($className, Context $context);
 }

@@ -31,10 +31,13 @@ use PSX\Command\OutputAbstract;
  */
 class Composite extends OutputAbstract
 {
+    /**
+     * @var \PSX\Command\OutputInterface[]
+     */
 	protected $outputs;
 
 	/**
-	 * @param array<PSX\Command\OutputInterface>
+	 * @param \PSX\Command\OutputInterface[] $outputs
 	 */
 	public function __construct(array $outputs)
 	{

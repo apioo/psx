@@ -34,7 +34,7 @@ interface SchemaManagerInterface
 	 * schema name. Returns an schema interface or must throw an exception
 	 *
 	 * @param string $schemaName
-	 * @return PSX\Data\SchemaInterface
+	 * @return \PSX\Data\SchemaInterface
 	 */
 	public function getSchema($schemaName);
 }

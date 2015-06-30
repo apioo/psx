@@ -36,9 +36,9 @@ class UriResolver
 	/**
 	 * Resolves an base uri against an target uri
 	 *
-	 * @param PSX\Uri $baseUri
-	 * @param PSX\Uri $targetUri
-	 * @return PSX\Uri
+	 * @param \PSX\Uri $baseUri
+	 * @param \PSX\Uri $targetUri
+	 * @return \PSX\Uri
 	 */
 	public static function resolve(Uri $baseUri, Uri $targetUri)
 	{

@@ -22,18 +22,13 @@ namespace PSX;
 
 use Monolog\Handler\NullHandler;
 use Monolog\Logger;
-use PSX\Event\ControllerExecuteEvent;
-use PSX\Event\ControllerProcessedEvent;
-use PSX\Event\RouteMatchedEvent;
 use PSX\Http\Request;
+use PSX\Http\RequestInterface;
 use PSX\Http\Response;
-use PSX\Http\Stream\StringStream;
-use PSX\Loader\Callback;
 use PSX\Loader\Context;
 use PSX\Loader\FilterController;
 use PSX\Loader\LocationFinder\CallbackMethod;
 use PSX\Test\Environment;
-use PSX\Url;
 
 /**
  * LoaderTest
@@ -166,7 +161,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Loader\InvalidPathException
+	 * @expectedException \PSX\Loader\InvalidPathException
 	 */
 	public function testLoadUnknownLocation()
 	{
@@ -308,7 +303,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException RuntimeException
+	 * @expectedException \RuntimeException
 	 */
 	public function testPreFilterInvalid()
 	{
@@ -383,14 +378,14 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException RuntimeException
+	 * @expectedException \RuntimeException
 	 */
 	public function testPostFilterInvalid()
 	{
 		$request  = new Request(new Url('http://127.0.0.1/foobar'), 'GET');
 		$response = new Response();
 
-		$locationFinder = new CallbackMethod(function($request, $context){
+		$locationFinder = new CallbackMethod(function(RequestInterface $request, Context $context){
 
 			$context->set(Context::KEY_SOURCE, 'PSX\Loader\FilterController');
 
@@ -417,7 +412,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException UnexpectedValueException
+	 * @expectedException \UnexpectedValueException
 	 */
 	public function testWrongCallbackClassType()
 	{

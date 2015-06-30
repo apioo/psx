@@ -31,13 +31,23 @@ use RuntimeException;
  */
 class GrantTypeFactory
 {
+    /**
+     * @var \PSX\Oauth2\Provider\GrantTypeInterface[]
+     */
 	protected $types = array();
 
+    /**
+     * @param \PSX\Oauth2\Provider\GrantTypeInterface $grantType
+     */
 	public function add(GrantTypeInterface $grantType)
 	{
 		$this->types[] = $grantType;
 	}
 
+    /**
+     * @param $type
+     * @return \PSX\Oauth2\Provider\GrantTypeInterface
+     */
 	public function get($type)
 	{
 		foreach($this->types as $grantType)

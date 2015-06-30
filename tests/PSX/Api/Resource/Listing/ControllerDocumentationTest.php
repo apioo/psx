@@ -20,12 +20,8 @@
 
 namespace PSX\Api\Resource\Listing;
 
-use PSX\Http\Request;
-use PSX\Http\Response;
-use PSX\Loader\Context;
 use PSX\Test\ControllerDbTestCase;
 use PSX\Test\Environment;
-use PSX\Uri;
 
 /**
  * ControllerDocumentationTest
@@ -43,6 +39,7 @@ class ControllerDocumentationTest extends ControllerDbTestCase
 
 	public function testGetResourceIndex()
 	{
+        /** @var \PSX\Api\Resource[] $resources */
 		$resources = Environment::getService('resource_listing')->getResourceIndex();
 
 		$this->assertEquals(2, count($resources));
@@ -56,6 +53,7 @@ class ControllerDocumentationTest extends ControllerDbTestCase
 
 	public function testGetDocumentation()
 	{
+        /** @var \PSX\Api\DocumentationInterface $documentation */
 		$documentation = Environment::getService('resource_listing')->getDocumentation('/foo');
 
 		$this->assertInstanceOf('PSX\Api\DocumentationInterface', $documentation);

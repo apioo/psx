@@ -42,6 +42,7 @@ class SerializeTest extends DbTestCase
 
 	public function testSerialize()
 	{
+        /** @var \PSX\Sql\TestTableCommand $table */
 		$table = Environment::getService('table_manager')->getTable('PSX\Sql\TestTableCommand');
 		$row   = $table->get(1);
 

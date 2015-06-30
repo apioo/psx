@@ -22,10 +22,8 @@ namespace PSX\Dispatch\Filter;
 
 use PSX\Cache;
 use PSX\Cache\Handler as CacheHandler;
-use PSX\Dispatch\FilterChain;
 use PSX\Http\Request;
 use PSX\Http\Response;
-use PSX\Http\Stream\StringStream;
 use PSX\Url;
 
 /**
@@ -56,7 +54,7 @@ class UserAgentEnforcerTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Http\Exception\BadRequestException
+	 * @expectedException \PSX\Http\Exception\BadRequestException
 	 */
 	public function testNoUserAgent()
 	{

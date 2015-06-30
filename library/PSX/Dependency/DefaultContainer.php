@@ -20,7 +20,6 @@
 
 namespace PSX\Dependency;
 
-use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\EntityManager;
@@ -55,7 +54,7 @@ class DefaultContainer extends Container
 	use Event;
 
 	/**
-	 * @return PSX\Config
+	 * @return \PSX\Config
 	 */
 	public function getConfig()
 	{
@@ -66,7 +65,7 @@ class DefaultContainer extends Container
 	}
 
 	/**
-	 * @return PSX\Http
+	 * @return \PSX\Http
 	 */
 	public function getHttp()
 	{
@@ -74,7 +73,7 @@ class DefaultContainer extends Container
 	}
 
 	/**
-	 * @return PSX\Session
+	 * @return \PSX\Session
 	 */
 	public function getSession()
 	{
@@ -90,7 +89,7 @@ class DefaultContainer extends Container
 	}
 
 	/**
-	 * @return Doctrine\DBAL\Connection
+	 * @return \Doctrine\DBAL\Connection
 	 */
 	public function getConnection()
 	{
@@ -109,7 +108,7 @@ class DefaultContainer extends Container
 	}
 
 	/**
-	 * @return PSX\TemplateInterface
+	 * @return \PSX\TemplateInterface
 	 */
 	public function getTemplate()
 	{
@@ -117,7 +116,7 @@ class DefaultContainer extends Container
 	}
 
 	/**
-	 * @return PSX\Validate
+	 * @return \PSX\Validate
 	 */
 	public function getValidate()
 	{
@@ -125,7 +124,7 @@ class DefaultContainer extends Container
 	}
 
 	/**
-	 * @return PSX\Dependency\ObjectBuilderInterface
+	 * @return \PSX\Dependency\ObjectBuilderInterface
 	 */
 	public function getObjectBuilder()
 	{
@@ -133,7 +132,7 @@ class DefaultContainer extends Container
 	}
 
 	/**
-	 * @return PSX\Exception\ConverterInterface
+	 * @return \PSX\Exception\ConverterInterface
 	 */
 	public function getExceptionConverter()
 	{
@@ -141,7 +140,7 @@ class DefaultContainer extends Container
 	}
 
 	/**
-	 * @return PSX\Cache\CacheItemPoolInterface
+	 * @return \PSX\Cache\CacheItemPoolInterface
 	 */
 	public function getCache()
 	{
@@ -149,7 +148,7 @@ class DefaultContainer extends Container
 	}
 
 	/**
-	 * @return Psr\Log\LoggerInterface
+	 * @return \Psr\Log\LoggerInterface
 	 */
 	public function getLogger()
 	{
@@ -163,7 +162,7 @@ class DefaultContainer extends Container
 	}
 
 	/**
-	 * @return PSX\Sql\TableManagerInterface
+	 * @return \PSX\Sql\TableManagerInterface
 	 */
 	public function getTableManager()
 	{
@@ -171,7 +170,7 @@ class DefaultContainer extends Container
 	}
 
 	/**
-	 * @return Doctrine\ORM\EntityManager
+	 * @return \Doctrine\ORM\EntityManager
 	 */
 	public function getEntityManager()
 	{

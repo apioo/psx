@@ -21,12 +21,8 @@
 namespace PSX\Oauth2\Authorization\AuthorizationCode;
 
 use PSX\Http;
-use PSX\Http\Request;
-use PSX\Http\Response;
-use PSX\Http\Stream\TempStream;
 use PSX\Oauth;
 use PSX\Test\ControllerTestCase;
-use PSX\Url;
 
 /**
  * CallbackAbstractTest

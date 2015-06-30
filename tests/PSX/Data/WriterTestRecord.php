@@ -22,9 +22,6 @@ namespace PSX\Data;
 
 use DateTime;
 use PSX\ActivityStream;
-use PSX\Data\RecordAbstract;
-use PSX\Data\WriterInterface;
-use PSX\Data\WriterResult;
 
 /**
  * WriterTestRecord

@@ -21,7 +21,6 @@
 namespace PSX\Data\Record;
 
 use PSX\Data\Record;
-use PSX\Data\RecordInterface;
 
 /**
  * StoreTestCase
@@ -44,5 +43,8 @@ abstract class StoreTestCase extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(null, $store->load('bar'));
 	}
 
+    /**
+     * @return \PSX\Data\Record\StoreInterface
+     */
 	abstract public function getStore();
 }

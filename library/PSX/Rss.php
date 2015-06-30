@@ -220,7 +220,7 @@ class Rss extends CollectionAbstract
 	}
 
 	/**
-	 * @param PSX\Rss\Category $category
+	 * @param \PSX\Rss\Category $category
 	 */
 	public function addCategory(Category $category)
 	{
@@ -233,7 +233,7 @@ class Rss extends CollectionAbstract
 	}
 
 	/**
-	 * @param array<PSX\Rss\Category> $category
+	 * @param \PSX\Rss\Category[] $category
 	 */
 	public function setCategory(array $category)
 	{
@@ -246,7 +246,7 @@ class Rss extends CollectionAbstract
 	}
 
 	/**
-	 * @param DateTime $pubDate
+	 * @param \DateTime $pubDate
 	 */
 	public function setPubDate(\DateTime $pubDate)
 	{
@@ -259,7 +259,7 @@ class Rss extends CollectionAbstract
 	}
 
 	/**
-	 * @param DateTime $lastBuildDate
+	 * @param \DateTime $lastBuildDate
 	 */
 	public function setLastBuildDate(\DateTime $lastBuildDate)
 	{
@@ -272,7 +272,7 @@ class Rss extends CollectionAbstract
 	}
 
 	/**
-	 * @param PSX\Rss\Cloud $cloud
+	 * @param \PSX\Rss\Cloud $cloud
 	 */
 	public function setCloud(Cloud $cloud)
 	{
@@ -285,7 +285,7 @@ class Rss extends CollectionAbstract
 	}
 
 	/**
-	 * @param array<PSX\Rss\Item>
+	 * @param \PSX\Rss\Item[]
 	 */
 	public function setItem($item)
 	{

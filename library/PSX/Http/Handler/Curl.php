@@ -24,8 +24,7 @@ use PSX\Http;
 use PSX\Http\HandlerException;
 use PSX\Http\HandlerInterface;
 use PSX\Http\Options;
-use PSX\Http\Request;
-use PSX\Http\Response;
+use PSX\Http\RequestInterface;
 use PSX\Http\ResponseParser;
 use PSX\Http\Stream\StringStream;
 use PSX\Http\Stream\TempStream;
@@ -49,7 +48,7 @@ class Curl implements HandlerInterface
 		$this->hasFollowLocation = (bool) $followLocation;
 	}
 
-	public function request(Request $request, Options $options)
+	public function request(RequestInterface $request, Options $options)
 	{
 		$this->header = array();
 		$this->body   = fopen('php://temp', 'r+');

@@ -60,51 +60,81 @@ class Resource implements \IteratorAggregate
 		$this->methods         = array();
 	}
 
+    /**
+     * @return boolean
+     */
 	public function isActive()
 	{
 		return $this->status == self::STATUS_ACTIVE;
 	}
 
+    /**
+     * @return boolean
+     */
 	public function isDeprecated()
 	{
 		return $this->status == self::STATUS_DEPRECATED;
 	}
 
+    /**
+     * @return boolean
+     */
 	public function isClosed()
 	{
 		return $this->status == self::STATUS_CLOSED;
 	}
 
+    /**
+     * @return boolean
+     */
 	public function isDevelopment()
 	{
 		return $this->status == self::STATUS_DEVELOPMENT;
 	}
 
+    /**
+     * @return integer
+     */
 	public function getStatus()
 	{
 		return $this->status;
 	}
 
+    /**
+     * @return string
+     */
 	public function getPath()
 	{
 		return $this->path;
 	}
 
+    /**
+     * @param string $title
+     */
 	public function setTitle($title)
 	{
 		$this->title = $title;
 	}
-	
+
+    /**
+     * @return string
+     */
 	public function getTitle()
 	{
 		return $this->title;
 	}
 
+    /**
+     * @param string $description
+     */
 	public function setDescription($description)
 	{
 		$this->description = $description;
 	}
-	
+
+    /**
+     * @return string
+     */
 	public function getDescription()
 	{
 		return $this->description;
@@ -127,6 +157,10 @@ class Resource implements \IteratorAggregate
 		$this->methods[$method->getName()] = $method;
 	}
 
+    /**
+     * @param string $method
+     * @return \PSX\Api\Resource\MethodAbstract
+     */
 	public function getMethod($method)
 	{
 		if(isset($this->methods[$method]))
@@ -139,16 +173,25 @@ class Resource implements \IteratorAggregate
 		}
 	}
 
+    /**
+     * @return \PSX\Api\Resource\MethodAbstract[]
+     */
 	public function getMethods()
 	{
 		return $this->methods;
 	}
 
+    /**
+     * @return array
+     */
 	public function getAllowedMethods()
 	{
 		return array_keys($this->methods);
 	}
 
+    /**
+     * @return boolean
+     */
 	public function hasMethod($method)
 	{
 		return isset($this->methods[$method]);

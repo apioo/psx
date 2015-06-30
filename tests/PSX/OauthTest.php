@@ -23,7 +23,7 @@ namespace PSX;
 use PSX\Http\Authentication;
 use PSX\Http\GetRequest;
 use PSX\Http\Handler\Callback;
-use PSX\Http\Response;
+use PSX\Http\RequestInterface;
 use PSX\Http\ResponseParser;
 
 /**
@@ -47,7 +47,7 @@ class OauthTest extends \PHPUnit_Framework_TestCase
 	public function testFlow()
 	{
 		$testCase = $this;
-		$http = new Http(new Callback(function($request) use ($testCase){
+		$http = new Http(new Callback(function(RequestInterface $request) use ($testCase){
 
 			// request token
 			if($request->getUri()->getPath() == '/requestToken')
@@ -119,6 +119,10 @@ Content-Type: text/html; charset=UTF-8
 SUCCESS
 TEXT;
 			}
+            else
+            {
+                throw new \RuntimeException('Invalid path');
+            }
 
 			return ResponseParser::convert($response, ResponseParser::MODE_LOOSE)->toString();
 

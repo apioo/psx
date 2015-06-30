@@ -24,8 +24,7 @@ use PSX\Http;
 use PSX\Http\HandlerException;
 use PSX\Http\HandlerInterface;
 use PSX\Http\Options;
-use PSX\Http\Request;
-use PSX\Http\Response;
+use PSX\Http\RequestInterface;
 use PSX\Http\ResponseParser;
 use PSX\Http\Stream\StringStream;
 use PSX\Http\Stream\TempStream;
@@ -46,7 +45,7 @@ class Stream implements HandlerInterface
 		$this->hasFollowLocation = (bool) $followLocation;
 	}
 
-	public function request(Request $request, Options $options)
+	public function request(RequestInterface $request, Options $options)
 	{
 		// check whether scheme is supported
 		$supportedWrappers = array_intersect(array('http', 'https'), stream_get_wrappers());
@@ -109,7 +108,7 @@ class Stream implements HandlerInterface
 		throw new HandlerException($errstr, $errno);
 	}
 
-	public static function assignHttpContext($context, Request $request, Options $options = null)
+	public static function assignHttpContext($context, RequestInterface $request, Options $options = null)
 	{
 		stream_context_set_option($context, 'http', 'method', $request->getMethod());
 		stream_context_set_option($context, 'http', 'protocol_version', $request->getProtocolVersion() ?: 1.1);

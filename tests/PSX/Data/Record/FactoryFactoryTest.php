@@ -43,7 +43,7 @@ class FactoryFactoryTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testGetFactoryInvalidClass()
 	{
@@ -52,7 +52,7 @@ class FactoryFactoryTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException ReflectionException
+	 * @expectedException \ReflectionException
 	 */
 	public function testGetFactoryClassNotExist()
 	{

@@ -105,7 +105,7 @@ class RequestParserTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Http\ParseException
+	 * @expectedException \PSX\Http\ParseException
 	 */
 	public function testParseInvalidStatusLine()
 	{
@@ -117,7 +117,7 @@ class RequestParserTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testParseEmpty()
 	{
@@ -128,7 +128,7 @@ class RequestParserTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PSX\Http\ParseException
+	 * @expectedException \PSX\Http\ParseException
 	 */
 	public function testParseNoLineEnding()
 	{
@@ -140,7 +140,7 @@ class RequestParserTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testParseInvalidMode()
 	{
@@ -150,6 +150,24 @@ class RequestParserTest extends \PHPUnit_Framework_TestCase
 		$parser = new RequestParser(new Url('http://localhost.com'), 'foo');
 		$parser->parse($request);
 	}
+
+    public function testBuildStatusLine()
+    {
+        $request = new Request(new Url('http://127.0.0.1'), 'GET');
+
+        $this->assertEquals('GET / HTTP/1.1', RequestParser::buildStatusLine($request));
+    }
+
+    /**
+     * @expectedException \PSX\Exception
+     */
+    public function testBuildStatusLineNoTarget()
+    {
+        $request = new Request(new Url('http://127.0.0.1'), 'GET');
+        $request->setRequestTarget('');
+
+        RequestParser::buildStatusLine($request);
+    }
 
 	public function testConvert()
 	{

@@ -35,15 +35,15 @@ interface CommandInterface
 	/**
 	 * Executes the command
 	 *
-	 * @param PSX\Command\Parameters $parameters
-	 * @param PSX\Command\OutputInterface $output
+	 * @param \PSX\Command\Parameters $parameters
+	 * @param \PSX\Command\OutputInterface $output
 	 */
 	public function onExecute(Parameters $parameters, OutputInterface $output);
 
 	/**
 	 * Returns the parameters which are used by this command
 	 *
-	 * @return PSX\Command\Parameters
+	 * @return \PSX\Command\Parameters
 	 */
 	public function getParameters();
 }

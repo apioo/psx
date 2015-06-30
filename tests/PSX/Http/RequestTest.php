@@ -55,23 +55,6 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('http://127.0.0.1/foo', $request->getUri()->toString());
 	}
 
-	public function testGetLine()
-	{
-		$request = new Request(new Url('http://127.0.0.1'), 'GET');
-
-		$this->assertEquals('GET / HTTP/1.1', $request->getLine());
-	}
-
-	/**
-	 * @expectedException PSX\Exception
-	 */
-	public function testGetLineNoTarget()
-	{
-		$request = new Request(new Url('http://127.0.0.1'), 'GET');
-		$request->setRequestTarget('');
-		$request->getLine();
-	}
-
 	public function testToString()
 	{
 		$body = new StringStream();

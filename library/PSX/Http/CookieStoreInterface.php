@@ -33,7 +33,7 @@ interface CookieStoreInterface
 	 * Saves a cookie for the domain
 	 *
 	 * @param string $domain
-	 * @param PSX\Http\Cookie $cookie
+	 * @param \PSX\Http\Cookie $cookie
 	 * @return void
 	 */
 	public function store($domain, Cookie $cookie);
@@ -42,7 +42,7 @@ interface CookieStoreInterface
 	 * Returns all cookies for the domain
 	 *
 	 * @param string $domain
-	 * @return array<PSX\Http\Cookie>
+	 * @return \PSX\Http\Cookie[]
 	 */
 	public function load($domain);
 
@@ -50,7 +50,7 @@ interface CookieStoreInterface
 	 * Removes the cookie from the store
 	 *
 	 * @param string $domain
-	 * @param PSX\Http\Cookie $cookie
+	 * @param \PSX\Http\Cookie $cookie
 	 * @return void
 	 */
 	public function remove($domain, Cookie $cookie);
