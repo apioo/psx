@@ -83,6 +83,14 @@ trait RedirectTrait
             $url = $this->reverseRouter->getUrl($source, $parameters);
         }
 
-        throw new StatusCode\TemporaryRedirectException($url);
+        if ($code == 301) {
+            throw new StatusCode\MovedPermanentlyException($url);
+        } else if ($code == 302) {
+            throw new StatusCode\FoundException($url);
+        } else if ($code == 307) {
+            throw new StatusCode\TemporaryRedirectException($url);
+        } else {
+            throw new RuntimeException('Invalid redirect status code');
+        }
     }
 }
