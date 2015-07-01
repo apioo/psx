@@ -21,12 +21,11 @@
 $loader = require(__DIR__ . '/../vendor/autoload.php');
 $loader->add('PSX', 'tests');
 
-PSX\Test\Environment::setup(__DIR__ . '/..', function($fromSchema){
+\PSX\Test\Environment::setup(__DIR__ . '/..', function(\Doctrine\DBAL\Schema\Schema $fromSchema){
 
 	// create the database schema if not available
-	if(!$fromSchema->hasTable('psx_cache_handler_sql_test'))
-	{
-		return PSX\Sql\TestSchema::getSchema();
+	if (!$fromSchema->hasTable('psx_cache_handler_sql_test')) {
+		return \PSX\Sql\TestSchema::getSchema();
 	}
 
 });
