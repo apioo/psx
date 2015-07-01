@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,37 +29,37 @@ namespace PSX;
  */
 class JsonTest extends \PHPUnit_Framework_TestCase
 {
-	public function testJsonEncode()
-	{
-		$val = array('foo' => 'bar');
+    public function testJsonEncode()
+    {
+        $val = array('foo' => 'bar');
 
-		$this->assertEquals('{"foo":"bar"}', Json::encode($val));
-	}
+        $this->assertEquals('{"foo":"bar"}', Json::encode($val));
+    }
 
-	public function testJsonDecode()
-	{
-		$val = '{"foo":"bar"}';
+    public function testJsonDecode()
+    {
+        $val = '{"foo":"bar"}';
 
-		$this->assertEquals(array('foo' => 'bar'), Json::decode($val));
-	}
+        $this->assertEquals(array('foo' => 'bar'), Json::decode($val));
+    }
 
-	/**
-	 * @expectedException \PSX\Exception
-	 */
-	public function testJsonDecodeMalformed()
-	{
-		$val = '{"foo":"bar"';
+    /**
+     * @expectedException \PSX\Exception
+     */
+    public function testJsonDecodeMalformed()
+    {
+        $val = '{"foo":"bar"';
 
-		Json::decode($val);
-	}
+        Json::decode($val);
+    }
 
-	/**
-	 * @expectedException \PSX\Exception
-	 */
-	public function testJsonDecodeControlCharacter()
-	{
-		$val = '{"foo' . "\x02" . '":"bar"}';
+    /**
+     * @expectedException \PSX\Exception
+     */
+    public function testJsonDecodeControlCharacter()
+    {
+        $val = '{"foo' . "\x02" . '":"bar"}';
 
-		Json::decode($val);
-	}
+        Json::decode($val);
+    }
 }

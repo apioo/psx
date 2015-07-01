@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -41,7 +41,7 @@ use PSX\Uri;
  */
 interface RequestInterface extends MessageInterface
 {
-	/**
+    /**
      * Retrieves the message's request target.
      *
      * Retrieves the message's request-target either as it will appear (for
@@ -54,12 +54,12 @@ interface RequestInterface extends MessageInterface
      *
      * If no URI is available, and no request-target has been specifically
      * provided, this method MUST return the string "/".
-	 *
-	 * @return string
-	 */
-	public function getRequestTarget();
+     *
+     * @return string
+     */
+    public function getRequestTarget();
 
-	/**
+    /**
      * Sets an specific request-target.
      *
      * If the request needs a non-origin-form request-target — e.g., for
@@ -71,17 +71,17 @@ interface RequestInterface extends MessageInterface
      *     request-target forms allowed in request messages)
      * @param mixed $requestTarget
      * @return void
-	 */
-	public function setRequestTarget($requestTarget);
+     */
+    public function setRequestTarget($requestTarget);
 
-	/**
-	 * Retrieves the HTTP method of the request
-	 *
-	 * @return string
-	 */
-	public function getMethod();
+    /**
+     * Retrieves the HTTP method of the request
+     *
+     * @return string
+     */
+    public function getMethod();
 
-	/**
+    /**
      * Sets the provided HTTP method.
      *
      * While HTTP method names are typically all uppercase characters, HTTP
@@ -91,29 +91,29 @@ interface RequestInterface extends MessageInterface
      * @param string $method Case-insensitive method.
      * @return void
      * @throws \InvalidArgumentException for invalid HTTP methods.
-	 */
-	public function setMethod($method);
+     */
+    public function setMethod($method);
 
-	/**
+    /**
      * Retrieves the URI instance.
      *
      * This method MUST return a PSX\Uri instance.
      *
      * @link http://tools.ietf.org/html/rfc3986#section-4.3
-	 * @return \PSX\Uri
-	 */
-	public function getUri();
+     * @return \PSX\Uri
+     */
+    public function getUri();
 
-	/**
+    /**
      * Sets the provided URI.
      *
      * @link http://tools.ietf.org/html/rfc3986#section-4.3
      * @param \PSX\Uri $uri New request URI to use.
      * @return void
-	 */
-	public function setUri(Uri $uri);
+     */
+    public function setUri(Uri $uri);
 
-	/**
+    /**
      * Retrieve attributes derived from the request.
      *
      * The request "attributes" may be used to allow injection of any
@@ -123,10 +123,10 @@ interface RequestInterface extends MessageInterface
      * will be application and request specific.
      *
      * @return array Attributes derived from the request.
-	 */
-	public function getAttributes();
+     */
+    public function getAttributes();
 
-	/**
+    /**
      * Retrieve a single derived request attribute.
      *
      * Retrieves a single derived request attribute as described in
@@ -136,10 +136,10 @@ interface RequestInterface extends MessageInterface
      * @see getAttributes()
      * @param string $name The attribute name.
      * @return mixed
-	 */
-	public function getAttribute($name);
+     */
+    public function getAttribute($name);
 
-	/**
+    /**
      * Sets the specified derived request attribute.
      *
      * This method allows setting a single derived request attribute as
@@ -149,10 +149,10 @@ interface RequestInterface extends MessageInterface
      * @param string $name The attribute name.
      * @param mixed $value The value of the attribute.
      * @return void
-	 */
-	public function setAttribute($name, $value);
+     */
+    public function setAttribute($name, $value);
 
-	/**
+    /**
      * Removes the specified derived request attribute.
      *
      * This method allows removing a single derived request attribute as
@@ -161,6 +161,6 @@ interface RequestInterface extends MessageInterface
      * @see getAttributes()
      * @param string $name The attribute name.
      * @return void
-	 */
-	public function removeAttribute($name);
+     */
+    public function removeAttribute($name);
 }

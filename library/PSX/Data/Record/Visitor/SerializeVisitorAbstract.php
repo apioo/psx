@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,134 +33,124 @@ use PSX\DateTime;
  */
 abstract class SerializeVisitorAbstract extends VisitorAbstract
 {
-	protected $objectStack = array();
-	protected $objectCount = -1;
+    protected $objectStack = array();
+    protected $objectCount = -1;
 
-	protected $arrayStack  = array();
-	protected $arrayCount  = -1;
+    protected $arrayStack  = array();
+    protected $arrayCount  = -1;
 
-	protected $lastObject;
-	protected $lastArray;
+    protected $lastObject;
+    protected $lastArray;
 
-	protected $stack = array();
+    protected $stack = array();
 
-	public function getObject()
-	{
-		return $this->lastObject;
-	}
+    public function getObject()
+    {
+        return $this->lastObject;
+    }
 
-	public function visitObjectStart($name)
-	{
-		$this->objectStack[] = $this->newObject();
+    public function visitObjectStart($name)
+    {
+        $this->objectStack[] = $this->newObject();
 
-		$this->objectCount++;
-	}
+        $this->objectCount++;
+    }
 
-	public function visitObjectEnd()
-	{
-		$this->lastObject = array_pop($this->objectStack);
+    public function visitObjectEnd()
+    {
+        $this->lastObject = array_pop($this->objectStack);
 
-		$this->objectCount--;
-	}
+        $this->objectCount--;
+    }
 
-	public function visitObjectValueStart($key, $value)
-	{
-		$this->stack[] = [$key, $value];
-	}
+    public function visitObjectValueStart($key, $value)
+    {
+        $this->stack[] = [$key, $value];
+    }
 
-	public function visitObjectValueEnd()
-	{
-		list($key, $value) = array_pop($this->stack);
+    public function visitObjectValueEnd()
+    {
+        list($key, $value) = array_pop($this->stack);
 
-		$this->addObjectValue($key, $this->getValue($value), $this->objectStack[$this->objectCount]);
-	}
+        $this->addObjectValue($key, $this->getValue($value), $this->objectStack[$this->objectCount]);
+    }
 
-	public function visitArrayStart()
-	{
-		$this->arrayStack[] = $this->newArray();
+    public function visitArrayStart()
+    {
+        $this->arrayStack[] = $this->newArray();
 
-		$this->arrayCount++;
-	}
+        $this->arrayCount++;
+    }
 
-	public function visitArrayEnd()
-	{
-		$this->lastArray = array_pop($this->arrayStack);
+    public function visitArrayEnd()
+    {
+        $this->lastArray = array_pop($this->arrayStack);
 
-		$this->arrayCount--;
-	}
+        $this->arrayCount--;
+    }
 
-	public function visitArrayValueStart($value)
-	{
-		$this->stack[] = [$value];
-	}
+    public function visitArrayValueStart($value)
+    {
+        $this->stack[] = [$value];
+    }
 
-	public function visitArrayValueEnd()
-	{
-		list($value) = array_pop($this->stack);
+    public function visitArrayValueEnd()
+    {
+        list($value) = array_pop($this->stack);
 
-		$this->addArrayValue($this->getValue($value), $this->arrayStack[$this->arrayCount]);
-	}
+        $this->addArrayValue($this->getValue($value), $this->arrayStack[$this->arrayCount]);
+    }
 
-	/**
-	 * Returns an new object instance
-	 *
-	 * @return mixed
-	 */
-	abstract protected function newObject();
+    /**
+     * Returns an new object instance
+     *
+     * @return mixed
+     */
+    abstract protected function newObject();
 
-	/**
-	 * Adds an key value pair to the object
-	 *
-	 * @param string $key
-	 * @param mixed $value
-	 * @param mixed $object
-	 */
-	abstract protected function addObjectValue($key, $value, &$object);
+    /**
+     * Adds an key value pair to the object
+     *
+     * @param string $key
+     * @param mixed $value
+     * @param mixed $object
+     */
+    abstract protected function addObjectValue($key, $value, &$object);
 
-	/**
-	 * Returns an new array instance
-	 *
-	 * @return mixed
-	 */
-	abstract protected function newArray();
+    /**
+     * Returns an new array instance
+     *
+     * @return mixed
+     */
+    abstract protected function newArray();
 
-	/**
-	 * Adds an value to an array
-	 *
-	 * @param mixed $value
-	 * @param mixed $array
-	 */
-	abstract protected function addArrayValue($value, &$array);
+    /**
+     * Adds an value to an array
+     *
+     * @param mixed $value
+     * @param mixed $array
+     */
+    abstract protected function addArrayValue($value, &$array);
 
-	protected function newValue($value)
-	{
-		if($value instanceof \DateTime)
-		{
-			return DateTime::getFormat($value);
-		}
-		else if(is_scalar($value))
-		{
-			return $value;
-		}
-		else
-		{
-			return (string) $value;
-		}
-	}
+    protected function newValue($value)
+    {
+        if ($value instanceof \DateTime) {
+            return DateTime::getFormat($value);
+        } elseif (is_scalar($value)) {
+            return $value;
+        } else {
+            return (string) $value;
+        }
+    }
 
-	protected function getValue($value)
-	{
-		if(GraphTraverser::isObject($value))
-		{
-			return $this->lastObject;
-		}
-		else if(GraphTraverser::isArray($value))
-		{
-			return $this->lastArray;
-		}
-		else
-		{
-			return $this->newValue($value);
-		}
-	}
+    protected function getValue($value)
+    {
+        if (GraphTraverser::isObject($value)) {
+            return $this->lastObject;
+        } elseif (GraphTraverser::isArray($value)) {
+            return $this->lastArray;
+        } else {
+            return $this->newValue($value);
+        }
+    }
 }

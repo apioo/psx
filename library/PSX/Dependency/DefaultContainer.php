@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -47,152 +47,151 @@ use PSX\Validate;
  */
 class DefaultContainer extends Container
 {
-	use Command;
-	use Console;
-	use Controller;
-	use Data;
-	use Event;
+    use Command;
+    use Console;
+    use Controller;
+    use Data;
+    use Event;
 
-	/**
-	 * @return \PSX\Config
-	 */
-	public function getConfig()
-	{
-		$config = new Config($this->appendDefaultConfig());
-		$config = $config->merge(Config::fromFile($this->getParameter('config.file')));
+    /**
+     * @return \PSX\Config
+     */
+    public function getConfig()
+    {
+        $config = new Config($this->appendDefaultConfig());
+        $config = $config->merge(Config::fromFile($this->getParameter('config.file')));
 
-		return $config;
-	}
+        return $config;
+    }
 
-	/**
-	 * @return \PSX\Http
-	 */
-	public function getHttp()
-	{
-		return new Http();
-	}
+    /**
+     * @return \PSX\Http
+     */
+    public function getHttp()
+    {
+        return new Http();
+    }
 
-	/**
-	 * @return \PSX\Session
-	 */
-	public function getSession()
-	{
-		$name    = $this->hasParameter('session.name') ? $this->getParameter('session.name') : 'psx';
-		$session = new Session($name);
+    /**
+     * @return \PSX\Session
+     */
+    public function getSession()
+    {
+        $name    = $this->hasParameter('session.name') ? $this->getParameter('session.name') : 'psx';
+        $session = new Session($name);
 
-		if(PHP_SAPI != 'cli')
-		{
-			$session->start();
-		}
+        if (PHP_SAPI != 'cli') {
+            $session->start();
+        }
 
-		return $session;
-	}
+        return $session;
+    }
 
-	/**
-	 * @return \Doctrine\DBAL\Connection
-	 */
-	public function getConnection()
-	{
-		$config = new Configuration();
-		$config->setSQLLogger(new SqlLogger($this->get('logger')));
+    /**
+     * @return \Doctrine\DBAL\Connection
+     */
+    public function getConnection()
+    {
+        $config = new Configuration();
+        $config->setSQLLogger(new SqlLogger($this->get('logger')));
 
-		$params = array(
-			'dbname'   => $this->get('config')->get('psx_sql_db'),
-			'user'     => $this->get('config')->get('psx_sql_user'),
-			'password' => $this->get('config')->get('psx_sql_pw'),
-			'host'     => $this->get('config')->get('psx_sql_host'),
-			'driver'   => 'pdo_mysql',
-		);
+        $params = array(
+            'dbname'   => $this->get('config')->get('psx_sql_db'),
+            'user'     => $this->get('config')->get('psx_sql_user'),
+            'password' => $this->get('config')->get('psx_sql_pw'),
+            'host'     => $this->get('config')->get('psx_sql_host'),
+            'driver'   => 'pdo_mysql',
+        );
 
-		return DriverManager::getConnection($params, $config);
-	}
+        return DriverManager::getConnection($params, $config);
+    }
 
-	/**
-	 * @return \PSX\TemplateInterface
-	 */
-	public function getTemplate()
-	{
-		return new Template();
-	}
+    /**
+     * @return \PSX\TemplateInterface
+     */
+    public function getTemplate()
+    {
+        return new Template();
+    }
 
-	/**
-	 * @return \PSX\Validate
-	 */
-	public function getValidate()
-	{
-		return new Validate();
-	}
+    /**
+     * @return \PSX\Validate
+     */
+    public function getValidate()
+    {
+        return new Validate();
+    }
 
-	/**
-	 * @return \PSX\Dependency\ObjectBuilderInterface
-	 */
-	public function getObjectBuilder()
-	{
-		return new ObjectBuilder($this);
-	}
+    /**
+     * @return \PSX\Dependency\ObjectBuilderInterface
+     */
+    public function getObjectBuilder()
+    {
+        return new ObjectBuilder($this);
+    }
 
-	/**
-	 * @return \PSX\Exception\ConverterInterface
-	 */
-	public function getExceptionConverter()
-	{
-		return new Exception\Converter($this->get('config')->get('psx_debug'));
-	}
+    /**
+     * @return \PSX\Exception\ConverterInterface
+     */
+    public function getExceptionConverter()
+    {
+        return new Exception\Converter($this->get('config')->get('psx_debug'));
+    }
 
-	/**
-	 * @return \PSX\Cache\CacheItemPoolInterface
-	 */
-	public function getCache()
-	{
-		return new Cache();
-	}
+    /**
+     * @return \PSX\Cache\CacheItemPoolInterface
+     */
+    public function getCache()
+    {
+        return new Cache();
+    }
 
-	/**
-	 * @return \Psr\Log\LoggerInterface
-	 */
-	public function getLogger()
-	{
-		$handler = new MonologHandler\ErrorLogHandler(MonologHandler\ErrorLogHandler::OPERATING_SYSTEM, Logger::ERROR, true, true);
-		$handler->setFormatter(new ErrorFormatter());
+    /**
+     * @return \Psr\Log\LoggerInterface
+     */
+    public function getLogger()
+    {
+        $handler = new MonologHandler\ErrorLogHandler(MonologHandler\ErrorLogHandler::OPERATING_SYSTEM, Logger::ERROR, true, true);
+        $handler->setFormatter(new ErrorFormatter());
 
-		$logger = new Logger('psx');
-		$logger->pushHandler($handler);
+        $logger = new Logger('psx');
+        $logger->pushHandler($handler);
 
-		return $logger;
-	}
+        return $logger;
+    }
 
-	/**
-	 * @return \PSX\Sql\TableManagerInterface
-	 */
-	public function getTableManager()
-	{
-		return new TableManager($this->get('connection'));
-	}
+    /**
+     * @return \PSX\Sql\TableManagerInterface
+     */
+    public function getTableManager()
+    {
+        return new TableManager($this->get('connection'));
+    }
 
-	/**
-	 * @return \Doctrine\ORM\EntityManager
-	 */
-	public function getEntityManager()
-	{
-		$connection = $this->get('connection');
-		$paths      = array(PSX_PATH_LIBRARY);
-		$isDevMode  = $this->get('config')->get('psx_debug');
+    /**
+     * @return \Doctrine\ORM\EntityManager
+     */
+    public function getEntityManager()
+    {
+        $connection = $this->get('connection');
+        $paths      = array(PSX_PATH_LIBRARY);
+        $isDevMode  = $this->get('config')->get('psx_debug');
 
-		$config = Setup::createAnnotationMetadataConfiguration($paths, $isDevMode);
+        $config = Setup::createAnnotationMetadataConfiguration($paths, $isDevMode);
 
-		return EntityManager::create($connection, $config, $connection->getEventManager());
-	}
+        return EntityManager::create($connection, $config, $connection->getEventManager());
+    }
 
-	protected function appendDefaultConfig()
-	{
-		return array(
-			'psx_dispatch'            => 'index.php/',
-			'psx_timezone'            => 'UTC',
-			'psx_error_controller'    => null,
-			'psx_error_template'      => null,
-			'psx_annotation_autoload' => array('Doctrine\ORM\Mapping', 'JMS\Serializer\Annotation'),
-			'psx_soap_namespace'      => 'http://phpsx.org/2014/data',
-			'psx_json_namespace'      => 'urn:schema.phpsx.org#',
-		);
-	}
+    protected function appendDefaultConfig()
+    {
+        return array(
+            'psx_dispatch'            => 'index.php/',
+            'psx_timezone'            => 'UTC',
+            'psx_error_controller'    => null,
+            'psx_error_template'      => null,
+            'psx_annotation_autoload' => array('Doctrine\ORM\Mapping', 'JMS\Serializer\Annotation'),
+            'psx_soap_namespace'      => 'http://phpsx.org/2014/data',
+            'psx_json_namespace'      => 'urn:schema.phpsx.org#',
+        );
+    }
 }

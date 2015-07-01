@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,41 +29,37 @@ namespace PSX\ActivityStream;
  */
 class Language
 {
-	const PREFERRED_LANGUAGE = 'en';
+    const PREFERRED_LANGUAGE = 'en';
 
-	protected $value;
+    protected $value;
 
-	public function __construct($value)
-	{
-		$this->value = $value;
-	}
+    public function __construct($value)
+    {
+        $this->value = $value;
+    }
 
-	public function getValue()
-	{
-		return $this->value;
-	}
+    public function getValue()
+    {
+        return $this->value;
+    }
 
-	public function getPreferred()
-	{
-		if(is_array($this->value))
-		{
-			$value = isset($this->value[self::PREFERRED_LANGUAGE]) ? $this->value[self::PREFERRED_LANGUAGE] : current($this->value);
+    public function getPreferred()
+    {
+        if (is_array($this->value)) {
+            $value = isset($this->value[self::PREFERRED_LANGUAGE]) ? $this->value[self::PREFERRED_LANGUAGE] : current($this->value);
 
-			if(!empty($value))
-			{
-				return (string) $value;
-			}
+            if (!empty($value)) {
+                return (string) $value;
+            }
 
-			return null;
-		}
-		else
-		{
-			return (string) $this->value;
-		}
-	}
+            return null;
+        } else {
+            return (string) $this->value;
+        }
+    }
 
-	public function __toString()
-	{
-		return $this->getPreferred();
-	}
+    public function __toString()
+    {
+        return $this->getPreferred();
+    }
 }

@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,14 +32,14 @@ use PSX\DateTime;
  */
 class IssueTest extends SerializeTestAbstract
 {
-	public function testIssue()
-	{
-		$issue = new Issue();
-		$issue->setDisplayName('Terms of Use Violation');
-		$issue->setUrl('http://.../terms-of-use');
-		$issue->setTypes(array('http://example.org/codes/inappropriateMaterial', 'http://example.org/codes/copyrightViolation'));
+    public function testIssue()
+    {
+        $issue = new Issue();
+        $issue->setDisplayName('Terms of Use Violation');
+        $issue->setUrl('http://.../terms-of-use');
+        $issue->setTypes(array('http://example.org/codes/inappropriateMaterial', 'http://example.org/codes/copyrightViolation'));
 
-		$content = <<<JSON
+        $content = <<<JSON
   {
     "objectType": "issue",
     "displayName": "Terms of Use Violation",
@@ -51,8 +51,8 @@ class IssueTest extends SerializeTestAbstract
   }
 JSON;
 
-		$this->assertRecordEqualsContent($issue, $content);
+        $this->assertRecordEqualsContent($issue, $content);
 
-		$this->assertEquals(array('http://example.org/codes/inappropriateMaterial', 'http://example.org/codes/copyrightViolation'), $issue->getTypes());
-	}
+        $this->assertEquals(array('http://example.org/codes/inappropriateMaterial', 'http://example.org/codes/copyrightViolation'), $issue->getTypes());
+    }
 }

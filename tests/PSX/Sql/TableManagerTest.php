@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,46 +33,46 @@ use PSX\Test\DbTestCase;
  */
 class TableManagerTest extends DbTestCase
 {
-	public function getDataSet()
-	{
-		return $this->createFlatXMLDataSet(__DIR__ . '/table_fixture.xml');
-	}
+    public function getDataSet()
+    {
+        return $this->createFlatXMLDataSet(__DIR__ . '/table_fixture.xml');
+    }
 
-	public function testGetTable()
-	{
-		$manager = new TableManager($this->connection);
+    public function testGetTable()
+    {
+        $manager = new TableManager($this->connection);
 
-		$table = $manager->getTable('PSX\Sql\TestTable');
+        $table = $manager->getTable('PSX\Sql\TestTable');
 
-		$this->assertInstanceOf('PSX\Sql\TableInterface', $table);
-		$this->assertEquals('psx_handler_comment', $table->getName());
-		$this->assertEquals(['id', 'userId', 'title', 'date'], array_keys($table->getColumns()));
-	}
+        $this->assertInstanceOf('PSX\Sql\TableInterface', $table);
+        $this->assertEquals('psx_handler_comment', $table->getName());
+        $this->assertEquals(['id', 'userId', 'title', 'date'], array_keys($table->getColumns()));
+    }
 
-	public function testGetTableWithReader()
-	{
-		$manager = new TableManager($this->connection, new Reader\Schema($this->connection));
+    public function testGetTableWithReader()
+    {
+        $manager = new TableManager($this->connection, new Reader\Schema($this->connection));
 
-		$table = $manager->getTable('psx_handler_comment');
+        $table = $manager->getTable('psx_handler_comment');
 
-		$this->assertInstanceOf('PSX\Sql\TableInterface', $table);
-		$this->assertEquals('psx_handler_comment', $table->getName());
-		$this->assertEquals(['id', 'userId', 'title', 'date'], array_keys($table->getColumns()));
-	}
+        $this->assertInstanceOf('PSX\Sql\TableInterface', $table);
+        $this->assertEquals('psx_handler_comment', $table->getName());
+        $this->assertEquals(['id', 'userId', 'title', 'date'], array_keys($table->getColumns()));
+    }
 
-	/**
-	 * @expectedException \InvalidArgumentException
-	 */
-	public function testGetTableInvalidTable()
-	{
-		$manager = new TableManager($this->connection);
-		$manager->getTable('PSX\Sql\FooTable');
-	}
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testGetTableInvalidTable()
+    {
+        $manager = new TableManager($this->connection);
+        $manager->getTable('PSX\Sql\FooTable');
+    }
 
-	public function testGetConnection()
-	{
-		$manager = new TableManager($this->connection);
+    public function testGetConnection()
+    {
+        $manager = new TableManager($this->connection);
 
-		$this->assertInstanceOf('Doctrine\DBAL\Connection', $manager->getConnection());
-	}
+        $this->assertInstanceOf('Doctrine\DBAL\Connection', $manager->getConnection());
+    }
 }

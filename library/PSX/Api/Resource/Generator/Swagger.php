@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,7 +36,7 @@ use PSX\Swagger\ResponseMessage;
 use PSX\Util\ApiGeneration;
 
 /**
- * Generates an Swagger 1.2 representation of an API resource. Note this does 
+ * Generates an Swagger 1.2 representation of an API resource. Note this does
  * not generate a resource listing only the documentation of an single resource
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
@@ -45,202 +45,186 @@ use PSX\Util\ApiGeneration;
  */
 class Swagger extends GeneratorAbstract
 {
-	protected $apiVersion;
-	protected $basePath;
-	protected $targetNamespace;
+    protected $apiVersion;
+    protected $basePath;
+    protected $targetNamespace;
 
-	public function __construct($apiVersion, $basePath, $targetNamespace)
-	{
-		$this->apiVersion      = $apiVersion;
-		$this->basePath        = $basePath;
-		$this->targetNamespace = $targetNamespace;
-	}
+    public function __construct($apiVersion, $basePath, $targetNamespace)
+    {
+        $this->apiVersion      = $apiVersion;
+        $this->basePath        = $basePath;
+        $this->targetNamespace = $targetNamespace;
+    }
 
-	public function generate(Resource $resource)
-	{
-		$declaration = new Declaration($this->apiVersion);
-		$declaration->setBasePath($this->basePath);
-		$declaration->setApis($this->getApis($resource));
-		$declaration->setModels($this->getModels($resource));
-		$declaration->setResourcePath(ApiGeneration::transformRoutePlaceholder($resource->getPath()));
+    public function generate(Resource $resource)
+    {
+        $declaration = new Declaration($this->apiVersion);
+        $declaration->setBasePath($this->basePath);
+        $declaration->setApis($this->getApis($resource));
+        $declaration->setModels($this->getModels($resource));
+        $declaration->setResourcePath(ApiGeneration::transformRoutePlaceholder($resource->getPath()));
 
-		$writer  = new JsonWriter();
-		$swagger = $writer->write($declaration);
+        $writer  = new JsonWriter();
+        $swagger = $writer->write($declaration);
 
-		// since swagger does not fully support the json schema spec we must 
-		// remove the $ref fragments
-		$swagger = str_replace('#\/definitions\/', '', $swagger);
+        // since swagger does not fully support the json schema spec we must
+        // remove the $ref fragments
+        $swagger = str_replace('#\/definitions\/', '', $swagger);
 
-		return $swagger;
-	}
+        return $swagger;
+    }
 
-	protected function getApis(Resource $resource)
-	{
-		$api         = new Api(ApiGeneration::transformRoutePlaceholder($resource->getPath()));
-		$description = $resource->getDescription();
-		$methods     = $resource->getMethods();
+    protected function getApis(Resource $resource)
+    {
+        $api         = new Api(ApiGeneration::transformRoutePlaceholder($resource->getPath()));
+        $description = $resource->getDescription();
+        $methods     = $resource->getMethods();
 
-		if(!empty($description))
-		{
-			$api->setDescription($description);
-		}
+        if (!empty($description)) {
+            $api->setDescription($description);
+        }
 
-		foreach($methods as $method)
-		{
-			// get operation name
-			$request     = $method->getRequest();
-			$response    = $this->getSuccessfulResponse($method);
-			$description = $method->getDescription();
-			$entityName  = '';
+        foreach ($methods as $method) {
+            // get operation name
+            $request     = $method->getRequest();
+            $response    = $this->getSuccessfulResponse($method);
+            $description = $method->getDescription();
+            $entityName  = '';
 
-			if($request instanceof SchemaInterface)
-			{
-				$entityName = $request->getDefinition()->getName();
-			}
-			else if($response instanceof SchemaInterface)
-			{
-				$entityName = $response->getDefinition()->getName();
-			}
+            if ($request instanceof SchemaInterface) {
+                $entityName = $request->getDefinition()->getName();
+            } elseif ($response instanceof SchemaInterface) {
+                $entityName = $response->getDefinition()->getName();
+            }
 
-			// create new operation
-			$operation = new Operation($method->getName(), strtolower($method->getName()) . ucfirst($entityName));
+            // create new operation
+            $operation = new Operation($method->getName(), strtolower($method->getName()) . ucfirst($entityName));
 
-			if(!empty($description))
-			{
-				$operation->setSummary($description);
-			}
+            if (!empty($description)) {
+                $operation->setSummary($description);
+            }
 
-			// path parameter
-			$parameters = $resource->getPathParameters()->getDefinition();
+            // path parameter
+            $parameters = $resource->getPathParameters()->getDefinition();
 
-			foreach($parameters as $parameter)
-			{
-				$param = new Parameter('path', $parameter->getName(), $parameter->getDescription(), $parameter->isRequired());
+            foreach ($parameters as $parameter) {
+                $param = new Parameter('path', $parameter->getName(), $parameter->getDescription(), $parameter->isRequired());
 
-				$this->setParameterType($parameter, $param);
+                $this->setParameterType($parameter, $param);
 
-				$operation->addParameter($param);
-			}
+                $operation->addParameter($param);
+            }
 
-			// query parameter
-			$parameters = $method->getQueryParameters()->getDefinition();
+            // query parameter
+            $parameters = $method->getQueryParameters()->getDefinition();
 
-			foreach($parameters as $parameter)
-			{
-				$param = new Parameter('query', $parameter->getName(), $parameter->getDescription(), $parameter->isRequired());
+            foreach ($parameters as $parameter) {
+                $param = new Parameter('query', $parameter->getName(), $parameter->getDescription(), $parameter->isRequired());
 
-				$this->setParameterType($parameter, $param);
+                $this->setParameterType($parameter, $param);
 
-				$operation->addParameter($param);
-			}
+                $operation->addParameter($param);
+            }
 
-			// request body
-			if($request instanceof SchemaInterface)
-			{
-				$description = $request->getDefinition()->getDescription();
-				$type        = strtolower($method->getName()) . 'Request';
-				$parameter   = new Parameter('body', 'body', $description, true);
-				$parameter->setType($type);
+            // request body
+            if ($request instanceof SchemaInterface) {
+                $description = $request->getDefinition()->getDescription();
+                $type        = strtolower($method->getName()) . 'Request';
+                $parameter   = new Parameter('body', 'body', $description, true);
+                $parameter->setType($type);
 
-				$operation->addParameter($parameter);
-			}
+                $operation->addParameter($parameter);
+            }
 
-			// response body
-			$responses = $method->getResponses();
+            // response body
+            $responses = $method->getResponses();
 
-			foreach($responses as $statusCode => $response)
-			{
-				$type    = strtolower($method->getName()) . 'Response';
-				$message = $response->getDefinition()->getDescription() ?: 'Response';
+            foreach ($responses as $statusCode => $response) {
+                $type    = strtolower($method->getName()) . 'Response';
+                $message = $response->getDefinition()->getDescription() ?: 'Response';
 
-				$operation->addResponseMessage(new ResponseMessage($statusCode, $message, $type));
-			}
+                $operation->addResponseMessage(new ResponseMessage($statusCode, $message, $type));
+            }
 
-			$api->addOperation($operation);
-		}
+            $api->addOperation($operation);
+        }
 
-		return array($api);
-	}
+        return array($api);
+    }
 
-	protected function getModels(Resource $resource)
-	{
-		$generator = new JsonSchema($this->targetNamespace);
-		$data      = json_decode($generator->generate($resource));
-		$models    = new \stdClass();
+    protected function getModels(Resource $resource)
+    {
+        $generator = new JsonSchema($this->targetNamespace);
+        $data      = json_decode($generator->generate($resource));
+        $models    = new \stdClass();
 
-		$properties = $data->properties;
-		foreach($properties as $name => $property)
-		{
-			$description = isset($property->description) ? $property->description : null;
-			$required    = isset($property->required)    ? $property->required    : null;
-			$properties  = isset($property->properties)  ? $property->properties  : null;
+        $properties = $data->properties;
+        foreach ($properties as $name => $property) {
+            $description = isset($property->description) ? $property->description : null;
+            $required    = isset($property->required)    ? $property->required    : null;
+            $properties  = isset($property->properties)  ? $property->properties  : null;
 
-			$model = new Model($name, $description, $required);
-			$model->setProperties($properties);
+            $model = new Model($name, $description, $required);
+            $model->setProperties($properties);
 
-			$models->$name = $model;
-		}
+            $models->$name = $model;
+        }
 
-		$definitions = $data->definitions;
-		foreach($definitions as $name => $definition)
-		{
-			$description = isset($definition->description) ? $definition->description : null;
-			$required    = isset($definition->required)    ? $definition->required    : null;
-			$properties  = isset($definition->properties)  ? $definition->properties  : null;
+        $definitions = $data->definitions;
+        foreach ($definitions as $name => $definition) {
+            $description = isset($definition->description) ? $definition->description : null;
+            $required    = isset($definition->required)    ? $definition->required    : null;
+            $properties  = isset($definition->properties)  ? $definition->properties  : null;
 
-			$model = new Model($name, $description, $required);
-			$model->setProperties($properties);
+            $model = new Model($name, $description, $required);
+            $model->setProperties($properties);
 
-			$models->$name = $model;
-		}
+            $models->$name = $model;
+        }
 
-		return $models;
-	}
+        return $models;
+    }
 
-	protected function setParameterType(PropertyInterface $parameter, Parameter $param)
-	{
-		switch(true)
-		{
-			case $parameter instanceof Property\IntegerType:
-				$param->setType('integer');
-				break;
+    protected function setParameterType(PropertyInterface $parameter, Parameter $param)
+    {
+        switch (true) {
+            case $parameter instanceof Property\IntegerType:
+                $param->setType('integer');
+                break;
 
-			case $parameter instanceof Property\FloatType:
-				$param->setType('number');
-				break;
+            case $parameter instanceof Property\FloatType:
+                $param->setType('number');
+                break;
 
-			case $parameter instanceof Property\BooleanType:
-				$param->setType('boolean');
-				break;
+            case $parameter instanceof Property\BooleanType:
+                $param->setType('boolean');
+                break;
 
-			case $parameter instanceof Property\DateType:
-				$param->setType('string');
-				$param->setFormat('date');
-				break;
+            case $parameter instanceof Property\DateType:
+                $param->setType('string');
+                $param->setFormat('date');
+                break;
 
-			case $parameter instanceof Property\DateTimeType:
-				$param->setType('string');
-				$param->setFormat('date-time');
-				break;
+            case $parameter instanceof Property\DateTimeType:
+                $param->setType('string');
+                $param->setFormat('date-time');
+                break;
 
-			default:
-				$param->setType('string');
-				break;
-		}
+            default:
+                $param->setType('string');
+                break;
+        }
 
-		$param->setDescription($parameter->getDescription());
-		$param->setRequired($parameter->isRequired());
+        $param->setDescription($parameter->getDescription());
+        $param->setRequired($parameter->isRequired());
 
-		if($parameter instanceof Property\DecimalType)
-		{
-			$param->setMinimum($parameter->getMin());
-			$param->setMaximum($parameter->getMax());
-		}
-		else if($parameter instanceof Property\StringType)
-		{
-			$param->setMinimum($parameter->getMinLength());
-			$param->setMaximum($parameter->getMaxLength());
-			$param->setEnum($parameter->getEnumeration());
-		}
-	}
+        if ($parameter instanceof Property\DecimalType) {
+            $param->setMinimum($parameter->getMin());
+            $param->setMaximum($parameter->getMax());
+        } elseif ($parameter instanceof Property\StringType) {
+            $param->setMinimum($parameter->getMinLength());
+            $param->setMaximum($parameter->getMaxLength());
+            $param->setEnum($parameter->getEnumeration());
+        }
+    }
 }

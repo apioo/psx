@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,48 +33,48 @@ use PSX\DateTime;
  */
 class ActivityTest extends SerializeTestAbstract
 {
-	public function testActivity()
-	{
-		$image = new Object();
-		$image->setUrl('http://example.org/martin/image.jpg');
-		$image->setMediaType('image/jpeg');
-		$image->setWidth(250);
-		$image->setHeight(250);
+    public function testActivity()
+    {
+        $image = new Object();
+        $image->setUrl('http://example.org/martin/image.jpg');
+        $image->setMediaType('image/jpeg');
+        $image->setWidth(250);
+        $image->setHeight(250);
 
-		$actor = new Object();
-		$actor->setObjectType('person');
-		$actor->setId('urn:example:person:martin');
-		$actor->setDisplayName('Martin Smith');
-		$actor->setUrl('http://example.org/martin');
-		$actor->setImage($image);
+        $actor = new Object();
+        $actor->setObjectType('person');
+        $actor->setId('urn:example:person:martin');
+        $actor->setDisplayName('Martin Smith');
+        $actor->setUrl('http://example.org/martin');
+        $actor->setImage($image);
 
-		$object = new Object();
-		$object->setObjectType('article');
-		$object->setId('urn:example:blog:abc123/xyz');
-		$object->setUrl('http://example.org/blog/2011/02/entry');
-		$object->setDisplayName('Why I love Activity Streams');
+        $object = new Object();
+        $object->setObjectType('article');
+        $object->setId('urn:example:blog:abc123/xyz');
+        $object->setUrl('http://example.org/blog/2011/02/entry');
+        $object->setDisplayName('Why I love Activity Streams');
 
-		$target = new Object();
-		$target->setObjectType('blog');
-		$target->setId('urn:example:blog:abc123');
-		$target->setDisplayName('Martin\'s Blog');
-		$target->setUrl('http://example.org/blog/');
+        $target = new Object();
+        $target->setObjectType('blog');
+        $target->setId('urn:example:blog:abc123');
+        $target->setDisplayName('Martin\'s Blog');
+        $target->setUrl('http://example.org/blog/');
 
-		$activity = new Activity();
-		$activity->setVerb('post');
-		$activity->setPublished(new DateTime('2011-02-10T15:04:55Z'));
-		$activity->setLanguage('en');
-		$activity->setActor($actor);
-		$activity->setObject($object);
-		$activity->setTarget($target);
-		$activity->setResult($image);
-		$activity->setPriority(0.5);
-		$activity->setTo($actor);
-		$activity->setCc($actor);
-		$activity->setBto($actor);
-		$activity->setBcc($actor);
+        $activity = new Activity();
+        $activity->setVerb('post');
+        $activity->setPublished(new DateTime('2011-02-10T15:04:55Z'));
+        $activity->setLanguage('en');
+        $activity->setActor($actor);
+        $activity->setObject($object);
+        $activity->setTarget($target);
+        $activity->setResult($image);
+        $activity->setPriority(0.5);
+        $activity->setTo($actor);
+        $activity->setCc($actor);
+        $activity->setBto($actor);
+        $activity->setBcc($actor);
 
-		$content = <<<JSON
+        $content = <<<JSON
 {
   "verb": "post",
   "actor": {
@@ -161,101 +161,101 @@ class ActivityTest extends SerializeTestAbstract
 }
 JSON;
 
-		$this->assertRecordEqualsContent($activity, $content);
+        $this->assertRecordEqualsContent($activity, $content);
 
-		$this->assertEquals('post', $activity->getVerb());
-		$this->assertEquals(new DateTime('2011-02-10T15:04:55Z'), $activity->getPublished());
-		$this->assertEquals('en', $activity->getLanguage());
-		$this->assertEquals($actor, $activity->getActor());
-		$this->assertEquals($object, $activity->getObject());
-		$this->assertEquals($target, $activity->getTarget());
-		$this->assertEquals($image, $activity->getResult());
-		$this->assertEquals(0.5, $activity->getPriority());
-		$this->assertEquals($actor, $activity->getTo());
-		$this->assertEquals($actor, $activity->getCc());
-		$this->assertEquals($actor, $activity->getBto());
-		$this->assertEquals($actor, $activity->getBcc());
-	}
+        $this->assertEquals('post', $activity->getVerb());
+        $this->assertEquals(new DateTime('2011-02-10T15:04:55Z'), $activity->getPublished());
+        $this->assertEquals('en', $activity->getLanguage());
+        $this->assertEquals($actor, $activity->getActor());
+        $this->assertEquals($object, $activity->getObject());
+        $this->assertEquals($target, $activity->getTarget());
+        $this->assertEquals($image, $activity->getResult());
+        $this->assertEquals(0.5, $activity->getPriority());
+        $this->assertEquals($actor, $activity->getTo());
+        $this->assertEquals($actor, $activity->getCc());
+        $this->assertEquals($actor, $activity->getBto());
+        $this->assertEquals($actor, $activity->getBcc());
+    }
 
-	public function testComplexActivity()
-	{
-		$generator = new Object();
-		$generator->setUrl('http://example.org/activities-app');
+    public function testComplexActivity()
+    {
+        $generator = new Object();
+        $generator->setUrl('http://example.org/activities-app');
 
-		$provider = new Object();
-		$provider->setUrl('http://example.org/activity-stream');
+        $provider = new Object();
+        $provider->setUrl('http://example.org/activity-stream');
 
-		$image = new Object();
-		$image->setUrl('http://example.org/martin/image');
-		$image->setMediaType('image/jpeg');
-		$image->setWidth(250);
-		$image->setHeight(250);
+        $image = new Object();
+        $image->setUrl('http://example.org/martin/image');
+        $image->setMediaType('image/jpeg');
+        $image->setWidth(250);
+        $image->setHeight(250);
 
-		$actor = new Object();
-		$actor->setUrl('http://example.org/martin');
-		$actor->setObjectType('person');
-		$actor->setId('urn:example:person:martin');
-		$actor->setImage($image);
-		$actor->setDisplayName('Martin Smith');
+        $actor = new Object();
+        $actor->setUrl('http://example.org/martin');
+        $actor->setObjectType('person');
+        $actor->setId('urn:example:person:martin');
+        $actor->setImage($image);
+        $actor->setDisplayName('Martin Smith');
 
-		$image = new Object();
-		$image->setUrl('http://example.org/album/my_fluffy_cat_thumb.jpg');
-		$image->setMediaType('image/jpeg');
-		$image->setWidth(250);
-		$image->setHeight(250);
+        $image = new Object();
+        $image->setUrl('http://example.org/album/my_fluffy_cat_thumb.jpg');
+        $image->setMediaType('image/jpeg');
+        $image->setWidth(250);
+        $image->setHeight(250);
 
-		$objectType = new Object();
-		$objectType->setId('http://example.org/Photo');
-		$objectType->setDisplayName('Photo');
+        $objectType = new Object();
+        $objectType->setId('http://example.org/Photo');
+        $objectType->setDisplayName('Photo');
 
-		$object = new Object();
-		$object->setUrl('http://example.org/album/my_fluffy_cat.jpg');
-		$object->setObjectType($objectType);
-		$object->setId('urn:example:album:abc123/my_fluffy_cat');
-		$object->setImage($image);
+        $object = new Object();
+        $object->setUrl('http://example.org/album/my_fluffy_cat.jpg');
+        $object->setObjectType($objectType);
+        $object->setId('urn:example:album:abc123/my_fluffy_cat');
+        $object->setImage($image);
 
-		$image = new Object();
-		$image->setUrl('http://example.org/album/thumbnail.jpg');
-		$image->setMediaType('image/jpeg');
-		$image->setWidth(250);
-		$image->setHeight(250);
+        $image = new Object();
+        $image->setUrl('http://example.org/album/thumbnail.jpg');
+        $image->setMediaType('image/jpeg');
+        $image->setWidth(250);
+        $image->setHeight(250);
 
-		$objectType = new Object();
-		$objectType->setId('http://example.org/PhotoAlbum');
-		$objectType->setDisplayName('Photo-Album');
+        $objectType = new Object();
+        $objectType->setId('http://example.org/PhotoAlbum');
+        $objectType->setDisplayName('Photo-Album');
 
-		$displayName = new \stdClass();
-		$displayName->en = 'Martin\'s Photo Album';
-		$displayName->ga = 'Grianghraif Mairtin';
+        $displayName = new \stdClass();
+        $displayName->en = 'Martin\'s Photo Album';
+        $displayName->ga = 'Grianghraif Mairtin';
 
-		$target = new Object();
-		$target->setUrl('http://example.org/album/');
-		$target->setObjectType($objectType);
-		$target->setId('urn:example.org:album:abc123');
-		$target->setDisplayName($displayName);
-		$target->setImage($image);
+        $target = new Object();
+        $target->setUrl('http://example.org/album/');
+        $target->setObjectType($objectType);
+        $target->setId('urn:example.org:album:abc123');
+        $target->setDisplayName($displayName);
+        $target->setImage($image);
 
-		$activity = new Activity();
-		$activity->setVerb('post');
-		$activity->setLanguage('en');
-		$activity->setPublished(new DateTime('2011-02-10T15:04:55Z'));
-		$activity->setGenerator('http://example.org/activities-app');
-		$activity->setProvider('http://example.org/activity-stream');
+        $activity = new Activity();
+        $activity->setVerb('post');
+        $activity->setLanguage('en');
+        $activity->setPublished(new DateTime('2011-02-10T15:04:55Z'));
+        $activity->setGenerator('http://example.org/activities-app');
+        $activity->setProvider('http://example.org/activity-stream');
 
-		$displayName = new \stdClass();
-		$displayName->en = 'Martin posted a new video to his album.';
-		$displayName->ga = 'Martin phost le fisean nua a albam.';
+        $displayName = new \stdClass();
+        $displayName->en = 'Martin posted a new video to his album.';
+        $displayName->ga = 'Martin phost le fisean nua a albam.';
 
-		$activity->setDisplayName($displayName);
-		$activity->setActor($actor);
-		$activity->setObject($object);
-		$activity->setTarget($target);
+        $activity->setDisplayName($displayName);
+        $activity->setActor($actor);
+        $activity->setObject($object);
+        $activity->setTarget($target);
 
-		$collection = new Collection();
-		$collection->setTotalItems(1);
-		$collection->add($activity);
+        $collection = new Collection();
+        $collection->setTotalItems(1);
+        $collection->add($activity);
 
-		$content = <<<JSON
+        $content = <<<JSON
 {
   "totalItems": 1,
   "items": [{
@@ -316,10 +316,6 @@ JSON;
 }
 JSON;
 
-		$this->assertRecordEqualsContent($collection, $content);	
-	}
+        $this->assertRecordEqualsContent($collection, $content);
+    }
 }
-
-
-
-

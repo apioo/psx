@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,29 +29,28 @@ namespace PSX\OpenSsl;
  */
 class PKeyTest extends \PHPUnit_Framework_TestCase
 {
-	protected function setUp()
-	{
-		if(!function_exists('openssl_pkey_new'))
-		{
-			$this->markTestSkipped('Openssl extension not installed');
-		}
-	}
+    protected function setUp()
+    {
+        if (!function_exists('openssl_pkey_new')) {
+            $this->markTestSkipped('Openssl extension not installed');
+        }
+    }
 
-	public function testExport()
-	{
-		$pkey = new PKey();
-		$pkey->export($privateKey, 'foobar');
+    public function testExport()
+    {
+        $pkey = new PKey();
+        $pkey->export($privateKey, 'foobar');
 
-		$publicKey = $pkey->getPublicKey();
+        $publicKey = $pkey->getPublicKey();
 
-		$pkey->free();
+        $pkey->free();
 
-		$this->assertEquals('-----BEGIN PUBLIC KEY-----', substr($publicKey, 0, 26));
-	}
+        $this->assertEquals('-----BEGIN PUBLIC KEY-----', substr($publicKey, 0, 26));
+    }
 
-	public function testGetPrivate()
-	{
-		$privateKey = <<<TEXT
+    public function testGetPrivate()
+    {
+        $privateKey = <<<TEXT
 -----BEGIN RSA PRIVATE KEY-----
 Proc-Type: 4,ENCRYPTED
 DEK-Info: DES-EDE3-CBC,F653AE67D69C3B31
@@ -72,23 +71,23 @@ NLdCEZh1YcQ9pIu2wHisIe8QgRmdMtR0LyenlwrgOK1cHh5Xhye9oGRb0vYOb3vb
 -----END RSA PRIVATE KEY-----
 TEXT;
 
-		$pkey = PKey::getPrivate($privateKey, 'foobar');
+        $pkey = PKey::getPrivate($privateKey, 'foobar');
 
-		$this->assertInstanceOf('PSX\OpenSsl\PKey', $pkey);
+        $this->assertInstanceOf('PSX\OpenSsl\PKey', $pkey);
 
-		$publicKey = $pkey->getPublicKey();
+        $publicKey = $pkey->getPublicKey();
 
-		$pkey->free();
+        $pkey->free();
 
-		$this->assertEquals('-----BEGIN PUBLIC KEY-----', substr($publicKey, 0, 26));
-	}
+        $this->assertEquals('-----BEGIN PUBLIC KEY-----', substr($publicKey, 0, 26));
+    }
 
-	/**
-	 * @expectedException \PSX\OpenSsl\Exception
-	 */
-	public function testGetPrivateInvalidPassword()
-	{
-		$privateKey = <<<TEXT
+    /**
+     * @expectedException \PSX\OpenSsl\Exception
+     */
+    public function testGetPrivateInvalidPassword()
+    {
+        $privateKey = <<<TEXT
 -----BEGIN RSA PRIVATE KEY-----
 Proc-Type: 4,ENCRYPTED
 DEK-Info: DES-EDE3-CBC,F653AE67D69C3B31
@@ -109,15 +108,15 @@ NLdCEZh1YcQ9pIu2wHisIe8QgRmdMtR0LyenlwrgOK1cHh5Xhye9oGRb0vYOb3vb
 -----END RSA PRIVATE KEY-----
 TEXT;
 
-		$pkey = PKey::getPrivate($privateKey, 'foo');
-	}
+        $pkey = PKey::getPrivate($privateKey, 'foo');
+    }
 
-	/**
-	 * @expectedException \PSX\OpenSsl\Exception
-	 */
-	public function testGetPrivateInvalidFormat()
-	{
-		$privateKey = <<<TEXT
+    /**
+     * @expectedException \PSX\OpenSsl\Exception
+     */
+    public function testGetPrivateInvalidFormat()
+    {
+        $privateKey = <<<TEXT
 -----BEGIN RSA PRIVATE KEY-----
 Proc-Type: 4,ENCRYPTED
 DEK-Info: DES-EDE3-CBC,F653AE67D69C3B31
@@ -137,12 +136,12 @@ NLdCEZh1YcQ9pIu2wHisIe8QgRmdMtR0LyenlwrgOK1cHh5Xhye9oGRb0vYOb3vb
 -----END RSA PRIVATE KEY-----
 TEXT;
 
-		$pkey = PKey::getPrivate($privateKey, 'foobar');
-	}
+        $pkey = PKey::getPrivate($privateKey, 'foobar');
+    }
 
-	public function testGetPublic()
-	{
-		$publicKey = <<<TEXT
+    public function testGetPublic()
+    {
+        $publicKey = <<<TEXT
 -----BEGIN PUBLIC KEY-----
 MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDK5CRsyemwJ0Pf09ww0UYaeqUr
 YDkaD+6KaPGMNhkvKyWvLWn0T3cJ9m2oG9/KB8x3Nx/U1Dqc+pPAUIuJS/kA9sVn
@@ -151,23 +150,23 @@ ZOqvOq7faORkrJPT1QIDAQAB
 -----END PUBLIC KEY-----
 TEXT;
 
-		$pkey = PKey::getPublic($publicKey);
+        $pkey = PKey::getPublic($publicKey);
 
-		$this->assertInstanceOf('PSX\OpenSsl\PKey', $pkey);
+        $this->assertInstanceOf('PSX\OpenSsl\PKey', $pkey);
 
-		$publicKey = $pkey->getPublicKey();
+        $publicKey = $pkey->getPublicKey();
 
-		$pkey->free();
+        $pkey->free();
 
-		$this->assertEquals('-----BEGIN PUBLIC KEY-----', substr($publicKey, 0, 26));
-	}
+        $this->assertEquals('-----BEGIN PUBLIC KEY-----', substr($publicKey, 0, 26));
+    }
 
-	/**
-	 * @expectedException \PSX\OpenSsl\Exception
-	 */
-	public function testGetPublicInvalidFormat()
-	{
-		$publicKey = <<<TEXT
+    /**
+     * @expectedException \PSX\OpenSsl\Exception
+     */
+    public function testGetPublicInvalidFormat()
+    {
+        $publicKey = <<<TEXT
 -----BEGIN PUBLIC KEY-----
 MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDK5CRsyemwJ0Pf09ww0UYaeqUr
 07BCbq+O4+xZpwOR7eDAGm1z5Q7hsTG0gW2k5mEDgdxmapKV8IOvXj5FkobYVw8W
@@ -175,6 +174,6 @@ ZOqvOq7faORkrJPT1QIDAQAB
 -----END PUBLIC KEY-----
 TEXT;
 
-		$pkey = PKey::getPublic($publicKey);
-	}
+        $pkey = PKey::getPublic($publicKey);
+    }
 }

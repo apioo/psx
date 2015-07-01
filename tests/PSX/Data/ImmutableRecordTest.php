@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,62 +31,62 @@ use PSX\Exception;
  */
 class ImmutableRecordTest extends \PHPUnit_Framework_TestCase
 {
-	public function testGetMagicMethods()
-	{
-		$record = new ImmutableRecord('foo', array(
-			'id'    => 1,
-			'title' => 'bar',
-		));
+    public function testGetMagicMethods()
+    {
+        $record = new ImmutableRecord('foo', array(
+            'id'    => 1,
+            'title' => 'bar',
+        ));
 
-		$this->assertEquals(1, $record->getId());
-		$this->assertEquals('bar', $record->getTitle());
-	}
+        $this->assertEquals(1, $record->getId());
+        $this->assertEquals('bar', $record->getTitle());
+    }
 
-	/**
-	 * @expectedException \BadMethodCallException
-	 */
-	public function testSetMagicMethods()
-	{
-		$record = new ImmutableRecord('foo', array(
-			'id'    => 1,
-			'title' => 'bar',
-		));
+    /**
+     * @expectedException \BadMethodCallException
+     */
+    public function testSetMagicMethods()
+    {
+        $record = new ImmutableRecord('foo', array(
+            'id'    => 1,
+            'title' => 'bar',
+        ));
 
-		$this->assertEquals(1, $record->getId());
-		$this->assertEquals('bar', $record->getTitle());
+        $this->assertEquals(1, $record->getId());
+        $this->assertEquals('bar', $record->getTitle());
 
-		$record->setId(2);
-		$record->setTitle('foo');
+        $record->setId(2);
+        $record->setTitle('foo');
 
-		$this->assertEquals(2, $record->getId());
-		$this->assertEquals('foo', $record->getTitle());
-	}
+        $this->assertEquals(2, $record->getId());
+        $this->assertEquals('foo', $record->getTitle());
+    }
 
-	public function testGetRecordInfo()
-	{
-		$fields = array(
-			'id'    => 1,
-			'title' => 'bar',
-		);
-		$record = new ImmutableRecord('foo', $fields);
+    public function testGetRecordInfo()
+    {
+        $fields = array(
+            'id'    => 1,
+            'title' => 'bar',
+        );
+        $record = new ImmutableRecord('foo', $fields);
 
-		$this->assertEquals('foo', $record->getRecordInfo()->getName());
-		$this->assertEquals(true, $record->getRecordInfo()->hasField('id'));
-	}
+        $this->assertEquals('foo', $record->getRecordInfo()->getName());
+        $this->assertEquals(true, $record->getRecordInfo()->hasField('id'));
+    }
 
-	public function testSerialize()
-	{
-		$record = new ImmutableRecord('foo', array(
-			'id'    => 1,
-			'title' => 'bar',
-		));
+    public function testSerialize()
+    {
+        $record = new ImmutableRecord('foo', array(
+            'id'    => 1,
+            'title' => 'bar',
+        ));
 
-		$this->assertEquals(1, $record->getId());
-		$this->assertEquals('bar', $record->getTitle());
+        $this->assertEquals(1, $record->getId());
+        $this->assertEquals('bar', $record->getTitle());
 
-		$record = unserialize(serialize($record));
+        $record = unserialize(serialize($record));
 
-		$this->assertEquals(1, $record->getId());
-		$this->assertEquals('bar', $record->getTitle());
-	}
+        $this->assertEquals(1, $record->getId());
+        $this->assertEquals('bar', $record->getTitle());
+    }
 }

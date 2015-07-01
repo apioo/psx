@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,75 +35,66 @@ use PSX\Util\UriResolver;
  */
 class RequestParser extends ParserAbstract
 {
-	protected $baseUrl;
+    protected $baseUrl;
 
-	public function __construct(Url $baseUrl = null, $mode = self::MODE_STRICT)
-	{
-		parent::__construct($mode);
+    public function __construct(Url $baseUrl = null, $mode = self::MODE_STRICT)
+    {
+        parent::__construct($mode);
 
-		$this->baseUrl = $baseUrl;
-	}
+        $this->baseUrl = $baseUrl;
+    }
 
-	/**
-	 * Converts an raw http request into an PSX\Http\Request object
-	 *
-	 * @param string $content
-	 * @return \PSX\Http\Request
-	 */
-	public function parse($content)
-	{
-		$content = $this->normalize($content);
+    /**
+     * Converts an raw http request into an PSX\Http\Request object
+     *
+     * @param string $content
+     * @return \PSX\Http\Request
+     */
+    public function parse($content)
+    {
+        $content = $this->normalize($content);
 
-		list($method, $path, $scheme) = $this->getStatus($content);
+        list($method, $path, $scheme) = $this->getStatus($content);
 
-		// resolve uri path
-		if($this->baseUrl !== null)
-		{
-			$path = UriResolver::resolve($this->baseUrl, new Uri($path));
-		}
-		else
-		{
-			$path = new Uri($path);
-		}
+        // resolve uri path
+        if ($this->baseUrl !== null) {
+            $path = UriResolver::resolve($this->baseUrl, new Uri($path));
+        } else {
+            $path = new Uri($path);
+        }
 
-		$request = new Request($path, $method);
-		$request->setProtocolVersion($scheme);
+        $request = new Request($path, $method);
+        $request->setProtocolVersion($scheme);
 
-		list($header, $body) = $this->splitMessage($content);
+        list($header, $body) = $this->splitMessage($content);
 
-		$this->headerToArray($request, $header);
+        $this->headerToArray($request, $header);
 
-		$request->setBody(new StringStream($body));
+        $request->setBody(new StringStream($body));
 
-		return $request;
-	}
+        return $request;
+    }
 
-	protected function getStatus($request)
-	{
-		$line = $this->getStatusLine($request);
+    protected function getStatus($request)
+    {
+        $line = $this->getStatusLine($request);
 
-		if($line !== false)
-		{
-			$parts = explode(' ', $line, 3);
+        if ($line !== false) {
+            $parts = explode(' ', $line, 3);
 
-			if(isset($parts[0]) && isset($parts[1]) && isset($parts[2]))
-			{
-				$method = $parts[0];
-				$path   = $parts[1];
-				$scheme = $parts[2];
+            if (isset($parts[0]) && isset($parts[1]) && isset($parts[2])) {
+                $method = $parts[0];
+                $path   = $parts[1];
+                $scheme = $parts[2];
 
-				return array($method, $path, $scheme);
-			}
-			else
-			{
-				throw new ParseException('Invalid status line format');
-			}
-		}
-		else
-		{
-			throw new ParseException('Couldnt find status line');
-		}
-	}
+                return array($method, $path, $scheme);
+            } else {
+                throw new ParseException('Invalid status line format');
+            }
+        } else {
+            throw new ParseException('Couldnt find status line');
+        }
+    }
 
     /**
      * @param \PSX\Http\RequestInterface $request
@@ -115,8 +106,7 @@ class RequestParser extends ParserAbstract
         $target   = $request->getRequestTarget();
         $protocol = $request->getProtocolVersion();
 
-        if(empty($target))
-        {
+        if (empty($target)) {
             throw new Exception('Target not set');
         }
 
@@ -126,19 +116,19 @@ class RequestParser extends ParserAbstract
         return $method . ' ' . $target . ' ' . $protocol;
     }
 
-	/**
-	 * Parses an raw http request into an PSX\Http\Request object. Throws an
-	 * exception if the request has not an valid format
-	 *
-	 * @param string $content
-	 * @param \PSX\Url $baseUrl
-	 * @param integer $mode
-	 * @return \PSX\Http\Request
-	 */
-	public static function convert($content, Url $baseUrl = null, $mode = ParserAbstract::MODE_STRICT)
-	{
-		$parser = new self($baseUrl, $mode);
+    /**
+     * Parses an raw http request into an PSX\Http\Request object. Throws an
+     * exception if the request has not an valid format
+     *
+     * @param string $content
+     * @param \PSX\Url $baseUrl
+     * @param integer $mode
+     * @return \PSX\Http\Request
+     */
+    public static function convert($content, Url $baseUrl = null, $mode = ParserAbstract::MODE_STRICT)
+    {
+        $parser = new self($baseUrl, $mode);
 
-		return $parser->parse($content);
-	}
+        return $parser->parse($content);
+    }
 }

@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,44 +33,44 @@ use PSX\Test\Environment;
  */
 class SupportedWriterControllerTest extends ControllerTestCase
 {
-	public function testIndex()
-	{
-		$response = $this->sendRequest('http://127.0.0.1/', 'GET', ['Accept' => 'application/json']);
-		$body     = (string) $response->getBody();
+    public function testIndex()
+    {
+        $response = $this->sendRequest('http://127.0.0.1/', 'GET', ['Accept' => 'application/json']);
+        $body     = (string) $response->getBody();
 
-		$expect = <<<XML
+        $expect = <<<XML
 <record>
   <foo>bar</foo>
 </record>
 XML;
 
-		$this->assertEquals(null, $response->getStatusCode(), $body);
-		$this->assertXmlStringEqualsXmlString($expect, $body, $body);
-	}
+        $this->assertEquals(null, $response->getStatusCode(), $body);
+        $this->assertXmlStringEqualsXmlString($expect, $body, $body);
+    }
 
-	public function testForward()
-	{
-		$response = $this->sendRequest('http://127.0.0.1/forward', 'GET', ['Accept' => 'application/json']);
-		$body     = (string) $response->getBody();
+    public function testForward()
+    {
+        $response = $this->sendRequest('http://127.0.0.1/forward', 'GET', ['Accept' => 'application/json']);
+        $body     = (string) $response->getBody();
 
-		$expect = <<<XML
+        $expect = <<<XML
 <record>
   <bar>foo</bar>
 </record>
 XML;
 
-		$this->assertEquals(null, $response->getStatusCode(), $body);
-		$this->assertXmlStringEqualsXmlString($expect, $body, $body);
-	}
+        $this->assertEquals(null, $response->getStatusCode(), $body);
+        $this->assertXmlStringEqualsXmlString($expect, $body, $body);
+    }
 
-	public function testError()
-	{
-		Environment::getService('config')->set('psx_debug', false);
+    public function testError()
+    {
+        Environment::getService('config')->set('psx_debug', false);
 
-		$response = $this->sendRequest('http://127.0.0.1/error', 'GET', ['Accept', 'application/json']);
-		$body     = (string) $response->getBody();
+        $response = $this->sendRequest('http://127.0.0.1/error', 'GET', ['Accept', 'application/json']);
+        $body     = (string) $response->getBody();
 
-		$expect = <<<XML
+        $expect = <<<XML
 <error>
   <success>false</success>
   <title>Internal Server Error</title>
@@ -78,17 +78,17 @@ XML;
 </error>
 XML;
 
-		$this->assertEquals(500, $response->getStatusCode(), $body);
-		$this->assertXmlStringEqualsXmlString($expect, $body, $body);
-	}
+        $this->assertEquals(500, $response->getStatusCode(), $body);
+        $this->assertXmlStringEqualsXmlString($expect, $body, $body);
+    }
 
-	protected function getPaths()
-	{
-		return array(
-			[['GET'], '/', 'PSX\Controller\Foo\Application\TestSupportedWriterController::doIndex'],
-			[['GET'], '/forward', 'PSX\Controller\Foo\Application\TestSupportedWriterController::doForward'],
-			[['GET'], '/error', 'PSX\Controller\Foo\Application\TestSupportedWriterController::doError'],
-			[['GET'], '/inherit', 'PSX\Controller\Foo\Application\TestController::doInheritSupportedWriter'],
-		);
-	}
+    protected function getPaths()
+    {
+        return array(
+            [['GET'], '/', 'PSX\Controller\Foo\Application\TestSupportedWriterController::doIndex'],
+            [['GET'], '/forward', 'PSX\Controller\Foo\Application\TestSupportedWriterController::doForward'],
+            [['GET'], '/error', 'PSX\Controller\Foo\Application\TestSupportedWriterController::doError'],
+            [['GET'], '/inherit', 'PSX\Controller\Foo\Application\TestController::doInheritSupportedWriter'],
+        );
+    }
 }

@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,12 +29,12 @@ namespace PSX\Api\Resource\Generator;
  */
 class XsdTest extends GeneratorTestCase
 {
-	public function testGenerate()
-	{
-		$generator = new Xsd('http://foo.phpsx.org');
-		$xsd       = $generator->generate($this->getResource());
+    public function testGenerate()
+    {
+        $generator = new Xsd('http://foo.phpsx.org');
+        $xsd       = $generator->generate($this->getResource());
 
-		$expect = <<<XML
+        $expect = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://foo.phpsx.org" targetNamespace="http://foo.phpsx.org" elementFormDefault="qualified">
 	<xs:element name="getRequest" type="tns:void"/>
@@ -137,17 +137,17 @@ class XsdTest extends GeneratorTestCase
 </xs:schema>
 XML;
 
-		$this->assertXmlStringEqualsXmlString($expect, $xsd);
-	}
+        $this->assertXmlStringEqualsXmlString($expect, $xsd);
+    }
 
-	public function testXsdSchema()
-	{
-		$generator = new Xsd('http://ns.foo.com');
-		$result    = $generator->generate($this->getResource());
+    public function testXsdSchema()
+    {
+        $generator = new Xsd('http://ns.foo.com');
+        $result    = $generator->generate($this->getResource());
 
-		$dom = new \DOMDocument();
-		$dom->loadXML($result);
+        $dom = new \DOMDocument();
+        $dom->loadXML($result);
 
-		$this->assertTrue($dom->schemaValidate(__DIR__ . '/Wsdl/schema.xsd'));
-	}
+        $this->assertTrue($dom->schemaValidate(__DIR__ . '/Wsdl/schema.xsd'));
+    }
 }

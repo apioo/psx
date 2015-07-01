@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,19 +31,19 @@ use PSX\Data\SerializeTestAbstract;
  */
 class ModelTest extends SerializeTestAbstract
 {
-	public function testSerialize()
-	{
-		$model = new Model('Order', 'Order object');
-		$model->addProperty(new Property('id', 'integer'));
-		$model->addProperty(new Property('type', 'string'));
-		$model->addProperty(new PropertyReference('customer', 'Customer'));
-		$model->addProperty(new Property('petId', 'integer'));
-		$model->addProperty(new Property('shipDate', 'string'));
-		$model->setRequired(array('type', 'customer', 'petId'));
-		$model->setSubTypes(array('PetOrder', 'FooOrder'));
-		$model->setDiscriminator('type');
+    public function testSerialize()
+    {
+        $model = new Model('Order', 'Order object');
+        $model->addProperty(new Property('id', 'integer'));
+        $model->addProperty(new Property('type', 'string'));
+        $model->addProperty(new PropertyReference('customer', 'Customer'));
+        $model->addProperty(new Property('petId', 'integer'));
+        $model->addProperty(new Property('shipDate', 'string'));
+        $model->setRequired(array('type', 'customer', 'petId'));
+        $model->setSubTypes(array('PetOrder', 'FooOrder'));
+        $model->setDiscriminator('type');
 
-		$content = <<<'JSON'
+        $content = <<<'JSON'
 {
   "id": "Order",
   "description": "Order object",
@@ -75,6 +75,6 @@ class ModelTest extends SerializeTestAbstract
 }
 JSON;
 
-		$this->assertRecordEqualsContent($model, $content);
-	}
+        $this->assertRecordEqualsContent($model, $content);
+    }
 }

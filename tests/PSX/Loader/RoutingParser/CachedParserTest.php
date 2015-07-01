@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,25 +31,25 @@ use PSX\Cache;
  */
 class CachedParserTest extends \PHPUnit_Framework_TestCase
 {
-	public function testGetCollection()
-	{
-		$cache         = new Cache(new Cache\Handler\Memory());
-		$routing       = new RoutingFile('tests/PSX/Loader/routes');
-		$routingParser = new CachedParser($routing, $cache);
+    public function testGetCollection()
+    {
+        $cache         = new Cache(new Cache\Handler\Memory());
+        $routing       = new RoutingFile('tests/PSX/Loader/routes');
+        $routingParser = new CachedParser($routing, $cache);
 
-		// we remove previous cache
-		$cache->deleteItems([CachedParser::CACHE_KEY]);
+        // we remove previous cache
+        $cache->deleteItems([CachedParser::CACHE_KEY]);
 
-		// get collection from the parser
-		$collection = $routingParser->getCollection();
+        // get collection from the parser
+        $collection = $routingParser->getCollection();
 
-		$this->assertInstanceOf('PSX\Loader\RoutingCollection', $collection);
-		$this->assertEquals(14, count($collection));
+        $this->assertInstanceOf('PSX\Loader\RoutingCollection', $collection);
+        $this->assertEquals(14, count($collection));
 
-		// get collection from the cache
-		$collection = $routingParser->getCollection();
+        // get collection from the cache
+        $collection = $routingParser->getCollection();
 
-		$this->assertInstanceOf('PSX\Loader\RoutingCollection', $routingParser->getCollection());
-		$this->assertEquals(14, count($collection));
-	}
+        $this->assertInstanceOf('PSX\Loader\RoutingCollection', $routingParser->getCollection());
+        $this->assertEquals(14, count($collection));
+    }
 }

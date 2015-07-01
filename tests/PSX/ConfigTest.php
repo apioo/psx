@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,115 +29,111 @@ namespace PSX;
  */
 class ConfigTest extends \PHPUnit_Framework_TestCase
 {
-	public function testConstructorArray()
-	{
-		$config = new Config(array(
-			'foo' => 'bar'
-		));
+    public function testConstructorArray()
+    {
+        $config = new Config(array(
+            'foo' => 'bar'
+        ));
 
-		$this->assertEquals('bar', $config['foo']);
-		$this->assertEquals('bar', $config->get('foo'));
-	}
+        $this->assertEquals('bar', $config['foo']);
+        $this->assertEquals('bar', $config->get('foo'));
+    }
 
-	/**
-	 * @expectedException \PSX\Config\NotFoundException
-	 */
-	public function testDefinitionConfig()
-	{
-		$config = Config::fromFile(__DIR__ . '/Config/definition_config.php');
+    /**
+     * @expectedException \PSX\Config\NotFoundException
+     */
+    public function testDefinitionConfig()
+    {
+        $config = Config::fromFile(__DIR__ . '/Config/definition_config.php');
 
-		$this->assertEquals('bar', $config['foo']);
-		$this->assertEquals('bar', $config->get('foo'));
-	}
+        $this->assertEquals('bar', $config['foo']);
+        $this->assertEquals('bar', $config->get('foo'));
+    }
 
-	/**
-	 * @expectedException \PSX\Config\NotFoundException
-	 */
-	public function testDefinitionConfigInvalidType()
-	{
-		$config = Config::fromFile(__DIR__ . '/Config/definition_invalid_config_type.php');
-	}
+    /**
+     * @expectedException \PSX\Config\NotFoundException
+     */
+    public function testDefinitionConfigInvalidType()
+    {
+        $config = Config::fromFile(__DIR__ . '/Config/definition_invalid_config_type.php');
+    }
 
-	public function testReturnConfig()
-	{
-		$config = Config::fromFile(__DIR__ . '/Config/return_config.php');
+    public function testReturnConfig()
+    {
+        $config = Config::fromFile(__DIR__ . '/Config/return_config.php');
 
-		$this->assertEquals('bar', $config['foo']);
-		$this->assertEquals('bar', $config->get('foo'));
-	}
+        $this->assertEquals('bar', $config['foo']);
+        $this->assertEquals('bar', $config->get('foo'));
+    }
 
-	/**
-	 * @expectedException \PSX\Config\NotFoundException
-	 */
-	public function testReturnConfigInvalidType()
-	{
-		$config = Config::fromFile(__DIR__ . '/Config/return_invalid_config_type.php');
-	}
+    /**
+     * @expectedException \PSX\Config\NotFoundException
+     */
+    public function testReturnConfigInvalidType()
+    {
+        $config = Config::fromFile(__DIR__ . '/Config/return_invalid_config_type.php');
+    }
 
-	/**
-	 * @expectedException \PSX\Config\NotFoundException
-	 */
-	public function testNoConfig()
-	{
-		$config = Config::fromFile(__DIR__ . '/Config/no_config.php');
-	}
+    /**
+     * @expectedException \PSX\Config\NotFoundException
+     */
+    public function testNoConfig()
+    {
+        $config = Config::fromFile(__DIR__ . '/Config/no_config.php');
+    }
 
-	/**
-	 * @expectedException \ErrorException
-	 */
-	public function testConfigFileNotExisting()
-	{
-		$config = Config::fromFile(__DIR__ . '/Config/foo_config.php');
-	}
+    /**
+     * @expectedException \ErrorException
+     */
+    public function testConfigFileNotExisting()
+    {
+        $config = Config::fromFile(__DIR__ . '/Config/foo_config.php');
+    }
 
-	public function testConfigOffsetSet()
-	{
-		$config = new Config(array());
+    public function testConfigOffsetSet()
+    {
+        $config = new Config(array());
 
-		$config['foo'] = 'bar';
+        $config['foo'] = 'bar';
 
-		$this->assertEquals('bar', $config['foo']);
+        $this->assertEquals('bar', $config['foo']);
 
-		$config->set('bar', 'foo');
+        $config->set('bar', 'foo');
 
-		$this->assertEquals('foo', $config['bar']);
-	}
+        $this->assertEquals('foo', $config['bar']);
+    }
 
-	public function testConfigOffsetExists()
-	{
-		$config = new Config(array());
+    public function testConfigOffsetExists()
+    {
+        $config = new Config(array());
 
-		$this->assertEquals(false, isset($config['foobar']));
-		$this->assertEquals(false, $config->has('foobar'));
+        $this->assertEquals(false, isset($config['foobar']));
+        $this->assertEquals(false, $config->has('foobar'));
 
-		$config['foobar'] = 'test';
+        $config['foobar'] = 'test';
 
-		$this->assertEquals(true, isset($config['foobar']));
-		$this->assertEquals(true, $config->has('foobar'));
-	}
+        $this->assertEquals(true, isset($config['foobar']));
+        $this->assertEquals(true, $config->has('foobar'));
+    }
 
-	public function testConfigOffsetUnset()
-	{
-		$config = new Config(array());
+    public function testConfigOffsetUnset()
+    {
+        $config = new Config(array());
 
-		$config['bar'] = 'test';
+        $config['bar'] = 'test';
 
-		unset($config['bar']);
+        unset($config['bar']);
 
-		$this->assertEquals(true, !isset($config['bar']));
-	}
+        $this->assertEquals(true, !isset($config['bar']));
+    }
 
-	public function testConfigOffsetGet()
-	{
-		$config = new Config(array());
+    public function testConfigOffsetGet()
+    {
+        $config = new Config(array());
 
-		$config['bar'] = 'test';
+        $config['bar'] = 'test';
 
-		$this->assertEquals('test', $config['bar']);
-		$this->assertEquals('test', $config->get('bar'));
-	}
+        $this->assertEquals('test', $config['bar']);
+        $this->assertEquals('test', $config->get('bar'));
+    }
 }
-
-
-
-

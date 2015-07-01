@@ -1,6 +1,5 @@
 <?php
 
 $config = array(
-	'foo' => 'bar'
+    'foo' => 'bar'
 );
-

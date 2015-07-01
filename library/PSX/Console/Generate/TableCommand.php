@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -39,100 +39,90 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class TableCommand extends GenerateCommandAbstract
 {
-	protected $connection;
+    protected $connection;
 
-	public function __construct(Connection $connection)
-	{
-		parent::__construct();
+    public function __construct(Connection $connection)
+    {
+        parent::__construct();
 
-		$this->connection = $connection;
-	}
+        $this->connection = $connection;
+    }
 
-	protected function configure()
-	{
-		$this
-			->setName('generate:table')
-			->setDescription('Generates a new api controller based on an SQL table')
-			->addArgument('namespace', InputArgument::REQUIRED, 'Absolute class name of the class (i.e. Acme\Table\News)')
-			->addArgument('table', InputArgument::REQUIRED, 'Creates the table according to the given sql table name')
-			->addOption('dry-run', null, InputOption::VALUE_NONE, 'Executes no file operations if true');
-	}
+    protected function configure()
+    {
+        $this
+            ->setName('generate:table')
+            ->setDescription('Generates a new api controller based on an SQL table')
+            ->addArgument('namespace', InputArgument::REQUIRED, 'Absolute class name of the class (i.e. Acme\Table\News)')
+            ->addArgument('table', InputArgument::REQUIRED, 'Creates the table according to the given sql table name')
+            ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Executes no file operations if true');
+    }
 
-	protected function execute(InputInterface $input, OutputInterface $output)
-	{
-		$definition = $this->getServiceDefinition($input);
-		$table      = $input->getArgument('table');
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $definition = $this->getServiceDefinition($input);
+        $table      = $input->getArgument('table');
 
-		$output->writeln('Generating table');
+        $output->writeln('Generating table');
 
-		// create dir
-		$path = $definition->getPath();
+        // create dir
+        $path = $definition->getPath();
 
-		if(!$this->isDir($path))
-		{
-			$output->writeln('Create dir ' . $path);
+        if (!$this->isDir($path)) {
+            $output->writeln('Create dir ' . $path);
 
-			if(!$definition->isDryRun())
-			{
-				$this->makeDir($path);
-			}
-		}
+            if (!$definition->isDryRun()) {
+                $this->makeDir($path);
+            }
+        }
 
-		// generate controller
-		$file = $path . DIRECTORY_SEPARATOR . $definition->getClassName() . '.php';
+        // generate controller
+        $file = $path . DIRECTORY_SEPARATOR . $definition->getClassName() . '.php';
 
-		if(!$this->isFile($file))
-		{
-			$source = $this->getTableSource($definition, $table);
+        if (!$this->isFile($file)) {
+            $source = $this->getTableSource($definition, $table);
 
-			$output->writeln('Write file ' . $file);
+            $output->writeln('Write file ' . $file);
 
-			if(!$definition->isDryRun())
-			{
-				$this->writeFile($file, $source);
-			}
-		}
-		else
-		{
-			throw new \RuntimeException('File ' . $file . ' already exists');
-		}
-	}
+            if (!$definition->isDryRun()) {
+                $this->writeFile($file, $source);
+            }
+        } else {
+            throw new \RuntimeException('File ' . $file . ' already exists');
+        }
+    }
 
-	protected function getTableSource(ServiceDefinition $definition, $table)
-	{
-		$namespace = $definition->getNamespace();
-		$className = $definition->getClassName();
+    protected function getTableSource(ServiceDefinition $definition, $table)
+    {
+        $namespace = $definition->getNamespace();
+        $className = $definition->getClassName();
 
-		$sm         = $this->connection->getSchemaManager();
-		$columns    = $sm->listTableColumns($table);
-		$indexes    = $sm->listTableIndexes($table);
-		$properties = array();
+        $sm         = $this->connection->getSchemaManager();
+        $columns    = $sm->listTableColumns($table);
+        $indexes    = $sm->listTableIndexes($table);
+        $properties = array();
 
-		foreach($columns as $column)
-		{
-			$isPrimary = false;
-			foreach($indexes as $index)
-			{
-				if($index->isPrimary() && in_array($column->getName(), $index->getColumns()))
-				{
-					$isPrimary = true;
-					break;
-				}
-			}
+        foreach ($columns as $column) {
+            $isPrimary = false;
+            foreach ($indexes as $index) {
+                if ($index->isPrimary() && in_array($column->getName(), $index->getColumns())) {
+                    $isPrimary = true;
+                    break;
+                }
+            }
 
-			$properties[] = $this->convertDoctrineTypeToString($column, $isPrimary);
-		}
+            $properties[] = $this->convertDoctrineTypeToString($column, $isPrimary);
+        }
 
-		$columns = '';
+        $columns = '';
 
-		foreach($properties as $property)
-		{
-			$columns.= $property . "\n";
-		}
+        foreach ($properties as $property) {
+            $columns.= $property . "\n";
+        }
 
-		$columns = trim($columns);
+        $columns = trim($columns);
 
-		return <<<PHP
+        return <<<PHP
 <?php
 
 namespace {$namespace};
@@ -160,111 +150,108 @@ class {$className} extends TableAbstract
 }
 
 PHP;
-	}
+    }
 
-	protected function convertDoctrineTypeToString(Column $column, $isPrimary)
-	{
-		$type = SerializeTrait::getTypeByDoctrineType($column->getType());
-		$name = $column->getName();
+    protected function convertDoctrineTypeToString(Column $column, $isPrimary)
+    {
+        $type = SerializeTrait::getTypeByDoctrineType($column->getType());
+        $name = $column->getName();
 
-		switch($type)
-		{
-			case TableInterface::TYPE_BIGINT:
-				$result = <<<PHP
+        switch ($type) {
+            case TableInterface::TYPE_BIGINT:
+                $result = <<<PHP
 			'{$name}' => self::TYPE_BIGINT
 PHP;
-				break;
+                break;
 
-			case TableInterface::TYPE_BLOB:
-				$result = <<<PHP
+            case TableInterface::TYPE_BLOB:
+                $result = <<<PHP
 			'{$name}' => self::TYPE_BLOB
 PHP;
-				break;
+                break;
 
-			case TableInterface::TYPE_BOOLEAN:
-				$result = <<<PHP
+            case TableInterface::TYPE_BOOLEAN:
+                $result = <<<PHP
 			'{$name}' => self::TYPE_BOOLEAN
 PHP;
-				break;
+                break;
 
-			case TableInterface::TYPE_DATETIME:
-				$result = <<<PHP
+            case TableInterface::TYPE_DATETIME:
+                $result = <<<PHP
 			'{$name}' => self::TYPE_DATETIME
 PHP;
-				break;
+                break;
 
-			case TableInterface::TYPE_DATE:
-				$result = <<<PHP
+            case TableInterface::TYPE_DATE:
+                $result = <<<PHP
 			'{$name}' => self::TYPE_DATE
 PHP;
-				break;
+                break;
 
-			case TableInterface::TYPE_DECIMAL:
-				$result = <<<PHP
+            case TableInterface::TYPE_DECIMAL:
+                $result = <<<PHP
 			'{$name}' => self::TYPE_DECIMAL
 PHP;
-				break;
+                break;
 
-			case TableInterface::TYPE_FLOAT:
-				$result = <<<PHP
+            case TableInterface::TYPE_FLOAT:
+                $result = <<<PHP
 			'{$name}' => self::TYPE_FLOAT
 PHP;
-				break;
+                break;
 
-			case TableInterface::TYPE_INT:
-				$result = <<<PHP
+            case TableInterface::TYPE_INT:
+                $result = <<<PHP
 			'{$name}' => self::TYPE_INT
 PHP;
-				break;
+                break;
 
-			case TableInterface::TYPE_SMALLINT:
-				$result = <<<PHP
+            case TableInterface::TYPE_SMALLINT:
+                $result = <<<PHP
 			'{$name}' => self::TYPE_SMALLINT
 PHP;
-				break;
+                break;
 
-			case TableInterface::TYPE_TEXT:
-				$result = <<<PHP
+            case TableInterface::TYPE_TEXT:
+                $result = <<<PHP
 			'{$name}' => self::TYPE_TEXT
 PHP;
-				break;
+                break;
 
-			case TableInterface::TYPE_ARRAY:
-				$result = <<<PHP
+            case TableInterface::TYPE_ARRAY:
+                $result = <<<PHP
 			'{$name}' => self::TYPE_ARRAY
 PHP;
-				break;
+                break;
 
-			case TableInterface::TYPE_OBJECT:
-				$result = <<<PHP
+            case TableInterface::TYPE_OBJECT:
+                $result = <<<PHP
 			'{$name}' => self::TYPE_OBJECT
 PHP;
-				break;
+                break;
 
-			case TableInterface::TYPE_TIME:
-				$result = <<<PHP
+            case TableInterface::TYPE_TIME:
+                $result = <<<PHP
 			'{$name}' => self::TYPE_TIME
 PHP;
-				break;
+                break;
 
-			case TableInterface::TYPE_VARCHAR:
-			default:
-				$result = <<<PHP
+            case TableInterface::TYPE_VARCHAR:
+            default:
+                $result = <<<PHP
 			'{$name}' => self::TYPE_VARCHAR
 PHP;
-				break;
-		}
+                break;
+        }
 
-		if($column->getAutoincrement())
-		{
-			$result.= ' | self::AUTO_INCREMENT';
-		}
+        if ($column->getAutoincrement()) {
+            $result.= ' | self::AUTO_INCREMENT';
+        }
 
-		if($isPrimary)
-		{
-			$result.= ' | self::PRIMARY_KEY';
-		}
+        if ($isPrimary) {
+            $result.= ' | self::PRIMARY_KEY';
+        }
 
-		return $result . ',';
-	}
+        return $result . ',';
+    }
 }

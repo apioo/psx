@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -34,73 +34,67 @@ use PSX\Oauth2\Authorization\Exception\ErrorExceptionAbstract;
  */
 abstract class TokenAbstract extends ApiAbstract
 {
-	/**
-	 * @Inject oauth2_grant_type_factory
-	 * @var \PSX\Oauth2\Provider\GrantTypeFactory
-	 */
-	protected $grantTypeFactory;
+    /**
+     * @Inject oauth2_grant_type_factory
+     * @var \PSX\Oauth2\Provider\GrantTypeFactory
+     */
+    protected $grantTypeFactory;
 
-	public function onGet()
-	{
-		$this->doHandle();
-	}
+    public function onGet()
+    {
+        $this->doHandle();
+    }
 
-	public function onPost()
-	{
-		$this->doHandle();
-	}
+    public function onPost()
+    {
+        $this->doHandle();
+    }
 
-	protected function doHandle()
-	{
-		$parameters  = (array) $this->getBody(ReaderInterface::FORM);
-		$grantType   = isset($parameters['grant_type']) ? $parameters['grant_type'] : null;
-		$scope       = isset($parameters['scope']) ? $parameters['scope'] : null;
-		$credentials = null;
+    protected function doHandle()
+    {
+        $parameters  = (array) $this->getBody(ReaderInterface::FORM);
+        $grantType   = isset($parameters['grant_type']) ? $parameters['grant_type'] : null;
+        $scope       = isset($parameters['scope']) ? $parameters['scope'] : null;
+        $credentials = null;
 
-		$auth  = $this->request->getHeader('Authorization');
-		$parts = explode(' ', $auth, 2);
-		$type  = isset($parts[0]) ? $parts[0] : null;
-		$data  = isset($parts[1]) ? $parts[1] : null;
+        $auth  = $this->request->getHeader('Authorization');
+        $parts = explode(' ', $auth, 2);
+        $type  = isset($parts[0]) ? $parts[0] : null;
+        $data  = isset($parts[1]) ? $parts[1] : null;
 
-		if($type == 'Basic' && !empty($data))
-		{
-			$data         = explode(':', base64_decode($data), 2);
-			$clientId     = isset($data[0]) ? $data[0] : null;
-			$clientSecret = isset($data[1]) ? $data[1] : null;
-			$credentials  = new Credentials($clientId, $clientSecret);
-		}
+        if ($type == 'Basic' && !empty($data)) {
+            $data         = explode(':', base64_decode($data), 2);
+            $clientId     = isset($data[0]) ? $data[0] : null;
+            $clientSecret = isset($data[1]) ? $data[1] : null;
+            $credentials  = new Credentials($clientId, $clientSecret);
+        }
 
-		try
-		{
-			// we get the grant type factory from the DI container the factory
-			// contains the available grant types
-			$accessToken = $this->grantTypeFactory->get($grantType)->generateAccessToken($credentials, $parameters);
+        try {
+            // we get the grant type factory from the DI container the factory
+            // contains the available grant types
+            $accessToken = $this->grantTypeFactory->get($grantType)->generateAccessToken($credentials, $parameters);
 
-			$this->response->setStatus(200);
+            $this->response->setStatus(200);
 
-			$this->setBody($accessToken, WriterInterface::JSON);
-		}
-		catch(ErrorExceptionAbstract $e)
-		{
-			$error = new Error();
-			$error->setError($e->getType());
-			$error->setErrorDescription($e->getMessage());
-			$error->setState(null);
+            $this->setBody($accessToken, WriterInterface::JSON);
+        } catch (ErrorExceptionAbstract $e) {
+            $error = new Error();
+            $error->setError($e->getType());
+            $error->setErrorDescription($e->getMessage());
+            $error->setState(null);
 
-			$this->response->setStatus(400);
+            $this->response->setStatus(400);
 
-			$this->setBody($error, WriterInterface::JSON);
-		}
-		catch(\Exception $e)
-		{
-			$error = new Error();
-			$error->setError('server_error');
-			$error->setErrorDescription($e->getMessage());
-			$error->setState(null);
+            $this->setBody($error, WriterInterface::JSON);
+        } catch (\Exception $e) {
+            $error = new Error();
+            $error->setError('server_error');
+            $error->setErrorDescription($e->getMessage());
+            $error->setState(null);
 
-			$this->response->setStatus(400);
+            $this->response->setStatus(400);
 
-			$this->setBody($error, WriterInterface::JSON);
-		}
-	}
+            $this->setBody($error, WriterInterface::JSON);
+        }
+    }
 }

@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,12 +32,12 @@ use PSX\Test\ControllerTestCase;
  */
 class DiscoveryControllerTest extends ControllerTestCase
 {
-	public function testIndex()
-	{
-		$response = $this->sendRequest('http://127.0.0.1/discovery', 'GET');
-		$json     = (string) $response->getBody();
+    public function testIndex()
+    {
+        $response = $this->sendRequest('http://127.0.0.1/discovery', 'GET');
+        $json     = (string) $response->getBody();
 
-		$expect = <<<'JSON'
+        $expect = <<<'JSON'
 {
     "links": [
         {
@@ -72,22 +72,22 @@ class DiscoveryControllerTest extends ControllerTestCase
 }
 JSON;
 
-		$this->assertEquals(null, $response->getStatusCode(), $json);
-		$this->assertJsonStringEqualsJsonString($expect, $json, $json);
-	}
+        $this->assertEquals(null, $response->getStatusCode(), $json);
+        $this->assertJsonStringEqualsJsonString($expect, $json, $json);
+    }
 
-	protected function getPaths()
-	{
-		return array(
-			[['GET'], '/discovery', 'PSX\Controller\Tool\DiscoveryController'],
-			[['GET'], '/routing', 'PSX\Controller\Tool\RoutingController'],
-			[['GET', 'POST'], '/command', 'PSX\Controller\Tool\CommandController'],
-			[['GET'], '/rest_client', 'PSX\Controller\Tool\RestClientController'],
-			[['GET'], '/doc', 'PSX\Controller\Tool\DocumentationController::doIndex'],
-			[['GET'], '/doc/:version/*path', 'PSX\Controller\Tool\DocumentationController::doDetail'],
-			[['GET'], '/raml', 'PSX\Controller\Tool\RamlGeneratorController'],
-			[['GET'], '/wsdl', 'PSX\Controller\Tool\WsdlGeneratorController'],
-			[['GET'], '/swagger', 'PSX\Controller\Tool\SwaggerGeneratorController::doDetail'],
-		);
-	}
+    protected function getPaths()
+    {
+        return array(
+            [['GET'], '/discovery', 'PSX\Controller\Tool\DiscoveryController'],
+            [['GET'], '/routing', 'PSX\Controller\Tool\RoutingController'],
+            [['GET', 'POST'], '/command', 'PSX\Controller\Tool\CommandController'],
+            [['GET'], '/rest_client', 'PSX\Controller\Tool\RestClientController'],
+            [['GET'], '/doc', 'PSX\Controller\Tool\DocumentationController::doIndex'],
+            [['GET'], '/doc/:version/*path', 'PSX\Controller\Tool\DocumentationController::doDetail'],
+            [['GET'], '/raml', 'PSX\Controller\Tool\RamlGeneratorController'],
+            [['GET'], '/wsdl', 'PSX\Controller\Tool\WsdlGeneratorController'],
+            [['GET'], '/swagger', 'PSX\Controller\Tool\SwaggerGeneratorController::doDetail'],
+        );
+    }
 }

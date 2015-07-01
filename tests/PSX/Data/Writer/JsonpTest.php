@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,13 +32,13 @@ use PSX\Http\MediaType;
  */
 class JsonpTest extends WriterTestCase
 {
-	public function testWrite()
-	{
-		$writer = new Jsonp();
-		$writer->setCallbackName('foo');
-		$actual = $writer->write($this->getRecord());
+    public function testWrite()
+    {
+        $writer = new Jsonp();
+        $writer->setCallbackName('foo');
+        $actual = $writer->write($this->getRecord());
 
-		$expect = <<<TEXT
+        $expect = <<<TEXT
 foo({
     "id": 1,
     "author": "foo",
@@ -48,16 +48,16 @@ foo({
 })
 TEXT;
 
-		$this->assertJsonp($expect, $actual);
-	}
+        $this->assertJsonp($expect, $actual);
+    }
 
-	public function testWriteResultSet()
-	{
-		$writer = new Jsonp();
-		$writer->setCallbackName('foo');
-		$actual = $writer->write($this->getResultSet());
+    public function testWriteResultSet()
+    {
+        $writer = new Jsonp();
+        $writer->setCallbackName('foo');
+        $actual = $writer->write($this->getResultSet());
 
-		$expect = <<<TEXT
+        $expect = <<<TEXT
 foo({
     "totalResults": 2,
     "startIndex": 0,
@@ -81,16 +81,16 @@ foo({
 })
 TEXT;
 
-		$this->assertJsonp($expect, $actual);
-	}
+        $this->assertJsonp($expect, $actual);
+    }
 
-	public function testWriteComplex()
-	{
-		$writer = new Jsonp();
-		$writer->setCallbackName('foo');
-		$actual = $writer->write($this->getComplexRecord());
+    public function testWriteComplex()
+    {
+        $writer = new Jsonp();
+        $writer->setCallbackName('foo');
+        $actual = $writer->write($this->getComplexRecord());
 
-		$expect = <<<TEXT
+        $expect = <<<TEXT
 foo({
     "verb": "post",
     "actor": {
@@ -113,71 +113,71 @@ foo({
 })
 TEXT;
 
-		$this->assertJsonp($expect, $actual);
-	}
+        $this->assertJsonp($expect, $actual);
+    }
 
-	public function testWriteEmpty()
-	{
-		$writer = new Jsonp();
-		$writer->setCallbackName('foo');
-		$actual = $writer->write($this->getEmptyRecord());
+    public function testWriteEmpty()
+    {
+        $writer = new Jsonp();
+        $writer->setCallbackName('foo');
+        $actual = $writer->write($this->getEmptyRecord());
 
-		$expect = <<<TEXT
+        $expect = <<<TEXT
 foo({})
 TEXT;
 
-		$this->assertJsonp($expect, $actual);
-	}
+        $this->assertJsonp($expect, $actual);
+    }
 
-	public function testSetCallbackName()
-	{
-		$writer = new Jsonp();
-		$writer->setCallbackName('foo');
+    public function testSetCallbackName()
+    {
+        $writer = new Jsonp();
+        $writer->setCallbackName('foo');
 
-		$this->assertEquals('foo', $writer->getCallbackName());
-	}
+        $this->assertEquals('foo', $writer->getCallbackName());
+    }
 
-	public function testSetCallbackNameInvalid()
-	{
-		$writer = new Jsonp();
+    public function testSetCallbackNameInvalid()
+    {
+        $writer = new Jsonp();
 
-		// invalid signs
-		$writer->setCallbackName('!foo');
+        // invalid signs
+        $writer->setCallbackName('!foo');
 
-		$this->assertEquals(null, $writer->getCallbackName());
+        $this->assertEquals(null, $writer->getCallbackName());
 
-		// min length
-		$writer->setCallbackName('fo');
+        // min length
+        $writer->setCallbackName('fo');
 
-		$this->assertEquals(null, $writer->getCallbackName());
+        $this->assertEquals(null, $writer->getCallbackName());
 
-		// max length
-		$writer->setCallbackName('fooooooooooooooofoooooooooooooooo');
+        // max length
+        $writer->setCallbackName('fooooooooooooooofoooooooooooooooo');
 
-		$this->assertEquals(null, $writer->getCallbackName());
-	}
+        $this->assertEquals(null, $writer->getCallbackName());
+    }
 
-	public function testIsContentTypeSupported()
-	{
-		$writer = new Jsonp();
+    public function testIsContentTypeSupported()
+    {
+        $writer = new Jsonp();
 
-		$this->assertTrue($writer->isContentTypeSupported(new MediaType('application/javascript')));
-		$this->assertFalse($writer->isContentTypeSupported(new MediaType('text/html')));
-	}
+        $this->assertTrue($writer->isContentTypeSupported(new MediaType('application/javascript')));
+        $this->assertFalse($writer->isContentTypeSupported(new MediaType('text/html')));
+    }
 
-	public function testGetContentType()
-	{
-		$writer = new Jsonp();
+    public function testGetContentType()
+    {
+        $writer = new Jsonp();
 
-		$this->assertEquals('application/javascript', $writer->getContentType());
-	}
+        $this->assertEquals('application/javascript', $writer->getContentType());
+    }
 
-	public function testWriteEmptyCallback()
-	{
-		$writer = new Jsonp();
-		$actual = $writer->write($this->getRecord());
+    public function testWriteEmptyCallback()
+    {
+        $writer = new Jsonp();
+        $actual = $writer->write($this->getRecord());
 
-		$expect = <<<TEXT
+        $expect = <<<TEXT
 {
     "id": 1,
     "author": "foo",
@@ -187,14 +187,14 @@ TEXT;
 }
 TEXT;
 
-		$this->assertJsonStringEqualsJsonString($expect, $actual);
-	}
+        $this->assertJsonStringEqualsJsonString($expect, $actual);
+    }
 
-	protected function assertJsonp($expect, $actual)
-	{
-		preg_match('/^foo\((.*)\)$/s', $expect, $matchesExpect);
-		preg_match('/^foo\((.*)\)$/s', $actual, $matchesActual);
+    protected function assertJsonp($expect, $actual)
+    {
+        preg_match('/^foo\((.*)\)$/s', $expect, $matchesExpect);
+        preg_match('/^foo\((.*)\)$/s', $actual, $matchesActual);
 
-		$this->assertJsonStringEqualsJsonString($matchesExpect[1], $matchesActual[1]);
-	}
+        $this->assertJsonStringEqualsJsonString($matchesExpect[1], $matchesActual[1]);
+    }
 }

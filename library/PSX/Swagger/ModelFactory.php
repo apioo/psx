@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,31 +32,29 @@ use RuntimeException;
  */
 class ModelFactory implements FactoryInterface
 {
-	/**
-	 * @Inject
-	 * @var \PSX\Data\Record\ImporterManager
-	 */
-	protected $importerManager;
+    /**
+     * @Inject
+     * @var \PSX\Data\Record\ImporterManager
+     */
+    protected $importerManager;
 
-	public function factory($data)
-	{
-		if(!$data instanceof \stdClass)
-		{
-			throw new RuntimeException('Models must be an object');
-		}
+    public function factory($data)
+    {
+        if (!$data instanceof \stdClass) {
+            throw new RuntimeException('Models must be an object');
+        }
 
-		$importer = $this->importerManager->getImporterByInstance('PSX\Data\Record\Importer\Record');
-		$models   = new \stdClass();
+        $importer = $this->importerManager->getImporterByInstance('PSX\Data\Record\Importer\Record');
+        $models   = new \stdClass();
 
-		foreach($data as $name => $value)
-		{
-			$model = new Model();
-			$model = $importer->import($model, $value);
-			$model->setId($name);
+        foreach ($data as $name => $value) {
+            $model = new Model();
+            $model = $importer->import($model, $value);
+            $model->setId($name);
 
-			$models->$name = $model;
-		}
+            $models->$name = $model;
+        }
 
-		return $models;
-	}
+        return $models;
+    }
 }

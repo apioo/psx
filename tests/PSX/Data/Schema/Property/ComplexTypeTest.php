@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,32 +31,32 @@ use PSX\Data\Schema\Property;
  */
 class ComplexTypeTest extends \PHPUnit_Framework_TestCase
 {
-	public function testGetId()
-	{
-		$property = Property::getComplex('test')
-			->add(Property::getString('foo'))
-			->add(Property::getString('bar'));
+    public function testGetId()
+    {
+        $property = Property::getComplex('test')
+            ->add(Property::getString('foo'))
+            ->add(Property::getString('bar'));
 
-		$this->assertEquals('0a7a6f5aee11c41efce8cbd1a3ed0b1d', $property->getId());
-	}
+        $this->assertEquals('0a7a6f5aee11c41efce8cbd1a3ed0b1d', $property->getId());
+    }
 
-	public function testProperties()
-	{
-		$property = Property::getComplex('test')
-			->add(Property::getString('foo'))
-			->add(Property::getString('bar'));
+    public function testProperties()
+    {
+        $property = Property::getComplex('test')
+            ->add(Property::getString('foo'))
+            ->add(Property::getString('bar'));
 
-		$this->assertInstanceOf('PSX\Data\Schema\Property\StringType', $property->get('foo'));
-		$this->assertTrue($property->has('foo'));
+        $this->assertInstanceOf('PSX\Data\Schema\Property\StringType', $property->get('foo'));
+        $this->assertTrue($property->has('foo'));
 
-		$property->remove('foo');
-		$property->remove('foo'); // should not produce an error
+        $property->remove('foo');
+        $property->remove('foo'); // should not produce an error
 
-		$this->assertFalse($property->has('foo'));
-	}
+        $this->assertFalse($property->has('foo'));
+    }
 
-	public function testGetTypeName()
-	{
-		$this->assertEquals('complex', Property::getComplex('test')->getTypeName());
-	}
+    public function testGetTypeName()
+    {
+        $this->assertEquals('complex', Property::getComplex('test')->getTypeName());
+    }
 }

@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -37,29 +37,29 @@ use PSX\Test\Environment;
  */
 class TokenAbstractTest extends ControllerTestCase
 {
-	protected function setUp()
-	{
-		parent::setUp();
+    protected function setUp()
+    {
+        parent::setUp();
 
-		$grantTypeFactory = new GrantTypeFactory();
-		$grantTypeFactory->add(new TestAuthorizationCode());
-		$grantTypeFactory->add(new TestClientCredentials());
-		$grantTypeFactory->add(new TestImplicit());
-		$grantTypeFactory->add(new TestPassword());
-		$grantTypeFactory->add(new TestRefreshToken());
+        $grantTypeFactory = new GrantTypeFactory();
+        $grantTypeFactory->add(new TestAuthorizationCode());
+        $grantTypeFactory->add(new TestClientCredentials());
+        $grantTypeFactory->add(new TestImplicit());
+        $grantTypeFactory->add(new TestPassword());
+        $grantTypeFactory->add(new TestRefreshToken());
 
-		Environment::getContainer()->set('oauth2_grant_type_factory', $grantTypeFactory);
-	}
+        Environment::getContainer()->set('oauth2_grant_type_factory', $grantTypeFactory);
+    }
 
-	public function testAuthorizationCodeGrant()
-	{
-		$response = $this->callEndpoint('foo', 'bar', array(
-			'grant_type'   => 'authorization_code',
-			'code'         => 'SplxlOBeZQQYbYS6WxSbIA',
-			'redirect_uri' => 'https://client.example.com/cb',
-		));
+    public function testAuthorizationCodeGrant()
+    {
+        $response = $this->callEndpoint('foo', 'bar', array(
+            'grant_type'   => 'authorization_code',
+            'code'         => 'SplxlOBeZQQYbYS6WxSbIA',
+            'redirect_uri' => 'https://client.example.com/cb',
+        ));
 
-		$expect = <<<JSON
+        $expect = <<<JSON
 {
 	"access_token":"2YotnFZFEjr1zCsicMWpAA",
 	"token_type":"example",
@@ -68,19 +68,19 @@ class TokenAbstractTest extends ControllerTestCase
 }
 JSON;
 
-		$body = (string) $response->getBody();
+        $body = (string) $response->getBody();
 
-		$this->assertEquals(200, $response->getStatusCode(), $body);
-		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
-	}
+        $this->assertEquals(200, $response->getStatusCode(), $body);
+        $this->assertJsonStringEqualsJsonString($expect, $body, $body);
+    }
 
-	public function testClientCredentialsGrant()
-	{
-		$response = $this->callEndpoint('foo', 'bar', array(
-			'grant_type' => 'client_credentials',
-		));
+    public function testClientCredentialsGrant()
+    {
+        $response = $this->callEndpoint('foo', 'bar', array(
+            'grant_type' => 'client_credentials',
+        ));
 
-		$expect = <<<JSON
+        $expect = <<<JSON
 {
 	"access_token":"2YotnFZFEjr1zCsicMWpAA",
 	"token_type":"example",
@@ -89,21 +89,21 @@ JSON;
 }
 JSON;
 
-		$body = (string) $response->getBody();
+        $body = (string) $response->getBody();
 
-		$this->assertEquals(200, $response->getStatusCode(), $body);
-		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
-	}
+        $this->assertEquals(200, $response->getStatusCode(), $body);
+        $this->assertJsonStringEqualsJsonString($expect, $body, $body);
+    }
 
-	public function testPasswordGrant()
-	{
-		$response = $this->callEndpoint('foo', 'bar', array(
-			'grant_type' => 'password',
-			'username'   => 'johndoe',
-			'password'   => 'A3ddj3w',
-		));
+    public function testPasswordGrant()
+    {
+        $response = $this->callEndpoint('foo', 'bar', array(
+            'grant_type' => 'password',
+            'username'   => 'johndoe',
+            'password'   => 'A3ddj3w',
+        ));
 
-		$expect = <<<JSON
+        $expect = <<<JSON
 {
 	"access_token":"2YotnFZFEjr1zCsicMWpAA",
 	"token_type":"example",
@@ -112,20 +112,20 @@ JSON;
 }
 JSON;
 
-		$body = (string) $response->getBody();
+        $body = (string) $response->getBody();
 
-		$this->assertEquals(200, $response->getStatusCode(), $body);
-		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
-	}
+        $this->assertEquals(200, $response->getStatusCode(), $body);
+        $this->assertJsonStringEqualsJsonString($expect, $body, $body);
+    }
 
-	public function testRefreshTokenGrant()
-	{
-		$response = $this->callEndpoint('foo', 'bar', array(
-			'grant_type'    => 'refresh_token',
-			'refresh_token' => 'tGzv3JOkF0XG5Qx2TlKWIA',
-		));
+    public function testRefreshTokenGrant()
+    {
+        $response = $this->callEndpoint('foo', 'bar', array(
+            'grant_type'    => 'refresh_token',
+            'refresh_token' => 'tGzv3JOkF0XG5Qx2TlKWIA',
+        ));
 
-		$expect = <<<JSON
+        $expect = <<<JSON
 {
 	"access_token":"2YotnFZFEjr1zCsicMWpAA",
 	"token_type":"example",
@@ -134,40 +134,40 @@ JSON;
 }
 JSON;
 
-		$body = (string) $response->getBody();
+        $body = (string) $response->getBody();
 
-		$this->assertEquals(200, $response->getStatusCode(), $body);
-		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
-	}
+        $this->assertEquals(200, $response->getStatusCode(), $body);
+        $this->assertJsonStringEqualsJsonString($expect, $body, $body);
+    }
 
-	public function testInvalidGrant()
-	{
-		$response = $this->callEndpoint('foo', 'bar', array(
-			'grant_type' => 'foo',
-		));
+    public function testInvalidGrant()
+    {
+        $response = $this->callEndpoint('foo', 'bar', array(
+            'grant_type' => 'foo',
+        ));
 
-		$expect = <<<JSON
+        $expect = <<<JSON
 {
 	"error":"server_error",
 	"error_description":"Invalid grant type"
 }
 JSON;
 
-		$body = (string) $response->getBody();
+        $body = (string) $response->getBody();
 
-		$this->assertEquals(400, $response->getStatusCode(), $body);
-		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
-	}
+        $this->assertEquals(400, $response->getStatusCode(), $body);
+        $this->assertJsonStringEqualsJsonString($expect, $body, $body);
+    }
 
-	protected function callEndpoint($clientId, $clientSecret, array $params)
-	{
-		return $this->sendRequest('http://127.0.0.1/token', 'POST', ['Authorization' => 'Basic ' . base64_encode($clientId . ':' . $clientSecret)], http_build_query($params, '', '&'));
-	}
+    protected function callEndpoint($clientId, $clientSecret, array $params)
+    {
+        return $this->sendRequest('http://127.0.0.1/token', 'POST', ['Authorization' => 'Basic ' . base64_encode($clientId . ':' . $clientSecret)], http_build_query($params, '', '&'));
+    }
 
-	protected function getPaths()
-	{
-		return array(
-			[['POST'], '/token', 'PSX\Oauth2\Provider\TestTokenAbstract'],
-		);
-	}
+    protected function getPaths()
+    {
+        return array(
+            [['POST'], '/token', 'PSX\Oauth2\Provider\TestTokenAbstract'],
+        );
+    }
 }

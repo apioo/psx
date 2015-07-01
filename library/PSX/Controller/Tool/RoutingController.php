@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,37 +32,36 @@ use PSX\Data\Object;
  */
 class RoutingController extends ApiAbstract
 {
-	/**
-	 * @Inject
-	 * @var \PSX\Loader\RoutingParserInterface
-	 */
-	protected $routingParser;
+    /**
+     * @Inject
+     * @var \PSX\Loader\RoutingParserInterface
+     */
+    protected $routingParser;
 
-	public function onGet()
-	{
-		parent::onGet();
+    public function onGet()
+    {
+        parent::onGet();
 
-		$this->setBody(array(
-			'routings' => $this->getRoutings(),
-		));
-	}
+        $this->setBody(array(
+            'routings' => $this->getRoutings(),
+        ));
+    }
 
-	protected function getRoutings()
-	{
-		$result   = array();
-		$routings = $this->routingParser->getCollection()->getAll();
+    protected function getRoutings()
+    {
+        $result   = array();
+        $routings = $this->routingParser->getCollection()->getAll();
 
-		foreach($routings as $routing)
-		{
-			list($methods, $path, $source) = $routing;
+        foreach ($routings as $routing) {
+            list($methods, $path, $source) = $routing;
 
-			$result[] = new Object([
-				'methods' => $methods,
-				'path'    => $path,
-				'source'  => $source,
-			]);
-		}
+            $result[] = new Object([
+                'methods' => $methods,
+                'path'    => $path,
+                'source'  => $source,
+            ]);
+        }
 
-		return $result;
-	}
+        return $result;
+    }
 }

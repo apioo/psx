@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -34,101 +34,88 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ViewCommand extends ContainerGenerateCommandAbstract
 {
-	protected function configure()
-	{
-		$this
-			->setName('generate:view')
-			->setDescription('Generates a new view controller and an template sample')
-			->addArgument('namespace', InputArgument::REQUIRED, 'Absolute class name of the controller (i.e. Acme\News\Overview)')
-			->addArgument('services', InputArgument::OPTIONAL, 'Comma seperated list of service ids (i.e. connection,template)', 'connection,template')
-			->addOption('dry-run', null, InputOption::VALUE_NONE, 'Executes no file operations if true');
-	}
+    protected function configure()
+    {
+        $this
+            ->setName('generate:view')
+            ->setDescription('Generates a new view controller and an template sample')
+            ->addArgument('namespace', InputArgument::REQUIRED, 'Absolute class name of the controller (i.e. Acme\News\Overview)')
+            ->addArgument('services', InputArgument::OPTIONAL, 'Comma seperated list of service ids (i.e. connection,template)', 'connection,template')
+            ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Executes no file operations if true');
+    }
 
-	protected function execute(InputInterface $input, OutputInterface $output)
-	{
-		$definition = $this->getServiceDefinition($input);
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $definition = $this->getServiceDefinition($input);
 
-		$output->writeln('Generating view controller');
+        $output->writeln('Generating view controller');
 
-		// create dir
-		$path            = $definition->getPath();
-		$applicationPath = $path . DIRECTORY_SEPARATOR . 'Application';
-		$resourcePath    = $path . DIRECTORY_SEPARATOR . 'Resource';
+        // create dir
+        $path            = $definition->getPath();
+        $applicationPath = $path . DIRECTORY_SEPARATOR . 'Application';
+        $resourcePath    = $path . DIRECTORY_SEPARATOR . 'Resource';
 
-		if(!$this->isDir($applicationPath))
-		{
-			$output->writeln('Create dir ' . $applicationPath);
+        if (!$this->isDir($applicationPath)) {
+            $output->writeln('Create dir ' . $applicationPath);
 
-			if(!$definition->isDryRun())
-			{
-				$this->makeDir($applicationPath);
-			}
-		}
+            if (!$definition->isDryRun()) {
+                $this->makeDir($applicationPath);
+            }
+        }
 
-		if(!$this->isDir($resourcePath))
-		{
-			$output->writeln('Create dir ' . $resourcePath);
+        if (!$this->isDir($resourcePath)) {
+            $output->writeln('Create dir ' . $resourcePath);
 
-			if(!$definition->isDryRun())
-			{
-				$this->makeDir($resourcePath);
-			}
-		}
+            if (!$definition->isDryRun()) {
+                $this->makeDir($resourcePath);
+            }
+        }
 
-		// generate controller
-		$controllerFile = $applicationPath . DIRECTORY_SEPARATOR . $definition->getClassName() . '.php';
-		$templateFile   = $resourcePath . DIRECTORY_SEPARATOR . $this->underscore($definition->getClassName()) . '.html';
+        // generate controller
+        $controllerFile = $applicationPath . DIRECTORY_SEPARATOR . $definition->getClassName() . '.php';
+        $templateFile   = $resourcePath . DIRECTORY_SEPARATOR . $this->underscore($definition->getClassName()) . '.html';
 
-		if(!$this->isFile($controllerFile) && !$this->isFile($templateFile))
-		{
-			$definition->setNamespace($definition->getNamespace() . '\Application');
+        if (!$this->isFile($controllerFile) && !$this->isFile($templateFile)) {
+            $definition->setNamespace($definition->getNamespace() . '\Application');
 
-			$source = $this->getControllerSource($definition);
+            $source = $this->getControllerSource($definition);
 
-			$output->writeln('Write file ' . $controllerFile);
+            $output->writeln('Write file ' . $controllerFile);
 
-			if(!$definition->isDryRun())
-			{
-				$this->writeFile($controllerFile, $source);
-			}
+            if (!$definition->isDryRun()) {
+                $this->writeFile($controllerFile, $source);
+            }
 
-			// template file
-			$source = $this->getTemplateSource();
+            // template file
+            $source = $this->getTemplateSource();
 
-			$output->writeln('Write file ' . $templateFile);
+            $output->writeln('Write file ' . $templateFile);
 
-			if(!$definition->isDryRun())
-			{
-				$this->writeFile($templateFile, $source);
-			}
-		}
-		else
-		{
-			if($this->isFile($controllerFile))
-			{
-				throw new \RuntimeException('File ' . $controllerFile . ' already exists');
-			}
-			else if($this->isFile($templateFile))
-			{
-				throw new \RuntimeException('File ' . $templateFile . ' already exists');
-			}
-		}
-	}
+            if (!$definition->isDryRun()) {
+                $this->writeFile($templateFile, $source);
+            }
+        } else {
+            if ($this->isFile($controllerFile)) {
+                throw new \RuntimeException('File ' . $controllerFile . ' already exists');
+            } elseif ($this->isFile($templateFile)) {
+                throw new \RuntimeException('File ' . $templateFile . ' already exists');
+            }
+        }
+    }
 
-	protected function getControllerSource(ServiceDefinition $definition)
-	{
-		$namespace = $definition->getNamespace();
-		$className = $definition->getClassName();
-		$services  = '';
+    protected function getControllerSource(ServiceDefinition $definition)
+    {
+        $namespace = $definition->getNamespace();
+        $className = $definition->getClassName();
+        $services  = '';
 
-		foreach($definition->getServices() as $serviceName)
-		{
-			$services.= $this->getServiceSource($serviceName) . "\n\n";
-		}
+        foreach ($definition->getServices() as $serviceName) {
+            $services.= $this->getServiceSource($serviceName) . "\n\n";
+        }
 
-		$services = trim($services);
+        $services = trim($services);
 
-		return <<<PHP
+        return <<<PHP
 <?php
 
 namespace {$namespace};
@@ -155,11 +142,11 @@ class {$className} extends ViewAbstract
 }
 
 PHP;
-	}
+    }
 
-	protected function getTemplateSource()
-	{
-		return <<<'HTML'
+    protected function getTemplateSource()
+    {
+        return <<<'HTML'
 <!DOCTYPE>
 <html>
 <head>
@@ -172,5 +159,5 @@ PHP;
 </body>
 </html>
 HTML;
-	}
+    }
 }

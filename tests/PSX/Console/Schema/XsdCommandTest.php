@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,16 +33,16 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 class XsdCommandTest extends ControllerTestCase
 {
-	public function testCommand()
-	{
-		$command = new XsdCommand(Environment::getService('config'), Environment::getService('resource_listing'));
+    public function testCommand()
+    {
+        $command = new XsdCommand(Environment::getService('config'), Environment::getService('resource_listing'));
 
-		$commandTester = new CommandTester($command);
-		$commandTester->execute(array(
-			'path' => '/api'
-		));
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(array(
+            'path' => '/api'
+        ));
 
-		$expect = <<<'XML'
+        $expect = <<<'XML'
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://phpsx.org/2014/data" targetNamespace="http://phpsx.org/2014/data" elementFormDefault="qualified">
   <xs:element name="getRequest" type="tns:void"/>
@@ -145,21 +145,20 @@ class XsdCommandTest extends ControllerTestCase
 </xs:schema>
 XML;
 
-		$this->assertXmlStringEqualsXmlString($expect, $commandTester->getDisplay());
-	}
+        $this->assertXmlStringEqualsXmlString($expect, $commandTester->getDisplay());
+    }
 
-	public function testCommandAvailable()
-	{
-		$command = Environment::getService('console')->find('schema:xsd');
+    public function testCommandAvailable()
+    {
+        $command = Environment::getService('console')->find('schema:xsd');
 
-		$this->assertInstanceOf('PSX\Console\Schema\XsdCommand', $command);
-	}
+        $this->assertInstanceOf('PSX\Console\Schema\XsdCommand', $command);
+    }
 
-	protected function getPaths()
-	{
-		return [
-			[['GET', 'POST', 'PUT', 'DELETE'], '/api', 'PSX\Controller\Foo\Application\SchemaApi\VersionViewController']
-		];
-	}
+    protected function getPaths()
+    {
+        return [
+            [['GET', 'POST', 'PUT', 'DELETE'], '/api', 'PSX\Controller\Foo\Application\SchemaApi\VersionViewController']
+        ];
+    }
 }
-

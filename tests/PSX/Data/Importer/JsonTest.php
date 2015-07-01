@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -34,9 +34,9 @@ use PSX\Test\Environment;
  */
 class JsonTest extends \PHPUnit_Framework_TestCase
 {
-	public function testJson()
-	{
-		$body = <<<JSON
+    public function testJson()
+    {
+        $body = <<<JSON
 {
 	"id": "1",
 	"title": "foo",
@@ -44,22 +44,22 @@ class JsonTest extends \PHPUnit_Framework_TestCase
 }
 JSON;
 
-		$request = new Message(array('Content-Type' => 'application/json'), $body);
-		$record  = Environment::getService('importer')->import(new JsonRecord(), $request);
+        $request = new Message(array('Content-Type' => 'application/json'), $body);
+        $record  = Environment::getService('importer')->import(new JsonRecord(), $request);
 
-		$this->assertEquals(1, $record->getId());
-		$this->assertEquals('foo', $record->getTitle());
-		$this->assertInstanceOf('DateTime', $record->getDate());
-		$this->assertEquals('Tue, 29 Jul 2014 23:37:00 +0000', $record->getDate()->format('r'));
-	}
+        $this->assertEquals(1, $record->getId());
+        $this->assertEquals('foo', $record->getTitle());
+        $this->assertInstanceOf('DateTime', $record->getDate());
+        $this->assertEquals('Tue, 29 Jul 2014 23:37:00 +0000', $record->getDate()->format('r'));
+    }
 
-	/**
-	 * As default we use the json reader so even if we have no content type 
-	 * this should work
-	 */
-	public function testUnknownContentType()
-	{
-		$body = <<<JSON
+    /**
+     * As default we use the json reader so even if we have no content type
+     * this should work
+     */
+    public function testUnknownContentType()
+    {
+        $body = <<<JSON
 {
 	"id": "1",
 	"title": "foo",
@@ -67,58 +67,58 @@ JSON;
 }
 JSON;
 
-		$request = new Message(array('Content-Type' => ''), $body);
-		$record  = Environment::getService('importer')->import(new JsonRecord(), $request);
+        $request = new Message(array('Content-Type' => ''), $body);
+        $record  = Environment::getService('importer')->import(new JsonRecord(), $request);
 
-		$this->assertEquals(1, $record->getId());
-		$this->assertEquals('foo', $record->getTitle());
-		$this->assertInstanceOf('DateTime', $record->getDate());
-		$this->assertEquals('Tue, 29 Jul 2014 23:37:00 +0000', $record->getDate()->format('r'));
-	}
+        $this->assertEquals(1, $record->getId());
+        $this->assertEquals('foo', $record->getTitle());
+        $this->assertInstanceOf('DateTime', $record->getDate());
+        $this->assertEquals('Tue, 29 Jul 2014 23:37:00 +0000', $record->getDate()->format('r'));
+    }
 }
 
 class JsonRecord extends RecordAbstract
 {
-	protected $id;
-	protected $title;
-	protected $date;
+    protected $id;
+    protected $title;
+    protected $date;
 
-	/**
-	 * @param integer $id
-	 */
-	public function setId($id)
-	{
-		$this->id = $id;
-	}
-	
-	public function getId()
-	{
-		return $this->id;
-	}
+    /**
+     * @param integer $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+    
+    public function getId()
+    {
+        return $this->id;
+    }
 
-	/**
-	 * @param string $title
-	 */
-	public function setTitle($title)
-	{
-		$this->title = $title;
-	}
-	
-	public function getTitle()
-	{
-		return $this->title;
-	}
+    /**
+     * @param string $title
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    }
+    
+    public function getTitle()
+    {
+        return $this->title;
+    }
 
-	/**
-	 * @param DateTime $date
-	 */
-	public function setDate(DateTime $date)
-	{
-		$this->date = $date;
-	}
-	
-	public function getDate()
-	{
-		return $this->date;
-	}
+    /**
+     * @param DateTime $date
+     */
+    public function setDate(DateTime $date)
+    {
+        $this->date = $date;
+    }
+    
+    public function getDate()
+    {
+        return $this->date;
+    }
 }

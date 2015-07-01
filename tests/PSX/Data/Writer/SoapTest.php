@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,14 +33,14 @@ use PSX\Http\MediaType;
  */
 class SoapTest extends WriterTestCase
 {
-	public function testWrite()
-	{
-		$writer = new Soap('http://foo.bar');
-		$writer->setRequestMethod('GET');
+    public function testWrite()
+    {
+        $writer = new Soap('http://foo.bar');
+        $writer->setRequestMethod('GET');
 
-		$actual = $writer->write($this->getRecord());
+        $actual = $writer->write($this->getRecord());
 
-		$expect = <<<TEXT
+        $expect = <<<TEXT
 <?xml version="1.0" encoding="UTF-8"?>
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
   <soap:Body>
@@ -55,18 +55,18 @@ class SoapTest extends WriterTestCase
 </soap:Envelope>
 TEXT;
 
-		$this->assertXmlStringEqualsXmlString($expect, $actual);
-		$this->assertEquals('get', $writer->getRequestMethod());
-	}
+        $this->assertXmlStringEqualsXmlString($expect, $actual);
+        $this->assertEquals('get', $writer->getRequestMethod());
+    }
 
-	public function testWriteResultSet()
-	{
-		$writer = new Soap('http://foo.bar');
-		$writer->setRequestMethod('GET');
+    public function testWriteResultSet()
+    {
+        $writer = new Soap('http://foo.bar');
+        $writer->setRequestMethod('GET');
 
-		$actual = $writer->write($this->getResultSet());
+        $actual = $writer->write($this->getResultSet());
 
-		$expect = <<<TEXT
+        $expect = <<<TEXT
 <?xml version="1.0" encoding="UTF-8"?>
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
   <soap:Body>
@@ -93,18 +93,18 @@ TEXT;
 </soap:Envelope>
 TEXT;
 
-		$this->assertXmlStringEqualsXmlString($expect, $actual);
-		$this->assertEquals('get', $writer->getRequestMethod());
-	}
+        $this->assertXmlStringEqualsXmlString($expect, $actual);
+        $this->assertEquals('get', $writer->getRequestMethod());
+    }
 
-	public function testWriteComplex()
-	{
-		$writer = new Soap('http://foo.bar');
-		$writer->setRequestMethod('GET');
+    public function testWriteComplex()
+    {
+        $writer = new Soap('http://foo.bar');
+        $writer->setRequestMethod('GET');
 
-		$actual = $writer->write($this->getComplexRecord());
+        $actual = $writer->write($this->getComplexRecord());
 
-		$expect = <<<TEXT
+        $expect = <<<TEXT
 <?xml version="1.0" encoding="UTF-8"?>
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
   <soap:Body>
@@ -132,15 +132,15 @@ TEXT;
 </soap:Envelope>
 TEXT;
 
-		$this->assertXmlStringEqualsXmlString($expect, $actual);
-	}
+        $this->assertXmlStringEqualsXmlString($expect, $actual);
+    }
 
-	public function testWriteEmpty()
-	{
-		$writer = new Soap('http://foo.bar');
-		$actual = $writer->write($this->getEmptyRecord());
+    public function testWriteEmpty()
+    {
+        $writer = new Soap('http://foo.bar');
+        $actual = $writer->write($this->getEmptyRecord());
 
-		$expect = <<<TEXT
+        $expect = <<<TEXT
 <?xml version="1.0" encoding="UTF-8"?>
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
   <soap:Body>
@@ -149,39 +149,39 @@ TEXT;
 </soap:Envelope>
 TEXT;
 
-		$this->assertXmlStringEqualsXmlString($expect, $actual);
-	}
+        $this->assertXmlStringEqualsXmlString($expect, $actual);
+    }
 
-	public function testIsContentTypeSupported()
-	{
-		$writer = new Soap('http://foo.bar');
+    public function testIsContentTypeSupported()
+    {
+        $writer = new Soap('http://foo.bar');
 
-		$this->assertTrue($writer->isContentTypeSupported(new MediaType('application/soap+xml')));
-		$this->assertFalse($writer->isContentTypeSupported(new MediaType('text/html')));
-	}
+        $this->assertTrue($writer->isContentTypeSupported(new MediaType('application/soap+xml')));
+        $this->assertFalse($writer->isContentTypeSupported(new MediaType('text/html')));
+    }
 
-	public function testGetContentType()
-	{
-		$writer = new Soap('http://foo.bar');
+    public function testGetContentType()
+    {
+        $writer = new Soap('http://foo.bar');
 
-		$this->assertEquals('text/xml', $writer->getContentType());
-	}
+        $this->assertEquals('text/xml', $writer->getContentType());
+    }
 
-	public function testWriteExceptionRecord()
-	{
-		$record = new ExceptionRecord();
-		$record->setSuccess(false);
-		$record->setTitle('An error occured');
-		$record->setMessage('Foobar');
-		$record->setTrace('Foo');
-		$record->setContext('Bar');
+    public function testWriteExceptionRecord()
+    {
+        $record = new ExceptionRecord();
+        $record->setSuccess(false);
+        $record->setTitle('An error occured');
+        $record->setMessage('Foobar');
+        $record->setTrace('Foo');
+        $record->setContext('Bar');
 
-		$writer = new Soap('http://foo.bar');
-		$writer->setRequestMethod('GET');
+        $writer = new Soap('http://foo.bar');
+        $writer->setRequestMethod('GET');
 
-		$actual = $writer->write($record);
+        $actual = $writer->write($record);
 
-		$expect = <<<TEXT
+        $expect = <<<TEXT
 <?xml version="1.0" encoding="UTF-8"?>
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
   <soap:Body>
@@ -202,6 +202,6 @@ TEXT;
 </soap:Envelope>
 TEXT;
 
-		$this->assertXmlStringEqualsXmlString($expect, $actual);
-	}
+        $this->assertXmlStringEqualsXmlString($expect, $actual);
+    }
 }

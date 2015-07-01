@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -38,17 +38,17 @@ namespace PSX\Http;
  */
 interface ResponseInterface extends MessageInterface
 {
-	/**
+    /**
      * Gets the response status code.
      *
      * The status code is a 3-digit integer result code of the server's attempt
      * to understand and satisfy the request.
      *
      * @return int Status code.
-	 */
-	public function getStatusCode();
+     */
+    public function getStatusCode();
 
-	/**
+    /**
      * Gets the response reason phrase, a short textual description of the
      * status code.
      *
@@ -61,11 +61,11 @@ interface ResponseInterface extends MessageInterface
      * @link http://tools.ietf.org/html/rfc7231#section-6
      * @link http://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml
      * @return string|null Reason phrase, or null if unknown.
-	 */
-	public function getReasonPhrase();
+     */
+    public function getReasonPhrase();
 
-	/**
-     * Sets the specified status code, and optionally reason phrase, for the 
+    /**
+     * Sets the specified status code, and optionally reason phrase, for the
      * response.
      *
      * If no reason phrase is specified, implementations MAY choose to default
@@ -80,6 +80,6 @@ interface ResponseInterface extends MessageInterface
      *     use the defaults as suggested in the HTTP specification.
      * @return void
      * @throws \InvalidArgumentException For invalid status code arguments.
-	 */
-	public function setStatus($code, $reasonPhrase = null);
+     */
+    public function setStatus($code, $reasonPhrase = null);
 }

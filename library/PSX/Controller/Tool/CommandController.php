@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,86 +36,79 @@ use PSX\Loader\Context;
  */
 class CommandController extends ApiAbstract
 {
-	/**
-	 * @Inject
-	 * @var \PSX\Command\Executor
-	 */
-	protected $executor;
+    /**
+     * @Inject
+     * @var \PSX\Command\Executor
+     */
+    protected $executor;
 
-	/**
-	 * @Inject
-	 * @var \PSX\Dispatch\CommandFactoryInterface
-	 */
-	protected $commandFactory;
+    /**
+     * @Inject
+     * @var \PSX\Dispatch\CommandFactoryInterface
+     */
+    protected $commandFactory;
 
-	/**
-	 * @Inject
-	 * @var \Monolog\Logger
-	 */
-	protected $logger;
+    /**
+     * @Inject
+     * @var \Monolog\Logger
+     */
+    protected $logger;
 
-	public function onGet()
-	{
-		parent::onGet();
+    public function onGet()
+    {
+        parent::onGet();
 
-		$commandClass = $this->getParameter('command');
+        $commandClass = $this->getParameter('command');
 
-		if(!empty($commandClass))
-		{
-			$command    = $this->commandFactory->getCommand($commandClass, new Context());
-			$parameters = $command->getParameters();
-			$data       = array();
+        if (!empty($commandClass)) {
+            $command    = $this->commandFactory->getCommand($commandClass, new Context());
+            $parameters = $command->getParameters();
+            $data       = array();
 
-			foreach($parameters as $parameter)
-			{
-				$data[] = new Record('parameter', [
-					'name'        => $parameter->getName(),
-					'description' => $parameter->getDescription(),
-					'type'        => $parameter->getType(),
-				]);
-			}
+            foreach ($parameters as $parameter) {
+                $data[] = new Record('parameter', [
+                    'name'        => $parameter->getName(),
+                    'description' => $parameter->getDescription(),
+                    'type'        => $parameter->getType(),
+                ]);
+            }
 
-			$this->setBody(array(
-				'command'     => $commandClass,
-				'description' => $parameters->getDescription(),
-				'parameters'  => $data,
-			));
-		}
-		else
-		{
-			$this->setBody(array(
-				'commands' => (object) $this->executor->getAliases(),
-			));
-		}
-	}
+            $this->setBody(array(
+                'command'     => $commandClass,
+                'description' => $parameters->getDescription(),
+                'parameters'  => $data,
+            ));
+        } else {
+            $this->setBody(array(
+                'commands' => (object) $this->executor->getAliases(),
+            ));
+        }
+    }
 
-	public function onPost()
-	{
-		parent::onPost();
+    public function onPost()
+    {
+        parent::onPost();
 
-		$commandClass = $this->getParameter('command');
-		$parameters   = $this->getBody();
-		$parameters   = !empty($parameters) ? $parameters : array();
+        $commandClass = $this->getParameter('command');
+        $parameters   = $this->getBody();
+        $parameters   = !empty($parameters) ? $parameters : array();
 
-		if(!empty($commandClass))
-		{
-			$stream = fopen('php://memory', 'r+');
+        if (!empty($commandClass)) {
+            $stream = fopen('php://memory', 'r+');
 
-			$this->logger->pushHandler(new StreamHandler($stream, Logger::DEBUG));
+            $this->logger->pushHandler(new StreamHandler($stream, Logger::DEBUG));
 
-			$this->executor->run(new ParameterParser\Map($commandClass, $parameters));
+            $this->executor->run(new ParameterParser\Map($commandClass, $parameters));
 
-			$output = stream_get_contents($stream, -1, 0);
+            $output = stream_get_contents($stream, -1, 0);
 
-			$this->logger->popHandler();
+            $this->logger->popHandler();
 
-			$this->setBody(array(
-				'output' => $output,
-			));
-		}
-		else
-		{
-			throw new \Exception('Command not available');
-		}
-	}
+            $this->setBody(array(
+                'output' => $output,
+            ));
+        } else {
+            throw new \Exception('Command not available');
+        }
+    }
 }

@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,31 +31,30 @@ use PSX\Sql\TableInterface;
  */
 class TableMetaData implements \PHPUnit_Extensions_Database_DataSet_ITableMetaData
 {
-	private $table;
+    private $table;
 
-	public function __construct(TableInterface $table)
-	{
-		$this->table = $table;
-	}
+    public function __construct(TableInterface $table)
+    {
+        $this->table = $table;
+    }
 
-	public function matches(\PHPUnit_Extensions_Database_DataSet_ITableMetaData $other)
-	{
-		return $this->getTableName() == $other->getTableName();
-	}
+    public function matches(\PHPUnit_Extensions_Database_DataSet_ITableMetaData $other)
+    {
+        return $this->getTableName() == $other->getTableName();
+    }
 
-	public function getColumns()
-	{
-		return array_keys($this->table->getColumns());
-	}
+    public function getColumns()
+    {
+        return array_keys($this->table->getColumns());
+    }
 
-	public function getPrimaryKeys() 
-	{
-		return array($this->table->getPrimaryKey());
-	}
+    public function getPrimaryKeys()
+    {
+        return array($this->table->getPrimaryKey());
+    }
 
-	public function getTableName() 
-	{
-		return $this->table->getName();
-	}
+    public function getTableName()
+    {
+        return $this->table->getName();
+    }
 }
-

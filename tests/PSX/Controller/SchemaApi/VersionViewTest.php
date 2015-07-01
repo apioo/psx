@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -34,17 +34,17 @@ use PSX\Test\ControllerDbTestCase;
  */
 class VersionViewTest extends ControllerDbTestCase
 {
-	public function getDataSet()
-	{
-		return $this->createFlatXMLDataSet(__DIR__ . '/../../Sql/table_fixture.xml');
-	}
+    public function getDataSet()
+    {
+        return $this->createFlatXMLDataSet(__DIR__ . '/../../Sql/table_fixture.xml');
+    }
 
-	public function testGetNoVersion()
-	{
-		$response = $this->sendRequest('http://127.0.0.1/api', 'GET');
-		$body     = (string) $response->getBody();
+    public function testGetNoVersion()
+    {
+        $response = $this->sendRequest('http://127.0.0.1/api', 'GET');
+        $body     = (string) $response->getBody();
 
-		$expect = <<<JSON
+        $expect = <<<JSON
 {"entry": [
     {
       "id": 4,
@@ -73,140 +73,140 @@ class VersionViewTest extends ControllerDbTestCase
   ]}
 JSON;
 
-		$this->assertEquals(200, $response->getStatusCode(), $body);
-		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
-	}
+        $this->assertEquals(200, $response->getStatusCode(), $body);
+        $this->assertJsonStringEqualsJsonString($expect, $body, $body);
+    }
 
-	public function testPostNoVersion()
-	{
-		$data     = json_encode(array('userId' => 3, 'title' => 'test', 'date' => '2013-05-29T16:56:32Z'));
-		$response = $this->sendRequest('http://127.0.0.1/api', 'POST', ['Content-Type' => 'application/json'], $data);
-		$body     = (string) $response->getBody();
+    public function testPostNoVersion()
+    {
+        $data     = json_encode(array('userId' => 3, 'title' => 'test', 'date' => '2013-05-29T16:56:32Z'));
+        $response = $this->sendRequest('http://127.0.0.1/api', 'POST', ['Content-Type' => 'application/json'], $data);
+        $body     = (string) $response->getBody();
 
-		$expect = <<<JSON
+        $expect = <<<JSON
 {
 	"success": true,
 	"message": "You have successful create a record"
 }
 JSON;
 
-		$this->assertEquals(200, $response->getStatusCode(), $body);
-		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
-	}
+        $this->assertEquals(200, $response->getStatusCode(), $body);
+        $this->assertJsonStringEqualsJsonString($expect, $body, $body);
+    }
 
-	public function testPutNoVersion()
-	{
-		$data     = json_encode(array('id' => 1, 'userId' => 3, 'title' => 'foobar'));
-		$response = $this->sendRequest('http://127.0.0.1/api', 'PUT', ['Content-Type' => 'application/json'], $data);
-		$body     = (string) $response->getBody();
+    public function testPutNoVersion()
+    {
+        $data     = json_encode(array('id' => 1, 'userId' => 3, 'title' => 'foobar'));
+        $response = $this->sendRequest('http://127.0.0.1/api', 'PUT', ['Content-Type' => 'application/json'], $data);
+        $body     = (string) $response->getBody();
 
-		$expect = <<<JSON
+        $expect = <<<JSON
 {
 	"success": true,
 	"message": "You have successful update a record"
 }
 JSON;
 
-		$this->assertEquals(200, $response->getStatusCode(), $body);
-		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
-	}
+        $this->assertEquals(200, $response->getStatusCode(), $body);
+        $this->assertJsonStringEqualsJsonString($expect, $body, $body);
+    }
 
-	public function testDeleteNoVersion()
-	{
-		$data     = json_encode(array('id' => 1));
-		$response = $this->sendRequest('http://127.0.0.1/api', 'DELETE', ['Content-Type' => 'application/json'], $data);
-		$body     = (string) $response->getBody();
+    public function testDeleteNoVersion()
+    {
+        $data     = json_encode(array('id' => 1));
+        $response = $this->sendRequest('http://127.0.0.1/api', 'DELETE', ['Content-Type' => 'application/json'], $data);
+        $body     = (string) $response->getBody();
 
-		$expect = <<<JSON
+        $expect = <<<JSON
 {
 	"success": true,
 	"message": "You have successful delete a record"
 }
 JSON;
 
-		$this->assertEquals(200, $response->getStatusCode(), $body);
-		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
-	}
+        $this->assertEquals(200, $response->getStatusCode(), $body);
+        $this->assertJsonStringEqualsJsonString($expect, $body, $body);
+    }
 
-	public function testGetClosedVersion()
-	{
-		$response = $this->sendRequest('http://127.0.0.1/api', 'GET', ['Accept' => 'application/vnd.psx.v1+json']);
-		$body     = Json::decode((string) $response->getBody());
+    public function testGetClosedVersion()
+    {
+        $response = $this->sendRequest('http://127.0.0.1/api', 'GET', ['Accept' => 'application/vnd.psx.v1+json']);
+        $body     = Json::decode((string) $response->getBody());
 
-		$this->assertEquals(410, $response->getStatusCode());
+        $this->assertEquals(410, $response->getStatusCode());
 
-		$this->assertArrayHasKey('success', $body);
-		$this->assertArrayHasKey('title', $body);
-		$this->assertArrayHasKey('message', $body);
-		$this->assertArrayHasKey('trace', $body);
-		$this->assertArrayHasKey('context', $body);
+        $this->assertArrayHasKey('success', $body);
+        $this->assertArrayHasKey('title', $body);
+        $this->assertArrayHasKey('message', $body);
+        $this->assertArrayHasKey('trace', $body);
+        $this->assertArrayHasKey('context', $body);
 
-		$this->assertEquals(false, $body['success']);
-		$this->assertEquals('Version v1 is not longer supported', substr($body['message'], 0, 34));
-	}
+        $this->assertEquals(false, $body['success']);
+        $this->assertEquals('Version v1 is not longer supported', substr($body['message'], 0, 34));
+    }
 
-	public function testPostClosedVersion()
-	{
-		$data     = json_encode(array('userId' => 3, 'title' => 'test', 'date' => '2013-05-29T16:56:32Z'));
-		$response = $this->sendRequest('http://127.0.0.1/api', 'POST', ['Accept' => 'application/vnd.psx.v1+json', 'Content-Type' => 'application/json'], $data);
-		$body     = Json::decode((string) $response->getBody());
+    public function testPostClosedVersion()
+    {
+        $data     = json_encode(array('userId' => 3, 'title' => 'test', 'date' => '2013-05-29T16:56:32Z'));
+        $response = $this->sendRequest('http://127.0.0.1/api', 'POST', ['Accept' => 'application/vnd.psx.v1+json', 'Content-Type' => 'application/json'], $data);
+        $body     = Json::decode((string) $response->getBody());
 
-		$this->assertEquals(410, $response->getStatusCode());
+        $this->assertEquals(410, $response->getStatusCode());
 
-		$this->assertArrayHasKey('success', $body);
-		$this->assertArrayHasKey('title', $body);
-		$this->assertArrayHasKey('message', $body);
-		$this->assertArrayHasKey('trace', $body);
-		$this->assertArrayHasKey('context', $body);
+        $this->assertArrayHasKey('success', $body);
+        $this->assertArrayHasKey('title', $body);
+        $this->assertArrayHasKey('message', $body);
+        $this->assertArrayHasKey('trace', $body);
+        $this->assertArrayHasKey('context', $body);
 
-		$this->assertEquals(false, $body['success']);
-		$this->assertEquals('Version v1 is not longer supported', substr($body['message'], 0, 34));
-	}
+        $this->assertEquals(false, $body['success']);
+        $this->assertEquals('Version v1 is not longer supported', substr($body['message'], 0, 34));
+    }
 
-	public function testPutClosedVersion()
-	{
-		$data     = json_encode(array('id' => 1, 'userId' => 3, 'title' => 'foobar'));
-		$response = $this->sendRequest('http://127.0.0.1/api', 'PUT', ['Accept' => 'application/vnd.psx.v1+json', 'Content-Type' => 'application/json'], $data);
-		$body     = Json::decode((string) $response->getBody());
+    public function testPutClosedVersion()
+    {
+        $data     = json_encode(array('id' => 1, 'userId' => 3, 'title' => 'foobar'));
+        $response = $this->sendRequest('http://127.0.0.1/api', 'PUT', ['Accept' => 'application/vnd.psx.v1+json', 'Content-Type' => 'application/json'], $data);
+        $body     = Json::decode((string) $response->getBody());
 
-		$this->assertEquals(410, $response->getStatusCode());
+        $this->assertEquals(410, $response->getStatusCode());
 
-		$this->assertArrayHasKey('success', $body);
-		$this->assertArrayHasKey('title', $body);
-		$this->assertArrayHasKey('message', $body);
-		$this->assertArrayHasKey('trace', $body);
-		$this->assertArrayHasKey('context', $body);
+        $this->assertArrayHasKey('success', $body);
+        $this->assertArrayHasKey('title', $body);
+        $this->assertArrayHasKey('message', $body);
+        $this->assertArrayHasKey('trace', $body);
+        $this->assertArrayHasKey('context', $body);
 
-		$this->assertEquals(false, $body['success']);
-		$this->assertEquals('Version v1 is not longer supported', substr($body['message'], 0, 34));
-	}
+        $this->assertEquals(false, $body['success']);
+        $this->assertEquals('Version v1 is not longer supported', substr($body['message'], 0, 34));
+    }
 
-	public function testDeleteClosedVersion()
-	{
-		$data     = json_encode(array('id' => 1));
-		$response = $this->sendRequest('http://127.0.0.1/api', 'DELETE', ['Accept' => 'application/vnd.psx.v1+json', 'Content-Type' => 'application/json'], $data);
-		$body     = Json::decode((string) $response->getBody());
+    public function testDeleteClosedVersion()
+    {
+        $data     = json_encode(array('id' => 1));
+        $response = $this->sendRequest('http://127.0.0.1/api', 'DELETE', ['Accept' => 'application/vnd.psx.v1+json', 'Content-Type' => 'application/json'], $data);
+        $body     = Json::decode((string) $response->getBody());
 
-		$this->assertEquals(410, $response->getStatusCode());
+        $this->assertEquals(410, $response->getStatusCode());
 
-		$this->assertArrayHasKey('success', $body);
-		$this->assertArrayHasKey('title', $body);
-		$this->assertArrayHasKey('message', $body);
-		$this->assertArrayHasKey('trace', $body);
-		$this->assertArrayHasKey('context', $body);
+        $this->assertArrayHasKey('success', $body);
+        $this->assertArrayHasKey('title', $body);
+        $this->assertArrayHasKey('message', $body);
+        $this->assertArrayHasKey('trace', $body);
+        $this->assertArrayHasKey('context', $body);
 
-		$this->assertEquals(false, $body['success']);
-		$this->assertEquals('Version v1 is not longer supported', substr($body['message'], 0, 34));
-	}
+        $this->assertEquals(false, $body['success']);
+        $this->assertEquals('Version v1 is not longer supported', substr($body['message'], 0, 34));
+    }
 
-	public function testGetDeprecatedVersion()
-	{
-		$response = $this->sendRequest('http://127.0.0.1/api', 'GET', ['Accept' => 'application/vnd.psx.v2+json']);
-		$body     = (string) $response->getBody();
+    public function testGetDeprecatedVersion()
+    {
+        $response = $this->sendRequest('http://127.0.0.1/api', 'GET', ['Accept' => 'application/vnd.psx.v2+json']);
+        $body     = (string) $response->getBody();
 
-		$this->assertEquals('199 PSX "Version v2 is deprecated"', $response->getHeader('Warning'));
+        $this->assertEquals('199 PSX "Version v2 is deprecated"', $response->getHeader('Warning'));
 
-		$expect = <<<JSON
+        $expect = <<<JSON
 {"entry": [
     {
       "id": 4,
@@ -235,69 +235,69 @@ JSON;
   ]}
 JSON;
 
-		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
-	}
+        $this->assertJsonStringEqualsJsonString($expect, $body, $body);
+    }
 
-	public function testPostDeprecatedVersion()
-	{
-		$data     = json_encode(array('userId' => 3, 'title' => 'test', 'date' => '2013-05-29T16:56:32Z'));
-		$response = $this->sendRequest('http://127.0.0.1/api', 'POST', ['Accept' => 'application/vnd.psx.v2+json', 'Content-Type' => 'application/json'], $data);
-		$body     = (string) $response->getBody();
+    public function testPostDeprecatedVersion()
+    {
+        $data     = json_encode(array('userId' => 3, 'title' => 'test', 'date' => '2013-05-29T16:56:32Z'));
+        $response = $this->sendRequest('http://127.0.0.1/api', 'POST', ['Accept' => 'application/vnd.psx.v2+json', 'Content-Type' => 'application/json'], $data);
+        $body     = (string) $response->getBody();
 
-		$expect = <<<JSON
+        $expect = <<<JSON
 {
 	"success": true,
 	"message": "You have successful create a record"
 }
 JSON;
 
-		$this->assertEquals(200, $response->getStatusCode(), $body);
-		$this->assertEquals('199 PSX "Version v2 is deprecated"', $response->getHeader('Warning'));
-		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
-	}
+        $this->assertEquals(200, $response->getStatusCode(), $body);
+        $this->assertEquals('199 PSX "Version v2 is deprecated"', $response->getHeader('Warning'));
+        $this->assertJsonStringEqualsJsonString($expect, $body, $body);
+    }
 
-	public function testPutDeprecatedVersion()
-	{
-		$data     = json_encode(array('id' => 1, 'userId' => 3, 'title' => 'foobar'));
-		$response = $this->sendRequest('http://127.0.0.1/api', 'PUT', ['Accept' => 'application/vnd.psx.v2+json', 'Content-Type' => 'application/json'], $data);
-		$body     = (string) $response->getBody();
+    public function testPutDeprecatedVersion()
+    {
+        $data     = json_encode(array('id' => 1, 'userId' => 3, 'title' => 'foobar'));
+        $response = $this->sendRequest('http://127.0.0.1/api', 'PUT', ['Accept' => 'application/vnd.psx.v2+json', 'Content-Type' => 'application/json'], $data);
+        $body     = (string) $response->getBody();
 
-		$expect = <<<JSON
+        $expect = <<<JSON
 {
 	"success": true,
 	"message": "You have successful update a record"
 }
 JSON;
 
-		$this->assertEquals(200, $response->getStatusCode(), $body);
-		$this->assertEquals('199 PSX "Version v2 is deprecated"', $response->getHeader('Warning'));
-		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
-	}
+        $this->assertEquals(200, $response->getStatusCode(), $body);
+        $this->assertEquals('199 PSX "Version v2 is deprecated"', $response->getHeader('Warning'));
+        $this->assertJsonStringEqualsJsonString($expect, $body, $body);
+    }
 
-	public function testDeleteDeprecatedVersion()
-	{
-		$data     = json_encode(array('id' => 1));
-		$response = $this->sendRequest('http://127.0.0.1/api', 'DELETE', ['Accept' => 'application/vnd.psx.v2+json', 'Content-Type' => 'application/json'], $data);
-		$body     = (string) $response->getBody();
+    public function testDeleteDeprecatedVersion()
+    {
+        $data     = json_encode(array('id' => 1));
+        $response = $this->sendRequest('http://127.0.0.1/api', 'DELETE', ['Accept' => 'application/vnd.psx.v2+json', 'Content-Type' => 'application/json'], $data);
+        $body     = (string) $response->getBody();
 
-		$expect = <<<JSON
+        $expect = <<<JSON
 {
 	"success": true,
 	"message": "You have successful delete a record"
 }
 JSON;
 
-		$this->assertEquals(200, $response->getStatusCode(), $body);
-		$this->assertEquals('199 PSX "Version v2 is deprecated"', $response->getHeader('Warning'));
-		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
-	}
+        $this->assertEquals(200, $response->getStatusCode(), $body);
+        $this->assertEquals('199 PSX "Version v2 is deprecated"', $response->getHeader('Warning'));
+        $this->assertJsonStringEqualsJsonString($expect, $body, $body);
+    }
 
-	public function testGetActiveVersion()
-	{
-		$response = $this->sendRequest('http://127.0.0.1/api', 'GET', ['Accept' => 'application/vnd.psx.v3+json']);
-		$body     = (string) $response->getBody();
+    public function testGetActiveVersion()
+    {
+        $response = $this->sendRequest('http://127.0.0.1/api', 'GET', ['Accept' => 'application/vnd.psx.v3+json']);
+        $body     = (string) $response->getBody();
 
-		$expect = <<<JSON
+        $expect = <<<JSON
 {"entry": [
     {
       "id": 4,
@@ -326,136 +326,136 @@ JSON;
   ]}
 JSON;
 
-		$this->assertEquals(200, $response->getStatusCode(), $body);
-		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
-	}
+        $this->assertEquals(200, $response->getStatusCode(), $body);
+        $this->assertJsonStringEqualsJsonString($expect, $body, $body);
+    }
 
-	public function testPostActiveVersion()
-	{
-		$data     = json_encode(array('userId' => 3, 'title' => 'test', 'date' => '2013-05-29T16:56:32Z'));
-		$response = $this->sendRequest('http://127.0.0.1/api', 'POST', ['Accept' => 'application/vnd.psx.v3+json', 'Content-Type' => 'application/json'], $data);
-		$body     = (string) $response->getBody();
+    public function testPostActiveVersion()
+    {
+        $data     = json_encode(array('userId' => 3, 'title' => 'test', 'date' => '2013-05-29T16:56:32Z'));
+        $response = $this->sendRequest('http://127.0.0.1/api', 'POST', ['Accept' => 'application/vnd.psx.v3+json', 'Content-Type' => 'application/json'], $data);
+        $body     = (string) $response->getBody();
 
-		$expect = <<<JSON
+        $expect = <<<JSON
 {
 	"success": true,
 	"message": "You have successful create a record"
 }
 JSON;
 
-		$this->assertEquals(200, $response->getStatusCode(), $body);
-		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
-	}
+        $this->assertEquals(200, $response->getStatusCode(), $body);
+        $this->assertJsonStringEqualsJsonString($expect, $body, $body);
+    }
 
-	public function testPutActiveVersion()
-	{
-		$data     = json_encode(array('id' => 1, 'userId' => 3, 'title' => 'foobar'));
-		$response = $this->sendRequest('http://127.0.0.1/api', 'PUT', ['Accept' => 'application/vnd.psx.v3+json', 'Content-Type' => 'application/json'], $data);
-		$body     = (string) $response->getBody();
+    public function testPutActiveVersion()
+    {
+        $data     = json_encode(array('id' => 1, 'userId' => 3, 'title' => 'foobar'));
+        $response = $this->sendRequest('http://127.0.0.1/api', 'PUT', ['Accept' => 'application/vnd.psx.v3+json', 'Content-Type' => 'application/json'], $data);
+        $body     = (string) $response->getBody();
 
-		$expect = <<<JSON
+        $expect = <<<JSON
 {
 	"success": true,
 	"message": "You have successful update a record"
 }
 JSON;
 
-		$this->assertEquals(200, $response->getStatusCode(), $body);
-		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
-	}
+        $this->assertEquals(200, $response->getStatusCode(), $body);
+        $this->assertJsonStringEqualsJsonString($expect, $body, $body);
+    }
 
-	public function testDeleteActiveVersion()
-	{
-		$data     = json_encode(array('id' => 1));
-		$response = $this->sendRequest('http://127.0.0.1/api', 'DELETE', ['Accept' => 'application/vnd.psx.v3+json', 'Content-Type' => 'application/json'], $data);
-		$body     = (string) $response->getBody();
+    public function testDeleteActiveVersion()
+    {
+        $data     = json_encode(array('id' => 1));
+        $response = $this->sendRequest('http://127.0.0.1/api', 'DELETE', ['Accept' => 'application/vnd.psx.v3+json', 'Content-Type' => 'application/json'], $data);
+        $body     = (string) $response->getBody();
 
-		$expect = <<<JSON
+        $expect = <<<JSON
 {
 	"success": true,
 	"message": "You have successful delete a record"
 }
 JSON;
 
-		$this->assertEquals(200, $response->getStatusCode(), $body);
-		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
-	}
+        $this->assertEquals(200, $response->getStatusCode(), $body);
+        $this->assertJsonStringEqualsJsonString($expect, $body, $body);
+    }
 
-	public function testGetUnknownVersion()
-	{
-		$response = $this->sendRequest('http://127.0.0.1/api', 'GET', ['Accept' => 'application/vnd.psx.v4+json']);
-		$body     = Json::decode((string) $response->getBody());
+    public function testGetUnknownVersion()
+    {
+        $response = $this->sendRequest('http://127.0.0.1/api', 'GET', ['Accept' => 'application/vnd.psx.v4+json']);
+        $body     = Json::decode((string) $response->getBody());
 
-		$this->assertEquals(406, $response->getStatusCode());
+        $this->assertEquals(406, $response->getStatusCode());
 
-		$this->assertArrayHasKey('success', $body);
-		$this->assertArrayHasKey('title', $body);
-		$this->assertArrayHasKey('message', $body);
-		$this->assertArrayHasKey('trace', $body);
-		$this->assertArrayHasKey('context', $body);
+        $this->assertArrayHasKey('success', $body);
+        $this->assertArrayHasKey('title', $body);
+        $this->assertArrayHasKey('message', $body);
+        $this->assertArrayHasKey('trace', $body);
+        $this->assertArrayHasKey('context', $body);
 
-		$this->assertEquals(false, $body['success']);
-		$this->assertEquals('Version is not available', substr($body['message'], 0, 24));
-	}
+        $this->assertEquals(false, $body['success']);
+        $this->assertEquals('Version is not available', substr($body['message'], 0, 24));
+    }
 
-	public function testPostUnknownVersion()
-	{
-		$data     = json_encode(array('userId' => 3, 'title' => 'test', 'date' => '2013-05-29T16:56:32Z'));
-		$response = $this->sendRequest('http://127.0.0.1/api', 'POST', ['Accept' => 'application/vnd.psx.v4+json', 'Content-Type' => 'application/json'], $data);
-		$body     = Json::decode((string) $response->getBody());
+    public function testPostUnknownVersion()
+    {
+        $data     = json_encode(array('userId' => 3, 'title' => 'test', 'date' => '2013-05-29T16:56:32Z'));
+        $response = $this->sendRequest('http://127.0.0.1/api', 'POST', ['Accept' => 'application/vnd.psx.v4+json', 'Content-Type' => 'application/json'], $data);
+        $body     = Json::decode((string) $response->getBody());
 
-		$this->assertEquals(406, $response->getStatusCode());
+        $this->assertEquals(406, $response->getStatusCode());
 
-		$this->assertArrayHasKey('success', $body);
-		$this->assertArrayHasKey('title', $body);
-		$this->assertArrayHasKey('message', $body);
-		$this->assertArrayHasKey('trace', $body);
-		$this->assertArrayHasKey('context', $body);
+        $this->assertArrayHasKey('success', $body);
+        $this->assertArrayHasKey('title', $body);
+        $this->assertArrayHasKey('message', $body);
+        $this->assertArrayHasKey('trace', $body);
+        $this->assertArrayHasKey('context', $body);
 
-		$this->assertEquals(false, $body['success']);
-		$this->assertEquals('Version is not available', substr($body['message'], 0, 24));
-	}
+        $this->assertEquals(false, $body['success']);
+        $this->assertEquals('Version is not available', substr($body['message'], 0, 24));
+    }
 
-	public function testPutUnknownVersion()
-	{
-		$data     = json_encode(array('id' => 1, 'userId' => 3, 'title' => 'foobar'));
-		$response = $this->sendRequest('http://127.0.0.1/api', 'PUT', ['Accept' => 'application/vnd.psx.v4+json', 'Content-Type' => 'application/json'], $data);
-		$body     = Json::decode((string) $response->getBody());
+    public function testPutUnknownVersion()
+    {
+        $data     = json_encode(array('id' => 1, 'userId' => 3, 'title' => 'foobar'));
+        $response = $this->sendRequest('http://127.0.0.1/api', 'PUT', ['Accept' => 'application/vnd.psx.v4+json', 'Content-Type' => 'application/json'], $data);
+        $body     = Json::decode((string) $response->getBody());
 
-		$this->assertEquals(406, $response->getStatusCode());
+        $this->assertEquals(406, $response->getStatusCode());
 
-		$this->assertArrayHasKey('success', $body);
-		$this->assertArrayHasKey('title', $body);
-		$this->assertArrayHasKey('message', $body);
-		$this->assertArrayHasKey('trace', $body);
-		$this->assertArrayHasKey('context', $body);
+        $this->assertArrayHasKey('success', $body);
+        $this->assertArrayHasKey('title', $body);
+        $this->assertArrayHasKey('message', $body);
+        $this->assertArrayHasKey('trace', $body);
+        $this->assertArrayHasKey('context', $body);
 
-		$this->assertEquals(false, $body['success']);
-		$this->assertEquals('Version is not available', substr($body['message'], 0, 24));
-	}
+        $this->assertEquals(false, $body['success']);
+        $this->assertEquals('Version is not available', substr($body['message'], 0, 24));
+    }
 
-	public function testDeleteUnknownVersion()
-	{
-		$data     = json_encode(array('id' => 1));
-		$response = $this->sendRequest('http://127.0.0.1/api', 'DELETE', ['Accept' => 'application/vnd.psx.v4+json', 'Content-Type' => 'application/json'], $data);
-		$body     = Json::decode((string) $response->getBody());
+    public function testDeleteUnknownVersion()
+    {
+        $data     = json_encode(array('id' => 1));
+        $response = $this->sendRequest('http://127.0.0.1/api', 'DELETE', ['Accept' => 'application/vnd.psx.v4+json', 'Content-Type' => 'application/json'], $data);
+        $body     = Json::decode((string) $response->getBody());
 
-		$this->assertEquals(406, $response->getStatusCode());
+        $this->assertEquals(406, $response->getStatusCode());
 
-		$this->assertArrayHasKey('success', $body);
-		$this->assertArrayHasKey('title', $body);
-		$this->assertArrayHasKey('message', $body);
-		$this->assertArrayHasKey('trace', $body);
-		$this->assertArrayHasKey('context', $body);
+        $this->assertArrayHasKey('success', $body);
+        $this->assertArrayHasKey('title', $body);
+        $this->assertArrayHasKey('message', $body);
+        $this->assertArrayHasKey('trace', $body);
+        $this->assertArrayHasKey('context', $body);
 
-		$this->assertEquals(false, $body['success']);
-		$this->assertEquals('Version is not available', substr($body['message'], 0, 24));
-	}
+        $this->assertEquals(false, $body['success']);
+        $this->assertEquals('Version is not available', substr($body['message'], 0, 24));
+    }
 
-	protected function getPaths()
-	{
-		return array(
-			[['GET', 'POST', 'PUT', 'DELETE'], '/api', 'PSX\Controller\Foo\Application\SchemaApi\VersionViewController'],
-		);
-	}
+    protected function getPaths()
+    {
+        return array(
+            [['GET', 'POST', 'PUT', 'DELETE'], '/api', 'PSX\Controller\Foo\Application\SchemaApi\VersionViewController'],
+        );
+    }
 }

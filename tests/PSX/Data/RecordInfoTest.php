@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,41 +29,40 @@ namespace PSX\Data;
  */
 class RecordInfoTest extends \PHPUnit_Framework_TestCase
 {
-	public function testRecordInfo()
-	{
-		$info = new RecordInfo('record', array('title' => 'foo'));
+    public function testRecordInfo()
+    {
+        $info = new RecordInfo('record', array('title' => 'foo'));
 
-		$this->assertEquals('record', $info->getName());
-		$this->assertEquals(array('title' => 'foo'), $info->getFields());
-		$this->assertTrue($info->hasField('title'));
-		$this->assertFalse($info->hasField('foo'));
-		$this->assertEquals('foo', $info->getField('title'));
-		$this->assertFalse($info->isEmpty());
+        $this->assertEquals('record', $info->getName());
+        $this->assertEquals(array('title' => 'foo'), $info->getFields());
+        $this->assertTrue($info->hasField('title'));
+        $this->assertFalse($info->hasField('foo'));
+        $this->assertEquals('foo', $info->getField('title'));
+        $this->assertFalse($info->isEmpty());
 
-		$info->setName('bar');
-		$info->setFields(array('bar' => 'foo'));
+        $info->setName('bar');
+        $info->setFields(array('bar' => 'foo'));
 
-		$this->assertEquals('bar', $info->getName());
-		$this->assertEquals(array('bar' => 'foo'), $info->getFields());
-	}
+        $this->assertEquals('bar', $info->getName());
+        $this->assertEquals(array('bar' => 'foo'), $info->getFields());
+    }
 
-	public function testRecordInfoParent()
-	{
-		$parent = new RecordInfo('record', array('bar' => 'foo'));
-		$info   = new RecordInfo('record', array('title' => 'foo'), $parent);
+    public function testRecordInfoParent()
+    {
+        $parent = new RecordInfo('record', array('bar' => 'foo'));
+        $info   = new RecordInfo('record', array('title' => 'foo'), $parent);
 
-		$this->assertEquals('record', $info->getName());
-		$this->assertEquals(array('title' => 'foo', 'bar' => 'foo'), $info->getFields());
-	}
+        $this->assertEquals('record', $info->getName());
+        $this->assertEquals(array('title' => 'foo', 'bar' => 'foo'), $info->getFields());
+    }
 
-	public function testRecordInfoTraversable()
-	{
-		$info = new RecordInfo('record', array('title' => 'foo'));
+    public function testRecordInfoTraversable()
+    {
+        $info = new RecordInfo('record', array('title' => 'foo'));
 
-		foreach($info as $key => $value)
-		{
-			$this->assertEquals('title', $key);
-			$this->assertEquals('foo', $value);
-		}
-	}
+        foreach ($info as $key => $value) {
+            $this->assertEquals('title', $key);
+            $this->assertEquals('foo', $value);
+        }
+    }
 }

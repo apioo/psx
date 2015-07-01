@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,17 +32,17 @@ use PSX\Test\ControllerDbTestCase;
  */
 class TableApiAbstractTest extends ControllerDbTestCase
 {
-	public function getDataSet()
-	{
-		return $this->createFlatXMLDataSet(__DIR__ . '/../Sql/table_fixture.xml');
-	}
+    public function getDataSet()
+    {
+        return $this->createFlatXMLDataSet(__DIR__ . '/../Sql/table_fixture.xml');
+    }
 
-	public function testGet()
-	{
-		$response = $this->sendRequest('http://127.0.0.1/api', 'GET');
-		$body     = (string) $response->getBody();
+    public function testGet()
+    {
+        $response = $this->sendRequest('http://127.0.0.1/api', 'GET');
+        $body     = (string) $response->getBody();
 
-		$expect = <<<JSON
+        $expect = <<<JSON
 {
 	"startIndex": 0,
 	"count": 16,
@@ -66,216 +66,216 @@ class TableApiAbstractTest extends ControllerDbTestCase
 }
 JSON;
 
-		$this->assertEquals(200, $response->getStatusCode(), $body);
-		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
-	}
+        $this->assertEquals(200, $response->getStatusCode(), $body);
+        $this->assertJsonStringEqualsJsonString($expect, $body, $body);
+    }
 
-	public function testPost()
-	{
-		$data = json_encode(array(
-			'col_bigint' => '68719476735',
-			'col_blob' => 'foobar',
-			'col_boolean' => 'true',
-			'col_datetime' => '2015-01-21T23:59:59+00:00',
-			'col_datetimetz' => '2015-01-21T23:59:59+01:00',
-			'col_date' => '2015-01-21',
-			'col_decimal' => '10',
-			'col_float' => '10.37',
-			'col_integer' => '2147483647',
-			'col_smallint' => '255',
-			'col_text' => 'foobar',
-			'col_time' => '23:59:59',
-			'col_string' => 'foobar',
-		));
+    public function testPost()
+    {
+        $data = json_encode(array(
+            'col_bigint' => '68719476735',
+            'col_blob' => 'foobar',
+            'col_boolean' => 'true',
+            'col_datetime' => '2015-01-21T23:59:59+00:00',
+            'col_datetimetz' => '2015-01-21T23:59:59+01:00',
+            'col_date' => '2015-01-21',
+            'col_decimal' => '10',
+            'col_float' => '10.37',
+            'col_integer' => '2147483647',
+            'col_smallint' => '255',
+            'col_text' => 'foobar',
+            'col_time' => '23:59:59',
+            'col_string' => 'foobar',
+        ));
 
-		$response = $this->sendRequest('http://127.0.0.1/api', 'POST', ['Content-Type' => 'application/json'], $data);
-		$body     = (string) $response->getBody();
+        $response = $this->sendRequest('http://127.0.0.1/api', 'POST', ['Content-Type' => 'application/json'], $data);
+        $body     = (string) $response->getBody();
 
-		$expect = <<<JSON
+        $expect = <<<JSON
 {
 	"success": true,
 	"message": "Test successful created"
 }
 JSON;
 
-		$this->assertEquals(200, $response->getStatusCode(), $body);
-		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
+        $this->assertEquals(200, $response->getStatusCode(), $body);
+        $this->assertJsonStringEqualsJsonString($expect, $body, $body);
 
-		// check database
-		$result = $this->connection->createQueryBuilder()
-			->select(array('id', 'col_bigint', 'col_blob', 'col_boolean', 'col_datetime', 'col_datetimetz', 'col_date', 'col_decimal', 'col_float', 'col_integer', 'col_smallint', 'col_text', 'col_time', 'col_string'))
-			->from('psx_table_command_test')
-			->execute()
-			->fetchAll();
+        // check database
+        $result = $this->connection->createQueryBuilder()
+            ->select(array('id', 'col_bigint', 'col_blob', 'col_boolean', 'col_datetime', 'col_datetimetz', 'col_date', 'col_decimal', 'col_float', 'col_integer', 'col_smallint', 'col_text', 'col_time', 'col_string'))
+            ->from('psx_table_command_test')
+            ->execute()
+            ->fetchAll();
 
-		$expect = array(
-			array(
-				'id' => '1',
-				'col_bigint' => '68719476735',
-				'col_blob' => 'foobar',
-				'col_boolean' => '1',
-				'col_datetime' => '2015-01-21 23:59:59',
-				'col_datetimetz' => '2015-01-21 23:59:59',
-				'col_date' => '2015-01-21',
-				'col_decimal' => '10',
-				'col_float' => '10.37',
-				'col_integer' => '2147483647',
-				'col_smallint' => '255',
-				'col_text' => 'foobar',
-				'col_time' => '23:59:59',
-				'col_string' => 'foobar',
-			),
-			array(
-				'id' => '2',
-				'col_bigint' => '68719476735',
-				'col_blob' => 'foobar',
-				'col_boolean' => '1',
-				'col_datetime' => '2015-01-21 23:59:59',
-				'col_datetimetz' => '2015-01-21 23:59:59',
-				'col_date' => '2015-01-21',
-				'col_decimal' => '10',
-				'col_float' => '10.37',
-				'col_integer' => '2147483647',
-				'col_smallint' => '255',
-				'col_text' => 'foobar',
-				'col_time' => '23:59:59',
-				'col_string' => 'foobar',
-			),
-		);
+        $expect = array(
+            array(
+                'id' => '1',
+                'col_bigint' => '68719476735',
+                'col_blob' => 'foobar',
+                'col_boolean' => '1',
+                'col_datetime' => '2015-01-21 23:59:59',
+                'col_datetimetz' => '2015-01-21 23:59:59',
+                'col_date' => '2015-01-21',
+                'col_decimal' => '10',
+                'col_float' => '10.37',
+                'col_integer' => '2147483647',
+                'col_smallint' => '255',
+                'col_text' => 'foobar',
+                'col_time' => '23:59:59',
+                'col_string' => 'foobar',
+            ),
+            array(
+                'id' => '2',
+                'col_bigint' => '68719476735',
+                'col_blob' => 'foobar',
+                'col_boolean' => '1',
+                'col_datetime' => '2015-01-21 23:59:59',
+                'col_datetimetz' => '2015-01-21 23:59:59',
+                'col_date' => '2015-01-21',
+                'col_decimal' => '10',
+                'col_float' => '10.37',
+                'col_integer' => '2147483647',
+                'col_smallint' => '255',
+                'col_text' => 'foobar',
+                'col_time' => '23:59:59',
+                'col_string' => 'foobar',
+            ),
+        );
 
-		$this->assertEquals($expect, $result);
-	}
+        $this->assertEquals($expect, $result);
+    }
 
-	public function testPut()
-	{
-		$data = json_encode(array(
-			'id' => 1,
-			'col_bigint' => '68719476735',
-			'col_blob' => 'foobar',
-			'col_boolean' => 'true',
-			'col_datetime' => '2015-01-21T23:59:59+00:00',
-			'col_datetimetz' => '2015-01-21T23:59:59+01:00',
-			'col_date' => '2015-01-21',
-			'col_decimal' => '10',
-			'col_float' => '10.37',
-			'col_integer' => '2147483647',
-			'col_smallint' => '255',
-			'col_text' => 'foobar',
-			'col_time' => '23:59:59',
-			'col_string' => 'foo',
-		));
+    public function testPut()
+    {
+        $data = json_encode(array(
+            'id' => 1,
+            'col_bigint' => '68719476735',
+            'col_blob' => 'foobar',
+            'col_boolean' => 'true',
+            'col_datetime' => '2015-01-21T23:59:59+00:00',
+            'col_datetimetz' => '2015-01-21T23:59:59+01:00',
+            'col_date' => '2015-01-21',
+            'col_decimal' => '10',
+            'col_float' => '10.37',
+            'col_integer' => '2147483647',
+            'col_smallint' => '255',
+            'col_text' => 'foobar',
+            'col_time' => '23:59:59',
+            'col_string' => 'foo',
+        ));
 
-		$response = $this->sendRequest('http://127.0.0.1/api', 'PUT', ['Content-Type' => 'application/json'], $data);
-		$body     = (string) $response->getBody();
+        $response = $this->sendRequest('http://127.0.0.1/api', 'PUT', ['Content-Type' => 'application/json'], $data);
+        $body     = (string) $response->getBody();
 
-		$expect = <<<JSON
+        $expect = <<<JSON
 {
 	"success": true,
 	"message": "Test successful updated"
 }
 JSON;
 
-		$this->assertEquals(200, $response->getStatusCode(), $body);
-		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
+        $this->assertEquals(200, $response->getStatusCode(), $body);
+        $this->assertJsonStringEqualsJsonString($expect, $body, $body);
 
-		// check database
-		$result = $this->connection->createQueryBuilder()
-			->select(array('id', 'col_bigint', 'col_blob', 'col_boolean', 'col_datetime', 'col_datetimetz', 'col_date', 'col_decimal', 'col_float', 'col_integer', 'col_smallint', 'col_text', 'col_time', 'col_string'))
-			->from('psx_table_command_test')
-			->execute()
-			->fetchAll();
+        // check database
+        $result = $this->connection->createQueryBuilder()
+            ->select(array('id', 'col_bigint', 'col_blob', 'col_boolean', 'col_datetime', 'col_datetimetz', 'col_date', 'col_decimal', 'col_float', 'col_integer', 'col_smallint', 'col_text', 'col_time', 'col_string'))
+            ->from('psx_table_command_test')
+            ->execute()
+            ->fetchAll();
 
-		$expect = array(
-			array(
-				'id' => '1',
-				'col_bigint' => '68719476735',
-				'col_blob' => 'foobar',
-				'col_boolean' => '1',
-				'col_datetime' => '2015-01-21 23:59:59',
-				'col_datetimetz' => '2015-01-21 23:59:59',
-				'col_date' => '2015-01-21',
-				'col_decimal' => '10',
-				'col_float' => '10.37',
-				'col_integer' => '2147483647',
-				'col_smallint' => '255',
-				'col_text' => 'foobar',
-				'col_time' => '23:59:59',
-				'col_string' => 'foo',
-			),
-		);
+        $expect = array(
+            array(
+                'id' => '1',
+                'col_bigint' => '68719476735',
+                'col_blob' => 'foobar',
+                'col_boolean' => '1',
+                'col_datetime' => '2015-01-21 23:59:59',
+                'col_datetimetz' => '2015-01-21 23:59:59',
+                'col_date' => '2015-01-21',
+                'col_decimal' => '10',
+                'col_float' => '10.37',
+                'col_integer' => '2147483647',
+                'col_smallint' => '255',
+                'col_text' => 'foobar',
+                'col_time' => '23:59:59',
+                'col_string' => 'foo',
+            ),
+        );
 
-		$this->assertEquals($expect, $result);
-	}
+        $this->assertEquals($expect, $result);
+    }
 
-	public function testPutNotAvailable()
-	{
-		$data     = json_encode(array('id' => 12));
-		$response = $this->sendRequest('http://127.0.0.1/api', 'PUT', ['Content-Type' => 'application/json'], $data);
-		$body     = (string) $response->getBody();
-		$data     = Json::decode($body);
+    public function testPutNotAvailable()
+    {
+        $data     = json_encode(array('id' => 12));
+        $response = $this->sendRequest('http://127.0.0.1/api', 'PUT', ['Content-Type' => 'application/json'], $data);
+        $body     = (string) $response->getBody();
+        $data     = Json::decode($body);
 
-		$this->assertArrayHasKey('success', $data);
-		$this->assertArrayHasKey('title', $data);
-		$this->assertArrayHasKey('message', $data);
-		$this->assertArrayHasKey('trace', $data);
-		$this->assertArrayHasKey('context', $data);
+        $this->assertArrayHasKey('success', $data);
+        $this->assertArrayHasKey('title', $data);
+        $this->assertArrayHasKey('message', $data);
+        $this->assertArrayHasKey('trace', $data);
+        $this->assertArrayHasKey('context', $data);
 
-		$this->assertEquals(404, $response->getStatusCode(), $body);
-		$this->assertEquals(false, $data['success']);
-		$this->assertEquals('Record not found', substr($data['message'], 0, 16));
-	}
+        $this->assertEquals(404, $response->getStatusCode(), $body);
+        $this->assertEquals(false, $data['success']);
+        $this->assertEquals('Record not found', substr($data['message'], 0, 16));
+    }
 
-	public function testDelete()
-	{
-		$data     = json_encode(array('id' => 1));
-		$response = $this->sendRequest('http://127.0.0.1/api', 'DELETE', ['Content-Type' => 'application/json'], $data);
-		$body     = (string) $response->getBody();
+    public function testDelete()
+    {
+        $data     = json_encode(array('id' => 1));
+        $response = $this->sendRequest('http://127.0.0.1/api', 'DELETE', ['Content-Type' => 'application/json'], $data);
+        $body     = (string) $response->getBody();
 
-		$expect = <<<JSON
+        $expect = <<<JSON
 {
 	"success": true,
 	"message": "Test successful deleted"
 }
 JSON;
 
-		$this->assertEquals(200, $response->getStatusCode(), $body);
-		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
+        $this->assertEquals(200, $response->getStatusCode(), $body);
+        $this->assertJsonStringEqualsJsonString($expect, $body, $body);
 
-		// check database
-		$result = $this->connection->createQueryBuilder()
-			->select(array('id', 'col_bigint', 'col_blob', 'col_boolean', 'col_datetime', 'col_datetimetz', 'col_date', 'col_decimal', 'col_float', 'col_integer', 'col_smallint', 'col_text', 'col_time', 'col_string'))
-			->from('psx_table_command_test')
-			->execute()
-			->fetchAll();
+        // check database
+        $result = $this->connection->createQueryBuilder()
+            ->select(array('id', 'col_bigint', 'col_blob', 'col_boolean', 'col_datetime', 'col_datetimetz', 'col_date', 'col_decimal', 'col_float', 'col_integer', 'col_smallint', 'col_text', 'col_time', 'col_string'))
+            ->from('psx_table_command_test')
+            ->execute()
+            ->fetchAll();
 
-		$expect = array(
-		);
+        $expect = array(
+        );
 
-		$this->assertEquals($expect, $result);
-	}
+        $this->assertEquals($expect, $result);
+    }
 
-	public function testDeleteNotAvailable()
-	{
-		$data     = json_encode(array('id' => 12));
-		$response = $this->sendRequest('http://127.0.0.1/api', 'DELETE', ['Content-Type' => 'application/json'], $data);
-		$body     = (string) $response->getBody();
-		$data     = Json::decode($body);
+    public function testDeleteNotAvailable()
+    {
+        $data     = json_encode(array('id' => 12));
+        $response = $this->sendRequest('http://127.0.0.1/api', 'DELETE', ['Content-Type' => 'application/json'], $data);
+        $body     = (string) $response->getBody();
+        $data     = Json::decode($body);
 
-		$this->assertArrayHasKey('success', $data);
-		$this->assertArrayHasKey('title', $data);
-		$this->assertArrayHasKey('message', $data);
-		$this->assertArrayHasKey('trace', $data);
-		$this->assertArrayHasKey('context', $data);
+        $this->assertArrayHasKey('success', $data);
+        $this->assertArrayHasKey('title', $data);
+        $this->assertArrayHasKey('message', $data);
+        $this->assertArrayHasKey('trace', $data);
+        $this->assertArrayHasKey('context', $data);
 
-		$this->assertEquals(404, $response->getStatusCode(), $body);
-		$this->assertEquals(false, $data['success']);
-		$this->assertEquals('Record not found', substr($data['message'], 0, 16));
-	}
+        $this->assertEquals(404, $response->getStatusCode(), $body);
+        $this->assertEquals(false, $data['success']);
+        $this->assertEquals('Record not found', substr($data['message'], 0, 16));
+    }
 
-	protected function getPaths()
-	{
-		return array(
-			[['GET', 'POST', 'PUT', 'DELETE'], '/api', 'PSX\Controller\Foo\Application\TestTableApiController'],
-		);
-	}
+    protected function getPaths()
+    {
+        return array(
+            [['GET', 'POST', 'PUT', 'DELETE'], '/api', 'PSX\Controller\Foo\Application\TestTableApiController'],
+        );
+    }
 }

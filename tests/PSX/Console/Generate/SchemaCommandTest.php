@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,129 +33,128 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 class SchemaCommandTest extends CommandTestCase
 {
-	protected function setUp()
-	{
-		parent::setUp();
+    protected function setUp()
+    {
+        parent::setUp();
 
-		if(!Environment::hasConnection())
-		{
-			$this->markTestSkipped('Database connection not available');
-		}
-	}
+        if (!Environment::hasConnection()) {
+            $this->markTestSkipped('Database connection not available');
+        }
+    }
 
-	public function testCommand()
-	{
-		$command = $this->getMockBuilder('PSX\Console\Generate\SchemaCommand')
-			->setConstructorArgs(array(Environment::getService('connection')))
-			->setMethods(array('makeDir', 'writeFile', 'isDir', 'isFile'))
-			->getMock();
+    public function testCommand()
+    {
+        $command = $this->getMockBuilder('PSX\Console\Generate\SchemaCommand')
+            ->setConstructorArgs(array(Environment::getService('connection')))
+            ->setMethods(array('makeDir', 'writeFile', 'isDir', 'isFile'))
+            ->getMock();
 
-		$command->expects($this->at(0))
-			->method('isDir')
-			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo'))
-			->will($this->returnValue(false));
+        $command->expects($this->at(0))
+            ->method('isDir')
+            ->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo'))
+            ->will($this->returnValue(false));
 
-		$command->expects($this->at(1))
-			->method('makeDir')
-			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo'));
+        $command->expects($this->at(1))
+            ->method('makeDir')
+            ->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo'));
 
-		$command->expects($this->at(2))
-			->method('isFile')
-			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Bar.php'))
-			->will($this->returnValue(false));
+        $command->expects($this->at(2))
+            ->method('isFile')
+            ->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Bar.php'))
+            ->will($this->returnValue(false));
 
-		$command->expects($this->at(3))
-			->method('writeFile')
-			->with(
-				$this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Bar.php'), 
-				$this->callback(function($source){
-					$this->assertSource($this->getExpectedSource(), $source);
-					return true;
-				})
-			);
+        $command->expects($this->at(3))
+            ->method('writeFile')
+            ->with(
+                $this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Bar.php'),
+                $this->callback(function ($source) {
+                    $this->assertSource($this->getExpectedSource(), $source);
+                    return true;
+                })
+            );
 
-		$commandTester = new CommandTester($command);
-		$commandTester->execute(array(
-			'namespace' => 'Acme\Foo\Bar',
-			'table'     => 'psx_table_command_test'
-		));
-	}
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(array(
+            'namespace' => 'Acme\Foo\Bar',
+            'table'     => 'psx_table_command_test'
+        ));
+    }
 
-	/**
-	 * @expectedException \RuntimeException
-	 */
-	public function testCommandFileExists()
-	{
-		$command = $this->getMockBuilder('PSX\Console\Generate\SchemaCommand')
-			->setConstructorArgs(array(Environment::getService('connection')))
-			->setMethods(array('makeDir', 'writeFile', 'isDir', 'isFile'))
-			->getMock();
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testCommandFileExists()
+    {
+        $command = $this->getMockBuilder('PSX\Console\Generate\SchemaCommand')
+            ->setConstructorArgs(array(Environment::getService('connection')))
+            ->setMethods(array('makeDir', 'writeFile', 'isDir', 'isFile'))
+            ->getMock();
 
-		$command->expects($this->at(0))
-			->method('isDir')
-			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo'))
-			->will($this->returnValue(false));
+        $command->expects($this->at(0))
+            ->method('isDir')
+            ->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo'))
+            ->will($this->returnValue(false));
 
-		$command->expects($this->at(1))
-			->method('makeDir')
-			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo'));
+        $command->expects($this->at(1))
+            ->method('makeDir')
+            ->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo'));
 
-		$command->expects($this->at(2))
-			->method('isFile')
-			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Bar.php'))
-			->will($this->returnValue(true));
+        $command->expects($this->at(2))
+            ->method('isFile')
+            ->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Bar.php'))
+            ->will($this->returnValue(true));
 
-		$command->expects($this->never())
-			->method('writeFile');
+        $command->expects($this->never())
+            ->method('writeFile');
 
-		$commandTester = new CommandTester($command);
-		$commandTester->execute(array(
-			'namespace' => 'Acme\Foo\Bar',
-			'table'     => 'psx_table_command_test'
-		));
-	}
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(array(
+            'namespace' => 'Acme\Foo\Bar',
+            'table'     => 'psx_table_command_test'
+        ));
+    }
 
-	public function testCommandWithoutTable()
-	{
-		$command = $this->getMockBuilder('PSX\Console\Generate\SchemaCommand')
-			->setConstructorArgs(array(Environment::getService('connection')))
-			->setMethods(array('makeDir', 'writeFile'))
-			->getMock();
+    public function testCommandWithoutTable()
+    {
+        $command = $this->getMockBuilder('PSX\Console\Generate\SchemaCommand')
+            ->setConstructorArgs(array(Environment::getService('connection')))
+            ->setMethods(array('makeDir', 'writeFile'))
+            ->getMock();
 
-		$command->expects($this->at(1))
-			->method('writeFile')
-			->with(
-				$this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Bar.php'), 
-				$this->callback(function($source){
-					$this->assertSource($this->getExpectedSourceNoTable(), $source);
-					return true;
-				})
-			);
+        $command->expects($this->at(1))
+            ->method('writeFile')
+            ->with(
+                $this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Bar.php'),
+                $this->callback(function ($source) {
+                    $this->assertSource($this->getExpectedSourceNoTable(), $source);
+                    return true;
+                })
+            );
 
-		$commandTester = new CommandTester($command);
-		$commandTester->execute(array(
-			'namespace' => 'Acme\Foo\Bar',
-		));
-	}
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(array(
+            'namespace' => 'Acme\Foo\Bar',
+        ));
+    }
 
-	public function testCommandAvailable()
-	{
-		$command = Environment::getService('console')->find('generate:schema');
+    public function testCommandAvailable()
+    {
+        $command = Environment::getService('console')->find('generate:schema');
 
-		$this->assertInstanceOf('PSX\Console\Generate\SchemaCommand', $command);
-	}
+        $this->assertInstanceOf('PSX\Console\Generate\SchemaCommand', $command);
+    }
 
-	protected function assertSource($expect, $actual)
-	{
-		$expect = str_replace(array("\r\n", "\n", "\r"), "\n", $expect);
-		$actual = str_replace(array("\r\n", "\n", "\r"), "\n", $actual);
+    protected function assertSource($expect, $actual)
+    {
+        $expect = str_replace(array("\r\n", "\n", "\r"), "\n", $expect);
+        $actual = str_replace(array("\r\n", "\n", "\r"), "\n", $actual);
 
-		$this->assertEquals($expect, $actual);
-	}
+        $this->assertEquals($expect, $actual);
+    }
 
-	protected function getExpectedSource()
-	{
-		return <<<'PHP'
+    protected function getExpectedSource()
+    {
+        return <<<'PHP'
 <?php
 
 namespace Acme\Foo;
@@ -194,11 +193,11 @@ class Bar extends SchemaAbstract
 }
 
 PHP;
-	}
+    }
 
-	protected function getExpectedSourceNoTable()
-	{
-		return <<<'PHP'
+    protected function getExpectedSourceNoTable()
+    {
+        return <<<'PHP'
 <?php
 
 namespace Acme\Foo;
@@ -224,6 +223,5 @@ class Bar extends SchemaAbstract
 }
 
 PHP;
-	}
+    }
 }
-

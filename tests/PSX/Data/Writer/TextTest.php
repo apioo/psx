@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,43 +33,43 @@ use PSX\TemplateInterface;
  */
 class TextTest extends TemplateAbstractTestCase
 {
-	protected function getWriter(TemplateInterface $template, ReverseRouter $router)
-	{
-		return new Text($template, $router);
-	}
+    protected function getWriter(TemplateInterface $template, ReverseRouter $router)
+    {
+        return new Text($template, $router);
+    }
 
-	public function testIsContentTypeSupported()
-	{
-		$template = $this->getMock('PSX\TemplateInterface');
-		$router   = $this->getMockBuilder('PSX\Loader\ReverseRouter')
-			->disableOriginalConstructor()
-			->getMock();
+    public function testIsContentTypeSupported()
+    {
+        $template = $this->getMock('PSX\TemplateInterface');
+        $router   = $this->getMockBuilder('PSX\Loader\ReverseRouter')
+            ->disableOriginalConstructor()
+            ->getMock();
 
-		$writer = new Text($template, $router);
+        $writer = new Text($template, $router);
 
-		$this->assertTrue($writer->isContentTypeSupported(new MediaType('text/plain')));
-		$this->assertFalse($writer->isContentTypeSupported(new MediaType('text/html')));
-	}
+        $this->assertTrue($writer->isContentTypeSupported(new MediaType('text/plain')));
+        $this->assertFalse($writer->isContentTypeSupported(new MediaType('text/html')));
+    }
 
-	public function testGetContentType()
-	{
-		$template = $this->getMock('PSX\TemplateInterface');
-		$router   = $this->getMockBuilder('PSX\Loader\ReverseRouter')
-			->disableOriginalConstructor()
-			->getMock();
+    public function testGetContentType()
+    {
+        $template = $this->getMock('PSX\TemplateInterface');
+        $router   = $this->getMockBuilder('PSX\Loader\ReverseRouter')
+            ->disableOriginalConstructor()
+            ->getMock();
 
-		$writer = new Text($template, $router);
+        $writer = new Text($template, $router);
 
-		$this->assertEquals('text/plain', $writer->getContentType());
-	}
+        $this->assertEquals('text/plain', $writer->getContentType());
+    }
 
-	/**
-	 * @expectedException \PSX\Http\Exception\UnsupportedMediaTypeException
-	 */
-	public function testFallbackGenerator()
-	{
-		// we have no text generator
+    /**
+     * @expectedException \PSX\Http\Exception\UnsupportedMediaTypeException
+     */
+    public function testFallbackGenerator()
+    {
+        // we have no text generator
 
-		parent::testFallbackGenerator();
-	}
+        parent::testFallbackGenerator();
+    }
 }

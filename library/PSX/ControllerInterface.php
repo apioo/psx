@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,48 +29,48 @@ namespace PSX;
  */
 interface ControllerInterface
 {
-	/**
-	 * Method which gets always called before the on* methods are called
-	 */
-	public function onLoad();
+    /**
+     * Method which gets always called before the on* methods are called
+     */
+    public function onLoad();
 
-	/**
-	 * Method which gets called on an DELETE request
-	 */
-	public function onDelete();
+    /**
+     * Method which gets called on an DELETE request
+     */
+    public function onDelete();
 
-	/**
-	 * Method which gets called on an GET request
-	 */
-	public function onGet();
+    /**
+     * Method which gets called on an GET request
+     */
+    public function onGet();
 
-	/**
-	 * Method which gets called on an HEAD request
-	 */
-	public function onHead();
+    /**
+     * Method which gets called on an HEAD request
+     */
+    public function onHead();
 
-	/**
-	 * Method which gets called on an OPTIONS request
-	 */
-	public function onOptions();
+    /**
+     * Method which gets called on an OPTIONS request
+     */
+    public function onOptions();
 
-	/**
-	 * Method which gets called on an POST request
-	 */
-	public function onPost();
+    /**
+     * Method which gets called on an POST request
+     */
+    public function onPost();
 
-	/**
-	 * Method which gets called on an PUT request
-	 */
-	public function onPut();
+    /**
+     * Method which gets called on an PUT request
+     */
+    public function onPut();
 
-	/**
-	 * Method which gets called on an TRACE request
-	 */
-	public function onTrace();
+    /**
+     * Method which gets called on an TRACE request
+     */
+    public function onTrace();
 
-	/**
-	 * Is called after the controller action was called
-	 */
-	public function processResponse();
+    /**
+     * Is called after the controller action was called
+     */
+    public function processResponse();
 }

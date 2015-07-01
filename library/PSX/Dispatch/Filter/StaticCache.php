@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -37,117 +37,105 @@ use PSX\Http\Stream\Util;
  */
 class StaticCache implements FilterInterface
 {
-	protected $cache;
-	protected $keyGenerator;
-	protected $ttl;
+    protected $cache;
+    protected $keyGenerator;
+    protected $ttl;
 
-	/**
-	 * @param \PSX\Cache\CacheItemPoolInterface $cache
-	 * @param callable $keyGenerator
-	 * @param integer $ttl
-	 */
-	public function __construct(CacheItemPoolInterface $cache, $keyGenerator = null, $ttl = null)
-	{
-		$this->cache        = $cache;
-		$this->keyGenerator = $keyGenerator;
-		$this->ttl          = $ttl;
-	}
+    /**
+     * @param \PSX\Cache\CacheItemPoolInterface $cache
+     * @param callable $keyGenerator
+     * @param integer $ttl
+     */
+    public function __construct(CacheItemPoolInterface $cache, $keyGenerator = null, $ttl = null)
+    {
+        $this->cache        = $cache;
+        $this->keyGenerator = $keyGenerator;
+        $this->ttl          = $ttl;
+    }
 
-	public function handle(RequestInterface $request, ResponseInterface $response, FilterChainInterface $filterChain)
-	{
-		$key = $this->getCacheKey($request);
+    public function handle(RequestInterface $request, ResponseInterface $response, FilterChainInterface $filterChain)
+    {
+        $key = $this->getCacheKey($request);
 
-		if(!empty($key))
-		{
-			$item = $this->cache->getItem($key);
+        if (!empty($key)) {
+            $item = $this->cache->getItem($key);
 
-			if($item->isHit())
-			{
-				// serve cache response
-				$resp = $item->get();
+            if ($item->isHit()) {
+                // serve cache response
+                $resp = $item->get();
 
-				$response->setHeaders($resp['headers']);
-				$response->getBody()->write($resp['body']);
-			}
-			else
-			{
-				$filterChain->handle($request, $response);
+                $response->setHeaders($resp['headers']);
+                $response->getBody()->write($resp['body']);
+            } else {
+                $filterChain->handle($request, $response);
 
-				// save response
-				$resp = array(
-					'headers' => $this->getCacheHeaders($response),
-					'body'    => Util::toString($response->getBody()),
-				);
+                // save response
+                $resp = array(
+                    'headers' => $this->getCacheHeaders($response),
+                    'body'    => Util::toString($response->getBody()),
+                );
 
-				$item->set($resp, $this->ttl);
+                $item->set($resp, $this->ttl);
 
-				$this->cache->save($item);
-			}
-		}
-		else
-		{
-			// if we have no key we can not use a cache
-			$filterChain->handle($request, $response);
-		}
-	}
+                $this->cache->save($item);
+            }
+        } else {
+            // if we have no key we can not use a cache
+            $filterChain->handle($request, $response);
+        }
+    }
 
-	protected function getCacheKey(RequestInterface $request)
-	{
-		if($request->getMethod() == 'GET')
-		{
-			if($this->keyGenerator === null)
-			{
-				return $this->getKeyDefaultImpl($request);
-			}
-			else
-			{
-				return call_user_func_array($this->keyGenerator, array($request));
-			}
-		}
+    protected function getCacheKey(RequestInterface $request)
+    {
+        if ($request->getMethod() == 'GET') {
+            if ($this->keyGenerator === null) {
+                return $this->getKeyDefaultImpl($request);
+            } else {
+                return call_user_func_array($this->keyGenerator, array($request));
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	/**
-	 * Returns an string which gets used by the cache as key. You can provide a
-	 * custom key generator function in the constructor to override this 
-	 * behaviour
-	 *
-	 * @param \PSX\Http\RequestInterface $request
-	 * @return string
-	 */
-	protected function getKeyDefaultImpl(RequestInterface $request)
-	{
-		$url      = $request->getUri();
-		$query    = $url->getQuery();
-		$fragment = $url->getFragment();
+    /**
+     * Returns an string which gets used by the cache as key. You can provide a
+     * custom key generator function in the constructor to override this
+     * behaviour
+     *
+     * @param \PSX\Http\RequestInterface $request
+     * @return string
+     */
+    protected function getKeyDefaultImpl(RequestInterface $request)
+    {
+        $url      = $request->getUri();
+        $query    = $url->getQuery();
+        $fragment = $url->getFragment();
 
-		if(empty($query) && empty($fragment))
-		{
-			// we cache the request only if we have no query or fragment values
-			return md5($url->getPath());
-		}
+        if (empty($query) && empty($fragment)) {
+            // we cache the request only if we have no query or fragment values
+            return md5($url->getPath());
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	/**
-	 * Returns an array containing all headers which gets saved in the cache
-	 *
+    /**
+     * Returns an array containing all headers which gets saved in the cache
+     *
      * @param \PSX\Http\ResponseInterface $response
-	 * @return array
-	 */
-	protected function getCacheHeaders(ResponseInterface $response)
-	{
-		$headers = array(
-			'Last-Modified' => date(DateTime::HTTP),
-		);
+     * @return array
+     */
+    protected function getCacheHeaders(ResponseInterface $response)
+    {
+        $headers = array(
+            'Last-Modified' => date(DateTime::HTTP),
+        );
 
-		if($response->hasHeader('Content-Type'))
-		{
-			$headers['Content-Type'] = $response->getHeader('Content-Type');
-		}
+        if ($response->hasHeader('Content-Type')) {
+            $headers['Content-Type'] = $response->getHeader('Content-Type');
+        }
 
-		return $headers;
-	}
+        return $headers;
+    }
 }

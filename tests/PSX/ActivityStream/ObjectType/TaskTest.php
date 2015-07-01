@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,31 +33,31 @@ use PSX\DateTime;
  */
 class TaskTest extends SerializeTestAbstract
 {
-	public function testTask()
-	{
-		$actor = new Object();
-		$actor->setObjectType('person');
-		$actor->setDisplayName('James');
+    public function testTask()
+    {
+        $actor = new Object();
+        $actor->setObjectType('person');
+        $actor->setDisplayName('James');
 
-		$object = new Object();
-		$object->setObjectType('file');
-		$object->setDisplayName('A specification');
-		$object->setUrl('http://example.org/spec.html');
+        $object = new Object();
+        $object->setObjectType('file');
+        $object->setDisplayName('A specification');
+        $object->setUrl('http://example.org/spec.html');
 
-		$subTask = new Task();
-		$subTask->setDisplayName('Foo task');
+        $subTask = new Task();
+        $subTask->setDisplayName('Foo task');
 
-		$task = new Task();
-		$task->setDisplayName('James needs to read the spec');
-		$task->setBy(new DateTime('2012-12-12T12:12:12Z'));
-		$task->setVerb('read');
-		$task->setActor($actor);
-		$task->setObject($object);
-		$task->setRequired(true);
-		$task->setPrerequisites(array($subTask));
-		$task->setSupersedes(array($subTask));
+        $task = new Task();
+        $task->setDisplayName('James needs to read the spec');
+        $task->setBy(new DateTime('2012-12-12T12:12:12Z'));
+        $task->setVerb('read');
+        $task->setActor($actor);
+        $task->setObject($object);
+        $task->setRequired(true);
+        $task->setPrerequisites(array($subTask));
+        $task->setSupersedes(array($subTask));
 
-		$content = <<<JSON
+        $content = <<<JSON
 {
   "actor": {
     "objectType": "person",
@@ -84,14 +84,14 @@ class TaskTest extends SerializeTestAbstract
 }
 JSON;
 
-		$this->assertRecordEqualsContent($task, $content);
+        $this->assertRecordEqualsContent($task, $content);
 
-		$this->assertEquals($actor, $task->getActor());
-		$this->assertEquals(new DateTime('2012-12-12T12:12:12Z'), $task->getBy());
-		$this->assertEquals($object, $task->getObject());
-		$this->assertEquals(array($subTask), $task->getPrerequisites());
-		$this->assertEquals(true, $task->getRequired());
-		$this->assertEquals(array($subTask), $task->getSupersedes());
-		$this->assertEquals('read', $task->getVerb());
-	}
+        $this->assertEquals($actor, $task->getActor());
+        $this->assertEquals(new DateTime('2012-12-12T12:12:12Z'), $task->getBy());
+        $this->assertEquals($object, $task->getObject());
+        $this->assertEquals(array($subTask), $task->getPrerequisites());
+        $this->assertEquals(true, $task->getRequired());
+        $this->assertEquals(array($subTask), $task->getSupersedes());
+        $this->assertEquals('read', $task->getVerb());
+    }
 }

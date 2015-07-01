@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,7 +31,7 @@ use PSX\TemplateInterface;
 
 /**
  * Abstract class to facilitate an template engine to produce the output. If no
- * template file was found we look for an generator which can produce this 
+ * template file was found we look for an generator which can produce this
  * content type
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
@@ -40,133 +40,116 @@ use PSX\TemplateInterface;
  */
 abstract class TemplateAbstract implements WriterInterface
 {
-	protected $template;
-	protected $reverseRouter;
-	protected $generatorFactory;
-	protected $className;
+    protected $template;
+    protected $reverseRouter;
+    protected $generatorFactory;
+    protected $className;
 
-	public function __construct(TemplateInterface $template, ReverseRouter $reverseRouter, GeneratorFactoryInterface $generatorFactory = null)
-	{
-		$this->template         = $template;
-		$this->reverseRouter    = $reverseRouter;
-		$this->generatorFactory = $generatorFactory ?: new GeneratorFactory();
-		$this->baseDir          = PSX_PATH_LIBRARY;
-	}
+    public function __construct(TemplateInterface $template, ReverseRouter $reverseRouter, GeneratorFactoryInterface $generatorFactory = null)
+    {
+        $this->template         = $template;
+        $this->reverseRouter    = $reverseRouter;
+        $this->generatorFactory = $generatorFactory ?: new GeneratorFactory();
+        $this->baseDir          = PSX_PATH_LIBRARY;
+    }
 
-	public function setBaseDir($baseDir)
-	{
-		$this->baseDir = $baseDir;
-	}
+    public function setBaseDir($baseDir)
+    {
+        $this->baseDir = $baseDir;
+    }
 
-	public function getBaseDir()
-	{
-		return $this->baseDir;
-	}
+    public function getBaseDir()
+    {
+        return $this->baseDir;
+    }
 
-	public function setControllerClass($className)
-	{
-		$this->className = $className;
-	}
+    public function setControllerClass($className)
+    {
+        $this->className = $className;
+    }
 
-	public function getControllerClass()
-	{
-		return $this->className;
-	}
+    public function getControllerClass()
+    {
+        return $this->className;
+    }
 
-	public function write(RecordInterface $record)
-	{
-		// set default template if no template is set
-		$class = str_replace('\\', '/', $this->className);
-		$path  = $this->baseDir . '/' . strstr($class, '/Application/', true) . '/Resource';
+    public function write(RecordInterface $record)
+    {
+        // set default template if no template is set
+        $class = str_replace('\\', '/', $this->className);
+        $path  = $this->baseDir . '/' . strstr($class, '/Application/', true) . '/Resource';
 
-		if(!$this->template->hasFile())
-		{
-			$ext  = $this->getFileExtension();
-			$file = substr(strstr($class, 'Application'), 12);
-			$file = $this->underscore($file) . '.' . $ext;
+        if (!$this->template->hasFile()) {
+            $ext  = $this->getFileExtension();
+            $file = substr(strstr($class, 'Application'), 12);
+            $file = $this->underscore($file) . '.' . $ext;
 
-			$this->template->setDir($path);
-			$this->template->set($file);
-		}
-		else
-		{
-			// if we have an absolute file we must check whether the file 
-			// extension is the same as the given writer needs. If not we set
-			// the right extension
-			if($this->template->isAbsoluteFile())
-			{
-				$ext  = $this->getFileExtension();
-				$file = $this->template->get();
-				$pos  = strrpos($file, '.');
+            $this->template->setDir($path);
+            $this->template->set($file);
+        } else {
+            // if we have an absolute file we must check whether the file
+            // extension is the same as the given writer needs. If not we set
+            // the right extension
+            if ($this->template->isAbsoluteFile()) {
+                $ext  = $this->getFileExtension();
+                $file = $this->template->get();
+                $pos  = strrpos($file, '.');
 
-				if($pos !== false)
-				{
-					if(substr($file, $pos + 1) != $ext)
-					{
-						$this->template->set(substr($file, 0, $pos) . '.' . $ext);
-					}
-				}
-				else
-				{
-					$this->template->set($file . '.' . $ext);
-				}
+                if ($pos !== false) {
+                    if (substr($file, $pos + 1) != $ext) {
+                        $this->template->set(substr($file, 0, $pos) . '.' . $ext);
+                    }
+                } else {
+                    $this->template->set($file . '.' . $ext);
+                }
 
-				$this->template->setDir(null);
-			}
-			else
-			{
-				$this->template->setDir($path);
-			}
-		}
+                $this->template->setDir(null);
+            } else {
+                $this->template->setDir($path);
+            }
+        }
 
-		if(!$this->template->isFileAvailable())
-		{
-			$generator = $this->generatorFactory->getByContentType($this->getContentType());
+        if (!$this->template->isFileAvailable()) {
+            $generator = $this->generatorFactory->getByContentType($this->getContentType());
 
-			if($generator instanceof GeneratorInterface)
-			{
-				return $generator->generate($record);
-			}
-			else
-			{
-				throw new StatusCode\UnsupportedMediaTypeException('Content is not available in the requested media type');
-			}
-		}
-		else
-		{
-			// assign default values
-			$self   = isset($_SERVER['QUERY_STRING']) && !empty($_SERVER['QUERY_STRING']) ? $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING'] : $_SERVER['PHP_SELF'];
-			$render = round(microtime(true) - $GLOBALS['psx_benchmark'], 6);
+            if ($generator instanceof GeneratorInterface) {
+                return $generator->generate($record);
+            } else {
+                throw new StatusCode\UnsupportedMediaTypeException('Content is not available in the requested media type');
+            }
+        } else {
+            // assign default values
+            $self   = isset($_SERVER['QUERY_STRING']) && !empty($_SERVER['QUERY_STRING']) ? $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING'] : $_SERVER['PHP_SELF'];
+            $render = round(microtime(true) - $GLOBALS['psx_benchmark'], 6);
 
-			$this->template->assign('self', htmlspecialchars($self));
-			$this->template->assign('url', $this->reverseRouter->getDispatchUrl());
-			$this->template->assign('base', $this->reverseRouter->getBasePath());
-			$this->template->assign('render', $render);
-			$this->template->assign('location', $path);
-			$this->template->assign('router', $this->reverseRouter);
+            $this->template->assign('self', htmlspecialchars($self));
+            $this->template->assign('url', $this->reverseRouter->getDispatchUrl());
+            $this->template->assign('base', $this->reverseRouter->getBasePath());
+            $this->template->assign('render', $render);
+            $this->template->assign('location', $path);
+            $this->template->assign('router', $this->reverseRouter);
 
-			// assign data
-			$fields = $record->getRecordInfo()->getFields();
+            // assign data
+            $fields = $record->getRecordInfo()->getFields();
 
-			foreach($fields as $key => $value)
-			{
-				$this->template->assign($key, $value);
-			}
+            foreach ($fields as $key => $value) {
+                $this->template->assign($key, $value);
+            }
 
-			return $this->template->transform();
-		}
-	}
+            return $this->template->transform();
+        }
+    }
 
-	/**
-	 * Returns the file extension which is used by the template file. The file
-	 * extension must not include a leading dot
-	 *
-	 * @return string
-	 */
-	abstract public function getFileExtension();
+    /**
+     * Returns the file extension which is used by the template file. The file
+     * extension must not include a leading dot
+     *
+     * @return string
+     */
+    abstract public function getFileExtension();
 
-	protected function underscore($word)
-	{
-		return strtolower(preg_replace('/(?<=\\w)([A-Z])/', '_\\1', $word));
-	}
+    protected function underscore($word)
+    {
+        return strtolower(preg_replace('/(?<=\\w)([A-Z])/', '_\\1', $word));
+    }
 }

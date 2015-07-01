@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,12 +32,12 @@ use PSX\Http\MediaType;
  */
 class JsonTest extends WriterTestCase
 {
-	public function testWrite()
-	{
-		$writer = new Json();
-		$actual = $writer->write($this->getRecord());
+    public function testWrite()
+    {
+        $writer = new Json();
+        $actual = $writer->write($this->getRecord());
 
-		$expect = <<<TEXT
+        $expect = <<<TEXT
 {
 	"id":1,
 	"author":"foo",
@@ -47,15 +47,15 @@ class JsonTest extends WriterTestCase
 }
 TEXT;
 
-		$this->assertJsonStringEqualsJsonString($expect, $actual);
-	}
+        $this->assertJsonStringEqualsJsonString($expect, $actual);
+    }
 
-	public function testWriteResultSet()
-	{
-		$writer = new Json();
-		$actual = $writer->write($this->getResultSet());
+    public function testWriteResultSet()
+    {
+        $writer = new Json();
+        $actual = $writer->write($this->getResultSet());
 
-		$expect = <<<TEXT
+        $expect = <<<TEXT
 {
 	"totalResults":2,
 	"startIndex":0,
@@ -76,15 +76,15 @@ TEXT;
 }
 TEXT;
 
-		$this->assertJsonStringEqualsJsonString($expect, $actual);
-	}
+        $this->assertJsonStringEqualsJsonString($expect, $actual);
+    }
 
-	public function testWriteComplex()
-	{
-		$writer = new Json();
-		$actual = $writer->write($this->getComplexRecord());
+    public function testWriteComplex()
+    {
+        $writer = new Json();
+        $actual = $writer->write($this->getComplexRecord());
 
-		$expect = <<<TEXT
+        $expect = <<<TEXT
 {
 	"published":"2011-02-10T15:04:55Z",
 	"actor":{
@@ -107,33 +107,33 @@ TEXT;
 }
 TEXT;
 
-		$this->assertJsonStringEqualsJsonString($expect, $actual);
-	}
+        $this->assertJsonStringEqualsJsonString($expect, $actual);
+    }
 
-	public function testWriteEmpty()
-	{
-		$writer = new Json();
-		$actual = $writer->write($this->getEmptyRecord());
+    public function testWriteEmpty()
+    {
+        $writer = new Json();
+        $actual = $writer->write($this->getEmptyRecord());
 
-		$expect = <<<TEXT
+        $expect = <<<TEXT
 {}
 TEXT;
 
-		$this->assertJsonStringEqualsJsonString($expect, $actual);
-	}
+        $this->assertJsonStringEqualsJsonString($expect, $actual);
+    }
 
-	public function testIsContentTypeSupported()
-	{
-		$writer = new Json();
+    public function testIsContentTypeSupported()
+    {
+        $writer = new Json();
 
-		$this->assertTrue($writer->isContentTypeSupported(new MediaType('application/json')));
-		$this->assertFalse($writer->isContentTypeSupported(new MediaType('text/html')));
-	}
+        $this->assertTrue($writer->isContentTypeSupported(new MediaType('application/json')));
+        $this->assertFalse($writer->isContentTypeSupported(new MediaType('text/html')));
+    }
 
-	public function testGetContentType()
-	{
-		$writer = new Json();
+    public function testGetContentType()
+    {
+        $writer = new Json();
 
-		$this->assertEquals('application/json', $writer->getContentType());
-	}
+        $this->assertEquals('application/json', $writer->getContentType());
+    }
 }

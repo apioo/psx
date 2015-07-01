@@ -1,4 +1,3 @@
 <?php
 
 $config = 'foo';
-

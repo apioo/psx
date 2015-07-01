@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -34,37 +34,37 @@ use PSX\Data\Writer;
  */
 class SerializeTest extends SerializeTestAbstract
 {
-	public function testSerialize()
-	{
-		$entry = new Entry();
-		$entry->addAuthor(new Person('foobar', 'http://foo.com', 'foo@bar.com'));
-		$entry->addCategory(new Category('foobar', 'http://foo.com', 'Foobar'));
-		$entry->setContent(new Text('foobar'));
-		$entry->addContributor(new Person('foobar', 'http://foo.com', 'foo@bar.com'));
-		$entry->setId('http://localhost.com#1');
-		$entry->setRights('foo');
-		$entry->setTitle('Star City');
-		$entry->setPublished(new DateTime('Tue, 10 Jun 2003 04:00:00 GMT'));
-		$entry->setUpdated(new DateTime('Tue, 10 Jun 2003 04:00:00 GMT'));
-		$entry->addLink(new Link('http://localhost.com', 'me', 'application/xml', 'en', 'Foobar', 1337));
-		$entry->setSummary(new Text('lreom ipsum'));
+    public function testSerialize()
+    {
+        $entry = new Entry();
+        $entry->addAuthor(new Person('foobar', 'http://foo.com', 'foo@bar.com'));
+        $entry->addCategory(new Category('foobar', 'http://foo.com', 'Foobar'));
+        $entry->setContent(new Text('foobar'));
+        $entry->addContributor(new Person('foobar', 'http://foo.com', 'foo@bar.com'));
+        $entry->setId('http://localhost.com#1');
+        $entry->setRights('foo');
+        $entry->setTitle('Star City');
+        $entry->setPublished(new DateTime('Tue, 10 Jun 2003 04:00:00 GMT'));
+        $entry->setUpdated(new DateTime('Tue, 10 Jun 2003 04:00:00 GMT'));
+        $entry->addLink(new Link('http://localhost.com', 'me', 'application/xml', 'en', 'Foobar', 1337));
+        $entry->setSummary(new Text('lreom ipsum'));
 
-		$atom = new Atom();
-		$atom->addAuthor(new Person('foobar', 'http://foo.com', 'foo@bar.com'));
-		$atom->addCategory(new Category('foobar', 'http://foo.com', 'Foobar'));
-		$atom->addContributor(new Person('foobar', 'http://foo.com', 'foo@bar.com'));
-		$atom->setGenerator(new Generator('foobar', 'http://foo.com', '1.0'));
-		$atom->setIcon('http://localhost.com/icon.png');
-		$atom->setLogo('http://localhost.com/logo.png');
-		$atom->setId('http://localhost.com#1');
-		$atom->setRights('foo');
-		$atom->setTitle('Foo has bar');
-		$atom->setUpdated(new DateTime('Tue, 10 Jun 2003 04:00:00 GMT'));
-		$atom->addLink(new Link('http://localhost.com', 'me', 'application/xml', 'en', 'Foobar', 1337));
-		$atom->setSubTitle(new Text('And some more content'));
-		$atom->add($entry);
+        $atom = new Atom();
+        $atom->addAuthor(new Person('foobar', 'http://foo.com', 'foo@bar.com'));
+        $atom->addCategory(new Category('foobar', 'http://foo.com', 'Foobar'));
+        $atom->addContributor(new Person('foobar', 'http://foo.com', 'foo@bar.com'));
+        $atom->setGenerator(new Generator('foobar', 'http://foo.com', '1.0'));
+        $atom->setIcon('http://localhost.com/icon.png');
+        $atom->setLogo('http://localhost.com/logo.png');
+        $atom->setId('http://localhost.com#1');
+        $atom->setRights('foo');
+        $atom->setTitle('Foo has bar');
+        $atom->setUpdated(new DateTime('Tue, 10 Jun 2003 04:00:00 GMT'));
+        $atom->addLink(new Link('http://localhost.com', 'me', 'application/xml', 'en', 'Foobar', 1337));
+        $atom->setSubTitle(new Text('And some more content'));
+        $atom->add($entry);
 
-		$content = <<<JSON
+        $content = <<<JSON
 {
   "author": [{
     "name": "foobar",
@@ -139,9 +139,9 @@ class SerializeTest extends SerializeTestAbstract
     "title": "Star City",
     "updated": "2003-06-10T04:00:00Z"
   }]
-} 
+}
 JSON;
 
-		$this->assertRecordEqualsContent($atom, $content);
-	}
+        $this->assertRecordEqualsContent($atom, $content);
+    }
 }

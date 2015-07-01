@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,102 +29,99 @@ namespace PSX;
  */
 class CalendarTest extends \PHPUnit_Framework_TestCase
 {
-	public function testGetter()
-	{
-		$calendar = new Calendar(new \DateTime('2014-01-01 12:14:00'), new \DateTimeZone('UTC'));
+    public function testGetter()
+    {
+        $calendar = new Calendar(new \DateTime('2014-01-01 12:14:00'), new \DateTimeZone('UTC'));
 
-		$this->assertEquals('2014-01-01 00:00:00', $calendar->getDate()->format('Y-m-d H:i:s'));
+        $this->assertEquals('2014-01-01 00:00:00', $calendar->getDate()->format('Y-m-d H:i:s'));
 
-		$calendar->setDate(new \DateTime('2014-01-04 12:14:00'));
+        $calendar->setDate(new \DateTime('2014-01-04 12:14:00'));
 
-		$this->assertEquals('2014-01-04 00:00:00', $calendar->getDate()->format('Y-m-d H:i:s'));
+        $this->assertEquals('2014-01-04 00:00:00', $calendar->getDate()->format('Y-m-d H:i:s'));
 
-		$tz = new \DateTimeZone('Europe/Berlin');
+        $tz = new \DateTimeZone('Europe/Berlin');
 
-		$calendar->setTimezone($tz);
+        $calendar->setTimezone($tz);
 
-		$this->assertEquals($tz, $calendar->getTimezone());
-		$this->assertEquals('01', $calendar->getWeekNumber());
-		$this->assertEquals(4, $calendar->getDay());
-		$this->assertEquals(1, $calendar->getMonth());
-		$this->assertEquals(2014, $calendar->getYear());
-		$this->assertEquals('January', $calendar->getMonthName());
-	}
+        $this->assertEquals($tz, $calendar->getTimezone());
+        $this->assertEquals('01', $calendar->getWeekNumber());
+        $this->assertEquals(4, $calendar->getDay());
+        $this->assertEquals(1, $calendar->getMonth());
+        $this->assertEquals(2014, $calendar->getYear());
+        $this->assertEquals('January', $calendar->getMonthName());
+    }
 
-	public function testGetDays()
-	{
-		if(!function_exists('cal_days_in_month'))
-		{
-			$this->markTestSkipped('cal_days_in_month function not available');
-		}
+    public function testGetDays()
+    {
+        if (!function_exists('cal_days_in_month')) {
+            $this->markTestSkipped('cal_days_in_month function not available');
+        }
 
-		$calendar = new Calendar(new \DateTime('2014-01-01 12:14:00'), new \DateTimeZone('UTC'));
+        $calendar = new Calendar(new \DateTime('2014-01-01 12:14:00'), new \DateTimeZone('UTC'));
 
-		$this->assertEquals(31, $calendar->getDays());
-		$this->assertEquals(31, count($calendar));
-	}
+        $this->assertEquals(31, $calendar->getDays());
+        $this->assertEquals(31, count($calendar));
+    }
 
-	public function testGetEasterDate()
-	{
-		if(!function_exists('easter_days'))
-		{
-			$this->markTestSkipped('easter_days function not available');
-		}
+    public function testGetEasterDate()
+    {
+        if (!function_exists('easter_days')) {
+            $this->markTestSkipped('easter_days function not available');
+        }
 
-		$calendar = new Calendar(new \DateTime('2014-01-04 12:14:00'));
+        $calendar = new Calendar(new \DateTime('2014-01-04 12:14:00'));
 
-		$this->assertEquals('2014-04-20', $calendar->getEasterDate()->format('Y-m-d'));
-	}
+        $this->assertEquals('2014-04-20', $calendar->getEasterDate()->format('Y-m-d'));
+    }
 
-	public function testDateNavigation()
-	{
-		$calendar = new Calendar(new \DateTime('2014-01-04 12:14:00'));
+    public function testDateNavigation()
+    {
+        $calendar = new Calendar(new \DateTime('2014-01-04 12:14:00'));
 
-		$this->assertEquals('2014-01-04', $calendar->getDate()->format('Y-m-d'));
+        $this->assertEquals('2014-01-04', $calendar->getDate()->format('Y-m-d'));
 
-		$calendar->nextDay();
+        $calendar->nextDay();
 
-		$this->assertEquals('2014-01-05', $calendar->getDate()->format('Y-m-d'));
+        $this->assertEquals('2014-01-05', $calendar->getDate()->format('Y-m-d'));
 
-		$calendar->prevDay();
+        $calendar->prevDay();
 
-		$this->assertEquals('2014-01-04', $calendar->getDate()->format('Y-m-d'));
+        $this->assertEquals('2014-01-04', $calendar->getDate()->format('Y-m-d'));
 
-		$calendar->nextMonth();
+        $calendar->nextMonth();
 
-		$this->assertEquals('2014-02-04', $calendar->getDate()->format('Y-m-d'));
+        $this->assertEquals('2014-02-04', $calendar->getDate()->format('Y-m-d'));
 
-		$calendar->prevMonth();
+        $calendar->prevMonth();
 
-		$this->assertEquals('2014-01-04', $calendar->getDate()->format('Y-m-d'));
+        $this->assertEquals('2014-01-04', $calendar->getDate()->format('Y-m-d'));
 
-		$calendar->nextYear();
+        $calendar->nextYear();
 
-		$this->assertEquals('2015-01-04', $calendar->getDate()->format('Y-m-d'));
+        $this->assertEquals('2015-01-04', $calendar->getDate()->format('Y-m-d'));
 
-		$calendar->prevYear();
+        $calendar->prevYear();
 
-		$this->assertEquals('2014-01-04', $calendar->getDate()->format('Y-m-d'));
+        $this->assertEquals('2014-01-04', $calendar->getDate()->format('Y-m-d'));
 
-		$calendar->add(new \DateInterval('P1M2D'));
+        $calendar->add(new \DateInterval('P1M2D'));
 
-		$this->assertEquals('2014-02-06', $calendar->getDate()->format('Y-m-d'));
+        $this->assertEquals('2014-02-06', $calendar->getDate()->format('Y-m-d'));
 
-		$calendar->sub(new \DateInterval('P1M2D'));
+        $calendar->sub(new \DateInterval('P1M2D'));
 
-		$this->assertEquals('2014-01-04', $calendar->getDate()->format('Y-m-d'));
-	}
+        $this->assertEquals('2014-01-04', $calendar->getDate()->format('Y-m-d'));
+    }
 
-	public function testDateIterator()
-	{
-		$calendar = new Calendar(new \DateTime('2014-01-04 12:14:00'));
-		$i = 0;
+    public function testDateIterator()
+    {
+        $calendar = new Calendar(new \DateTime('2014-01-04 12:14:00'));
+        $i = 0;
 
-		foreach($calendar as $key => $day)
-		{
-			$i++;
-			$this->assertEquals($i, $day->format('j'));
-			$this->assertEquals($i, $key);
-		}
-	}
+        foreach ($calendar as $key => $day) {
+            $i++;
+            $this->assertEquals($i, $day->format('j'));
+            $this->assertEquals($i, $key);
+        }
+    }
 }

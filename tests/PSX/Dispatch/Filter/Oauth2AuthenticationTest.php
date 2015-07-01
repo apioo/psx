@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -37,162 +37,156 @@ use PSX\Url;
  */
 class Oauth2AuthenticationTest extends \PHPUnit_Framework_TestCase
 {
-	const ACCESS_TOKEN = '2YotnFZFEjr1zCsicMWpAA';
+    const ACCESS_TOKEN = '2YotnFZFEjr1zCsicMWpAA';
 
-	public function testSuccessful()
-	{
-		$handle = new Oauth2Authentication(function($accessToken){
+    public function testSuccessful()
+    {
+        $handle = new Oauth2Authentication(function ($accessToken) {
 
-			return $accessToken == self::ACCESS_TOKEN;
+            return $accessToken == self::ACCESS_TOKEN;
 
-		});
+        });
 
-		$handle->onSuccess(function(){
-			// success
-		});
+        $handle->onSuccess(function () {
+            // success
+        });
 
-		$oauth = new Oauth2();
-		$value = $oauth->getAuthorizationHeader($this->getAccessToken());
+        $oauth = new Oauth2();
+        $value = $oauth->getAuthorizationHeader($this->getAccessToken());
 
-		$request  = new Request(new Url('http://localhost/index.php'), 'GET', array('Authorization' => $value));
-		$response = new Response();
+        $request  = new Request(new Url('http://localhost/index.php'), 'GET', array('Authorization' => $value));
+        $response = new Response();
 
-		$filterChain = $this->getMockFilterChain();
-		$filterChain->expects($this->once())
-			->method('handle')
-			->with($this->equalTo($request), $this->equalTo($response));
+        $filterChain = $this->getMockFilterChain();
+        $filterChain->expects($this->once())
+            ->method('handle')
+            ->with($this->equalTo($request), $this->equalTo($response));
 
-		$handle->handle($request, $response, $filterChain);
-	}
+        $handle->handle($request, $response, $filterChain);
+    }
 
-	/**
-	 * @expectedException \PSX\Http\Exception\BadRequestException
-	 */
-	public function testFailure()
-	{
-		$handle = new Oauth2Authentication(function($accessToken){
+    /**
+     * @expectedException \PSX\Http\Exception\BadRequestException
+     */
+    public function testFailure()
+    {
+        $handle = new Oauth2Authentication(function ($accessToken) {
 
-			return false;
+            return false;
 
-		});
+        });
 
-		$oauth = new Oauth2();
-		$value = $oauth->getAuthorizationHeader($this->getAccessToken());
+        $oauth = new Oauth2();
+        $value = $oauth->getAuthorizationHeader($this->getAccessToken());
 
-		$request  = new Request(new Url('http://localhost/index.php'), 'GET', array('Authorization' => $value));
-		$response = new Response();
+        $request  = new Request(new Url('http://localhost/index.php'), 'GET', array('Authorization' => $value));
+        $response = new Response();
 
-		$filterChain = $this->getMockFilterChain();
-		$filterChain->expects($this->never())
-			->method('handle');
+        $filterChain = $this->getMockFilterChain();
+        $filterChain->expects($this->never())
+            ->method('handle');
 
-		$handle->handle($request, $response, $filterChain);
-	}
+        $handle->handle($request, $response, $filterChain);
+    }
 
-	/**
-	 * @expectedException \PSX\Http\Exception\UnauthorizedException
-	 */
-	public function testFailureEmptyCredentials()
-	{
-		$handle = new Oauth2Authentication(function($accessToken){
-			
-			return $accessToken == self::ACCESS_TOKEN;
+    /**
+     * @expectedException \PSX\Http\Exception\UnauthorizedException
+     */
+    public function testFailureEmptyCredentials()
+    {
+        $handle = new Oauth2Authentication(function ($accessToken) {
+            
+            return $accessToken == self::ACCESS_TOKEN;
 
-		});
+        });
 
-		$oauth = new Oauth2();
-		$value = '';
+        $oauth = new Oauth2();
+        $value = '';
 
-		$request  = new Request(new Url('http://localhost/index.php'), 'GET', array('Authorization' => $value));
-		$response = new Response();
+        $request  = new Request(new Url('http://localhost/index.php'), 'GET', array('Authorization' => $value));
+        $response = new Response();
 
-		$filterChain = $this->getMockFilterChain();
-		$filterChain->expects($this->never())
-			->method('handle');
+        $filterChain = $this->getMockFilterChain();
+        $filterChain->expects($this->never())
+            ->method('handle');
 
-		$handle->handle($request, $response, $filterChain);
-	}
+        $handle->handle($request, $response, $filterChain);
+    }
 
-	public function testMissing()
-	{
-		$handle = new Oauth2Authentication(function($accessToken){
-			
-			return $accessToken == self::ACCESS_TOKEN;
+    public function testMissing()
+    {
+        $handle = new Oauth2Authentication(function ($accessToken) {
+            
+            return $accessToken == self::ACCESS_TOKEN;
 
-		});
+        });
 
-		$oauth = new Oauth2();
-		$value = $oauth->getAuthorizationHeader($this->getAccessToken());
+        $oauth = new Oauth2();
+        $value = $oauth->getAuthorizationHeader($this->getAccessToken());
 
-		$request  = new Request(new Url('http://localhost/index.php'), 'GET');
-		$response = new Response();
+        $request  = new Request(new Url('http://localhost/index.php'), 'GET');
+        $response = new Response();
 
-		$filterChain = $this->getMockFilterChain();
-		$filterChain->expects($this->never())
-			->method('handle');
+        $filterChain = $this->getMockFilterChain();
+        $filterChain->expects($this->never())
+            ->method('handle');
 
-		try
-		{
-			$handle->handle($request, $response, $filterChain);
+        try {
+            $handle->handle($request, $response, $filterChain);
 
-			$this->fail('Must throw an Exception');
-		}
-		catch(UnauthorizedException $e)
-		{
-			$this->assertEquals(401, $e->getStatusCode());
-			$this->assertEquals('Bearer', $e->getType());
-			$this->assertEquals(array('realm' => 'psx'), $e->getParameters());
-		}
-	}
+            $this->fail('Must throw an Exception');
+        } catch (UnauthorizedException $e) {
+            $this->assertEquals(401, $e->getStatusCode());
+            $this->assertEquals('Bearer', $e->getType());
+            $this->assertEquals(array('realm' => 'psx'), $e->getParameters());
+        }
+    }
 
-	public function testMissingWrongType()
-	{
-		$handle = new Oauth2Authentication(function($accessToken){
-			
-			return $accessToken == self::ACCESS_TOKEN;
+    public function testMissingWrongType()
+    {
+        $handle = new Oauth2Authentication(function ($accessToken) {
+            
+            return $accessToken == self::ACCESS_TOKEN;
 
-		});
+        });
 
-		$oauth = new Oauth2();
-		$value = $oauth->getAuthorizationHeader($this->getAccessToken());
+        $oauth = new Oauth2();
+        $value = $oauth->getAuthorizationHeader($this->getAccessToken());
 
-		$request  = new Request(new Url('http://localhost/index.php'), 'GET', array('Authorization' => 'Foo'));
-		$response = new Response();
+        $request  = new Request(new Url('http://localhost/index.php'), 'GET', array('Authorization' => 'Foo'));
+        $response = new Response();
 
-		$filterChain = $this->getMockFilterChain();
-		$filterChain->expects($this->never())
-			->method('handle');
+        $filterChain = $this->getMockFilterChain();
+        $filterChain->expects($this->never())
+            ->method('handle');
 
-		try
-		{
-			$handle->handle($request, $response, $filterChain);
+        try {
+            $handle->handle($request, $response, $filterChain);
 
-			$this->fail('Must throw an Exception');
-		}
-		catch(UnauthorizedException $e)
-		{
-			$this->assertEquals(401, $e->getStatusCode());
-			$this->assertEquals('Bearer', $e->getType());
-			$this->assertEquals(array('realm' => 'psx'), $e->getParameters());
-		}
-	}
+            $this->fail('Must throw an Exception');
+        } catch (UnauthorizedException $e) {
+            $this->assertEquals(401, $e->getStatusCode());
+            $this->assertEquals('Bearer', $e->getType());
+            $this->assertEquals(array('realm' => 'psx'), $e->getParameters());
+        }
+    }
 
-	protected function getAccessToken()
-	{
-		$accessToken = new AccessToken();
-		$accessToken->setAccessToken('2YotnFZFEjr1zCsicMWpAA');
-		$accessToken->setTokenType('bearer');
-		$accessToken->setExpiresIn(3600);
-		$accessToken->setRefreshToken('tGzv3JOkF0XG5Qx2TlKWIA');
+    protected function getAccessToken()
+    {
+        $accessToken = new AccessToken();
+        $accessToken->setAccessToken('2YotnFZFEjr1zCsicMWpAA');
+        $accessToken->setTokenType('bearer');
+        $accessToken->setExpiresIn(3600);
+        $accessToken->setRefreshToken('tGzv3JOkF0XG5Qx2TlKWIA');
 
-		return $accessToken;
-	}
+        return $accessToken;
+    }
 
-	protected function getMockFilterChain()
-	{
-		return $this->getMockBuilder('PSX\Dispatch\FilterChain')
-			->setConstructorArgs(array(array()))
-			->setMethods(array('handle'))
-			->getMock();
-	}
+    protected function getMockFilterChain()
+    {
+        return $this->getMockBuilder('PSX\Dispatch\FilterChain')
+            ->setConstructorArgs(array(array()))
+            ->setMethods(array('handle'))
+            ->getMock();
+    }
 }

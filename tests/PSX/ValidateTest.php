@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,174 +31,173 @@ use PSX\Filter;
  */
 class ValidateTest extends \PHPUnit_Framework_TestCase
 {
-	protected $successFilter;
-	protected $failureFilter;
-	protected $responseFilter;
-	protected $validate;
+    protected $successFilter;
+    protected $failureFilter;
+    protected $responseFilter;
+    protected $validate;
 
-	protected function setUp()
-	{
-		$this->successFilter = $this->getMockBuilder('PSX\FilterAbstract')
-			->getMock();
+    protected function setUp()
+    {
+        $this->successFilter = $this->getMockBuilder('PSX\FilterAbstract')
+            ->getMock();
 
-		$this->failureFilter = $this->getMockBuilder('PSX\FilterAbstract')
-			->getMock();
+        $this->failureFilter = $this->getMockBuilder('PSX\FilterAbstract')
+            ->getMock();
 
-		$this->responseFilter = $this->getMockBuilder('PSX\FilterAbstract')
-			->getMock();
+        $this->responseFilter = $this->getMockBuilder('PSX\FilterAbstract')
+            ->getMock();
 
-		$this->validate = new Validate();
-	}
+        $this->validate = new Validate();
+    }
 
-	protected function tearDown()
-	{
-	}
+    protected function tearDown()
+    {
+    }
 
-	public function testApply()
-	{
-		$this->successFilter->expects($this->once())
-			->method('apply')
-			->will($this->returnValue(true));
+    public function testApply()
+    {
+        $this->successFilter->expects($this->once())
+            ->method('apply')
+            ->will($this->returnValue(true));
 
-		$this->responseFilter->expects($this->once())
-			->method('apply')
-			->will($this->returnValue('bar'));
+        $this->responseFilter->expects($this->once())
+            ->method('apply')
+            ->will($this->returnValue('bar'));
 
-		$this->assertEquals('foo', $this->validate->apply('foo', Validate::TYPE_STRING));
-		$this->assertEquals('foo', $this->validate->apply('foo', Validate::TYPE_STRING, array()));
-		$this->assertEquals('foo', $this->validate->apply('foo', Validate::TYPE_STRING, array($this->successFilter)));
-		$this->assertEquals('bar', $this->validate->apply('foo', Validate::TYPE_STRING, array($this->responseFilter)));
-	}
+        $this->assertEquals('foo', $this->validate->apply('foo', Validate::TYPE_STRING));
+        $this->assertEquals('foo', $this->validate->apply('foo', Validate::TYPE_STRING, array()));
+        $this->assertEquals('foo', $this->validate->apply('foo', Validate::TYPE_STRING, array($this->successFilter)));
+        $this->assertEquals('bar', $this->validate->apply('foo', Validate::TYPE_STRING, array($this->responseFilter)));
+    }
 
-	/**
-	 * @expectedException \PSX\Validate\ValidationException
-	 */
-	public function testApplyFailure()
-	{
-		$this->failureFilter->expects($this->once())
-			->method('apply')
-			->will($this->returnValue(false));
+    /**
+     * @expectedException \PSX\Validate\ValidationException
+     */
+    public function testApplyFailure()
+    {
+        $this->failureFilter->expects($this->once())
+            ->method('apply')
+            ->will($this->returnValue(false));
 
-		$this->assertEquals(false, $this->validate->apply('foo', Validate::TYPE_STRING, array($this->failureFilter)));
-	}
+        $this->assertEquals(false, $this->validate->apply('foo', Validate::TYPE_STRING, array($this->failureFilter)));
+    }
 
-	public function testApplyType()
-	{
-		$this->assertEquals('foo', $this->validate->apply('foo', Validate::TYPE_STRING));
-		$this->assertInternalType(Validate::TYPE_STRING, $this->validate->apply('foo', Validate::TYPE_STRING));
+    public function testApplyType()
+    {
+        $this->assertEquals('foo', $this->validate->apply('foo', Validate::TYPE_STRING));
+        $this->assertInternalType(Validate::TYPE_STRING, $this->validate->apply('foo', Validate::TYPE_STRING));
 
-		$this->assertEquals(0, $this->validate->apply('foo', Validate::TYPE_INTEGER));
-		$this->assertInternalType(Validate::TYPE_INTEGER, $this->validate->apply('foo', Validate::TYPE_INTEGER));
+        $this->assertEquals(0, $this->validate->apply('foo', Validate::TYPE_INTEGER));
+        $this->assertInternalType(Validate::TYPE_INTEGER, $this->validate->apply('foo', Validate::TYPE_INTEGER));
 
-		$this->assertEquals(0.0, $this->validate->apply('foo', Validate::TYPE_FLOAT));
-		$this->assertInternalType(Validate::TYPE_FLOAT, $this->validate->apply('foo', Validate::TYPE_FLOAT));
+        $this->assertEquals(0.0, $this->validate->apply('foo', Validate::TYPE_FLOAT));
+        $this->assertInternalType(Validate::TYPE_FLOAT, $this->validate->apply('foo', Validate::TYPE_FLOAT));
 
-		$this->assertEquals(true, $this->validate->apply('foo', Validate::TYPE_BOOLEAN));
-		$this->assertInternalType(Validate::TYPE_BOOLEAN, $this->validate->apply('foo', Validate::TYPE_BOOLEAN));
+        $this->assertEquals(true, $this->validate->apply('foo', Validate::TYPE_BOOLEAN));
+        $this->assertInternalType(Validate::TYPE_BOOLEAN, $this->validate->apply('foo', Validate::TYPE_BOOLEAN));
 
-		$this->assertEquals(array('foo'), $this->validate->apply('foo', Validate::TYPE_ARRAY));
-		$this->assertInternalType(Validate::TYPE_ARRAY, $this->validate->apply('foo', Validate::TYPE_ARRAY));
-	}
+        $this->assertEquals(array('foo'), $this->validate->apply('foo', Validate::TYPE_ARRAY));
+        $this->assertInternalType(Validate::TYPE_ARRAY, $this->validate->apply('foo', Validate::TYPE_ARRAY));
+    }
 
-	public function testApplyTypeObject()
-	{
-		$object = new \stdClass();
+    public function testApplyTypeObject()
+    {
+        $object = new \stdClass();
 
-		$this->assertEquals($object, $this->validate->apply($object, Validate::TYPE_OBJECT));
-		$this->assertInstanceOf('stdClass', $this->validate->apply($object, Validate::TYPE_OBJECT));
-	}
+        $this->assertEquals($object, $this->validate->apply($object, Validate::TYPE_OBJECT));
+        $this->assertInstanceOf('stdClass', $this->validate->apply($object, Validate::TYPE_OBJECT));
+    }
 
-	/**
-	 * @expectedException \PSX\Validate\ValidationException
-	 */
-	public function testApplyTypeObjectNullRequired()
-	{
-		$this->assertEquals(null, $this->validate->apply(null, Validate::TYPE_OBJECT, array(), 'foo', true));
-	}
+    /**
+     * @expectedException \PSX\Validate\ValidationException
+     */
+    public function testApplyTypeObjectNullRequired()
+    {
+        $this->assertEquals(null, $this->validate->apply(null, Validate::TYPE_OBJECT, array(), 'foo', true));
+    }
 
-	public function testApplyTypeObjectNullOptional()
-	{
-		$this->assertEquals(null, $this->validate->apply(null, Validate::TYPE_OBJECT, array(), 'foo', false));
-	}
+    public function testApplyTypeObjectNullOptional()
+    {
+        $this->assertEquals(null, $this->validate->apply(null, Validate::TYPE_OBJECT, array(), 'foo', false));
+    }
 
-	/**
-	 * @expectedException \InvalidArgumentException
-	 */
-	public function testApplyTypeObjectInvalid()
-	{
-		$this->assertEquals('foo', $this->validate->apply('foo', Validate::TYPE_OBJECT));
-	}
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testApplyTypeObjectInvalid()
+    {
+        $this->assertEquals('foo', $this->validate->apply('foo', Validate::TYPE_OBJECT));
+    }
 
-	/**
-	 * @expectedException \PSX\Validate\ValidationException
-	 */
-	public function testApplyRequired()
-	{
-		$this->failureFilter->expects($this->once())
-			->method('apply')
-			->will($this->returnValue(false));
+    /**
+     * @expectedException \PSX\Validate\ValidationException
+     */
+    public function testApplyRequired()
+    {
+        $this->failureFilter->expects($this->once())
+            ->method('apply')
+            ->will($this->returnValue(false));
 
-		$this->assertEquals(false, $this->validate->apply('foo', Validate::TYPE_STRING, array($this->failureFilter), 'bar', true));
+        $this->assertEquals(false, $this->validate->apply('foo', Validate::TYPE_STRING, array($this->failureFilter), 'bar', true));
+    }
 
-	}
+    public function testApplyOptional()
+    {
+        $this->failureFilter->expects($this->once())
+            ->method('apply')
+            ->will($this->returnValue(false));
 
-	public function testApplyOptional()
-	{
-		$this->failureFilter->expects($this->once())
-			->method('apply')
-			->will($this->returnValue(false));
+        $this->assertEquals(null, $this->validate->apply('foo', Validate::TYPE_STRING, array($this->failureFilter), 'bar', false));
+    }
 
-		$this->assertEquals(null, $this->validate->apply('foo', Validate::TYPE_STRING, array($this->failureFilter), 'bar', false));
-	}
+    public function testApplyFilter()
+    {
+        $this->assertEquals('foo', $this->validate->apply('foo', Validate::TYPE_STRING, array(new Filter\Alnum())));
+    }
 
-	public function testApplyFilter()
-	{
-		$this->assertEquals('foo', $this->validate->apply('foo', Validate::TYPE_STRING, array(new Filter\Alnum())));
-	}
+    /**
+     * @expectedException \PSX\Validate\ValidationException
+     */
+    public function testApplyFilterInvalid()
+    {
+        $this->assertEquals('foo', $this->validate->apply('foo-', Validate::TYPE_STRING, array(new Filter\Alnum())));
+    }
 
-	/**
-	 * @expectedException \PSX\Validate\ValidationException
-	 */
-	public function testApplyFilterInvalid()
-	{
-		$this->assertEquals('foo', $this->validate->apply('foo-', Validate::TYPE_STRING, array(new Filter\Alnum())));
-	}
+    public function testApplyFilterCallable()
+    {
+        $this->assertEquals('foo', $this->validate->apply('foo', Validate::TYPE_STRING, array(function ($value) {
+            return ctype_alnum($value);
+        })));
+    }
 
-	public function testApplyFilterCallable()
-	{
-		$this->assertEquals('foo', $this->validate->apply('foo', Validate::TYPE_STRING, array(function($value){
-			return ctype_alnum($value);
-		})));
-	}
+    /**
+     * @expectedException \PSX\Validate\ValidationException
+     */
+    public function testApplyFilterCallableInvalid()
+    {
+        $this->assertEquals('foo', $this->validate->apply('foo', Validate::TYPE_STRING, array(function ($value) {
+            return false;
+        })));
+    }
 
-	/**
-	 * @expectedException \PSX\Validate\ValidationException
-	 */
-	public function testApplyFilterCallableInvalid()
-	{
-		$this->assertEquals('foo', $this->validate->apply('foo', Validate::TYPE_STRING, array(function($value){
-			return false;
-		})));
-	}
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testApplyInvalidFilterType()
+    {
+        $this->assertEquals('foo', $this->validate->apply('foo', Validate::TYPE_STRING, array('foo')));
+    }
 
-	/**
-	 * @expectedException \InvalidArgumentException
-	 */
-	public function testApplyInvalidFilterType()
-	{
-		$this->assertEquals('foo', $this->validate->apply('foo', Validate::TYPE_STRING, array('foo')));
-	}
+    public function testValidateTitleNotSet()
+    {
+        $result = $this->validate->validate(null);
 
-	public function testValidateTitleNotSet()
-	{
-		$result = $this->validate->validate(null);
+        $this->assertEquals(null, $result->getValue());
+        $this->assertEquals('The field "Unknown" is not set', $result->getFirstError());
 
-		$this->assertEquals(null, $result->getValue());
-		$this->assertEquals('The field "Unknown" is not set', $result->getFirstError());
+        $result = $this->validate->validate(null, Validate::TYPE_STRING, array(), 'foo');
 
-		$result = $this->validate->validate(null, Validate::TYPE_STRING, array(), 'foo');
-
-		$this->assertEquals(null, $result->getValue());
-		$this->assertEquals('The field "foo" is not set', $result->getFirstError());
-	}
+        $this->assertEquals(null, $result->getValue());
+        $this->assertEquals('The field "foo" is not set', $result->getFirstError());
+    }
 }

@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,16 +33,16 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 class RamlCommandTest extends ControllerTestCase
 {
-	public function testCommand()
-	{
-		$command = new RamlCommand(Environment::getService('config'), Environment::getService('resource_listing'));
+    public function testCommand()
+    {
+        $command = new RamlCommand(Environment::getService('config'), Environment::getService('resource_listing'));
 
-		$commandTester = new CommandTester($command);
-		$commandTester->execute(array(
-			'path' => '/api'
-		));
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(array(
+            'path' => '/api'
+        ));
 
-		$expect = <<<'YAML'
+        $expect = <<<'YAML'
 #%RAML 0.8
 ---
 baseUri: 'http://127.0.0.1/'
@@ -276,29 +276,28 @@ title: foo
 
 YAML;
 
-		$this->assertSource($expect, $commandTester->getDisplay());
-	}
+        $this->assertSource($expect, $commandTester->getDisplay());
+    }
 
-	public function testCommandAvailable()
-	{
-		$command = Environment::getService('console')->find('schema:raml');
+    public function testCommandAvailable()
+    {
+        $command = Environment::getService('console')->find('schema:raml');
 
-		$this->assertInstanceOf('PSX\Console\Schema\RamlCommand', $command);
-	}
+        $this->assertInstanceOf('PSX\Console\Schema\RamlCommand', $command);
+    }
 
-	protected function assertSource($expect, $actual)
-	{
-		$expect = str_replace(array("\r\n", "\n", "\r"), "\n", $expect);
-		$actual = str_replace(array("\r\n", "\n", "\r"), "\n", $actual);
+    protected function assertSource($expect, $actual)
+    {
+        $expect = str_replace(array("\r\n", "\n", "\r"), "\n", $expect);
+        $actual = str_replace(array("\r\n", "\n", "\r"), "\n", $actual);
 
-		$this->assertEquals($expect, $actual);
-	}
+        $this->assertEquals($expect, $actual);
+    }
 
-	protected function getPaths()
-	{
-		return [
-			[['GET', 'POST', 'PUT', 'DELETE'], '/api', 'PSX\Controller\Foo\Application\SchemaApi\VersionViewController']
-		];
-	}
+    protected function getPaths()
+    {
+        return [
+            [['GET', 'POST', 'PUT', 'DELETE'], '/api', 'PSX\Controller\Foo\Application\SchemaApi\VersionViewController']
+        ];
+    }
 }
-

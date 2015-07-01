@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,12 +33,12 @@ use PSX\Test\ControllerTestCase;
  */
 class WsdlControllerTest extends ControllerTestCase
 {
-	public function testIndex()
-	{
-		$response = $this->sendRequest('http://127.0.0.1/wsdl/1/api', 'GET');
-		$xml      = (string) $response->getBody();
+    public function testIndex()
+    {
+        $response = $this->sendRequest('http://127.0.0.1/wsdl/1/api', 'GET');
+        $xml      = (string) $response->getBody();
 
-		$expect = <<<XML
+        $expect = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <wsdl:definitions xmlns:xs="http://www.w3.org/2001/XMLSchema" name="Api" targetNamespace="http://phpsx.org/2014/data" xmlns:tns="http://phpsx.org/2014/data" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
 	<wsdl:types xmlns:xs="http://www.w3.org/2001/XMLSchema">
@@ -250,29 +250,29 @@ class WsdlControllerTest extends ControllerTestCase
 </wsdl:definitions>
 XML;
 
-		$this->assertEquals(null, $response->getStatusCode(), $xml);
-		$this->assertEquals('text/xml', $response->getHeader('Content-Type'), $xml);
-		$this->assertXmlStringEqualsXmlString($expect, $xml, $xml);
-	}
+        $this->assertEquals(null, $response->getStatusCode(), $xml);
+        $this->assertEquals('text/xml', $response->getHeader('Content-Type'), $xml);
+        $this->assertXmlStringEqualsXmlString($expect, $xml, $xml);
+    }
 
-	public function testWsdlSchema()
-	{
-		$response = $this->sendRequest('http://127.0.0.1/wsdl/1/api', 'GET');
-		$wsdl     = (string) $response->getBody();
+    public function testWsdlSchema()
+    {
+        $response = $this->sendRequest('http://127.0.0.1/wsdl/1/api', 'GET');
+        $wsdl     = (string) $response->getBody();
 
-		$dom = new DOMDocument();
-		$dom->loadXML($wsdl);
+        $dom = new DOMDocument();
+        $dom->loadXML($wsdl);
 
-		$result = $dom->schemaValidate(__DIR__ . '/../../Api/Resource/Generator/Wsdl/wsdl1.xsd');
+        $result = $dom->schemaValidate(__DIR__ . '/../../Api/Resource/Generator/Wsdl/wsdl1.xsd');
 
-		$this->assertTrue($result);
-	}
+        $this->assertTrue($result);
+    }
 
-	protected function getPaths()
-	{
-		return array(
-			[['GET'], '/wsdl/:version/*path', 'PSX\Controller\Tool\WsdlGeneratorController'],
-			[['GET', 'POST', 'PUT', 'DELETE'], '/api', 'PSX\Controller\Foo\Application\TestSchemaApiController'],
-		);
-	}
+    protected function getPaths()
+    {
+        return array(
+            [['GET'], '/wsdl/:version/*path', 'PSX\Controller\Tool\WsdlGeneratorController'],
+            [['GET', 'POST', 'PUT', 'DELETE'], '/api', 'PSX\Controller\Foo\Application\TestSchemaApiController'],
+        );
+    }
 }

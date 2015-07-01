@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,47 +31,46 @@ use PSX\Data\RecordAbstract;
  */
 class Position extends RecordAbstract
 {
-	protected $altitude;
-	protected $latitude;
-	protected $longitude;
+    protected $altitude;
+    protected $latitude;
+    protected $longitude;
 
-	/**
-	 * @param float $altitude
-	 */
-	public function setAltitude($altitude)
-	{
-		$this->altitude = $altitude;
-	}
+    /**
+     * @param float $altitude
+     */
+    public function setAltitude($altitude)
+    {
+        $this->altitude = $altitude;
+    }
 
-	public function getAltitude()
-	{
-		return $this->altitude;
-	}
+    public function getAltitude()
+    {
+        return $this->altitude;
+    }
 
-	/**
-	 * @param float $latitude
-	 */
-	public function setLatitude($latitude)
-	{
-		$this->latitude = $latitude;
-	}
+    /**
+     * @param float $latitude
+     */
+    public function setLatitude($latitude)
+    {
+        $this->latitude = $latitude;
+    }
 
-	public function getLatitude()
-	{
-		return $this->latitude;
-	}
+    public function getLatitude()
+    {
+        return $this->latitude;
+    }
 
-	/**
-	 * @param float $longitude
-	 */
-	public function setLongitude($longitude)
-	{
-		$this->longitude = $longitude;
-	}
+    /**
+     * @param float $longitude
+     */
+    public function setLongitude($longitude)
+    {
+        $this->longitude = $longitude;
+    }
 
-	public function getLongitude()
-	{
-		return $this->longitude;
-	}
+    public function getLongitude()
+    {
+        return $this->longitude;
+    }
 }
-

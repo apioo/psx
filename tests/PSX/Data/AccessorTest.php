@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,120 +32,120 @@ use PSX\Validate;
  */
 class AccessorTest extends \PHPUnit_Framework_TestCase
 {
-	/**
-	 * @dataProvider provideSources
-	 */
-	public function testGet($source)
-	{
-		$accessor = new Accessor(new Validate(), $source);
+    /**
+     * @dataProvider provideSources
+     */
+    public function testGet($source)
+    {
+        $accessor = new Accessor(new Validate(), $source);
 
-		$this->assertEquals($source, $accessor->getSource());
-		$this->assertEquals('bar', $accessor->get('foo'));
-		$this->assertEquals(1, $accessor->get('bar.foo'));
-		$this->assertEquals('bar', $accessor->get('tes.0.foo'));
-	}
+        $this->assertEquals($source, $accessor->getSource());
+        $this->assertEquals('bar', $accessor->get('foo'));
+        $this->assertEquals(1, $accessor->get('bar.foo'));
+        $this->assertEquals('bar', $accessor->get('tes.0.foo'));
+    }
 
-	/**
-	 * @dataProvider provideSources
-	 */
-	public function testGetFilter($source)
-	{
-		$filter = new Filter\Length(3, 8);
+    /**
+     * @dataProvider provideSources
+     */
+    public function testGetFilter($source)
+    {
+        $filter = new Filter\Length(3, 8);
 
-		$validate = $this->getMockBuilder('PSX\Validate')
-			->setMethods(array('apply'))
-			->getMock();
+        $validate = $this->getMockBuilder('PSX\Validate')
+            ->setMethods(array('apply'))
+            ->getMock();
 
-		$validate->expects($this->at(0))
-			->method('apply')
-			->with($this->equalTo('bar'), $this->equalTo(Validate::TYPE_STRING), $this->equalTo(array()));
+        $validate->expects($this->at(0))
+            ->method('apply')
+            ->with($this->equalTo('bar'), $this->equalTo(Validate::TYPE_STRING), $this->equalTo(array()));
 
-		$validate->expects($this->at(1))
-			->method('apply')
-			->with($this->equalTo(1), $this->equalTo(Validate::TYPE_INTEGER), $this->equalTo(array()));
+        $validate->expects($this->at(1))
+            ->method('apply')
+            ->with($this->equalTo(1), $this->equalTo(Validate::TYPE_INTEGER), $this->equalTo(array()));
 
-		$validate->expects($this->at(2))
-			->method('apply')
-			->with($this->equalTo('bar'), $this->equalTo(Validate::TYPE_STRING), $this->equalTo(array($filter)));
+        $validate->expects($this->at(2))
+            ->method('apply')
+            ->with($this->equalTo('bar'), $this->equalTo(Validate::TYPE_STRING), $this->equalTo(array($filter)));
 
-		$accessor = new Accessor($validate, $source);
+        $accessor = new Accessor($validate, $source);
 
-		$accessor->get('foo');
-		$accessor->get('bar.foo', Validate::TYPE_INTEGER);
-		$accessor->get('tes.0.foo', Validate::TYPE_STRING, array($filter));
-	}
+        $accessor->get('foo');
+        $accessor->get('bar.foo', Validate::TYPE_INTEGER);
+        $accessor->get('tes.0.foo', Validate::TYPE_STRING, array($filter));
+    }
 
-	public function provideSources()
-	{
-		$sources = array();
+    public function provideSources()
+    {
+        $sources = array();
 
-		// array
-		$source = array(
-			'foo' => 'bar',
-			'bar' => array(
-				'foo' => '1',
-			),
-			'tes' => array(
-				array(
-					'foo' => 'bar'
-				),
-			),
-		);
+        // array
+        $source = array(
+            'foo' => 'bar',
+            'bar' => array(
+                'foo' => '1',
+            ),
+            'tes' => array(
+                array(
+                    'foo' => 'bar'
+                ),
+            ),
+        );
 
-		$sources[] = [$source];
+        $sources[] = [$source];
 
-		// stdClass
-		$source = new \stdClass();
-		$source->foo = 'bar';
-		$source->bar = new \stdClass();
-		$source->bar->foo = 1;
-		$source->tes = array();
-		$source->tes[0] = new \stdClass();
-		$source->tes[0]->foo = 'bar';
+        // stdClass
+        $source = new \stdClass();
+        $source->foo = 'bar';
+        $source->bar = new \stdClass();
+        $source->bar->foo = 1;
+        $source->tes = array();
+        $source->tes[0] = new \stdClass();
+        $source->tes[0]->foo = 'bar';
 
-		$sources[] = [$source];
+        $sources[] = [$source];
 
-		// RecordInterface
-		$source = new Object([
-			'foo' => 'bar',
-			'bar' => new Object([
-				'foo' => '1'
-			]),
-			'tes' => [
-				new Object([
-					'foo' => 'bar'
-				])
-			]
-		]);
+        // RecordInterface
+        $source = new Object([
+            'foo' => 'bar',
+            'bar' => new Object([
+                'foo' => '1'
+            ]),
+            'tes' => [
+                new Object([
+                    'foo' => 'bar'
+                ])
+            ]
+        ]);
 
-		$sources[] = [$source];
+        $sources[] = [$source];
 
-		return $sources;
-	}
+        return $sources;
+    }
 
-	/**
-	 * @expectedException \PSX\Validate\ValidationException
-	 */
-	public function testGetUnknownKey()
-	{
-		$source = array(
-			'bar' => array(
-				'foo' => '1',
-			),
-		);
+    /**
+     * @expectedException \PSX\Validate\ValidationException
+     */
+    public function testGetUnknownKey()
+    {
+        $source = array(
+            'bar' => array(
+                'foo' => '1',
+            ),
+        );
 
-		$accessor = new Accessor(new Validate(), $source);
-		$accessor->get('bar.bar');
-	}
+        $accessor = new Accessor(new Validate(), $source);
+        $accessor->get('bar.bar');
+    }
 
-	/**
-	 * @expectedException \PSX\Validate\ValidationException
-	 */
-	public function testGetUnknownKeyInvalidSource()
-	{
-		$source = 'foo';
+    /**
+     * @expectedException \PSX\Validate\ValidationException
+     */
+    public function testGetUnknownKeyInvalidSource()
+    {
+        $source = 'foo';
 
-		$accessor = new Accessor(new Validate(), $source);
-		$accessor->get('bar.bar');
-	}
+        $accessor = new Accessor(new Validate(), $source);
+        $accessor->get('bar.bar');
+    }
 }

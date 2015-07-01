@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,28 +32,24 @@ use PSX\Http\Response;
  */
 class SenderTestCase extends \PHPUnit_Framework_TestCase
 {
-	protected function captureOutput(SenderInterface $sender, Response $response)
-	{
-		$lastError = null;
+    protected function captureOutput(SenderInterface $sender, Response $response)
+    {
+        $lastError = null;
 
-		ob_start();
+        ob_start();
 
-		try
-		{
-			$sender->send($response);
-		}
-		catch(\Exception $e)
-		{
-			$lastError = $e->getMessage();
-		}
+        try {
+            $sender->send($response);
+        } catch (\Exception $e) {
+            $lastError = $e->getMessage();
+        }
 
-		$content = ob_get_clean();
+        $content = ob_get_clean();
 
-		if($lastError !== null)
-		{
-			$this->fail($lastError);
-		}
+        if ($lastError !== null) {
+            $this->fail($lastError);
+        }
 
-		return $content;
-	}
+        return $content;
+    }
 }

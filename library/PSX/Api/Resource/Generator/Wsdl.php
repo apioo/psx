@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,248 +36,238 @@ use PSX\Data\SchemaInterface;
  */
 class Wsdl extends GeneratorAbstract
 {
-	protected $name;
-	protected $endpoint;
-	protected $targetNamespace;
+    protected $name;
+    protected $endpoint;
+    protected $targetNamespace;
 
-	public function __construct($name, $endpoint, $targetNamespace)
-	{
-		$this->name            = $name;
-		$this->endpoint        = $endpoint;
-		$this->targetNamespace = $targetNamespace;
-	}
+    public function __construct($name, $endpoint, $targetNamespace)
+    {
+        $this->name            = $name;
+        $this->endpoint        = $endpoint;
+        $this->targetNamespace = $targetNamespace;
+    }
 
-	public function generate(Resource $resource)
-	{
-		$dom = new DOMDocument('1.0', 'UTF-8');
-		$dom->formatOutput = true;
+    public function generate(Resource $resource)
+    {
+        $dom = new DOMDocument('1.0', 'UTF-8');
+        $dom->formatOutput = true;
 
-		$wsdl = $dom->createElement('wsdl:definitions');
-		$wsdl->setAttribute('name', $this->name);
-		$wsdl->setAttribute('targetNamespace', $this->targetNamespace);
-		$wsdl->setAttribute('xmlns:tns', $this->targetNamespace);
-		$wsdl->setAttribute('xmlns:soap', 'http://schemas.xmlsoap.org/wsdl/soap/');
-		$wsdl->setAttribute('xmlns:wsdl', 'http://schemas.xmlsoap.org/wsdl/');
+        $wsdl = $dom->createElement('wsdl:definitions');
+        $wsdl->setAttribute('name', $this->name);
+        $wsdl->setAttribute('targetNamespace', $this->targetNamespace);
+        $wsdl->setAttribute('xmlns:tns', $this->targetNamespace);
+        $wsdl->setAttribute('xmlns:soap', 'http://schemas.xmlsoap.org/wsdl/soap/');
+        $wsdl->setAttribute('xmlns:wsdl', 'http://schemas.xmlsoap.org/wsdl/');
 
-		$operations = $this->getOperations($resource);
+        $operations = $this->getOperations($resource);
 
-		$this->appendTypes($wsdl, $resource);
-		$this->appendMessages($wsdl, $operations);
-		$this->appendPortTypes($wsdl, $operations);
-		$this->appendBindings($wsdl, $operations);
-		$this->appendServices($wsdl);
+        $this->appendTypes($wsdl, $resource);
+        $this->appendMessages($wsdl, $operations);
+        $this->appendPortTypes($wsdl, $operations);
+        $this->appendBindings($wsdl, $operations);
+        $this->appendServices($wsdl);
 
-		$dom->appendChild($wsdl);
+        $dom->appendChild($wsdl);
 
-		return $dom->saveXML();
-	}
+        return $dom->saveXML();
+    }
 
-	protected function getOperations(Resource $resource)
-	{
-		$operations = array();
-		$methods    = $resource->getMethods();
+    protected function getOperations(Resource $resource)
+    {
+        $operations = array();
+        $methods    = $resource->getMethods();
 
-		foreach($methods as $method)
-		{
-			$request  = $method->getRequest();
-			$response = $this->getSuccessfulResponse($method);
+        foreach ($methods as $method) {
+            $request  = $method->getRequest();
+            $response = $this->getSuccessfulResponse($method);
 
-			if($request instanceof SchemaInterface)
-			{
-				$entityName = $request->getDefinition()->getName();
-			}
-			else if($response instanceof SchemaInterface)
-			{
-				$entityName = $response->getDefinition()->getName();
-			}
+            if ($request instanceof SchemaInterface) {
+                $entityName = $request->getDefinition()->getName();
+            } elseif ($response instanceof SchemaInterface) {
+                $entityName = $response->getDefinition()->getName();
+            }
 
-			$operation = new Operation(strtolower($method->getName()) . ucfirst($entityName));
-			$operation->setMethod($method->getName());
+            $operation = new Operation(strtolower($method->getName()) . ucfirst($entityName));
+            $operation->setMethod($method->getName());
 
-			if($request instanceof SchemaInterface)
-			{
-				$operation->setIn($request->getDefinition()->getName());
-			}
+            if ($request instanceof SchemaInterface) {
+                $operation->setIn($request->getDefinition()->getName());
+            }
 
-			if($response instanceof SchemaInterface)
-			{
-				$operation->setOut($response->getDefinition()->getName());
-			}
+            if ($response instanceof SchemaInterface) {
+                $operation->setOut($response->getDefinition()->getName());
+            }
 
-			if($operation->hasOperation())
-			{
-				$operations[] = $operation;
-			}
-		}
+            if ($operation->hasOperation()) {
+                $operations[] = $operation;
+            }
+        }
 
-		return $operations;
-	}
+        return $operations;
+    }
 
-	protected function appendTypes(DOMElement $element, Resource $resource)
-	{
-		$types  = $element->ownerDocument->createElement('wsdl:types');
-		$schema = $element->ownerDocument->createElementNS('http://www.w3.org/2001/XMLSchema', 'xs:schema');
-		$schema->setAttribute('targetNamespace', $this->targetNamespace);
-		$schema->setAttribute('elementFormDefault', 'qualified');
-		$schema->setAttribute('xmlns:tns', $this->targetNamespace);
+    protected function appendTypes(DOMElement $element, Resource $resource)
+    {
+        $types  = $element->ownerDocument->createElement('wsdl:types');
+        $schema = $element->ownerDocument->createElementNS('http://www.w3.org/2001/XMLSchema', 'xs:schema');
+        $schema->setAttribute('targetNamespace', $this->targetNamespace);
+        $schema->setAttribute('elementFormDefault', 'qualified');
+        $schema->setAttribute('xmlns:tns', $this->targetNamespace);
 
-		$xsdGenerator = new Xsd($this->targetNamespace);
-		$xsdGenerator->appendSchema($schema, $resource);
+        $xsdGenerator = new Xsd($this->targetNamespace);
+        $xsdGenerator->appendSchema($schema, $resource);
 
-		$types->appendChild($schema);
+        $types->appendChild($schema);
 
-		$element->appendChild($types);
-	}
+        $element->appendChild($types);
+    }
 
-	public function appendMessages(DOMElement $element, array $operations)
-	{
-		foreach($operations as $operation)
-		{
-			// input
-			$interface = $element->ownerDocument->createElement('wsdl:message');
-			$interface->setAttribute('name', $operation->getName() . 'Input');
+    public function appendMessages(DOMElement $element, array $operations)
+    {
+        foreach ($operations as $operation) {
+            // input
+            $interface = $element->ownerDocument->createElement('wsdl:message');
+            $interface->setAttribute('name', $operation->getName() . 'Input');
 
-			$part = $element->ownerDocument->createElement('wsdl:part');
-			$part->setAttribute('name', 'body');
-			$part->setAttribute('element', 'tns:' . strtolower($operation->getMethod()) . 'Request');
+            $part = $element->ownerDocument->createElement('wsdl:part');
+            $part->setAttribute('name', 'body');
+            $part->setAttribute('element', 'tns:' . strtolower($operation->getMethod()) . 'Request');
 
-			$interface->appendChild($part);
+            $interface->appendChild($part);
 
-			$element->appendChild($interface);
+            $element->appendChild($interface);
 
-			// output
-			$interface = $element->ownerDocument->createElement('wsdl:message');
-			$interface->setAttribute('name', $operation->getName() . 'Output');
+            // output
+            $interface = $element->ownerDocument->createElement('wsdl:message');
+            $interface->setAttribute('name', $operation->getName() . 'Output');
 
-			$part = $element->ownerDocument->createElement('wsdl:part');
-			$part->setAttribute('name', 'body');
-			$part->setAttribute('element', 'tns:' . strtolower($operation->getMethod()) . 'Response');
+            $part = $element->ownerDocument->createElement('wsdl:part');
+            $part->setAttribute('name', 'body');
+            $part->setAttribute('element', 'tns:' . strtolower($operation->getMethod()) . 'Response');
 
-			$interface->appendChild($part);
+            $interface->appendChild($part);
 
-			$element->appendChild($interface);
-		}
+            $element->appendChild($interface);
+        }
 
-		// default types
-		$interface = $element->ownerDocument->createElement('wsdl:message');
-		$interface->setAttribute('name', 'faultOutput');
+        // default types
+        $interface = $element->ownerDocument->createElement('wsdl:message');
+        $interface->setAttribute('name', 'faultOutput');
 
-		$part = $element->ownerDocument->createElement('wsdl:part');
-		$part->setAttribute('name', 'body');
-		$part->setAttribute('element', 'tns:' . 'error');
+        $part = $element->ownerDocument->createElement('wsdl:part');
+        $part->setAttribute('name', 'body');
+        $part->setAttribute('element', 'tns:' . 'error');
 
-		$interface->appendChild($part);
+        $interface->appendChild($part);
 
-		$element->appendChild($interface);
-	}
+        $element->appendChild($interface);
+    }
 
-	public function appendPortTypes(DOMElement $element, array $operations)
-	{
-		$portType = $element->ownerDocument->createElement('wsdl:portType');
-		$portType->setAttribute('name', $this->name . 'PortType');
+    public function appendPortTypes(DOMElement $element, array $operations)
+    {
+        $portType = $element->ownerDocument->createElement('wsdl:portType');
+        $portType->setAttribute('name', $this->name . 'PortType');
 
-		foreach($operations as $operation)
-		{
-			$oper = $element->ownerDocument->createElement('wsdl:operation');
-			$oper->setAttribute('name', $operation->getName());
+        foreach ($operations as $operation) {
+            $oper = $element->ownerDocument->createElement('wsdl:operation');
+            $oper->setAttribute('name', $operation->getName());
 
-			// input
-			$input = $element->ownerDocument->createElement('wsdl:input');
-			$input->setAttribute('message', 'tns:' . $operation->getName() . 'Input');
+            // input
+            $input = $element->ownerDocument->createElement('wsdl:input');
+            $input->setAttribute('message', 'tns:' . $operation->getName() . 'Input');
 
-			$oper->appendChild($input);
+            $oper->appendChild($input);
 
-			// output
-			$output = $element->ownerDocument->createElement('wsdl:output');
-			$output->setAttribute('message', 'tns:' . $operation->getName() . 'Output');
+            // output
+            $output = $element->ownerDocument->createElement('wsdl:output');
+            $output->setAttribute('message', 'tns:' . $operation->getName() . 'Output');
 
-			$oper->appendChild($output);
+            $oper->appendChild($output);
 
-			$output = $element->ownerDocument->createElement('wsdl:fault');
-			$output->setAttribute('message', 'tns:' . 'faultOutput');
-			$output->setAttribute('name', 'SoapFaultException');
-	
-			$oper->appendChild($output);
+            $output = $element->ownerDocument->createElement('wsdl:fault');
+            $output->setAttribute('message', 'tns:' . 'faultOutput');
+            $output->setAttribute('name', 'SoapFaultException');
+    
+            $oper->appendChild($output);
 
-			$portType->appendChild($oper);
-		}
+            $portType->appendChild($oper);
+        }
 
-		$element->appendChild($portType);
-	}
+        $element->appendChild($portType);
+    }
 
-	public function appendBindings(DOMElement $element, array $operations)
-	{
-		$binding = $element->ownerDocument->createElement('wsdl:binding');
-		$binding->setAttribute('name', $this->name . 'Binding');
-		$binding->setAttribute('type', 'tns:' . $this->name . 'PortType');
+    public function appendBindings(DOMElement $element, array $operations)
+    {
+        $binding = $element->ownerDocument->createElement('wsdl:binding');
+        $binding->setAttribute('name', $this->name . 'Binding');
+        $binding->setAttribute('type', 'tns:' . $this->name . 'PortType');
 
-		$soapBinding = $element->ownerDocument->createElement('soap:binding');
-		$soapBinding->setAttribute('style', 'document');
-		$soapBinding->setAttribute('transport', 'http://schemas.xmlsoap.org/soap/http');
+        $soapBinding = $element->ownerDocument->createElement('soap:binding');
+        $soapBinding->setAttribute('style', 'document');
+        $soapBinding->setAttribute('transport', 'http://schemas.xmlsoap.org/soap/http');
 
-		$binding->appendChild($soapBinding);
+        $binding->appendChild($soapBinding);
 
-		foreach($operations as $operation)
-		{
-			$oper = $element->ownerDocument->createElement('wsdl:operation');
-			$oper->setAttribute('name', $operation->getName());
+        foreach ($operations as $operation) {
+            $oper = $element->ownerDocument->createElement('wsdl:operation');
+            $oper->setAttribute('name', $operation->getName());
 
-			$soapOperation = $element->ownerDocument->createElement('soap:operation');
-			$soapOperation->setAttribute('soapAction', $this->targetNamespace . '/' . $operation->getName() . '#' . $operation->getMethod());
+            $soapOperation = $element->ownerDocument->createElement('soap:operation');
+            $soapOperation->setAttribute('soapAction', $this->targetNamespace . '/' . $operation->getName() . '#' . $operation->getMethod());
 
-			$oper->appendChild($soapOperation);
+            $oper->appendChild($soapOperation);
 
-			// input
-			$input    = $element->ownerDocument->createElement('wsdl:input');
-			$soapBody = $element->ownerDocument->createElement('soap:body');
-			$soapBody->setAttribute('use', 'literal');
+            // input
+            $input    = $element->ownerDocument->createElement('wsdl:input');
+            $soapBody = $element->ownerDocument->createElement('soap:body');
+            $soapBody->setAttribute('use', 'literal');
 
-			$input->appendChild($soapBody);
+            $input->appendChild($soapBody);
 
-			$oper->appendChild($input);
+            $oper->appendChild($input);
 
-			// output
-			$output   = $element->ownerDocument->createElement('wsdl:output');
-			$soapBody = $element->ownerDocument->createElement('soap:body');
-			$soapBody->setAttribute('use', 'literal');
+            // output
+            $output   = $element->ownerDocument->createElement('wsdl:output');
+            $soapBody = $element->ownerDocument->createElement('soap:body');
+            $soapBody->setAttribute('use', 'literal');
 
-			$output->appendChild($soapBody);
+            $output->appendChild($soapBody);
 
-			$oper->appendChild($output);
+            $oper->appendChild($output);
 
-			// fault
-			$output   = $element->ownerDocument->createElement('wsdl:fault');
-			$output->setAttribute('name', 'SoapFaultException');
-			$soapBody = $element->ownerDocument->createElement('soap:body');
-			$soapBody->setAttribute('use', 'literal');
-			$soapBody->setAttribute('name', 'SoapFaultException');
+            // fault
+            $output   = $element->ownerDocument->createElement('wsdl:fault');
+            $output->setAttribute('name', 'SoapFaultException');
+            $soapBody = $element->ownerDocument->createElement('soap:body');
+            $soapBody->setAttribute('use', 'literal');
+            $soapBody->setAttribute('name', 'SoapFaultException');
 
-			$output->appendChild($soapBody);
+            $output->appendChild($soapBody);
 
-			$oper->appendChild($output);
+            $oper->appendChild($output);
 
-			$binding->appendChild($oper);
-		}
+            $binding->appendChild($oper);
+        }
 
-		$element->appendChild($binding);
-	}
+        $element->appendChild($binding);
+    }
 
-	public function appendServices(DOMElement $element)
-	{
-		$service = $element->ownerDocument->createElement('wsdl:service');
-		$service->setAttribute('name', $this->name . 'Service');
+    public function appendServices(DOMElement $element)
+    {
+        $service = $element->ownerDocument->createElement('wsdl:service');
+        $service->setAttribute('name', $this->name . 'Service');
 
-		$port = $element->ownerDocument->createElement('wsdl:port');
-		$port->setAttribute('name', $this->name . 'Port');
-		$port->setAttribute('binding', 'tns:' . $this->name . 'Binding');
+        $port = $element->ownerDocument->createElement('wsdl:port');
+        $port->setAttribute('name', $this->name . 'Port');
+        $port->setAttribute('binding', 'tns:' . $this->name . 'Binding');
 
-		$address = $element->ownerDocument->createElement('soap:address');
-		$address->setAttribute('location', $this->endpoint);
+        $address = $element->ownerDocument->createElement('soap:address');
+        $address->setAttribute('location', $this->endpoint);
 
-		$port->appendChild($address);
+        $port->appendChild($address);
 
-		$service->appendChild($port);
+        $service->appendChild($port);
 
-		$element->appendChild($service);
-	}
+        $element->appendChild($service);
+    }
 }

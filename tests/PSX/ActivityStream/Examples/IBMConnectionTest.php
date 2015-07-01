@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,105 +36,105 @@ use PSX\Data\SerializeTestAbstract;
  */
 class IBMConnectionTest extends SerializeTestAbstract
 {
-	public function testStream()
-	{
-		$items = array();
+    public function testStream()
+    {
+        $items = array();
 
-		$author = new Object();
-		$author->setObjectType('person');
-		$author->setId('12345678-8f0a-1028-xxxz-db07163b51b2');
-		$author->setDisplayName('Joe Blogs');
+        $author = new Object();
+        $author->setObjectType('person');
+        $author->setId('12345678-8f0a-1028-xxxz-db07163b51b2');
+        $author->setDisplayName('Joe Blogs');
 
-		$item = new Object();
-		$item->setContent('This was my first comment');
-		$item->setAuthor($author);
-		$item->setUpdated(new DateTime('2011-11-21T15:13:59+00:00'));
-		$item->setId('f8f0e93f-e462-4ede-92cc-f6e8a1b7eb36');
+        $item = new Object();
+        $item->setContent('This was my first comment');
+        $item->setAuthor($author);
+        $item->setUpdated(new DateTime('2011-11-21T15:13:59+00:00'));
+        $item->setId('f8f0e93f-e462-4ede-92cc-f6e8a1b7eb36');
 
-		$items[] = $item;
+        $items[] = $item;
 
-		$author = new Object();
-		$author->setObjectType('person');
-		$author->setId('12345678-8f0a-1028-xxxy-db07163b51b2');
-		$author->setDisplayName('Jane Doe');
+        $author = new Object();
+        $author->setObjectType('person');
+        $author->setId('12345678-8f0a-1028-xxxy-db07163b51b2');
+        $author->setDisplayName('Jane Doe');
 
-		$item = new Object();
-		$item->setContent('This was another comment');
-		$item->setAuthor($author);
-		$item->setUpdated(new DateTime('2011-11-21T15:14:06+00:00'));
-		$item->setId('5369ea82-d791-46cb-a87a-3696ff90d8f3');
+        $item = new Object();
+        $item->setContent('This was another comment');
+        $item->setAuthor($author);
+        $item->setUpdated(new DateTime('2011-11-21T15:14:06+00:00'));
+        $item->setId('5369ea82-d791-46cb-a87a-3696ff90d8f3');
 
-		$items[] = $item;
+        $items[] = $item;
 
-		$replies = new Collection();
-		$replies->setItems($items);
-		$replies->setTotalItems(0);
+        $replies = new Collection();
+        $replies->setItems($items);
+        $replies->setTotalItems(0);
 
-		$author = new Object();
-		$author->setId('12345678-8f0a-1028-xxxx-db07163b51b2');
-		$author->setDisplayName('Joseph Bloggs');
+        $author = new Object();
+        $author->setId('12345678-8f0a-1028-xxxx-db07163b51b2');
+        $author->setDisplayName('Joseph Bloggs');
 
-		$target = new Object();
-		$target->setSummary('Top App Entry');
-		$target->setReplies($replies);
-		$target->setObjectType('note');
-		$target->setAuthor($author);
-		$target->setUpdated(new DateTime('2011-11-21T15:08:44+00:00'));
-		$target->setId('87d7a7fb-af22-403b-ab0d-d101d9caac4f');
-		$target->setDisplayName('Joseph Bloggs');
-		$target->setPublished(new DateTime('2011-11-21T15:08:44+00:00'));
-		$target->setUrl('http://www.example.org/topapp/1028-xxxx-db07163b51b2');
+        $target = new Object();
+        $target->setSummary('Top App Entry');
+        $target->setReplies($replies);
+        $target->setObjectType('note');
+        $target->setAuthor($author);
+        $target->setUpdated(new DateTime('2011-11-21T15:08:44+00:00'));
+        $target->setId('87d7a7fb-af22-403b-ab0d-d101d9caac4f');
+        $target->setDisplayName('Joseph Bloggs');
+        $target->setPublished(new DateTime('2011-11-21T15:08:44+00:00'));
+        $target->setUrl('http://www.example.org/topapp/1028-xxxx-db07163b51b2');
 
-		$provider = new Object();
-		$provider->setId('http://www.ibm.com/xmlns/prod/sn');
-		$provider->setDisplayName('IBM Connections - News Service');
-		$provider->setUrl('http://www.example.org/news');
+        $provider = new Object();
+        $provider->setId('http://www.ibm.com/xmlns/prod/sn');
+        $provider->setDisplayName('IBM Connections - News Service');
+        $provider->setUrl('http://www.example.org/news');
 
-		$image = new Object();
-		$image->setUrl('http://www.example.org/topapp/images/icon.png'); 
+        $image = new Object();
+        $image->setUrl('http://www.example.org/topapp/images/icon.png');
 
-		$generator = new Object();
-		$generator->setImage($image);
-		$generator->setId('topapp');
-		$generator->setDisplayName('Top Application');
-		$generator->setUrl('http://www.example.org/topapp');
+        $generator = new Object();
+        $generator->setImage($image);
+        $generator->setId('topapp');
+        $generator->setDisplayName('Top Application');
+        $generator->setUrl('http://www.example.org/topapp');
 
-		$actor = new Object();
-		$actor->setId('12345678-8f0a-1028-xxxx-db07163b51b2');
-		$actor->setDisplayName('Joseph Bloggs');
+        $actor = new Object();
+        $actor->setId('12345678-8f0a-1028-xxxx-db07163b51b2');
+        $actor->setDisplayName('Joseph Bloggs');
 
-		$author = new Object();
-		$author->setId('12345678-8f0a-1028-xxxx-db07163b51b2');
-		$author->setDisplayName('Joseph Bloggs');
+        $author = new Object();
+        $author->setId('12345678-8f0a-1028-xxxx-db07163b51b2');
+        $author->setDisplayName('Joseph Bloggs');
 
-		$object = new Object();
-		$object->setSummary('This was my first comment');
-		$object->setObjectType('comment');
-		$object->setAuthor($author);
-		$object->setId('5369ea82-d791-46cb-a87a-3696ff90d8f3');
-		$object->setUrl('http://www.example.org/topapp/1028-xxxx-db07163b51b2/comments/1');
+        $object = new Object();
+        $object->setSummary('This was my first comment');
+        $object->setObjectType('comment');
+        $object->setAuthor($author);
+        $object->setId('5369ea82-d791-46cb-a87a-3696ff90d8f3');
+        $object->setUrl('http://www.example.org/topapp/1028-xxxx-db07163b51b2/comments/1');
 
-		$activity = new Activity();
-		$activity->setPublished(new DateTime('2011-11-21T15:14:06+00:00'));
-		$activity->setUrl('http://www.example.org/connections/opensocial/rest/activitystreams/@me/@all/@all/86c62a05-61de-4658-97a7-16e7ccf72e78');
-		$activity->setTarget($target);
-		$activity->setProvider($provider);
-		$activity->setGenerator($generator);
-		$activity->setActor($actor);
-		$activity->setTitle('Joseph Bloggs commented on their own Top App entry.');
-		$activity->setContent('<span class="vcard"><a class="fn url" title="This is a link to the profile of Joseph Bloggs." href="http://www.example.org/profiles/html/profileView.do?userid=12345678-8f0a-1028-xxxx-db07163b51b2"><span class="photo" src="http://www.example.org/profiles/photo.do?userid=12345678-8f0a-1028-xxxx-db07163b51b2" alt="This is a photo of Joseph Bloggs." style="display : none"></span>Joseph Bloggs</a><span class="x-lconn-userid" style="display : none">12345678-8f0a-1028-xxxx-db07163b51b2</span></span> commented on their own Top App entry.');
-		$activity->setId('urn:lsid:ibm.com:activitystreams:86c62a05-61de-4658-97a7-16e7ccf72e78');
-		$activity->setUpdated(new DateTime('2011-11-21T15:14:07+00:00'));
-		$activity->setObject($object);
-		$activity->setVerb('post');
+        $activity = new Activity();
+        $activity->setPublished(new DateTime('2011-11-21T15:14:06+00:00'));
+        $activity->setUrl('http://www.example.org/connections/opensocial/rest/activitystreams/@me/@all/@all/86c62a05-61de-4658-97a7-16e7ccf72e78');
+        $activity->setTarget($target);
+        $activity->setProvider($provider);
+        $activity->setGenerator($generator);
+        $activity->setActor($actor);
+        $activity->setTitle('Joseph Bloggs commented on their own Top App entry.');
+        $activity->setContent('<span class="vcard"><a class="fn url" title="This is a link to the profile of Joseph Bloggs." href="http://www.example.org/profiles/html/profileView.do?userid=12345678-8f0a-1028-xxxx-db07163b51b2"><span class="photo" src="http://www.example.org/profiles/photo.do?userid=12345678-8f0a-1028-xxxx-db07163b51b2" alt="This is a photo of Joseph Bloggs." style="display : none"></span>Joseph Bloggs</a><span class="x-lconn-userid" style="display : none">12345678-8f0a-1028-xxxx-db07163b51b2</span></span> commented on their own Top App entry.');
+        $activity->setId('urn:lsid:ibm.com:activitystreams:86c62a05-61de-4658-97a7-16e7ccf72e78');
+        $activity->setUpdated(new DateTime('2011-11-21T15:14:07+00:00'));
+        $activity->setObject($object);
+        $activity->setVerb('post');
 
-		$collection = new Collection();
-		$collection->setStartIndex(0);
-		$collection->setTotalItems(1);
-		$collection->setItemsPerPage(1);
-		$collection->setItems([$activity]);
+        $collection = new Collection();
+        $collection->setStartIndex(0);
+        $collection->setTotalItems(1);
+        $collection->setItemsPerPage(1);
+        $collection->setItems([$activity]);
 
-		$content = <<<JSON
+        $content = <<<JSON
 {
     "startIndex": 0,
     "totalItems": 1,
@@ -215,6 +215,6 @@ class IBMConnectionTest extends SerializeTestAbstract
 }
 JSON;
 
-		$this->assertRecordEqualsContent($collection, $content);
-	}
+        $this->assertRecordEqualsContent($collection, $content);
+    }
 }

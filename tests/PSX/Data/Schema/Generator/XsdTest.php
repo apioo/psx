@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,12 +29,12 @@ namespace PSX\Data\Schema\Generator;
  */
 class XsdTest extends GeneratorTestCase
 {
-	public function testGenerate()
-	{
-		$generator = new Xsd('http://ns.foo.com');
-		$result    = $generator->generate($this->getSchema());
+    public function testGenerate()
+    {
+        $generator = new Xsd('http://ns.foo.com');
+        $result    = $generator->generate($this->getSchema());
 
-		$expect = <<<'XML'
+        $expect = <<<'XML'
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:tns="http://ns.foo.com" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://ns.foo.com">
 	<xs:element name="news">
@@ -142,19 +142,19 @@ class XsdTest extends GeneratorTestCase
 </xs:schema>
 XML;
 
-		$this->assertXmlStringEqualsXmlString($expect, $result);
-	}
+        $this->assertXmlStringEqualsXmlString($expect, $result);
+    }
 
-	/**
-	 * Check whether the generated xsd is valid and we can use it agains some 
-	 * custom xml
-	 */
-	public function testXsd()
-	{
-		$generator = new Xsd('http://ns.foo.com');
-		$result    = $generator->generate($this->getSchema());
+    /**
+     * Check whether the generated xsd is valid and we can use it agains some
+     * custom xml
+     */
+    public function testXsd()
+    {
+        $generator = new Xsd('http://ns.foo.com');
+        $result    = $generator->generate($this->getSchema());
 
-		$xml = <<<XML
+        $xml = <<<XML
 <news xmlns="http://ns.foo.com">
 	<tags>foo</tags>
 	<tags>bar</tags>
@@ -199,23 +199,23 @@ XML;
 </news>
 XML;
 
-		$dom = new \DOMDocument();
-		$dom->loadXML($xml);
+        $dom = new \DOMDocument();
+        $dom->loadXML($xml);
 
-		$this->assertTrue($dom->schemaValidateSource($result));
-	}
+        $this->assertTrue($dom->schemaValidateSource($result));
+    }
 
-	/**
-	 * Test whether the generated XSD follows the schema XSD
-	 */
-	public function testXsdSchema()
-	{
-		$generator = new Xsd('http://ns.foo.com');
-		$result    = $generator->generate($this->getSchema());
+    /**
+     * Test whether the generated XSD follows the schema XSD
+     */
+    public function testXsdSchema()
+    {
+        $generator = new Xsd('http://ns.foo.com');
+        $result    = $generator->generate($this->getSchema());
 
-		$dom = new \DOMDocument();
-		$dom->loadXML($result);
+        $dom = new \DOMDocument();
+        $dom->loadXML($result);
 
-		$this->assertTrue($dom->schemaValidate(__DIR__ . '/../../../Api/Resource/Generator/Wsdl/schema.xsd'));
-	}
+        $this->assertTrue($dom->schemaValidate(__DIR__ . '/../../../Api/Resource/Generator/Wsdl/schema.xsd'));
+    }
 }

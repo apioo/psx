@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,16 +29,16 @@ namespace PSX\Loader;
  */
 class ContextTest extends \PHPUnit_Framework_TestCase
 {
-	public function testContext()
-	{
-		$context = new Context();
+    public function testContext()
+    {
+        $context = new Context();
 
-		$this->assertEquals(null, $context->get('foo'));
-		$this->assertFalse($context->has('foo'));
+        $this->assertEquals(null, $context->get('foo'));
+        $this->assertFalse($context->has('foo'));
 
-		$context->set('foo', 'bar');
+        $context->set('foo', 'bar');
 
-		$this->assertEquals('bar', $context->get('foo'));
-		$this->assertTrue($context->has('foo'));
-	}
+        $this->assertEquals('bar', $context->get('foo'));
+        $this->assertTrue($context->has('foo'));
+    }
 }

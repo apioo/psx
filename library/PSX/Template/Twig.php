@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -34,70 +34,69 @@ use Twig_Loader_Filesystem;
  */
 class Twig implements TemplateInterface
 {
-	protected $config;
-	protected $dir;
-	protected $file;
-	protected $data = array();
+    protected $config;
+    protected $dir;
+    protected $file;
+    protected $data = array();
 
-	public function __construct(Config $config)
-	{
-		$this->config = $config;
-	}
+    public function __construct(Config $config)
+    {
+        $this->config = $config;
+    }
 
-	public function setDir($dir)
-	{
-		$this->dir = $dir;
-	}
+    public function setDir($dir)
+    {
+        $this->dir = $dir;
+    }
 
-	public function getDir()
-	{
-		return $this->dir;
-	}
+    public function getDir()
+    {
+        return $this->dir;
+    }
 
-	public function set($file)
-	{
-		$this->file = $file;
-	}
+    public function set($file)
+    {
+        $this->file = $file;
+    }
 
-	public function get()
-	{
-		return $this->file;
-	}
+    public function get()
+    {
+        return $this->file;
+    }
 
-	public function hasFile()
-	{
-		return !empty($this->file);
-	}
+    public function hasFile()
+    {
+        return !empty($this->file);
+    }
 
-	public function getFile()
-	{
-		return $this->dir != null ? $this->dir . '/' . $this->file : $this->file;
-	}
+    public function getFile()
+    {
+        return $this->dir != null ? $this->dir . '/' . $this->file : $this->file;
+    }
 
-	public function isFileAvailable()
-	{
-		return is_file($this->getFile());
-	}
+    public function isFileAvailable()
+    {
+        return is_file($this->getFile());
+    }
 
-	public function isAbsoluteFile()
-	{
-		return is_file($this->file);
-	}
+    public function isAbsoluteFile()
+    {
+        return is_file($this->file);
+    }
 
-	public function assign($key, $value)
-	{
-		$this->data[$key] = $value;
-	}
+    public function assign($key, $value)
+    {
+        $this->data[$key] = $value;
+    }
 
-	public function transform()
-	{
-		$loader = new Twig_Loader_Filesystem($this->dir);
-		$twig   = new Twig_Environment($loader, array(
-			'cache' => $this->config['psx_path_cache'],
-			'debug' => $this->config['psx_debug'],
-		));
+    public function transform()
+    {
+        $loader = new Twig_Loader_Filesystem($this->dir);
+        $twig   = new Twig_Environment($loader, array(
+            'cache' => $this->config['psx_path_cache'],
+            'debug' => $this->config['psx_debug'],
+        ));
 
-		return $twig->render($this->file, $this->data);
-	}
+        return $twig->render($this->file, $this->data);
+    }
 }
-

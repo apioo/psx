@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,41 +31,38 @@ use PSX\Command\ParameterParser\Map;
  */
 abstract class CommandDbTestCase extends \PHPUnit_Extensions_Database_TestCase
 {
-	use ContainerTestCaseTrait;
+    use ContainerTestCaseTrait;
 
-	protected static $con;
+    protected static $con;
 
-	protected $connection;
+    protected $connection;
 
-	public function getConnection()
-	{
-		if(!Environment::hasConnection())
-		{
-			$this->markTestSkipped('No database connection available');
-		}
+    public function getConnection()
+    {
+        if (!Environment::hasConnection()) {
+            $this->markTestSkipped('No database connection available');
+        }
 
-		if(self::$con === null)
-		{
-			self::$con = Environment::getService('connection');
-		}
+        if (self::$con === null) {
+            self::$con = Environment::getService('connection');
+        }
 
-		if($this->connection === null)
-		{
-			$this->connection = self::$con;
-		}
+        if ($this->connection === null) {
+            $this->connection = self::$con;
+        }
 
-		return $this->createDefaultDBConnection($this->connection->getWrappedConnection(), Environment::getService('config')->get('psx_sql_db'));
-	}
+        return $this->createDefaultDBConnection($this->connection->getWrappedConnection(), Environment::getService('config')->get('psx_sql_db'));
+    }
 
-	/**
-	 * Loads an specific command
-	 *
-	 * @param string $className
-	 * @param array $parameters
-	 * @return \PSX\CommandInterface
-	 */
-	protected function loadCommand($className, array $parameters)
-	{
-		return Environment::getService('executor')->run(new Map($className, $parameters));
-	}
+    /**
+     * Loads an specific command
+     *
+     * @param string $className
+     * @param array $parameters
+     * @return \PSX\CommandInterface
+     */
+    protected function loadCommand($className, array $parameters)
+    {
+        return Environment::getService('executor')->run(new Map($className, $parameters));
+    }
 }

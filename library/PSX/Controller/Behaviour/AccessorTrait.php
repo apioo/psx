@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,32 +32,31 @@ use PSX\Data\TransformerInterface;
  */
 trait AccessorTrait
 {
-	/**
-	 * @Inject
-	 * @var \PSX\Data\Extractor
-	 */
-	protected $extractor;
+    /**
+     * @Inject
+     * @var \PSX\Data\Extractor
+     */
+    protected $extractor;
 
-	private $_accessor;
+    private $_accessor;
 
-	/**
-	 * Returns an accessor object with that you can easily access values from
-	 * the request body
-	 *
-	 * @param \PSX\Data\TransformerInterface $transformer
-	 * @param string $readerType
-	 * @return \PSX\Data\Accessor
-	 */
-	protected function getAccessor(TransformerInterface $transformer = null, $readerType = null)
-	{
-		if($this->_accessor === null)
-		{
-			$data     = $this->extractor->extract($this->request, $transformer, $readerType);
-			$accessor = new Accessor($this->validate, $data);
+    /**
+     * Returns an accessor object with that you can easily access values from
+     * the request body
+     *
+     * @param \PSX\Data\TransformerInterface $transformer
+     * @param string $readerType
+     * @return \PSX\Data\Accessor
+     */
+    protected function getAccessor(TransformerInterface $transformer = null, $readerType = null)
+    {
+        if ($this->_accessor === null) {
+            $data     = $this->extractor->extract($this->request, $transformer, $readerType);
+            $accessor = new Accessor($this->validate, $data);
 
-			$this->_accessor = $accessor;
-		}
+            $this->_accessor = $accessor;
+        }
 
-		return $this->_accessor;
-	}
+        return $this->_accessor;
+    }
 }

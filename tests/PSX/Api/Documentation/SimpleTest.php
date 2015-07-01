@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,18 +31,18 @@ use PSX\Api\Resource;
  */
 class SimpleTest extends \PHPUnit_Framework_TestCase
 {
-	public function testSimple()
-	{
-		$view   = new Resource(Resource::STATUS_ACTIVE, '/foo');
-		$simple = new Simple($view, 'foo');
+    public function testSimple()
+    {
+        $view   = new Resource(Resource::STATUS_ACTIVE, '/foo');
+        $simple = new Simple($view, 'foo');
 
-		$this->assertTrue($simple->hasResource(1));
-		$this->assertFalse($simple->hasResource(8));
-		$this->assertEquals($view, $simple->getResource(1));
-		$this->assertEquals(null, $simple->getResource(8));
-		$this->assertEquals(array(1 => $view), $simple->getResources());
-		$this->assertEquals(1, $simple->getLatestVersion());
-		$this->assertFalse($simple->isVersionRequired());
-		$this->assertEquals('foo', $simple->getDescription());
-	}
+        $this->assertTrue($simple->hasResource(1));
+        $this->assertFalse($simple->hasResource(8));
+        $this->assertEquals($view, $simple->getResource(1));
+        $this->assertEquals(null, $simple->getResource(8));
+        $this->assertEquals(array(1 => $view), $simple->getResources());
+        $this->assertEquals(1, $simple->getLatestVersion());
+        $this->assertFalse($simple->isVersionRequired());
+        $this->assertEquals('foo', $simple->getDescription());
+    }
 }

@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -34,7 +34,7 @@ use PSX\Oauth2\TokenAbstract;
  * $http = new Http();
  * $code = new AuthorizationCode($http, new Url('[token_url]'));
  * $code->setClientPassword('[client_id]', '[client_secret]', AuthorizationCode::AUTH_POST);
- * 
+ *
  * $accessToken = $code->getAccessToken('[redirect_url]');
  *
  * // if we have an access token we can request the api
@@ -58,22 +58,21 @@ use PSX\Oauth2\TokenAbstract;
  */
 class Oauth2
 {
-	/**
-	 * If you have received an access token you can use this method to get the
-	 * authorization header. You can add the header to an http request to make
-	 * an valid oauth2 request i.e.
-	 * <code>
-	 * $header = array(
-	 * 	'Authorization: ' . $oauth->getAuthorizationHeader(...),
-	 * );
-	 * </code>
-	 *
-	 * @param \PSX\Oauth2\AccessToken $accessToken
-	 * @return string
-	 */
-	public function getAuthorizationHeader(AccessToken $accessToken)
-	{
-		return TokenAbstract::factory($accessToken)->getHeader();
-	}
+    /**
+     * If you have received an access token you can use this method to get the
+     * authorization header. You can add the header to an http request to make
+     * an valid oauth2 request i.e.
+     * <code>
+     * $header = array(
+     * 	'Authorization: ' . $oauth->getAuthorizationHeader(...),
+     * );
+     * </code>
+     *
+     * @param \PSX\Oauth2\AccessToken $accessToken
+     * @return string
+     */
+    public function getAuthorizationHeader(AccessToken $accessToken)
+    {
+        return TokenAbstract::factory($accessToken)->getHeader();
+    }
 }
-

@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,12 +32,12 @@ use PSX\Test\ControllerTestCase;
  */
 class SwaggerControllerTest extends ControllerTestCase
 {
-	public function testIndex()
-	{
-		$response = $this->sendRequest('http://127.0.0.1/swagger', 'GET', ['Accept' => 'application/json']);
-		$json     = (string) $response->getBody();
+    public function testIndex()
+    {
+        $response = $this->sendRequest('http://127.0.0.1/swagger', 'GET', ['Accept' => 'application/json']);
+        $json     = (string) $response->getBody();
 
-		$expect = <<<'JSON'
+        $expect = <<<'JSON'
 {
     "swaggerVersion": "1.2",
     "apiVersion": "1.0",
@@ -49,17 +49,17 @@ class SwaggerControllerTest extends ControllerTestCase
 }
 JSON;
 
-		$this->assertEquals(null, $response->getStatusCode(), $json);
-		$this->assertEquals('application/json', $response->getHeader('Content-Type'), $json);
-		$this->assertJsonStringEqualsJsonString($expect, $json, $json);
-	}
+        $this->assertEquals(null, $response->getStatusCode(), $json);
+        $this->assertEquals('application/json', $response->getHeader('Content-Type'), $json);
+        $this->assertJsonStringEqualsJsonString($expect, $json, $json);
+    }
 
-	public function testDetail()
-	{
-		$response = $this->sendRequest('http://127.0.0.1/swagger/1/api', 'GET', ['Accept' => 'application/json']);
-		$json     = (string) $response->getBody();
+    public function testDetail()
+    {
+        $response = $this->sendRequest('http://127.0.0.1/swagger/1/api', 'GET', ['Accept' => 'application/json']);
+        $json     = (string) $response->getBody();
 
-		$expect = <<<'JSON'
+        $expect = <<<'JSON'
 {
     "swaggerVersion": "1.2",
     "apiVersion": 1,
@@ -280,17 +280,17 @@ JSON;
 }
 JSON;
 
-		$this->assertEquals(null, $response->getStatusCode(), $json);
-		$this->assertEquals('application/json', $response->getHeader('Content-Type'), $json);
-		$this->assertJsonStringEqualsJsonString($expect, $json, $json);
-	}
+        $this->assertEquals(null, $response->getStatusCode(), $json);
+        $this->assertEquals('application/json', $response->getHeader('Content-Type'), $json);
+        $this->assertJsonStringEqualsJsonString($expect, $json, $json);
+    }
 
-	protected function getPaths()
-	{
-		return array(
-			[['GET'], '/swagger', 'PSX\Controller\Tool\SwaggerGeneratorController::doIndex'],
-			[['GET'], '/swagger/:version/*path', 'PSX\Controller\Tool\SwaggerGeneratorController::doDetail'],
-			[['GET', 'POST', 'PUT', 'DELETE'], '/api', 'PSX\Controller\Foo\Application\TestSchemaApiController'],
-		);
-	}
+    protected function getPaths()
+    {
+        return array(
+            [['GET'], '/swagger', 'PSX\Controller\Tool\SwaggerGeneratorController::doIndex'],
+            [['GET'], '/swagger/:version/*path', 'PSX\Controller\Tool\SwaggerGeneratorController::doDetail'],
+            [['GET', 'POST', 'PUT', 'DELETE'], '/api', 'PSX\Controller\Foo\Application\TestSchemaApiController'],
+        );
+    }
 }

@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,81 +29,73 @@ namespace PSX\Cache;
  */
 class Item implements CacheItemInterface
 {
-	protected $key;
-	protected $value;
-	protected $isHit;
-	protected $ttl;
+    protected $key;
+    protected $value;
+    protected $isHit;
+    protected $ttl;
 
-	public function __construct($key, $value, $isHit, $ttl = null)
-	{
-		$this->key   = $key;
-		$this->value = $value;
-		$this->isHit = $isHit;
+    public function __construct($key, $value, $isHit, $ttl = null)
+    {
+        $this->key   = $key;
+        $this->value = $value;
+        $this->isHit = $isHit;
 
-		$this->setExpiration($ttl);
-	}
+        $this->setExpiration($ttl);
+    }
 
-	public function getKey()
-	{
-		return $this->key;
-	}
+    public function getKey()
+    {
+        return $this->key;
+    }
 
-	public function get()
-	{
-		return $this->value;
-	}
+    public function get()
+    {
+        return $this->value;
+    }
 
-	public function set($value, $ttl = null)
-	{
-		$this->value = $value;
+    public function set($value, $ttl = null)
+    {
+        $this->value = $value;
 
-		$this->setExpiration($ttl);
+        $this->setExpiration($ttl);
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function isHit()
-	{
-		return $this->isHit;
-	}
+    public function isHit()
+    {
+        return $this->isHit;
+    }
 
-	public function exists()
-	{
-		return $this->value !== null;
-	}
+    public function exists()
+    {
+        return $this->value !== null;
+    }
 
-	public function setExpiration($ttl = null)
-	{
-		if(is_numeric($ttl))
-		{
-			$this->ttl = time() + $ttl;
-		}
-		else if($ttl instanceof \DateTime)
-		{
-			$this->ttl = $ttl->getTimestamp();
-		}
-		else if($ttl === null)
-		{
-			$this->ttl = null;
-		}
+    public function setExpiration($ttl = null)
+    {
+        if (is_numeric($ttl)) {
+            $this->ttl = time() + $ttl;
+        } elseif ($ttl instanceof \DateTime) {
+            $this->ttl = $ttl->getTimestamp();
+        } elseif ($ttl === null) {
+            $this->ttl = null;
+        }
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function getExpiration()
-	{
-		if($this->ttl === null)
-		{
-			return new \DateTime();
-		}
-		else
-		{
-			return new \DateTime('@' . $this->ttl);
-		}
-	}
+    public function getExpiration()
+    {
+        if ($this->ttl === null) {
+            return new \DateTime();
+        } else {
+            return new \DateTime('@' . $this->ttl);
+        }
+    }
 
-	public function hasExpiration()
-	{
-		return $this->ttl !== null;
-	}
+    public function hasExpiration()
+    {
+        return $this->ttl !== null;
+    }
 }

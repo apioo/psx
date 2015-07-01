@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,23 +33,22 @@ use PSX\Oauth2\Provider\GrantTypeInterface;
  */
 abstract class RefreshTokenAbstract implements GrantTypeInterface
 {
-	public function getType()
-	{
-		return self::TYPE_REFRESH_TOKEN;
-	}
+    public function getType()
+    {
+        return self::TYPE_REFRESH_TOKEN;
+    }
 
-	public function generateAccessToken(Credentials $credentials = null, array $parameters)
-	{
-		if($credentials === null)
-		{
-			throw new InvalidRequestException('Credentials not available');
-		}
+    public function generateAccessToken(Credentials $credentials = null, array $parameters)
+    {
+        if ($credentials === null) {
+            throw new InvalidRequestException('Credentials not available');
+        }
 
-		$refreshToken = isset($parameters['refresh_token']) ? $parameters['refresh_token'] : null;
-		$scope        = isset($parameters['scope']) ? $parameters['scope'] : null;
+        $refreshToken = isset($parameters['refresh_token']) ? $parameters['refresh_token'] : null;
+        $scope        = isset($parameters['scope']) ? $parameters['scope'] : null;
 
-		return $this->generate($credentials, $refreshToken, $scope);
-	}
+        return $this->generate($credentials, $refreshToken, $scope);
+    }
 
-	abstract protected function generate(Credentials $credentials, $refreshToken, $scope);
+    abstract protected function generate(Credentials $credentials, $refreshToken, $scope);
 }

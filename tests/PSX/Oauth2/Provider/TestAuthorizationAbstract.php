@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,22 +29,22 @@ namespace PSX\Oauth2\Provider;
  */
 class TestAuthorizationAbstract extends AuthorizationAbstract
 {
-	protected function hasGrant(AccessRequest $request)
-	{
-		// normally we must check whether the user is authenticated and if not
-		// we must redirect them to an login form which redirects the user back
-		// if the login was successful. In this case we use the get parameter
-		// for testing purpose
+    protected function hasGrant(AccessRequest $request)
+    {
+        // normally we must check whether the user is authenticated and if not
+        // we must redirect them to an login form which redirects the user back
+        // if the login was successful. In this case we use the get parameter
+        // for testing purpose
 
-		return $this->getParameter('has_grant');
-	}
+        return $this->getParameter('has_grant');
+    }
 
-	protected function generateCode(AccessRequest $request)
-	{
-		// this code must be stored in an database so we can later check whether
-		// the code was generated. In this case we use the get parameter for 
-		// testing purpose
+    protected function generateCode(AccessRequest $request)
+    {
+        // this code must be stored in an database so we can later check whether
+        // the code was generated. In this case we use the get parameter for
+        // testing purpose
 
-		return $this->getParameter('code');
-	}
+        return $this->getParameter('code');
+    }
 }

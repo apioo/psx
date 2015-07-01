@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,30 +35,27 @@ use PSX\Loader\Context;
  */
 class DependencyInjector implements CallbackResolverInterface
 {
-	protected $factory;
+    protected $factory;
 
-	public function __construct(ControllerFactoryInterface $factory)
-	{
-		$this->factory = $factory;
-	}
+    public function __construct(ControllerFactoryInterface $factory)
+    {
+        $this->factory = $factory;
+    }
 
-	public function resolve(RequestInterface $request, ResponseInterface $response, Context $context)
-	{
-		$source = $context->get(Context::KEY_SOURCE);
+    public function resolve(RequestInterface $request, ResponseInterface $response, Context $context)
+    {
+        $source = $context->get(Context::KEY_SOURCE);
 
-		if(strpos($source, '::') !== false)
-		{
-			list($className, $method) = explode('::', $source, 2);
-		}
-		else
-		{
-			$className = $source;
-			$method    = null;
-		}
+        if (strpos($source, '::') !== false) {
+            list($className, $method) = explode('::', $source, 2);
+        } else {
+            $className = $source;
+            $method    = null;
+        }
 
-		$context->set(Context::KEY_CLASS, $className);
-		$context->set(Context::KEY_METHOD, $method);
+        $context->set(Context::KEY_CLASS, $className);
+        $context->set(Context::KEY_METHOD, $method);
 
-		return $this->factory->getController($className, $request, $response, $context);
-	}
+        return $this->factory->getController($className, $request, $response, $context);
+    }
 }

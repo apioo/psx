@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,47 +31,47 @@ use PSX\Data\Schema\PropertyInterface;
  */
 class ArrayType extends CompositeTypeAbstract
 {
-	protected $minLength;
-	protected $maxLength;
+    protected $minLength;
+    protected $maxLength;
 
-	public function add(PropertyInterface $property)
-	{
-		return $this->setPrototype($property);
-	}
+    public function add(PropertyInterface $property)
+    {
+        return $this->setPrototype($property);
+    }
 
-	public function setPrototype(PropertyInterface $prototype)
-	{
-		$this->properties = array('prototype' => $prototype);
+    public function setPrototype(PropertyInterface $prototype)
+    {
+        $this->properties = array('prototype' => $prototype);
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function getPrototype()
-	{
-		return current($this->properties);
-	}
+    public function getPrototype()
+    {
+        return current($this->properties);
+    }
 
-	public function setMinLength($minLength)
-	{
-		$this->minLength = $minLength;
+    public function setMinLength($minLength)
+    {
+        $this->minLength = $minLength;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function getMinLength()
-	{
-		return $this->minLength;
-	}
+    public function getMinLength()
+    {
+        return $this->minLength;
+    }
 
-	public function setMaxLength($maxLength)
-	{
-		$this->maxLength = $maxLength;
+    public function setMaxLength($maxLength)
+    {
+        $this->maxLength = $maxLength;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function getMaxLength()
-	{
-		return $this->maxLength;
-	}
+    public function getMaxLength()
+    {
+        return $this->maxLength;
+    }
 }

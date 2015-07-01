@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,49 +29,49 @@ namespace PSX\Command;
  */
 class Parameter
 {
-	const TYPE_OPTIONAL = 1;
-	const TYPE_REQUIRED = 2;
-	const TYPE_FLAG     = 3;
+    const TYPE_OPTIONAL = 1;
+    const TYPE_REQUIRED = 2;
+    const TYPE_FLAG     = 3;
 
-	protected $name;
-	protected $type;
-	protected $description;
-	protected $value;
+    protected $name;
+    protected $type;
+    protected $description;
+    protected $value;
 
-	public function __construct($name, $type, $description)
-	{
-		$this->name        = $name;
-		$this->type        = $type;
-		$this->description = $description;
-	}
+    public function __construct($name, $type, $description)
+    {
+        $this->name        = $name;
+        $this->type        = $type;
+        $this->description = $description;
+    }
 
-	public function getName()
-	{
-		return $this->name;
-	}
+    public function getName()
+    {
+        return $this->name;
+    }
 
-	public function getType()
-	{
-		return $this->type;
-	}
+    public function getType()
+    {
+        return $this->type;
+    }
 
-	public function getDescription()
-	{
-		return $this->description;
-	}
+    public function getDescription()
+    {
+        return $this->description;
+    }
 
-	public function setValue($value)
-	{
-		$this->value = $value;
-	}
+    public function setValue($value)
+    {
+        $this->value = $value;
+    }
 
-	public function getValue()
-	{
-		return $this->value;
-	}
+    public function getValue()
+    {
+        return $this->value;
+    }
 
-	public function hasValue()
-	{
-		return !empty($this->value);
-	}
+    public function hasValue()
+    {
+        return !empty($this->value);
+    }
 }

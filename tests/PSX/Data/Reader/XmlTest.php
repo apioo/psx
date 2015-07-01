@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,9 +32,9 @@ use PSX\Http\Message;
  */
 class XmlTest extends \PHPUnit_Framework_TestCase
 {
-	public function testRead()
-	{
-		$body = <<<INPUT
+    public function testRead()
+    {
+        $body = <<<INPUT
 <?xml version="1.0" encoding="UTF-8"?>
 <foo>
 	<bar>jedi</bar>
@@ -42,20 +42,20 @@ class XmlTest extends \PHPUnit_Framework_TestCase
 </foo>
 INPUT;
 
-		$reader  = new Xml();
-		$message = new Message(array(), $body);
-		$dom     = $reader->read($message);
+        $reader  = new Xml();
+        $message = new Message(array(), $body);
+        $dom     = $reader->read($message);
 
-		$this->assertEquals(true, $dom instanceof DOMDocument);
-		$this->assertEquals('foo', $dom->documentElement->localName);
-	}
+        $this->assertEquals(true, $dom instanceof DOMDocument);
+        $this->assertEquals('foo', $dom->documentElement->localName);
+    }
 
-	public function testReadEmpty()
-	{
-		$reader  = new Xml();
-		$message = new Message(array(), '');
-		$dom     = $reader->read($message);
+    public function testReadEmpty()
+    {
+        $reader  = new Xml();
+        $message = new Message(array(), '');
+        $dom     = $reader->read($message);
 
-		$this->assertNull($dom);
-	}
+        $this->assertNull($dom);
+    }
 }

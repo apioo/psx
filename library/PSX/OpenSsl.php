@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,146 +33,142 @@ use PSX\OpenSsl\PKey;
  */
 class OpenSsl
 {
-	use ErrorHandleTrait;
+    use ErrorHandleTrait;
 
-	public static function decrypt($data, $method, $password, $rawInput = false, $iv = '')
-	{
-		$return = openssl_decrypt($data, $method, $password, $rawInput, $iv);
+    public static function decrypt($data, $method, $password, $rawInput = false, $iv = '')
+    {
+        $return = openssl_decrypt($data, $method, $password, $rawInput, $iv);
 
-		self::handleReturn($return);
+        self::handleReturn($return);
 
-		return $return;
-	}
+        return $return;
+    }
 
-	public static function dhComputeKey($pubKey, PKey $dhKey)
-	{
-		$return = openssl_dh_compute_key($pubKey, $dhKey->getResource());
+    public static function dhComputeKey($pubKey, PKey $dhKey)
+    {
+        $return = openssl_dh_compute_key($pubKey, $dhKey->getResource());
 
-		self::handleReturn($return);
+        self::handleReturn($return);
 
-		return $return;
-	}
+        return $return;
+    }
 
-	public static function digest($data, $func, $rawOutput = false)
-	{
-		$return = openssl_digest($data, $func, $rawOutput);
+    public static function digest($data, $func, $rawOutput = false)
+    {
+        $return = openssl_digest($data, $func, $rawOutput);
 
-		self::handleReturn($return);
+        self::handleReturn($return);
 
-		return $return;
-	}
+        return $return;
+    }
 
-	public static function encrypt($data, $method, $password, $rawOutput = false, $iv = '')
-	{
-		$return = openssl_encrypt($data, $method, $password, $rawOutput, $iv);
+    public static function encrypt($data, $method, $password, $rawOutput = false, $iv = '')
+    {
+        $return = openssl_encrypt($data, $method, $password, $rawOutput, $iv);
 
-		self::handleReturn($return);
+        self::handleReturn($return);
 
-		return $return;
-	}
+        return $return;
+    }
 
-	public static function errorString()
-	{
-		return openssl_error_string();
-	}
+    public static function errorString()
+    {
+        return openssl_error_string();
+    }
 
-	public static function getCipherMethods($aliases = false)
-	{
-		return openssl_get_cipher_methods($aliases);
-	}
+    public static function getCipherMethods($aliases = false)
+    {
+        return openssl_get_cipher_methods($aliases);
+    }
 
-	public static function getMdMethods($aliases = false)
-	{
-		return openssl_get_md_methods($aliases);
-	}
+    public static function getMdMethods($aliases = false)
+    {
+        return openssl_get_md_methods($aliases);
+    }
 
-	public static function open($sealedData, &$openData, $envKey, PKey $key)
-	{
-		$return = openssl_open($sealedData, $openData, $envKey, $key->getResource());
+    public static function open($sealedData, &$openData, $envKey, PKey $key)
+    {
+        $return = openssl_open($sealedData, $openData, $envKey, $key->getResource());
 
-		self::handleReturn($return);
+        self::handleReturn($return);
 
-		return $return;
-	}
+        return $return;
+    }
 
-	public static function seal($data, &$sealedData, &$envKeys, array $pubKeys)
-	{
-		$pubKeyIds = array();
-		foreach($pubKeys as $pubKey)
-		{
-			if($pubKey instanceof PKey)
-			{
-				$pubKeyIds[] = $pubKey->getPublicKey();
-			}
-			else
-			{
-				throw new OpenSslException('Pub keys must be an array containing PSX\OpenSsl\PKey instances');
-			}
-		}
+    public static function seal($data, &$sealedData, &$envKeys, array $pubKeys)
+    {
+        $pubKeyIds = array();
+        foreach ($pubKeys as $pubKey) {
+            if ($pubKey instanceof PKey) {
+                $pubKeyIds[] = $pubKey->getPublicKey();
+            } else {
+                throw new OpenSslException('Pub keys must be an array containing PSX\OpenSsl\PKey instances');
+            }
+        }
 
-		$return = openssl_seal($data, $sealedData, $envKeys, $pubKeyIds);
+        $return = openssl_seal($data, $sealedData, $envKeys, $pubKeyIds);
 
-		self::handleReturn($return);
+        self::handleReturn($return);
 
-		return $return;
-	}
+        return $return;
+    }
 
-	public static function sign($data, &$signature, PKey $key, $signatureAlg = OPENSSL_ALGO_SHA1)
-	{
-		$return = openssl_sign($data, $signature, $key->getResource(), $signatureAlg);
+    public static function sign($data, &$signature, PKey $key, $signatureAlg = OPENSSL_ALGO_SHA1)
+    {
+        $return = openssl_sign($data, $signature, $key->getResource(), $signatureAlg);
 
-		self::handleReturn($return);
+        self::handleReturn($return);
 
-		return $return;
-	}
+        return $return;
+    }
 
-	public static function verify($data, $signature, PKey $key, $signatureAlg = OPENSSL_ALGO_SHA1)
-	{
-		$return = openssl_verify($data, $signature, $key->getPublicKey(), $signatureAlg);
+    public static function verify($data, $signature, PKey $key, $signatureAlg = OPENSSL_ALGO_SHA1)
+    {
+        $return = openssl_verify($data, $signature, $key->getPublicKey(), $signatureAlg);
 
-		self::handleReturn($return);
+        self::handleReturn($return);
 
-		return $return;
-	}
+        return $return;
+    }
 
-	public static function privateDecrypt($data, &$decrypted, PKey $key, $padding = OPENSSL_PKCS1_PADDING)
-	{
-		$return = openssl_private_decrypt($data, $decrypted, $key->getResource(), $padding);
+    public static function privateDecrypt($data, &$decrypted, PKey $key, $padding = OPENSSL_PKCS1_PADDING)
+    {
+        $return = openssl_private_decrypt($data, $decrypted, $key->getResource(), $padding);
 
-		self::handleReturn($return);
+        self::handleReturn($return);
 
-		return $return;
-	}
+        return $return;
+    }
 
-	public static function privateEncrypt($data, &$crypted, PKey $key, $padding = OPENSSL_PKCS1_PADDING)
-	{
-		$return = openssl_private_encrypt($data, $crypted, $key->getResource(), $padding);
+    public static function privateEncrypt($data, &$crypted, PKey $key, $padding = OPENSSL_PKCS1_PADDING)
+    {
+        $return = openssl_private_encrypt($data, $crypted, $key->getResource(), $padding);
 
-		self::handleReturn($return);
+        self::handleReturn($return);
 
-		return $return;
-	}
+        return $return;
+    }
 
-	public static function publicDecrypt($data, &$decrypted, PKey $key, $padding = OPENSSL_PKCS1_PADDING)
-	{
-		$return = openssl_public_decrypt($data, $decrypted, $key->getPublicKey(), $padding);
+    public static function publicDecrypt($data, &$decrypted, PKey $key, $padding = OPENSSL_PKCS1_PADDING)
+    {
+        $return = openssl_public_decrypt($data, $decrypted, $key->getPublicKey(), $padding);
 
-		self::handleReturn($return);
+        self::handleReturn($return);
 
-		return $return;
-	}
+        return $return;
+    }
 
-	public static function publicEncrypt($data, &$crypted, PKey $key, $padding = OPENSSL_PKCS1_PADDING)
-	{
-		$return = openssl_public_encrypt($data, $crypted, $key->getPublicKey(), $padding);
+    public static function publicEncrypt($data, &$crypted, PKey $key, $padding = OPENSSL_PKCS1_PADDING)
+    {
+        $return = openssl_public_encrypt($data, $crypted, $key->getPublicKey(), $padding);
 
-		self::handleReturn($return);
+        self::handleReturn($return);
 
-		return $return;
-	}
+        return $return;
+    }
 
-	public static function randomPseudoBytes($length)
-	{
-		return openssl_random_pseudo_bytes($length);
-	}
+    public static function randomPseudoBytes($length)
+    {
+        return openssl_random_pseudo_bytes($length);
+    }
 }

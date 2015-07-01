@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,55 +31,55 @@ use PSX\Http\MediaType;
  */
 class CallbackTest extends \PHPUnit_Framework_TestCase
 {
-	public function testTransform()
-	{
-		$transformer = new Callback(function($data){
+    public function testTransform()
+    {
+        $transformer = new Callback(function ($data) {
 
-			return array(
-				'foo' => md5($data)
-			);
+            return array(
+                'foo' => md5($data)
+            );
 
-		});
+        });
 
-		$data = 'some data format';
+        $data = 'some data format';
 
-		$result = $transformer->transform($data);
+        $result = $transformer->transform($data);
 
-		$this->assertEquals(array('foo' => '791a818e1f5aef6ae38ada7b7317c69a'), $result);
-	}
+        $this->assertEquals(array('foo' => '791a818e1f5aef6ae38ada7b7317c69a'), $result);
+    }
 
-	public function testAccept()
-	{
-		$transformer = new Callback(function(){}, 'text/plain');
+    public function testAccept()
+    {
+        $transformer = new Callback(function () {}, 'text/plain');
 
-		$this->assertTrue($transformer->accept(new MediaType('text/plain')));
-	}
+        $this->assertTrue($transformer->accept(new MediaType('text/plain')));
+    }
 
-	public function testAcceptCallback()
-	{
-		$testCase = $this;
-		$transformer = new Callback(function(){}, function($contentType) use ($testCase){
+    public function testAcceptCallback()
+    {
+        $testCase = $this;
+        $transformer = new Callback(function () {}, function ($contentType) use ($testCase) {
 
-			$testCase->assertInstanceOf('PSX\Http\MediaType', $contentType);
+            $testCase->assertInstanceOf('PSX\Http\MediaType', $contentType);
 
-			return $contentType->getName() == 'text/plain';
+            return $contentType->getName() == 'text/plain';
 
-		});
+        });
 
-		$this->assertTrue($transformer->accept(new MediaType('text/plain')));
-	}
+        $this->assertTrue($transformer->accept(new MediaType('text/plain')));
+    }
 
-	public function testAcceptAll()
-	{
-		$transformer = new Callback(function(){});
+    public function testAcceptAll()
+    {
+        $transformer = new Callback(function () {});
 
-		$this->assertTrue($transformer->accept(new MediaType('text/plain')));
-	}
+        $this->assertTrue($transformer->accept(new MediaType('text/plain')));
+    }
 
-	public function testAcceptNone()
-	{
-		$transformer = new Callback(function(){}, false);
+    public function testAcceptNone()
+    {
+        $transformer = new Callback(function () {}, false);
 
-		$this->assertFalse($transformer->accept(new MediaType('text/plain')));
-	}
+        $this->assertFalse($transformer->accept(new MediaType('text/plain')));
+    }
 }

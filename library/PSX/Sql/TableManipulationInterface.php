@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,27 +29,27 @@ namespace PSX\Sql;
  */
 interface TableManipulationInterface
 {
-	/**
-	 * Create the record
-	 *
-	 * @param \PSX\Data\RecordInterface|array $record
-	 * @return void
-	 */
-	public function create($record);
+    /**
+     * Create the record
+     *
+     * @param \PSX\Data\RecordInterface|array $record
+     * @return void
+     */
+    public function create($record);
 
-	/**
-	 * Update the record
-	 *
-	 * @param \PSX\Data\RecordInterface|array $record
-	 * @return void
-	 */
-	public function update($record);
+    /**
+     * Update the record
+     *
+     * @param \PSX\Data\RecordInterface|array $record
+     * @return void
+     */
+    public function update($record);
 
-	/**
-	 * Delete the record
-	 *
-	 * @param \PSX\Data\RecordInterface|array $record
-	 * @return void
-	 */
-	public function delete($record);
+    /**
+     * Delete the record
+     *
+     * @param \PSX\Data\RecordInterface|array $record
+     * @return void
+     */
+    public function delete($record);
 }

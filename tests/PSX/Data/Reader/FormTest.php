@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,32 +31,32 @@ use PSX\Http\Message;
  */
 class FormTest extends \PHPUnit_Framework_TestCase
 {
-	public function testRead()
-	{
-		$body = <<<INPUT
+    public function testRead()
+    {
+        $body = <<<INPUT
 foo=bar&bar%5B0%5D=blub&bar%5B1%5D=bla&test%5Bfoo%5D=bar
 INPUT;
 
-		$reader  = new Form();
-		$message = new Message(array(), $body);
-		$form    = $reader->read($message);
+        $reader  = new Form();
+        $message = new Message(array(), $body);
+        $form    = $reader->read($message);
 
-		$expect = new \stdClass();
-		$expect->foo = 'bar';
-		$expect->bar = array('blub', 'bla');
-		$expect->test = new \stdClass();
-		$expect->test->foo = 'bar';
+        $expect = new \stdClass();
+        $expect->foo = 'bar';
+        $expect->bar = array('blub', 'bla');
+        $expect->test = new \stdClass();
+        $expect->test->foo = 'bar';
 
-		$this->assertInstanceOf('stdClass', $form);
-		$this->assertEquals($expect, $form);
-	}
+        $this->assertInstanceOf('stdClass', $form);
+        $this->assertEquals($expect, $form);
+    }
 
-	public function testReadEmpty()
-	{
-		$reader  = new Form();
-		$message = new Message(array(), '');
-		$form    = $reader->read($message);
+    public function testReadEmpty()
+    {
+        $reader  = new Form();
+        $message = new Message(array(), '');
+        $form    = $reader->read($message);
 
-		$this->assertNull($form);
-	}
+        $this->assertNull($form);
+    }
 }

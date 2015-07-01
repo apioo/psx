@@ -930,7 +930,7 @@
       <name>pidf+xml</name>
       <xref type="rfc" data="rfc3863"/>
       <file type="template">application/pidf+xml</file>
-    </record>  
+    </record>
     <record>
       <name>pkcs10</name>
       <xref type="rfc" data="rfc5967"/>
@@ -5773,7 +5773,7 @@
       <name>G722</name>
       <xref type="rfc" data="rfc4856"/>
       <file type="template">audio/G722</file>
-    </record>   
+    </record>
     <record>
       <name>G723</name>
       <xref type="rfc" data="rfc4856"/>
@@ -6724,7 +6724,7 @@
     <record>
       <name>digest</name>
       <xref type="rfc" data="rfc2046"/>
-      <xref type="rfc" data="rfc2045"/>  
+      <xref type="rfc" data="rfc2045"/>
     </record>
     <record>
       <name>encrypted</name>

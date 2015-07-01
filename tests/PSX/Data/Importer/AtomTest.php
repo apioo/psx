@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,9 +33,9 @@ use PSX\Test\Environment;
  */
 class AtomTest extends \PHPUnit_Framework_TestCase
 {
-	public function testAtom()
-	{
-		$body = <<<XML
+    public function testAtom()
+    {
+        $body = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 	<title type="text">dive into mark</title>
@@ -73,83 +73,83 @@ class AtomTest extends \PHPUnit_Framework_TestCase
 </feed>
 XML;
 
-		$request = new Message(array('Content-Type' => 'application/atom+xml'), $body);
-		$atom    = Environment::getService('importer')->import(new Atom(), $request);
+        $request = new Message(array('Content-Type' => 'application/atom+xml'), $body);
+        $atom    = Environment::getService('importer')->import(new Atom(), $request);
 
-		$this->assertInstanceOf('PSX\Atom', $atom);
-		$this->assertEquals('dive into mark', $atom->getTitle());
-		$this->assertEquals('A <em>lot</em> of effort went into making this effortless', $atom->getSubTitle());
-		$this->assertEquals('2005-07-31', $atom->getUpdated()->format('Y-m-d'));
-		$this->assertEquals('tag:example.org,2003:3', $atom->getId());
+        $this->assertInstanceOf('PSX\Atom', $atom);
+        $this->assertEquals('dive into mark', $atom->getTitle());
+        $this->assertEquals('A <em>lot</em> of effort went into making this effortless', $atom->getSubTitle());
+        $this->assertEquals('2005-07-31', $atom->getUpdated()->format('Y-m-d'));
+        $this->assertEquals('tag:example.org,2003:3', $atom->getId());
 
-		$links = $atom->getLink();
-		$this->assertInstanceOf('PSX\Atom\Link', $links[0]);
-		$this->assertEquals('http://example.org/', $links[0]->getHref());
-		$this->assertEquals('alternate', $links[0]->getRel());
-		$this->assertEquals('text/html', $links[0]->getType());
-		$this->assertEquals('en', $links[0]->getHrefLang());
-		$this->assertEquals('', $links[0]->getTitle());
-		$this->assertEquals('', $links[0]->getLength());
+        $links = $atom->getLink();
+        $this->assertInstanceOf('PSX\Atom\Link', $links[0]);
+        $this->assertEquals('http://example.org/', $links[0]->getHref());
+        $this->assertEquals('alternate', $links[0]->getRel());
+        $this->assertEquals('text/html', $links[0]->getType());
+        $this->assertEquals('en', $links[0]->getHrefLang());
+        $this->assertEquals('', $links[0]->getTitle());
+        $this->assertEquals('', $links[0]->getLength());
 
-		$this->assertInstanceOf('PSX\Atom\Link', $links[1]);
-		$this->assertEquals('http://example.org/feed.atom', $links[1]->getHref());
-		$this->assertEquals('self', $links[1]->getRel());
-		$this->assertEquals('application/atom+xml', $links[1]->getType());
-		$this->assertEquals('', $links[1]->getHrefLang());
-		$this->assertEquals('', $links[1]->getTitle());
-		$this->assertEquals('', $links[1]->getLength());
+        $this->assertInstanceOf('PSX\Atom\Link', $links[1]);
+        $this->assertEquals('http://example.org/feed.atom', $links[1]->getHref());
+        $this->assertEquals('self', $links[1]->getRel());
+        $this->assertEquals('application/atom+xml', $links[1]->getType());
+        $this->assertEquals('', $links[1]->getHrefLang());
+        $this->assertEquals('', $links[1]->getTitle());
+        $this->assertEquals('', $links[1]->getLength());
 
-		$this->assertEquals('Copyright (c) 2003, Mark Pilgrim', $atom->getRights());
-		$this->assertEquals('Example Toolkit', $atom->getGenerator());
+        $this->assertEquals('Copyright (c) 2003, Mark Pilgrim', $atom->getRights());
+        $this->assertEquals('Example Toolkit', $atom->getGenerator());
 
-		$entry = $atom->current();
+        $entry = $atom->current();
 
-		$this->assertInstanceOf('PSX\Atom\Entry', $entry);
-		$this->assertEquals('Atom draft-07 snapshot', $entry->getTitle());
+        $this->assertInstanceOf('PSX\Atom\Entry', $entry);
+        $this->assertEquals('Atom draft-07 snapshot', $entry->getTitle());
 
-		$links = $entry->getLink();
-		$this->assertInstanceOf('PSX\Atom\Link', $links[0]);
-		$this->assertEquals('http://example.org/2005/04/02/atom', $links[0]->getHref());
-		$this->assertEquals('alternate', $links[0]->getRel());
-		$this->assertEquals('text/html', $links[0]->getType());
-		$this->assertEquals('', $links[0]->getHrefLang());
-		$this->assertEquals('', $links[0]->getTitle());
-		$this->assertEquals('', $links[0]->getLength());
+        $links = $entry->getLink();
+        $this->assertInstanceOf('PSX\Atom\Link', $links[0]);
+        $this->assertEquals('http://example.org/2005/04/02/atom', $links[0]->getHref());
+        $this->assertEquals('alternate', $links[0]->getRel());
+        $this->assertEquals('text/html', $links[0]->getType());
+        $this->assertEquals('', $links[0]->getHrefLang());
+        $this->assertEquals('', $links[0]->getTitle());
+        $this->assertEquals('', $links[0]->getLength());
 
-		$this->assertInstanceOf('PSX\Atom\Link', $links[1]);
-		$this->assertEquals('http://example.org/audio/ph34r_my_podcast.mp3', $links[1]->getHref());
-		$this->assertEquals('enclosure', $links[1]->getRel());
-		$this->assertEquals('audio/mpeg', $links[1]->getType());
-		$this->assertEquals('', $links[1]->getHrefLang());
-		$this->assertEquals('', $links[1]->getTitle());
-		$this->assertEquals('1337', $links[1]->getLength());
+        $this->assertInstanceOf('PSX\Atom\Link', $links[1]);
+        $this->assertEquals('http://example.org/audio/ph34r_my_podcast.mp3', $links[1]->getHref());
+        $this->assertEquals('enclosure', $links[1]->getRel());
+        $this->assertEquals('audio/mpeg', $links[1]->getType());
+        $this->assertEquals('', $links[1]->getHrefLang());
+        $this->assertEquals('', $links[1]->getTitle());
+        $this->assertEquals('1337', $links[1]->getLength());
 
-		$this->assertEquals('tag:example.org,2003:3.2397', $entry->getId());
-		$this->assertEquals('2005-07-31', $entry->getUpdated()->format('Y-m-d'));
-		$this->assertEquals('2003-12-13', $entry->getPublished()->format('Y-m-d'));
+        $this->assertEquals('tag:example.org,2003:3.2397', $entry->getId());
+        $this->assertEquals('2005-07-31', $entry->getUpdated()->format('Y-m-d'));
+        $this->assertEquals('2003-12-13', $entry->getPublished()->format('Y-m-d'));
 
-		$authors = $entry->getAuthor();
-		$this->assertInstanceOf('PSX\Atom\Person', $authors[0]);
-		$this->assertEquals('Mark Pilgrim', $authors[0]->getName());
-		$this->assertEquals('http://example.org/', $authors[0]->getUri());
-		$this->assertEquals('f8dy@example.com', $authors[0]->getEmail());
+        $authors = $entry->getAuthor();
+        $this->assertInstanceOf('PSX\Atom\Person', $authors[0]);
+        $this->assertEquals('Mark Pilgrim', $authors[0]->getName());
+        $this->assertEquals('http://example.org/', $authors[0]->getUri());
+        $this->assertEquals('f8dy@example.com', $authors[0]->getEmail());
 
-		$contributors = $entry->getContributor();
-		$this->assertInstanceOf('PSX\Atom\Person', $contributors[0]);
-		$this->assertEquals('Sam Ruby', $contributors[0]->getName());
-		$this->assertEquals('Joe Gregorio', $contributors[1]->getName());
+        $contributors = $entry->getContributor();
+        $this->assertInstanceOf('PSX\Atom\Person', $contributors[0]);
+        $this->assertEquals('Sam Ruby', $contributors[0]->getName());
+        $this->assertEquals('Joe Gregorio', $contributors[1]->getName());
 
-		$expected = <<<HTML
+        $expected = <<<HTML
 <div xmlns="http://www.w3.org/1999/xhtml">
 	<p><i>[Update: The Atom draft is finished.]</i></p>
 </div>
 HTML;
-		$this->assertXmlStringEqualsXmlString($expected, $entry->getContent());
-	}
+        $this->assertXmlStringEqualsXmlString($expected, $entry->getContent());
+    }
 
-	public function testAtomSource()
-	{
-		$body = <<<XML
+    public function testAtomSource()
+    {
+        $body = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 	<title type="text">dive into mark</title>
@@ -197,42 +197,42 @@ HTML;
 </feed>
 XML;
 
-		$request = new Message(array('Content-Type' => 'application/atom+xml'), $body);
-		$atom    = Environment::getService('importer')->import(new Atom(), $request);
+        $request = new Message(array('Content-Type' => 'application/atom+xml'), $body);
+        $atom    = Environment::getService('importer')->import(new Atom(), $request);
 
-		$entry = $atom->current();
+        $entry = $atom->current();
 
-		$this->assertInstanceOf('PSX\Atom\Entry', $entry);
-		$this->assertInstanceOf('PSX\Atom', $entry->getSource());
-		$this->assertEquals('dive into mark', $entry->getSource()->getTitle());
-		$this->assertEquals('A <em>lot</em> of effort went into making this effortless', $entry->getSource()->getSubTitle());
-		$this->assertEquals('2005-07-31', $entry->getSource()->getUpdated()->format('Y-m-d'));
-		$this->assertEquals('tag:example.org,2003:3', $entry->getSource()->getId());
+        $this->assertInstanceOf('PSX\Atom\Entry', $entry);
+        $this->assertInstanceOf('PSX\Atom', $entry->getSource());
+        $this->assertEquals('dive into mark', $entry->getSource()->getTitle());
+        $this->assertEquals('A <em>lot</em> of effort went into making this effortless', $entry->getSource()->getSubTitle());
+        $this->assertEquals('2005-07-31', $entry->getSource()->getUpdated()->format('Y-m-d'));
+        $this->assertEquals('tag:example.org,2003:3', $entry->getSource()->getId());
 
-		$links = $entry->getSource()->getLink();
-		$this->assertInstanceOf('PSX\Atom\Link', $links[0]);
-		$this->assertEquals('http://example.org/', $links[0]->getHref());
-		$this->assertEquals('alternate', $links[0]->getRel());
-		$this->assertEquals('text/html', $links[0]->getType());
-		$this->assertEquals('en', $links[0]->getHrefLang());
-		$this->assertEquals('', $links[0]->getTitle());
-		$this->assertEquals('', $links[0]->getLength());
+        $links = $entry->getSource()->getLink();
+        $this->assertInstanceOf('PSX\Atom\Link', $links[0]);
+        $this->assertEquals('http://example.org/', $links[0]->getHref());
+        $this->assertEquals('alternate', $links[0]->getRel());
+        $this->assertEquals('text/html', $links[0]->getType());
+        $this->assertEquals('en', $links[0]->getHrefLang());
+        $this->assertEquals('', $links[0]->getTitle());
+        $this->assertEquals('', $links[0]->getLength());
 
-		$this->assertInstanceOf('PSX\Atom\Link', $links[1]);
-		$this->assertEquals('http://example.org/feed.atom', $links[1]->getHref());
-		$this->assertEquals('self', $links[1]->getRel());
-		$this->assertEquals('application/atom+xml', $links[1]->getType());
-		$this->assertEquals('', $links[1]->getHrefLang());
-		$this->assertEquals('', $links[1]->getTitle());
-		$this->assertEquals('', $links[1]->getLength());
+        $this->assertInstanceOf('PSX\Atom\Link', $links[1]);
+        $this->assertEquals('http://example.org/feed.atom', $links[1]->getHref());
+        $this->assertEquals('self', $links[1]->getRel());
+        $this->assertEquals('application/atom+xml', $links[1]->getType());
+        $this->assertEquals('', $links[1]->getHrefLang());
+        $this->assertEquals('', $links[1]->getTitle());
+        $this->assertEquals('', $links[1]->getLength());
 
-		$this->assertEquals('Copyright (c) 2003, Mark Pilgrim', $entry->getSource()->getRights());
-		$this->assertEquals('Example Toolkit', $entry->getSource()->getGenerator());
-	}
+        $this->assertEquals('Copyright (c) 2003, Mark Pilgrim', $entry->getSource()->getRights());
+        $this->assertEquals('Example Toolkit', $entry->getSource()->getGenerator());
+    }
 
-	public function testEntry()
-	{
-		$body = <<<XML
+    public function testEntry()
+    {
+        $body = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <entry>
 	<title>Atom-Powered Robots Run Amok</title>
@@ -243,20 +243,19 @@ XML;
 </entry>
 XML;
 
-		$request = new Message(array('Content-Type' => 'application/atom+xml'), $body);
-		$atom    = Environment::getService('importer')->import(new Atom(), $request);
-		$entry   = $atom->current();
+        $request = new Message(array('Content-Type' => 'application/atom+xml'), $body);
+        $atom    = Environment::getService('importer')->import(new Atom(), $request);
+        $entry   = $atom->current();
 
-		$this->assertInstanceOf('PSX\Atom\Entry', $entry);
-		$this->assertEquals('Atom-Powered Robots Run Amok', $entry->getTitle());
-		$this->assertEquals('urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a', $entry->getId());
-		$this->assertEquals(new \DateTime('2003-12-13T18:30:02Z'), $entry->getUpdated());
-		$this->assertEquals('Some text.', $entry->getSummary());
+        $this->assertInstanceOf('PSX\Atom\Entry', $entry);
+        $this->assertEquals('Atom-Powered Robots Run Amok', $entry->getTitle());
+        $this->assertEquals('urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a', $entry->getId());
+        $this->assertEquals(new \DateTime('2003-12-13T18:30:02Z'), $entry->getUpdated());
+        $this->assertEquals('Some text.', $entry->getSummary());
 
-		$link = current($entry->getLink());
+        $link = current($entry->getLink());
 
-		$this->assertInstanceOf('PSX\Atom\Link', $link);
-		$this->assertEquals('http://example.org/2003/12/13/atom03', $link->getHref());
-	}
+        $this->assertInstanceOf('PSX\Atom\Link', $link);
+        $this->assertEquals('http://example.org/2003/12/13/atom03', $link->getHref());
+    }
 }
-

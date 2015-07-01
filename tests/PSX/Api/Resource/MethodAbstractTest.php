@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,28 +32,28 @@ use PSX\Data\Schema\Property;
  */
 class MethodAbstractTest extends \PHPUnit_Framework_TestCase
 {
-	public function testMethod()
-	{
-		$method = Factory::getMethod('POST');
-		$method->setDescription('foobar');
-		$method->addQueryParameter(Property::getString('foo'));
-		$method->setRequest(new Schema(Property::getString('foo')));
-		$method->addResponse(200, new Schema(Property::getString('foo')));
+    public function testMethod()
+    {
+        $method = Factory::getMethod('POST');
+        $method->setDescription('foobar');
+        $method->addQueryParameter(Property::getString('foo'));
+        $method->setRequest(new Schema(Property::getString('foo')));
+        $method->addResponse(200, new Schema(Property::getString('foo')));
 
-		$this->assertEquals('foobar', $method->getDescription());
-		$this->assertInstanceOf('PSX\Data\SchemaInterface', $method->getQueryParameters());
-		$this->assertTrue($method->hasRequest());
-		$this->assertInstanceOf('PSX\Data\SchemaInterface', $method->getRequest());
-		$this->assertInstanceOf('PSX\Data\SchemaInterface', $method->getResponse(200));
-		$this->assertTrue($method->hasResponse(200));
-		$this->assertFalse($method->hasResponse(201));
-	}
+        $this->assertEquals('foobar', $method->getDescription());
+        $this->assertInstanceOf('PSX\Data\SchemaInterface', $method->getQueryParameters());
+        $this->assertTrue($method->hasRequest());
+        $this->assertInstanceOf('PSX\Data\SchemaInterface', $method->getRequest());
+        $this->assertInstanceOf('PSX\Data\SchemaInterface', $method->getResponse(200));
+        $this->assertTrue($method->hasResponse(200));
+        $this->assertFalse($method->hasResponse(201));
+    }
 
-	/**
-	 * @expectedException \RuntimeException
-	 */
-	public function testGetResponseInvalid()
-	{
-		Factory::getMethod('POST')->getResponse(500);
-	}
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testGetResponseInvalid()
+    {
+        Factory::getMethod('POST')->getResponse(500);
+    }
 }

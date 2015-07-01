@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,7 +27,7 @@ use PSX\Http\ResponseInterface;
 use PSX\Loader;
 
 /**
- * Inspired by rubys rack backstage. If the specified file exists it get 
+ * Inspired by rubys rack backstage. If the specified file exists it get
  * written as response i.e. to show an maintenance message else the next filter
  * gets called. Note the message gets only displayed for text/html visitors all
  * other requests get passed to the application
@@ -38,25 +38,22 @@ use PSX\Loader;
  */
 class Backstage implements FilterInterface
 {
-	protected $file;
+    protected $file;
 
-	public function __construct($file)
-	{
-		$this->file = $file;
-	}
+    public function __construct($file)
+    {
+        $this->file = $file;
+    }
 
-	public function handle(RequestInterface $request, ResponseInterface $response, FilterChainInterface $filterChain)
-	{
-		$accept = $request->getHeader('Accept');
+    public function handle(RequestInterface $request, ResponseInterface $response, FilterChainInterface $filterChain)
+    {
+        $accept = $request->getHeader('Accept');
 
-		if(stripos($accept, 'text/html') !== false && is_file($this->file))
-		{
-			$response->setHeader('Content-Type', 'text/html');
-			$response->getBody()->write(file_get_contents($this->file));
-		}
-		else
-		{
-			$filterChain->handle($request, $response);
-		}
-	}
+        if (stripos($accept, 'text/html') !== false && is_file($this->file)) {
+            $response->setHeader('Content-Type', 'text/html');
+            $response->getBody()->write(file_get_contents($this->file));
+        } else {
+            $filterChain->handle($request, $response);
+        }
+    }
 }

@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,51 +31,51 @@ use PSX\Data\RecordAbstract;
  */
 class Api extends RecordAbstract
 {
-	protected $path;
-	protected $description;
-	protected $operations = array();
+    protected $path;
+    protected $description;
+    protected $operations = array();
 
-	public function __construct($path = null, $description = null)
-	{
-		$this->path        = $path;
-		$this->description = $description;
-	}
+    public function __construct($path = null, $description = null)
+    {
+        $this->path        = $path;
+        $this->description = $description;
+    }
 
-	public function setPath($path)
-	{
-		$this->path = $path;
-	}
+    public function setPath($path)
+    {
+        $this->path = $path;
+    }
 
-	public function getPath()
-	{
-		return $this->path;
-	}
+    public function getPath()
+    {
+        return $this->path;
+    }
 
-	public function setDescription($description)
-	{
-		$this->description = $description;
-	}
+    public function setDescription($description)
+    {
+        $this->description = $description;
+    }
 
-	public function getDescription()
-	{
-		return $this->description;
-	}
+    public function getDescription()
+    {
+        return $this->description;
+    }
 
-	/**
-	 * @param \PSX\Swagger\Operation[] $operations
-	 */
-	public function setOperations(array $operations)
-	{
-		$this->operations = $operations;
-	}
+    /**
+     * @param \PSX\Swagger\Operation[] $operations
+     */
+    public function setOperations(array $operations)
+    {
+        $this->operations = $operations;
+    }
 
-	public function getOperations()
-	{
-		return $this->operations;
-	}
+    public function getOperations()
+    {
+        return $this->operations;
+    }
 
-	public function addOperation(Operation $operation)
-	{
-		$this->operations[] = $operation;
-	}
+    public function addOperation(Operation $operation)
+    {
+        $this->operations[] = $operation;
+    }
 }

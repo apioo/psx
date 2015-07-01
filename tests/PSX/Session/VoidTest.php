@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,28 +29,28 @@ namespace PSX\Session;
  */
 class VoidTest extends \PHPUnit_Framework_TestCase
 {
-	public function testGetSet()
-	{
-		$sess = new Void('psx_session');
+    public function testGetSet()
+    {
+        $sess = new Void('psx_session');
 
-		$this->assertInstanceOf('PSX\Session', $sess);
-		$this->assertEquals(false, $sess->get('foo'));
-		$this->assertEquals(false, $sess->has('foo'));
+        $this->assertInstanceOf('PSX\Session', $sess);
+        $this->assertEquals(false, $sess->get('foo'));
+        $this->assertEquals(false, $sess->has('foo'));
 
-		$sess->set('foo', 'bar');
+        $sess->set('foo', 'bar');
 
-		$this->assertEquals('bar', $sess->get('foo'));
-		$this->assertEquals(true, $sess->has('foo'));
-	}
+        $this->assertEquals('bar', $sess->get('foo'));
+        $this->assertEquals(true, $sess->has('foo'));
+    }
 
-	public function testPropertyGetSet()
-	{
-		$sess = new Void('psx_session');
+    public function testPropertyGetSet()
+    {
+        $sess = new Void('psx_session');
 
-		$this->assertEquals(false, $sess->foo);
+        $this->assertEquals(false, $sess->foo);
 
-		$sess->foo = 'bar';
+        $sess->foo = 'bar';
 
-		$this->assertEquals('bar', $sess->foo);
-	}
+        $this->assertEquals('bar', $sess->foo);
+    }
 }

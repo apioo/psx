@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,29 +35,29 @@ use PSX\DateTime;
  */
 class Assimilator
 {
-	protected $factory;
-	protected $traverser;
+    protected $factory;
+    protected $traverser;
 
-	public function __construct(FactoryFactory $factory)
-	{
-		$this->factory   = $factory;
-		$this->traverser = new SchemaTraverser();
-	}
+    public function __construct(FactoryFactory $factory)
+    {
+        $this->factory   = $factory;
+        $this->traverser = new SchemaTraverser();
+    }
 
-	/**
-	 * Takes an array and fits it accoring to the specification. If validate is 
-	 * true all values are also validated. The type indicates whether we handle
-	 * incoming or outgoing data. Incoming data is handled more strict then 
-	 * outgoing data
-	 *
-	 * @param \PSX\Data\SchemaInterface $schema
+    /**
+     * Takes an array and fits it accoring to the specification. If validate is
+     * true all values are also validated. The type indicates whether we handle
+     * incoming or outgoing data. Incoming data is handled more strict then
+     * outgoing data
+     *
+     * @param \PSX\Data\SchemaInterface $schema
      * @param array $data
-	 * @param boolean $validate
-	 * @param integer $type
-	 * @return mixed
-	 */
-	public function assimilate(SchemaInterface $schema, $data, $validate = false, $type = SchemaTraverser::TYPE_OUTGOING)
-	{
-		return $this->traverser->traverse($data, $schema, new Visitor\AssimilationVisitor($validate, $this->factory), $type);
-	}
+     * @param boolean $validate
+     * @param integer $type
+     * @return mixed
+     */
+    public function assimilate(SchemaInterface $schema, $data, $validate = false, $type = SchemaTraverser::TYPE_OUTGOING)
+    {
+        return $this->traverser->traverse($data, $schema, new Visitor\AssimilationVisitor($validate, $this->factory), $type);
+    }
 }

@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,192 +33,192 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 class ViewCommandTest extends CommandTestCase
 {
-	public function testCommand()
-	{
-		$command = $this->getMockBuilder('PSX\Console\Generate\ViewCommand')
-			->setConstructorArgs(array(Environment::getContainer()))
-			->setMethods(array('makeDir', 'writeFile', 'isDir', 'isFile'))
-			->getMock();
+    public function testCommand()
+    {
+        $command = $this->getMockBuilder('PSX\Console\Generate\ViewCommand')
+            ->setConstructorArgs(array(Environment::getContainer()))
+            ->setMethods(array('makeDir', 'writeFile', 'isDir', 'isFile'))
+            ->getMock();
 
-		$command->expects($this->at(0))
-			->method('isDir')
-			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Application'))
-			->will($this->returnValue(false));
+        $command->expects($this->at(0))
+            ->method('isDir')
+            ->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Application'))
+            ->will($this->returnValue(false));
 
-		$command->expects($this->at(1))
-			->method('makeDir')
-			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Application'));
+        $command->expects($this->at(1))
+            ->method('makeDir')
+            ->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Application'));
 
-		$command->expects($this->at(2))
-			->method('isDir')
-			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Resource'))
-			->will($this->returnValue(false));
+        $command->expects($this->at(2))
+            ->method('isDir')
+            ->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Resource'))
+            ->will($this->returnValue(false));
 
-		$command->expects($this->at(3))
-			->method('makeDir')
-			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Resource'));
+        $command->expects($this->at(3))
+            ->method('makeDir')
+            ->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Resource'));
 
-		$command->expects($this->at(4))
-			->method('isFile')
-			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Application' . DIRECTORY_SEPARATOR . 'Bar.php'))
-			->will($this->returnValue(false));
+        $command->expects($this->at(4))
+            ->method('isFile')
+            ->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Application' . DIRECTORY_SEPARATOR . 'Bar.php'))
+            ->will($this->returnValue(false));
 
-		$command->expects($this->at(5))
-			->method('isFile')
-			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Resource' . DIRECTORY_SEPARATOR . 'bar.html'))
-			->will($this->returnValue(false));
+        $command->expects($this->at(5))
+            ->method('isFile')
+            ->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Resource' . DIRECTORY_SEPARATOR . 'bar.html'))
+            ->will($this->returnValue(false));
 
-		$command->expects($this->at(6))
-			->method('writeFile')
-			->with(
-				$this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Application' . DIRECTORY_SEPARATOR . 'Bar.php'), 
-				$this->callback(function($source){
-					$this->assertSource($this->getExpectedControllerSource(), $source);
-					return true;
-				})
-			);
+        $command->expects($this->at(6))
+            ->method('writeFile')
+            ->with(
+                $this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Application' . DIRECTORY_SEPARATOR . 'Bar.php'),
+                $this->callback(function ($source) {
+                    $this->assertSource($this->getExpectedControllerSource(), $source);
+                    return true;
+                })
+            );
 
-		$command->expects($this->at(7))
-			->method('writeFile')
-			->with(
-				$this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Resource' . DIRECTORY_SEPARATOR . 'bar.html'), 
-				$this->callback(function($source){
-					$this->assertSource($this->getExpectedResourceSource(), $source);
-					return true;
-				})
-			);
+        $command->expects($this->at(7))
+            ->method('writeFile')
+            ->with(
+                $this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Resource' . DIRECTORY_SEPARATOR . 'bar.html'),
+                $this->callback(function ($source) {
+                    $this->assertSource($this->getExpectedResourceSource(), $source);
+                    return true;
+                })
+            );
 
-		$commandTester = new CommandTester($command);
-		$commandTester->execute(array(
-			'namespace' => 'Acme\Foo\Bar',
-			'services'  => 'connection,template'
-		));
-	}
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(array(
+            'namespace' => 'Acme\Foo\Bar',
+            'services'  => 'connection,template'
+        ));
+    }
 
-	/**
-	 * @expectedException \RuntimeException
-	 */
-	public function testCommandControllerFileExists()
-	{
-		$command = $this->getMockBuilder('PSX\Console\Generate\ViewCommand')
-			->setConstructorArgs(array(Environment::getContainer()))
-			->setMethods(array('makeDir', 'writeFile', 'isDir', 'isFile'))
-			->getMock();
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testCommandControllerFileExists()
+    {
+        $command = $this->getMockBuilder('PSX\Console\Generate\ViewCommand')
+            ->setConstructorArgs(array(Environment::getContainer()))
+            ->setMethods(array('makeDir', 'writeFile', 'isDir', 'isFile'))
+            ->getMock();
 
-		$command->expects($this->at(0))
-			->method('isDir')
-			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Application'))
-			->will($this->returnValue(false));
+        $command->expects($this->at(0))
+            ->method('isDir')
+            ->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Application'))
+            ->will($this->returnValue(false));
 
-		$command->expects($this->at(1))
-			->method('makeDir')
-			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Application'));
+        $command->expects($this->at(1))
+            ->method('makeDir')
+            ->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Application'));
 
-		$command->expects($this->at(2))
-			->method('isDir')
-			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Resource'))
-			->will($this->returnValue(false));
+        $command->expects($this->at(2))
+            ->method('isDir')
+            ->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Resource'))
+            ->will($this->returnValue(false));
 
-		$command->expects($this->at(3))
-			->method('makeDir')
-			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Resource'));
+        $command->expects($this->at(3))
+            ->method('makeDir')
+            ->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Resource'));
 
-		$command->expects($this->at(4))
-			->method('isFile')
-			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Application' . DIRECTORY_SEPARATOR . 'Bar.php'))
-			->will($this->returnValue(true));
+        $command->expects($this->at(4))
+            ->method('isFile')
+            ->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Application' . DIRECTORY_SEPARATOR . 'Bar.php'))
+            ->will($this->returnValue(true));
 
-		$command->expects($this->at(5))
-			->method('isFile')
-			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Application' . DIRECTORY_SEPARATOR . 'Bar.php'))
-			->will($this->returnValue(true));
+        $command->expects($this->at(5))
+            ->method('isFile')
+            ->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Application' . DIRECTORY_SEPARATOR . 'Bar.php'))
+            ->will($this->returnValue(true));
 
-		$command->expects($this->never())
-			->method('writeFile');
+        $command->expects($this->never())
+            ->method('writeFile');
 
-		$commandTester = new CommandTester($command);
-		$commandTester->execute(array(
-			'namespace' => 'Acme\Foo\Bar',
-			'services'  => 'connection,template'
-		));
-	}
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(array(
+            'namespace' => 'Acme\Foo\Bar',
+            'services'  => 'connection,template'
+        ));
+    }
 
-	/**
-	 * @expectedException \RuntimeException
-	 */
-	public function testCommandTemplateFileExists()
-	{
-		$command = $this->getMockBuilder('PSX\Console\Generate\ViewCommand')
-			->setConstructorArgs(array(Environment::getContainer()))
-			->setMethods(array('makeDir', 'writeFile', 'isDir', 'isFile'))
-			->getMock();
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testCommandTemplateFileExists()
+    {
+        $command = $this->getMockBuilder('PSX\Console\Generate\ViewCommand')
+            ->setConstructorArgs(array(Environment::getContainer()))
+            ->setMethods(array('makeDir', 'writeFile', 'isDir', 'isFile'))
+            ->getMock();
 
-		$command->expects($this->at(0))
-			->method('isDir')
-			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Application'))
-			->will($this->returnValue(false));
+        $command->expects($this->at(0))
+            ->method('isDir')
+            ->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Application'))
+            ->will($this->returnValue(false));
 
-		$command->expects($this->at(1))
-			->method('makeDir')
-			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Application'));
+        $command->expects($this->at(1))
+            ->method('makeDir')
+            ->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Application'));
 
-		$command->expects($this->at(2))
-			->method('isDir')
-			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Resource'))
-			->will($this->returnValue(false));
+        $command->expects($this->at(2))
+            ->method('isDir')
+            ->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Resource'))
+            ->will($this->returnValue(false));
 
-		$command->expects($this->at(3))
-			->method('makeDir')
-			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Resource'));
+        $command->expects($this->at(3))
+            ->method('makeDir')
+            ->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Resource'));
 
-		$command->expects($this->at(4))
-			->method('isFile')
-			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Application' . DIRECTORY_SEPARATOR . 'Bar.php'))
-			->will($this->returnValue(false));
+        $command->expects($this->at(4))
+            ->method('isFile')
+            ->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Application' . DIRECTORY_SEPARATOR . 'Bar.php'))
+            ->will($this->returnValue(false));
 
-		$command->expects($this->at(5))
-			->method('isFile')
-			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Resource' . DIRECTORY_SEPARATOR . 'bar.html'))
-			->will($this->returnValue(true));
+        $command->expects($this->at(5))
+            ->method('isFile')
+            ->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Resource' . DIRECTORY_SEPARATOR . 'bar.html'))
+            ->will($this->returnValue(true));
 
-		$command->expects($this->at(6))
-			->method('isFile')
-			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Application' . DIRECTORY_SEPARATOR . 'Bar.php'))
-			->will($this->returnValue(false));
+        $command->expects($this->at(6))
+            ->method('isFile')
+            ->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Application' . DIRECTORY_SEPARATOR . 'Bar.php'))
+            ->will($this->returnValue(false));
 
-		$command->expects($this->at(7))
-			->method('isFile')
-			->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Resource' . DIRECTORY_SEPARATOR . 'bar.html'))
-			->will($this->returnValue(true));
+        $command->expects($this->at(7))
+            ->method('isFile')
+            ->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo' . DIRECTORY_SEPARATOR . 'Resource' . DIRECTORY_SEPARATOR . 'bar.html'))
+            ->will($this->returnValue(true));
 
-		$command->expects($this->never())
-			->method('writeFile');
+        $command->expects($this->never())
+            ->method('writeFile');
 
-		$commandTester = new CommandTester($command);
-		$commandTester->execute(array(
-			'namespace' => 'Acme\Foo\Bar',
-			'services'  => 'connection,template'
-		));
-	}
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(array(
+            'namespace' => 'Acme\Foo\Bar',
+            'services'  => 'connection,template'
+        ));
+    }
 
-	public function testCommandAvailable()
-	{
-		$command = Environment::getService('console')->find('generate:view');
+    public function testCommandAvailable()
+    {
+        $command = Environment::getService('console')->find('generate:view');
 
-		$this->assertInstanceOf('PSX\Console\Generate\ViewCommand', $command);
-	}
+        $this->assertInstanceOf('PSX\Console\Generate\ViewCommand', $command);
+    }
 
-	protected function assertSource($expect, $actual)
-	{
-		$expect = str_replace(array("\r\n", "\n", "\r"), "\n", $expect);
-		$actual = str_replace(array("\r\n", "\n", "\r"), "\n", $actual);
+    protected function assertSource($expect, $actual)
+    {
+        $expect = str_replace(array("\r\n", "\n", "\r"), "\n", $expect);
+        $actual = str_replace(array("\r\n", "\n", "\r"), "\n", $actual);
 
-		$this->assertEquals($expect, $actual);
-	}
+        $this->assertEquals($expect, $actual);
+    }
 
-	protected function getExpectedControllerSource()
-	{
-		return <<<'PHP'
+    protected function getExpectedControllerSource()
+    {
+        return <<<'PHP'
 <?php
 
 namespace Acme\Foo\Application;
@@ -255,11 +255,11 @@ class Bar extends ViewAbstract
 }
 
 PHP;
-	}
+    }
 
-	protected function getExpectedResourceSource()
-	{
-		return <<<'HTML'
+    protected function getExpectedResourceSource()
+    {
+        return <<<'HTML'
 <!DOCTYPE>
 <html>
 <head>
@@ -272,6 +272,5 @@ PHP;
 </body>
 </html>
 HTML;
-	}
+    }
 }
-

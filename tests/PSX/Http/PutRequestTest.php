@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,30 +31,30 @@ use PSX\Url;
  */
 class PutRequestTest extends \PHPUnit_Framework_TestCase
 {
-	public function testConstruct()
-	{
-		$request = new PutRequest(new Url('http://localhost.com/foo'), array('X-Foo' => 'bar'), 'foo');
+    public function testConstruct()
+    {
+        $request = new PutRequest(new Url('http://localhost.com/foo'), array('X-Foo' => 'bar'), 'foo');
 
-		$this->assertEquals('PUT', $request->getMethod());
-		$this->assertEquals('localhost.com', $request->getHeader('Host'));
-		$this->assertEquals('bar', $request->getHeader('X-Foo'));
-		$this->assertEquals('foo', (string) $request->getBody());
-	}
+        $this->assertEquals('PUT', $request->getMethod());
+        $this->assertEquals('localhost.com', $request->getHeader('Host'));
+        $this->assertEquals('bar', $request->getHeader('X-Foo'));
+        $this->assertEquals('foo', (string) $request->getBody());
+    }
 
-	public function testConstructUrlHeader()
-	{
-		$request = new PutRequest(new Url('http://localhost.com/foo'), array('X-Foo' => 'bar'));
+    public function testConstructUrlHeader()
+    {
+        $request = new PutRequest(new Url('http://localhost.com/foo'), array('X-Foo' => 'bar'));
 
-		$this->assertEquals('PUT', $request->getMethod());
-		$this->assertEquals('localhost.com', $request->getHeader('Host'));
-		$this->assertEquals('bar', $request->getHeader('X-Foo'));
-	}
+        $this->assertEquals('PUT', $request->getMethod());
+        $this->assertEquals('localhost.com', $request->getHeader('Host'));
+        $this->assertEquals('bar', $request->getHeader('X-Foo'));
+    }
 
-	public function testConstructUrl()
-	{
-		$request = new PutRequest(new Url('http://localhost.com/foo'));
+    public function testConstructUrl()
+    {
+        $request = new PutRequest(new Url('http://localhost.com/foo'));
 
-		$this->assertEquals('PUT', $request->getMethod());
-		$this->assertEquals('localhost.com', $request->getHeader('Host'));
-	}
+        $this->assertEquals('PUT', $request->getMethod());
+        $this->assertEquals('localhost.com', $request->getHeader('Host'));
+    }
 }

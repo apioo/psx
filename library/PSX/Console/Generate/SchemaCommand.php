@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,103 +36,92 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class SchemaCommand extends GenerateCommandAbstract
 {
-	protected $connection;
+    protected $connection;
 
-	public function __construct(Connection $connection)
-	{
-		parent::__construct();
+    public function __construct(Connection $connection)
+    {
+        parent::__construct();
 
-		$this->connection = $connection;
-	}
+        $this->connection = $connection;
+    }
 
-	protected function configure()
-	{
-		$this
-			->setName('generate:schema')
-			->setDescription('Generates a new schema')
-			->addArgument('namespace', InputArgument::REQUIRED, 'Absolute class name of the command (i.e. Acme\News\Overview)')
-			->addArgument('table', InputArgument::OPTIONAL, 'Creates the schema according to the given sql table name')
-			->addOption('dry-run', null, InputOption::VALUE_NONE, 'Executes no file operations if true');
-	}
+    protected function configure()
+    {
+        $this
+            ->setName('generate:schema')
+            ->setDescription('Generates a new schema')
+            ->addArgument('namespace', InputArgument::REQUIRED, 'Absolute class name of the command (i.e. Acme\News\Overview)')
+            ->addArgument('table', InputArgument::OPTIONAL, 'Creates the schema according to the given sql table name')
+            ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Executes no file operations if true');
+    }
 
-	protected function execute(InputInterface $input, OutputInterface $output)
-	{
-		$definition = $this->getServiceDefinition($input);
-		$table      = $input->getArgument('table');
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $definition = $this->getServiceDefinition($input);
+        $table      = $input->getArgument('table');
 
-		$output->writeln('Generating schema');
+        $output->writeln('Generating schema');
 
-		// create dir
-		$path = $definition->getPath();
+        // create dir
+        $path = $definition->getPath();
 
-		if(!$this->isDir($path))
-		{
-			$output->writeln('Create dir ' . $path);
+        if (!$this->isDir($path)) {
+            $output->writeln('Create dir ' . $path);
 
-			if(!$definition->isDryRun())
-			{
-				$this->makeDir($path);
-			}
-		}
+            if (!$definition->isDryRun()) {
+                $this->makeDir($path);
+            }
+        }
 
-		// generate controller
-		$file = $path . DIRECTORY_SEPARATOR . $definition->getClassName() . '.php';
+        // generate controller
+        $file = $path . DIRECTORY_SEPARATOR . $definition->getClassName() . '.php';
 
-		if(!$this->isFile($file))
-		{
-			$source = $this->getSchemaSource($definition, $table);
+        if (!$this->isFile($file)) {
+            $source = $this->getSchemaSource($definition, $table);
 
-			$output->writeln('Write file ' . $file);
+            $output->writeln('Write file ' . $file);
 
-			if(!$definition->isDryRun())
-			{
-				$this->writeFile($file, $source);
-			}
-		}
-		else
-		{
-			throw new \RuntimeException('File ' . $file . ' already exists');
-		}
-	}
+            if (!$definition->isDryRun()) {
+                $this->writeFile($file, $source);
+            }
+        } else {
+            throw new \RuntimeException('File ' . $file . ' already exists');
+        }
+    }
 
-	protected function getSchemaSource(ServiceDefinition $definition, $table)
-	{
-		$namespace = $definition->getNamespace();
-		$className = $definition->getClassName();
-		$name      = lcfirst($className);
+    protected function getSchemaSource(ServiceDefinition $definition, $table)
+    {
+        $namespace = $definition->getNamespace();
+        $className = $definition->getClassName();
+        $name      = lcfirst($className);
 
-		if(!empty($table))
-		{
-			$sm         = $this->connection->getSchemaManager();
-			$columns    = $sm->listTableColumns($table);
-			$properties = array();
+        if (!empty($table)) {
+            $sm         = $this->connection->getSchemaManager();
+            $columns    = $sm->listTableColumns($table);
+            $properties = array();
 
-			foreach($columns as $column)
-			{
-				$type = $this->convertDoctrinTypeToString($column->getType());
+            foreach ($columns as $column) {
+                $type = $this->convertDoctrinTypeToString($column->getType());
 
-				$properties[] = $this->getSchemaType($type, $column->getName());
-			}
-		}
-		else
-		{
-			$properties = array(
-				$this->getSchemaType('integer', 'id'),
-				$this->getSchemaType('string', 'title'),
-				$this->getSchemaType('dateTime', 'date'),
-			);
-		}
+                $properties[] = $this->getSchemaType($type, $column->getName());
+            }
+        } else {
+            $properties = array(
+                $this->getSchemaType('integer', 'id'),
+                $this->getSchemaType('string', 'title'),
+                $this->getSchemaType('dateTime', 'date'),
+            );
+        }
 
-		$definition = '';
+        $definition = '';
 
-		foreach($properties as $property)
-		{
-			$definition.= $property . "\n";
-		}
+        foreach ($properties as $property) {
+            $definition.= $property . "\n";
+        }
 
-		$definition = trim($definition);
+        $definition = trim($definition);
 
-		return <<<PHP
+        return <<<PHP
 <?php
 
 namespace {$namespace};
@@ -156,68 +145,66 @@ class {$className} extends SchemaAbstract
 }
 
 PHP;
-	}
+    }
 
-	protected function getSchemaType($type, $name)
-	{
-		switch($type)
-		{
-			case 'integer':
-				return <<<PHP
+    protected function getSchemaType($type, $name)
+    {
+        switch ($type) {
+            case 'integer':
+                return <<<PHP
 		\$sb->integer('{$name}');
 PHP;
-				break;
+                break;
 
-			case 'dateTime':
-				return <<<PHP
+            case 'dateTime':
+                return <<<PHP
 		\$sb->dateTime('{$name}');
 PHP;
-				break;
+                break;
 
-			case 'boolean':
-				return <<<PHP
+            case 'boolean':
+                return <<<PHP
 		\$sb->boolean('{$name}');
 PHP;
-				break;
+                break;
 
-			case 'float':
-				return <<<PHP
+            case 'float':
+                return <<<PHP
 		\$sb->float('{$name}');
 PHP;
-				break;
+                break;
 
-			case 'string':
-			default:
-				return <<<PHP
+            case 'string':
+            default:
+                return <<<PHP
 		\$sb->string('{$name}');
 PHP;
-				break;
-		}
-	}
+                break;
+        }
+    }
 
-	protected function convertDoctrinTypeToString(Types\Type $type)
-	{
-		switch(true)
-		{
-			case $type instanceof Types\BigIntType:
-			case $type instanceof Types\IntegerType:
-			case $type instanceof Types\SmallIntType:
-				return 'integer';
+    protected function convertDoctrinTypeToString(Types\Type $type)
+    {
+        switch (true) {
+            case $type instanceof Types\BigIntType:
+            case $type instanceof Types\IntegerType:
+            case $type instanceof Types\SmallIntType:
+                return 'integer';
 
-			case $type instanceof Types\DateTimeType:
-			case $type instanceof Types\DateTimeTzType:
-				return 'dateTime';
+            case $type instanceof Types\DateTimeType:
+            case $type instanceof Types\DateTimeTzType:
+                return 'dateTime';
 
-			case $type instanceof Types\BooleanType:
-				return 'boolean';
+            case $type instanceof Types\BooleanType:
+                return 'boolean';
 
-			case $type instanceof Types\FloatType:
-			case $type instanceof Types\DecimalType:
-				return 'float';
+            case $type instanceof Types\FloatType:
+            case $type instanceof Types\DecimalType:
+                return 'float';
 
-			case $type instanceof Types\StringType:
-			default:
-				return 'string';
-		}
-	}
+            case $type instanceof Types\StringType:
+            default:
+                return 'string';
+        }
+    }
 }

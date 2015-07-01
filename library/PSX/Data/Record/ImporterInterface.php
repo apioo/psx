@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,7 +21,7 @@
 namespace PSX\Data\Record;
 
 /**
- * The importer takes meta informations from an source and returns an record 
+ * The importer takes meta informations from an source and returns an record
  * containing the actual data
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
@@ -30,23 +30,23 @@ namespace PSX\Data\Record;
  */
 interface ImporterInterface
 {
-	const ENTITY = 'PSX\Data\Record\Importer\Entity';
-	const RECORD = 'PSX\Data\Record\Importer\Record';
-	const SCHEMA = 'PSX\Data\Record\Importer\Schema';
-	const TABLE  = 'PSX\Data\Record\Importer\Table';
+    const ENTITY = 'PSX\Data\Record\Importer\Entity';
+    const RECORD = 'PSX\Data\Record\Importer\Record';
+    const SCHEMA = 'PSX\Data\Record\Importer\Schema';
+    const TABLE  = 'PSX\Data\Record\Importer\Table';
 
-	/**
-	 * Returns whether the source is acceptable for this importer
-	 *
-	 * @param mixed $source
-	 * @return boolean
-	 */
-	public function accept($source);
+    /**
+     * Returns whether the source is acceptable for this importer
+     *
+     * @param mixed $source
+     * @return boolean
+     */
+    public function accept($source);
 
-	/**
-	 * @param mixed $source
-	 * @param mixed $data
-	 * @return \PSX\Data\RecordInterface
-	 */
-	public function import($source, $data);
+    /**
+     * @param mixed $source
+     * @param mixed $data
+     * @return \PSX\Data\RecordInterface
+     */
+    public function import($source, $data);
 }

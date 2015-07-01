@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,30 +31,29 @@ use PSX\Test\Environment;
  */
 class TwigTest extends \PHPUnit_Framework_TestCase
 {
-	protected function setUp()
-	{
-		if(!class_exists('Twig_Environment'))
-		{
-			$this->markTestSkipped('Twig is not installed');
-		}
-	}
+    protected function setUp()
+    {
+        if (!class_exists('Twig_Environment')) {
+            $this->markTestSkipped('Twig is not installed');
+        }
+    }
 
-	public function testTransform()
-	{
-		$template = new Twig(Environment::getService('config'));
+    public function testTransform()
+    {
+        $template = new Twig(Environment::getService('config'));
 
-		$template->setDir('tests/PSX/Template/twig');
-		$template->set('foo.twig.html');
+        $template->setDir('tests/PSX/Template/twig');
+        $template->set('foo.twig.html');
 
-		$this->assertTrue($template->hasFile());
-		$this->assertTrue($template->isFileAvailable());
-		$this->assertFalse($template->isAbsoluteFile());
-		$this->assertEquals('foo.twig.html', $template->get());
+        $this->assertTrue($template->hasFile());
+        $this->assertTrue($template->isFileAvailable());
+        $this->assertFalse($template->isAbsoluteFile());
+        $this->assertEquals('foo.twig.html', $template->get());
 
-		$template->assign('foo', 'bar');
+        $template->assign('foo', 'bar');
 
-		$content = $template->transform();
+        $content = $template->transform();
 
-		$this->assertEquals('Hello bar', $content);
-	}
+        $this->assertEquals('Hello bar', $content);
+    }
 }

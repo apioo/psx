@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,9 +31,9 @@ use PSX\Http\Message;
  */
 class JsonTest extends \PHPUnit_Framework_TestCase
 {
-	public function testRead()
-	{
-		$body = <<<INPUT
+    public function testRead()
+    {
+        $body = <<<INPUT
 {
 	"foo": "bar",
 	"bar": ["blub","bla"],
@@ -57,38 +57,38 @@ class JsonTest extends \PHPUnit_Framework_TestCase
 }
 INPUT;
 
-		$reader  = new Json();
-		$message = new Message(array(), $body);
-		$json    = $reader->read($message);
+        $reader  = new Json();
+        $message = new Message(array(), $body);
+        $json    = $reader->read($message);
 
-		$expect = new \stdClass();
-		$expect->foo = 'bar';
-		$expect->bar = ['blub', 'bla'];
-		$expect->test = new \stdClass();
-		$expect->test->foo = 'bar';
-		$expect->item = new \stdClass();
-		$expect->item->foo = new \stdClass();
-		$expect->item->foo->bar = new \stdClass();
-		$expect->item->foo->bar->title = 'foo';
-		$expect->items = new \stdClass();
-		$expect->items->item = [];
-		$expect->items->item[0] = new \stdClass();
-		$expect->items->item[0]->title = 'foo';
-		$expect->items->item[0]->text = 'bar';
-		$expect->items->item[1] = new \stdClass();
-		$expect->items->item[1]->title = 'foo';
-		$expect->items->item[1]->text = 'bar';
+        $expect = new \stdClass();
+        $expect->foo = 'bar';
+        $expect->bar = ['blub', 'bla'];
+        $expect->test = new \stdClass();
+        $expect->test->foo = 'bar';
+        $expect->item = new \stdClass();
+        $expect->item->foo = new \stdClass();
+        $expect->item->foo->bar = new \stdClass();
+        $expect->item->foo->bar->title = 'foo';
+        $expect->items = new \stdClass();
+        $expect->items->item = [];
+        $expect->items->item[0] = new \stdClass();
+        $expect->items->item[0]->title = 'foo';
+        $expect->items->item[0]->text = 'bar';
+        $expect->items->item[1] = new \stdClass();
+        $expect->items->item[1]->title = 'foo';
+        $expect->items->item[1]->text = 'bar';
 
-		$this->assertInstanceOf('stdClass', $json);
-		$this->assertEquals($expect, $json);
-	}
+        $this->assertInstanceOf('stdClass', $json);
+        $this->assertEquals($expect, $json);
+    }
 
-	public function testReadEmpty()
-	{
-		$reader  = new Json();
-		$message = new Message(array(), '');
-		$json    = $reader->read($message);
+    public function testReadEmpty()
+    {
+        $reader  = new Json();
+        $message = new Message(array(), '');
+        $json    = $reader->read($message);
 
-		$this->assertNull($json);
-	}
+        $this->assertNull($json);
+    }
 }

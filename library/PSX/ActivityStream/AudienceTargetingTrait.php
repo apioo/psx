@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,61 +29,60 @@ namespace PSX\ActivityStream;
  */
 trait AudienceTargetingTrait
 {
-	protected $to;
-	protected $cc;
-	protected $bto;
-	protected $bcc;
+    protected $to;
+    protected $cc;
+    protected $bto;
+    protected $bcc;
 
-	/**
-	 * @param \PSX\ActivityStream\ObjectFactory $to
-	 */
-	public function setTo($to)
-	{
-		$this->to = $to;
-	}
-	
-	public function getTo()
-	{
-		return $this->to;
-	}
+    /**
+     * @param \PSX\ActivityStream\ObjectFactory $to
+     */
+    public function setTo($to)
+    {
+        $this->to = $to;
+    }
+    
+    public function getTo()
+    {
+        return $this->to;
+    }
 
-	/**
-	 * @param \PSX\ActivityStream\ObjectFactory $cc
-	 */
-	public function setCc($cc)
-	{
-		$this->cc = $cc;
-	}
-	
-	public function getCc()
-	{
-		return $this->cc;
-	}
+    /**
+     * @param \PSX\ActivityStream\ObjectFactory $cc
+     */
+    public function setCc($cc)
+    {
+        $this->cc = $cc;
+    }
+    
+    public function getCc()
+    {
+        return $this->cc;
+    }
 
-	/**
-	 * @param \PSX\ActivityStream\ObjectFactory $bto
-	 */
-	public function setBto($bto)
-	{
-		$this->bto = $bto;
-	}
-	
-	public function getBto()
-	{
-		return $this->bto;
-	}
+    /**
+     * @param \PSX\ActivityStream\ObjectFactory $bto
+     */
+    public function setBto($bto)
+    {
+        $this->bto = $bto;
+    }
+    
+    public function getBto()
+    {
+        return $this->bto;
+    }
 
-	/**
-	 * @param \PSX\ActivityStream\ObjectFactory $bcc
-	 */
-	public function setBcc($bcc)
-	{
-		$this->bcc = $bcc;
-	}
-	
-	public function getBcc()
-	{
-		return $this->bcc;
-	}
+    /**
+     * @param \PSX\ActivityStream\ObjectFactory $bcc
+     */
+    public function setBcc($bcc)
+    {
+        $this->bcc = $bcc;
+    }
+    
+    public function getBcc()
+    {
+        return $this->bcc;
+    }
 }
-	

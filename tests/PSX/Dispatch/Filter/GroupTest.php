@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -38,42 +38,42 @@ use PSX\Url;
  */
 class GroupTest extends \PHPUnit_Framework_TestCase
 {
-	public function testGroup()
-	{
-		$request  = new Request(new Url('http://localhost'), 'GET');
-		$response = new Response();
+    public function testGroup()
+    {
+        $request  = new Request(new Url('http://localhost'), 'GET');
+        $response = new Response();
 
-		$subFilters[] = new DummyFilter(3);
-		$subFilters[] = new DummyFilter(4);
+        $subFilters[] = new DummyFilter(3);
+        $subFilters[] = new DummyFilter(4);
 
-		$filters[] = new DummyFilter(1);
-		$filters[] = new DummyFilter(2);
-		$filters[] = new Group($subFilters);
-		$filters[] = new DummyFilter(5);
-		$filters[] = new DummyFilter(6);
+        $filters[] = new DummyFilter(1);
+        $filters[] = new DummyFilter(2);
+        $filters[] = new Group($subFilters);
+        $filters[] = new DummyFilter(5);
+        $filters[] = new DummyFilter(6);
 
-		$filterChain = new FilterChain($filters);
-		$filterChain->handle($request, $response);
+        $filterChain = new FilterChain($filters);
+        $filterChain->handle($request, $response);
 
-		$this->assertEquals(array(1, 2, 3, 4, 5, 6), DummyFilter::$calls);
-	}
+        $this->assertEquals(array(1, 2, 3, 4, 5, 6), DummyFilter::$calls);
+    }
 }
 
 class DummyFilter implements FilterInterface
 {
-	public static $calls = array();
+    public static $calls = array();
 
-	protected $id;
+    protected $id;
 
-	public function __construct($id)
-	{
-		$this->id = $id;
-	}
+    public function __construct($id)
+    {
+        $this->id = $id;
+    }
 
-	public function handle(RequestInterface $request, ResponseInterface $response, FilterChainInterface $filterChain)
-	{
-		self::$calls[] = $this->id;
+    public function handle(RequestInterface $request, ResponseInterface $response, FilterChainInterface $filterChain)
+    {
+        self::$calls[] = $this->id;
 
-		$filterChain->handle($request, $response);
-	}
+        $filterChain->handle($request, $response);
+    }
 }

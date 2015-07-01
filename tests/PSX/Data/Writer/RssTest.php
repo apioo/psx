@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,12 +35,12 @@ use PSX\Rss\Item;
  */
 class RssTest extends \PHPUnit_Framework_TestCase
 {
-	public function testWriteFeed()
-	{
-		$writer = new Rss();
-		$actual = $writer->write($this->getRssRecord());
+    public function testWriteFeed()
+    {
+        $writer = new Rss();
+        $actual = $writer->write($this->getRssRecord());
 
-		$expect = <<<TEXT
+        $expect = <<<TEXT
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
  <channel>
@@ -65,15 +65,15 @@ class RssTest extends \PHPUnit_Framework_TestCase
 </rss>
 TEXT;
 
-		$this->assertXmlStringEqualsXmlString($expect, $actual);
-	}
+        $this->assertXmlStringEqualsXmlString($expect, $actual);
+    }
 
-	public function testWriteItem()
-	{
-		$writer = new Rss();
-		$actual = $writer->write($this->getItemRecord());
+    public function testWriteItem()
+    {
+        $writer = new Rss();
+        $actual = $writer->write($this->getItemRecord());
 
-		$expect = <<<TEXT
+        $expect = <<<TEXT
 <?xml version="1.0" encoding="UTF-8"?>
 <item>
  <title>Star City</title>
@@ -84,60 +84,60 @@ TEXT;
 </item>
 TEXT;
 
-		$this->assertXmlStringEqualsXmlString($expect, $actual);
-	}
+        $this->assertXmlStringEqualsXmlString($expect, $actual);
+    }
 
-	public function getRssRecord()
-	{
-		$rss = new RssRecord();
-		$rss->setTitle('Liftoff News');
-		$rss->setLink('http://liftoff.msfc.nasa.gov/');
-		$rss->setDescription('Liftoff to Space Exploration.');
-		$rss->setLanguage('en-us');
-		$rss->setPubDate(new DateTime('Tue, 10 Jun 2003 04:00:00 GMT'));
-		$rss->setLastBuildDate(new DateTime('Tue, 10 Jun 2003 09:41:01 GMT'));
-		$rss->setDocs('http://blogs.law.harvard.edu/tech/rss');
-		$rss->setGenerator('Weblog Editor 2.0');
-		$rss->setManagingEditor('editor@example.com');
-		$rss->setWebMaster('webmaster@example.com');
-		$rss->add($this->getItemRecord());
+    public function getRssRecord()
+    {
+        $rss = new RssRecord();
+        $rss->setTitle('Liftoff News');
+        $rss->setLink('http://liftoff.msfc.nasa.gov/');
+        $rss->setDescription('Liftoff to Space Exploration.');
+        $rss->setLanguage('en-us');
+        $rss->setPubDate(new DateTime('Tue, 10 Jun 2003 04:00:00 GMT'));
+        $rss->setLastBuildDate(new DateTime('Tue, 10 Jun 2003 09:41:01 GMT'));
+        $rss->setDocs('http://blogs.law.harvard.edu/tech/rss');
+        $rss->setGenerator('Weblog Editor 2.0');
+        $rss->setManagingEditor('editor@example.com');
+        $rss->setWebMaster('webmaster@example.com');
+        $rss->add($this->getItemRecord());
 
-		return $rss;
-	}
+        return $rss;
+    }
 
-	public function getItemRecord()
-	{
-		$item = new Item();
-		$item->setTitle('Star City');
-		$item->setLink('http://liftoff.msfc.nasa.gov/news/2003/news-starcity.asp');
-		$item->setDescription('How do Americans get ready to work with Russians aboard the International Space Station? They take a crash course in culture, language and protocol at Russia\'s <a href="http://howe.iki.rssi.ru/GCTC/gctc_e.htm">Star City</a>.');
-		$item->setPubDate(new DateTime('Tue, 03 Jun 2003 09:39:21 GMT'));
-		$item->setGuid('http://liftoff.msfc.nasa.gov/2003/06/03.html#item573');
+    public function getItemRecord()
+    {
+        $item = new Item();
+        $item->setTitle('Star City');
+        $item->setLink('http://liftoff.msfc.nasa.gov/news/2003/news-starcity.asp');
+        $item->setDescription('How do Americans get ready to work with Russians aboard the International Space Station? They take a crash course in culture, language and protocol at Russia\'s <a href="http://howe.iki.rssi.ru/GCTC/gctc_e.htm">Star City</a>.');
+        $item->setPubDate(new DateTime('Tue, 03 Jun 2003 09:39:21 GMT'));
+        $item->setGuid('http://liftoff.msfc.nasa.gov/2003/06/03.html#item573');
 
-		return $item;
-	}
+        return $item;
+    }
 
-	public function testIsContentTypeSupported()
-	{
-		$writer = new Rss();
+    public function testIsContentTypeSupported()
+    {
+        $writer = new Rss();
 
-		$this->assertTrue($writer->isContentTypeSupported(new MediaType('application/rss+xml')));
-		$this->assertFalse($writer->isContentTypeSupported(new MediaType('text/html')));
-	}
+        $this->assertTrue($writer->isContentTypeSupported(new MediaType('application/rss+xml')));
+        $this->assertFalse($writer->isContentTypeSupported(new MediaType('text/html')));
+    }
 
-	public function testGetContentType()
-	{
-		$writer = new Rss();
+    public function testGetContentType()
+    {
+        $writer = new Rss();
 
-		$this->assertEquals('application/rss+xml', $writer->getContentType());
-	}
+        $this->assertEquals('application/rss+xml', $writer->getContentType());
+    }
 
-	/**
-	 * @expectedException \InvalidArgumentException
-	 */
-	public function testInvalidData()
-	{
-		$writer = new Rss();
-		$writer->write(new Record());
-	}
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testInvalidData()
+    {
+        $writer = new Rss();
+        $writer->write(new Record());
+    }
 }

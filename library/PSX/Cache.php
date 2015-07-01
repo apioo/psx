@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -34,69 +34,66 @@ use PSX\Cache\HandlerInterface;
  */
 class Cache implements CacheItemPoolInterface
 {
-	protected $handler;
-	protected $items = array();
+    protected $handler;
+    protected $items = array();
 
-	public function __construct(HandlerInterface $handler = null)
-	{
-		$this->handler = $handler === null ? new Handler\File() : $handler;
-	}
+    public function __construct(HandlerInterface $handler = null)
+    {
+        $this->handler = $handler === null ? new Handler\File() : $handler;
+    }
 
-	public function getItem($key)
-	{
-		return $this->handler->load($key);
-	}
+    public function getItem($key)
+    {
+        return $this->handler->load($key);
+    }
 
-	public function getItems(array $keys = array())
-	{
-		$items = array();
+    public function getItems(array $keys = array())
+    {
+        $items = array();
 
-		foreach($keys as $key)
-		{
-			$items[] = $this->handler->load($key);
-		}
+        foreach ($keys as $key) {
+            $items[] = $this->handler->load($key);
+        }
 
-		return $items;
-	}
+        return $items;
+    }
 
-	public function clear()
-	{
-		return $this->handler->removeAll();
-	}
+    public function clear()
+    {
+        return $this->handler->removeAll();
+    }
 
-	public function deleteItems(array $keys)
-	{
-		foreach($keys as $key)
-		{
-			$this->handler->remove($key);
-		}
+    public function deleteItems(array $keys)
+    {
+        foreach ($keys as $key) {
+            $this->handler->remove($key);
+        }
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function save(CacheItemInterface $item)
-	{
-		$this->handler->write($item);
+    public function save(CacheItemInterface $item)
+    {
+        $this->handler->write($item);
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function saveDeferred(CacheItemInterface $item)
-	{
-		$this->items[] = $item;
+    public function saveDeferred(CacheItemInterface $item)
+    {
+        $this->items[] = $item;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function commit()
-	{
-		foreach($this->items as $item)
-		{
-			$this->handler->write($item);
-		}
+    public function commit()
+    {
+        foreach ($this->items as $item) {
+            $this->handler->write($item);
+        }
 
-		$this->items = array();
+        $this->items = array();
 
-		return true;
-	}
+        return true;
+    }
 }

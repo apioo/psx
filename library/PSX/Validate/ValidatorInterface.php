@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,18 +29,18 @@ namespace PSX\Validate;
  */
 interface ValidatorInterface
 {
-	const THROW_ERRORS   = 1;
-	const COLLECT_ERRORS = 2;
+    const THROW_ERRORS   = 1;
+    const COLLECT_ERRORS = 2;
 
-	/**
-	 * Validates the given data against defined rules. The method should search
-	 * for each key in the $data array for an fitting rule. If such an rule does 
-	 * not exists or the value is not valid an exception shall be thrown. That 
-	 * means that the result will contain only valid values. If $data is empty 
-	 * the validation should pass
-	 *
-	 * @param mixed $data
-	 * @return mixed
-	 */
-	public function validate($data);
+    /**
+     * Validates the given data against defined rules. The method should search
+     * for each key in the $data array for an fitting rule. If such an rule does
+     * not exists or the value is not valid an exception shall be thrown. That
+     * means that the result will contain only valid values. If $data is empty
+     * the validation should pass
+     *
+     * @param mixed $data
+     * @return mixed
+     */
+    public function validate($data);
 }

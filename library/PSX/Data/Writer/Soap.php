@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -37,81 +37,77 @@ use XMLWriter;
  */
 class Soap extends Xml
 {
-	protected static $mime = 'application/soap+xml';
+    protected static $mime = 'application/soap+xml';
 
-	protected $namespace;
-	protected $requestMethod;
+    protected $namespace;
+    protected $requestMethod;
 
-	public function __construct($namespace)
-	{
-		$this->namespace = $namespace;
-	}
+    public function __construct($namespace)
+    {
+        $this->namespace = $namespace;
+    }
 
-	public function setRequestMethod($requestMethod)
-	{
-		$this->requestMethod = strtolower($requestMethod);
-	}
+    public function setRequestMethod($requestMethod)
+    {
+        $this->requestMethod = strtolower($requestMethod);
+    }
 
-	public function getRequestMethod()
-	{
-		return $this->requestMethod;
-	}
+    public function getRequestMethod()
+    {
+        return $this->requestMethod;
+    }
 
-	public function write(RecordInterface $record)
-	{
-		$xmlWriter = new XMLWriter();
-		$xmlWriter->openMemory();
-		$xmlWriter->setIndent(true);
-		$xmlWriter->startDocument('1.0', 'UTF-8');
+    public function write(RecordInterface $record)
+    {
+        $xmlWriter = new XMLWriter();
+        $xmlWriter->openMemory();
+        $xmlWriter->setIndent(true);
+        $xmlWriter->startDocument('1.0', 'UTF-8');
 
-		$xmlWriter->startElement('soap:Envelope');
-		$xmlWriter->writeAttribute('xmlns:soap', 'http://schemas.xmlsoap.org/soap/envelope/');
+        $xmlWriter->startElement('soap:Envelope');
+        $xmlWriter->writeAttribute('xmlns:soap', 'http://schemas.xmlsoap.org/soap/envelope/');
 
-		if($record instanceof ExceptionRecord)
-		{
-			$xmlWriter->startElement('soap:Body');
-			$xmlWriter->startElement('soap:Fault');
+        if ($record instanceof ExceptionRecord) {
+            $xmlWriter->startElement('soap:Body');
+            $xmlWriter->startElement('soap:Fault');
 
-			$xmlWriter->writeElement('faultcode', 'soap:Server');
-			$xmlWriter->writeElement('faultstring', $record->getMessage());
+            $xmlWriter->writeElement('faultcode', 'soap:Server');
+            $xmlWriter->writeElement('faultstring', $record->getMessage());
 
-			if($record->getTrace())
-			{
-				$xmlWriter->startElement('detail');
+            if ($record->getTrace()) {
+                $xmlWriter->startElement('detail');
 
-				$graph = new GraphTraverser();
-				$graph->traverse($record, new Visitor\XmlWriterVisitor($xmlWriter, $this->namespace));
+                $graph = new GraphTraverser();
+                $graph->traverse($record, new Visitor\XmlWriterVisitor($xmlWriter, $this->namespace));
 
-				$xmlWriter->endElement();
-			}
+                $xmlWriter->endElement();
+            }
 
-			$xmlWriter->endElement();
-			$xmlWriter->endElement();
-		}
-		else
-		{
-			$xmlWriter->startElement('soap:Body');
+            $xmlWriter->endElement();
+            $xmlWriter->endElement();
+        } else {
+            $xmlWriter->startElement('soap:Body');
 
-			$record = new Record($this->requestMethod . 'Response', $record->getRecordInfo()->getFields());
-			$graph  = new GraphTraverser();
-			$graph->traverse($record, new Visitor\XmlWriterVisitor($xmlWriter, $this->namespace));
+            $record = new Record($this->requestMethod . 'Response', $record->getRecordInfo()->getFields());
+            $graph  = new GraphTraverser();
+            $graph->traverse($record, new Visitor\XmlWriterVisitor($xmlWriter, $this->namespace));
 
-			$xmlWriter->endElement();
-		}
+            $xmlWriter->endElement();
+        }
 
-		$xmlWriter->endElement();
-		$xmlWriter->endDocument();
+        $xmlWriter->endElement();
+        $xmlWriter->endDocument();
 
-		return $xmlWriter->outputMemory();
-	}
+        return $xmlWriter->outputMemory();
+    }
 
-	public function isContentTypeSupported(MediaType $contentType)
-	{
-		return $contentType->getName() == self::$mime;
-	}
+    public function isContentTypeSupported(MediaType $contentType)
+    {
+        return $contentType->getName() == self::$mime;
+    }
 
-	public function getContentType()
-	{
-		return 'text/xml';
-	}
+    public function getContentType()
+    {
+        return 'text/xml';
+    }
 }

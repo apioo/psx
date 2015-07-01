@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,6 +21,7 @@
 namespace PSX\Controller;
 
 use PSX\Json;
+use PSX\Test\Assert;
 use PSX\Test\ControllerTestCase;
 use PSX\Test\Environment;
 
@@ -33,66 +34,66 @@ use PSX\Test\Environment;
  */
 class ErrorControllerTest extends ControllerTestCase
 {
-	public function testExceptionDebug()
-	{
-		Environment::getService('config')->set('psx_debug', true);
+    public function testExceptionDebug()
+    {
+        Environment::getService('config')->set('psx_debug', true);
 
-		$response = $this->sendRequest('http://127.0.0.1/error', 'GET', ['Accept' => 'application/json']);
-		$body     = (string) $response->getBody();
-		$data     = Json::decode($body);
+        $response = $this->sendRequest('http://127.0.0.1/error', 'GET', ['Accept' => 'application/json']);
+        $body     = (string) $response->getBody();
+        $data     = Json::decode($body);
 
-		$this->assertEquals(null, $response->getStatusCode(), $body);
-		$this->assertEquals(false, $data['success'], $body);
-		$this->assertEquals('foo in', substr($data['message'], 0, 6), $body);
-	}
+        $this->assertEquals(null, $response->getStatusCode(), $body);
+        $this->assertEquals(false, $data['success'], $body);
+        $this->assertEquals('foo in', substr($data['message'], 0, 6), $body);
+    }
 
-	public function testExceptionNoDebug()
-	{
-		Environment::getService('config')->set('psx_debug', false);
+    public function testExceptionNoDebug()
+    {
+        Environment::getService('config')->set('psx_debug', false);
 
-		$response = $this->sendRequest('http://127.0.0.1/error', 'GET', ['Accept' => 'application/json']);
-		$body     = (string) $response->getBody();
-		$data     = Json::decode($body);
+        $response = $this->sendRequest('http://127.0.0.1/error', 'GET', ['Accept' => 'application/json']);
+        $body     = (string) $response->getBody();
+        $data     = Json::decode($body);
 
-		$this->assertEquals(null, $response->getStatusCode(), $body);
-		$this->assertEquals(false, $data['success']);
-		$this->assertEquals('The server encountered an internal error and was unable to complete your request.', $data['message']);
-	}
+        $this->assertEquals(null, $response->getStatusCode(), $body);
+        $this->assertEquals(false, $data['success']);
+        $this->assertEquals('The server encountered an internal error and was unable to complete your request.', $data['message']);
+    }
 
-	public function testDisplayExceptionDebug()
-	{
-		Environment::getService('config')->set('psx_debug', true);
+    public function testDisplayExceptionDebug()
+    {
+        Environment::getService('config')->set('psx_debug', true);
 
-		$response = $this->sendRequest('http://127.0.0.1/display_error', 'GET', ['Accept' => 'application/json']);
-		$body     = (string) $response->getBody();
-		$data     = Json::decode($body);
+        $response = $this->sendRequest('http://127.0.0.1/display_error', 'GET', ['Accept' => 'application/json']);
+        $body     = (string) $response->getBody();
+        $data     = Json::decode($body);
 
-		$this->assertEquals(null, $response->getStatusCode(), $body);
-		$this->assertEquals(false, $data['success']);
-		$this->assertEquals('foo in', substr($data['message'], 0, 6));
-	}
+        $this->assertEquals(null, $response->getStatusCode(), $body);
+        $this->assertEquals(false, $data['success']);
+        $this->assertEquals('foo in', substr($data['message'], 0, 6));
+    }
 
-	public function testDisplayExceptionNoDebug()
-	{
-		Environment::getService('config')->set('psx_debug', false);
+    public function testDisplayExceptionNoDebug()
+    {
+        Environment::getService('config')->set('psx_debug', false);
 
-		$response = $this->sendRequest('http://127.0.0.1/display_error', 'GET', ['Accept' => 'application/json']);
-		$body     = (string) $response->getBody();
-		$data     = Json::decode($body);
+        $response = $this->sendRequest('http://127.0.0.1/display_error', 'GET', ['Accept' => 'application/json']);
+        $body     = (string) $response->getBody();
+        $data     = Json::decode($body);
 
-		$this->assertEquals(null, $response->getStatusCode(), $body);
-		$this->assertEquals(false, $data['success']);
-		$this->assertEquals('foo', $data['message']);
-	}
+        $this->assertEquals(null, $response->getStatusCode(), $body);
+        $this->assertEquals(false, $data['success']);
+        $this->assertEquals('foo', $data['message']);
+    }
 
-	public function testException()
-	{
-		Environment::getService('config')->set('psx_debug', false);
+    public function testException()
+    {
+        Environment::getService('config')->set('psx_debug', false);
 
-		$response = $this->sendRequest('http://127.0.0.1/error', 'GET');
-		$body     = (string) $response->getBody();
+        $response = $this->sendRequest('http://127.0.0.1/error', 'GET');
+        $body     = (string) $response->getBody();
 
-		$expect = <<<JSON
+        $expect = <<<JSON
 {
 	"success": false,
 	"message": "The server encountered an internal error and was unable to complete your request.",
@@ -100,19 +101,19 @@ class ErrorControllerTest extends ControllerTestCase
 }
 JSON;
 
-		$this->assertEquals(null, $response->getStatusCode(), $body);
-		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
-	}
+        $this->assertEquals(null, $response->getStatusCode(), $body);
+        $this->assertJsonStringEqualsJsonString($expect, $body, $body);
+    }
 
-	public function testExceptionHtml()
-	{
-		Environment::getService('config')->set('psx_debug', false);
-		//Environment::getService('template')->set(null);
+    public function testExceptionHtml()
+    {
+        Environment::getService('config')->set('psx_debug', false);
+        //Environment::getService('template')->set(null);
 
-		$response = $this->sendRequest('http://127.0.0.1/error', 'GET', ['Accept' => 'text/html']);
-		$body     = (string) $response->getBody();
+        $response = $this->sendRequest('http://127.0.0.1/error', 'GET', ['Accept' => 'text/html']);
+        $body     = (string) $response->getBody();
 
-		$expect = <<<HTML
+        $expect = <<<HTML
 <!DOCTYPE>
 <html>
 <head>
@@ -190,18 +191,19 @@ JSON;
 
 HTML;
 
-		$this->assertEquals(null, $response->getStatusCode(), $body);
-		$this->assertEquals($expect, $body, $body);
-	}
+        $this->assertEquals(null, $response->getStatusCode(), $body);
 
-	public function testExceptionXml()
-	{
-		Environment::getService('config')->set('psx_debug', false);
+        Assert::assertStringMatchIgnoreWhitespace($expect, $body);
+    }
 
-		$response = $this->sendRequest('http://127.0.0.1/error', 'GET', ['Accept' => 'application/xml']);
-		$body     = (string) $response->getBody();
+    public function testExceptionXml()
+    {
+        Environment::getService('config')->set('psx_debug', false);
 
-		$expect = <<<XML
+        $response = $this->sendRequest('http://127.0.0.1/error', 'GET', ['Accept' => 'application/xml']);
+        $body     = (string) $response->getBody();
+
+        $expect = <<<XML
 <?xml version="1.0"?>
 <error>
 	<success>false</success>
@@ -210,18 +212,18 @@ HTML;
 </error>
 XML;
 
-		$this->assertEquals(null, $response->getStatusCode(), $body);
-		$this->assertXmlStringEqualsXmlString($expect, $body, $body);
-	}
+        $this->assertEquals(null, $response->getStatusCode(), $body);
+        $this->assertXmlStringEqualsXmlString($expect, $body, $body);
+    }
 
-	public function testExceptionJson()
-	{
-		Environment::getService('config')->set('psx_debug', false);
+    public function testExceptionJson()
+    {
+        Environment::getService('config')->set('psx_debug', false);
 
-		$response = $this->sendRequest('http://127.0.0.1/error', 'GET', ['Accept' => 'application/json']);
-		$body     = (string) $response->getBody();
+        $response = $this->sendRequest('http://127.0.0.1/error', 'GET', ['Accept' => 'application/json']);
+        $body     = (string) $response->getBody();
 
-		$expect = <<<JSON
+        $expect = <<<JSON
 {
 	"success": false,
 	"message": "The server encountered an internal error and was unable to complete your request.",
@@ -229,18 +231,18 @@ XML;
 }
 JSON;
 
-		$this->assertEquals(null, $response->getStatusCode(), $body);
-		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
-	}
+        $this->assertEquals(null, $response->getStatusCode(), $body);
+        $this->assertJsonStringEqualsJsonString($expect, $body, $body);
+    }
 
-	public function testExceptionXhr()
-	{
-		Environment::getService('config')->set('psx_debug', false);
+    public function testExceptionXhr()
+    {
+        Environment::getService('config')->set('psx_debug', false);
 
-		$response = $this->sendRequest('http://127.0.0.1/error', 'GET', ['X-Requested-With' => 'XMLHttpRequest']);
-		$body     = (string) $response->getBody();
+        $response = $this->sendRequest('http://127.0.0.1/error', 'GET', ['X-Requested-With' => 'XMLHttpRequest']);
+        $body     = (string) $response->getBody();
 
-		$expect = <<<JSON
+        $expect = <<<JSON
 {
 	"success": false,
 	"message": "The server encountered an internal error and was unable to complete your request.",
@@ -248,15 +250,15 @@ JSON;
 }
 JSON;
 
-		$this->assertEquals(null, $response->getStatusCode(), $body);
-		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
-	}
+        $this->assertEquals(null, $response->getStatusCode(), $body);
+        $this->assertJsonStringEqualsJsonString($expect, $body, $body);
+    }
 
-	protected function getPaths()
-	{
-		return array(
-			[['GET'], '/error', 'PSX\Controller\Foo\Application\TestErrorController::doError'],
-			[['GET'], '/display_error', 'PSX\Controller\Foo\Application\TestErrorController::doDisplayError'],
-		);
-	}
+    protected function getPaths()
+    {
+        return array(
+            [['GET'], '/error', 'PSX\Controller\Foo\Application\TestErrorController::doError'],
+            [['GET'], '/display_error', 'PSX\Controller\Foo\Application\TestErrorController::doDisplayError'],
+        );
+    }
 }

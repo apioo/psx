@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,17 +33,17 @@ use PSX\Test\Environment;
  */
 class SchemaApiAbstractTest extends ControllerDbTestCase
 {
-	public function getDataSet()
-	{
-		return $this->createFlatXMLDataSet(__DIR__ . '/../Sql/table_fixture.xml');
-	}
+    public function getDataSet()
+    {
+        return $this->createFlatXMLDataSet(__DIR__ . '/../Sql/table_fixture.xml');
+    }
 
-	public function testGet()
-	{
-		$response = $this->sendRequest('http://127.0.0.1/api', 'GET');
-		$body     = (string) $response->getBody();
+    public function testGet()
+    {
+        $response = $this->sendRequest('http://127.0.0.1/api', 'GET');
+        $body     = (string) $response->getBody();
 
-		$expect = <<<JSON
+        $expect = <<<JSON
 {"entry": [
     {
       "id": 4,
@@ -72,36 +72,36 @@ class SchemaApiAbstractTest extends ControllerDbTestCase
   ]}
 JSON;
 
-		$this->assertEquals(200, $response->getStatusCode(), $body);
-		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
-	}
+        $this->assertEquals(200, $response->getStatusCode(), $body);
+        $this->assertJsonStringEqualsJsonString($expect, $body, $body);
+    }
 
-	public function testPost()
-	{
-		$data     = json_encode(array('userId' => 3, 'title' => 'test', 'date' => '2013-05-29T16:56:32Z'));
-		$response = $this->sendRequest('http://127.0.0.1/api', 'POST', ['Content-Type' => 'application/json'], $data);
-		$body     = (string) $response->getBody();
+    public function testPost()
+    {
+        $data     = json_encode(array('userId' => 3, 'title' => 'test', 'date' => '2013-05-29T16:56:32Z'));
+        $response = $this->sendRequest('http://127.0.0.1/api', 'POST', ['Content-Type' => 'application/json'], $data);
+        $body     = (string) $response->getBody();
 
-		$expect = <<<JSON
+        $expect = <<<JSON
 {
 	"success": true,
 	"message": "You have successful create a record"
 }
 JSON;
 
-		$this->assertEquals(201, $response->getStatusCode(), $body);
-		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
-	}
+        $this->assertEquals(201, $response->getStatusCode(), $body);
+        $this->assertJsonStringEqualsJsonString($expect, $body, $body);
+    }
 
-	public function testPostInvalidTitleLength()
-	{
-		Environment::getService('config')->set('psx_debug', false);
+    public function testPostInvalidTitleLength()
+    {
+        Environment::getService('config')->set('psx_debug', false);
 
-		$data     = json_encode(array('userId' => 3, 'title' => 'foobarfoobarfoobarfoobar', 'date' => '2013-05-29T16:56:32Z'));
-		$response = $this->sendRequest('http://127.0.0.1/api', 'POST', ['Content-Type' => 'application/json'], $data);
-		$body     = (string) $response->getBody();
+        $data     = json_encode(array('userId' => 3, 'title' => 'foobarfoobarfoobarfoobar', 'date' => '2013-05-29T16:56:32Z'));
+        $response = $this->sendRequest('http://127.0.0.1/api', 'POST', ['Content-Type' => 'application/json'], $data);
+        $body     = (string) $response->getBody();
 
-		$expect = <<<JSON
+        $expect = <<<JSON
 {
 	"success": false,
 	"message": "/title must contain less then 16 characters",
@@ -109,19 +109,19 @@ JSON;
 }
 JSON;
 
-		$this->assertEquals(500, $response->getStatusCode(), $body);
-		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
-	}
+        $this->assertEquals(500, $response->getStatusCode(), $body);
+        $this->assertJsonStringEqualsJsonString($expect, $body, $body);
+    }
 
-	public function testPostInvalidFields()
-	{
-		Environment::getService('config')->set('psx_debug', false);
+    public function testPostInvalidFields()
+    {
+        Environment::getService('config')->set('psx_debug', false);
 
-		$data     = json_encode(array('foobar' => 'title'));
-		$response = $this->sendRequest('http://127.0.0.1/api', 'POST', ['Content-Type' => 'application/json'], $data);
-		$body     = (string) $response->getBody();
+        $data     = json_encode(array('foobar' => 'title'));
+        $response = $this->sendRequest('http://127.0.0.1/api', 'POST', ['Content-Type' => 'application/json'], $data);
+        $body     = (string) $response->getBody();
 
-		$expect = <<<JSON
+        $expect = <<<JSON
 {
 	"success": false,
 	"message": "/title is required",
@@ -129,48 +129,48 @@ JSON;
 }
 JSON;
 
-		$this->assertEquals(500, $response->getStatusCode(), $body);
-		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
-	}
+        $this->assertEquals(500, $response->getStatusCode(), $body);
+        $this->assertJsonStringEqualsJsonString($expect, $body, $body);
+    }
 
-	public function testPut()
-	{
-		$data     = json_encode(array('id' => 1, 'userId' => 3, 'title' => 'foobar'));
-		$response = $this->sendRequest('http://127.0.0.1/api', 'PUT', ['Content-Type' => 'application/json'], $data);
-		$body     = (string) $response->getBody();
+    public function testPut()
+    {
+        $data     = json_encode(array('id' => 1, 'userId' => 3, 'title' => 'foobar'));
+        $response = $this->sendRequest('http://127.0.0.1/api', 'PUT', ['Content-Type' => 'application/json'], $data);
+        $body     = (string) $response->getBody();
 
-		$expect = <<<JSON
+        $expect = <<<JSON
 {
 	"success": true,
 	"message": "You have successful update a record"
 }
 JSON;
 
-		$this->assertEquals(200, $response->getStatusCode(), $body);
-		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
-	}
+        $this->assertEquals(200, $response->getStatusCode(), $body);
+        $this->assertJsonStringEqualsJsonString($expect, $body, $body);
+    }
 
-	public function testDelete()
-	{
-		$data     = json_encode(array('id' => 1));
-		$response = $this->sendRequest('http://127.0.0.1/api', 'DELETE', ['Content-Type' => 'application/json'], $data);
-		$body     = (string) $response->getBody();
+    public function testDelete()
+    {
+        $data     = json_encode(array('id' => 1));
+        $response = $this->sendRequest('http://127.0.0.1/api', 'DELETE', ['Content-Type' => 'application/json'], $data);
+        $body     = (string) $response->getBody();
 
-		$expect = <<<JSON
+        $expect = <<<JSON
 {
 	"success": true,
 	"message": "You have successful delete a record"
 }
 JSON;
 
-		$this->assertEquals(200, $response->getStatusCode(), $body);
-		$this->assertJsonStringEqualsJsonString($expect, $body, $body);
-	}
+        $this->assertEquals(200, $response->getStatusCode(), $body);
+        $this->assertJsonStringEqualsJsonString($expect, $body, $body);
+    }
 
-	protected function getPaths()
-	{
-		return array(
-			[['GET', 'POST', 'PUT', 'DELETE'], '/api', 'PSX\Controller\Foo\Application\TestSchemaApiController'],
-		);
-	}
+    protected function getPaths()
+    {
+        return array(
+            [['GET', 'POST', 'PUT', 'DELETE'], '/api', 'PSX\Controller\Foo\Application\TestSchemaApiController'],
+        );
+    }
 }

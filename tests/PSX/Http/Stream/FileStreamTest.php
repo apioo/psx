@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,29 +29,29 @@ namespace PSX\Http\Stream;
  */
 class FileStreamTest extends StreamTestCase
 {
-	protected function getStream()
-	{
-		$resource = fopen('php://memory', 'r+');
-		fwrite($resource, 'foobar');
-		rewind($resource);
+    protected function getStream()
+    {
+        $resource = fopen('php://memory', 'r+');
+        fwrite($resource, 'foobar');
+        rewind($resource);
 
-		return new FileStream($resource, 'foo.txt', 'text/plain');
-	}
+        return new FileStream($resource, 'foo.txt', 'text/plain');
+    }
 
-	public function testGetFileName()
-	{
-		$resource = fopen('php://memory', 'r+');
-		fwrite($resource, 'foobar');
-		rewind($resource);
+    public function testGetFileName()
+    {
+        $resource = fopen('php://memory', 'r+');
+        fwrite($resource, 'foobar');
+        rewind($resource);
 
-		$file = new FileStream($resource, 'foo.txt', 'text/plain');
+        $file = new FileStream($resource, 'foo.txt', 'text/plain');
 
-		$this->assertEquals('foo.txt', $file->getFileName());
-		$this->assertEquals('text/plain', $file->getContentType());
+        $this->assertEquals('foo.txt', $file->getFileName());
+        $this->assertEquals('text/plain', $file->getContentType());
 
-		$file = new FileStream($resource, 'foo.txt');
+        $file = new FileStream($resource, 'foo.txt');
 
-		$this->assertEquals('foo.txt', $file->getFileName());
-		$this->assertEquals(null, $file->getContentType());
-	}
+        $this->assertEquals('foo.txt', $file->getFileName());
+        $this->assertEquals(null, $file->getContentType());
+    }
 }

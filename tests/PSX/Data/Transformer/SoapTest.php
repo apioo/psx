@@ -4,13 +4,13 @@
  * For the current version and informations visit <http://phpsx.org>
  *
  * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,9 +31,9 @@ use PSX\Http\MediaType;
  */
 class SoapTest extends \PHPUnit_Framework_TestCase
 {
-	public function testTransform()
-	{
-		$body = <<<INPUT
+    public function testTransform()
+    {
+        $body = <<<INPUT
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
 	<soap:Body>
 		<test xmlns="http://phpsx.org/2014/data">
@@ -48,29 +48,29 @@ class SoapTest extends \PHPUnit_Framework_TestCase
 </soap:Envelope>
 INPUT;
 
-		$dom = new \DOMDocument();
-		$dom->loadXML($body);
+        $dom = new \DOMDocument();
+        $dom->loadXML($body);
 
-		$transformer = new Soap('http://phpsx.org/2014/data');
+        $transformer = new Soap('http://phpsx.org/2014/data');
 
-		$expect = new \stdClass();
-		$expect->foo = 'bar';
-		$expect->bar = ['blub', 'bla'];
-		$expect->test = new \stdClass();
-		$expect->test->foo = 'bar';
+        $expect = new \stdClass();
+        $expect->foo = 'bar';
+        $expect->bar = ['blub', 'bla'];
+        $expect->test = new \stdClass();
+        $expect->test->foo = 'bar';
 
-		$data = $transformer->transform($dom);
+        $data = $transformer->transform($dom);
 
-		$this->assertInstanceOf('stdClass', $data);
-		$this->assertEquals($expect, $data);
-	}
+        $this->assertInstanceOf('stdClass', $data);
+        $this->assertEquals($expect, $data);
+    }
 
-	/**
-	 * @expectedException \RuntimeException
-	 */
-	public function testNoEnvelope()
-	{
-		$body = <<<INPUT
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testNoEnvelope()
+    {
+        $body = <<<INPUT
 <test xmlns="http://phpsx.org/2014/data">
 	<foo>bar</foo>
 	<bar>blub</bar>
@@ -81,74 +81,74 @@ INPUT;
 </test>
 INPUT;
 
-		$dom = new \DOMDocument();
-		$dom->loadXML($body);
+        $dom = new \DOMDocument();
+        $dom->loadXML($body);
 
-		$transformer = new Soap('http://phpsx.org/2014/data');
-		$transformer->transform($dom);
-	}
+        $transformer = new Soap('http://phpsx.org/2014/data');
+        $transformer->transform($dom);
+    }
 
-	public function testEmptyBody()
-	{
-		$body = <<<INPUT
+    public function testEmptyBody()
+    {
+        $body = <<<INPUT
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
 	<soap:Body>
 	</soap:Body>
 </soap:Envelope>
 INPUT;
 
-		$dom = new \DOMDocument();
-		$dom->loadXML($body);
+        $dom = new \DOMDocument();
+        $dom->loadXML($body);
 
-		$transformer = new Soap('http://phpsx.org/2014/data');
+        $transformer = new Soap('http://phpsx.org/2014/data');
 
-		$expect = new \stdClass();
+        $expect = new \stdClass();
 
-		$data = $transformer->transform($dom);
+        $data = $transformer->transform($dom);
 
-		$this->assertInstanceOf('stdClass', $data);
-		$this->assertEquals($expect, $data);
-	}
+        $this->assertInstanceOf('stdClass', $data);
+        $this->assertEquals($expect, $data);
+    }
 
-	/**
-	 * @expectedException \RuntimeException
-	 */
-	public function testBodyWrongNamespace()
-	{
-		$body = <<<INPUT
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testBodyWrongNamespace()
+    {
+        $body = <<<INPUT
 <soap:Envelope xmlns:soap="http://www.w3.org/2001/12/soap-envelope">
 	<soap:Body>
 	</soap:Body>
 </soap:Envelope>
 INPUT;
 
-		$dom = new \DOMDocument();
-		$dom->loadXML($body);
+        $dom = new \DOMDocument();
+        $dom->loadXML($body);
 
-		$transformer = new Soap('http://phpsx.org/2014/data');
-		$transformer->transform($dom);
-	}
+        $transformer = new Soap('http://phpsx.org/2014/data');
+        $transformer->transform($dom);
+    }
 
-	/**
-	 * @expectedException \InvalidArgumentException
-	 */
-	public function testInvalidData()
-	{
-		$transformer = new Soap('http://phpsx.org/2014/data');
-		$transformer->transform(array());
-	}
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testInvalidData()
+    {
+        $transformer = new Soap('http://phpsx.org/2014/data');
+        $transformer->transform(array());
+    }
 
-	public function testAccept()
-	{
-		$transformer = new Soap('http://phpsx.org/2014/data');
+    public function testAccept()
+    {
+        $transformer = new Soap('http://phpsx.org/2014/data');
 
-		$this->assertTrue($transformer->accept(new MediaType('application/soap+xml')));
-	}
+        $this->assertTrue($transformer->accept(new MediaType('application/soap+xml')));
+    }
 
-	public function testAcceptInvalid()
-	{
-		$transformer = new Soap('http://phpsx.org/2014/data');
+    public function testAcceptInvalid()
+    {
+        $transformer = new Soap('http://phpsx.org/2014/data');
 
-		$this->assertFalse($transformer->accept(new MediaType('text/plain')));
-	}
+        $this->assertFalse($transformer->accept(new MediaType('text/plain')));
+    }
 }
