@@ -106,7 +106,7 @@ class Socks implements HandlerInterface
             // write header
             $headers = ResponseParser::buildHeaderFromMessage($request);
 
-            fwrite($handle, Http\ParserAbstract::buildStatusLine($request) . Http::$newLine);
+            fwrite($handle, Http\RequestParser::buildStatusLine($request) . Http::$newLine);
 
             foreach ($headers as $header) {
                 fwrite($handle, $header . Http::$newLine);
