@@ -1,4 +1,13 @@
 
+1.0.4
+* Switched to PSR-2 coding style and using absolute class paths in phpdocs
+* Improve controller test cases
+* Add RecordInterface access to Accessor
+* Add JsonSerializable interface to record abstract
+* For incoming requests an exception is now throw if the data structure contains
+  keys which are not available in the schema
+* Add development status for an API resource
+
 1.0.3
 * Added new ChoiceType property which allows different kinds of objects as value
 * Use same logic for traversing incoming and outgoing data
