@@ -21,6 +21,7 @@
 namespace PSX\Data;
 
 use PSX\Data\Schema\PropertyInterface;
+use Serializable;
 
 /**
  * Schema
@@ -29,7 +30,7 @@ use PSX\Data\Schema\PropertyInterface;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Schema implements SchemaInterface
+class Schema implements SchemaInterface, Serializable
 {
     /**
      * @var \PSX\Data\Schema\PropertyInterface
@@ -44,5 +45,15 @@ class Schema implements SchemaInterface
     public function getDefinition()
     {
         return $this->property;
+    }
+
+    public function serialize()
+    {
+        return serialize($this->property);
+    }
+
+    public function unserialize($data)
+    {
+        $this->property = unserialize($data);
     }
 }

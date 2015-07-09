@@ -20,6 +20,7 @@
 
 namespace PSX\Api\Resource;
 
+use PSX\Data\RecordAbstract;
 use PSX\Data\Schema;
 use PSX\Data\Schema\Property;
 use PSX\Data\Schema\PropertySimpleAbstract;
@@ -33,7 +34,7 @@ use RuntimeException;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link	http://phpsx.org
  */
-abstract class MethodAbstract
+abstract class MethodAbstract extends RecordAbstract
 {
     protected $description;
     protected $queryParameters;

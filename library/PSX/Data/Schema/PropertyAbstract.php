@@ -20,6 +20,8 @@
 
 namespace PSX\Data\Schema;
 
+use PSX\Data\RecordAbstract;
+
 /**
  * PropertyAbstract
  *
@@ -27,7 +29,7 @@ namespace PSX\Data\Schema;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-abstract class PropertyAbstract implements PropertyInterface
+abstract class PropertyAbstract extends RecordAbstract implements PropertyInterface
 {
     protected $name;
     protected $description;
