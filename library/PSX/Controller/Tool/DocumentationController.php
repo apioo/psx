@@ -71,7 +71,7 @@ class DocumentationController extends ApiAbstract
     public function doDetail()
     {
         $version = $this->getUriFragment('version');
-        $path    = $this->getUriFragment('path');
+        $path    = $this->getUriFragment('path') ?: '/';
 
         if (empty($version) || empty($path)) {
             throw new HttpException\BadRequestException('Version and path not provided');
