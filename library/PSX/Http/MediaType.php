@@ -186,22 +186,22 @@ class MediaType
         $types  = explode(',', $mimeList);
         $result = array();
 
-        foreach ($types as $mime) {
+        $sortQuality = array();
+        $sortIndex   = array();
+
+        foreach ($types as $key => $mime) {
             try {
-                $result[] = new self(trim($mime));
+                $mediaType = new self(trim($mime));
+
+                $sortQuality[] = $mediaType->getQuality();
+                $sortIndex[]   = $key;
+
+                $result[] = $mediaType;
             } catch (InvalidArgumentException $e) {
             }
         }
 
-        usort($result, function ($a, $b) {
-
-            if ($a->getQuality() == $b->getQuality()) {
-                return 0;
-            }
-
-            return $a->getQuality() > $b->getQuality() ? -1 : 1;
-
-        });
+        array_multisort($sortQuality, SORT_DESC, $sortIndex, SORT_ASC, $result);
 
         return $result;
     }

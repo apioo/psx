@@ -152,4 +152,22 @@ class WriterFactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('PSX\Data\Writer\Html', $this->writerFactory->getWriterByContentType('image/png, image/svg+xml, image/*;q=0.8, */*;q=0.5'));
         $this->assertInstanceOf('PSX\Data\Writer\Html', $this->writerFactory->getWriterByContentType('text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'));
     }
+
+    /**
+     * Check whether we serve known browsers with html
+     *
+     * @dataProvider contentNegotiationProvider
+     */
+    public function testBrowserCases($contentType, $className)
+    {
+        $this->assertInstanceOf($className, $this->writerFactory->getWriterByContentType($contentType));
+    }
+
+    public function acceptBrowserProvider()
+    {
+        return [
+            ['text/html, application/xhtml+xml, */*', 'PSX\Data\Writer\Html'], // IE Version 11.0
+            ['text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8', 'PSX\Data\Writer\Html'], // Chrome Version 43.0
+        ];
+    }
 }
