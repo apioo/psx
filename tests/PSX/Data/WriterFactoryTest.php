@@ -156,14 +156,14 @@ class WriterFactoryTest extends \PHPUnit_Framework_TestCase
     /**
      * Check whether we serve known browsers with html
      *
-     * @dataProvider contentNegotiationProvider
+     * @dataProvider browserAcceptHeaderProvider
      */
-    public function testBrowserCases($contentType, $className)
+    public function testBrowserAcceptHeaders($contentType, $className)
     {
         $this->assertInstanceOf($className, $this->writerFactory->getWriterByContentType($contentType));
     }
 
-    public function acceptBrowserProvider()
+    public function browserAcceptHeaderProvider()
     {
         return [
             ['text/html, application/xhtml+xml, */*', 'PSX\Data\Writer\Html'], // IE Version 11.0
