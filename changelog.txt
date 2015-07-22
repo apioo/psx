@@ -1,4 +1,8 @@
 
+1.0.5
+* Fix issue with content negotiation #10
+* Make api resource and schema classes serializable
+
 1.0.4
 * Switched to PSR-2 coding style and using absolute class paths in phpdocs
 * Improve controller test cases
