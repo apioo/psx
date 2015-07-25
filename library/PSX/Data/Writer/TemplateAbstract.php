@@ -128,6 +128,7 @@ abstract class TemplateAbstract implements WriterInterface
             $this->template->assign('render', $render);
             $this->template->assign('location', $path);
             $this->template->assign('router', $this->reverseRouter);
+            $this->template->assign('controllerClass', $this->className);
 
             // assign data
             $fields = $record->getRecordInfo()->getFields();
