@@ -77,25 +77,29 @@ abstract class TemplateAbstractTestCase extends WriterTestCase
 
         $template->expects($this->at(10))
                 ->method('assign')
-                ->with($this->equalTo('id'), $this->equalTo(1));
+                ->with($this->equalTo('controllerClass'));
 
         $template->expects($this->at(11))
                 ->method('assign')
-                ->with($this->equalTo('author'), $this->equalTo('foo'));
+                ->with($this->equalTo('id'), $this->equalTo(1));
 
         $template->expects($this->at(12))
                 ->method('assign')
-                ->with($this->equalTo('title'), $this->equalTo('bar'));
+                ->with($this->equalTo('author'), $this->equalTo('foo'));
 
         $template->expects($this->at(13))
                 ->method('assign')
-                ->with($this->equalTo('content'), $this->equalTo('foobar'));
+                ->with($this->equalTo('title'), $this->equalTo('bar'));
 
         $template->expects($this->at(14))
                 ->method('assign')
-                ->with($this->equalTo('date'));
+                ->with($this->equalTo('content'), $this->equalTo('foobar'));
 
         $template->expects($this->at(15))
+                ->method('assign')
+                ->with($this->equalTo('date'));
+
+        $template->expects($this->at(16))
                 ->method('transform')
                 ->will($this->returnValue('foo'));
 
@@ -146,21 +150,25 @@ TEXT;
 
         $template->expects($this->at(10))
                 ->method('assign')
-                ->with($this->equalTo('totalResults'), $this->equalTo(2));
+                ->with($this->equalTo('controllerClass'));
 
         $template->expects($this->at(11))
                 ->method('assign')
-                ->with($this->equalTo('startIndex'), $this->equalTo(0));
+                ->with($this->equalTo('totalResults'), $this->equalTo(2));
 
         $template->expects($this->at(12))
                 ->method('assign')
-                ->with($this->equalTo('itemsPerPage'), $this->equalTo(8));
+                ->with($this->equalTo('startIndex'), $this->equalTo(0));
 
         $template->expects($this->at(13))
                 ->method('assign')
-                ->with($this->equalTo('entry'));
+                ->with($this->equalTo('itemsPerPage'), $this->equalTo(8));
 
         $template->expects($this->at(14))
+                ->method('assign')
+                ->with($this->equalTo('entry'));
+
+        $template->expects($this->at(15))
                 ->method('transform')
                 ->will($this->returnValue('foo'));
 
