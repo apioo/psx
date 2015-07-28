@@ -46,6 +46,33 @@ class AccessorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @expectedException \PSX\Validate\ValidationException
+     * @expectedExceptionMessage The field "bar" is not set
+     */
+    public function testGetMissing()
+    {
+        $accessor = new Accessor(new Validate(), ['foo' => 'bar']);
+        $accessor->get('bar');
+    }
+
+    /**
+     * @expectedException \PSX\Validate\ValidationException
+     * @expectedExceptionMessage The field "lorem" is not set
+     */
+    public function testGetMissingWithTitle()
+    {
+        $accessor = new Accessor(new Validate(), ['foo' => 'bar']);
+        $accessor->get('bar', Validate::TYPE_STRING, [], 'lorem');
+    }
+
+    public function testGetNotRequired()
+    {
+        $accessor = new Accessor(new Validate(), ['foo' => 'bar']);
+
+        $this->assertNull($accessor->get('bar', Validate::TYPE_STRING, [], null, false));
+    }
+
+    /**
      * @dataProvider provideSources
      */
     public function testGetFilter($source)

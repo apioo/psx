@@ -45,12 +45,12 @@ class Accessor
         return $this->source;
     }
 
-    public function get($key, $type = Validate::TYPE_STRING, array $filter = array())
+    public function get($key, $type = Validate::TYPE_STRING, array $filter = array(), $title = null, $required = true)
     {
         $parts = explode('.', $key);
         $value = $this->searchArray($parts, $this->source);
 
-        return $this->validate->apply($value, $type, $filter, $key);
+        return $this->validate->apply($value, $type, $filter, $title === null ? $key : $title, $required);
     }
 
     protected function searchArray(array $parts, $value)
