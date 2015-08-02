@@ -100,10 +100,22 @@ class JsonSchemaTest extends GeneratorTestCase
         }
       },
       "additionalProperties": false
+    },
+    "refcd912e509b19822dd7788b11538902d8": {
+      "type": "object",
+      "patternProperties": {
+        "^[a-zA-Z_\\x7f-\\xff][a-zA-Z0-9_\\x7f-\\xff]+$": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
     }
   },
   "type": "object",
   "properties": {
+    "config": {
+      "$ref": "#/definitions/refcd912e509b19822dd7788b11538902d8"
+    },
     "tags": {
       "type": "array",
       "items": {

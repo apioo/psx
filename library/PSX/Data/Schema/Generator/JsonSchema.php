@@ -102,22 +102,9 @@ class JsonSchema implements GeneratorInterface
 
     protected function generateType(PropertyInterface $type)
     {
-        if ($type instanceof Property\ComplexType) {
-            $properties = $type->getProperties();
-            $props      = array();
-            $required   = array();
-
-            foreach ($properties as $property) {
-                $props[$property->getName()] = $this->generateType($property);
-
-                if ($property->isRequired()) {
-                    $required[] = $property->getName();
-                }
-            }
-
+        if ($type instanceof Property\AnyType) {
             $result = array(
-                'type'       => 'object',
-                'properties' => $props,
+                'type' => 'object',
             );
 
             $description = $type->getDescription();
@@ -125,9 +112,9 @@ class JsonSchema implements GeneratorInterface
                 $result['description'] = $description;
             }
 
-            if (!empty($required)) {
-                $result['required'] = $required;
-            }
+            $result['patternProperties'] = array(
+                '^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]+$' => $this->generateType($type->getPrototype())
+            );
 
             $result['additionalProperties'] = false;
 
@@ -176,6 +163,40 @@ class JsonSchema implements GeneratorInterface
             }
 
             return $result;
+        } elseif ($type instanceof Property\ComplexType) {
+            $properties = $type->getProperties();
+            $props      = array();
+            $required   = array();
+
+            foreach ($properties as $property) {
+                $props[$property->getName()] = $this->generateType($property);
+
+                if ($property->isRequired()) {
+                    $required[] = $property->getName();
+                }
+            }
+
+            $result = array(
+                'type'       => 'object',
+                'properties' => $props,
+            );
+
+            $description = $type->getDescription();
+            if (!empty($description)) {
+                $result['description'] = $description;
+            }
+
+            if (!empty($required)) {
+                $result['required'] = $required;
+            }
+
+            $result['additionalProperties'] = false;
+
+            $key = 'ref' . $type->getId();
+
+            $this->definitions[$key] = $result;
+
+            return ['$ref' => '#/definitions/' . $key];
         } else {
             $result = array();
             $result['type'] = $this->getPropertyTypeName($type);

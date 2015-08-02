@@ -43,6 +43,7 @@ class XsdTest extends GeneratorTestCase
 				<xs:documentation>An general news entry</xs:documentation>
 			</xs:annotation>
 			<xs:sequence>
+				<xs:element maxOccurs="1" minOccurs="0" name="config" type="xs:anyType"/>
 				<xs:element name="tags" type="xs:string" maxOccurs="6" minOccurs="1"/>
 				<xs:element name="receiver" type="tns:type11c55f48b558e06534c2dccf005c97cb" maxOccurs="unbounded" minOccurs="1"/>
 				<xs:element name="resources" type="tns:type7faa72cba86513503baa1411b67158f2" maxOccurs="unbounded" minOccurs="0"/>

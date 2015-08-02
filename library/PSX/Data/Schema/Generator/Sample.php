@@ -74,16 +74,10 @@ class Sample implements GeneratorInterface
 
     protected function generateType(PropertyInterface $type, $data)
     {
-        if ($type instanceof Property\ComplexType) {
-            $fields     = array();
-            $properties = $type->getProperties();
-
-            foreach ($properties as $name => $property) {
-                if (isset($data[$name])) {
-                    $fields[$name] = $this->generateType($property, $data[$name]);
-                } elseif ($property->isRequired()) {
-                    throw new RuntimeException('Missing sample data of required property ' . $name);
-                }
+        if ($type instanceof Property\AnyType) {
+            $fields = array();
+            foreach ($data as $name => $value) {
+                $fields[$name] = $this->generateType($type->getPrototype(), $value);
             }
 
             return new Record($type->getName(), $fields);
@@ -100,6 +94,19 @@ class Sample implements GeneratorInterface
             }
         } elseif ($type instanceof Property\BooleanType) {
             return (bool) $data;
+        } elseif ($type instanceof Property\ComplexType) {
+            $fields     = array();
+            $properties = $type->getProperties();
+
+            foreach ($properties as $name => $property) {
+                if (isset($data[$name])) {
+                    $fields[$name] = $this->generateType($property, $data[$name]);
+                } elseif ($property->isRequired()) {
+                    throw new RuntimeException('Missing sample data of required property ' . $name);
+                }
+            }
+
+            return new Record($type->getName(), $fields);
         } elseif ($type instanceof Property\IntegerType) {
             return (int) $data;
         } elseif ($type instanceof Property\FloatType) {

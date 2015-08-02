@@ -51,6 +51,7 @@ class Property extends SchemaAbstract
         $complex = $sb->getProperty();
 
         $sb = $this->getSchemaBuilder('property');
+        $sb->anyType('any')->setPrototype(SchemaProperty::getString('foo'));
         $sb->arrayType('array')->setPrototype(SchemaProperty::getString('foo'));
         $sb->arrayType('arrayComplex')->setPrototype($complex);
         $sb->arrayType('arrayChoice')->setPrototype($choice);

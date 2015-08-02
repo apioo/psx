@@ -36,7 +36,7 @@ class HtmlTest extends GeneratorTestCase
 
         $expect = <<<'HTML'
 <div>
-	<div id="psx-type-0752c3fe3de55fa0970a57228884c3c0" class="psx-complex-type">
+	<div id="psx-type-31d4e8e54820a2c56e63a62bbd7af751" class="psx-complex-type">
 		<h1>news</h1>
 		<div class="psx-type-description">An general news entry</div>
 		<table class="table psx-type-properties">
@@ -55,6 +55,18 @@ class HtmlTest extends GeneratorTestCase
 				</tr>
 			</thead>
 			<tbody>
+				<tr>
+					<td>
+						<span class="psx-property-name psx-property-optional">config</span>
+					</td>
+					<td>
+						<span class="psx-property-type psx-property-type-any">Object&lt;String,<span class="psx-property-type psx-property-type-string">String</span>&gt;</span>
+					</td>
+					<td>
+						<span class="psx-property-description"/>
+					</td>
+					<td/>
+				</tr>
 				<tr>
 					<td>
 						<span class="psx-property-name psx-property-optional">tags</span>

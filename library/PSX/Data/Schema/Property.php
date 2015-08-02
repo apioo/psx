@@ -33,6 +33,15 @@ abstract class Property
 {
     /**
      * @param string $name
+     * @return \PSX\Data\Schema\Property\AnyType
+     */
+    public static function getAny($name)
+    {
+        return new Property\AnyType($name);
+    }
+
+    /**
+     * @param string $name
      * @return \PSX\Data\Schema\Property\ArrayType
      */
     public static function getArray($name)

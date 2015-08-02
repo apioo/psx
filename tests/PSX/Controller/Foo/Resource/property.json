@@ -3,6 +3,14 @@
     "id": "http://test.phpsx.org/test#",
     "type": "object",
     "properties": {
+        "any": {
+            "type": "object",
+            "patternProperties": {
+                "^[A-z]+$": {
+                    "type": "string"
+                }
+            }
+        },
         "array": {
             "type": "array",
             "items": {

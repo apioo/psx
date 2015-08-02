@@ -60,6 +60,25 @@ abstract class PropertyTestCase extends ControllerTestCase
         $this->assertJsonStringEqualsJsonString(self::getExpected(), $body, $body);
     }
 
+    public function testPostInvalidAny()
+    {
+        $data = <<<JSON
+{
+    "any": {
+        "foo": {
+        }
+    }
+}
+JSON;
+
+        $response = $this->sendRequest('http://127.0.0.1/api', 'POST', [], $data);
+        $body     = (string) $response->getBody();
+        $data     = json_decode($body);
+
+        $this->assertEquals(500, $response->getStatusCode(), $body);
+        $this->assertEquals('/any/foo must be a string', substr($data->message, 0, 25), $body);
+    }
+
     public function testPostInvalidArray()
     {
         $data = <<<JSON
@@ -287,6 +306,8 @@ JSON;
      */
     public static function assertRecord(\PHPUnit_Framework_TestCase $testCase, RecordInterface $record)
     {
+        $testCase->assertInstanceOf('PSX\Data\RecordInterface', $record->getAny());
+        $testCase->assertEquals(['foo' => 'bar'], $record->getAny()->getRecordInfo()->getFields());
         $testCase->assertInternalType('array', $record->getArray());
         $testCase->assertEquals(1, count($record->getArray()));
         $testCase->assertEquals(['bar'], $record->getArray());
@@ -353,6 +374,9 @@ JSON;
             case 1:
                 // we return actual types
                 return array(
+                    'any' => [
+                        'foo' => 'bar'
+                    ],
                     'array' => ['bar'],
                     'arrayComplex' => [[
                         'foo' => 'bar'
@@ -386,6 +410,9 @@ JSON;
             case 2:
                 // we return only strings like from an database
                 return array(
+                    'any' => [
+                        'foo' => 'bar'
+                    ],
                     'array' => ['bar'],
                     'arrayComplex' => [[
                         'foo' => 'bar'
@@ -419,6 +446,9 @@ JSON;
             case 3:
                 // we return types which we get from the doctrine mapper
                 return array(
+                    'any' => [
+                        'foo' => 'bar'
+                    ],
                     'array' => ['bar'],
                     'arrayComplex' => [[
                         'foo' => 'bar'
@@ -460,6 +490,9 @@ JSON;
     {
         return <<<JSON
 {
+    "any": {
+        "foo": "bar"
+    },
     "array": [
         "bar"
     ],

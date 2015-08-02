@@ -94,7 +94,7 @@ class Xsd implements GeneratorInterface
     protected function generateTypes(array $properties)
     {
         foreach ($properties as $property) {
-            if ($property instanceof Property\ArrayType && !$property->getPrototype() instanceof Property\ChoiceType) {
+            if (($property instanceof Property\AnyType || $property instanceof Property\ArrayType) && !$property->getPrototype() instanceof Property\ChoiceType) {
                 $property = $property->getPrototype();
             }
 
@@ -233,6 +233,13 @@ class Xsd implements GeneratorInterface
                     $this->writer->writeAttribute('maxOccurs', 'unbounded');
                 }
 
+                $this->writer->endElement();
+            } elseif ($property instanceof Property\AnyType) {
+                $this->writer->startElement('xs:element');
+                $this->writer->writeAttribute('name', $property->getName());
+                $this->writer->writeAttribute('type', 'xs:anyType');
+                $this->writer->writeAttribute('minOccurs', 0);
+                $this->writer->writeAttribute('maxOccurs', 1);
                 $this->writer->endElement();
             } else {
                 $this->writer->startElement('xs:element');

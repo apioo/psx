@@ -125,8 +125,9 @@ class Html implements GeneratorInterface
 
     protected function getValueDescription(PropertyInterface $type)
     {
-        if ($type instanceof Property\ComplexType) {
-            $span = '<span class="psx-property-type psx-property-type-complex"><a href="#psx-type-' . $type->getId() . '">' . $type->getName() . '</a></span>';
+        if ($type instanceof Property\AnyType) {
+            $property = $this->getValueDescription($type->getPrototype());
+            $span     = '<span class="psx-property-type psx-property-type-any">Object&lt;String,' . $property[0] . '&gt;</span>';
 
             return [$span, null];
         } elseif ($type instanceof Property\ArrayType) {
@@ -158,6 +159,10 @@ class Html implements GeneratorInterface
             }
 
             $span = '<span class="psx-property-type psx-property-type-choice">' . implode('|', $choice) . '</span>';
+
+            return [$span, null];
+        } elseif ($type instanceof Property\ComplexType) {
+            $span = '<span class="psx-property-type psx-property-type-complex"><a href="#psx-type-' . $type->getId() . '">' . $type->getName() . '</a></span>';
 
             return [$span, null];
         } elseif ($type instanceof PropertySimpleAbstract) {

@@ -59,7 +59,20 @@ class SchemaTraverser
 
     protected function recTraverse($data, PropertyInterface $property, VisitorInterface $visitor, $type)
     {
-        if ($property instanceof Property\ArrayType) {
+        if ($property instanceof Property\AnyType) {
+            $data   = $this->getObjectAsArray($type, $data);
+            $result = new \stdClass();
+
+            foreach ($data as $key => $value) {
+                array_push($this->pathStack, $key);
+
+                $result->$key = $this->recTraverse($value, $property->getPrototype(), $visitor, $type);
+
+                array_pop($this->pathStack);
+            }
+
+            return $visitor->visitComplex($result, $property, $this->getCurrentPath());
+        } elseif ($property instanceof Property\ArrayType) {
             if (!is_array($data) && !$data instanceof Traversable) {
                 throw new ValidationException($this->getCurrentPath() . ' must be an array');
             }
@@ -98,19 +111,7 @@ class SchemaTraverser
 
             return $this->recTraverse($data, $properties[key($matches)], $visitor, $type);
         } elseif ($property instanceof Property\ComplexType) {
-            if ($type == self::TYPE_INCOMING) {
-                if ($data instanceof \stdClass) {
-                    $data = (array) $data;
-                } else {
-                    throw new ValidationException($this->getCurrentPath() . ' must be an object');
-                }
-            } else {
-                $data = $this->normalizeToArray($data);
-                if (!is_array($data)) {
-                    throw new ValidationException($this->getCurrentPath() . ' must be an object');
-                }
-            }
-
+            $data   = $this->getObjectAsArray($type, $data);
             $result = new \stdClass();
 
             foreach ($property as $key => $prop) {
@@ -196,5 +197,22 @@ class SchemaTraverser
     protected function getCurrentPath()
     {
         return '/' . implode('/', $this->pathStack);
+    }
+
+    protected function getObjectAsArray($type, $data)
+    {
+        if ($type == self::TYPE_INCOMING) {
+            if ($data instanceof \stdClass) {
+                $data = (array) $data;
+            } else {
+                throw new ValidationException($this->getCurrentPath() . ' must be an object');
+            }
+        } else {
+            $data = $this->normalizeToArray($data);
+            if (!is_array($data)) {
+                throw new ValidationException($this->getCurrentPath() . ' must be an object');
+            }
+        }
+        return $data;
     }
 }

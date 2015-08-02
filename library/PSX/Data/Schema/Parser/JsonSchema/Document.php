@@ -196,6 +196,19 @@ class Document
         $complexType = Property::getComplex($name);
         $properties  = isset($data['properties']) ? $data['properties'] : array();
 
+        if (isset($data['patternProperties'])) {
+            $anyType    = Property::getAny($name);
+            $properties = $data['patternProperties'];
+
+            if (is_array($properties)) {
+                $prototype = $this->getRecProperty(current($properties), $name, $depth + 1);
+
+                $anyType->setPrototype($prototype);
+
+                return $anyType;
+            }
+        }
+
         foreach ($properties as $name => $row) {
             if (is_array($row)) {
                 $property = $this->getRecProperty($row, $name, $depth + 1);

@@ -82,6 +82,21 @@ class Builder
 
     /**
      * @param string $name
+     * @return \PSX\Data\Schema\Property\AnyType
+     */
+    public function anyType($name)
+    {
+        if ($name instanceof Property\AnyType) {
+            $this->add($property = $name);
+        } else {
+            $this->add($property = Property::getAny($name));
+        }
+
+        return $property;
+    }
+
+    /**
+     * @param string $name
      * @return \PSX\Data\Schema\Property\ArrayType
      */
     public function arrayType($name)
