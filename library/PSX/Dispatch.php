@@ -146,8 +146,4 @@ class Dispatch
             }
         }
     }
-
-    protected function get()
-    {
-    }
 }
