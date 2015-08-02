@@ -196,14 +196,12 @@ class Document
         $complexType = Property::getComplex($name);
         $properties  = isset($data['properties']) ? $data['properties'] : array();
 
-        if (isset($data['patternProperties'])) {
-            $anyType    = Property::getAny($name);
-            $properties = $data['patternProperties'];
+        if (isset($data['patternProperties']) && is_array($data['patternProperties'])) {
+            $prototype = current($data['patternProperties']);
 
-            if (is_array($properties)) {
-                $prototype = $this->getRecProperty(current($properties), $name, $depth + 1);
-
-                $anyType->setPrototype($prototype);
+            if (!empty($prototype) && is_array($prototype)) {
+                $anyType = Property::getAny($name);
+                $anyType->setPrototype($this->getRecProperty($prototype, $name, $depth + 1));
 
                 return $anyType;
             }
@@ -254,6 +252,10 @@ class Document
             if ($property !== null) {
                 $arrayType->setPrototype($property);
             }
+        }
+
+        if (isset($data['description'])) {
+            $arrayType->setDescription($data['description']);
         }
 
         return $arrayType;
@@ -334,6 +336,10 @@ class Document
 
         if (isset($data['maxLength'])) {
             $property->setMaxLength($data['maxLength']);
+        }
+
+        if (isset($data['description'])) {
+            $property->setDescription($data['description']);
         }
     }
 
