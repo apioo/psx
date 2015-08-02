@@ -115,9 +115,7 @@ class LogListener implements EventSubscriberInterface
             'severity' => $severity,
         );
 
-        if ($exception instanceof DisplayException) {
-            $this->logger->notice($exception->getMessage(), $context);
-        } elseif ($exception instanceof StatusCodeException) {
+        if ($exception instanceof StatusCodeException) {
             if ($exception->isClientError()) {
                 $this->logger->notice($exception->getMessage(), $context);
             } elseif ($exception->isServerError()) {
@@ -125,6 +123,8 @@ class LogListener implements EventSubscriberInterface
             } else {
                 $this->logger->info($exception->getMessage(), $context);
             }
+        } elseif ($exception instanceof DisplayException) {
+            $this->logger->notice($exception->getMessage(), $context);
         } else {
             $this->logger->error($exception->getMessage(), $context);
         }
