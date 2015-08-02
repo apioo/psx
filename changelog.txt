@@ -1,4 +1,12 @@
 
+1.0.6
+* Fix schema parse read description of array and scalar types
+* Add any schema property type
+* Messages of StatusCodeException are now shown to the user when in production 
+  mode
+* Add title and required parameter to accessor
+* Set controllerClass variable for template writers
+
 1.0.5
 * Fix issue with content negotiation #10
 * Make api resource and schema classes serializable
