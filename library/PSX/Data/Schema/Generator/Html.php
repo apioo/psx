@@ -62,14 +62,18 @@ class Html implements GeneratorInterface
 
         $this->_types[$type->getId()] = $type->getName();
 
-        if ($type instanceof Property\ComplexType) {
-            $properties = $type->getProperties();
+        $response   = '';
+        $properties = [];
 
+        if ($type instanceof Property\CompositeTypeAbstract) {
+            $properties = $type->getProperties();
             if (empty($properties)) {
                 return;
             }
+        }
 
-            $response = '<div id="psx-type-' . $type->getId() . '" class="psx-complex-type">';
+        if ($type instanceof Property\ComplexType) {
+            $response.= '<div id="psx-type-' . $type->getId() . '" class="psx-complex-type">';
             $response.= '<h1>' . $type->getName() . '</h1>';
             $response.= '<div class="psx-type-description">' . $type->getDescription() . '</div>';
             $response.= '<table class="table psx-type-properties">';
@@ -108,19 +112,17 @@ class Html implements GeneratorInterface
             $response.= '</tbody>';
             $response.= '</table>';
             $response.= '</div>';
-
-            foreach ($properties as $property) {
-                if ($property instanceof Property\CompositeTypeAbstract) {
-                    foreach ($property as $childProperty) {
-                        $response.= $this->generateType($childProperty);
-                    }
-                }
-            }
-
-            return $response;
         }
 
-        return '';
+        foreach ($properties as $property) {
+            if ($property instanceof Property\AnyType || $property instanceof Property\ArrayType) {
+                $response.= $this->generateType($property->getPrototype());
+            } elseif ($property instanceof Property\CompositeTypeAbstract) {
+                $response.= $this->generateType($property);
+            }
+        }
+
+        return $response;
     }
 
     protected function getValueDescription(PropertyInterface $type)
