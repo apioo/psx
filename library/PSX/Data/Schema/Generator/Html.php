@@ -62,12 +62,13 @@ class Html implements GeneratorInterface
 
         $this->_types[$type->getId()] = $type->getName();
 
-        $response   = '';
-        $properties = [];
+        $response    = '';
+        $description = $type->getDescription();
+        $properties  = [];
 
         if ($type instanceof Property\CompositeTypeAbstract) {
             $properties = $type->getProperties();
-            if (empty($properties)) {
+            if (empty($properties) && empty($description)) {
                 return;
             }
         }
@@ -75,42 +76,46 @@ class Html implements GeneratorInterface
         if ($type instanceof Property\ComplexType) {
             $response.= '<div id="psx-type-' . $type->getId() . '" class="psx-complex-type">';
             $response.= '<h1>' . $type->getName() . '</h1>';
-            $response.= '<div class="psx-type-description">' . $type->getDescription() . '</div>';
-            $response.= '<table class="table psx-type-properties">';
-            $response.= '<colgroup>';
-            $response.= '<col width="20%" />';
-            $response.= '<col width="20%" />';
-            $response.= '<col width="40%" />';
-            $response.= '<col width="20%" />';
-            $response.= '</colgroup>';
-            $response.= '<thead>';
-            $response.= '<tr>';
-            $response.= '<th>Property</th>';
-            $response.= '<th>Type</th>';
-            $response.= '<th>Description</th>';
-            $response.= '<th>Constraints</th>';
-            $response.= '</tr>';
-            $response.= '</thead>';
-            $response.= '<tbody>';
+            $response.= '<div class="psx-type-description">' . $description . '</div>';
 
-            foreach ($properties as $property) {
-                list($type, $constraints) = $this->getValueDescription($property);
+            if (!empty($properties)) {
+                $response.= '<table class="table psx-type-properties">';
+                $response.= '<colgroup>';
+                $response.= '<col width="20%" />';
+                $response.= '<col width="20%" />';
+                $response.= '<col width="40%" />';
+                $response.= '<col width="20%" />';
+                $response.= '</colgroup>';
+                $response.= '<thead>';
+                $response.= '<tr>';
+                $response.= '<th>Property</th>';
+                $response.= '<th>Type</th>';
+                $response.= '<th>Description</th>';
+                $response.= '<th>Constraints</th>';
+                $response.= '</tr>';
+                $response.= '</thead>';
+                $response.= '<tbody>';
 
-                $description = '';
-                if (!$property instanceof Property\ComplexType) {
-                    $description.= $property->getDescription();
+                foreach ($properties as $property) {
+                    list($type, $constraints) = $this->getValueDescription($property);
+
+                    $description = '';
+                    if (!$property instanceof Property\ComplexType) {
+                        $description = $property->getDescription();
+                    }
+
+                    $response.= '<tr>';
+                    $response.= '<td><span class="psx-property-name ' . ($property->isRequired() ? 'psx-property-required' : 'psx-property-optional') . '">' . $property->getName() . '</span></td>';
+                    $response.= '<td>' . $type . '</td>';
+                    $response.= '<td><span class="psx-property-description">' . $description . '</span></td>';
+                    $response.= '<td>' . $constraints . '</td>';
+                    $response.= '</tr>';
                 }
 
-                $response.= '<tr>';
-                $response.= '<td><span class="psx-property-name ' . ($property->isRequired() ? 'psx-property-required' : 'psx-property-optional') . '">' . $property->getName() . '</span></td>';
-                $response.= '<td>' . $type . '</td>';
-                $response.= '<td><span class="psx-property-description">' . $description . '</span></td>';
-                $response.= '<td>' . $constraints . '</td>';
-                $response.= '</tr>';
+                $response.= '</tbody>';
+                $response.= '</table>';
             }
 
-            $response.= '</tbody>';
-            $response.= '</table>';
             $response.= '</div>';
         }
 
