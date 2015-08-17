@@ -72,7 +72,8 @@ class TestApiController extends ApiAbstract
 
         $condition = FilterParameter::getCondition($params);
 
-        $this->testCase->assertEquals(array(array('id', '=', '12', 'AND', 1), array('date', '>', '2014-01-26 00:00:00', 'AND', 1)), $condition->toArray());
+        $this->testCase->assertEquals('WHERE (id = ? AND date > ?)', $condition->getStatment());
+        $this->testCase->assertEquals(['12', '2014-01-26 00:00:00'], $condition->getValues());
 
         // check writer
         $this->testCase->assertTrue($this->isWriter('PSX\Data\Writer\Json'));
