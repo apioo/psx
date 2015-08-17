@@ -92,7 +92,7 @@ abstract class TableAbstract extends TableQueryAbstract implements TableInterfac
             ->setMaxResults($count);
 
         if ($condition !== null && $condition->hasCondition()) {
-            $builder->where(substr($condition->getStatment(), 5));
+            $builder->where($condition->getExpression($this->connection->getDatabasePlatform()));
 
             $values = $condition->getValues();
             foreach ($values as $key => $value) {
@@ -117,7 +117,7 @@ abstract class TableAbstract extends TableQueryAbstract implements TableInterfac
             ->from($this->getName(), null);
 
         if ($condition !== null && $condition->hasCondition()) {
-            $builder->where(substr($condition->getStatment(), 5));
+            $builder->where($condition->getExpression($this->connection->getDatabasePlatform()));
 
             $values = $condition->getValues();
             foreach ($values as $key => $value) {
