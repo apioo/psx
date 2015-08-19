@@ -54,7 +54,7 @@ class ConditionTest extends \PHPUnit_Framework_TestCase
         $con2 = new Condition();
         $con2->add('id', '=', '1');
         $con2->add('id', '=', '2');
-        $con2->addExpr($con);
+        $con2->addExpression($con);
 
         $this->assertEquals('WHERE (id = ? AND id = ? AND (id = ? OR id = ?))', $con2->getStatment());
         $this->assertEquals(array('1', '2', '1', '2'), $con2->getValues());
