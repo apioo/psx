@@ -46,6 +46,7 @@ class RequestFactoryTest extends \PHPUnit_Framework_TestCase
             ['http://foo.com/', ['REQUEST_URI' => '/']],
             ['http://foo.com/bar', ['REQUEST_URI' => '/bar']],
             ['http://foo.com/bar?bar=test', ['REQUEST_URI' => '/bar?bar=test']],
+            ['http://foo.com/bar/?bar=test', ['REQUEST_URI' => '/bar/?bar=test']],
             ['http://foo.com/?bar=test', ['REQUEST_URI' => '/?bar=test']],
             ['http://foo.com/?bar=test', ['REQUEST_URI' => '?bar=test']],
         );
@@ -134,6 +135,7 @@ class RequestFactoryTest extends \PHPUnit_Framework_TestCase
             ['http://foo.com/', ['REQUEST_URI' => '/sub/folder/']],
             ['http://foo.com/bar', ['REQUEST_URI' => '/sub/folder/bar']],
             ['http://foo.com/bar/', ['REQUEST_URI' => '/sub/folder/bar/']],
+            ['http://foo.com/bar/?bar=test', ['REQUEST_URI' => '/sub/folder/bar/?bar=test']],
             ['http://foo.com/bar?bar=test', ['REQUEST_URI' => '/sub/folder/bar?bar=test']],
             ['http://foo.com/?bar=test', ['REQUEST_URI' => '/sub/folder/?bar=test']],
             ['http://foo.com/?bar=test', ['REQUEST_URI' => '/sub/folder?bar=test']],
