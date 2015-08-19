@@ -218,26 +218,26 @@ class FilterParameter
         if ($parameter->getFilterBy() && $parameter->getFilterValue()) {
             switch ($parameter->getFilterOp()) {
                 case 'contains':
-                    $condition->add($parameter->getFilterBy(), 'LIKE', '%' . $parameter->getFilterValue() . '%');
+                    $condition->like($parameter->getFilterBy(), '%' . $parameter->getFilterValue() . '%');
                     break;
 
                 case 'equals':
-                    $condition->add($parameter->getFilterBy(), '=', $parameter->getFilterValue());
+                    $condition->equals($parameter->getFilterBy(), $parameter->getFilterValue());
                     break;
 
                 case 'startsWith':
-                    $condition->add($parameter->getFilterBy(), 'LIKE', $parameter->getFilterValue() . '%');
+                    $condition->like($parameter->getFilterBy(), $parameter->getFilterValue() . '%');
                     break;
 
                 case 'present':
-                    $condition->add($parameter->getFilterBy(), 'IS NOT', 'NULL', 'AND');
-                    $condition->add($parameter->getFilterBy(), 'NOT LIKE', '');
+                    $condition->notNil($parameter->getFilterBy());
+                    $condition->notEquals($parameter->getFilterBy(), '');
                     break;
             }
         }
 
         if ($parameter->getUpdatedSince() instanceof \DateTime) {
-            $condition->add($dateColumn, '>', $parameter->getUpdatedSince()->format(DateTime::SQL));
+            $condition->greater($dateColumn, $parameter->getUpdatedSince());
         }
 
         return $condition;
