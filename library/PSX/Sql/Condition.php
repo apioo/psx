@@ -28,8 +28,7 @@ use PSX\Sql\Condition\ExpressionAbstract;
 use PSX\Sql\Condition\ExpressionInterface;
 
 /**
- * Condition which represents a SQL espression which filters a result set. Note
- * try to avoid using the constants since they are only for internal handling.
+ * Condition which represents a SQL expression which filters a result set
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
@@ -56,7 +55,7 @@ class Condition extends ExpressionAbstract implements Countable
 
     /**
      * Adds an condition and tries to detect the type of the condition based on
-     * the provided values
+     * the provided values. It is recommended to use an explicit method
      *
      * @param string $column
      * @param string $operator
@@ -84,77 +83,188 @@ class Condition extends ExpressionAbstract implements Countable
             $expr = new Condition\Basic($column, $operator, $value, $conjunction);
         }
 
-        return $this->addExpr($expr);
+        return $this->addExpression($expr);
     }
 
+    /**
+     * Asserts that the column is equals to the value
+     *
+     * @param string $column
+     * @param string $value
+     * @param string $conjunction
+     * @return \PSX\Sql\Condition
+     */
     public function equals($column, $value, $conjunction = 'AND')
     {
-        return $this->addExpr(new Condition\Basic($column, '=', $value, $conjunction));
+        return $this->addExpression(new Condition\Basic($column, '=', $value, $conjunction));
     }
 
+    /**
+     * Asserts that the column is not equal to the value
+     *
+     * @param string $column
+     * @param string $value
+     * @param string $conjunction
+     * @return \PSX\Sql\Condition
+     */
     public function notEquals($column, $value, $conjunction = 'AND')
     {
-        return $this->addExpr(new Condition\Basic($column, '!=', $value, $conjunction));
+        return $this->addExpression(new Condition\Basic($column, '!=', $value, $conjunction));
     }
 
+    /**
+     * Asserts that the column is greater then the value
+     *
+     * @param string $column
+     * @param string $value
+     * @param string $conjunction
+     * @return \PSX\Sql\Condition
+     */
     public function greater($column, $value, $conjunction = 'AND')
     {
-        return $this->addExpr(new Condition\Basic($column, '>', $value, $conjunction));
+        return $this->addExpression(new Condition\Basic($column, '>', $value, $conjunction));
     }
 
+    /**
+     * Asserts that the column is greater or equal to the value
+     *
+     * @param string $column
+     * @param string $value
+     * @param string $conjunction
+     * @return \PSX\Sql\Condition
+     */
     public function greaterThen($column, $value, $conjunction = 'AND')
     {
-        return $this->addExpr(new Condition\Basic($column, '>=', $value, $conjunction));
+        return $this->addExpression(new Condition\Basic($column, '>=', $value, $conjunction));
     }
 
+    /**
+     * Asserts that the column is lower then the value
+     *
+     * @param string $column
+     * @param string $value
+     * @param string $conjunction
+     * @return \PSX\Sql\Condition
+     */
     public function lower($column, $value, $conjunction = 'AND')
     {
-        return $this->addExpr(new Condition\Basic($column, '<', $value, $conjunction));
+        return $this->addExpression(new Condition\Basic($column, '<', $value, $conjunction));
     }
 
+    /**
+     * Asserts that the column is lower or equal to the value
+     *
+     * @param string $column
+     * @param string $value
+     * @param string $conjunction
+     * @return \PSX\Sql\Condition
+     */
     public function lowerThen($column, $value, $conjunction = 'AND')
     {
-        return $this->addExpr(new Condition\Basic($column, '<=', $value, $conjunction));
+        return $this->addExpression(new Condition\Basic($column, '<=', $value, $conjunction));
     }
 
+    /**
+     * Asserts that the column is like the value
+     *
+     * @param string $column
+     * @param string $value
+     * @param string $conjunction
+     * @return \PSX\Sql\Condition
+     */
     public function like($column, $value, $conjunction = 'AND')
     {
-        return $this->addExpr(new Condition\Basic($column, 'LIKE', $value, $conjunction));
+        return $this->addExpression(new Condition\Basic($column, 'LIKE', $value, $conjunction));
     }
 
+    /**
+     * Asserts that the column is not like the value
+     *
+     * @param string $column
+     * @param string $value
+     * @param string $conjunction
+     * @return \PSX\Sql\Condition
+     */
     public function notLike($column, $value, $conjunction = 'AND')
     {
-        return $this->addExpr(new Condition\Basic($column, 'NOT LIKE', $value, $conjunction));
+        return $this->addExpression(new Condition\Basic($column, 'NOT LIKE', $value, $conjunction));
     }
 
+    /**
+     * Asserts that the column is between the left and right value
+     *
+     * @param string $column
+     * @param string $left
+     * @param string $right
+     * @param string $conjunction
+     * @return \PSX\Sql\Condition
+     */
     public function between($column, $left, $right, $conjunction = 'AND')
     {
-        return $this->addExpr(new Condition\Between($column, $left, $right, $conjunction));
+        return $this->addExpression(new Condition\Between($column, $left, $right, $conjunction));
     }
 
+    /**
+     * Asserts that the column is in the array of values
+     *
+     * @param string $column
+     * @param array $values
+     * @param string $conjunction
+     * @return \PSX\Sql\Condition
+     */
     public function in($column, array $values, $conjunction = 'AND')
     {
-        return $this->addExpr(new Condition\In($column, $values, $conjunction));
+        return $this->addExpression(new Condition\In($column, $values, $conjunction));
     }
 
+    /**
+     * Asserts that the column is null
+     *
+     * @param string $column
+     * @param string $conjunction
+     * @return \PSX\Sql\Condition
+     */
     public function nil($column, $conjunction = 'AND')
     {
-        return $this->addExpr(new Condition\Nil($column, $conjunction));
+        return $this->addExpression(new Condition\Nil($column, $conjunction));
     }
 
+    /**
+     * Asserts that the column is not null
+     *
+     * @param string $column
+     * @param string $conjunction
+     * @return \PSX\Sql\Condition
+     */
     public function notNil($column, $conjunction = 'AND')
     {
-        return $this->addExpr(new Condition\NotNil($column, $conjunction));
+        return $this->addExpression(new Condition\NotNil($column, $conjunction));
     }
 
-    public function raw($expr, array $values = array(), $conjunction = 'AND')
+    /**
+     * Adds an raw SQL expression
+     *
+     * @param string $statment
+     * @param array $values
+     * @param string $conjunction
+     * @return \PSX\Sql\Condition
+     */
+    public function raw($statment, array $values = array(), $conjunction = 'AND')
     {
-        return $this->addExpr(new Condition\Raw($expr, $values, $conjunction));
+        return $this->addExpression(new Condition\Raw($statment, $values, $conjunction));
     }
 
+    /**
+     * Asserts that the column matches the provided regular expression
+     *
+     * @param string $column
+     * @param string $regexp
+     * @param string $conjunction
+     * @return \PSX\Sql\Condition
+     */
     public function regexp($column, $regexp, $conjunction = 'AND')
     {
-        return $this->addExpr(new Condition\Regexp($column, $regexp, $conjunction));
+        return $this->addExpression(new Condition\Regexp($column, $regexp, $conjunction));
     }
 
     /**
@@ -163,7 +273,7 @@ class Condition extends ExpressionAbstract implements Countable
      * @param \PSX\Sql\Condition\ExpressionInterface $expr
      * @return \PSX\Sql\Condition
      */
-    public function addExpr(ExpressionInterface $expr)
+    public function addExpression(ExpressionInterface $expr)
     {
         $this->expressions[] = $expr;
 
@@ -300,7 +410,7 @@ class Condition extends ExpressionAbstract implements Countable
             $values = $expr->getValues();
             foreach ($values as $value) {
                 if ($value instanceof \DateTime) {
-                    $params[] = $values->format('Y-m-d H:i:s');
+                    $params[] = $value->format('Y-m-d H:i:s');
                 } else {
                     $params[] = $value;
                 }
@@ -332,11 +442,11 @@ class Condition extends ExpressionAbstract implements Countable
 
         foreach ($criteria as $field => $value) {
             if (is_array($value)) {
-                $condition->addExpr(new Condition\In($field, $value));
+                $condition->addExpression(new Condition\In($field, $value));
             } elseif (is_null($value)) {
-                $condition->addExpr(new Condition\Nil($field));
+                $condition->addExpression(new Condition\Nil($field));
             } elseif (is_scalar($value)) {
-                $condition->addExpr(new Condition\Basic($field, '=', $value));
+                $condition->addExpression(new Condition\Basic($field, '=', $value));
             }
         }
 
