@@ -238,6 +238,19 @@ class ConditionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(true, $con_1->hasCondition());
     }
 
+    public function testGet()
+    {
+        $con = new Condition();
+        $con->add('title', '=', '2');
+
+        $titleExpression = $con->get('title');
+
+        $this->assertInstanceOf('PSX\Sql\Condition\ExpressionInterface', $titleExpression);
+        $this->assertEquals(['2'], $titleExpression->getValues());
+
+        $this->assertNull($con->get('foo'));
+    }
+
     public function testRemove()
     {
         $con = new Condition();
@@ -288,8 +301,6 @@ class ConditionTest extends \PHPUnit_Framework_TestCase
         ));
 
         $this->assertEquals('WHERE (foo = ? AND bar IN (?,?) AND baz IS NULL)', $con->getStatment());
-
-        // test buffer
         $this->assertEquals('WHERE (foo = ? AND bar IN (?,?) AND baz IS NULL)', $con->getStatment());
     }
 

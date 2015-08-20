@@ -317,6 +317,23 @@ class Condition extends ExpressionAbstract implements Countable
     }
 
     /**
+     * Returns an expression by the column name or null
+     *
+     * @param string $column
+     * @return \PSX\Sql\Condition\ExpressionInterface
+     */
+    public function get($column)
+    {
+        foreach ($this->expressions as $expr) {
+            if ($expr->getColumn() == $column) {
+                return $expr;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Removes an condition containing an specific column
      *
      * @param string $column
@@ -331,7 +348,7 @@ class Condition extends ExpressionAbstract implements Countable
     }
 
     /**
-     * Removes all columns and cleans the internal cache
+     * Removes all columns
      *
      * @return void
      */
