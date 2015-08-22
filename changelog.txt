@@ -1,4 +1,8 @@
 
+1.0.7
+* Improved condition class
+* Schema html generator fix traversing nested schema properties
+
 1.0.6
 * Fix schema parse read description of array and scalar types
 * Add any schema property type
