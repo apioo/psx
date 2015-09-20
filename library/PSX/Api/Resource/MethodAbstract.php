@@ -71,6 +71,11 @@ abstract class MethodAbstract extends RecordAbstract
         return new Schema($this->queryParameters);
     }
 
+    public function hasQueryParameters()
+    {
+        return count($this->queryParameters) > 0;
+    }
+
     public function setRequest(SchemaInterface $schema)
     {
         $this->request = $schema;

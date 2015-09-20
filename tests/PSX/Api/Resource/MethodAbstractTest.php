@@ -47,6 +47,7 @@ class MethodAbstractTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('PSX\Data\SchemaInterface', $method->getResponse(200));
         $this->assertTrue($method->hasResponse(200));
         $this->assertFalse($method->hasResponse(201));
+        $this->assertTrue($method->hasQueryParameters());
     }
 
     /**
