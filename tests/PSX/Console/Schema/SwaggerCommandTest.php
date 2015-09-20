@@ -111,8 +111,8 @@ class SwaggerCommandTest extends ControllerTestCase
                     "responseMessages": [
                         {
                             "code": 200,
-                            "message": "Response",
-                            "responseModel": "getResponse"
+                            "message": "200 response",
+                            "responseModel": "GET-200-response"
                         }
                     ]
                 },
@@ -142,14 +142,14 @@ class SwaggerCommandTest extends ControllerTestCase
                             "paramType": "body",
                             "name": "body",
                             "required": true,
-                            "type": "postRequest"
+                            "type": "POST-request"
                         }
                     ],
                     "responseMessages": [
                         {
                             "code": 200,
-                            "message": "Response",
-                            "responseModel": "postResponse"
+                            "message": "200 response",
+                            "responseModel": "POST-200-response"
                         }
                     ]
                 },
@@ -179,14 +179,14 @@ class SwaggerCommandTest extends ControllerTestCase
                             "paramType": "body",
                             "name": "body",
                             "required": true,
-                            "type": "putRequest"
+                            "type": "PUT-request"
                         }
                     ],
                     "responseMessages": [
                         {
                             "code": 200,
-                            "message": "Response",
-                            "responseModel": "putResponse"
+                            "message": "200 response",
+                            "responseModel": "PUT-200-response"
                         }
                     ]
                 },
@@ -216,14 +216,14 @@ class SwaggerCommandTest extends ControllerTestCase
                             "paramType": "body",
                             "name": "body",
                             "required": true,
-                            "type": "deleteRequest"
+                            "type": "DELETE-request"
                         }
                     ],
                     "responseMessages": [
                         {
                             "code": 200,
-                            "message": "Response",
-                            "responseModel": "deleteResponse"
+                            "message": "200 response",
+                            "responseModel": "DELETE-200-response"
                         }
                     ]
                 }
@@ -231,8 +231,68 @@ class SwaggerCommandTest extends ControllerTestCase
         }
     ],
     "models": {
-        "getResponse": {
-            "id": "getResponse",
+        "ref8c9e003f6d4ea9f9c0ebc8c466a780b7": {
+            "id": "ref8c9e003f6d4ea9f9c0ebc8c466a780b7",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Name parameter",
+                    "maxLength": 16,
+                    "pattern": "[A-z]+"
+                },
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "foo",
+                        "bar"
+                    ]
+                }
+            }
+        },
+        "refb06e4990004303fabe7a828ef449cdb3": {
+            "id": "refb06e4990004303fabe7a828ef449cdb3",
+            "properties": {
+                "startIndex": {
+                    "type": "integer",
+                    "description": "startIndex parameter",
+                    "maximum": 32
+                },
+                "float": {
+                    "type": "number"
+                },
+                "boolean": {
+                    "type": "boolean"
+                },
+                "date": {
+                    "type": "string"
+                },
+                "datetime": {
+                    "type": "string"
+                }
+            }
+        },
+        "ref993f4bb37f524889fc963fedd6381458": {
+            "id": "ref993f4bb37f524889fc963fedd6381458",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "userId": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 16,
+                    "pattern": "[A-z]+"
+                },
+                "date": {
+                    "type": "string"
+                }
+            }
+        },
+        "refe80c8b9e68244cea3401d3b7aff00733": {
+            "id": "refe80c8b9e68244cea3401d3b7aff00733",
             "properties": {
                 "entry": {
                     "type": "array",
@@ -242,8 +302,8 @@ class SwaggerCommandTest extends ControllerTestCase
                 }
             }
         },
-        "postRequest": {
-            "id": "postRequest",
+        "ref3934915b538d8557d87031925d29ac0d": {
+            "id": "ref3934915b538d8557d87031925d29ac0d",
             "required": [
                 "title",
                 "date"
@@ -266,8 +326,8 @@ class SwaggerCommandTest extends ControllerTestCase
                 }
             }
         },
-        "postResponse": {
-            "id": "postResponse",
+        "ref3a0bf597c698b671859e2c0ca2640825": {
+            "id": "ref3a0bf597c698b671859e2c0ca2640825",
             "properties": {
                 "success": {
                     "type": "boolean"
@@ -277,8 +337,8 @@ class SwaggerCommandTest extends ControllerTestCase
                 }
             }
         },
-        "putRequest": {
-            "id": "putRequest",
+        "ref3368bc12f3927997f38dc1bea49554be": {
+            "id": "ref3368bc12f3927997f38dc1bea49554be",
             "required": [
                 "id"
             ],
@@ -300,8 +360,83 @@ class SwaggerCommandTest extends ControllerTestCase
                 }
             }
         },
-        "putResponse": {
-            "id": "putResponse",
+        "path": {
+            "id": "path",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Name parameter",
+                    "maxLength": 16,
+                    "pattern": "[A-z]+"
+                },
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "foo",
+                        "bar"
+                    ]
+                }
+            }
+        },
+        "GET-query": {
+            "id": "GET-query",
+            "properties": {
+                "startIndex": {
+                    "type": "integer",
+                    "description": "startIndex parameter",
+                    "maximum": 32
+                },
+                "float": {
+                    "type": "number"
+                },
+                "boolean": {
+                    "type": "boolean"
+                },
+                "date": {
+                    "type": "string"
+                },
+                "datetime": {
+                    "type": "string"
+                }
+            }
+        },
+        "GET-200-response": {
+            "id": "GET-200-response",
+            "properties": {
+                "entry": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "ref993f4bb37f524889fc963fedd6381458"
+                    }
+                }
+            }
+        },
+        "POST-request": {
+            "id": "POST-request",
+            "required": [
+                "title",
+                "date"
+            ],
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "userId": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 16,
+                    "pattern": "[A-z]+"
+                },
+                "date": {
+                    "type": "string"
+                }
+            }
+        },
+        "POST-200-response": {
+            "id": "POST-200-response",
             "properties": {
                 "success": {
                     "type": "boolean"
@@ -311,8 +446,8 @@ class SwaggerCommandTest extends ControllerTestCase
                 }
             }
         },
-        "deleteRequest": {
-            "id": "deleteRequest",
+        "PUT-request": {
+            "id": "PUT-request",
             "required": [
                 "id"
             ],
@@ -334,8 +469,8 @@ class SwaggerCommandTest extends ControllerTestCase
                 }
             }
         },
-        "deleteResponse": {
-            "id": "deleteResponse",
+        "PUT-200-response": {
+            "id": "PUT-200-response",
             "properties": {
                 "success": {
                     "type": "boolean"
@@ -345,8 +480,11 @@ class SwaggerCommandTest extends ControllerTestCase
                 }
             }
         },
-        "ref993f4bb37f524889fc963fedd6381458": {
-            "id": "ref993f4bb37f524889fc963fedd6381458",
+        "DELETE-request": {
+            "id": "DELETE-request",
+            "required": [
+                "id"
+            ],
             "properties": {
                 "id": {
                     "type": "integer"
@@ -361,6 +499,17 @@ class SwaggerCommandTest extends ControllerTestCase
                     "pattern": "[A-z]+"
                 },
                 "date": {
+                    "type": "string"
+                }
+            }
+        },
+        "DELETE-200-response": {
+            "id": "DELETE-200-response",
+            "properties": {
+                "success": {
+                    "type": "boolean"
+                },
+                "message": {
                     "type": "string"
                 }
             }

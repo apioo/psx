@@ -36,109 +36,174 @@ class JsonSchemaTest extends GeneratorTestCase
 
         $expect = <<<'JSON'
 {
-  "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "foo",
-  "type": "object",
-  "definitions": {"ref993f4bb37f524889fc963fedd6381458": {
-      "type": "object",
-      "properties": {
-        "id": {"type": "integer"},
-        "userId": {"type": "integer"},
-        "title": {
-          "type": "string",
-          "minLength": 3,
-          "maxLength": 16,
-          "pattern": "[A-z]+"
+    "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
+    "id": "foo",
+    "type": "object",
+    "definitions": {
+        "ref8c9e003f6d4ea9f9c0ebc8c466a780b7": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Name parameter",
+                    "maxLength": 16,
+                    "pattern": "[A-z]+"
+                },
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "foo",
+                        "bar"
+                    ]
+                }
+            },
+            "additionalProperties": false
         },
-        "date": {"type": "string"}
-      },
-      "additionalProperties": false
-    }},
-  "properties": {
-    "getResponse": {
-      "type": "object",
-      "properties": {"entry": {
-          "type": "array",
-          "items": {"$ref": "#/definitions/ref993f4bb37f524889fc963fedd6381458"}
-        }},
-      "additionalProperties": false
-    },
-    "postRequest": {
-      "type": "object",
-      "properties": {
-        "id": {"type": "integer"},
-        "userId": {"type": "integer"},
-        "title": {
-          "type": "string",
-          "minLength": 3,
-          "maxLength": 16,
-          "pattern": "[A-z]+"
+        "refb06e4990004303fabe7a828ef449cdb3": {
+            "type": "object",
+            "properties": {
+                "startIndex": {
+                    "type": "integer",
+                    "description": "startIndex parameter",
+                    "maximum": 32
+                },
+                "float": {
+                    "type": "number"
+                },
+                "boolean": {
+                    "type": "boolean"
+                },
+                "date": {
+                    "type": "string"
+                },
+                "datetime": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false
         },
-        "date": {"type": "string"}
-      },
-      "required": [
-        "title",
-        "date"
-      ],
-      "additionalProperties": false
-    },
-    "postResponse": {
-      "type": "object",
-      "properties": {
-        "success": {"type": "boolean"},
-        "message": {"type": "string"}
-      },
-      "additionalProperties": false
-    },
-    "putRequest": {
-      "type": "object",
-      "properties": {
-        "id": {"type": "integer"},
-        "userId": {"type": "integer"},
-        "title": {
-          "type": "string",
-          "minLength": 3,
-          "maxLength": 16,
-          "pattern": "[A-z]+"
+        "ref993f4bb37f524889fc963fedd6381458": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "userId": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 16,
+                    "pattern": "[A-z]+"
+                },
+                "date": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false
         },
-        "date": {"type": "string"}
-      },
-      "required": ["id"],
-      "additionalProperties": false
-    },
-    "putResponse": {
-      "type": "object",
-      "properties": {
-        "success": {"type": "boolean"},
-        "message": {"type": "string"}
-      },
-      "additionalProperties": false
-    },
-    "deleteRequest": {
-      "type": "object",
-      "properties": {
-        "id": {"type": "integer"},
-        "userId": {"type": "integer"},
-        "title": {
-          "type": "string",
-          "minLength": 3,
-          "maxLength": 16,
-          "pattern": "[A-z]+"
+        "refe80c8b9e68244cea3401d3b7aff00733": {
+            "type": "object",
+            "properties": {
+                "entry": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#\/definitions\/ref993f4bb37f524889fc963fedd6381458"
+                    }
+                }
+            },
+            "additionalProperties": false
         },
-        "date": {"type": "string"}
-      },
-      "required": ["id"],
-      "additionalProperties": false
-    },
-    "deleteResponse": {
-      "type": "object",
-      "properties": {
-        "success": {"type": "boolean"},
-        "message": {"type": "string"}
-      },
-      "additionalProperties": false
+        "ref3934915b538d8557d87031925d29ac0d": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "userId": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 16,
+                    "pattern": "[A-z]+"
+                },
+                "date": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "title",
+                "date"
+            ],
+            "additionalProperties": false
+        },
+        "ref3a0bf597c698b671859e2c0ca2640825": {
+            "type": "object",
+            "properties": {
+                "success": {
+                    "type": "boolean"
+                },
+                "message": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false
+        },
+        "ref3368bc12f3927997f38dc1bea49554be": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "userId": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 16,
+                    "pattern": "[A-z]+"
+                },
+                "date": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "id"
+            ],
+            "additionalProperties": false
+        },
+        "path": {
+            "$ref": "#\/definitions\/ref8c9e003f6d4ea9f9c0ebc8c466a780b7"
+        },
+        "GET-query": {
+            "$ref": "#\/definitions\/refb06e4990004303fabe7a828ef449cdb3"
+        },
+        "GET-200-response": {
+            "$ref": "#\/definitions\/refe80c8b9e68244cea3401d3b7aff00733"
+        },
+        "POST-request": {
+            "$ref": "#\/definitions\/ref3934915b538d8557d87031925d29ac0d"
+        },
+        "POST-200-response": {
+            "$ref": "#\/definitions\/ref3a0bf597c698b671859e2c0ca2640825"
+        },
+        "PUT-request": {
+            "$ref": "#\/definitions\/ref3368bc12f3927997f38dc1bea49554be"
+        },
+        "PUT-200-response": {
+            "$ref": "#\/definitions\/ref3a0bf597c698b671859e2c0ca2640825"
+        },
+        "DELETE-request": {
+            "$ref": "#\/definitions\/ref3368bc12f3927997f38dc1bea49554be"
+        },
+        "DELETE-200-response": {
+            "$ref": "#\/definitions\/ref3a0bf597c698b671859e2c0ca2640825"
+        }
     }
-  }
 }
 JSON;
 

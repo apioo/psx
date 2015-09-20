@@ -36,167 +36,179 @@ class JsonSchemaTest extends GeneratorTestCase
 
         $expect = <<<'JSON'
 {
-  "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "urn:schema.phpsx.org#",
-  "description": "An general news entry",
-  "definitions": {
-    "ref11c55f48b558e06534c2dccf005c97cb": {
-      "type": "object",
-      "description": "An simple author element with some description",
-      "properties": {
-        "title": {
-          "type": "string",
-          "pattern": "[A-z]{3,16}"
+    "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
+    "id": "urn:schema.phpsx.org#",
+    "type": "object",
+    "description": "An general news entry",
+    "definitions": {
+        "refcd912e509b19822dd7788b11538902d8": {
+            "type": "object",
+            "patternProperties": {
+                "^[a-zA-Z_\\x7f-\\xff][a-zA-Z0-9_\\x7f-\\xff]+$": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false
         },
-        "email": {
-          "type": "string",
-          "description": "We will send no spam to this addresss"
+        "refe081a664cb5227a334bc5e0fa367f178": {
+            "type": "object",
+            "properties": {
+                "lat": {
+                    "type": "integer"
+                },
+                "long": {
+                    "type": "integer"
+                }
+            },
+            "description": "Location of the person",
+            "additionalProperties": false
         },
-        "categories": {
-          "type": "array",
-          "maxItems": 8,
-          "items": {
+        "ref11c55f48b558e06534c2dccf005c97cb": {
+            "type": "object",
+            "properties": {
+                "title": {
+                    "type": "string",
+                    "pattern": "[A-z]{3,16}"
+                },
+                "email": {
+                    "type": "string",
+                    "description": "We will send no spam to this addresss"
+                },
+                "categories": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "maxItems": 8
+                },
+                "locations": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#\/definitions\/refe081a664cb5227a334bc5e0fa367f178"
+                    },
+                    "description": "Array of locations"
+                },
+                "origin": {
+                    "$ref": "#\/definitions\/refe081a664cb5227a334bc5e0fa367f178"
+                }
+            },
+            "description": "An simple author element with some description",
+            "required": [
+                "title"
+            ],
+            "additionalProperties": false
+        },
+        "refaf92365f86505945496a4ce039023ec6": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                }
+            },
+            "description": "An application",
+            "additionalProperties": false
+        },
+        "ref7faa72cba86513503baa1411b67158f2": {
+            "oneOf": [
+                {
+                    "$ref": "#\/definitions\/refe081a664cb5227a334bc5e0fa367f178"
+                },
+                {
+                    "$ref": "#\/definitions\/refaf92365f86505945496a4ce039023ec6"
+                }
+            ]
+        },
+        "refb54ac38d5d84a0e86a372e69fa388424": {
+            "oneOf": [
+                {
+                    "$ref": "#\/definitions\/ref11c55f48b558e06534c2dccf005c97cb"
+                },
+                {
+                    "$ref": "#\/definitions\/refaf92365f86505945496a4ce039023ec6"
+                }
+            ]
+        }
+    },
+    "properties": {
+        "config": {
+            "$ref": "#\/definitions\/refcd912e509b19822dd7788b11538902d8"
+        },
+        "tags": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "minItems": 1,
+            "maxItems": 6
+        },
+        "receiver": {
+            "type": "array",
+            "items": {
+                "$ref": "#\/definitions\/ref11c55f48b558e06534c2dccf005c97cb"
+            },
+            "minItems": 1
+        },
+        "resources": {
+            "type": "array",
+            "items": {
+                "$ref": "#\/definitions\/ref7faa72cba86513503baa1411b67158f2"
+            }
+        },
+        "read": {
+            "type": "boolean"
+        },
+        "source": {
+            "$ref": "#\/definitions\/refb54ac38d5d84a0e86a372e69fa388424"
+        },
+        "author": {
+            "$ref": "#\/definitions\/ref11c55f48b558e06534c2dccf005c97cb"
+        },
+        "sendDate": {
             "type": "string"
-          }
         },
-        "locations": {
-          "type": "array",
-          "description": "Array of locations",
-          "items": {
-            "$ref": "#/definitions/refe081a664cb5227a334bc5e0fa367f178"
-          }
+        "readDate": {
+            "type": "string"
         },
-        "origin": {
-          "$ref": "#/definitions/refe081a664cb5227a334bc5e0fa367f178"
-        }
-      },
-      "required": [
-        "title"
-      ],
-      "additionalProperties": false
-    },
-    "refe081a664cb5227a334bc5e0fa367f178": {
-      "type": "object",
-      "description": "Location of the person",
-      "properties": {
-        "lat": {
-          "type": "integer"
+        "expires": {
+            "type": "string"
         },
-        "long": {
-          "type": "integer"
-        }
-      },
-      "additionalProperties": false
-    },
-    "refaf92365f86505945496a4ce039023ec6": {
-      "type": "object",
-      "description": "An application",
-      "properties": {
-        "name": {
-          "type": "string"
+        "price": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 100
         },
-        "url": {
-          "type": "string"
+        "rating": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
+        },
+        "content": {
+            "type": "string",
+            "description": "Contains the main content of the news entry",
+            "minLength": 3,
+            "maxLength": 512
+        },
+        "question": {
+            "type": "string",
+            "enum": [
+                "foo",
+                "bar"
+            ]
+        },
+        "coffeeTime": {
+            "type": "string"
         }
-      },
-      "additionalProperties": false
     },
-    "refcd912e509b19822dd7788b11538902d8": {
-      "type": "object",
-      "patternProperties": {
-        "^[a-zA-Z_\\x7f-\\xff][a-zA-Z0-9_\\x7f-\\xff]+$": {
-          "type": "string"
-        }
-      },
-      "additionalProperties": false
-    }
-  },
-  "type": "object",
-  "properties": {
-    "config": {
-      "$ref": "#/definitions/refcd912e509b19822dd7788b11538902d8"
-    },
-    "tags": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "minItems": 1,
-      "maxItems": 6
-    },
-    "receiver": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/ref11c55f48b558e06534c2dccf005c97cb"
-      },
-      "minItems": 1
-    },
-    "resources": {
-      "type": "array",
-      "items": {
-        "oneOf": [{
-          "$ref": "#/definitions/refe081a664cb5227a334bc5e0fa367f178"
-        },{
-          "$ref": "#/definitions/refaf92365f86505945496a4ce039023ec6"
-        }]
-      }
-    },
-    "read": {
-      "type": "boolean"
-    },
-    "source": {
-      "oneOf": [{
-        "$ref": "#/definitions/ref11c55f48b558e06534c2dccf005c97cb"
-      },{
-        "$ref": "#/definitions/refaf92365f86505945496a4ce039023ec6"
-      }]
-    },
-    "author": {
-      "$ref": "#/definitions/ref11c55f48b558e06534c2dccf005c97cb"
-    },
-    "sendDate": {
-      "type": "string"
-    },
-    "readDate": {
-      "type": "string"
-    },
-    "expires": {
-      "type": "string"
-    },
-    "price": {
-      "type": "number",
-      "minimum": 1,
-      "maximum": 100
-    },
-    "rating": {
-      "type": "integer",
-      "minimum": 1,
-      "maximum": 5
-    },
-    "content": {
-      "type": "string",
-      "minLength": 3,
-      "maxLength": 512,
-      "description": "Contains the main content of the news entry"
-    },
-    "question": {
-      "type": "string",
-      "enum": [
-        "foo",
-        "bar"
-      ]
-    },
-    "coffeeTime": {
-      "type": "string"
-    }
-  },
-  "required": [
-    "receiver",
-    "author",
-    "price",
-    "content"
-  ],
-  "additionalProperties": false
+    "required": [
+        "receiver",
+        "author",
+        "price",
+        "content"
+    ],
+    "additionalProperties": false
 }
 JSON;
 

@@ -48,13 +48,14 @@ class SwaggerTest extends GeneratorTestCase
                 {
                     "method": "GET",
                     "nickname": "getCollection",
+                    "summary": "Returns a collection",
                     "parameters": [
                         {
                             "paramType": "path",
                             "name": "name",
-                            "type": "string",
                             "description": "Name parameter",
                             "required": false,
+                            "type": "string",
                             "minimum": 0,
                             "maximum": 16
                         },
@@ -62,14 +63,17 @@ class SwaggerTest extends GeneratorTestCase
                             "paramType": "path",
                             "name": "type",
                             "type": "string",
-                            "enum": ["foo", "bar"]
+                            "enum": [
+                                "foo",
+                                "bar"
+                            ]
                         },
                         {
                             "paramType": "query",
                             "name": "startIndex",
-                            "type": "integer",
                             "description": "startIndex parameter",
                             "required": false,
+                            "type": "integer",
                             "minimum": 0,
                             "maximum": 32
                         },
@@ -96,12 +100,11 @@ class SwaggerTest extends GeneratorTestCase
                             "format": "date-time"
                         }
                     ],
-                    "summary": "Returns a collection",
                     "responseMessages": [
                         {
                             "code": 200,
-                            "message": "Response",
-                            "responseModel": "getResponse"
+                            "message": "200 response",
+                            "responseModel": "GET-200-response"
                         }
                     ]
                 },
@@ -112,9 +115,9 @@ class SwaggerTest extends GeneratorTestCase
                         {
                             "paramType": "path",
                             "name": "name",
-                            "type": "string",
                             "description": "Name parameter",
                             "required": false,
+                            "type": "string",
                             "minimum": 0,
                             "maximum": 16
                         },
@@ -122,20 +125,23 @@ class SwaggerTest extends GeneratorTestCase
                             "paramType": "path",
                             "name": "type",
                             "type": "string",
-                            "enum": ["foo", "bar"]
+                            "enum": [
+                                "foo",
+                                "bar"
+                            ]
                         },
                         {
                             "paramType": "body",
                             "name": "body",
                             "required": true,
-                            "type": "postRequest"
+                            "type": "POST-request"
                         }
                     ],
                     "responseMessages": [
                         {
                             "code": 200,
-                            "message": "Response",
-                            "responseModel": "postResponse"
+                            "message": "200 response",
+                            "responseModel": "POST-200-response"
                         }
                     ]
                 },
@@ -146,9 +152,9 @@ class SwaggerTest extends GeneratorTestCase
                         {
                             "paramType": "path",
                             "name": "name",
-                            "type": "string",
                             "description": "Name parameter",
                             "required": false,
+                            "type": "string",
                             "minimum": 0,
                             "maximum": 16
                         },
@@ -156,20 +162,23 @@ class SwaggerTest extends GeneratorTestCase
                             "paramType": "path",
                             "name": "type",
                             "type": "string",
-                            "enum": ["foo", "bar"]
+                            "enum": [
+                                "foo",
+                                "bar"
+                            ]
                         },
                         {
                             "paramType": "body",
                             "name": "body",
                             "required": true,
-                            "type": "putRequest"
+                            "type": "PUT-request"
                         }
                     ],
                     "responseMessages": [
                         {
                             "code": 200,
-                            "message": "Response",
-                            "responseModel": "putResponse"
+                            "message": "200 response",
+                            "responseModel": "PUT-200-response"
                         }
                     ]
                 },
@@ -180,9 +189,9 @@ class SwaggerTest extends GeneratorTestCase
                         {
                             "paramType": "path",
                             "name": "name",
-                            "type": "string",
                             "description": "Name parameter",
                             "required": false,
+                            "type": "string",
                             "minimum": 0,
                             "maximum": 16
                         },
@@ -190,20 +199,23 @@ class SwaggerTest extends GeneratorTestCase
                             "paramType": "path",
                             "name": "type",
                             "type": "string",
-                            "enum": ["foo", "bar"]
+                            "enum": [
+                                "foo",
+                                "bar"
+                            ]
                         },
                         {
                             "paramType": "body",
                             "name": "body",
                             "required": true,
-                            "type": "deleteRequest"
+                            "type": "DELETE-request"
                         }
                     ],
                     "responseMessages": [
                         {
                             "code": 200,
-                            "message": "Response",
-                            "responseModel": "deleteResponse"
+                            "message": "200 response",
+                            "responseModel": "DELETE-200-response"
                         }
                     ]
                 }
@@ -211,8 +223,48 @@ class SwaggerTest extends GeneratorTestCase
         }
     ],
     "models": {
-        "getResponse": {
-            "id": "getResponse",
+        "path": {
+            "id": "path",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Name parameter",
+                    "maxLength": 16,
+                    "pattern": "[A-z]+"
+                },
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "foo",
+                        "bar"
+                    ]
+                }
+            }
+        },
+        "GET-query": {
+            "id": "GET-query",
+            "properties": {
+                "startIndex": {
+                    "type": "integer",
+                    "description": "startIndex parameter",
+                    "maximum": 32
+                },
+                "float": {
+                    "type": "number"
+                },
+                "boolean": {
+                    "type": "boolean"
+                },
+                "date": {
+                    "type": "string"
+                },
+                "datetime": {
+                    "type": "string"
+                }
+            }
+        },
+        "GET-200-response": {
+            "id": "GET-200-response",
             "properties": {
                 "entry": {
                     "type": "array",
@@ -222,8 +274,8 @@ class SwaggerTest extends GeneratorTestCase
                 }
             }
         },
-        "postRequest": {
-            "id": "postRequest",
+        "POST-request": {
+            "id": "POST-request",
             "required": [
                 "title",
                 "date"
@@ -246,8 +298,8 @@ class SwaggerTest extends GeneratorTestCase
                 }
             }
         },
-        "postResponse": {
-            "id": "postResponse",
+        "POST-200-response": {
+            "id": "POST-200-response",
             "properties": {
                 "success": {
                     "type": "boolean"
@@ -257,8 +309,8 @@ class SwaggerTest extends GeneratorTestCase
                 }
             }
         },
-        "putRequest": {
-            "id": "putRequest",
+        "PUT-request": {
+            "id": "PUT-request",
             "required": [
                 "id"
             ],
@@ -280,8 +332,8 @@ class SwaggerTest extends GeneratorTestCase
                 }
             }
         },
-        "putResponse": {
-            "id": "putResponse",
+        "PUT-200-response": {
+            "id": "PUT-200-response",
             "properties": {
                 "success": {
                     "type": "boolean"
@@ -291,8 +343,8 @@ class SwaggerTest extends GeneratorTestCase
                 }
             }
         },
-        "deleteRequest": {
-            "id": "deleteRequest",
+        "DELETE-request": {
+            "id": "DELETE-request",
             "required": [
                 "id"
             ],
@@ -314,19 +366,128 @@ class SwaggerTest extends GeneratorTestCase
                 }
             }
         },
-        "deleteResponse": {
-            "id": "deleteResponse",
+        "DELETE-200-response": {
+            "id": "DELETE-200-response",
             "properties": {
                 "success": {
                     "type": "boolean"
                 },
                 "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "ref8c9e003f6d4ea9f9c0ebc8c466a780b7": {
+            "id": "ref8c9e003f6d4ea9f9c0ebc8c466a780b7",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Name parameter",
+                    "maxLength": 16,
+                    "pattern": "[A-z]+"
+                },
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "foo",
+                        "bar"
+                    ]
+                }
+            }
+        },
+        "refb06e4990004303fabe7a828ef449cdb3": {
+            "id": "refb06e4990004303fabe7a828ef449cdb3",
+            "properties": {
+                "startIndex": {
+                    "type": "integer",
+                    "description": "startIndex parameter",
+                    "maximum": 32
+                },
+                "float": {
+                    "type": "number"
+                },
+                "boolean": {
+                    "type": "boolean"
+                },
+                "date": {
+                    "type": "string"
+                },
+                "datetime": {
                     "type": "string"
                 }
             }
         },
         "ref993f4bb37f524889fc963fedd6381458": {
             "id": "ref993f4bb37f524889fc963fedd6381458",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "userId": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 16,
+                    "pattern": "[A-z]+"
+                },
+                "date": {
+                    "type": "string"
+                }
+            }
+        },
+        "refe80c8b9e68244cea3401d3b7aff00733": {
+            "id": "refe80c8b9e68244cea3401d3b7aff00733",
+            "properties": {
+                "entry": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "ref993f4bb37f524889fc963fedd6381458"
+                    }
+                }
+            }
+        },
+        "ref3934915b538d8557d87031925d29ac0d": {
+            "id": "ref3934915b538d8557d87031925d29ac0d",
+            "required": [
+                "title",
+                "date"
+            ],
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "userId": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 16,
+                    "pattern": "[A-z]+"
+                },
+                "date": {
+                    "type": "string"
+                }
+            }
+        },
+        "ref3a0bf597c698b671859e2c0ca2640825": {
+            "id": "ref3a0bf597c698b671859e2c0ca2640825",
+            "properties": {
+                "success": {
+                    "type": "boolean"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "ref3368bc12f3927997f38dc1bea49554be": {
+            "id": "ref3368bc12f3927997f38dc1bea49554be",
+            "required": [
+                "id"
+            ],
             "properties": {
                 "id": {
                     "type": "integer"

@@ -62,7 +62,7 @@ JSON;
         $expect = <<<'JSON'
 {
     "swaggerVersion": "1.2",
-    "apiVersion": 1,
+    "apiVersion": "1",
     "basePath": "http:\/\/127.0.0.1\/",
     "resourcePath": "\/api",
     "apis": [
@@ -76,8 +76,8 @@ JSON;
                     "responseMessages": [
                         {
                             "code": 200,
-                            "message": "Response",
-                            "responseModel": "getResponse"
+                            "message": "200 response",
+                            "responseModel": "GET-200-response"
                         }
                     ]
                 },
@@ -89,14 +89,14 @@ JSON;
                             "paramType": "body",
                             "name": "body",
                             "required": true,
-                            "type": "postRequest"
+                            "type": "POST-request"
                         }
                     ],
                     "responseMessages": [
                         {
                             "code": 201,
-                            "message": "Response",
-                            "responseModel": "postResponse"
+                            "message": "201 response",
+                            "responseModel": "POST-201-response"
                         }
                     ]
                 },
@@ -108,14 +108,14 @@ JSON;
                             "paramType": "body",
                             "name": "body",
                             "required": true,
-                            "type": "putRequest"
+                            "type": "PUT-request"
                         }
                     ],
                     "responseMessages": [
                         {
                             "code": 200,
-                            "message": "Response",
-                            "responseModel": "putResponse"
+                            "message": "200 response",
+                            "responseModel": "PUT-200-response"
                         }
                     ]
                 },
@@ -127,14 +127,14 @@ JSON;
                             "paramType": "body",
                             "name": "body",
                             "required": true,
-                            "type": "deleteRequest"
+                            "type": "DELETE-request"
                         }
                     ],
                     "responseMessages": [
                         {
                             "code": 200,
-                            "message": "Response",
-                            "responseModel": "deleteResponse"
+                            "message": "200 response",
+                            "responseModel": "DELETE-200-response"
                         }
                     ]
                 }
@@ -142,8 +142,28 @@ JSON;
         }
     ],
     "models": {
-        "getResponse": {
-            "id": "getResponse",
+        "ref993f4bb37f524889fc963fedd6381458": {
+            "id": "ref993f4bb37f524889fc963fedd6381458",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "userId": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 16,
+                    "pattern": "[A-z]+"
+                },
+                "date": {
+                    "type": "string"
+                }
+            }
+        },
+        "refe80c8b9e68244cea3401d3b7aff00733": {
+            "id": "refe80c8b9e68244cea3401d3b7aff00733",
             "properties": {
                 "entry": {
                     "type": "array",
@@ -153,8 +173,8 @@ JSON;
                 }
             }
         },
-        "postRequest": {
-            "id": "postRequest",
+        "ref3934915b538d8557d87031925d29ac0d": {
+            "id": "ref3934915b538d8557d87031925d29ac0d",
             "required": [
                 "title",
                 "date"
@@ -177,8 +197,8 @@ JSON;
                 }
             }
         },
-        "postResponse": {
-            "id": "postResponse",
+        "ref3a0bf597c698b671859e2c0ca2640825": {
+            "id": "ref3a0bf597c698b671859e2c0ca2640825",
             "properties": {
                 "success": {
                     "type": "boolean"
@@ -188,8 +208,8 @@ JSON;
                 }
             }
         },
-        "putRequest": {
-            "id": "putRequest",
+        "ref3368bc12f3927997f38dc1bea49554be": {
+            "id": "ref3368bc12f3927997f38dc1bea49554be",
             "required": [
                 "id"
             ],
@@ -211,8 +231,43 @@ JSON;
                 }
             }
         },
-        "putResponse": {
-            "id": "putResponse",
+        "GET-200-response": {
+            "id": "GET-200-response",
+            "properties": {
+                "entry": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "ref993f4bb37f524889fc963fedd6381458"
+                    }
+                }
+            }
+        },
+        "POST-request": {
+            "id": "POST-request",
+            "required": [
+                "title",
+                "date"
+            ],
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "userId": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 16,
+                    "pattern": "[A-z]+"
+                },
+                "date": {
+                    "type": "string"
+                }
+            }
+        },
+        "POST-201-response": {
+            "id": "POST-201-response",
             "properties": {
                 "success": {
                     "type": "boolean"
@@ -222,8 +277,8 @@ JSON;
                 }
             }
         },
-        "deleteRequest": {
-            "id": "deleteRequest",
+        "PUT-request": {
+            "id": "PUT-request",
             "required": [
                 "id"
             ],
@@ -245,8 +300,8 @@ JSON;
                 }
             }
         },
-        "deleteResponse": {
-            "id": "deleteResponse",
+        "PUT-200-response": {
+            "id": "PUT-200-response",
             "properties": {
                 "success": {
                     "type": "boolean"
@@ -256,8 +311,11 @@ JSON;
                 }
             }
         },
-        "ref993f4bb37f524889fc963fedd6381458": {
-            "id": "ref993f4bb37f524889fc963fedd6381458",
+        "DELETE-request": {
+            "id": "DELETE-request",
+            "required": [
+                "id"
+            ],
             "properties": {
                 "id": {
                     "type": "integer"
@@ -272,6 +330,17 @@ JSON;
                     "pattern": "[A-z]+"
                 },
                 "date": {
+                    "type": "string"
+                }
+            }
+        },
+        "DELETE-200-response": {
+            "id": "DELETE-200-response",
+            "properties": {
+                "success": {
+                    "type": "boolean"
+                },
+                "message": {
                     "type": "string"
                 }
             }

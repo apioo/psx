@@ -46,54 +46,85 @@ class JsonSchema extends GeneratorAbstract
 
     public function generate(Resource $resource)
     {
-        $methods = $resource->getMethods();
+        return Json::encode($this->toArray($resource), JSON_PRETTY_PRINT);
+    }
 
+    public function toArray(Resource $resource)
+    {
         $definitions = array();
         $properties  = array();
 
+        // path
+        if ($resource->hasPathParameters()) {
+            list($defs, $refs) = $this->getJsonSchema($resource->getPathParameters());
+
+            $definitions = array_merge($definitions, $defs);
+
+            if (!empty($refs)) {
+                $key = 'path';
+
+                $properties[$key] = $refs;
+            }
+        }
+
+        // methods
+        $methods = $resource->getMethods();
         foreach ($methods as $method) {
-            $request = $method->getRequest();
+            // query
+            if ($method->hasQueryParameters()) {
+                list($defs, $refs) = $this->getJsonSchema($method->getQueryParameters());
 
-            if ($request instanceof SchemaInterface) {
-                list($defs, $props) = $this->getJsonSchema($request);
-
-                $key        = strtolower($method->getName()) . 'Request';
                 $definitions = array_merge($definitions, $defs);
 
-                if (isset($props['properties'])) {
-                    $properties[$key] = $props;
+                if (!empty($refs)) {
+                    $key = $method->getName() . '-query';
+
+                    $properties[$key] = $refs;
                 }
             }
 
-            $response = $this->getSuccessfulResponse($method);
+            // request
+            if ($method->hasRequest()) {
+                list($defs, $refs) = $this->getJsonSchema($method->getRequest());
 
-            if ($response instanceof SchemaInterface) {
-                list($defs, $props) = $this->getJsonSchema($response);
-
-                $key         = strtolower($method->getName()) . 'Response';
                 $definitions = array_merge($definitions, $defs);
 
-                if (isset($props['properties'])) {
-                    $properties[$key] = $props;
+                if (!empty($refs)) {
+                    $key = $method->getName() . '-request';
+
+                    $properties[$key] = $refs;
+                }
+            }
+
+            // response
+            $responses = $method->getResponses();
+            foreach ($responses as $statusCode => $response) {
+                list($defs, $refs) = $this->getJsonSchema($response);
+
+                $definitions = array_merge($definitions, $defs);
+
+                if (!empty($refs)) {
+                    $key = $method->getName() . '-' . $statusCode . '-response';
+
+                    $properties[$key] = $refs;
                 }
             }
         }
 
-        $result = array(
+        $definitions = array_merge($definitions, $properties);
+
+        return array(
             '$schema'     => JsonSchemaGenerator::SCHEMA,
             'id'          => $this->targetNamespace,
             'type'        => 'object',
             'definitions' => $definitions,
-            'properties'  => $properties,
         );
-
-        return Json::encode($result, JSON_PRETTY_PRINT);
     }
 
     protected function getJsonSchema(SchemaInterface $schema)
     {
         $generator   = new JsonSchemaGenerator($this->targetNamespace);
-        $data        = json_decode($generator->generate($schema), true);
+        $data        = $generator->toArray($schema);
         $definitions = array();
 
         unset($data['$schema']);
@@ -105,6 +136,18 @@ class JsonSchema extends GeneratorAbstract
             unset($data['definitions']);
         }
 
-        return [$definitions, $data];
+        $type  = isset($data['type']) ? $data['type'] : null;
+        $props = null;
+
+        if (isset($data['properties'])) {
+            $key = 'ref' . $schema->getDefinition()->getId();
+            if (!isset($definitions[$key])) {
+                $definitions[$key] = $data;
+            }
+
+            $props = ['$ref' => '#/definitions/' . $key];
+        }
+
+        return [$definitions, $props];
     }
 }

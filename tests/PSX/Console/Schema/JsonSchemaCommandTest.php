@@ -48,6 +48,48 @@ class JsonSchemaCommandTest extends ControllerTestCase
     "id": "urn:schema.phpsx.org#",
     "type": "object",
     "definitions": {
+        "ref8c9e003f6d4ea9f9c0ebc8c466a780b7": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Name parameter",
+                    "maxLength": 16,
+                    "pattern": "[A-z]+"
+                },
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "foo",
+                        "bar"
+                    ]
+                }
+            },
+            "additionalProperties": false
+        },
+        "refb06e4990004303fabe7a828ef449cdb3": {
+            "type": "object",
+            "properties": {
+                "startIndex": {
+                    "type": "integer",
+                    "description": "startIndex parameter",
+                    "maximum": 32
+                },
+                "float": {
+                    "type": "number"
+                },
+                "boolean": {
+                    "type": "boolean"
+                },
+                "date": {
+                    "type": "string"
+                },
+                "datetime": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false
+        },
         "ref993f4bb37f524889fc963fedd6381458": {
             "type": "object",
             "properties": {
@@ -68,10 +110,8 @@ class JsonSchemaCommandTest extends ControllerTestCase
                 }
             },
             "additionalProperties": false
-        }
-    },
-    "properties": {
-        "getResponse": {
+        },
+        "refe80c8b9e68244cea3401d3b7aff00733": {
             "type": "object",
             "properties": {
                 "entry": {
@@ -83,7 +123,7 @@ class JsonSchemaCommandTest extends ControllerTestCase
             },
             "additionalProperties": false
         },
-        "postRequest": {
+        "ref3934915b538d8557d87031925d29ac0d": {
             "type": "object",
             "properties": {
                 "id": {
@@ -108,7 +148,7 @@ class JsonSchemaCommandTest extends ControllerTestCase
             ],
             "additionalProperties": false
         },
-        "postResponse": {
+        "ref3a0bf597c698b671859e2c0ca2640825": {
             "type": "object",
             "properties": {
                 "success": {
@@ -120,7 +160,7 @@ class JsonSchemaCommandTest extends ControllerTestCase
             },
             "additionalProperties": false
         },
-        "putRequest": {
+        "ref3368bc12f3927997f38dc1bea49554be": {
             "type": "object",
             "properties": {
                 "id": {
@@ -144,53 +184,32 @@ class JsonSchemaCommandTest extends ControllerTestCase
             ],
             "additionalProperties": false
         },
-        "putResponse": {
-            "type": "object",
-            "properties": {
-                "success": {
-                    "type": "boolean"
-                },
-                "message": {
-                    "type": "string"
-                }
-            },
-            "additionalProperties": false
+        "path": {
+            "$ref": "#\/definitions\/ref8c9e003f6d4ea9f9c0ebc8c466a780b7"
         },
-        "deleteRequest": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "userId": {
-                    "type": "integer"
-                },
-                "title": {
-                    "type": "string",
-                    "minLength": 3,
-                    "maxLength": 16,
-                    "pattern": "[A-z]+"
-                },
-                "date": {
-                    "type": "string"
-                }
-            },
-            "required": [
-                "id"
-            ],
-            "additionalProperties": false
+        "GET-query": {
+            "$ref": "#\/definitions\/refb06e4990004303fabe7a828ef449cdb3"
         },
-        "deleteResponse": {
-            "type": "object",
-            "properties": {
-                "success": {
-                    "type": "boolean"
-                },
-                "message": {
-                    "type": "string"
-                }
-            },
-            "additionalProperties": false
+        "GET-200-response": {
+            "$ref": "#\/definitions\/refe80c8b9e68244cea3401d3b7aff00733"
+        },
+        "POST-request": {
+            "$ref": "#\/definitions\/ref3934915b538d8557d87031925d29ac0d"
+        },
+        "POST-200-response": {
+            "$ref": "#\/definitions\/ref3a0bf597c698b671859e2c0ca2640825"
+        },
+        "PUT-request": {
+            "$ref": "#\/definitions\/ref3368bc12f3927997f38dc1bea49554be"
+        },
+        "PUT-200-response": {
+            "$ref": "#\/definitions\/ref3a0bf597c698b671859e2c0ca2640825"
+        },
+        "DELETE-request": {
+            "$ref": "#\/definitions\/ref3368bc12f3927997f38dc1bea49554be"
+        },
+        "DELETE-200-response": {
+            "$ref": "#\/definitions\/ref3a0bf597c698b671859e2c0ca2640825"
         }
     }
 }

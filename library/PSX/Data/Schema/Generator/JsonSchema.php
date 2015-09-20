@@ -48,7 +48,17 @@ class JsonSchema implements GeneratorInterface
 
     public function generate(SchemaInterface $schema)
     {
-        return Json::encode($this->generateRootElement($schema->getDefinition()), JSON_PRETTY_PRINT);
+        return Json::encode($this->toArray($schema), JSON_PRETTY_PRINT);
+    }
+
+    /**
+     * Returns the jsonschema as array
+     *
+     * @return array
+     */
+    public function toArray(SchemaInterface $schema)
+    {
+        return $this->generateRootElement($schema->getDefinition());
     }
 
     protected function generateRootElement(Property\ComplexType $type)
@@ -118,11 +128,7 @@ class JsonSchema implements GeneratorInterface
 
             $result['additionalProperties'] = false;
 
-            $key = 'ref' . $type->getId();
-
-            $this->definitions[$key] = $result;
-
-            return ['$ref' => '#/definitions/' . $key];
+            return $this->generateRef($type, $result);
         } elseif ($type instanceof Property\ArrayType) {
             $result = array(
                 'type'  => 'array',
@@ -162,7 +168,7 @@ class JsonSchema implements GeneratorInterface
                 $result['description'] = $description;
             }
 
-            return $result;
+            return $this->generateRef($type, $result);
         } elseif ($type instanceof Property\ComplexType) {
             $properties = $type->getProperties();
             $props      = array();
@@ -192,11 +198,7 @@ class JsonSchema implements GeneratorInterface
 
             $result['additionalProperties'] = false;
 
-            $key = 'ref' . $type->getId();
-
-            $this->definitions[$key] = $result;
-
-            return ['$ref' => '#/definitions/' . $key];
+            return $this->generateRef($type, $result);
         } else {
             $result = array();
             $result['type'] = $this->getPropertyTypeName($type);
@@ -257,5 +259,14 @@ class JsonSchema implements GeneratorInterface
             default:
                 return 'string';
         }
+    }
+
+    protected function generateRef(PropertyInterface $type, array $result)
+    {
+        $key = 'ref' . $type->getId();
+
+        $this->definitions[$key] = $result;
+
+        return ['$ref' => '#/definitions/' . $key];
     }
 }

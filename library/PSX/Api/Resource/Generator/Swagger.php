@@ -129,7 +129,7 @@ class Swagger extends GeneratorAbstract
             // request body
             if ($request instanceof SchemaInterface) {
                 $description = $request->getDefinition()->getDescription();
-                $type        = strtolower($method->getName()) . 'Request';
+                $type        = $method->getName() . '-request';
                 $parameter   = new Parameter('body', 'body', $description, true);
                 $parameter->setType($type);
 
@@ -140,8 +140,8 @@ class Swagger extends GeneratorAbstract
             $responses = $method->getResponses();
 
             foreach ($responses as $statusCode => $response) {
-                $type    = strtolower($method->getName()) . 'Response';
-                $message = $response->getDefinition()->getDescription() ?: 'Response';
+                $type    = $method->getName() . '-' . $statusCode . '-response';
+                $message = $response->getDefinition()->getDescription() ?: $statusCode . ' response';
 
                 $operation->addResponseMessage(new ResponseMessage($statusCode, $message, $type));
             }
@@ -155,31 +155,30 @@ class Swagger extends GeneratorAbstract
     protected function getModels(Resource $resource)
     {
         $generator = new JsonSchema($this->targetNamespace);
-        $data      = json_decode($generator->generate($resource));
+        $data      = $generator->toArray($resource);
         $models    = new \stdClass();
 
-        $properties = $data->properties;
-        foreach ($properties as $name => $property) {
-            $description = isset($property->description) ? $property->description : null;
-            $required    = isset($property->required)    ? $property->required    : null;
-            $properties  = isset($property->properties)  ? $property->properties  : null;
+        if (isset($data['definitions']) && is_array($data['definitions'])) {
+            foreach ($data['definitions'] as $name => $definition) {
+                $properties  = isset($definition['properties'])  ? $definition['properties']  : null;
+                $description = isset($definition['description']) ? $definition['description'] : null;
+                $required    = isset($definition['required'])    ? $definition['required']    : null;
 
-            $model = new Model($name, $description, $required);
-            $model->setProperties($properties);
+                // if the property has an ref to an definition resolve the ref
+                if (isset($definition['$ref'])) {
+                    $ref = str_replace('#/definitions/', '', $definition['$ref']);
+                    if (isset($data['definitions'][$ref])) {
+                        $properties  = isset($data['definitions'][$ref]['properties'])  ? $data['definitions'][$ref]['properties']  : null;
+                        $description = isset($data['definitions'][$ref]['description']) ? $data['definitions'][$ref]['description'] : null;
+                        $required    = isset($data['definitions'][$ref]['required'])    ? $data['definitions'][$ref]['required']    : null;
+                    }
+                }
 
-            $models->$name = $model;
-        }
+                $model = new Model($name, $description, $required);
+                $model->setProperties($properties);
 
-        $definitions = $data->definitions;
-        foreach ($definitions as $name => $definition) {
-            $description = isset($definition->description) ? $definition->description : null;
-            $required    = isset($definition->required)    ? $definition->required    : null;
-            $properties  = isset($definition->properties)  ? $definition->properties  : null;
-
-            $model = new Model($name, $description, $required);
-            $model->setProperties($properties);
-
-            $models->$name = $model;
+                $models->$name = $model;
+            }
         }
 
         return $models;
