@@ -1,4 +1,10 @@
 
+1.0.8
+* Documentation controller returns now the complete json schema which can be 
+  used by the API client
+* Improved swagger and json schema generator
+* Extended api resource methods
+
 1.0.7
 * Improved condition class
 * Schema html generator fix traversing nested schema properties
