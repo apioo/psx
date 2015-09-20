@@ -26,6 +26,7 @@ use PSX\Api\Resource\Generator;
 use PSX\Api\Resource\Generator\HtmlAbstract;
 use PSX\Controller\ApiAbstract;
 use PSX\Data\Record;
+use PSX\Data\SchemaInterface;
 use PSX\Data\Schema\Generator as SchemaGenerator;
 use PSX\Exception;
 use PSX\Http\Exception as HttpException;
@@ -91,6 +92,17 @@ class DocumentationController extends ApiAbstract
         }
 
         if ($resource instanceof Resource) {
+            $generator = new Generator\JsonSchema($this->config['psx_json_namespace']);
+
+            $api = [
+                'path'        => $resource->getPath(),
+                'version'     => $version,
+                'status'      => $resource->getStatus(),
+                'description' => $resource->getDescription(),
+                'schema'      => $generator->toArray($resource),
+            ];
+
+            // available versions
             $resources = $documentation->getResources();
 
             krsort($resources);
@@ -103,27 +115,59 @@ class DocumentationController extends ApiAbstract
                 ]);
             }
 
-            $generators = $this->getViewGenerators();
-            $data       = array();
+            $api['versions'] = $versions;
 
-            foreach ($generators as $name => $generator) {
-                if ($generator instanceof HtmlAbstract) {
-                    $data[$generator->getName()] = $generator->generate($resource);
-                }
+            // path parameters
+            if ($resource->hasPathParameters()) {
+                $api['pathParameters'] = '#/definitions/path';
             }
 
-            $this->setBody(array(
-                'method'      => $resource->getAllowedMethods(),
-                'path'        => $resource->getPath(),
-                'description' => $resource->getDescription(),
-                'versions'    => $versions,
-                'see_others'  => $this->getSeeOthers($version, $resource->getPath()),
-                'resource'    => new Record('resource', [
-                    'version' => $version,
-                    'status'  => $resource->getStatus(),
-                    'data'    => new Record('data', $data),
-                ]),
-            ));
+            // methods
+            $methods = $resource->getMethods();
+            $details = [];
+
+            foreach ($methods as $method) {
+                $data = new \stdClass();
+
+                // description
+                $description = $method->getDescription();
+                if (!empty($description)) {
+                    $data->description = $description;
+                }
+
+                // query parameters
+                if ($method->hasQueryParameters()) {
+                    $data->queryParameters = '#/definitions/' . $method->getName() . '-query';
+                }
+
+                // request
+                if ($method->hasRequest()) {
+                    $data->request = '#/definitions/' . $method->getName() . '-request';
+                }
+
+                // responses
+                $responses = $method->getResponses();
+                if (!empty($responses)) {
+                    $resps = array();
+                    foreach ($responses as $statusCode => $response) {
+                        $resps[$statusCode] = '#/definitions/' . $method->getName() . '-' . $statusCode . '-response';
+                    }
+
+                    $data->responses = $resps;
+                }
+
+                $details[$method->getName()] = $data;
+            }
+
+            $api['methods'] = $details;
+
+            // links
+            $links = $this->getLinks($version, $resource->getPath());
+            if (!empty($links)) {
+                $api['links'] = $links;
+            }
+
+            $this->setBody($api);
         } else {
             throw new HttpException\BadRequestException('Invalid api version');
         }
@@ -145,24 +189,33 @@ class DocumentationController extends ApiAbstract
         return $routings;
     }
 
-    protected function getSeeOthers($version, $path)
+    protected function getLinks($version, $path)
     {
         $path   = ltrim($path, '/');
-        $result = new \stdClass();
+        $result = [];
 
         $wsdlGeneratorPath = $this->reverseRouter->getAbsolutePath('PSX\Controller\Tool\WsdlGeneratorController', array('version' => $version, 'path' => $path));
         if ($wsdlGeneratorPath !== null) {
-            $result->WSDL = $wsdlGeneratorPath;
+            $result[] = [
+                'rel'  => 'wsdl',
+                'href' => $wsdlGeneratorPath,
+            ];
         }
 
         $swaggerGeneratorPath = $this->reverseRouter->getAbsolutePath('PSX\Controller\Tool\SwaggerGeneratorController::doDetail', array('version' => $version, 'path' => $path));
         if ($swaggerGeneratorPath !== null) {
-            $result->Swagger = $swaggerGeneratorPath;
+            $result[] = [
+                'rel'  => 'swagger',
+                'href' => $swaggerGeneratorPath,
+            ];
         }
 
         $ramlGeneratorPath = $this->reverseRouter->getAbsolutePath('PSX\Controller\Tool\RamlGeneratorController', array('version' => $version, 'path' => $path));
         if ($ramlGeneratorPath !== null) {
-            $result->RAML = $ramlGeneratorPath;
+            $result[] = [
+                'rel'  => 'raml',
+                'href' => $ramlGeneratorPath,
+            ];
         }
 
         return $result;

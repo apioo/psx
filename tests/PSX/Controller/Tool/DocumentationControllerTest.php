@@ -75,25 +75,160 @@ JSON;
 
         $expect = <<<'JSON'
 {
-    "method": [
-        "GET",
-        "POST",
-        "PUT",
-        "DELETE"
-    ],
     "path": "\/api",
+    "version": "1",
+    "status": 1,
+    "schema": {
+        "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
+        "id": "urn:schema.phpsx.org#",
+        "type": "object",
+        "definitions": {
+            "ref993f4bb37f524889fc963fedd6381458": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "userId": {
+                        "type": "integer"
+                    },
+                    "title": {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 16,
+                        "pattern": "[A-z]+"
+                    },
+                    "date": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "refe80c8b9e68244cea3401d3b7aff00733": {
+                "type": "object",
+                "properties": {
+                    "entry": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#\/definitions\/ref993f4bb37f524889fc963fedd6381458"
+                        }
+                    }
+                },
+                "additionalProperties": false
+            },
+            "ref3934915b538d8557d87031925d29ac0d": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "userId": {
+                        "type": "integer"
+                    },
+                    "title": {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 16,
+                        "pattern": "[A-z]+"
+                    },
+                    "date": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "title",
+                    "date"
+                ],
+                "additionalProperties": false
+            },
+            "ref3a0bf597c698b671859e2c0ca2640825": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "message": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "ref3368bc12f3927997f38dc1bea49554be": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "userId": {
+                        "type": "integer"
+                    },
+                    "title": {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 16,
+                        "pattern": "[A-z]+"
+                    },
+                    "date": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id"
+                ],
+                "additionalProperties": false
+            },
+            "GET-200-response": {
+                "$ref": "#\/definitions\/refe80c8b9e68244cea3401d3b7aff00733"
+            },
+            "POST-request": {
+                "$ref": "#\/definitions\/ref3934915b538d8557d87031925d29ac0d"
+            },
+            "POST-201-response": {
+                "$ref": "#\/definitions\/ref3a0bf597c698b671859e2c0ca2640825"
+            },
+            "PUT-request": {
+                "$ref": "#\/definitions\/ref3368bc12f3927997f38dc1bea49554be"
+            },
+            "PUT-200-response": {
+                "$ref": "#\/definitions\/ref3a0bf597c698b671859e2c0ca2640825"
+            },
+            "DELETE-request": {
+                "$ref": "#\/definitions\/ref3368bc12f3927997f38dc1bea49554be"
+            },
+            "DELETE-200-response": {
+                "$ref": "#\/definitions\/ref3a0bf597c698b671859e2c0ca2640825"
+            }
+        }
+    },
     "versions": [
         {
             "version": 1,
             "status": 1
         }
     ],
-    "see_others": {},
-    "resource": {
-        "version": "1",
-        "status": 1,
-        "data": {
-            "Schema": "<div class=\"psx-resource psx-api-resource-generator-html-schema\" data-status=\"1\" data-path=\"\/api\"><h4>Schema<\/h4><div class=\"psx-resource-method\" data-method=\"GET\"><div class=\"psx-resource-data psx-resource-response\"><h5>GET Response - 200 OK<\/h5><div class=\"psx-resource-data-content\"><div id=\"psx-type-e80c8b9e68244cea3401d3b7aff00733\" class=\"psx-complex-type\"><h1>collection<\/h1><div class=\"psx-type-description\"><\/div><table class=\"table psx-type-properties\"><colgroup><col width=\"20%\" \/><col width=\"20%\" \/><col width=\"40%\" \/><col width=\"20%\" \/><\/colgroup><thead><tr><th>Property<\/th><th>Type<\/th><th>Description<\/th><th>Constraints<\/th><\/tr><\/thead><tbody><tr><td><span class=\"psx-property-name psx-property-optional\">entry<\/span><\/td><td><span class=\"psx-property-type psx-property-type-array\">Array&lt;<span class=\"psx-property-type psx-property-type-complex\"><a href=\"#psx-type-993f4bb37f524889fc963fedd6381458\">item<\/a><\/span>&gt;<\/span><\/td><td><span class=\"psx-property-description\"><\/span><\/td><td><\/td><\/tr><\/tbody><\/table><\/div><div id=\"psx-type-993f4bb37f524889fc963fedd6381458\" class=\"psx-complex-type\"><h1>item<\/h1><div class=\"psx-type-description\"><\/div><table class=\"table psx-type-properties\"><colgroup><col width=\"20%\" \/><col width=\"20%\" \/><col width=\"40%\" \/><col width=\"20%\" \/><\/colgroup><thead><tr><th>Property<\/th><th>Type<\/th><th>Description<\/th><th>Constraints<\/th><\/tr><\/thead><tbody><tr><td><span class=\"psx-property-name psx-property-optional\">id<\/span><\/td><td><span class=\"psx-property-type psx-property-type-integer\">Integer<\/span><\/td><td><span class=\"psx-property-description\"><\/span><\/td><td><\/td><\/tr><tr><td><span class=\"psx-property-name psx-property-optional\">userId<\/span><\/td><td><span class=\"psx-property-type psx-property-type-integer\">Integer<\/span><\/td><td><span class=\"psx-property-description\"><\/span><\/td><td><\/td><\/tr><tr><td><span class=\"psx-property-name psx-property-optional\">title<\/span><\/td><td><span class=\"psx-property-type psx-property-type-string\">String<\/span><\/td><td><span class=\"psx-property-description\"><\/span><\/td><td><dl class=\"psx-property-constraint\"><dt>Pattern<\/dt><dd><span class=\"psx-constraint-pattern\">[A-z]+<\/span><\/dd><dt>Minimum<\/dt><dd><span class=\"psx-constraint-minimum\">3<\/span><\/dd><dt>Maximum<\/dt><dd><span class=\"psx-constraint-maximum\">16<\/span><\/dd><\/dl><\/td><\/tr><tr><td><span class=\"psx-property-name psx-property-optional\">date<\/span><\/td><td><span class=\"psx-property-type psx-property-type-datetime\"><a href=\"http:\/\/tools.ietf.org\/html\/rfc3339#section-5.6\" title=\"RFC3339\">DateTime<\/a><\/span><\/td><td><span class=\"psx-property-description\"><\/span><\/td><td><\/td><\/tr><\/tbody><\/table><\/div><\/div><\/div><\/div><div class=\"psx-resource-method\" data-method=\"POST\"><div class=\"psx-resource-data psx-resource-request\"><h5>POST Request<\/h5><div class=\"psx-resource-data-content\"><div id=\"psx-type-3934915b538d8557d87031925d29ac0d\" class=\"psx-complex-type\"><h1>item<\/h1><div class=\"psx-type-description\"><\/div><table class=\"table psx-type-properties\"><colgroup><col width=\"20%\" \/><col width=\"20%\" \/><col width=\"40%\" \/><col width=\"20%\" \/><\/colgroup><thead><tr><th>Property<\/th><th>Type<\/th><th>Description<\/th><th>Constraints<\/th><\/tr><\/thead><tbody><tr><td><span class=\"psx-property-name psx-property-optional\">id<\/span><\/td><td><span class=\"psx-property-type psx-property-type-integer\">Integer<\/span><\/td><td><span class=\"psx-property-description\"><\/span><\/td><td><\/td><\/tr><tr><td><span class=\"psx-property-name psx-property-optional\">userId<\/span><\/td><td><span class=\"psx-property-type psx-property-type-integer\">Integer<\/span><\/td><td><span class=\"psx-property-description\"><\/span><\/td><td><\/td><\/tr><tr><td><span class=\"psx-property-name psx-property-required\">title<\/span><\/td><td><span class=\"psx-property-type psx-property-type-string\">String<\/span><\/td><td><span class=\"psx-property-description\"><\/span><\/td><td><dl class=\"psx-property-constraint\"><dt>Pattern<\/dt><dd><span class=\"psx-constraint-pattern\">[A-z]+<\/span><\/dd><dt>Minimum<\/dt><dd><span class=\"psx-constraint-minimum\">3<\/span><\/dd><dt>Maximum<\/dt><dd><span class=\"psx-constraint-maximum\">16<\/span><\/dd><\/dl><\/td><\/tr><tr><td><span class=\"psx-property-name psx-property-required\">date<\/span><\/td><td><span class=\"psx-property-type psx-property-type-datetime\"><a href=\"http:\/\/tools.ietf.org\/html\/rfc3339#section-5.6\" title=\"RFC3339\">DateTime<\/a><\/span><\/td><td><span class=\"psx-property-description\"><\/span><\/td><td><\/td><\/tr><\/tbody><\/table><\/div><\/div><\/div><div class=\"psx-resource-data psx-resource-response\"><h5>POST Response - 201 Created<\/h5><div class=\"psx-resource-data-content\"><div id=\"psx-type-3a0bf597c698b671859e2c0ca2640825\" class=\"psx-complex-type\"><h1>message<\/h1><div class=\"psx-type-description\"><\/div><table class=\"table psx-type-properties\"><colgroup><col width=\"20%\" \/><col width=\"20%\" \/><col width=\"40%\" \/><col width=\"20%\" \/><\/colgroup><thead><tr><th>Property<\/th><th>Type<\/th><th>Description<\/th><th>Constraints<\/th><\/tr><\/thead><tbody><tr><td><span class=\"psx-property-name psx-property-optional\">success<\/span><\/td><td><span class=\"psx-property-type psx-property-type-boolean\">Boolean<\/span><\/td><td><span class=\"psx-property-description\"><\/span><\/td><td><\/td><\/tr><tr><td><span class=\"psx-property-name psx-property-optional\">message<\/span><\/td><td><span class=\"psx-property-type psx-property-type-string\">String<\/span><\/td><td><span class=\"psx-property-description\"><\/span><\/td><td><\/td><\/tr><\/tbody><\/table><\/div><\/div><\/div><\/div><div class=\"psx-resource-method\" data-method=\"PUT\"><div class=\"psx-resource-data psx-resource-request\"><h5>PUT Request<\/h5><div class=\"psx-resource-data-content\"><div id=\"psx-type-3368bc12f3927997f38dc1bea49554be\" class=\"psx-complex-type\"><h1>item<\/h1><div class=\"psx-type-description\"><\/div><table class=\"table psx-type-properties\"><colgroup><col width=\"20%\" \/><col width=\"20%\" \/><col width=\"40%\" \/><col width=\"20%\" \/><\/colgroup><thead><tr><th>Property<\/th><th>Type<\/th><th>Description<\/th><th>Constraints<\/th><\/tr><\/thead><tbody><tr><td><span class=\"psx-property-name psx-property-required\">id<\/span><\/td><td><span class=\"psx-property-type psx-property-type-integer\">Integer<\/span><\/td><td><span class=\"psx-property-description\"><\/span><\/td><td><\/td><\/tr><tr><td><span class=\"psx-property-name psx-property-optional\">userId<\/span><\/td><td><span class=\"psx-property-type psx-property-type-integer\">Integer<\/span><\/td><td><span class=\"psx-property-description\"><\/span><\/td><td><\/td><\/tr><tr><td><span class=\"psx-property-name psx-property-optional\">title<\/span><\/td><td><span class=\"psx-property-type psx-property-type-string\">String<\/span><\/td><td><span class=\"psx-property-description\"><\/span><\/td><td><dl class=\"psx-property-constraint\"><dt>Pattern<\/dt><dd><span class=\"psx-constraint-pattern\">[A-z]+<\/span><\/dd><dt>Minimum<\/dt><dd><span class=\"psx-constraint-minimum\">3<\/span><\/dd><dt>Maximum<\/dt><dd><span class=\"psx-constraint-maximum\">16<\/span><\/dd><\/dl><\/td><\/tr><tr><td><span class=\"psx-property-name psx-property-optional\">date<\/span><\/td><td><span class=\"psx-property-type psx-property-type-datetime\"><a href=\"http:\/\/tools.ietf.org\/html\/rfc3339#section-5.6\" title=\"RFC3339\">DateTime<\/a><\/span><\/td><td><span class=\"psx-property-description\"><\/span><\/td><td><\/td><\/tr><\/tbody><\/table><\/div><\/div><\/div><div class=\"psx-resource-data psx-resource-response\"><h5>PUT Response - 200 OK<\/h5><div class=\"psx-resource-data-content\"><div id=\"psx-type-3a0bf597c698b671859e2c0ca2640825\" class=\"psx-complex-type\"><h1>message<\/h1><div class=\"psx-type-description\"><\/div><table class=\"table psx-type-properties\"><colgroup><col width=\"20%\" \/><col width=\"20%\" \/><col width=\"40%\" \/><col width=\"20%\" \/><\/colgroup><thead><tr><th>Property<\/th><th>Type<\/th><th>Description<\/th><th>Constraints<\/th><\/tr><\/thead><tbody><tr><td><span class=\"psx-property-name psx-property-optional\">success<\/span><\/td><td><span class=\"psx-property-type psx-property-type-boolean\">Boolean<\/span><\/td><td><span class=\"psx-property-description\"><\/span><\/td><td><\/td><\/tr><tr><td><span class=\"psx-property-name psx-property-optional\">message<\/span><\/td><td><span class=\"psx-property-type psx-property-type-string\">String<\/span><\/td><td><span class=\"psx-property-description\"><\/span><\/td><td><\/td><\/tr><\/tbody><\/table><\/div><\/div><\/div><\/div><div class=\"psx-resource-method\" data-method=\"DELETE\"><div class=\"psx-resource-data psx-resource-request\"><h5>DELETE Request<\/h5><div class=\"psx-resource-data-content\"><div id=\"psx-type-3368bc12f3927997f38dc1bea49554be\" class=\"psx-complex-type\"><h1>item<\/h1><div class=\"psx-type-description\"><\/div><table class=\"table psx-type-properties\"><colgroup><col width=\"20%\" \/><col width=\"20%\" \/><col width=\"40%\" \/><col width=\"20%\" \/><\/colgroup><thead><tr><th>Property<\/th><th>Type<\/th><th>Description<\/th><th>Constraints<\/th><\/tr><\/thead><tbody><tr><td><span class=\"psx-property-name psx-property-required\">id<\/span><\/td><td><span class=\"psx-property-type psx-property-type-integer\">Integer<\/span><\/td><td><span class=\"psx-property-description\"><\/span><\/td><td><\/td><\/tr><tr><td><span class=\"psx-property-name psx-property-optional\">userId<\/span><\/td><td><span class=\"psx-property-type psx-property-type-integer\">Integer<\/span><\/td><td><span class=\"psx-property-description\"><\/span><\/td><td><\/td><\/tr><tr><td><span class=\"psx-property-name psx-property-optional\">title<\/span><\/td><td><span class=\"psx-property-type psx-property-type-string\">String<\/span><\/td><td><span class=\"psx-property-description\"><\/span><\/td><td><dl class=\"psx-property-constraint\"><dt>Pattern<\/dt><dd><span class=\"psx-constraint-pattern\">[A-z]+<\/span><\/dd><dt>Minimum<\/dt><dd><span class=\"psx-constraint-minimum\">3<\/span><\/dd><dt>Maximum<\/dt><dd><span class=\"psx-constraint-maximum\">16<\/span><\/dd><\/dl><\/td><\/tr><tr><td><span class=\"psx-property-name psx-property-optional\">date<\/span><\/td><td><span class=\"psx-property-type psx-property-type-datetime\"><a href=\"http:\/\/tools.ietf.org\/html\/rfc3339#section-5.6\" title=\"RFC3339\">DateTime<\/a><\/span><\/td><td><span class=\"psx-property-description\"><\/span><\/td><td><\/td><\/tr><\/tbody><\/table><\/div><\/div><\/div><div class=\"psx-resource-data psx-resource-response\"><h5>DELETE Response - 200 OK<\/h5><div class=\"psx-resource-data-content\"><div id=\"psx-type-3a0bf597c698b671859e2c0ca2640825\" class=\"psx-complex-type\"><h1>message<\/h1><div class=\"psx-type-description\"><\/div><table class=\"table psx-type-properties\"><colgroup><col width=\"20%\" \/><col width=\"20%\" \/><col width=\"40%\" \/><col width=\"20%\" \/><\/colgroup><thead><tr><th>Property<\/th><th>Type<\/th><th>Description<\/th><th>Constraints<\/th><\/tr><\/thead><tbody><tr><td><span class=\"psx-property-name psx-property-optional\">success<\/span><\/td><td><span class=\"psx-property-type psx-property-type-boolean\">Boolean<\/span><\/td><td><span class=\"psx-property-description\"><\/span><\/td><td><\/td><\/tr><tr><td><span class=\"psx-property-name psx-property-optional\">message<\/span><\/td><td><span class=\"psx-property-type psx-property-type-string\">String<\/span><\/td><td><span class=\"psx-property-description\"><\/span><\/td><td><\/td><\/tr><\/tbody><\/table><\/div><\/div><\/div><\/div><\/div>"
+    "methods": {
+        "GET": {
+            "responses": {
+                "200": "#\/definitions\/GET-200-response"
+            }
+        },
+        "POST": {
+            "request": "#\/definitions\/POST-request",
+            "responses": {
+                "201": "#\/definitions\/POST-201-response"
+            }
+        },
+        "PUT": {
+            "request": "#\/definitions\/PUT-request",
+            "responses": {
+                "200": "#\/definitions\/PUT-200-response"
+            }
+        },
+        "DELETE": {
+            "request": "#\/definitions\/DELETE-request",
+            "responses": {
+                "200": "#\/definitions\/DELETE-200-response"
+            }
         }
     }
 }
