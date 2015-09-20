@@ -133,8 +133,8 @@ abstract class PropertyAbstract extends RecordAbstract implements PropertyInterf
      */
     public function getTypeName()
     {
-        $class    = explode('\\', get_class($this));
-        $typeName = substr(end($class), 0, -4);
+        $class    = get_class($this);
+        $typeName = substr(strrchr($class, '\\'), 1, -4);
 
         return lcfirst($typeName);
     }
