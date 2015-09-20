@@ -53,6 +53,7 @@ class ResourceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(['GET'], $resource->getAllowedMethods());
         $this->assertTrue($resource->hasMethod('GET'));
         $this->assertFalse($resource->hasMethod('POST'));
+        $this->assertTrue($resource->hasPathParameters());
     }
 
     /**

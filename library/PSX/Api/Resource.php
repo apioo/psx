@@ -155,6 +155,11 @@ class Resource extends RecordAbstract implements IteratorAggregate
         return new Schema($this->pathParameters);
     }
 
+    public function hasPathParameters()
+    {
+        return count($this->pathParameters) > 0;
+    }
+
     public function addMethod(MethodAbstract $method)
     {
         $this->methods[$method->getName()] = $method;
