@@ -65,6 +65,10 @@ class DocumentationController extends ApiAbstract
                     'rel'  => 'detail',
                     'href' => $this->reverseRouter->getUrl(get_class($this) . '::doDetail', array('{version}', '{path}')),
                 ],
+                [
+                    'rel'  => 'api',
+                    'href' => $this->reverseRouter->getDispatchUrl(),
+                ],
             ]
         ]);
     }
