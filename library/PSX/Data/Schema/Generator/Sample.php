@@ -44,14 +44,10 @@ class Sample implements GeneratorInterface
     protected $format;
     protected $data;
 
-    public function __construct($format = self::FORMAT_JSON)
+    public function __construct($format = self::FORMAT_JSON, array $data)
     {
         $this->format = $format;
-    }
-
-    public function setData(array $data)
-    {
-        $this->data = $data;
+        $this->data   = $data;
     }
 
     public function generate(SchemaInterface $schema)
