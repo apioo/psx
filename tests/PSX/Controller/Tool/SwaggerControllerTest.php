@@ -167,6 +167,7 @@ JSON;
             "properties": {
                 "entry": {
                     "type": "array",
+                    "title": "entry",
                     "items": {
                         "$ref": "ref993f4bb37f524889fc963fedd6381458"
                     }
@@ -236,6 +237,7 @@ JSON;
             "properties": {
                 "entry": {
                     "type": "array",
+                    "title": "entry",
                     "items": {
                         "$ref": "ref993f4bb37f524889fc963fedd6381458"
                     }

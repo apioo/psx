@@ -39,10 +39,12 @@ class JsonSchemaTest extends GeneratorTestCase
     "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
     "id": "urn:schema.phpsx.org#",
     "type": "object",
+    "title": "news",
     "description": "An general news entry",
     "definitions": {
         "refcd912e509b19822dd7788b11538902d8": {
             "type": "object",
+            "title": "config",
             "patternProperties": {
                 "^[a-zA-Z_\\x7f-\\xff][a-zA-Z0-9_\\x7f-\\xff]+$": {
                     "type": "string"
@@ -52,6 +54,7 @@ class JsonSchemaTest extends GeneratorTestCase
         },
         "refe081a664cb5227a334bc5e0fa367f178": {
             "type": "object",
+            "title": "origin",
             "properties": {
                 "lat": {
                     "type": "integer"
@@ -65,6 +68,7 @@ class JsonSchemaTest extends GeneratorTestCase
         },
         "ref11c55f48b558e06534c2dccf005c97cb": {
             "type": "object",
+            "title": "author",
             "properties": {
                 "title": {
                     "type": "string",
@@ -76,6 +80,7 @@ class JsonSchemaTest extends GeneratorTestCase
                 },
                 "categories": {
                     "type": "array",
+                    "title": "categories",
                     "items": {
                         "type": "string"
                     },
@@ -83,6 +88,7 @@ class JsonSchemaTest extends GeneratorTestCase
                 },
                 "locations": {
                     "type": "array",
+                    "title": "locations",
                     "items": {
                         "$ref": "#\/definitions\/refe081a664cb5227a334bc5e0fa367f178"
                     },
@@ -100,6 +106,7 @@ class JsonSchemaTest extends GeneratorTestCase
         },
         "refaf92365f86505945496a4ce039023ec6": {
             "type": "object",
+            "title": "web",
             "properties": {
                 "name": {
                     "type": "string"
@@ -112,6 +119,7 @@ class JsonSchemaTest extends GeneratorTestCase
             "additionalProperties": false
         },
         "ref7faa72cba86513503baa1411b67158f2": {
+            "title": "resource",
             "oneOf": [
                 {
                     "$ref": "#\/definitions\/refe081a664cb5227a334bc5e0fa367f178"
@@ -122,6 +130,7 @@ class JsonSchemaTest extends GeneratorTestCase
             ]
         },
         "refb54ac38d5d84a0e86a372e69fa388424": {
+            "title": "source",
             "oneOf": [
                 {
                     "$ref": "#\/definitions\/ref11c55f48b558e06534c2dccf005c97cb"
@@ -138,6 +147,7 @@ class JsonSchemaTest extends GeneratorTestCase
         },
         "tags": {
             "type": "array",
+            "title": "tags",
             "items": {
                 "type": "string"
             },
@@ -146,6 +156,7 @@ class JsonSchemaTest extends GeneratorTestCase
         },
         "receiver": {
             "type": "array",
+            "title": "receiver",
             "items": {
                 "$ref": "#\/definitions\/ref11c55f48b558e06534c2dccf005c97cb"
             },
@@ -153,6 +164,7 @@ class JsonSchemaTest extends GeneratorTestCase
         },
         "resources": {
             "type": "array",
+            "title": "resources",
             "items": {
                 "$ref": "#\/definitions\/ref7faa72cba86513503baa1411b67158f2"
             }

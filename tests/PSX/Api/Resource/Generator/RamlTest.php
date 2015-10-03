@@ -84,6 +84,7 @@ title: foobar
                   "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
                   "id": "urn:schema.phpsx.org#",
                   "type": "object",
+                  "title": "collection",
                   "definitions": {
                       "ref993f4bb37f524889fc963fedd6381458": {
                           "type": "object",
@@ -104,6 +105,7 @@ title: foobar
                                   "type": "string"
                               }
                           },
+                          "title": "item",
                           "additionalProperties": false
                       }
                   },
@@ -112,7 +114,8 @@ title: foobar
                           "type": "array",
                           "items": {
                               "$ref": "#\/definitions\/ref993f4bb37f524889fc963fedd6381458"
-                          }
+                          },
+                          "title": "entry"
                       }
                   },
                   "additionalProperties": false
@@ -125,6 +128,7 @@ title: foobar
               "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
               "id": "urn:schema.phpsx.org#",
               "type": "object",
+              "title": "item",
               "properties": {
                   "id": {
                       "type": "integer"
@@ -157,6 +161,7 @@ title: foobar
                   "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
                   "id": "urn:schema.phpsx.org#",
                   "type": "object",
+                  "title": "message",
                   "properties": {
                       "success": {
                           "type": "boolean"
@@ -175,6 +180,7 @@ title: foobar
               "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
               "id": "urn:schema.phpsx.org#",
               "type": "object",
+              "title": "item",
               "properties": {
                   "id": {
                       "type": "integer"
@@ -206,6 +212,7 @@ title: foobar
                   "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
                   "id": "urn:schema.phpsx.org#",
                   "type": "object",
+                  "title": "message",
                   "properties": {
                       "success": {
                           "type": "boolean"
@@ -224,6 +231,7 @@ title: foobar
               "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
               "id": "urn:schema.phpsx.org#",
               "type": "object",
+              "title": "item",
               "properties": {
                   "id": {
                       "type": "integer"
@@ -255,6 +263,7 @@ title: foobar
                   "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
                   "id": "urn:schema.phpsx.org#",
                   "type": "object",
+                  "title": "message",
                   "properties": {
                       "success": {
                           "type": "boolean"

@@ -64,6 +64,7 @@ class JsonSchema implements GeneratorInterface
     protected function generateRootElement(Property\ComplexType $type)
     {
         $properties  = $type->getProperties();
+        $typeName    = $type->getName();
         $description = $type->getDescription();
         $props       = array();
         $required    = array();
@@ -88,6 +89,10 @@ class JsonSchema implements GeneratorInterface
             'id'      => $this->targetNamespace,
             'type'    => 'object',
         );
+
+        if (!empty($typeName)) {
+            $result['title'] = $typeName;
+        }
 
         if (!empty($description)) {
             $result['description'] = $description;
@@ -117,6 +122,11 @@ class JsonSchema implements GeneratorInterface
                 'type' => 'object',
             );
 
+            $name = $type->getName();
+            if (!empty($name)) {
+                $result['title'] = $name;
+            }
+
             $description = $type->getDescription();
             if (!empty($description)) {
                 $result['description'] = $description;
@@ -134,6 +144,11 @@ class JsonSchema implements GeneratorInterface
                 'type'  => 'array',
                 'items' => $this->generateType($type->getPrototype()),
             );
+
+            $name = $type->getName();
+            if (!empty($name)) {
+                $result['title'] = $name;
+            }
 
             $description = $type->getDescription();
             if (!empty($description)) {
@@ -163,6 +178,11 @@ class JsonSchema implements GeneratorInterface
                 'oneOf' => $props,
             );
 
+            $name = $type->getName();
+            if (!empty($name)) {
+                $result['title'] = $name;
+            }
+
             $description = $type->getDescription();
             if (!empty($description)) {
                 $result['description'] = $description;
@@ -186,6 +206,11 @@ class JsonSchema implements GeneratorInterface
                 'type'       => 'object',
                 'properties' => $props,
             );
+
+            $name = $type->getName();
+            if (!empty($name)) {
+                $result['title'] = $name;
+            }
 
             $description = $type->getDescription();
             if (!empty($description)) {

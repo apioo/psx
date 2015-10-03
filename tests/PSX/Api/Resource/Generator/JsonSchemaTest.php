@@ -42,6 +42,7 @@ class JsonSchemaTest extends GeneratorTestCase
     "definitions": {
         "ref8c9e003f6d4ea9f9c0ebc8c466a780b7": {
             "type": "object",
+            "title": "path",
             "properties": {
                 "name": {
                     "type": "string",
@@ -61,6 +62,7 @@ class JsonSchemaTest extends GeneratorTestCase
         },
         "refb06e4990004303fabe7a828ef449cdb3": {
             "type": "object",
+            "title": "query",
             "properties": {
                 "startIndex": {
                     "type": "integer",
@@ -84,6 +86,7 @@ class JsonSchemaTest extends GeneratorTestCase
         },
         "ref993f4bb37f524889fc963fedd6381458": {
             "type": "object",
+            "title": "item",
             "properties": {
                 "id": {
                     "type": "integer"
@@ -105,9 +108,11 @@ class JsonSchemaTest extends GeneratorTestCase
         },
         "refe80c8b9e68244cea3401d3b7aff00733": {
             "type": "object",
+            "title": "collection",
             "properties": {
                 "entry": {
                     "type": "array",
+                    "title": "entry",
                     "items": {
                         "$ref": "#\/definitions\/ref993f4bb37f524889fc963fedd6381458"
                     }
@@ -117,6 +122,7 @@ class JsonSchemaTest extends GeneratorTestCase
         },
         "ref3934915b538d8557d87031925d29ac0d": {
             "type": "object",
+            "title": "item",
             "properties": {
                 "id": {
                     "type": "integer"
@@ -142,6 +148,7 @@ class JsonSchemaTest extends GeneratorTestCase
         },
         "ref3a0bf597c698b671859e2c0ca2640825": {
             "type": "object",
+            "title": "message",
             "properties": {
                 "success": {
                     "type": "boolean"
@@ -154,6 +161,7 @@ class JsonSchemaTest extends GeneratorTestCase
         },
         "ref3368bc12f3927997f38dc1bea49554be": {
             "type": "object",
+            "title": "item",
             "properties": {
                 "id": {
                     "type": "integer"

@@ -54,6 +54,7 @@ title: Api
                   "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
                   "id": "urn:schema.phpsx.org#",
                   "type": "object",
+                  "title": "collection",
                   "definitions": {
                       "ref993f4bb37f524889fc963fedd6381458": {
                           "type": "object",
@@ -74,6 +75,7 @@ title: Api
                                   "type": "string"
                               }
                           },
+                          "title": "item",
                           "additionalProperties": false
                       }
                   },
@@ -82,7 +84,8 @@ title: Api
                           "type": "array",
                           "items": {
                               "$ref": "#\/definitions\/ref993f4bb37f524889fc963fedd6381458"
-                          }
+                          },
+                          "title": "entry"
                       }
                   },
                   "additionalProperties": false
@@ -95,6 +98,7 @@ title: Api
               "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
               "id": "urn:schema.phpsx.org#",
               "type": "object",
+              "title": "item",
               "properties": {
                   "id": {
                       "type": "integer"
@@ -127,6 +131,7 @@ title: Api
                   "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
                   "id": "urn:schema.phpsx.org#",
                   "type": "object",
+                  "title": "message",
                   "properties": {
                       "success": {
                           "type": "boolean"
@@ -145,6 +150,7 @@ title: Api
               "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
               "id": "urn:schema.phpsx.org#",
               "type": "object",
+              "title": "item",
               "properties": {
                   "id": {
                       "type": "integer"
@@ -176,6 +182,7 @@ title: Api
                   "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
                   "id": "urn:schema.phpsx.org#",
                   "type": "object",
+                  "title": "message",
                   "properties": {
                       "success": {
                           "type": "boolean"
@@ -194,6 +201,7 @@ title: Api
               "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
               "id": "urn:schema.phpsx.org#",
               "type": "object",
+              "title": "item",
               "properties": {
                   "id": {
                       "type": "integer"
@@ -225,6 +233,7 @@ title: Api
                   "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
                   "id": "urn:schema.phpsx.org#",
                   "type": "object",
+                  "title": "message",
                   "properties": {
                       "success": {
                           "type": "boolean"

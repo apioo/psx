@@ -59,6 +59,10 @@ class DocumentationControllerTest extends ControllerTestCase
         {
             "rel": "detail",
             "href": "http:\/\/127.0.0.1\/doc\/{version}\/{path}"
+        },
+        {
+            "rel": "api",
+            "href": "http:\/\/127.0.0.1\/"
         }
     ]
 }
@@ -85,6 +89,7 @@ JSON;
         "definitions": {
             "ref993f4bb37f524889fc963fedd6381458": {
                 "type": "object",
+                "title": "item",
                 "properties": {
                     "id": {
                         "type": "integer"
@@ -106,9 +111,11 @@ JSON;
             },
             "refe80c8b9e68244cea3401d3b7aff00733": {
                 "type": "object",
+                "title": "collection",
                 "properties": {
                     "entry": {
                         "type": "array",
+                        "title": "entry",
                         "items": {
                             "$ref": "#\/definitions\/ref993f4bb37f524889fc963fedd6381458"
                         }
@@ -118,6 +125,7 @@ JSON;
             },
             "ref3934915b538d8557d87031925d29ac0d": {
                 "type": "object",
+                "title": "item",
                 "properties": {
                     "id": {
                         "type": "integer"
@@ -143,6 +151,7 @@ JSON;
             },
             "ref3a0bf597c698b671859e2c0ca2640825": {
                 "type": "object",
+                "title": "message",
                 "properties": {
                     "success": {
                         "type": "boolean"
@@ -155,6 +164,7 @@ JSON;
             },
             "ref3368bc12f3927997f38dc1bea49554be": {
                 "type": "object",
+                "title": "item",
                 "properties": {
                     "id": {
                         "type": "integer"

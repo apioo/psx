@@ -31,8 +31,7 @@ class SampleTest extends GeneratorTestCase
 {
     public function testGenerateJson()
     {
-        $generator = new Sample(Sample::FORMAT_JSON);
-        $generator->setData($this->getSampleData());
+        $generator = new Sample(Sample::FORMAT_JSON, $this->getSampleData());
         $result    = $generator->generate($this->getSchema());
 
         $expect = <<<'JSON'
@@ -65,8 +64,7 @@ JSON;
 
     public function testGenerateXml()
     {
-        $generator = new Sample(Sample::FORMAT_XML);
-        $generator->setData($this->getSampleData());
+        $generator = new Sample(Sample::FORMAT_XML, $this->getSampleData());
         $result    = $generator->generate($this->getSchema());
 
         $expect = <<<'XML'
@@ -98,8 +96,7 @@ XML;
      */
     public function testGenerateMissingValue()
     {
-        $generator = new Sample(Sample::FORMAT_JSON);
-        $generator->setData(array());
+        $generator = new Sample(Sample::FORMAT_JSON, []);
         $generator->generate($this->getSchema());
     }
 
