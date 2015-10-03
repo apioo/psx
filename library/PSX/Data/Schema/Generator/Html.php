@@ -27,8 +27,7 @@ use PSX\Data\Schema\PropertySimpleAbstract;
 use PSX\Data\SchemaInterface;
 
 /**
- * Can generate sample html request data from an schema which can be used for
- * documentation purpose
+ * Generates html tables containing all informations from the provided schema
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
