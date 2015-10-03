@@ -20,7 +20,7 @@
 
 namespace PSX\Data\Record\Visitor;
 
-use PSX\Data\Record;
+use PSX\Data\Object;
 use PSX\Data\Record\GraphTraverser;
 use XMLWriter;
 
@@ -44,6 +44,66 @@ class XmlWriterVisitorTest extends VisitorTestCase
         $graph->traverse($this->getRecord(), new XmlWriterVisitor($writer));
 
         $this->assertXmlStringEqualsXmlString($this->getExpected(), $writer->outputMemory());
+    }
+
+    /**
+     * A XML element name can only contain alnum and _. All other characters are
+     * replaced with an _
+     */
+    public function testInvalidElementName()
+    {
+        $writer = new XMLWriter();
+        $writer->openMemory();
+        $writer->setIndent(true);
+        $writer->startDocument('1.0', 'UTF-8');
+
+        $key = '';
+        for ($i = 0; $i <= 0x7F; $i++) {
+          $key.= chr($i);
+        }
+
+        $record = new Object([
+          $key => 'foo'
+        ]);
+
+        $graph = new GraphTraverser();
+        $graph->traverse($record, new XmlWriterVisitor($writer));
+
+        $expect = <<<XML
+<?xml version="1.0"?>
+<record>
+  <________________________________________________0123456789_______ABCDEFGHIJKLMNOPQRSTUVWXYZ______abcdefghijklmnopqrstuvwxyz_____>foo</________________________________________________0123456789_______ABCDEFGHIJKLMNOPQRSTUVWXYZ______abcdefghijklmnopqrstuvwxyz_____>
+</record>
+XML;
+
+        $this->assertXmlStringEqualsXmlString($expect, $writer->outputMemory());
+    }
+
+    /**
+     * A XML element name can not start with an number
+     */
+    public function testInvalidElementNameNumberAtStart()
+    {
+        $writer = new XMLWriter();
+        $writer->openMemory();
+        $writer->setIndent(true);
+        $writer->startDocument('1.0', 'UTF-8');
+
+        $record = new Object([
+          '09foo' => 'foo'
+        ]);
+
+        $graph = new GraphTraverser();
+        $graph->traverse($record, new XmlWriterVisitor($writer));
+
+        $expect = <<<XML
+<?xml version="1.0"?>
+<record>
+  <_09foo>foo</_09foo>
+</record>
+XML;
+
+        $this->assertXmlStringEqualsXmlString($expect, $writer->outputMemory());
     }
 
     protected function getExpected()

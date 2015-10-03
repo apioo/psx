@@ -72,6 +72,14 @@ class XmlWriterVisitor extends VisitorAbstract
 
     public function visitObjectValueStart($key, $value)
     {
+        // replace all non alnum characters
+        $key = preg_replace('/[^A-Za-z0-9]/', '_', $key);
+
+        // element names can not start with an digit
+        if (isset($key[0]) && ctype_digit($key[0])) {
+            $key = '_' . $key;
+        }
+
         $this->writer->startElement($this->objectKey = $key);
     }
 
