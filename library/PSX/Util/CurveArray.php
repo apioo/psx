@@ -40,22 +40,32 @@ class CurveArray
      */
     public static function nest(array $data, $seperator = '_')
     {
-        $result = new \stdClass();
+        if (self::isAssoc($data)) {
+            $result = new \stdClass();
 
-        foreach ($data as $key => $value) {
-            if (($pos = strpos($key, $seperator)) !== false) {
-                $subKey = substr($key, 0, $pos);
-                $name   = substr($key, $pos + 1);
+            foreach ($data as $key => $value) {
+                if (($pos = strpos($key, $seperator)) !== false) {
+                    $subKey = substr($key, 0, $pos);
+                    $name   = substr($key, $pos + 1);
 
-                if (!isset($result->$subKey)) {
-                    $result->$subKey = self::nest(self::getParts($data, $subKey . $seperator), $seperator);
+                    if (!isset($result->$subKey)) {
+                        $result->$subKey = self::nest(self::getParts($data, $subKey . $seperator), $seperator);
+                    }
+                } else {
+                    $result->$key = $value;
                 }
-            } else {
-                $result->$key = $value;
             }
-        }
 
-        return $result;
+            return $result;
+        } else {
+            $result = [];
+
+            foreach ($data as $value) {
+                $result[] = self::nest($value, $seperator);
+            }
+
+            return $result;
+        }
     }
 
     /**

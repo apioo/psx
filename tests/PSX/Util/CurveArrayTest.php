@@ -63,6 +63,11 @@ class CurveArrayTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->nestArray, CurveArray::nest($this->flattenArray));
     }
 
+    public function testNestArray()
+    {
+        $this->assertEquals([$this->nestArray, $this->nestArray], CurveArray::nest([$this->flattenArray, $this->flattenArray]));
+    }
+
     public function testFlatten()
     {
         $this->assertEquals($this->flattenArray, CurveArray::flatten($this->nestArray));
