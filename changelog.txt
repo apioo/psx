@@ -1,7 +1,11 @@
 
-1.0.8
+1.1.0
+* Curve array nest method handle indexed arrays
+* JSON Schema add title property to complex types
+* Documentation controller returns also the API endpoint url
+* XML generator validate element names
 * Documentation controller returns now the complete json schema which can be 
-  used by the API client
+  used by the API client to generate a documentation
 * Improved swagger and json schema generator
 * Extended api resource methods
 
