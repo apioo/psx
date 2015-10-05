@@ -11,7 +11,7 @@ application.
 .. literalinclude:: ../../container.php
    :language: php
 
-The DI container of PSX is a simple class where each method represents an 
+The DI container of PSX is a simple class where each method represents a 
 service definition. Normally you would create your own container which extends 
 the PSX default container. To add a service to the container you have to simply 
 specifiy a method in the container which returns an object instance.
@@ -39,8 +39,8 @@ specifiy a method in the container which returns an object instance.
         }
     }
 
-The id of the service is "some_bar" which can be used in an inject annotation.
-Note when your object has an dependency to another service use the 
+The id of the service is "some_bar" which can be used in a inject annotation.
+Note when your object has a dependency to another service use the 
 $this->get('[service_id]') method to get only one instance of the service. In 
 PSX it is best practice to group services into traits. I.e. the default 
 container uses several traits which contains service methods

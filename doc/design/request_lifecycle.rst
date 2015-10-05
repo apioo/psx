@@ -106,6 +106,6 @@ stack i.e.:
 
 .. literalinclude:: ../../library/PSX/ControllerAbstract.php
    :language: php
-   :lines: 117-124
+   :lines: 112-119
    :prepend: <?php
 

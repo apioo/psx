@@ -138,7 +138,7 @@ use the schema to generate great documentation about the API
         }
     }
 
-Here an example schema from an test case
+Here an example schema from a test case
 
 .. literalinclude:: ../../tests/PSX/Controller/Foo/Schema/Entry.php
    :language: php
@@ -150,7 +150,7 @@ More detailed informations about the process at :doc:`import_data`
 Writing responses
 -----------------
 
-PSX analyzes the object graph which was produced by the controller and uses an
+PSX analyzes the object graph which was produced by the controller and uses a
 writer to produce the fitting data format for the client. What content is served 
 depends on the Accept header or the GET parameter format. More informations 
 about the object graph at :doc:`object_graph`
