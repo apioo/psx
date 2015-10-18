@@ -147,7 +147,7 @@ class AssimilationVisitor extends ValidationVisitor
         try {
             return $this->createSimpleProperty(new DateTime($data), $property);
         } catch (\Exception $e) {
-            throw new ValidationException($path . ' must be an valid date-time format (full-date "T" full-time) [RFC3339]');
+            throw new ValidationException($path . ' must be a valid date-time format (full-date "T" full-time) [RFC3339]');
         }
     }
 
@@ -166,7 +166,7 @@ class AssimilationVisitor extends ValidationVisitor
         try {
             return $this->createSimpleProperty(new Date($data), $property);
         } catch (\Exception $e) {
-            throw new ValidationException($path . ' must be an valid full-date format (date-fullyear "-" date-month "-" date-mday) [RFC3339]');
+            throw new ValidationException($path . ' must be a valid full-date format (date-fullyear "-" date-month "-" date-mday) [RFC3339]');
         }
     }
 
@@ -185,7 +185,7 @@ class AssimilationVisitor extends ValidationVisitor
         try {
             return $this->createSimpleProperty(new Duration($data), $property);
         } catch (\Exception $e) {
-            throw new ValidationException($path . ' must be an valid duration format [ISO8601]');
+            throw new ValidationException($path . ' must be a valid duration format [ISO8601]');
         }
     }
 
@@ -248,7 +248,7 @@ class AssimilationVisitor extends ValidationVisitor
         try {
             return $this->createSimpleProperty(new Time($data), $property);
         } catch (\Exception $e) {
-            throw new ValidationException($path . ' must be an valid full-time format (partial-time time-offset) [RFC3339]');
+            throw new ValidationException($path . ' must be a valid full-time format (partial-time time-offset) [RFC3339]');
         }
     }
 

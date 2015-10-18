@@ -146,7 +146,7 @@ JSON;
         $data     = json_decode($body);
 
         $this->assertEquals(500, $response->getStatusCode(), $body);
-        $this->assertEquals('/boolean must be boolean', substr($data->message, 0, 24), $body);
+        $this->assertEquals('/boolean must be a boolean', substr($data->message, 0, 26), $body);
     }
 
     public function testPostInvalidChoice()
@@ -198,7 +198,7 @@ JSON;
         $data     = json_decode($body);
 
         $this->assertEquals(500, $response->getStatusCode(), $body);
-        $this->assertEquals('/dateTime must be an valid date-time format (full-date "T" full-time) [RFC3339]', substr($data->message, 0, 79), $body);
+        $this->assertEquals('/dateTime must be a valid date-time format (full-date "T" full-time) [RFC3339]', substr($data->message, 0, 78), $body);
     }
 
     public function testPostInvalidDate()
@@ -214,7 +214,7 @@ JSON;
         $data     = json_decode($body);
 
         $this->assertEquals(500, $response->getStatusCode(), $body);
-        $this->assertEquals('/date must be an valid full-date format (date-fullyear "-" date-month "-" date-mday) [RFC3339]', substr($data->message, 0, 94), $body);
+        $this->assertEquals('/date must be a valid full-date format (date-fullyear "-" date-month "-" date-mday) [RFC3339]', substr($data->message, 0, 93), $body);
     }
 
     public function testPostInvalidDuration()
@@ -230,7 +230,7 @@ JSON;
         $data     = json_decode($body);
 
         $this->assertEquals(500, $response->getStatusCode(), $body);
-        $this->assertEquals('/duration must be an valid duration format [ISO8601]', substr($data->message, 0, 52), $body);
+        $this->assertEquals('/duration must be a valid duration format [ISO8601]', substr($data->message, 0, 51), $body);
     }
 
     public function testPostInvalidFloat()
@@ -246,7 +246,7 @@ JSON;
         $data     = json_decode($body);
 
         $this->assertEquals(500, $response->getStatusCode(), $body);
-        $this->assertEquals('/float must be an float', substr($data->message, 0, 23), $body);
+        $this->assertEquals('/float must be a float', substr($data->message, 0, 22), $body);
     }
 
     public function testPostInvalidInteger()
@@ -262,7 +262,7 @@ JSON;
         $data     = json_decode($body);
 
         $this->assertEquals(500, $response->getStatusCode(), $body);
-        $this->assertEquals('/integer must be an integer', substr($data->message, 0, 27), $body);
+        $this->assertEquals('/integer must be a integer', substr($data->message, 0, 26), $body);
     }
 
     public function testPostInvalidString()
@@ -294,7 +294,7 @@ JSON;
         $data     = json_decode($body);
 
         $this->assertEquals(500, $response->getStatusCode(), $body);
-        $this->assertEquals('/time must be an valid full-time format (partial-time time-offset) [RFC3339]', substr($data->message, 0, 76), $body);
+        $this->assertEquals('/time must be a valid full-time format (partial-time time-offset) [RFC3339]', substr($data->message, 0, 75), $body);
     }
 
     /**
