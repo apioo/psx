@@ -20,39 +20,21 @@
 
 namespace PSX\Validate;
 
-use InvalidArgumentException;
+use PSX\Validate;
 
 /**
- * ArrayValidator
+ * Validator
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class ArrayValidator extends ValidatorAbstract
+class Validator extends ValidatorAbstract
 {
-    public function validate($data)
+    public function __construct(array $fields = null, $flag = ValidatorInterface::THROW_ERRORS, Validate $validate = null)
     {
-        if (!is_array($data)) {
-            throw new InvalidArgumentException('Data must be an array');
-        }
+        $validate = $validate === null ? new Validate() : $validate;
 
-        $cleanData = array();
-
-        foreach ($data as $key => $value) {
-            $cleanData[$key] = $this->getPropertyValue($this->getProperty($key), $value, $key);
-        }
-
-        // we fill up missing property names with null values
-        $names     = $this->getPropertyNames();
-        $diffNames = array_diff($names, array_keys($cleanData));
-
-        if (!empty($diffNames)) {
-            foreach ($diffNames as $name) {
-                $cleanData[$name] = null;
-            }
-        }
-
-        return $cleanData;
+        parent::__construct($validate, $fields, $flag);
     }
 }

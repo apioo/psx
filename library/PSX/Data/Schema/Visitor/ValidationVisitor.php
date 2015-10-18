@@ -27,6 +27,7 @@ use PSX\Data\Schema\PropertySimpleAbstract;
 use PSX\Data\Schema\ValidationException;
 use PSX\Data\Schema\VisitorInterface;
 use PSX\DateTime;
+use PSX\Validate\ValidatorInterface;
 use RuntimeException;
 
 /**
@@ -38,23 +39,25 @@ use RuntimeException;
  */
 class ValidationVisitor implements VisitorInterface
 {
+    protected $validator;
+
+    /**
+     * Sets an optional validator which can validate each value through custom
+     * filters. This should only be used for filters which can not be defined 
+     * inside a JsonSchema like i.e. check whether a row exists in a database
+     */
+    public function setValidator(ValidatorInterface $validator = null)
+    {
+        $this->validator = $validator;
+    }
+
     public function visitArray(array $data, Property\ArrayType $property, $path)
     {
         $this->assertCompositeProperties($property, $path);
 
-        if ($property->getMinLength() !== null) {
-            if (count($data) < $property->getMinLength()) {
-                throw new ValidationException($path . ' must contain more then ' . $property->getMinLength() . ' elements');
-            }
-        }
+        $this->assertArrayConstraints($data, $property, $path);
 
-        if ($property->getMaxLength() !== null) {
-            if (count($data) > $property->getMaxLength()) {
-                throw new ValidationException($path . ' must contain less then ' . $property->getMaxLength() . ' elements');
-            }
-        }
-
-        return true;
+        $this->assertValidatorConstraints($data, $path);
     }
 
     public function visitBoolean($data, Property\BooleanType $property, $path)
@@ -62,27 +65,27 @@ class ValidationVisitor implements VisitorInterface
         $this->assertRequired($data, $property, $path);
 
         if ($data === null) {
-            return true;
-        }
-
-        if (is_bool($data)) {
-            return true;
+        } elseif (is_bool($data)) {
         } elseif (is_scalar($data)) {
             $result = preg_match('/^true|false|1|0$/', $data);
 
             if ($result) {
-                return true;
+                $data = $data === 'false' ? false : (bool) $data;
+            } else {
+                throw new ValidationException($path . ' must be a boolean format (true|false|1|0)');
             }
+        } else {
+            throw new ValidationException($path . ' must be a boolean format (true|false|1|0)');
         }
 
-        throw new ValidationException($path . ' must be boolean');
+        $this->assertValidatorConstraints($data, $path);
     }
 
     public function visitComplex(\stdClass $data, Property\ComplexType $property, $path)
     {
         $this->assertCompositeProperties($property, $path);
 
-        return true;
+        $this->assertValidatorConstraints($data, $path);
     }
 
     public function visitDateTime($data, Property\DateTimeType $property, $path)
@@ -90,18 +93,20 @@ class ValidationVisitor implements VisitorInterface
         $this->assertRequired($data, $property, $path);
 
         if ($data === null) {
-            return true;
         } elseif ($data instanceof \DateTime) {
-            return true;
         } elseif (is_string($data)) {
             $result = preg_match('/^' . DateTime::getPattern() . '$/', $data);
 
             if ($result) {
-                return true;
+                $data = new DateTime($data);
+            } else {
+                throw new ValidationException($path . ' must be a valid date-time format (full-date "T" full-time) [RFC3339]');
             }
+        } else {
+            throw new ValidationException($path . ' must be a valid date-time format (full-date "T" full-time) [RFC3339]');
         }
 
-        throw new ValidationException($path . ' must be an valid date-time format (full-date "T" full-time) [RFC3339]');
+        $this->assertValidatorConstraints($data, $path);
     }
 
     public function visitDate($data, Property\DateType $property, $path)
@@ -109,18 +114,20 @@ class ValidationVisitor implements VisitorInterface
         $this->assertRequired($data, $property, $path);
 
         if ($data === null) {
-            return true;
         } elseif ($data instanceof \DateTime) {
-            return true;
         } elseif (is_string($data)) {
             $result = preg_match('/^' . DateTime\Date::getPattern() . '$/', $data);
 
             if ($result) {
-                return true;
+                $data = new DateTime\Date($data);
+            } else {
+                throw new ValidationException($path . ' must be a valid full-date format (date-fullyear "-" date-month "-" date-mday) [RFC3339]');
             }
+        } else {
+            throw new ValidationException($path . ' must be a valid full-date format (date-fullyear "-" date-month "-" date-mday) [RFC3339]');
         }
 
-        throw new ValidationException($path . ' must be an valid full-date format (date-fullyear "-" date-month "-" date-mday) [RFC3339]');
+        $this->assertValidatorConstraints($data, $path);
     }
 
     public function visitDuration($data, Property\DurationType $property, $path)
@@ -128,18 +135,20 @@ class ValidationVisitor implements VisitorInterface
         $this->assertRequired($data, $property, $path);
 
         if ($data === null) {
-            return true;
         } elseif ($data instanceof \DateInterval) {
-            return true;
         } elseif (is_string($data)) {
             $result = preg_match('/^' . DateTime\Duration::getPattern() . '$/', $data);
 
             if ($result) {
-                return true;
+                $data = new DateTime\Duration($data);
+            } else {
+                throw new ValidationException($path . ' must be a valid duration format [ISO8601]');
             }
+        } else {
+            throw new ValidationException($path . ' must be a valid duration format [ISO8601]');
         }
 
-        throw new ValidationException($path . ' must be an valid duration format [ISO8601]');
+        $this->assertValidatorConstraints($data, $path);
     }
 
     public function visitFloat($data, Property\FloatType $property, $path)
@@ -147,7 +156,6 @@ class ValidationVisitor implements VisitorInterface
         $this->assertRequired($data, $property, $path);
 
         if ($data === null) {
-            return true;
         } elseif (is_float($data)) {
         } elseif (is_int($data)) {
             $data = (float) $data;
@@ -157,15 +165,15 @@ class ValidationVisitor implements VisitorInterface
             if ($result) {
                 $data = (float) $data;
             } else {
-                throw new ValidationException($path . ' must be an float');
+                throw new ValidationException($path . ' must be a float format (i.e. 1.23, -1.23)');
             }
         } else {
-            throw new ValidationException($path . ' must be an float');
+            throw new ValidationException($path . ' must be a float format (i.e. 1.23, -1.23)');
         }
 
         $this->assertDecimalConstraints($data, $property, $path);
 
-        return true;
+        $this->assertValidatorConstraints($data, $path);
     }
 
     public function visitInteger($data, Property\IntegerType $property, $path)
@@ -173,7 +181,6 @@ class ValidationVisitor implements VisitorInterface
         $this->assertRequired($data, $property, $path);
 
         if ($data === null) {
-            return true;
         } elseif (is_int($data)) {
         } elseif (is_string($data)) {
             $result = preg_match('/^[\-+]?[0-9]+$/', $data);
@@ -181,15 +188,15 @@ class ValidationVisitor implements VisitorInterface
             if ($result) {
                 $data = (int) $data;
             } else {
-                throw new ValidationException($path . ' must be an integer');
+                throw new ValidationException($path . ' must be a integer format (i.e. 1, -2)');
             }
         } else {
-            throw new ValidationException($path . ' must be an integer');
+            throw new ValidationException($path . ' must be a integer format (i.e. 1, -2)');
         }
 
         $this->assertDecimalConstraints($data, $property, $path);
 
-        return true;
+        $this->assertValidatorConstraints($data, $path);
     }
 
     public function visitString($data, Property\StringType $property, $path)
@@ -198,7 +205,6 @@ class ValidationVisitor implements VisitorInterface
 
         // must be an string or an object which can be casted to an string
         if ($data === null) {
-            return true;
         } elseif (is_string($data)) {
         } elseif (is_object($data) && method_exists($data, '__toString')) {
             $data = (string) $data;
@@ -208,19 +214,9 @@ class ValidationVisitor implements VisitorInterface
 
         $this->assertPropertySimpleConstraints($data, $property, $path);
 
-        if ($property->getMinLength() !== null) {
-            if (strlen($data) < $property->getMinLength()) {
-                throw new ValidationException($path . ' must contain more then ' . $property->getMinLength() . ' characters');
-            }
-        }
+        $this->assertStringConstraints($data, $property, $path);
 
-        if ($property->getMaxLength() !== null) {
-            if (strlen($data) > $property->getMaxLength()) {
-                throw new ValidationException($path . ' must contain less then ' . $property->getMaxLength() . ' characters');
-            }
-        }
-
-        return true;
+        $this->assertValidatorConstraints($data, $path);
     }
 
     public function visitTime($data, Property\TimeType $property, $path)
@@ -228,18 +224,20 @@ class ValidationVisitor implements VisitorInterface
         $this->assertRequired($data, $property, $path);
 
         if ($data === null) {
-            return true;
         } elseif ($data instanceof \DateTime) {
-            return true;
         } elseif (is_string($data)) {
             $result = preg_match('/^' . DateTime\Time::getPattern() . '$/', $data);
 
             if ($result) {
-                return true;
+                $data = new DateTime\Time($data);
+            } else {
+                throw new ValidationException($path . ' must be a valid full-time format (partial-time time-offset) [RFC3339]');
             }
+        } else {
+            throw new ValidationException($path . ' must be a valid full-time format (partial-time time-offset) [RFC3339]');
         }
 
-        throw new ValidationException($path . ' must be an valid full-time format (partial-time time-offset) [RFC3339]');
+        $this->assertValidatorConstraints($data, $path);
     }
 
     protected function assertCompositeProperties(Property\CompositeTypeAbstract $property, $path)
@@ -252,12 +250,16 @@ class ValidationVisitor implements VisitorInterface
     protected function assertRequired($data, PropertyInterface $property, $path)
     {
         if ($property->isRequired() && $data === null) {
-            throw new ValidationException('Property ' . $path . ' is required');
+            throw new ValidationException($path . ' is required');
         }
     }
 
     protected function assertPropertySimpleConstraints($data, PropertySimpleAbstract $property, $path)
     {
+        if ($data === null) {
+            return;
+        }
+
         if ($property->getPattern() !== null) {
             $result = preg_match('/^(' . $property->getPattern() . '){1}$/', $data);
 
@@ -275,6 +277,10 @@ class ValidationVisitor implements VisitorInterface
 
     protected function assertDecimalConstraints($data, Property\DecimalType $property, $path)
     {
+        if ($data === null) {
+            return;
+        }
+
         if ($property->getMax() !== null) {
             if ($data > $property->getMax()) {
                 throw new ValidationException($path . ' must be lower or equal then ' . $property->getMax());
@@ -285,6 +291,47 @@ class ValidationVisitor implements VisitorInterface
             if ($data < $property->getMin()) {
                 throw new ValidationException($path . ' must be greater or equal then ' . $property->getMin());
             }
+        }
+    }
+
+    protected function assertStringConstraints($data, Property\StringType $property, $path)
+    {
+        if ($data === null) {
+            return;
+        }
+
+        if ($property->getMinLength() !== null) {
+            if (strlen($data) < $property->getMinLength()) {
+                throw new ValidationException($path . ' must contain more then ' . $property->getMinLength() . ' characters');
+            }
+        }
+
+        if ($property->getMaxLength() !== null) {
+            if (strlen($data) > $property->getMaxLength()) {
+                throw new ValidationException($path . ' must contain less then ' . $property->getMaxLength() . ' characters');
+            }
+        }
+    }
+
+    protected function assertArrayConstraints($data, Property\ArrayType $property, $path)
+    {
+        if ($property->getMinLength() !== null) {
+            if (count($data) < $property->getMinLength()) {
+                throw new ValidationException($path . ' must contain more then ' . $property->getMinLength() . ' elements');
+            }
+        }
+
+        if ($property->getMaxLength() !== null) {
+            if (count($data) > $property->getMaxLength()) {
+                throw new ValidationException($path . ' must contain less then ' . $property->getMaxLength() . ' elements');
+            }
+        }
+    }
+
+    protected function assertValidatorConstraints($data, $path)
+    {
+        if ($this->validator !== null) {
+            $this->validator->validateProperty($path, $data);
         }
     }
 }

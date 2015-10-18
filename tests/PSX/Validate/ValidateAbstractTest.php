@@ -33,48 +33,109 @@ use PSX\Validate;
  */
 class ValidateAbstractTest extends \PHPUnit_Framework_TestCase
 {
-    public function testGetRecord()
+    public function testValidate()
     {
-        $validator = new ArrayValidator(new Validate(), array(
-            new Property('id', Validate::TYPE_INTEGER),
-            new Property('title', Validate::TYPE_STRING, array(new Filter\Length(1, 2))),
-        ));
+        $validator = $this->getValidator(ValidatorInterface::THROW_ERRORS);
+        $validator->validate([
+            'id' => 1,
+            'title' => 'fo',
+            'foo' => 'bar',
+        ]);
 
-        $this->assertInstanceOf('PSX\Data\RecordInterface', $validator->getRecord());
-        $this->assertEquals(array('id' => null, 'title' => null), $validator->getRecord()->getRecordInfo()->getFields());
+        $this->assertTrue($validator->isSuccessful());
     }
 
-    public function testThrowErrors()
+    /**
+     * @expectedException \PSX\Validate\ValidationException
+     */
+    public function testValidateInvalid()
+    {
+        $validator = $this->getValidator(ValidatorInterface::THROW_ERRORS);
+        $validator->validate([
+            'id' => 1,
+            'title' => 'foobar',
+            'foo' => 'bar',
+        ]);
+
+        $this->assertTrue($validator->isSuccessful());
+    }
+
+    public function testValidateProperty()
+    {
+        $validator = $this->getValidator(ValidatorInterface::THROW_ERRORS);
+        $validator->validateProperty('/id', 2);
+
+        $this->assertTrue($validator->isSuccessful());
+    }
+
+    /**
+     * @expectedException \PSX\Validate\ValidationException
+     */
+    public function testValidatePropertyInvalid()
+    {
+        $validator = $this->getValidator(ValidatorInterface::THROW_ERRORS);
+        $validator->validateProperty('/id', 4);
+
+        $this->assertTrue($validator->isSuccessful());
+    }
+
+    public function testValidatePropertyUnknown()
+    {
+        $validator = $this->getValidator(ValidatorInterface::THROW_ERRORS);
+        $validator->validateProperty('/foo', 4);
+
+        $this->assertTrue($validator->isSuccessful());
+    }
+
+    public function testValidateFlagThrowErrors()
     {
         try {
             $this->getValidator(ValidatorInterface::THROW_ERRORS)->validate(array(
                 'id' => 5,
                 'title' => 'foobar',
+                'author' => [
+                    'name' => 'foobar',
+                ],
+                'foo' => 'bar',
             ));
         } catch (ValidationException $e) {
-            $this->assertEquals('id', $e->getTitle());
-            $this->assertEquals('id has an invalid length min 1 and max 2 signs', $e->getResult()->getFirstError());
-            $this->assertEquals(['id has an invalid length min 1 and max 2 signs'], $e->getResult()->getErrors());
+            $this->assertEquals('/id', $e->getTitle());
+            $this->assertEquals('/id has an invalid length min 1 and max 2 signs', $e->getResult()->getFirstError());
+            $this->assertEquals(['/id has an invalid length min 1 and max 2 signs'], $e->getResult()->getErrors());
         }
     }
 
-    public function testCollectErrors()
+    public function testValidateFlagCollectErrors()
     {
         $validator = $this->getValidator(ValidatorInterface::COLLECT_ERRORS);
-        $result    = $validator->validate(array(
+
+        $validator->validate(array(
             'id' => 5,
             'title' => 'foobar',
+            'author' => [
+                'name' => 'foobar',
+            ],
+            'foo' => 'bar',
         ));
 
         $errors = $validator->getErrors();
 
-        $this->assertEquals(['id' => null, 'title' => null], $result);
         $this->assertArrayHasKey('id', $errors);
-        $this->assertEquals('id has an invalid length min 1 and max 2 signs', $errors['id']->getFirstError());
+        $this->assertEquals('/id has an invalid length min 1 and max 2 signs', $errors['id']->getFirstError());
         $this->assertArrayHasKey('title', $errors);
-        $this->assertEquals('title has an invalid length min 1 and max 2 signs', $errors['title']->getFirstError());
-        $this->assertEquals(['title has an invalid length min 1 and max 2 signs'], $errors['title']->getErrors());
+        $this->assertEquals('/title has an invalid length min 1 and max 2 signs', $errors['title']->getFirstError());
+        $this->assertEquals(['/title has an invalid length min 1 and max 2 signs'], $errors['title']->getErrors());
+        $this->assertEquals('/author/name has an invalid length min 1 and max 2 signs', $errors['author/name']->getFirstError());
+        $this->assertEquals(['/author/name has an invalid length min 1 and max 2 signs'], $errors['author/name']->getErrors());
         $this->assertEquals(false, $validator->isSuccessful());
+    }
+
+    public function testGetFields()
+    {
+        $fields    = [new Property('id', Validate::TYPE_INTEGER, array(new Filter\Length(1, 2)))];
+        $validator = new Validator($fields);
+
+        $this->assertEquals($fields, $validator->getFields());
     }
 
     /**
@@ -82,9 +143,12 @@ class ValidateAbstractTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetFieldsAndFlag()
     {
+        $fields = [new Property('id', Validate::TYPE_INTEGER, array(new Filter\Length(3, 6)))];
+
         $validator = $this->getValidator(ValidatorInterface::COLLECT_ERRORS);
-        $validator->setFields([new Property('id', Validate::TYPE_INTEGER, array(new Filter\Length(1, 2)))]);
+        $validator->setFields($fields);
         $validator->setFlag(ValidatorInterface::THROW_ERRORS);
+
         $validator->validate(array(
             'id' => 1,
             'title' => 'foobar',
@@ -96,8 +160,9 @@ class ValidateAbstractTest extends \PHPUnit_Framework_TestCase
         $properties = [
             new Property('id', Validate::TYPE_INTEGER, array(new Filter\Length(1, 2))),
             new Property('title', Validate::TYPE_STRING, array(new Filter\Length(1, 2))),
+            new Property('author/name', Validate::TYPE_STRING, array(new Filter\Length(1, 2))),
         ];
 
-        return new ArrayValidator(new Validate(), $properties, $flag);
+        return new Validator($properties, $flag);
     }
 }

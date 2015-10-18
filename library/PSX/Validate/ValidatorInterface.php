@@ -33,14 +33,21 @@ interface ValidatorInterface
     const COLLECT_ERRORS = 2;
 
     /**
-     * Validates the given data against defined rules. The method should search
-     * for each key in the $data array for an fitting rule. If such an rule does
-     * not exists or the value is not valid an exception shall be thrown. That
-     * means that the result will contain only valid values. If $data is empty
-     * the validation should pass
+     * Goes through the data structure and calls for each property the 
+     * validateProperty method. Data must be an object structure
      *
      * @param mixed $data
      * @return mixed
      */
     public function validate($data);
+
+    /**
+     * Validates a specific property. Searches a fitting validation property
+     * inside the list of available rules and applies all filters to the data
+     *
+     * @param string $data
+     * @param mixed $data
+     * @return mixed
+     */
+    public function validateProperty($path, $data);
 }

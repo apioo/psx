@@ -21,7 +21,10 @@
 namespace PSX\Validate;
 
 use PSX\Data\Record;
+use PSX\Data\Record\GraphTraverser;
+use PSX\Data\Record\Visitor\ValidationVisitor;
 use PSX\Validate;
+use RuntimeException;
 
 /**
  * ValidatorAbstract
@@ -59,6 +62,14 @@ abstract class ValidatorAbstract implements ValidatorInterface
     }
 
     /**
+     * @return \PSX\Validate\Property[]
+     */
+    public function getFields()
+    {
+        return $this->fields;
+    }
+
+    /**
      * @param integer $flag
      */
     public function setFlag($flag)
@@ -87,20 +98,21 @@ abstract class ValidatorAbstract implements ValidatorInterface
         return count($this->errors) == 0;
     }
 
-    /**
-     * Returns an anonymous record based on the defined fields
-     *
-     * @return \PSX\Data\RecordInterface
-     */
-    public function getRecord()
+    public function validate($data)
     {
-        $fields = array();
+        $traverser = new GraphTraverser();
+        $visitor   = new ValidationVisitor($this);
 
-        foreach ($this->fields as $property) {
-            $fields[$property->getName()] = null;
+        $traverser->traverse($data, $visitor);
+    }
+
+    public function validateProperty($path, $data)
+    {
+        $property = $this->getProperty($path);
+
+        if ($property instanceof Property) {
+            return $this->getPropertyValue($this->getProperty($path), $data, $path);
         }
-
-        return new Record('record', $fields);
     }
 
     /**
@@ -112,23 +124,17 @@ abstract class ValidatorAbstract implements ValidatorInterface
      * @param string $key
      * @return mixed
      */
-    protected function getPropertyValue(Property $property = null, $value, $key)
+    protected function getPropertyValue(Property $property, $value, $key)
     {
         try {
-            if ($property !== null) {
-                $result = $this->validate->apply($value, $property->getType(), $property->getFilters(), $property->getName(), $property->isRequired());
+            $result = $this->validate->apply($value, $property->getType(), $property->getFilters(), $key, $property->isRequired());
 
-                // if we have no error and the value is not true the filter
-                // has modified the value
-                if ($result !== true) {
-                    return $result;
-                } else {
-                    return $value;
-                }
+            // if we have no error and the value is not true the filter has 
+            // modified the value
+            if ($result !== true) {
+                return $result;
             } else {
-                $message = 'Field "' . $key . '" not defined';
-
-                throw new ValidationException($message, $key, new Result(null, array($message)));
+                return $value;
             }
         } catch (ValidationException $e) {
             if ($this->flag == self::COLLECT_ERRORS) {
@@ -149,8 +155,10 @@ abstract class ValidatorAbstract implements ValidatorInterface
      */
     protected function getProperty($name)
     {
-        foreach ($this->fields as $property) {
-            if ($property->getName() == $name) {
+        $fields = $this->getFields();
+        foreach ($fields as $property) {
+            $propertyName = '/' . ltrim($property->getName(), '/');
+            if ($propertyName == $name) {
                 return $property;
             }
         }
