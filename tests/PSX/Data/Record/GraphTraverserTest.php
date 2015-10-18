@@ -39,6 +39,16 @@ class GraphTraverserTest extends Visitor\VisitorTestCase
         $graph->traverse($record, $this->getVisitorMock($record));
     }
 
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testTraverseNoObject()
+    {
+        $record = $this->getRecord();
+        $graph  = new GraphTraverser();
+        $graph->traverse('foo', new SpyVisitor());
+    }
+
     public function testTraverseCallStack()
     {
         $record  = $this->getRecord();

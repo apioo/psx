@@ -20,6 +20,7 @@
 
 namespace PSX\Data\Record;
 
+use InvalidArgumentException;
 use PSX\Data\RecordInterface;
 use PSX\Util\CurveArray;
 
@@ -34,6 +35,10 @@ class GraphTraverser
 {
     public function traverse($record, VisitorInterface $visitor)
     {
+        if (!self::isObject($record)) {
+            throw new InvalidArgumentException('Provided value must be an object type');
+        }
+
         $this->traverseObject($record, $visitor);
     }
 
