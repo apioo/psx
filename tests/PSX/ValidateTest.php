@@ -98,14 +98,12 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(array('foo'), $this->validate->apply('foo', Validate::TYPE_ARRAY));
         $this->assertInternalType(Validate::TYPE_ARRAY, $this->validate->apply('foo', Validate::TYPE_ARRAY));
-    }
 
-    public function testApplyTypeObject()
-    {
-        $object = new \stdClass();
+        $expect = new \stdClass();
+        $expect->scalar = 'foo';
 
-        $this->assertEquals($object, $this->validate->apply($object, Validate::TYPE_OBJECT));
-        $this->assertInstanceOf('stdClass', $this->validate->apply($object, Validate::TYPE_OBJECT));
+        $this->assertEquals($expect, $this->validate->apply('foo', Validate::TYPE_OBJECT));
+        $this->assertInternalType(Validate::TYPE_OBJECT, $this->validate->apply('foo', Validate::TYPE_OBJECT));
     }
 
     /**
@@ -119,14 +117,6 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
     public function testApplyTypeObjectNullOptional()
     {
         $this->assertEquals(null, $this->validate->apply(null, Validate::TYPE_OBJECT, array(), 'foo', false));
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testApplyTypeObjectInvalid()
-    {
-        $this->assertEquals('foo', $this->validate->apply('foo', Validate::TYPE_OBJECT));
     }
 
     /**
@@ -193,11 +183,11 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
         $result = $this->validate->validate(null);
 
         $this->assertEquals(null, $result->getValue());
-        $this->assertEquals('The field "Unknown" is not set', $result->getFirstError());
+        $this->assertEquals('Unknown is not set', $result->getFirstError());
 
         $result = $this->validate->validate(null, Validate::TYPE_STRING, array(), 'foo');
 
         $this->assertEquals(null, $result->getValue());
-        $this->assertEquals('The field "foo" is not set', $result->getFirstError());
+        $this->assertEquals('foo is not set', $result->getFirstError());
     }
 }

@@ -86,41 +86,15 @@ class Validate
             $title = 'Unknown';
         }
 
-        // we check whether the value is not null
-        if ($required === true && $value === null) {
-            $result->addError(sprintf('The field "%s" is not set', $title));
-
-            return $result;
+        if ($value !== null) {
+            $value = $this->transformType($value, $type);
         }
 
-        if ($value !== null) {
-            switch ($type) {
-                case self::TYPE_INTEGER:
-                    $value = (int) $value;
-                    break;
+        // we check whether the value is not null
+        if ($required === true && $value === null) {
+            $result->addError(sprintf('%s is not set', $title));
 
-                case self::TYPE_STRING:
-                    $value = (string) $value;
-                    break;
-
-                case self::TYPE_FLOAT:
-                    $value = (float) $value;
-                    break;
-
-                case self::TYPE_BOOLEAN:
-                    $value = (bool) $value;
-                    break;
-
-                case self::TYPE_ARRAY:
-                    $value = (array) $value;
-                    break;
-
-                case self::TYPE_OBJECT:
-                    if (!is_object($value)) {
-                        throw new InvalidArgumentException('Value must be an object');
-                    }
-                    break;
-            }
+            return $result;
         }
 
         foreach ($filters as $filter) {
@@ -132,13 +106,13 @@ class Validate
             } elseif (is_callable($filter)) {
                 $return = call_user_func_array($filter, array($value));
             } else {
-                throw new InvalidArgumentException('Filter must be either an callable or instanceof PSX\FilterInterface');
+                throw new InvalidArgumentException('Filter must be either a callable or instanceof PSX\FilterInterface');
             }
 
             if ($return === false) {
                 if ($required === true) {
                     if ($error === null) {
-                        $error = 'The field "%s" is not valid';
+                        $error = '%s is not valid';
                     }
 
                     $result->addError(sprintf($error, $title));
@@ -155,5 +129,31 @@ class Validate
         $result->setValue($value);
 
         return $result;
+    }
+
+    protected function transformType($value, $type)
+    {
+        switch ($type) {
+            case self::TYPE_INTEGER:
+                return (int) $value;
+
+            case self::TYPE_STRING:
+                return (string) $value;
+
+            case self::TYPE_FLOAT:
+                return (float) $value;
+
+            case self::TYPE_BOOLEAN:
+                return (bool) $value;
+
+            case self::TYPE_ARRAY:
+                return (array) $value;
+
+            case self::TYPE_OBJECT:
+                return (object) $value;
+
+            default:
+                return $value;
+        }
     }
 }

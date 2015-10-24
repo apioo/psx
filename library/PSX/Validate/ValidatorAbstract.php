@@ -111,7 +111,7 @@ abstract class ValidatorAbstract implements ValidatorInterface
         $property = $this->getProperty($path);
 
         if ($property instanceof Property) {
-            return $this->getPropertyValue($this->getProperty($path), $data, $path);
+            return $this->getPropertyValue($property, $data, $path);
         }
     }
 
