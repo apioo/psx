@@ -25,8 +25,12 @@ use PSX\Api\Resource;
 use PSX\Api\Version;
 use PSX\Controller\SchemaApiAbstract;
 use PSX\Data\RecordInterface;
+use PSX\Filter;
 use PSX\Loader\Context;
 use PSX\Test\Environment;
+use PSX\Validate;
+use PSX\Validate\Property;
+use PSX\Validate\Validator;
 
 /**
  * TestSchemaApiController
@@ -110,5 +114,12 @@ class TestSchemaApiController extends SchemaApiAbstract
             'success' => true,
             'message' => 'You have successful delete a record'
         );
+    }
+
+    protected function getImportSchemaValidator()
+    {
+        return new Validator([
+            new Property('/title', Validate::TYPE_STRING, [new Filter\Length(3, 8)]),
+        ]);
     }
 }

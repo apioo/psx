@@ -47,7 +47,7 @@ class AccessorTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \PSX\Validate\ValidationException
-     * @expectedExceptionMessage The field "bar" is not set
+     * @expectedExceptionMessage bar is not set
      */
     public function testGetMissing()
     {
@@ -57,7 +57,7 @@ class AccessorTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \PSX\Validate\ValidationException
-     * @expectedExceptionMessage The field "lorem" is not set
+     * @expectedExceptionMessage lorem is not set
      */
     public function testGetMissingWithTitle()
     {
