@@ -26,7 +26,7 @@ use PSX\Http\MessageInterface;
 use RuntimeException;
 
 /**
- * Reads data from an http message and imports them into an record
+ * Reads data from a http message and imports them into a record
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
@@ -51,18 +51,20 @@ class Importer
     }
 
     /**
-     * Imports data from an http message into an record. The reader which gets
+     * Imports data from a http message into a record. The reader which gets
      * used depends on the content type. If not other specified a transformer
      * for the content type gets loaded. If no transformer is available we
-     * simply pass the data from the reader to the importer
+     * simply pass the data from the reader to the importer. If no importer was
+     * explicit provided the importer is determined based on the source
      *
      * @param mixed $source
      * @param \PSX\Http\MessageInterface $message
      * @param \PSX\Data\TransformerInterface $transformer
      * @param string $readerType
+     * @param \PSX\Data\Record\ImporterInterface $importer
      * @return \PSX\Data\RecordInterface
      */
-    public function import($source, MessageInterface $message, TransformerInterface $transformer = null, $readerType = null)
+    public function import($source, MessageInterface $message, TransformerInterface $transformer = null, $readerType = null, ImporterInterface $importer = null)
     {
         $data = $this->extractor->extract($message, $transformer, $readerType);
 
@@ -70,7 +72,9 @@ class Importer
             $source = call_user_func_array($source, array($data));
         }
 
-        $importer = $this->importerManager->getImporterBySource($source);
+        if ($importer === null) {
+            $importer = $this->createBySource($source);
+        }
 
         if ($importer instanceof ImporterInterface) {
             if ($data === null) {
@@ -81,5 +85,15 @@ class Importer
         } else {
             throw new NotFoundException('Could not find fitting importer');
         }
+    }
+
+    /**
+     * Returns an importer which understands the provided source
+     *
+     * @return \PSX\Data\Record\ImporterInterface
+     */
+    public function createBySource($source)
+    {
+        return $this->importerManager->getImporterBySource($source);
     }
 }

@@ -25,6 +25,7 @@ use PSX\Data\Record\FactoryFactory;
 use PSX\Data\Schema\Property;
 use PSX\Data\SchemaInterface;
 use PSX\DateTime;
+use PSX\Validate\ValidatorInterface;
 
 /**
  * Assimilator
@@ -37,11 +38,24 @@ class Assimilator
 {
     protected $factory;
     protected $traverser;
+    protected $validator;
 
     public function __construct(FactoryFactory $factory)
     {
         $this->factory   = $factory;
         $this->traverser = new SchemaTraverser();
+    }
+
+    /**
+     * Pushes a validator to the stack. A call to the assimilate method will 
+     * remove the last validator of the stack and add it to the assimilate 
+     * visitor.
+     *
+     * @param \PSX\Validate\ValidatorInterface $validator
+     */
+    public function setValidator(ValidatorInterface $validator)
+    {
+        $this->validator = $validator;
     }
 
     /**
@@ -58,6 +72,12 @@ class Assimilator
      */
     public function assimilate(SchemaInterface $schema, $data, $validate = false, $type = SchemaTraverser::TYPE_OUTGOING)
     {
-        return $this->traverser->traverse($data, $schema, new Visitor\AssimilationVisitor($validate, $this->factory), $type);
+        $visitor = new Visitor\AssimilationVisitor($validate, $this->factory);
+
+        if ($this->validator !== null) {
+            $visitor->setValidator($this->validator);
+        }
+
+        return $this->traverser->traverse($data, $schema, $visitor, $type);
     }
 }

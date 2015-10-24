@@ -21,9 +21,13 @@
 namespace PSX\Controller\Behaviour;
 
 use PSX\Data\TransformerInterface;
+use PSX\Data\Record\Importer;
+use PSX\Data\Record\ImporterManager;
+use PSX\Data\Record\ImporterInterface;
+use PSX\Validate\ValidatorInterface;
 
 /**
- * Provides an method to import data from an request into an source
+ * Provides a method to import data from the current request into a source
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
@@ -38,7 +42,7 @@ trait ImporterTrait
     protected $importer;
 
     /**
-     * Imports data from the current request into an record
+     * Imports data from the current request into a record
      *
      * @param mixed $source
      * @param \PSX\Data\TransformerInterface $transformer
@@ -47,6 +51,25 @@ trait ImporterTrait
      */
     protected function import($source, TransformerInterface $transformer = null, $readerType = null)
     {
-        return $this->importer->import($source, $this->request, $transformer, $readerType);
+        $importer = $this->importer->createBySource($source);
+        if ($importer instanceof Importer\Schema) {
+            $validator = $this->getImportSchemaValidator();
+            if ($validator instanceof ValidatorInterface) {
+                $importer->getAssimilator()->setValidator($validator);
+            }
+        }
+
+        return $this->importer->import($source, $this->request, $transformer, $readerType, $importer);
+    }
+
+    /**
+     * Returns a custom validator which can perform additional validation rules
+     * like i.e. checking whether an entry exists in a database
+     *
+     * @return \PSX\Validate\ValidatorInterface
+     */
+    protected function getImportSchemaValidator()
+    {
+        return null;
     }
 }

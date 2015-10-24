@@ -55,7 +55,7 @@ class ImportManagerTest extends \PHPUnit_Framework_TestCase
 
         $importer = $manager->getImporterBySource($source);
 
-        $this->assertTrue($acceptImporter === $importer);
+        $this->assertEquals(get_class($acceptImporter), get_class($importer));
     }
 
     public function testGetImporterBySourceNotAvailable()
@@ -90,7 +90,7 @@ class ImportManagerTest extends \PHPUnit_Framework_TestCase
 
         $importer = $manager->getImporterByInstance(get_class($acceptImporter));
 
-        $this->assertTrue($acceptImporter === $importer);
+        $this->assertEquals(get_class($acceptImporter), get_class($importer));
 
         $importer = $manager->getImporterByInstance('stdClass');
 

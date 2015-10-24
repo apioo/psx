@@ -25,10 +25,10 @@ use PSX\Data\Record\ImporterInterface;
 use PSX\Data\Schema\Assimilator;
 use PSX\Data\Schema\SchemaTraverser;
 use PSX\Data\SchemaInterface;
+use PSX\Validate\ValidatorInterface;
 
 /**
- * Imports data based on an given schema. Validates also the data if an
- * validator was set
+ * Imports data based on a given schema
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
@@ -43,6 +43,11 @@ class Schema implements ImporterInterface
         $this->assimilator = $assimilator;
     }
 
+    public function getAssimilator()
+    {
+        return $this->assimilator;
+    }
+
     public function accept($schema)
     {
         return $schema instanceof SchemaInterface;
@@ -55,9 +60,14 @@ class Schema implements ImporterInterface
         }
 
         if (!$data instanceof \stdClass) {
-            throw new InvalidArgumentException('Data must be an stdClass');
+            throw new InvalidArgumentException('Data must be a stdClass');
         }
 
         return $this->assimilator->assimilate($schema, $data, true, SchemaTraverser::TYPE_INCOMING);
+    }
+
+    public function __clone()
+    {
+        $this->assimilator = clone $this->assimilator;
     }
 }

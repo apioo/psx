@@ -23,7 +23,10 @@ namespace PSX\Data\Record;
 use PSX\Util\PriorityQueue;
 
 /**
- * The importer manager returns the fitting importer for an source
+ * The importer manager returns the fitting importer for a source. The importer
+ * list is immutable so calls to a get* method returns always a clone of the 
+ * importer object. Because of that it is not possible to globally change a 
+ * importer
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
@@ -56,7 +59,7 @@ class ImporterManager
     {
         foreach ($this->importers as $importer) {
             if ($importer->accept($source)) {
-                return $importer;
+                return clone $importer;
             }
         }
 
@@ -73,7 +76,7 @@ class ImporterManager
     {
         foreach ($this->importers as $importer) {
             if ($importer instanceof $className) {
-                return $importer;
+                return clone $importer;
             }
         }
 
