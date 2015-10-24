@@ -67,4 +67,19 @@ abstract class ControllerTestCase extends \PHPUnit_Framework_TestCase
 
         return $response;
     }
+
+    /**
+     * Removes any system specific parts of an exception response
+     *
+     * @param string $body
+     * @return string
+     */
+    public static function normalizeExceptionResponse($body)
+    {
+        $body = preg_replace('/ in (.*) on line (\d+)/', '', $body);
+        $body = preg_replace('/"trace": "(.*)"/', '"trace": ""', $body);
+        $body = preg_replace('/"context": "(.*)"/', '"context": ""', $body);
+
+        return $body;
+    }
 }
