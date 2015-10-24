@@ -25,7 +25,6 @@ use PSX\Data\Record\ImporterInterface;
 use PSX\Data\Schema\Assimilator;
 use PSX\Data\Schema\SchemaTraverser;
 use PSX\Data\SchemaInterface;
-use PSX\Validate\ValidatorInterface;
 
 /**
  * Imports data based on a given schema
