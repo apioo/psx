@@ -25,7 +25,7 @@ use PSX\Sql\Condition;
 use PSX\Sql\TableInterface;
 
 /**
- * Checks whether the value is an primary key of the given table
+ * Checks whether the value is available in the primary key column of the table
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0

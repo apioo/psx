@@ -49,7 +49,7 @@ class Extractor
     }
 
     /**
-     * Extracts the body from an http message and transforms the data into an
+     * Extracts the body from a http message and transforms the data into an
      * array structure
      *
      * @param \PSX\Http\MessageInterface $message
@@ -89,7 +89,7 @@ class Extractor
 
             // @TODO the correct response would be to throw an unsupported
             // content type exception since this would enforce clients to send
-            // an correct content type
+            // a correct content type
             //throw new UnsupportedMediaTypeException('Unsupported content type', 415);
         }
 

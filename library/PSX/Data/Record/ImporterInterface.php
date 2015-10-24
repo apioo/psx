@@ -21,7 +21,7 @@
 namespace PSX\Data\Record;
 
 /**
- * The importer takes meta informations from an source and returns an record
+ * The importer takes meta informations from a source and returns a record
  * containing the actual data
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
