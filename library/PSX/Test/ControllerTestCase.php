@@ -37,7 +37,7 @@ abstract class ControllerTestCase extends \PHPUnit_Framework_TestCase
     use ContainerTestCaseTrait;
 
     /**
-     * Loads an specific controller
+     * Loads a specific controller
      *
      * @param \PSX\Http\Request $request
      * @param \PSX\Http\Response $response
@@ -49,7 +49,7 @@ abstract class ControllerTestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Sends an request to the system and returns the http response
+     * Sends a request to the system and returns the http response
      *
      * @param string $url
      * @param string $method
