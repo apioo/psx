@@ -25,6 +25,7 @@ use PSX\Data\Record\ImporterInterface;
 use PSX\Data\Schema\Assimilator;
 use PSX\Data\Schema\SchemaTraverser;
 use PSX\Data\SchemaInterface;
+use PSX\Validate\ValidatorAwareInterface;
 use PSX\Validate\ValidatorInterface;
 
 /**
@@ -34,7 +35,7 @@ use PSX\Validate\ValidatorInterface;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Schema implements ImporterInterface
+class Schema implements ImporterInterface, ValidatorAwareInterface
 {
     protected $assimilator;
 

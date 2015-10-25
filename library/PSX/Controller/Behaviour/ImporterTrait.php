@@ -24,6 +24,7 @@ use PSX\Data\TransformerInterface;
 use PSX\Data\Record\Importer;
 use PSX\Data\Record\ImporterManager;
 use PSX\Data\Record\ImporterInterface;
+use PSX\Validate\ValidatorAwareInterface;
 use PSX\Validate\ValidatorInterface;
 
 /**
@@ -52,8 +53,8 @@ trait ImporterTrait
     protected function import($source, TransformerInterface $transformer = null, $readerType = null)
     {
         $importer = $this->importer->createBySource($source);
-        if ($importer instanceof Importer\Schema) {
-            $validator = $this->getImportSchemaValidator();
+        if ($importer instanceof ValidatorAwareInterface) {
+            $validator = $this->getImportValidator();
             if ($validator instanceof ValidatorInterface) {
                 $importer->setValidator($validator);
             }
@@ -68,7 +69,7 @@ trait ImporterTrait
      *
      * @return \PSX\Validate\ValidatorInterface
      */
-    protected function getImportSchemaValidator()
+    protected function getImportValidator()
     {
         return null;
     }

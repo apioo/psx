@@ -116,7 +116,7 @@ class TestSchemaApiController extends SchemaApiAbstract
         );
     }
 
-    protected function getImportSchemaValidator()
+    protected function getImportValidator()
     {
         return new Validator([
             new Property('/title', Validate::TYPE_STRING, [new Filter\Length(3, 8)]),
