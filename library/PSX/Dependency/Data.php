@@ -98,12 +98,7 @@ trait Data
      */
     public function getImporterManager()
     {
-        $manager = new ImporterManager();
-        $manager->addImporter(new Importer\Record($this->get('record_factory_factory')), 16);
-        $manager->addImporter(new Importer\Schema($this->get('schema_assimilator')), 8);
-        $manager->addImporter(new Importer\Table(), 0);
-
-        return $manager;
+        return new ImporterManager($this->get('record_factory_factory'));
     }
 
     /**

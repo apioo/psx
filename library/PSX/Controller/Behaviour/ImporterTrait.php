@@ -55,7 +55,7 @@ trait ImporterTrait
         if ($importer instanceof Importer\Schema) {
             $validator = $this->getImportSchemaValidator();
             if ($validator instanceof ValidatorInterface) {
-                $importer->getAssimilator()->setValidator($validator);
+                $importer->setValidator($validator);
             }
         }
 

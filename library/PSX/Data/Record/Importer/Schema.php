@@ -25,6 +25,7 @@ use PSX\Data\Record\ImporterInterface;
 use PSX\Data\Schema\Assimilator;
 use PSX\Data\Schema\SchemaTraverser;
 use PSX\Data\SchemaInterface;
+use PSX\Validate\ValidatorInterface;
 
 /**
  * Imports data based on a given schema
@@ -42,9 +43,9 @@ class Schema implements ImporterInterface
         $this->assimilator = $assimilator;
     }
 
-    public function getAssimilator()
+    public function setValidator(ValidatorInterface $validator)
     {
-        return $this->assimilator;
+        $this->assimilator->setValidator($validator);
     }
 
     public function accept($schema)
@@ -63,10 +64,5 @@ class Schema implements ImporterInterface
         }
 
         return $this->assimilator->assimilate($schema, $data, true, SchemaTraverser::TYPE_INCOMING);
-    }
-
-    public function __clone()
-    {
-        $this->assimilator = clone $this->assimilator;
     }
 }

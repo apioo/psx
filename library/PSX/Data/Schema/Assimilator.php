@@ -47,10 +47,6 @@ class Assimilator
     }
 
     /**
-     * Pushes a validator to the stack. A call to the assimilate method will 
-     * remove the last validator of the stack and add it to the assimilate 
-     * visitor.
-     *
      * @param \PSX\Validate\ValidatorInterface $validator
      */
     public function setValidator(ValidatorInterface $validator)

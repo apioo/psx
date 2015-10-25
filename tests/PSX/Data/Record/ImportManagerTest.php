@@ -20,6 +20,11 @@
 
 namespace PSX\Data\Record;
 
+use PSX\Data\Record;
+use PSX\Data\Schema;
+use PSX\Data\Schema\Property;
+use PSX\Test\Environment;
+
 /**
  * ImportManagerTest
  *
@@ -29,71 +34,79 @@ namespace PSX\Data\Record;
  */
 class ImportManagerTest extends \PHPUnit_Framework_TestCase
 {
-    public function testGetImporterBySource()
+    public function testGetImporterBySourceRecord()
     {
-        $manager = new ImporterManager();
-        $source = new \stdClass();
-
-        $acceptImporter = $this->getMockBuilder('PSX\Data\Record\ImporterInterface')
+        $source = $this->getMockBuilder('PSX\Data\Record')
+            ->disableOriginalConstructor()
             ->getMock();
 
-        $acceptImporter->expects($this->once())
-            ->method('accept')
-            ->with($source)
-            ->will($this->returnValue(true));
-
-        $notAcceptImporter = $this->getMockBuilder('PSX\Data\Record\ImporterInterface')
-            ->getMock();
-
-        $notAcceptImporter->expects($this->once())
-            ->method('accept')
-            ->with($source)
-            ->will($this->returnValue(false));
-
-        $manager->addImporter($notAcceptImporter);
-        $manager->addImporter($acceptImporter);
-
+        $manager  = new ImporterManager(Environment::getService('record_factory_factory'));
         $importer = $manager->getImporterBySource($source);
 
-        $this->assertEquals(get_class($acceptImporter), get_class($importer));
+        $this->assertInstanceOf('PSX\Data\Record\Importer\Record', $importer);
     }
 
-    public function testGetImporterBySourceNotAvailable()
+    public function testGetImporterBySourceSchema()
     {
-        $manager = new ImporterManager();
-        $source = new \stdClass();
-
-        $notAcceptImporter = $this->getMockBuilder('PSX\Data\Record\ImporterInterface')
+        $source = $this->getMockBuilder('PSX\Data\Schema')
+            ->disableOriginalConstructor()
             ->getMock();
 
-        $notAcceptImporter->expects($this->once())
-            ->method('accept')
-            ->with($source)
-            ->will($this->returnValue(false));
-
-        $manager->addImporter($notAcceptImporter);
-
+        $manager  = new ImporterManager(Environment::getService('record_factory_factory'));
         $importer = $manager->getImporterBySource($source);
 
-        $this->assertEquals(null, $importer);
+        $this->assertInstanceOf('PSX\Data\Record\Importer\Schema', $importer);
     }
 
-    public function testGetImporterByInstance()
+    public function testGetImporterBySourceTable()
     {
-        $manager = new ImporterManager();
-
-        $acceptImporter = $this->getMockBuilder('PSX\Data\Record\ImporterInterface')
+        $source = $this->getMockBuilder('PSX\Sql\Table')
+            ->disableOriginalConstructor()
             ->getMock();
 
-        $manager->addImporter(new Importer\Table());
-        $manager->addImporter($acceptImporter);
+        $manager  = new ImporterManager(Environment::getService('record_factory_factory'));
+        $importer = $manager->getImporterBySource($source);
 
-        $importer = $manager->getImporterByInstance(get_class($acceptImporter));
+        $this->assertInstanceOf('PSX\Data\Record\Importer\Table', $importer);
+    }
 
-        $this->assertEquals(get_class($acceptImporter), get_class($importer));
+    public function testGetImporterBySourceUnknown()
+    {
+        $manager  = new ImporterManager(Environment::getService('record_factory_factory'));
+        $importer = $manager->getImporterBySource(new \stdClass);
 
-        $importer = $manager->getImporterByInstance('stdClass');
+        $this->assertNull($importer);
+    }
 
-        $this->assertEquals(null, $importer);
+    public function testGetImporterByInstanceRecord()
+    {
+        $manager  = new ImporterManager(Environment::getService('record_factory_factory'));
+        $importer = $manager->getImporterByInstance('PSX\Data\Record\Importer\Record');
+
+        $this->assertInstanceOf('PSX\Data\Record\Importer\Record', $importer);
+    }
+
+    public function testGetImporterByInstanceSchema()
+    {
+        $manager  = new ImporterManager(Environment::getService('record_factory_factory'));
+        $importer = $manager->getImporterByInstance('PSX\Data\Record\Importer\Schema');
+
+        $this->assertInstanceOf('PSX\Data\Record\Importer\Schema', $importer);
+    }
+
+    public function testGetImporterByInstanceTable()
+    {
+        $manager  = new ImporterManager(Environment::getService('record_factory_factory'));
+        $importer = $manager->getImporterByInstance('PSX\Data\Record\Importer\Table');
+
+        $this->assertInstanceOf('PSX\Data\Record\Importer\Table', $importer);
+    }
+
+    public function testGetImporterByInstanceUnknown()
+    {
+        $manager  = new ImporterManager(Environment::getService('record_factory_factory'));
+        $importer = $manager->getImporterByInstance('PSX\Data\Record\Importer\Foo');
+
+        $this->assertNull($importer);
     }
 }

@@ -20,13 +20,16 @@
 
 namespace PSX\Data\Record;
 
-use PSX\Util\PriorityQueue;
+use PSX\Data\RecordInterface;
+use PSX\Data\Record\FactoryFactory;
+use PSX\Data\Record\Importer;
+use PSX\Data\SchemaInterface;
+use PSX\Data\Schema\Assimilator;
+use PSX\Sql\TableInterface;
 
 /**
  * The importer manager returns the fitting importer for a source. The importer
- * list is immutable so calls to a get* method returns always a clone of the 
- * importer object. Because of that it is not possible to globally change a 
- * importer
+ * manager returns always a new instance of the importer object
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
@@ -35,18 +38,13 @@ use PSX\Util\PriorityQueue;
 class ImporterManager
 {
     /**
-     * @var \PSX\Data\Record\ImporterInterface[]
+     * @var \PSX\Data\Record\FactoryFactory
      */
-    protected $importers;
+    protected $factoryFactory;
 
-    public function __construct()
+    public function __construct(FactoryFactory $factoryFactory)
     {
-        $this->importers = new PriorityQueue();
-    }
-
-    public function addImporter(ImporterInterface $importer, $priority = 0)
-    {
-        $this->importers->insert($importer, $priority);
+        $this->factoryFactory = $factoryFactory;
     }
 
     /**
@@ -57,27 +55,47 @@ class ImporterManager
      */
     public function getImporterBySource($source)
     {
-        foreach ($this->importers as $importer) {
-            if ($importer->accept($source)) {
-                return clone $importer;
-            }
-        }
-
-        return null;
+        return $this->createByClass($this->getClassForSource($source));
     }
 
     /**
-     * Returns the importer which is an instanceof the given class name
+     * Returns the importer which is an instance of the given class name
      *
      * @param string $className
      * @return \PSX\Data\Record\ImporterInterface
      */
     public function getImporterByInstance($className)
     {
-        foreach ($this->importers as $importer) {
-            if ($importer instanceof $className) {
-                return clone $importer;
-            }
+        return $this->createByClass($className);
+    }
+
+    protected function getClassForSource($source)
+    {
+        if ($source instanceof RecordInterface) {
+            return ImporterInterface::RECORD;
+        } elseif ($source instanceof SchemaInterface) {
+            return ImporterInterface::SCHEMA;
+        } elseif ($source instanceof TableInterface) {
+            return ImporterInterface::TABLE;
+        }
+
+        return null;
+    }
+
+    protected function createByClass($className)
+    {
+        switch ($className) {
+            case ImporterInterface::RECORD:
+                return new Importer\Record($this->factoryFactory);
+                break;
+
+            case ImporterInterface::SCHEMA:
+                return new Importer\Schema(new Assimilator($this->factoryFactory));
+                break;
+
+            case ImporterInterface::TABLE:
+                return new Importer\Table();
+                break;
         }
 
         return null;
