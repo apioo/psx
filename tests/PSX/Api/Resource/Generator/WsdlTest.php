@@ -253,10 +253,11 @@ XML;
 
     public function testWsdlSchema()
     {
-        $endpoint        = 'http://127.0.0.1/foo/api';
-        $targetNamespace = 'http://127.0.0.1/wsdl/1/foo/api';
+        if (version_compare(PHP_VERSION, '5.5.0', '<')) {
+            $this->markTestSkipped('Schema validation causes segfault on 5.4');
+        }
 
-        $generator = new Wsdl('foo', $endpoint, $targetNamespace);
+        $generator = new Wsdl('foo', 'http://api.phpsx.org', 'http://foo.phpsx.org');
 
         $dom = new DOMDocument();
         $dom->loadXML($generator->generate($this->getResource()));
