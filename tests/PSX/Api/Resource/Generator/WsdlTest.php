@@ -253,10 +253,6 @@ XML;
 
     public function testWsdlSchema()
     {
-        if (version_compare(PHP_VERSION, '5.5.0', '<')) {
-            $this->markTestSkipped('Schema validation causes segfault on 5.4');
-        }
-
         $generator = new Wsdl('foo', 'http://api.phpsx.org', 'http://foo.phpsx.org');
 
         $dom = new DOMDocument();
