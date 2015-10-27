@@ -86,15 +86,16 @@ class Validate
             $title = 'Unknown';
         }
 
-        if ($value !== null) {
+        if ($value === null) {
+            if ($required === true) {
+                $result->addError(sprintf('%s is not set', $title));
+
+                return $result;
+            } elseif ($required === false) {
+                return $result;
+            }
+        } else {
             $value = $this->transformType($value, $type);
-        }
-
-        // we check whether the value is not null
-        if ($required === true && $value === null) {
-            $result->addError(sprintf('%s is not set', $title));
-
-            return $result;
         }
 
         foreach ($filters as $filter) {
@@ -110,13 +111,11 @@ class Validate
             }
 
             if ($return === false) {
-                if ($required === true) {
-                    if ($error === null) {
-                        $error = '%s is not valid';
-                    }
-
-                    $result->addError(sprintf($error, $title));
+                if ($error === null) {
+                    $error = '%s is not valid';
                 }
+
+                $result->addError(sprintf($error, $title));
 
                 return $result;
             } elseif ($return === true) {

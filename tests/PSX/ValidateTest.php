@@ -109,35 +109,40 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException \PSX\Validate\ValidationException
      */
-    public function testApplyTypeObjectNullRequired()
+    public function testApplyRequiredNull()
     {
-        $this->assertEquals(null, $this->validate->apply(null, Validate::TYPE_OBJECT, array(), 'foo', true));
+        $this->validate->apply(null, Validate::TYPE_STRING, [], 'bar', true);
     }
 
-    public function testApplyTypeObjectNullOptional()
+    public function testApplyOptionalNull()
     {
-        $this->assertEquals(null, $this->validate->apply(null, Validate::TYPE_OBJECT, array(), 'foo', false));
+        $this->assertEquals(null, $this->validate->apply(null, Validate::TYPE_STRING, [], 'bar', false));
+    }
+
+    public function testApplyRequiredValue()
+    {
+        $this->assertEquals('foo', $this->validate->apply('foo', Validate::TYPE_STRING, [], 'bar', true));
+    }
+
+    public function testApplyOptionalValue()
+    {
+        $this->assertEquals('foo', $this->validate->apply('foo', Validate::TYPE_STRING, [], 'bar', false));
     }
 
     /**
      * @expectedException \PSX\Validate\ValidationException
      */
-    public function testApplyRequired()
+    public function testApplyRequiredValueFilterInvalid()
     {
-        $this->failureFilter->expects($this->once())
-            ->method('apply')
-            ->will($this->returnValue(false));
-
-        $this->assertEquals(false, $this->validate->apply('foo', Validate::TYPE_STRING, array($this->failureFilter), 'bar', true));
+        $this->validate->apply('foo-', Validate::TYPE_STRING, [new Filter\Alnum()], 'bar', true);
     }
 
-    public function testApplyOptional()
+    /**
+     * @expectedException \PSX\Validate\ValidationException
+     */
+    public function testApplyOptionalValueFilterInvalid()
     {
-        $this->failureFilter->expects($this->once())
-            ->method('apply')
-            ->will($this->returnValue(false));
-
-        $this->assertEquals(null, $this->validate->apply('foo', Validate::TYPE_STRING, array($this->failureFilter), 'bar', false));
+        $this->validate->apply('foo-', Validate::TYPE_STRING, [new Filter\Alnum()], 'bar', false);
     }
 
     public function testApplyFilter()
