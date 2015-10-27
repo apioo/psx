@@ -115,11 +115,4 @@ class TestSchemaApiController extends SchemaApiAbstract
             'message' => 'You have successful delete a record'
         );
     }
-
-    protected function getImportValidator()
-    {
-        return new Validator([
-            new Property('/title', Validate::TYPE_STRING, [new Filter\Length(3, 8)]),
-        ]);
-    }
 }
