@@ -46,7 +46,7 @@ class ValidationVisitor implements VisitorInterface
      * filters. This should only be used for filters which can not be defined 
      * inside a JsonSchema like i.e. check whether a row exists in a database
      */
-    public function setValidator(ValidatorInterface $validator = null)
+    public function setValidator(ValidatorInterface $validator)
     {
         $this->validator = $validator;
     }
@@ -313,7 +313,7 @@ class ValidationVisitor implements VisitorInterface
         }
     }
 
-    protected function assertArrayConstraints($data, Property\ArrayType $property, $path)
+    protected function assertArrayConstraints(array $data, Property\ArrayType $property, $path)
     {
         if ($property->getMinLength() !== null) {
             if (count($data) < $property->getMinLength()) {
