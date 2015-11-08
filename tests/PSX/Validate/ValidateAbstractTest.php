@@ -155,6 +155,16 @@ class ValidateAbstractTest extends \PHPUnit_Framework_TestCase
         ));
     }
 
+    public function testGetRequiredNames()
+    {
+        $validator = $this->getValidator(ValidatorInterface::THROW_ERRORS);
+        $validator->validate(array(
+            'title' => 'fo',
+        ));
+
+        $this->assertEquals(['id', 'author/name'], $validator->getRequiredNames());
+    }
+
     protected function getValidator($flag)
     {
         $properties = [

@@ -39,7 +39,8 @@ abstract class ValidatorAbstract implements ValidatorInterface
     protected $fields;
     protected $flag;
 
-    protected $errors = array();
+    protected $errors  = array();
+    protected $visited = array();
 
     /**
      * @param \PSX\Validate $validate
@@ -89,6 +90,25 @@ abstract class ValidatorAbstract implements ValidatorInterface
     }
 
     /**
+     * Returns all fields which are required but not visited
+     *
+     * @return array
+     */
+    public function getRequiredNames()
+    {
+        $fields = $this->getFields();
+        $result = array();
+
+        foreach ($fields as $property) {
+            if (!in_array($property->getName(), $this->visited)) {
+                $result[] = $property->getName();
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * Returns whether we have errors collected or not
      *
      * @return boolean
@@ -111,6 +131,10 @@ abstract class ValidatorAbstract implements ValidatorInterface
         $property = $this->getProperty($path);
 
         if ($property instanceof Property) {
+            if (!in_array($property->getName(), $this->visited)) {
+                $this->visited[] = $property->getName();
+            }
+
             return $this->getPropertyValue($property, $data, $path);
         }
     }
@@ -155,10 +179,11 @@ abstract class ValidatorAbstract implements ValidatorInterface
      */
     protected function getProperty($name)
     {
+        $name   = ltrim($name, '/');
         $fields = $this->getFields();
+
         foreach ($fields as $property) {
-            $propertyName = '/' . ltrim($property->getName(), '/');
-            if ($propertyName == $name) {
+            if (preg_match('#^' . $name . '$#', ltrim($property->getName(), '/'))) {
                 return $property;
             }
         }
