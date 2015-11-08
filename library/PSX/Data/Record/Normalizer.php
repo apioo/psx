@@ -18,34 +18,34 @@
  * limitations under the License.
  */
 
-namespace PSX\Data\Record\Visitor;
+namespace PSX\Data\Record;
+
+use PSX\Data\Object;
+use PSX\Data\RecordInterface;
+use PSX\Data\Record\GraphTraverser;
+use PSX\Data\Record\Visitor\RecordSerializeVisitor;
 
 /**
- * Creates a new object tree using a simple stdClass for object representation
+ * Normalizer
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class StdClassSerializeVisitor extends SerializeVisitorAbstract
+class Normalizer
 {
-    protected function newObject()
+    /**
+     * Transforms an arbitrary data structure into a record graph
+     *
+     * @param mixed $data
+     * @return \PSX\Data\RecordInterface
+     */
+    public static function normalize($data)
     {
-        return new \stdClass();
-    }
+        $visitor   = new RecordSerializeVisitor();
+        $traverser = new GraphTraverser();
+        $traverser->traverse($data, $visitor);
 
-    protected function addObjectValue($key, $value, &$object)
-    {
-        $object->$key = $value;
-    }
-
-    protected function newArray()
-    {
-        return array();
-    }
-
-    protected function addArrayValue($value, &$array)
-    {
-        $array[] = $value;
+        return $visitor->getObject();
     }
 }

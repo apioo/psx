@@ -20,23 +20,25 @@
 
 namespace PSX\Data\Record\Visitor;
 
+use PSX\Data\Object;
+
 /**
- * Creates a new object tree using a simple stdClass for object representation
+ * Creates a new object tree using a record as object representation
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class StdClassSerializeVisitor extends SerializeVisitorAbstract
+class RecordSerializeVisitor extends SerializeVisitorAbstract
 {
     protected function newObject()
     {
-        return new \stdClass();
+        return new Object();
     }
 
     protected function addObjectValue($key, $value, &$object)
     {
-        $object->$key = $value;
+        $object->setProperty($key, $value);
     }
 
     protected function newArray()

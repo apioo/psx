@@ -18,34 +18,30 @@
  * limitations under the License.
  */
 
-namespace PSX\Data\Record\Visitor;
+namespace PSX\Data\Record;
+
+use PSX\Data\Object;
 
 /**
- * Creates a new object tree using a simple stdClass for object representation
+ * NormalizerTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class StdClassSerializeVisitor extends SerializeVisitorAbstract
+class NormalizerTest extends \PHPUnit_Framework_TestCase
 {
-    protected function newObject()
+    public function testNormalize()
     {
-        return new \stdClass();
-    }
+        $data = new \stdClass();
+        $data->id = 1;
+        $data->foo = 'bar';
 
-    protected function addObjectValue($key, $value, &$object)
-    {
-        $object->$key = $value;
-    }
+        $result = Normalizer::normalize($data);
 
-    protected function newArray()
-    {
-        return array();
-    }
+        $expect = new Object(['id' => 1, 'foo' => 'bar']);
 
-    protected function addArrayValue($value, &$array)
-    {
-        $array[] = $value;
+        $this->assertInstanceOf('PSX\Data\RecordInterface', $result);
+        $this->assertEquals($expect, $result);
     }
 }
