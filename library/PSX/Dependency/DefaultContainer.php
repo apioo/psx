@@ -24,14 +24,11 @@ use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Setup;
-use Monolog\Handler as MonologHandler;
-use Monolog\Logger;
-use Monolog\Processor as MonologProcessor;
 use PSX\Cache;
 use PSX\Config;
 use PSX\Exception;
 use PSX\Http;
-use PSX\Log\ErrorFormatter;
+use PSX\Log\LoggerFactory;
 use PSX\Session;
 use PSX\Sql\Logger as SqlLogger;
 use PSX\Sql\TableManager;
@@ -151,13 +148,11 @@ class DefaultContainer extends Container
      */
     public function getLogger()
     {
-        $handler = new MonologHandler\ErrorLogHandler(MonologHandler\ErrorLogHandler::OPERATING_SYSTEM, Logger::ERROR, true, true);
-        $handler->setFormatter(new ErrorFormatter());
-
-        $logger = new Logger('psx');
-        $logger->pushHandler($handler);
-
-        return $logger;
+        return LoggerFactory::factory(
+            $this->get('config')->get('psx_log_level'),
+            $this->get('config')->get('psx_log_handler'),
+            $this->get('config')->get('psx_log_uri')
+        );
     }
 
     /**
@@ -192,6 +187,9 @@ class DefaultContainer extends Container
             'psx_annotation_autoload' => array('Doctrine\ORM\Mapping', 'JMS\Serializer\Annotation'),
             'psx_soap_namespace'      => 'http://phpsx.org/2014/data',
             'psx_json_namespace'      => 'urn:schema.phpsx.org#',
+            'psx_log_level'           => \Monolog\Logger::ERROR,
+            'psx_log_handler'         => 'system',
+            'psx_log_uri'             => null,
         );
     }
 }
