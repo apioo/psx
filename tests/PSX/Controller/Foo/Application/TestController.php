@@ -101,10 +101,10 @@ class TestController extends ControllerAbstract
         $this->testCase->assertEquals($data, $this->getBody(ReaderInterface::JSON));
 
         // accessor
-        $this->testCase->assertEquals('bar', $this->getAccessor()->get('foo'));
-        $this->testCase->assertEquals('nested', $this->getAccessor()->get('bar.foo'));
-        $this->testCase->assertEquals('bar', $this->getAccessor()->get('entries.0.title'));
-        $this->testCase->assertEquals('foo', $this->getAccessor()->get('entries.1.title'));
+        $this->testCase->assertEquals('bar', $this->getAccessor()->get('/foo'));
+        $this->testCase->assertEquals('nested', $this->getAccessor()->get('/bar/foo'));
+        $this->testCase->assertEquals('bar', $this->getAccessor()->get('/entries/0/title'));
+        $this->testCase->assertEquals('foo', $this->getAccessor()->get('/entries/1/title'));
 
         // import
         $record = new Record('foo', array('foo' => null));

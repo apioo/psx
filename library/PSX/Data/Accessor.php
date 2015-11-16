@@ -20,6 +20,7 @@
 
 namespace PSX\Data;
 
+use PSX\Json\Pointer;
 use PSX\Validate;
 
 /**
@@ -47,30 +48,9 @@ class Accessor
 
     public function get($key, $type = Validate::TYPE_STRING, array $filter = array(), $title = null, $required = true)
     {
-        $parts = explode('.', $key);
-        $value = $this->searchArray($parts, $this->source);
+        $pointer = new Pointer('/' . ltrim($key, '/'));
+        $value   = $pointer->evaluate($this->source);
 
         return $this->validate->apply($value, $type, $filter, $title === null ? $key : $title, $required);
-    }
-
-    protected function searchArray(array $parts, $value)
-    {
-        foreach ($parts as $part) {
-            if (is_array($value)) {
-                $value = isset($value[$part]) ? $value[$part] : null;
-            } elseif ($value instanceof \stdClass) {
-                $value = isset($value->$part) ? $value->$part : null;
-            } elseif ($value instanceof RecordInterface) {
-                $value = $value->getRecordInfo()->getField($part);
-            } else {
-                $value = null;
-            }
-
-            if ($value === null) {
-                break;
-            }
-        }
-
-        return $value;
     }
 }

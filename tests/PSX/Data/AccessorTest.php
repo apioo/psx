@@ -40,9 +40,9 @@ class AccessorTest extends \PHPUnit_Framework_TestCase
         $accessor = new Accessor(new Validate(), $source);
 
         $this->assertEquals($source, $accessor->getSource());
-        $this->assertEquals('bar', $accessor->get('foo'));
-        $this->assertEquals(1, $accessor->get('bar.foo'));
-        $this->assertEquals('bar', $accessor->get('tes.0.foo'));
+        $this->assertEquals('bar', $accessor->get('/foo'));
+        $this->assertEquals(1, $accessor->get('/bar/foo'));
+        $this->assertEquals('bar', $accessor->get('/tes/0/foo'));
     }
 
     /**
@@ -97,9 +97,9 @@ class AccessorTest extends \PHPUnit_Framework_TestCase
 
         $accessor = new Accessor($validate, $source);
 
-        $accessor->get('foo');
-        $accessor->get('bar.foo', Validate::TYPE_INTEGER);
-        $accessor->get('tes.0.foo', Validate::TYPE_STRING, array($filter));
+        $accessor->get('/foo');
+        $accessor->get('/bar/foo', Validate::TYPE_INTEGER);
+        $accessor->get('/tes/0/foo', Validate::TYPE_STRING, array($filter));
     }
 
     public function provideSources()
@@ -162,7 +162,7 @@ class AccessorTest extends \PHPUnit_Framework_TestCase
         );
 
         $accessor = new Accessor(new Validate(), $source);
-        $accessor->get('bar.bar');
+        $accessor->get('/bar/bar');
     }
 
     /**
@@ -173,6 +173,6 @@ class AccessorTest extends \PHPUnit_Framework_TestCase
         $source = 'foo';
 
         $accessor = new Accessor(new Validate(), $source);
-        $accessor->get('bar.bar');
+        $accessor->get('/bar/bar');
     }
 }
