@@ -21,7 +21,7 @@
 namespace PSX\ActivityStream\ObjectType;
 
 use DateTime;
-use PSX\ActivityStream\Object;
+use PSX\ActivityStream\ObjectType;
 
 /**
  * Event
@@ -30,7 +30,7 @@ use PSX\ActivityStream\Object;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Event extends Object
+class Event extends ObjectType
 {
     protected $attendedBy;
     protected $attending;

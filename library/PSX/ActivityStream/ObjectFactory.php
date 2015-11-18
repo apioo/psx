@@ -20,6 +20,7 @@
 
 namespace PSX\ActivityStream;
 
+use PSX\Data\Record;
 use PSX\Data\Record\FactoryInterface;
 use PSX\Data\Record\Importer;
 
@@ -50,7 +51,7 @@ class ObjectFactory implements FactoryInterface
             if ($class !== null && class_exists($class)) {
                 $object = new $class();
             } else {
-                $object = new Object();
+                $object = new Record();
             }
 
             $importer = $this->importerManager->getImporterByInstance('PSX\Data\Record\Importer\Record');

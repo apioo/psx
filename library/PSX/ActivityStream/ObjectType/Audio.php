@@ -20,7 +20,7 @@
 
 namespace PSX\ActivityStream\ObjectType;
 
-use PSX\ActivityStream\Object;
+use PSX\ActivityStream\ObjectType;
 
 /**
  * Audio
@@ -29,7 +29,7 @@ use PSX\ActivityStream\Object;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Audio extends Object
+class Audio extends ObjectType
 {
     protected $embedCode;
     protected $stream;

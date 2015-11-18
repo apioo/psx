@@ -21,7 +21,7 @@
 namespace PSX\ActivityStream\ObjectType;
 
 use PSX\ActivityStream\AudienceTargetingTrait;
-use PSX\ActivityStream\Object;
+use PSX\ActivityStream\ObjectType;
 
 /**
  * Activity
@@ -30,7 +30,7 @@ use PSX\ActivityStream\Object;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Activity extends Object
+class Activity extends ObjectType
 {
     use AudienceTargetingTrait;
 

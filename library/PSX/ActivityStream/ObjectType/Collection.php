@@ -21,7 +21,7 @@
 namespace PSX\ActivityStream\ObjectType;
 
 use DateTime;
-use PSX\ActivityStream\Object;
+use PSX\ActivityStream\ObjectType;
 use PSX\Data\CollectionInterface;
 use PSX\Data\RecordInterface;
 
@@ -32,7 +32,7 @@ use PSX\Data\RecordInterface;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Collection extends Object implements CollectionInterface
+class Collection extends ObjectType implements CollectionInterface
 {
     protected $totalItems;
     protected $items;

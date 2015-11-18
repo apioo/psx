@@ -21,13 +21,13 @@
 namespace PSX\ActivityStream;
 
 /**
- * Object
+ * ObjectType
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Object extends ObjectAbstract
+class ObjectType extends ObjectAbstract
 {
     use AdditionalObjectPropertiesTrait;
 }
