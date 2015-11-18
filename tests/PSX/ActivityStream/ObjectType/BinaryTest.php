@@ -20,7 +20,7 @@
 
 namespace PSX\ActivityStream\ObjectType;
 
-use PSX\ActivityStream\Object;
+use PSX\ActivityStream\ObjectType;
 use PSX\Data\SerializeTestAbstract;
 use PSX\DateTime;
 
@@ -35,7 +35,7 @@ class BinaryTest extends SerializeTestAbstract
 {
     public function testBinary()
     {
-        $stream = new Object();
+        $stream = new ObjectType();
         $stream->setUrl('http://example.org/my_binary.mp3');
 
         $binary = new Binary();
@@ -46,7 +46,7 @@ class BinaryTest extends SerializeTestAbstract
         $binary->setMd5('827ae7e1ab45e4dd591d087c741e5770');
         $binary->setMimeType('text/plain');
 
-        $object = new Object();
+        $object = new ObjectType();
         $object->setObjectType('note');
         $object->setDisplayName('A note with a binary attachment');
         $object->setAttachments(array($binary));

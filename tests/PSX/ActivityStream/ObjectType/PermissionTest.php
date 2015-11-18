@@ -20,7 +20,7 @@
 
 namespace PSX\ActivityStream\ObjectType;
 
-use PSX\ActivityStream\Object;
+use PSX\ActivityStream\ObjectType;
 use PSX\Data\SerializeTestAbstract;
 use PSX\DateTime;
 
@@ -35,15 +35,15 @@ class PermissionTest extends SerializeTestAbstract
 {
     public function testPermission()
     {
-        $file = new Object();
+        $file = new ObjectType();
         $file->setObjectType('file');
         $file->setDisplayName('2Q2014 Sales Forecast.xls');
 
-        $html = new Object();
+        $html = new ObjectType();
         $html->setObjectType('inline-html');
         $html->setContent('<video ... />');
 
-        $share = new Object();
+        $share = new ObjectType();
         $share->setObjectType('service');
         $share->setDisplayName('My Sharing Service');
         $share->setUrl('http://example.net/share');

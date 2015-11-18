@@ -21,7 +21,7 @@
 namespace PSX\ActivityStream\Examples;
 
 use DateTime;
-use PSX\ActivityStream\Object;
+use PSX\ActivityStream\ObjectType;
 use PSX\ActivityStream\ObjectType\Activity;
 use PSX\ActivityStream\ObjectType\Collection;
 use PSX\Data\SerializeTestAbstract;
@@ -40,12 +40,12 @@ class IBMConnectionTest extends SerializeTestAbstract
     {
         $items = array();
 
-        $author = new Object();
+        $author = new ObjectType();
         $author->setObjectType('person');
         $author->setId('12345678-8f0a-1028-xxxz-db07163b51b2');
         $author->setDisplayName('Joe Blogs');
 
-        $item = new Object();
+        $item = new ObjectType();
         $item->setContent('This was my first comment');
         $item->setAuthor($author);
         $item->setUpdated(new DateTime('2011-11-21T15:13:59+00:00'));
@@ -53,12 +53,12 @@ class IBMConnectionTest extends SerializeTestAbstract
 
         $items[] = $item;
 
-        $author = new Object();
+        $author = new ObjectType();
         $author->setObjectType('person');
         $author->setId('12345678-8f0a-1028-xxxy-db07163b51b2');
         $author->setDisplayName('Jane Doe');
 
-        $item = new Object();
+        $item = new ObjectType();
         $item->setContent('This was another comment');
         $item->setAuthor($author);
         $item->setUpdated(new DateTime('2011-11-21T15:14:06+00:00'));
@@ -70,11 +70,11 @@ class IBMConnectionTest extends SerializeTestAbstract
         $replies->setItems($items);
         $replies->setTotalItems(0);
 
-        $author = new Object();
+        $author = new ObjectType();
         $author->setId('12345678-8f0a-1028-xxxx-db07163b51b2');
         $author->setDisplayName('Joseph Bloggs');
 
-        $target = new Object();
+        $target = new ObjectType();
         $target->setSummary('Top App Entry');
         $target->setReplies($replies);
         $target->setObjectType('note');
@@ -85,29 +85,29 @@ class IBMConnectionTest extends SerializeTestAbstract
         $target->setPublished(new DateTime('2011-11-21T15:08:44+00:00'));
         $target->setUrl('http://www.example.org/topapp/1028-xxxx-db07163b51b2');
 
-        $provider = new Object();
+        $provider = new ObjectType();
         $provider->setId('http://www.ibm.com/xmlns/prod/sn');
         $provider->setDisplayName('IBM Connections - News Service');
         $provider->setUrl('http://www.example.org/news');
 
-        $image = new Object();
+        $image = new ObjectType();
         $image->setUrl('http://www.example.org/topapp/images/icon.png');
 
-        $generator = new Object();
+        $generator = new ObjectType();
         $generator->setImage($image);
         $generator->setId('topapp');
         $generator->setDisplayName('Top Application');
         $generator->setUrl('http://www.example.org/topapp');
 
-        $actor = new Object();
+        $actor = new ObjectType();
         $actor->setId('12345678-8f0a-1028-xxxx-db07163b51b2');
         $actor->setDisplayName('Joseph Bloggs');
 
-        $author = new Object();
+        $author = new ObjectType();
         $author->setId('12345678-8f0a-1028-xxxx-db07163b51b2');
         $author->setDisplayName('Joseph Bloggs');
 
-        $object = new Object();
+        $object = new ObjectType();
         $object->setSummary('This was my first comment');
         $object->setObjectType('comment');
         $object->setAuthor($author);

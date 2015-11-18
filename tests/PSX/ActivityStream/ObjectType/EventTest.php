@@ -20,7 +20,7 @@
 
 namespace PSX\ActivityStream\ObjectType;
 
-use PSX\ActivityStream\Object;
+use PSX\ActivityStream\ObjectType;
 use PSX\Data\SerializeTestAbstract;
 use PSX\DateTime;
 
@@ -35,7 +35,7 @@ class EventTest extends SerializeTestAbstract
 {
     public function testEvent()
     {
-        $person = new Object();
+        $person = new ObjectType();
         $person->setObjectType('person');
         $person->setDisplayName('Joe');
 

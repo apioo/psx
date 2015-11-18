@@ -43,11 +43,11 @@ class ObjectTest extends SerializeTestAbstract
         $binary->setMd5('827ae7e1ab45e4dd591d087c741e5770');
         $binary->setMimeType('text/plain');
 
-        $laura = new Object();
+        $laura = new ObjectType();
         $laura->setObjectType('person');
         $laura->setDisplayName('Laura');
 
-        $object = new Object();
+        $object = new ObjectType();
         $object->setId('1');
         $object->setObjectType('person');
         $object->setLanguage('en');

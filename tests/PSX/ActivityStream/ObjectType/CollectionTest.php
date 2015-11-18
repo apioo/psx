@@ -20,7 +20,7 @@
 
 namespace PSX\ActivityStream\ObjectType;
 
-use PSX\ActivityStream\Object;
+use PSX\ActivityStream\ObjectType;
 use PSX\Data\SerializeTestAbstract;
 use PSX\DateTime;
 
@@ -37,14 +37,14 @@ class CollectionTest extends SerializeTestAbstract
     {
         $items = array();
 
-        $item = new Object();
+        $item = new ObjectType();
         $item->setContent('This was my first comment');
         $item->setUpdated(new DateTime('2011-11-21T15:13:59+00:00'));
         $item->setId('f8f0e93f-e462-4ede-92cc-f6e8a1b7eb36');
 
         $items[] = $item;
 
-        $item = new Object();
+        $item = new ObjectType();
         $item->setContent('This was another comment');
         $item->setUpdated(new DateTime('2011-11-21T15:14:06+00:00'));
         $item->setId('5369ea82-d791-46cb-a87a-3696ff90d8f3');
@@ -124,8 +124,8 @@ JSON;
         $this->assertEquals($items, $collection->toArray());
         $this->assertEquals(3, $collection->get(2));
 
-        $collection->set(2, new Object());
+        $collection->set(2, new ObjectType());
 
-        $this->assertInstanceOf('PSX\ActivityStream\Object', $collection->get(2));
+        $this->assertInstanceOf('PSX\ActivityStream\ObjectType', $collection->get(2));
     }
 }

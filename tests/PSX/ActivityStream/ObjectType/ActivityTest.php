@@ -20,7 +20,7 @@
 
 namespace PSX\ActivityStream\ObjectType;
 
-use PSX\ActivityStream\Object;
+use PSX\ActivityStream\ObjectType;
 use PSX\Data\SerializeTestAbstract;
 use PSX\DateTime;
 
@@ -35,26 +35,26 @@ class ActivityTest extends SerializeTestAbstract
 {
     public function testActivity()
     {
-        $image = new Object();
+        $image = new ObjectType();
         $image->setUrl('http://example.org/martin/image.jpg');
         $image->setMediaType('image/jpeg');
         $image->setWidth(250);
         $image->setHeight(250);
 
-        $actor = new Object();
+        $actor = new ObjectType();
         $actor->setObjectType('person');
         $actor->setId('urn:example:person:martin');
         $actor->setDisplayName('Martin Smith');
         $actor->setUrl('http://example.org/martin');
         $actor->setImage($image);
 
-        $object = new Object();
+        $object = new ObjectType();
         $object->setObjectType('article');
         $object->setId('urn:example:blog:abc123/xyz');
         $object->setUrl('http://example.org/blog/2011/02/entry');
         $object->setDisplayName('Why I love Activity Streams');
 
-        $target = new Object();
+        $target = new ObjectType();
         $target->setObjectType('blog');
         $target->setId('urn:example:blog:abc123');
         $target->setDisplayName('Martin\'s Blog');
@@ -179,48 +179,48 @@ JSON;
 
     public function testComplexActivity()
     {
-        $generator = new Object();
+        $generator = new ObjectType();
         $generator->setUrl('http://example.org/activities-app');
 
-        $provider = new Object();
+        $provider = new ObjectType();
         $provider->setUrl('http://example.org/activity-stream');
 
-        $image = new Object();
+        $image = new ObjectType();
         $image->setUrl('http://example.org/martin/image');
         $image->setMediaType('image/jpeg');
         $image->setWidth(250);
         $image->setHeight(250);
 
-        $actor = new Object();
+        $actor = new ObjectType();
         $actor->setUrl('http://example.org/martin');
         $actor->setObjectType('person');
         $actor->setId('urn:example:person:martin');
         $actor->setImage($image);
         $actor->setDisplayName('Martin Smith');
 
-        $image = new Object();
+        $image = new ObjectType();
         $image->setUrl('http://example.org/album/my_fluffy_cat_thumb.jpg');
         $image->setMediaType('image/jpeg');
         $image->setWidth(250);
         $image->setHeight(250);
 
-        $objectType = new Object();
+        $objectType = new ObjectType();
         $objectType->setId('http://example.org/Photo');
         $objectType->setDisplayName('Photo');
 
-        $object = new Object();
+        $object = new ObjectType();
         $object->setUrl('http://example.org/album/my_fluffy_cat.jpg');
         $object->setObjectType($objectType);
         $object->setId('urn:example:album:abc123/my_fluffy_cat');
         $object->setImage($image);
 
-        $image = new Object();
+        $image = new ObjectType();
         $image->setUrl('http://example.org/album/thumbnail.jpg');
         $image->setMediaType('image/jpeg');
         $image->setWidth(250);
         $image->setHeight(250);
 
-        $objectType = new Object();
+        $objectType = new ObjectType();
         $objectType->setId('http://example.org/PhotoAlbum');
         $objectType->setDisplayName('Photo-Album');
 
@@ -228,7 +228,7 @@ JSON;
         $displayName->en = 'Martin\'s Photo Album';
         $displayName->ga = 'Grianghraif Mairtin';
 
-        $target = new Object();
+        $target = new ObjectType();
         $target->setUrl('http://example.org/album/');
         $target->setObjectType($objectType);
         $target->setId('urn:example.org:album:abc123');

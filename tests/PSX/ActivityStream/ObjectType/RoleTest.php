@@ -20,7 +20,7 @@
 
 namespace PSX\ActivityStream\ObjectType;
 
-use PSX\ActivityStream\Object;
+use PSX\ActivityStream\ObjectType;
 use PSX\Data\SerializeTestAbstract;
 use PSX\DateTime;
 
@@ -35,11 +35,11 @@ class RoleTest extends SerializeTestAbstract
 {
     public function testRole()
     {
-        $laura = new Object();
+        $laura = new ObjectType();
         $laura->setObjectType('person');
         $laura->setDisplayName('Laura');
 
-        $mark = new Object();
+        $mark = new ObjectType();
         $mark->setObjectType('person');
         $mark->setDisplayName('Mark');
 

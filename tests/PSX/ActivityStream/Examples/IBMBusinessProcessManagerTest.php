@@ -21,7 +21,7 @@
 namespace PSX\ActivityStream\Examples;
 
 use DateTime;
-use PSX\ActivityStream\Object;
+use PSX\ActivityStream\ObjectType;
 use PSX\ActivityStream\ObjectType\Activity;
 use PSX\ActivityStream\ObjectType\Collection;
 use PSX\Data\SerializeTestAbstract;
@@ -38,17 +38,17 @@ class IBMBusinessProcessManagerTest extends SerializeTestAbstract
 {
     public function testStream()
     {
-        $image = new Object();
+        $image = new ObjectType();
         $image->setHeight(32);
         $image->setWidth(32);
 
-        $author = new Object();
+        $author = new ObjectType();
         $author->setDisplayName('Internal TW Admin user');
         $author->setId('tw_admin');
         $author->setImage($image);
         $author->setObjectType('PERSON');
 
-        $item = new Object();
+        $item = new ObjectType();
         $item->setAuthor($author);
         $item->setContent('tagging Internal TW Admin user user');
         $item->setObjectType('COMMENT');
@@ -57,12 +57,12 @@ class IBMBusinessProcessManagerTest extends SerializeTestAbstract
         $replies = new Collection();
         $replies->setItems([$item]);
 
-        $actor = new Object();
+        $actor = new ObjectType();
         $actor->setId('tw_admin');
         $actor->setDisplayName('Internal TW Admin user');
         $actor->setObjectType('PERSON');
 
-        $object = new Object();
+        $object = new ObjectType();
         $object->setDisplayName('Task: Submit requisition');
         $object->setId('2078.3');
         $object->setObjectType('ibm.bpm.task');
