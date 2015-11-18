@@ -20,28 +20,42 @@
 
 namespace PSX\Data\Record;
 
-use PSX\Data\Object;
+use PSX\Data\Record;
 
 /**
- * NormalizerTest
+ * TransformerTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class NormalizerTest extends \PHPUnit_Framework_TestCase
+class TransformerTest extends \PHPUnit_Framework_TestCase
 {
-    public function testNormalize()
+    public function testToRecord()
     {
         $data = new \stdClass();
         $data->id = 1;
         $data->foo = 'bar';
 
-        $result = Normalizer::normalize($data);
+        $result = Transformer::toRecord($data);
 
-        $expect = new Object(['id' => 1, 'foo' => 'bar']);
+        $expect = Record::fromArray(['id' => 1, 'foo' => 'bar']);
 
         $this->assertInstanceOf('PSX\Data\RecordInterface', $result);
+        $this->assertEquals($expect, $result);
+    }
+
+    public function testToStdClass()
+    {
+        $data = Record::fromArray(['id' => 1, 'foo' => 'bar']);
+
+        $result = Transformer::toStdClass($data);
+
+        $expect = new \stdClass();
+        $expect->id = 1;
+        $expect->foo = 'bar';
+
+        $this->assertInstanceOf('stdClass', $result);
         $this->assertEquals($expect, $result);
     }
 }

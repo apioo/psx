@@ -20,19 +20,18 @@
 
 namespace PSX\Data\Record;
 
-use PSX\Data\Object;
 use PSX\Data\RecordInterface;
-use PSX\Data\Record\GraphTraverser;
 use PSX\Data\Record\Visitor\RecordSerializeVisitor;
+use PSX\Data\Record\Visitor\StdClassSerializeVisitor;
 
 /**
- * Normalizer
+ * Transformer
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Normalizer
+class Transformer
 {
     /**
      * Transforms an arbitrary data structure into a record graph
@@ -40,9 +39,24 @@ class Normalizer
      * @param mixed $data
      * @return \PSX\Data\RecordInterface
      */
-    public static function normalize($data)
+    public static function toRecord($data)
     {
         $visitor   = new RecordSerializeVisitor();
+        $traverser = new GraphTraverser();
+        $traverser->traverse($data, $visitor);
+
+        return $visitor->getObject();
+    }
+
+    /**
+     * Transforms an arbitrary data structure into a stdClass graph
+     *
+     * @param mixed $data
+     * @return \stdClass
+     */
+    public static function toStdClass($data)
+    {
+        $visitor   = new StdClassSerializeVisitor();
         $traverser = new GraphTraverser();
         $traverser->traverse($data, $visitor);
 
