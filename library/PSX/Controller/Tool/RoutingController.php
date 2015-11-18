@@ -21,7 +21,7 @@
 namespace PSX\Controller\Tool;
 
 use PSX\Controller\ApiAbstract;
-use PSX\Data\Object;
+use PSX\Data\Record;
 
 /**
  * RoutingController
@@ -55,7 +55,7 @@ class RoutingController extends ApiAbstract
         foreach ($routings as $routing) {
             list($methods, $path, $source) = $routing;
 
-            $result[] = new Object([
+            $result[] = Record::fromArray([
                 'methods' => $methods,
                 'path'    => $path,
                 'source'  => $source,

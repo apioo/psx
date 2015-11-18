@@ -20,7 +20,7 @@
 
 namespace PSX\Data\Record\Visitor;
 
-use PSX\Data\Object;
+use PSX\Data\Record;
 
 /**
  * Creates a new object tree using a record as object representation
@@ -33,7 +33,7 @@ class RecordSerializeVisitor extends SerializeVisitorAbstract
 {
     protected function newObject()
     {
-        return new Object();
+        return new Record();
     }
 
     protected function addObjectValue($key, $value, &$object)

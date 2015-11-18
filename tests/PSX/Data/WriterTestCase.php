@@ -72,17 +72,17 @@ abstract class WriterTestCase extends \PHPUnit_Framework_TestCase
 
     public function getComplexRecord()
     {
-        $actor = new ActivityStream\Object();
+        $actor = new ActivityStream\ObjectType();
         $actor->setUrl('http://example.org/martin');
         $actor->setObjectType('person');
         $actor->setId('tag:example.org,2011:martin');
         $actor->setDisplayName('Martin Smith');
 
-        $object = new ActivityStream\Object();
+        $object = new ActivityStream\ObjectType();
         $object->setUrl('http://example.org/blog/2011/02/entry');
         $object->setId('tag:example.org,2011:abc123/xyz');
 
-        $target = new ActivityStream\Object();
+        $target = new ActivityStream\ObjectType();
         $target->setUrl('http://example.org/blog/');
         $target->setObjectType('blog');
         $target->setId('tag:example.org,2011:abc123');

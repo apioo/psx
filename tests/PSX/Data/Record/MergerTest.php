@@ -20,7 +20,7 @@
 
 namespace PSX\Data\Record;
 
-use PSX\Data\Object;
+use PSX\Data\Record;
 
 /**
  * MergerTest
@@ -33,8 +33,8 @@ class MergerTest extends \PHPUnit_Framework_TestCase
 {
     public function testMerge()
     {
-        $left   = new Object(['id' => 1, 'foo' => 'bar']);
-        $right  = new Object(['foo' => 'foo']);
+        $left   = Record::fromArray(['id' => 1, 'foo' => 'bar']);
+        $right  = Record::fromArray(['foo' => 'foo']);
         $result = Merger::merge($left, $right);
 
         $this->assertInstanceOf('PSX\Data\RecordInterface', $result);

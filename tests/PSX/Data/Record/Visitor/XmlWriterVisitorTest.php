@@ -20,7 +20,7 @@
 
 namespace PSX\Data\Record\Visitor;
 
-use PSX\Data\Object;
+use PSX\Data\Record;
 use PSX\Data\Record\GraphTraverser;
 use XMLWriter;
 
@@ -62,7 +62,7 @@ class XmlWriterVisitorTest extends VisitorTestCase
           $key.= chr($i);
         }
 
-        $record = new Object([
+        $record = Record::fromArray([
           $key => 'foo'
         ]);
 
@@ -89,7 +89,7 @@ XML;
         $writer->setIndent(true);
         $writer->startDocument('1.0', 'UTF-8');
 
-        $record = new Object([
+        $record = Record::fromArray([
           '09foo' => 'foo'
         ]);
 

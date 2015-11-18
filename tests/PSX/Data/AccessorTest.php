@@ -133,13 +133,13 @@ class AccessorTest extends \PHPUnit_Framework_TestCase
         $sources[] = [$source];
 
         // RecordInterface
-        $source = new Object([
+        $source = Record::fromArray([
             'foo' => 'bar',
-            'bar' => new Object([
+            'bar' => Record::fromArray([
                 'foo' => '1'
             ]),
             'tes' => [
-                new Object([
+                Record::fromArray([
                     'foo' => 'bar'
                 ])
             ]

@@ -20,7 +20,7 @@
 
 namespace PSX\Data\Record;
 
-use PSX\Data\Object;
+use PSX\Data\Record;
 use PSX\Data\RecordInterface;
 
 /**
@@ -42,7 +42,7 @@ class Merger
      */
     public static function merge(RecordInterface $left, RecordInterface $right)
     {
-        return new Object(array_merge(
+        return Record::fromArray(array_merge(
             $left->getRecordInfo()->getData(),
             $right->getRecordInfo()->getData()
         ));

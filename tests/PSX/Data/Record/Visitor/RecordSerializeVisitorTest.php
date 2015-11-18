@@ -20,7 +20,6 @@
 
 namespace PSX\Data\Record\Visitor;
 
-use PSX\Data\Object;
 use PSX\Data\Record;
 use PSX\Data\Record\GraphTraverser;
 
@@ -45,21 +44,21 @@ class RecordSerializeVisitorTest extends VisitorTestCase
 
     protected function getExpected()
     {
-        $person = new Object();
+        $person = new Record();
         $person->setProperty('title', 'Foo');
 
-        $category = new Object();
-        $category->setProperty('general', new Object());
-        $category['general']->setProperty('news', new Object());
+        $category = new Record();
+        $category->setProperty('general', new Record());
+        $category['general']->setProperty('news', new Record());
         $category['general']['news']->setProperty('technic', 'Foo');
 
         $entry = array();
-        $entry[0] = new Object();
+        $entry[0] = new Record();
         $entry[0]->setProperty('title', 'bar');
-        $entry[1] = new Object();
+        $entry[1] = new Record();
         $entry[1]->setProperty('title', 'foo');
 
-        $record = new Object();
+        $record = new Record();
         $record->setProperty('id', 1);
         $record->setProperty('title', 'foobar');
         $record->setProperty('active', true);

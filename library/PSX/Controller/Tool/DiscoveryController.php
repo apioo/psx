@@ -21,7 +21,7 @@
 namespace PSX\Controller\Tool;
 
 use PSX\Controller\ApiAbstract;
-use PSX\Data\Object;
+use PSX\Data\Record;
 
 /**
  * DiscoveryController
@@ -46,7 +46,7 @@ class DiscoveryController extends ApiAbstract
 
         $apiPath = $this->reverseRouter->getDispatchUrl();
         if ($apiPath !== null) {
-            $links[] = new Object([
+            $links[] = Record::fromArray([
                 'rel'  => 'api',
                 'href' => $apiPath,
             ]);
@@ -54,7 +54,7 @@ class DiscoveryController extends ApiAbstract
 
         $routingPath = $this->reverseRouter->getUrl('PSX\Controller\Tool\RoutingController');
         if ($routingPath !== null) {
-            $links[] = new Object([
+            $links[] = Record::fromArray([
                 'rel'  => 'routing',
                 'href' => $routingPath,
             ]);
@@ -62,7 +62,7 @@ class DiscoveryController extends ApiAbstract
 
         $commandPath = $this->reverseRouter->getUrl('PSX\Controller\Tool\CommandController');
         if ($commandPath !== null) {
-            $links[] = new Object([
+            $links[] = Record::fromArray([
                 'rel'  => 'command',
                 'href' => $commandPath,
             ]);
@@ -70,7 +70,7 @@ class DiscoveryController extends ApiAbstract
 
         $documentationPath = $this->reverseRouter->getUrl('PSX\Controller\Tool\DocumentationController::doIndex');
         if ($documentationPath !== null) {
-            $links[] = new Object([
+            $links[] = Record::fromArray([
                 'rel'  => 'documentation',
                 'href' => $documentationPath,
             ]);
@@ -78,7 +78,7 @@ class DiscoveryController extends ApiAbstract
 
         $ramlGeneratorPath = $this->reverseRouter->getUrl('PSX\Controller\Tool\RamlGeneratorController', ['{version}', '{path}']);
         if ($ramlGeneratorPath !== null) {
-            $links[] = new Object([
+            $links[] = Record::fromArray([
                 'rel'  => 'raml',
                 'href' => $ramlGeneratorPath,
             ]);
@@ -86,7 +86,7 @@ class DiscoveryController extends ApiAbstract
 
         $wsdlGeneratorPath = $this->reverseRouter->getUrl('PSX\Controller\Tool\WsdlGeneratorController', ['{version}', '{path}']);
         if ($wsdlGeneratorPath !== null) {
-            $links[] = new Object([
+            $links[] = Record::fromArray([
                 'rel'  => 'wsdl',
                 'href' => $wsdlGeneratorPath,
             ]);
@@ -94,7 +94,7 @@ class DiscoveryController extends ApiAbstract
 
         $swaggerGeneratorPath = $this->reverseRouter->getUrl('PSX\Controller\Tool\SwaggerGeneratorController::doDetail', ['{version}', '{path}']);
         if ($swaggerGeneratorPath !== null) {
-            $links[] = new Object([
+            $links[] = Record::fromArray([
                 'rel'  => 'swagger',
                 'href' => $swaggerGeneratorPath,
             ]);

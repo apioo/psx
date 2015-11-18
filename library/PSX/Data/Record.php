@@ -101,4 +101,9 @@ class Record extends RecordAbstract implements ArrayAccess
             throw new BadMethodCallException('Invalid method call ' . $method);
         }
     }
+
+    public static function fromArray(array $data)
+    {
+        return new self('record', $data);
+    }
 }
