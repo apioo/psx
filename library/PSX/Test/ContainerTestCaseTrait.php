@@ -23,9 +23,9 @@ namespace PSX\Test;
 use Monolog\Handler\NullHandler;
 use Monolog\Logger;
 use PSX\Cache;
-use PSX\Cache\Handler\Void as CacheHandler;
-use PSX\Command\Output\Void;
-use PSX\Dispatch\Sender\Void as VoidSender;
+use PSX\Cache\Handler\Noop as CacheHandler;
+use PSX\Command\Output\Noop as CommandOutput;
+use PSX\Dispatch\Sender\Noop as DispatchSender;
 use PSX\Event;
 use PSX\Event\ExceptionThrownEvent;
 use PSX\Loader;
@@ -64,13 +64,13 @@ trait ContainerTestCaseTrait
         Environment::getContainer()->set('cache', new Cache(new CacheHandler()));
 
         // use void sender
-        Environment::getContainer()->set('dispatch_sender', new VoidSender());
+        Environment::getContainer()->set('dispatch_sender', new DispatchSender());
 
         // enables us to load the same controller multiple times
         Environment::getContainer()->get('loader')->setRecursiveLoading(true);
 
         // use void output
-        Environment::getContainer()->set('command_output', new Void());
+        Environment::getContainer()->set('command_output', new CommandOutput());
 
         // add event listener which redirects PHPUnit exceptions. Because of
         // this we can make assertions inside an controller

@@ -18,39 +18,20 @@
  * limitations under the License.
  */
 
-namespace PSX\Session;
+namespace PSX\Command\Output;
+
+use PSX\Command\OutputAbstract;
 
 /**
- * VoidTest
+ * Noop
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class VoidTest extends \PHPUnit_Framework_TestCase
+class Noop extends OutputAbstract
 {
-    public function testGetSet()
+    public function write($value)
     {
-        $sess = new Void('psx_session');
-
-        $this->assertInstanceOf('PSX\Session', $sess);
-        $this->assertEquals(false, $sess->get('foo'));
-        $this->assertEquals(false, $sess->has('foo'));
-
-        $sess->set('foo', 'bar');
-
-        $this->assertEquals('bar', $sess->get('foo'));
-        $this->assertEquals(true, $sess->has('foo'));
-    }
-
-    public function testPropertyGetSet()
-    {
-        $sess = new Void('psx_session');
-
-        $this->assertEquals(false, $sess->foo);
-
-        $sess->foo = 'bar';
-
-        $this->assertEquals('bar', $sess->foo);
     }
 }

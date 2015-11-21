@@ -21,23 +21,23 @@
 namespace PSX\Command\Output;
 
 /**
- * VoidTest
+ * NoopTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class VoidTest extends \PHPUnit_Framework_TestCase
+class NoopTest extends \PHPUnit_Framework_TestCase
 {
     public function testWrite()
     {
-        $output = new Void();
+        $output = new Noop();
         $output->write('foobar');
     }
 
     public function testWriteln()
     {
-        $output = new Void();
+        $output = new Noop();
         $output->writeln('foobar');
     }
 }

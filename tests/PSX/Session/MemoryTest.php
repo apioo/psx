@@ -18,21 +18,39 @@
  * limitations under the License.
  */
 
-namespace PSX\Dispatch\Sender;
-
-use PSX\Dispatch\SenderInterface;
-use PSX\Http\ResponseInterface;
+namespace PSX\Session;
 
 /**
- * Void
+ * MemoryTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Void implements SenderInterface
+class MemoryTest extends \PHPUnit_Framework_TestCase
 {
-    public function send(ResponseInterface $response)
+    public function testGetSet()
     {
+        $sess = new Memory('psx_session');
+
+        $this->assertInstanceOf('PSX\Session', $sess);
+        $this->assertEquals(false, $sess->get('foo'));
+        $this->assertEquals(false, $sess->has('foo'));
+
+        $sess->set('foo', 'bar');
+
+        $this->assertEquals('bar', $sess->get('foo'));
+        $this->assertEquals(true, $sess->has('foo'));
+    }
+
+    public function testPropertyGetSet()
+    {
+        $sess = new Memory('psx_session');
+
+        $this->assertEquals(false, $sess->foo);
+
+        $sess->foo = 'bar';
+
+        $this->assertEquals('bar', $sess->foo);
     }
 }

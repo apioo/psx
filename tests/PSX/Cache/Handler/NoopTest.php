@@ -21,17 +21,17 @@
 namespace PSX\Cache\Handler;
 
 /**
- * VoidTest
+ * NoopTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class VoidTest extends \PHPUnit_Framework_TestCase
+class NoopTest extends \PHPUnit_Framework_TestCase
 {
     public function testLoad()
     {
-        $handler = new Void();
+        $handler = new Noop();
         $item    = $handler->load('key');
 
         $this->assertInstanceOf('PSX\Cache\Item', $item);
@@ -42,7 +42,7 @@ class VoidTest extends \PHPUnit_Framework_TestCase
 
     public function testWrite()
     {
-        $handler = new Void();
+        $handler = new Noop();
         $item    = $handler->load('key');
 
         $item->set('foobar');
@@ -52,13 +52,13 @@ class VoidTest extends \PHPUnit_Framework_TestCase
 
     public function testRemove()
     {
-        $handler = new Void();
+        $handler = new Noop();
         $handler->remove('foobar');
     }
 
     public function testRemoveAll()
     {
-        $handler = new Void();
+        $handler = new Noop();
         $handler->removeAll();
     }
 }

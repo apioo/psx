@@ -25,13 +25,13 @@ use PSX\Cache\HandlerInterface;
 use PSX\Cache\Item;
 
 /**
- * Void
+ * Noop
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Void implements HandlerInterface
+class Noop implements HandlerInterface
 {
     public function load($key)
     {

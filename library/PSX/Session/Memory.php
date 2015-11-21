@@ -31,7 +31,7 @@ use SessionHandlerInterface;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Void extends Session
+class Memory extends Session
 {
     protected $container = array();
 

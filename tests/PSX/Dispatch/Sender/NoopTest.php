@@ -24,20 +24,20 @@ use PSX\Http\Response;
 use PSX\Http\Stream\StringStream;
 
 /**
- * VoidTest
+ * NoopTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class VoidTest extends SenderTestCase
+class NoopTest extends SenderTestCase
 {
     public function testSend()
     {
         $response = new Response();
         $response->setBody(new StringStream('foobar'));
 
-        $sender = new Void();
+        $sender = new Noop();
 
         $actual = $this->captureOutput($sender, $response);
 

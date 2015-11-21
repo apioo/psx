@@ -18,20 +18,21 @@
  * limitations under the License.
  */
 
-namespace PSX\Command\Output;
+namespace PSX\Dispatch\Sender;
 
-use PSX\Command\OutputAbstract;
+use PSX\Dispatch\SenderInterface;
+use PSX\Http\ResponseInterface;
 
 /**
- * Void
+ * Noop
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Void extends OutputAbstract
+class Noop implements SenderInterface
 {
-    public function write($value)
+    public function send(ResponseInterface $response)
     {
     }
 }

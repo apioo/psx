@@ -20,7 +20,7 @@
 
 namespace PSX\Command;
 
-use PSX\Command\Output\Void;
+use PSX\Command\Output\Noop;
 use PSX\Command\ParameterParser\Map;
 use PSX\CommandAbstract;
 use PSX\Event;
@@ -92,7 +92,7 @@ class ExecutorTest extends CommandTestCase
             ->with($this->identicalTo('Foo\Bar'))
             ->will($this->returnValue($command));
 
-        $executor = new Executor($factory, new Void(), Environment::getService('event_dispatcher'));
+        $executor = new Executor($factory, new Noop(), Environment::getService('event_dispatcher'));
         $executor->run(new Map('Foo\Bar', array('r' => 'foo', 'o' => 'bar', 'f' => true)));
 
         Environment::getService('event_dispatcher')->removeListener(Event::COMMAND_EXECUTE, $commandExecuteListener);
@@ -117,7 +117,7 @@ class ExecutorTest extends CommandTestCase
             ->with($this->identicalTo('Foo\Bar'))
             ->will($this->returnValue($command));
 
-        $executor = new Executor($factory, new Void(), Environment::getService('event_dispatcher'));
+        $executor = new Executor($factory, new Noop(), Environment::getService('event_dispatcher'));
         $executor->run(new Map('Foo\Bar', array('o' => 'bar', 'f' => true)));
     }
 
@@ -144,7 +144,7 @@ class ExecutorTest extends CommandTestCase
             ->with($this->identicalTo('Foo\Bar'))
             ->will($this->returnValue($command));
 
-        $executor = new Executor($factory, new Void(), Environment::getService('event_dispatcher'));
+        $executor = new Executor($factory, new Noop(), Environment::getService('event_dispatcher'));
         $executor->run(new Map('Foo\Bar', array('r' => 'foo', 'f' => true)));
     }
 
@@ -171,7 +171,7 @@ class ExecutorTest extends CommandTestCase
             ->with($this->identicalTo('Foo\Bar'))
             ->will($this->returnValue($command));
 
-        $executor = new Executor($factory, new Void(), Environment::getService('event_dispatcher'));
+        $executor = new Executor($factory, new Noop(), Environment::getService('event_dispatcher'));
         $executor->run(new Map('Foo\Bar', array('r' => 'foo', 'o' => 'bar')));
     }
 
@@ -189,7 +189,7 @@ class ExecutorTest extends CommandTestCase
             ->with($this->identicalTo('Foo\Bar'))
             ->will($this->returnValue($command));
 
-        $executor = new Executor($factory, new Void(), Environment::getService('event_dispatcher'));
+        $executor = new Executor($factory, new Noop(), Environment::getService('event_dispatcher'));
         $executor->addAlias('foo', 'Foo\Bar');
         $executor->run(new Map('foo', array('r' => 'foo')));
 
@@ -218,7 +218,7 @@ class ExecutorTest extends CommandTestCase
             ->with($this->identicalTo('PSX\Command\ErrorCommand'))
             ->will($this->returnValue(Environment::getService('command_factory')->getCommand('PSX\Command\ErrorCommand', new Context())));
 
-        $executor = new Executor($factory, new Void(), Environment::getService('event_dispatcher'));
+        $executor = new Executor($factory, new Noop(), Environment::getService('event_dispatcher'));
         $executor->run(new Map('Foo\Bar', array('r' => 'foo')));
     }
 }
