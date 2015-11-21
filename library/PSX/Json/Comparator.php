@@ -89,9 +89,11 @@ class Comparator
                             return false;
                         }
                     }
-                }
 
-                return true;
+                    return true;
+                } else {
+                    return false;
+                }
             } else {
                 return false;
             }
