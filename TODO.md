@@ -117,9 +117,9 @@ _which are likely to be implemented are moved to a seperate github issue_
       arbitrary keys
 - [x] Add class to apply a JSON patch format on an object structure
 - [x] Add API test case for choice property type
-- [/] Probably add XML-RPC protocol reader/writer visitor. (XML-RPC is really
+- [ ] Probably add XML-RPC protocol reader/writer visitor. (XML-RPC is really
       outdated since we already have SOAP its maybe not needed)
-- [/] Probably rename Context::KEY_* to PSX_*
+- [ ] Probably rename Context::KEY_* to PSX_*
 - [x] Add writer test with empty records
 - [x] Probably use readthedocs.org for documentation hosting
 - [x] Add security disclosure link to website (PSR-9)
@@ -132,7 +132,7 @@ _which are likely to be implemented are moved to a seperate github issue_
         understand. Useful for debugging
 - [x] If 1.0 is released create 1.x branch
 - [x] Register PSX at http://www.programmableweb.com/
-- [/] Possibility to throw an exception which has a response record attached 
+- [ ] Possibility to throw an exception which has a response record attached 
       which gets displayed to the user. We dont want do that since this could be 
       abused as normal output channel
 - [x] Add PSX value objects probably in seperate folder/package there we can 
@@ -150,7 +150,7 @@ _which are likely to be implemented are moved to a seperate github issue_
       exception. Probably force same format from controller for error response
 - [x] When passing a custom Accept header containing a version i.e. 
       application/vnd.foobar.v2+json check whether the +[format] is considered
-- [/] Fix correct handling with Accept: text/foo header (If the accept header is 
+- [ ] Fix correct handling with Accept: text/foo header (If the accept header is 
       not known we serve as fallback json)
 - [x] Move todo and bugs to github
 - [x] When using raml/json schema for resource description their are some 
@@ -178,19 +178,19 @@ _which are likely to be implemented are moved to a seperate github issue_
 - [x] Fix RecordStore references
 - [x] probably add cache controller which does caching through http around a 
       haevy task
-- [/] Pubsubhubbub provider implementation (moved to psx-ws)
-- [/] Update pshb subscriber to 0.4 spec (moved to psx-ws)
-- [/] Implement webfinger provider serving XML (XRD) and JSON (JRD)
+- [ ] Pubsubhubbub provider implementation (moved to psx-ws)
+- [ ] Update pshb subscriber to 0.4 spec (moved to psx-ws)
+- [ ] Implement webfinger provider serving XML (XRD) and JSON (JRD)
       http://tools.ietf.org/html/draft-jones-appsawg-webfinger-03 (moved to psx-ws)
-- [/] Implement foaf, activity streams, microformat parser (moved to psx-ws)
-- [/] Implement OpenId connect based on Oauth 2.0 (moved to psx-ws)
-- [/] Test webfinger and XRDS with OpenId and update HostMeta to extend XRD (moved to psx-ws)
-- [/] Implement openid connect basic (http://openid.net/specs/openid-connect-basic-1_0-28.html) (moved to psx-ws)
+- [ ] Implement foaf, activity streams, microformat parser (moved to psx-ws)
+- [ ] Implement OpenId connect based on Oauth 2.0 (moved to psx-ws)
+- [ ] Test webfinger and XRDS with OpenId and update HostMeta to extend XRD (moved to psx-ws)
+- [ ] Implement openid connect basic (http://openid.net/specs/openid-connect-basic-1_0-28.html) (moved to psx-ws)
   - [x] Add JWS (http://tools.ietf.org/html/draft-ietf-jose-json-web-signature-11)
   - [x] Add JWT (http://tools.ietf.org/html/draft-ietf-oauth-json-web-token-08)
-- [/] Update XRD classes using DomDocument according to
+- [ ] Update XRD classes using DomDocument according to
       http://docs.oasis-open.org/xri/xrd/v1.0/os/xrd-1.0-os.html (moved to psx-ws)
-- [/] Add XRDS class using old XRD class see
+- [ ] Add XRDS class using old XRD class see
       http://yadis.org/wiki/Yadis_1.0_%28HTML%29 (moved to psx-ws)
 - [x] Use entity manager in entity importer
 - [x] Add help command which displays all needed settings for a command
@@ -201,7 +201,7 @@ _which are likely to be implemented are moved to a seperate github issue_
       into a file using the psr cache
 - [x] Create generate command which generate i.e. controller, commands, schema
       or other classes
-- [/] Probably use willdurand/negotiation for content negotiation index,php and 
+- [ ] Probably use willdurand/negotiation for content negotiation index,php and 
       console.php- We have implemented a custom contnent negotiation rule since
 - [x] Move html in its own repo
 - [x] Move payment into own repo
@@ -227,11 +227,11 @@ _which are likely to be implemented are moved to a seperate github issue_
 - [x] Type-Hint Psr\Http\StreamInterface
 - [x] Implement Oauth 2.0 (consumer done so far)
 - [x] Add paypal payment builder
-- [/] Implement magicsig and salmon (replaced by JWT)
+- [ ] Implement magicsig and salmon (replaced by JWT)
 - [x] Add dynamic table wich uses describe to build a table class based on the
       table name
 - [x] Add url resolver to resolve a href to a specific url
-- [/] Add sitemap reader (add record importer wich can import sitemap data into 
+- [ ] Add sitemap reader (add record importer wich can import sitemap data into 
       a record collection)
 - [x] Handler can define wich record class should be used (i.e. getRecordClass)
 - [x] Allow _ underscore in resource path to prettify folder structure
@@ -260,10 +260,10 @@ _which are likely to be implemented are moved to a seperate github issue_
       PSX_PATH_CACHE
 - [x] build psx package (http://packagist.org)
 - [x] test paypal IPN endpoint and implement express checkout
-- [/] Add setter methods for opensocial records
+- [ ] Add setter methods for opensocial records
 - [x] Add HTTP_HeadRequest class
 - [x] write better and more complex tests
-- [/] build XRDS component srv class wich is used by opensocial and maybe oauth  
+- [ ] build XRDS component srv class wich is used by opensocial and maybe oauth  
       to declare their services
 - [x] Add OpenSocial records
 - [x] Fix Atum/Entry source attribute. source element contains complete feed
