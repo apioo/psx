@@ -33,7 +33,7 @@ interface ValidatorInterface
     const COLLECT_ERRORS = 2;
 
     /**
-     * Goes through the data structure and calls for each property the 
+     * Goes through the data structure and calls for each property the
      * validateProperty method. Data must be an object structure
      *
      * @param mixed $data

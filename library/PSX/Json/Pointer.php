@@ -25,7 +25,7 @@ use PSX\Data\RecordInterface;
 
 /**
  * Pointer
- * 
+ *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
@@ -84,7 +84,7 @@ class Pointer
             throw new InvalidArgumentException('Pointer must start with a /');
         }
 
-        return array_map(function($value) {
+        return array_map(function ($value) {
             return str_replace(['~1', '~0'], ['/', '~'], $value);
         }, $parts);
     }

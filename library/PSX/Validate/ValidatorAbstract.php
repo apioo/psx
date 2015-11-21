@@ -153,7 +153,7 @@ abstract class ValidatorAbstract implements ValidatorInterface
         try {
             $result = $this->validate->apply($value, $property->getType(), $property->getFilters(), $key, $property->isRequired());
 
-            // if we have no error and the value is not true the filter has 
+            // if we have no error and the value is not true the filter has
             // modified the value
             if ($result !== true) {
                 return $result;

@@ -75,9 +75,9 @@ class Condition extends ExpressionAbstract implements Countable
 
         if ($operator == 'IN' && is_array($value)) {
             $expr = new Condition\In($column, $value, $conjunction);
-        } elseif(($operator == '=' || $operator == 'IS') && $value === null) {
+        } elseif (($operator == '=' || $operator == 'IS') && $value === null) {
             $expr = new Condition\Nil($column, $conjunction);
-        } elseif(($operator == '!=' || $operator == 'IS NOT') && $value === null) {
+        } elseif (($operator == '!=' || $operator == 'IS NOT') && $value === null) {
             $expr = new Condition\NotNil($column, $conjunction);
         } else {
             $expr = new Condition\Basic($column, $operator, $value, $conjunction);
@@ -443,9 +443,9 @@ class Condition extends ExpressionAbstract implements Countable
         foreach ($this->expressions as $expr) {
             if ($expr instanceof Condition\In) {
                 $result[$expr->getColumn()] = $expr->getValues();
-            } elseif($expr instanceof Condition\Nil) {
+            } elseif ($expr instanceof Condition\Nil) {
                 $result[$expr->getColumn()] = null;
-            } elseif($expr instanceof Condition\Basic) {
+            } elseif ($expr instanceof Condition\Basic) {
                 $result[$expr->getColumn()] = current($expr->getValues());
             }
         }

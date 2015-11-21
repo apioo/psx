@@ -25,7 +25,7 @@ use InvalidArgumentException;
 /**
  * Class to apply patch operations on a json object. Based on the json-patch-php
  * library but works with stdClass instead of associative arrays
- * 
+ *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org

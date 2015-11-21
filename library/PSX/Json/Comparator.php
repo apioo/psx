@@ -24,7 +24,7 @@ use PSX\Data\RecordInterface;
 
 /**
  * Comparator
- * 
+ *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
@@ -32,7 +32,7 @@ use PSX\Data\RecordInterface;
 class Comparator
 {
     /**
-     * Compares whether two values are equals. Uses the comparsion rules 
+     * Compares whether two values are equals. Uses the comparsion rules
      * described in the JSON patch RFC
      *
      * @see https://tools.ietf.org/html/rfc6902#section-4.6

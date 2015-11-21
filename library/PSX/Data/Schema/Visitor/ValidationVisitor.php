@@ -43,7 +43,7 @@ class ValidationVisitor implements VisitorInterface
 
     /**
      * Sets an optional validator which can validate each value through custom
-     * filters. This should only be used for filters which can not be defined 
+     * filters. This should only be used for filters which can not be defined
      * inside a JsonSchema like i.e. check whether a row exists in a database
      */
     public function setValidator(ValidatorInterface $validator)
