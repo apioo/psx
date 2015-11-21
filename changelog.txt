@@ -1,4 +1,19 @@
 
+1.1.1
+* Add logger configuration settings and factory
+* Add json patch and pointer implementation. The accessor uses now also the json 
+  pointer syntax
+* Add record serializer and add transformer which builds a record graph from 
+  arbitrary data
+* Add option to attach a validator to the importer inside a controller
+* Make ImporterManager immutable so that it is not possible to globally change
+  a importer object
+* Improved validator
+* Renamed some classes for PHP7 compatibility
+* Removed class PSX\Data\Object and added static factory method fromArray to 
+  PSX\Data\Record
+* Adjust visitor exception messages
+
 1.1.0
 * Curve array nest method handle indexed arrays
 * JSON Schema add title property to complex types
