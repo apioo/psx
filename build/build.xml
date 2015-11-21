@@ -1,108 +1,120 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="psx" default="build" basedir="..">
+<project name="psx" default="build" basedir=".">
 	<description>PSX build script</description>
 
-	<property name="build" location="build/psx" />
-	<property name="bin" location="bin" />
-	<property name="doc" location="doc" />
-	<property name="library" location="library" />
-	<property name="tests" location="tests" />
+    <condition property="properties-file" value="build-win" else="build-default">
+        <os family="windows" />
+    </condition>
 
-	<taskdef name="git-clone" classname="org.eclipse.jgit.ant.tasks.GitCloneTask" />
+    <property file="${properties-file}.properties" />
 
-	<!-- clone the repository -->
-	<target name="git-clone">
-		<git-clone uri="https://github.com/k42b3/psx.git" dest="${build}" />
-	</target>
+    <!-- ############################# INSTALL ############################# -->
+    <!-- delete git dir -->
+    <target name="delete-git-dir">
+        <delete dir="${build}" />
+    </target>
 
-	<!-- composer install -->
-	<target name="composer-install">
-		<exec dir="${build}" executable="composer.bat" failonerror="true">
-			<arg line="install" />
-		</exec>
-	</target>
+    <!-- clone the repository -->
+    <target name="git-clone">
+        <exec executable="${git}" failonerror="true">
+            <arg line="clone https://github.com/k42b3/psx.git ${build}" />
+        </exec>
+        <exec dir="${build}" executable="${git}" failonerror="true">
+            <arg line="checkout ${branch}" />
+        </exec>
+    </target>
 
-	<!-- removes all files wich are not needed in the release -->
-	<target name="clean">
-		<delete dir="${build}" />
-	</target>
+    <!-- composer install -->
+    <target name="composer-install">
+        <exec dir="${build}" executable="${composer}" failonerror="true">
+            <arg line="install" />
+        </exec>
+    </target>
 
-	<target name="clean-git">
+    <!-- after this target we have an system with all dependencies installed -->
+    <target name="init" depends="delete-git-dir,git-clone,composer-install" />
+
+    <!-- ############################## TESTS ############################## -->
+    <!-- syntax check of all files -->
+    <target name="syntax-check">
+        <exec executable="${shell}" failonerror="true">
+            <arg line="${check-syntax}" />
+        </exec>
+    </target>
+
+    <!-- run phpunit tests -->
+    <target name="phpunit">
+        <exec dir="${build}" executable="${phpunit}" failonerror="true" />
+    </target>
+
+    <!-- this target runs all tests -->
+    <target name="test" depends="init,syntax-check,phpunit" />
+
+    <!-- ############################## CLEAN ############################## -->
+    <!-- removes all files wich are not needed in the release -->
+    <target name="remove-files">
 		<delete dir="${build}/.git" />
 		<delete dir="${build}/build" />
 		<delete dir="${build}/tests" />
 		<delete file="${build}/.travis.yml" />
 		<delete file="${build}/phpunit.xml" />
 		<delete file="${build}/todo.txt" />
-	</target>
+        <delete includeemptydirs="true">
+            <fileset dir="${build}/cache" includes="*" />
+        </delete>
+    </target>
 
-	<target name="get-version">
-		<exec dir="build" executable="php" failonerror="true" outputproperty="version">
-			<arg line="get-version.php" />
-		</exec>
-		<echo message="Building version ${version}" />
-	</target>
+    <!-- clean build -->
+    <target name="clean" depends="remove-files" />
 
-	<!-- syntax check of all files -->
-	<target name="syntax-check">
-		<exec dir="build" executable="check-syntax.bat" failonerror="true" osfamily="windows" />
-	</target>
+    <!-- ############################## BUILD ############################## -->
+    <!-- returns the current version -->
+    <target name="get-version">
+        <exec executable="${php}" failonerror="true" outputproperty="version">
+            <arg line="get-version.php" />
+        </exec>
+        <echo message="Building version ${version}" />
+    </target>
 
-	<!-- run phpunit tests -->
-	<target name="phpunit" depends="syntax-check">
-		<exec dir="${build}" executable="phpunit.bat" failonerror="true" />
-		<!-- clean temp files from test -->
-		<delete>
-			<fileset dir="${build}/cache" />
-		</delete>
-	</target>
+    <!-- creates the archive -->
+    <target name="create-archive" depends="get-version">
+        <tar destfile="psx_${version}.tar" basedir="${build}" />
+        <gzip destfile="psx_${version}.tar.gz" src="psx_${version}.tar" />
+        <delete file="psx_${version}.tar" />
+        <zip destfile="psx_${version}.zip" basedir="${build}" />
+    </target>
 
-	<target name="build-init" depends="git-clone,composer-install,get-version,phpunit">
-	</target>
+    <!-- builds the archive -->
+    <target name="build" depends="test,clean,create-archive" />
 
-	<target name="build-phar" depends="build-init">
-		<exec dir="${build}" executable="php" failonerror="true">
-			<arg line="generate-phar.php ${version}" />
-		</exec>
-	</target>
-
-	<target name="build" depends="clean,clean-git,build-init,compress-release" />
-
-	<!-- docs -->
-	<target name="build-doc" depends="clean-doc,manual-doc,api-doc" />
-
-	<target name="clean-doc">
+    <!-- ############################## DOCUMENTATION ###################### -->
+	<target name="doc-clean">
 		<delete>
 			<fileset dir="${build}/doc/manual" includes="**/*.html" erroronmissingdir="false" />
 			<fileset dir="${build}/doc/api" includes="**/*.html" erroronmissingdir="false" />
 		</delete>
 	</target>
 
-	<target name="manual-doc">
+	<target name="doc-manual">
 		<mkdir dir="${build}/doc/manual" />
 		<exec dir="${build}" executable="sphinx-build" failonerror="true">
-			<arg line="${build}/doc ${build}/doc/manual" />
+			<arg line="doc doc/manual" />
 		</exec>
-		<delete>
-			<fileset dir="${build}/doc" includes="**/*.rst" erroronmissingdir="false" />
-			<fileset file="${build}/doc/conf.py" />
+		<delete includeemptydirs="true">
+			<fileset dir="${build}/doc">
+				<include name="**" />
+				<exclude name="manual/" />
+				<exclude name="api/" />
+			</fileset>
 		</delete>
-		<delete dir="${build}/doc/_static" />
 	</target>
 
-	<target name="api-doc">
+	<target name="doc-api">
 		<mkdir dir="${build}/doc/api" />
-		<exec dir="${build}" executable="apigen.bat" failonerror="true">
-			<arg line="-s ${build}/library -d ${build}/doc/api" />
+		<exec dir="${build}" executable="${apigen}" failonerror="true">
+			<arg line="-s library -d doc/api" />
 		</exec>
 	</target>
 
-	<!-- compress -->
-	<target name="compress-release" depends="build-init">
-		<tar destfile="build/psx_${version}.tar" basedir="${build}" />
-		<gzip destfile="build/psx_${version}.tar.gz" src="build/psx_${version}.tar" />
-		<delete file="build/psx_${version}.tar" />
-		<zip destfile="build/psx_${version}.zip" basedir="${build}" />
-	</target>
-
+	<target name="doc" depends="doc-clean,doc-manual,doc-api" />
 </project>
