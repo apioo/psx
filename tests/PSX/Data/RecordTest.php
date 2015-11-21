@@ -196,6 +196,30 @@ class RecordTest extends \PHPUnit_Framework_TestCase
 
         $record->foo();
     }
+
+    public function testFromArray()
+    {
+        $record = Record::fromArray([
+            'id'    => 1,
+            'title' => 'bar',
+        ]);
+
+        $this->assertInstanceOf('PSX\Data\RecordInterface', $record);
+        $this->assertEquals(1, $record->getId());
+        $this->assertEquals('bar', $record->getTitle());
+    }
+
+    public function testFromStdClass()
+    {
+        $record = Record::fromStdClass((object) [
+            'id'    => 1,
+            'title' => 'bar',
+        ]);
+
+        $this->assertInstanceOf('PSX\Data\RecordInterface', $record);
+        $this->assertEquals(1, $record->getId());
+        $this->assertEquals('bar', $record->getTitle());
+    }
 }
 
 class StringObject

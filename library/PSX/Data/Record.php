@@ -106,4 +106,9 @@ class Record extends RecordAbstract implements ArrayAccess
     {
         return new self('record', $data);
     }
+
+    public static function fromStdClass(\stdClass $data)
+    {
+        return new self('record', (array) $data);
+    }
 }
