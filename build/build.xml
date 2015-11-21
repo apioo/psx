@@ -58,7 +58,7 @@
 		<delete dir="${build}/tests" />
 		<delete file="${build}/.travis.yml" />
 		<delete file="${build}/phpunit.xml" />
-		<delete file="${build}/todo.txt" />
+		<delete file="${build}/TODO.md" />
         <delete includeemptydirs="true">
             <fileset dir="${build}/cache" includes="*" />
         </delete>
