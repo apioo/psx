@@ -1,8 +1,10 @@
 
-1.1.2
+### 1.1.2 
+
 * Fixed comperator record comparsion and add test case
 
-1.1.1
+### 1.1.1 (2015-11-21)
+
 * Add logger configuration settings and factory
 * Add json patch and pointer implementation. The accessor uses now also the json 
   pointer syntax
@@ -17,7 +19,8 @@
   PSX\Data\Record
 * Adjust visitor exception messages
 
-1.1.0
+### 1.1.0 (2015-10-05)
+
 * Curve array nest method handle indexed arrays
 * JSON Schema add title property to complex types
 * Documentation controller returns also the API endpoint url
@@ -27,11 +30,13 @@
 * Improved swagger and json schema generator
 * Extended api resource methods
 
-1.0.7
+### 1.0.7 (2015-08-22)
+
 * Improved condition class
 * Schema html generator fix traversing nested schema properties
 
-1.0.6
+### 1.0.6 (2015-08-03)
+
 * Fix schema parse read description of array and scalar types
 * Add any schema property type
 * Messages of StatusCodeException are now shown to the user when in production 
@@ -39,11 +44,13 @@
 * Add title and required parameter to accessor
 * Set controllerClass variable for template writers
 
-1.0.5
+### 1.0.5 (2015-07-22)
+
 * Fix issue with content negotiation #10
 * Make api resource and schema classes serializable
 
-1.0.4
+### 1.0.4 (2015-07-05)
+
 * Switched to PSR-2 coding style and using absolute class paths in phpdocs
 * Improve controller test cases
 * Add RecordInterface access to Accessor
@@ -52,7 +59,8 @@
   keys which are not available in the schema
 * Add development status for an API resource
 
-1.0.3
+### 1.0.3 (2015-06-13)
+
 * Added new ChoiceType property which allows different kinds of objects as value
 * Use same logic for traversing incoming and outgoing data
 * Moved schema property methods assimilate and validate into seperate class
@@ -61,11 +69,13 @@
 * Implemented factory to convert requests into PSR-7 objects and vice versa
 * Improved many test cases
 
-1.0.2
+### 1.0.2 (2015-05-23)
+
 * Fixed bug that the wrong base path was used when an json schema was included 
   in an RAML file
 
-1.0.1
+### 1.0.1 (2015-05-22)
+
 * Added raml file parameter for api generation command
 * Improved raml parser and tests
 * Add format key to swagger parameter record
@@ -75,7 +85,8 @@
 * Add debug commands to print an raml and jsonschema resource definition
 * Add console commands to generate different schema representations of the api
 
-1.0.0
+### 1.0.0 (2015-05-02)
+
 * Removed unused methods in documentation controller
 * Added property type factory class
 * Gain php7 compatibility
@@ -83,7 +94,8 @@
 * Improved schema data, validation and api controller test cases
 * Fixed datetime wrong behaviour without constructor args
 
-1.0.0-RC2
+### 1.0.0-RC2
+
 * Fixed correct handling with date and time formats
 * Improved several value objects 
 * Improved controller schema api tests
@@ -95,13 +107,15 @@
 * Added controller set stdClass body test
 * Improved XSD generator and allow setting min max array length
 
-1.0.0-RC1
+### 1.0.0-RC1
+
 * Updated documentation
 * Improved controller tests
 * Container test case preserve config values between unit tests
 * Moved test bootstrap code into seperate class
 
-0.9.10
+### 0.9.10
+
 * Added getConnection method to table manager to enable easy transaction 
   handling
 * Moved cache logic from table manager into seperate reader class
@@ -116,7 +130,8 @@
 * Resource listing controller documentation create context in seperate method 
   which can be overloaded
 
-0.9.9
+### 0.9.9
+
 * Handle different successful status codes in schema api
 * Updated manual
 * Removed html presentations from tool controllers
@@ -126,7 +141,8 @@
 * Improved json schema parse resolve external resources. Supports file:// and
   http:// protocol
 
-0.9.8
+### 0.9.8
+
 * Added raml and json schema parser
 * Improved html output added psx- prefix for css classes
 * Renamed Api\View to Api\Resource and redesigned classes containing the schema. 
@@ -136,7 +152,8 @@
 * Renamed RestController to RestClientController
 * Fixed bug in request factory where sub paths are not handeled correctly
 
-0.9.7
+### 0.9.7
+
 * Added record graph traverser class and various visitor implementations which
   are used to produce data from an object graph
 * Improved internal data representation for incoming and outgoing data
@@ -152,7 +169,8 @@
 * Updated PSR http-message to the current version of the spec
 * Changed license from GPLv3 to Apache 2.0
 
-0.9.6
+### 0.9.6
+
 * Improved documentation
 * Added raml generator
 * Added table api abstract controller
@@ -165,7 +183,8 @@
 * Removed location and added context class which holds parameters gathered 
   around the controller/command
 
-0.9.5
+### 0.9.5
+
 * Added HTTP request/response interfaces and added an factory to convert PSX 
   HTTP request/responses into PSR-7 request/responses
 * Added HTTP stream handler which uses the native HTTP stream wrapper
@@ -175,7 +194,8 @@
 * Used dbal query builder in various places for better db vendor support
 * Added plain text writer
 
-0.9.4
+### 0.9.4
+
 * Sql table query methods return now an array instead of RecordInterface
 * Added media type class and improved content negotiation
 * Improved JWT implementation
@@ -194,7 +214,8 @@
 * Add CurveArray class to nest or flatten an array
 * Updated api doc controller template
 
-0.9.3
+### 0.9.3
+
 * Added commands to generate boilerplate source code for controller, commands 
   and schema
 * When the default writer gets determined it respects now the list of supported
@@ -211,7 +232,8 @@
 * Added command to generate an bootstrap cache which can be included at startup
   to increase performance
 
-0.9.2
+### 0.9.2
+
 * Integrated JMS serializer
 * Removed payment and handler classes
 * Added symfony console component and added several commands
@@ -222,7 +244,8 @@
   different environments and the user can easily change the container
 * Dispatch events at key locations
 
-0.9.1
+### 0.9.1
+
 * Added tool controller to generate an Swagger or WSDL definition from an API
 * Added SOAP support and WSDL generator
 * Improved OpenSSL classes
@@ -232,7 +255,8 @@
 * Added getAccessor() method to controller which offers a way to easily get an
   value from the request body
 
-0.9
+### 0.9
+
 * Remove psx sql library and using doctrine dbal instead
 * Improved data system seperating reader functionality into an reader and 
   transformer class
@@ -253,7 +277,8 @@
 * Improved request factory
 * Possibility to set an wildcard in an routing file
 
-0.8.6
+### 0.8.6
+
 * Added missing http event method onHead
 * Possibiliy to set an alias path in an routing file
 * Improved hhvm/hack compatibility (all tests pass on hhvm 3.0.1)
@@ -265,7 +290,8 @@
 * Added record xml definition schema
 * Default manager was removed and concrete Dom/Map manager was introduced
 
-0.8.5
+### 0.8.5
+
 * Improved hhvm compatibility
 * Added redirect exception
 * Importer add possibility to import anonymous record classes and improved tests
@@ -273,11 +299,13 @@
   getPreFilter and getPostFilter
 * Improved tests
 
-0.8.4
+### 0.8.4
+
 * Update http library to current psr-7
 * Improved tests
 
-0.8.3
+### 0.8.3
+
 * Changed getRecord of HandlerQueryInterface its only possible to get a new 
   record containing all supported fields
 * Implemented http request and response through the complete framework lifecycle
@@ -287,11 +315,13 @@
 * Updated activity streams according to RFC draft
 * Removed docbook documentation infavor of reStructuredText files
 
-0.8.2
+### 0.8.2
+
 * Improve parsing of routing file
 * Fix bug that the sended headers are not correctly parsed
 
-0.8.1
+### 0.8.1
+
 * Add http callback handler and add response parser class
 * Fix html parser single and double quotes in attributes
 * Allow urls with protocol definition i.e. //phpsx.org
@@ -302,7 +332,8 @@
 * Added sql table manager wich can read table definitions from different sources
 * Add annotation test and improve parsing
 
-0.8
+### 0.8
+
 * Added domain package. The package helps you to create your application in a 
   domain driven design
 * Fully support symfony di container
@@ -320,7 +351,8 @@
 * A new handler package was added wich contains all handler related classes
 * Added filter definition class to validate a record based on a set of rules
 
-0.7.3
+### 0.7.3
+
 * Added openid connect basic client
 * Fixed routing mechanism
 * Improved sql select and tests
@@ -332,16 +364,19 @@
 * Added http fixture for skrill test
 * Improved loader and dispatch test
 
-0.7.2
+### 0.7.2
+
 * Fix use correct request method
 * Improved oauth test
 
-0.7.1
+### 0.7.1
+
 * Improve template detection
 * Curl handler option to set a proxy
 * Use real request method in oauth authentication filter
 
-0.7
+### 0.7
+
 * Added get method to TemplateInterface
 * Load template from Resource folder in ViewAbstract
 * Added custom template error config
@@ -352,12 +387,14 @@
 * Added http mock and mock capture handler
 * Improved unit tests
 
-0.6.4
+### 0.6.4
+
 * Add proper clone behavior for select class
 * Set openid request record attributes protected
 * Fix oauth request filter content type detection
 
-0.6.3
+### 0.6.3
+
 * Added static method setupEnvironment to Bootstrap
 * Improve sql library
 * Fixed getErrorTemplate() env vars
@@ -368,17 +405,20 @@
 * Improve void session to save values in memory
 * Added clearError() method to validate
 
-0.6.2
+### 0.6.2
+
 * Added JWT and JWS library
 * Json decode throws now an exception if decoding fails
 * Add void session
 * Add support to call controller through cli to simplify testing
 * Improve error response handling
 
-0.6.1
+### 0.6.1
+
 * Improved cache class
 
-0.6
+### 0.6
+
 * Added dispatch class wich routes the request to the controller. Also applies
   the request and response filter wich are defined by the controller
 * The controller proxies unknown get* methods to the container
@@ -395,13 +435,15 @@
 * Improved activity stream classes
 * Add method get, getBy and getOneBy to handler interface
 
-0.5.4
+### 0.5.4
+
 * Fixed record serialize
 * Fix select remove getDefaultRecordClass call from underlying table and remove
   getResultSet method
 * Improved select and record test
 
-0.5.3
+### 0.5.3
+
 * Fix Oauth2 error exception types
 * Improve handler abstract and interface
 * Use json encode/decode to un/serialize records
@@ -411,11 +453,13 @@
   decide wich object should be used this is part of the handler
 * Improve tests and remove create table statments in tests
 
-0.5.2
+### 0.5.2
+
 * Use port in base self url
 * Config option to set include path
 
-0.5.1
+### 0.5.1
+
 * Added autoload parameter in config to disable autoloading in case an external
   autoloader like composer is used
 * Added payment paypal and skrill library
@@ -423,7 +467,8 @@
   interface
 * Fixed wrong name in OpenId provider namespace
 
-0.5
+### 0.5
+
 * Added namespace support
 * Improved db tests
 * Improved html parser library
@@ -432,7 +477,8 @@
 * Load dependencies in _ini() method instead of __construct()
 * Fixed markdown parser and sql select
 
-0.4.7
+### 0.4.7
+
 * Added classes to generate an swagger api declaration and util annotation 
   parser
 * Improved autoloader using stream_resolve_include_path before require the class
@@ -453,7 +499,8 @@
 * Fix markdown class encode emphasis
 * Add method setSavePath to PSX_Session class
 
-0.4.6
+### 0.4.6
+
 * Added Atom and RSS static request method
 * Improved docblock comments
 * Removed unused DOM package
@@ -469,7 +516,8 @@
 * Added getParameters to dependency abstract
 * Added view dependency and renamed module DefaultAbstract to ViewAbstract
 
-0.4.5
+### 0.4.5
+
 * Renamed constant in_psx to PSX because of namespace issue
 * Added data multipart/form-data reader
 * Added PSX_Base class containing informations about the framework and current
@@ -485,7 +533,8 @@
   extends now SplFileObject wich already defines an isFile method
 * Fixed openid stateless mode and correct exception name
 
-0.4.4
+### 0.4.4
+
 * Updated webfinger library and tests
 * Removed idna (punnycode) filter
 * Added uri and urn libraries
@@ -495,7 +544,8 @@
 * Fix openid consumer and relying party library
 * Update documentation
 
-0.4.3
+### 0.4.3
+
 * Fixed openid provider association implementation
 * Added openssl wrapper class
 * Added webfinger util library
@@ -508,7 +558,8 @@
 * Added optional require parameter to input method
 * Added and improved several tests
 
-0.4.2
+### 0.4.2
+
 * Updated atom and rss item parsing
 * Updated HTTP socks handler proper handling of chunked transfer encoding
 * Removed NestedSet library because they where not stable enough
@@ -521,47 +572,54 @@
 * Added unit tests
 * Fixed several bugs
 
-0.4.1
+### 0.4.1
+
 * Rewrote manual
 * Fix follow location in http curl handler
 * Improve tests
 
-0.4
+### 0.4
+
 * Using now standard "camelcase" coding style for interoperability
 * Update data writer library for handling Atom and Rss feeds correctly
 * Add http library option to automatically follow redirects
 * Remove unused classes
 * Fixing many bugs
 
-0.3.4
-* rewrote html form / paging / grid using now the DomDocument object
-* remove task lib
-* add psx/api and psx/data package for building RESTful API services
-* moved the classes from psx/core in the package psx
-* rewroter filter system and add class psx_validate
+### 0.3.4
 
-0.3.3
-* updated psx_srv_[atom|rss] class wich uses now the DateTime class
-* updated dom wich extends now the DomDocument class
-* updated time class wich extends now the DateTime class and some uneccasary
+* Rewrote html form / paging / grid using now the DomDocument object
+* Remove task lib
+* Add psx/api and psx/data package for building RESTful API services
+* Moved the classes from psx/core in the package psx
+* Rewroter filter system and add class psx_validate
+
+### 0.3.3
+
+* Updated psx_srv_[atom|rss] class wich uses now the DateTime class
+* Updated dom wich extends now the DomDocument class
+* Updated time class wich extends now the DateTime class and some uneccasary
   methods were removed
-* remove util/uri class
-* update sql library send SET NAMES UTF-8 command on creation
+* Remove util/uri class
+* Update sql library send SET NAMES UTF-8 command on creation
 
-0.3.2
-* unknown
+### 0.3.2
 
-0.3.1
-* added form generation class
-* added and fixed tests
-* added request library
-* implemented psx_input interface
-* rewrote filter library
-* rewrote manual to version 0.3
-* fixed openid oauth and yadis library
+* Unknown
 
-0.3
-* complete redesing of the framework the library is now more loosly coupled
+### 0.3.1
+
+* Added form generation class
+* Added and fixed tests
+* Added request library
+* Implemented psx_input interface
+* Rewrote filter library
+* Rewrote manual to version 0.3
+* Fixed openid oauth and yadis library
+
+### 0.3
+
+* Complete redesing of the framework the library is now more loosly coupled
   because most classes using dependency injection.
 * The component section was removed and all classes are now in the psx library
   folder
@@ -569,29 +627,31 @@
   module nobody can access the public methods via the browser
 * The standard PHP loader was implemented wich is also used by Zend etc.
 * adding sql pdo driver
-* fixing several bugs
+* Fixing several bugs
 
-0.2.3
-* add pubsubhubbub library
-* add atom library to parse atom feeds
-* add html parse library to parse malformed html
-* we use XMLWriter now in the class rss/atom/opensearch to produce XML
-* fixed opensocial component bugs
+### 0.2.3
 
-0.2.2
-* add openid, yadis, atom/rss2 and opensearch component
-* renamed folder lib to library and ext to extension
-* perfomance improvments
-* fixing bugs
-* delete include folder
-* add phpunit tests
+* Add pubsubhubbub library
+* Add atom library to parse atom feeds
+* Add html parse library to parse malformed html
+* We use XMLWriter now in the class rss/atom/opensearch to produce XML
+* Fixed opensocial component bugs
 
-0.2.1
-* add component net/oauth
-* rewrote http lib
-* add phpunit tests
-* fixing bugs
-* redesign sample template
-* orm lib removed
-* parse lib removed
+### 0.2.2
 
+* Add openid, yadis, atom/rss2 and opensearch component
+* Renamed folder lib to library and ext to extension
+* Perfomance improvments
+* Fixing bugs
+* Delete include folder
+* Add phpunit tests
+
+### 0.2.1
+
+* Add component net/oauth
+* Rewrote http lib
+* Add phpunit tests
+* Fixing bugs
+* Redesign sample template
+* Orm lib removed
+* Parse lib removed
