@@ -97,7 +97,7 @@
 
 	<target name="doc-manual">
 		<mkdir dir="${build}/doc/manual" />
-		<exec dir="${build}" executable="sphinx-build" failonerror="true">
+		<exec dir="${build}" executable="${sphinx-build}" failonerror="true">
 			<arg line="doc doc/manual" />
 		</exec>
 		<delete includeemptydirs="true">
