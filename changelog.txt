@@ -1,4 +1,7 @@
 
+1.1.2
+* Fixed comperator record comparsion and add test case
+
 1.1.1
 * Add logger configuration settings and factory
 * Add json patch and pointer implementation. The accessor uses now also the json 
