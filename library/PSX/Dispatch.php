@@ -52,6 +52,8 @@ class Dispatch
     protected $eventDispatcher;
     protected $exceptionConverter;
 
+    protected $level;
+
     public function __construct(Config $config, LoaderInterface $loader, ControllerFactoryInterface $factory, SenderInterface $sender, EventDispatcherInterface $eventDispatcher, Exception\Converter $exceptionConverter)
     {
         $this->config             = $config;
@@ -60,10 +62,14 @@ class Dispatch
         $this->factory            = $factory;
         $this->eventDispatcher    = $eventDispatcher;
         $this->exceptionConverter = $exceptionConverter;
+
+        $this->level = 0;
     }
 
     public function route(RequestInterface $request, ResponseInterface $response, Context $context = null)
     {
+        $this->level++;
+
         $this->eventDispatcher->dispatch(Event::REQUEST_INCOMING, new RequestIncomingEvent($request));
 
         // load controller
@@ -106,8 +112,12 @@ class Dispatch
 
         $this->eventDispatcher->dispatch(Event::RESPONSE_SEND, new ResponseSendEvent($response));
 
-        // send response
-        $this->sender->send($response);
+        $this->level--;
+
+        // send the response only if we are not in a nested call
+        if ($this->level === 0) {
+            $this->sender->send($response);
+        }
     }
 
     protected function handleException(\Exception $e, ResponseInterface $response)
