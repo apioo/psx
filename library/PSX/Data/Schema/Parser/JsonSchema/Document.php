@@ -51,7 +51,7 @@ class Document
         $this->resolver = $resolver;
         $this->basePath = $basePath;
         $this->source   = $source;
-        $this->baseUri  = new Uri(isset($data['id']) ? $data['id'] : '');
+        $this->baseUri  = new Uri(isset($data['id']) ? $data['id'] : 'http://phpsx.org/2015/data#');
     }
 
     /**
