@@ -26,6 +26,7 @@ use PSX\Data\Schema\Property;
 use PSX\Data\Schema\PropertyInterface;
 use PSX\Data\Schema\PropertySimpleAbstract;
 use PSX\Json;
+use PSX\Json\Pointer;
 use PSX\Uri;
 
 /**
@@ -108,7 +109,7 @@ class Document
     }
 
     /**
-     * Resolves an json pointer on the document and returns the fitting array
+     * Resolves a json pointer on the document and returns the fitting array
      * fragment
      *
      * @param string $pointer
@@ -116,21 +117,9 @@ class Document
      */
     public function pointer($pointer)
     {
-        $pointer = ltrim($pointer, '/');
-        $pointer = str_replace('~0', '~', $pointer);
-        $pointer = str_replace('~1', '/', $pointer);
-        $parts   = !empty($pointer) ? explode('/', $pointer) : array();
-        $data    = $this->data;
+        $pointer = new Pointer($pointer);
 
-        foreach ($parts as $key) {
-            if (isset($data[$key])) {
-                $data = $data[$key];
-            } else {
-                return array();
-            }
-        }
-
-        return $data;
+        return $pointer->evaluate($this->data);
     }
 
     /**
