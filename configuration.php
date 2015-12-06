@@ -47,4 +47,9 @@ return array(
     // specify a custom template
     //'psx_error_template'      => null,
 
+    // Global middleware which are applied before and after every request. Must
+    // bei either a classname, closure or PSX\Dispatch\FilterInterface instance
+    //'psx_filter_pre'          => [],
+    //'psx_filter_post'         => [],
+
 );
