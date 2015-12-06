@@ -36,7 +36,7 @@ use PSX\Loader\RoutingParserInterface;
 use PSX\Uri;
 
 /**
- * The documentation how an request and response looks is provided in the
+ * The documentation how a request and response looks is provided in the
  * controller
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
@@ -74,9 +74,9 @@ class ControllerDocumentation implements ListingInterface
                 }
             }
 
-            // because creating a new instance of an controller is expensive
+            // because creating a new instance of a controller is expensive
             // since we resolve all dependencies we use class_implements to
-            // check whether this is an documented API endpoint
+            // check whether this is a documented API endpoint
             if (class_exists($className) && in_array('PSX\Api\DocumentedInterface', class_implements($className))) {
                 $result[] = $resource;
             }

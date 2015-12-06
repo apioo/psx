@@ -88,8 +88,8 @@ class CachedListing implements ListingInterface
     }
 
     /**
-     * An resource can contain schema definitions which are only resolved if we
-     * actual call the getDefinition method i.e. the schema is stored in an
+     * A resource can contain schema definitions which are only resolved if we
+     * actual call the getDefinition method i.e. the schema is stored in a
      * database. So before we cache the documentation we must get the actual
      * definition object which we can serialize
      *

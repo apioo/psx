@@ -29,9 +29,9 @@ use PSX\Http\ResponseInterface;
 use PSX\Json;
 
 /**
- * The cookie signer adds an signature to the cookie so that you can verify that
+ * The cookie signer adds a signature to the cookie so that you can verify that
  * the value which was set by the server has not changed. Note it does not
- * encrypt the values so everybody can still read the data like in an normal
+ * encrypt the values so everybody can still read the data like in a normal
  * cookie but you can verify that the data was not modified
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>

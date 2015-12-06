@@ -34,7 +34,7 @@ use PSX\Uri;
 class UriResolver
 {
     /**
-     * Resolves an base uri against an target uri
+     * Resolves a base uri against a target uri
      *
      * @param \PSX\Uri $baseUri
      * @param \PSX\Uri $targetUri
@@ -131,7 +131,7 @@ class UriResolver
     }
 
     /**
-     * Percent encodes an value
+     * Percent encodes a value
      *
      * @param string $value
      * @param boolean $preventDoubleEncode
