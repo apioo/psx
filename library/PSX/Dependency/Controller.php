@@ -83,7 +83,7 @@ trait Controller
      */
     public function getLoader()
     {
-        return new Loader($this->get('loader_location_finder'), $this->get('loader_callback_resolver'), $this->get('event_dispatcher'), $this->get('logger'));
+        return new Loader($this->get('loader_location_finder'), $this->get('loader_callback_resolver'), $this->get('event_dispatcher'), $this->get('logger'), $this->get('object_builder'), $this->get('config'));
     }
 
     /**

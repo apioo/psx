@@ -20,8 +20,11 @@
 
 namespace PSX;
 
+use Closure;
 use Psr\Log\LoggerInterface;
+use PSX\Dependency\ObjectBuilder;
 use PSX\Dispatch\FilterChain;
+use PSX\Dispatch\FilterInterface;
 use PSX\Event\ControllerExecuteEvent;
 use PSX\Event\ControllerProcessedEvent;
 use PSX\Event\RouteMatchedEvent;
@@ -47,16 +50,20 @@ class Loader implements LoaderInterface
     protected $callbackResolver;
     protected $eventDispatcher;
     protected $logger;
+    protected $objectBuilder;
+    protected $config;
 
     protected $recursiveLoading = false;
     protected $loaded = array();
 
-    public function __construct(LocationFinderInterface $locationFinder, CallbackResolverInterface $callbackResolver, EventDispatcherInterface $eventDispatcher, LoggerInterface $logger)
+    public function __construct(LocationFinderInterface $locationFinder, CallbackResolverInterface $callbackResolver, EventDispatcherInterface $eventDispatcher, LoggerInterface $logger, ObjectBuilder $objectBuilder, Config $config)
     {
         $this->locationFinder   = $locationFinder;
         $this->callbackResolver = $callbackResolver;
         $this->eventDispatcher  = $eventDispatcher;
         $this->logger           = $logger;
+        $this->objectBuilder    = $objectBuilder;
+        $this->config           = $config;
     }
 
     public function setRecursiveLoading($recursiveLoading)
@@ -110,7 +117,13 @@ class Loader implements LoaderInterface
         if ($controller instanceof ApplicationStackInterface) {
             $this->eventDispatcher->dispatch(Event::CONTROLLER_EXECUTE, new ControllerExecuteEvent($controller, $request, $response));
 
-            $filterChain = new FilterChain($controller->getApplicationStack());
+            $filters = array_merge(
+                $this->resolveFilters($this->config->get('psx_filter_pre')),
+                $controller->getApplicationStack(),
+                $this->resolveFilters($this->config->get('psx_filter_post'))
+            );
+
+            $filterChain = new FilterChain($filters);
             $filterChain->setLogger($this->logger);
             $filterChain->handle($request, $response);
 
@@ -118,5 +131,27 @@ class Loader implements LoaderInterface
         } else {
             throw new UnexpectedValueException('Controller must be an instance of PSX\ApplicationStackInterface');
         }
+    }
+
+    protected function resolveFilters($filters)
+    {
+        if (empty($filters) || !is_array($filters)) {
+            return [];
+        }
+
+        $result = [];
+        foreach ($filters as $filter) {
+            if (is_string($filter)) {
+                $result[] = $this->objectBuilder->getObject($filter, [], 'PSX\Dispatch\FilterInterface');
+            } elseif ($filter instanceof FilterInterface) {
+                $result[] = $filter;
+            } elseif ($filter instanceof Closure) {
+                $result[] = $filter;
+            } else {
+                throw new RuntimeException('Filter must be either a classname, instance of PSX\Dispatch\FilterInterface or closure');
+            }
+        }
+
+        return $result;
     }
 }

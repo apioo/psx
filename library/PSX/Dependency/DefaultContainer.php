@@ -190,6 +190,8 @@ class DefaultContainer extends Container
             'psx_log_level'           => \Monolog\Logger::ERROR,
             'psx_log_handler'         => 'system',
             'psx_log_uri'             => null,
+            'psx_filter_pre'          => [],
+            'psx_filter_post'         => [],
         );
     }
 }

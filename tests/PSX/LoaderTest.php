@@ -99,7 +99,9 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
             $locationFinder,
             Environment::getService('loader_callback_resolver'),
             Environment::getService('event_dispatcher'),
-            new Logger('psx', [new NullHandler()])
+            new Logger('psx', [new NullHandler()]),
+            Environment::getService('object_builder'),
+            Environment::getService('config')
         );
         $request  = new Request(new Url('http://127.0.0.1/foobar'), 'GET');
         $response = new Response();
@@ -140,7 +142,9 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
             $locationFinder,
             Environment::getService('loader_callback_resolver'),
             Environment::getService('event_dispatcher'),
-            new Logger('psx', [new NullHandler()])
+            new Logger('psx', [new NullHandler()]),
+            Environment::getService('object_builder'),
+            Environment::getService('config')
         );
         $request  = new Request(new Url('http://127.0.0.1/foobar/detail/12'), 'GET');
         $response = new Response();
@@ -175,7 +179,9 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
             $locationFinder,
             Environment::getService('loader_callback_resolver'),
             Environment::getService('event_dispatcher'),
-            new Logger('psx', [new NullHandler()])
+            new Logger('psx', [new NullHandler()]),
+            Environment::getService('object_builder'),
+            Environment::getService('config')
         );
         $request  = new Request(new Url('http://127.0.0.1/foobar'), 'GET');
         $response = new Response();
@@ -205,7 +211,9 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
                 $locationFinder,
                 $resolver,
                 Environment::getService('event_dispatcher'),
-                new Logger('psx', [new NullHandler()])
+                new Logger('psx', [new NullHandler()]),
+                Environment::getService('object_builder'),
+                Environment::getService('config')
             ))
             ->setMethods(array('executeController'))
             ->getMock();
@@ -244,7 +252,9 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
                 $locationFinder,
                 $resolver,
                 Environment::getService('event_dispatcher'),
-                new Logger('psx', [new NullHandler()])
+                new Logger('psx', [new NullHandler()]),
+                Environment::getService('object_builder'),
+                Environment::getService('config')
             ))
             ->setMethods(array('executeController'))
             ->getMock();
@@ -296,7 +306,9 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
             $locationFinder,
             $resolver,
             Environment::getService('event_dispatcher'),
-            new Logger('psx', [new NullHandler()])
+            new Logger('psx', [new NullHandler()]),
+            Environment::getService('object_builder'),
+            Environment::getService('config')
         );
 
         $this->assertEquals($controller, $loader->load($request, $response));
@@ -331,7 +343,9 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
             $locationFinder,
             $resolver,
             Environment::getService('event_dispatcher'),
-            new Logger('psx', [new NullHandler()])
+            new Logger('psx', [new NullHandler()]),
+            Environment::getService('object_builder'),
+            Environment::getService('config')
         );
         $loader->load($request, $response);
     }
@@ -371,7 +385,9 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
             $locationFinder,
             $resolver,
             Environment::getService('event_dispatcher'),
-            new Logger('psx', [new NullHandler()])
+            new Logger('psx', [new NullHandler()]),
+            Environment::getService('object_builder'),
+            Environment::getService('config')
         );
 
         $this->assertEquals($controller, $loader->load($request, $response));
@@ -406,7 +422,9 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
             $locationFinder,
             $resolver,
             Environment::getService('event_dispatcher'),
-            new Logger('psx', [new NullHandler()])
+            new Logger('psx', [new NullHandler()]),
+            Environment::getService('object_builder'),
+            Environment::getService('config')
         );
         $loader->load($request, $response);
     }
@@ -435,7 +453,9 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
             $locationFinder,
             $resolver,
             Environment::getService('event_dispatcher'),
-            new Logger('psx', [new NullHandler()])
+            new Logger('psx', [new NullHandler()]),
+            Environment::getService('object_builder'),
+            Environment::getService('config')
         );
         $request  = new Request(new Url('http://127.0.0.1/foobar'), 'GET');
         $response = new Response();
