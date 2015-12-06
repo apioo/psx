@@ -20,9 +20,12 @@
 
 namespace PSX\Data\Record;
 
+use ArrayObject;
 use InvalidArgumentException;
+use JsonSerializable;
 use PSX\Data\RecordInterface;
 use PSX\Util\CurveArray;
+use Traversable;
 
 /**
  * GraphTraverser
@@ -35,6 +38,8 @@ class GraphTraverser
 {
     public function traverse($record, VisitorInterface $visitor)
     {
+        $record = $this->reveal($record);
+
         if (!self::isObject($record)) {
             throw new InvalidArgumentException('Provided value must be an object type');
         }
@@ -72,6 +77,8 @@ class GraphTraverser
 
     protected function traverseValue($value, VisitorInterface $visitor)
     {
+        $value = $this->reveal($value);
+
         if (self::isObject($value)) {
             $this->traverseObject($value, $visitor);
         } elseif (self::isArray($value)) {
@@ -89,6 +96,28 @@ class GraphTraverser
         } else {
             $visitor->visitValue($value);
         }
+    }
+
+    /**
+     * Method which reveals the true value of an object if it has a known 
+     * interface. Note this resolves also all Traversable instances to an array
+     *
+     * @param mixed $object
+     * @return mixed
+     */
+    protected function reveal($object)
+    {
+        if ($object instanceof RecordInterface) {
+            return $object;
+        } elseif ($object instanceof JsonSerializable) {
+            return $object->jsonSerialize();
+        } elseif ($object instanceof ArrayObject) {
+            return $object->getArrayCopy();
+        } elseif ($object instanceof Traversable) {
+            return iterator_to_array($object);
+        }
+
+        return $object;
     }
 
     public static function isObject($value)
