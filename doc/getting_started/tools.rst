@@ -4,14 +4,14 @@ Tools
 
 PSX comes by default with a set of controllers which help you to generate 
 documentation or other data based on your defined APIs. The following chapter
-explains all available controllers. To setup such an controller you have to add 
+explains all available controllers. To setup such a controller you have to add 
 a route entry. The paths in the routes are only a suggestion you can easily 
 change them how you like.
 
 Documentation
 -------------
 
-PSX provides an controller which can generate automatically a documentation for
+PSX provides a controller which can generate automatically a documentation for
 your defined APIs. The controller provides only an API which can be used by any
 client to display a documentation for end-users. You can use i.e. evid 
 (https://github.com/k42b3/evid) which is a html/javascript app which uses the 
@@ -27,7 +27,7 @@ change the style according to your needs.
 WSDL
 ----
 
-Generates an WSDL representation for the given API.
+Generates a WSDL representation for the given API.
 
 .. code::
 
@@ -36,7 +36,7 @@ Generates an WSDL representation for the given API.
 Swagger
 -------
 
-Generates an Swagger resource listing and definition.
+Generates a Swagger resource listing and definition.
 
 .. code::
 
@@ -46,7 +46,7 @@ Generates an Swagger resource listing and definition.
 RAML
 ----
 
-Generates an RAML representation for the given API.
+Generates a RAML representation for the given API.
 
 .. code::
 
@@ -65,7 +65,7 @@ Command
 -------
 
 Provides an API to execute commands. Note you most likely have to add some sort
-of authentication so that only authorized users can trigger an specific command.
+of authentication so that only authorized users can trigger a specific command.
 
 .. code::
 

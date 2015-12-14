@@ -47,7 +47,7 @@ container uses several traits which contains service methods
 
 .. literalinclude:: ../../library/PSX/Dependency/DefaultContainer.php
    :language: php
-   :lines: 49-56
+   :lines: 47-51
    :prepend: <?php
 
 The returned container must be compatible with the symfony DI container. You 
@@ -68,7 +68,7 @@ Usage
 
 The command and controller are the points which connect the framework to your
 application. The DI container is not directly accessible instead you have to
-specify properties in your command and controller with an specific inject 
+specify properties in your command and controller with a specific inject 
 annotation to use a service. 
 
 .. code-block:: php

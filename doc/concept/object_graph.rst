@@ -6,13 +6,13 @@ Abstract
 --------
 
 With object graph we mean the response which is set in the controller as body.
-This can be i.e. an simple associative array or an deep nested object structure. 
+This can be i.e. a simple associative array or a deep nested object structure. 
 PSX walks through the object graph and determines whether a value represents an 
-object, array or scalar value. If the value is an PSX\\Data\\RecordInterface, 
+object, array or scalar value. If the value is a PSX\\Data\\RecordInterface, 
 stdClass or associative array the value gets treated as object. If it is an 
 array the value gets treated as array. All other values have no structural 
-meaning and are treated as scalar values. If an scalar value is an object PSX 
-tries to case it to an string.
+meaning and are treated as scalar values. If a scalar value is an object PSX 
+tries to case it to a string.
 
 Examples
 --------

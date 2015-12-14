@@ -5,7 +5,7 @@ Import data
 Abstract
 --------
 
-This chapter will explain more detailed how you can use an importer to read 
+This chapter will explain more detailed how you can use a importer to read 
 request data.
 
 Record
@@ -14,7 +14,7 @@ Record
 A record is a simple object which stores key value pairs. The importer needs to 
 know which fields are available and what type has each field. The record 
 importer obtains theses meta informations from the annotation of each method. As 
-example lets say we want import the following xml from an request
+example lets say we want import the following xml from a request
 
 .. code-block:: xml
 
@@ -143,7 +143,7 @@ In this case we have to define the following records
 If the @param annotation is defined the importer will cast the variable to the 
 specific type if it is a scalar type: string, float, integer or boolean. In 
 every other case we check whether the given name is a valid class. If the class 
-is an RecordInterface we import the data into this record else we pass the data 
+is a RecordInterface we import the data into this record else we pass the data 
 as first argument to the constructor.
 
 Through the method getRecordInfo()->getFields() we get an array of all available 

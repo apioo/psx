@@ -33,7 +33,7 @@ Foo\\News\\Application\\Api gets called
 The path /foo is an alias for the path /. That means in both cases we call the 
 method doFoo of the class Foo\\News\\Application\\Index.
 
-If we make an HTTP request to /news/2 the controller 
+If we make a HTTP request to /news/2 the controller 
 Foo\\News\\Application\\News::doDetail gets called. In our controller we can 
 access the dynamic part of the path with
 
@@ -44,18 +44,18 @@ access the dynamic part of the path with
     $newsId = $this->getUriFragment('news_id')
 
 The dynamic part contains all content to the next slash. You can also specifiy
-an regular expression to define which chars are allowed in the dynamic part. In
+a regular expression to define which chars are allowed in the dynamic part. In
 our example the path /news/archive/$year<[0-9]+> is only matched if the last 
 part contains numeric signs i.e. /news/archive/2014.
 
-Also you can specifiy an wildcard * which matches all content i.e. 
+Also you can specifiy a wildcard * which matches all content i.e. 
 /file/foo/bar/test.txt would invoke Foo\\News\\Application\\File::downloadFile
 
 Reverse routing
 ---------------
 
-PSX contains an reverse router class with that it is possible to get the path or 
-url to an existing controller method. If you want i.e. to link or redirect to an 
+PSX contains a reverse router class with that it is possible to get the path or 
+url to an existing controller method. If you want i.e. to link or redirect to a 
 specific controller method
 
 .. code-block:: php
@@ -78,8 +78,8 @@ and all links point automatically to the correct path.
 Custom routing
 --------------
 
-If you want store your routes in another format or in an database you can 
-write your own RoutingParser. The routing parser returns an RoutingCollection 
+If you want store your routes in another format or in a database you can 
+write your own RoutingParser. The routing parser returns a RoutingCollection 
 which contains all available routes.
 
 .. literalinclude:: ../../library/PSX/Loader/RoutingParserInterface.php

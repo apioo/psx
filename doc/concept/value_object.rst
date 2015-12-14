@@ -15,7 +15,7 @@ Specification
   value or another value object
 
 * The class must be immutable so it must be not possible to modify the state
-  of an value object once it was created
+  of a value object once it was created
 
 * The class must have a constructor with two behaviours. If only one argument was 
   passed to the constructor this value represents the string representation of 
@@ -30,7 +30,7 @@ Specification
 
       $mediaType = new MediaType('text', 'plain', ['charset' => 'UTF-8']);
 
-* The class must have a method ``toString()`` which returns an string which 
+* The class must have a method ``toString()`` which returns a string which 
   contains the complete state of the object. The following operation should be 
   always true: 
   
@@ -69,8 +69,8 @@ Specification
 
       $uri = $uri->withPath('/foo');
 
-* The value object should provide an protected method ``parse()`` which parses 
-  the string representation. When parsing the value must be cast to an string so 
+* The value object should provide a protected method ``parse()`` which parses 
+  the string representation. When parsing the value must be cast to a string so 
   that in case it is another value object it returns its string representation. 
   If there are components which need extra processing provide protected methods 
   ``parseXXX()`` which are called inside the parse method. This has the 

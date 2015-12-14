@@ -4,15 +4,15 @@ Logic
 
 In the previous chapter we have defined a schema for our API. This chapter 
 covers how we can create the logic for our API which consumes the request and 
-creates an response.
+creates a response.
 
 Using services
 --------------
 
 Services are the building blocks of our application. In order to use a service 
-from the DI container you can use the "Inject" annotation to include an service 
-into your controller. In the following an example controller which uses an 
-doctrine DBAL connection to fetch data from an table.
+from the DI container you can use the "Inject" annotation to include a service 
+into your controller. In the following an example controller which uses a 
+doctrine DBAL connection to fetch data from a table.
 
 .. code-block:: php
 
@@ -53,7 +53,7 @@ doctrine DBAL connection to fetch data from an table.
     }
 
 By default PSX comes with the following registered services which can be used 
-inside an controller or command.
+inside a controller or command.
 
 .. code-block:: text
 
@@ -123,6 +123,6 @@ the container class. In the following an example which creates a new service:
         }
     }
 
-This service can then be used in an controller. Since PSX uses composer you can 
+This service can then be used in a controller. Since PSX uses composer you can 
 require other packages to use them as a service.
 

@@ -2,15 +2,15 @@
 Table
 =====
 
-PSX provides a table controller which can create an REST endpoint to CRUD data
-on an table. The table API extends the schema API but gets all needed schema 
-informations from an sql table.
+PSX provides a table controller which can create a REST endpoint to CRUD data
+on a table. The table API extends the schema API but gets all needed schema 
+informations from a SQL table.
 
 Definition
 ----------
 
 In order to create an API PSX needs meta informations about the table. By 
-default PSX uses an simple table class which contains such informations. Here an 
+default PSX uses a simple table class which contains such informations. Here an 
 example how a simple table can look:
 
 .. code-block:: php
@@ -50,7 +50,7 @@ config keys.
 API
 ---
 
-In the following an table API which provides basic CRUD operations on the given
+In the following a table API which provides basic CRUD operations on the given
 table.
 
 .. code-block:: php

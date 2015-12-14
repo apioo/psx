@@ -6,7 +6,7 @@ Abstract
 --------
 
 This chapter gives a short overview of the most important methods which you need
-inside an controller. To simplify things take a look at the following source
+inside a controller. To simplify things take a look at the following source
 code.
 
 Usage
@@ -66,7 +66,7 @@ Usage
 Generation
 ----------
 
-It is possible to generate an controller template. You can use the following 
+It is possible to generate a controller template. You can use the following 
 command which takes as first argument the class name and as second a comma 
 seperated list with service names. These services are automatically included in
 the controller

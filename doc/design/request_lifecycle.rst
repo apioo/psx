@@ -2,14 +2,14 @@
 Request lifecycle
 =================
 
-This chapter explains the request lifecycle of an PSX application which helps
+This chapter explains the request lifecycle of a PSX application which helps
 you to better understand how PSX works.
 
 Http request/response
 ---------------------
 
-PSX uses an standard HTTP request and response interface. At the start of the 
-application lifecycle an HTTP request and response object will be created.
+PSX uses a standard HTTP request and response interface. At the start of the 
+application lifecycle a HTTP request and response object will be created.
 
 .. literalinclude:: ../../library/PSX/Dispatch/RequestFactoryInterface.php
    :language: php
@@ -40,7 +40,7 @@ the request and write data to the response.
    :prepend: <?php
 
 After the stack was executed the response must be send to the client. This is 
-done through an sender class which sends the header through the "header" 
+done through a sender class which sends the header through the "header" 
 function and outputs the response body via "echo".
 
 .. literalinclude:: ../../library/PSX/Dispatch/SenderInterface.php
@@ -79,7 +79,7 @@ list of events with a short description.
 Middleware
 ----------
 
-In PSX an middleware must be either an FilterInterface or callable i.e. the most 
+In PSX a middleware must be either a FilterInterface or callable i.e. the most 
 basic "hello world" example would be:
 
 .. code-block:: php

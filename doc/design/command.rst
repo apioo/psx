@@ -6,15 +6,15 @@ Abstract
 --------
 
 A command is a piece of code which takes some arguments and executes a specific
-task. You can see a command like an controller but without the request/response 
-context. A command can be executed from the command line or from an 
-controller/command. I.e. if you have a command which sends an email if an 
+task. You can see a command like a controller but without the request/response 
+context. A command can be executed from the command line or from a 
+controller/command. I.e. if you have a command which sends an email if a 
 payment process was successful you could execute this command directly from the 
-controller and also from an cron in order to complete payments. In contrast to 
-an symfony command an psx command was not designed for cli that means you can 
+controller and also from a cron in order to complete payments. In contrast to 
+a symfony command a psx command was not designed for cli that means you can 
 not access user input. All settings which the command needs must be available in 
-the parameters. But we have build an symfony command which takes the user input
-and triggers an PSX command.
+the parameters. But we have build a symfony command which takes the user input
+and triggers a PSX command.
 
 Usage
 -----
@@ -71,7 +71,7 @@ inside an command. To simplify things take a look at the following source code.
         }
     }
 
-The command can be executed from an controller or another command. If an
+The command can be executed from a controller or another command. If a
 required parameter is missing an exception gets thrown.
 
 .. code-block:: php
@@ -97,7 +97,7 @@ switch
 Generation
 ----------
 
-It is possible to generate an command template. You can use the following 
+It is possible to generate a command template. You can use the following 
 command which takes as first argument the class name and as second a comma 
 seperated list with service names. These services are automatically included in
 the command

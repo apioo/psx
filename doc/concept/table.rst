@@ -5,12 +5,12 @@ Table
 Abstract
 --------
 
-The PSX table class provides an simple repository pattern which can be used as 
-alternative to an ORM. It works with plain SQL queries. Each table class 
-represents an sql table which contains the table name and all available columns.
+The PSX table class provides a simple repository pattern which can be used as 
+alternative to a ORM. It works with plain SQL queries. Each table class 
+represents a SQL table which contains the table name and all available columns.
 A table class returns record objects which are filled with the values from the 
 query. It is also the place where you can put all complex business queries. To 
-get an first impression here an example:
+get a first impression here an example:
 
 .. code-block:: php
 
@@ -38,7 +38,7 @@ get an first impression here an example:
         }
     }
 
-Inside an controller you could use the table class in order to get all comment 
+Inside a controller you could use the table class in order to get all comment 
 entries
 
 .. code-block:: php
@@ -81,7 +81,7 @@ the table
    :prepend: <?php
 
 If you have complex queries it is best practice to put such queries inside the 
-table class where you can reuse the method across your application. Here an
+table class where you can reuse the method across your application. Here a
 fictional method which returns the best comments
 
 .. code-block:: php
@@ -110,7 +110,7 @@ fictional method which returns the best comments
         }
     }
 
-PSX does not force you to use the table classes. If you want use an ORM or any
+PSX does not force you to use the table classes. If you want use a ORM or any
 other database abstraction layer you only have to add the fitting service to the
 dependency container in order to use them in your controller. See the chapter
 :doc:`/design/dependency_injection` for more informations.
@@ -118,7 +118,7 @@ dependency container in order to use them in your controller. See the chapter
 Generation
 ----------
 
-It is possible to generate such table classes from an sql table. Therefor you
+It is possible to generate such table classes from a SQL table. Therefor you
 can use the following command
 
 .. code::

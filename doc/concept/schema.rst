@@ -5,14 +5,13 @@ Schema
 Abstract
 --------
 
-This chapter explains more detailed how you can define an schema for your
+This chapter explains more detailed how you can define a schema for your
 data
 
 Definition
 ----------
 
-In the following we will define an complex sample schema which show cases howto
-create an schema
+In the following we will define a complex sample schema
 
 .. code-block:: php
 
@@ -122,7 +121,7 @@ Generate
 --------
 
 It is possible to generate different kind of output based on the schema. In the
-following we show the output of the schema transformed into an XSD or JsonSchema 
+following we show the output of the schema transformed into a XSD or JsonSchema 
 format.
 
 XSD

@@ -5,25 +5,25 @@ Data
 Abstract
 --------
 
-This chapter should give an overview how data handling works in PSX. That means
-how you can read data from an request and write an response
+This chapter should give a overview how data handling works in PSX. That means
+how you can read data from a request and write a response
 
 Reading requests
 ----------------
 
-If we want import data from an request we have to known the format of the 
+If we want import data from a request we have to known the format of the 
 request body. PSX uses the content type header to determine which reader should 
 be used. I.e. if we have an application/xml content type we use the xml reader 
 and if we have an application/json content type we use the json reader. The 
-reader returns the request data in an form which can be easily used in php. I.e. 
-the xml reader returns an DOMDocument and the json reader returns an stdClass.
+reader returns the request data in a form which can be easily used in php. I.e. 
+the xml reader returns a DOMDocument and the json reader returns a stdClass.
 
 .. literalinclude:: ../../library/PSX/Data/ReaderInterface.php
    :language: php
    :lines: 33-55
    :prepend: <?php
 
-Since we need a uniform structure of the data we must apply an transformation in
+Since we need a uniform structure of the data we must apply a transformation in
 some cases. The transformation depends also on the content type. If we receive
 an application/xml content type the XmlArray transformer gets applied.
 
@@ -32,9 +32,9 @@ an application/xml content type the XmlArray transformer gets applied.
    :lines: 33-49
    :prepend: <?php
 
-Then it is possible to import the data into an record through an importer class. 
-In abstract an importer class takes meta informations from an source and returns 
-an record class containing the data.
+Then it is possible to import the data into a record through a importer class. 
+In abstract a importer class takes meta informations from a source and returns 
+a record class containing the data.
 
 .. literalinclude:: ../../library/PSX/Data/Record/ImporterInterface.php
    :language: php
@@ -57,7 +57,7 @@ PSX comes with the following data reader:
 +--------------------------+-----------------------------------+-------------+
 
 The result of the data reader can be obtained by using the getBody method inside
-the controller. Depending on the content type the response is either an stdClass
+the controller. Depending on the content type the response is either a stdClass
 or DOMDocument.
 
 .. code-block:: php
@@ -83,7 +83,7 @@ Importer
 
 Which importer gets used depends on the source. You can pass different objects 
 to the import method which in the end provides meta informations how the 
-incoming request data looks. If you pass to the source an 
+incoming request data looks. If you pass to the source a 
 PSX\\Data\\RecordInterface the annotations of the record class gets parsed. I.e. 
 if you want import an atom xml format you could use the following controller
 
@@ -106,11 +106,11 @@ if you want import an atom xml format you could use the following controller
         }
     }
 
-The content type application/atom+xml has also an transformer registered which
-builds an data structure from the DOMDocument which then gets imported into the 
+The content type application/atom+xml has also a transformer registered which
+builds a data structure from the DOMDocument which then gets imported into the 
 Atom record.
 
-It is also possible to pass an schema definition to the import method. The data
+It is also possible to pass a schema definition to the import method. The data
 will be validated against this schema. This has also the advantage that you can 
 use the schema to generate great documentation about the API
 
@@ -198,7 +198,7 @@ Lets take a look at the following controller.
         }
     }
 
-If you would request this method with an normal browser PSX would try to display
+If you would request this method with a normal browser PSX would try to display
 the data as HTML (since most browsers send an Accept header with text/html). 
 Therefor it would use the html writer which assigns the data to the template. In 
 your template you can then build the html representation of the feed. If we 
@@ -210,7 +210,7 @@ Serializer
 ----------
 
 PSX integrates the JMS serializer library to serialize arbitrary objects. This
-is useful if you use i.e. an ORM like doctrine where you have objects which
+is useful if you use i.e. a ORM like doctrine where you have objects which
 contain fields which you want expose per API. Here an example how you could use 
 the serializer
 
