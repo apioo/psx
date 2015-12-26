@@ -1,6 +1,12 @@
 
 ### 1.1.2 
 
+* Add option to specify global middlewares
+* Updated composer dependencies
+* Graph traverser handle also objects which implement JsonSerializable, 
+  ArrayObject or Traversable
+* JsonSchema parser set default id if not available
+* Improve dispatcher dont send the response for nested calls
 * Fixed comperator record comparsion and add test case
 
 ### 1.1.1 (2015-11-21)
