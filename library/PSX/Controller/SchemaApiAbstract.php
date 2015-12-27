@@ -121,18 +121,32 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 
     public function onPost()
     {
-        $method   = $this->resource->getMethod('POST');
-        $record   = $this->parseRequest($method);
-        $response = $this->doPost($record, $this->version);
+        $method = $this->resource->getMethod('POST');
+        $record = $this->parseRequest($method);
+
+        // compatibility layer to transition from doCreate to doPost. The 
+        // doCreate call will be removed in the next major version
+        if (method_exists($this, 'doPost')) {
+            $response = $this->doPost($record, $this->version);
+        } else {
+            $response = $this->doCreate($record, $this->version);
+        }
 
         $this->sendResponse($method, $response);
     }
 
     public function onPut()
     {
-        $method   = $this->resource->getMethod('PUT');
-        $record   = $this->parseRequest($method);
-        $response = $this->doPut($record, $this->version);
+        $method = $this->resource->getMethod('PUT');
+        $record = $this->parseRequest($method);
+
+        // compatibility layer to transition from doUpdate to doPut. The 
+        // doUpdate call will be removed in the next major version
+        if (method_exists($this, 'doPut')) {
+            $response = $this->doPut($record, $this->version);
+        } else {
+            $response = $this->doUpdate($record, $this->version);
+        }
 
         $this->sendResponse($method, $response);
     }
@@ -150,7 +164,7 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
     {
         $method   = $this->resource->getMethod('PATCH');
         $record   = $this->parseRequest($method);
-        $response = $this->doPut($record, $this->version);
+        $response = $this->doPatch($record, $this->version);
 
         $this->sendResponse($method, $response);
     }
