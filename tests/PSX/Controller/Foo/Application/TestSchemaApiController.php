@@ -70,6 +70,10 @@ class TestSchemaApiController extends SchemaApiAbstract
             ->setRequest($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Delete'))
             ->addResponse(200, $this->schemaManager->getSchema('PSX\Controller\Foo\Schema\SuccessMessage')));
 
+        $resource->addMethod(Resource\Factory::getMethod('PATCH')
+            ->setRequest($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\Update'))
+            ->addResponse(200, $this->schemaManager->getSchema('PSX\Controller\Foo\Schema\SuccessMessage')));
+
         return new Documentation\Simple($resource);
     }
 
@@ -88,7 +92,7 @@ class TestSchemaApiController extends SchemaApiAbstract
 
         return array(
             'success' => true,
-            'message' => 'You have successful create a record'
+            'message' => 'You have successful post a record'
         );
     }
 
@@ -100,7 +104,7 @@ class TestSchemaApiController extends SchemaApiAbstract
 
         return array(
             'success' => true,
-            'message' => 'You have successful update a record'
+            'message' => 'You have successful put a record'
         );
     }
 
@@ -111,6 +115,18 @@ class TestSchemaApiController extends SchemaApiAbstract
         return array(
             'success' => true,
             'message' => 'You have successful delete a record'
+        );
+    }
+
+    protected function doPatch(RecordInterface $record, Version $version)
+    {
+        $this->testCase->assertEquals(1, $record->getId());
+        $this->testCase->assertEquals(3, $record->getUserId());
+        $this->testCase->assertEquals('foobar', $record->getTitle());
+
+        return array(
+            'success' => true,
+            'message' => 'You have successful patch a record'
         );
     }
 }

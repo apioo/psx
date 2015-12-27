@@ -85,7 +85,7 @@ JSON;
         $expect = <<<JSON
 {
 	"success": true,
-	"message": "You have successful create a record"
+	"message": "You have successful post a record"
 }
 JSON;
 
@@ -142,7 +142,7 @@ JSON;
         $expect = <<<JSON
 {
 	"success": true,
-	"message": "You have successful update a record"
+	"message": "You have successful put a record"
 }
 JSON;
 
@@ -167,10 +167,27 @@ JSON;
         $this->assertJsonStringEqualsJsonString($expect, $body, $body);
     }
 
+    public function testPatch()
+    {
+        $data     = json_encode(array('id' => 1, 'userId' => 3, 'title' => 'foobar'));
+        $response = $this->sendRequest('http://127.0.0.1/api', 'PATCH', ['Content-Type' => 'application/json'], $data);
+        $body     = (string) $response->getBody();
+
+        $expect = <<<JSON
+{
+    "success": true,
+    "message": "You have successful patch a record"
+}
+JSON;
+
+        $this->assertEquals(200, $response->getStatusCode(), $body);
+        $this->assertJsonStringEqualsJsonString($expect, $body, $body);
+    }
+
     protected function getPaths()
     {
         return array(
-            [['GET', 'POST', 'PUT', 'DELETE'], '/api', 'PSX\Controller\Foo\Application\TestSchemaApiController'],
+            [['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], '/api', 'PSX\Controller\Foo\Application\TestSchemaApiController'],
         );
     }
 }
