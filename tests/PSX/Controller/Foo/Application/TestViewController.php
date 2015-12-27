@@ -31,13 +31,6 @@ use PSX\Controller\ViewAbstract;
  */
 class TestViewController extends ViewAbstract
 {
-    public function onLoad()
-    {
-        parent::onLoad();
-
-        $this->writerFactory->getWriterByContentType('text/html')->setBaseDir('tests');
-    }
-
     public function doIndex()
     {
         $this->template->assign('foo', 'bar');

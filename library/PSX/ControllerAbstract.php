@@ -34,6 +34,7 @@ use PSX\Http\RequestInterface;
 use PSX\Http\ResponseInterface;
 use PSX\Http\StreamInterface;
 use PSX\Loader\Context;
+use ReflectionClass;
 use SimpleXMLElement;
 
 /**
@@ -264,12 +265,9 @@ abstract class ControllerAbstract implements ControllerInterface, ApplicationSta
     protected function configureWriter(WriterInterface $writer)
     {
         if ($writer instanceof Writer\TemplateAbstract) {
-            if (!$writer->getBaseDir()) {
-                $writer->setBaseDir(PSX_PATH_LIBRARY);
-            }
-
-            if (!$writer->getControllerClass()) {
-                $writer->setControllerClass(get_class($this));
+            if (!$writer->getControllerFile()) {
+                $class = new ReflectionClass($this);
+                $writer->setControllerFile($class->getFilename());
             }
         } elseif ($writer instanceof Writer\Soap) {
             if (!$writer->getRequestMethod()) {

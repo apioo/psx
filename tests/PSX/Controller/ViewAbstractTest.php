@@ -35,7 +35,8 @@ class ViewAbstractTest extends ControllerTestCase
     public function testAutomaticTemplateDetection()
     {
         $response = $this->sendRequest('http://127.0.0.1/view', 'GET', ['Accept' => 'text/html']);
-        $data     = simplexml_load_string((string) $response->getBody());
+        $body     = (string) $response->getBody();
+        $data     = simplexml_load_string($body);
 
         $render = (float) $data->render;
         $config = Environment::getService('config');
@@ -46,7 +47,7 @@ class ViewAbstractTest extends ControllerTestCase
         $this->assertEquals($config['psx_url'] . '/' . $config['psx_dispatch'], $data->url);
         $this->assertEquals($base, $data->base);
         $this->assertTrue($render > 0);
-        $this->assertEquals('tests/PSX/Controller/Foo/Resource', $data->location);
+        $this->assertEquals('tests/PSX/Controller/Foo/Resource', substr($data->location, -33));
     }
 
     public function testImplicitTemplate()
@@ -63,7 +64,7 @@ class ViewAbstractTest extends ControllerTestCase
         $this->assertEquals($config['psx_url'] . '/' . $config['psx_dispatch'], $data->url);
         $this->assertEquals($base, $data->base);
         $this->assertTrue($render > 0);
-        $this->assertEquals('tests/PSX/Controller/Foo/Resource', $data->location);
+        $this->assertEquals('tests/PSX/Controller/Foo/Resource', substr($data->location, -33));
     }
 
     public function testExplicitTemplate()
@@ -80,7 +81,7 @@ class ViewAbstractTest extends ControllerTestCase
         $this->assertEquals($config['psx_url'] . '/' . $config['psx_dispatch'], $data->url);
         $this->assertEquals($base, $data->base);
         $this->assertTrue($render > 0);
-        $this->assertEquals('tests/PSX/Controller/Foo/Resource', $data->location);
+        $this->assertEquals('tests/PSX/Controller/Foo/Resource', substr($data->location, -33));
     }
 
     protected function getPaths()

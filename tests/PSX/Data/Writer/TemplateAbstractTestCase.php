@@ -206,7 +206,7 @@ TEXT;
                 ->will($this->returnValue(true));
 
         $writer = $this->getWriter($template, $router);
-        $writer->setControllerClass('Foo\Application\News\DetailDescription');
+        $writer->setControllerFile(PSX_PATH_LIBRARY . '/Foo/Application/News/DetailDescription.php');
 
         $template->expects($this->at(2))
                 ->method('set')
@@ -243,7 +243,7 @@ TEXT;
                 ->will($this->returnValue(true));
 
         $writer = $this->getWriter($template, $router);
-        $writer->setControllerClass('Foo\Application\News\DetailDescription');
+        $writer->setControllerFile(PSX_PATH_LIBRARY . '/Foo/Application/News/DetailDescription.php');
 
         $actual = $writer->write($this->getRecord());
     }
@@ -261,7 +261,7 @@ TEXT;
             ->getMock();
 
         $writer = $this->getWriter($template, $router);
-        $writer->setControllerClass('Foo\Application\News\DetailDescription');
+        $writer->setControllerFile(PSX_PATH_LIBRARY . '/Foo/Application/News/DetailDescription.php');
 
         $template->expects($this->at(0))
                 ->method('hasFile')
@@ -294,7 +294,7 @@ TEXT;
             ->getMock();
 
         $writer = $this->getWriter($template, $router);
-        $writer->setControllerClass('Foo\Application\News\DetailDescription');
+        $writer->setControllerFile(PSX_PATH_LIBRARY . '/Foo/Application/News/DetailDescription.php');
 
         $template->expects($this->at(0))
                 ->method('hasFile')
@@ -331,7 +331,7 @@ TEXT;
             ->getMock();
 
         $writer = $this->getWriter($template, $router);
-        $writer->setControllerClass('Foo\Application\News\DetailDescription');
+        $writer->setControllerFile(PSX_PATH_LIBRARY . '/Foo/Application/News/DetailDescription.php');
 
         $template->expects($this->at(0))
                 ->method('hasFile')
@@ -388,7 +388,7 @@ TEXT;
                 ->will($this->returnValue(false));
 
         $writer = $this->getWriter($template, $router);
-        $writer->setControllerClass('Foo\Application\News\DetailDescription');
+        $writer->setControllerFile(PSX_PATH_LIBRARY . '/Foo/Application/News/DetailDescription.php');
 
         $actual = $writer->write($this->getRecord());
 

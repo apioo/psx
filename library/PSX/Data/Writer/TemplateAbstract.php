@@ -44,6 +44,8 @@ abstract class TemplateAbstract implements WriterInterface
     protected $reverseRouter;
     protected $generatorFactory;
     protected $className;
+    protected $baseDir;
+    protected $controllerFile;
 
     public function __construct(TemplateInterface $template, ReverseRouter $reverseRouter, GeneratorFactoryInterface $generatorFactory = null)
     {
@@ -63,25 +65,42 @@ abstract class TemplateAbstract implements WriterInterface
         return $this->baseDir;
     }
 
-    public function setControllerClass($className)
+    public function setControllerFile($controllerFile)
     {
-        $this->className = $className;
+        $this->controllerFile = $controllerFile;
     }
 
-    public function getControllerClass()
+    public function getControllerFile()
     {
-        return $this->className;
+        return $this->controllerFile;
     }
 
     public function write(RecordInterface $record)
     {
-        // set default template if no template is set
-        $class = str_replace('\\', '/', $this->className);
-        $path  = $this->baseDir . '/' . strstr($class, '/Application/', true) . '/Resource';
+        $this->controllerFile = str_replace('\\', '/', $this->controllerFile);
+
+        if (strpos($this->controllerFile, '/Application/') !== false) {
+            $path = strstr($this->controllerFile, '/Application/', true) . '/Resource';
+        } else {
+            $path = pathinfo($this->controllerFile, PATHINFO_DIRNAME);
+        }
 
         if (!$this->template->hasFile()) {
+            // try to detect template file if we have no explicit file set
             $ext  = $this->getFileExtension();
-            $file = substr(strstr($class, 'Application'), 12);
+
+            if (strpos($this->controllerFile, '/Application/') !== false) {
+                $file = substr(strstr($this->controllerFile, 'Application'), 12);
+            } else {
+                $file = pathinfo($this->controllerFile, PATHINFO_BASENAME);
+            }
+
+            // remove file extension
+            $pos = strrpos($file, '.');
+            if ($pos !== false) {
+                $file = substr($file, 0, $pos);
+            }
+
             $file = $this->underscore($file) . '.' . $ext;
 
             $this->template->setDir($path);
@@ -110,6 +129,8 @@ abstract class TemplateAbstract implements WriterInterface
         }
 
         if (!$this->template->isFileAvailable()) {
+            // if we hvae no template we check whether we have a generator which
+            // can generate a generic representation of the data
             $generator = $this->generatorFactory->getByContentType($this->getContentType());
 
             if ($generator instanceof GeneratorInterface) {
