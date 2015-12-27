@@ -107,6 +107,7 @@ class JsonSchemaTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \RuntimeException
+     * @expectedExceptionMessageRegExp /^Could not load json schema (.*)$/
      */
     public function testParseInvalidFile()
     {
@@ -115,6 +116,7 @@ class JsonSchemaTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \PSX\Data\Schema\Parser\JsonSchema\UnsupportedVersionException
+     * @expectedExceptionMessage Invalid version requires http://json-schema.org/draft-04/schema#
      */
     public function testParseInvalidVersion()
     {
@@ -123,6 +125,7 @@ class JsonSchemaTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \RuntimeException
+     * @expectedExceptionMessageRegExp /^Could not load external schema (.*)$/
      */
     public function testParseInvalidFileRef()
     {
@@ -131,6 +134,7 @@ class JsonSchemaTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \RuntimeException
+     * @expectedExceptionMessage Could not load external schema http://localhost/foo/bar#/definitions/bar received 404
      */
     public function testParseInvalidHttpRef()
     {
@@ -144,9 +148,20 @@ class JsonSchemaTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \RuntimeException
+     * @expectedExceptionMessage Unknown protocol scheme foo
      */
     public function testParseInvalidSchemaRef()
     {
         JsonSchema::fromFile(__DIR__ . '/unknown_protocol_ref_schema.json');
     }
+
+    /**
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage Could not resolve pointer /definitions/bar
+     */
+    public function testParseInvalidDocumentRef()
+    {
+        JsonSchema::fromFile(__DIR__ . '/invalid_document_ref_schema.json');
+    }
+
 }

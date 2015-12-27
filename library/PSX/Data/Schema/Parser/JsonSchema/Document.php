@@ -28,6 +28,7 @@ use PSX\Data\Schema\PropertySimpleAbstract;
 use PSX\Json;
 use PSX\Json\Pointer;
 use PSX\Uri;
+use RuntimeException;
 
 /**
  * Document
@@ -104,13 +105,13 @@ class Document
         if ($pointer === null) {
             return $this->getRecProperty($this->data, $name, $depth);
         } else {
-            return $this->getRecProperty($this->pointer($pointer) ?: [], $name, $depth);
+            return $this->getRecProperty($this->pointer($pointer), $name, $depth);
         }
     }
 
     /**
      * Resolves a json pointer on the document and returns the fitting array
-     * fragment
+     * fragment. Throws an exception if the pointer could not be resolved
      *
      * @param string $pointer
      * @return array
@@ -118,8 +119,13 @@ class Document
     public function pointer($pointer)
     {
         $pointer = new Pointer($pointer);
+        $data    = $pointer->evaluate($this->data);
 
-        return $pointer->evaluate($this->data);
+        if ($data !== null) {
+            return $data;
+        } else {
+            throw new RuntimeException('Could not resolve pointer ' . $pointer->getPath());
+        }
     }
 
     /**
