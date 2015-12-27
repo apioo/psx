@@ -22,9 +22,12 @@ namespace PSX;
 
 use Monolog\Handler\NullHandler;
 use Monolog\Logger;
+use PSX\Dispatch\FilterInterface as DispatchFilterInterface;
+use PSX\Dispatch\FilterChainInterface;
 use PSX\Http\Request;
 use PSX\Http\RequestInterface;
 use PSX\Http\Response;
+use PSX\Http\ResponseInterface;
 use PSX\Loader\Context;
 use PSX\Loader\FilterController;
 use PSX\Loader\LocationFinder\CallbackMethod;
@@ -461,5 +464,113 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
         $response = new Response();
 
         $loader->load($request, $response);
+    }
+
+    public function testGlobalPreFilter()
+    {
+        $request  = new Request(new Url('http://127.0.0.1/foobar'), 'GET');
+        $response = new Response();
+
+        $locationFinder = new CallbackMethod(function ($request, $context) {
+
+            $context->set(Context::KEY_SOURCE, 'PSX\Loader\FilterController');
+
+            return $request;
+
+        });
+
+        $controller = new FilterController($request, $response);
+
+        $filter1 = function ($request, $response, $filterChain) {
+            $response->addHeader('X-Middleware', __FUNCTION__);
+
+            $filterChain->handle($request, $response);
+        };
+
+        $filter2 = 'PSX\LoaderFilterTest';
+        $filter3 = new LoaderFilterTest();
+
+        $resolver = $this->getMock('PSX\Loader\CallbackResolverInterface');
+
+        $resolver
+            ->method('resolve')
+            ->will($this->returnValue($controller));
+
+        $config = Environment::getService('config');
+        $config->set('psx_filter_pre', [$filter1, $filter2, $filter3]);
+
+        $loader = new Loader(
+            $locationFinder,
+            $resolver,
+            Environment::getService('event_dispatcher'),
+            new Logger('psx', [new NullHandler()]),
+            Environment::getService('object_builder'),
+            $config
+        );
+
+        $this->assertEquals($controller, $loader->load($request, $response));
+
+        $config->set('psx_filter_pre', []);
+
+        $this->assertEquals('PSX\{closure}, PSX\LoaderFilterTest, PSX\LoaderFilterTest', $response->getHeader('X-Middleware'));
+    }
+
+    public function testGlobalPostFilter()
+    {
+        $request  = new Request(new Url('http://127.0.0.1/foobar'), 'GET');
+        $response = new Response();
+
+        $locationFinder = new CallbackMethod(function ($request, $context) {
+
+            $context->set(Context::KEY_SOURCE, 'PSX\Loader\FilterController');
+
+            return $request;
+
+        });
+
+        $controller = new FilterController($request, $response);
+
+        $filter1 = function ($request, $response, $filterChain) {
+            $response->addHeader('X-Middleware', __FUNCTION__);
+
+            $filterChain->handle($request, $response);
+        };
+
+        $filter2 = 'PSX\LoaderFilterTest';
+        $filter3 = new LoaderFilterTest();
+
+        $resolver = $this->getMock('PSX\Loader\CallbackResolverInterface');
+
+        $resolver
+            ->method('resolve')
+            ->will($this->returnValue($controller));
+
+        $config = Environment::getService('config');
+        $config->set('psx_filter_post', [$filter1, $filter2, $filter3]);
+
+        $loader = new Loader(
+            $locationFinder,
+            $resolver,
+            Environment::getService('event_dispatcher'),
+            new Logger('psx', [new NullHandler()]),
+            Environment::getService('object_builder'),
+            $config
+        );
+
+        $this->assertEquals($controller, $loader->load($request, $response));
+
+        $config->set('psx_filter_pre', []);
+
+        $this->assertEquals('PSX\{closure}, PSX\LoaderFilterTest, PSX\LoaderFilterTest', $response->getHeader('X-Middleware'));
+    }
+}
+
+class LoaderFilterTest implements DispatchFilterInterface
+{
+    public function handle(RequestInterface $request, ResponseInterface $response, FilterChainInterface $filterChain)
+    {
+        $response->addHeader('X-Middleware', __CLASS__);
+
+        $filterChain->handle($request, $response);
     }
 }

@@ -24,7 +24,7 @@ use Closure;
 use Psr\Log\LoggerInterface;
 use PSX\Dependency\ObjectBuilder;
 use PSX\Dispatch\FilterChain;
-use PSX\Dispatch\FilterInterface;
+use PSX\Dispatch\FilterInterface as DispatchFilterInterface;
 use PSX\Event\ControllerExecuteEvent;
 use PSX\Event\ControllerProcessedEvent;
 use PSX\Event\RouteMatchedEvent;
@@ -34,6 +34,7 @@ use PSX\Loader\CallbackResolverInterface;
 use PSX\Loader\Context;
 use PSX\Loader\InvalidPathException;
 use PSX\Loader\LocationFinderInterface;
+use RuntimeException;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use UnexpectedValueException;
 
@@ -143,7 +144,7 @@ class Loader implements LoaderInterface
         foreach ($filters as $filter) {
             if (is_string($filter)) {
                 $result[] = $this->objectBuilder->getObject($filter, [], 'PSX\Dispatch\FilterInterface');
-            } elseif ($filter instanceof FilterInterface) {
+            } elseif ($filter instanceof DispatchFilterInterface) {
                 $result[] = $filter;
             } elseif ($filter instanceof Closure) {
                 $result[] = $filter;
