@@ -1,5 +1,10 @@
 
-### 1.1.2 
+### 1.1.3 (2015-12-27)
+
+* Fixed a missing import alias which causes a problem in the loader
+* Organize uses and fixed coding styles
+
+### 1.1.2 (2015-12-27)
 
 * Add option to specify global middlewares
 * Updated composer dependencies
