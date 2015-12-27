@@ -37,7 +37,7 @@ class ContentMd5 implements FilterInterface
 {
     public function handle(RequestInterface $request, ResponseInterface $response, FilterChainInterface $filterChain)
     {
-        $filterChain->handle($request, $response, $filterChain);
+        $filterChain->handle($request, $response);
 
         if (!$response->hasHeader('Content-MD5')) {
             $response->setHeader('Content-MD5', md5(Util::toString($response->getBody())));

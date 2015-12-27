@@ -54,6 +54,7 @@ class JsonSchema implements GeneratorInterface
     /**
      * Returns the jsonschema as array
      *
+     * @param \PSX\Data\SchemaInterface $schema
      * @return array
      */
     public function toArray(SchemaInterface $schema)

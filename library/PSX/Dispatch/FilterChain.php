@@ -69,7 +69,7 @@ class FilterChain implements FilterChainInterface, LoggerAwareInterface
             // if we have no filters check whether we have another filter chain
             // which should be called next
             if ($this->filterChain !== null) {
-                $this->filterChain->handle($request, $response, $this->filterChain);
+                $this->filterChain->handle($request, $response);
             }
         } elseif ($filter instanceof FilterInterface) {
             if ($this->logger !== null) {

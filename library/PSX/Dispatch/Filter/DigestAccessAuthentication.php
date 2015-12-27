@@ -152,7 +152,7 @@ class DigestAccessAuthentication implements FilterInterface
                 }
 
                 if (strcmp($hash, $params['response']) === 0) {
-                    $this->callSuccess($response, $hash);
+                    $this->callSuccess($response);
 
                     $filterChain->handle($request, $response);
                 } else {

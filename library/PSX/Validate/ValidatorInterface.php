@@ -45,7 +45,7 @@ interface ValidatorInterface
      * Validates a specific property. Searches a fitting validation property
      * inside the list of available rules and applies all filters to the data
      *
-     * @param string $data
+     * @param string $path
      * @param mixed $data
      * @return mixed
      */

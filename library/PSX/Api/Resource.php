@@ -195,6 +195,7 @@ class Resource extends RecordAbstract implements IteratorAggregate
     }
 
     /**
+     * @param string $method
      * @return boolean
      */
     public function hasMethod($method)

@@ -22,6 +22,7 @@ namespace PSX;
 
 use PSX\Http\RequestInterface;
 use PSX\Http\ResponseInterface;
+use PSX\Loader\Context;
 
 /**
  * LoaderInterface
@@ -39,7 +40,8 @@ interface LoaderInterface
      *
      * @param \PSX\Http\RequestInterface $request
      * @param \PSX\Http\ResponseInterface $response
+     * @param \PSX\Loader\Context $context
      * @return \PSX\ControllerInterface
      */
-    public function load(RequestInterface $request, ResponseInterface $response);
+    public function load(RequestInterface $request, ResponseInterface $response, Context $context = null);
 }

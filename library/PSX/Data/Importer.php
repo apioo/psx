@@ -90,6 +90,7 @@ class Importer
     /**
      * Returns an importer which understands the provided source
      *
+     * @param mixed $source
      * @return \PSX\Data\Record\ImporterInterface
      */
     public function createBySource($source)

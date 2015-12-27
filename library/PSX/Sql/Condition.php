@@ -283,7 +283,7 @@ class Condition extends ExpressionAbstract implements Countable
     /**
      * Sets whether the expression is inverse
      *
-     * @param boolean $inverse
+     * @param boolean $isInverse
      * @return \PSX\Sql\Condition
      */
     public function setInverse($isInverse)
@@ -378,6 +378,7 @@ class Condition extends ExpressionAbstract implements Countable
     }
 
     /**
+     * @param \Doctrine\DBAL\Platforms\AbstractPlatform $platform
      * @return string
      */
     public function getStatment(AbstractPlatform $platform = null)

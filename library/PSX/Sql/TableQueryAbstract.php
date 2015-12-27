@@ -89,7 +89,6 @@ abstract class TableQueryAbstract implements TableQueryInterface
         if (substr($method, 0, 8) == 'getOneBy') {
             $column = lcfirst(substr($method, 8));
             $value  = isset($arguments[0]) ? $arguments[0] : null;
-            $fields = isset($arguments[1]) ? $arguments[1] : null;
 
             if (!empty($value)) {
                 $condition = new Condition(array($column, '=', $value));
@@ -97,11 +96,10 @@ abstract class TableQueryAbstract implements TableQueryInterface
                 throw new InvalidArgumentException('Value required');
             }
 
-            return $this->getOneBy($condition, $fields);
+            return $this->getOneBy($condition);
         } elseif (substr($method, 0, 5) == 'getBy') {
             $column = lcfirst(substr($method, 5));
             $value  = isset($arguments[0]) ? $arguments[0] : null;
-            $fields = isset($arguments[1]) ? $arguments[1] : null;
 
             if (!empty($value)) {
                 $condition = new Condition(array($column, '=', $value));
@@ -109,7 +107,7 @@ abstract class TableQueryAbstract implements TableQueryInterface
                 throw new InvalidArgumentException('Value required');
             }
 
-            return $this->getBy($condition, $fields);
+            return $this->getBy($condition);
         } else {
             throw new BadMethodCallException('Undefined method ' . $method);
         }
