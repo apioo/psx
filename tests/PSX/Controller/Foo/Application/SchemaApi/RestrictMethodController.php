@@ -58,16 +58,4 @@ class RestrictMethodController extends SchemaApiAbstract
             'foo' => 'bar'
         );
     }
-
-    protected function doCreate(RecordInterface $record, Version $version)
-    {
-    }
-
-    protected function doUpdate(RecordInterface $record, Version $version)
-    {
-    }
-
-    protected function doDelete(RecordInterface $record, Version $version)
-    {
-    }
 }

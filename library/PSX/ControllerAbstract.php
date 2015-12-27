@@ -134,31 +134,52 @@ abstract class ControllerAbstract implements ControllerInterface, ApplicationSta
         $this->context->set(Context::KEY_SUPPORTED_WRITER, $this->getSupportedWriter());
     }
 
-    public function onDelete()
-    {
-    }
-
+    /**
+     * @see http://tools.ietf.org/html/rfc7231#section-4.3.1
+     */
     public function onGet()
     {
     }
 
+    /**
+     * @see http://tools.ietf.org/html/rfc7231#section-4.3.2
+     */
     public function onHead()
     {
     }
 
-    public function onOptions()
-    {
-    }
-
+    /**
+     * @see http://tools.ietf.org/html/rfc7231#section-4.3.3
+     */
     public function onPost()
     {
     }
 
+    /**
+     * @see http://tools.ietf.org/html/rfc7231#section-4.3.4
+     */
     public function onPut()
     {
     }
 
-    public function onTrace()
+    /**
+     * @see http://tools.ietf.org/html/rfc7231#section-4.3.5
+     */
+    public function onDelete()
+    {
+    }
+
+    /**
+     * @see http://tools.ietf.org/html/rfc7231#section-4.3.7
+     */
+    public function onOptions()
+    {
+    }
+
+    /**
+     * @see https://tools.ietf.org/html/rfc5789#section-2
+     */
+    public function onPatch()
     {
     }
 
@@ -281,7 +302,7 @@ abstract class ControllerAbstract implements ControllerInterface, ApplicationSta
     }
 
     /**
-     * Can be overriden by an controller to return the formats which are
+     * Can be overridden by a controller to return the formats which are
      * supported. All following controllers will have the same supported writers
      * as the origin controller. If null gets returned every available format is
      * supported otherwise it must return an array containing writer class names
@@ -327,7 +348,13 @@ abstract class ControllerAbstract implements ControllerInterface, ApplicationSta
             }
         }
 
-        // for iframe file uploads we need an text/html content type header even
+        // for head requests set content length and remove body
+        if ($this->request->getMethod() == 'HEAD') {
+            $this->response->setHeader('Content-Length', mb_strlen($response));
+            $response = '';
+        }
+
+        // for iframe file uploads we need a text/html content type header even
         // if we want serve json content. If all browsers support the FormData
         // api we can send file uploads per ajax but for now we use this hack.
         // Note do not rely on this param it will be removed as soon as possible

@@ -55,13 +55,13 @@ class Basic implements SenderInterface
         if (in_array($response->getStatusCode(), array(100, 101, 204, 304))) {
             $response->setBody(new StringStream(''));
         }
-        // if we have an location header we dont send any content
+        // if we have a location header we dont send any content
         elseif ($response->hasHeader('Location')) {
             $response->setBody(new StringStream(''));
         }
 
         if ($this->shouldSendHeader()) {
-            // if we have an file stream body set custom header
+            // if we have a file stream body set custom header
             $this->prepareFileStream($response);
 
             // send status line
@@ -171,7 +171,7 @@ class Basic implements SenderInterface
 
         while (!$body->eof()) {
             $chunk = $body->read($this->chunkSize);
-            $len   = strlen($chunk);
+            $len   = mb_strlen($chunk);
 
             if ($len > 0) {
                 echo dechex($len) . "\r\n" . $chunk . "\r\n";

@@ -163,7 +163,7 @@ class {$className} extends SchemaApiAbstract
 	 * @param \PSX\Api\Version \$version
 	 * @return array|\PSX\Data\RecordInterface
 	 */
-	protected function doCreate(RecordInterface \$record, Version \$version)
+	protected function doPost(RecordInterface \$record, Version \$version)
 	{
 	}
 
@@ -174,7 +174,7 @@ class {$className} extends SchemaApiAbstract
 	 * @param \PSX\Api\Version \$version
 	 * @return array|\PSX\Data\RecordInterface
 	 */
-	protected function doUpdate(RecordInterface \$record, Version \$version)
+	protected function doPut(RecordInterface \$record, Version \$version)
 	{
 	}
 

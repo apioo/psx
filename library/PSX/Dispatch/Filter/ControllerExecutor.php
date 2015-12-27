@@ -50,20 +50,12 @@ class ControllerExecutor implements FilterInterface
         $this->controller->onLoad();
 
         switch ($request->getMethod()) {
-            case 'DELETE':
-                $this->controller->onDelete();
-                break;
-
             case 'GET':
                 $this->controller->onGet();
                 break;
 
             case 'HEAD':
                 $this->controller->onHead();
-                break;
-
-            case 'OPTIONS':
-                $this->controller->onOptions();
                 break;
 
             case 'POST':
@@ -74,8 +66,16 @@ class ControllerExecutor implements FilterInterface
                 $this->controller->onPut();
                 break;
 
-            case 'TRACE':
-                $this->controller->onTrace();
+            case 'DELETE':
+                $this->controller->onDelete();
+                break;
+
+            case 'OPTIONS':
+                $this->controller->onOptions();
+                break;
+
+            case 'PATCH':
+                $this->controller->onPatch();
                 break;
         }
 

@@ -46,13 +46,13 @@ class ControllerExecutorTest extends \PHPUnit_Framework_TestCase
 
         $controller = $this->getMock('PSX\ControllerInterface', array(
             'onLoad',
-            'onDelete',
             'onGet',
             'onHead',
-            'onOptions',
             'onPost',
             'onPut',
-            'onTrace',
+            'onDelete',
+            'onOptions',
+            'onPatch',
             'processResponse',
         ));
 
@@ -75,13 +75,13 @@ class ControllerExecutorTest extends \PHPUnit_Framework_TestCase
     public function requestMethodProvider()
     {
         return array(
-            ['DELETE'],
             ['GET'],
             ['HEAD'],
-            ['OPTIONS'],
             ['POST'],
             ['PUT'],
-            ['TRACE'],
+            ['DELETE'],
+            ['OPTIONS'],
+            ['PATCH'],
         );
     }
 
@@ -89,13 +89,13 @@ class ControllerExecutorTest extends \PHPUnit_Framework_TestCase
     {
         $controller = $this->getMock('PSX\ControllerInterface', array(
             'onLoad',
-            'onDelete',
             'onGet',
             'onHead',
-            'onOptions',
             'onPost',
             'onPut',
-            'onTrace',
+            'onDelete',
+            'onOptions',
+            'onPatch',
             'processResponse',
             'doFoo',
         ));

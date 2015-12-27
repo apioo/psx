@@ -80,7 +80,7 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
         $doc = $this->resourceListing->getDocumentation($this->context->get(Context::KEY_PATH));
 
         if (!$doc instanceof DocumentationInterface) {
-            throw new RuntimeException('No documentation available');
+            throw new StatusCode\InternalServerErrorException('No documentation available for this resource');
         }
 
         $this->version  = $this->getVersion($doc);
@@ -101,6 +101,16 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
         );
     }
 
+    public function onHead()
+    {
+        $method   = $this->resource->getMethod('GET');
+        $response = $this->doGet($this->version);
+
+        // the setResponse method removes the body so we behave like on a GET 
+        // request
+        $this->sendResponse($method, $response);
+    }
+
     public function onGet()
     {
         $method   = $this->resource->getMethod('GET');
@@ -113,7 +123,7 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
     {
         $method   = $this->resource->getMethod('POST');
         $record   = $this->parseRequest($method);
-        $response = $this->doCreate($record, $this->version);
+        $response = $this->doPost($record, $this->version);
 
         $this->sendResponse($method, $response);
     }
@@ -122,7 +132,7 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
     {
         $method   = $this->resource->getMethod('PUT');
         $record   = $this->parseRequest($method);
-        $response = $this->doUpdate($record, $this->version);
+        $response = $this->doPut($record, $this->version);
 
         $this->sendResponse($method, $response);
     }
@@ -136,40 +146,73 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
         $this->sendResponse($method, $response);
     }
 
-    /**
-     * Returns the GET response
-     *
-     * @param \PSX\Api\Version $version
-     * @return array|\PSX\Data\RecordInterface
-     */
-    abstract protected function doGet(Version $version);
+    public function onPatch()
+    {
+        $method   = $this->resource->getMethod('PATCH');
+        $record   = $this->parseRequest($method);
+        $response = $this->doPut($record, $this->version);
+
+        $this->sendResponse($method, $response);
+    }
 
     /**
-     * Returns the POST response
+     * Handles a GET request and returns a response
      *
-     * @param \PSX\Data\RecordInterface $record
+     * @see http://tools.ietf.org/html/rfc7231#section-4.3.1
      * @param \PSX\Api\Version $version
-     * @return array|\PSX\Data\RecordInterface
+     * @return mixed
      */
-    abstract protected function doCreate(RecordInterface $record, Version $version);
+    protected function doGet(Version $version)
+    {
+    }
 
     /**
-     * Returns the PUT response
+     * Handles a POST request and returns a response
      *
+     * @see http://tools.ietf.org/html/rfc7231#section-4.3.3
      * @param \PSX\Data\RecordInterface $record
      * @param \PSX\Api\Version $version
-     * @return array|\PSX\Data\RecordInterface
+     * @return mixed
      */
-    abstract protected function doUpdate(RecordInterface $record, Version $version);
+    protected function doPost(RecordInterface $record, Version $version)
+    {
+    }
 
     /**
-     * Returns the DELETE response
+     * Handles a PUT request and returns a response
      *
+     * @see http://tools.ietf.org/html/rfc7231#section-4.3.4
      * @param \PSX\Data\RecordInterface $record
      * @param \PSX\Api\Version $version
-     * @return array|\PSX\Data\RecordInterface
+     * @return mixed
      */
-    abstract protected function doDelete(RecordInterface $record, Version $version);
+    protected function doPut(RecordInterface $record, Version $version)
+    {
+    }
+
+    /**
+     * Handles a DELETE request and returns a response
+     *
+     * @see http://tools.ietf.org/html/rfc7231#section-4.3.5
+     * @param \PSX\Data\RecordInterface $record
+     * @param \PSX\Api\Version $version
+     * @return mixed
+     */
+    protected function doDelete(RecordInterface $record, Version $version)
+    {
+    }
+
+    /**
+     * Handles a PATCH request and returns a response
+     *
+     * @see https://tools.ietf.org/html/rfc5789#section-2
+     * @param \PSX\Data\RecordInterface $record
+     * @param \PSX\Api\Version $version
+     * @return mixed
+     */
+    protected function doPatch(RecordInterface $record, Version $version)
+    {
+    }
 
     /**
      * Imports the request data based on the schema if available

@@ -48,14 +48,14 @@ abstract class PropertyControllerAbstract extends SchemaApiAbstract
         return PropertyTestCase::getDataByType($this->queryParameters->getProperty('type'));
     }
 
-    protected function doCreate(RecordInterface $record, Version $version)
+    protected function doPost(RecordInterface $record, Version $version)
     {
         PropertyTestCase::assertRecord($this->testCase, $record);
 
         return $record;
     }
 
-    protected function doUpdate(RecordInterface $record, Version $version)
+    protected function doPut(RecordInterface $record, Version $version)
     {
     }
 

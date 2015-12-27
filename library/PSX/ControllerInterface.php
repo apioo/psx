@@ -35,39 +35,39 @@ interface ControllerInterface
     public function onLoad();
 
     /**
-     * Method which gets called on an DELETE request
-     */
-    public function onDelete();
-
-    /**
-     * Method which gets called on an GET request
+     * @see http://tools.ietf.org/html/rfc7231#section-4.3.1
      */
     public function onGet();
 
     /**
-     * Method which gets called on an HEAD request
+     * @see http://tools.ietf.org/html/rfc7231#section-4.3.2
      */
     public function onHead();
 
     /**
-     * Method which gets called on an OPTIONS request
-     */
-    public function onOptions();
-
-    /**
-     * Method which gets called on an POST request
+     * @see http://tools.ietf.org/html/rfc7231#section-4.3.3
      */
     public function onPost();
 
     /**
-     * Method which gets called on an PUT request
+     * @see http://tools.ietf.org/html/rfc7231#section-4.3.4
      */
     public function onPut();
 
     /**
-     * Method which gets called on an TRACE request
+     * @see http://tools.ietf.org/html/rfc7231#section-4.3.5
      */
-    public function onTrace();
+    public function onDelete();
+
+    /**
+     * @see http://tools.ietf.org/html/rfc7231#section-4.3.7
+     */
+    public function onOptions();
+
+    /**
+     * @see https://tools.ietf.org/html/rfc5789#section-2
+     */
+    public function onPatch();
 
     /**
      * Is called after the controller action was called

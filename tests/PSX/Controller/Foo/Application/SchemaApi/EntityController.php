@@ -83,11 +83,11 @@ class EntityController extends SchemaApiAbstract
         );
     }
 
-    protected function doCreate(RecordInterface $record, Version $version)
+    protected function doPost(RecordInterface $record, Version $version)
     {
     }
 
-    protected function doUpdate(RecordInterface $record, Version $version)
+    protected function doPut(RecordInterface $record, Version $version)
     {
         $this->testCase->assertEquals(8, $this->pathParameters->getProperty('fooId'));
         $this->testCase->assertEmpty($this->pathParameters->getProperty('bar'));

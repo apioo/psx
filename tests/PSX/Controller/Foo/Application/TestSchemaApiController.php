@@ -80,7 +80,7 @@ class TestSchemaApiController extends SchemaApiAbstract
         );
     }
 
-    protected function doCreate(RecordInterface $record, Version $version)
+    protected function doPost(RecordInterface $record, Version $version)
     {
         $this->testCase->assertEquals(3, $record->getUserId());
         $this->testCase->assertEquals('test', $record->getTitle());
@@ -92,7 +92,7 @@ class TestSchemaApiController extends SchemaApiAbstract
         );
     }
 
-    protected function doUpdate(RecordInterface $record, Version $version)
+    protected function doPut(RecordInterface $record, Version $version)
     {
         $this->testCase->assertEquals(1, $record->getId());
         $this->testCase->assertEquals(3, $record->getUserId());

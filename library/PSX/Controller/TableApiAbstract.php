@@ -111,7 +111,7 @@ abstract class TableApiAbstract extends SchemaApiAbstract
         );
     }
 
-    protected function doCreate(RecordInterface $record, Version $version)
+    protected function doPost(RecordInterface $record, Version $version)
     {
         $table = $this->getTable();
         $table->create($record);
@@ -122,7 +122,7 @@ abstract class TableApiAbstract extends SchemaApiAbstract
         );
     }
 
-    protected function doUpdate(RecordInterface $record, Version $version)
+    protected function doPut(RecordInterface $record, Version $version)
     {
         $table = $this->getTable();
         $data  = $table->get($record->getRecordInfo()->getField($table->getPrimaryKey()));

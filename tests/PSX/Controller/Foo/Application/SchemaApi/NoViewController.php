@@ -51,20 +51,4 @@ class NoViewController extends SchemaApiAbstract
     {
         return new Documentation\Simple(new Resource(Resource::STATUS_ACTIVE, '/'));
     }
-
-    protected function doGet(Version $version)
-    {
-    }
-
-    protected function doCreate(RecordInterface $record, Version $version)
-    {
-    }
-
-    protected function doUpdate(RecordInterface $record, Version $version)
-    {
-    }
-
-    protected function doDelete(RecordInterface $record, Version $version)
-    {
-    }
 }
