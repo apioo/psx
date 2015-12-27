@@ -482,7 +482,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
         $controller = new FilterController($request, $response);
 
         $filter1 = function ($request, $response, $filterChain) {
-            $response->addHeader('X-Middleware', __FUNCTION__);
+            $response->addHeader('X-Middleware', '{closure}');
 
             $filterChain->handle($request, $response);
         };
@@ -512,7 +512,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 
         $config->set('psx_filter_pre', []);
 
-        $this->assertEquals('PSX\{closure}, PSX\LoaderFilterTest, PSX\LoaderFilterTest', $response->getHeader('X-Middleware'));
+        $this->assertEquals('{closure}, PSX\LoaderFilterTest, PSX\LoaderFilterTest', $response->getHeader('X-Middleware'));
     }
 
     public function testGlobalPostFilter()
@@ -531,7 +531,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
         $controller = new FilterController($request, $response);
 
         $filter1 = function ($request, $response, $filterChain) {
-            $response->addHeader('X-Middleware', __FUNCTION__);
+            $response->addHeader('X-Middleware', '{closure}');
 
             $filterChain->handle($request, $response);
         };
@@ -561,7 +561,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 
         $config->set('psx_filter_pre', []);
 
-        $this->assertEquals('PSX\{closure}, PSX\LoaderFilterTest, PSX\LoaderFilterTest', $response->getHeader('X-Middleware'));
+        $this->assertEquals('{closure}, PSX\LoaderFilterTest, PSX\LoaderFilterTest', $response->getHeader('X-Middleware'));
     }
 }
 
