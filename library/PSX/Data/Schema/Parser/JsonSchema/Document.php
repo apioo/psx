@@ -104,7 +104,7 @@ class Document
         if ($pointer === null) {
             return $this->getRecProperty($this->data, $name, $depth);
         } else {
-            return $this->getRecProperty($this->pointer($pointer), $name, $depth);
+            return $this->getRecProperty($this->pointer($pointer) ?: [], $name, $depth);
         }
     }
 
