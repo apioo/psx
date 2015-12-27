@@ -20,10 +20,8 @@
 
 namespace PSX\Controller\Behaviour;
 
-use PSX\Data\TransformerInterface;
 use PSX\Data\Record\Importer;
-use PSX\Data\Record\ImporterManager;
-use PSX\Data\Record\ImporterInterface;
+use PSX\Data\TransformerInterface;
 use PSX\Validate\ValidatorAwareInterface;
 use PSX\Validate\ValidatorInterface;
 

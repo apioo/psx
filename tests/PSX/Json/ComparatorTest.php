@@ -21,7 +21,6 @@
 namespace PSX\Json;
 
 use PSX\Data\Record;
-use stdClass;
 
 /**
  * ComparatorTest

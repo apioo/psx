@@ -24,7 +24,6 @@ use PSX\Data\Record;
 use PSX\Data\Record\GraphTraverser;
 use PSX\Data\Record\Visitor\ValidationVisitor;
 use PSX\Validate;
-use RuntimeException;
 
 /**
  * ValidatorAbstract

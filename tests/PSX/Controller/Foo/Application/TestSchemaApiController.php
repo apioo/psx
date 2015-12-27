@@ -29,8 +29,6 @@ use PSX\Filter;
 use PSX\Loader\Context;
 use PSX\Test\Environment;
 use PSX\Validate;
-use PSX\Validate\Property;
-use PSX\Validate\Validator;
 
 /**
  * TestSchemaApiController

@@ -22,7 +22,6 @@ namespace PSX\Data\Record\Visitor;
 
 use PSX\Data\Record;
 use PSX\Data\Record\GraphTraverser;
-use PSX\Test\Assert;
 use PSX\Uri;
 use PSX\Validate\ValidatorInterface;
 

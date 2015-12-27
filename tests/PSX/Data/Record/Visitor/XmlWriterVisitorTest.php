@@ -59,7 +59,7 @@ class XmlWriterVisitorTest extends VisitorTestCase
 
         $key = '';
         for ($i = 0; $i <= 0x7F; $i++) {
-          $key.= chr($i);
+            $key.= chr($i);
         }
 
         $record = Record::fromArray([

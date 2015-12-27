@@ -22,8 +22,8 @@ namespace PSX;
 
 use Monolog\Handler\NullHandler;
 use Monolog\Logger;
-use PSX\Dispatch\FilterInterface as DispatchFilterInterface;
 use PSX\Dispatch\FilterChainInterface;
+use PSX\Dispatch\FilterInterface as DispatchFilterInterface;
 use PSX\Http\Request;
 use PSX\Http\RequestInterface;
 use PSX\Http\Response;

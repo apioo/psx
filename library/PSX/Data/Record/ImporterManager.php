@@ -20,11 +20,10 @@
 
 namespace PSX\Data\Record;
 
-use PSX\Data\RecordInterface;
-use PSX\Data\Record\FactoryFactory;
 use PSX\Data\Record\Importer;
-use PSX\Data\SchemaInterface;
+use PSX\Data\RecordInterface;
 use PSX\Data\Schema\Assimilator;
+use PSX\Data\SchemaInterface;
 use PSX\Sql\TableInterface;
 
 /**

@@ -67,8 +67,8 @@ class TestApiValidateController extends ApiAbstract
 
         $this->testCase->assertInstanceOf('PSX\Data\RecordInterface', $data);
 
-        // we check that the validator is only applied for the request. If the 
-        // importer manager is not immutable the importer would also have the 
+        // we check that the validator is only applied for the request. If the
+        // importer manager is not immutable the importer would also have the
         // request validator
         $message = new Message([], '{"title": "foofoofoo"}');
         $data    = $this->importer->import($this->schemaManager->getSchema('PSX\Controller\Foo\Schema\NestedEntry'), $message);

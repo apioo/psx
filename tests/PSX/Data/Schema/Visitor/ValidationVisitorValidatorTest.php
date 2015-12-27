@@ -21,13 +21,10 @@
 namespace PSX\Data\Schema\Visitor;
 
 use PSX\Data\Schema\Property;
-use PSX\Data\Schema\Visitor\ValidationVisitor;
 use PSX\DateTime;
 use PSX\DateTime\Date;
 use PSX\DateTime\Duration;
 use PSX\DateTime\Time;
-use PSX\Uri;
-use PSX\Validate\Validator;
 
 /**
  * Checks whether the validator is called for each property

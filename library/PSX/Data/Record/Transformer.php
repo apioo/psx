@@ -20,7 +20,6 @@
 
 namespace PSX\Data\Record;
 
-use PSX\Data\RecordInterface;
 use PSX\Data\Record\Visitor\RecordSerializeVisitor;
 use PSX\Data\Record\Visitor\StdClassSerializeVisitor;
 

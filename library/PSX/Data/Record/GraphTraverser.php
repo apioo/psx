@@ -99,7 +99,7 @@ class GraphTraverser
     }
 
     /**
-     * Method which reveals the true value of an object if it has a known 
+     * Method which reveals the true value of an object if it has a known
      * interface. Note this resolves also all Traversable instances to an array
      *
      * @param mixed $object
