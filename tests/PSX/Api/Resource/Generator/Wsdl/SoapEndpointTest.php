@@ -62,7 +62,7 @@ class SoapEndpointTest extends ControllerDbTestCase
         $message = $this->getSoapClient()->postItem($entry);
 
         $this->assertTrue($message->success);
-        $this->assertEquals('You have successful create a record', $message->message);
+        $this->assertEquals('You have successful post a record', $message->message);
     }
 
     /**
@@ -89,7 +89,7 @@ class SoapEndpointTest extends ControllerDbTestCase
         $message = $this->getSoapClient()->putItem($entry);
 
         $this->assertTrue($message->success);
-        $this->assertEquals('You have successful update a record', $message->message);
+        $this->assertEquals('You have successful put a record', $message->message);
     }
 
     public function testDeleteItem()

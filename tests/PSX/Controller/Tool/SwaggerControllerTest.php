@@ -137,6 +137,25 @@ JSON;
                             "responseModel": "DELETE-200-response"
                         }
                     ]
+                },
+                {
+                    "method": "PATCH",
+                    "nickname": "patchItem",
+                    "parameters": [
+                        {
+                            "paramType": "body",
+                            "name": "body",
+                            "required": true,
+                            "type": "PATCH-request"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 200,
+                            "message": "200 response",
+                            "responseModel": "PATCH-200-response"
+                        }
+                    ]
                 }
             ]
         }
@@ -167,10 +186,10 @@ JSON;
             "properties": {
                 "entry": {
                     "type": "array",
-                    "title": "entry",
                     "items": {
                         "$ref": "ref993f4bb37f524889fc963fedd6381458"
-                    }
+                    },
+                    "title": "entry"
                 }
             }
         },
@@ -237,10 +256,10 @@ JSON;
             "properties": {
                 "entry": {
                     "type": "array",
-                    "title": "entry",
                     "items": {
                         "$ref": "ref993f4bb37f524889fc963fedd6381458"
-                    }
+                    },
+                    "title": "entry"
                 }
             }
         },
@@ -338,6 +357,40 @@ JSON;
         },
         "DELETE-200-response": {
             "id": "DELETE-200-response",
+            "properties": {
+                "success": {
+                    "type": "boolean"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "PATCH-request": {
+            "id": "PATCH-request",
+            "required": [
+                "id"
+            ],
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "userId": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 16,
+                    "pattern": "[A-z]+"
+                },
+                "date": {
+                    "type": "string"
+                }
+            }
+        },
+        "PATCH-200-response": {
+            "id": "PATCH-200-response",
             "properties": {
                 "success": {
                     "type": "boolean"

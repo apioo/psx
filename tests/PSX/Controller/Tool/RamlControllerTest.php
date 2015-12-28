@@ -244,6 +244,57 @@ title: Api
                   },
                   "additionalProperties": false
               }
+  patch:
+    body:
+      application/json:
+        schema: |
+          {
+              "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
+              "id": "urn:schema.phpsx.org#",
+              "type": "object",
+              "title": "item",
+              "properties": {
+                  "id": {
+                      "type": "integer"
+                  },
+                  "userId": {
+                      "type": "integer"
+                  },
+                  "title": {
+                      "type": "string",
+                      "minLength": 3,
+                      "maxLength": 16,
+                      "pattern": "[A-z]+"
+                  },
+                  "date": {
+                      "type": "string"
+                  }
+              },
+              "required": [
+                  "id"
+              ],
+              "additionalProperties": false
+          }
+    responses:
+      200:
+        body:
+          application/json:
+            schema: |
+              {
+                  "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
+                  "id": "urn:schema.phpsx.org#",
+                  "type": "object",
+                  "title": "message",
+                  "properties": {
+                      "success": {
+                          "type": "boolean"
+                      },
+                      "message": {
+                          "type": "string"
+                      }
+                  },
+                  "additionalProperties": false
+              }
 
 RAML;
 

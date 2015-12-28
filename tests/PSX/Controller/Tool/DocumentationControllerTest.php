@@ -89,7 +89,6 @@ JSON;
         "definitions": {
             "ref993f4bb37f524889fc963fedd6381458": {
                 "type": "object",
-                "title": "item",
                 "properties": {
                     "id": {
                         "type": "integer"
@@ -107,6 +106,7 @@ JSON;
                         "type": "string"
                     }
                 },
+                "title": "item",
                 "additionalProperties": false
             },
             "refe80c8b9e68244cea3401d3b7aff00733": {
@@ -115,10 +115,10 @@ JSON;
                 "properties": {
                     "entry": {
                         "type": "array",
-                        "title": "entry",
                         "items": {
                             "$ref": "#\/definitions\/ref993f4bb37f524889fc963fedd6381458"
-                        }
+                        },
+                        "title": "entry"
                     }
                 },
                 "additionalProperties": false
@@ -207,6 +207,12 @@ JSON;
             },
             "DELETE-200-response": {
                 "$ref": "#\/definitions\/ref3a0bf597c698b671859e2c0ca2640825"
+            },
+            "PATCH-request": {
+                "$ref": "#\/definitions\/ref3368bc12f3927997f38dc1bea49554be"
+            },
+            "PATCH-200-response": {
+                "$ref": "#\/definitions\/ref3a0bf597c698b671859e2c0ca2640825"
             }
         }
     },
@@ -238,6 +244,12 @@ JSON;
             "request": "#\/definitions\/DELETE-request",
             "responses": {
                 "200": "#\/definitions\/DELETE-200-response"
+            }
+        },
+        "PATCH": {
+            "request": "#\/definitions\/PATCH-request",
+            "responses": {
+                "200": "#\/definitions\/PATCH-200-response"
             }
         }
     }
