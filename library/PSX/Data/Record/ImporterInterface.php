@@ -30,7 +30,6 @@ namespace PSX\Data\Record;
  */
 interface ImporterInterface
 {
-    const ENTITY = 'PSX\Data\Record\Importer\Entity';
     const RECORD = 'PSX\Data\Record\Importer\Record';
     const SCHEMA = 'PSX\Data\Record\Importer\Schema';
     const TABLE  = 'PSX\Data\Record\Importer\Table';
