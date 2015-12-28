@@ -46,7 +46,8 @@ class DocumentationControllerTest extends ControllerTestCase
                 "GET",
                 "POST",
                 "PUT",
-                "DELETE"
+                "DELETE",
+                "PATCH"
             ],
             "version": "*"
         }
@@ -265,7 +266,7 @@ JSON;
         return array(
             [['GET'], '/doc', 'PSX\Controller\Tool\DocumentationController::doIndex'],
             [['GET'], '/doc/:version/*path', 'PSX\Controller\Tool\DocumentationController::doDetail'],
-            [['GET', 'POST', 'PUT', 'DELETE'], '/api', 'PSX\Controller\Foo\Application\TestSchemaApiController'],
+            [['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], '/api', 'PSX\Controller\Foo\Application\TestSchemaApiController'],
         );
     }
 }
