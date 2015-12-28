@@ -90,11 +90,11 @@ In the following a short example howto add versioning to an schema API
         {
         }
 
-        protected function doCreate(RecordInterface $record, Version $version)
+        protected function doPost(RecordInterface $record, Version $version)
         {
         }
 
-        protected function doUpdate(RecordInterface $record, Version $version)
+        protected function doPut(RecordInterface $record, Version $version)
         {
         }
 

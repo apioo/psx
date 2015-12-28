@@ -50,7 +50,7 @@ you have to check
 * is the token not expired
 
 PSX calculates and compares the signature if you return an consumer. For more 
-informations see :rfc:`5849#anchor`
+informations see :rfc:`5849`.
 
 .. code-block:: php
 
@@ -74,4 +74,33 @@ informations see :rfc:`5849#anchor`
     	});
     
     	return array($auth);
+    }
+
+Oauth2 authentication
+--------------------
+
+Sample oauth2 authentication. In the callback you have to check whether the 
+provided `Bearer` access token is valid. For more informations see :rfc:`6749`.
+
+.. code-block:: php
+
+    <?php
+    
+    use PSX\Dispatch\RequestFilter\Oauth2Authentication;
+    
+    ...
+    
+    public function getPreFilter()
+    {
+        $auth = new Oauth2Authentication(function($accessToken) {
+    
+            if ($accessToken == '[accessToken]') {
+                return true;
+            }
+    
+            return false;
+    
+        });
+    
+        return array($auth);
     }

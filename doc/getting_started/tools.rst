@@ -60,14 +60,3 @@ Provides an API to publish all available API paths
 .. code::
 
     GET /routing PSX\Controller\Tool\RoutingController
-
-Command
--------
-
-Provides an API to execute commands. Note you most likely have to add some sort
-of authentication so that only authorized users can trigger a specific command.
-
-.. code::
-
-    GET|POST /command PSX\Controller\Tool\CommandController
-

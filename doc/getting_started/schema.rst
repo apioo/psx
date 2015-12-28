@@ -2,7 +2,7 @@
 Schema
 ======
 
-To build an documented API we need to tell PSX which request methods are 
+To build a documented API we need to tell PSX which request methods are 
 available and how the incoming and outgoing data looks. Because of this PSX 
 can automatically validate incoming data and format outgoing data according to 
 the schema. Also it is possible to generate documentation or other schema 
@@ -47,7 +47,7 @@ You can copy this example and play with the API to test the behaviour.
             ];
         }
 
-        protected function doCreate(RecordInterface $record, Version $version)
+        protected function doPost(RecordInterface $record, Version $version)
         {
             // @TODO work with the record
 
@@ -57,7 +57,7 @@ You can copy this example and play with the API to test the behaviour.
             ];
         }
 
-        protected function doUpdate(RecordInterface $record, Version $version)
+        protected function doPut(RecordInterface $record, Version $version)
         {
             // @TODO work with the record
 
@@ -142,7 +142,7 @@ JSON schema (message.json)
     }
 
 Internally the RAML parser creates resource objects which you can also produce 
-manually. In the following an schema API which defines the resources in PHP.
+manually. In the following a schema API which defines the resources in PHP.
 
 .. code-block:: php
 
@@ -209,7 +209,7 @@ schema manager.
         }
     }
 
-It is also possible to generate such an schema from an sql database. You can use 
+It is also possible to generate such a schema from a sql database. You can use 
 the following command:
 
 .. code::

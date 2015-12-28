@@ -13,8 +13,8 @@ Reading requests
 
 If we want import data from a request we have to known the format of the 
 request body. PSX uses the content type header to determine which reader should 
-be used. I.e. if we have an application/xml content type we use the xml reader 
-and if we have an application/json content type we use the json reader. The 
+be used. I.e. if we have an `application/xml` content type we use the xml reader 
+and if we have an `application/json` content type we use the json reader. The 
 reader returns the request data in a form which can be easily used in php. I.e. 
 the xml reader returns a DOMDocument and the json reader returns a stdClass.
 
@@ -25,7 +25,7 @@ the xml reader returns a DOMDocument and the json reader returns a stdClass.
 
 Since we need a uniform structure of the data we must apply a transformation in
 some cases. The transformation depends also on the content type. If we receive
-an application/xml content type the XmlArray transformer gets applied.
+an `application/xml` content type the XmlArray transformer gets applied.
 
 .. literalinclude:: ../../library/PSX/Data/TransformerInterface.php
    :language: php

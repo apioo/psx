@@ -30,7 +30,7 @@ doctrine DBAL connection to fetch data from a table.
     {
     	/**
     	 * @Inject
-    	 * @var Doctrine\DBAL\Connection
+    	 * @var \Doctrine\DBAL\Connection
     	 */
     	protected $connection;
 
@@ -57,46 +57,47 @@ inside a controller or command.
 
 .. code-block:: text
 
-    config                    PSX\Config
-    http                      PSX\Http
-    session                   PSX\Session
-    connection                Doctrine\DBAL\Connection
-    template                  PSX\TemplateInterface
-    validate                  PSX\Validate
-    object_builder            PSX\Dependency\ObjectBuilderInterface
-    cache                     PSX\Cache\CacheItemPoolInterface
-    logger                    Psr\Log\LoggerInterface
-    table_manager             PSX\Sql\TableManagerInterface
-    entity_manager            Doctrine\ORM\EntityManager
-    command_factory           PSX\Dispatch\CommandFactoryInterface
-    command_output            PSX\Command\OutputInterface
-    executor                  PSX\Command\Executor
-    console                   Symfony\Component\Console\Application
-    console_reader            PSX\Console\ReaderInterface
-    application_stack_factory PSX\Dispatch\ControllerFactoryInterface
-    controller_factory        PSX\Dispatch\ControllerFactoryInterface
-    dispatch_sender           PSX\Dispatch\SenderInterface
-    loader_location_finder    PSX\Loader\LocationFinderInterface
-    loader_callback_resolver  PSX\Loader\CallbackResolverInterface
-    loader                    PSX\Loader
-    request_factory           PSX\Dispatch\RequestFactoryInterface
-    response_factory          PSX\Dispatch\ResponseFactoryInterface
-    dispatch                  PSX\Dispatch
-    routing_parser            PSX\Loader\RoutingParserInterface
-    reverse_router            PSX\Loader\ReverseRouter
-    resource_listing          PSX\Api\Resource\ListingInterface
-    reader_factory            PSX\Data\ReaderFactory
-    writer_factory            PSX\Data\WriterFactory
-    transformer_manager       PSX\Data\Transformer\TransformerManager
-    importer_manager          PSX\Data\Record\ImporterManager
-    schema_manager            PSX\Data\Schema\SchemaManagerInterface
-    schema_validator          PSX\Data\Schema\ValidatorInterface
-    schema_assimilator        PSX\Data\Schema\Assimilator
-    record_factory_factory    PSX\Data\Record\FactoryFactory
-    importer                  PSX\Data\Importer
-    extractor                 PSX\Data\Extractor
-    serializer                PSX\Data\SerializerInterface
-    event_dispatcher          Symfony\Component\EventDispatcher\EventDispatcherInterface
+    config                    \PSX\Config
+    http                      \PSX\Http
+    session                   \PSX\Session
+    connection                \Doctrine\DBAL\Connection
+    template                  \PSX\TemplateInterface
+    validate                  \PSX\Validate
+    object_builder            \PSX\Dependency\ObjectBuilderInterface
+    exception_converter       \PSX\Exception\ConverterInterface
+    cache                     \PSX\Cache\CacheItemPoolInterface
+    logger                    \Psr\Log\LoggerInterface
+    table_manager             \PSX\Sql\TableManagerInterface
+    entity_manager            \Doctrine\ORM\EntityManager
+    command_factory           \PSX\Dispatch\CommandFactoryInterface
+    command_output            \PSX\Command\OutputInterface
+    executor                  \PSX\Command\Executor
+    console                   \Symfony\Component\Console\Application
+    console_reader            \PSX\Console\ReaderInterface
+    application_stack_factory \PSX\Dispatch\ControllerFactoryInterface
+    controller_factory        \PSX\Dispatch\ControllerFactoryInterface
+    dispatch_sender           \PSX\Dispatch\SenderInterface
+    loader_location_finder    \PSX\Loader\LocationFinderInterface
+    loader_callback_resolver  \PSX\Loader\CallbackResolverInterface
+    loader                    \PSX\Loader
+    request_factory           \PSX\Dispatch\RequestFactoryInterface
+    response_factory          \PSX\Dispatch\ResponseFactoryInterface
+    dispatch                  \PSX\Dispatch
+    routing_parser            \PSX\Loader\RoutingParserInterface
+    reverse_router            \PSX\Loader\ReverseRouter
+    resource_listing          \PSX\Api\Resource\ListingInterface
+    reader_factory            \PSX\Data\ReaderFactory
+    writer_factory            \PSX\Data\WriterFactory
+    transformer_manager       \PSX\Data\Transformer\TransformerManager
+    importer_manager          \PSX\Data\Record\ImporterManager
+    schema_manager            \PSX\Data\Schema\SchemaManagerInterface
+    schema_validator          \PSX\Data\Schema\ValidatorInterface
+    schema_assimilator        \PSX\Data\Schema\Assimilator
+    record_factory_factory    \PSX\Data\Record\FactoryFactory
+    importer                  \PSX\Data\Importer
+    extractor                 \PSX\Data\Extractor
+    serializer                \PSX\Data\SerializerInterface
+    event_dispatcher          \Symfony\Component\EventDispatcher\EventDispatcherInterface
 
 A current list of services can also be generated with the following command.
 
@@ -112,10 +113,10 @@ the container class. In the following an example which creates a new service:
 
 .. code-block:: php
 
-    class Container extends DefaultContainer
+    class Container extends SchemaApiAbstract
     {
         /**
-         * @return Acme\ServiceInterface
+         * @return \Acme\ServiceInterface
          */
         public function getAcmeService()
         {
@@ -126,3 +127,15 @@ the container class. In the following an example which creates a new service:
 This service can then be used in a controller. Since PSX uses composer you can 
 require other packages to use them as a service.
 
+.. code-block:: php
+
+    <?php
+
+    class Endpoint extends SchemaApiAbstract
+    {
+        /**
+         * @Inject
+         * @var \Acme\ServiceInterface
+         */
+        protected $acmeService;
+    }

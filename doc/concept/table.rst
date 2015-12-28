@@ -6,7 +6,7 @@ Abstract
 --------
 
 The PSX table class provides a simple repository pattern which can be used as 
-alternative to a ORM. It works with plain SQL queries. Each table class 
+alternative to an ORM. It works with plain SQL queries. Each table class 
 represents a SQL table which contains the table name and all available columns.
 A table class returns record objects which are filled with the values from the 
 query. It is also the place where you can put all complex business queries. To 

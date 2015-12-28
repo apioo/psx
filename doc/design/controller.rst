@@ -33,21 +33,21 @@ Usage
             // returns the request url as PSX\Uri
             $this->getUrl();
 
-            // returns an request header
+            // returns a request header
             $this->getHeader('Content-Type');
 
-            // returns an GET parameter
+            // returns a GET parameter
             $this->getParameter('id');
 
             // returns the request body. For x-www-form-urlencoded or json data
-            // this will be an stdClass for xml an DOMDocument
+            // this will be a stdClass for xml a DOMDocument
             $body = $this->getBody();
 
             // returns the value for the key "title". This works with 
             // x-www-form-urlencoded, json or xml data
             $title = $this->getAccessor()->get('title');
 
-            // if you want assign an value to the template which is not exposed
+            // if you want assign a value to the template which is not exposed
             // to the public you can assign it directly to the template
             $this->template->assign('foo', 'bar');
 

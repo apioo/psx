@@ -20,7 +20,7 @@ Usage
 -----
 
 This chapter gives a short overview of the most important methods which you need
-inside an command. To simplify things take a look at the following source code.
+inside a command. To simplify things take a look at the following source code.
 
 .. code-block:: php
 
@@ -43,10 +43,10 @@ inside an command. To simplify things take a look at the following source code.
 
         public function onExecute(Parameters $parameters, OutputInterface $output)
         {
-            // returns whether an parameter is available
+            // returns whether a parameter is available
             $parameters->has('bar')
 
-            // returns the value of an parameter or null
+            // returns the value of a parameter or null
             $bar = $parameters->get('bar')
 
             // inside the command you can use every injected service
