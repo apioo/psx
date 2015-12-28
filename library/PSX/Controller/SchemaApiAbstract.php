@@ -126,10 +126,10 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 
         // compatibility layer to transition from doCreate to doPost. The 
         // doCreate call will be removed in the next major version
-        if (method_exists($this, 'doPost')) {
-            $response = $this->doPost($record, $this->version);
-        } else {
+        if (method_exists($this, 'doCreate')) {
             $response = $this->doCreate($record, $this->version);
+        } else {
+            $response = $this->doPost($record, $this->version);
         }
 
         $this->sendResponse($method, $response);
@@ -142,10 +142,10 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
 
         // compatibility layer to transition from doUpdate to doPut. The 
         // doUpdate call will be removed in the next major version
-        if (method_exists($this, 'doPut')) {
-            $response = $this->doPut($record, $this->version);
-        } else {
+        if (method_exists($this, 'doUpdate')) {
             $response = $this->doUpdate($record, $this->version);
+        } else {
+            $response = $this->doPut($record, $this->version);
         }
 
         $this->sendResponse($method, $response);
