@@ -53,7 +53,7 @@ class Mock implements HandlerInterface
 
     public function add($method, $url, Closure $handler)
     {
-        if (!in_array($method, array('GET', 'POST', 'PUT', 'DELETE'))) {
+        if (!in_array($method, array('GET', 'POST', 'PUT', 'DELETE', 'PATCH'))) {
             throw new Exception('Invalid http request method');
         }
 

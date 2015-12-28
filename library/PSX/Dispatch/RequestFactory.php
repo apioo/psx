@@ -83,8 +83,8 @@ class RequestFactory implements RequestFactoryInterface
             // create body
             $requestMethod = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : null;
 
-            if (in_array($requestMethod, array('POST', 'PUT', 'DELETE'))) {
-                // as long as we support PHP < 5.6 we must use an BufferedStream
+            if (in_array($requestMethod, array('POST', 'PUT', 'DELETE', 'PATCH'))) {
+                // as long as we support PHP < 5.6 we must use a BufferedStream
                 // since the php://input stream can only be read once
                 $body = new BufferedStream(new TempStream(fopen('php://input', 'r')));
             }
@@ -97,7 +97,7 @@ class RequestFactory implements RequestFactoryInterface
                 $actionUri  = trim(strstr($headers['SOAPACTION'] . ';', ';', true), '" ');
                 $soapMethod = parse_url($actionUri, PHP_URL_FRAGMENT);
 
-                if (in_array($soapMethod, array('GET', 'POST', 'PUT', 'DELETE'))) {
+                if (in_array($soapMethod, array('GET', 'POST', 'PUT', 'DELETE', 'PATCH'))) {
                     $method = $soapMethod;
                 }
             }
@@ -119,7 +119,7 @@ class RequestFactory implements RequestFactoryInterface
         if (isset($_SERVER['REQUEST_METHOD'])) {
             // check for X-HTTP-Method-Override
             if (isset($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE']) &&
-                in_array($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'], array('OPTIONS', 'GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'TRACE', 'CONNECT'))) {
+                in_array($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'], array('OPTIONS', 'GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'PATCH'))) {
                 return $_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'];
             } else {
                 return $_SERVER['REQUEST_METHOD'];
