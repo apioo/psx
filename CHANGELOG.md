@@ -1,4 +1,14 @@
 
+### 1.1.4 (2015-12-29)
+
+* The schema API handles now automatically HEAD requests
+* Add support for PATCH request method
+* Fix automatic template detection for psr4 namespaces
+* Renamed doCreate and doUpdate method to doPost and doPut to follow the http
+  request method naming scheme
+* Json schema document throw an exception if a json pointer could not be 
+  resolved
+
 ### 1.1.3 (2015-12-27)
 
 * Fixed a missing import alias which causes a problem in the loader
