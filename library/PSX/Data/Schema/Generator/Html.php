@@ -3,7 +3,7 @@
  * PSX is a open source PHP framework to develop RESTful APIs.
  * For the current version and informations visit <http://phpsx.org>
  *
- * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
+ * Copyright 2010-2016 Christoph Kappestein <k42b3.x@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ use PSX\Data\Schema\Property;
 use PSX\Data\Schema\PropertyInterface;
 use PSX\Data\Schema\PropertySimpleAbstract;
 use PSX\Data\SchemaInterface;
+use RuntimeException;
 
 /**
  * Generates html tables containing all informations from the provided schema
@@ -132,10 +133,16 @@ class Html implements GeneratorInterface
     protected function getValueDescription(PropertyInterface $type)
     {
         if ($type instanceof Property\AnyType) {
-            $property = $this->getValueDescription($type->getPrototype());
-            $span     = '<span class="psx-property-type psx-property-type-any">Object&lt;String,' . $property[0] . '&gt;</span>';
+            $prototype = $type->getPrototype();
 
-            return [$span, null];
+            if ($prototype instanceof PropertyInterface) {
+                $property = $this->getValueDescription($prototype);
+                $span     = '<span class="psx-property-type psx-property-type-any">Object&lt;String,' . $property[0] . '&gt;</span>';
+
+                return [$span, null];
+            } else {
+                throw new RuntimeException('Any property has no prototype');
+            }
         } elseif ($type instanceof Property\ArrayType) {
             $constraints = array();
 
@@ -150,11 +157,16 @@ class Html implements GeneratorInterface
             }
 
             $constraint = $this->constraintToString($constraints);
+            $prototype  = $type->getPrototype();
 
-            $property = $this->getValueDescription($type->getPrototype());
-            $span     = '<span class="psx-property-type psx-property-type-array">Array&lt;' . $property[0] . '&gt;</span>';
+            if ($prototype instanceof PropertyInterface) {
+                $property = $this->getValueDescription($prototype);
+                $span     = '<span class="psx-property-type psx-property-type-array">Array&lt;' . $property[0] . '&gt;</span>';
 
-            return [$span, $constraint];
+                return [$span, $constraint];
+            } else {
+                throw new RuntimeException('Array property has no prototype');
+            }
         } elseif ($type instanceof Property\ChoiceType) {
             $choice     = array();
             $properties = $type->getProperties();
