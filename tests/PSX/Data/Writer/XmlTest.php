@@ -3,7 +3,7 @@
  * PSX is a open source PHP framework to develop RESTful APIs.
  * For the current version and informations visit <http://phpsx.org>
  *
- * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
+ * Copyright 2010-2016 Christoph Kappestein <k42b3.x@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,7 +58,7 @@ TEXT;
 
         $expect = <<<TEXT
 <?xml version="1.0" encoding="UTF-8"?>
-<resultset>
+<collection>
   <totalResults>2</totalResults>
   <startIndex>0</startIndex>
   <itemsPerPage>8</itemsPerPage>
@@ -76,7 +76,7 @@ TEXT;
     <content>foobar</content>
     <date>2012-03-11T13:37:21Z</date>
   </entry>
-</resultset>
+</collection>
 TEXT;
 
         $this->assertXmlStringEqualsXmlString($expect, $actual);
