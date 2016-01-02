@@ -3,7 +3,7 @@
  * PSX is a open source PHP framework to develop RESTful APIs.
  * For the current version and informations visit <http://phpsx.org>
  *
- * Copyright 2010-2015 Christoph Kappestein <k42b3.x@gmail.com>
+ * Copyright 2010-2016 Christoph Kappestein <k42b3.x@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ namespace PSX;
  */
 class Base
 {
-    const VERSION = '1.1.4';
+    const VERSION = '1.1.5';
 
     /**
      * Returns the version of the framework
