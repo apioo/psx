@@ -66,7 +66,14 @@ abstract class TokenAbstract extends ApiAbstract
             $data         = explode(':', base64_decode($data), 2);
             $clientId     = isset($data[0]) ? $data[0] : null;
             $clientSecret = isset($data[1]) ? $data[1] : null;
-            $credentials  = new Credentials($clientId, $clientSecret);
+
+            if (!empty($clientId) && !empty($clientSecret)) {
+                $credentials = new Credentials($clientId, $clientSecret);
+            }
+        }
+
+        if ($credentials === null && isset($parameters['client_id']) && isset($parameters['client_secret'])) {
+            $credentials = new Credentials($parameters['client_id'], $parameters['client_secret']);
         }
 
         try {
