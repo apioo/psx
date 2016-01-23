@@ -41,6 +41,14 @@ namespace. I.e. the following command would create the file `src/Acme/Foo.php`
 
     $ vendor/bin/psx generate:api Acme\Foo connection,http
 
+It is also possible to reference a RAML file which is then used in the API 
+controller. The path of the RAML file is relative to the controller file.
+
+.. code::
+
+    $ vendor/bin/psx generate:api Acme\Foo connection,http --raml ../Resource/schema.raml
+
+
 `generate:bootstrap_cache`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
