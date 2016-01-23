@@ -8,13 +8,12 @@ can automatically validate incoming data and format outgoing data according to
 the schema. Also it is possible to generate documentation or other schema 
 formats like i.e. Swagger, WSDL or RAML based on the defined schema.
 
-Definition
-----------
+RAML
+----
 
-The easiest way to provide these informations for our API endpoint is to use
-a RAML file. RAML (http://raml.org/) is a general specification to describe an
-API endpoint. In the following a sample API with the fitting RAML specification. 
-You can copy this example and play with the API to test the behaviour.
+It is possible to use an existing RAML (http://raml.org/) specification to build 
+the API endpoint. In the following a sample API with the fitting RAML 
+specification.
 
 .. code-block:: php
 
@@ -39,7 +38,7 @@ You can copy this example and play with the API to test the behaviour.
         {
             $count = $this->queryParameters->getProperty('count');
 
-            // @TODO return the result i.e. from an database
+            // @TODO return the result i.e. from a database
 
             return [
                 'title'  => 'Wut ueber den verlorenen groschen',
@@ -54,26 +53,6 @@ You can copy this example and play with the API to test the behaviour.
             return [
                 'success' => true,
                 'message' => 'Successful created',
-            ];
-        }
-
-        protected function doPut(RecordInterface $record, Version $version)
-        {
-            // @TODO work with the record
-
-            return [
-                'success' => true,
-                'message' => 'Successful updated',
-            ];
-        }
-
-        protected function doDelete(RecordInterface $record, Version $version)
-        {
-            // @TODO work with the record
-
-            return [
-                'success' => true,
-                'message' => 'Successful deleted',
             ];
         }
     }
@@ -100,7 +79,7 @@ RAML definition (endpoint.raml)
           application/json:
             schema: !include schema/song.json
         responses:
-          200:
+          201:
             body:
               application/json:
                 schema: !include schema/message.json
@@ -141,8 +120,61 @@ JSON schema (message.json)
         }
     }
 
-Internally the RAML parser creates resource objects which you can also produce 
-manually. In the following a schema API which defines the resources in PHP.
+Annotation
+----------
+
+If you dont want to use a RAML schema you can also attach all informations to
+the controller through annotations.
+
+.. code-block:: php
+
+    <?php
+
+    namespace Foo;
+
+    use PSX\Api\Version;
+    use PSX\Controller\AnnotationApiAbstract;
+    use PSX\Data\RecordInterface;
+
+    class Endpoint extends AnnotationApiAbstract
+    {
+        /**
+         * @QueryParam(name="count", description="filter the songs by genre")
+         * @Outgoing(code=200, schema="schema/song.json")
+         */
+        protected function doGet(Version $version)
+        {
+            $count = $this->queryParameters->getProperty('count');
+
+            // @TODO return the result i.e. from a database
+
+            return [
+                'title'  => 'Wut ueber den verlorenen groschen',
+                'artist' => 'Beethoven',
+            ];
+        }
+
+        /**
+         * @Incoming(schema="schema/song.json")
+         * @Outgoing(code=201, schema="schema/message.json")
+         */
+        protected function doPost(RecordInterface $record, Version $version)
+        {
+            // @TODO work with the record
+
+            return [
+                'success' => true,
+                'message' => 'Successful created',
+            ];
+        }
+    }
+
+
+Programmatic
+------------
+
+It is also possible to manually create the schema definition. In the following a 
+schema API which defines the resources.
 
 .. code-block:: php
 
