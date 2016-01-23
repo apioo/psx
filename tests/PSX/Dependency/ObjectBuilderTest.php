@@ -20,6 +20,9 @@
 
 namespace PSX\Dependency;
 
+use Doctrine\Common\Annotations;
+use PSX\Test\Environment;
+
 /**
  * ObjectBuilderTest
  *
@@ -35,7 +38,7 @@ class ObjectBuilderTest extends \PHPUnit_Framework_TestCase
         $container->set('foo', new \stdClass());
         $container->set('foo_bar', new \DateTime());
 
-        $builder = new ObjectBuilder($container);
+        $builder = new ObjectBuilder($container, Environment::getService('annotation_reader'));
         $object  = $builder->getObject('PSX\Dependency\FooService');
 
         $this->assertInstanceof('PSX\Dependency\FooService', $object);
@@ -49,7 +52,7 @@ class ObjectBuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetObjectInjectUnknownService()
     {
-        $builder = new ObjectBuilder(new Container());
+        $builder = new ObjectBuilder(new Container(), Environment::getService('annotation_reader'));
         $builder->getObject('PSX\Dependency\FooService');
     }
 
@@ -58,7 +61,7 @@ class ObjectBuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetObjectUnknownClass()
     {
-        $builder = new ObjectBuilder(new Container());
+        $builder = new ObjectBuilder(new Container(), Environment::getService('annotation_reader'));
         $builder->getObject('PSX\Dependency\BarService');
     }
 
@@ -68,7 +71,7 @@ class ObjectBuilderTest extends \PHPUnit_Framework_TestCase
         $container->set('foo', new \stdClass());
         $container->set('foo_bar', new \stdClass());
 
-        $builder = new ObjectBuilder($container);
+        $builder = new ObjectBuilder($container, Environment::getService('annotation_reader'));
         $object  = $builder->getObject('PSX\Dependency\FooService', array(), 'PSX\Dependency\FooService');
 
         $this->assertInstanceof('PSX\Dependency\FooService', $object);
@@ -83,7 +86,7 @@ class ObjectBuilderTest extends \PHPUnit_Framework_TestCase
         $container->set('foo', new \stdClass());
         $container->set('foo_bar', new \stdClass());
 
-        $builder = new ObjectBuilder($container);
+        $builder = new ObjectBuilder($container, Environment::getService('annotation_reader'));
         $builder->getObject('PSX\Dependency\FooService', array(), 'PSX\Dependency\BarService');
     }
 
@@ -93,7 +96,7 @@ class ObjectBuilderTest extends \PHPUnit_Framework_TestCase
         $container->set('foo', new \stdClass());
         $container->set('foo_bar', new \stdClass());
 
-        $builder = new ObjectBuilder($container);
+        $builder = new ObjectBuilder($container, Environment::getService('annotation_reader'));
         $object  = $builder->getObject('PSX\Dependency\FooService', array('foo'), 'PSX\Dependency\FooService');
 
         $this->assertEquals('foo', $object->getProperty());
@@ -104,57 +107,15 @@ class ObjectBuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetObjectConstructorArgumentsInvalid()
     {
-        $builder = new ObjectBuilder(new Container());
+        $builder = new ObjectBuilder(new Container(), Environment::getService('annotation_reader'));
         $builder->getObject('PSX\Dependency\InvalidService');
     }
 
     public function testGetObjectWithoutConstructor()
     {
-        $builder  = new ObjectBuilder(new Container());
+        $builder  = new ObjectBuilder(new Container(), Environment::getService('annotation_reader'));
         $stdClass = $builder->getObject('stdClass');
 
         $this->assertInstanceof('stdClass', $stdClass);
-    }
-}
-
-class FooService
-{
-    /**
-     * @Inject
-     */
-    protected $foo;
-
-    /**
-     * @Inject foo_bar
-     */
-    protected $bar;
-
-    protected $property;
-
-    public function __construct($property = null)
-    {
-        $this->property = $property;
-    }
-
-    public function getFoo()
-    {
-        return $this->foo;
-    }
-
-    public function getBar()
-    {
-        return $this->bar;
-    }
-
-    public function getProperty()
-    {
-        return $this->property;
-    }
-}
-
-class InvalidService
-{
-    public function __construct($foo)
-    {
     }
 }
