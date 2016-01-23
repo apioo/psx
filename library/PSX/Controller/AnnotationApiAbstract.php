@@ -18,48 +18,40 @@
  * limitations under the License.
  */
 
-namespace PSX\Controller\Foo\Application\SchemaApi;
+namespace PSX\Controller;
 
-use PSX\Api\Documentation;
-use PSX\Api\Resource;
-use PSX\Api\Version;
-use PSX\Controller\SchemaApi\PropertyTestCase;
-use PSX\Controller\SchemaApiAbstract;
-use PSX\Data\RecordInterface;
-use PSX\Data\Schema\Property;
+use PSX\Api\Documentation\Parser;
+use PSX\Loader\Context;
 
 /**
- * PropertyControllerAbstract
+ * Controller which reads the schema specifications based on the method 
+ * annotations
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-abstract class PropertyControllerAbstract extends SchemaApiAbstract
+abstract class AnnotationApiAbstract extends SchemaApiAbstract
 {
     /**
      * @Inject
-     * @var \PHPUnit_Framework_TestCase
+     * @var \Doctrine\Common\Annotations\Reader
      */
-    protected $testCase;
+    protected $annotationReader;
 
-    protected function doGet(Version $version)
+    /**
+     * @Inject
+     * @var \PSX\Data\Schema\SchemaManagerInterface
+     */
+    protected $schemaManager;
+
+    public function getDocumentation()
     {
-        return PropertyTestCase::getDataByType($this->queryParameters->getProperty('type'));
-    }
+        $parser = new Parser\Annotation(
+            $this->annotationReader,
+            $this->schemaManager
+        );
 
-    protected function doPost(RecordInterface $record, Version $version)
-    {
-        PropertyTestCase::assertRecord($this->testCase, $record);
-
-        return $record;
-    }
-
-    protected function doPut(RecordInterface $record, Version $version)
-    {
-    }
-
-    protected function doDelete(RecordInterface $record, Version $version)
-    {
+        return $parser->parse($this, $this->context->get(Context::KEY_PATH));
     }
 }

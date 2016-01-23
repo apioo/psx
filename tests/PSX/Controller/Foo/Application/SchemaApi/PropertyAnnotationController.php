@@ -20,25 +20,42 @@
 
 namespace PSX\Controller\Foo\Application\SchemaApi;
 
-use PSX\Api\Documentation;
-use PSX\Api\Documentation\Parser;
-use PSX\Api\Resource;
-use PSX\Controller\SchemaApiAbstract;
-use PSX\Loader\Context;
+use PSX\Api\Version;
+use PSX\Controller\AnnotationApiAbstract;
+use PSX\Controller\SchemaApi\PropertyTestCase;
+use PSX\Data\RecordInterface;
 
 /**
- * PropertyRamlController
+ * PropertyAnnotationController
  *
+ * @PathParam(name="id", type="integer")
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class PropertyRamlController extends SchemaApiAbstract
+class PropertyAnnotationController extends AnnotationApiAbstract
 {
     use PropertyControllerTrait;
 
-    public function getDocumentation()
+    /**
+     * @QueryParam(name="type", type="integer")
+     * @Outgoing(code=200, schema="../../Resource/property.json")
+     */
+    protected function doGet(Version $version)
     {
-        return Parser\Raml::fromFile(__DIR__ . '/../../Resource/property.raml', $this->context->get(Context::KEY_PATH));
+        $this->testCase->assertEquals(1, $this->pathParameters->getProperty('id'));
+
+        return PropertyTestCase::getDataByType($this->queryParameters->getProperty('type'));
+    }
+
+    /**
+     * @Incoming(schema="../../Resource/property.json")
+     * @Outgoing(code=200, schema="../../Resource/property.json")
+     */
+    protected function doPost(RecordInterface $record, Version $version)
+    {
+        PropertyTestCase::assertRecord($this->testCase, $record);
+
+        return $record;
     }
 }

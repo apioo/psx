@@ -20,8 +20,9 @@
 
 namespace PSX\Dependency;
 
+use Doctrine\Common\Annotations\Reader;
 use InvalidArgumentException;
-use PSX\Util\Annotation;
+use PSX\Annotation\Inject;
 use ReflectionClass;
 use RuntimeException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -36,10 +37,12 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class ObjectBuilder implements ObjectBuilderInterface
 {
     protected $container;
+    protected $reader;
 
-    public function __construct(ContainerInterface $container)
+    public function __construct(ContainerInterface $container, Reader $reader)
     {
         $this->container = $container;
+        $this->reader    = $reader;
     }
 
     public function getObject($className, array $constructorArguments = array(), $instanceOf = null)
@@ -56,22 +59,20 @@ class ObjectBuilder implements ObjectBuilderInterface
             throw new InvalidArgumentException('Class ' . $className . ' must be an instanceof ' . $instanceOf);
         }
 
-        foreach ($class->getProperties() as $property) {
-            if (strpos($property->getDocComment(), '@Inject') !== false) {
-                $doc = Annotation::parse($property->getDocComment());
+        $properties = $class->getProperties();
+        foreach ($properties as $property) {
+            $inject = $this->reader->getPropertyAnnotation($property, '\\PSX\\Annotation\\Inject');
+            if ($inject instanceof Inject) {
+                $service = $inject->getService();
+                if (empty($service)) {
+                    $service = $property->getName();
+                }
 
-                if ($doc->hasAnnotation('Inject')) {
-                    $name = $doc->getFirstAnnotation('Inject');
-                    if (empty($name)) {
-                        $name = $property->getName();
-                    }
-
-                    if ($this->container->has($name)) {
-                        $property->setAccessible(true);
-                        $property->setValue($object, $this->container->get($name));
-                    } else {
-                        throw new RuntimeException('Trying to inject an non existing service ' . $name);
-                    }
+                if ($this->container->has($service)) {
+                    $property->setAccessible(true);
+                    $property->setValue($object, $this->container->get($service));
+                } else {
+                    throw new RuntimeException('Trying to inject a not existing service ' . $service);
                 }
             }
         }

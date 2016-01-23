@@ -21,18 +21,18 @@
 namespace PSX\Controller\SchemaApi;
 
 /**
- * PropertyDocumentationTest
+ * PropertyAnnotationTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class PropertyDocumentationTest extends PropertyTestCase
+class PropertyAnnotationTest extends PropertyTestCase
 {
     protected function getPaths()
     {
         return array(
-            [['GET', 'POST', 'PUT', 'DELETE'], '/api/:id', 'PSX\Controller\Foo\Application\SchemaApi\PropertyDocumentationController'],
+            [['GET', 'POST', 'PUT', 'DELETE'], '/api/:id', 'PSX\Controller\Foo\Application\SchemaApi\PropertyAnnotationController'],
         );
     }
 }

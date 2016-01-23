@@ -20,6 +20,8 @@
 
 namespace PSX\Dependency;
 
+use Doctrine\Common\Annotations;
+use Doctrine\Common\Cache as DoctrineCache;
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\EntityManager;
@@ -124,7 +126,10 @@ class DefaultContainer extends Container
      */
     public function getObjectBuilder()
     {
-        return new ObjectBuilder($this);
+        return new ObjectBuilder(
+            $this,
+            $this->get('annotation_reader')
+        );
     }
 
     /**
@@ -164,6 +169,21 @@ class DefaultContainer extends Container
     }
 
     /**
+     * @return \Doctrine\Common\Annotations\Reader
+     */
+    public function getAnnotationReader()
+    {
+        $reader = new Annotations\SimpleAnnotationReader();
+        $reader->addNamespace('PSX\Annotation');
+
+        return new Annotations\CachedReader(
+            $reader,
+            new DoctrineCache\FilesystemCache(PSX_PATH_CACHE),
+            $this->get('config')->get('psx_debug')
+        );
+    }
+
+    /**
      * @return \Doctrine\ORM\EntityManager
      */
     public function getEntityManager()
@@ -184,7 +204,7 @@ class DefaultContainer extends Container
             'psx_timezone'            => 'UTC',
             'psx_error_controller'    => null,
             'psx_error_template'      => null,
-            'psx_annotation_autoload' => array('Doctrine\ORM\Mapping', 'JMS\Serializer\Annotation'),
+            'psx_annotation_autoload' => ['Doctrine\ORM\Mapping', 'JMS\Serializer\Annotation', 'PSX\Annotation'],
             'psx_soap_namespace'      => 'http://phpsx.org/2014/data',
             'psx_json_namespace'      => 'urn:schema.phpsx.org#',
             'psx_log_level'           => \Monolog\Logger::ERROR,

@@ -22,6 +22,7 @@ namespace PSX\Controller\Foo\Application\SchemaApi;
 
 use PSX\Api\Documentation;
 use PSX\Api\Resource;
+use PSX\Controller\SchemaApiAbstract;
 use PSX\Data\Schema\Property;
 use PSX\Loader\Context;
 
@@ -32,8 +33,10 @@ use PSX\Loader\Context;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class PropertyDocumentationController extends PropertyControllerAbstract
+class PropertyDocumentationController extends SchemaApiAbstract
 {
+    use PropertyControllerTrait;
+
     /**
      * @Inject
      * @var \PSX\Data\Schema\SchemaManager
@@ -43,6 +46,8 @@ class PropertyDocumentationController extends PropertyControllerAbstract
     public function getDocumentation()
     {
         $resource = new Resource(Resource::STATUS_ACTIVE, $this->context->get(Context::KEY_PATH));
+
+        $resource->addPathParameter(Property::getInteger('id'));
 
         $resource->addMethod(Resource\Factory::getMethod('GET')
             ->addQueryParameter(Property::getInteger('type'))

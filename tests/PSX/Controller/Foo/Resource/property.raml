@@ -2,7 +2,10 @@
 title: PSX sample API
 baseUri: http://example.phpsx.org
 version: v1
-/api:
+/api/{id}:
+  uriParameters:
+    id:
+      type: integer
   get:
     queryParameters:
       type:

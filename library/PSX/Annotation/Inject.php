@@ -18,21 +18,31 @@
  * limitations under the License.
  */
 
-namespace PSX\Controller\SchemaApi;
+namespace PSX\Annotation;
 
 /**
- * PropertyDocumentationTest
+ * Inject
  *
+ * @Annotation
+ * @Target("PROPERTY")
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class PropertyDocumentationTest extends PropertyTestCase
+class Inject
 {
-    protected function getPaths()
+    /**
+     * @var string
+     */
+    protected $service;
+
+    public function __construct(array $values)
     {
-        return array(
-            [['GET', 'POST', 'PUT', 'DELETE'], '/api/:id', 'PSX\Controller\Foo\Application\SchemaApi\PropertyDocumentationController'],
-        );
+        $this->service = current($values);
+    }
+
+    public function getService()
+    {
+        return $this->service;
     }
 }

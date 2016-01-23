@@ -18,21 +18,38 @@
  * limitations under the License.
  */
 
-namespace PSX\Controller\SchemaApi;
+namespace PSX\Controller\Foo\Application\SchemaApi;
+
+use PSX\Api\Version;
+use PSX\Controller\SchemaApi\PropertyTestCase;
+use PSX\Data\RecordInterface;
 
 /**
- * PropertyDocumentationTest
+ * PropertyControllerTrait
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class PropertyDocumentationTest extends PropertyTestCase
+trait PropertyControllerTrait
 {
-    protected function getPaths()
+    /**
+     * @Inject
+     * @var \PHPUnit_Framework_TestCase
+     */
+    protected $testCase;
+
+    protected function doGet(Version $version)
     {
-        return array(
-            [['GET', 'POST', 'PUT', 'DELETE'], '/api/:id', 'PSX\Controller\Foo\Application\SchemaApi\PropertyDocumentationController'],
-        );
+        $this->testCase->assertEquals(1, $this->pathParameters->getProperty('id'));
+
+        return PropertyTestCase::getDataByType($this->queryParameters->getProperty('type'));
+    }
+
+    protected function doPost(RecordInterface $record, Version $version)
+    {
+        PropertyTestCase::assertRecord($this->testCase, $record);
+
+        return $record;
     }
 }

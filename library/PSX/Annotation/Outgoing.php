@@ -18,21 +18,33 @@
  * limitations under the License.
  */
 
-namespace PSX\Controller\SchemaApi;
+namespace PSX\Annotation;
 
 /**
- * PropertyDocumentationTest
+ * Outgoing
  *
+ * @Annotation
+ * @Target("METHOD")
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class PropertyDocumentationTest extends PropertyTestCase
+class Outgoing extends SchemaAbstract
 {
-    protected function getPaths()
+    /**
+     * @var integer
+     */
+    protected $code;
+
+    public function __construct(array $values)
     {
-        return array(
-            [['GET', 'POST', 'PUT', 'DELETE'], '/api/:id', 'PSX\Controller\Foo\Application\SchemaApi\PropertyDocumentationController'],
-        );
+        parent::__construct($values);
+
+        $this->code = isset($values['code']) ? $values['code'] : 200;
+    }
+
+    public function getCode()
+    {
+        return $this->code;
     }
 }
