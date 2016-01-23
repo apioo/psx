@@ -35,7 +35,7 @@ use PSX\Oauth2\Authorization\Exception\ErrorExceptionAbstract;
 abstract class TokenAbstract extends ApiAbstract
 {
     /**
-     * @Inject oauth2_grant_type_factory
+     * @Inject("oauth2_grant_type_factory")
      * @var \PSX\Oauth2\Provider\GrantTypeFactory
      */
     protected $grantTypeFactory;
