@@ -80,4 +80,9 @@ class ServiceDefinition
     {
         return PSX_PATH_LIBRARY . DIRECTORY_SEPARATOR . str_replace('\\', DIRECTORY_SEPARATOR, $this->namespace);
     }
+
+    public function getClass()
+    {
+        return $this->namespace . '\\' . $this->className;
+    }
 }

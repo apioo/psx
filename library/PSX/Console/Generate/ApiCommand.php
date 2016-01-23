@@ -68,19 +68,26 @@ class ApiCommand extends ContainerGenerateCommandAbstract
         $file = $path . DIRECTORY_SEPARATOR . $definition->getClassName() . '.php';
 
         if (!$this->isFile($file)) {
-            $source = $this->getControllerSource($definition, $ramlFile);
+            $source = $this->getControllerSource($definition, $path, $ramlFile);
 
             $output->writeln('Write file ' . $file);
 
             if (!$definition->isDryRun()) {
                 $this->writeFile($file, $source);
+
+                $output->writeln('');
+                $output->writeln('Add an entry to your routes file (' . $this->container->get('config')->get('psx_routing') . ')');
+                $output->writeln('to make the endpoint accessible i.e.:');
+                $output->writeln('');
+                $output->writeln('GET|POST|PUT|DELETE /acme/api ' . $definition->getClass());
+                $output->writeln('');
             }
         } else {
             throw new RuntimeException('File ' . $file . ' already exists');
         }
     }
 
-    protected function getControllerSource(ServiceDefinition $definition, $ramlFile)
+    protected function getControllerSource(ServiceDefinition $definition, $basePath, $ramlFile)
     {
         $namespace = $definition->getNamespace();
         $className = $definition->getClassName();
@@ -95,12 +102,12 @@ class ApiCommand extends ContainerGenerateCommandAbstract
         // documentation
         $documentation = '';
         if (!empty($ramlFile)) {
-            if (!$this->isFile($ramlFile)) {
-                throw new RuntimeException('RAML file "' . $ramlFile . '" does not exist');
+            if (!$this->isFile($basePath . '/' . $ramlFile)) {
+                throw new RuntimeException('RAML file "' . $basePath . '/' . $ramlFile . '" does not exist');
             }
 
             $documentation = <<<PHP
-return Documentation\Parser\Raml::fromFile('{$ramlFile}', \$this->context->get(Context::KEY_PATH));
+return Documentation\Parser\Raml::fromFile(__DIR__ . '/{$ramlFile}', \$this->context->get(Context::KEY_PATH));
 PHP;
         } else {
             $documentation = <<<PHP

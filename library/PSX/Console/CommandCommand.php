@@ -57,7 +57,7 @@ class CommandCommand extends Command
     {
         $this
             ->setName('command')
-            ->setDescription('Executes an PSX command through the console. The parameters must be either provided as JSON via stdin or per parameter')
+            ->setDescription('Executes an command through the console. The parameters must be either provided as JSON via stdin or per parameter')
             ->addArgument('cmd', InputArgument::REQUIRED, 'Name of the command')
             ->addArgument('parameters', InputArgument::IS_ARRAY | InputArgument::OPTIONAL, 'Needed parameters for the command')
             ->addOption('stdin', 's', InputOption::VALUE_NONE, 'Whether to read from stdin');
