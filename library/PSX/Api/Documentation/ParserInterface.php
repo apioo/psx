@@ -30,8 +30,8 @@ namespace PSX\Api\Documentation;
 interface ParserInterface
 {
     /**
-     * Parses an schema containing an specification of resources and returns
-     * an documentation for the given path
+     * Parses a schema containing a specification of resources and returns
+     * a documentation for the given path
      *
      * @param string $schema
      * @param string $path
