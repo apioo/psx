@@ -136,7 +136,7 @@ class ApiCommandTest extends CommandTestCase
 
         $command->expects($this->at(3))
             ->method('isFile')
-            ->with($this->equalTo('./test.raml'))
+            ->with($this->equalTo('library\Acme\Foo/./test.raml'))
             ->will($this->returnValue(true));
 
         $command->expects($this->at(4))
@@ -183,7 +183,7 @@ class ApiCommandTest extends CommandTestCase
 
         $command->expects($this->at(3))
             ->method('isFile')
-            ->with($this->equalTo('./test.raml'))
+            ->with($this->equalTo('library\Acme\Foo/./test.raml'))
             ->will($this->returnValue(false));
 
         $commandTester = new CommandTester($command);
@@ -227,6 +227,7 @@ class ApiCommandTest extends CommandTestCase
     public function testCommandOtherDiContainer()
     {
         $container = new Container();
+        $container->set('config', Environment::getService('config'));
         $container->set('foo', new \stdClass());
 
         $command = $this->getMockBuilder('PSX\Console\Generate\ApiCommand')
@@ -254,6 +255,7 @@ class ApiCommandTest extends CommandTestCase
     public function testCommandOtherDiContainerNoObject()
     {
         $container = new Container();
+        $container->set('config', Environment::getService('config'));
         $container->set('foo', array('foo', 'bar'));
 
         $command = $this->getMockBuilder('PSX\Console\Generate\ApiCommand')
@@ -594,7 +596,7 @@ class Bar extends SchemaApiAbstract
 	 */
 	public function getDocumentation()
 	{
-		return Documentation\Parser\Raml::fromFile('./test.raml', $this->context->get(Context::KEY_PATH));
+		return Documentation\Parser\Raml::fromFile(__DIR__ . '/./test.raml', $this->context->get(Context::KEY_PATH));
 	}
 
 	/**
