@@ -44,6 +44,7 @@ use PSX\Util\Api\FilterParameter;
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link	http://phpsx.org
+ * @deprecated
  */
 abstract class TableApiAbstract extends SchemaApiAbstract
 {
