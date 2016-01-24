@@ -21,7 +21,7 @@ The best option is to install the PSX sample project via composer
 
 it is also possible to require PSX as dependency in your composer.json
 
-    "psx/psx": "~1.1"
+    "psx/psx": "~1.2"
 
 you can also download a current release from github which already includes all
 vendor libraries in case composer is not available
