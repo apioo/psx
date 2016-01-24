@@ -5,6 +5,7 @@ _which are likely to be implemented are moved to a seperate github issue_
 
 - [ ] Better support for conditional requests E-Tag, If-Match etc.
 - [ ] Think about support for OData
+- [ ] Think about support for JSON-RPC
 - [ ] Add Swagger2 support #11
 - [ ] Add GraphQL parser to generate a schema based on a GraphQL string #12
 - [ ] Option to setup global middlewares inside the configuration.php which are
@@ -27,7 +28,7 @@ _which are likely to be implemented are moved to a seperate github issue_
 - [ ] Improve OAuth2 support #7
 - [ ] Add host-meta controller to expose specific API services #5
 - [ ] Create controller which generates a text/uri-list #4
-- [ ] Consider use of JAX-RS annotations to provide meta informations for a 
+- [x] Consider use of JAX-RS annotations to provide meta informations for a 
       controller #3
 - [ ] Add WADL generator #2
 - [ ] Extend schema representation
@@ -89,6 +90,7 @@ _which are likely to be implemented are moved to a seperate github issue_
 
 ### 2.x
 
+- [ ] Remove doCreate and doUpdate call in SchemaApiAbstract
 - [ ] Think about moving from a monolith repo into multiple packages. There are
       some components which might be useful withput psx i.e. data, schema
 
