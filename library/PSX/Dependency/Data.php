@@ -20,6 +20,8 @@
 
 namespace PSX\Dependency;
 
+use Doctrine\Common\Annotations;
+use Doctrine\Common\Cache as DoctrineCache;
 use JMS\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\Serializer\SerializerBuilder;
@@ -156,8 +158,14 @@ trait Data
     {
         $propertyNamingStrategy = new SerializedNameAnnotationStrategy(new CamelCaseNamingStrategy());
 
+        $reader = new Annotations\CachedReader(
+            new Annotations\AnnotationReader(),
+            $this->newDoctrineCacheImpl('annotations/jms'),
+            $this->get('config')->get('psx_debug')
+        );
+
         $serializer = SerializerBuilder::create()
-            ->setCacheDir(PSX_PATH_CACHE)
+            ->setAnnotationReader($reader)
             ->setDebug($this->get('config')->get('psx_debug'))
             ->setSerializationVisitor(Serializer\SerializationVisitor::NAME, new Serializer\SerializationVisitor($propertyNamingStrategy))
             ->build();

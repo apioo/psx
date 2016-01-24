@@ -22,10 +22,8 @@ namespace PSX\Dependency;
 
 use Doctrine\Common\Annotations;
 use Doctrine\Common\Cache as DoctrineCache;
-use Doctrine\DBAL\Configuration;
-use Doctrine\DBAL\DriverManager;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Tools\Setup;
+use Doctrine\DBAL;
+use Doctrine\ORM;
 use PSX\Cache;
 use PSX\Config;
 use PSX\Exception;
@@ -91,7 +89,7 @@ class DefaultContainer extends Container
      */
     public function getConnection()
     {
-        $config = new Configuration();
+        $config = new DBAL\Configuration();
         $config->setSQLLogger(new SqlLogger($this->get('logger')));
 
         $params = array(
@@ -102,7 +100,7 @@ class DefaultContainer extends Container
             'driver'   => 'pdo_mysql',
         );
 
-        return DriverManager::getConnection($params, $config);
+        return DBAL\DriverManager::getConnection($params, $config);
     }
 
     /**
@@ -178,7 +176,7 @@ class DefaultContainer extends Container
 
         return new Annotations\CachedReader(
             $reader,
-            new DoctrineCache\FilesystemCache(PSX_PATH_CACHE),
+            $this->newDoctrineCacheImpl('annotations/psx'),
             $this->get('config')->get('psx_debug')
         );
     }
@@ -189,12 +187,27 @@ class DefaultContainer extends Container
     public function getEntityManager()
     {
         $connection = $this->get('connection');
-        $paths      = array(PSX_PATH_LIBRARY);
-        $isDevMode  = $this->get('config')->get('psx_debug');
+        $cache      = $this->newDoctrineCacheImpl('annotations/orm');
+        $isDebug    = $this->get('config')->get('psx_debug');
 
-        $config = Setup::createAnnotationMetadataConfiguration($paths, $isDevMode);
+        $driver = new ORM\Mapping\Driver\AnnotationDriver(
+            new Annotations\CachedReader(
+                new Annotations\AnnotationReader(), 
+                $cache,
+                $isDebug
+            ),
+            $this->get('config')->get('psx_entity_paths')
+        );
 
-        return EntityManager::create($connection, $config, $connection->getEventManager());
+        $config = ORM\Tools\Setup::createConfiguration(
+            $isDebug, 
+            PSX_PATH_CACHE . '/proxy',
+            $cache
+        );
+
+        $config->setMetadataDriverImpl($driver);
+
+        return ORM\EntityManager::create($connection, $config, $connection->getEventManager());
     }
 
     protected function appendDefaultConfig()
@@ -204,7 +217,8 @@ class DefaultContainer extends Container
             'psx_timezone'            => 'UTC',
             'psx_error_controller'    => null,
             'psx_error_template'      => null,
-            'psx_annotation_autoload' => ['Doctrine\ORM\Mapping', 'JMS\Serializer\Annotation', 'PSX\Annotation'],
+            'psx_annotation_autoload' => ['PSX\Annotation', 'JMS\Serializer\Annotation', 'Doctrine\ORM\Mapping'],
+            'psx_entity_paths'        => [],
             'psx_soap_namespace'      => 'http://phpsx.org/2014/data',
             'psx_json_namespace'      => 'urn:schema.phpsx.org#',
             'psx_log_level'           => \Monolog\Logger::ERROR,
@@ -213,5 +227,14 @@ class DefaultContainer extends Container
             'psx_filter_pre'          => [],
             'psx_filter_post'         => [],
         );
+    }
+
+    /**
+     * If you want to change the doctrine cache which is used in various 
+     * components you can override this method
+     */
+    protected function newDoctrineCacheImpl($namespace)
+    {
+        return new DoctrineCache\FilesystemCache(PSX_PATH_CACHE . '/' . $namespace);
     }
 }

@@ -20,34 +20,36 @@
 
 namespace PSX\Sql\Table\Reader\EntityAnnotation;
 
+use Doctrine\ORM\Mapping as ORM;
+
 /**
- * @Entity
- * @Table(name="bugs")
+ * @ORM\Entity
+ * @ORM\Table(name="bugs")
  */
 class TestEntity
 {
     /**
-     * @Id
-     * @Column(type="integer")
-     * @GeneratedValue
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue
      * @var int
      */
     protected $id;
 
     /**
-     * @Column(type="string")
+     * @ORM\Column(type="string")
      * @var string
      */
     protected $description;
 
     /**
-     * @Column(type="datetime")
+     * @ORM\Column(type="datetime")
      * @var \DateTime
      */
     protected $created;
 
     /**
-     * @Column(name="foobar", type="string")
+     * @ORM\Column(name="foobar", type="string")
      * @var string
      */
     protected $status;

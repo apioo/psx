@@ -20,45 +20,47 @@
 
 namespace PSX\Data\Record\Importer\Test;
 
+use Doctrine\ORM\Mapping as ORM;
+
 /**
- * @Entity
- * @Table(name="news")
+ * @ORM\Entity
+ * @ORM\Table(name="news")
  */
 class Entity
 {
     /**
-     * @Id
-     * @Column(type="integer")
+     * @ORM\Id
+     * @ORM\Column(type="integer")
      */
     protected $id;
 
     /**
-     * @Column(type="string")
+     * @ORM\Column(type="string")
      */
     protected $title;
 
     /**
-     * @Column(type="boolean")
+     * @ORM\Column(type="boolean")
      */
     protected $active;
 
     /**
-     * @Column(type="boolean")
+     * @ORM\Column(type="boolean")
      */
     protected $disabled;
 
     /**
-     * @Column(type="integer")
+     * @ORM\Column(type="integer")
      */
     protected $count;
 
     /**
-     * @Column(type="float")
+     * @ORM\Column(type="float")
      */
     protected $rating;
 
     /**
-     * @Column(type="datetime")
+     * @ORM\Column(type="datetime")
      */
     protected $date;
 }
