@@ -1,4 +1,13 @@
 
+### 1.2.0
+
+* Add annotation API controller which can be used to specify the API behaviour
+  through annotations
+* Improved api generation command
+* Add doctrine annotation reader for annotation parsing
+* Unify doctrine cache usage and improve entity manager integration
+* Oauth2 token endpoint handle also client_id and client_secret parameter
+
 ### 1.1.4 (2015-12-29)
 
 * The schema API handles now automatically HEAD requests
