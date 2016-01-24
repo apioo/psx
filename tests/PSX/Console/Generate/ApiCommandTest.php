@@ -136,7 +136,7 @@ class ApiCommandTest extends CommandTestCase
 
         $command->expects($this->at(3))
             ->method('isFile')
-            ->with($this->equalTo('library\Acme\Foo/./test.raml'))
+            ->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo/./test.raml'))
             ->will($this->returnValue(true));
 
         $command->expects($this->at(4))
@@ -183,7 +183,7 @@ class ApiCommandTest extends CommandTestCase
 
         $command->expects($this->at(3))
             ->method('isFile')
-            ->with($this->equalTo('library\Acme\Foo/./test.raml'))
+            ->with($this->equalTo('library' . DIRECTORY_SEPARATOR . 'Acme' . DIRECTORY_SEPARATOR . 'Foo/./test.raml'))
             ->will($this->returnValue(false));
 
         $commandTester = new CommandTester($command);
