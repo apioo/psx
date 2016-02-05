@@ -72,18 +72,24 @@ abstract class TableAbstract extends TableQueryAbstract implements TableInterfac
         return isset($columns[$column]);
     }
 
-    public function getAll($startIndex = null, $count = null, $sortBy = null, $sortOrder = null, Condition $condition = null)
+    public function getAll($startIndex = null, $count = null, $sortBy = null, $sortOrder = null, Condition $condition = null, array $restrictedFields = null)
     {
         $startIndex = $startIndex !== null ? (int) $startIndex : 0;
         $count      = !empty($count)       ? (int) $count      : 16;
         $sortBy     = $sortBy     !== null ? $sortBy           : $this->getPrimaryKey();
         $sortOrder  = $sortOrder  !== null ? (int) $sortOrder  : Sql::SORT_DESC;
+        $fields     = array_keys($this->getColumns());
 
-        if (!in_array($sortBy, $this->getSupportedFields())) {
+        if (!in_array($sortBy, $fields)) {
             $sortBy = $this->getPrimaryKey();
         }
 
-        $fields  = $this->getSupportedFields();
+        $fields = array_diff($fields, $this->getRestrictedFields());
+
+        if ($restrictedFields !== null) {
+            $fields = array_diff($fields, $restrictedFields);
+        }
+
         $builder = $this->connection->createQueryBuilder()
             ->select($fields)
             ->from($this->getName(), null)
