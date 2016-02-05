@@ -109,11 +109,11 @@ abstract class TableAbstract extends TableQueryAbstract implements TableInterfac
         return $this->project($builder->getSQL(), $builder->getParameters());
     }
 
-    public function get($id)
+    public function get($id, array $restrictedFields = null)
     {
         $condition = new Condition(array($this->getPrimaryKey(), '=', $id));
 
-        return $this->getOneBy($condition);
+        return $this->getOneBy($condition, $restrictedFields);
     }
 
     public function getCount(Condition $condition = null)

@@ -35,14 +35,14 @@ abstract class TableQueryAbstract implements TableQueryInterface
 {
     protected $restrictedFields = array();
 
-    public function getBy(Condition $condition)
+    public function getBy(Condition $condition, array $restrictedFields = null)
     {
-        return $this->getAll(null, null, null, null, $condition);
+        return $this->getAll(null, null, null, null, $condition, $restrictedFields);
     }
 
-    public function getOneBy(Condition $condition)
+    public function getOneBy(Condition $condition, array $restrictedFields = null)
     {
-        $result = $this->getAll(0, 1, null, null, $condition);
+        $result = $this->getAll(0, 1, null, null, $condition, $restrictedFields);
 
         return current($result);
     }
