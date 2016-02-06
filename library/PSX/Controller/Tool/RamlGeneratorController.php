@@ -25,6 +25,7 @@ use PSX\Api\Resource;
 use PSX\Api\Resource\Generator;
 use PSX\ControllerAbstract;
 use PSX\Http\Exception as HttpException;
+use PSX\Util\ApiGeneration;
 
 /**
  * RamlGeneratorController
@@ -64,17 +65,17 @@ class RamlGeneratorController extends ControllerAbstract
             $title = $resource->getTitle();
 
             if (empty($title)) {
-                $title = str_replace(' ', '', ucwords(str_replace('/', ' ', $path)));
+                $title = ApiGeneration::generateTitleFromRoute($path);
             }
 
             $baseUri         = $this->config['psx_url'] . '/' . $this->config['psx_dispatch'];
             $targetNamespace = $this->config['psx_json_namespace'];
 
-            $this->response->setHeader('Content-Type', 'application/raml+yaml');
-
             $generator = new Generator\Raml($title, $version, $baseUri, $targetNamespace);
+            $raml      = $generator->generate($resource);
 
-            $this->setBody($generator->generate($resource));
+            $this->setHeader('Content-Type', 'application/raml+yaml');
+            $this->setBody($raml);
         } else {
             throw new HttpException\NotFoundException('Invalid resource');
         }

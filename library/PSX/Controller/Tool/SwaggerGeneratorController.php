@@ -80,11 +80,11 @@ class SwaggerGeneratorController extends ControllerAbstract
             $baseUri         = $this->config['psx_url'] . '/' . $this->config['psx_dispatch'];
             $targetNamespace = $this->config['psx_json_namespace'];
 
-            $this->response->setHeader('Content-Type', 'application/json');
-
             $generator = new Generator\Swagger($version, $baseUri, $targetNamespace);
+            $swagger   = $generator->generate($resource);
 
-            $this->setBody($generator->generate($resource));
+            $this->setHeader('Content-Type', 'application/json');
+            $this->setBody($swagger);
         } else {
             throw new HttpException\NotFoundException('Invalid resource');
         }

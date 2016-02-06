@@ -129,6 +129,7 @@ class SoapEndpointTest extends ControllerDbTestCase
         return array(
             [['GET', 'POST', 'PUT', 'DELETE'], '/api', 'PSX\Controller\Foo\Application\TestSchemaApiController'],
             [['GET'], '/wsdl/:version/*path', 'PSX\Controller\Tool\WsdlGeneratorController'],
+            [['POST'], '/soap', 'PSX\Controller\Tool\SoapProxyController'],
         );
     }
 

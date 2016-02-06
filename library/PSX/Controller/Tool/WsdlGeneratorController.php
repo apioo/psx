@@ -26,6 +26,7 @@ use PSX\Api\Resource\Generator;
 use PSX\ControllerAbstract;
 use PSX\Http\Exception as HttpException;
 use PSX\Util\ApiGeneration;
+use RuntimeException;
 
 /**
  * WsdlGeneratorController
@@ -74,14 +75,17 @@ class WsdlGeneratorController extends ControllerAbstract
                 $title = ApiGeneration::generateTitleFromRoute($path);
             }
 
-            $endpoint        = $this->reverseRouter->getUrl('PSX\Controller\Tool\SoapProxyController');
-            $targetNamespace = $this->config['psx_soap_namespace'];
+            $endpoint = $this->reverseRouter->getUrl('PSX\Controller\Tool\SoapProxyController');
 
-            $this->response->setHeader('Content-Type', 'text/xml');
+            if (empty($endpoint)) {
+                throw new RuntimeException('Could not find soap proxy controller');
+            }
 
-            $generator = new Generator\Wsdl($title, $endpoint, $targetNamespace);
+            $generator = new Generator\Wsdl($title, $endpoint, $this->config['psx_soap_namespace']);
+            $wsdl      = $generator->generate($resource);
 
-            $this->setBody($generator->generate($resource));
+            $this->setHeader('Content-Type', 'text/xml');
+            $this->setBody($wsdl);
         } else {
             throw new HttpException\NotFoundException('Invalid resource');
         }
