@@ -30,6 +30,7 @@ namespace PSX\Api\Resource\Generator\Wsdl;
 class Operation
 {
     protected $name;
+    protected $path;
     protected $method;
     protected $in;
     protected $out;
@@ -42,6 +43,16 @@ class Operation
     public function getName()
     {
         return $this->name;
+    }
+
+    public function setPath($path)
+    {
+        $this->path = $path;
+    }
+
+    public function getPath()
+    {
+        return $this->path;
     }
 
     public function setMethod($method)

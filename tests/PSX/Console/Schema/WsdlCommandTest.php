@@ -198,7 +198,7 @@ class WsdlCommandTest extends ControllerTestCase
   <wsdl:binding name="fooBinding" type="tns:fooPortType">
     <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
     <wsdl:operation name="getCollection">
-      <soap:operation soapAction="http://phpsx.org/2014/data/getCollection#GET"/>
+      <soap:operation soapAction="/api#GET"/>
       <wsdl:input>
         <soap:body use="literal"/>
       </wsdl:input>
@@ -210,7 +210,7 @@ class WsdlCommandTest extends ControllerTestCase
       </wsdl:fault>
     </wsdl:operation>
     <wsdl:operation name="postItem">
-      <soap:operation soapAction="http://phpsx.org/2014/data/postItem#POST"/>
+      <soap:operation soapAction="/api#POST"/>
       <wsdl:input>
         <soap:body use="literal"/>
       </wsdl:input>
@@ -222,7 +222,7 @@ class WsdlCommandTest extends ControllerTestCase
       </wsdl:fault>
     </wsdl:operation>
     <wsdl:operation name="putItem">
-      <soap:operation soapAction="http://phpsx.org/2014/data/putItem#PUT"/>
+      <soap:operation soapAction="/api#PUT"/>
       <wsdl:input>
         <soap:body use="literal"/>
       </wsdl:input>
@@ -234,7 +234,7 @@ class WsdlCommandTest extends ControllerTestCase
       </wsdl:fault>
     </wsdl:operation>
     <wsdl:operation name="deleteItem">
-      <soap:operation soapAction="http://phpsx.org/2014/data/deleteItem#DELETE"/>
+      <soap:operation soapAction="/api#DELETE"/>
       <wsdl:input>
         <soap:body use="literal"/>
       </wsdl:input>

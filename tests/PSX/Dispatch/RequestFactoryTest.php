@@ -332,23 +332,6 @@ class RequestFactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('foobar', $request->getHeader('Foo-Bar'));
     }
 
-    public function testSoapActionHeader()
-    {
-        $config = new Config(array(
-            'psx_url' => 'http://foo.com',
-        ));
-
-        $env = array('HTTP_SOAPACTION' => 'http://foobar.com/api/method#GET');
-
-        $_SERVER['argv'][1] = '/';
-
-        $request = $this->getRequest($env, $config, true);
-
-        $this->assertEquals('application/soap+xml', $request->getHeader('Content-Type'));
-        $this->assertEquals('application/soap+xml', $request->getHeader('Accept'));
-        $this->assertEquals('http://foobar.com/api/method#GET', $request->getHeader('Soapaction'));
-    }
-
     public function testGetRequestHeaderContentHeader()
     {
         $config = new Config(array(

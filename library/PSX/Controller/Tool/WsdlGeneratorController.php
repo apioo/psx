@@ -42,6 +42,12 @@ class WsdlGeneratorController extends ControllerAbstract
      */
     protected $resourceListing;
 
+    /**
+     * @Inject
+     * @var \PSX\Loader\ReverseRouter
+     */
+    protected $reverseRouter;
+
     public function onGet()
     {
         parent::onGet();
@@ -68,7 +74,7 @@ class WsdlGeneratorController extends ControllerAbstract
                 $title = ApiGeneration::generateTitleFromRoute($path);
             }
 
-            $endpoint        = $this->config['psx_url'] . '/' . $this->config['psx_dispatch'] . $path;
+            $endpoint        = $this->reverseRouter->getUrl('PSX\Controller\Tool\SoapProxyController');
             $targetNamespace = $this->config['psx_soap_namespace'];
 
             $this->response->setHeader('Content-Type', 'text/xml');

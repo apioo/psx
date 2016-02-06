@@ -131,7 +131,10 @@ abstract class ControllerAbstract implements ControllerInterface, ApplicationSta
 
     public function onLoad()
     {
-        $this->context->set(Context::KEY_SUPPORTED_WRITER, $this->getSupportedWriter());
+        // we change the supported writer only if not set
+        if ($this->context->get(Context::KEY_SUPPORTED_WRITER) === null) {
+            $this->context->set(Context::KEY_SUPPORTED_WRITER, $this->getSupportedWriter());
+        }
     }
 
     /**
@@ -402,7 +405,7 @@ abstract class ControllerAbstract implements ControllerInterface, ApplicationSta
         }
 
         if ($writer === null) {
-            $writer = $this->writerFactory->getDefaultWriter($this->getSupportedWriter());
+            $writer = $this->writerFactory->getDefaultWriter($this->context->get(Context::KEY_SUPPORTED_WRITER));
         }
 
         if (!$writer instanceof WriterInterface) {
@@ -433,9 +436,9 @@ abstract class ControllerAbstract implements ControllerInterface, ApplicationSta
         $format     = isset($parameters['format']) ? $parameters['format'] : null;
 
         if (!empty($format)) {
-            return $this->writerFactory->getWriterByFormat($format, $this->getSupportedWriter());
+            return $this->writerFactory->getWriterByFormat($format, $this->context->get(Context::KEY_SUPPORTED_WRITER));
         } else {
-            return $this->writerFactory->getWriterByContentType($this->request->getHeader('Accept'), $this->getSupportedWriter());
+            return $this->writerFactory->getWriterByContentType($this->request->getHeader('Accept'), $this->context->get(Context::KEY_SUPPORTED_WRITER));
         }
     }
 }

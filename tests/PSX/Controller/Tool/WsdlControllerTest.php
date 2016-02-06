@@ -223,7 +223,7 @@ class WsdlControllerTest extends ControllerTestCase
   <wsdl:binding name="ApiBinding" type="tns:ApiPortType">
     <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
     <wsdl:operation name="getCollection">
-      <soap:operation soapAction="http://phpsx.org/2014/data/getCollection#GET"/>
+      <soap:operation soapAction="/api#GET"/>
       <wsdl:input>
         <soap:body use="literal"/>
       </wsdl:input>
@@ -235,7 +235,7 @@ class WsdlControllerTest extends ControllerTestCase
       </wsdl:fault>
     </wsdl:operation>
     <wsdl:operation name="postItem">
-      <soap:operation soapAction="http://phpsx.org/2014/data/postItem#POST"/>
+      <soap:operation soapAction="/api#POST"/>
       <wsdl:input>
         <soap:body use="literal"/>
       </wsdl:input>
@@ -247,7 +247,7 @@ class WsdlControllerTest extends ControllerTestCase
       </wsdl:fault>
     </wsdl:operation>
     <wsdl:operation name="putItem">
-      <soap:operation soapAction="http://phpsx.org/2014/data/putItem#PUT"/>
+      <soap:operation soapAction="/api#PUT"/>
       <wsdl:input>
         <soap:body use="literal"/>
       </wsdl:input>
@@ -259,7 +259,7 @@ class WsdlControllerTest extends ControllerTestCase
       </wsdl:fault>
     </wsdl:operation>
     <wsdl:operation name="deleteItem">
-      <soap:operation soapAction="http://phpsx.org/2014/data/deleteItem#DELETE"/>
+      <soap:operation soapAction="/api#DELETE"/>
       <wsdl:input>
         <soap:body use="literal"/>
       </wsdl:input>
@@ -271,7 +271,7 @@ class WsdlControllerTest extends ControllerTestCase
       </wsdl:fault>
     </wsdl:operation>
     <wsdl:operation name="patchItem">
-      <soap:operation soapAction="http://phpsx.org/2014/data/patchItem#PATCH"/>
+      <soap:operation soapAction="/api#PATCH"/>
       <wsdl:input>
         <soap:body use="literal"/>
       </wsdl:input>
@@ -285,7 +285,7 @@ class WsdlControllerTest extends ControllerTestCase
   </wsdl:binding>
   <wsdl:service name="ApiService">
     <wsdl:port name="ApiPort" binding="tns:ApiBinding">
-      <soap:address location="http://127.0.0.1/api"/>
+      <soap:address location="http://127.0.0.1/soap"/>
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>
@@ -313,6 +313,7 @@ XML;
     {
         return array(
             [['GET'], '/wsdl/:version/*path', 'PSX\Controller\Tool\WsdlGeneratorController'],
+            [['POST'], '/soap', 'PSX\Controller\Tool\SoapProxyController'],
             [['GET', 'POST', 'PUT', 'DELETE'], '/api', 'PSX\Controller\Foo\Application\TestSchemaApiController'],
         );
     }

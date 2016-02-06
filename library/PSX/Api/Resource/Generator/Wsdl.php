@@ -88,6 +88,7 @@ class Wsdl extends GeneratorAbstract
             }
 
             $operation = new Operation(strtolower($method->getName()) . ucfirst($entityName));
+            $operation->setPath($resource->getPath());
             $operation->setMethod($method->getName());
 
             if ($request instanceof SchemaInterface) {
@@ -213,7 +214,7 @@ class Wsdl extends GeneratorAbstract
             $oper->setAttribute('name', $operation->getName());
 
             $soapOperation = $element->ownerDocument->createElement('soap:operation');
-            $soapOperation->setAttribute('soapAction', $this->targetNamespace . '/' . $operation->getName() . '#' . $operation->getMethod());
+            $soapOperation->setAttribute('soapAction', $operation->getPath() . '#' . $operation->getMethod());
 
             $oper->appendChild($soapOperation);
 
