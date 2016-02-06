@@ -20,6 +20,7 @@
 
 namespace PSX;
 
+use PSX\Data\Writer;
 use PSX\Dispatch\ControllerFactoryInterface;
 use PSX\Dispatch\SenderInterface;
 use PSX\Event\Context\ControllerContext;
@@ -97,16 +98,17 @@ class Dispatch
 
                 $this->loader->executeController($controller, $request, $response);
             } catch (\Exception $e) {
-                // in this case the error controller has thrown an exception.
-                // This can happen i.e. if we can not represent the error in an
-                // fitting media type. In this case we send json to the client
+                // the error controller has thrown an exception. This can happen 
+                // i.e. if we can not represent the error in a fitting media 
+                // type. In this case we send json to the client
 
                 $this->handleException($e, $response);
 
                 $record = $this->exceptionConverter->convert($e);
+                $writer = new Writer\Json();
 
                 $response->setHeader('Content-Type', 'application/json');
-                $response->setBody(new StringStream(Json::encode($record->getRecordInfo()->getData(), JSON_PRETTY_PRINT)));
+                $response->setBody(new StringStream($writer->write($record)));
             }
         }
 
