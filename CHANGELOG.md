@@ -1,5 +1,13 @@
 
-### 1.2.0
+### 1.2.1 (2016-02-07)
+
+* Add pseudo ANY request method to the routing parser
+* Removed annotation loader
+* Dispatcher add option to disable sending the response to the client
+* Add SoapProxyController which handles all SOAP communication
+* Add option to restrict fields at the table abstract class
+
+### 1.2.0 (2016-01-24)
 
 * Add annotation API controller which can be used to specify the API behaviour
   through annotations
