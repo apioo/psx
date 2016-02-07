@@ -84,6 +84,42 @@ XML;
         $this->assertXmlStringEqualsXmlString($expect, $xml, $xml);
     }
 
+    public function testPost()
+    {
+        $header = ['SOAPAction' => '/api#POST'];
+        $body   = <<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+ <soap:Body>
+  <postRequest xmlns="http://phpsx.org/2014/data">
+    <userId>3</userId>
+    <title>test</title>
+    <date>2013-04-29T16:56:32Z</date>
+  </postRequest>
+ </soap:Body>
+</soap:Envelope>
+XML;
+
+        $response = $this->sendRequest('http://127.0.0.1/soap', 'POST', $header, $body);
+        $xml      = (string) $response->getBody();
+
+        $expect = <<<'XML'
+<?xml version="1.0" encoding="UTF-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+ <soap:Body>
+  <postResponse xmlns="http://phpsx.org/2014/data">
+   <success>true</success>
+   <message>You have successful post a record</message>
+  </postResponse>
+ </soap:Body>
+</soap:Envelope>
+XML;
+
+        $this->assertEquals(201, $response->getStatusCode(), $xml);
+        $this->assertEquals('text/xml', $response->getHeader('Content-Type'), $xml);
+        $this->assertXmlStringEqualsXmlString($expect, $xml, $xml);
+    }
+
     public function testInvalidMethod()
     {
         Environment::getService('config')->set('psx_debug', false);

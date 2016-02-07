@@ -63,7 +63,10 @@ class SoapProxyController extends ApiAbstract
         $uri       = new Uri($actionUri);
         $method    = $uri->getFragment();
 
-        $request = new Request($uri, $method, $this->request->getHeaders(), $this->request->getBody());
+        $headers = $this->request->getHeaders();
+        $headers['Content-Type'] = 'application/soap+xml';
+
+        $request = new Request($uri, $method, $headers, $this->request->getBody());
 
         $this->dispatch->route($request, $this->response, $this->context);
     }
