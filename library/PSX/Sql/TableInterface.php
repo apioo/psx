@@ -75,7 +75,7 @@ interface TableInterface extends TableQueryInterface, TableManipulationInterface
      * )
      * </code>
      *
-     * For better understanding here an 32 bit integer representation of the
+     * For better understanding here a 32 bit integer representation of the
      * example above:
      * <code>
      *             UNAP     T                L
@@ -97,18 +97,7 @@ interface TableInterface extends TableQueryInterface, TableManipulationInterface
     public function getColumns();
 
     /**
-     * Returns the relation between the table and columns
-     *
-     * array(
-     * 	'column' => 'table'
-     * )
-     *
-     * @return array
-     */
-    public function getConnections();
-
-    /**
-     * Returns an pretty representation of the table name. If the table is
+     * Returns a pretty representation of the table name. If the table is
      * seperated with underscores the last part could be the display name i.e.
      * "foo_bar" should return "bar"
      *

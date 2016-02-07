@@ -85,8 +85,7 @@ class TableManager implements TableManagerInterface
 
                 $this->_container[$tableName] = new Table($this->connection,
                     $definition->getName(),
-                    $definition->getColumns(),
-                    $definition->getConnections());
+                    $definition->getColumns());
             }
         }
 

@@ -35,7 +35,8 @@ use PSX\Test\Environment;
  */
 class TableAbstractTest extends DbTestCase
 {
-    use TableTestCase;
+    use TableQueryTestTrait;
+    use TableManipulationTestTrait;
 
     public function getDataSet()
     {
@@ -43,6 +44,31 @@ class TableAbstractTest extends DbTestCase
     }
 
     /**
+     * Returns the table wich should be used for the test. The table must
+     * have the following fields: id, userId, title, date. And the following
+     * default values:
+     * <code>
+     *  id = 1,
+     *  userId = 1,
+     *  title = 'foo',
+     *  date = '2013-04-29 16:56:32'
+     *
+     *  id = 2,
+     *  userId = 1,
+     *  title = 'bar',
+     *  date = '2013-04-29 16:56:32'
+     *
+     *  id = 3,
+     *  userId = 2,
+     *  title = 'test',
+     *  date = '2013-04-29 16:56:32'
+     *
+     *  id = 4,
+     *  userId = 3,
+     *  title = 'blub',
+     *  date = '2013-04-29 16:56:32'
+     * </code>
+     *
      * @return \PSX\Sql\TableInterface
      */
     protected function getTable()
@@ -67,11 +93,6 @@ class TableAbstractTest extends DbTestCase
         $this->assertEquals($expect, $this->getTable()->getColumns());
     }
 
-    public function testGetConnections()
-    {
-        $this->assertEquals(array(), $this->getTable()->getConnections());
-    }
-
     public function testGetDisplayName()
     {
         $this->assertEquals('comment', $this->getTable()->getDisplayName());
@@ -86,139 +107,5 @@ class TableAbstractTest extends DbTestCase
     {
         $this->assertTrue($this->getTable()->hasColumn('title'));
         $this->assertFalse($this->getTable()->hasColumn('foobar'));
-    }
-
-    public function testRestrictedFields()
-    {
-        $table = $this->getTable();
-        $table->setRestrictedFields(array('id', 'userId'));
-
-        $result = $table->getAll();
-
-        $this->assertEquals(true, is_array($result));
-        $this->assertEquals(4, count($result));
-        $this->assertEquals(array(2 => 'title', 3 => 'date'), $table->getSupportedFields());
-
-        $table->setRestrictedFields(array());
-
-        $expect = array(
-            new Record('comment', array(
-                'title' => 'blub',
-                'date' => new \DateTime('2013-04-29 16:56:32'),
-            )),
-            new Record('comment', array(
-                'title' => 'test',
-                'date' => new \DateTime('2013-04-29 16:56:32'),
-            )),
-            new Record('comment', array(
-                'title' => 'bar',
-                'date' => new \DateTime('2013-04-29 16:56:32'),
-            )),
-            new Record('comment', array(
-                'title' => 'foo',
-                'date' => new \DateTime('2013-04-29 16:56:32'),
-            )),
-        );
-
-        $this->assertEquals($expect, $result);
-    }
-
-    public function testNestedResult()
-    {
-        $result = $this->getTable()->getNestedResult();
-
-        $expect = array(
-            new Record('comment', array(
-                'id' => 4,
-                'author' => (object) array('userId' => 3, 'date' => new \DateTime('2013-04-29 16:56:32')),
-                'title' => 'blub',
-            )),
-            new Record('comment', array(
-                'id' => 3,
-                'author' => (object) array('userId' => 2, 'date' => new \DateTime('2013-04-29 16:56:32')),
-                'title' => 'test',
-            )),
-            new Record('comment', array(
-                'id' => 2,
-                'author' => (object) array('userId' => 1, 'date' => new \DateTime('2013-04-29 16:56:32')),
-                'title' => 'bar',
-            )),
-            new Record('comment', array(
-                'id' => 1,
-                'author' => (object) array('userId' => 1, 'date' => new \DateTime('2013-04-29 16:56:32')),
-                'title' => 'foo',
-            )),
-        );
-
-        $this->assertEquals($expect, $result);
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testGetOneByXXXMethodNoValue()
-    {
-        $this->getTable()->getOneById();
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testGetByXXXMethodNoValue()
-    {
-        $this->getTable()->getById();
-    }
-
-    /**
-     * @expectedException \BadMethodCallException
-     */
-    public function testInvalidMethodCall()
-    {
-        $this->getTable()->foobar();
-    }
-
-    /**
-     * @expectedException \PSX\Exception
-     */
-    public function testUpdateNoPrimaryKey()
-    {
-        $table = new Table($this->connection, 'psx_handler_comment', array('foo' => TableInterface::TYPE_VARCHAR));
-        $table->update(array('foo' => 'bar'));
-    }
-
-    /**
-     * @expectedException \PSX\Exception
-     */
-    public function testDeleteNoPrimaryKey()
-    {
-        $table = new Table($this->connection, 'psx_handler_comment', array('foo' => TableInterface::TYPE_VARCHAR));
-        $table->delete(array('foo' => 'bar'));
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testCreateInvalidData()
-    {
-        $table = new Table($this->connection, 'psx_handler_comment', array('foo' => TableInterface::TYPE_VARCHAR));
-        $table->create('foo');
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testUpdateInvalidData()
-    {
-        $table = new Table($this->connection, 'psx_handler_comment', array('foo' => TableInterface::TYPE_VARCHAR));
-        $table->update('foo');
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testDeleteInvalidData()
-    {
-        $table = new Table($this->connection, 'psx_handler_comment', array('foo' => TableInterface::TYPE_VARCHAR));
-        $table->delete('foo');
     }
 }

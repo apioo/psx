@@ -68,18 +68,7 @@ class Schema implements ReaderInterface
             }
         }
 
-        // foreign keys
-        $connections = array();
-
-        foreach ($table->getForeignKeys() as $fk) {
-            $columnNames = $fk->localColumnNames();
-
-            if (count($columnNames) == 1) {
-                $connections[$columnNames[0]] = $fk->getForeignTableName();
-            }
-        }
-
-        return new Definition($tableName, $columns, $connections);
+        return new Definition($tableName, $columns);
     }
 
     protected function getType(Column $column)

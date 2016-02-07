@@ -39,7 +39,7 @@ interface TableQueryInterface
      * @param \PSX\Sql\Condition $condition
      * @return array
      */
-    public function getAll($startIndex = null, $count = null, $sortBy = null, $sortOrder = null, Condition $condition = null);
+    public function getAll($startIndex = null, $count = null, $sortBy = null, $sortOrder = null, Condition $condition = null, Fields $fields = null);
 
     /**
      * Returns an array of records matching the condition
@@ -47,7 +47,7 @@ interface TableQueryInterface
      * @param \PSX\Sql\Condition $condition
      * @return array
      */
-    public function getBy(Condition $condition);
+    public function getBy(Condition $condition, Fields $fields = null);
 
     /**
      * Returns an record by the condition
@@ -55,7 +55,7 @@ interface TableQueryInterface
      * @param \PSX\Sql\Condition $condition
      * @return \PSX\Data\RecordInterface
      */
-    public function getOneBy(Condition $condition);
+    public function getOneBy(Condition $condition, Fields $fields = null);
 
     /**
      * Returns an record by the primary key
@@ -63,7 +63,7 @@ interface TableQueryInterface
      * @param string $id
      * @return \PSX\Data\RecordInterface
      */
-    public function get($id);
+    public function get($id, Fields $fields = null);
 
     /**
      * Returns all available fields of this handler

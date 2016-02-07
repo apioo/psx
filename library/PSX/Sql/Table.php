@@ -34,29 +34,13 @@ class Table extends TableAbstract
 {
     protected $name;
     protected $columns = array();
-    protected $connections = array();
 
-    public function __construct(Connection $connection, $name, array $columns, array $connections = array())
+    public function __construct(Connection $connection, $name, array $columns)
     {
         parent::__construct($connection);
 
-        $this->name        = $name;
-        $this->columns     = $columns;
-        $this->connections = $connections;
-    }
-
-    public function getConnections()
-    {
-        return $this->connections;
-    }
-
-    public function addConnection($column, $table)
-    {
-        if ($this->hasColumn($column)) {
-            $this->connections[$column] = $table;
-        } else {
-            throw new Exception('Invalid column');
-        }
+        $this->name    = $name;
+        $this->columns = $columns;
     }
 
     public function getName()

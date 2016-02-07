@@ -18,33 +18,44 @@
  * limitations under the License.
  */
 
-namespace PSX\Sql\Table;
+namespace PSX\Sql;
 
 /**
- * Definition
+ * Fields
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
+ * @author  Fabien Potencier <fabien@symfony.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Definition
+class Fields
 {
-    protected $name;
-    protected $columns;
+    protected $whitelist;
+    protected $blacklist;
 
-    public function __construct($name, array $columns)
+    private function __construct(array $whitelist = null, array $blacklist = null)
     {
-        $this->name    = $name;
-        $this->columns = $columns;
+        $this->whitelist = $whitelist;
+        $this->blacklist = $blacklist;
     }
 
-    public function getName()
+    public function getWhitelist()
     {
-        return $this->name;
+        return $this->whitelist;
     }
 
-    public function getColumns()
+    public function getBlacklist()
     {
-        return $this->columns;
+        return $this->blacklist;
+    }
+
+    public static function whitelist(array $fields)
+    {
+        return new self($fields);
+    }
+
+    public static function blacklist(array $fields)
+    {
+        return new self(null, $fields);
     }
 }

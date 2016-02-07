@@ -25,47 +25,14 @@ use PSX\DateTime;
 use PSX\Sql;
 
 /**
- * TableTestCase
+ * TableQueryTestTrait
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-trait TableTestCase
+trait TableQueryTestTrait
 {
-    /**
-     * Returns the table wich should be used for the test. The table must
-     * have the following fields: id, userId, title, date. And the following
-     * default values:
-     * <code>
-     * 	id = 1,
-     * 	userId = 1,
-     * 	title = 'foo',
-     * 	date = '2013-04-29 16:56:32'
-     *
-     * 	id = 2,
-     * 	userId = 1,
-     * 	title = 'bar',
-     * 	date = '2013-04-29 16:56:32'
-     *
-     * 	id = 3,
-     * 	userId = 2,
-     * 	title = 'test',
-     * 	date = '2013-04-29 16:56:32'
-     *
-     * 	id = 4,
-     * 	userId = 3,
-     * 	title = 'blub',
-     * 	date = '2013-04-29 16:56:32'
-     * </code>
-     *
-     * @return \PSX\Sql\TableInterface
-     */
-    protected function getTable()
-    {
-        $this->markTestIncomplete('Table not given');
-    }
-
     public function testGetAll()
     {
         $table = $this->getTable();
@@ -554,111 +521,92 @@ trait TableTestCase
         $this->assertEquals(array('id', 'userId', 'title', 'date'), array_keys($obj->getRecordInfo()->getFields()));
     }
 
-    public function testCreate()
+    public function testRestrictedFields()
     {
         $table = $this->getTable();
+        $table->setRestrictedFields(array('id', 'userId'));
 
-        if (!$table instanceof TableManipulationInterface) {
-            $this->markTestSkipped('Table not an manipulation interface');
-        }
+        $result = $table->getAll();
 
-        $record = $table->getRecord();
-        $record->setId(5);
-        $record->setUserId(2);
-        $record->setTitle('foobar');
-        $record->setDate(new DateTime());
+        $this->assertEquals(true, is_array($result));
+        $this->assertEquals(4, count($result));
+        $this->assertEquals(array(2 => 'title', 3 => 'date'), $table->getSupportedFields());
 
-        $table->create($record);
+        $table->setRestrictedFields(array());
 
-        $this->assertEquals(5, $table->getLastInsertId());
+        $expect = array(
+            new Record('comment', array(
+                'title' => 'blub',
+                'date' => new \DateTime('2013-04-29 16:56:32'),
+            )),
+            new Record('comment', array(
+                'title' => 'test',
+                'date' => new \DateTime('2013-04-29 16:56:32'),
+            )),
+            new Record('comment', array(
+                'title' => 'bar',
+                'date' => new \DateTime('2013-04-29 16:56:32'),
+            )),
+            new Record('comment', array(
+                'title' => 'foo',
+                'date' => new \DateTime('2013-04-29 16:56:32'),
+            )),
+        );
 
-        $row = $table->getOneById(5);
+        $this->assertEquals($expect, $result);
+    }
 
-        $this->assertInstanceOf('PSX\Data\RecordInterface', $row);
-        $this->assertEquals(5, $row->getId());
-        $this->assertEquals(2, $row->getUserId());
-        $this->assertEquals('foobar', $row->getTitle());
-        $this->assertInstanceOf('DateTime', $row->getDate());
+    public function testNestedResult()
+    {
+        $result = $this->getTable()->getNestedResult();
+
+        $expect = array(
+            new Record('comment', array(
+                'id' => 4,
+                'author' => (object) array('userId' => 3, 'date' => new \DateTime('2013-04-29 16:56:32')),
+                'title' => 'blub',
+            )),
+            new Record('comment', array(
+                'id' => 3,
+                'author' => (object) array('userId' => 2, 'date' => new \DateTime('2013-04-29 16:56:32')),
+                'title' => 'test',
+            )),
+            new Record('comment', array(
+                'id' => 2,
+                'author' => (object) array('userId' => 1, 'date' => new \DateTime('2013-04-29 16:56:32')),
+                'title' => 'bar',
+            )),
+            new Record('comment', array(
+                'id' => 1,
+                'author' => (object) array('userId' => 1, 'date' => new \DateTime('2013-04-29 16:56:32')),
+                'title' => 'foo',
+            )),
+        );
+
+        $this->assertEquals($expect, $result);
     }
 
     /**
-     * @expectedException \PSX\Exception
+     * @expectedException \InvalidArgumentException
      */
-    public function testCreateEmpty()
+    public function testGetOneByXXXMethodNoValue()
     {
-        $table = $this->getTable();
-
-        if (!$table instanceof TableManipulationInterface) {
-            $this->markTestSkipped('Table not an manipulation interface');
-        }
-
-        $table->create(array());
-    }
-
-    public function testUpdate()
-    {
-        $table = $this->getTable();
-
-        if (!$table instanceof TableManipulationInterface) {
-            $this->markTestSkipped('Table not an manipulation interface');
-        }
-
-        $row = $table->getOneById(1);
-        $row->setUserId(2);
-        $row->setTitle('foobar');
-        $row->setDate(new DateTime());
-
-        $table->update($row);
-
-        $row = $table->getOneById(1);
-
-        $this->assertEquals(2, $row->getUserId());
-        $this->assertEquals('foobar', $row->getTitle());
-        $this->assertInstanceOf('DateTime', $row->getDate());
+        $this->getTable()->getOneById();
     }
 
     /**
-     * @expectedException \PSX\Exception
+     * @expectedException \InvalidArgumentException
      */
-    public function testUpdateEmpty()
+    public function testGetByXXXMethodNoValue()
     {
-        $table = $this->getTable();
-
-        if (!$table instanceof TableManipulationInterface) {
-            $this->markTestSkipped('Table not an manipulation interface');
-        }
-
-        $table->update(array());
-    }
-
-    public function testDelete()
-    {
-        $table = $this->getTable();
-
-        if (!$table instanceof TableManipulationInterface) {
-            $this->markTestSkipped('Table not an manipulation interface');
-        }
-
-        $row = $table->getOneById(1);
-
-        $table->delete($row);
-
-        $row = $table->getOneById(1);
-
-        $this->assertEmpty($row);
+        $this->getTable()->getById();
     }
 
     /**
-     * @expectedException \PSX\Exception
+     * @expectedException \BadMethodCallException
      */
-    public function testDeleteEmpty()
+    public function testInvalidMethodCall()
     {
-        $table = $this->getTable();
-
-        if (!$table instanceof TableManipulationInterface) {
-            $this->markTestSkipped('Table not an manipulation interface');
-        }
-
-        $table->delete(array());
+        $this->getTable()->foobar();
     }
 }

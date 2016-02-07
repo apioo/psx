@@ -45,19 +45,5 @@ class TableTest extends DbTestCase
 
         $this->assertEquals('foo_table', $table->getName());
         $this->assertEquals(array('bar' => TableInterface::TYPE_INT), $table->getColumns());
-        $this->assertEquals(array(), $table->getConnections());
-
-        $table->addConnection('bar', 'bar_table');
-
-        $this->assertEquals(array('bar' => 'bar_table'), $table->getConnections());
-    }
-
-    /**
-     * @expectedException \PSX\Exception
-     */
-    public function testAddConnectionInvalidColumn()
-    {
-        $table = new Table($this->connection, 'foo_table', array());
-        $table->addConnection('bar', 'bar_table');
     }
 }
