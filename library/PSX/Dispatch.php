@@ -20,7 +20,6 @@
 
 namespace PSX;
 
-use PSX\Data\Writer;
 use PSX\Dispatch\ControllerFactoryInterface;
 use PSX\Dispatch\SenderInterface;
 use PSX\Event\Context\ControllerContext;
@@ -67,7 +66,18 @@ class Dispatch
         $this->level = 0;
     }
 
-    public function route(RequestInterface $request, ResponseInterface $response, Context $context = null)
+    /**
+     * Routes the request to the fitting controller and writes the response to
+     * the client. The response is written only for the top most route call. 
+     * Nested calls from i.e. a controller will not send the response. It is 
+     * also possible to explicit ignore sending the content
+     *
+     * @param \PSX\Http\RequestInterface $request
+     * @param \PSX\Http\ResponseInterface $response
+     * @param \PSX\Loader\Context $context
+     * @param boolean $send
+     */
+    public function route(RequestInterface $request, ResponseInterface $response, Context $context = null, $send = true)
     {
         $this->level++;
 
@@ -98,17 +108,16 @@ class Dispatch
 
                 $this->loader->executeController($controller, $request, $response);
             } catch (\Exception $e) {
-                // the error controller has thrown an exception. This can happen 
-                // i.e. if we can not represent the error in a fitting media 
-                // type. In this case we send json to the client
+                // in this case the error controller has thrown an exception.
+                // This can happen i.e. if we can not represent the error in an
+                // fitting media type. In this case we send json to the client
 
                 $this->handleException($e, $response);
 
                 $record = $this->exceptionConverter->convert($e);
-                $writer = new Writer\Json();
 
                 $response->setHeader('Content-Type', 'application/json');
-                $response->setBody(new StringStream($writer->write($record)));
+                $response->setBody(new StringStream(Json::encode($record->getRecordInfo()->getData(), JSON_PRETTY_PRINT)));
             }
         }
 
@@ -117,7 +126,7 @@ class Dispatch
         $this->level--;
 
         // send the response only if we are not in a nested call
-        if ($this->level === 0) {
+        if ($this->level === 0 && $send === true) {
             $this->sender->send($response);
         }
     }
