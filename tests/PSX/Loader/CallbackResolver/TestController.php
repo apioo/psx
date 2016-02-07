@@ -18,38 +18,25 @@
  * limitations under the License.
  */
 
-namespace PSX\Loader\RoutingParser;
+namespace PSX\Loader\CallbackResolver;
 
-use PSX\Cache;
+use PSX\ControllerAbstract;
 
 /**
- * CachedParserTest
+ * TestController
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class CachedParserTest extends \PHPUnit_Framework_TestCase
+class TestController extends ControllerAbstract
 {
-    public function testGetCollection()
+    /**
+     * @Inject
+     */
+    protected $loader;
+
+    public function doIndex()
     {
-        $cache         = new Cache(new Cache\Handler\Memory());
-        $routing       = new RoutingFile('tests/PSX/Loader/routes');
-        $routingParser = new CachedParser($routing, $cache);
-
-        // we remove previous cache
-        $cache->deleteItems([CachedParser::CACHE_KEY]);
-
-        // get collection from the parser
-        $collection = $routingParser->getCollection();
-
-        $this->assertInstanceOf('PSX\Loader\RoutingCollection', $collection);
-        $this->assertEquals(15, count($collection));
-
-        // get collection from the cache
-        $collection = $routingParser->getCollection();
-
-        $this->assertInstanceOf('PSX\Loader\RoutingCollection', $routingParser->getCollection());
-        $this->assertEquals(15, count($collection));
     }
 }

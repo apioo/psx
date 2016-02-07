@@ -38,55 +38,66 @@ class RoutingParserTest extends \PHPUnit_Framework_TestCase
     {
         $context = $this->resolve('GET', '');
         $this->assertEquals('PSX\Loader\Foo1Controller', $context->get(Context::KEY_SOURCE));
-        $this->assertEquals(array(), $context->get(Context::KEY_FRAGMENT));
+        $this->assertEquals([], $context->get(Context::KEY_FRAGMENT));
 
         $context = $this->resolve('GET', '/');
         $this->assertEquals('PSX\Loader\Foo1Controller', $context->get(Context::KEY_SOURCE));
-        $this->assertEquals(array(), $context->get(Context::KEY_FRAGMENT));
+        $this->assertEquals([], $context->get(Context::KEY_FRAGMENT));
 
         $context = $this->resolve('GET', '/foo/bar');
         $this->assertEquals('PSX\Loader\Foo2Controller', $context->get(Context::KEY_SOURCE));
-        $this->assertEquals(array(), $context->get(Context::KEY_FRAGMENT));
+        $this->assertEquals([], $context->get(Context::KEY_FRAGMENT));
 
         $context = $this->resolve('GET', '/foo/test');
         $this->assertEquals('PSX\Loader\Foo3Controller', $context->get(Context::KEY_SOURCE));
-        $this->assertEquals(array('bar' => 'test'), $context->get(Context::KEY_FRAGMENT));
+        $this->assertEquals(['bar' => 'test'], $context->get(Context::KEY_FRAGMENT));
 
         $context = $this->resolve('GET', '/foo/test/bar');
         $this->assertEquals('PSX\Loader\Foo4Controller', $context->get(Context::KEY_SOURCE));
-        $this->assertEquals(array('bar' => 'test', 'foo' => 'bar'), $context->get(Context::KEY_FRAGMENT));
+        $this->assertEquals(['bar' => 'test', 'foo' => 'bar'], $context->get(Context::KEY_FRAGMENT));
 
         $context = $this->resolve('GET', '/bar');
         $this->assertEquals('PSX\Loader\Foo5Controller', $context->get(Context::KEY_SOURCE));
-        $this->assertEquals(array(), $context->get(Context::KEY_FRAGMENT));
+        $this->assertEquals([], $context->get(Context::KEY_FRAGMENT));
 
         $context = $this->resolve('GET', '/bar/foo');
         $this->assertEquals('PSX\Loader\Foo6Controller', $context->get(Context::KEY_SOURCE));
-        $this->assertEquals(array(), $context->get(Context::KEY_FRAGMENT));
+        $this->assertEquals([], $context->get(Context::KEY_FRAGMENT));
 
         $context = $this->resolve('GET', '/bar/14');
         $this->assertEquals('PSX\Loader\Foo7Controller', $context->get(Context::KEY_SOURCE));
-        $this->assertEquals(array('foo' => '14'), $context->get(Context::KEY_FRAGMENT));
+        $this->assertEquals(['foo' => '14'], $context->get(Context::KEY_FRAGMENT));
 
         $context = $this->resolve('GET', '/bar/14/16');
         $this->assertEquals('PSX\Loader\Foo8Controller', $context->get(Context::KEY_SOURCE));
-        $this->assertEquals(array('foo' => '14', 'bar' => '16'), $context->get(Context::KEY_FRAGMENT));
+        $this->assertEquals(['foo' => '14', 'bar' => '16'], $context->get(Context::KEY_FRAGMENT));
 
         $context = $this->resolve('POST', '/bar');
         $this->assertEquals('PSX\Loader\Foo9Controller', $context->get(Context::KEY_SOURCE));
-        $this->assertEquals(array(), $context->get(Context::KEY_FRAGMENT));
+        $this->assertEquals([], $context->get(Context::KEY_FRAGMENT));
 
         $context = $this->resolve('GET', '/whitespace');
         $this->assertEquals('PSX\Loader\Foo10Controller', $context->get(Context::KEY_SOURCE));
-        $this->assertEquals(array(), $context->get(Context::KEY_FRAGMENT));
+        $this->assertEquals([], $context->get(Context::KEY_FRAGMENT));
 
         $context = $this->resolve('GET', '/alias');
         $this->assertEquals('PSX\Loader\Foo2Controller', $context->get(Context::KEY_SOURCE));
-        $this->assertEquals(array(), $context->get(Context::KEY_FRAGMENT));
+        $this->assertEquals([], $context->get(Context::KEY_FRAGMENT));
 
         $context = $this->resolve('GET', '/files/foo/bar/foo.htm');
         $this->assertEquals('PSX\Loader\Foo12Controller', $context->get(Context::KEY_SOURCE));
-        $this->assertEquals(array('path' => 'foo/bar/foo.htm'), $context->get(Context::KEY_FRAGMENT));
+        $this->assertEquals(['path' => 'foo/bar/foo.htm'], $context->get(Context::KEY_FRAGMENT));
+
+        // we can not resolve controller Foo13Controller since it has a static
+        // url this is only useful for the reverse router
+
+        $context = $this->resolve('GET', '/baz');
+        $this->assertEquals('PSX\Loader\Foo14Controller', $context->get(Context::KEY_SOURCE));
+        $this->assertEquals([], $context->get(Context::KEY_FRAGMENT));
+
+        $context = $this->resolve('PATCH', '/baz');
+        $this->assertEquals('PSX\Loader\Foo14Controller', $context->get(Context::KEY_SOURCE));
+        $this->assertEquals([], $context->get(Context::KEY_FRAGMENT));
     }
 
     public function testInvalidRoute()

@@ -33,7 +33,7 @@ class RoutingFileTest extends \PHPUnit_Framework_TestCase
 {
     public function testGetCollection()
     {
-        $routingFile = new RoutingFile('tests/PSX/Loader/routes');
+        $routingFile = new RoutingFile(__DIR__ . '/../routes');
         $collection  = $routingFile->getCollection();
 
         $this->assertInstanceOf('PSX\Loader\RoutingCollection', $collection);
@@ -114,6 +114,34 @@ class RoutingFileTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('/test', $routing[RoutingCollection::ROUTING_PATH]);
         $this->assertEquals('PSX\Loader\Foo11Controller', $routing[RoutingCollection::ROUTING_SOURCE]);
         $this->assertEquals(10, $collection->key());
+
+        $routing = $collection->next();
+
+        $this->assertEquals(array('GET'), $routing[RoutingCollection::ROUTING_METHODS]);
+        $this->assertEquals('/alias', $routing[RoutingCollection::ROUTING_PATH]);
+        $this->assertEquals('~/foo/bar', $routing[RoutingCollection::ROUTING_SOURCE]);
+        $this->assertEquals(11, $collection->key());
+
+        $routing = $collection->next();
+
+        $this->assertEquals(array('GET'), $routing[RoutingCollection::ROUTING_METHODS]);
+        $this->assertEquals('/files/*path', $routing[RoutingCollection::ROUTING_PATH]);
+        $this->assertEquals('PSX\Loader\Foo12Controller', $routing[RoutingCollection::ROUTING_SOURCE]);
+        $this->assertEquals(12, $collection->key());
+
+        $routing = $collection->next();
+
+        $this->assertEquals(array('GET'), $routing[RoutingCollection::ROUTING_METHODS]);
+        $this->assertEquals('http://cdn.foo.com/serve/*path', $routing[RoutingCollection::ROUTING_PATH]);
+        $this->assertEquals('PSX\Loader\Foo13Controller', $routing[RoutingCollection::ROUTING_SOURCE]);
+        $this->assertEquals(13, $collection->key());
+
+        $routing = $collection->next();
+
+        $this->assertEquals(array('ANY'), $routing[RoutingCollection::ROUTING_METHODS]);
+        $this->assertEquals('/baz', $routing[RoutingCollection::ROUTING_PATH]);
+        $this->assertEquals('PSX\Loader\Foo14Controller', $routing[RoutingCollection::ROUTING_SOURCE]);
+        $this->assertEquals(14, $collection->key());
 
         // test traversable
         foreach ($collection as $route) {

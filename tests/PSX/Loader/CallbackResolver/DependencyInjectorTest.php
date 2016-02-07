@@ -38,7 +38,7 @@ class DependencyInjectorTest extends \PHPUnit_Framework_TestCase
     public function testResolve()
     {
         $context  = new Context();
-        $context->set(Context::KEY_SOURCE, 'PSX\Loader\RoutingParser\Annotation\BarController::doIndex');
+        $context->set(Context::KEY_SOURCE, 'PSX\Loader\CallbackResolver\TestController::doIndex');
 
         $request  = new Request(new Url('http://127.0.0.1'), 'GET');
         $response = new Response();
@@ -46,8 +46,8 @@ class DependencyInjectorTest extends \PHPUnit_Framework_TestCase
         $simple     = new DependencyInjector(Environment::getService('controller_factory'));
         $controller = $simple->resolve($request, $response, $context);
 
-        $this->assertInstanceOf('PSX\Loader\RoutingParser\Annotation\BarController', $controller);
-        $this->assertEquals('PSX\Loader\RoutingParser\Annotation\BarController', $context->get(Context::KEY_CLASS));
+        $this->assertInstanceOf('PSX\Loader\CallbackResolver\TestController', $controller);
+        $this->assertEquals('PSX\Loader\CallbackResolver\TestController', $context->get(Context::KEY_CLASS));
         $this->assertEquals('doIndex', $context->get(Context::KEY_METHOD));
     }
 

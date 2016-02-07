@@ -53,7 +53,10 @@ class RoutingParser implements LocationFinderInterface
         foreach ($routingCollection as $routing) {
             $parameters = array();
 
-            if (in_array($method, $routing[RoutingCollection::ROUTING_METHODS]) &&
+            $methodMatch = $routing[RoutingCollection::ROUTING_METHODS] === ['ANY'] || 
+                in_array($method, $routing[RoutingCollection::ROUTING_METHODS]);
+
+            if ($methodMatch &&
                 $pathMatcher->match($routing[RoutingCollection::ROUTING_PATH], $parameters)) {
                 $source = $routing[RoutingCollection::ROUTING_SOURCE];
 

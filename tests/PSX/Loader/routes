@@ -14,4 +14,5 @@ GET    	    /whitespace    	       PSX\Loader\Foo10Controller
 GET|POST /test                     PSX\Loader\Foo11Controller
 GET /alias                         ~/foo/bar
 GET /files/*path                   PSX\Loader\Foo12Controller
-GET http://cdn.foo.com/files/*path PSX\Loader\Foo13Controller
+GET http://cdn.foo.com/serve/*path PSX\Loader\Foo13Controller
+ANY /baz                           PSX\Loader\Foo14Controller
