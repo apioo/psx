@@ -63,6 +63,10 @@ class SoapProxyController extends ApiAbstract
         $uri       = new Uri($actionUri);
         $method    = $uri->getFragment();
 
+        if (!in_array($method, ['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'])) {
+            throw new StatusCode\BadRequestException('Invalid request method');
+        }
+
         $headers = $this->request->getHeaders();
         $headers['Content-Type'] = 'application/soap+xml';
 

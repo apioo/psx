@@ -145,6 +145,31 @@ XML;
         $this->assertXmlStringEqualsXmlString($expect, $xml, $xml);
     }
 
+    public function testInvalidMethodFragment()
+    {
+        Environment::getService('config')->set('psx_debug', false);
+
+        $headers  = ['SOAPAction' => '/api#FOO'];
+        $response = $this->sendRequest('http://127.0.0.1/soap', 'POST', $headers);
+        $xml      = (string) $response->getBody();
+
+        $expect = <<<'XML'
+<?xml version="1.0" encoding="UTF-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+ <soap:Body>
+  <soap:Fault>
+   <faultcode>soap:Server</faultcode>
+   <faultstring>Invalid request method</faultstring>
+  </soap:Fault>
+ </soap:Body>
+</soap:Envelope>
+XML;
+
+        $this->assertEquals(400, $response->getStatusCode(), $xml);
+        $this->assertEquals('text/xml', $response->getHeader('Content-Type'), $xml);
+        $this->assertXmlStringEqualsXmlString($expect, $xml, $xml);
+    }
+
     public function testExplicitAccept()
     {
         Environment::getService('config')->set('psx_debug', false);
