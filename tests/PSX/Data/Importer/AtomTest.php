@@ -144,7 +144,8 @@ XML;
 	<p><i>[Update: The Atom draft is finished.]</i></p>
 </div>
 HTML;
-        $this->assertXmlStringEqualsXmlString($expected, $entry->getContent());
+
+        $this->assertXmlStringEqualsXmlString($expected, $entry->getContent()->getContent());
     }
 
     public function testAtomSource()
