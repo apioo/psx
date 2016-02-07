@@ -405,6 +405,60 @@ trait TableQueryTestTrait
         $this->assertEquals($expect, $result);
     }
 
+    public function testGetAllFieldWhitelist()
+    {
+        $table = $this->getTable();
+
+        if (!$table instanceof TableQueryInterface) {
+            $this->markTestSkipped('Table not an query interface');
+        }
+
+        $result = $table->getAll(0, 2, 'id', Sql::SORT_DESC, null, Fields::whitelist(['id', 'title']));
+
+        $this->assertEquals(true, is_array($result));
+        $this->assertEquals(2, count($result));
+
+        $expect = array(
+            new Record('comment', array(
+                'id' => 4,
+                'title' => 'blub',
+            )),
+            new Record('comment', array(
+                'id' => 3,
+                'title' => 'test',
+            )),
+        );
+
+        $this->assertEquals($expect, $result);
+    }
+
+    public function testGetAllFieldBlacklist()
+    {
+        $table = $this->getTable();
+
+        if (!$table instanceof TableQueryInterface) {
+            $this->markTestSkipped('Table not an query interface');
+        }
+
+        $result = $table->getAll(0, 2, 'id', Sql::SORT_DESC, null, Fields::blacklist(['id', 'title']));
+
+        $this->assertEquals(true, is_array($result));
+        $this->assertEquals(2, count($result));
+
+        $expect = array(
+            new Record('comment', array(
+                'userId' => 3,
+                'date' => new \DateTime('2013-04-29 16:56:32'),
+            )),
+            new Record('comment', array(
+                'userId' => 2,
+                'date' => new \DateTime('2013-04-29 16:56:32'),
+            )),
+        );
+
+        $this->assertEquals($expect, $result);
+    }
+
     public function testGetBy()
     {
         $table = $this->getTable();

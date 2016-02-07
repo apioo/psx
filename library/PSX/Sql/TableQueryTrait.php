@@ -189,10 +189,18 @@ trait TableQueryTrait
     }
 
     /**
-     * Builds the SQL query and returns the sql statment and parameters
+     * Builds the SQL query and returns the sql statment and parameters. Can be
+     * override to provide a more complex query
      *
+     * @param string $table
+     * @param array $fields
+     * @param integer $startIndex
+     * @param integer $count
+     * @param string $sortBy
+     * @param string $sortOrder
+     * @param \PSX\Sql\Condition $condition
      */
-    protected function getQuery($table, $fields, $startIndex, $count, $sortBy, $sortOrder, Condition $condition = null)
+    protected function getQuery($table, array $fields, $startIndex, $count, $sortBy, $sortOrder, Condition $condition = null)
     {
         $builder = $this->connection->createQueryBuilder()
             ->select($fields)
