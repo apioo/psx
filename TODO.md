@@ -3,22 +3,14 @@ _which are likely to be implemented are moved to a seperate github issue_
 
 ### 1.x
 
+- [ ] Add controller to server static content
 - [ ] Better support for conditional requests E-Tag, If-Match etc.
 - [ ] Think about support for OData
 - [ ] Think about support for JSON-RPC
 - [ ] Add Swagger2 support #11
 - [ ] Add GraphQL parser to generate a schema based on a GraphQL string #12
-- [ ] Option to setup global middlewares inside the configuration.php which are
-      loaded for all controllers. Maybe we can specifiy pre and post controller
-      middlewares #15
 - [ ] Add http interceptor handler and method to add global default headers i.e.
       a user agent header (these can be overriden by a specific set header)
-- [ ] Add more http methods to controller abstract / schema api
-  - [ ] Support http method PATCH. Json patch format (rfc6902) is already 
-        implemented in #13
-- [ ] Add proxy controller which can be used to fix the WSDL dynmaic part 
-      problem. The proxy controller redirects calls to other controllers. 
-      Probably also useful for OData
 - [ ] Use DateTimeImmutable if we are dropping support for 5.4 and require at 
       least 5.5
 - [ ] Schema html writer array constraints are not listed, only the constraints 
@@ -41,12 +33,9 @@ _which are likely to be implemented are moved to a seperate github issue_
 - [ ] Add commands which generate php code
   - [ ] Add command to generate an API endpoint based on a RAML file
   - [ ] Add command to generate a PHP schema based on a json schema
-- [ ] Add command to generate a json schema from a schema
+  - [ ] Add command to generate a json schema from a PHP schema
 - [ ] Add command to generate client code based on the API definition. Probably 
       this should be done in another project and based on a RAML/jsonschema spec
-- [ ] Add template helper which simplifies working with a HATEOAS array. You can
-      get a title or href by rel. Probably not needed since in almost every case 
-      we render HATEOAS arrays through a data and not a template writer #6
 - [ ] Add event listener to table manager so that we can fire an event everytime 
       a record gets created, updated or deleted
 - [ ] Possibility to describe in an API that authentication is required. 
@@ -62,12 +51,6 @@ _which are likely to be implemented are moved to a seperate github issue_
   - [ ] Create command to create PHP source code based on a RAML spec. This 
         could probably use the json schema generator to generate the schema 
         class. So we could create a complete schema endpoint from the RAML spec
-- [ ] WSDL generation problem for routes with dynamic parts
-- [ ] We need two routes for the table schema controller for a better RESTful 
-      urls i.e. /foo to get a collection /foo/1 for a specific entry
-  - [ ] This requires that we need some way to describe the needed routes for
-        a controller. Or we add multiple routes which point to the controller
-- [ ] Add ANY request method in router
 - [ ] Consider use Stash as caching library if PSR is ready
 - [ ] Evaluate whether we could build a RDF writer
 - [ ] Add verify method to psx sql condition to verify conditions against an 
@@ -83,7 +66,7 @@ _which are likely to be implemented are moved to a seperate github issue_
   - [ ] Add SymfonyControllerExecutor to execute a symfony controller from PSX
 - [ ] Probably implement http://www.w3.org/TR/xmldsig-core/
 - [ ] Probably replace all generic exceptions (RuntimeException, 
-    InvalidArgumentException, etc..) with PSX specific exceptions 
+      InvalidArgumentException, etc..) with PSX specific exceptions 
 - [ ] Follow the json-ld / hydra spec (http://www.hydra-cg.com/) and see whether 
       we should add support for it
 - [ ] Test and handle file uploads
@@ -91,6 +74,7 @@ _which are likely to be implemented are moved to a seperate github issue_
 ### 2.x
 
 - [ ] Remove doCreate and doUpdate call in SchemaApiAbstract
+- [ ] Remove set/getRestrictedFields in TableAbstract
 - [ ] Think about moving from a monolith repo into multiple packages. There are
       some components which might be useful withput psx i.e. data, schema
 
@@ -106,6 +90,25 @@ _which are likely to be implemented are moved to a seperate github issue_
 
 ### Archive
 
+- [x] Add ANY request method in router
+- [ ] We need two routes for the table schema controller for a better RESTful 
+      urls i.e. /foo to get a collection /foo/1 for a specific entry (we have
+      deprecated the table controller)
+  - [ ] This requires that we need some way to describe the needed routes for
+        a controller. Or we add multiple routes which point to the controller
+- [x] WSDL generation problem for routes with dynamic parts
+- [ ] Add template helper which simplifies working with a HATEOAS array. You can
+      get a title or href by rel. Probably not needed since in almost every case 
+      we render HATEOAS arrays through a data and not a template writer #6
+- [x] Add proxy controller which can be used to fix the WSDL dynmaic part 
+      problem. The proxy controller redirects calls to other controllers. 
+      Useful for all service which have one entry point OData, GraphQL
+- [x] Add more http methods to controller abstract / schema api
+  - [x] Support http method PATCH. Json patch format (rfc6902) is already 
+        implemented in #13
+- [x] Option to setup global middlewares inside the configuration.php which are
+      loaded for all controllers. Maybe we can specifiy pre and post controller
+      middlewares #15
 - [x] Rename object to something else since object is a keyword in php7
 - [x] Accessor work with / insteadof . as seperator
 - [x] Build on validator and remove Record/Array validator which can handle all
