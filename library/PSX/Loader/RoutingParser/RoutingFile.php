@@ -53,6 +53,11 @@ class RoutingFile implements RoutingParserInterface
                 if (!empty($line) && $line[0] != '#') {
                     $line    = preg_replace('/([\s]{1,})/', ' ', $line);
                     $parts   = explode(' ', $line);
+
+                    if ($parts[0] == 'ANY') {
+                        $parts[0] = 'GET|POST|PUT|DELETE|PATCH';
+                    }
+
                     $allowed = isset($parts[0]) ? explode('|', $parts[0]) : array();
                     $path    = isset($parts[1]) ? $parts[1] : null;
                     $class   = isset($parts[2]) ? $parts[2] : null;
