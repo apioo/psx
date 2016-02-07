@@ -490,6 +490,33 @@ trait TableQueryTestTrait
         $this->assertEquals($expect, $result);
     }
 
+    public function testGetByFieldWhitelist()
+    {
+        $table = $this->getTable();
+
+        if (!$table instanceof TableQueryInterface) {
+            $this->markTestSkipped('Table not an query interface');
+        }
+
+        $result = $table->getByUserId(1, Fields::whitelist(['id', 'title']));
+
+        $this->assertEquals(true, is_array($result));
+        $this->assertEquals(2, count($result));
+
+        $expect = array(
+            new Record('comment', array(
+                'id' => 2,
+                'title' => 'bar',
+            )),
+            new Record('comment', array(
+                'id' => 1,
+                'title' => 'foo',
+            )),
+        );
+
+        $this->assertEquals($expect, $result);
+    }
+
     public function testGetOneBy()
     {
         $table = $this->getTable();
@@ -512,6 +539,26 @@ trait TableQueryTestTrait
         $this->assertEquals($expect, array($row));
     }
 
+    public function testGetOneByFieldWhitelist()
+    {
+        $table = $this->getTable();
+
+        if (!$table instanceof TableQueryInterface) {
+            $this->markTestSkipped('Table not an query interface');
+        }
+
+        $row = $table->getOneById(1, Fields::whitelist(['id', 'title']));
+
+        $expect = array(
+            new Record('comment', array(
+                'id' => 1,
+                'title' => 'foo',
+            )),
+        );
+
+        $this->assertEquals($expect, array($row));
+    }
+
     public function testGet()
     {
         $table = $this->getTable();
@@ -528,6 +575,26 @@ trait TableQueryTestTrait
                 'userId' => 1,
                 'title' => 'foo',
                 'date' => new \DateTime('2013-04-29 16:56:32'),
+            )),
+        );
+
+        $this->assertEquals($expect, array($row));
+    }
+
+    public function testGetFieldWhitelist()
+    {
+        $table = $this->getTable();
+
+        if (!$table instanceof TableQueryInterface) {
+            $this->markTestSkipped('Table not an query interface');
+        }
+
+        $row = $table->get(1, Fields::whitelist(['id', 'title']));
+
+        $expect = array(
+            new Record('comment', array(
+                'id' => 1,
+                'title' => 'foo',
             )),
         );
 

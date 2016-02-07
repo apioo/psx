@@ -164,6 +164,7 @@ trait TableQueryTrait
         if (substr($method, 0, 8) == 'getOneBy') {
             $column = lcfirst(substr($method, 8));
             $value  = isset($arguments[0]) ? $arguments[0] : null;
+            $field  = isset($arguments[1]) ? $arguments[1] : null;
 
             if (!empty($value)) {
                 $condition = new Condition(array($column, '=', $value));
@@ -171,10 +172,11 @@ trait TableQueryTrait
                 throw new InvalidArgumentException('Value required');
             }
 
-            return $this->getOneBy($condition);
+            return $this->getOneBy($condition, $field);
         } elseif (substr($method, 0, 5) == 'getBy') {
             $column = lcfirst(substr($method, 5));
             $value  = isset($arguments[0]) ? $arguments[0] : null;
+            $field  = isset($arguments[1]) ? $arguments[1] : null;
 
             if (!empty($value)) {
                 $condition = new Condition(array($column, '=', $value));
@@ -182,7 +184,7 @@ trait TableQueryTrait
                 throw new InvalidArgumentException('Value required');
             }
 
-            return $this->getBy($condition);
+            return $this->getBy($condition, $field);
         } else {
             throw new BadMethodCallException('Undefined method ' . $method);
         }
