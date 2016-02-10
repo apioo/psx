@@ -29,7 +29,7 @@ namespace PSX;
  */
 class Base
 {
-    const VERSION = '1.2.2';
+    const VERSION = '1.2.3';
 
     /**
      * Returns the version of the framework
