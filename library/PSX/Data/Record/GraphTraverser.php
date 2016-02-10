@@ -65,6 +65,8 @@ class GraphTraverser
         $visitor->visitObjectStart($name);
 
         foreach ($properties as $key => $value) {
+            $value = $this->reveal($value);
+
             $visitor->visitObjectValueStart($key, $value);
 
             $this->traverseValue($value, $visitor);
@@ -77,14 +79,14 @@ class GraphTraverser
 
     protected function traverseValue($value, VisitorInterface $visitor)
     {
-        $value = $this->reveal($value);
-
         if (self::isObject($value)) {
             $this->traverseObject($value, $visitor);
         } elseif (self::isArray($value)) {
             $visitor->visitArrayStart();
 
             foreach ($value as $val) {
+                $val = $this->reveal($val);
+
                 $visitor->visitArrayValueStart($val);
 
                 $this->traverseValue($val, $visitor);
