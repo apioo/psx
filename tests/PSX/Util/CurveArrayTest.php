@@ -111,10 +111,17 @@ class CurveArrayTest extends \PHPUnit_Framework_TestCase
 
     public function testIsAssoc()
     {
-        $this->assertFalse(CurveArray::isAssoc(array()));
-        $this->assertFalse(CurveArray::isAssoc(range(0, 9)));
-        $this->assertTrue(CurveArray::isAssoc(array('foo' => null, 'bar' => null)));
-        $this->assertTrue(CurveArray::isAssoc(array(0 => 'foo', 'foo' => null, 'bar' => null)));
+        $this->assertFalse(CurveArray::isAssoc([]));
+        $this->assertFalse(CurveArray::isAssoc([0, 9]));
+        $this->assertFalse(CurveArray::isAssoc(['foo', null]));
+        $this->assertFalse(CurveArray::isAssoc(['foo']));
+        $this->assertTrue(CurveArray::isAssoc(['foo' => null, 'bar' => null]));
+        $this->assertTrue(CurveArray::isAssoc([0 => 'foo', 'foo' => null, 'bar' => null]));
+
+        // it is a know problem that this should return false. Since we use
+        // isset for performance reasons it returns true. If it becomes
+        // important we can switch to array_key_exists
+        $this->assertTrue(CurveArray::isAssoc([null]));
     }
 
     public function testObjectify()

@@ -184,6 +184,18 @@ class RecordTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('bar', $record->getTitle());
     }
 
+    public function testJsonEncode()
+    {
+        $record = new Record('foo', array(
+            'id'    => 1,
+            'title' => 'bar',
+        ));
+
+        $expect = '{"id": 1, "title": "bar"}';
+
+        $this->assertJsonStringEqualsJsonString($expect, json_encode($record));
+    }
+
     /**
      * @expectedException \BadMethodCallException
      */
