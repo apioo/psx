@@ -6,7 +6,85 @@ To build a documented API we need to tell PSX which request methods are
 available and how the incoming and outgoing data looks. Because of this PSX 
 can automatically validate incoming data and format outgoing data according to 
 the schema. Also it is possible to generate documentation or other schema 
-formats like i.e. Swagger, WSDL or RAML based on the defined schema.
+formats like i.e. Swagger, WSDL or RAML based on the defined schema. In the 
+following we describe the available options.
+
+Annotation
+----------
+
+It is possible to provide all API informations to the controller through 
+annotations.
+
+.. code-block:: php
+
+    <?php
+
+    namespace Foo;
+
+    use PSX\Api\Version;
+    use PSX\Controller\AnnotationApiAbstract;
+    use PSX\Data\RecordInterface;
+
+    /**
+     * @Title("Endpoint")
+     * @PathParam(name="foo_id", type="integer")
+     */
+    class Endpoint extends AnnotationApiAbstract
+    {
+        /**
+         * @QueryParam(name="count", description="filter the songs by genre")
+         * @Outgoing(code=200, schema="schema/song.json")
+         */
+        protected function doGet(Version $version)
+        {
+            $count = $this->queryParameters->getProperty('count');
+
+            // @TODO return the result i.e. from a database
+
+            return [
+                'title'  => 'Wut ueber den verlorenen groschen',
+                'artist' => 'Beethoven',
+            ];
+        }
+
+        /**
+         * @Incoming(schema="schema/song.json")
+         * @Outgoing(code=201, schema="schema/message.json")
+         */
+        protected function doPost(RecordInterface $record, Version $version)
+        {
+            // @TODO work with the record
+
+            return [
+                'success' => true,
+                'message' => 'Successful created',
+            ];
+        }
+    }
+
+The following annotations are available:
+
++--------------+--------------+-----------------------------------------------------------------+
+| Annotation   | Target       | Example                                                         |
++==============+==============+=================================================================+
+| @Title       | Class/Method | @Title("Foo")                                                   |
++--------------+--------------+-----------------------------------------------------------------+
+| @Description | Class/Method | @Description("Bar")                                             |
++--------------+--------------+-----------------------------------------------------------------+
+| @PathParam   | Class        | @PathParam(name="foo", type="integer")                          |
++--------------+--------------+-----------------------------------------------------------------+
+| @QueryParam  | Method       | @QueryParam(name="bar", type="integer")                         |
++--------------+--------------+-----------------------------------------------------------------+
+| @Incoming    | Method       | @Incoming(schema="schema/song.json")                            |
++--------------+--------------+-----------------------------------------------------------------+
+| @Outgoing    | Method       | @Outgoing(code=200, schema="schema/song.json")                  |
++--------------+--------------+-----------------------------------------------------------------+
+| @Version     | Class        | @Version(version="3", status=PSX\\Api\\Resource::STATUS_ACTIVE) |
++--------------+--------------+-----------------------------------------------------------------+
+
+In case you define a ``@Version`` annotation you can also assign the "version" 
+attribute to every annotation i.e. ``@PathParam(name="foo", type="integer", version=2)``.
+Through this it is possible to add annotations only for a specific version.
 
 RAML
 ----
@@ -83,92 +161,6 @@ RAML definition (endpoint.raml)
             body:
               application/json:
                 schema: !include schema/message.json
-
-JSON schema (song.json)
-
-.. code-block:: json
-
-    {
-        "$schema": "http://json-schema.org/draft-04/schema#",
-        "description": "A canonical song",
-        "type": "object",
-        "properties": {
-            "artist": {
-                "type": "string"
-            },
-            "title": {
-                "type": "string"
-            }
-        }
-    }
-
-JSON schema (message.json)
-
-.. code-block:: json
-
-    {
-        "$schema": "http://json-schema.org/draft-04/schema#",
-        "description": "A status message",
-        "type": "object",
-        "properties": {
-            "message": {
-                "type": "string"
-            },
-            "success": {
-                "type": "boolean"
-            }
-        }
-    }
-
-Annotation
-----------
-
-If you dont want to use a RAML schema you can also attach all informations to
-the controller through annotations.
-
-.. code-block:: php
-
-    <?php
-
-    namespace Foo;
-
-    use PSX\Api\Version;
-    use PSX\Controller\AnnotationApiAbstract;
-    use PSX\Data\RecordInterface;
-
-    class Endpoint extends AnnotationApiAbstract
-    {
-        /**
-         * @QueryParam(name="count", description="filter the songs by genre")
-         * @Outgoing(code=200, schema="schema/song.json")
-         */
-        protected function doGet(Version $version)
-        {
-            $count = $this->queryParameters->getProperty('count');
-
-            // @TODO return the result i.e. from a database
-
-            return [
-                'title'  => 'Wut ueber den verlorenen groschen',
-                'artist' => 'Beethoven',
-            ];
-        }
-
-        /**
-         * @Incoming(schema="schema/song.json")
-         * @Outgoing(code=201, schema="schema/message.json")
-         */
-        protected function doPost(RecordInterface $record, Version $version)
-        {
-            // @TODO work with the record
-
-            return [
-                'success' => true,
-                'message' => 'Successful created',
-            ];
-        }
-    }
-
 
 Programmatic
 ------------

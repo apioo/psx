@@ -32,6 +32,7 @@ Generates a WSDL representation for the given API.
 .. code::
 
     GET /wsdl/:version/*path PSX\Controller\Tool\WsdlGeneratorController
+    GET /soap                PSX\Controller\Tool\SoapProxyController
 
 Swagger
 -------
