@@ -24,16 +24,52 @@ use PSX\Api\DocumentationInterface;
 use PSX\Api\Resource;
 
 /**
- * Simple
+ * Explicit
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Simple extends Explicit
+class Explicit implements DocumentationInterface
 {
-    public function __construct(Resource $resource, $description = null)
+    protected $version;
+    protected $resource;
+    protected $description;
+
+    public function __construct($version, Resource $resource, $description = null)
     {
-        parent::__construct(1, $resource, $description);
+        $this->version     = (int) $version;
+        $this->resource    = $resource;
+        $this->description = $description;
+    }
+
+    public function hasResource($version)
+    {
+        return $version == $this->version;
+    }
+
+    public function getResource($version)
+    {
+        return $version == $this->version ? $this->resource : null;
+    }
+
+    public function getResources()
+    {
+        return [$this->version => $this->resource];
+    }
+
+    public function getLatestVersion()
+    {
+        return $this->version;
+    }
+
+    public function isVersionRequired()
+    {
+        return false;
+    }
+
+    public function getDescription()
+    {
+        return $this->description;
     }
 }

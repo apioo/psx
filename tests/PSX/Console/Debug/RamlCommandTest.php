@@ -39,7 +39,7 @@ class RamlCommandTest extends CommandTestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(array(
-            'file'   => __DIR__ . '/../../Api/Documentation/Parser/test.raml',
+            'file'   => __DIR__ . '/../../Api/Documentation/Parser/raml/test.raml',
             'path'   => '/foo',
             'format' => 'serialize',
         ));

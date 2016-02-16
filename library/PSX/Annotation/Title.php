@@ -18,22 +18,33 @@
  * limitations under the License.
  */
 
-namespace PSX\Api\Documentation;
-
-use PSX\Api\DocumentationInterface;
-use PSX\Api\Resource;
+namespace PSX\Annotation;
 
 /**
- * Simple
+ * Title
  *
+ * @Annotation
+ * @Target("CLASS")
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Simple extends Explicit
+class Title extends VersionableAbstract
 {
-    public function __construct(Resource $resource, $description = null)
+    /**
+     * @var string
+     */
+    protected $title;
+
+    public function __construct(array $values)
     {
-        parent::__construct(1, $resource, $description);
+        parent::__construct($values);
+
+        $this->title = current($values);
+    }
+
+    public function getTitle()
+    {
+        return $this->title;
     }
 }

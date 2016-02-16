@@ -24,16 +24,20 @@ use PSX\Api\DocumentationInterface;
 use PSX\Api\Resource;
 
 /**
- * Simple
+ * Composite
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Simple extends Explicit
+class Composite extends Version
 {
-    public function __construct(Resource $resource, $description = null)
+    public function __construct(array $docs, $description = null)
     {
-        parent::__construct(1, $resource, $description);
+        parent::__construct($description);
+
+        foreach ($docs as $doc) {
+            $this->resources = $this->resources + $doc->getResources();
+        }
     }
 }

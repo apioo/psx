@@ -1,0 +1,8 @@
+{
+    "type": "object",
+    "properties": {
+        "title2": {
+            "type": "string"
+        }
+    }
+}

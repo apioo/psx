@@ -29,11 +29,26 @@ use PSX\Data\SchemaInterface;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class RamlTest extends \PHPUnit_Framework_TestCase
+class RamlTest extends ParserTestCase
 {
-    public function testParse()
+    protected function getSimpleDocumentation()
     {
-        $doc = Raml::fromFile(__DIR__ . '/test.raml', '/foo');
+        return Raml::fromFile(__DIR__ . '/raml/simple.raml', '/foo');
+    }
+
+    protected function getVersionDocumentation()
+    {
+        return Raml::fromFiles([
+            __DIR__ . '/raml/version1.raml', 
+            __DIR__ . '/raml/version2.raml', 
+            __DIR__ . '/raml/version3.raml', 
+            __DIR__ . '/raml/version4.raml'], 
+        '/foo');
+    }
+
+    public function testParseComplex()
+    {
+        $doc = Raml::fromFile(__DIR__ . '/raml/test.raml', '/foo');
 
         $this->assertInstanceOf('PSX\Api\DocumentationInterface', $doc);
         $this->assertEquals('World Music API', $doc->getDescription());
@@ -85,7 +100,7 @@ class RamlTest extends \PHPUnit_Framework_TestCase
 
     public function testParsePath()
     {
-        $doc = Raml::fromFile(__DIR__ . '/test.raml', '/bar/:bar_id');
+        $doc = Raml::fromFile(__DIR__ . '/raml/test.raml', '/bar/:bar_id');
 
         $this->assertInstanceOf('PSX\Api\DocumentationInterface', $doc);
         $this->assertEquals('World Music API', $doc->getDescription());
@@ -113,7 +128,7 @@ class RamlTest extends \PHPUnit_Framework_TestCase
 
     public function testParseNested()
     {
-        $doc = Raml::fromFile(__DIR__ . '/test.raml', '/foo/bar');
+        $doc = Raml::fromFile(__DIR__ . '/raml/test.raml', '/foo/bar');
 
         $this->assertInstanceOf('PSX\Api\DocumentationInterface', $doc);
         $this->assertEquals('World Music API', $doc->getDescription());
@@ -131,7 +146,7 @@ class RamlTest extends \PHPUnit_Framework_TestCase
      */
     public function testParseResponseWithoutSchema()
     {
-        $doc      = Raml::fromFile(__DIR__ . '/test.raml', '/foo');
+        $doc      = Raml::fromFile(__DIR__ . '/raml/test.raml', '/foo');
         $resource = $doc->getResource(2);
 
         $resource->getMethod('POST')->getResponse(500);
@@ -142,7 +157,7 @@ class RamlTest extends \PHPUnit_Framework_TestCase
      */
     public function testParseInvalidPath()
     {
-        Raml::fromFile(__DIR__ . '/test.raml', '/test');
+        Raml::fromFile(__DIR__ . '/raml/test.raml', '/test');
     }
 
     /**
@@ -150,7 +165,7 @@ class RamlTest extends \PHPUnit_Framework_TestCase
      */
     public function testParseInvalidSchema()
     {
-        Raml::fromFile(__DIR__ . '/test.raml', '/invalid_schema');
+        Raml::fromFile(__DIR__ . '/raml/test.raml', '/invalid_schema');
     }
 
     /**
@@ -158,7 +173,7 @@ class RamlTest extends \PHPUnit_Framework_TestCase
      */
     public function testParseInvalidSchemaReference()
     {
-        Raml::fromFile(__DIR__ . '/test.raml', '/invalid_reference');
+        Raml::fromFile(__DIR__ . '/raml/test.raml', '/invalid_reference');
     }
 
     /**
@@ -166,7 +181,7 @@ class RamlTest extends \PHPUnit_Framework_TestCase
      */
     public function testFromFileNotExistingFile()
     {
-        Raml::fromFile(__DIR__ . '/foo.raml', '/bar/:bar_id');
+        Raml::fromFile(__DIR__ . '/raml/foo.raml', '/bar/:bar_id');
     }
 
     protected function assertParameters(SchemaInterface $parameters)

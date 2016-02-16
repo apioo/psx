@@ -18,22 +18,42 @@
  * limitations under the License.
  */
 
-namespace PSX\Api\Documentation;
-
-use PSX\Api\DocumentationInterface;
-use PSX\Api\Resource;
+namespace PSX\Annotation;
 
 /**
- * Simple
+ * Version
  *
+ * @Annotation
+ * @Target("CLASS")
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Simple extends Explicit
+class Version
 {
-    public function __construct(Resource $resource, $description = null)
+    /**
+     * @var string
+     */
+    protected $version;
+
+    /**
+     * @var string
+     */
+    protected $status;
+
+    public function __construct(array $values)
     {
-        parent::__construct(1, $resource, $description);
+        $this->version = isset($values['version']) ? $values['version'] : null;
+        $this->status  = isset($values['status'])  ? $values['status']  : null;
+    }
+
+    public function getVersion()
+    {
+        return $this->version;
+    }
+
+    public function getStatus()
+    {
+        return $this->status;
     }
 }

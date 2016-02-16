@@ -321,7 +321,7 @@ abstract class SchemaApiAbstract extends ApiAbstract implements DocumentedInterf
     }
 
     /**
-     * Returns the successful response of an method or null if no is available
+     * Returns the successful response of a method or null if no is available
      *
      * @param \PSX\Api\Resource\MethodAbstract $method
      * @param integer $statusCode

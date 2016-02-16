@@ -85,15 +85,17 @@ class Raml implements ParserInterface
             $title = $this->data['title'];
         }
 
-        $doc = new Documentation\Version($title);
-        $doc->addResource($version, $resource);
-
-        return $doc;
+        return new Documentation\Explicit($version, $resource, $title);
     }
 
     protected function parseResource(array $data, $path)
     {
-        $resource = new Resource(Resource::STATUS_ACTIVE, $path);
+        $status = Resource::STATUS_ACTIVE;
+        if (isset($this->data['status'])) {
+            $status = $this->getResourceStatus($this->data['status']);
+        }
+
+        $resource = new Resource($status, $path);
 
         if (isset($data['displayName'])) {
             $resource->setTitle($data['displayName']);
@@ -348,6 +350,19 @@ class Raml implements ParserInterface
         return $version;
     }
 
+    protected function getResourceStatus($status)
+    {
+        if ($status === 'deprecated') {
+            return Resource::STATUS_DEPRECATED;
+        } elseif ($status === 'development') {
+            return Resource::STATUS_DEVELOPMENT;
+        } elseif ($status === 'closed') {
+            return Resource::STATUS_CLOSED;
+        } else {
+            return Resource::STATUS_ACTIVE;
+        }
+    }
+
     public static function fromFile($file, $path)
     {
         if (!empty($file) && is_file($file)) {
@@ -358,5 +373,14 @@ class Raml implements ParserInterface
         } else {
             throw new RuntimeException('Could not load raml schema ' . $file);
         }
+    }
+    public static function fromFiles(array $files, $path)
+    {
+        $docs = [];
+        foreach ($files as $file) {
+            $docs[] = self::fromFile($file, $path);
+        }
+
+        return new Documentation\Composite($docs);
     }
 }

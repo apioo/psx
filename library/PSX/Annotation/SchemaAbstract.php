@@ -25,7 +25,7 @@ namespace PSX\Annotation;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-abstract class SchemaAbstract
+abstract class SchemaAbstract extends VersionableAbstract
 {
     /**
      * @var string
@@ -34,6 +34,8 @@ abstract class SchemaAbstract
 
     public function __construct(array $values)
     {
+        parent::__construct($values);
+
         $this->schema = isset($values['schema']) ? $values['schema'] : null;
     }
 

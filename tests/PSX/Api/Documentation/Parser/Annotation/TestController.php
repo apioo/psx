@@ -29,6 +29,8 @@ use PSX\Controller\SchemaApiAbstract;
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
+ * @Title("Test")
+ * @Description("Test description")
  * @PathParam(name="fooId", type="string")
  */
 class TestController extends SchemaApiAbstract
@@ -43,6 +45,7 @@ class TestController extends SchemaApiAbstract
     }
 
     /**
+     * @Description("Test description")
      * @QueryParam(name="foo", type="string", description="Test")
      * @QueryParam(name="bar", type="string", required=true)
      * @QueryParam(name="baz", type="string", enum={"foo", "bar"})

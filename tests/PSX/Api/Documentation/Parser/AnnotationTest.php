@@ -30,53 +30,26 @@ use PSX\Test\Environment;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class AnnotationTest extends \PHPUnit_Framework_TestCase
+class AnnotationTest extends ParserTestCase
 {
-    public function testParse()
+    protected function getSimpleDocumentation()
     {
         $annotation = new Annotation(
             Environment::getService('annotation_reader'), 
             Environment::getService('schema_manager')
         );
 
-        $versions = $annotation->parse(new Annotation\TestController(), '/foo');
-        $resource = $versions->getResource(1);
+        return $annotation->parse(new Annotation\TestController(), '/foo');
+    }
 
-        $this->assertEquals('/foo', $resource->getPath());
+    protected function getVersionDocumentation()
+    {
+        $annotation = new Annotation(
+            Environment::getService('annotation_reader'), 
+            Environment::getService('schema_manager')
+        );
 
-        $path = $resource->getPathParameters();
-
-        $this->assertInstanceOf('PSX\Data\Schema\Property\ComplexType', $path->getDefinition());
-        $this->assertInstanceOf('PSX\Data\Schema\Property\StringType', $path->getDefinition()->get('fooId'));
-
-        $methods = $resource->getMethods();
-
-        $this->assertEquals(['GET'], array_keys($methods));
-
-        $query = $methods['GET']->getQueryParameters();
-
-        $this->assertEquals('foo', $query->getDefinition()->get('foo')->getName());
-        $this->assertEquals('Test', $query->getDefinition()->get('foo')->getDescription());
-        $this->assertEquals('bar', $query->getDefinition()->get('bar')->getName());
-        $this->assertEquals(true, $query->getDefinition()->get('bar')->isRequired());
-        $this->assertEquals('baz', $query->getDefinition()->get('baz')->getName());
-        $this->assertEquals(['foo', 'bar'], $query->getDefinition()->get('baz')->getEnumeration());
-        $this->assertEquals('boz', $query->getDefinition()->get('boz')->getName());
-        $this->assertEquals('[A-z]+', $query->getDefinition()->get('boz')->getPattern());
-        $this->assertInstanceOf('PSX\Data\Schema\Property\ComplexType', $query->getDefinition());
-        $this->assertInstanceOf('PSX\Data\Schema\Property\IntegerType', $query->getDefinition()->get('integer'));
-        $this->assertInstanceOf('PSX\Data\Schema\Property\FloatType', $query->getDefinition()->get('number'));
-        $this->assertInstanceOf('PSX\Data\Schema\Property\DateTimeType', $query->getDefinition()->get('date'));
-        $this->assertInstanceOf('PSX\Data\Schema\Property\BooleanType', $query->getDefinition()->get('boolean'));
-        $this->assertInstanceOf('PSX\Data\Schema\Property\StringType', $query->getDefinition()->get('string'));
-
-        $request = $methods['GET']->getRequest();
-
-        $this->assertInstanceOf('PSX\Data\SchemaInterface', $request);
-
-        $response = $methods['GET']->getResponse(200);
-
-        $this->assertInstanceOf('PSX\Data\SchemaInterface', $response);
+        return $annotation->parse(new Annotation\TestVersionController(), '/foo');
     }
 
     /**

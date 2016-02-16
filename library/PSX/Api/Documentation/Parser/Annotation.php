@@ -48,6 +48,7 @@ class Annotation implements ParserInterface
 {
     protected $annotationReader;
     protected $schemaManager;
+    protected $resources;
 
     public function __construct(Reader $annotationReader, SchemaManagerInterface $schemaManager)
     {
@@ -61,22 +62,49 @@ class Annotation implements ParserInterface
             throw new RuntimeException('Must be a SchemaApiAbstract controller');
         }
 
-        // we dont need to consider the path since if we are here the routing
-        // mechanism has already selected the corect controller
+        $controller  = new ReflectionObject($schema);
+        $basePath    = dirname($controller->getFileName());
+        $annotations = $this->annotationReader->getClassAnnotations($controller);
 
-        $resource = $this->parseResource($schema, $path);
+        $this->resources = [];
 
-        return new Documentation\Simple($resource);
+        foreach ($annotations as $annotation) {
+            if ($annotation instanceof Anno\Version) {
+                $version = $this->getNormalizedVersion($annotation->getVersion());
+                $this->resources[$version] = new Resource($annotation->getStatus(), $path);
+            }
+        }
+
+        if (count($this->resources) === 0) {
+            $this->resources[1] = new Resource(Resource::STATUS_ACTIVE, $path);
+        }
+
+        foreach ($annotations as $annotation) {
+            $resource = $this->getResourceForVersion($annotation->getVersion());
+            if ($resource instanceof Resource) {
+                if ($annotation instanceof Anno\Version) {
+                } elseif ($annotation instanceof Anno\Title) {
+                    $resource->setTitle($annotation->getTitle());
+                } elseif ($annotation instanceof Anno\Description) {
+                    $resource->setDescription($annotation->getDescription());
+                } elseif ($annotation instanceof Anno\PathParam) {
+                    $resource->addPathParameter($this->getParameter($annotation));
+                }
+            }
+        }
+
+        $this->parseMethods($controller, $basePath);
+
+        $doc = new Documentation\Version();
+        foreach ($this->resources as $version => $resource) {
+            $doc->addResource($version, $resource);
+        }
+
+        return $doc;
     }
 
-    protected function parseResource($object, $path)
+    protected function parseMethods(ReflectionObject $controller, $basePath)
     {
-        $controller = new ReflectionObject($object);
-        $resource   = new Resource(Resource::STATUS_ACTIVE, $path);
-        $basePath   = dirname($controller->getFileName());
-
-        $this->parsePathParameters($controller, $resource);
-
         $methods = [
             'GET'    => 'doGet', 
             'POST'   => 'doPost', 
@@ -87,7 +115,6 @@ class Annotation implements ParserInterface
 
         foreach ($methods as $httpMethod => $methodName) {
             $reflection = $controller->getMethod($methodName);
-            $method     = Resource\Factory::getMethod($httpMethod);
 
             // if the method is defined in the SchemaApiAbstract controller we
             // have no implementation so skip
@@ -95,65 +122,41 @@ class Annotation implements ParserInterface
                 continue;
             }
 
-            // @TODO parse description from the doc comment
-            $description = null;
-            if (!empty($description)) {
-                $method->setDescription($description);
-            }
+            $annotations = $this->annotationReader->getMethodAnnotations($reflection);
+            foreach ($annotations as $annotation) {
+                $resource = $this->getResourceForVersion($annotation->getVersion());
 
-            $this->parseQueryParameters($reflection, $method);
-            $this->parseRequest($reflection, $method, $basePath);
-            $this->parseResponses($reflection, $method, $basePath);
-
-            $resource->addMethod($method);
-        }
-
-        return $resource;
-    }
-
-    protected function parsePathParameters(ReflectionClass $reflectionClass, Resource $resource)
-    {
-        $annotations = $this->annotationReader->getClassAnnotations($reflectionClass);
-        foreach ($annotations as $annotation) {
-            if ($annotation instanceof Anno\PathParam) {
-                $resource->addPathParameter($this->getParameter($annotation));
-            }
-        }
-    }
-
-    protected function parseQueryParameters(ReflectionMethod $reflectionMethod, Resource\MethodAbstract $method)
-    {
-        $annotations = $this->annotationReader->getMethodAnnotations($reflectionMethod);
-        foreach ($annotations as $annotation) {
-            if ($annotation instanceof Anno\QueryParam) {
-                $method->addQueryParameter($this->getParameter($annotation));
-            }
-        }
-    }
-
-    protected function parseRequest(ReflectionMethod $reflectionMethod, Resource\MethodAbstract $method, $basePath)
-    {
-        $annotations = $this->annotationReader->getMethodAnnotations($reflectionMethod);
-        foreach ($annotations as $annotation) {
-            if ($annotation instanceof Anno\Incoming) {
-                $schema = $this->getBodySchema($annotation, $basePath);
-
-                if ($schema instanceof SchemaInterface) {
-                    $method->setRequest($schema);
+                if (!$resource instanceof Resource) {
+                    // we have no resource for the specified version
+                    continue;
                 }
-            }
-        }
-    }
 
-    protected function parseResponses(ReflectionMethod $reflectionMethod, Resource\MethodAbstract $method, $basePath)
-    {
-        $annotations = $this->annotationReader->getMethodAnnotations($reflectionMethod);
-        foreach ($annotations as $annotation) {
-            if ($annotation instanceof Anno\Outgoing) {
-                $schema = $this->getBodySchema($annotation, $basePath);
+                try {
+                    $method = $resource->getMethod($httpMethod);
+                    $isNew  = false;
+                } catch (\RuntimeException $e) {
+                    $method = Resource\Factory::getMethod($httpMethod);
+                    $isNew  = true;
+                }
 
-                if ($schema instanceof SchemaInterface) {
-                    $method->addResponse($annotation->getCode(), $schema);
+                if ($annotation instanceof Anno\Description) {
+                    $method->setDescription($annotation->getDescription());
+                } elseif ($annotation instanceof Anno\QueryParam) {
+                    $method->addQueryParameter($this->getParameter($annotation));
+                } elseif ($annotation instanceof Anno\Incoming) {
+                    $schema = $this->getBodySchema($annotation, $basePath);
+                    if ($schema instanceof SchemaInterface) {
+                        $method->setRequest($schema);
+                    }
+                } elseif ($annotation instanceof Anno\Outgoing) {
+                    $schema = $this->getBodySchema($annotation, $basePath);
+                    if ($schema instanceof SchemaInterface) {
+                        $method->addResponse($annotation->getCode(), $schema);
+                    }
+                }
+
+                if ($isNew) {
+                    $resource->addMethod($method);
                 }
             }
         }
@@ -218,5 +221,27 @@ class Annotation implements ParserInterface
             default:
                 return Property::getString($name);
         }
+    }
+
+    protected function getResourceForVersion($version)
+    {
+        $version = $this->getNormalizedVersion($version);
+
+        if (isset($this->resources[$version])) {
+            return $this->resources[$version];
+        } else {
+            return null;
+        }
+    }
+
+    protected function getNormalizedVersion($version)
+    {
+        $version = (int) ltrim($version, 'v');
+
+        if (empty($version)) {
+            $version = 1;
+        }
+
+        return $version;
     }
 }

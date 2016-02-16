@@ -25,7 +25,7 @@ namespace PSX\Annotation;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-abstract class ParamAbstract
+abstract class ParamAbstract extends VersionableAbstract
 {
     /**
      * @var string
@@ -59,6 +59,8 @@ abstract class ParamAbstract
 
     public function __construct(array $values)
     {
+        parent::__construct($values);
+
         $this->name        = isset($values['name'])        ? $values['name']        : null;
         $this->type        = isset($values['type'])        ? $values['type']        : null;
         $this->description = isset($values['description']) ? $values['description'] : null;

@@ -23,26 +23,39 @@ namespace PSX\Api\Documentation;
 use PSX\Api\Resource;
 
 /**
- * SimpleTest
+ * CompositeTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class SimpleTest extends \PHPUnit_Framework_TestCase
+class CompositeTest extends \PHPUnit_Framework_TestCase
 {
-    public function testSimple()
+    public function testVersion()
     {
-        $resource = new Resource(Resource::STATUS_ACTIVE, '/foo');
-        $doc      = new Simple($resource, 'foo');
+        $resource1 = new Resource(Resource::STATUS_ACTIVE, '/foo');
+        $resource2 = new Resource(Resource::STATUS_ACTIVE, '/foo');
+
+        $doc1 = new Explicit(1, $resource1, 'foo');
+        $doc2 = new Explicit(2, $resource2, 'foo');
+        $doc  = new Composite([$doc1, $doc2], 'foo');
 
         $this->assertTrue($doc->hasResource(1));
+        $this->assertTrue($doc->hasResource(2));
         $this->assertFalse($doc->hasResource(8));
-        $this->assertEquals($resource, $doc->getResource(1));
+        $this->assertEquals($resource1, $doc->getResource(1));
+        $this->assertEquals($resource2, $doc->getResource(2));
         $this->assertEquals(null, $doc->getResource(8));
-        $this->assertEquals(array(1 => $resource), $doc->getResources());
-        $this->assertEquals(1, $doc->getLatestVersion());
-        $this->assertFalse($doc->isVersionRequired());
+        $this->assertEquals([1 => $resource1, 2 => $resource2], $doc->getResources());
+        $this->assertEquals(2, $doc->getLatestVersion());
+        $this->assertTrue($doc->isVersionRequired());
         $this->assertEquals('foo', $doc->getDescription());
+    }
+
+    public function testGetLatestVersionNoResource()
+    {
+        $doc = new Composite([]);
+
+        $this->assertEquals(1, $doc->getLatestVersion());
     }
 }

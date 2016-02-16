@@ -1,0 +1,22 @@
+#%RAML 0.8
+version: v2
+status: deprecated
+/foo:
+  displayName: Test v2
+  description: Test description v2
+  uriParameters:
+    fooId2:
+      type: string
+  get:
+    description: Test description v2
+    queryParameters:
+      string2:
+        type: string
+    body:
+      application/json:
+        schema: !include ../schema/schema2.json
+    responses:
+      200:
+        body:
+          application/json:
+            schema: !include ../schema/schema2.json

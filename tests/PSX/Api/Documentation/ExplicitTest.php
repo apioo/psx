@@ -20,20 +20,29 @@
 
 namespace PSX\Api\Documentation;
 
-use PSX\Api\DocumentationInterface;
 use PSX\Api\Resource;
 
 /**
- * Simple
+ * ExplicitTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Simple extends Explicit
+class ExplicitTest extends \PHPUnit_Framework_TestCase
 {
-    public function __construct(Resource $resource, $description = null)
+    public function testExplicit()
     {
-        parent::__construct(1, $resource, $description);
+        $resource = new Resource(Resource::STATUS_ACTIVE, '/foo');
+        $doc      = new Explicit(2, $resource, 'foo');
+
+        $this->assertTrue($doc->hasResource(2));
+        $this->assertFalse($doc->hasResource(8));
+        $this->assertEquals($resource, $doc->getResource(2));
+        $this->assertEquals(null, $doc->getResource(8));
+        $this->assertEquals([2 => $resource], $doc->getResources());
+        $this->assertEquals(2, $doc->getLatestVersion());
+        $this->assertFalse($doc->isVersionRequired());
+        $this->assertEquals('foo', $doc->getDescription());
     }
 }

@@ -35,27 +35,27 @@ class VersionTest extends \PHPUnit_Framework_TestCase
     {
         $resource1 = new Resource(Resource::STATUS_ACTIVE, '/foo');
         $resource2 = new Resource(Resource::STATUS_ACTIVE, '/foo');
-        $version   = new Version('foo');
 
-        $version->addResource(1, $resource1);
-        $version->addResource(2, $resource2);
+        $doc = new Version('foo');
+        $doc->addResource(1, $resource1);
+        $doc->addResource(2, $resource2);
 
-        $this->assertTrue($version->hasResource(1));
-        $this->assertTrue($version->hasResource(2));
-        $this->assertFalse($version->hasResource(8));
-        $this->assertEquals($resource1, $version->getResource(1));
-        $this->assertEquals($resource2, $version->getResource(2));
-        $this->assertEquals(null, $version->getResource(8));
-        $this->assertEquals(array(1 => $resource1, 2 => $resource2), $version->getResources());
-        $this->assertEquals(2, $version->getLatestVersion());
-        $this->assertTrue($version->isVersionRequired());
-        $this->assertEquals('foo', $version->getDescription());
+        $this->assertTrue($doc->hasResource(1));
+        $this->assertTrue($doc->hasResource(2));
+        $this->assertFalse($doc->hasResource(8));
+        $this->assertEquals($resource1, $doc->getResource(1));
+        $this->assertEquals($resource2, $doc->getResource(2));
+        $this->assertEquals(null, $doc->getResource(8));
+        $this->assertEquals([1 => $resource1, 2 => $resource2], $doc->getResources());
+        $this->assertEquals(2, $doc->getLatestVersion());
+        $this->assertTrue($doc->isVersionRequired());
+        $this->assertEquals('foo', $doc->getDescription());
     }
 
     public function testGetLatestVersionNoResource()
     {
-        $version = new Version();
+        $doc = new Version();
 
-        $this->assertEquals(1, $version->getLatestVersion());
+        $this->assertEquals(1, $doc->getLatestVersion());
     }
 }

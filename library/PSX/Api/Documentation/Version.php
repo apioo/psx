@@ -32,17 +32,18 @@ use PSX\Api\Resource;
  */
 class Version implements DocumentationInterface
 {
-    protected $resources = array();
+    protected $resources;
     protected $description;
 
     public function __construct($description = null)
     {
+        $this->resources   = [];
         $this->description = $description;
     }
 
-    public function addResource($version, Resource $view)
+    public function addResource($version, Resource $resource)
     {
-        $this->resources[$version] = $view;
+        $this->resources[$version] = $resource;
     }
 
     public function hasResource($version)
@@ -50,10 +51,6 @@ class Version implements DocumentationInterface
         return isset($this->resources[$version]);
     }
 
-    /**
-     * @param integer $version
-     * @return \PSX\Api\Resource
-     */
     public function getResource($version)
     {
         return isset($this->resources[$version]) ? $this->resources[$version] : null;
@@ -67,7 +64,14 @@ class Version implements DocumentationInterface
     public function getLatestVersion()
     {
         if (count($this->resources) > 0) {
-            return max(array_keys($this->resources));
+            $latestVersion = 1;
+            foreach ($this->resources as $version => $resource) {
+                if ($resource->isActive() && $version > $latestVersion) {
+                    $latestVersion = $version;
+                }
+            }
+
+            return $latestVersion;
         } else {
             return 1;
         }
