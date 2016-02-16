@@ -138,7 +138,7 @@ class RoutingFileTest extends \PHPUnit_Framework_TestCase
 
         $routing = $collection->next();
 
-        $this->assertEquals(['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], $routing[RoutingCollection::ROUTING_METHODS]);
+        $this->assertEquals(['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'PATCH'], $routing[RoutingCollection::ROUTING_METHODS]);
         $this->assertEquals('/baz', $routing[RoutingCollection::ROUTING_PATH]);
         $this->assertEquals('PSX\Loader\Foo14Controller', $routing[RoutingCollection::ROUTING_SOURCE]);
         $this->assertEquals(14, $collection->key());

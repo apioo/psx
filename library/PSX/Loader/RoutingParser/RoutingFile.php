@@ -55,7 +55,7 @@ class RoutingFile implements RoutingParserInterface
                     $parts   = explode(' ', $line);
 
                     if ($parts[0] == 'ANY') {
-                        $parts[0] = 'GET|POST|PUT|DELETE|PATCH';
+                        $parts[0] = 'GET|HEAD|POST|PUT|DELETE|PATCH';
                     }
 
                     $allowed = isset($parts[0]) ? explode('|', $parts[0]) : array();
