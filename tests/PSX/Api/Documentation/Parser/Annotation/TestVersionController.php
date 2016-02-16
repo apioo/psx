@@ -30,25 +30,25 @@ use PSX\Controller\SchemaApiAbstract;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  *
- * @Title("Test v1", version="1")
- * @Description("Test description v1", version="1")
- * @PathParam(name="fooId1", type="string", version="1")
+ * @Title("Test v1", version=1)
+ * @Description("Test description v1", version=1)
+ * @PathParam(name="fooId1", type="string", version=1)
  *
- * @Title("Test v2", version="2")
- * @Description("Test description v2", version="2")
- * @PathParam(name="fooId2", type="string", version="2")
+ * @Title("Test v2", version=2)
+ * @Description("Test description v2", version=2)
+ * @PathParam(name="fooId2", type="string", version=2)
  *
- * @Title("Test v3", version="3")
- * @Description("Test description v3", version="3")
- * @PathParam(name="fooId3", type="string", version="3")
+ * @Title("Test v3", version=3)
+ * @Description("Test description v3", version=3)
+ * @PathParam(name="fooId3", type="string", version=3)
  *
- * @Title("Test v4", version="4")
- * @Description("Test description v4", version="4")
- * @PathParam(name="fooId4", type="string", version="4")
+ * @Title("Test v4", version=4)
+ * @Description("Test description v4", version=4)
+ * @PathParam(name="fooId4", type="string", version=4)
  *
- * @Title("Test v5", version="5")
- * @Description("Test description v5", version="5")
- * @PathParam(name="fooId4", type="string", version="5")
+ * @Title("Test v5", version=5)
+ * @Description("Test description v5", version=5)
+ * @PathParam(name="fooId4", type="string", version=5)
  *
  * @Version(version="1", status=PSX\Api\Resource::STATUS_CLOSED)
  * @Version(version="2", status=PSX\Api\Resource::STATUS_DEPRECATED)
