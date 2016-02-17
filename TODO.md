@@ -3,6 +3,11 @@ _which are likely to be implemented are moved to a seperate github issue_
 
 ### 1.x
 
+- [ ] We need a command which reads a RAML/Swagger file and generates a 
+      controller with annotations based on the definition
+- [ ] Probably adapt a common API error format:
+      https://github.com/blongden/vnd.error
+      https://tools.ietf.org/html/draft-nottingham-http-problem-07
 - [ ] Add controller to server static content
 - [ ] Better support for conditional requests E-Tag, If-Match etc.
 - [ ] Think about support for OData
@@ -20,11 +25,12 @@ _which are likely to be implemented are moved to a seperate github issue_
 - [ ] Improve OAuth2 support #7
 - [ ] Add host-meta controller to expose specific API services #5
 - [ ] Create controller which generates a text/uri-list #4
-- [x] Consider use of JAX-RS annotations to provide meta informations for a 
-      controller #3
 - [ ] Add WADL generator #2
 - [ ] Extend schema representation
   - [ ] Add schema property default value option
+  - [ ] Possibility to describe in an API that authentication is required. 
+        Probably also what kind basic, oauth, etc
+    - [ ] Check how this is done in various specs like Swagger, RAML, etc.
   - [x] PSX schema add support for object choice for a key (json schema: oneOf, 
         xsd:choice)
   - [x] Add possibility to add a wildcard type in a schema which allows 
@@ -38,9 +44,6 @@ _which are likely to be implemented are moved to a seperate github issue_
       this should be done in another project and based on a RAML/jsonschema spec
 - [ ] Add event listener to table manager so that we can fire an event everytime 
       a record gets created, updated or deleted
-- [ ] Possibility to describe in an API that authentication is required. 
-      Probably also what kind basic, oauth, etc
-  - [ ] Check how this is done in various specs like Swagger, RAML, etc.
 - [ ] Schema generation
   - [ ] Probably add json schema importer command to create a PHP schema based
         on the given json schema
@@ -90,6 +93,8 @@ _which are likely to be implemented are moved to a seperate github issue_
 
 ### Archive
 
+- [x] Consider use of JAX-RS annotations to provide meta informations for a 
+      controller #3
 - [x] Add ANY request method in router
 - [ ] We need two routes for the table schema controller for a better RESTful 
       urls i.e. /foo to get a collection /foo/1 for a specific entry (we have
