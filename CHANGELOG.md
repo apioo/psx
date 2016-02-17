@@ -1,4 +1,16 @@
 
+### 1.2.3 (2016-02-17)
+
+* Added version handling to annotation and raml parser
+* The pseudo ANY request method includes now also HEAD
+* Fixed graph traverse handling with JsonSerializable objects
+* Extended and improved test cases
+
+### 1.2.2 (2016-02-08)
+
+* Fix handle ANY request method
+* Fix soap proxy controller content negotiation
+
 ### 1.2.1 (2016-02-07)
 
 * Add pseudo ANY request method to the routing parser
