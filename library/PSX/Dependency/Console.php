@@ -44,7 +44,11 @@ trait Console
     public function getConsole()
     {
         $application = new Application('psx', Base::getVersion());
-        $application->setHelperSet(new HelperSet($this->appendConsoleHelpers()));
+
+        $helpers = $this->appendConsoleHelpers();
+        foreach ($helpers as $alias => $helper) {
+            $application->getHelperSet()->set($helper, $alias);
+        }
 
         $this->appendConsoleCommands($application);
 
