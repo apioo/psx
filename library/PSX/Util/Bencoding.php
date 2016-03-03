@@ -33,25 +33,19 @@ class Bencoding
 {
     public static function encode($value)
     {
-        $type = gettype($value);
-        $out  = '';
+        $out = '';
 
-        switch ($type) {
-            case 'integer':
-
+        switch (true) {
+            case is_int($value):
                 $out.= 'i' . $value . 'e';
-
                 break;
 
-            case 'string':
-
-                $out.= strlen($value) . ':' . utf8_encode($value);
-
+            case is_string($value):
+                $out.= strlen($value) . ':' . $value;
                 break;
 
-            case 'array':
-
-                if (!self::isAssociative($value)) {
+            case is_array($value):
+                if (!CurveArray::isAssoc($value)) {
                     $out.= 'l';
 
                     foreach ($value as $entry) {
@@ -68,11 +62,9 @@ class Bencoding
 
                     $out.= 'e';
                 }
-
                 break;
 
             default:
-
                 throw new InvalidArgumentException('Type must be integer / string or array');
                 break;
         }
@@ -196,16 +188,5 @@ class Bencoding
         }
 
         return array(false, false);
-    }
-
-    private static function isAssociative($array)
-    {
-        for ($i = 0; $i < count($array); $i++) {
-            if (!isset($array[$i])) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }
