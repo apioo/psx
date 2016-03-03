@@ -32,7 +32,7 @@ use Psr\Http\Message\StreamInterface;
 class Util
 {
     /**
-     * Converts an stream into an string and returns the result. The position of
+     * Converts a stream into a string and returns the result. The position of
      * the pointer will not change if the stream is seekable. Note this copies
      * the complete content of the stream into the memory
      *
