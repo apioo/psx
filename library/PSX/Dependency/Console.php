@@ -27,7 +27,9 @@ use PSX\Console as PSXCommand;
 use PSX\Console\Reader;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command as SymfonyCommand;
+use Symfony\Component\Console\Helper\FormatterHelper;
 use Symfony\Component\Console\Helper\HelperSet;
+use Symfony\Component\Console\Helper\QuestionHelper;
 
 /**
  * Console
@@ -44,18 +46,8 @@ trait Console
     public function getConsole()
     {
         $application = new Application('psx', Base::getVersion());
+        $application->setHelperSet(new HelperSet($this->appendConsoleHelpers()));
 
-        // append helpers
-        $helpers   = $this->appendConsoleHelpers();
-        $helperSet = $application->getHelperSet();
-
-        foreach ($helperSet as $alias => $helper) {
-            $helpers[$alias] = $helper;
-        }
-
-        $application->setHelperSet(new HelperSet($helpers));
-
-        // append commands
         $this->appendConsoleCommands($application);
 
         return $application;
@@ -109,6 +101,8 @@ trait Console
     protected function appendConsoleHelpers()
     {
         return array(
+            'formatter' => new FormatterHelper(),
+            'question' => new QuestionHelper(),
             'db' => new ConnectionHelper($this->get('connection')),
         );
     }
