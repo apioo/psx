@@ -45,11 +45,17 @@ trait Console
     {
         $application = new Application('psx', Base::getVersion());
 
-        $helpers = $this->appendConsoleHelpers();
-        foreach ($helpers as $alias => $helper) {
-            $application->getHelperSet()->set($helper, $alias);
+        // append helpers
+        $helpers   = $this->appendConsoleHelpers();
+        $helperSet = $application->getHelperSet();
+
+        foreach ($helperSet as $alias => $helper) {
+            $helpers[$alias] = $helper;
         }
 
+        $application->setHelperSet(new HelperSet($helpers));
+
+        // append commands
         $this->appendConsoleCommands($application);
 
         return $application;
