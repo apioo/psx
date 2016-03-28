@@ -1,39 +1,41 @@
-PSX Framework
+PSX Http
 ===
 
 ## About
 
-PSX is a framework written in PHP to create RESTful APIs. It provides tools to 
-handle routing, API versioning, data transformation, authentication, 
-documentation and testing. With PSX you can easily build a REST API around an 
-existing application or create a new one from scratch. More informations at
-[phpsx.org](http://phpsx.org/)
+This is a mutable version of the [PSR-7](http://www.php-fig.org/psr/psr-7/)
+specification. It has almost the same API except that the with* methods are set*
+methods which set the value on the object and dont return a new instance. It
+contains also a simple client to send requests.
 
-## Requirements
+## Reasoning
 
-> &gt;= PHP 5.4 or HHVM 3.2.0
+At first we really appreciate the work which has gone into making the PSR-7
+specification possible. But we are not satisfied with the design decision to
+"model" the HTTP request/response immutable. The only way to express this is to
+not implement the specification.
 
-## Installation
+Immutability forces a design on your application you can i.e. not write
+middlewares which simply accept a request and response object. They must be
+designed in such a way that they must return the changed response. This is also
+a problem for existing applications since there is no backwards compatible way
+to upgrade such an application. So as long as the majority of frameworks does
+not use PSR-7 we remain with this implementation.
 
-The best option is to install the PSX sample project via composer
+## Usage
 
-    php composer.phar create-project psx/sample .
+```php
+<?php
 
-it is also possible to require PSX as dependency in your composer.json
+$client   = new Client();
+$request  = new GetRequest('http://google.com', ['Accept' => 'text/html']);
+$response = $client->request($request);
 
-    "psx/psx": "~1.2"
+if ($response->getStatusCode() == 200) {
+    echo (string) $response->getBody();
+} else {
+    // something goes wrong
+}
 
-you can also download a current release from github which already includes all
-vendor libraries in case composer is not available
+```
 
-    https://github.com/k42b3/psx/releases
-
-check out the [get started](http://phpsx.org/get-started) guide for more 
-detailed instructions.
-
-## Documentation
-
-For documentation please take a look at [phpsx.org](http://phpsx.org/) or the 
-[official manual](http://psx.readthedocs.org/)
-
-[![Build Status](https://travis-ci.org/k42b3/psx.png)](https://travis-ci.org/k42b3/psx)
