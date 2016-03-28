@@ -20,18 +20,9 @@
 
 require_once(__DIR__ . '/../vendor/autoload.php');
 
-// To increase the performance of your application you may include this file
-// which contains PSX classes which are needed for each request so they must be
-// not loaded with the autoloader. The file can be generated through the 
-// "generate:bootstrap_cache" command. Note this makes only sense if you are 
-// _not_ using an bytecode cache which is included in HHVM or PHP 5.5.0 and 
-// later. Also you could dump an optimized autoloader in order to increase 
-// autoloading performance with "composer dump-autoload -o"
-// require_once(__DIR__ . '/../cache/bootstrap.cache.php');
-
 $container = require_once(__DIR__ . '/../container.php');
 
-PSX\Bootstrap::setupEnvironment($container->get('config'));
+PSX\Framework\Bootstrap::setupEnvironment($container->get('config'));
 
 $request  = $container->get('request_factory')->createRequest();
 $response = $container->get('response_factory')->createResponse();
