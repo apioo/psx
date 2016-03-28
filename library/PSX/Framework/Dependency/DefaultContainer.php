@@ -57,7 +57,7 @@ class DefaultContainer extends Container
     public function getAnnotationReader()
     {
         $reader = new Annotations\SimpleAnnotationReader();
-        $reader->addNamespace('PSX\\Api\\Resource\\Annotation');
+        $reader->addNamespace('PSX\\Api\\Annotation');
         $reader->addNamespace('PSX\\Schema\\Parser\\Popo\\Annotation');
         $reader->addNamespace('PSX\\Framework\\Annotation');
 
@@ -183,7 +183,7 @@ class DefaultContainer extends Container
             'psx_error_controller'    => null,
             'psx_error_template'      => null,
             'psx_annotation_autoload' => [
-                'PSX\Api\Resource\Annotation',
+                'PSX\Api\Annotation',
                 'PSX\Schema\Parser\Popo\Annotation',
                 'PSX\Framework\Annotation',
                 'JMS\Serializer\Annotation',

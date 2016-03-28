@@ -22,7 +22,7 @@ namespace PSX\Framework\Dependency;
 
 use Doctrine\Common\Annotations;
 use Doctrine\Common\Cache as DoctrineCache;
-use PSX\Api\Resource\Listing;
+use PSX\Api\Listing;
 use PSX\Framework\Config\Config;
 use PSX\Framework\Dispatch\Dispatch;
 use PSX\Framework\Dispatch\ApplicationStackFactory;
@@ -210,7 +210,7 @@ trait Framework
     }
 
     /**
-     * @return \PSX\Api\Resource\ListingInterface
+     * @return \PSX\Api\ListingInterface
      */
     public function getResourceListing()
     {

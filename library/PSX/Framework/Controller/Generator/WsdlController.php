@@ -21,10 +21,10 @@
 namespace PSX\Framework\Controller\Generator;
 
 use PSX\Api\Resource;
-use PSX\Api\Resource\Generator;
+use PSX\Api\Generator;
 use PSX\Framework\Controller\ControllerAbstract;
 use PSX\Http\Exception as HttpException;
-use PSX\Api\Resource\Util\Inflection;
+use PSX\Api\Util\Inflection;
 use RuntimeException;
 
 /**
@@ -38,7 +38,7 @@ class WsdlController extends ControllerAbstract
 {
     /**
      * @Inject
-     * @var \PSX\Api\Resource\ListingInterface
+     * @var \PSX\Api\ListingInterface
      */
     protected $resourceListing;
 

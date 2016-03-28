@@ -20,7 +20,6 @@
 
 namespace PSX\Data;
 
-use PSX\Data\Record\Transformer;
 use PSX\Http\MediaType;
 use PSX\Schema\Parser;
 use PSX\Http\Exception as StatusCode;
