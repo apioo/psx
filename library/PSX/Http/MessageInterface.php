@@ -134,7 +134,7 @@ interface MessageInterface
     public function setHeader($name, $value);
 
     /**
-     * Adds a new header, the value gets appended if such an header already
+     * Adds a new header, the value gets appended if such a header already
      * exists
      *
      * @param string $name

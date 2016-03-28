@@ -20,11 +20,10 @@
 
 namespace PSX\Http;
 
-use PSX\Exception;
 use PSX\Http\Stream\StringStream;
 use PSX\Uri\Uri;
-use PSX\Uri\Url;
 use PSX\Uri\UriResolver;
+use PSX\Uri\Url;
 
 /**
  * RequestParser

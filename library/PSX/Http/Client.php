@@ -22,6 +22,7 @@ namespace PSX\Http;
 
 use InvalidArgumentException;
 use PSX\Http\Handler\Curl;
+use PSX\Uri\Uri;
 use PSX\Uri\UriResolver;
 
 /**

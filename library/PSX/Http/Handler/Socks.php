@@ -21,14 +21,14 @@
 namespace PSX\Http\Handler;
 
 use PSX\Exception;
-use PSX\Http\Http;
 use PSX\Http\HandlerException;
 use PSX\Http\HandlerInterface;
+use PSX\Http\Http;
 use PSX\Http\NotSupportedException;
 use PSX\Http\Options;
 use PSX\Http\RequestInterface;
-use PSX\Http\ResponseParser;
 use PSX\Http\RequestParser;
+use PSX\Http\ResponseParser;
 use PSX\Http\Stream\SocksStream;
 use PSX\Http\Stream\StringStream;
 

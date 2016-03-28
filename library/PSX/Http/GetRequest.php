@@ -32,7 +32,7 @@ use PSX\Uri\Url;
 class GetRequest extends Request
 {
     /**
-     * @param \PSX\Url|string $url
+     * @param \PSX\Uri\Url|string $url
      * @param array $headers
      */
     public function __construct($url, array $headers = array())

@@ -146,7 +146,7 @@ class Message implements MessageInterface
         } elseif (is_resource($body)) {
             return new Stream\TempStream($body);
         } else {
-            throw new InvalidArgumentException('Body must be either an PSX\Http\StreamInterface, string or resource');
+            throw new InvalidArgumentException('Body must be either a PSX\Http\StreamInterface, string or resource');
         }
     }
 }

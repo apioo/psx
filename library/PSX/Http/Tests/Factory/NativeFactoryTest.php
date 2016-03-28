@@ -21,7 +21,6 @@
 namespace PSX\Http\Tests\Factory;
 
 use PSX\Http\Factory\NativeFactory;
-
 use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequestFactory;
 use Zend\Diactoros\Stream;
