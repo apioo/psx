@@ -33,6 +33,13 @@ use PSX\Framework\Template\TemplateInterface;
  */
 abstract class TemplateAbstractTestCase extends WriterTestCase
 {
+    protected $basePath;
+
+    protected function setUp()
+    {
+        $this->basePath = str_replace('\\', '/', PSX_PATH_LIBRARY);
+    }
+
     /**
      * Returns the writer
      *
@@ -201,14 +208,14 @@ TEXT;
 
         $template->expects($this->at(1))
                 ->method('setDir')
-                ->with($this->equalTo('library/Foo/Resource'));
+                ->with($this->equalTo($this->basePath . '/Foo/Resource'));
 
         $template->expects($this->at(3))
                 ->method('isFileAvailable')
                 ->will($this->returnValue(true));
 
         $writer = $this->getWriter($template, $router);
-        $writer->setControllerFile(PSX_PATH_LIBRARY . '/Foo/Application/News/DetailDescription.php');
+        $writer->setControllerFile($this->basePath . '/Foo/Application/News/DetailDescription.php');
 
         $template->expects($this->at(2))
                 ->method('set')
@@ -238,14 +245,14 @@ TEXT;
 
         $template->expects($this->at(2))
                 ->method('setDir')
-                ->with($this->equalTo('library/Foo/Resource'));
+                ->with($this->equalTo($this->basePath . '/Foo/Resource'));
 
         $template->expects($this->at(3))
                 ->method('isFileAvailable')
                 ->will($this->returnValue(true));
 
         $writer = $this->getWriter($template, $router);
-        $writer->setControllerFile(PSX_PATH_LIBRARY . '/Foo/Application/News/DetailDescription.php');
+        $writer->setControllerFile($this->basePath . '/Foo/Application/News/DetailDescription.php');
 
         $actual = $writer->write($this->getRecord());
     }
@@ -263,7 +270,7 @@ TEXT;
             ->getMock();
 
         $writer = $this->getWriter($template, $router);
-        $writer->setControllerFile(PSX_PATH_LIBRARY . '/Foo/Application/News/DetailDescription.php');
+        $writer->setControllerFile($this->basePath . '/Foo/Application/News/DetailDescription.php');
 
         $template->expects($this->at(0))
                 ->method('hasFile')
@@ -296,7 +303,7 @@ TEXT;
             ->getMock();
 
         $writer = $this->getWriter($template, $router);
-        $writer->setControllerFile(PSX_PATH_LIBRARY . '/Foo/Application/News/DetailDescription.php');
+        $writer->setControllerFile($this->basePath . '/Foo/Application/News/DetailDescription.php');
 
         $template->expects($this->at(0))
                 ->method('hasFile')
@@ -333,7 +340,7 @@ TEXT;
             ->getMock();
 
         $writer = $this->getWriter($template, $router);
-        $writer->setControllerFile(PSX_PATH_LIBRARY . '/Foo/Application/News/DetailDescription.php');
+        $writer->setControllerFile($this->basePath . '/Foo/Application/News/DetailDescription.php');
 
         $template->expects($this->at(0))
                 ->method('hasFile')
@@ -383,14 +390,14 @@ TEXT;
 
         $template->expects($this->at(2))
                 ->method('setDir')
-                ->with($this->equalTo('library/Foo/Resource'));
+                ->with($this->equalTo($this->basePath . '/Foo/Resource'));
 
         $template->expects($this->at(3))
                 ->method('isFileAvailable')
                 ->will($this->returnValue(false));
 
         $writer = $this->getWriter($template, $router);
-        $writer->setControllerFile(PSX_PATH_LIBRARY . '/Foo/Application/News/DetailDescription.php');
+        $writer->setControllerFile($this->basePath . '/Foo/Application/News/DetailDescription.php');
 
         $actual = $writer->write($this->getRecord());
 
