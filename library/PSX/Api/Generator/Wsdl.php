@@ -22,9 +22,9 @@ namespace PSX\Api\Generator;
 
 use DOMDocument;
 use DOMElement;
-use PSX\Api\Resource;
-use PSX\Api\GeneratorAbstract;
 use PSX\Api\Generator\Wsdl\Operation;
+use PSX\Api\GeneratorAbstract;
+use PSX\Api\Resource;
 use PSX\Schema\SchemaInterface;
 
 /**

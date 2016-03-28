@@ -20,11 +20,11 @@
 
 namespace PSX\Api\Generator;
 
+use PSX\Api\GeneratorAbstract;
+use PSX\Api\Resource;
+use PSX\Api\Util\Inflection;
 use PSX\Data\ExporterInterface;
 use PSX\Data\Record;
-use PSX\Api\Resource;
-use PSX\Api\GeneratorAbstract;
-use PSX\Api\Util\Inflection;
 use PSX\Json\Parser;
 use PSX\Model\Swagger\Api;
 use PSX\Model\Swagger\Declaration;
@@ -32,8 +32,8 @@ use PSX\Model\Swagger\Model;
 use PSX\Model\Swagger\Operation;
 use PSX\Model\Swagger\Parameter;
 use PSX\Model\Swagger\ResponseMessage;
-use PSX\Schema\PropertyInterface;
 use PSX\Schema\Property;
+use PSX\Schema\PropertyInterface;
 use PSX\Schema\SchemaInterface;
 
 /**

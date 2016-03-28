@@ -20,8 +20,8 @@
 
 namespace PSX\Api\Generator;
 
-use PSX\Api\Resource;
 use PSX\Api\GeneratorInterface;
+use PSX\Api\Resource;
 use PSX\Http\Http;
 use PSX\Schema\SchemaInterface;
 

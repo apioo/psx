@@ -20,12 +20,12 @@
 
 namespace PSX\Api\Generator;
 
-use PSX\Api\Resource;
 use PSX\Api\GeneratorAbstract;
+use PSX\Api\Resource;
 use PSX\Api\Util\Inflection;
 use PSX\Schema\Generator as SchemaGenerator;
-use PSX\Schema\PropertyInterface;
 use PSX\Schema\Property;
+use PSX\Schema\PropertyInterface;
 use Symfony\Component\Yaml\Inline;
 
 /**

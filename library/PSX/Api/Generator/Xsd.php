@@ -22,10 +22,10 @@ namespace PSX\Api\Generator;
 
 use DOMDocument;
 use DOMElement;
-use PSX\Api\Resource;
 use PSX\Api\GeneratorAbstract;
-use PSX\Schema\SchemaInterface;
+use PSX\Api\Resource;
 use PSX\Schema\Generator;
+use PSX\Schema\SchemaInterface;
 
 /**
  * Xsd

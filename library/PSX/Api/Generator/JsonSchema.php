@@ -20,8 +20,8 @@
 
 namespace PSX\Api\Generator;
 
-use PSX\Api\Resource;
 use PSX\Api\GeneratorAbstract;
+use PSX\Api\Resource;
 use PSX\Json\Parser;
 use PSX\Schema\Generator\JsonSchema as JsonSchemaGenerator;
 use PSX\Schema\SchemaInterface;

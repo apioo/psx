@@ -21,8 +21,8 @@
 namespace PSX\Api\Listing;
 
 use PSX\Api\DocumentedInterface;
-use PSX\Api\Resource;
 use PSX\Api\ListingInterface;
+use PSX\Api\Resource;
 use PSX\Framework\Dispatch\ControllerFactoryInterface;
 use PSX\Framework\Loader\Context;
 use PSX\Framework\Loader\PathMatcher;
