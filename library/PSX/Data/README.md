@@ -129,3 +129,49 @@ class Comment
 
 ```
 
+## Formats
+
+The library supports different reader and writer classes to produce different
+data formats. If you want to read a specific format you can provide the content
+type of the data. I.e. if you want read XML you could use the following
+payload:
+
+```php
+$payload = Payload::create($in, 'application/xml');
+```
+
+The processor uses a reader factory to obtain the fitting reader for a specific
+content type. In this case it would use the XML reader. The reader factory can
+be easily extended with different reader classes to support other data formats.
+
+```php
+$configuration->getReaderFactory()->addReader(new Acme\Reader(), 32);
+```
+
+In order to produce a payload from an incoming HTTP request you simply have to
+set the body as data and the content type from the header. How you access this
+data depends on the HTTP interface. For an PSR-7 request you could use:
+
+```php
+$payload = Payload::create(
+    (string) $request->getBody(),
+    $request->getHeaderLine('Content-Type')
+);
+```
+
+On the other hand if you want to write data as response you would use:
+
+```php
+$payload = Payload::create(
+    $model,
+    $request->getHeaderLine('Accept')
+);
+```
+
+When writing data the same mechanism is used with a writer factory. The writer
+factory can also be extended with custom writer implementations.
+
+```php
+$configuration->getWriterFactory()->addWriter(new Acme\Writer(), 64);
+```
+
