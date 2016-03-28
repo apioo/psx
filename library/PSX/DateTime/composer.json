@@ -1,39 +1,22 @@
 {
-  "name": "psx/psx",
-  "description": "PHP REST Framework",
-  "keywords": ["REST", "Api", "Framework", "Oauth"],
+  "name": "psx/datetime",
+  "description": "Stricter date time implementations which only accepts RFC3339 date time strings",
+  "keywords": ["date", "time", "rfc3339"],
   "homepage": "http://phpsx.org",
   "license": "Apache-2.0",
   "authors": [
     {
       "name": "Christoph Kappestein",
-      "email": "k42b3.x@gmail.com",
-      "homepage": "http://k42b3.com"
+      "email": "christoph.kappestein@gmail.com",
+      "homepage": "http://christoph.kappestein.com/"
     }
   ],
   "require": {
-    "php": ">=5.4",
-    "doctrine/annotations": "^1.2",
-    "doctrine/dbal": "^2.5",
-    "jms/serializer": "^1.1",
-    "monolog/monolog": "^1.17",
-    "psr/http-message": "^1.0",
-    "psr/log": "^1.0",
-    "psx/structor": "dev-master",
-    "symfony/console": "^2.8",
-    "symfony/dependency-injection": "^2.8",
-    "symfony/event-dispatcher": "^2.8",
-    "symfony/yaml": "^2.8",
-    "zendframework/zend-diactoros": "^1.3"
+    "php": ">=5.4"
   },
-  "require-dev": {
-    "phpunit/phpunit": "^4.8",
-    "phpunit/dbunit": "^2.0"
-  },
-  "bin": ["bin/psx"],
   "autoload": {
-    "psr-0": {
-      "PSX\\": "library/"
+    "psr-4": {
+      "PSX\\DateTime\\": ""
     }
   }
 }
