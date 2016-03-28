@@ -3,172 +3,129 @@ PSX Data
 
 ## About
 
-[PSR-6](http://www.php-fig.org/psr/psr-6/) implementation using the doctrine 
-cache system. This implementation is used by the PSX framework. More 
-informations about PSX at http://phpsx.org
+Data processing library which helps to read and write data to and from POPOs
+in different formats.
 
 ## Usage
 
+The following example showcases how you could read/write a complex model.
+
 ```php
-<?php
+// create processor
+$processor = new Processor(Configuration::createDefault());
 
-$pool = new PSX\Cache\Pool(new Doctrine\Common\Cache\FilesystemCache());
-$item = $pool->getItem('foo');
+// example json data which we want to parse in our model
+$in = <<<JSON
+{
+    "id": 1,
+    "title": "Lorem ipsum",
+    "author": {
+        "id": 1,
+        "name": "Foo",
+        "email": "foo@bar.com",
+    },
+    "comments": [{
+        "id": 1,
+        "author": {
+            "id": 1,
+            "name": "Foo",
+            "email": "foo@bar.com",
+        },
+        "text": "Lorem ipsum"
+    },{
+        "id": 2,
+        "author": {
+            "id": 1,
+            "name": "Foo",
+            "email": "foo@bar.com",
+        },
+        "text": "Lorem ipsum"
+    }],
+    "date": "2016-03-28T22:40:00Z"
+}
+JSON;
 
-if (!$item->isHit()) {
-    $value = doComplexTask();
+// reads the json data into a custom model class
+$model = $processor->read(News::class, Payload::json($in));
 
-    $item->set($value);
-    $item->expiresAfter(3600);
+// the model can be used to get or set data
+$model->getAuthor()->getName();
+$model->getComments()[0]->getText();
 
-    $pool->save($item);
-} else {
-    $value = $item->get();
+// writes the model back to json
+$out = $processor->write(Payload::json($model));
+
+// model classes
+class News
+{
+    /**
+     * @Type("integer")
+     */
+    protected $id;
+
+    /**
+     * @Type("string")
+     */
+    protected $title;
+
+    /**
+     * @Type("Acme\Author")
+     */
+    protected $author;
+
+    /**
+     * @Type("array<Acme\Comment>")
+     */
+    protected $comments;
+
+    /**
+     * @Type("datetime")
+     */
+    protected $date;
+
+    // getter/setter implementations removed for readability
 }
 
-// @TODO work with the value
-    
+class Author
+{
+    /**
+     * @Type("integer")
+     */
+    protected $id;
+
+    /**
+     * @Type("string")
+     */
+    protected $name;
+
+    /**
+     * @Type("string")
+     */
+    protected $email;
+
+    // getter/setter implementations removed for readability
+}
+
+class Comment
+{
+    /**
+     * @Type("integer")
+     */
+    protected $id;
+
+    /**
+     * @Type("Acme\Author")
+     */
+    protected $author;
+
+    /**
+     * @Type("string")
+     */
+    protected $text;
+
+    // getter/setter implementations removed for readability
+}
+
+
 ```
-
-
-$config = Configuration::createDefault();
-$dm     = new DataManager($config);
-
-
-
-$data   = $dm->getBodyAs(Foo::class, 'application/json', '{"foo": "bar"}');
-
-
-
-
-$schema = JsonSchema::fromFile('incoming.json');
-$data   = $dm->getBodyAs($schema, 'application/json', '{"foo": "bar"}');
-
-
-
-
-
-$dm->writeBody($data);
-
-
-
-
-
-
-
-class Foo
-{
-    protected $foo;
-
-    public function getFoo()
-    {
-        return $this->foo;
-    }
-
-    public function setFoo($foo)
-    {
-        $this->foo = $foo;
-    }
-}
-
-
-
-$schema = JsonSchema::fromFile('outgoing.json');
-$data = $dm->getAssimilator()->assimilate($schema, $data);
-
-
-$data = $dm->getWriter('application/xml')->write($data);
-
-
-$foo = $dm->getAccessor($data)->get('/foo');
-
-
-{
-	"title": "Example Schema",
-	"type": "object",
-	"properties": {
-		"foo": {
-			"type": "string"
-		},
-	}
-}
-
-
-
-
-
-$data = $dm->getReader('application/json')->read('{"foo": "bar"}');
-
-object(stdClass)#2 (1) {
-  ["foo"]=>
-  string(3) "bar"
-}
-
-$data = $dm->getWriter('application/xml')->write($data);
-
-<?xml version="1.0" encoding="UTF-8"?>
-<foo>bar</foo>
-
-$data = $dm->getReader('application/xml')->read($data);
-
-object(DOMDocument)#2 (34) {
-    ...
-}
-
-
-
-$data = $dm->getExtractor()->extract(new Message(['Content-Type' => 'application/json'], '{"foo": "bar"}'));
-
-object(stdClass)#2 (1) {
-  ["foo"]=>
-  string(3) "bar"
-}
-
-
-
-$data = $dm->getExtractor()->extract(new Message(['Content-Type' => 'application/xml'], '<foo>bar</foo>'));
-
-object(stdClass)#2 (1) {
-  ["foo"]=>
-  string(3) "bar"
-}
-
-
-
-$data = $dm->getExtractor()->extract(new Message(['Content-Type' => 'application/x-www-form-urlencoded'], 'foo=bar'));
-
-object(stdClass)#2 (1) {
-  ["foo"]=>
-  string(3) "bar"
-}
-
-
-
-
-
-$dm->getAssimilator()->assimilate();
-
-
-
-
-BarFactory implements FactoryInterface
-{
-	public function __construct(Connection $connection)
-	{
-	
-	}
-}
-
-$dm->setFactoryBuilder(new NewBuilder());
-$dm->setFactoryBuilder(new ClosureBuilder(function($className) use ($connection){
-
-	if ($className == 'BarFactory') {
-		return new BarFactory($connection);
-	}
-
-}));
-
-
-
-
 

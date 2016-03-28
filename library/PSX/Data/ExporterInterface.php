@@ -21,8 +21,8 @@
 namespace PSX\Data;
 
 /**
- * The transformer can format the response of a reader so that it can be used
- * by an importer
+ * The exporter produces a readable result of an object. It uses a mechanism to
+ * get the readable fields of an object
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0

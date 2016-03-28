@@ -19,6 +19,7 @@
  */
 
 namespace PSX\Data;
+
 use PSX\Schema\RevealerInterface;
 use PSX\Validate\ValidatorInterface;
 
