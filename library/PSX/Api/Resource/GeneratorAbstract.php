@@ -20,8 +20,6 @@
 
 namespace PSX\Api\Resource;
 
-use PSX\Api\Resource;
-
 /**
  * GeneratorAbstract
  *
@@ -35,7 +33,7 @@ abstract class GeneratorAbstract implements GeneratorInterface
      * Returns the successful response of an method or null if no is available
      *
      * @param \PSX\Api\Resource\MethodAbstract $method
-     * @return \PSX\Data\SchemaInterface
+     * @return \PSX\Schema\SchemaInterface
      */
     protected function getSuccessfulResponse(MethodAbstract $method)
     {

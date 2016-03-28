@@ -27,6 +27,6 @@ namespace PSX\OpenSsl;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Exception extends \PSX\Exception
+class Exception extends \Exception
 {
 }

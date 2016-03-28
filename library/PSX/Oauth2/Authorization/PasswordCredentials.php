@@ -20,7 +20,7 @@
 
 namespace PSX\Oauth2\Authorization;
 
-use PSX\Base;
+use PSX\Framework\Base;
 use PSX\Oauth2\AuthorizationAbstract;
 
 /**

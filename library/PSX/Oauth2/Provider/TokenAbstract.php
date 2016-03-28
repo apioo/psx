@@ -20,10 +20,11 @@
 
 namespace PSX\Oauth2\Provider;
 
-use PSX\Controller\ApiAbstract;
 use PSX\Data\ReaderInterface;
 use PSX\Data\WriterInterface;
+use PSX\Framework\Controller\ApiAbstract;
 use PSX\Oauth2\Authorization\Exception\ErrorExceptionAbstract;
+use PSX\Http\Exception as StatusCode;
 
 /**
  * TokenAbstract
@@ -40,13 +41,14 @@ abstract class TokenAbstract extends ApiAbstract
      */
     protected $grantTypeFactory;
 
-    public function onGet()
+    public function onLoad()
     {
-        $this->doHandle();
-    }
+        parent::onLoad();
 
-    public function onPost()
-    {
+        if (!in_array($this->request->getMethod(), ['GET', 'POST'])) {
+            throw new StatusCode\MethodNotAllowedException('Invalid request method', ['GET', 'POST']);
+        }
+
         $this->doHandle();
     }
 

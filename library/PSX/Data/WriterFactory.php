@@ -20,9 +20,9 @@
 
 namespace PSX\Data;
 
+use PSX\Data\Util\PriorityQueue;
 use PSX\Data\Writer;
 use PSX\Http\MediaType;
-use PSX\Util\PriorityQueue;
 
 /**
  * WriterFactory
@@ -90,26 +90,6 @@ class WriterFactory
                 if ($writer->isContentTypeSupported($contentType)) {
                     return $writer;
                 }
-            }
-        }
-
-        return null;
-    }
-
-    public function getWriterByFormat($format, array $supportedWriter = null)
-    {
-        foreach ($this->writers as $writer) {
-            $className = get_class($writer);
-
-            if ($supportedWriter !== null && !in_array($className, $supportedWriter)) {
-                continue;
-            }
-
-            $pos       = strrpos($className, '\\');
-            $shortName = strtolower(substr($className, $pos === false ? 0 : $pos + 1));
-
-            if ($shortName == $format) {
-                return $writer;
             }
         }
 

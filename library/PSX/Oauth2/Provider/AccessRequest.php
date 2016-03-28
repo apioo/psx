@@ -20,7 +20,7 @@
 
 namespace PSX\Oauth2\Provider;
 
-use PSX\Url;
+use PSX\Uri\Url;
 
 /**
  * AccessRequest

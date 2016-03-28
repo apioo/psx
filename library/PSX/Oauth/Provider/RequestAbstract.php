@@ -20,13 +20,13 @@
 
 namespace PSX\Oauth\Provider;
 
-use PSX\Controller\ApiAbstract;
+use PSX\Framework\Controller\ApiAbstract;
 use PSX\Data\WriterInterface;
-use PSX\Exception;
-use PSX\Oauth;
-use PSX\Oauth\Provider\Data\Consumer;
+use PSX\Oauth\Consumer;
+use PSX\Oauth\Provider\Data\Credentials;
 use PSX\Oauth\Provider\Data\Request;
 use PSX\Oauth\Provider\Data\Response;
+use PSX\Http\Exception as StatusCode;
 
 /**
  * RequestAbstract
@@ -37,9 +37,13 @@ use PSX\Oauth\Provider\Data\Response;
  */
 abstract class RequestAbstract extends ApiAbstract
 {
-    public function onGet()
+    public function onLoad()
     {
-        throw new Exception('Invalid request method', 405);
+        parent::onLoad();
+
+        if ($this->request->getMethod() != 'POST') {
+            throw new StatusCode\MethodNotAllowedException('Only POST requests are allowed', ['POST']);
+        }
     }
 
     public function onPost()
@@ -62,15 +66,14 @@ abstract class RequestAbstract extends ApiAbstract
         $request  = $extractor->extract($this->request, new Request());
         $consumer = $this->getConsumer($request->getConsumerKey());
 
-        if ($consumer instanceof Consumer) {
-            $signature = Oauth::getSignature($request->getSignatureMethod());
+        if ($consumer instanceof Credentials) {
+            $signature = Consumer::getSignature($request->getSignatureMethod());
 
             $method = $this->request->getMethod();
             $url    = $this->request->getUri();
-            $params = array_merge($request->getRecordInfo()->getData(), $this->request->getUri()->getParameters());
+            $params = array_merge($request->getProperties(), $this->request->getUri()->getParameters());
 
-            $baseString = Oauth::buildBasestring($method, $url, $params);
-
+            $baseString = Consumer::buildBasestring($method, $url, $params);
 
             if ($signature->verify($baseString, $consumer->getConsumerSecret(), '', $request->getSignature()) !== false) {
                 $response = $this->getResponse($consumer, $request);
@@ -78,32 +81,37 @@ abstract class RequestAbstract extends ApiAbstract
                 if ($response instanceof Response) {
                     $response->addParam('oauth_callback_confirmed', true);
 
-                    $this->setBody($response, WriterInterface::FORM);
+                    $this->setBody($response);
                 } else {
-                    throw new Exception('Invalid response');
+                    throw new StatusCode\BadRequestException('Invalid response');
                 }
             } else {
-                throw new Exception('Invalid signature');
+                throw new StatusCode\BadRequestException('Invalid signature');
             }
         } else {
-            throw new Exception('Invalid Consumer Key');
+            throw new StatusCode\BadRequestException('Invalid Consumer Key');
         }
+    }
+
+    protected function getSupportedWriter()
+    {
+        return [WriterInterface::FORM];
     }
 
     /**
      * Returns the consumer object with the $consumerKey and $token
      *
      * @param string $consumerKey
-     * @return \PSX\Oauth\Provider\Data\Consumer
+     * @return \PSX\Oauth\Provider\Data\Credentials
      */
     abstract protected function getConsumer($consumerKey);
 
     /**
-     * Returns the response depending on the $consumer and $request
+     * Returns the response depending on the $credentials and $request
      *
-     * @param \PSX\Oauth\Provider\Data\Consumer $consumer
+     * @param \PSX\Oauth\Provider\Data\Credentials $credentials
      * @param \PSX\Oauth\Provider\Data\Request $request
      * @return \PSX\Oauth\Provider\Data\Response
      */
-    abstract protected function getResponse(Consumer $consumer, Request $request);
+    abstract protected function getResponse(Credentials $credentials, Request $request);
 }

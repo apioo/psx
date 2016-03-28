@@ -20,10 +20,10 @@
 
 namespace PSX\Data\Reader;
 
+use PSX\Data\Util\CurveArray;
 use PSX\Data\ReaderAbstract;
 use PSX\Http\MediaType;
 use PSX\Http\MessageInterface;
-use PSX\Util\CurveArray;
 
 /**
  * Form
@@ -34,13 +34,12 @@ use PSX\Util\CurveArray;
  */
 class Form extends ReaderAbstract
 {
-    public function read(MessageInterface $message)
+    public function read($data)
     {
-        $body = (string) $message->getBody();
         $form = array();
 
-        if (!empty($body)) {
-            parse_str($body, $form);
+        if (!empty($data)) {
+            parse_str($data, $form);
 
             return CurveArray::objectify($form);
         } else {

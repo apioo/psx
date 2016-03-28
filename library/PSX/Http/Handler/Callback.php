@@ -21,7 +21,6 @@
 namespace PSX\Http\Handler;
 
 use Closure;
-use PSX\Http;
 use PSX\Http\HandlerInterface;
 use PSX\Http\Options;
 use PSX\Http\RequestInterface;

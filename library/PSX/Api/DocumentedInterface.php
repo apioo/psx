@@ -30,11 +30,11 @@ namespace PSX\Api;
 interface DocumentedInterface
 {
     /**
-     * Returns an object which contains all available schema definitions for
-     * this api. The method is public so that we can get the object for
-     * automatic api doc generation
+     * Returns an object which describe the format of this resource. If no
+     * version was provided the most recent version should be returned
      *
-     * @return \PSX\Api\DocumentationInterface
+     * @param integer $version
+     * @return \PSX\Api\Resource
      */
-    public function getDocumentation();
+    public function getDocumentation($version = null);
 }

@@ -21,8 +21,8 @@
 namespace PSX\Http\Exception;
 
 use InvalidArgumentException;
-use PSX\DisplayException;
-use PSX\Http;
+use PSX\Framework\DisplayException;
+use PSX\Http\Http;
 
 /**
  * StatusCodeException

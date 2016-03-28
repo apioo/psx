@@ -21,7 +21,6 @@
 namespace PSX\Http;
 
 use PSX\Exception;
-use PSX\Http;
 use PSX\Http\Stream\StringStream;
 
 /**
@@ -127,7 +126,7 @@ class ResponseParser extends ParserAbstract
         $phrase   = $response->getReasonPhrase();
 
         if (empty($code)) {
-            throw new Exception('Status code not set');
+            throw new \RuntimeException('Status code not set');
         }
 
         $protocol = !empty($protocol) ? $protocol : 'HTTP/1.1';
@@ -137,7 +136,7 @@ class ResponseParser extends ParserAbstract
         }
 
         if (empty($phrase)) {
-            throw new Exception('No reason phrase provided');
+            throw new \RuntimeException('No reason phrase provided');
         }
 
         return $protocol . ' ' . $code . ' ' . $phrase;

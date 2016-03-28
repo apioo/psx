@@ -60,7 +60,7 @@ class Pointer
             } elseif ($data instanceof \stdClass) {
                 $data = isset($data->$part) ? $data->$part : null;
             } elseif ($data instanceof RecordInterface) {
-                $data = $data->getRecordInfo()->getField($part);
+                $data = $data->getProperty($part);
             } else {
                 $data = null;
             }

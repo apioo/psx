@@ -20,7 +20,7 @@
 
 namespace PSX\Oauth\Signature;
 
-use PSX\Oauth;
+use PSX\Oauth\Consumer;
 use PSX\Oauth\SignatureAbstract;
 
 /**
@@ -34,7 +34,7 @@ class HMACSHA1 extends SignatureAbstract
 {
     public function build($baseString, $consumerSecret, $tokenSecret = '')
     {
-        $key       = Oauth::urlEncode($consumerSecret) . '&' . Oauth::urlEncode($tokenSecret);
+        $key       = Consumer::urlEncode($consumerSecret) . '&' . Consumer::urlEncode($tokenSecret);
         $signature = base64_encode(hash_hmac('sha1', $baseString, $key, true));
 
         return $signature;

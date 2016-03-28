@@ -20,10 +20,10 @@
 
 namespace PSX\Data\Writer;
 
-use PSX\Data\ExceptionRecord;
+use PSX\Model\Common\Error;
 use PSX\Data\Record;
-use PSX\Data\Record\GraphTraverser;
-use PSX\Data\Record\Visitor;
+use PSX\Data\GraphTraverser;
+use PSX\Data\Visitor;
 use PSX\Data\RecordInterface;
 use PSX\Http\MediaType;
 use XMLWriter;
@@ -57,7 +57,7 @@ class Soap extends Xml
         return $this->requestMethod;
     }
 
-    public function write(RecordInterface $record)
+    public function write($data)
     {
         $xmlWriter = new XMLWriter();
         $xmlWriter->openMemory();
@@ -67,18 +67,18 @@ class Soap extends Xml
         $xmlWriter->startElement('soap:Envelope');
         $xmlWriter->writeAttribute('xmlns:soap', 'http://schemas.xmlsoap.org/soap/envelope/');
 
-        if ($record instanceof ExceptionRecord) {
+        if ($data instanceof Error) {
             $xmlWriter->startElement('soap:Body');
             $xmlWriter->startElement('soap:Fault');
 
             $xmlWriter->writeElement('faultcode', 'soap:Server');
-            $xmlWriter->writeElement('faultstring', $record->getMessage());
+            $xmlWriter->writeElement('faultstring', $data->getMessage());
 
-            if ($record->getTrace()) {
+            if ($data->getTrace()) {
                 $xmlWriter->startElement('detail');
 
                 $graph = new GraphTraverser();
-                $graph->traverse($record, new Visitor\XmlWriterVisitor($xmlWriter, $this->namespace));
+                $graph->traverse($data, new Visitor\XmlWriterVisitor($xmlWriter, $this->namespace));
 
                 $xmlWriter->endElement();
             }
@@ -88,7 +88,7 @@ class Soap extends Xml
         } else {
             $xmlWriter->startElement('soap:Body');
 
-            $record = new Record($this->requestMethod . 'Response', $record->getRecordInfo()->getFields());
+            $record = Record::from($data, $this->requestMethod . 'Response');
             $graph  = new GraphTraverser();
             $graph->traverse($record, new Visitor\XmlWriterVisitor($xmlWriter, $this->namespace));
 

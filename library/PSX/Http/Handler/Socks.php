@@ -21,13 +21,14 @@
 namespace PSX\Http\Handler;
 
 use PSX\Exception;
-use PSX\Http;
+use PSX\Http\Http;
 use PSX\Http\HandlerException;
 use PSX\Http\HandlerInterface;
 use PSX\Http\NotSupportedException;
 use PSX\Http\Options;
 use PSX\Http\RequestInterface;
 use PSX\Http\ResponseParser;
+use PSX\Http\RequestParser;
 use PSX\Http\Stream\SocksStream;
 use PSX\Http\Stream\StringStream;
 
@@ -106,13 +107,13 @@ class Socks implements HandlerInterface
             // write header
             $headers = ResponseParser::buildHeaderFromMessage($request);
 
-            fwrite($handle, Http\RequestParser::buildStatusLine($request) . Http::$newLine);
+            fwrite($handle, RequestParser::buildStatusLine($request) . Http::NEW_LINE);
 
             foreach ($headers as $header) {
-                fwrite($handle, $header . Http::$newLine);
+                fwrite($handle, $header . Http::NEW_LINE);
             }
 
-            fwrite($handle, Http::$newLine);
+            fwrite($handle, Http::NEW_LINE);
             fflush($handle);
 
             // write body
@@ -125,12 +126,12 @@ class Socks implements HandlerInterface
                         $len   = strlen($chunk);
 
                         if ($len > 0) {
-                            fwrite($handle, dechex($len) . Http::$newLine . $chunk . Http::$newLine);
+                            fwrite($handle, dechex($len) . Http::NEW_LINE . $chunk . Http::NEW_LINE);
                             fflush($handle);
                         }
                     }
 
-                    fwrite($handle, '0' . Http::$newLine . Http::$newLine);
+                    fwrite($handle, '0' . Http::NEW_LINE . Http::NEW_LINE);
                     fflush($handle);
                 } else {
                     fwrite($handle, (string) $body);

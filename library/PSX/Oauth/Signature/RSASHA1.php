@@ -20,7 +20,7 @@
 
 namespace PSX\Oauth\Signature;
 
-use PSX\Exception;
+use RuntimeException;
 use PSX\Oauth\SignatureAbstract;
 
 /**
@@ -34,6 +34,6 @@ class RSASHA1 extends SignatureAbstract
 {
     public function build($baseString, $consumerSecret, $tokenSecret = '')
     {
-        throw new Exception('RSA-SHA1 method is not implemented');
+        throw new RuntimeException('RSA-SHA1 method is not implemented');
     }
 }

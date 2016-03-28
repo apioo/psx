@@ -20,13 +20,14 @@
 
 namespace PSX\Oauth2\Provider;
 
-use PSX\Controller\ApiAbstract;
+use PSX\Framework\Controller\ApiAbstract;
 use PSX\Oauth2\Authorization\Exception\ErrorExceptionAbstract;
 use PSX\Oauth2\Authorization\Exception\InvalidRequestException;
 use PSX\Oauth2\Authorization\Exception\ServerErrorException;
 use PSX\Oauth2\Authorization\Exception\UnauthorizedClientException;
 use PSX\Oauth2\Authorization\Exception\UnsupportedResponseTypeException;
-use PSX\Url;
+use PSX\Uri\Url;
+use PSX\Http\Exception as StatusCode;
 
 /**
  * AuthorizationAbstract
@@ -43,13 +44,14 @@ abstract class AuthorizationAbstract extends ApiAbstract
      */
     protected $grantTypeFactory;
 
-    public function onGet()
+    public function onLoad()
     {
-        $this->doHandle();
-    }
+        parent::onLoad();
 
-    public function onPost()
-    {
+        if (!in_array($this->request->getMethod(), ['GET', 'POST'])) {
+            throw new StatusCode\MethodNotAllowedException('Invalid request method', ['GET', 'POST']);
+        }
+
         $this->doHandle();
     }
 
@@ -158,7 +160,7 @@ abstract class AuthorizationAbstract extends ApiAbstract
      * method if its possible to get an callback from another source
      *
      * @param string $clientId
-     * @return \PSX\Url
+     * @return \PSX\Uri\Url
      */
     protected function getCallback($clientId)
     {

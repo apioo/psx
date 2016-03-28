@@ -21,9 +21,7 @@
 namespace PSX\Oauth\Provider\Data;
 
 use PSX\Data\InvalidDataException;
-use PSX\Data\RecordAbstract;
-use PSX\Data\RecordInfo;
-use PSX\Oauth;
+use PSX\Data\Record;
 use PSX\Validate;
 
 /**
@@ -33,51 +31,26 @@ use PSX\Validate;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Request extends RecordAbstract
+class Request extends Record
 {
-    protected $consumerKey;
-    protected $token;
-    protected $signatureMethod;
-    protected $signature;
-    protected $timestamp;
-    protected $nonce;
-    protected $callback;
-    protected $version;
-    protected $verifier;
-
-    public function getRecordInfo()
-    {
-        return new RecordInfo('request', array(
-            'oauth_consumer_key'     => $this->consumerKey,
-            'oauth_token'            => $this->token,
-            'oauth_signature_method' => $this->signatureMethod,
-            'oauth_signature'        => $this->signature,
-            'oauth_timestamp'        => $this->timestamp,
-            'oauth_nonce'            => $this->nonce,
-            'oauth_callback'         => $this->callback,
-            'oauth_version'          => $this->version,
-            'oauth_verifier'         => $this->verifier
-        ));
-    }
-
     public function setConsumerKey($consumerKey)
     {
-        $this->consumerKey = $consumerKey;
+        $this->setProperty('oauth_consumer_key', $consumerKey);
     }
     
     public function getConsumerKey()
     {
-        return $this->consumerKey;
+        return $this->getProperty('oauth_consumer_key');
     }
 
     public function setToken($token)
     {
-        $this->token = $token;
+        $this->setProperty('oauth_token', $token);
     }
     
     public function getToken()
     {
-        return $this->token;
+        return $this->getProperty('oauth_token');
     }
 
     public function setSignatureMethod($signatureMethod)
@@ -86,7 +59,7 @@ class Request extends RecordAbstract
             case 'HMAC-SHA1':
             case 'RSA-SHA1':
             case 'PLAINTEXT':
-                $this->signatureMethod = $signatureMethod;
+                $this->setProperty('oauth_signature_method', $signatureMethod);
                 break;
 
             default:
@@ -97,17 +70,17 @@ class Request extends RecordAbstract
 
     public function getSignatureMethod()
     {
-        return $this->signatureMethod;
+        return $this->getProperty('oauth_signature_method');
     }
 
     public function setSignature($signature)
     {
-        $this->signature = $signature;
+        $this->setProperty('oauth_signature', $signature);
     }
 
     public function getSignature()
     {
-        return $this->signature;
+        return $this->getProperty('oauth_signature');
     }
 
     /**
@@ -116,7 +89,7 @@ class Request extends RecordAbstract
     public function setTimestamp($timestamp)
     {
         if (is_numeric($timestamp) && strlen($timestamp) == 10) {
-            $this->timestamp = $timestamp;
+            $this->setProperty('oauth_timestamp', $timestamp);
         } else {
             throw new InvalidDataException('Invalid timestamp format');
         }
@@ -124,17 +97,17 @@ class Request extends RecordAbstract
 
     public function getTimestamp()
     {
-        return $this->timestamp;
+        return $this->getProperty('oauth_timestamp');
     }
 
     public function setNonce($nonce)
     {
-        $this->nonce = $nonce;
+        $this->setProperty('oauth_nonce', $nonce);
     }
 
     public function getNonce()
     {
-        return $this->nonce;
+        return $this->getProperty('oauth_nonce');
     }
 
     public function setCallback($callback)
@@ -142,9 +115,9 @@ class Request extends RecordAbstract
         if ($callback == 'oob') {
             // callback was set "out of bound" ... we get the url later from the
             // consumer object
-            $this->callback = 'oob';
+            $this->setProperty('oauth_callback', 'oob');
         } elseif (strlen($callback) >= 7 && strlen($callback) <= 256 && filter_var($callback, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED)) {
-            $this->callback = $callback;
+            $this->setProperty('oauth_callback', $callback);
         } else {
             throw new InvalidDataException('Invalid callback format');
         }
@@ -152,23 +125,23 @@ class Request extends RecordAbstract
 
     public function getCallback()
     {
-        return $this->callback;
+        return $this->getProperty('oauth_callback');
     }
 
     public function setVersion($version)
     {
-        $this->version = $version;
+        $this->setProperty('oauth_version', $version);
     }
 
     public function getVersion()
     {
-        return $this->version;
+        return $this->getProperty('oauth_version');
     }
 
     public function setVerifier($verifier)
     {
         if (strlen($verifier) >= 16 && strlen($verifier) <= 512) {
-            $this->verifier = $verifier;
+            $this->setProperty('oauth_verifier', $verifier);
         } else {
             throw new InvalidDataException('Invalid verifier format');
         }
@@ -176,6 +149,6 @@ class Request extends RecordAbstract
 
     public function getVerifier()
     {
-        return $this->verifier;
+        return $this->getProperty('oauth_verifier');
     }
 }

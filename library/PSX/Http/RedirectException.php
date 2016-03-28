@@ -20,8 +20,6 @@
 
 namespace PSX\Http;
 
-use PSX\Exception;
-
 /**
  * Exception thrown if the max redirection of http requests is reached
  *
@@ -29,6 +27,6 @@ use PSX\Exception;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class RedirectException extends Exception
+class RedirectException extends \Exception
 {
 }

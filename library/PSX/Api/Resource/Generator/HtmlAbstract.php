@@ -22,8 +22,8 @@ namespace PSX\Api\Resource\Generator;
 
 use PSX\Api\Resource;
 use PSX\Api\Resource\GeneratorInterface;
-use PSX\Data\SchemaInterface;
-use PSX\Http;
+use PSX\Http\Http;
+use PSX\Schema\SchemaInterface;
 
 /**
  * HtmlAbstract
@@ -136,7 +136,7 @@ abstract class HtmlAbstract implements GeneratorInterface
     /**
      * Returns an html chunk for the specific schema
      *
-     * @param \PSX\Data\SchemaInterface $schema
+     * @param \PSX\Schema\SchemaInterface $schema
      * @param integer $type
      * @param string $method
      * @param string $path

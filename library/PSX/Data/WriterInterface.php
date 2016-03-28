@@ -46,10 +46,10 @@ interface WriterInterface
     /**
      * Returns the string representation of this record from the writer
      *
-     * @param \PSX\Data\RecordInterface
+     * @param mixed $data
      * @return string
      */
-    public function write(RecordInterface $record);
+    public function write($data);
 
     /**
      * Returns whether the content type is supported by this writer

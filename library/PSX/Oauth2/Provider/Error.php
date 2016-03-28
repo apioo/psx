@@ -20,8 +20,7 @@
 
 namespace PSX\Oauth2\Provider;
 
-use PSX\Data\RecordAbstract;
-use PSX\Data\RecordInfo;
+use PSX\Data\Record;
 
 /**
  * Error
@@ -30,60 +29,45 @@ use PSX\Data\RecordInfo;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Error extends RecordAbstract
+class Error extends Record
 {
-    protected $error;
-    protected $errorDescription;
-    protected $errorUri;
-    protected $state;
-
-    public function getRecordInfo()
-    {
-        return new RecordInfo('error', array(
-            'error' => $this->error,
-            'error_description' => $this->errorDescription,
-            'error_uri' => $this->errorUri,
-            'state' => $this->state,
-        ));
-    }
-
     public function setError($error)
     {
-        $this->error = $error;
+        $this->setProperty('error', $error);
     }
     
     public function getError()
     {
-        return $this->error;
+        return $this->getProperty('error');
     }
 
     public function setErrorDescription($errorDescription)
     {
-        $this->errorDescription = $errorDescription;
+        $this->setProperty('error_description', $errorDescription);
     }
     
     public function getErrorDescription()
     {
-        return $this->errorDescription;
+        return $this->getProperty('error_description');
     }
 
     public function setErrorUri($errorUri)
     {
-        $this->errorUri = $errorUri;
+        $this->setProperty('error_uri', $errorUri);
     }
     
     public function getErrorUri()
     {
-        return $this->errorUri;
+        return $this->getProperty('error_uri');
     }
 
     public function setState($state)
     {
-        $this->state = $state;
+        $this->setProperty('state', $state);
     }
     
     public function getState()
     {
-        return $this->state;
+        return $this->getProperty('state');
     }
 }

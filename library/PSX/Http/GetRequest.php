@@ -20,7 +20,7 @@
 
 namespace PSX\Http;
 
-use PSX\Url;
+use PSX\Uri\Url;
 
 /**
  * GetRequest

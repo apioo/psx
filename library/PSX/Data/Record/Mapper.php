@@ -34,7 +34,7 @@ use PSX\Data\RecordInterface;
 class Mapper
 {
     /**
-     * Method wich can map all fields of an record to an arbitary class by
+     * Method wich can map all fields of a record to an arbitary class by
      * calling the fitting setter methods if available
      *
      * @param \PSX\Data\RecordInterface $source
@@ -47,7 +47,7 @@ class Mapper
             throw new InvalidArgumentException('Destination must be an object');
         }
 
-        $data = $source->getRecordInfo()->getData();
+        $data = $source->getProperties();
 
         foreach ($data as $key => $value) {
             // convert to camelcase if underscore is in name

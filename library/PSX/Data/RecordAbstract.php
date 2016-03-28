@@ -20,8 +20,7 @@
 
 namespace PSX\Data;
 
-use JsonSerializable;
-use Serializable;
+use ArrayIterator;
 
 /**
  * RecordAbstract
@@ -30,51 +29,68 @@ use Serializable;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-abstract class RecordAbstract implements RecordInterface, Serializable, JsonSerializable
+abstract class RecordAbstract implements RecordInterface
 {
-    public function getRecordInfo()
+    public function offsetSet($offset, $value)
     {
-        $parts  = explode('\\', get_class($this));
-        $name   = lcfirst(end($parts));
-        $vars   = get_object_vars($this);
-        $fields = array();
+        $this->setProperty($offset, $value);
+    }
 
-        foreach ($vars as $key => $value) {
-            if ($key[0] != '_') {
-                $fields[$key] = $value;
-            }
-        }
+    public function offsetExists($offset)
+    {
+        return $this->hasProperty($offset);
+    }
 
-        return new RecordInfo($name, $fields);
+    public function offsetUnset($offset)
+    {
+        $this->removeProperty($offset);
+    }
+
+    public function offsetGet($offset)
+    {
+        return $this->getProperty($offset);
+    }
+
+    public function getIterator()
+    {
+        return new ArrayIterator($this->getProperties());
     }
 
     public function serialize()
     {
-        $vars = get_object_vars($this);
-        $data = array();
-
-        foreach ($vars as $key => $value) {
-            if ($key[0] != '_') {
-                $data[$key] = $value;
-            }
-        }
-
-        return serialize($data);
+        return serialize([$this->getDisplayName(), $this->getProperties()]);
     }
 
     public function unserialize($data)
     {
-        $data = unserialize($data);
+        list($displayName, $properties) = unserialize($data);
 
-        if (is_array($data)) {
-            foreach ($data as $key => $value) {
-                $this->$key = $value;
-            }
-        }
+        $this->setDisplayName($displayName);
+        $this->setProperties($properties);
     }
 
     public function jsonSerialize()
     {
-        return $this->getRecordInfo()->getData();
+        return $this->getProperties();
+    }
+
+    public function __set($name, $value)
+    {
+        $this->setProperty($name, $value);
+    }
+
+    public function __get($name)
+    {
+        return $this->getProperty($name);
+    }
+
+    public function __isset($name)
+    {
+        return $this->hasProperty($name);
+    }
+
+    public function __unset($name)
+    {
+        $this->removeProperty($name);
     }
 }

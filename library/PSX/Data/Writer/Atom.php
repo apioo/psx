@@ -21,11 +21,7 @@
 namespace PSX\Data\Writer;
 
 use DateTime;
-use PSX\Atom as AtomRecord;
-use PSX\Atom\Entry;
-use PSX\Atom\Text as AtomText;
-use PSX\Atom\Writer;
-use PSX\Data\RecordInterface;
+use PSX\Model\Atom as Model;
 use PSX\Exception;
 use PSX\Http\MediaType;
 
@@ -40,14 +36,15 @@ class Atom extends Xml
 {
     protected static $mime = 'application/atom+xml';
 
-    public function write(RecordInterface $record)
+    public function write($data)
     {
-        if ($record instanceof AtomRecord) {
-            $writer = new Writer($record->getTitle(), $record->getId(), $record->getUpdated());
+        if ($data instanceof Model\Atom) {
+            $writer = new Atom\Writer($data->getTitle(), $data->getId(), $data->getUpdated());
 
-            $this->buildFeed($record, $writer);
+            $this->buildFeed($data, $writer);
 
-            foreach ($record as $row) {
+            $entries = $data->getEntry();
+            foreach ($entries as $row) {
                 $entry = $writer->createEntry();
 
                 $this->buildEntry($row, $entry);
@@ -56,15 +53,15 @@ class Atom extends Xml
             }
 
             return $writer->toString();
-        } elseif ($record instanceof Entry) {
-            $writer = new Writer\Entry();
+        } elseif ($data instanceof Model\Entry) {
+            $writer = new Atom\Entry();
 
-            $this->buildEntry($record, $writer);
+            $this->buildEntry($data, $writer);
 
             return $writer->toString();
         } else {
-            $writer = new Writer\Entry();
-            $writer->setContent($record, 'application/xml');
+            $writer = new Atom\Entry();
+            $writer->setContent($data, 'application/xml');
 
             return $writer->toString();
         }
@@ -80,7 +77,7 @@ class Atom extends Xml
         return self::$mime;
     }
 
-    protected function buildFeed(AtomRecord $atom, Writer $writer)
+    protected function buildFeed(Model\Atom $atom, Atom\Writer $writer)
     {
         $subTitle = $atom->getSubTitle();
         if (!empty($subTitle)) {
@@ -136,7 +133,7 @@ class Atom extends Xml
         }
     }
 
-    protected function buildEntry(Entry $entry, Writer\Entry $writer)
+    protected function buildEntry(Model\Entry $entry, Atom\Entry $writer)
     {
         $id = $entry->getId();
         if (!empty($id)) {
@@ -192,18 +189,18 @@ class Atom extends Xml
         }
 
         $content = $entry->getContent();
-        if ($content instanceof AtomText) {
+        if ($content instanceof Model\Text) {
             $writer->setContent($content->getContent(), $content->getType());
         }
 
         $summary = $entry->getSummary();
-        if ($summary instanceof AtomText) {
+        if ($summary instanceof Model\Text) {
             $writer->setSummary($summary->getContent(), $summary->getType());
         }
 
         $source = $entry->getSource();
-        if ($source instanceof AtomRecord) {
-            $sourceWriter = new Writer($source->getTitle(), $source->getId(), $source->getUpdated(), $writer->getWriter(), 'source', false);
+        if ($source instanceof Model\Atom) {
+            $sourceWriter = new Atom\Writer($source->getTitle(), $source->getId(), $source->getUpdated(), $writer->getWriter(), 'source', false);
 
             $this->buildFeed($source, $sourceWriter);
 

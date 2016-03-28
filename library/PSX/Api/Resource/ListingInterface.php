@@ -38,11 +38,12 @@ interface ListingInterface
     public function getResourceIndex();
 
     /**
-     * Returns an specific resource with complete documentation or null if the
+     * Returns a specific resource with complete documentation or null if the
      * resource was not found
      *
      * @param string $sourcePath
-     * @return \PSX\Api\DocumentationInterface
+     * @param string $version
+     * @return \PSX\Api\Resource
      */
-    public function getDocumentation($sourcePath);
+    public function getResource($sourcePath, $version = null);
 }

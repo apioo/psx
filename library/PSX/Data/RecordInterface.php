@@ -20,6 +20,11 @@
 
 namespace PSX\Data;
 
+use ArrayAccess;
+use IteratorAggregate;
+use JsonSerializable;
+use Serializable;
+
 /**
  * RecordInterface
  *
@@ -27,13 +32,66 @@ namespace PSX\Data;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-interface RecordInterface
+interface RecordInterface extends ArrayAccess, Serializable, JsonSerializable, IteratorAggregate
 {
     /**
-     * Returns an RecordInfo object wich contains the name and all fields of the
-     * record
+     * Returns the display name of the object
      *
-     * @return \PSX\Data\RecordInfo
+     * @return string
      */
-    public function getRecordInfo();
+    public function getDisplayName();
+
+    /**
+     * Sets the display name
+     *
+     * @return mixed
+     */
+    public function setDisplayName($displayName);
+
+    /**
+     * Returns all properties which are set
+     *
+     * @return array
+     */
+    public function getProperties();
+
+    /**
+     * Sets the available properties
+     *
+     * @param array $properties
+     */
+    public function setProperties(array $properties);
+
+    /**
+     * Returns a property
+     *
+     * @param string $name
+     * @return mixed
+     */
+    public function getProperty($name);
+
+    /**
+     * Sets a property
+     *
+     * @param string $name
+     * @param mixed $value
+     * @return mixed
+     */
+    public function setProperty($name, $value);
+
+    /**
+     * Removes a property
+     *
+     * @param string $name
+     * @return mixed
+     */
+    public function removeProperty($name);
+
+    /**
+     * Returns whether a property exist
+     *
+     * @param string $name
+     * @return boolean
+     */
+    public function hasProperty($name);
 }

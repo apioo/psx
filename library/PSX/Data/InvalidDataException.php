@@ -20,8 +20,6 @@
 
 namespace PSX\Data;
 
-use PSX\Exception;
-
 /**
  * Exception thrown if data is missing or invalid when trying to import it into
  * an record
@@ -30,6 +28,6 @@ use PSX\Exception;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class InvalidDataException extends Exception
+class InvalidDataException extends \Exception
 {
 }

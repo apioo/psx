@@ -23,7 +23,7 @@ namespace PSX\Data\Reader;
 use PSX\Data\ReaderAbstract;
 use PSX\Http\MediaType;
 use PSX\Http\MessageInterface;
-use PSX\Json as JsonParser;
+use PSX\Json\Parser;
 
 /**
  * Json
@@ -34,12 +34,10 @@ use PSX\Json as JsonParser;
  */
 class Json extends ReaderAbstract
 {
-    public function read(MessageInterface $message)
+    public function read($data)
     {
-        $body = (string) $message->getBody();
-
-        if (!empty($body)) {
-            return JsonParser::decode($body, false);
+        if (!empty($data)) {
+            return Parser::decode($data, false);
         } else {
             return null;
         }

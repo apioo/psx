@@ -23,7 +23,6 @@ namespace PSX\Http\Handler;
 use DOMDocument;
 use DOMElement;
 use PSX\Exception;
-use PSX\Http;
 use PSX\Http\HandlerInterface;
 use PSX\Http\Options;
 use PSX\Http\RequestInterface;

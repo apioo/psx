@@ -22,10 +22,10 @@ namespace PSX\Api\Resource\Generator;
 
 use PSX\Api\Resource;
 use PSX\Api\Resource\GeneratorAbstract;
-use PSX\Data\Schema\Generator as SchemaGenerator;
-use PSX\Data\Schema\Property;
-use PSX\Data\Schema\PropertyInterface;
-use PSX\Util\ApiGeneration;
+use PSX\Api\Resource\Util\Inflection;
+use PSX\Schema\Generator as SchemaGenerator;
+use PSX\Schema\PropertyInterface;
+use PSX\Schema\Property;
 use Symfony\Component\Yaml\Inline;
 
 /**
@@ -52,7 +52,7 @@ class Raml extends GeneratorAbstract
 
     public function generate(Resource $resource)
     {
-        $path        = ApiGeneration::transformRoutePlaceholder($resource->getPath() ?: '/');
+        $path        = Inflection::transformRoutePlaceholder($resource->getPath() ?: '/');
         $description = $resource->getDescription();
 
         $raml = '#%RAML 0.8' . "\n";

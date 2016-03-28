@@ -20,8 +20,6 @@
 
 namespace PSX\Api\Resource\Generator\Html\Sample;
 
-use PSX\Api\Resource;
-
 /**
  * LoaderInterface
  *
@@ -32,7 +30,7 @@ use PSX\Api\Resource;
 interface LoaderInterface
 {
     /**
-     * Returns an an sample code according to an specific request type, method
+     * Returns a sample code according to a specific request type, method
      * and path
      *
      * @param integer $type

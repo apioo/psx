@@ -20,8 +20,7 @@
 
 namespace PSX\Json;
 
-use PSX\Exception;
-use PSX\Json;
+use RuntimeException;
 
 /**
  * WebSignature
@@ -59,7 +58,7 @@ class WebSignature extends WebToken
     public function validate($key)
     {
         if (empty($this->signature)) {
-            throw new Exception('No foreign signature available');
+            throw new RuntimeException('No foreign signature available');
         }
 
         return strcmp($this->signature, $this->getEncodedSignature($key)) === 0;
@@ -74,7 +73,7 @@ class WebSignature extends WebToken
      */
     public function getCompact($key)
     {
-        $headers   = self::base64Encode(Json::encode($this->headers));
+        $headers   = self::base64Encode(Parser::encode($this->headers));
         $claim     = self::base64Encode($this->claim);
         $signature = $this->getEncodedSignature($key);
 
@@ -91,11 +90,11 @@ class WebSignature extends WebToken
     public function getJson($key)
     {
         $signature = array();
-        $signature['protected'] = self::base64Encode(Json::encode($this->headers));
+        $signature['protected'] = self::base64Encode(Parser::encode($this->headers));
         $signature['payload']   = self::base64Encode($this->claim);
         $signature['signature'] = $this->getEncodedSignature($key);
 
-        return Json::encode($signature);
+        return Parser::encode($signature);
     }
 
     protected function getEncodedSignature($key)
@@ -111,7 +110,7 @@ class WebSignature extends WebToken
 
             return $signature;
         } else {
-            throw new Exception('Unsupported signature algorithm');
+            throw new RuntimeException('Unsupported signature algorithm');
         }
     }
 }

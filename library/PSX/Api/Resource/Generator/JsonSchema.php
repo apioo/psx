@@ -22,10 +22,9 @@ namespace PSX\Api\Resource\Generator;
 
 use PSX\Api\Resource;
 use PSX\Api\Resource\GeneratorAbstract;
-use PSX\Data\Schema\Generator\JsonSchema as JsonSchemaGenerator;
-use PSX\Data\Schema\Property;
-use PSX\Data\SchemaInterface;
-use PSX\Json;
+use PSX\Json\Parser;
+use PSX\Schema\Generator\JsonSchema as JsonSchemaGenerator;
+use PSX\Schema\SchemaInterface;
 
 /**
  * JsonSchema
@@ -46,7 +45,7 @@ class JsonSchema extends GeneratorAbstract
 
     public function generate(Resource $resource)
     {
-        return Json::encode($this->toArray($resource), JSON_PRETTY_PRINT);
+        return Parser::encode($this->toArray($resource), JSON_PRETTY_PRINT);
     }
 
     public function toArray(Resource $resource)

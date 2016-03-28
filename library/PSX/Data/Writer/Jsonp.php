@@ -36,14 +36,14 @@ class Jsonp extends Json
 
     protected $callbackName;
 
-    public function write(RecordInterface $record)
+    public function write($data)
     {
         $callbackName = $this->getCallbackName();
 
         if (!empty($callbackName)) {
-            return $callbackName . '(' . parent::write($record) . ')';
+            return $callbackName . '(' . parent::write($data) . ')';
         } else {
-            return parent::write($record);
+            return parent::write($data);
         }
     }
 

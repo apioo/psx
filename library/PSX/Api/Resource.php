@@ -23,10 +23,9 @@ namespace PSX\Api;
 use ArrayIterator;
 use IteratorAggregate;
 use PSX\Api\Resource\MethodAbstract;
-use PSX\Data\RecordAbstract;
-use PSX\Data\Schema;
-use PSX\Data\Schema\Property;
-use PSX\Data\Schema\PropertySimpleAbstract;
+use PSX\Schema\Property;
+use PSX\Schema\PropertySimpleAbstract;
+use PSX\Schema\Schema;
 
 /**
  * Resource
@@ -35,7 +34,7 @@ use PSX\Data\Schema\PropertySimpleAbstract;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link	http://phpsx.org
  */
-class Resource extends RecordAbstract implements IteratorAggregate
+class Resource implements IteratorAggregate
 {
     const STATUS_ACTIVE      = 0x1;
     const STATUS_DEPRECATED  = 0x2;
@@ -59,7 +58,7 @@ class Resource extends RecordAbstract implements IteratorAggregate
     {
         $this->status          = $status;
         $this->path            = $path;
-        $this->pathParameters  = Property::getComplex('path');
+        $this->pathParameters  = Property::getComplex('path')->setAdditionalProperties(true);
         $this->methods         = array();
     }
 

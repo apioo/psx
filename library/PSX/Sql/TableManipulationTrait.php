@@ -21,8 +21,8 @@
 namespace PSX\Sql;
 
 use InvalidArgumentException;
-use PSX\Exception;
 use PSX\Data\RecordInterface;
+use RuntimeException;
 
 /**
  * TableManipulationTrait
@@ -47,7 +47,7 @@ trait TableManipulationTrait
 
             return $result;
         } else {
-            throw new Exception('No valid field set');
+            throw new RuntimeException('No valid field set');
         }
     }
 
@@ -61,12 +61,12 @@ trait TableManipulationTrait
             if (isset($fields[$pk])) {
                 $condition = array($pk => $fields[$pk]);
             } else {
-                throw new Exception('No primary key set');
+                throw new RuntimeException('No primary key set');
             }
 
             return $this->connection->update($this->getName(), $fields, $condition);
         } else {
-            throw new Exception('No valid field set');
+            throw new RuntimeException('No valid field set');
         }
     }
 
@@ -80,12 +80,12 @@ trait TableManipulationTrait
             if (isset($fields[$pk])) {
                 $condition = array($pk => $fields[$pk]);
             } else {
-                throw new Exception('No primary key set');
+                throw new RuntimeException('No primary key set');
             }
 
             return $this->connection->delete($this->getName(), $condition);
         } else {
-            throw new Exception('No valid field set');
+            throw new RuntimeException('No valid field set');
         }
     }
 
@@ -118,7 +118,7 @@ trait TableManipulationTrait
     protected function getArray($record)
     {
         if ($record instanceof RecordInterface) {
-            return $record->getRecordInfo()->getData();
+            return $record->getProperties();
         } elseif ($record instanceof \stdClass) {
             return (array) $record;
         } elseif (is_array($record)) {

@@ -20,7 +20,7 @@
 
 namespace PSX\Data\Writer;
 
-use PSX\Data\Record\Visitor;
+use PSX\Data\Visitor;
 use PSX\Http\MediaType;
 use XMLWriter;
 

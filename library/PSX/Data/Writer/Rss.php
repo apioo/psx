@@ -22,15 +22,10 @@ namespace PSX\Data\Writer;
 
 use DateTime;
 use InvalidArgumentException;
-use PSX\Data\RecordInterface;
 use PSX\Data\WriterInterface;
 use PSX\Exception;
 use PSX\Http\MediaType;
-use PSX\Rss as RssRecord;
-use PSX\Rss\Cloud;
-use PSX\Rss\Enclosure;
-use PSX\Rss\Item;
-use PSX\Rss\Writer;
+use PSX\Model\Rss as Model;
 
 /**
  * Rss
@@ -43,14 +38,15 @@ class Rss implements WriterInterface
 {
     protected static $mime = 'application/rss+xml';
 
-    public function write(RecordInterface $record)
+    public function write($data)
     {
-        if ($record instanceof RssRecord) {
-            $writer = new Writer($record->getTitle(), $record->getLink(), $record->getDescription());
+        if ($data instanceof Model\Rss) {
+            $writer = new Rss\Writer($data->getTitle(), $data->getLink(), $data->getDescription());
 
-            $this->buildChannel($record, $writer);
+            $this->buildChannel($data, $writer);
 
-            foreach ($record as $row) {
+            $items = $data->getItem();
+            foreach ($items as $row) {
                 $item = $writer->createItem();
 
                 $this->buildItem($row, $item);
@@ -59,10 +55,10 @@ class Rss implements WriterInterface
             }
 
             return $writer->toString();
-        } elseif ($record instanceof Item) {
-            $writer = new Writer\Item();
+        } elseif ($data instanceof Model\Item) {
+            $writer = new Rss\Item();
 
-            $this->buildItem($record, $writer);
+            $this->buildItem($data, $writer);
 
             return $writer->toString();
         } else {
@@ -80,7 +76,7 @@ class Rss implements WriterInterface
         return self::$mime;
     }
 
-    protected function buildChannel(RssRecord $rss, Writer $writer)
+    protected function buildChannel(Model\Rss $rss, Rss\Writer $writer)
     {
         $language = $rss->getLanguage();
         if (!empty($language)) {
@@ -130,7 +126,7 @@ class Rss implements WriterInterface
         }
 
         $cloud = $rss->getCloud();
-        if ($cloud instanceof Cloud) {
+        if ($cloud instanceof Model\Cloud) {
             $writer->setCloud($cloud->getDomain(),
                 $cloud->getPort(),
                 $cloud->getPath(),
@@ -159,7 +155,7 @@ class Rss implements WriterInterface
         }
     }
 
-    protected function buildItem(Item $item, Writer\Item $writer)
+    protected function buildItem(Model\Item $item, Rss\Item $writer)
     {
         $title = $item->getTitle();
         if (!empty($title)) {
@@ -194,7 +190,7 @@ class Rss implements WriterInterface
         }
 
         $enclosure = $item->getEnclosure();
-        if ($enclosure instanceof Enclosure) {
+        if ($enclosure instanceof Model\Enclosure) {
             $writer->setEnclosure($enclosure->getUrl(), $enclosure->getLength(), $enclosure->getType());
         }
 

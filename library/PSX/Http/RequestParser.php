@@ -22,9 +22,9 @@ namespace PSX\Http;
 
 use PSX\Exception;
 use PSX\Http\Stream\StringStream;
-use PSX\Uri;
-use PSX\Url;
-use PSX\Util\UriResolver;
+use PSX\Uri\Uri;
+use PSX\Uri\Url;
+use PSX\Uri\UriResolver;
 
 /**
  * RequestParser
@@ -107,7 +107,7 @@ class RequestParser extends ParserAbstract
         $protocol = $request->getProtocolVersion();
 
         if (empty($target)) {
-            throw new Exception('Target not set');
+            throw new \RuntimeException('Target not set');
         }
 
         $method   = !empty($method) ? $method : 'GET';
@@ -121,7 +121,7 @@ class RequestParser extends ParserAbstract
      * exception if the request has not an valid format
      *
      * @param string $content
-     * @param \PSX\Url $baseUrl
+     * @param \PSX\Uri\Url $baseUrl
      * @param integer $mode
      * @return \PSX\Http\Request
      */

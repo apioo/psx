@@ -20,18 +20,19 @@
 
 namespace PSX\Data\Writer;
 
-use PSX\Data\RecordInterface;
+use PSX\Data\GraphTraverser;
 use PSX\Data\WriterInterface;
+use PSX\Framework\Template\GeneratorFactory;
+use PSX\Framework\Template\GeneratorFactoryInterface;
+use PSX\Framework\Template\GeneratorInterface;
+use PSX\Framework\Template\TemplateInterface;
 use PSX\Http\Exception as StatusCode;
-use PSX\Loader\ReverseRouter;
-use PSX\Template\GeneratorFactory;
-use PSX\Template\GeneratorFactoryInterface;
-use PSX\Template\GeneratorInterface;
-use PSX\TemplateInterface;
+use PSX\Framework\Loader\ReverseRouter;
+use PSX\Data\Visitor;
 
 /**
- * Abstract class to facilitate an template engine to produce the output. If no
- * template file was found we look for an generator which can produce this
+ * Abstract class to facilitate a template engine to produce the output. If no
+ * template file was found we look for a generator which can produce this
  * content type
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
@@ -75,7 +76,7 @@ abstract class TemplateAbstract implements WriterInterface
         return $this->controllerFile;
     }
 
-    public function write(RecordInterface $record)
+    public function write($data)
     {
         $this->controllerFile = str_replace('\\', '/', $this->controllerFile);
 
@@ -134,7 +135,7 @@ abstract class TemplateAbstract implements WriterInterface
             $generator = $this->generatorFactory->getByContentType($this->getContentType());
 
             if ($generator instanceof GeneratorInterface) {
-                return $generator->generate($record);
+                return $generator->generate($data);
             } else {
                 throw new StatusCode\UnsupportedMediaTypeException('Content is not available in the requested media type');
             }
@@ -152,7 +153,7 @@ abstract class TemplateAbstract implements WriterInterface
             $this->template->assign('controllerClass', $this->className);
 
             // assign data
-            $fields = $record->getRecordInfo()->getFields();
+            $fields = $this->getNormalizedData($data);
 
             foreach ($fields as $key => $value) {
                 $this->template->assign($key, $value);
@@ -173,5 +174,14 @@ abstract class TemplateAbstract implements WriterInterface
     protected function underscore($word)
     {
         return strtolower(preg_replace('/(?<=\\w)([A-Z])/', '_\\1', $word));
+    }
+
+    protected function getNormalizedData($data)
+    {
+        $visitor = new Visitor\StdClassSerializeVisitor();
+        $graph   = new GraphTraverser();
+        $graph->traverse($data, $visitor);
+
+        return $visitor->getObject();
     }
 }

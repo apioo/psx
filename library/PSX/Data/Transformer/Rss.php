@@ -35,11 +35,6 @@ use PSX\Http\MediaType;
  */
 class Rss implements TransformerInterface
 {
-    public function accept(MediaType $contentType)
-    {
-        return $contentType->getName() == 'application/rss+xml';
-    }
-
     public function transform($data)
     {
         if (!$data instanceof DOMDocument) {
@@ -69,7 +64,6 @@ class Rss implements TransformerInterface
     protected function parseChannelElement(DOMElement $channel)
     {
         $result = new \stdClass();
-        $result->type = 'rss';
 
         $childNodes = $channel->childNodes;
 
@@ -128,7 +122,6 @@ class Rss implements TransformerInterface
     protected function parseItemElement(DOMElement $element)
     {
         $result = new \stdClass();
-        $result->type = 'item';
 
         for ($i = 0; $i < $element->childNodes->length; $i++) {
             $item = $element->childNodes->item($i);

@@ -20,11 +20,10 @@
 
 namespace PSX\Api\Resource;
 
-use PSX\Data\RecordAbstract;
-use PSX\Data\Schema;
-use PSX\Data\Schema\Property;
-use PSX\Data\Schema\PropertySimpleAbstract;
-use PSX\Data\SchemaInterface;
+use PSX\Schema\Property;
+use PSX\Schema\PropertySimpleAbstract;
+use PSX\Schema\Schema;
+use PSX\Schema\SchemaInterface;
 use RuntimeException;
 
 /**
@@ -34,16 +33,31 @@ use RuntimeException;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link	http://phpsx.org
  */
-abstract class MethodAbstract extends RecordAbstract
+abstract class MethodAbstract
 {
+    /**
+     * @var string
+     */
     protected $description;
+
+    /**
+     * @var \PSX\Schema\Property\ComplexType
+     */
     protected $queryParameters;
+
+    /**
+     * @var \PSX\Schema\SchemaInterface
+     */
     protected $request;
+
+    /**
+     * @var array
+     */
     protected $responses;
 
     public function __construct()
     {
-        $this->queryParameters = Property::getComplex('query');
+        $this->queryParameters = Property::getComplex('query')->setAdditionalProperties(true);
         $this->responses       = array();
     }
 

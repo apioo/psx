@@ -34,25 +34,10 @@ use PSX\Http\MediaType;
 class Callback implements TransformerInterface
 {
     protected $callback;
-    protected $contentType;
 
-    public function __construct(Closure $callback, $contentType = null)
+    public function __construct(Closure $callback)
     {
-        $this->callback    = $callback;
-        $this->contentType = $contentType;
-    }
-
-    public function accept(MediaType $contentType)
-    {
-        if ($this->contentType === null) {
-            return true;
-        } elseif (is_string($this->contentType)) {
-            return $this->contentType == $contentType->getName();
-        } elseif (is_callable($this->contentType)) {
-            return call_user_func_array($this->contentType, array($contentType));
-        }
-
-        return false;
+        $this->callback = $callback;
     }
 
     public function transform($data)

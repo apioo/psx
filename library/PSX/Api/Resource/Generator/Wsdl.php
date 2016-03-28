@@ -23,12 +23,12 @@ namespace PSX\Api\Resource\Generator;
 use DOMDocument;
 use DOMElement;
 use PSX\Api\Resource;
-use PSX\Api\Resource\Generator\Wsdl\Operation;
 use PSX\Api\Resource\GeneratorAbstract;
-use PSX\Data\SchemaInterface;
+use PSX\Api\Resource\Generator\Wsdl\Operation;
+use PSX\Schema\SchemaInterface;
 
 /**
- * Generates an WSDL 1.1 representation of an API view
+ * Generates a WSDL 1.1 representation of an API
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0

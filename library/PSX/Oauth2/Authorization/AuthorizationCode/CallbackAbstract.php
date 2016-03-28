@@ -20,8 +20,8 @@
 
 namespace PSX\Oauth2\Authorization\AuthorizationCode;
 
-use PSX\Controller\ApiAbstract;
-use PSX\Exception;
+use PSX\Framework\Controller\ApiAbstract;
+use RuntimeException;
 use PSX\Oauth2\AccessToken;
 use PSX\Oauth2\Authorization\Exception\ErrorExceptionAbstract;
 use PSX\Oauth2\AuthorizationAbstract;
@@ -51,7 +51,7 @@ abstract class CallbackAbstract extends ApiAbstract
             $state = $this->getParameter('state');
 
             if (empty($code)) {
-                throw new Exception('Code not available');
+                throw new RuntimeException('Code not available');
             }
 
             $redirectUri = '';

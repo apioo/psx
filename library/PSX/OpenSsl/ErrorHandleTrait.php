@@ -47,6 +47,8 @@ trait ErrorHandleTrait
 
         if (!empty($message)) {
             throw new Exception(implode(', ', $message));
+        } else {
+            throw new Exception('An unknown error occured');
         }
     }
 

@@ -21,13 +21,12 @@
 namespace PSX\Http\Handler;
 
 use Closure;
-use PSX\Exception;
-use PSX\Http;
 use PSX\Http\HandlerInterface;
 use PSX\Http\Options;
 use PSX\Http\RequestInterface;
 use PSX\Http\ResponseParser;
-use PSX\Url;
+use PSX\Uri\Url;
+use RuntimeException;
 
 /**
  * Mock handler where you can register urls wich return a specific response on
@@ -54,12 +53,12 @@ class Mock implements HandlerInterface
     public function add($method, $url, Closure $handler)
     {
         if (!in_array($method, array('GET', 'POST', 'PUT', 'DELETE', 'PATCH'))) {
-            throw new Exception('Invalid http request method');
+            throw new RuntimeException('Invalid http request method');
         }
 
         foreach ($this->resources as $resource) {
             if ($resource['method'] == $method && $resource['url'] == $url) {
-                throw new Exception('Resource already exists');
+                throw new RuntimeException('Resource already exists');
             }
         }
 
@@ -87,13 +86,13 @@ class Mock implements HandlerInterface
             }
         }
 
-        throw new Exception('Resource not available ' . $request->getMethod() . ' ' . $url);
+        throw new RuntimeException('Resource not available ' . $request->getMethod() . ' ' . $url);
     }
 
     public static function getByXmlDefinition($file)
     {
         if (!is_file($file)) {
-            throw new Exception('Could not load mock xml definition ' . $file);
+            throw new RuntimeException('Could not load mock xml definition ' . $file);
         }
 
         $mock = new self();

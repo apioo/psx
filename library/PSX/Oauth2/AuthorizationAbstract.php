@@ -20,12 +20,13 @@
 
 namespace PSX\Oauth2;
 
-use PSX\Data\Importer;
-use PSX\Exception;
+use PSX\Data\Payload;
+use PSX\Data\Record\Transformer;
 use PSX\Http;
 use PSX\Http\PostRequest;
 use PSX\Json;
-use PSX\Url;
+use PSX\Uri\Url;
+use RuntimeException;
 
 /**
  * AuthorizationAbstract
@@ -39,21 +40,37 @@ abstract class AuthorizationAbstract
     const AUTH_BASIC = 0x1;
     const AUTH_POST  = 0x2;
 
-    protected $http;
-    protected $url;
-    protected $importer;
+    /**
+     * @var \PSX\Http\Client
+     */
+    protected $httpClient;
 
+    /**
+     * @var \PSX\Uri\Url
+     */
+    protected $url;
+
+    /**
+     * @var string
+     */
     protected $clientId;
+
+    /**
+     * @var string
+     */
     protected $clientSecret;
+
+    /**
+     * @var integer
+     */
     protected $type;
 
     protected $accessTokenClass;
 
-    public function __construct(Http $http, Url $url, Importer $importer)
+    public function __construct(Http\Client $httpClient, Url $url)
     {
-        $this->http     = $http;
-        $this->url      = $url;
-        $this->importer = $importer;
+        $this->httpClient = $httpClient;
+        $this->url        = $url;
     }
 
     public function setClientPassword($clientId, $clientSecret, $type = 0x1)
@@ -89,7 +106,7 @@ abstract class AuthorizationAbstract
         $scope        = $accessToken->getScope();
 
         if (empty($refreshToken)) {
-            throw new Exception('No refresh token was set');
+            throw new RuntimeException('No refresh token was set');
         }
 
         $data = array(
@@ -114,33 +131,34 @@ abstract class AuthorizationAbstract
         }
 
         $request  = new PostRequest($this->url, $header, $data);
-        $response = $this->http->request($request);
+        $response = $this->httpClient->request($request);
+
+        $data = Json\Parser::decode($response->getBody());
 
         if ($response->getStatusCode() == 200) {
-            return $this->importer->import($this->createAccessToken(), $response);
+            return Transformer::toRecord($data, $this->getAccessTokenClass());
         } else {
-            throw new Exception('Could not refresh access token');
+            throw new RuntimeException('Could not refresh access token');
         }
     }
 
     protected function request(array $header, $data)
     {
         $request  = new PostRequest($this->url, $header, $data);
-        $response = $this->http->request($request);
+        $response = $this->httpClient->request($request);
+
+        $data = Json\Parser::decode($response->getBody());
 
         if ($response->getStatusCode() == 200) {
-            // import data
-            return $this->importer->import($this->createAccessToken(), $response);
+            return Transformer::toRecord($data, $this->getAccessTokenClass());
         } else {
-            $resp = Json::decode($response->getBody());
-
-            self::throwErrorException($resp);
+            self::throwErrorException($data);
         }
     }
 
-    protected function createAccessToken()
+    protected function getAccessTokenClass()
     {
-        if ($this->accessTokenClass != null && class_exists($this->accessTokenClass)) {
+        if ($this->accessTokenClass != null) {
             return new $this->accessTokenClass();
         } else {
             return new AccessToken();
@@ -168,7 +186,7 @@ abstract class AuthorizationAbstract
         // we do not type hint as array because we want throw a clean exception
         // in case data is not an array
         if (!is_array($data)) {
-            throw new Exception('Invalid response');
+            throw new RuntimeException('Invalid response');
         }
 
         // unfortunatly facebook doesnt follow the oauth draft 26 and set in the
@@ -204,7 +222,7 @@ abstract class AuthorizationAbstract
                 throw new $exceptionClass('No message available');
             }
         } else {
-            throw new Exception('Invalid error type');
+            throw new RuntimeException('Invalid error type');
         }
     }
 }

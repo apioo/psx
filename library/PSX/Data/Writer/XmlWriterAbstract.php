@@ -20,8 +20,7 @@
 
 namespace PSX\Data\Writer;
 
-use PSX\Data\Record\GraphTraverser;
-use PSX\Data\Record\Visitor;
+use PSX\Data\GraphTraverser;
 use PSX\Data\RecordInterface;
 use PSX\Data\WriterInterface;
 use PSX\Http\MediaType;
@@ -50,7 +49,7 @@ abstract class XmlWriterAbstract implements WriterInterface
         $this->writer = $writer;
     }
 
-    public function write(RecordInterface $record)
+    public function write($data)
     {
         $hasWriter = $this->writer !== null;
         $writer    = $this->writer ?: new XMLWriter();
@@ -62,7 +61,7 @@ abstract class XmlWriterAbstract implements WriterInterface
         }
 
         $graph = new GraphTraverser();
-        $graph->traverse($record, $this->getVisitor($writer));
+        $graph->traverse($data, $this->getVisitor($writer));
 
         if (!$hasWriter) {
             $writer->endDocument();
@@ -75,7 +74,7 @@ abstract class XmlWriterAbstract implements WriterInterface
 
     /**
      * @param \XMLWriter $writer
-     * @return \PSX\Data\Record\VisitorInterface
+     * @return \PSX\Data\VisitorInterface
      */
     abstract protected function getVisitor(XMLWriter $writer);
 }

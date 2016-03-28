@@ -20,10 +20,9 @@
 
 namespace PSX\Validate;
 
+use PSX\Data\GraphTraverser;
 use PSX\Data\Record;
-use PSX\Data\Record\GraphTraverser;
-use PSX\Data\Record\Visitor\ValidationVisitor;
-use PSX\Validate;
+use PSX\Data\Visitor\ValidationVisitor;
 
 /**
  * ValidatorAbstract
@@ -42,7 +41,7 @@ abstract class ValidatorAbstract implements ValidatorInterface
     protected $visited = array();
 
     /**
-     * @param \PSX\Validate $validate
+     * @param \PSX\Validate\Validate $validate
      * @param \PSX\Validate\Property[] $fields
      * @param integer $flag
      */

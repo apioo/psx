@@ -20,9 +20,6 @@
 
 namespace PSX\Json;
 
-use PSX\Exception;
-use PSX\Json;
-
 /**
  * WebToken
  *
@@ -121,19 +118,19 @@ abstract class WebToken
         $signature = isset($parts[2]) ? $parts[2] : null;
 
         if (empty($header)) {
-            throw new Exception('JWT header not available');
+            throw new RuntimeException('JWT header not available');
         }
 
         if (empty($claim)) {
-            throw new Exception('JWT claim not available');
+            throw new RuntimeException('JWT claim not available');
         }
 
         if (empty($signature)) {
-            throw new Exception('JWT signature not available');
+            throw new RuntimeException('JWT signature not available');
         }
 
         // get typ from header
-        $header = Json::decode(self::base64Decode($header));
+        $header = Parser::decode(self::base64Decode($header));
         $claim  = self::base64Decode($claim);
         $type   = isset($header[self::TYPE]) ? strtoupper($header[self::TYPE]) : 'JWT';
 
@@ -178,7 +175,7 @@ abstract class WebToken
                 $data.= '=';
                 break;
             default:
-                throw new Exception('Illegal base64url string!');
+                throw new RuntimeException('Illegal base64url string!');
         }
 
         return base64_decode($data);

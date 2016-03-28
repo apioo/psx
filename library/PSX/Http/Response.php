@@ -20,9 +20,6 @@
 
 namespace PSX\Http;
 
-use PSX\Exception;
-use PSX\Http;
-
 /**
  * Response
  *
@@ -93,14 +90,14 @@ class Response extends Message implements ResponseInterface
      */
     public function toString()
     {
-        $response = ResponseParser::buildStatusLine($this) . Http::$newLine;
+        $response = ResponseParser::buildStatusLine($this) . Http::NEW_LINE;
         $headers  = ResponseParser::buildHeaderFromMessage($this);
 
         foreach ($headers as $header) {
-            $response.= $header . Http::$newLine;
+            $response.= $header . Http::NEW_LINE;
         }
 
-        $response.= Http::$newLine;
+        $response.= Http::NEW_LINE;
         $response.= (string) $this->getBody();
 
         return $response;

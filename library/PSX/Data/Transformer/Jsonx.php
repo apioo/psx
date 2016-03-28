@@ -36,11 +36,6 @@ use PSX\Http\MediaType;
  */
 class Jsonx implements TransformerInterface
 {
-    public function accept(MediaType $contentType)
-    {
-        return $contentType->getName() == 'application/jsonx+xml';
-    }
-
     public function transform($data)
     {
         if (!$data instanceof DOMDocument) {

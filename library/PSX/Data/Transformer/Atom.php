@@ -23,7 +23,7 @@ namespace PSX\Data\Transformer;
 use DOMDocument;
 use DOMElement;
 use InvalidArgumentException;
-use PSX\Atom as AtomRecord;
+use PSX\Data\Writer\Atom\Writer as AtomWriter;
 use PSX\Data\TransformerInterface;
 use PSX\Http\MediaType;
 
@@ -36,11 +36,6 @@ use PSX\Http\MediaType;
  */
 class Atom implements TransformerInterface
 {
-    public function accept(MediaType $contentType)
-    {
-        return $contentType->getName() == 'application/atom+xml';
-    }
-
     public function transform($data)
     {
         if (!$data instanceof DOMDocument) {
@@ -64,7 +59,6 @@ class Atom implements TransformerInterface
     protected function parseFeedElement(DOMElement $feed)
     {
         $result = new \stdClass();
-        $result->type = 'feed';
 
         for ($i = 0; $i < $feed->childNodes->length; $i++) {
             $item = $feed->childNodes->item($i);
@@ -127,7 +121,6 @@ class Atom implements TransformerInterface
     protected function parseEntryElement(DOMElement $entry)
     {
         $result = new \stdClass();
-        $result->type = 'entry';
 
         for ($i = 0; $i < $entry->childNodes->length; $i++) {
             $item = $entry->childNodes->item($i);
@@ -172,7 +165,7 @@ class Atom implements TransformerInterface
 
                 case 'source':
                     $dom  = new DOMDocument();
-                    $feed = $dom->createElementNS(AtomRecord::$xmlns, 'feed');
+                    $feed = $dom->createElementNS(AtomWriter::$xmlns, 'feed');
 
                     foreach ($item->childNodes as $node) {
                         // the source node must not contain entry elements

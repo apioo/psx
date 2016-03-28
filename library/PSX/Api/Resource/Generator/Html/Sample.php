@@ -20,9 +20,9 @@
 
 namespace PSX\Api\Resource\Generator\Html;
 
-use PSX\Api\Resource\Generator\Html\Sample\LoaderInterface;
 use PSX\Api\Resource\Generator\HtmlAbstract;
-use PSX\Data\SchemaInterface;
+use PSX\Api\Resource\Generator\Html\Sample\LoaderInterface;
+use PSX\Schema\SchemaInterface;
 
 /**
  * Sample

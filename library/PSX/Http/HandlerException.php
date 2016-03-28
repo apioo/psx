@@ -20,8 +20,6 @@
 
 namespace PSX\Http;
 
-use PSX\Exception;
-
 /**
  * Exception thrown if a handler has a problem reading or writing the http
  * request or response
@@ -30,6 +28,6 @@ use PSX\Exception;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class HandlerException extends Exception
+class HandlerException extends \Exception
 {
 }

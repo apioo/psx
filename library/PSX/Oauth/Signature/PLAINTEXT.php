@@ -20,7 +20,7 @@
 
 namespace PSX\Oauth\Signature;
 
-use PSX\Oauth;
+use PSX\Oauth\Consumer;
 use PSX\Oauth\SignatureAbstract;
 
 /**
@@ -34,8 +34,8 @@ class PLAINTEXT extends SignatureAbstract
 {
     public function build($baseString, $consumerSecret, $tokenSecret = '')
     {
-        $key = Oauth::urlEncode($consumerSecret) . '&' . Oauth::urlEncode($tokenSecret);
+        $key = Consumer::urlEncode($consumerSecret) . '&' . Consumer::urlEncode($tokenSecret);
 
-        return Oauth::urlEncode($key);
+        return Consumer::urlEncode($key);
     }
 }

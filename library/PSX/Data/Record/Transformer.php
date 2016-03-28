@@ -20,8 +20,11 @@
 
 namespace PSX\Data\Record;
 
-use PSX\Data\Record\Visitor\RecordSerializeVisitor;
-use PSX\Data\Record\Visitor\StdClassSerializeVisitor;
+use PSX\Data\GraphTraverser;
+use PSX\Data\RecordInterface;
+use PSX\Data\Visitor\ArraySerializeVisitor;
+use PSX\Data\Visitor\RecordSerializeVisitor;
+use PSX\Data\Visitor\StdClassSerializeVisitor;
 
 /**
  * Transformer
@@ -36,11 +39,12 @@ class Transformer
      * Transforms an arbitrary data structure into a record graph
      *
      * @param mixed $data
+     * @param \PSX\Data\RecordInterface $root
      * @return \PSX\Data\RecordInterface
      */
-    public static function toRecord($data)
+    public static function toRecord($data, RecordInterface $root = null)
     {
-        $visitor   = new RecordSerializeVisitor();
+        $visitor   = new RecordSerializeVisitor($root);
         $traverser = new GraphTraverser();
         $traverser->traverse($data, $visitor);
 
@@ -56,6 +60,21 @@ class Transformer
     public static function toStdClass($data)
     {
         $visitor   = new StdClassSerializeVisitor();
+        $traverser = new GraphTraverser();
+        $traverser->traverse($data, $visitor);
+
+        return $visitor->getObject();
+    }
+
+    /**
+     * Transforms an arbitrary data structure into a stdClass graph
+     *
+     * @param mixed $data
+     * @return array
+     */
+    public static function toArray($data)
+    {
+        $visitor   = new ArraySerializeVisitor();
         $traverser = new GraphTraverser();
         $traverser->traverse($data, $visitor);
 

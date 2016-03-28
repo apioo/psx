@@ -20,7 +20,6 @@
 
 namespace PSX\Http\Handler;
 
-use PSX\Http;
 use PSX\Http\HandlerException;
 use PSX\Http\HandlerInterface;
 use PSX\Http\Options;

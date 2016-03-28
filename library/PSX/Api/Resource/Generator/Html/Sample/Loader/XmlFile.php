@@ -22,9 +22,8 @@ namespace PSX\Api\Resource\Generator\Html\Sample\Loader;
 
 use DOMDocument;
 use DOMElement;
-use PSX\Api\Resource;
-use PSX\Api\Resource\Generator\Html\Sample\LoaderInterface;
 use PSX\Api\Resource\Generator\HtmlAbstract;
+use PSX\Api\Resource\Generator\Html\Sample\LoaderInterface;
 
 /**
  * XmlFile

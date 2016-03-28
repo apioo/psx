@@ -20,9 +20,7 @@
 
 namespace PSX\Http;
 
-use PSX\Exception;
-use PSX\Http;
-use PSX\Uri;
+use PSX\Uri\Uri;
 
 /**
  * Request
@@ -39,7 +37,7 @@ class Request extends Message implements RequestInterface
     protected $attributes;
 
     /**
-     * @param \PSX\Uri $uri
+     * @param \PSX\Uri\Uri $uri
      * @param string $method
      * @param array $headers
      * @param string $body
@@ -109,7 +107,7 @@ class Request extends Message implements RequestInterface
     /**
      * Returns the request uri
      *
-     * @return \PSX\Uri
+     * @return \PSX\Uri\Uri
      */
     public function getUri()
     {
@@ -119,7 +117,7 @@ class Request extends Message implements RequestInterface
     /**
      * Sets the request uri
      *
-     * @param \PSX\Uri $uri
+     * @param \PSX\Uri\Uri $uri
      */
     public function setUri(Uri $uri)
     {
@@ -133,14 +131,14 @@ class Request extends Message implements RequestInterface
      */
     public function toString()
     {
-        $request = RequestParser::buildStatusLine($this) . Http::$newLine;
+        $request = RequestParser::buildStatusLine($this) . Http::NEW_LINE;
         $headers = RequestParser::buildHeaderFromMessage($this);
 
         foreach ($headers as $header) {
-            $request.= $header . Http::$newLine;
+            $request.= $header . Http::NEW_LINE;
         }
 
-        $request.= Http::$newLine;
+        $request.= Http::NEW_LINE;
         $request.= (string) $this->getBody();
 
         return $request;

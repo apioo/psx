@@ -113,7 +113,7 @@ class Stream implements HandlerInterface
         }
 
         // set header
-        $headers = implode(Http::$newLine, ResponseParser::buildHeaderFromMessage($request));
+        $headers = implode(Http::NEW_LINE, ResponseParser::buildHeaderFromMessage($request));
 
         stream_context_set_option($context, 'http', 'header', $headers);
 

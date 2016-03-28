@@ -44,13 +44,6 @@ class XmlArray implements TransformerInterface
         $this->namespace = $namespace;
     }
 
-    public function accept(MediaType $contentType)
-    {
-        return in_array($contentType->getName(), MediaType\Xml::getMediaTypes()) ||
-            substr($contentType->getSubType(), -4) == '+xml' ||
-            substr($contentType->getSubType(), -4) == '/xml';
-    }
-
     public function transform($data)
     {
         if (!$data instanceof DOMDocument) {

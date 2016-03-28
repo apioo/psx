@@ -20,12 +20,12 @@
 
 namespace PSX\Data\Writer;
 
-use PSX\Data\Record\GraphTraverser;
-use PSX\Data\Record\Visitor;
+use PSX\Data\GraphTraverser;
+use PSX\Data\Visitor;
 use PSX\Data\RecordInterface;
 use PSX\Data\WriterInterface;
 use PSX\Http\MediaType;
-use PSX\Json as JsonParser;
+use PSX\Json\Parser;
 
 /**
  * Json
@@ -38,13 +38,13 @@ class Json implements WriterInterface
 {
     protected static $mime = 'application/json';
 
-    public function write(RecordInterface $record)
+    public function write($data)
     {
         $visitor = new Visitor\StdClassSerializeVisitor();
         $graph   = new GraphTraverser();
-        $graph->traverse($record, $visitor);
+        $graph->traverse($data, $visitor);
 
-        return JsonParser::encode($visitor->getObject(), JSON_PRETTY_PRINT);
+        return Parser::encode($visitor->getObject(), JSON_PRETTY_PRINT);
     }
 
     public function isContentTypeSupported(MediaType $contentType)

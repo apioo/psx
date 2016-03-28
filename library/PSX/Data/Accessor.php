@@ -21,7 +21,7 @@
 namespace PSX\Data;
 
 use PSX\Json\Pointer;
-use PSX\Validate;
+use PSX\Validate\Validate;
 
 /**
  * Accessor

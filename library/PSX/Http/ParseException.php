@@ -20,8 +20,6 @@
 
 namespace PSX\Http;
 
-use PSX\Exception;
-
 /**
  * ParseException
  *
@@ -29,6 +27,6 @@ use PSX\Exception;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class ParseException extends Exception
+class ParseException extends \Exception
 {
 }

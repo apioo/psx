@@ -20,8 +20,8 @@
 
 namespace PSX\Data\Writer;
 
-use PSX\Data\Record\GraphTraverser;
-use PSX\Data\Record\Visitor;
+use PSX\Data\GraphTraverser;
+use PSX\Data\Visitor;
 use PSX\Data\RecordInterface;
 use PSX\Data\WriterInterface;
 use PSX\Http\MediaType;
@@ -37,11 +37,11 @@ class Form implements WriterInterface
 {
     protected static $mime = 'application/x-www-form-urlencoded';
 
-    public function write(RecordInterface $record)
+    public function write($data)
     {
         $visitor = new Visitor\StdClassSerializeVisitor();
         $graph   = new GraphTraverser();
-        $graph->traverse($record, $visitor);
+        $graph->traverse($data, $visitor);
 
         return http_build_query($visitor->getObject(), '', '&');
     }

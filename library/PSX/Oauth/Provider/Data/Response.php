@@ -20,8 +20,7 @@
 
 namespace PSX\Oauth\Provider\Data;
 
-use PSX\Data\RecordAbstract;
-use PSX\Data\RecordInfo;
+use PSX\Data\Record;
 
 /**
  * Response
@@ -30,52 +29,54 @@ use PSX\Data\RecordInfo;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Response extends RecordAbstract
+class Response extends Record
 {
-    protected $token;
-    protected $tokenSecret;
-    protected $params = array();
-
-    public function getRecordInfo()
-    {
-        return new RecordInfo('response', array_merge(array(
-            'oauth_token'        => $this->token,
-            'oauth_token_secret' => $this->tokenSecret,
-        ), $this->params));
-    }
-
     public function setToken($token)
     {
-        $this->token = $token;
+        $this->setProperty('oauth_token', $token);
     }
 
     public function getToken()
     {
-        return $this->token;
+        return $this->getProperty('oauth_token');
     }
 
     public function setTokenSecret($tokenSecret)
     {
-        $this->tokenSecret = $tokenSecret;
+        $this->setProperty('oauth_token_secret', $tokenSecret);
     }
 
     public function getTokenSecret()
     {
-        return $this->tokenSecret;
+        return $this->getProperty('oauth_token_secret');
     }
 
     public function setParams(array $params)
     {
-        $this->params = $params;
+        foreach ($params as $key => $value) {
+            if (!in_array($key, ['oauth_token', 'oauth_token_secret'])) {
+                $this->setProperty($key, $params);
+            }
+        }
     }
 
     public function getParams()
     {
-        return $this->params;
+        $props  = $this->getProperties();
+        $result = [];
+        foreach ($props as $key => $value) {
+            if (!in_array($key, ['oauth_token', 'oauth_token_secret'])) {
+                $result[$key] = $value;
+            }
+        }
+
+        return $result;
     }
 
     public function addParam($key, $value)
     {
-        $this->params[$key] = $value;
+        if (!in_array($key, ['oauth_token', 'oauth_token_secret'])) {
+            $this->setProperty($key, $value);
+        }
     }
 }

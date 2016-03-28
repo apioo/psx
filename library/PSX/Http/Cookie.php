@@ -21,7 +21,7 @@
 namespace PSX\Http;
 
 use InvalidArgumentException;
-use PSX\DateTime;
+use PSX\DateTime\DateTime;
 
 /**
  * Cookie

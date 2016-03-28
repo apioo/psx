@@ -21,8 +21,6 @@
 namespace PSX\Http;
 
 use InvalidArgumentException;
-use PSX\Exception;
-use PSX\Http;
 
 /**
  * ParserAbstract
@@ -72,7 +70,7 @@ abstract class ParserAbstract
     protected function splitMessage($message)
     {
         if ($this->mode == self::MODE_STRICT) {
-            $pos    = strpos($message, Http::$newLine . Http::$newLine);
+            $pos    = strpos($message, Http::NEW_LINE . Http::NEW_LINE);
             $header = substr($message, 0, $pos);
             $body   = trim(substr($message, $pos + 1));
         } elseif ($this->mode == self::MODE_LOOSE) {
@@ -91,7 +89,7 @@ abstract class ParserAbstract
                 }
 
                 if (!$found) {
-                    $header.= $line . Http::$newLine;
+                    $header.= $line . Http::NEW_LINE;
                 } else {
                     $body.= $line . ($i < $count - 1 ? "\n" : '');
                 }
@@ -127,7 +125,7 @@ abstract class ParserAbstract
      */
     protected function headerToArray(Message $message, $header)
     {
-        $lines = explode(Http::$newLine, $header);
+        $lines = explode(Http::NEW_LINE, $header);
 
         foreach ($lines as $line) {
             $parts = explode(':', $line, 2);
@@ -144,7 +142,7 @@ abstract class ParserAbstract
     protected function getStatusLine($message)
     {
         if ($this->mode == self::MODE_STRICT) {
-            $pos = strpos($message, Http::$newLine);
+            $pos = strpos($message, Http::NEW_LINE);
         } elseif ($this->mode == self::MODE_LOOSE) {
             $pos = strpos($message, "\n");
         }

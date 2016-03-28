@@ -76,8 +76,8 @@ class Comparator
             }
         } elseif ($left instanceof RecordInterface) {
             if ($right instanceof RecordInterface) {
-                $leftFields  = $left->getRecordInfo()->getFields();
-                $rightFields = $right->getRecordInfo()->getFields();
+                $leftFields  = $left->getProperties();
+                $rightFields = $right->getProperties();
 
                 if (count($leftFields) === count($rightFields)) {
                     foreach ($leftFields as $key => $value) {

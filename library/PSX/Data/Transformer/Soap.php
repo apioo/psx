@@ -42,11 +42,6 @@ class Soap extends XmlArray
         $this->namespace = $namespace;
     }
 
-    public function accept(MediaType $contentType)
-    {
-        return $contentType->getName() == 'application/soap+xml';
-    }
-
     public function transform($data)
     {
         if (!$data instanceof DOMDocument) {

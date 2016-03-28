@@ -30,85 +30,112 @@ use BadMethodCallException;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Record extends RecordAbstract implements ArrayAccess
+class Record extends RecordAbstract
 {
-    protected $name;
-    protected $fields;
+    protected $_displayName;
+    protected $_properties;
 
-    public function __construct($name = 'record', array $fields = array())
+    public function __construct($displayName = 'record', array $properties = array())
     {
-        $this->name   = $name;
-        $this->fields = $fields;
+        $this->_displayName = $displayName;
+        $this->_properties  = $properties;
     }
 
-    public function getRecordInfo()
+    public function getDisplayName()
     {
-        return new RecordInfo($this->name, $this->fields);
+        return $this->_displayName;
+    }
+
+    public function setDisplayName($displayName)
+    {
+        $this->_displayName = $displayName;
+    }
+
+    public function getProperties()
+    {
+        return array_filter($this->_properties, function($value){
+            return $value !== null;
+        });
+    }
+
+    public function setProperties(array $properties)
+    {
+        $this->_properties = $properties;
     }
 
     public function getProperty($name)
     {
-        return isset($this->fields[$name]) ? $this->fields[$name] : null;
+        return isset($this->_properties[$name]) ? $this->_properties[$name] : null;
     }
 
     public function setProperty($name, $value)
     {
-        $this->fields[$name] = $value;
+        $this->_properties[$name] = $value;
     }
 
     public function removeProperty($name)
     {
-        if (isset($this->fields[$name])) {
-            unset($this->fields[$name]);
+        if (isset($this->_properties[$name])) {
+            unset($this->_properties[$name]);
         }
     }
 
     public function hasProperty($name)
     {
-        return array_key_exists($name, $this->fields);
+        return array_key_exists($name, $this->_properties);
     }
 
-    public function offsetSet($offset, $value)
+    /**
+     * @param array $data
+     * @param string $name
+     * @return \PSX\Data\RecordInterface
+     */
+    public static function fromArray(array $data, $name = null)
     {
-        $this->setProperty($offset, $value);
+        return new static($name === null ? 'record' : $name, $data);
     }
 
-    public function offsetExists($offset)
+    /**
+     * @param \stdClass $data
+     * @param string $name
+     * @return \PSX\Data\RecordInterface
+     */
+    public static function fromStdClass(\stdClass $data, $name = null)
     {
-        return $this->hasProperty($offset);
+        return new static($name === null ? 'record' : $name, (array) $data);
     }
 
-    public function offsetUnset($offset)
+    /**
+     * @param mixed $data
+     * @param string $name
+     * @return \PSX\Data\RecordInterface
+     */
+    public static function from($data, $name = null)
     {
-        $this->removeProperty($offset);
-    }
-
-    public function offsetGet($offset)
-    {
-        return $this->getProperty($offset);
-    }
-
-    public function __call($method, array $args)
-    {
-        $type = substr($method, 0, 3);
-        $key  = lcfirst(substr($method, 3));
-
-        if ($type == 'set') {
-            $this->setProperty($key, current($args));
-        } elseif ($type == 'get') {
-            return $this->getProperty($key);
+        if ($data instanceof RecordInterface) {
+            if ($name !== null) {
+                $data->setDisplayName($name);
+            }
+            return $data;
+        } elseif ($data instanceof \stdClass) {
+            return self::fromStdClass($data, $name);
+        } elseif (is_array($data)) {
+            return self::fromArray($data, $name);
         } else {
-            throw new BadMethodCallException('Invalid method call ' . $method);
+            throw new \InvalidArgumentException('Can create record only from stdClass or array');
         }
     }
 
-    public static function fromArray(array $data)
+    /**
+     * Merges data from two records into a new record. The right record
+     * overwrites values from the left record
+     *
+     * @param \PSX\Data\RecordInterface $left
+     * @param \PSX\Data\RecordInterface $right
+     * @return \PSX\Data\RecordInterface
+     */
+    public static function merge(RecordInterface $left, RecordInterface $right)
     {
-        return new self('record', $data);
-    }
-
-    public static function fromStdClass(\stdClass $data)
-    {
-        return new self('record', (array) $data);
+        return Record::fromArray(array_merge($left->getProperties(), $right->getProperties()), $right->getDisplayName());
     }
 }

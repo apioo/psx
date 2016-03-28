@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="tests/bootstrap.php">
+	<testsuites>
+		<testsuite name="PSX Test Suite">
+			<directory>./library/PSX/*/Tests</directory>
+		</testsuite>
+	</testsuites>
+	<filter>
+		<whitelist processUncoveredFilesFromWhitelist="true">
+			<directory suffix=".php">./library/PSX</directory>
+		</whitelist>
+	</filter>
+	<php>
+		<!-- <env name="DB" value="sqlite" /> -->
+	</php>
+</phpunit>

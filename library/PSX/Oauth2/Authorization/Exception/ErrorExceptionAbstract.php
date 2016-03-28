@@ -20,7 +20,7 @@
 
 namespace PSX\Oauth2\Authorization\Exception;
 
-use PSX\Exception;
+use RuntimeException;
 
 /**
  * ErrorExceptionAbstract
@@ -29,7 +29,7 @@ use PSX\Exception;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-abstract class ErrorExceptionAbstract extends Exception
+abstract class ErrorExceptionAbstract extends RuntimeException
 {
     abstract public function getType();
 }

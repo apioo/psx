@@ -20,7 +20,7 @@
 
 namespace PSX\Oauth;
 
-use PSX\Oauth;
+use PSX\Oauth\Consumer;
 
 /**
  * SignatureAbstract
@@ -56,8 +56,8 @@ abstract class SignatureAbstract
      */
     public function verify($baseString, $consumerSecret, $tokenSecret = '', $signature)
     {
-        $lft = Oauth::urlDecode($signature);
-        $rgt = Oauth::urlDecode($this->build($baseString, $consumerSecret, $tokenSecret));
+        $lft = Consumer::urlDecode($signature);
+        $rgt = Consumer::urlDecode($this->build($baseString, $consumerSecret, $tokenSecret));
 
         return strcasecmp($lft, $rgt) == 0;
     }

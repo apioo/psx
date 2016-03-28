@@ -20,10 +20,10 @@
 
 namespace PSX\Oauth2\Authorization;
 
-use PSX\Base;
+use PSX\Framework\Base;
 use PSX\Http\Exception as StatusCode;
 use PSX\Oauth2\AuthorizationAbstract;
-use PSX\Url;
+use PSX\Uri\Url;
 
 /**
  * AuthorizationCode
@@ -75,7 +75,7 @@ class AuthorizationCode extends AuthorizationAbstract
      * authentication server. The getAccessToken method must be used when the
      * server redirects the user back to the redirect uri
      *
-     * @param \PSX\Url $url
+     * @param \PSX\Uri\Url $url
      * @param string $clientId
      * @param string $redirectUri
      * @param string $scope

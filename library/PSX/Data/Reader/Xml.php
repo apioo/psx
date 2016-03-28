@@ -34,14 +34,12 @@ use PSX\Http\MessageInterface;
  */
 class Xml extends ReaderAbstract
 {
-    public function read(MessageInterface $message)
+    public function read($data)
     {
-        $body = (string) $message->getBody();
-
-        if (!empty($body)) {
+        if (!empty($data)) {
             $dom = new DOMDocument();
             $dom->encoding = 'UTF-8';
-            $dom->loadXML($body);
+            $dom->loadXML($data);
 
             return $dom;
         } else {

@@ -20,7 +20,7 @@
 
 namespace PSX\Http;
 
-use PSX\Uri;
+use PSX\Uri\Uri;
 
 /**
  * This is a mutable version of the PSR HTTP message interface
@@ -100,7 +100,7 @@ interface RequestInterface extends MessageInterface
      * This method MUST return a PSX\Uri instance.
      *
      * @link http://tools.ietf.org/html/rfc3986#section-4.3
-     * @return \PSX\Uri
+     * @return \PSX\Uri\Uri
      */
     public function getUri();
 
@@ -108,7 +108,7 @@ interface RequestInterface extends MessageInterface
      * Sets the provided URI.
      *
      * @link http://tools.ietf.org/html/rfc3986#section-4.3
-     * @param \PSX\Uri $uri New request URI to use.
+     * @param \PSX\Uri\Uri $uri New request URI to use.
      * @return void
      */
     public function setUri(Uri $uri);

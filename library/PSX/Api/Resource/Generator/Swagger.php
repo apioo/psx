@@ -20,20 +20,21 @@
 
 namespace PSX\Api\Resource\Generator;
 
+use PSX\Data\ExporterInterface;
+use PSX\Data\Record;
 use PSX\Api\Resource;
 use PSX\Api\Resource\GeneratorAbstract;
-use PSX\Data\Schema\Property;
-use PSX\Data\Schema\PropertyInterface;
-use PSX\Data\SchemaInterface;
-use PSX\Data\Writer\Json as JsonWriter;
-use PSX\Json;
-use PSX\Swagger\Api;
-use PSX\Swagger\Declaration;
-use PSX\Swagger\Model;
-use PSX\Swagger\Operation;
-use PSX\Swagger\Parameter;
-use PSX\Swagger\ResponseMessage;
-use PSX\Util\ApiGeneration;
+use PSX\Api\Resource\Util\Inflection;
+use PSX\Json\Parser;
+use PSX\Model\Swagger\Api;
+use PSX\Model\Swagger\Declaration;
+use PSX\Model\Swagger\Model;
+use PSX\Model\Swagger\Operation;
+use PSX\Model\Swagger\Parameter;
+use PSX\Model\Swagger\ResponseMessage;
+use PSX\Schema\PropertyInterface;
+use PSX\Schema\Property;
+use PSX\Schema\SchemaInterface;
 
 /**
  * Generates an Swagger 1.2 representation of an API resource. Note this does
@@ -45,12 +46,29 @@ use PSX\Util\ApiGeneration;
  */
 class Swagger extends GeneratorAbstract
 {
+    /**
+     * @var \PSX\Data\ExporterInterface
+     */
+    protected $exporter;
+
+    /**
+     * @var string
+     */
     protected $apiVersion;
+
+    /**
+     * @var string
+     */
     protected $basePath;
+
+    /**
+     * @var string
+     */
     protected $targetNamespace;
 
-    public function __construct($apiVersion, $basePath, $targetNamespace)
+    public function __construct(ExporterInterface $exporter, $apiVersion, $basePath, $targetNamespace)
     {
+        $this->exporter        = $exporter;
         $this->apiVersion      = $apiVersion;
         $this->basePath        = $basePath;
         $this->targetNamespace = $targetNamespace;
@@ -62,10 +80,10 @@ class Swagger extends GeneratorAbstract
         $declaration->setBasePath($this->basePath);
         $declaration->setApis($this->getApis($resource));
         $declaration->setModels($this->getModels($resource));
-        $declaration->setResourcePath(ApiGeneration::transformRoutePlaceholder($resource->getPath()));
+        $declaration->setResourcePath(Inflection::transformRoutePlaceholder($resource->getPath()));
 
-        $writer  = new JsonWriter();
-        $swagger = $writer->write($declaration);
+        $swagger = $this->exporter->export($declaration);
+        $swagger = Parser::encode($swagger, JSON_PRETTY_PRINT);
 
         // since swagger does not fully support the json schema spec we must
         // remove the $ref fragments
@@ -76,7 +94,7 @@ class Swagger extends GeneratorAbstract
 
     protected function getApis(Resource $resource)
     {
-        $api         = new Api(ApiGeneration::transformRoutePlaceholder($resource->getPath()));
+        $api         = new Api(Inflection::transformRoutePlaceholder($resource->getPath()));
         $description = $resource->getDescription();
         $methods     = $resource->getMethods();
 
@@ -156,7 +174,7 @@ class Swagger extends GeneratorAbstract
     {
         $generator = new JsonSchema($this->targetNamespace);
         $data      = $generator->toArray($resource);
-        $models    = new \stdClass();
+        $models    = new Record();
 
         if (isset($data['definitions']) && is_array($data['definitions'])) {
             foreach ($data['definitions'] as $name => $definition) {
@@ -177,7 +195,7 @@ class Swagger extends GeneratorAbstract
                 $model = new Model($name, $description, $required);
                 $model->setProperties($properties);
 
-                $models->$name = $model;
+                $models->setProperty($name, $model);
             }
         }
 

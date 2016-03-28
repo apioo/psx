@@ -24,9 +24,8 @@ use DOMDocument;
 use DOMElement;
 use PSX\Api\Resource;
 use PSX\Api\Resource\GeneratorAbstract;
-use PSX\Data\Schema\Generator\Xsd as XsdGenerator;
-use PSX\Data\Schema\Property;
-use PSX\Data\SchemaInterface;
+use PSX\Schema\SchemaInterface;
+use PSX\Schema\Generator;
 
 /**
  * Xsd
@@ -99,7 +98,7 @@ class Xsd extends GeneratorAbstract
 
     protected function appendSchemaElement(SchemaInterface $schema, DOMElement $element, $elementName)
     {
-        $xsdGenerator = new XsdGenerator($this->targetNamespace);
+        $xsdGenerator = new Generator\Xsd($this->targetNamespace);
 
         $dom = new DOMDocument();
         $dom->loadXML($xsdGenerator->generate($schema));

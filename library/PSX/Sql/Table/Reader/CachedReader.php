@@ -20,8 +20,7 @@
 
 namespace PSX\Sql\Table\Reader;
 
-use PSX\Cache;
-use PSX\File;
+use Psr\Cache\CacheItemPoolInterface;
 use PSX\Sql\Table\ReaderInterface;
 
 /**
@@ -37,7 +36,7 @@ class CachedReader implements ReaderInterface
     protected $cache;
     protected $expire;
 
-    public function __construct(ReaderInterface $reader, Cache $cache, $expire = null)
+    public function __construct(ReaderInterface $reader, CacheItemPoolInterface $cache, $expire = null)
     {
         $this->reader = $reader;
         $this->cache  = $cache;
@@ -46,14 +45,18 @@ class CachedReader implements ReaderInterface
 
     public function getTableDefinition($value)
     {
-        $item = $this->cache->getItem('table-' . File::normalizeName($value));
+        $item = $this->cache->getItem('table-' . $value);
 
         if ($item->isHit()) {
             return $item->get();
         } else {
             $result = $this->reader->getTableDefinition($value);
 
-            $item->set($result, $this->expire);
+            $item->set($result);
+
+            if ($this->expire !== null) {
+                $item->expiresAfter($this->expire);
+            }
 
             $this->cache->save($item);
 

@@ -20,6 +20,8 @@
 
 namespace PSX\Cache;
 
+use Psr\Cache\CacheItemInterface;
+
 /**
  * Item
  *
@@ -34,13 +36,12 @@ class Item implements CacheItemInterface
     protected $isHit;
     protected $ttl;
 
-    public function __construct($key, $value, $isHit, $ttl = null)
+    public function __construct($key, $value, $isHit, $ttl = 0)
     {
         $this->key   = $key;
         $this->value = $value;
         $this->isHit = $isHit;
-
-        $this->setExpiration($ttl);
+        $this->ttl   = $ttl;
     }
 
     public function getKey()
@@ -53,49 +54,55 @@ class Item implements CacheItemInterface
         return $this->value;
     }
 
-    public function set($value, $ttl = null)
-    {
-        $this->value = $value;
-
-        $this->setExpiration($ttl);
-
-        return $this;
-    }
-
     public function isHit()
     {
         return $this->isHit;
     }
 
-    public function exists()
+    public function set($value)
     {
-        return $this->value !== null;
+        $this->value = $value;
+
+        return $this;
     }
 
-    public function setExpiration($ttl = null)
+    /**
+     * @inheritdoc
+     */
+    public function expiresAt($expiration)
     {
-        if (is_numeric($ttl)) {
-            $this->ttl = time() + $ttl;
-        } elseif ($ttl instanceof \DateTime) {
-            $this->ttl = $ttl->getTimestamp();
-        } elseif ($ttl === null) {
-            $this->ttl = null;
+        if (is_int($expiration)) {
+            $this->ttl = $expiration - time();
+        } elseif ($expiration instanceof \DateTime) {
+            $this->ttl = $expiration->getTimestamp() - time();
+        } elseif ($expiration === null) {
+            $this->ttl = 0;
+        } else {
+            throw new Exception('Invalid expires at parameter');
         }
 
         return $this;
     }
 
-    public function getExpiration()
+    public function expiresAfter($time)
     {
-        if ($this->ttl === null) {
-            return new \DateTime();
+        if (is_int($time)) {
+            $this->ttl = $time;
+        } elseif ($time instanceof \DateInterval) {
+            $now = new \DateTime();
+            $now->add($time);
+            $this->ttl = $now->getTimestamp() - time();
+        } elseif ($time === null) {
+            $this->ttl = 0;
         } else {
-            return new \DateTime('@' . $this->ttl);
+            throw new Exception('Invalid expires after parameter');
         }
+
+        return $this;
     }
 
-    public function hasExpiration()
+    public function getTtl()
     {
-        return $this->ttl !== null;
+        return $this->ttl;
     }
 }

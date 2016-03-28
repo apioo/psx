@@ -21,7 +21,6 @@
 namespace PSX\DateTime;
 
 use InvalidArgumentException;
-use PSX\DateTime;
 
 /**
  * Date

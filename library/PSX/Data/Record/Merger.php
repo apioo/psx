@@ -43,8 +43,8 @@ class Merger
     public static function merge(RecordInterface $left, RecordInterface $right)
     {
         return Record::fromArray(array_merge(
-            $left->getRecordInfo()->getData(),
-            $right->getRecordInfo()->getData()
+            $left->getProperties(),
+            $right->getProperties()
         ));
     }
 }

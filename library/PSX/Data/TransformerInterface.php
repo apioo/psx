@@ -23,7 +23,7 @@ namespace PSX\Data;
 use PSX\Http\MediaType;
 
 /**
- * The transformer can format the response of an reader so that it can be used
+ * The transformer can format the response of a reader so that it can be used
  * by an importer
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
@@ -33,15 +33,7 @@ use PSX\Http\MediaType;
 interface TransformerInterface
 {
     /**
-     * Returns whether the transformer can handle the given content type
-     *
-     * @param \PSX\Http\MediaType $contentType
-     * @return boolean
-     */
-    public function accept(MediaType $contentType);
-
-    /**
-     * Transforms the data into an readable state
+     * Transforms the data into a readable state
      *
      * @param string $data
      * @return array

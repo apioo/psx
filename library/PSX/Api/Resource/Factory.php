@@ -31,6 +31,10 @@ use InvalidArgumentException;
  */
 class Factory
 {
+    /**
+     * @param $methodName
+     * @return \PSX\Api\Resource\MethodAbstract
+     */
     public static function getMethod($methodName)
     {
         switch ($methodName) {

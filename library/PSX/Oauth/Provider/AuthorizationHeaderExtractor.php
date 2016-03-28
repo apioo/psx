@@ -23,7 +23,7 @@ namespace PSX\Oauth\Provider;
 use PSX\Data\InvalidDataException;
 use PSX\Data\RecordInterface;
 use PSX\Http\MessageInterface;
-use PSX\Oauth;
+use PSX\Oauth\Consumer;
 
 /**
  * AuthorizationHeaderExtractor
@@ -77,7 +77,7 @@ class AuthorizationHeaderExtractor
                             $key = substr(strtolower($pair[0]), 6);
                             $val = trim($pair[1], '"');
 
-                            $data[$key] = Oauth::urlDecode($val);
+                            $data[$key] = Consumer::urlDecode($val);
                         }
                     }
                 }

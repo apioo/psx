@@ -21,8 +21,8 @@
 namespace PSX\Data;
 
 use PSX\Data\Reader;
+use PSX\Data\Util\PriorityQueue;
 use PSX\Http\MediaType;
-use PSX\Util\PriorityQueue;
 
 /**
  * ReaderFactory
@@ -51,9 +51,19 @@ class ReaderFactory
     /**
      * @return \PSX\Data\ReaderInterface
      */
-    public function getDefaultReader()
+    public function getDefaultReader(array $supportedReader = null)
     {
-        return $this->readers->getIterator()->current();
+        foreach ($this->readers as $reader) {
+            $className = get_class($reader);
+
+            if ($supportedReader !== null && !in_array($className, $supportedReader)) {
+                continue;
+            }
+
+            return $reader;
+        }
+
+        return null;
     }
 
     /**

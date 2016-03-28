@@ -20,8 +20,6 @@
 
 namespace PSX\Validate;
 
-use PSX\Validate;
-
 /**
  * Validator
  *

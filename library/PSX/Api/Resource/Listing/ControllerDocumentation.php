@@ -20,20 +20,18 @@
 
 namespace PSX\Api\Resource\Listing;
 
-use PSX\Api\DocumentationInterface;
 use PSX\Api\DocumentedInterface;
 use PSX\Api\Resource;
 use PSX\Api\Resource\ListingInterface;
-use PSX\Api\Resource\MethodAbstract;
-use PSX\Dispatch\ControllerFactoryInterface;
+use PSX\Framework\Dispatch\ControllerFactoryInterface;
+use PSX\Framework\Loader\Context;
+use PSX\Framework\Loader\PathMatcher;
+use PSX\Framework\Loader\RoutingParserInterface;
 use PSX\Http\Request;
 use PSX\Http\RequestInterface;
 use PSX\Http\Response;
 use PSX\Http\ResponseInterface;
-use PSX\Loader\Context;
-use PSX\Loader\PathMatcher;
-use PSX\Loader\RoutingParserInterface;
-use PSX\Uri;
+use PSX\Uri\Uri;
 
 /**
  * The documentation how a request and response looks is provided in the
@@ -45,7 +43,14 @@ use PSX\Uri;
  */
 class ControllerDocumentation implements ListingInterface
 {
+    /**
+     * @var \PSX\Framework\Loader\RoutingParserInterface
+     */
     protected $routingParser;
+
+    /**
+     * @var \PSX\Framework\Dispatch\ControllerFactoryInterface
+     */
     protected $controllerFactory;
 
     public function __construct(RoutingParserInterface $routingParser, ControllerFactoryInterface $controllerFactory)
@@ -69,7 +74,7 @@ class ControllerDocumentation implements ListingInterface
             foreach ($methods as $methodName) {
                 $method = Resource\Factory::getMethod($methodName);
 
-                if ($method instanceof MethodAbstract) {
+                if ($method instanceof Resource\MethodAbstract) {
                     $resource->addMethod($method);
                 }
             }
@@ -85,7 +90,7 @@ class ControllerDocumentation implements ListingInterface
         return $result;
     }
 
-    public function getDocumentation($sourcePath)
+    public function getResource($sourcePath, $version = null)
     {
         $matcher     = new PathMatcher($sourcePath);
         $collections = $this->routingParser->getCollection();
@@ -103,11 +108,7 @@ class ControllerDocumentation implements ListingInterface
                 $controller = $this->newController($className, $request, $response, $context);
 
                 if ($controller instanceof DocumentedInterface) {
-                    $documentation = $controller->getDocumentation();
-
-                    if ($documentation instanceof DocumentationInterface) {
-                        return $documentation;
-                    }
+                    return $controller->getDocumentation($version);
                 }
             }
         }

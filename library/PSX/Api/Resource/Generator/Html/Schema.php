@@ -21,8 +21,8 @@
 namespace PSX\Api\Resource\Generator\Html;
 
 use PSX\Api\Resource\Generator\HtmlAbstract;
-use PSX\Data\Schema\GeneratorInterface;
-use PSX\Data\SchemaInterface;
+use PSX\Schema\GeneratorInterface;
+use PSX\Schema\SchemaInterface;
 
 /**
  * Schema

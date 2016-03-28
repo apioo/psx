@@ -24,7 +24,7 @@ use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as PsrServerRequestInterface;
 use PSX\Http\Request;
 use PSX\Http\Response;
-use PSX\Uri;
+use PSX\Uri\Uri;
 
 /**
  * NativeFactory

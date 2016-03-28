@@ -20,12 +20,10 @@
 
 namespace PSX\Api\Resource\Listing;
 
-use PSX\Api\Documentation;
-use PSX\Api\DocumentationInterface;
+use Psr\Cache\CacheItemPoolInterface;
 use PSX\Api\Resource;
 use PSX\Api\Resource\ListingInterface;
-use PSX\Cache;
-use PSX\Data\Schema;
+use PSX\Schema\Schema;
 
 /**
  * CachedListing
@@ -40,7 +38,7 @@ class CachedListing implements ListingInterface
     protected $cache;
     protected $expire;
 
-    public function __construct(ListingInterface $listing, Cache $cache, $expire = null)
+    public function __construct(ListingInterface $listing, CacheItemPoolInterface $cache, $expire = null)
     {
         $this->listing = $listing;
         $this->cache   = $cache;
@@ -64,23 +62,23 @@ class CachedListing implements ListingInterface
         }
     }
 
-    public function getDocumentation($sourcePath)
+    public function getResource($sourcePath, $version = null)
     {
-        $item = $this->cache->getItem('api-resource-' . substr(md5($sourcePath), 0, 16));
+        $item = $this->cache->getItem('api-resource-' . substr(md5($sourcePath . $version), 0, 16));
 
         if ($item->isHit()) {
             return $item->get();
         } else {
-            $doc = $this->listing->getDocumentation($sourcePath);
+            $resource = $this->listing->getResource($sourcePath, $version);
 
-            if ($doc instanceof DocumentationInterface) {
-                $this->materializeDocumentation($doc);
+            if ($resource instanceof Resource) {
+                $this->materializeResource($resource);
 
-                $item->set($doc, $this->expire);
+                $item->set($resource, $this->expire);
 
                 $this->cache->save($item);
 
-                return $doc;
+                return $resource;
             }
         }
 
@@ -93,23 +91,19 @@ class CachedListing implements ListingInterface
      * database. So before we cache the documentation we must get the actual
      * definition object which we can serialize
      *
-     * @param \PSX\Api\DocumentationInterface $documentation
+     * @param \PSX\Api\Resource $resource
      */
-    protected function materializeDocumentation(DocumentationInterface $documentation)
+    protected function materializeResource(Resource $resource)
     {
-        $versions = $documentation->getResources();
+        foreach ($resource as $method) {
+            $request = $method->getRequest();
+            if ($request) {
+                $method->setRequest(new Schema($request->getDefinition()));
+            }
 
-        foreach ($versions as $version => $resource) {
-            foreach ($resource as $method) {
-                $request = $method->getRequest();
-                if ($request) {
-                    $method->setRequest(new Schema($request->getDefinition()));
-                }
-
-                $responses = $method->getResponses();
-                foreach ($responses as $statusCode => $response) {
-                    $method->addResponse($statusCode, new Schema($response->getDefinition()));
-                }
+            $responses = $method->getResponses();
+            foreach ($responses as $statusCode => $response) {
+                $method->addResponse($statusCode, new Schema($response->getDefinition()));
             }
         }
     }

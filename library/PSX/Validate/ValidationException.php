@@ -20,7 +20,7 @@
 
 namespace PSX\Validate;
 
-use PSX\DisplayException;
+use PSX\Framework\DisplayException;
 
 /**
  * ValidationException
