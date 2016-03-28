@@ -18,24 +18,41 @@
  * limitations under the License.
  */
 
-namespace PSX\Api;
+namespace PSX\Api\Tests\Parser;
+
+use PSX\Api\Parser\Annotation as AnnotationParser;
+use PSX\Framework\Test\Environment;
 
 /**
- * A class which represents an API endpoint can implement this interface to
- * describe how the endpoint is designed
+ * AnnotationTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
- * @link	http://phpsx.org
+ * @link    http://phpsx.org
  */
-interface DocumentedInterface
+class AnnotationTest extends ParserTestCase
 {
+    protected function getResource()
+    {
+        $annotation = new AnnotationParser(
+            Environment::getService('annotation_reader'),
+            Environment::getService('schema_manager')
+        );
+
+        return $annotation->parse(new Annotation\TestController(), '/foo');
+    }
+
     /**
-     * Returns an object which describe the format of this resource. If no
-     * version was provided the most recent version should be returned
-     *
-     * @param integer $version
-     * @return \PSX\Api\Resource
+     * @expectedException \RuntimeException
      */
-    public function getDocumentation($version = null);
+    public function testParseInvalid()
+    {
+        $annotation = new AnnotationParser(
+            Environment::getService('annotation_reader'), 
+            Environment::getService('schema_manager')
+        );
+
+        $annotation->parse('foo', '/foo');
+    }
 }
+

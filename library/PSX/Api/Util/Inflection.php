@@ -18,24 +18,40 @@
  * limitations under the License.
  */
 
-namespace PSX\Api;
+namespace PSX\Api\Util;
 
 /**
- * A class which represents an API endpoint can implement this interface to
- * describe how the endpoint is designed
+ * Inflection
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
- * @link	http://phpsx.org
+ * @link    http://phpsx.org
  */
-interface DocumentedInterface
+class Inflection
 {
     /**
-     * Returns an object which describe the format of this resource. If no
-     * version was provided the most recent version should be returned
+     * Transforms placeholder of an PSX route "/bar/:foo" into an curly bracket
+     * "/bar/{foo}" route
      *
-     * @param integer $version
-     * @return \PSX\Api\Resource
+     * @param string $path
+     * @return string
      */
-    public function getDocumentation($version = null);
+    public static function transformRoutePlaceholder($path)
+    {
+        return preg_replace('/(\:|\*)(\w+)/i', '{$2}', $path);
+    }
+
+    /**
+     * Generates an title "BarFoo" based on an PSX route "/bar/:foo"
+     *
+     * @param string $path
+     * @return string
+     */
+    public static function generateTitleFromRoute($path)
+    {
+        $path = str_replace(':', '', $path);
+        $path = str_replace(' ', '', ucwords(str_replace('/', ' ', $path)));
+
+        return $path;
+    }
 }

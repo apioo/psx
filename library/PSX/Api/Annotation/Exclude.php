@@ -18,24 +18,17 @@
  * limitations under the License.
  */
 
-namespace PSX\Api;
+namespace PSX\Api\Annotation;
 
 /**
- * A class which represents an API endpoint can implement this interface to
- * describe how the endpoint is designed
+ * Exclude
  *
+ * @Annotation
+ * @Target({"METHOD"})
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
- * @link	http://phpsx.org
+ * @link    http://phpsx.org
  */
-interface DocumentedInterface
+class Exclude
 {
-    /**
-     * Returns an object which describe the format of this resource. If no
-     * version was provided the most recent version should be returned
-     *
-     * @param integer $version
-     * @return \PSX\Api\Resource
-     */
-    public function getDocumentation($version = null);
 }

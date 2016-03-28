@@ -21,21 +21,19 @@
 namespace PSX\Api;
 
 /**
- * A class which represents an API endpoint can implement this interface to
- * describe how the endpoint is designed
+ * Generates a API specification format from a resource object
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
- * @link	http://phpsx.org
+ * @link    http://phpsx.org
  */
-interface DocumentedInterface
+interface GeneratorInterface
 {
     /**
-     * Returns an object which describe the format of this resource. If no
-     * version was provided the most recent version should be returned
+     * Generates a representation of the resource in another format
      *
-     * @param integer $version
-     * @return \PSX\Api\Resource
+     * @param \PSX\Api\Resource $resource
+     * @return string
      */
-    public function getDocumentation($version = null);
+    public function generate(Resource $resource);
 }

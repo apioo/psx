@@ -18,24 +18,36 @@
  * limitations under the License.
  */
 
-namespace PSX\Api;
+namespace PSX\Api\Tests\Generator;
+
+use PSX\Framework\Loader\Context;
+use PSX\Framework\Test\ControllerTestCase;
+use PSX\Framework\Test\Environment;
 
 /**
- * A class which represents an API endpoint can implement this interface to
- * describe how the endpoint is designed
+ * GeneratorTestCase
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
- * @link	http://phpsx.org
+ * @link    http://phpsx.org
  */
-interface DocumentedInterface
+abstract class GeneratorTestCase extends ControllerTestCase
 {
-    /**
-     * Returns an object which describe the format of this resource. If no
-     * version was provided the most recent version should be returned
-     *
-     * @param integer $version
-     * @return \PSX\Api\Resource
-     */
-    public function getDocumentation($version = null);
+    protected function getResource()
+    {
+        $request  = $this->getMock('PSX\Http\RequestInterface');
+        $response = $this->getMock('PSX\Http\ResponseInterface');
+
+        $context = new Context();
+        $context->set(Context::KEY_PATH, '/foo/bar');
+
+        return Environment::getService('controller_factory')
+            ->getController('PSX\Framework\Tests\Controller\Foo\Application\TestSchemaApiController', $request, $response, $context)
+            ->getDocumentation();
+    }
+
+    protected function getPaths()
+    {
+        return array();
+    }
 }

@@ -28,7 +28,7 @@ use PSX\Schema\PropertySimpleAbstract;
 use PSX\Schema\Schema;
 
 /**
- * Resource
+ * A resource describes the capabilities of an API endpoint
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0

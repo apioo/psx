@@ -21,21 +21,20 @@
 namespace PSX\Api;
 
 /**
- * A class which represents an API endpoint can implement this interface to
- * describe how the endpoint is designed
+ * The parser reads an arbitrary schema format and returns a resource object
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link	http://phpsx.org
  */
-interface DocumentedInterface
+interface ParserInterface
 {
     /**
-     * Returns an object which describe the format of this resource. If no
-     * version was provided the most recent version should be returned
+     * Parses a schema and returns the corresponding resource object
      *
-     * @param integer $version
+     * @param string $schema
+     * @param string $path
      * @return \PSX\Api\Resource
      */
-    public function getDocumentation($version = null);
+    public function parse($schema, $path);
 }

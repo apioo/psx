@@ -20,22 +20,33 @@
 
 namespace PSX\Api;
 
+use PSX\Api\Resource\MethodAbstract;
+
 /**
- * A class which represents an API endpoint can implement this interface to
- * describe how the endpoint is designed
+ * GeneratorAbstract
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
- * @link	http://phpsx.org
+ * @link    http://phpsx.org
  */
-interface DocumentedInterface
+abstract class GeneratorAbstract implements GeneratorInterface
 {
     /**
-     * Returns an object which describe the format of this resource. If no
-     * version was provided the most recent version should be returned
+     * Returns the successful response of a method or null if no is available
      *
-     * @param integer $version
-     * @return \PSX\Api\Resource
+     * @param \PSX\Api\Resource\MethodAbstract $method
+     * @return \PSX\Schema\SchemaInterface
      */
-    public function getDocumentation($version = null);
+    protected function getSuccessfulResponse(MethodAbstract $method)
+    {
+        $responses = $method->getResponses();
+
+        for ($i = 200; $i < 210; $i++) {
+            if (isset($responses[$i])) {
+                return $responses[$i];
+            }
+        }
+
+        return null;
+    }
 }

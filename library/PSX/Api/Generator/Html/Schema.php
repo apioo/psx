@@ -18,24 +18,35 @@
  * limitations under the License.
  */
 
-namespace PSX\Api;
+namespace PSX\Api\Generator\Html;
+
+use PSX\Api\Generator\HtmlAbstract;
+use PSX\Schema\GeneratorInterface;
+use PSX\Schema\SchemaInterface;
 
 /**
- * A class which represents an API endpoint can implement this interface to
- * describe how the endpoint is designed
+ * Schema
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
- * @link	http://phpsx.org
+ * @link    http://phpsx.org
  */
-interface DocumentedInterface
+class Schema extends HtmlAbstract
 {
-    /**
-     * Returns an object which describe the format of this resource. If no
-     * version was provided the most recent version should be returned
-     *
-     * @param integer $version
-     * @return \PSX\Api\Resource
-     */
-    public function getDocumentation($version = null);
+    protected $generator;
+
+    public function __construct(GeneratorInterface $generator)
+    {
+        $this->generator = $generator;
+    }
+
+    public function getName()
+    {
+        return 'Schema';
+    }
+
+    protected function generateHtml(SchemaInterface $schema, $type, $method, $path, $statusCode = null)
+    {
+        return $this->generator->generate($schema);
+    }
 }

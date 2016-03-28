@@ -21,21 +21,31 @@
 namespace PSX\Api;
 
 /**
- * A class which represents an API endpoint can implement this interface to
- * describe how the endpoint is designed
+ * A listing knows all API endpoints in a system and can be used to get resource
+ * definitions for specific endpoints or to get an index of all available
+ * endpoints
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link	http://phpsx.org
  */
-interface DocumentedInterface
+interface ListingInterface
 {
     /**
-     * Returns an object which describe the format of this resource. If no
-     * version was provided the most recent version should be returned
+     * Returns all available resources. Note the index does not contain any
+     * documentation it contains only the path and the available request methods
      *
-     * @param integer $version
+     * @return \PSX\Api\Resource[]
+     */
+    public function getResourceIndex();
+
+    /**
+     * Returns a specific resource with complete documentation or null if the
+     * resource was not found
+     *
+     * @param string $sourcePath
+     * @param string $version
      * @return \PSX\Api\Resource
      */
-    public function getDocumentation($version = null);
+    public function getResource($sourcePath, $version = null);
 }
