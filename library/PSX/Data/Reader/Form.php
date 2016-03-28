@@ -20,10 +20,9 @@
 
 namespace PSX\Data\Reader;
 
-use PSX\Data\Util\CurveArray;
 use PSX\Data\ReaderAbstract;
+use PSX\Data\Util\CurveArray;
 use PSX\Http\MediaType;
-use PSX\Http\MessageInterface;
 
 /**
  * Form

@@ -24,8 +24,8 @@ use DateTime;
 use PSX\Data\Record;
 use PSX\Data\Writer\Rss;
 use PSX\Http\MediaType;
-use PSX\Model\Rss\Rss as RssRecord;
 use PSX\Model\Rss\Item;
+use PSX\Model\Rss\Rss as RssRecord;
 
 /**
  * RssTest

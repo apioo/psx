@@ -22,7 +22,6 @@ namespace PSX\Data\Writer;
 
 use PSX\Data\GraphTraverser;
 use PSX\Data\Visitor;
-use PSX\Data\RecordInterface;
 use PSX\Data\WriterInterface;
 use PSX\Http\MediaType;
 

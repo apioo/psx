@@ -21,7 +21,6 @@
 namespace PSX\Data\Tests\Reader;
 
 use PSX\Data\Reader\Json;
-use PSX\Http\Message;
 
 /**
  * JsonTest

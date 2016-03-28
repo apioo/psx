@@ -22,8 +22,8 @@ namespace PSX\Data\Tests\Writer;
 
 use PSX\Data\Writer\Html;
 use PSX\Framework\Loader\ReverseRouter;
-use PSX\Http\MediaType;
 use PSX\Framework\Template\TemplateInterface;
+use PSX\Http\MediaType;
 
 /**
  * HtmlTest

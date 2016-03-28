@@ -20,9 +20,9 @@
 
 namespace PSX\Data;
 
+use PSX\Http\Exception as StatusCode;
 use PSX\Http\MediaType;
 use PSX\Schema\Parser;
-use PSX\Http\Exception as StatusCode;
 use PSX\Schema\RevealerInterface;
 use PSX\Schema\SchemaInterface;
 use PSX\Schema\SchemaTraverser;

@@ -21,14 +21,14 @@
 namespace PSX\Data\Writer;
 
 use PSX\Data\GraphTraverser;
+use PSX\Data\Visitor;
 use PSX\Data\WriterInterface;
+use PSX\Framework\Loader\ReverseRouter;
 use PSX\Framework\Template\GeneratorFactory;
 use PSX\Framework\Template\GeneratorFactoryInterface;
 use PSX\Framework\Template\GeneratorInterface;
 use PSX\Framework\Template\TemplateInterface;
 use PSX\Http\Exception as StatusCode;
-use PSX\Framework\Loader\ReverseRouter;
-use PSX\Data\Visitor;
 
 /**
  * Abstract class to facilitate a template engine to produce the output. If no

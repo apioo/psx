@@ -21,17 +21,16 @@
 namespace PSX\Data\Tests\Writer;
 
 use PSX\Data\Record;
-use PSX\Data\Tests\WriterTestRecord;
 use PSX\Data\Writer\Atom;
 use PSX\DateTime\DateTime;
 use PSX\Http\MediaType;
 use PSX\Model\Atom\Atom as AtomRecord;
+use PSX\Model\Atom\Category;
 use PSX\Model\Atom\Entry;
+use PSX\Model\Atom\Generator;
 use PSX\Model\Atom\Link;
 use PSX\Model\Atom\Person;
-use PSX\Model\Atom\Category;
 use PSX\Model\Atom\Text;
-use PSX\Model\Atom\Generator;
 
 /**
  * AtomTest

@@ -21,7 +21,6 @@
 namespace PSX\Data\Tests;
 
 use PSX\Data\Payload;
-use PSX\Data\Processor;
 use PSX\Data\Record;
 use PSX\Data\Tests\Processor\Model\Entry;
 use PSX\Framework\Test\Environment;

@@ -23,7 +23,6 @@ namespace PSX\Data\Tests\Record;
 use PSX\Data\Record;
 use PSX\Data\Record\Mapper;
 use PSX\Data\Record\Mapper\Rule;
-use PSX\Data\RecordAbstract;
 
 /**
  * MapperTest

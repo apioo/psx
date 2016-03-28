@@ -22,7 +22,6 @@ namespace PSX\Data\Tests\Reader;
 
 use DOMDocument;
 use PSX\Data\Reader\Xml;
-use PSX\Http\Message;
 
 /**
  * XmlTest

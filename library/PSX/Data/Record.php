@@ -20,9 +20,6 @@
 
 namespace PSX\Data;
 
-use ArrayAccess;
-use BadMethodCallException;
-
 /**
  * Record
  *

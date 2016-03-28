@@ -21,7 +21,6 @@
 namespace PSX\Data;
 
 use PSX\Http\MediaType;
-use PSX\Http\MessageInterface;
 
 /**
  * ReaderInterface

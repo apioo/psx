@@ -21,10 +21,8 @@
 namespace PSX\Data\Tests;
 
 use PSX\Data\Payload;
-use PSX\Data\RecordInterface;
 use PSX\Data\Writer;
 use PSX\Framework\Test\Environment;
-use PSX\Http\Message;
 
 /**
  * SerializeTestAbstract

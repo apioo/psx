@@ -22,7 +22,6 @@ namespace PSX\Data\Tests;
 
 use DateTime;
 use PSX\Data\Record;
-use PSX\Model\Common\ResultSet;
 use PSX\Model\ActivityStream;
 
 /**

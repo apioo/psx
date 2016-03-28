@@ -23,7 +23,6 @@ namespace PSX\Data\Reader;
 use DOMDocument;
 use PSX\Data\ReaderAbstract;
 use PSX\Http\MediaType;
-use PSX\Http\MessageInterface;
 
 /**
  * Xml

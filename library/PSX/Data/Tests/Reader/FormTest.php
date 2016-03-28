@@ -21,7 +21,6 @@
 namespace PSX\Data\Tests\Reader;
 
 use PSX\Data\Reader\Form;
-use PSX\Http\Message;
 
 /**
  * FormTest

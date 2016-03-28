@@ -21,9 +21,9 @@
 namespace PSX\Data\Writer;
 
 use DateTime;
-use PSX\Model\Atom as Model;
 use PSX\Exception;
 use PSX\Http\MediaType;
+use PSX\Model\Atom as Model;
 
 /**
  * Atom

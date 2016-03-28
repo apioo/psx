@@ -20,7 +20,6 @@
 
 namespace PSX\Data\Transformer;
 
-use Closure;
 use PSX\Data\TransformerInterface;
 use PSX\Http\MediaType;
 

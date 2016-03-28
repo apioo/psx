@@ -20,8 +20,8 @@
 
 namespace PSX\Data\Visitor;
 
-use PSX\Data\VisitorInterface;
 use PSX\Data\Schema\Property as SchemaProperty;
+use PSX\Data\VisitorInterface;
 use PSX\Validate\ValidatorInterface;
 
 /**

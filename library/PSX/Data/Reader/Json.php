@@ -22,7 +22,6 @@ namespace PSX\Data\Reader;
 
 use PSX\Data\ReaderAbstract;
 use PSX\Http\MediaType;
-use PSX\Http\MessageInterface;
 use PSX\Json\Parser;
 
 /**

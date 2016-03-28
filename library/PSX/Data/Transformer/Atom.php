@@ -23,8 +23,8 @@ namespace PSX\Data\Transformer;
 use DOMDocument;
 use DOMElement;
 use InvalidArgumentException;
-use PSX\Data\Writer\Atom\Writer as AtomWriter;
 use PSX\Data\TransformerInterface;
+use PSX\Data\Writer\Atom\Writer as AtomWriter;
 use PSX\Http\MediaType;
 
 /**
