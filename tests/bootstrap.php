@@ -18,14 +18,14 @@
  * limitations under the License.
  */
 
-$loader = require(__DIR__ . '/../vendor/autoload.php');
-$loader->add('PSX', 'tests');
+require(__DIR__ . '/../vendor/autoload.php');
+require(__DIR__ . '/TestSchema.php');
 
-\PSX\Test\Environment::setup(__DIR__ . '/..', function(\Doctrine\DBAL\Schema\Schema $fromSchema){
+\PSX\Framework\Test\Environment::setup(__DIR__ . '/..', function(\Doctrine\DBAL\Schema\Schema $fromSchema){
 
 	// create the database schema if not available
 	if (!$fromSchema->hasTable('psx_cache_handler_sql_test')) {
-		return \PSX\Sql\TestSchema::getSchema();
+		return PSX\TestSchema::getSchema();
 	}
 
 });
