@@ -42,7 +42,7 @@ class JsonTest extends \PHPUnit_Framework_TestCase
     {
         $val = '{"foo":"bar"}';
 
-        $this->assertEquals(array('foo' => 'bar'), Parser::decode($val));
+        $this->assertEquals(array('foo' => 'bar'), Parser::decode($val, true));
     }
 
     /**

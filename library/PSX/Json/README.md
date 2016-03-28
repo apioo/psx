@@ -1,39 +1,76 @@
-PSX Framework
+PSX Json
 ===
 
 ## About
 
-PSX is a framework written in PHP to create RESTful APIs. It provides tools to 
-handle routing, API versioning, data transformation, authentication, 
-documentation and testing. With PSX you can easily build a REST API around an 
-existing application or create a new one from scratch. More informations at
-[phpsx.org](http://phpsx.org/)
+Library which contains classes to handle JSON data.
 
-## Requirements
+## Usage
 
-> &gt;= PHP 5.4 or HHVM 3.2.0
+```php
+<?php
 
-## Installation
+$json = <<<JSON
+{
+    "bar": {
+        "foo": "lorem ipsum"
+    }
+}
+JSON;
 
-The best option is to install the PSX sample project via composer
+// decode json
+$data = Parse::decode($json);
 
-    php composer.phar create-project psx/sample .
+// evaluate json pointer
+$pointer = new Pointer('/bar/foo');
+$value   = $pointer->evaluate($data); // lorem ipsum
 
-it is also possible to require PSX as dependency in your composer.json
+// apply JSON patch operations
+$patch = <<<JSON
+[
+     { "op": "add", "path": "/bar", "value": { "bar", "test" } }
+]
+JSON;
 
-    "psx/psx": "~1.2"
+$patch = new Patch(Parse::decode($patch));
+$data  = $patch->patch($data);
 
-you can also download a current release from github which already includes all
-vendor libraries in case composer is not available
+// encode json
+echo Parser::encode($data);
 
-    https://github.com/k42b3/psx/releases
+```
 
-check out the [get started](http://phpsx.org/get-started) guide for more 
-detailed instructions.
+### Web Token
 
-## Documentation
+The library contains also a class to produce and consume web tokens.
 
-For documentation please take a look at [phpsx.org](http://phpsx.org/) or the 
-[official manual](http://psx.readthedocs.org/)
+```php
+<?php
 
-[![Build Status](https://travis-ci.org/k42b3/psx.png)](https://travis-ci.org/k42b3/psx)
+$key = 'secret';
+
+// build web token
+$token = new WebSignature();
+$token->setHeader(WebSignature::TYPE, 'JWT');
+$token->setHeader(WebSignature::ALGORITHM, 'HS256');
+$token->setClaim('Oo');
+
+$compact = $token->getCompact($key);
+
+// $compact contains the web token in compact form
+// eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.T28.fTqVAlaLB0Ri4QS8-PfBjSuTSLgqwdmePBNZ-X2GBm4
+
+// parse web token
+$token = WebSignature::parse($compact);
+
+// validates the token
+$token->validate($key);
+
+// access the values from the token
+$token->getHeader(WebSignature::TYPE); // JWT
+$token->getHeader(WebSignature::ALGORITHM); // HS256
+$token->getClaim(); // Oo
+$token->getSignature(); // fTqVAlaLB0Ri4QS8-PfBjSuTSLgqwdmePBNZ-X2GBm4
+
+```
+

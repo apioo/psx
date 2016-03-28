@@ -28,7 +28,7 @@ use RuntimeException;
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
- * @see     http://tools.ietf.org/html/draft-ietf-jose-json-web-signature-39
+ * @see     http://tools.ietf.org/html/rfc7515
  */
 class WebSignature extends WebToken
 {

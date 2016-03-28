@@ -20,13 +20,15 @@
 
 namespace PSX\Json;
 
+use RuntimeException;
+
 /**
  * WebToken
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
- * @see     https://tools.ietf.org/html/draft-ietf-oauth-json-web-token-32
+ * @see     https://tools.ietf.org/html/rfc7519
  */
 abstract class WebToken
 {
@@ -130,7 +132,7 @@ abstract class WebToken
         }
 
         // get typ from header
-        $header = Parser::decode(self::base64Decode($header));
+        $header = Parser::decode(self::base64Decode($header), true);
         $claim  = self::base64Decode($claim);
         $type   = isset($header[self::TYPE]) ? strtoupper($header[self::TYPE]) : 'JWT';
 
