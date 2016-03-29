@@ -146,11 +146,13 @@ class Processor
      */
     public function write(Payload $payload, $schema = null)
     {
-        $data = $this->transform($payload->getData());
+        $data = $payload->getData();
 
         if ($schema === null && is_object($data) && !GraphTraverser::isObject($data)) {
             $schema = get_class($data);
         }
+
+        $data = $this->transform($data);
 
         if ($schema !== null) {
             $data = $this->assimilate(
