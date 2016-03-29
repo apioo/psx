@@ -436,6 +436,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 ################################################################################
+- psr/cache
 - psr/http-message
 - psr/log
 
