@@ -20,10 +20,6 @@
 
 namespace PSX\OpenSsl;
 
-use PSX\OpenSsl\ErrorHandleTrait;
-use PSX\OpenSsl\Exception as OpenSslException;
-use PSX\OpenSsl\PKey;
-
 /**
  * OpenSsl
  *

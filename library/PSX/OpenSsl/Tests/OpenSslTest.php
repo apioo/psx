@@ -21,7 +21,7 @@
 namespace PSX\OpenSsl\Tests;
 
 use PSX\OpenSsl\OpenSsl;
-use PSX\OpenSsl\Pkey;
+use PSX\OpenSsl\PKey;
 
 /**
  * OpenSslTest
