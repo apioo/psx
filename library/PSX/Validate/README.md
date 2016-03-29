@@ -1,39 +1,32 @@
-PSX Framework
+PSX Validate
 ===
 
 ## About
 
-PSX is a framework written in PHP to create RESTful APIs. It provides tools to 
-handle routing, API versioning, data transformation, authentication, 
-documentation and testing. With PSX you can easily build a REST API around an 
-existing application or create a new one from scratch. More informations at
-[phpsx.org](http://phpsx.org/)
+Validation library which validates data using a filter system. Through a
+validator it is possible to validate specific fields or complex data structures.
 
-## Requirements
+## Usage
 
-> &gt;= PHP 5.4 or HHVM 3.2.0
+```php
+<?php
 
-## Installation
+$validator = new Validator([
+    new Property('/title', Validate::TYPE_STRING, [new Filter\Alnum(), new Filter\Length(3, 255)]),
+    new Property('/author/name', Validate::TYPE_STRING, [new Filter\Alnum(), new Filter\Length(3, 32)]),
+]);
 
-The best option is to install the PSX sample project via composer
+$data = <<<JSON
+{
+    "title": "foo",
+    "author": {
+        "name": "bar"
+    },
+    "date": "2016-03-28T23:27:00Z"
+}
+JSON;
 
-    php composer.phar create-project psx/sample .
+// throws an exception if a field is not valid
+$validator->validate(json_decode($data));
 
-it is also possible to require PSX as dependency in your composer.json
-
-    "psx/psx": "~1.2"
-
-you can also download a current release from github which already includes all
-vendor libraries in case composer is not available
-
-    https://github.com/k42b3/psx/releases
-
-check out the [get started](http://phpsx.org/get-started) guide for more 
-detailed instructions.
-
-## Documentation
-
-For documentation please take a look at [phpsx.org](http://phpsx.org/) or the 
-[official manual](http://psx.readthedocs.org/)
-
-[![Build Status](https://travis-ci.org/k42b3/psx.png)](https://travis-ci.org/k42b3/psx)
+```

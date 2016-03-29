@@ -45,7 +45,7 @@ class Validate
      *
      * @param string $value
      * @param string $type
-     * @param \PSX\Validate\FilterInterface[] $filters
+     * @param \PSX\Validate\FilterInterface[]|callable $filters
      * @param string $title
      * @param boolean $required
      * @return mixed
@@ -64,14 +64,14 @@ class Validate
     }
 
     /**
-     * Applies the $filter array containing PSX\FilterInterface on the $value.
-     * Returns an result object which contains the value and error messages from
-     * the filter. If $required is set to true an error will be added if $value
-     * is null
+     * Applies the $filter array containing PSX\Validate\FilterInterface on the
+     * $value. Returns a result object which contains the value and error
+     * messages from the filter. If $required is set to true an error will be
+     * added if the $value is null
      *
      * @param string $value
      * @param string $type
-     * @param \PSX\Validate\FilterInterface[] $filters
+     * @param \PSX\Validate\FilterInterface[]|callable $filters
      * @param string $title
      * @param boolean $required
      * @return \PSX\Validate\Result
@@ -105,7 +105,7 @@ class Validate
             } elseif (is_callable($filter)) {
                 $return = call_user_func_array($filter, array($value));
             } else {
-                throw new InvalidArgumentException('Filter must be either a callable or instanceof PSX\FilterInterface');
+                throw new InvalidArgumentException('Filter must be either a callable or instanceof PSX\Validate\FilterInterface');
             }
 
             if ($return === false) {

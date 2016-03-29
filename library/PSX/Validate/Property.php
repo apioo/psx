@@ -29,11 +29,35 @@ namespace PSX\Validate;
  */
 class Property
 {
+    /**
+     * @var string
+     */
     protected $name;
+
+    /**
+     * @var string
+     */
     protected $type;
+
+    /**
+     * @var array
+     */
     protected $filters;
+
+    /**
+     * @var boolean
+     */
     protected $required;
 
+    /**
+     * The name should be a JSON pointer which locates the target property i.e.
+     * /author/name
+     *
+     * @param string $name
+     * @param string $type
+     * @param array $filters
+     * @param boolean $required
+     */
     public function __construct($name, $type, array $filters = array(), $required = true)
     {
         $this->name     = $name;

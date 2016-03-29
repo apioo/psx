@@ -29,13 +29,6 @@ namespace PSX\Validate;
  */
 abstract class FilterAbstract implements FilterInterface
 {
-    /**
-     * A filter can overwrite this method to provide an custom error message.
-     * The error message can contain one %s which gets replaced with the name
-     * of the field
-     *
-     * @return string
-     */
     public function getErrorMessage()
     {
         return null;

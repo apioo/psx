@@ -88,6 +88,15 @@ abstract class ValidatorAbstract implements ValidatorInterface
     }
 
     /**
+     * Clears the internal state of the validator
+     */
+    public function clear()
+    {
+        $this->errors  = [];
+        $this->visited = [];
+    }
+
+    /**
      * Returns all fields which are required but not visited
      *
      * @return array
@@ -118,6 +127,8 @@ abstract class ValidatorAbstract implements ValidatorInterface
 
     public function validate($data)
     {
+        $this->clear();
+
         $traverser = new GraphTraverser();
         $visitor   = new ValidationVisitor($this);
 
@@ -133,7 +144,7 @@ abstract class ValidatorAbstract implements ValidatorInterface
                 $this->visited[] = $property->getName();
             }
 
-            return $this->getPropertyValue($property, $data, $path);
+            $this->validateValue($property, $data, $path);
         }
     }
 
@@ -146,7 +157,7 @@ abstract class ValidatorAbstract implements ValidatorInterface
      * @param string $key
      * @return mixed
      */
-    protected function getPropertyValue(Property $property, $value, $key)
+    protected function validateValue(Property $property, $value, $key)
     {
         try {
             $result = $this->validate->apply($value, $property->getType(), $property->getFilters(), $key, $property->isRequired());
@@ -173,14 +184,13 @@ abstract class ValidatorAbstract implements ValidatorInterface
      * Returns the property defined by the name
      *
      * @param string $name
-     * @return \PSX\Validate\Property
+     * @return \PSX\Validate\Property|null
      */
     protected function getProperty($name)
     {
-        $name   = ltrim($name, '/');
-        $fields = $this->getFields();
+        $name = ltrim($name, '/');
 
-        foreach ($fields as $property) {
+        foreach ($this->fields as $property) {
             if (preg_match('#^' . $name . '$#', ltrim($property->getName(), '/'))) {
                 return $property;
             }

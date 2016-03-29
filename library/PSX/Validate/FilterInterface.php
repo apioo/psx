@@ -21,7 +21,7 @@
 namespace PSX\Validate;
 
 /**
- * A filter is an class which validates an value. If the filter returns true
+ * A filter is a class which validates a value. If the filter returns true
  * the value is valid. If it returns false it is invalid. In every other case
  * the filter overwrites the value
  *
@@ -38,4 +38,13 @@ interface FilterInterface
      * @return mixed
      */
     public function apply($value);
+
+    /**
+     * A filter can overwrite this method to provide a custom error message.
+     * The error message can contain one %s which is replaced with the name
+     * of the field
+     *
+     * @return string
+     */
+    public function getErrorMessage();
 }

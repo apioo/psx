@@ -20,7 +20,7 @@
 
 namespace PSX\Validate;
 
-use PSX\Framework\DisplayException;
+use RuntimeException;
 
 /**
  * ValidationException
@@ -29,7 +29,7 @@ use PSX\Framework\DisplayException;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class ValidationException extends DisplayException
+class ValidationException extends RuntimeException
 {
     protected $title;
     protected $result;

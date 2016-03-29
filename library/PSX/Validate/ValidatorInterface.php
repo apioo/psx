@@ -37,7 +37,7 @@ interface ValidatorInterface
      * validateProperty method. Data must be an object structure
      *
      * @param mixed $data
-     * @return mixed
+     * @return void
      */
     public function validate($data);
 
@@ -47,7 +47,7 @@ interface ValidatorInterface
      *
      * @param string $path
      * @param mixed $data
-     * @return mixed
+     * @return void
      */
     public function validateProperty($path, $data);
 }
