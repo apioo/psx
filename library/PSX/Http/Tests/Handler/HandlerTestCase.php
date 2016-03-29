@@ -103,7 +103,7 @@ abstract class HandlerTestCase extends \PHPUnit_Framework_TestCase
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('OK', $response->getReasonPhrase());
 
-        $body = Parser::decode((string) $response->getBody());
+        $body = Parser::decode((string) $response->getBody(), true);
 
         $this->assertEquals(array('success' => true, 'method' => 'GET'), $body);
     }
@@ -117,7 +117,7 @@ abstract class HandlerTestCase extends \PHPUnit_Framework_TestCase
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('OK', $response->getReasonPhrase());
 
-        $body = Parser::decode((string) $response->getBody());
+        $body = Parser::decode((string) $response->getBody(), true);
 
         $this->assertEquals(array('success' => true, 'method' => 'POST', 'request' => 'foobar'), $body);
     }
@@ -132,7 +132,7 @@ abstract class HandlerTestCase extends \PHPUnit_Framework_TestCase
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('OK', $response->getReasonPhrase());
 
-        $body = Parser::decode((string) $response->getBody());
+        $body = Parser::decode((string) $response->getBody(), true);
 
         $this->assertEquals(array('success' => true, 'method' => 'POST', 'request' => 'Hello <?php echo $foo; ?>'), $body);
     }
@@ -147,7 +147,7 @@ abstract class HandlerTestCase extends \PHPUnit_Framework_TestCase
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('OK', $response->getReasonPhrase());
 
-        $body = Parser::decode((string) $response->getBody());
+        $body = Parser::decode((string) $response->getBody(), true);
 
         $this->assertEquals(array('success' => true, 'method' => 'POST', 'request' => 'Hello <?php echo $foo; ?>'), $body);
     }
@@ -161,7 +161,7 @@ abstract class HandlerTestCase extends \PHPUnit_Framework_TestCase
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('OK', $response->getReasonPhrase());
 
-        $body = Parser::decode((string) $response->getBody());
+        $body = Parser::decode((string) $response->getBody(), true);
 
         $this->assertEquals(array('success' => true, 'method' => 'PUT', 'request' => 'foobar'), $body);
     }
@@ -176,7 +176,7 @@ abstract class HandlerTestCase extends \PHPUnit_Framework_TestCase
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('OK', $response->getReasonPhrase());
 
-        $body = Parser::decode((string) $response->getBody());
+        $body = Parser::decode((string) $response->getBody(), true);
 
         $this->assertEquals(array('success' => true, 'method' => 'PUT', 'request' => 'Hello <?php echo $foo; ?>'), $body);
     }
@@ -190,7 +190,7 @@ abstract class HandlerTestCase extends \PHPUnit_Framework_TestCase
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('OK', $response->getReasonPhrase());
 
-        $body = Parser::decode((string) $response->getBody());
+        $body = Parser::decode((string) $response->getBody(), true);
 
         $this->assertEquals(array('success' => true, 'method' => 'DELETE', 'request' => 'foobar'), $body);
     }
@@ -205,7 +205,7 @@ abstract class HandlerTestCase extends \PHPUnit_Framework_TestCase
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('OK', $response->getReasonPhrase());
 
-        $body = Parser::decode((string) $response->getBody());
+        $body = Parser::decode((string) $response->getBody(), true);
 
         $this->assertEquals(array('success' => true, 'method' => 'DELETE', 'request' => 'Hello <?php echo $foo; ?>'), $body);
     }
@@ -222,7 +222,7 @@ abstract class HandlerTestCase extends \PHPUnit_Framework_TestCase
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('OK', $response->getReasonPhrase());
 
-        $body = Parser::decode((string) $response->getBody());
+        $body = Parser::decode((string) $response->getBody(), true);
 
         $this->assertEquals(array('success' => true, 'method' => 'GET'), $body);
     }
@@ -281,7 +281,7 @@ abstract class HandlerTestCase extends \PHPUnit_Framework_TestCase
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('OK', $response->getReasonPhrase());
 
-        $body = Parser::decode((string) $response->getBody());
+        $body = Parser::decode((string) $response->getBody(), true);
 
         $this->assertEquals(array('success' => true, 'method' => 'GET'), $body);
         $this->assertTrue($called, 'Callback option not called');
