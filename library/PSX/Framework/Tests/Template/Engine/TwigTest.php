@@ -41,7 +41,10 @@ class TwigTest extends \PHPUnit_Framework_TestCase
 
     public function testTransform()
     {
-        $template = new Twig(Environment::getService('config'));
+        $template = new Twig(
+            Environment::getService('config')->get('psx_path_cache'),
+            Environment::getService('config')->get('psx_debug')
+        );
 
         $template->setDir(__DIR__ . '/../twig');
         $template->set('foo.twig.html');

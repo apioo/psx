@@ -35,7 +35,7 @@ class Twig extends EngineAbstract
     protected $cache;
     protected $debug;
 
-    public function __construct($cache = true, $debug = false)
+    public function __construct($cache = false, $debug = false)
     {
         $this->cache = $cache;
         $this->debug = $debug;
