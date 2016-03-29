@@ -1,39 +1,36 @@
-PSX Framework
+PSX Uri
 ===
 
 ## About
 
-PSX is a framework written in PHP to create RESTful APIs. It provides tools to 
-handle routing, API versioning, data transformation, authentication, 
-documentation and testing. With PSX you can easily build a REST API around an 
-existing application or create a new one from scratch. More informations at
-[phpsx.org](http://phpsx.org/)
+Library which contains value objects to represent URI, URL and URNs. The value
+objects are immutable so in case you change a value through a with* method you
+get a new instance of that object. There is also a uri resolver class to resolve
+a uri against a base uri.
 
-## Requirements
+## Usage
 
-> &gt;= PHP 5.4 or HHVM 3.2.0
+```php
+<?php
 
-## Installation
+$uri = new Uri('/bar?foo=bar');
 
-The best option is to install the PSX sample project via composer
+$uri->getPath(); // /bar
+$uri->getQuery(); // foo=bar
 
-    php composer.phar create-project psx/sample .
+$uri = $uri->withScheme('https');
+$uri = $uri->withScheme('foo.com');
 
-it is also possible to require PSX as dependency in your composer.json
+echo $uri->toString(); // https://foo.com/bar?foo=bar
 
-    "psx/psx": "~1.2"
+// the url object validates whether a scheme and host is available thus it is
+// a valid url
+$url = new Url($uri->toString());
 
-you can also download a current release from github which already includes all
-vendor libraries in case composer is not available
+// a urn provides additional getter to get the urn specific components. A urn
+// must start with urn:
+$urn = new Urn('urn:uuid:6e8bc430-9c3a-11d9-9669-0800200c9a66');
 
-    https://github.com/k42b3/psx/releases
-
-check out the [get started](http://phpsx.org/get-started) guide for more 
-detailed instructions.
-
-## Documentation
-
-For documentation please take a look at [phpsx.org](http://phpsx.org/) or the 
-[official manual](http://psx.readthedocs.org/)
-
-[![Build Status](https://travis-ci.org/k42b3/psx.png)](https://travis-ci.org/k42b3/psx)
+$urn->getNid(); // uuid
+$urn->getNss(); // 6e8bc430-9c3a-11d9-9669-0800200c9a66
+```

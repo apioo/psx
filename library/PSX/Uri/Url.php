@@ -23,11 +23,11 @@ namespace PSX\Uri;
 use InvalidArgumentException;
 
 /**
- * Represents an URL. A string is only an valid URL if it has an scheme and host
- * part. If the URL is not valid an exception gets thrown. Note if you want
- * display an URL you need to escape the URL according to the context. I.e. to
- * display the URL in an HTML context it is nessacary to use htmlspecialchars
- * since the URL could contain an XSS vector
+ * Represents a URL. A string is only a valid URL if it has a scheme and host
+ * part. If the URL is not valid an exception is thrown. Note if you want
+ * display a URL you need to escape the URL according to the context. I.e. to
+ * display the URL in a HTML context it is nessacary to use htmlspecialchars
+ * since the URL could contain a XSS vector
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
@@ -48,7 +48,7 @@ class Url extends Uri
 
         parent::parse($url);
 
-        // we need at least an scheme and host
+        // we need at least a scheme and host
         if (empty($this->scheme) || empty($this->host)) {
             throw new InvalidArgumentException('Invalid url syntax');
         }

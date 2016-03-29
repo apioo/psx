@@ -23,9 +23,9 @@ namespace PSX\Uri;
 use InvalidArgumentException;
 
 /**
- * Represents an URN. This class exists mostly to express in your code that
- * you expect/return an URN. Also the value must have "urn" as scheme else an
- * exception gets thrown
+ * Represents a URN. This class exists mostly to express in your code that
+ * you expect/return a URN. Also the value must have "urn" as scheme else an
+ * exception is thrown
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0

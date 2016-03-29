@@ -23,7 +23,7 @@ namespace PSX\Uri;
 use Psr\Http\Message\UriInterface;
 
 /**
- * Represents an URI. Provides getters to retrieve parts of the URI. The class
+ * Represents a URI. Provides getters to retrieve parts of the URI. The class
  * tries to parse the given string into the URI specific components:
  *
  *   foo://example.com:8042/over/there?name=ferret#nose
