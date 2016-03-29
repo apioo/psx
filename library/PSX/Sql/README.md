@@ -1,4 +1,4 @@
-Sql
+PSX Sql
 ===
 
 ## About
