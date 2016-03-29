@@ -3,7 +3,8 @@ PSX Json
 
 ## About
 
-Library which contains classes to handle JSON data.
+Library which contains classes to handle JSON data. It implements the JSON patch
+and pointer specification. Also it is possible to generate and parse web tokens.
 
 ## Usage
 
@@ -41,8 +42,6 @@ echo Parser::encode($data);
 ```
 
 ### Web Token
-
-The library contains also a class to produce and consume web tokens.
 
 ```php
 <?php
