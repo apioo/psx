@@ -20,9 +20,9 @@
 
 namespace PSX\Http\Handler;
 
-use PSX\Http\Http;
 use PSX\Http\HandlerException;
 use PSX\Http\HandlerInterface;
+use PSX\Http\Http;
 use PSX\Http\Options;
 use PSX\Http\RequestInterface;
 use PSX\Http\ResponseParser;
