@@ -1,10 +1,17 @@
-Structor
-========
+Sql
+===
 
 ## About
 
-Structor is a simple library which helps you to build complex data structures.
-In example if you want to provide the following JSON based on a SQL database:
+The SQL library helps to manage data from relational databases. It contains a
+system to build complex data structures from flat SQL results and a simple
+table interface which can be used as an alternative to an ORM. Each table class
+represents a table on the database and offers standard methods to CRUD data to
+the table. It is also easy possible to add custom methods to a table.
+
+## Complex data structures
+
+At first lets take a look how we can generate the following data structure:
 
 ```json
 {
@@ -45,14 +52,14 @@ most database libraries or ORMs are not designed to produce such nested results.
 They either return a simple array or model objects in case of an ORM. Turning
 these results into the desired format is mostly no easy task.
 
-Structor simplifies this process by providing a simple builder to create fully
-customizable responses. To produce the response above we could write the
+The SQL library simplifies this process by providing a simple builder to create
+fully customizable responses. To produce the response above we could write the
 following code:
 
 ```php
-use PSX\Structor\Field;
-use PSX\Structor\Provider\PDO;
-use PSX\Structor\Reference;
+use PSX\Sql\Field;
+use PSX\Sql\Provider\PDO;
+use PSX\Sql\Reference;
 
 $provider = new PDO\Factory($pdo);
 
@@ -84,16 +91,32 @@ $result  = $builder->build($definition));
 In this example it would be much more performant to simply join the author table
 but the example should show how to handle nested queries.
 
-Structor aims not to be a replacement for existing database or ORM libraries
-instead it should be used in conjunction to produce complex data views.
+## Table class
 
-## Concept
+The table class represents a table and provides method to query and manipulate
+data on a table. It is similar to a repository in doctrine except that it works
+with plain SQL and does not return entities.
 
-Structor uses a concept called providers. A provider is a simple class which
-either returns a collection or entity. Collection means it returns an array
-which contains array entities. A entity means it returns a simple associative
-array containing the fields of the entity.
+It is recommended to put custom queries in a seperate method into the table
+class so that you can reuse such queries across your app. The following methods
+are available by default:
 
-At the moment we have a PDO and Doctrine DBAL provider but it should be easy
-possible to writer providers for other systems. Feel free to send a pull
-request.
+```php
+// query
+$table->getAll();
+$table->getBy();
+$table->getOneBy();
+$table->get();
+$table->getCount();
+
+// manipulation
+$table->create();
+$table->update();
+$table->delete();
+
+```
+
+There is also a table manager which can be used to obtain table instances. It
+simply passes the database connection to the table instance. You most likely
+want to register the table manager at your DI container so that you can easily
+use it in your app to obtain a table instance.
