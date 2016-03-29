@@ -24,7 +24,8 @@ use Exception;
 use PSX\Framework\DisplayException;
 use PSX\Framework\Template\ErrorException;
 use PSX\Model\Common\Error;
-use PSX\Schema\ValidationException;
+use PSX\Schema;
+use PSX\Validate;
 
 /**
  * Converter
@@ -80,7 +81,7 @@ class Converter implements ConverterInterface
         } else {
             // if we have an display exception we can use the error message else
             // we hide the message with an general error message
-            if ($exception instanceof DisplayException || $exception instanceof ValidationException) {
+            if ($exception instanceof DisplayException || $exception instanceof Schema\ValidationException || $exception instanceof Validate\ValidationException) {
                 $message = $exception->getMessage();
             } else {
                 $message = 'The server encountered an internal error and was unable to complete your request.';

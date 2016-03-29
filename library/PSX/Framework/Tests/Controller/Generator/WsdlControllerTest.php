@@ -303,7 +303,7 @@ XML;
         $dom = new DOMDocument();
         $dom->loadXML($wsdl);
 
-        $result = $dom->schemaValidate(__DIR__ . '/../../../../Api/Tests/Resource/Generator/Wsdl/wsdl1.xsd');
+        $result = $dom->schemaValidate(__DIR__ . '/../../../../Api/Tests/Generator/Wsdl/wsdl1.xsd');
 
         $this->assertTrue($result);
     }

@@ -20,7 +20,7 @@
 
 namespace PSX\Framework\Controller;
 
-use PSX\Api\Resource\Parser;
+use PSX\Api\Parser;
 use PSX\Framework\Loader\Context;
 
 /**

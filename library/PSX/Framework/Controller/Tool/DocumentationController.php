@@ -21,7 +21,7 @@
 namespace PSX\Framework\Controller\Tool;
 
 use PSX\Api\Resource;
-use PSX\Api\Resource\Generator;
+use PSX\Api\Generator;
 use PSX\Framework\Controller\ApiAbstract;
 use PSX\Data\Record;
 use PSX\Schema\Generator as SchemaGenerator;
@@ -39,7 +39,7 @@ class DocumentationController extends ApiAbstract
 {
     /**
      * @Inject
-     * @var \PSX\Api\Resource\ListingInterface
+     * @var \PSX\Api\ListingInterface
      */
     protected $resourceListing;
 

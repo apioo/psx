@@ -21,10 +21,9 @@
 namespace PSX\Framework\Console;
 
 use PSX\Api\Resource;
-use PSX\Api\Resource\Generator;
-use PSX\Api\Resource\ListingInterface;
+use PSX\Api\Generator;
+use PSX\Api\ListingInterface;
 use PSX\Data\ExporterInterface;
-use PSX\Data\Processor;
 use PSX\Framework\Config\Config;
 use RuntimeException;
 use Symfony\Component\Console\Command\Command;

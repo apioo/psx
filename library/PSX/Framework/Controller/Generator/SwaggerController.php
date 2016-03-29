@@ -21,8 +21,8 @@
 namespace PSX\Framework\Controller\Generator;
 
 use PSX\Api\Resource;
-use PSX\Api\Resource\Generator;
-use PSX\Api\Resource\Util\Inflection;
+use PSX\Api\Generator;
+use PSX\Api\Util\Inflection;
 use PSX\Data\Exporter;
 use PSX\Framework\Controller\ControllerAbstract;
 use PSX\Data\WriterInterface;
@@ -41,7 +41,7 @@ class SwaggerController extends ControllerAbstract
 {
     /**
      * @Inject
-     * @var \PSX\Api\Resource\ListingInterface
+     * @var \PSX\Api\ListingInterface
      */
     protected $resourceListing;
 
