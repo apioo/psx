@@ -30,52 +30,52 @@ namespace PSX\Model\Rss;
 class Item
 {
     /**
-     * @var string
+     * @Type("string")
      */
     protected $title;
 
     /**
-     * @var string
+     * @Type("string")
      */
     protected $link;
 
     /**
-     * @var string
+     * @Type("string")
      */
     protected $description;
 
     /**
-     * @var string
+     * @Type("string")
      */
     protected $author;
 
     /**
-     * @var array<\PSX\Model\Rss\Category>
+     * @Type("array<\PSX\Model\Rss\Category>")
      */
     protected $category;
 
     /**
-     * @var string
+     * @Type("string")
      */
     protected $comments;
 
     /**
-     * @var \PSX\Model\Rss\Enclosure
+     * @Type("\PSX\Model\Rss\Enclosure")
      */
     protected $enclosure;
 
     /**
-     * @var string
+     * @Type("string")
      */
     protected $guid;
 
     /**
-     * @var \DateTime<RSS>
+     * @Type("\DateTime<RSS>")
      */
     protected $pubDate;
 
     /**
-     * @var \PSX\Model\Rss\Source
+     * @Type("\PSX\Model\Rss\Source")
      */
     protected $source;
 

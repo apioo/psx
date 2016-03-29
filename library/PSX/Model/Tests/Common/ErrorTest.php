@@ -18,22 +18,22 @@
  * limitations under the License.
  */
 
-namespace PSX\Data\Tests;
+namespace PSX\Model\Tests\Common;
 
-use PSX\Model\Common\ExceptionRecord;
+use PSX\Model\Common\Error;
 
 /**
- * ExceptionRecordTest
+ * ErrorTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class ExceptionRecordTest extends \PHPUnit_Framework_TestCase
+class ErrorTest extends \PHPUnit_Framework_TestCase
 {
     public function testRecord()
     {
-        $record = new ExceptionRecord();
+        $record = new Error();
         $record->setSuccess(false);
         $record->setTitle('title');
         $record->setMessage('message');

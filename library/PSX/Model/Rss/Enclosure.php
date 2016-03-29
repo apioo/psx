@@ -30,17 +30,17 @@ namespace PSX\Model\Rss;
 class Enclosure
 {
     /**
-     * @var string
+     * @Type("string")
      */
     protected $url;
 
     /**
-     * @var integer
+     * @Type("integer")
      */
     protected $length;
 
     /**
-     * @var string
+     * @Type("string")
      */
     protected $type;
 

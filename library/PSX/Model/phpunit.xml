@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit bootstrap="tests/bootstrap.php">
-	<testsuites>
-		<testsuite name="PSX Test Suite">
-			<directory>./tests</directory>
-		</testsuite>
-	</testsuites>
-	<filter>
-		<whitelist processUncoveredFilesFromWhitelist="true">
-			<directory suffix=".php">./src</directory>
-		</whitelist>
-	</filter>
+<phpunit bootstrap="vendor/autoload.php" backupGlobals="false">
+    <testsuites>
+        <testsuite name="PSX Model Test Suite">
+            <directory>./Tests</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist>
+            <directory suffix=".php">./</directory>
+            <exclude>
+                <directory>./Tests</directory>
+                <directory>./vendor</directory>
+            </exclude>
+        </whitelist>
+    </filter>
 </phpunit>

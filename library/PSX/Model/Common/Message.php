@@ -41,6 +41,14 @@ class Message extends RecordObject
      */
     protected $success;
 
+    public function __construct($message = null, $success = null)
+    {
+        parent::__construct();
+
+        $this->message = $message;
+        $this->success = $success;
+    }
+
     public function getMessage()
     {
         return $this->message;

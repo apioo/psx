@@ -30,27 +30,27 @@ namespace PSX\Model\Rss;
 class Cloud
 {
     /**
-     * @var string
+     * @Type("string")
      */
     protected $domain;
 
     /**
-     * @var integer
+     * @Type("integer")
      */
     protected $port;
 
     /**
-     * @var string
+     * @Type("string")
      */
     protected $path;
 
     /**
-     * @var string
+     * @Type("string")
      */
     protected $registerProcedure;
 
     /**
-     * @var string
+     * @Type("string")
      */
     protected $protocol;
 

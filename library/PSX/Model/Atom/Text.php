@@ -30,12 +30,12 @@ namespace PSX\Model\Atom;
 class Text
 {
     /**
-     * @var string
+     * @Type("string")
      */
     protected $type;
 
     /**
-     * @var string
+     * @Type("string")
      */
     protected $content;
 

@@ -3,6 +3,33 @@ PSX ActivityStream
 
 ## About
 
+This library contains simple POPO which model common data formats. At the moment
+we support the following data formats:
+
+* ActivityStream
+* Atom
+* Rss
+* Swagger
+
+These classes can be used in combination with psx/data to consume or produce
+data.
+
+## Usage
+
+```php
+<?php
+
+
+
+```
+
+
+
+PSX ActivityStream
+===
+
+## About
+
 Model classes to build [ActivityStream](http://activitystrea.ms/) JSON 
 responses. More informations about PSX at [phpsx.org](http://phpsx.org/)
 

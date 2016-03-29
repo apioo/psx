@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-namespace PSX\Atom;
+namespace PSX\Model\Tests\Atom;
 
 use DateTime;
 use PSX\Data\Tests\SerializeTestAbstract;

@@ -50,6 +50,16 @@ class ResultSet extends RecordObject
      */
     protected $entry;
 
+    public function __construct($totalResults = null, $startIndex = null, $itemsPerPage = null, array $entry)
+    {
+        parent::__construct();
+
+        $this->totalResults = $totalResults;
+        $this->startIndex   = $startIndex;
+        $this->itemsPerPage = $itemsPerPage;
+        $this->entry        = $entry;
+    }
+
     public function getTotalResults()
     {
         return $this->totalResults;

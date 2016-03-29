@@ -20,9 +20,6 @@
 
 namespace PSX\Model\Atom;
 
-use PSX\Data\RecordInfo;
-use PSX\Model\Common\CollectionAbstract;
-
 /**
  * This record represents an atom feed
  *
@@ -36,67 +33,67 @@ class Atom
     public static $xmlns = 'http://www.w3.org/2005/Atom';
 
     /**
-     * @var array<\PSX\Model\Atom\Person>
+     * @Type("array<\PSX\Model\Atom\Person>")
      */
     protected $author;
 
     /**
-     * @var array<\PSX\Model\Atom\Category>
+     * @Type("array<\PSX\Model\Atom\Category>")
      */
     protected $category;
 
     /**
-     * @var array<\PSX\Model\Atom\Person>
+     * @Type("array<\PSX\Model\Atom\Person>")
      */
     protected $contributor;
 
     /**
-     * @var \PSX\Model\Atom\Generator
+     * @Type("\PSX\Model\Atom\Generator")
      */
     protected $generator;
 
     /**
-     * @var string
+     * @Type("string")
      */
     protected $icon;
 
     /**
-     * @var string
+     * @Type("string")
      */
     protected $logo;
 
     /**
-     * @var string
+     * @Type("string")
      */
     protected $id;
 
     /**
-     * @var array<\PSX\Model\Atom\Link>
+     * @Type("array<\PSX\Model\Atom\Link>")
      */
     protected $link;
 
     /**
-     * @var string
+     * @Type("string")
      */
     protected $rights;
 
     /**
-     * @var \PSX\Model\Atom\Text
+     * @Type("\PSX\Model\Atom\Text")
      */
     protected $subTitle;
 
     /**
-     * @var string
+     * @Type("string")
      */
     protected $title;
 
     /**
-     * @var \DateTime
+     * @Type("\DateTime")
      */
     protected $updated;
 
     /**
-     * @var array<\PSX\Model\Atom\Entry>
+     * @Type("array<\PSX\Model\Atom\Entry>")
      */
     protected $entry;
 

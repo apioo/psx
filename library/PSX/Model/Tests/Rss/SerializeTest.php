@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-namespace PSX\Rss;
+namespace PSX\Model\Tests\Rss;
 
 use DateTime;
 use PSX\Data\Tests\SerializeTestAbstract;

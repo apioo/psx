@@ -31,97 +31,97 @@ namespace PSX\Model\Rss;
 class Rss
 {
     /**
-     * @var string
+     * @Type("string")
      */
     protected $title;
 
     /**
-     * @var string
+     * @Type("string")
      */
     protected $link;
 
     /**
-     * @var string
+     * @Type("string")
      */
     protected $description;
 
     /**
-     * @var string
+     * @Type("string")
      */
     protected $language;
 
     /**
-     * @var string
+     * @Type("string")
      */
     protected $copyright;
 
     /**
-     * @var string
+     * @Type("string")
      */
     protected $managingEditor;
 
     /**
-     * @var string
+     * @Type("string")
      */
     protected $webMaster;
 
     /**
-     * @var string
+     * @Type("string")
      */
     protected $generator;
 
     /**
-     * @var string
+     * @Type("string")
      */
     protected $docs;
 
     /**
-     * @var integer
+     * @Type("integer")
      */
     protected $ttl;
 
     /**
-     * @var string
+     * @Type("string")
      */
     protected $image;
 
     /**
-     * @var string
+     * @Type("string")
      */
     protected $rating;
 
     /**
-     * @var integer
+     * @Type("integer")
      */
     protected $skipHours;
 
     /**
-     * @var string
+     * @Type("string")
      */
     protected $skipDays;
 
     /**
-     * @var array<\PSX\Model\Rss\Category>
+     * @Type("array<\PSX\Model\Rss\Category>")
      */
     protected $category;
 
     /**
-     * @var \DateTime<RSS>
+     * @Type("\DateTime<RSS>")
      */
     protected $pubDate;
 
     /**
-     * @var \DateTime<RSS>
+     * @Type("\DateTime<RSS>")
      */
     protected $lastBuildDate;
 
     /**
-     * @var \PSX\Model\Rss\Cloud
+     * @Type("\PSX\Model\Rss\Cloud")
      */
     protected $cloud;
 
     /**
-     * @var array<\PSX\Model\Rss\Item>
+     * @Type("array<\PSX\Model\Rss\Item>")
      */
     protected $item;
 

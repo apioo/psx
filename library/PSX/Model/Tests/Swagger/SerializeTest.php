@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-namespace PSX\Swagger;
+namespace PSX\Model\Tests\Swagger;
 
 use PSX\Data\Tests\SerializeTestAbstract;
 use PSX\Model\Swagger\Api;

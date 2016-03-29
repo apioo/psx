@@ -30,12 +30,12 @@ namespace PSX\Model\Rss;
 class Category
 {
     /**
-     * @var string
+     * @Type("string")
      */
     protected $text;
 
     /**
-     * @var string
+     * @Type("string")
      */
     protected $domain;
 

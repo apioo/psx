@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-namespace PSX\Data\Tests;
+namespace PSX\Model\Tests\Common;
 
 use PSX\Data\Record;
 use PSX\Model\Common\Collection;
@@ -36,9 +36,8 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     {
         $data       = array(new Record(), new Record());
         $collection = new Collection($data);
-        $recordInfo = $collection->getRecordInfo();
+        $collection->add(new Record());
 
-        $this->assertInstanceOf('PSX\Data\RecordInfo', $recordInfo);
-        $this->assertEquals(array('entry' => $data), $recordInfo->getData());
+        $this->assertEquals(3, count($collection));
     }
 }

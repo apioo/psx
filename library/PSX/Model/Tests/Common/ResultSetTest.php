@@ -18,9 +18,9 @@
  * limitations under the License.
  */
 
-namespace PSX\Data\Tests;
+namespace PSX\Model\Tests\Common;
 
-use PSX\Exception;
+use PSX\Model\Common\ResultSet;
 
 /**
  * ResultSetTest
@@ -42,33 +42,9 @@ class ResultSetTest extends \PHPUnit_Framework_TestCase
 
         $resultSet = new ResultSet(12, 0, 2, $entries);
 
-        $this->assertEquals(4, count($resultSet));
-        $this->assertEquals(4, $resultSet->count());
         $this->assertEquals(12, $resultSet->getTotalResults());
         $this->assertEquals(0, $resultSet->getStartIndex());
         $this->assertEquals(2, $resultSet->getItemsPerPage());
-        $this->assertEquals(false, $resultSet->isEmpty());
-
-        foreach ($resultSet as $i => $result) {
-            $this->assertEquals($i + 1, $result['id']);
-        }
-
-        // test internal reset
-        foreach ($resultSet as $i => $result) {
-            $this->assertEquals($i + 1, $result['id']);
-        }
-    }
-
-    public function testEmptyResultSet()
-    {
-        $resultSet = new ResultSet(12, 0, 2, array());
-
-        $this->assertEquals(0, count($resultSet));
-        $this->assertEquals(0, $resultSet->count());
-        $this->assertEquals(true, $resultSet->isEmpty());
-
-        foreach ($resultSet as $row) {
-            throw new Exception('Should not happen');
-        }
+        $this->assertEquals($entries, $resultSet->getEntry());
     }
 }

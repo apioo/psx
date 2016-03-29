@@ -32,62 +32,62 @@ use DateTime;
 class Entry
 {
     /**
-     * @var array<\PSX\Model\Atom\Person>
+     * @Type("array<\PSX\Model\Atom\Person>")
      */
     protected $author;
 
     /**
-     * @var array<\PSX\Model\Atom\Category>
+     * @Type("array<\PSX\Model\Atom\Category>")
      */
     protected $category;
 
     /**
-     * @var \PSX\Model\Atom\Text
+     * @Type("\PSX\Model\Atom\Text")
      */
     protected $content;
 
     /**
-     * @var array<\PSX\Model\Atom\Person>
+     * @Type("array<\PSX\Model\Atom\Person>")
      */
     protected $contributor;
 
     /**
-     * @var string
+     * @Type("string")
      */
     protected $id;
 
     /**
-     * @var array<\PSX\Model\Atom\Link>
+     * @Type("array<\PSX\Model\Atom\Link>")
      */
     protected $link;
 
     /**
-     * @var \DateTime
+     * @Type("\DateTime")
      */
     protected $published;
 
     /**
-     * @var string
+     * @Type("string")
      */
     protected $rights;
 
     /**
-     * @var \PSX\Model\Atom\Atom
+     * @Type("\PSX\Model\Atom\Atom")
      */
     protected $source;
 
     /**
-     * @var \PSX\Model\Atom\Text
+     * @Type("\PSX\Model\Atom\Text")
      */
     protected $summary;
 
     /**
-     * @var string
+     * @Type("string")
      */
     protected $title;
 
     /**
-     * @var \DateTime
+     * @Type("\DateTime")
      */
     protected $updated;
 

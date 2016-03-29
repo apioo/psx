@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-namespace PSX\Data;
+namespace PSX\Model\Tests\Common;
 
 use PSX\Model\Common\Message;
 
@@ -49,8 +49,6 @@ class MessageTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('success', $message->getMessage());
         $this->assertEquals(true, $message->hasSuccess());
 
-        $record = $message->getRecordInfo();
-
-        $this->assertEquals(array('message' => 'success', 'success' => true), $record->getData());
+        $this->assertEquals(array('message' => 'success', 'success' => true), $message->getProperties());
     }
 }
