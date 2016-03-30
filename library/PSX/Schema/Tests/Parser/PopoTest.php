@@ -18,24 +18,40 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Tests\Generator;
+namespace PSX\Schema\Tests\Parser;
 
-use PSX\Schema\SchemaManager;
+use Doctrine\Common\Annotations\SimpleAnnotationReader;
+use PSX\Schema\Parser;
+use PSX\Schema\Tests\Parser\Popo\News;
 
 /**
- * GeneratorTestCase
+ * PopoTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-abstract class GeneratorTestCase extends \PHPUnit_Framework_TestCase
+class PopoTest extends \PHPUnit_Framework_TestCase
 {
-    protected function getSchema()
-    {
-        $manager = new SchemaManager();
-        $schema  = $manager->getSchema('PSX\Schema\Tests\Generator\TestSchema');
+    /**
+     * @var \Doctrine\Common\Annotations\Reader
+     */
+    protected $reader;
 
-        return $schema;
+    protected function setUp()
+    {
+        $this->reader = new SimpleAnnotationReader();
+        $this->reader->addNamespace('PSX\\Schema\\Parser\\Popo\\Annotation');
+    }
+
+    public function testParse()
+    {
+        $parser   = new Parser\Popo($this->reader);
+        $schema   = $parser->parse(News::class);
+        $property = $schema->getDefinition();
+
+        $this->assertInstanceOf('PSX\Schema\PropertyInterface', $property);
+
+        // @TODO add more schema checks
     }
 }

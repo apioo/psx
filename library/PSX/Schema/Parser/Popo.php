@@ -22,7 +22,6 @@ namespace PSX\Schema\Parser;
 
 use Doctrine\Common\Annotations\Reader;
 use InvalidArgumentException;
-use PSX\Framework\Util\Annotation;
 use PSX\Schema\Parser\Popo\ObjectReader;
 use PSX\Schema\ParserInterface;
 use PSX\Schema\Property;

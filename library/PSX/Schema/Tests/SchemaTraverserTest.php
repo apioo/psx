@@ -20,8 +20,8 @@
 
 namespace PSX\Schema\Tests;
 
+use Doctrine\Common\Annotations\SimpleAnnotationReader;
 use PSX\Data\Record\Transformer;
-use PSX\Framework\Test\Environment;
 use PSX\Schema\Parser;
 use PSX\Schema\SchemaTraverser;
 use PSX\Schema\Tests\SchemaTraverser\RecursionModel;
@@ -36,10 +36,20 @@ use PSX\Schema\Visitor\OutgoingVisitor;
  */
 class SchemaTraverserTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var \Doctrine\Common\Annotations\Reader
+     */
+    protected $reader;
+
+    protected function setUp()
+    {
+        $this->reader = new SimpleAnnotationReader();
+        $this->reader->addNamespace('PSX\\Schema\\Parser\\Popo\\Annotation');
+    }
+
     public function testRecursion()
     {
-        $reader = Environment::getService("annotation_reader");
-        $parser = new Parser\Popo($reader);
+        $parser = new Parser\Popo($this->reader);
         $schema = $parser->parse(RecursionModel::class);
 
         $expect = [
@@ -78,8 +88,7 @@ class SchemaTraverserTest extends \PHPUnit_Framework_TestCase
      */
     public function testMaxRecursion()
     {
-        $reader = Environment::getService("annotation_reader");
-        $parser = new Parser\Popo($reader);
+        $parser = new Parser\Popo($this->reader);
         $schema = $parser->parse(RecursionModel::class);
 
         $expect = [

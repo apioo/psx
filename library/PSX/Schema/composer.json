@@ -12,7 +12,14 @@
     }
   ],
   "require": {
-    "php": ">=5.5"
+    "php": ">=5.5",
+    "doctrine/annotations": "^1.2",
+    "psx/data": "^2.0",
+    "psx/datetime": "^2.0",
+    "psx/http": "^2.0",
+    "psx/json": "^2.0",
+    "psx/schema": "^2.0",
+    "symfony/console": "^2.8"
   },
   "autoload": {
     "psr-4": {

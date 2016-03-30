@@ -18,24 +18,77 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Tests\Generator;
-
-use PSX\Schema\SchemaManager;
+namespace PSX\Schema\Tests\Parser\Popo;
 
 /**
- * GeneratorTestCase
+ * Author
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-abstract class GeneratorTestCase extends \PHPUnit_Framework_TestCase
+class Author
 {
-    protected function getSchema()
-    {
-        $manager = new SchemaManager();
-        $schema  = $manager->getSchema('PSX\Schema\Tests\Generator\TestSchema');
+    /**
+    * @Type("integer")
+    */
+    protected $id;
 
-        return $schema;
+    /**
+    * @Type("string")
+    */
+    protected $name;
+
+    /**
+    * @Type("string")
+    */
+    protected $email;
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param mixed $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param mixed $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
+     * @param mixed $email
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
     }
 }
