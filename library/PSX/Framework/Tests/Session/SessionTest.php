@@ -43,6 +43,10 @@ class SessionTest extends \PHPUnit_Framework_TestCase
 
     protected function tearDown()
     {
+        parent::tearDown();
+
+        // we remove all values which were set during the test
+        $_SESSION = [];
     }
 
     public function testGetSet()

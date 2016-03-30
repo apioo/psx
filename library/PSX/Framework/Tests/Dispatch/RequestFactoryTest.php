@@ -34,6 +34,27 @@ use PSX\Framework\Dispatch\RequestFactory;
  */
 class RequestFactoryTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var array
+     */
+    protected $server;
+
+    protected function setUp()
+    {
+        parent::setUp();
+
+        // the test modifies the global server variable so store and reset the
+        // values after the test
+        $this->server = $_SERVER;
+    }
+
+    protected function tearDown()
+    {
+        parent::tearDown();
+
+        $_SERVER = $this->server;
+    }
+
     public function testCreateRequestNoPathAndNoDispatch()
     {
         $config = new Config(array(
