@@ -50,7 +50,7 @@ class SchemaCommand extends GenerateCommandAbstract
         $this
             ->setName('generate:schema')
             ->setDescription('Generates a new schema')
-            ->addArgument('namespace', InputArgument::REQUIRED, 'Absolute class name of the command (i.e. Acme\News\Overview)')
+            ->addArgument('namespace', InputArgument::REQUIRED, 'Absolute class name of the schema (i.e. Acme\News\Overview)')
             ->addArgument('table', InputArgument::OPTIONAL, 'Creates the schema according to the given sql table name')
             ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Executes no file operations if true');
     }

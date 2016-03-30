@@ -21,14 +21,12 @@
 namespace PSX\Framework\Event;
 
 /**
- * This interface represents an value object which contains informations about
- * the context where an event was dispatched. I.e. the exception event can be
- * dispatched in an command or controller context.
+ * This interface represents a value object which contains informations about
+ * the context where an event was dispatched
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
- * @see     http://www.ietf.org/rfc/rfc4287.txt
  */
 interface ContextInterface
 {
