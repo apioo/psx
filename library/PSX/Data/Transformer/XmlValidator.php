@@ -47,17 +47,39 @@ class XmlValidator extends XmlArray
             throw new InvalidArgumentException('Data must be an instanceof DOMDocument');
         }
 
-        libxml_clear_errors();
+        $useErrors = libxml_use_internal_errors(true);
 
-        $data->schemaValidateSource($this->xsdSchema);
+        $data->schemaValidate($this->xsdSchema);
 
-        $errors = libxml_get_errors();
-        if (!empty($errors)) {
-            foreach ($errors as $error) {
-                throw new RuntimeException($error);
-            }
+        $errors = $this->getXmlErrors();
+
+        libxml_use_internal_errors($useErrors);
+
+        if (count($errors) > 0) {
+            $this->throwXmlError(current($errors));
         }
 
         return parent::transform($data);
+    }
+
+    protected function getXmlErrors()
+    {
+        $errors = libxml_get_errors();
+        $result = [];
+
+        if (!empty($errors)) {
+            foreach ($errors as $error) {
+                $result[] = $error;
+            }
+        }
+
+        libxml_clear_errors();
+
+        return $result;
+    }
+
+    protected function throwXmlError(\LibXMLError $error)
+    {
+        throw new RuntimeException(rtrim($error->message));
     }
 }
