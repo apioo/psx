@@ -1,7 +1,7 @@
 {
-  "name": "psx/http",
-  "description": "Mutable HTTP model",
-  "keywords": ["http"],
+  "name": "psx/openssl",
+  "description": "OpenSsl wrapper library",
+  "keywords": ["openssl"],
   "homepage": "http://phpsx.org",
   "license": "Apache-2.0",
   "authors": [
@@ -12,15 +12,11 @@
     }
   ],
   "require": {
-    "php": ">=5.5",
-    "psx/uri": "^2.0",
-    "psx/datetime": "^2.0",
-    "psr/http-message": "^1.0",
-    "zendframework/zend-diactoros": "^1.3"
+    "php": ">=5.5"
   },
   "autoload": {
     "psr-4": {
-      "PSX\\Http\\": ""
+      "PSX\\OpenSsl\\": ""
     },
     "exclude-from-classmap": [
       "/Tests/"

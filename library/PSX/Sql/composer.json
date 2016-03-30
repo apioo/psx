@@ -17,6 +17,9 @@
   "autoload": {
     "psr-4": {
       "PSX\\Sql\\": ""
-    }
+    },
+    "exclude-from-classmap": [
+      "/Tests/"
+    ]
   }
 }

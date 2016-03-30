@@ -17,6 +17,9 @@
   "autoload": {
     "psr-4": {
       "PSX\\Uri\\": ""
-    }
+    },
+    "exclude-from-classmap": [
+      "/Tests/"
+    ]
   }
 }

@@ -19,6 +19,9 @@
   "autoload": {
     "psr-4": {
       "PSX\\Cache\\": ""
-    }
+    },
+    "exclude-from-classmap": [
+      "/Tests/"
+    ]
   }
 }

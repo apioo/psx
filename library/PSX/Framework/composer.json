@@ -27,6 +27,9 @@
   "autoload": {
     "psr-4": {
       "PSX\\Framework\\": ""
-    }
+    },
+    "exclude-from-classmap": [
+      "/Tests/"
+    ]
   }
 }

@@ -17,6 +17,9 @@
   "autoload": {
     "psr-4": {
       "PSX\\DateTime\\": ""
-    }
+    },
+    "exclude-from-classmap": [
+      "/Tests/"
+    ]
   }
 }

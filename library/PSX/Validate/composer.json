@@ -17,6 +17,9 @@
   "autoload": {
     "psr-4": {
       "PSX\\Validate\\": ""
-    }
+    },
+    "exclude-from-classmap": [
+      "/Tests/"
+    ]
   }
 }
