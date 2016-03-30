@@ -17,7 +17,6 @@
     "psx/validate": "^2.0",
     "psx/json": "^2.0",
     "psx/http": "^2.0",
-    "psx/uri": "^2.0",
     "psx/model": "^2.0",
     "psx/datetime": "^2.0",
     "psr/cache": "^1.0",

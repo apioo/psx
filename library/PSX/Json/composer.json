@@ -12,7 +12,8 @@
     }
   ],
   "require": {
-    "php": ">=5.5"
+    "php": ">=5.5",
+    "psx/data": "^2.0"
   },
   "autoload": {
     "psr-4": {

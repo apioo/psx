@@ -18,8 +18,13 @@
     "jms/serializer": "^1.1",
     "monolog/monolog": "^1.17",
     "psr/log": "^1.0",
+    "psx/api": "^2.0",
+    "psx/cache": "^2.0",
     "psx/data": "^2.0",
+    "psx/http": "^2.0",
     "psx/schema": "^2.0",
+    "psx/sql": "^2.0",
+    "psx/validate": "^2.0",
     "symfony/console": "^2.8",
     "symfony/dependency-injection": "^2.8",
     "symfony/event-dispatcher": "^2.8"

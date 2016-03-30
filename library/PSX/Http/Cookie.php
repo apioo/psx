@@ -21,7 +21,6 @@
 namespace PSX\Http;
 
 use InvalidArgumentException;
-use PSX\DateTime\DateTime;
 
 /**
  * Cookie
@@ -97,7 +96,7 @@ class Cookie
         );
 
         if ($this->expires !== null) {
-            $parameters['Expires'] = $this->expires->format(DateTime::HTTP);
+            $parameters['Expires'] = $this->expires->format('D, d M Y H:i:s \G\M\T');
         }
 
         if (!empty($this->path)) {
