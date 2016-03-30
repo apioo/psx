@@ -3,4 +3,4 @@ PSX Oauth
 
 ## About
 
-Oauth consumer and provider implementation
+Oauth consumer and provider implementation.

@@ -3,8 +3,8 @@ PSX Model
 
 ## About
 
-This library contains simple POPO which model common data formats. At the moment
-we support the following data formats:
+This library contains simple POPOs which model common data formats. At the
+moment we support the following data formats:
 
 * ActivityStream
 * Atom

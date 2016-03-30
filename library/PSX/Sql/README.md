@@ -93,7 +93,7 @@ but the example should show how to handle nested queries.
 
 ## Table class
 
-The table class represents a table and provides method to query and manipulate
+The table class represents a table and provides methods to query and manipulate
 data on a table. It is similar to a repository in doctrine except that it works
 with plain SQL and does not return entities.
 
