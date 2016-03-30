@@ -57,7 +57,7 @@ class OpenSslTest extends \PHPUnit_Framework_TestCase
 
     /**
      * This is essentially the openid association flow where two parties
-     * establish an shared secret. Only the server/client public key and mac key
+     * establish a shared secret. Only the server/client public key and mac key
      * are transfered over the wire. The shared secret can then be used to
      * encrypt or sign data
      */
