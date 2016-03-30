@@ -5,7 +5,7 @@ PSX Cache
 
 [PSR-6](http://www.php-fig.org/psr/psr-6/) implementation using the doctrine 
 cache system. Through theses classes it is possible to access the doctrine cache
-system through an PSR-6 interface.
+system through a PSR-6 interface.
 
 ## Usage
 

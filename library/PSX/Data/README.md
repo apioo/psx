@@ -168,10 +168,84 @@ $payload = Payload::create(
 );
 ```
 
-When writing data the same mechanism is used with a writer factory. The writer
-factory can also be extended with custom writer implementations.
+The writer factory can also be extended with custom writer implementations.
 
 ```php
 $configuration->getWriterFactory()->addWriter(new Acme\Writer(), 64);
 ```
+
+## Constraints
+
+It is also possible to add specific constraints to your model class. All
+constraints are based on the JsonSchema specification. In the following some
+examples:
+
+```php
+class News
+{
+    /**
+     * @Type("string")
+     * @Pattern("[A-z]")
+     * @Required
+     */
+    protected $title;
+
+    /**
+     * @Type("string")
+     * @MinLength(3)
+     * @MaxLength(255)
+     */
+    protected $text;
+
+    /**
+     * @Type("string")
+     * @Enum({"active", "deleted"})
+     */
+    protected $status;
+
+    /**
+     * @Type("integer")
+     * @Minimum(0)
+     * @Maximum(5)
+     */
+    protected $rating;
+}
+```
+
+All available annotations are located in the psx/schema project.
+
+## Transformations
+
+Each reader class returns the data in a form which can be easily processed. I.e.
+the json reader returns a `stdClass` produced by `json_decode` and the xml
+reader returns a `DOMDocument`. To unify the output we use transformation
+classes which take the output of a reader and return a normalized format. I.e.
+for xml content we apply by default the `XmlArray` transformer which transforms
+the `DOMDocument`. So you can use a transformer if you directly want to work
+with the output of the reader.
+
+In case you want to validate incoming XML data after a XSD schema you could use
+the `XmlValidator` transformer:
+
+```php
+$payload = Payload::xml($data);
+$payload->setTransformer(new XmlValidator('path/to/schema.xsd'));
+
+$model = $processor->read(News::class, $payload);
+
+```
+
+## Exporter
+
+If you write data you can set as payload an arbitrary object. We use a exporter
+class to return the actual data representation of that object. By default the
+exporter reads also the psx/schema annotations so you can use the same model for
+incoming and outgoing data. But it is also possible to use different classes.
+I.e. you could create model classes using the psx/schema annotations only for
+incoming data and for outgoing data you could use the JMS exporter in case you
+have already objects which have these annotations.
+
+If you have another way how to extract data of an object (i.e. a toArray
+method which returns the available fields of the object) you can easily write
+a custom exporter.
 

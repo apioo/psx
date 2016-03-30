@@ -3,37 +3,36 @@ PSX Framework
 
 ## About
 
-PSX is a framework written in PHP to create RESTful APIs. It provides tools to 
-handle routing, API versioning, data transformation, authentication, 
-documentation and testing. With PSX you can easily build a REST API around an 
-existing application or create a new one from scratch. More informations at
-[phpsx.org](http://phpsx.org/)
+Stricter date time implementations which only accepts RFC3339 date time strings.
+Handles date time, date, time and duration formats.
 
-## Requirements
+## Usage
 
-> &gt;= PHP 5.4 or HHVM 3.2.0
+```php
+<?php
 
-## Installation
+// date time
+$dateTime = new DateTime('2016-03-28T23:27:00Z');
+$dateTime = new DateTime(2016, 3, 28, 23, 27, 0);
 
-The best option is to install the PSX sample project via composer
+echo $dateTime->toString(); // 2016-03-28T23:27:00Z
 
-    php composer.phar create-project psx/sample .
+// date
+$date = new Date('2016-03-28');
+$date = new Date(2016, 3, 28);
 
-it is also possible to require PSX as dependency in your composer.json
+echo $date->toString(); // 2016-03-28
 
-    "psx/psx": "~1.2"
+// time
+$time = new Time('23:27:00');
+$time = new Time(23, 27, 0);
 
-you can also download a current release from github which already includes all
-vendor libraries in case composer is not available
+echo $time->toString(); // 23:27:00
 
-    https://github.com/k42b3/psx/releases
+// duration
+$duration = new Duration('P1D');
+$duration = new Duration(0, 0, 1);
 
-check out the [get started](http://phpsx.org/get-started) guide for more 
-detailed instructions.
+echo $duration->toString(); // P0Y0M1D
 
-## Documentation
-
-For documentation please take a look at [phpsx.org](http://phpsx.org/) or the 
-[official manual](http://psx.readthedocs.org/)
-
-[![Build Status](https://travis-ci.org/k42b3/psx.png)](https://travis-ci.org/k42b3/psx)
+```
