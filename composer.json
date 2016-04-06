@@ -13,48 +13,7 @@
   ],
   "require": {
     "php": ">=5.5",
-    "doctrine/annotations": "^1.2",
-    "doctrine/cache": "^1.6",
-    "doctrine/dbal": "^2.5",
-    "jms/serializer": "^1.1",
-    "monolog/monolog": "^1.17",
-    "psr/cache": "^1.0",
-    "psr/http-message": "^1.0",
-    "psr/log": "^1.0",
-    "symfony/console": "^2.8",
-    "symfony/dependency-injection": "^2.8",
-    "symfony/event-dispatcher": "^2.8",
-    "symfony/yaml": "^2.8",
-    "zendframework/zend-diactoros": "^1.3"
+    "psx/framework": "^0.1"
   },
-  "require-dev": {
-    "phpunit/phpunit": "^4.8",
-    "phpunit/dbunit": "^2.0"
-  },
-  "replace": {
-    "psx/api": "self.version",
-    "psx/cache": "self.version",
-    "psx/data": "self.version",
-    "psx/datetime": "self.version",
-    "psx/framework": "self.version",
-    "psx/http": "self.version",
-    "psx/json": "self.version",
-    "psx/model": "self.version",
-    "psx/oauth": "self.version",
-    "psx/oauth2": "self.version",
-    "psx/openssl": "self.version",
-    "psx/schema": "self.version",
-    "psx/sql": "self.version",
-    "psx/uri": "self.version",
-    "psx/validate": "self.version"
-  },
-  "bin": ["bin/psx"],
-  "autoload": {
-    "psr-4": {
-      "PSX\\": "library/PSX"
-    },
-    "exclude-from-classmap": [
-      "**/Tests/"
-    ]
-  }
+  "bin": ["bin/psx"]
 }
