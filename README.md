@@ -3,33 +3,40 @@ PSX Framework
 
 ## About
 
-PSX is a framework written in PHP to create RESTful APIs. It provides tools to 
-handle routing, API versioning, data transformation, authentication, 
-documentation and testing. With PSX you can easily build a REST API around an 
-existing application or create a new one from scratch. More informations at
-[phpsx.org](http://phpsx.org/)
+PSX is a framework written in PHP dedicated to build RESTful APIs. It is based
+on multiple components which cover many aspects of the API lifecycle. These
+components are independent of the framework and can also be used in another
+context. The following list contains the most notable packages:
+
+- [psx/api](https://github.com/apioo/psx-api)
+  Parse and generate API specification formats (i.e. RAML)
+- [psx/data](https://github.com/apioo/psx-data)
+  Data processing library to read and write POPOs in different formats
+- [psx/schema](https://github.com/apioo/psx-schema)
+  Parse and generate data schema formats (i.e. JsonSchema)
+- [psx/sql](https://github.com/apioo/psx-sql)
+  Build complex data structures from relational databases
+- [psx/framework](https://github.com/apioo/psx-framework)
+  Engine of the PSX framework
+
+More informations about the PSX framework and the components at
+[phpsx.org](http://phpsx.org/).
 
 ## Requirements
 
-> &gt;= PHP 5.4 or HHVM 3.2.0
+> &gt;= PHP 5.5 or HHVM 3.2.0
 
 ## Installation
 
-The best option is to install the PSX sample project via composer
+To install the full stack framework you can install the sample project which
+setups a basic PSX project with a sample API.
 
     php composer.phar create-project psx/sample .
 
-it is also possible to require PSX as dependency in your composer.json
+you can also download the current release from GitHub which already includes all
+vendor libraries in case you can not use composer
 
-    "psx/psx": "~1.2"
-
-you can also download a current release from github which already includes all
-vendor libraries in case composer is not available
-
-    https://github.com/k42b3/psx/releases
-
-check out the [get started](http://phpsx.org/get-started) guide for more 
-detailed instructions.
+    https://github.com/apioo/psx/releases
 
 ## Documentation
 
