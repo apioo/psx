@@ -7,7 +7,7 @@ different configuration depending on the environment you can change the
 "config.file" parameter.
 */
 
-$container = new \PSX\Framework\Dependency\DefaultContainer();
+$container = new PSX\Framework\Dependency\DefaultContainer();
 $container->setParameter('config.file', __DIR__ . '/configuration.php');
 
 return $container;

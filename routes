@@ -1,2 +1,2 @@
 
-GET / PSX\Controller\Tool\DefaultController
+GET / PSX\Framework\Controller\Tool\DefaultController
