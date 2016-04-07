@@ -1,9 +1,0 @@
-{
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "id": "http://test.phpsx.org/other_schema#",
-    "definition": {
-        "title": {
-            "type": "string"
-        }
-    }
-}
