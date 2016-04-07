@@ -1,0 +1,53 @@
+#%RAML 0.8
+title: PSX sample API
+baseUri: http://example.phpsx.org
+version: v1
+/population/raml:
+  description: Returns a collection of population entries
+  get:
+    queryParameters:
+      startIndex:
+        type: integer
+      count:
+        type: integer
+    responses:
+      200:
+        body:
+          application/json:
+            schema: !include schema/population/collection.json
+  post:
+    body:
+      application/json:
+        schema: !include schema/population/entity.json
+    responses:
+      201:
+        body:
+          application/json:
+            schema: !include schema/population/message.json
+/population/raml/{id}:
+  description: Returns a single population entity
+  uriParameters:
+    id:
+      type: integer
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            schema: !include schema/population/entity.json
+  put:
+    body:
+      application/json:
+        schema: !include schema/population/entity.json
+    responses:
+      200:
+        body:
+          application/json:
+            schema: !include schema/population/message.json
+  delete:
+    responses:
+      200:
+        body:
+          application/json:
+            schema: !include schema/population/message.json
+

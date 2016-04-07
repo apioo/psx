@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "http://example.phpsx.org/population#",
+  "title": "collection",
+  "description": "Collection result",
+  "type": "object",
+  "properties": {
+    "totalResults": {
+      "type": "integer"
+    },
+    "entry": {
+      "type": "array",
+      "items": {
+        "$ref": "file:///entity.json"
+      }
+    }
+  }
+}
