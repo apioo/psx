@@ -9,7 +9,6 @@ Concept
    concept/object_graph
    concept/schema
    concept/table
-   concept/api_versioning
    concept/authentication
    concept/value_object
    concept/date_time

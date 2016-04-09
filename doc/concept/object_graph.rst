@@ -8,8 +8,8 @@ Abstract
 With object graph we mean the response which is set in the controller as body.
 This can be i.e. a simple associative array or a deep nested object structure. 
 PSX walks through the object graph and determines whether a value represents an 
-object, array or scalar value. If the value is a PSX\\Data\\RecordInterface, 
-stdClass or associative array the value gets treated as object. If it is an 
+object, array or scalar value. If the value is a PSX\\Record\\RecordInterface,
+stdClass or associative array the value is treated as object. If it is an
 array the value gets treated as array. All other values have no structural 
 meaning and are treated as scalar values. If a scalar value is an object PSX 
 tries to cast it to a string.
@@ -23,9 +23,9 @@ In the following some examples to show how PSX handles the object graph
 
     <?php
 
-    $this->setBody(array(
+    $this->setBody([
         'foo' => 'bar'
-    ));
+    ]);
 
 
 .. code-block:: json
@@ -39,9 +39,9 @@ In the following some examples to show how PSX handles the object graph
 
     <?php
 
-    $this->setBody(array(
-        'foo' => array('foo', 'bar')
-    ));
+    $this->setBody([
+        'foo' => ['foo', 'bar']
+    ]);
 
 
 .. code-block:: json
@@ -58,16 +58,16 @@ In the following some examples to show how PSX handles the object graph
 
     <?php
 
-    $this->setBody(array(
-        'entry' => array(
-            array(
+    $this->setBody([
+        'entry' => [
+            [
                 'title' => 'foo'
-            ),
-            array(
+            ],
+            [
                 'title' => 'foo'
-            )
-        )
-    ));
+            ]
+        ]
+    ]);
 
 
 .. code-block:: json
@@ -87,11 +87,11 @@ In the following some examples to show how PSX handles the object graph
 
     <?php
 
-    $this->setBody(array(
-        'foo' => new Object(array(
+    $this->setBody([
+        'foo' => new Object([
             'title' => 'bar'
-        ))
-    ));
+        ])
+    ]);
 
 
 .. code-block:: json
@@ -110,9 +110,9 @@ In the following some examples to show how PSX handles the object graph
     $body = new \stdClass();
     $body->title = 'foo';
 
-    $this->setBody(array(
+    $this->setBody([
         'foo' => $body
-    ));
+    ]);
 
 
 .. code-block:: json
@@ -128,9 +128,9 @@ In the following some examples to show how PSX handles the object graph
 
     <?php
 
-    $this->setBody(array(
+    $this->setBody([
         'foo' => new \ArrayIterator(['foo', 'bar'])
-    ));
+    ]);
 
 
 .. code-block:: json

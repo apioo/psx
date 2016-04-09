@@ -18,19 +18,19 @@ Usage
     
     namespace Foo\Bar;
 
-    use PSX\ControllerAbstract;
+    use PSX\Framework\Controller\ControllerAbstract;
 
     class Controller extends ControllerAbstract;
     {
         /**
          * @Inject
-         * @var PSX\TemplateInterface
+         * @var \PSX\Framework\Template\TemplateInterface
          */
         protected $template;
 
         public function doIndex()
         {
-            // returns the request url as PSX\Uri
+            // returns the request url as PSX\Uri\Uri
             $this->getUrl();
 
             // returns a request header
@@ -53,13 +53,13 @@ Usage
 
             // imports data from the request body into the record. See the 
             // data chapter for more informations
-            $record = $this->import($source);
+            $model = $this->getBodyAs(Model::class);
 
             // set data to the response body. How this data is presented depends
             // on the Accept header or GET parameter "format"
-            $this->setBody(array(
+            $this->setBody([
                 'foo' => 'bar'
-            ));
+            ]);
         }
     }
 

@@ -5,7 +5,7 @@ Data
 Abstract
 --------
 
-This chapter should give a overview how data handling works in PSX. That means
+This chapter should give an overview how data handling works in PSX. That means
 how you can read data from a request and write a response
 
 Reading requests
@@ -18,28 +18,44 @@ and if we have an `application/json` content type we use the json reader. The
 reader returns the request data in a form which can be easily used in php. I.e. 
 the xml reader returns a DOMDocument and the json reader returns a stdClass.
 
-.. literalinclude:: ../../library/PSX/Data/ReaderInterface.php
-   :language: php
-   :lines: 33-55
-   :prepend: <?php
+.. code-block:: php
+
+    interface ReaderInterface
+    {
+        /**
+         * Transforms the $request into an parseable form this can be an array
+         * or DOMDocument etc.
+         *
+         * @param string $data
+         * @return mixed
+         */
+        public function read($data);
+
+        /**
+         * Returns whether the content type is supported by this reader
+         *
+         * @param \PSX\Http\MediaType $contentType
+         * @return boolean
+         */
+        public function isContentTypeSupported(MediaType $contentType);
+    }
 
 Since we need a uniform structure of the data we must apply a transformation in
 some cases. The transformation depends also on the content type. If we receive
 an `application/xml` content type the XmlArray transformer gets applied.
 
-.. literalinclude:: ../../library/PSX/Data/TransformerInterface.php
-   :language: php
-   :lines: 33-49
-   :prepend: <?php
+.. code-block:: php
 
-Then it is possible to import the data into a record through a importer class. 
-In abstract a importer class takes meta informations from a source and returns 
-a record class containing the data.
-
-.. literalinclude:: ../../library/PSX/Data/Record/ImporterInterface.php
-   :language: php
-   :lines: 31-52
-   :prepend: <?php
+    interface TransformerInterface
+    {
+        /**
+         * Transforms the data into a readable state
+         *
+         * @param string $data
+         * @return array
+         */
+        public function transform($data);
+    }
 
 Available data reader
 ---------------------
@@ -77,75 +93,6 @@ or DOMDocument.
             // @TODO do something with the body
         }
     }
-
-Importer
---------
-
-Which importer gets used depends on the source. You can pass different objects 
-to the import method which in the end provides meta informations how the 
-incoming request data looks. If you pass to the source a 
-PSX\\Data\\RecordInterface the annotations of the record class gets parsed. I.e. 
-if you want import an atom xml format you could use the following controller
-
-.. code-block:: php
-
-    <?php
-
-    namespace Foo\Application;
-
-    use PSX\Atom;
-    use PSX\ControllerAbstract;
-
-    class Index extends ControllerAbstract
-    {
-        public function doIndex()
-        {
-            $atom = $this->import(new Atom());
-
-            // do something with the atom record i.e. $atom->getTitle();
-        }
-    }
-
-The content type application/atom+xml has also a transformer registered which
-builds a data structure from the DOMDocument which then gets imported into the 
-Atom record.
-
-It is also possible to pass a schema definition to the import method. The data
-will be validated against this schema. This has also the advantage that you can 
-use the schema to generate great documentation about the API
-
-.. code-block:: php
-
-    <?php
-
-    namespace Foo\Application;
-
-    use PSX\ControllerAbstract;
-
-    class Index extends ControllerAbstract
-    {
-        /**
-         * @Inject
-         * @var PSX\Data\Schema\SchemaManager
-         */
-        protected $schemaManager;
-
-        public function doIndex()
-        {
-            $entry = $this->import($this->schemaManager->getSchema('Foo\Schema\Entry'));
-
-            // do something with the entry
-        }
-    }
-
-Here an example schema from a test case
-
-.. literalinclude:: ../../tests/PSX/Controller/Foo/Schema/Entry.php
-   :language: php
-   :lines: 32-47
-   :prepend: <?php
-
-More detailed informations about the process at :doc:`import_data`
 
 Writing responses
 -----------------
@@ -206,40 +153,3 @@ would make the request containing an Accept header application/json or GET
 parameter "format" containing "json" the data would be returned as json format. 
 If we would provide an application/atom+xml the atom feed gets returned.
 
-Serializer
-----------
-
-PSX integrates the JMS serializer library to serialize arbitrary objects. This
-is useful if you use i.e. a ORM like doctrine where you have objects which
-contain fields which you want expose per API. Here an example how you could use 
-the serializer
-
-.. code-block:: php
-
-    <?php
-
-    class FooController extends ControllerAbstract
-    {
-        /**
-         * @Inject
-         * @var PSX\Data\SerializerInterface
-         */
-        protected $serializer;
-
-        /**
-         * @Inject
-         * @var Doctrine\ORM\EntityManager
-         */
-        protected $entityManager;
-
-        public function doIndex()
-        {
-            $news = $this->entityManager->getRepository('Foo\BarRepository')->findAll();
-
-            $this->setBody(array(
-                'news' => $this->serialize($news),
-            ));
-        }
-    }
-
-More informations how the serializer works at https://github.com/schmittjoh/serializer.

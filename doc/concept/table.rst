@@ -47,13 +47,13 @@ entries
 
     namespace Acme\News\Application;
 
-    use PSX\ControllerAbstract;
+    use PSX\Framework\Controller\ControllerAbstract;
 
     class NewsController extends ControllerAbstract
     {
     	/**
     	 * @Inject
-    	 * @var PSX\Sql\TableManager
+    	 * @var \PSX\Sql\TableManager
     	 */
     	protected $tableManager;
 
@@ -70,15 +70,92 @@ entries
 Each table has automatically some standard query methods to query and manipulate
 the table
 
-.. literalinclude:: ../../library/PSX/Sql/TableQueryInterface.php
-   :language: php
-   :lines: 32-82
-   :prepend: <?php
+.. code-block:: php
 
-.. literalinclude:: ../../library/PSX/Sql/TableManipulationInterface.php
-   :language: php
-   :lines: 32-57
-   :prepend: <?php
+    <?php
+
+    interface TableQueryInterface
+    {
+        /**
+         * Returns an array of records matching the conditions
+         *
+         * @param integer $startIndex
+         * @param integer $count
+         * @param string $sortBy
+         * @param integer $sortOrder
+         * @param \PSX\Sql\Condition $condition
+         * @return array
+         */
+        public function getAll($startIndex = null, $count = null, $sortBy = null, $sortOrder = null, Condition $condition = null, Fields $fields = null);
+
+        /**
+         * Returns an array of records matching the condition
+         *
+         * @param \PSX\Sql\Condition $condition
+         * @return array
+         */
+        public function getBy(Condition $condition, Fields $fields = null);
+
+        /**
+         * Returns an record by the condition
+         *
+         * @param \PSX\Sql\Condition $condition
+         * @return \PSX\Record\RecordInterface
+         */
+        public function getOneBy(Condition $condition, Fields $fields = null);
+
+        /**
+         * Returns an record by the primary key
+         *
+         * @param string $id
+         * @return \PSX\Record\RecordInterface
+         */
+        public function get($id, Fields $fields = null);
+
+        /**
+         * Returns all available fields of this handler
+         *
+         * @return array
+         */
+        public function getSupportedFields();
+
+        /**
+         * Returns the number of rows matching the given condition in the resultset
+         *
+         * @param \PSX\Sql\Condition $condition
+         * @return integer
+         */
+        public function getCount(Condition $condition = null);
+    }
+
+.. code-block:: php
+
+    interface TableManipulationInterface
+    {
+        /**
+         * Create the record
+         *
+         * @param \PSX\Record\RecordInterface|array $record
+         * @return void
+         */
+        public function create($record);
+
+        /**
+         * Update the record
+         *
+         * @param \PSX\Record\RecordInterface|array $record
+         * @return void
+         */
+        public function update($record);
+
+        /**
+         * Delete the record
+         *
+         * @param \PSX\Record\RecordInterface|array $record
+         * @return void
+         */
+        public function delete($record);
+    }
 
 If you have complex queries it is best practice to put such queries inside the 
 table class where you can reuse the method across your application. Here a
@@ -110,18 +187,7 @@ fictional method which returns the best comments
         }
     }
 
-PSX does not force you to use the table classes. If you want use a ORM or any
+PSX does not force you to use the table classes. If you want use an ORM or any
 other database abstraction layer you only have to add the fitting service to the
 dependency container in order to use them in your controller. See the chapter
 :doc:`/design/dependency_injection` for more informations.
-
-Generation
-----------
-
-It is possible to generate such table classes from a SQL table. Therefor you
-can use the following command
-
-.. code::
-
-    $ ./vendor/bin/psx generate:table Acme\Table\Comment psx_handler_comment
-

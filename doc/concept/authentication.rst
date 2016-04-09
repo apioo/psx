@@ -20,7 +20,7 @@ controller in order to add basic authentication
 
     <?php
 
-    use PSX\Dispatch\RequestFilter\BasicAuthentication;
+    use PSX\Framework\Filter\BasicAuthentication;
     
     ...
     
@@ -56,8 +56,8 @@ informations see :rfc:`5849`.
 
     <?php
     
-    use PSX\Dispatch\RequestFilter\OauthAuthentication;
-    use PSX\Oauth\Provider\Data\Consumer;
+    use PSX\Framework\Filter\OauthAuthentication;
+    use PSX\Oauth\Consumer;
     
     ...
     
@@ -86,7 +86,7 @@ provided `Bearer` access token is valid. For more informations see :rfc:`6749`.
 
     <?php
     
-    use PSX\Dispatch\RequestFilter\Oauth2Authentication;
+    use PSX\Framework\Filter\Oauth2Authentication;
     
     ...
     

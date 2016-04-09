@@ -2,11 +2,10 @@
 PSX Framework
 =============
 
-PSX is a framework written in PHP to create RESTful APIs. It provides tools to 
-handle routing, API versioning, data transformation, authentication, 
-documentation and testing. With PSX you can easily build an REST API around an 
-existing application or create a new one from scratch. More informations at
-http://phpsx.org.
+PSX is a framework written in PHP dedicated to build RESTful APIs. It is based
+on multiple components which cover many aspects of the API lifecycle. These
+components are independent of the framework and can also be used in another
+context. More informations at http://phpsx.org
 
 This manual is seperated into three chapters. The :doc:`getting_started` chapter
 contains all informations to quickly create an REST API with PSX. The 
@@ -24,10 +23,8 @@ TOC
    design
    concept
 
-Help
-----
+Scope
+-----
 
-Because PSX is in an early stage the manual is not complete. I appreciate every 
-help in making this documentation better. The documentation is written in 
-reStructuredText and uses the sphinx documentation generator. If you have made 
-changes that you want commit please submit a pull request.
+This manual covers the full stack framework. If you need informations about
+a specific component please take a look at the repository.

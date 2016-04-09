@@ -8,4 +8,3 @@ Design
    design/dependency_injection
    design/routing
    design/controller
-   design/command

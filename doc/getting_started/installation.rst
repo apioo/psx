@@ -2,20 +2,22 @@
 Installation
 ============
 
-PSX uses composer as dependency manager so in order to install PSX composer must
+PSX uses composer as dependency manager. In order to install PSX composer must
 be installed on your system. More informations howto install composer at 
-https://getcomposer.org/. In case you cant install composer PSX has also a
-pre-packaged release which already includes all dependencies which you can 
-download at https://github.com/k42b3/psx/releases.
+https://getcomposer.org/.
 
-You can install the sample project with the following command: 
+The easiest way to start is to install the PSX sample project through composer:
 
 .. code::
 
     $ php composer.phar create-project psx/sample .
 
-The sample project contains a sample API and all classes which you need to
+This sample project contains a sample API and all classes which you need to
 start with PSX.
+
+In case you cant install composer PSX has also a pre-packaged release which
+already includes all dependencies which you can download at
+https://github.com/apioo/psx/releases
 
 Configuration
 -------------
@@ -36,13 +38,17 @@ Routing
 -------
 
 In order to make a controller accessible you have to define a route in your 
-:file:`routes` file which invokes the controller class. Note PSX tries to 
-autoload the given class name so the namespace must be therefor defined in 
-the :file:`composer.json` autoload key. Here an example route entry:
+:file:`routes` file. PSX tries to autoload the given class name so the namespace
+must be therefor defined in the :file:`composer.json` autoload key. Here an
+example route entry:
 
 .. code::
 
     GET|POST|PUT|DELETE /foo/bar Acme\Api\News\Endpoint
+
+This would invoke the class `Acme\Api\News\Endpoint` if you visit the route
+`/foo/bar`. All controller classes must extend the class
+`PSX\Framework\Controller\ControllerAbstract`
 
 Webserver
 ---------
@@ -54,7 +60,7 @@ You can start the server with the following command:
 
     php -S 127.0.0.1:8000 public/index.php
 
-The configuration file should have the following entries:
+The configuration file should have then the following entries:
 
 .. code::
 

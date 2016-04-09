@@ -3,16 +3,15 @@ Tools
 =====
 
 PSX comes by default with a set of controllers which help you to generate 
-documentation or other data based on your defined APIs. The following chapter
+documentation or other data based on the defined APIs. The following chapter
 explains all available controllers. To setup such a controller you have to add 
-a route entry. The paths in the routes are only a suggestion you can easily 
-change them how you like.
+a route entry.
 
 Documentation
 -------------
 
 PSX provides a controller which can generate automatically a documentation for
-your defined APIs. The controller provides only an API which can be used by any
+the defined APIs. The controller provides only an API which can be used by any
 client to display a documentation for end-users. You can use i.e. evid 
 (https://github.com/k42b3/evid) which is a html/javascript app which uses the 
 API to provide a clean API documentation. With evid it is also very easy to 

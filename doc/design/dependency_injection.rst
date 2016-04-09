@@ -6,10 +6,14 @@ Definition
 ----------
 
 The file :file:`container.php` returns the main DI container of your 
-application. 
+application.
 
-.. literalinclude:: ../../container.php
-   :language: php
+.. code-block:: php
+
+    $container = new \PSX\Framework\Dependency\DefaultContainer();
+    $container->setParameter('config.file', __DIR__ . '/configuration.php');
+
+    return $container;
 
 The DI container of PSX is a simple class where each method represents a 
 service definition. Normally you would create your own container which extends 
@@ -39,16 +43,9 @@ specifiy a method in the container which returns an object instance.
         }
     }
 
-The id of the service is "some_bar" which can be used in a inject annotation.
+The id of the service is "some_bar" which can be used in an inject annotation.
 Note when your object has a dependency to another service use the 
-$this->get('[service_id]') method to get only one instance of the service. In 
-PSX it is best practice to group services into traits. I.e. the default 
-container uses several traits which contains service methods
-
-.. literalinclude:: ../../library/PSX/Dependency/DefaultContainer.php
-   :language: php
-   :lines: 47-51
-   :prepend: <?php
+$this->get('[service_id]') method to get only one instance of the service.
 
 The returned container must be compatible with the symfony DI container. You 
 could also use i.e. the symfony DI container
@@ -66,10 +63,9 @@ could also use i.e. the symfony DI container
 Usage
 -----
 
-The command and controller are the points which connect the framework to your
-application. The DI container is not directly accessible instead you have to
-specify properties in your command and controller with a specific inject 
-annotation to use a service. 
+The DI container is not directly accessible instead you have to specify
+properties in your controller with a specific inject annotation to use a
+service.
 
 .. code-block:: php
 
@@ -79,17 +75,17 @@ annotation to use a service.
     {
         /**
          * @Inject
-         * @var PSX\Http
+         * @var \PSX\Http\Client
          */
-        protected $http
+        protected $httpClient;
     }
 
-When the controller or command gets created PSX searches for properties with
-the "@Inject" annotation. If the inject annotation is available it takes the 
-name from the property and searches in the DI container for a fitting service.
-You can also specify the id of the service which should be used i.e. 
-"@Inject entity_manager". We need to have the following method in our DI 
-container in order to access the "http" service from the code above. 
+When the controller is created PSX searches for properties with the "@Inject"
+annotation. If the inject annotation is available it takes the name of the
+property and searches in the DI container for a fitting service. You can also
+specify the id of the service which should be used i.e.
+`@Inject("entity_manager")`. We need to have the following method in our DI
+container in order to access the `httpClient` service from the code above.
 
 .. code-block:: php
 
@@ -98,16 +94,16 @@ container in order to access the "http" service from the code above.
     class DefaultContainer extends Container
     {
         /**
-         * @return PSX\Http
+         * @return PSX\Http\Client
          */
-        public function getHttp()
+        public function getHttpClient()
         {
-            return new Http();
+            return new Http\Client();
         }
     }
 
 This has the advantage that the DI container is completely invisible for our 
 application. We only need to explicit specify the services which we need in our 
-controller or command. So it is by design not possible to pass the DI container 
-to any service in our application which decouples the code from the framework. 
-Also it has the nice advantage that you can use code completion in your IDE.
+controller. So it is by design not possible to pass the DI container to any
+service in our application which decouples the code from the framework. Also it
+has the nice advantage that you can use code completion in your IDE.

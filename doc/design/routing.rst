@@ -24,18 +24,18 @@ the following example routing file
     GET /file/*path Foo\News\Application\File::downloadFile
 
 in case we make the following HTTP request the method doIndex of the class 
-Foo\\News\\Application\\Api gets called
+`Foo\\News\\Application\\Api` gets called
 
 .. code-block:: none
 
     GET /api HTTP/1.1
 
 The path /foo is an alias for the path /. That means in both cases we call the 
-method doFoo of the class Foo\\News\\Application\\Index.
+method doFoo of the class `Foo\\News\\Application\\Index`.
 
 If we make a HTTP request to /news/2 the controller 
-Foo\\News\\Application\\News::doDetail gets called. In our controller we can 
-access the dynamic part of the path with
+`Foo\\News\\Application\\News::doDetail` gets called. In our controller we can
+access the dynamic part of the path with:
 
 .. code-block:: php
 
@@ -49,7 +49,7 @@ our example the path /news/archive/$year<[0-9]+> is only matched if the last
 part contains numeric signs i.e. /news/archive/2014.
 
 Also you can specifiy a wildcard * which matches all content i.e. 
-/file/foo/bar/test.txt would invoke Foo\\News\\Application\\File::downloadFile
+/file/foo/bar/test.txt would invoke `Foo\\News\\Application\\File::downloadFile`
 
 Reverse routing
 ---------------
@@ -82,10 +82,15 @@ If you want store your routes in another format or in a database you can
 write your own RoutingParser. The routing parser returns a RoutingCollection 
 which contains all available routes.
 
-.. literalinclude:: ../../library/PSX/Loader/RoutingParserInterface.php
-   :language: php
-   :lines: 30-36
-   :prepend: <?php
+.. code-block:: php
+
+    interface RoutingParserInterface
+    {
+        /**
+         * @return \PSX\Framework\Loader\RoutingCollection
+         */
+        public function getCollection();
+    }
 
 Your routing class has to implement this interface. Then you can overwrite the 
 method :code:`getRoutingParser` in your DI container. Note in case you have a
@@ -93,7 +98,19 @@ really huge amount of routes you should probably consider to write your own
 location finder since the routing collection contains all available routes.
 A location finder has to implement the following interface.
 
-.. literalinclude:: ../../library/PSX/Loader/LocationFinderInterface.php
-   :language: php
-   :lines: 32-45
-   :prepend: <?php
+.. code-block:: php
+
+    interface LocationFinderInterface
+    {
+        /**
+         * Resolves the incoming request to an source. An source is an string which
+         * can be resolved to an callback. The source must be added to the context.
+         * If the request can not be resolved the method must return null else the
+         * given request
+         *
+         * @param \PSX\Http\RequestInterface $request
+         * @param \PSX\Framework\Loader\Context $context
+         * @return \PSX\Http\RequestInterface|null
+         */
+        public function resolve(RequestInterface $request, Context $context);
+    }

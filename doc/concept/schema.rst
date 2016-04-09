@@ -19,8 +19,8 @@ In the following we will define a complex sample schema
 
     namespace Acme\Schema;
 
-    use PSX\Data\SchemaAbstract;
-    use PSX\Data\Schema\Property;
+    use PSX\Schema\SchemaAbstract;
+    use PSX\Schema\Property;
 
     class Product extends SchemaAbstract
     {
@@ -53,8 +53,8 @@ In the following we will define a complex sample schema
 
     namespace Acme\Schema;
 
-    use PSX\Data\SchemaAbstract;
-    use PSX\Data\Schema\Property;
+    use PSX\Schema\SchemaAbstract;
+    use PSX\Schema\Property;
 
     class Customer extends SchemaAbstract
     {
@@ -75,8 +75,8 @@ In the following we will define a complex sample schema
 
     namespace Acme\Schema;
 
-    use PSX\Data\SchemaAbstract;
-    use PSX\Data\Schema\Property;
+    use PSX\Schema\SchemaAbstract;
+    use PSX\Schema\Property;
 
     class Option extends SchemaAbstract
     {

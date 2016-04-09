@@ -6,7 +6,7 @@ Getting started
    :maxdepth: 2
 
    getting_started/installation
-   getting_started/schema
-   getting_started/logic
+   getting_started/controller
+   getting_started/service
    getting_started/tools
    getting_started/cli

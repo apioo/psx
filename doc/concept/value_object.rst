@@ -82,11 +82,11 @@ Implementations
 
 The following value object implementations exist:
 
- * PSX\\Uri
- * PSX\\Url
- * PSX\\Urn
+ * PSX\\Uri\\Uri
+ * PSX\\Uri\\Url
+ * PSX\\Uri\\Urn
  * PSX\\Http\\MediaType
  * PSX\\Http\\Cookie
  * PSX\\DateTime\\Date
  * PSX\\DateTime\\Time
- * PSX\\DateTime
+ * PSX\\DateTime\\DateTime
