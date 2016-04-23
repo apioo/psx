@@ -21,8 +21,8 @@ class RoutingTest extends ApiTestCase
                 "PUT",
                 "DELETE"
             ],
-            "path": "\/population\/annotation",
-            "source": "PSX\\Project\\Tests\\Api\\Population\\CollectionAnnotation"
+            "path": "\/population\/popo",
+            "source": "PSX\\Project\\Tests\\Api\\Population\\CollectionPopo"
         },
         {
             "methods": [
@@ -31,8 +31,28 @@ class RoutingTest extends ApiTestCase
                 "PUT",
                 "DELETE"
             ],
-            "path": "\/population\/annotation\/:id",
-            "source": "PSX\\Project\\Tests\\Api\\Population\\EntityAnnotation"
+            "path": "\/population\/popo\/:id",
+            "source": "PSX\\Project\\Tests\\Api\\Population\\EntityPopo"
+        },
+        {
+            "methods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE"
+            ],
+            "path": "\/population\/jsonschema",
+            "source": "PSX\\Project\\Tests\\Api\\Population\\CollectionJsonSchema"
+        },
+        {
+            "methods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE"
+            ],
+            "path": "\/population\/jsonschema\/:id",
+            "source": "PSX\\Project\\Tests\\Api\\Population\\EntityJsonSchema"
         },
         {
             "methods": [

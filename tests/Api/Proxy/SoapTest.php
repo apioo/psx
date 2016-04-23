@@ -8,7 +8,7 @@ class SoapTest extends ApiTestCase
 {
     public function testGet()
     {
-        $response = $this->sendRequest('http://127.0.0.1/proxy/soap', 'GET', ['SOAPAction' => '/population/annotation/2#GET']);
+        $response = $this->sendRequest('http://127.0.0.1/proxy/soap', 'GET', ['SOAPAction' => '/population/popo/2#GET']);
 
         $body = (string) $response->getBody();
         $body = preg_replace('/<faultstring>(.*)<\/faultstring>/imsU', '<faultstring>[faultstring]</faultstring>', $body);
@@ -43,7 +43,7 @@ XML;
 
     public function testPost()
     {
-        $response = $this->sendRequest('http://127.0.0.1/proxy/soap', 'POST', ['SOAPAction' => '/population/annotation/2#GET']);
+        $response = $this->sendRequest('http://127.0.0.1/proxy/soap', 'POST', ['SOAPAction' => '/population/popo/2#GET']);
 
         $body   = (string) $response->getBody();
         $expect = <<<XML
@@ -56,7 +56,7 @@ XML;
    <region>United States</region>
    <population>307212123</population>
    <users>227719000</users>
-   <world_users>13.1</world_users>
+   <worldUsers>13.1</worldUsers>
    <datetime>2009-11-29T15:22:40Z</datetime>
   </getResponse>
  </soap:Body>

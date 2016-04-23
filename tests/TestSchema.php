@@ -16,7 +16,7 @@ class TestSchema
         $table->addColumn('region', 'string');
         $table->addColumn('population', 'integer');
         $table->addColumn('users', 'integer');
-        $table->addColumn('world_users', 'float');
+        $table->addColumn('worldUsers', 'float');
         $table->addColumn('datetime', 'datetime');
         $table->setPrimaryKey(array('id'));
 

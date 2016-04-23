@@ -39,12 +39,12 @@ class Population
     public function create($place, $region, $count, $users, $worldUsers)
     {
         $this->populationTable->create([
-            'place'       => $place,
-            'region'      => $region,
-            'population'  => $count,
-            'users'       => $users,
-            'world_users' => $worldUsers,
-            'datetime'    => new \DateTime(),
+            'place'      => $place,
+            'region'     => $region,
+            'population' => $count,
+            'users'      => $users,
+            'worldUsers' => $worldUsers,
+            'datetime'   => new \DateTime(),
         ]);
     }
 
@@ -53,12 +53,12 @@ class Population
         $population = $this->get($id);
 
         $this->populationTable->update([
-            'id'          => $population['id'],
-            'place'       => $place,
-            'region'      => $region,
-            'population'  => $count,
-            'users'       => $users,
-            'world_users' => $worldUsers,
+            'id'         => $population['id'],
+            'place'      => $place,
+            'region'     => $region,
+            'population' => $count,
+            'users'      => $users,
+            'worldUsers' => $worldUsers,
         ]);
     }
 

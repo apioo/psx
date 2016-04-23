@@ -2,7 +2,7 @@
 
 namespace PSX\Project\Tests\Api\Population;
 
-use PSX\Framework\Controller\AnnotationApiAbstract;
+use PSX\Framework\Controller\SchemaApiAbstract;
 use PSX\Record\RecordInterface;
 
 /**
@@ -10,7 +10,7 @@ use PSX\Record\RecordInterface;
  * @Description("Entity endpoint")
  * @PathParam(name="id", type="integer", required=true)
  */
-class EntityAnnotation extends AnnotationApiAbstract
+class EntityPopo extends SchemaApiAbstract
 {
     /**
      * @Inject
@@ -19,7 +19,7 @@ class EntityAnnotation extends AnnotationApiAbstract
     protected $populationService;
 
     /**
-     * @Outgoing(code=200, schema="../../Resource/schema/population/entity.json")
+     * @Outgoing(code=200, schema="PSX\Project\Tests\Model\Entity")
      */
     protected function doGet()
     {
@@ -29,18 +29,18 @@ class EntityAnnotation extends AnnotationApiAbstract
     }
 
     /**
-     * @Incoming(schema="../../Resource/schema/population/entity.json")
-     * @Outgoing(code=200, schema="../../Resource/schema/population/message.json")
+     * @Incoming(schema="PSX\Project\Tests\Model\Entity")
+     * @Outgoing(code=200, schema="PSX\Project\Tests\Model\Message")
      */
-    protected function doPut(RecordInterface $record)
+    protected function doPut($record)
     {
         $this->populationService->update(
             $this->pathParameters['id'],
-            $record['place'],
-            $record['region'],
-            $record['population'],
-            $record['users'],
-            $record['world_users']
+            $record->getPlace(),
+            $record->getRegion(),
+            $record->getPopulation(),
+            $record->getUsers(),
+            $record->getWorldUsers()
         );
 
         return [
@@ -50,9 +50,9 @@ class EntityAnnotation extends AnnotationApiAbstract
     }
 
     /**
-     * @Outgoing(code=200, schema="../../Resource/schema/population/message.json")
+     * @Outgoing(code=200, schema="PSX\Project\Tests\Model\Message")
      */
-    protected function doDelete(RecordInterface $record)
+    protected function doDelete($record)
     {
         $this->populationService->delete(
             $this->pathParameters['id']

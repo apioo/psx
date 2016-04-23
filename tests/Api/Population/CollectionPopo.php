@@ -2,14 +2,14 @@
 
 namespace PSX\Project\Tests\Api\Population;
 
-use PSX\Framework\Controller\AnnotationApiAbstract;
-use PSX\Record\RecordInterface;
+use PSX\Framework\Controller\SchemaApiAbstract;
+use PSX\Framework\Annotation\Inject;
 
 /**
  * @Title("Population")
  * @Description("Collection endpoint")
  */
-class CollectionAnnotation extends AnnotationApiAbstract
+class CollectionPopo extends SchemaApiAbstract
 {
     /**
      * @Inject
@@ -20,7 +20,7 @@ class CollectionAnnotation extends AnnotationApiAbstract
     /**
      * @QueryParam(name="startIndex", type="integer")
      * @QueryParam(name="count", type="integer")
-     * @Outgoing(code=200, schema="../../Resource/schema/population/collection.json")
+     * @Outgoing(code=200, schema="PSX\Project\Tests\Model\Collection")
      */
     protected function doGet()
     {
@@ -31,17 +31,17 @@ class CollectionAnnotation extends AnnotationApiAbstract
     }
 
     /**
-     * @Incoming(schema="../../Resource/schema/population/entity.json")
-     * @Outgoing(code=201, schema="../../Resource/schema/population/message.json")
+     * @Incoming(schema="PSX\Project\Tests\Model\Entity")
+     * @Outgoing(code=201, schema="PSX\Project\Tests\Model\Message")
      */
-    protected function doPost(RecordInterface $record)
+    protected function doPost($record)
     {
         $this->populationService->create(
-            $record['place'],
-            $record['region'],
-            $record['population'],
-            $record['users'],
-            $record['world_users']
+            $record->getPlace(),
+            $record->getRegion(),
+            $record->getPopulation(),
+            $record->getUsers(),
+            $record->getWorldUsers()
         );
 
         return [

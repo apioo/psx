@@ -9,7 +9,7 @@ class RamlTest extends ApiTestCase
 {
     public function testGet()
     {
-        $response = $this->sendRequest('http://127.0.0.1/generator/raml/*/population/annotation', 'GET');
+        $response = $this->sendRequest('http://127.0.0.1/generator/raml/*/population/popo', 'GET');
 
         $body   = (string) $response->getBody();
         $expect = <<<'RAML'
@@ -18,7 +18,7 @@ class RamlTest extends ApiTestCase
 baseUri: 'http://127.0.0.1/'
 version: v0
 title: Population
-/population/annotation:
+/population/popo:
   description: 'Collection endpoint'
   get:
     queryParameters:
@@ -40,7 +40,7 @@ title: Population
                   "title": "collection",
                   "description": "Collection result",
                   "definitions": {
-                      "ref11097597650a2b8da8978e836e225413": {
+                      "ref4fe78e9f8d9266767f15f9b094d00e9d": {
                           "type": "object",
                           "properties": {
                               "id": {
@@ -66,7 +66,7 @@ title: Population
                                   "type": "integer",
                                   "description": "Number of internet users"
                               },
-                              "world_users": {
+                              "worldUsers": {
                                   "type": "number",
                                   "description": "Percentage users of the world"
                               },
@@ -82,8 +82,9 @@ title: Population
                               "region",
                               "population",
                               "users",
-                              "world_users"
+                              "worldUsers"
                           ],
+                          "reference": "PSX\\Project\\Tests\\Model\\Entity",
                           "additionalProperties": false
                       }
                   },
@@ -94,7 +95,7 @@ title: Population
                       "entry": {
                           "type": "array",
                           "items": {
-                              "$ref": "#\/definitions\/ref11097597650a2b8da8978e836e225413"
+                              "$ref": "#\/definitions\/ref4fe78e9f8d9266767f15f9b094d00e9d"
                           },
                           "title": "entry"
                       }
@@ -135,7 +136,7 @@ title: Population
                       "type": "integer",
                       "description": "Number of internet users"
                   },
-                  "world_users": {
+                  "worldUsers": {
                       "type": "number",
                       "description": "Percentage users of the world"
                   },
@@ -149,7 +150,7 @@ title: Population
                   "region",
                   "population",
                   "users",
-                  "world_users"
+                  "worldUsers"
               ],
               "additionalProperties": false
           }

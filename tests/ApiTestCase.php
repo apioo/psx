@@ -14,8 +14,10 @@ class ApiTestCase extends ControllerDbTestCase
     protected function getPaths()
     {
         return array(
-            [['GET', 'POST', 'PUT', 'DELETE'], '/population/annotation', 'PSX\Project\Tests\Api\Population\CollectionAnnotation'],
-            [['GET', 'POST', 'PUT', 'DELETE'], '/population/annotation/:id', 'PSX\Project\Tests\Api\Population\EntityAnnotation'],
+            [['GET', 'POST', 'PUT', 'DELETE'], '/population/popo', 'PSX\Project\Tests\Api\Population\CollectionPopo'],
+            [['GET', 'POST', 'PUT', 'DELETE'], '/population/popo/:id', 'PSX\Project\Tests\Api\Population\EntityPopo'],
+            [['GET', 'POST', 'PUT', 'DELETE'], '/population/jsonschema', 'PSX\Project\Tests\Api\Population\CollectionJsonSchema'],
+            [['GET', 'POST', 'PUT', 'DELETE'], '/population/jsonschema/:id', 'PSX\Project\Tests\Api\Population\EntityJsonSchema'],
             [['GET', 'POST', 'PUT', 'DELETE'], '/population/raml', 'PSX\Project\Tests\Api\Population\CollectionRaml'],
             [['GET', 'POST', 'PUT', 'DELETE'], '/population/raml/:id', 'PSX\Project\Tests\Api\Population\EntityRaml'],
             [['GET', 'POST', 'PUT', 'DELETE'], '/population', 'PSX\Project\Tests\Api\Population\Collection'],

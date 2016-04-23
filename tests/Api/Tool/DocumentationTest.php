@@ -15,7 +15,7 @@ class DocumentationTest extends ApiTestCase
 {
     "routings": [
         {
-            "path": "\/population\/annotation",
+            "path": "\/population\/popo",
             "methods": [
                 "GET",
                 "POST",
@@ -25,7 +25,27 @@ class DocumentationTest extends ApiTestCase
             "version": "*"
         },
         {
-            "path": "\/population\/annotation\/:id",
+            "path": "\/population\/popo\/:id",
+            "methods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE"
+            ],
+            "version": "*"
+        },
+        {
+            "path": "\/population\/jsonschema",
+            "methods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE"
+            ],
+            "version": "*"
+        },
+        {
+            "path": "\/population\/jsonschema\/:id",
             "methods": [
                 "GET",
                 "POST",
@@ -98,12 +118,12 @@ JSON;
 
     public function testGetDetail()
     {
-        $response = $this->sendRequest('http://127.0.0.1/tool/doc/*/population/annotation', 'GET');
+        $response = $this->sendRequest('http://127.0.0.1/tool/doc/*/population/popo', 'GET');
 
         $body   = (string) $response->getBody();
         $expect = <<<'JSON'
 {
-    "path": "\/population\/annotation",
+    "path": "\/population\/popo",
     "version": "*",
     "status": 1,
     "description": "Collection endpoint",
@@ -125,7 +145,7 @@ JSON;
                 },
                 "additionalProperties": true
             },
-            "ref11097597650a2b8da8978e836e225413": {
+            "ref4fe78e9f8d9266767f15f9b094d00e9d": {
                 "type": "object",
                 "title": "entity",
                 "description": "Represents an internet population entity",
@@ -153,7 +173,7 @@ JSON;
                         "type": "integer",
                         "description": "Number of internet users"
                     },
-                    "world_users": {
+                    "worldUsers": {
                         "type": "number",
                         "description": "Percentage users of the world"
                     },
@@ -167,11 +187,11 @@ JSON;
                     "region",
                     "population",
                     "users",
-                    "world_users"
+                    "worldUsers"
                 ],
                 "additionalProperties": false
             },
-            "ref86e9674085c91e87e8e04206e7c53f16": {
+            "ref0eaf38a348f17dc3ce8660979b1d42e6": {
                 "type": "object",
                 "title": "collection",
                 "description": "Collection result",
@@ -182,7 +202,7 @@ JSON;
                     "entry": {
                         "type": "array",
                         "items": {
-                            "$ref": "#\/definitions\/ref11097597650a2b8da8978e836e225413"
+                            "$ref": "#\/definitions\/ref4fe78e9f8d9266767f15f9b094d00e9d"
                         },
                         "title": "entry"
                     }
@@ -207,10 +227,10 @@ JSON;
                 "$ref": "#\/definitions\/ref12427a2a4da80c722d6d54e518488d16"
             },
             "GET-200-response": {
-                "$ref": "#\/definitions\/ref86e9674085c91e87e8e04206e7c53f16"
+                "$ref": "#\/definitions\/ref0eaf38a348f17dc3ce8660979b1d42e6"
             },
             "POST-request": {
-                "$ref": "#\/definitions\/ref11097597650a2b8da8978e836e225413"
+                "$ref": "#\/definitions\/ref4fe78e9f8d9266767f15f9b094d00e9d"
             },
             "POST-201-response": {
                 "$ref": "#\/definitions\/ref31ead4d236fd038a7d55a40e2ca1171e"
@@ -234,15 +254,15 @@ JSON;
     "links": [
         {
             "rel": "wsdl",
-            "href": "\/generator\/wsdl\/*\/population\/annotation"
+            "href": "\/generator\/wsdl\/*\/population\/popo"
         },
         {
             "rel": "swagger",
-            "href": "\/generator\/swagger\/*\/population\/annotation"
+            "href": "\/generator\/swagger\/*\/population\/popo"
         },
         {
             "rel": "raml",
-            "href": "\/generator\/raml\/*\/population\/annotation"
+            "href": "\/generator\/raml\/*\/population\/popo"
         }
     ]
 }

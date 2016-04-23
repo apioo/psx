@@ -30,7 +30,7 @@
       "type": "integer",
       "description": "Number of internet users"
     },
-    "world_users": {
+    "worldUsers": {
       "type": "number",
       "description": "Percentage users of the world"
     },
@@ -40,5 +40,5 @@
       "description": "Date when the entity was created"
     }
   },
-  "required": ["place", "region", "population", "users", "world_users"]
+  "required": ["place", "region", "population", "users", "worldUsers"]
 }

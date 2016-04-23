@@ -17,10 +17,16 @@ class SwaggerTest extends ApiTestCase
     "apiVersion": "1.0",
     "apis": [
         {
-            "path": "\/*\/population\/annotation"
+            "path": "\/*\/population\/popo"
         },
         {
-            "path": "\/*\/population\/annotation\/{id}"
+            "path": "\/*\/population\/popo\/{id}"
+        },
+        {
+            "path": "\/*\/population\/jsonschema"
+        },
+        {
+            "path": "\/*\/population\/jsonschema\/{id}"
         },
         {
             "path": "\/*\/population\/raml"
@@ -44,7 +50,7 @@ JSON;
 
     public function testGetDetail()
     {
-        $response = $this->sendRequest('http://127.0.0.1/generator/swagger/*/population/annotation', 'GET');
+        $response = $this->sendRequest('http://127.0.0.1/generator/swagger/*/population/popo', 'GET');
 
         $body   = (string) $response->getBody();
         $expect = <<<'JSON'
@@ -52,10 +58,10 @@ JSON;
     "swaggerVersion": "1.2",
     "apiVersion": 0,
     "basePath": "http:\/\/127.0.0.1\/",
-    "resourcePath": "\/population\/annotation",
+    "resourcePath": "\/population\/popo",
     "apis": [
         {
-            "path": "\/population\/annotation",
+            "path": "\/population\/popo",
             "description": "Collection endpoint",
             "operations": [
                 {
@@ -116,15 +122,15 @@ JSON;
                 }
             }
         },
-        "ref11097597650a2b8da8978e836e225413": {
-            "id": "ref11097597650a2b8da8978e836e225413",
+        "ref4fe78e9f8d9266767f15f9b094d00e9d": {
+            "id": "ref4fe78e9f8d9266767f15f9b094d00e9d",
             "description": "Represents an internet population entity",
             "required": [
                 "place",
                 "region",
                 "population",
                 "users",
-                "world_users"
+                "worldUsers"
             ],
             "properties": {
                 "id": {
@@ -150,7 +156,7 @@ JSON;
                     "type": "integer",
                     "description": "Number of internet users"
                 },
-                "world_users": {
+                "worldUsers": {
                     "type": "number",
                     "description": "Percentage users of the world"
                 },
@@ -160,8 +166,8 @@ JSON;
                 }
             }
         },
-        "ref86e9674085c91e87e8e04206e7c53f16": {
-            "id": "ref86e9674085c91e87e8e04206e7c53f16",
+        "ref0eaf38a348f17dc3ce8660979b1d42e6": {
+            "id": "ref0eaf38a348f17dc3ce8660979b1d42e6",
             "description": "Collection result",
             "properties": {
                 "totalResults": {
@@ -170,7 +176,7 @@ JSON;
                 "entry": {
                     "type": "array",
                     "items": {
-                        "$ref": "ref11097597650a2b8da8978e836e225413"
+                        "$ref": "ref4fe78e9f8d9266767f15f9b094d00e9d"
                     },
                     "title": "entry"
                 }
@@ -209,7 +215,7 @@ JSON;
                 "entry": {
                     "type": "array",
                     "items": {
-                        "$ref": "ref11097597650a2b8da8978e836e225413"
+                        "$ref": "ref4fe78e9f8d9266767f15f9b094d00e9d"
                     },
                     "title": "entry"
                 }
@@ -223,7 +229,7 @@ JSON;
                 "region",
                 "population",
                 "users",
-                "world_users"
+                "worldUsers"
             ],
             "properties": {
                 "id": {
@@ -249,7 +255,7 @@ JSON;
                     "type": "integer",
                     "description": "Number of internet users"
                 },
-                "world_users": {
+                "worldUsers": {
                     "type": "number",
                     "description": "Percentage users of the world"
                 },

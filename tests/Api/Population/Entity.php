@@ -10,7 +10,7 @@ class Entity extends VersionController
     {
         return [
             1 => EntityRaml::class,
-            2 => EntityAnnotation::class,
+            2 => EntityPopo::class,
         ];
     }
 }

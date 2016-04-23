@@ -19,7 +19,7 @@ class VersionTest extends ApiTestCase
     "region": "United States",
     "population": 307212123,
     "users": 227719000,
-    "world_users": 13.1,
+    "worldUsers": 13.1,
     "datetime": "2009-11-29T15:22:40Z"
 }
 JSON;
@@ -40,7 +40,7 @@ JSON;
     "region": "United States",
     "population": 307212123,
     "users": 227719000,
-    "world_users": 13.1,
+    "worldUsers": 13.1,
     "datetime": "2009-11-29T15:22:40Z"
 }
 JSON;

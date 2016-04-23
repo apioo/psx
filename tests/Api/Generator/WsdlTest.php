@@ -8,7 +8,7 @@ class WsdlTest extends ApiTestCase
 {
     public function testGet()
     {
-        $response = $this->sendRequest('http://127.0.0.1/generator/wsdl/*/population/annotation', 'GET');
+        $response = $this->sendRequest('http://127.0.0.1/generator/wsdl/*/population/popo', 'GET');
 
         $body   = (string) $response->getBody();
         $expect = <<<XML
@@ -24,11 +24,11 @@ class WsdlTest extends ApiTestCase
           </xs:annotation>
           <xs:sequence>
             <xs:element name="totalResults" type="xs:integer" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="entry" type="tns:type11097597650a2b8da8978e836e225413" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="entry" type="tns:type4fe78e9f8d9266767f15f9b094d00e9d" minOccurs="0" maxOccurs="unbounded"/>
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:complexType name="type11097597650a2b8da8978e836e225413">
+      <xs:complexType name="type4fe78e9f8d9266767f15f9b094d00e9d">
         <xs:annotation>
           <xs:documentation>Represents an internet population entity</xs:documentation>
         </xs:annotation>
@@ -38,7 +38,7 @@ class WsdlTest extends ApiTestCase
           <xs:element name="region" type="tns:type223a14ad48026b2ee7c4dcf2b0d4c934" minOccurs="1" maxOccurs="1"/>
           <xs:element name="population" type="xs:integer" minOccurs="1" maxOccurs="1"/>
           <xs:element name="users" type="xs:integer" minOccurs="1" maxOccurs="1"/>
-          <xs:element name="world_users" type="xs:float" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="worldUsers" type="xs:float" minOccurs="1" maxOccurs="1"/>
           <xs:element name="datetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
       </xs:complexType>
@@ -63,7 +63,7 @@ class WsdlTest extends ApiTestCase
             <xs:element name="region" type="tns:type223a14ad48026b2ee7c4dcf2b0d4c934" minOccurs="1" maxOccurs="1"/>
             <xs:element name="population" type="xs:integer" minOccurs="1" maxOccurs="1"/>
             <xs:element name="users" type="xs:integer" minOccurs="1" maxOccurs="1"/>
-            <xs:element name="world_users" type="xs:float" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="worldUsers" type="xs:float" minOccurs="1" maxOccurs="1"/>
             <xs:element name="datetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
           </xs:sequence>
         </xs:complexType>
@@ -124,7 +124,7 @@ class WsdlTest extends ApiTestCase
   <wsdl:binding name="PopulationBinding" type="tns:PopulationPortType">
     <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
     <wsdl:operation name="getCollection">
-      <soap:operation soapAction="/population/annotation#GET"/>
+      <soap:operation soapAction="/population/popo#GET"/>
       <wsdl:input>
         <soap:body use="literal"/>
       </wsdl:input>
@@ -136,7 +136,7 @@ class WsdlTest extends ApiTestCase
       </wsdl:fault>
     </wsdl:operation>
     <wsdl:operation name="postEntity">
-      <soap:operation soapAction="/population/annotation#POST"/>
+      <soap:operation soapAction="/population/popo#POST"/>
       <wsdl:input>
         <soap:body use="literal"/>
       </wsdl:input>

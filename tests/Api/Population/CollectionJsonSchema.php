@@ -2,12 +2,14 @@
 
 namespace PSX\Project\Tests\Api\Population;
 
-use PSX\Api\Parser\Raml;
 use PSX\Framework\Controller\SchemaApiAbstract;
-use PSX\Framework\Loader\Context;
 use PSX\Record\RecordInterface;
 
-class CollectionRaml extends SchemaApiAbstract
+/**
+ * @Title("Population")
+ * @Description("Collection endpoint")
+ */
+class CollectionJsonSchema extends SchemaApiAbstract
 {
     /**
      * @Inject
@@ -15,11 +17,11 @@ class CollectionRaml extends SchemaApiAbstract
      */
     protected $populationService;
 
-    public function getDocumentation($version = null)
-    {
-        return Raml::fromFile(__DIR__ . '/../../Resource/population.raml', $this->context->get(Context::KEY_PATH));
-    }
-
+    /**
+     * @QueryParam(name="startIndex", type="integer")
+     * @QueryParam(name="count", type="integer")
+     * @Outgoing(code=200, schema="../../Resource/schema/population/collection.json")
+     */
     protected function doGet()
     {
         return $this->populationService->getAll(
@@ -28,6 +30,10 @@ class CollectionRaml extends SchemaApiAbstract
         );
     }
 
+    /**
+     * @Incoming(schema="../../Resource/schema/population/entity.json")
+     * @Outgoing(code=201, schema="../../Resource/schema/population/message.json")
+     */
     protected function doPost($record)
     {
         $this->populationService->create(
