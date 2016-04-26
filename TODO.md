@@ -1,10 +1,35 @@
 _Ever growing list of ideas and thoughts howto improve and extend PSX. Topics_ 
 _which are likely to be implemented are moved to a seperate github issue_
 
+### 2.x
+
+- [ ] Handle JSONRpc calls
+- [x] SchemaApiAbstract for outgoing schemas we need an option to set an 
+      passthru schema which simply outputs all provided data
+- [x] Use https://github.com/nikic/PHP-Parser/blob/master/doc/4_Code_generation.markdown
+      to generate code
+- [x] Remove set/getRestrictedFields in TableAbstract
+- [x] Redesign framework generations commands
+- [x] Fix problem with annotation collision @Title in api and schema
+- [x] Schema manager erturns same instance probably a problem when a schema gets
+      modified
+- [x] Add annotation to define the class of the request body, thus we must
+      remove the RecordInterface type hint of the doPost etc methods
+- [x] Create schema generator which dumps a schema as PHP code
+- [x] Remove doCreate and doUpdate call in SchemaApiAbstract
+- [x] Think about moving from a monolith repo into multiple packages. There are
+      some components which might be useful withput psx i.e. data, schema
+- [x] We need a command which reads a RAML/Swagger file and generates a 
+      controller with annotations based on the definition
+
 ### 1.x
 
-- [ ] We need a command which reads a RAML/Swagger file and generates a 
-      controller with annotations based on the definition
+- [ ] Add GraphQL parser to generate a schema based on a GraphQL string #12
+- [ ] Add Swagger2 support #11
+- [ ] Improve OAuth2 support #7
+- [ ] Add host-meta controller to expose specific API services #5
+- [ ] Create controller which generates a text/uri-list #4
+- [ ] Add WADL generator #2
 - [ ] Probably adapt a common API error format:
       https://github.com/blongden/vnd.error
       https://tools.ietf.org/html/draft-nottingham-http-problem-07
@@ -12,8 +37,6 @@ _which are likely to be implemented are moved to a seperate github issue_
 - [ ] Better support for conditional requests E-Tag, If-Match etc.
 - [ ] Think about support for OData
 - [ ] Think about support for JSON-RPC
-- [ ] Add Swagger2 support #11
-- [ ] Add GraphQL parser to generate a schema based on a GraphQL string #12
 - [ ] Add http interceptor handler and method to add global default headers i.e.
       a user agent header (these can be overriden by a specific set header)
 - [ ] Use DateTimeImmutable if we are dropping support for 5.4 and require at 
@@ -22,10 +45,6 @@ _which are likely to be implemented are moved to a seperate github issue_
       of the prototype element
 - [ ] Evaluate again whether to use psr7. Probably wait to see adoption, 
       immutability is still a problem
-- [ ] Improve OAuth2 support #7
-- [ ] Add host-meta controller to expose specific API services #5
-- [ ] Create controller which generates a text/uri-list #4
-- [ ] Add WADL generator #2
 - [ ] Extend schema representation
   - [ ] Add schema property default value option
   - [ ] Possibility to describe in an API that authentication is required. 
@@ -36,24 +55,8 @@ _which are likely to be implemented are moved to a seperate github issue_
   - [x] Add possibility to add a wildcard type in a schema which allows 
         arbitrary subtypes where we dont know the structure i.e. config (Is this 
         a good idea?)
-- [ ] Add commands which generate php code
-  - [ ] Add command to generate an API endpoint based on a RAML file
-  - [ ] Add command to generate a PHP schema based on a json schema
-  - [ ] Add command to generate a json schema from a PHP schema
-- [ ] Add command to generate client code based on the API definition. Probably 
-      this should be done in another project and based on a RAML/jsonschema spec
 - [ ] Add event listener to table manager so that we can fire an event everytime 
       a record gets created, updated or deleted
-- [ ] Schema generation
-  - [ ] Probably add json schema importer command to create a PHP schema based
-        on the given json schema
-  - [ ] Add generator to generate a php schema class from a xsd or json schema 
-        definition 
-  - [ ] Create tool controller to create and export a schema. Should produce
-        a json schema which can be imported by a command
-  - [ ] Create command to create PHP source code based on a RAML spec. This 
-        could probably use the json schema generator to generate the schema 
-        class. So we could create a complete schema endpoint from the RAML spec
 - [ ] Consider use Stash as caching library if PSR is ready
 - [ ] Evaluate whether we could build a RDF writer
 - [ ] Add verify method to psx sql condition to verify conditions against an 
@@ -74,13 +77,6 @@ _which are likely to be implemented are moved to a seperate github issue_
       we should add support for it
 - [ ] Test and handle file uploads
 
-### 2.x
-
-- [ ] Remove doCreate and doUpdate call in SchemaApiAbstract
-- [ ] Remove set/getRestrictedFields in TableAbstract
-- [ ] Think about moving from a monolith repo into multiple packages. There are
-      some components which might be useful withput psx i.e. data, schema
-
 ### Meta
 
 - [ ] Update github readme, more getting started instructions etc.
@@ -93,6 +89,22 @@ _which are likely to be implemented are moved to a seperate github issue_
 
 ### Archive
 
+- [x] Add commands which generate php code
+  - [x] Add command to generate an API endpoint based on a RAML file
+  - [x] Add command to generate a PHP schema based on a json schema
+  - [x] Add command to generate a json schema from a PHP schema
+- [x] Add command to generate client code based on the API definition. Probably 
+      this should be done in another project and based on a RAML/jsonschema spec
+- [x] Schema generation
+  - [x] Probably add json schema importer command to create a PHP schema based
+        on the given json schema
+  - [x] Add generator to generate a php schema class from a xsd or json schema 
+        definition 
+  - [/] Create tool controller to create and export a schema. Should produce
+        a json schema which can be imported by a command
+  - [x] Create command to create PHP source code based on a RAML spec. This 
+        could probably use the json schema generator to generate the schema 
+        class. So we could create a complete schema endpoint from the RAML spec
 - [x] Consider use of JAX-RS annotations to provide meta informations for a 
       controller #3
 - [x] Add ANY request method in router
