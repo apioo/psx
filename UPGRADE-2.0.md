@@ -1,12 +1,13 @@
 
-# Upgrade from 1.x to 2.0
+# Upgrade from 1.x to 2.x
 
-With the 2.x release we moved from a monolithic library to a component based. 
+With the 2.x release we moved from a monolithic library to multiple components. 
 That means we have split up the framework into components which can also be used
-independent of the framework. 
+independent of the framework. The following list contains all important class
+changes.
 
 * The `RecordInterface` type hint and `Version` parameter from the 
-  `SchemaApiAbstract::do*` methods was removed i.e.:  
+  `SchemaApiAbstract::do*` methods were removed i.e.:  
   __Before:__  
   `protected function doPost(RecordInterface $record, Version $version)`  
   __After:__  
@@ -38,7 +39,7 @@ independent of the framework.
   __After:__  
   `public function getDocumentation($version = null)`  
 
-* DI container service changes:
+* DI container service changes:  
     * `http` => `http_client`
     * `io` => (added)
     * `api_parser` => (added)
@@ -57,7 +58,7 @@ independent of the framework.
     * `extractor` => (removed)
     * `serializer` => (removed)
 
-* The following list contains common classes:  
+* The following list contains common classes which have changed:  
     * `PSX\Base` => `PSX\Framework\Base`
     * `PSX\Cache` => `PSX\Cache\Pool`
     * `PSX\Config` => `PSX\Framework\Config\Config`

@@ -1,4 +1,9 @@
 
+### 2.0.0-RC1
+
+* Split the framework into components
+* Removed command system
+
 ### 1.2.3 (2016-02-17)
 
 * Added version handling to annotation and raml parser
