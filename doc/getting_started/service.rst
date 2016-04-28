@@ -2,9 +2,9 @@
 Service
 =======
 
-In the previous chapter we have defined a controller which received the request
-and produces the response. This chapter describes where we can define the logic
-of our API endpoint.
+In the previous chapter we have defined a controller which receives the request
+and produces the response. This chapter describes where we can define the 
+business logic of our API endpoint.
 
 Definition
 ----------

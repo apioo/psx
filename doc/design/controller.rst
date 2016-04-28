@@ -20,7 +20,7 @@ Usage
 
     use PSX\Framework\Controller\ControllerAbstract;
 
-    class Controller extends ControllerAbstract;
+    class Controller extends ControllerAbstract
     {
         /**
          * @Inject

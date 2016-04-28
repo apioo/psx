@@ -9,8 +9,8 @@ The routing file was inspired by the java play framework.
 Routing file
 ------------
 
-PSX parses the routing file and the route which matches first is taken. Lets see 
-the following example routing file
+PSX parses the routing file and the route which matches first is taken. Lets 
+take a look at the following example routing file
 
 .. code-block:: none
 

@@ -93,7 +93,7 @@ namespace. I.e. the following command would create the file `src/Acme/Foo.php`
 `generate:table`
 ^^^^^^^^^^^^^^^^
 
-Generates a table class based on an actual table. The sql_ credentials must be 
+Generates a table class based on an actual table. The `sql_` credentials must be 
 provided in the `configuration.php` to use this command
 
 .. code::

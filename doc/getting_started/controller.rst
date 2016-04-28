@@ -21,18 +21,18 @@ annotations.
 
     namespace PSX\Project;
 
-    use PSX\Framework\Controller\AnnotationApiAbstract;
+    use PSX\Framework\Controller\SchemaApiAbstract;
     use PSX\Record\RecordInterface;
 
     /**
      * @Title("Endpoint")
      * @PathParam(name="foo_id", type="integer")
      */
-    class Endpoint extends AnnotationApiAbstract
+    class Endpoint extends SchemaApiAbstract
     {
         /**
          * @QueryParam(name="count", description="Count of comments")
-         * @Outgoing(code=200, schema="schema/song.json")
+         * @Outgoing(code=200, schema="PSX\Project\Model\Song")
          */
         protected function doGet()
         {
@@ -40,71 +40,92 @@ annotations.
 
             // @TODO return the result i.e. from a database
 
-            return [
-                'title'  => 'Wut ueber den verlorenen groschen',
-                'artist' => 'Beethoven',
-            ];
+            return new Song('Wut ueber den verlorenen groschen', 'Beethoven');
         }
 
         /**
-         * @Incoming(schema="schema/song.json")
-         * @Outgoing(code=201, schema="schema/message.json")
+         * @Incoming(schema="PSX\Project\Model\Song")
+         * @Outgoing(code=201, schema="PSX\Project\Model\Message")
          */
         protected function doPost(RecordInterface $record)
         {
             // @TODO work with the record
 
-            return [
-                'success' => true,
-                'message' => 'Successful created',
-            ];
+            return new Message(true, 'Successful created');
         }
     }
 
-The file `schema/song.json` contains the json schema of the data and could look
-like:
+The schema must be either a simple POPO class which contains annotations to 
+describe the schema or a json schema file. The model class 
+`PSX\Project\Model\Song` could look like:
 
-.. code-block:: json
+.. code-block:: php
 
+    class Song
     {
-      "$schema": "http://json-schema.org/draft-04/schema#",
-      "title": "song",
-      "type": "object",
-      "properties": {
-        "title": {
-          "type": "string"
-        },
-        "artist": {
-          "type": "string"
+        /**
+         * @Type("string")
+         */
+        protected $title;
+
+        /**
+         * @Type("string")
+         */
+        protected $artist;
+        
+        public function __construct($title = null, $artist = null)
+        {
+            $this->title  = $title;
+            $this->artist = $artist;
         }
-      }
+
+        public function getTitle()
+        {
+            return $this->title;
+        }
+
+        public function setTitle($title)
+        {
+            $this->title = $title;
+        }
+
+        public function getArtist()
+        {
+            return $this->artist;
+        }
+
+        public function setArtist($artist)
+        {
+            $this->artist = $artist;
+        }
     }
 
-The following annotations are available:
+More informations at the :ref:`schema concept <concept/schema>`. The following 
+annotations are available for the controller:
 
-+--------------+--------------+------------------------------------------------+
-| Annotation   | Target       | Example                                        |
-+==============+==============+================================================+
-| @Description | Class/Method | @Description("Bar")                            |
-+--------------+--------------+------------------------------------------------+
-| @Exclude     | Method       | @Exclude                                       |
-+--------------+--------------+------------------------------------------------+
-| @Incoming    | Method       | @Incoming(schema="schema/song.json")           |
-+--------------+--------------+------------------------------------------------+
-| @Outgoing    | Method       | @Outgoing(code=200, schema="schema/song.json") |
-+--------------+--------------+------------------------------------------------+
-| @PathParam   | Class        | @PathParam(name="foo", type="integer")         |
-+--------------+--------------+------------------------------------------------+
-| @QueryParam  | Method       | @QueryParam(name="bar", type="integer")        |
-+--------------+--------------+------------------------------------------------+
-| @Title       | Class/Method | @Title("Foo")                                  |
-+--------------+--------------+------------------------------------------------+
++--------------+--------------+------------------------------------------------------+
+| Annotation   | Target       | Example                                              |
++==============+==============+======================================================+
+| @Description | Class/Method | @Description("Bar")                                  |
++--------------+--------------+------------------------------------------------------+
+| @Exclude     | Method       | @Exclude                                             |
++--------------+--------------+------------------------------------------------------+
+| @Incoming    | Method       | @Incoming(schema="PSX\Project\Model\Song")           |
++--------------+--------------+------------------------------------------------------+
+| @Outgoing    | Method       | @Outgoing(code=200, schema="PSX\Project\Model\Song") |
++--------------+--------------+------------------------------------------------------+
+| @PathParam   | Class        | @PathParam(name="foo", type="integer")               |
++--------------+--------------+------------------------------------------------------+
+| @QueryParam  | Method       | @QueryParam(name="bar", type="integer")              |
++--------------+--------------+------------------------------------------------------+
+| @Title       | Class/Method | @Title("Foo")                                        |
++--------------+--------------+------------------------------------------------------+
 
 RAML
 ----
 
-It is possible to use an existing RAML (http://raml.org/) specification to build 
-the API endpoint. In the following a sample API with the fitting RAML 
+Instead of annotations it is also possible to provide a schema file which 
+describes the endpoint. At the moment we support the RAML (http://raml.org/) 
 specification.
 
 .. code-block:: php
