@@ -26,17 +26,17 @@ controller in order to add basic authentication
     
     public function getPreFilter()
     {
-    	$auth = new BasicAuthentication(function($username, $password) {
+        $auth = new BasicAuthentication(function($username, $password) {
     
-    		if ($username == '[username]' && $password == '[passsword]') {
-    			return true;
-    		}
+            if ($username == '[username]' && $password == '[passsword]') {
+                return true;
+            }
     
-    		return false;
+            return false;
     
-    	});
+        });
     
-    	return array($auth);
+        return array($auth);
     }
 
 Oauth authentication
@@ -63,21 +63,21 @@ informations see :rfc:`5849`.
     
     public function getPreFilter()
     {
-    	$auth = new OauthAuthentication(function($consumerKey, $token) {
+        $auth = new OauthAuthentication(function($consumerKey, $token) {
     
-    		if ($consumerKey == '[consumerKey]' && $token == '[token]') {
-    			return new Consumer('[consumerKey]', '[consumerSecret]', '[token]', '[tokenSecret]');
-    		}
+            if ($consumerKey == '[consumerKey]' && $token == '[token]') {
+                return new Consumer('[consumerKey]', '[consumerSecret]', '[token]', '[tokenSecret]');
+            }
     
-    		return false;
+            return false;
     
-    	});
+        });
     
-    	return array($auth);
+        return array($auth);
     }
 
 Oauth2 authentication
---------------------
+---------------------
 
 Sample oauth2 authentication. In the callback you have to check whether the 
 provided `Bearer` access token is valid. For more informations see :rfc:`6749`.

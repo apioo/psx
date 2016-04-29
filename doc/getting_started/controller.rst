@@ -100,8 +100,8 @@ describe the schema or a json schema file. The model class
         }
     }
 
-More informations at the :ref:`schema concept <concept/schema>`. The following 
-annotations are available for the controller:
+More informations at the psx schema project. The following annotations are 
+available for the controller:
 
 +--------------+--------------+------------------------------------------------------+
 | Annotation   | Target       | Example                                              |

@@ -71,7 +71,7 @@ service.
 
     <?php
 
-    class FooController extends ViewAbstract
+    class FooController extends ControllerAbstract
     {
         /**
          * @Inject

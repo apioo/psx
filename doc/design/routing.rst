@@ -23,17 +23,17 @@ take a look at the following example routing file
     GET /news/archive/$year<[0-9]+> Foo\News\Application\News::doArchive
     GET /file/*path Foo\News\Application\File::downloadFile
 
-in case we make the following HTTP request the method doIndex of the class 
+in case we make the following HTTP request the method `doIndex` of the class 
 `Foo\\News\\Application\\Api` gets called
 
 .. code-block:: none
 
     GET /api HTTP/1.1
 
-The path /foo is an alias for the path /. That means in both cases we call the 
-method doFoo of the class `Foo\\News\\Application\\Index`.
+The path `/foo` is an alias for the path `/`. That means in both cases we call 
+the method `doFoo` of the class `Foo\\News\\Application\\Index`.
 
-If we make a HTTP request to /news/2 the controller 
+If we make a HTTP request to `/news/2` the controller 
 `Foo\\News\\Application\\News::doDetail` gets called. In our controller we can
 access the dynamic part of the path with:
 

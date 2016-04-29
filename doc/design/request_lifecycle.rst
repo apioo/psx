@@ -7,7 +7,7 @@ This chapter explains the request lifecycle of a PSX application.
 Http request/response
 ---------------------
 
-PSX uses a standard HTTP request and response interface. At the start of the 
+PSX uses a standard HTTP request and response model. At the start of the 
 application lifecycle a HTTP request and response object will be created.
 
 .. code-block:: php
@@ -135,6 +135,6 @@ basic "hello world" example would be:
 
 By default the controller returns the ControllerExecutor middleware which simply
 calls the on* methods and optional the method which was set in the routes file.
-In adition you could also overwrite the :code:`getPreFilter` or 
+In addition you could also overwrite the :code:`getPreFilter` or 
 :code:`getPostFilter` method which are merged together to the application 
 stack.
