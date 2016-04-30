@@ -1,7 +1,11 @@
 
-### 2.0.0-RC1
+### 2.0.0-RC2
+
+### 2.0.0-RC1 (2016-04-30)
 
 * Split the framework into components
+* Decoupled and improved each component
+* Add generator to generate PHP classes from a RAML and JsonSchema specification
 * Removed command system
 
 ### 1.2.3 (2016-02-17)
