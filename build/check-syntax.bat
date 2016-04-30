@@ -1,5 +1,5 @@
 @ECHO OFF
-CD psx\library
+CD psx\vendor\psx
 FOR /r %%i IN (*.php) DO CALL :check "%%i"
 
 :check
