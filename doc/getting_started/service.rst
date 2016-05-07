@@ -9,24 +9,24 @@ business logic of our API endpoint.
 Definition
 ----------
 
-> Put simply, a Service is any PHP object that performs some sort of "global"
-> task. It's a purposefully-generic name used in computer science to describe an
-> object that's created for a specific purpose (e.g. delivering emails). Each
-> service is used throughout your application whenever you need the specific
-> functionality it provides. You don't have to do anything special to make a
-> service: simply write a PHP class with some code that accomplishes a specific
-> task. Congratulations, you've just created a service!
->
-> So what's the big deal then? The advantage of thinking about "services" is
-> that you begin to think about separating each piece of functionality in your
-> application into a series of services. Since each service does just one job,
-> you can easily access each service and use its functionality wherever you need
-> it. Each service can also be more easily tested and configured since it's
-> separated from the other functionality in your application. This idea is
-> called service-oriented architecture and is not unique to Symfony or even PHP.
-> Structuring your application around a set of independent service classes is a
-> well-known and trusted object-oriented best-practice. These skills are key to
-> being a good developer in almost any language.
+    Put simply, a Service is any PHP object that performs some sort of "global"
+    task. It's a purposefully-generic name used in computer science to describe an
+    object that's created for a specific purpose (e.g. delivering emails). Each
+    service is used throughout your application whenever you need the specific
+    functionality it provides. You don't have to do anything special to make a
+    service: simply write a PHP class with some code that accomplishes a specific
+    task. Congratulations, you've just created a service!
+    
+    So what's the big deal then? The advantage of thinking about "services" is
+    that you begin to think about separating each piece of functionality in your
+    application into a series of services. Since each service does just one job,
+    you can easily access each service and use its functionality wherever you need
+    it. Each service can also be more easily tested and configured since it's
+    separated from the other functionality in your application. This idea is
+    called service-oriented architecture and is not unique to Symfony or even PHP.
+    Structuring your application around a set of independent service classes is a
+    well-known and trusted object-oriented best-practice. These skills are key to
+    being a good developer in almost any language.
 
 This description was copied from the symfony documentation [#f1]_
 
@@ -98,7 +98,9 @@ Register
 ^^^^^^^^
 
 In order to add a new service to the DI container you have to add a method to
-the container class. In the following an example which creates a new service:
+the container class. In the sample porject the container class is located at 
+`src/Sample/Dependency/Container.php`. In the following an example which creates 
+a new service:
 
 .. code-block:: php
 

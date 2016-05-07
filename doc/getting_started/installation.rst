@@ -46,9 +46,9 @@ example route entry:
 
     GET|POST|PUT|DELETE /foo/bar Acme\Api\News\Endpoint
 
-This would invoke the class `Acme\Api\News\Endpoint` if you visit the route
+This would invoke the class `Acme\\Api\\News\\Endpoint` if you visit the route
 `/foo/bar`. All controller classes must extend the class
-`PSX\Framework\Controller\ControllerAbstract`
+`PSX\\Framework\\Controller\\ControllerAbstract`
 
 Webserver
 ---------

@@ -20,8 +20,8 @@ change the style according to your needs.
 
 .. code::
 
-    GET /doc                PSX\Controller\Tool\DocumentationController::doIndex
-    GET /doc/:version/*path PSX\Controller\Tool\DocumentationController::doDetail
+    GET /doc                PSX\Framework\Controller\Tool\DocumentationController::doIndex
+    GET /doc/:version/*path PSX\Framework\Controller\Tool\DocumentationController::doDetail
 
 WSDL
 ----
@@ -30,8 +30,8 @@ Generates a WSDL representation for the given API.
 
 .. code::
 
-    GET /wsdl/:version/*path PSX\Controller\Tool\WsdlGeneratorController
-    GET /soap                PSX\Controller\Tool\SoapProxyController
+    GET /wsdl/:version/*path PSX\Framework\Controller\Generator\WsdlController
+    ANY /soap                PSX\Framework\Controller\Proxy\SoapController
 
 Swagger
 -------
@@ -40,8 +40,8 @@ Generates a Swagger resource listing and definition.
 
 .. code::
 
-    GET /swagger                PSX\Controller\Tool\SwaggerGeneratorController::doIndex
-    GET /swagger/:version/*path PSX\Controller\Tool\SwaggerGeneratorController::doDetail
+    GET /swagger                PSX\Framework\Controller\Generator\SwaggerController::doIndex
+    GET /swagger/:version/*path PSX\Framework\Controller\Generator\SwaggerController::doDetail
 
 RAML
 ----
@@ -50,13 +50,13 @@ Generates a RAML representation for the given API.
 
 .. code::
 
-    GET /raml/:version/*path PSX\Controller\Tool\RamlGeneratorController
+    GET /raml/:version/*path PSX\Framework\Controller\Generator\RamlController
 
 Routing
 -------
 
-Provides an API to publish all available API paths
+Provides an API to publish all available API paths.
 
 .. code::
 
-    GET /routing PSX\Controller\Tool\RoutingController
+    GET /routing PSX\Framework\Controller\Tool\RoutingController

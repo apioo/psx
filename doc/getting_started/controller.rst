@@ -47,7 +47,7 @@ annotations.
          * @Incoming(schema="PSX\Project\Model\Song")
          * @Outgoing(code=201, schema="PSX\Project\Model\Message")
          */
-        protected function doPost(RecordInterface $record)
+        protected function doPost($record)
         {
             // @TODO work with the record
 
@@ -57,7 +57,7 @@ annotations.
 
 The schema must be either a simple POPO class which contains annotations to 
 describe the schema or a json schema file. The model class 
-`PSX\Project\Model\Song` could look like:
+`PSX\\Project\\Model\\Song` could look like:
 
 .. code-block:: php
 
@@ -103,23 +103,23 @@ describe the schema or a json schema file. The model class
 More informations at the psx schema project. The following annotations are 
 available for the controller:
 
-+--------------+--------------+------------------------------------------------------+
-| Annotation   | Target       | Example                                              |
-+==============+==============+======================================================+
-| @Description | Class/Method | @Description("Bar")                                  |
-+--------------+--------------+------------------------------------------------------+
-| @Exclude     | Method       | @Exclude                                             |
-+--------------+--------------+------------------------------------------------------+
-| @Incoming    | Method       | @Incoming(schema="PSX\Project\Model\Song")           |
-+--------------+--------------+------------------------------------------------------+
-| @Outgoing    | Method       | @Outgoing(code=200, schema="PSX\Project\Model\Song") |
-+--------------+--------------+------------------------------------------------------+
-| @PathParam   | Class        | @PathParam(name="foo", type="integer")               |
-+--------------+--------------+------------------------------------------------------+
-| @QueryParam  | Method       | @QueryParam(name="bar", type="integer")              |
-+--------------+--------------+------------------------------------------------------+
-| @Title       | Class/Method | @Title("Foo")                                        |
-+--------------+--------------+------------------------------------------------------+
++--------------+--------------+---------------------------------------------------------+
+| Annotation   | Target       | Example                                                 |
++==============+==============+=========================================================+
+| @Description | Class/Method | @Description("Bar")                                     |
++--------------+--------------+---------------------------------------------------------+
+| @Exclude     | Method       | @Exclude                                                |
++--------------+--------------+---------------------------------------------------------+
+| @Incoming    | Method       | @Incoming(schema="PSX\\Project\\Model\\Song")           |
++--------------+--------------+---------------------------------------------------------+
+| @Outgoing    | Method       | @Outgoing(code=200, schema="PSX\\Project\\Model\\Song") |
++--------------+--------------+---------------------------------------------------------+
+| @PathParam   | Class        | @PathParam(name="foo", type="integer")                  |
++--------------+--------------+---------------------------------------------------------+
+| @QueryParam  | Method       | @QueryParam(name="bar", type="integer")                 |
++--------------+--------------+---------------------------------------------------------+
+| @Title       | Class/Method | @Title("Foo")                                           |
++--------------+--------------+---------------------------------------------------------+
 
 RAML
 ----
