@@ -38,6 +38,15 @@ changes.
   `public function getDocumentation()`  
   __After:__  
   `public function getDocumentation($version = null)`  
+  Also the method returns now directly a `PSX\Api\Resource` object.
+
+* The default record implementation has changed. Previously you could access
+  a property through a magic method call. This is not longer possible instead 
+  you have to access directly the property.
+  __Before:__  
+  `$record->getTitle()`  
+  __After:__  
+  `$record->title`  
 
 * DI container service changes:  
     * `http` => `http_client`
@@ -62,6 +71,8 @@ changes.
     * `PSX\Base` => `PSX\Framework\Base`
     * `PSX\Cache` => `PSX\Cache\Pool`
     * `PSX\Config` => `PSX\Framework\Config\Config`
+    * `PSX\Data\RecordInterface` => `PSX\Record\RecordInterface`
+    * `PSX\Util\CurveArray` => `PSX\Data\Util\CurveArray`
     * `PSX\DateTime` => `PSX\DateTime\DateTime`
     * `PSX\Event` => `PSX\Framework\Event\Event`
     * `PSX\FilterAbstract` => `PSX\Validate\FilterAbstract`
