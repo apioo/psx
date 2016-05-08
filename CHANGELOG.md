@@ -1,5 +1,12 @@
 
-### 2.0.0-RC2
+### 2.0.0 (2016-05-08)
+
+* Split the framework into components
+* Decoupled and improved each component
+* Reading and writing data works now with POPOs
+* Add generator to generate PHP classes from a RAML and JsonSchema specification
+* Removed command system
+* Improved documentation
 
 ### 2.0.0-RC1 (2016-04-30)
 
