@@ -3,9 +3,61 @@ _which are likely to be implemented are moved to a seperate github issue_
 
 ### 2.x
 
-- [ ] Handle JSONRpc calls
+- [ ] Add JSONRpc proxy class #18
+- [ ] Probably adapt a common API error format:
+      https://github.com/blongden/vnd.error
+      https://tools.ietf.org/html/draft-nottingham-http-problem-07
+- [ ] Better support for conditional requests E-Tag, If-Match etc.
+- [ ] Add OData proxy class
+- [ ] Add http interceptor handler and method to add global default headers i.e.
+      a user agent header (these can be overriden by a specific set header)
+- [ ] Schema html writer array constraints are not listed, only the constraints 
+      of the prototype element
+- [ ] Evaluate again whether to use psr7. Probably wait to see adoption, 
+      immutability is still a problem
+- [ ] Add schema property default value option
+- [ ] Possibility to describe in an API that authentication is required. 
+      Probably also what kind basic, oauth, etc. Check how this is done in 
+      various specs like Swagger, RAML, etc.
+- [ ] Add event listener to table manager so that we can fire an event everytime 
+      a record gets created, updated or deleted
+- [ ] Consider use Stash as caching library if PSR is ready
+- [ ] Add verify method to psx sql condition to verify conditions against an 
+      array
+- [ ] Option to set a custom record class in table abstract
+- [ ] Probably replace all generic exceptions (RuntimeException, 
+      InvalidArgumentException, etc..) with PSX specific exceptions 
+- [ ] Test and handle file uploads
+- [ ] Implement filters
+  - [ ] Add hawk authentication filter (https://github.com/hueniverse/hawk)
+  - [ ] Add aws authentication filter (http://docs.aws.amazon.com/AmazonS3/latest/dev/RESTAuthentication.html)
+  - [ ] Add CORS header filter
+  - [ ] Add request rate limit filter
+- [ ] Update symfony bundle to PSX 2.0
+
+### Meta
+
+- [ ] Update github readme, more getting started instructions etc.
+- [ ] Add hyperlink vs specification API to the documentation
+- [ ] Write in doc about data vs document oriented aka data writer vs template 
+      writer
+- [ ] Improve global exception messages so that we have the same kind of wording
+- [ ] For version 1.0 implement http://www.techempower.com/benchmarks
+- [ ] Add win ci (http://www.appveyor.com/)
+
+### Archive
+
+- [ ] Evaluate whether we could build a RDF writer
+- [ ] Use DateTimeImmutable if we are dropping support for 5.4 and require at 
+      least 5.5 (we stay with \DateTime since all \DateTime typehints would 
+      break)
+- [ ] Think about support for JSON-RPC
+- [ ] Add Swagger2 support #11 (moved to the psx-api project)
+- [ ] Add WADL generator #2 (moved to the psx-api project)
 - [x] SchemaApiAbstract for outgoing schemas we need an option to set an 
       passthru schema which simply outputs all provided data
+- [ ] Add GraphQL parser to generate a schema based on a GraphQL string #12
+      https://github.com/webonyx/graphql-php
 - [x] Use https://github.com/nikic/PHP-Parser/blob/master/doc/4_Code_generation.markdown
       to generate code
 - [x] Remove set/getRestrictedFields in TableAbstract
@@ -21,74 +73,19 @@ _which are likely to be implemented are moved to a seperate github issue_
       some components which might be useful withput psx i.e. data, schema
 - [x] We need a command which reads a RAML/Swagger file and generates a 
       controller with annotations based on the definition
-
-### 1.x
-
-- [ ] Add GraphQL parser to generate a schema based on a GraphQL string #12
-- [ ] Add Swagger2 support #11
-- [ ] Improve OAuth2 support #7
+- [x] Improve OAuth2 support #7
 - [ ] Add host-meta controller to expose specific API services #5
 - [ ] Create controller which generates a text/uri-list #4
-- [ ] Add WADL generator #2
-- [ ] Probably adapt a common API error format:
-      https://github.com/blongden/vnd.error
-      https://tools.ietf.org/html/draft-nottingham-http-problem-07
 - [ ] Add controller to server static content
-- [ ] Better support for conditional requests E-Tag, If-Match etc.
-- [ ] Think about support for OData
-- [ ] Think about support for JSON-RPC
-- [ ] Add http interceptor handler and method to add global default headers i.e.
-      a user agent header (these can be overriden by a specific set header)
-- [ ] Use DateTimeImmutable if we are dropping support for 5.4 and require at 
-      least 5.5
-- [ ] Schema html writer array constraints are not listed, only the constraints 
-      of the prototype element
-- [ ] Evaluate again whether to use psr7. Probably wait to see adoption, 
-      immutability is still a problem
-- [ ] Extend schema representation
-  - [ ] Add schema property default value option
-  - [ ] Possibility to describe in an API that authentication is required. 
-        Probably also what kind basic, oauth, etc
-    - [ ] Check how this is done in various specs like Swagger, RAML, etc.
+- [x] Extend schema representation
   - [x] PSX schema add support for object choice for a key (json schema: oneOf, 
         xsd:choice)
   - [x] Add possibility to add a wildcard type in a schema which allows 
         arbitrary subtypes where we dont know the structure i.e. config (Is this 
         a good idea?)
-- [ ] Add event listener to table manager so that we can fire an event everytime 
-      a record gets created, updated or deleted
-- [ ] Consider use Stash as caching library if PSR is ready
-- [ ] Evaluate whether we could build a RDF writer
-- [ ] Add verify method to psx sql condition to verify conditions against an 
-      array
-- [ ] Option to set a custom record class in table abstract
-- [ ] Implement filters
-  - [ ] Add hawk authentication filter (https://github.com/hueniverse/hawk)
-  - [ ] Add aws authentication filter (http://docs.aws.amazon.com/AmazonS3/latest/dev/RESTAuthentication.html)
-  - [ ] Add CORS header filter
-  - [ ] Add request rate limit filter
-- [ ] Better symfony integration
-  - [ ] Add PSX symfony bundle
-  - [ ] Add SymfonyControllerExecutor to execute a symfony controller from PSX
 - [ ] Probably implement http://www.w3.org/TR/xmldsig-core/
-- [ ] Probably replace all generic exceptions (RuntimeException, 
-      InvalidArgumentException, etc..) with PSX specific exceptions 
 - [ ] Follow the json-ld / hydra spec (http://www.hydra-cg.com/) and see whether 
       we should add support for it
-- [ ] Test and handle file uploads
-
-### Meta
-
-- [ ] Update github readme, more getting started instructions etc.
-- [ ] Add hyperlink vs specification API to the documentation
-- [ ] Write in doc about data vs document oriented aka data writer vs template 
-      writer
-- [ ] Improve global exception messages so that we have the same kind of wording
-- [ ] For version 1.0 implement http://www.techempower.com/benchmarks
-- [ ] Add win ci (http://www.appveyor.com/)
-
-### Archive
-
 - [x] Add commands which generate php code
   - [x] Add command to generate an API endpoint based on a RAML file
   - [x] Add command to generate a PHP schema based on a json schema
@@ -100,7 +97,7 @@ _which are likely to be implemented are moved to a seperate github issue_
         on the given json schema
   - [x] Add generator to generate a php schema class from a xsd or json schema 
         definition 
-  - [/] Create tool controller to create and export a schema. Should produce
+  - [ ] Create tool controller to create and export a schema. Should produce
         a json schema which can be imported by a command
   - [x] Create command to create PHP source code based on a RAML spec. This 
         could probably use the json schema generator to generate the schema 
