@@ -43,4 +43,4 @@ vendor libraries in case you can not use composer
 For documentation please take a look at [phpsx.org](http://phpsx.org/) or the 
 [official manual](http://psx.readthedocs.org/)
 
-[![Build Status](https://travis-ci.org/k42b3/psx.png)](https://travis-ci.org/k42b3/psx)
+[![Build Status](https://travis-ci.org/apioo/psx.png)](https://travis-ci.org/apioo/psx)
