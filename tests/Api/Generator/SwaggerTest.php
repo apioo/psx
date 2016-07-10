@@ -113,7 +113,14 @@ JSON;
     "models": {
         "ref057ec8a6751954e551431f5108608475": {
             "id": "ref057ec8a6751954e551431f5108608475",
-            "properties": []
+            "properties": {
+                "startIndex": {
+                    "type": "integer"
+                },
+                "count": {
+                    "type": "integer"
+                }
+            }
         },
         "ref4fe78e9f8d9266767f15f9b094d00e9d": {
             "id": "ref4fe78e9f8d9266767f15f9b094d00e9d",
@@ -125,17 +132,66 @@ JSON;
                 "users",
                 "worldUsers"
             ],
-            "properties": []
+            "properties": {
+                "id": {
+                    "description": "Unique id for each entry",
+                    "type": "integer"
+                },
+                "place": {
+                    "description": "Position in the top list",
+                    "type": "integer"
+                },
+                "region": {
+                    "description": "Name of the region",
+                    "type": "string",
+                    "minimum": 3,
+                    "maximum": 64
+                },
+                "population": {
+                    "description": "Complete number of population",
+                    "type": "integer"
+                },
+                "users": {
+                    "description": "Number of internet users",
+                    "type": "integer"
+                },
+                "worldUsers": {
+                    "description": "Percentage users of the world",
+                    "type": "number"
+                },
+                "datetime": {
+                    "description": "Date when the entity was created",
+                    "type": "string",
+                    "format": "date-time"
+                }
+            }
         },
         "ref56cafd765c795ce405f04ff2c2b95851": {
             "id": "ref56cafd765c795ce405f04ff2c2b95851",
             "description": "Collection result",
-            "properties": []
+            "properties": {
+                "totalResults": {
+                    "type": "integer"
+                },
+                "entry": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "ref4fe78e9f8d9266767f15f9b094d00e9d"
+                    }
+                }
+            }
         },
         "ref31ead4d236fd038a7d55a40e2ca1171e": {
             "id": "ref31ead4d236fd038a7d55a40e2ca1171e",
             "description": "Operation message",
-            "properties": []
+            "properties": {
+                "success": {
+                    "type": "boolean"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
         },
         "GET-query": {
             "id": "GET-query",
@@ -159,8 +215,7 @@ JSON;
                     "type": "array",
                     "items": {
                         "$ref": "ref4fe78e9f8d9266767f15f9b094d00e9d"
-                    },
-                    "title": "entry"
+                    }
                 }
             }
         },
@@ -186,9 +241,8 @@ JSON;
                 "region": {
                     "description": "Name of the region",
                     "type": "string",
-                    "minLength": 3,
-                    "maxLength": 64,
-                    "pattern": "[A-z]+"
+                    "minimum": 3,
+                    "maximum": 64
                 },
                 "population": {
                     "description": "Complete number of population",
