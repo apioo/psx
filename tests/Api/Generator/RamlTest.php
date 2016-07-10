@@ -36,47 +36,46 @@ title: Population
               {
                   "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
                   "id": "urn:schema.phpsx.org#",
-                  "type": "object",
-                  "title": "collection",
-                  "description": "Collection result",
                   "definitions": {
                       "ref4fe78e9f8d9266767f15f9b094d00e9d": {
+                          "title": "entity",
+                          "description": "Represents an internet population entity",
                           "type": "object",
                           "properties": {
                               "id": {
-                                  "type": "integer",
-                                  "description": "Unique id for each entry"
+                                  "description": "Unique id for each entry",
+                                  "type": "integer"
                               },
                               "place": {
-                                  "type": "integer",
-                                  "description": "Position in the top list"
+                                  "description": "Position in the top list",
+                                  "type": "integer"
                               },
                               "region": {
-                                  "type": "string",
                                   "description": "Name of the region",
+                                  "type": "string",
                                   "minLength": 3,
                                   "maxLength": 64,
                                   "pattern": "[A-z]+"
                               },
                               "population": {
-                                  "type": "integer",
-                                  "description": "Complete number of population"
+                                  "description": "Complete number of population",
+                                  "type": "integer"
                               },
                               "users": {
-                                  "type": "integer",
-                                  "description": "Number of internet users"
+                                  "description": "Number of internet users",
+                                  "type": "integer"
                               },
                               "worldUsers": {
-                                  "type": "number",
-                                  "description": "Percentage users of the world"
+                                  "description": "Percentage users of the world",
+                                  "type": "number"
                               },
                               "datetime": {
+                                  "description": "Date when the entity was created",
                                   "type": "string",
-                                  "description": "Date when the entity was created"
+                                  "format": "date-time"
                               }
                           },
-                          "title": "entity",
-                          "description": "Represents an internet population entity",
+                          "additionalProperties": false,
                           "required": [
                               "place",
                               "region",
@@ -84,10 +83,12 @@ title: Population
                               "users",
                               "worldUsers"
                           ],
-                          "reference": "PSX\\Project\\Tests\\Model\\Entity",
-                          "additionalProperties": false
+                          "reference": "PSX\\Project\\Tests\\Model\\Entity"
                       }
                   },
+                  "title": "collection",
+                  "description": "Collection result",
+                  "type": "object",
                   "properties": {
                       "totalResults": {
                           "type": "integer"
@@ -100,7 +101,8 @@ title: Population
                           "title": "entry"
                       }
                   },
-                  "additionalProperties": false
+                  "additionalProperties": false,
+                  "reference": "PSX\\Project\\Tests\\Model\\Collection"
               }
   post:
     body:
@@ -109,42 +111,44 @@ title: Population
           {
               "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
               "id": "urn:schema.phpsx.org#",
-              "type": "object",
               "title": "entity",
               "description": "Represents an internet population entity",
+              "type": "object",
               "properties": {
                   "id": {
-                      "type": "integer",
-                      "description": "Unique id for each entry"
+                      "description": "Unique id for each entry",
+                      "type": "integer"
                   },
                   "place": {
-                      "type": "integer",
-                      "description": "Position in the top list"
+                      "description": "Position in the top list",
+                      "type": "integer"
                   },
                   "region": {
-                      "type": "string",
                       "description": "Name of the region",
+                      "type": "string",
                       "minLength": 3,
                       "maxLength": 64,
                       "pattern": "[A-z]+"
                   },
                   "population": {
-                      "type": "integer",
-                      "description": "Complete number of population"
+                      "description": "Complete number of population",
+                      "type": "integer"
                   },
                   "users": {
-                      "type": "integer",
-                      "description": "Number of internet users"
+                      "description": "Number of internet users",
+                      "type": "integer"
                   },
                   "worldUsers": {
-                      "type": "number",
-                      "description": "Percentage users of the world"
+                      "description": "Percentage users of the world",
+                      "type": "number"
                   },
                   "datetime": {
+                      "description": "Date when the entity was created",
                       "type": "string",
-                      "description": "Date when the entity was created"
+                      "format": "date-time"
                   }
               },
+              "additionalProperties": false,
               "required": [
                   "place",
                   "region",
@@ -152,7 +156,7 @@ title: Population
                   "users",
                   "worldUsers"
               ],
-              "additionalProperties": false
+              "reference": "PSX\\Project\\Tests\\Model\\Entity"
           }
     responses:
       201:
@@ -162,9 +166,9 @@ title: Population
               {
                   "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
                   "id": "urn:schema.phpsx.org#",
-                  "type": "object",
                   "title": "message",
                   "description": "Operation message",
+                  "type": "object",
                   "properties": {
                       "success": {
                           "type": "boolean"
@@ -173,7 +177,8 @@ title: Population
                           "type": "string"
                       }
                   },
-                  "additionalProperties": false
+                  "additionalProperties": false,
+                  "reference": "PSX\\Project\\Tests\\Model\\Message"
               }
 
 RAML;
