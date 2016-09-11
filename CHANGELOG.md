@@ -1,4 +1,9 @@
 
+### 2.0.1 (2016-09-11)
+
+* Use psx_connection in config
+* Updated project tests
+
 ### 2.0.0 (2016-05-08)
 
 * Split the framework into components
