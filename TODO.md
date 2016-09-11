@@ -3,6 +3,15 @@ _which are likely to be implemented are moved to a seperate github issue_
 
 ### 2.x
 
+- [ ] Add dynamic schema types #21
+- [ ] Use react json inspector as HTML view #20
+- [ ] If we have a redirect route i.e. ~/api/posts the ?format=json parameter
+      does not work probably the parameters are not correctly redirected #19
+- [ ] Test adding doctrine annotations to a model and add using eloquent
+- [ ] Make a clear distinction howto handle json schema allOf, anyOf, oneOf
+      types. At the moment we only support oneOf. The problem with allOf and 
+      anyOf is that there are multiple property types which could match so we
+      dont know which one to use
 - [ ] Add JSONRpc proxy class #18
 - [ ] Probably adapt a common API error format:
       https://github.com/blongden/vnd.error
@@ -35,6 +44,12 @@ _which are likely to be implemented are moved to a seperate github issue_
   - [ ] Add request rate limit filter
 - [ ] Update symfony bundle to PSX 2.0
 
+### Tutorials
+
+- [ ] Step by step walk through to build a REST API based on Mysql, Mongodb
+- [ ] Build a REST API for a AngularJS website
+- [ ] OAuth2 authentication
+
 ### Meta
 
 - [ ] Update github readme, more getting started instructions etc.
@@ -47,6 +62,8 @@ _which are likely to be implemented are moved to a seperate github issue_
 
 ### Archive
 
+- [x] Add command to generate a table class from a database table
+- [x] Add command to create the schema of a table interface on a database
 - [ ] Evaluate whether we could build a RDF writer
 - [ ] Use DateTimeImmutable if we are dropping support for 5.4 and require at 
       least 5.5 (we stay with \DateTime since all \DateTime typehints would 
