@@ -3,6 +3,7 @@ _which are likely to be implemented are moved to a seperate github issue_
 
 ### 2.x
 
+- [ ] Add Swagger 2.0 support #23
 - [ ] Add dynamic schema types #21
 - [ ] Use react json inspector as HTML view #20
 - [ ] If we have a redirect route i.e. ~/api/posts the ?format=json parameter
@@ -46,7 +47,7 @@ _which are likely to be implemented are moved to a seperate github issue_
 
 ### Tutorials
 
-- [ ] Step by step walk through to build a REST API based on Mysql, Mongodb
+- [x] Step by step walk through to build a REST API based on Mysql, Mongodb
 - [ ] Build a REST API for a AngularJS website
 - [ ] OAuth2 authentication
 
