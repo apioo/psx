@@ -52,6 +52,14 @@ return array(
     //'psx_filter_pre'          => [],
     //'psx_filter_post'         => [],
 
+    // A closure which returns a doctrine cache implementation. If null the
+    // filesystem cache is used
+    //'psx_cache_factory'       => null,
+
+    // A closure which returns a monolog handler implementation. If null the
+    // system handler is used
+    //'psx_logger_factory'      => null,
+
     // Class name of the error controller
     //'psx_error_controller'    => null,
 
