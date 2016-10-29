@@ -20,12 +20,8 @@ return array(
     'psx_timezone'            => 'UTC',
 
     // Whether PSX runs in debug mode or not. If not error reporting is set to 0
+    // Also several caches are used if the debug mode is false
     'psx_debug'               => true,
-
-    // Log settings, the handler is one of: stream, logcaster, void, system
-    'psx_log_level'           => \Monolog\Logger::ERROR,
-    'psx_log_handler'         => 'system',
-    'psx_log_uri'             => null,
 
     // Database parameters which are used for the doctrine DBAL connection
     // http://docs.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/configuration.html
@@ -42,7 +38,19 @@ return array(
 
     // Folder locations
     'psx_path_cache'          => __DIR__ . '/cache',
-    'psx_path_library'        => __DIR__ . '/library',
+    'psx_path_library'        => __DIR__ . '/src',
+
+    // Supported writers
+    'psx_supported_writer'    => [
+        \PSX\Data\Writer\Json::class,
+        \PSX\Data\Writer\Jsonp::class,
+        \PSX\Data\Writer\Jsonx::class,
+    ],
+
+    // Global middleware which are applied before and after every request. Must
+    // bei either a classname, closure or PSX\Dispatch\FilterInterface instance
+    //'psx_filter_pre'          => [],
+    //'psx_filter_post'         => [],
 
     // Class name of the error controller
     //'psx_error_controller'    => null,
@@ -50,10 +58,5 @@ return array(
     // If you only want to change the appearance of the error page you can 
     // specify a custom template
     //'psx_error_template'      => null,
-
-    // Global middleware which are applied before and after every request. Must
-    // bei either a classname, closure or PSX\Dispatch\FilterInterface instance
-    //'psx_filter_pre'          => [],
-    //'psx_filter_post'         => [],
 
 );
