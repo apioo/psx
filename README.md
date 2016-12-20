@@ -3,9 +3,9 @@ PSX Framework
 
 ## About
 
-PSX is a framework written in PHP dedicated to build RESTful APIs. It is based
-on multiple components which cover many aspects of the API lifecycle. These
-components are independent of the framework and can also be used in another
+PSX is a framework written in PHP dedicated to build REST APIs. It is based on 
+multiple components which cover many aspects of the API lifecycle. These 
+components are independent of the framework and can also be used in another 
 context. The following list contains the most notable packages:
 
 - [psx/api](https://github.com/apioo/psx-api)
@@ -24,7 +24,7 @@ More informations about the PSX framework and the components at
 
 ## Requirements
 
-> &gt;= PHP 5.5 or HHVM 3.2.0
+> &gt;= PHP 5.6 or HHVM 3.2.0
 
 ## Installation
 
