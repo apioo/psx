@@ -1,4 +1,10 @@
 
+### 2.1.0
+
+* Generate swagger 2.0 and raml 1.0 specifications
+* Updated psx schema and data library
+* Removed wsdl and xsd generation
+
 ### 2.0.1 (2016-09-11)
 
 * Use psx_connection in config
