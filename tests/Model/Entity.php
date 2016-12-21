@@ -5,6 +5,7 @@ namespace PSX\Project\Tests\Model;
 /**
  * @Title("entity")
  * @Description("Represents an internet population entity")
+ * @Required({"place", "region", "population", "users", "worldUsers"})
  */
 class Entity
 {
@@ -16,10 +17,9 @@ class Entity
 
     /**
      * @Type("integer")
-     * @Min(1)
-     * @Max(64)
+     * @Minimum(1)
+     * @Maximum(64)
      * @Description("Position in the top list")
-     * @Required
      */
     protected $place;
 
@@ -29,33 +29,30 @@ class Entity
      * @MaxLength(64)
      * @Pattern("[A-z]+")
      * @Description("Name of the region")
-     * @Required
      */
     protected $region;
 
     /**
      * @Type("integer")
      * @Description("Complete number of population")
-     * @Required
      */
     protected $population;
 
     /**
      * @Type("integer")
      * @Description("Number of internet users")
-     * @Required
      */
     protected $users;
 
     /**
-     * @Type("float")
+     * @Type("number")
      * @Description("Percentage users of the world")
-     * @Required
      */
     protected $worldUsers;
 
     /**
-     * @Type("datetime")
+     * @Type("string")
+     * @Format("date-time")
      * @Description("Date when the entity was created")
      */
     protected $datetime;

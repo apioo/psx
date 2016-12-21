@@ -27,16 +27,12 @@ class DiscoveryTest extends ApiTestCase
             "href": "http:\/\/127.0.0.1\/tool\/doc"
         },
         {
-            "rel": "raml",
-            "href": "http:\/\/127.0.0.1\/generator\/raml\/{version}\/{path}"
-        },
-        {
-            "rel": "wsdl",
-            "href": "http:\/\/127.0.0.1\/generator\/wsdl\/{version}\/{path}"
-        },
-        {
             "rel": "swagger",
             "href": "http:\/\/127.0.0.1\/generator\/swagger\/{version}\/{path}"
+        },
+        {
+            "rel": "raml",
+            "href": "http:\/\/127.0.0.1\/generator\/raml\/{version}\/{path}"
         }
     ]
 }

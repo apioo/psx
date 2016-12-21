@@ -14,7 +14,8 @@ class Collection
     protected $totalResults;
 
     /**
-     * @Type("array<PSX\Project\Tests\Model\Entity>")
+     * @Type("array")
+     * @Items(@Ref("PSX\Project\Tests\Model\Entity"))
      */
     protected $entry;
 

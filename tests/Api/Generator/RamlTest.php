@@ -13,7 +13,7 @@ class RamlTest extends ApiTestCase
 
         $body   = (string) $response->getBody();
         $expect = <<<'RAML'
-#%RAML 0.8
+#%RAML 1.0
 ---
 baseUri: 'http://127.0.0.1/'
 version: v0
@@ -32,50 +32,51 @@ title: Population
       200:
         body:
           application/json:
-            schema: |
+            type: |
               {
                   "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
                   "id": "urn:schema.phpsx.org#",
                   "definitions": {
-                      "ref4fe78e9f8d9266767f15f9b094d00e9d": {
+                      "Entity": {
+                          "type": "object",
                           "title": "entity",
                           "description": "Represents an internet population entity",
-                          "type": "object",
                           "properties": {
                               "id": {
-                                  "description": "Unique id for each entry",
-                                  "type": "integer"
+                                  "type": "integer",
+                                  "description": "Unique id for each entry"
                               },
                               "place": {
+                                  "type": "integer",
                                   "description": "Position in the top list",
-                                  "type": "integer"
+                                  "minimum": 1,
+                                  "maximum": 64
                               },
                               "region": {
-                                  "description": "Name of the region",
                                   "type": "string",
+                                  "description": "Name of the region",
+                                  "pattern": "[A-z]+",
                                   "minLength": 3,
-                                  "maxLength": 64,
-                                  "pattern": "[A-z]+"
+                                  "maxLength": 64
                               },
                               "population": {
-                                  "description": "Complete number of population",
-                                  "type": "integer"
+                                  "type": "integer",
+                                  "description": "Complete number of population"
                               },
                               "users": {
-                                  "description": "Number of internet users",
-                                  "type": "integer"
+                                  "type": "integer",
+                                  "description": "Number of internet users"
                               },
                               "worldUsers": {
-                                  "description": "Percentage users of the world",
-                                  "type": "number"
+                                  "type": "number",
+                                  "description": "Percentage users of the world"
                               },
                               "datetime": {
-                                  "description": "Date when the entity was created",
                                   "type": "string",
+                                  "description": "Date when the entity was created",
                                   "format": "date-time"
                               }
                           },
-                          "additionalProperties": false,
                           "required": [
                               "place",
                               "region",
@@ -83,12 +84,12 @@ title: Population
                               "users",
                               "worldUsers"
                           ],
-                          "reference": "PSX\\Project\\Tests\\Model\\Entity"
+                          "class": "PSX\\Project\\Tests\\Model\\Entity"
                       }
                   },
+                  "type": "object",
                   "title": "collection",
                   "description": "Collection result",
-                  "type": "object",
                   "properties": {
                       "totalResults": {
                           "type": "integer"
@@ -96,59 +97,58 @@ title: Population
                       "entry": {
                           "type": "array",
                           "items": {
-                              "$ref": "#\/definitions\/ref4fe78e9f8d9266767f15f9b094d00e9d"
-                          },
-                          "title": "entry"
+                              "$ref": "#\/definitions\/Entity"
+                          }
                       }
                   },
-                  "additionalProperties": false,
-                  "reference": "PSX\\Project\\Tests\\Model\\Collection"
+                  "class": "PSX\\Project\\Tests\\Model\\Collection"
               }
   post:
     body:
       application/json:
-        schema: |
+        type: |
           {
               "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
               "id": "urn:schema.phpsx.org#",
+              "type": "object",
               "title": "entity",
               "description": "Represents an internet population entity",
-              "type": "object",
               "properties": {
                   "id": {
-                      "description": "Unique id for each entry",
-                      "type": "integer"
+                      "type": "integer",
+                      "description": "Unique id for each entry"
                   },
                   "place": {
+                      "type": "integer",
                       "description": "Position in the top list",
-                      "type": "integer"
+                      "minimum": 1,
+                      "maximum": 64
                   },
                   "region": {
-                      "description": "Name of the region",
                       "type": "string",
+                      "description": "Name of the region",
+                      "pattern": "[A-z]+",
                       "minLength": 3,
-                      "maxLength": 64,
-                      "pattern": "[A-z]+"
+                      "maxLength": 64
                   },
                   "population": {
-                      "description": "Complete number of population",
-                      "type": "integer"
+                      "type": "integer",
+                      "description": "Complete number of population"
                   },
                   "users": {
-                      "description": "Number of internet users",
-                      "type": "integer"
+                      "type": "integer",
+                      "description": "Number of internet users"
                   },
                   "worldUsers": {
-                      "description": "Percentage users of the world",
-                      "type": "number"
+                      "type": "number",
+                      "description": "Percentage users of the world"
                   },
                   "datetime": {
-                      "description": "Date when the entity was created",
                       "type": "string",
+                      "description": "Date when the entity was created",
                       "format": "date-time"
                   }
               },
-              "additionalProperties": false,
               "required": [
                   "place",
                   "region",
@@ -156,19 +156,19 @@ title: Population
                   "users",
                   "worldUsers"
               ],
-              "reference": "PSX\\Project\\Tests\\Model\\Entity"
+              "class": "PSX\\Project\\Tests\\Model\\Entity"
           }
     responses:
       201:
         body:
           application/json:
-            schema: |
+            type: |
               {
                   "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
                   "id": "urn:schema.phpsx.org#",
+                  "type": "object",
                   "title": "message",
                   "description": "Operation message",
-                  "type": "object",
                   "properties": {
                       "success": {
                           "type": "boolean"
@@ -177,8 +177,7 @@ title: Population
                           "type": "string"
                       }
                   },
-                  "additionalProperties": false,
-                  "reference": "PSX\\Project\\Tests\\Model\\Message"
+                  "class": "PSX\\Project\\Tests\\Model\\Message"
               }
 
 RAML;

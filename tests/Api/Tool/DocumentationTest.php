@@ -130,73 +130,11 @@ JSON;
     "schema": {
         "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
         "id": "urn:schema.phpsx.org#",
-        "type": "object",
         "definitions": {
-            "ref057ec8a6751954e551431f5108608475": {
-                "title": "query",
+            "Collection": {
                 "type": "object",
-                "properties": {
-                    "startIndex": {
-                        "type": "integer"
-                    },
-                    "count": {
-                        "type": "integer"
-                    }
-                },
-                "additionalProperties": true
-            },
-            "ref4fe78e9f8d9266767f15f9b094d00e9d": {
-                "title": "entity",
-                "description": "Represents an internet population entity",
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "description": "Unique id for each entry",
-                        "type": "integer"
-                    },
-                    "place": {
-                        "description": "Position in the top list",
-                        "type": "integer"
-                    },
-                    "region": {
-                        "description": "Name of the region",
-                        "type": "string",
-                        "minLength": 3,
-                        "maxLength": 64,
-                        "pattern": "[A-z]+"
-                    },
-                    "population": {
-                        "description": "Complete number of population",
-                        "type": "integer"
-                    },
-                    "users": {
-                        "description": "Number of internet users",
-                        "type": "integer"
-                    },
-                    "worldUsers": {
-                        "description": "Percentage users of the world",
-                        "type": "number"
-                    },
-                    "datetime": {
-                        "description": "Date when the entity was created",
-                        "type": "string",
-                        "format": "date-time"
-                    }
-                },
-                "additionalProperties": false,
-                "required": [
-                    "place",
-                    "region",
-                    "population",
-                    "users",
-                    "worldUsers"
-                ],
-                "reference": "PSX\\Project\\Tests\\Model\\Entity"
-            },
-            "ref56cafd765c795ce405f04ff2c2b95851": {
                 "title": "collection",
                 "description": "Collection result",
-                "type": "object",
                 "properties": {
                     "totalResults": {
                         "type": "integer"
@@ -204,18 +142,65 @@ JSON;
                     "entry": {
                         "type": "array",
                         "items": {
-                            "$ref": "#\/definitions\/ref4fe78e9f8d9266767f15f9b094d00e9d"
-                        },
-                        "title": "entry"
+                            "$ref": "#\/definitions\/Entity"
+                        }
                     }
                 },
-                "additionalProperties": false,
-                "reference": "PSX\\Project\\Tests\\Model\\Collection"
+                "class": "PSX\\Project\\Tests\\Model\\Collection"
             },
-            "ref31ead4d236fd038a7d55a40e2ca1171e": {
+            "Entity": {
+                "type": "object",
+                "title": "entity",
+                "description": "Represents an internet population entity",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "description": "Unique id for each entry"
+                    },
+                    "place": {
+                        "type": "integer",
+                        "description": "Position in the top list",
+                        "minimum": 1,
+                        "maximum": 64
+                    },
+                    "region": {
+                        "type": "string",
+                        "description": "Name of the region",
+                        "pattern": "[A-z]+",
+                        "minLength": 3,
+                        "maxLength": 64
+                    },
+                    "population": {
+                        "type": "integer",
+                        "description": "Complete number of population"
+                    },
+                    "users": {
+                        "type": "integer",
+                        "description": "Number of internet users"
+                    },
+                    "worldUsers": {
+                        "type": "number",
+                        "description": "Percentage users of the world"
+                    },
+                    "datetime": {
+                        "type": "string",
+                        "description": "Date when the entity was created",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "place",
+                    "region",
+                    "population",
+                    "users",
+                    "worldUsers"
+                ],
+                "class": "PSX\\Project\\Tests\\Model\\Entity"
+            },
+            "Message": {
+                "type": "object",
                 "title": "message",
                 "description": "Operation message",
-                "type": "object",
                 "properties": {
                     "success": {
                         "type": "boolean"
@@ -224,20 +209,7 @@ JSON;
                         "type": "string"
                     }
                 },
-                "additionalProperties": false,
-                "reference": "PSX\\Project\\Tests\\Model\\Message"
-            },
-            "GET-query": {
-                "$ref": "#\/definitions\/ref057ec8a6751954e551431f5108608475"
-            },
-            "GET-200-response": {
-                "$ref": "#\/definitions\/ref56cafd765c795ce405f04ff2c2b95851"
-            },
-            "POST-request": {
-                "$ref": "#\/definitions\/ref4fe78e9f8d9266767f15f9b094d00e9d"
-            },
-            "POST-201-response": {
-                "$ref": "#\/definitions\/ref31ead4d236fd038a7d55a40e2ca1171e"
+                "class": "PSX\\Project\\Tests\\Model\\Message"
             }
         }
     },
@@ -256,14 +228,6 @@ JSON;
         }
     },
     "links": [
-        {
-            "rel": "wsdl",
-            "href": "\/generator\/wsdl\/*\/population\/popo"
-        },
-        {
-            "rel": "swagger",
-            "href": "\/generator\/swagger\/*\/population\/popo"
-        },
         {
             "rel": "raml",
             "href": "\/generator\/raml\/*\/population\/popo"

@@ -30,9 +30,7 @@ class ApiTestCase extends ControllerDbTestCase
             [['GET'], '/tool/routing', 'PSX\Framework\Controller\Tool\RoutingController'],
 
             [['GET'], '/generator/raml/:version/*path', 'PSX\Framework\Controller\Generator\RamlController'],
-            [['GET'], '/generator/swagger', 'PSX\Framework\Controller\Generator\SwaggerController::doIndex'],
-            [['GET'], '/generator/swagger/:version/*path', 'PSX\Framework\Controller\Generator\SwaggerController::doDetail'],
-            [['GET'], '/generator/wsdl/:version/*path', 'PSX\Framework\Controller\Generator\WsdlController'],
+            [['GET'], '/generator/swagger/:version/*path', 'PSX\Framework\Controller\Generator\SwaggerController'],
 
             [['GET', 'POST', 'PUT', 'DELETE'], '/proxy/soap', 'PSX\Framework\Controller\Proxy\SoapController'],
         );

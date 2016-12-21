@@ -8,166 +8,73 @@ class SwaggerTest extends ApiTestCase
 {
     public function testGet()
     {
-        $response = $this->sendRequest('http://127.0.0.1/generator/swagger', 'GET');
-
-        $body   = (string) $response->getBody();
-        $expect = <<<JSON
-{
-    "swaggerVersion": "1.2",
-    "apiVersion": "1.0",
-    "apis": [
-        {
-            "path": "\/*\/population\/popo"
-        },
-        {
-            "path": "\/*\/population\/popo\/{id}"
-        },
-        {
-            "path": "\/*\/population\/jsonschema"
-        },
-        {
-            "path": "\/*\/population\/jsonschema\/{id}"
-        },
-        {
-            "path": "\/*\/population\/raml"
-        },
-        {
-            "path": "\/*\/population\/raml\/{id}"
-        },
-        {
-            "path": "\/*\/population"
-        },
-        {
-            "path": "\/*\/population\/{id}"
-        }
-    ]
-}
-JSON;
-
-        $this->assertEquals(null, $response->getStatusCode(), $body);
-        $this->assertJsonStringEqualsJsonString($expect, $body, $body);
-    }
-
-    public function testGetDetail()
-    {
         $response = $this->sendRequest('http://127.0.0.1/generator/swagger/*/population/popo', 'GET');
 
         $body   = (string) $response->getBody();
         $expect = <<<'JSON'
 {
-    "swaggerVersion": "1.2",
-    "apiVersion": 0,
-    "basePath": "http:\/\/127.0.0.1\/",
-    "resourcePath": "\/population\/popo",
-    "apis": [
-        {
-            "path": "\/population\/popo",
-            "description": "Collection endpoint",
-            "operations": [
-                {
-                    "method": "GET",
-                    "nickname": "getCollection",
-                    "parameters": [
-                        {
-                            "paramType": "query",
-                            "name": "startIndex",
-                            "type": "integer"
-                        },
-                        {
-                            "paramType": "query",
-                            "name": "count",
-                            "type": "integer"
+    "swagger": "2.0",
+    "info": {
+        "title": "PSX",
+        "version": "0"
+    },
+    "basePath": "\/",
+    "paths": {
+        "\/population\/popo": {
+            "get": {
+                "operationId": "getCollection",
+                "parameters": [
+                    {
+                        "name": "startIndex",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "count",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Collection result",
+                        "schema": {
+                            "$ref": "#\/definitions\/Collection"
                         }
-                    ],
-                    "responseMessages": [
-                        {
-                            "code": 200,
-                            "message": "Collection result",
-                            "responseModel": "GET-200-response"
-                        }
-                    ]
-                },
-                {
-                    "method": "POST",
-                    "nickname": "postEntity",
-                    "parameters": [
-                        {
-                            "paramType": "body",
-                            "name": "body",
-                            "description": "Represents an internet population entity",
-                            "required": true,
-                            "type": "POST-request"
-                        }
-                    ],
-                    "responseMessages": [
-                        {
-                            "code": 201,
-                            "message": "Operation message",
-                            "responseModel": "POST-201-response"
-                        }
-                    ]
+                    }
                 }
-            ]
+            },
+            "post": {
+                "operationId": "postEntity",
+                "parameters": [
+                    {
+                        "description": "Represents an internet population entity",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#\/definitions\/Entity"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Operation message",
+                        "schema": {
+                            "$ref": "#\/definitions\/Message"
+                        }
+                    }
+                }
+            },
+            "parameters": []
         }
-    ],
-    "models": {
-        "ref057ec8a6751954e551431f5108608475": {
-            "id": "ref057ec8a6751954e551431f5108608475",
-            "properties": {
-                "startIndex": {
-                    "type": "integer"
-                },
-                "count": {
-                    "type": "integer"
-                }
-            }
-        },
-        "ref4fe78e9f8d9266767f15f9b094d00e9d": {
-            "id": "ref4fe78e9f8d9266767f15f9b094d00e9d",
-            "description": "Represents an internet population entity",
-            "required": [
-                "place",
-                "region",
-                "population",
-                "users",
-                "worldUsers"
-            ],
-            "properties": {
-                "id": {
-                    "description": "Unique id for each entry",
-                    "type": "integer"
-                },
-                "place": {
-                    "description": "Position in the top list",
-                    "type": "integer"
-                },
-                "region": {
-                    "description": "Name of the region",
-                    "type": "string",
-                    "minimum": 3,
-                    "maximum": 64
-                },
-                "population": {
-                    "description": "Complete number of population",
-                    "type": "integer"
-                },
-                "users": {
-                    "description": "Number of internet users",
-                    "type": "integer"
-                },
-                "worldUsers": {
-                    "description": "Percentage users of the world",
-                    "type": "number"
-                },
-                "datetime": {
-                    "description": "Date when the entity was created",
-                    "type": "string",
-                    "format": "date-time"
-                }
-            }
-        },
-        "ref56cafd765c795ce405f04ff2c2b95851": {
-            "id": "ref56cafd765c795ce405f04ff2c2b95851",
+    },
+    "definitions": {
+        "Collection": {
+            "type": "object",
+            "title": "collection",
             "description": "Collection result",
             "properties": {
                 "totalResults": {
@@ -176,52 +83,52 @@ JSON;
                 "entry": {
                     "type": "array",
                     "items": {
-                        "$ref": "ref4fe78e9f8d9266767f15f9b094d00e9d"
+                        "$ref": "#\/definitions\/Entity"
                     }
                 }
-            }
+            },
+            "class": "PSX\\Project\\Tests\\Model\\Collection"
         },
-        "ref31ead4d236fd038a7d55a40e2ca1171e": {
-            "id": "ref31ead4d236fd038a7d55a40e2ca1171e",
-            "description": "Operation message",
-            "properties": {
-                "success": {
-                    "type": "boolean"
-                },
-                "message": {
-                    "type": "string"
-                }
-            }
-        },
-        "GET-query": {
-            "id": "GET-query",
-            "properties": {
-                "startIndex": {
-                    "type": "integer"
-                },
-                "count": {
-                    "type": "integer"
-                }
-            }
-        },
-        "GET-200-response": {
-            "id": "GET-200-response",
-            "description": "Collection result",
-            "properties": {
-                "totalResults": {
-                    "type": "integer"
-                },
-                "entry": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "ref4fe78e9f8d9266767f15f9b094d00e9d"
-                    }
-                }
-            }
-        },
-        "POST-request": {
-            "id": "POST-request",
+        "Entity": {
+            "type": "object",
+            "title": "entity",
             "description": "Represents an internet population entity",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "description": "Unique id for each entry"
+                },
+                "place": {
+                    "type": "integer",
+                    "description": "Position in the top list",
+                    "minimum": 1,
+                    "maximum": 64
+                },
+                "region": {
+                    "type": "string",
+                    "description": "Name of the region",
+                    "pattern": "[A-z]+",
+                    "minLength": 3,
+                    "maxLength": 64
+                },
+                "population": {
+                    "type": "integer",
+                    "description": "Complete number of population"
+                },
+                "users": {
+                    "type": "integer",
+                    "description": "Number of internet users"
+                },
+                "worldUsers": {
+                    "type": "number",
+                    "description": "Percentage users of the world"
+                },
+                "datetime": {
+                    "type": "string",
+                    "description": "Date when the entity was created",
+                    "format": "date-time"
+                }
+            },
             "required": [
                 "place",
                 "region",
@@ -229,42 +136,11 @@ JSON;
                 "users",
                 "worldUsers"
             ],
-            "properties": {
-                "id": {
-                    "description": "Unique id for each entry",
-                    "type": "integer"
-                },
-                "place": {
-                    "description": "Position in the top list",
-                    "type": "integer"
-                },
-                "region": {
-                    "description": "Name of the region",
-                    "type": "string",
-                    "minimum": 3,
-                    "maximum": 64
-                },
-                "population": {
-                    "description": "Complete number of population",
-                    "type": "integer"
-                },
-                "users": {
-                    "description": "Number of internet users",
-                    "type": "integer"
-                },
-                "worldUsers": {
-                    "description": "Percentage users of the world",
-                    "type": "number"
-                },
-                "datetime": {
-                    "description": "Date when the entity was created",
-                    "type": "string",
-                    "format": "date-time"
-                }
-            }
+            "class": "PSX\\Project\\Tests\\Model\\Entity"
         },
-        "POST-201-response": {
-            "id": "POST-201-response",
+        "Message": {
+            "type": "object",
+            "title": "message",
             "description": "Operation message",
             "properties": {
                 "success": {
@@ -273,7 +149,8 @@ JSON;
                 "message": {
                     "type": "string"
                 }
-            }
+            },
+            "class": "PSX\\Project\\Tests\\Model\\Message"
         }
     }
 }

@@ -140,22 +140,8 @@ class RoutingTest extends ApiTestCase
             "methods": [
                 "GET"
             ],
-            "path": "\/generator\/swagger",
-            "source": "PSX\\Framework\\Controller\\Generator\\SwaggerController::doIndex"
-        },
-        {
-            "methods": [
-                "GET"
-            ],
             "path": "\/generator\/swagger\/:version\/*path",
-            "source": "PSX\\Framework\\Controller\\Generator\\SwaggerController::doDetail"
-        },
-        {
-            "methods": [
-                "GET"
-            ],
-            "path": "\/generator\/wsdl\/:version\/*path",
-            "source": "PSX\\Framework\\Controller\\Generator\\WsdlController"
+            "source": "PSX\\Framework\\Controller\\Generator\\SwaggerController"
         },
         {
             "methods": [
