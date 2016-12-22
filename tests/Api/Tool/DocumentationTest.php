@@ -229,6 +229,10 @@ JSON;
     },
     "links": [
         {
+            "rel": "swagger",
+            "href": "\/generator\/swagger\/*\/population\/popo"
+        },
+        {
             "rel": "raml",
             "href": "\/generator\/raml\/*\/population\/popo"
         }
