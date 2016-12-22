@@ -4,15 +4,14 @@ Controller
 
 To build an API endpoint we need to tell PSX which request methods are
 available and how the incoming and outgoing data looks. Because of this PSX 
-can automatically validate incoming data and format outgoing data according to 
-the schema. Also it is possible to generate documentation or other schema 
-formats like i.e. Swagger, WSDL or RAML based on the defined schema. In the 
-following we describe the available options.
+can automatically validate incoming data. Also it is possible to generate 
+documentation or other schema formats like i.e. Swagger or RAML based on 
+the defined schema. In the following we describe the available options.
 
 Annotation
 ----------
 
-It is possible to provide all API informations to the controller through 
+It is possible to provide all API information to the controller through 
 annotations.
 
 .. code-block:: php
@@ -100,7 +99,7 @@ describe the schema or a json schema file. The model class
         }
     }
 
-More informations at the psx schema project. The following annotations are 
+More information at the psx schema project. The following annotations are 
 available for the controller:
 
 +--------------+--------------+---------------------------------------------------------+
@@ -143,7 +142,7 @@ specification.
     {
         public function getDocumentation($version = null)
         {
-            return Raml::fromFile(__DIR__ . '/endpoint.raml', $this->context->get(Context::KEY_PATH));
+            return $this->apiManager->getApi(__DIR__ . '/endpoint.raml', $this->context->get(Context::KEY_PATH));
         }
 
         protected function doGet()
@@ -173,7 +172,7 @@ RAML definition (endpoint.raml)
 
 .. code-block:: yaml
 
-    #%RAML 0.8
+    #%RAML 1.0
     title: Endpoint
     baseUri: http://example.phpsx.org
     /endpoint/{foo_id}:
@@ -188,7 +187,7 @@ RAML definition (endpoint.raml)
           200:
             body:
               application/json:
-                schema: !include schema/song.json
+                type: !include schema/song.json
       post:
         body:
           application/json:
@@ -197,4 +196,4 @@ RAML definition (endpoint.raml)
           201:
             body:
               application/json:
-                schema: !include schema/message.json
+                type: !include schema/message.json

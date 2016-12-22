@@ -45,17 +45,10 @@ Usage
             // imports data from the request body into the model
             $model = $this->getBodyAs(Model::class);
 
-            // returns the value for the key "title". This works with 
-            // x-www-form-urlencoded, json or xml data
-            $title = $this->getAccessor()->get('title');
-
             // set data to the response body. How this data is presented depends
             // on the Accept header or GET parameter "format"
             $this->setBody([
                 'foo' => 'bar'
             ]);
-
-            // set the response data with an explicit schema
-            $this->setBodyAs($data, $schema);
         }
     }

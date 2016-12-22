@@ -3,7 +3,7 @@ Installation
 ============
 
 PSX uses composer as dependency manager. In order to install PSX composer must
-be installed on your system. More informations howto install composer at 
+be installed on your system. More information how to install composer at 
 https://getcomposer.org/.
 
 The easiest way to start is to install the PSX sample project through composer:
@@ -31,16 +31,15 @@ optional.
    :language: php
 
 If your application needs database access you can enter the credentials in the
-:code:`psx_sql_*` keys. The connection service provides a Doctrine DBAL 
+:code:`psx_connection` key. The connection service provides a Doctrine DBAL 
 connection which you can use in your application.
 
 Routing
 -------
 
 In order to make a controller accessible you have to define a route in your 
-:file:`routes` file. PSX tries to autoload the given class name so the namespace
-must be therefor defined in the :file:`composer.json` autoload key. Here an
-example route entry:
+:file:`routes` file. If a request arrives at an endpoint PSX tries to autoload 
+the provided class through composer. Here an example route entry:
 
 .. code::
 
@@ -53,7 +52,7 @@ This would invoke the class `Acme\\Api\\News\\Endpoint` if you visit the route
 Webserver
 ---------
 
-If you dont have a local webserver you can use the build in HTTP server of PHP.
+If you dont have a local web server you can use the build in HTTP server of PHP.
 You can start the server with the following command:
 
 .. code::

@@ -8,7 +8,7 @@ components are independent of the framework and can also be used in another
 context. More informations at http://phpsx.org
 
 This manual is seperated into three chapters. The :doc:`getting_started` chapter
-contains all informations to quickly create an REST API with PSX. The 
+contains all information to quickly create an REST API with PSX. The 
 :doc:`design` chapter contains more technical details about the anatomy of PSX. 
 The last chapter :doc:`concept` covers various concepts to get a deeper 
 understanding of PSX. 

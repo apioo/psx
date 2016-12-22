@@ -23,16 +23,6 @@ change the style according to your needs.
     GET /doc                PSX\Framework\Controller\Tool\DocumentationController::doIndex
     GET /doc/:version/*path PSX\Framework\Controller\Tool\DocumentationController::doDetail
 
-WSDL
-----
-
-Generates a WSDL representation for the given API.
-
-.. code::
-
-    GET /wsdl/:version/*path PSX\Framework\Controller\Generator\WsdlController
-    ANY /soap                PSX\Framework\Controller\Proxy\SoapController
-
 Swagger
 -------
 
@@ -40,8 +30,7 @@ Generates a Swagger resource listing and definition.
 
 .. code::
 
-    GET /swagger                PSX\Framework\Controller\Generator\SwaggerController::doIndex
-    GET /swagger/:version/*path PSX\Framework\Controller\Generator\SwaggerController::doDetail
+    GET /swagger/:version/*path PSX\Framework\Controller\Generator\SwaggerController
 
 RAML
 ----

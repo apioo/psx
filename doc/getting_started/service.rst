@@ -3,7 +3,7 @@ Service
 =======
 
 In the previous chapter we have defined a controller which receives the request
-and produces the response. This chapter describes where we can define the 
+and produces a response. This chapter describes where we can define the 
 business logic of our API endpoint.
 
 Definition
@@ -140,7 +140,7 @@ inside a controller:
 
     annotation_reader            \Doctrine\Common\Annotations\Reader
     annotation_reader_controller \Doctrine\Common\Annotations\Reader
-    api_parser                   \PSX\Api\ParserInterface
+    api_manager                  \PSX\Api\ApiManager
     application_stack_factory    \PSX\Framework\Dispatch\ControllerFactoryInterface
     cache                        \Psr\Cache\CacheItemPoolInterface
     config                       \PSX\Framework\Config\Config
