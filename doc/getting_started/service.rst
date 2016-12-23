@@ -36,7 +36,7 @@ Usage
 It is recommended to place your API logic inside a service. In the controller
 you only need to call service methods which return the response data or handle
 the request data. The service should be independent of the HTTP request/response
-context. Only the controller needs to read the HTTP data and passes it to the
+context. Only the controller needs to read the HTTP data and pass it to the
 service methods.
 
 In order to use a service from the DI container you can use the `Inject`
@@ -58,11 +58,11 @@ our previous controller with a service which fetches/inserts data on a table.
      */
     class Endpoint extends AnnotationApiAbstract
     {
-    	/**
-    	 * @Inject
-    	 * @var \Acme\NewsService
-    	 */
-    	protected $news;
+        /**
+         * @Inject
+         * @var \Acme\NewsService
+         */
+        protected $news;
 
         /**
          * @QueryParam(name="count", description="Count of comments")

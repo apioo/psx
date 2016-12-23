@@ -2,11 +2,12 @@
 Controller
 ==========
 
-To build an API endpoint we need to tell PSX which request methods are
-available and how the incoming and outgoing data looks. Because of this PSX 
-can automatically validate incoming data. Also it is possible to generate 
-documentation or other schema formats like i.e. Swagger or RAML based on 
-the defined schema. In the following we describe the available options.
+The controller receives the request and handles the response. To build an API 
+endpoint we should tell PSX which request methods are available and how the 
+incoming and outgoing data looks. Because of this PSX can automatically validate 
+incoming data and it is possible to generate documentation or other schema 
+formats like i.e. Swagger or RAML based from the controller. In the following we 
+describe the available options.
 
 Annotation
 ----------
@@ -99,8 +100,14 @@ describe the schema or a json schema file. The model class
         }
     }
 
-More information at the psx schema project. The following annotations are 
-available for the controller:
+It is also possible to generate a PHP class based on a json schema.
+
+.. code-block:: php
+
+    vendor/bin/psx schema schema.json php
+
+More information at the psx schema (https://github.com/apioo/psx-schema) 
+project. The following annotations are available for the controller:
 
 +--------------+--------------+---------------------------------------------------------+
 | Annotation   | Target       | Example                                                 |
