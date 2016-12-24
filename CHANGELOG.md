@@ -1,5 +1,5 @@
 
-### 2.1.0
+### 3.0.0 (2016-12-24)
 
 * Generate swagger 2.0 and raml 1.0 specifications
 * Updated psx schema and data library
