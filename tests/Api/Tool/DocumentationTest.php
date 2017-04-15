@@ -131,23 +131,6 @@ JSON;
         "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
         "id": "urn:schema.phpsx.org#",
         "definitions": {
-            "Collection": {
-                "type": "object",
-                "title": "collection",
-                "description": "Collection result",
-                "properties": {
-                    "totalResults": {
-                        "type": "integer"
-                    },
-                    "entry": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#\/definitions\/Entity"
-                        }
-                    }
-                },
-                "class": "PSX\\Project\\Tests\\Model\\Collection"
-            },
             "Entity": {
                 "type": "object",
                 "title": "entity",
@@ -197,6 +180,23 @@ JSON;
                 ],
                 "class": "PSX\\Project\\Tests\\Model\\Entity"
             },
+            "Collection": {
+                "type": "object",
+                "title": "collection",
+                "description": "Collection result",
+                "properties": {
+                    "totalResults": {
+                        "type": "integer"
+                    },
+                    "entry": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#\/definitions\/Entity"
+                        }
+                    }
+                },
+                "class": "PSX\\Project\\Tests\\Model\\Collection"
+            },
             "Message": {
                 "type": "object",
                 "title": "message",
@@ -210,6 +210,15 @@ JSON;
                     }
                 },
                 "class": "PSX\\Project\\Tests\\Model\\Message"
+            },
+            "GET-200-response": {
+                "$ref": "#\/definitions\/Collection"
+            },
+            "POST-request": {
+                "$ref": "#\/definitions\/Entity"
+            },
+            "POST-201-response": {
+                "$ref": "#\/definitions\/Message"
             }
         }
     },
