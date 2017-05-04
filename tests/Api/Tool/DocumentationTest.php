@@ -131,6 +131,19 @@ JSON;
         "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
         "id": "urn:schema.phpsx.org#",
         "definitions": {
+            "GET-query": {
+                "type": "object",
+                "title": "query",
+                "properties": {
+                    "startIndex": {
+                        "type": "integer"
+                    },
+                    "count": {
+                        "type": "integer"
+                    }
+                },
+                "required": []
+            },
             "Entity": {
                 "type": "object",
                 "title": "entity",
