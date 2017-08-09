@@ -250,6 +250,7 @@ JSON;
             ['population/popo'],
             ['population/jsonschema'],
             ['population/raml'],
+            ['population/openapi'],
         ];
     }
 }

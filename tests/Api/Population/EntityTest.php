@@ -138,6 +138,7 @@ JSON;
             ['population/popo/:id'],
             ['population/jsonschema/:id'],
             ['population/raml/:id'],
+            ['population/openapi/:id'],
         ];
     }
 }

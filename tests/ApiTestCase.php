@@ -13,13 +13,15 @@ class ApiTestCase extends ControllerDbTestCase
 
     protected function getPaths()
     {
-        return array(
+        return [
             [['GET', 'POST', 'PUT', 'DELETE'], '/population/popo', 'PSX\Project\Tests\Api\Population\CollectionPopo'],
             [['GET', 'POST', 'PUT', 'DELETE'], '/population/popo/:id', 'PSX\Project\Tests\Api\Population\EntityPopo'],
             [['GET', 'POST', 'PUT', 'DELETE'], '/population/jsonschema', 'PSX\Project\Tests\Api\Population\CollectionJsonSchema'],
             [['GET', 'POST', 'PUT', 'DELETE'], '/population/jsonschema/:id', 'PSX\Project\Tests\Api\Population\EntityJsonSchema'],
             [['GET', 'POST', 'PUT', 'DELETE'], '/population/raml', 'PSX\Project\Tests\Api\Population\CollectionRaml'],
             [['GET', 'POST', 'PUT', 'DELETE'], '/population/raml/:id', 'PSX\Project\Tests\Api\Population\EntityRaml'],
+            [['GET', 'POST', 'PUT', 'DELETE'], '/population/openapi', 'PSX\Project\Tests\Api\Population\CollectionOpenAPI'],
+            [['GET', 'POST', 'PUT', 'DELETE'], '/population/openapi/:id', 'PSX\Project\Tests\Api\Population\EntityOpenAPI'],
             [['GET', 'POST', 'PUT', 'DELETE'], '/population', 'PSX\Project\Tests\Api\Population\Collection'],
             [['GET', 'POST', 'PUT', 'DELETE'], '/population/:id', 'PSX\Project\Tests\Api\Population\Entity'],
 
@@ -31,8 +33,9 @@ class ApiTestCase extends ControllerDbTestCase
 
             [['GET'], '/generator/raml/:version/*path', 'PSX\Framework\Controller\Generator\RamlController'],
             [['GET'], '/generator/swagger/:version/*path', 'PSX\Framework\Controller\Generator\SwaggerController'],
+            [['GET'], '/generator/openapi/:version/*path', 'PSX\Framework\Controller\Generator\OpenAPIController'],
 
             [['GET', 'POST', 'PUT', 'DELETE'], '/proxy/soap', 'PSX\Framework\Controller\Proxy\SoapController'],
-        );
+        ];
     }
 }

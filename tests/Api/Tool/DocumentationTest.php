@@ -75,6 +75,26 @@ class DocumentationTest extends ApiTestCase
             "version": "*"
         },
         {
+            "path": "\/population\/openapi",
+            "methods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE"
+            ],
+            "version": "*"
+        },
+        {
+            "path": "\/population\/openapi\/:id",
+            "methods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE"
+            ],
+            "version": "*"
+        },
+        {
             "path": "\/population",
             "methods": [
                 "GET",
@@ -250,6 +270,10 @@ JSON;
         }
     },
     "links": [
+        {
+            "rel": "openapi",
+            "href": "\/generator\/openapi\/*\/population\/popo"
+        },
         {
             "rel": "swagger",
             "href": "\/generator\/swagger\/*\/population\/popo"

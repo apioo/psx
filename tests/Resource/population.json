@@ -1,0 +1,148 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "PSX sample API",
+    "version": "1"
+  },
+  "servers": [
+    {
+      "url": "http:\/\/example.phpsx.org"
+    }
+  ],
+  "paths": {
+    "\/population\/openapi": {
+      "summary": "Returns a collection of population entries",
+      "get": {
+        "operationId": "doGet",
+        "parameters": [
+          {
+            "name": "startIndex",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application\/json": {
+                "schema": {
+                  "$ref": "file:///schema/population/collection.json"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "requestBody": {
+          "content": {
+            "application\/json": {
+              "schema": {
+                "$ref": "file:///schema/population/entity.json"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application\/json": {
+                "schema": {
+                  "$ref": "file:///schema/population/message.json"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "\/population\/openapi\/{id}": {
+      "summary": "Returns a collection of population entries",
+      "parameters": [{
+        "name": "id",
+        "in": "path",
+        "required": false,
+        "schema": {
+          "type": "integer"
+        }
+      }],
+      "get": {
+        "parameters": [
+          {
+            "name": "startIndex",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application\/json": {
+                "schema": {
+                  "$ref": "file:///schema/population/collection.json"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "requestBody": {
+          "content": {
+            "application\/json": {
+              "schema": {
+                "$ref": "file:///schema/population/entity.json"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application\/json": {
+                "schema": {
+                  "$ref": "file:///schema/population/message.json"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "responses": {
+          "200": {
+            "content": {
+              "application\/json": {
+                "schema": {
+                  "$ref": "file:///schema/population/message.json"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

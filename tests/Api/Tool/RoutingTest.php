@@ -81,6 +81,26 @@ class RoutingTest extends ApiTestCase
                 "PUT",
                 "DELETE"
             ],
+            "path": "\/population\/openapi",
+            "source": "PSX\\Project\\Tests\\Api\\Population\\CollectionOpenAPI"
+        },
+        {
+            "methods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE"
+            ],
+            "path": "\/population\/openapi\/:id",
+            "source": "PSX\\Project\\Tests\\Api\\Population\\EntityOpenAPI"
+        },
+        {
+            "methods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE"
+            ],
             "path": "\/population",
             "source": "PSX\\Project\\Tests\\Api\\Population\\Collection"
         },
@@ -142,6 +162,13 @@ class RoutingTest extends ApiTestCase
             ],
             "path": "\/generator\/swagger\/:version\/*path",
             "source": "PSX\\Framework\\Controller\\Generator\\SwaggerController"
+        },
+        {
+            "methods": [
+                "GET"
+            ],
+            "path": "\/generator\/openapi\/:version\/*path",
+            "source": "PSX\\Framework\\Controller\\Generator\\OpenAPIController"
         },
         {
             "methods": [

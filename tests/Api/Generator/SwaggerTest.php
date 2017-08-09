@@ -22,7 +22,7 @@ class SwaggerTest extends ApiTestCase
     "paths": {
         "\/population\/popo": {
             "get": {
-                "operationId": "getCollection",
+                "operationId": "doGet",
                 "parameters": [
                     {
                         "name": "startIndex",
@@ -47,7 +47,7 @@ class SwaggerTest extends ApiTestCase
                 }
             },
             "post": {
-                "operationId": "postEntity",
+                "operationId": "doPost",
                 "parameters": [
                     {
                         "description": "Represents an internet population entity",
