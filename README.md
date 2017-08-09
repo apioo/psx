@@ -9,7 +9,7 @@ components are independent of the framework and can also be used in another
 context. The following list contains the most notable packages:
 
 - [psx/api](https://github.com/apioo/psx-api)
-  Parse and generate API specification formats (i.e. RAML)
+  Parse and generate API specification formats (i.e. OpenAPI, RAML)
 - [psx/data](https://github.com/apioo/psx-data)
   Data processing library to read and write POPOs in different formats
 - [psx/schema](https://github.com/apioo/psx-schema)
