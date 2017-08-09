@@ -1,4 +1,13 @@
 
+### 3.0.2 (2017-08-09)
+
+* Generate OpenAPI 3.0 specification
+* Improved test cases
+
+### 3.0.1 (2017-04-15)
+
+* Updated test cases
+
 ### 3.0.0 (2016-12-24)
 
 * Generate swagger 2.0 and raml 1.0 specifications
