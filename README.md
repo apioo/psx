@@ -24,7 +24,7 @@ More informations about the PSX framework and the components at
 
 ## Requirements
 
-> &gt;= PHP 5.6 or HHVM 3.2.0
+> &gt;= PHP 7.0
 
 ## Installation
 
