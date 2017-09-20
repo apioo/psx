@@ -27,6 +27,10 @@ class DiscoveryTest extends ApiTestCase
             "href": "http:\/\/127.0.0.1\/tool\/doc"
         },
         {
+            "rel": "openapi",
+            "href": "http:\/\/127.0.0.1\/generator\/openapi\/{version}\/{path}"
+        },
+        {
             "rel": "swagger",
             "href": "http:\/\/127.0.0.1\/generator\/swagger\/{version}\/{path}"
         },
