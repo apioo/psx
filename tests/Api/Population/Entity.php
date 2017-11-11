@@ -9,8 +9,7 @@ class Entity extends VersionController
     protected function getVersions()
     {
         return [
-            1 => EntityRaml::class,
-            2 => EntityPopo::class,
+            1 => EntityPopo::class,
         ];
     }
 }

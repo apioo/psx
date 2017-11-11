@@ -30,7 +30,7 @@ JSON;
 
     public function testGetExplicitVersion()
     {
-        $response = $this->sendRequest('http://127.0.0.1/population/2', 'GET', ['Accept' => 'application/vnd.psx.v2+json']);
+        $response = $this->sendRequest('http://127.0.0.1/population/2', 'GET', ['Accept' => 'application/vnd.psx.v1+json']);
 
         $body   = (string) $response->getBody();
         $expect = <<<JSON

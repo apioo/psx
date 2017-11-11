@@ -9,8 +9,7 @@ class Collection extends VersionController
     protected function getVersions()
     {
         return [
-            1 => CollectionRaml::class,
-            2 => CollectionAnnotation::class,
+            1 => CollectionPopo::class,
         ];
     }
 }

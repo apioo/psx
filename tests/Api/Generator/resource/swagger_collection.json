@@ -1,0 +1,639 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "PSX",
+    "version": "0"
+  },
+  "host": "127.0.0.1",
+  "basePath": "\/",
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "\/population\/popo": {
+      "get": {
+        "operationId": "populationPopoDoGet",
+        "parameters": [
+          {
+            "name": "startIndex",
+            "in": "query",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Collection result",
+            "schema": {
+              "$ref": "#\/definitions\/Collection"
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "populationPopoDoPost",
+        "parameters": [
+          {
+            "description": "Represents an internet population entity",
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#\/definitions\/Entity"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Operation message",
+            "schema": {
+              "$ref": "#\/definitions\/Message"
+            }
+          }
+        }
+      },
+      "parameters": []
+    },
+    "\/population\/popo\/{id}": {
+      "get": {
+        "operationId": "populationPopoIdDoGet",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Represents an internet population entity",
+            "schema": {
+              "$ref": "#\/definitions\/Entity"
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "populationPopoIdDoPut",
+        "parameters": [
+          {
+            "description": "Represents an internet population entity",
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#\/definitions\/Entity"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operation message",
+            "schema": {
+              "$ref": "#\/definitions\/Message"
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "populationPopoIdDoDelete",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Operation message",
+            "schema": {
+              "$ref": "#\/definitions\/Message"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "integer"
+        }
+      ]
+    },
+    "\/population\/jsonschema": {
+      "get": {
+        "operationId": "populationJsonschemaDoGet",
+        "parameters": [
+          {
+            "name": "startIndex",
+            "in": "query",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Collection result",
+            "schema": {
+              "$ref": "#\/definitions\/Collection"
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "populationJsonschemaDoPost",
+        "parameters": [
+          {
+            "description": "Represents an internet population entity",
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#\/definitions\/Entity"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Operation message",
+            "schema": {
+              "$ref": "#\/definitions\/Message"
+            }
+          }
+        }
+      },
+      "parameters": []
+    },
+    "\/population\/jsonschema\/{id}": {
+      "get": {
+        "operationId": "populationJsonschemaIdDoGet",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Represents an internet population entity",
+            "schema": {
+              "$ref": "#\/definitions\/Entity"
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "populationJsonschemaIdDoPut",
+        "parameters": [
+          {
+            "description": "Represents an internet population entity",
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#\/definitions\/Entity"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operation message",
+            "schema": {
+              "$ref": "#\/definitions\/Message"
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "populationJsonschemaIdDoDelete",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Operation message",
+            "schema": {
+              "$ref": "#\/definitions\/Message"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "integer"
+        }
+      ]
+    },
+    "\/population\/raml": {
+      "get": {
+        "operationId": "populationRamlGetCollection",
+        "parameters": [
+          {
+            "name": "startIndex",
+            "in": "query",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Collection result",
+            "schema": {
+              "$ref": "#\/definitions\/Collection"
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "populationRamlPostEntity",
+        "parameters": [
+          {
+            "description": "Represents an internet population entity",
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#\/definitions\/Entity"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Operation message",
+            "schema": {
+              "$ref": "#\/definitions\/Message"
+            }
+          }
+        }
+      },
+      "parameters": []
+    },
+    "\/population\/raml\/{id}": {
+      "get": {
+        "operationId": "populationRamlIdGetEntity",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Represents an internet population entity",
+            "schema": {
+              "$ref": "#\/definitions\/Entity"
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "populationRamlIdPutEntity",
+        "parameters": [
+          {
+            "description": "Represents an internet population entity",
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#\/definitions\/Entity"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operation message",
+            "schema": {
+              "$ref": "#\/definitions\/Message"
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "populationRamlIdDeleteMessage",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Operation message",
+            "schema": {
+              "$ref": "#\/definitions\/Message"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "integer"
+        }
+      ]
+    },
+    "\/population\/openapi": {
+      "get": {
+        "operationId": "populationOpenapiDoGet",
+        "parameters": [
+          {
+            "name": "startIndex",
+            "in": "query",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Collection result",
+            "schema": {
+              "$ref": "#\/definitions\/Collection"
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "populationOpenapiPostEntity",
+        "parameters": [
+          {
+            "description": "Represents an internet population entity",
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#\/definitions\/Entity"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Operation message",
+            "schema": {
+              "$ref": "#\/definitions\/Message"
+            }
+          }
+        }
+      },
+      "parameters": []
+    },
+    "\/population\/openapi\/{id}": {
+      "get": {
+        "operationId": "populationOpenapiIdGetCollection",
+        "parameters": [
+          {
+            "name": "startIndex",
+            "in": "query",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Collection result",
+            "schema": {
+              "$ref": "#\/definitions\/Collection"
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "populationOpenapiIdPutEntity",
+        "parameters": [
+          {
+            "description": "Represents an internet population entity",
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#\/definitions\/Entity"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operation message",
+            "schema": {
+              "$ref": "#\/definitions\/Message"
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "populationOpenapiIdDeleteMessage",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Operation message",
+            "schema": {
+              "$ref": "#\/definitions\/Message"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "integer"
+        }
+      ]
+    },
+    "\/population": {
+      "get": {
+        "operationId": "populationDoGet",
+        "parameters": [
+          {
+            "name": "startIndex",
+            "in": "query",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Collection result",
+            "schema": {
+              "$ref": "#\/definitions\/Collection"
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "populationDoPost",
+        "parameters": [
+          {
+            "description": "Represents an internet population entity",
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#\/definitions\/Entity"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Operation message",
+            "schema": {
+              "$ref": "#\/definitions\/Message"
+            }
+          }
+        }
+      },
+      "parameters": []
+    },
+    "\/population\/{id}": {
+      "get": {
+        "operationId": "populationIdDoGet",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Represents an internet population entity",
+            "schema": {
+              "$ref": "#\/definitions\/Entity"
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "populationIdDoPut",
+        "parameters": [
+          {
+            "description": "Represents an internet population entity",
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#\/definitions\/Entity"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operation message",
+            "schema": {
+              "$ref": "#\/definitions\/Message"
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "populationIdDoDelete",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Operation message",
+            "schema": {
+              "$ref": "#\/definitions\/Message"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "integer"
+        }
+      ]
+    }
+  },
+  "definitions": {
+    "Entity": {
+      "type": "object",
+      "title": "entity",
+      "description": "Represents an internet population entity",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Unique id for each entry"
+        },
+        "place": {
+          "type": "integer",
+          "description": "Position in the top list",
+          "minimum": 1,
+          "maximum": 64
+        },
+        "region": {
+          "type": "string",
+          "description": "Name of the region",
+          "pattern": "[A-z]+",
+          "minLength": 3,
+          "maxLength": 64
+        },
+        "population": {
+          "type": "integer",
+          "description": "Complete number of population"
+        },
+        "users": {
+          "type": "integer",
+          "description": "Number of internet users"
+        },
+        "worldUsers": {
+          "type": "number",
+          "description": "Percentage users of the world"
+        },
+        "datetime": {
+          "type": "string",
+          "description": "Date when the entity was created",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "place",
+        "region",
+        "population",
+        "users",
+        "worldUsers"
+      ],
+      "class": "PSX\\Project\\Tests\\Model\\Entity"
+    },
+    "Collection": {
+      "type": "object",
+      "title": "collection",
+      "description": "Collection result",
+      "properties": {
+        "totalResults": {
+          "type": "integer"
+        },
+        "entry": {
+          "type": "array",
+          "items": {
+            "$ref": "#\/definitions\/Entity"
+          }
+        }
+      },
+      "class": "PSX\\Project\\Tests\\Model\\Collection"
+    },
+    "Message": {
+      "type": "object",
+      "title": "message",
+      "description": "Operation message",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        }
+      },
+      "class": "PSX\\Project\\Tests\\Model\\Message"
+    }
+  }
+}

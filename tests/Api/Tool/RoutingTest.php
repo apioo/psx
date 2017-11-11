@@ -16,100 +16,70 @@ class RoutingTest extends ApiTestCase
     "routings": [
         {
             "methods": [
-                "GET",
-                "POST",
-                "PUT",
-                "DELETE"
+                "ANY"
             ],
             "path": "\/population\/popo",
             "source": "PSX\\Project\\Tests\\Api\\Population\\CollectionPopo"
         },
         {
             "methods": [
-                "GET",
-                "POST",
-                "PUT",
-                "DELETE"
+                "ANY"
             ],
             "path": "\/population\/popo\/:id",
             "source": "PSX\\Project\\Tests\\Api\\Population\\EntityPopo"
         },
         {
             "methods": [
-                "GET",
-                "POST",
-                "PUT",
-                "DELETE"
+                "ANY"
             ],
             "path": "\/population\/jsonschema",
             "source": "PSX\\Project\\Tests\\Api\\Population\\CollectionJsonSchema"
         },
         {
             "methods": [
-                "GET",
-                "POST",
-                "PUT",
-                "DELETE"
+                "ANY"
             ],
             "path": "\/population\/jsonschema\/:id",
             "source": "PSX\\Project\\Tests\\Api\\Population\\EntityJsonSchema"
         },
         {
             "methods": [
-                "GET",
-                "POST",
-                "PUT",
-                "DELETE"
+                "ANY"
             ],
             "path": "\/population\/raml",
             "source": "PSX\\Project\\Tests\\Api\\Population\\CollectionRaml"
         },
         {
             "methods": [
-                "GET",
-                "POST",
-                "PUT",
-                "DELETE"
+                "ANY"
             ],
             "path": "\/population\/raml\/:id",
             "source": "PSX\\Project\\Tests\\Api\\Population\\EntityRaml"
         },
         {
             "methods": [
-                "GET",
-                "POST",
-                "PUT",
-                "DELETE"
+                "ANY"
             ],
             "path": "\/population\/openapi",
             "source": "PSX\\Project\\Tests\\Api\\Population\\CollectionOpenAPI"
         },
         {
             "methods": [
-                "GET",
-                "POST",
-                "PUT",
-                "DELETE"
+                "ANY"
             ],
             "path": "\/population\/openapi\/:id",
             "source": "PSX\\Project\\Tests\\Api\\Population\\EntityOpenAPI"
         },
         {
             "methods": [
-                "GET",
-                "POST",
-                "PUT",
-                "DELETE"
+                "ANY"
             ],
             "path": "\/population",
             "source": "PSX\\Project\\Tests\\Api\\Population\\Collection"
         },
         {
             "methods": [
-                "GET",
-                "POST",
-                "PUT",
-                "DELETE"
+                "ANY"
             ],
             "path": "\/population\/:id",
             "source": "PSX\\Project\\Tests\\Api\\Population\\Entity"
@@ -172,10 +142,7 @@ class RoutingTest extends ApiTestCase
         },
         {
             "methods": [
-                "GET",
-                "POST",
-                "PUT",
-                "DELETE"
+                "ANY"
             ],
             "path": "\/proxy\/soap",
             "source": "PSX\\Framework\\Controller\\Proxy\\SoapController"

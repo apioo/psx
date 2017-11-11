@@ -20,7 +20,8 @@ class DocumentationTest extends ApiTestCase
                 "GET",
                 "POST",
                 "PUT",
-                "DELETE"
+                "DELETE",
+                "PATCH"
             ],
             "version": "*"
         },
@@ -30,7 +31,8 @@ class DocumentationTest extends ApiTestCase
                 "GET",
                 "POST",
                 "PUT",
-                "DELETE"
+                "DELETE",
+                "PATCH"
             ],
             "version": "*"
         },
@@ -40,7 +42,8 @@ class DocumentationTest extends ApiTestCase
                 "GET",
                 "POST",
                 "PUT",
-                "DELETE"
+                "DELETE",
+                "PATCH"
             ],
             "version": "*"
         },
@@ -50,7 +53,8 @@ class DocumentationTest extends ApiTestCase
                 "GET",
                 "POST",
                 "PUT",
-                "DELETE"
+                "DELETE",
+                "PATCH"
             ],
             "version": "*"
         },
@@ -60,7 +64,8 @@ class DocumentationTest extends ApiTestCase
                 "GET",
                 "POST",
                 "PUT",
-                "DELETE"
+                "DELETE",
+                "PATCH"
             ],
             "version": "*"
         },
@@ -70,7 +75,8 @@ class DocumentationTest extends ApiTestCase
                 "GET",
                 "POST",
                 "PUT",
-                "DELETE"
+                "DELETE",
+                "PATCH"
             ],
             "version": "*"
         },
@@ -80,7 +86,8 @@ class DocumentationTest extends ApiTestCase
                 "GET",
                 "POST",
                 "PUT",
-                "DELETE"
+                "DELETE",
+                "PATCH"
             ],
             "version": "*"
         },
@@ -90,7 +97,8 @@ class DocumentationTest extends ApiTestCase
                 "GET",
                 "POST",
                 "PUT",
-                "DELETE"
+                "DELETE",
+                "PATCH"
             ],
             "version": "*"
         },
@@ -100,7 +108,8 @@ class DocumentationTest extends ApiTestCase
                 "GET",
                 "POST",
                 "PUT",
-                "DELETE"
+                "DELETE",
+                "PATCH"
             ],
             "version": "*"
         },
@@ -110,7 +119,8 @@ class DocumentationTest extends ApiTestCase
                 "GET",
                 "POST",
                 "PUT",
-                "DELETE"
+                "DELETE",
+                "PATCH"
             ],
             "version": "*"
         }
