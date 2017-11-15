@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "title": "PSX",
-    "version": "0"
+    "version": "1"
   },
   "host": "127.0.0.1",
   "basePath": "\/",
