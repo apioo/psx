@@ -22,13 +22,7 @@ return array(
 
     // Database parameters which are used for the doctrine DBAL connection
     // http://docs.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/configuration.html
-    'psx_connection'          => [
-        'dbname'              => 'psx',
-        'user'                => 'root',
-        'password'            => '',
-        'host'                => 'localhost',
-        'driver'              => 'pdo_mysql',
-    ],
+    'psx_connection'          => getConnectionParams(getenv('DB')),
 
     // Path to the routing file
     'psx_routing'             => __DIR__ . '/routes',
@@ -65,3 +59,36 @@ return array(
     //'psx_error_template'      => null,
 
 );
+
+function getConnectionParams($db)
+{
+    switch ($db) {
+        case 'mysql':
+            return [
+                'dbname'   => 'psx',
+                'user'     => 'root',
+                'password' => '',
+                'host'     => 'localhost',
+                'driver'   => 'pdo_mysql',
+            ];
+            break;
+
+        case 'pgsql':
+            return [
+                'dbname'   => 'psx',
+                'user'     => 'root',
+                'password' => '',
+                'host'     => 'localhost',
+                'driver'   => 'pdo_pgsql',
+            ];
+            break;
+
+        default:
+        case 'sqlite':
+            return [
+                'path'   => __DIR__ . '/cache/population.db',
+                'driver' => 'pdo_sqlite',
+            ];
+            break;
+    }
+}
