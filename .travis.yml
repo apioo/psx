@@ -12,8 +12,8 @@ before_install:
 install:
   - composer install
 before_script:
-  - if [ $DB_TYPE = 'mysql' ]; then mysql -e 'create database psx;'; fi;
-  - if [ $DB_TYPE = 'pgsql' ]; then psql -c 'create database psx;' -U postgres; fi;
+  - if [ $DB = 'mysql' ]; then mysql -e 'create database psx;'; fi;
+  - if [ $DB = 'pgsql' ]; then psql -c 'create database psx;' -U postgres; fi;
 script:
   - vendor/bin/phpunit
 env:
