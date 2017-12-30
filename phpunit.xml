@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit bootstrap="tests/bootstrap.php" backupGlobals="false">
-	<testsuites>
-		<testsuite name="PSX Test Suite">
-			<directory>./tests</directory>
-		</testsuite>
-	</testsuites>
-	<filter>
-		<whitelist>
-			<directory suffix=".php">./vendor/psx/*/src</directory>
-		</whitelist>
-	</filter>
-	<php>
-		<!-- <env name="DB" value="sqlite" /> -->
-	</php>
+    <testsuites>
+        <testsuite name="PSX Test Suite">
+            <directory>./vendor/psx/framework/app</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist>
+            <directory suffix=".php">./vendor/psx/*/src</directory>
+        </whitelist>
+    </filter>
+    <php>
+        <!-- <env name="DB" value="sqlite" /> -->
+    </php>
 </phpunit>

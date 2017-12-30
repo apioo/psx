@@ -1,2 +1,15 @@
 
-GET / PSX\Framework\Controller\Tool\DefaultController
+# API
+GET /                            PSX\Framework\App\Api\Index
+ANY /population                  PSX\Framework\App\Api\Population\Collection
+ANY /population/:id              PSX\Framework\App\Api\Population\Entity
+
+# tool controller
+GET /tool/discovery              PSX\Framework\Controller\Tool\DiscoveryController
+GET /tool/routing                PSX\Framework\Controller\Tool\RoutingController
+GET /tool/doc                    PSX\Framework\Controller\Tool\DocumentationController::doIndex
+GET /tool/doc/:version/*path     PSX\Framework\Controller\Tool\DocumentationController::doDetail
+GET /tool/raml/:version/*path    PSX\Framework\Controller\Generator\RamlController
+GET /tool/swagger/:version/*path PSX\Framework\Controller\Generator\SwaggerController
+GET /tool/openapi/:version/*path PSX\Framework\Controller\Generator\OpenAPIController
+ANY /tool/soap                   PSX\Framework\Controller\Proxy\SoapController
