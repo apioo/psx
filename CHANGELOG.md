@@ -1,4 +1,16 @@
 
+### 4.0.0 (2017-12-31)
+
+* Add postgresql test case
+* Add abstract environment engine to use different webserver types
+* Removed test cases and use tests from the framework
+
+### 3.0.3 (2017-12-07)
+
+* Require min PHP 7.0
+* Add PHP 7.2 support
+* Improved test cases
+
 ### 3.0.2 (2017-08-09)
 
 * Generate OpenAPI 3.0 specification
