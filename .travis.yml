@@ -6,17 +6,14 @@ php:
 sudo: false
 services:
   - mysql
-  - postgresql
 before_install:
   - phpenv config-rm xdebug.ini
 install:
   - composer install
 before_script:
   - if [ $DB = 'mysql' ]; then mysql -e 'create database psx;'; fi;
-  - if [ $DB = 'pgsql' ]; then psql -c 'create database psx;' -U postgres; fi;
 script:
   - vendor/bin/phpunit
 env:
   - DB=mysql
-  - DB=pgsql
   - DB=sqlite
