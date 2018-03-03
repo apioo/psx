@@ -25,6 +25,4 @@ return [
     [['GET'], '/generator/swagger/:version/*path', \PSX\Framework\Controller\Generator\SwaggerController::class],
     [['GET'], '/generator/openapi/:version/*path', \PSX\Framework\Controller\Generator\OpenAPIController::class],
 
-    [['ANY'], '/proxy/soap', \PSX\Framework\Controller\Proxy\SoapController::class],
-
 ];
