@@ -29,7 +29,7 @@ More informations about the PSX framework and the components at
 ## Installation
 
 To install the full stack framework you can install the sample project which
-setups a basic PSX project with a sample API.
+creates a basic PSX project with a sample API.
 
     php composer.phar create-project psx/sample .
 
