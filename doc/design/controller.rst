@@ -18,36 +18,30 @@ Usage
     namespace Foo\Bar;
 
     use PSX\Framework\Controller\ControllerAbstract;
+    use PSX\Http\RequestInterface;
+    use PSX\Http\ResponseInterface;
 
     class Controller extends ControllerAbstract
     {
-        /**
-         * @Inject
-         * @var \PSX\Framework\Template\TemplateInterface
-         */
-        protected $template;
-
-        public function doIndex()
+        public function onGet(RequestInterface $request, ResponseInterface $response)
         {
             // returns the request url as PSX\Uri\Uri
-            $this->getUrl();
+            $request->getUri();
 
             // returns a request header
-            $this->getHeader('Content-Type');
+            $request->getHeader('Content-Type');
 
             // returns a GET parameter
-            $this->getParameter('id');
+            $request->getUri()->getParameter('id');
 
-            // returns the request body. For x-www-form-urlencoded or json data
-            // this will be a stdClass for xml a DOMDocument
-            $body = $this->getBody();
+            // returns the request body
+            $body = $this->requestReader->getBody($request);
 
             // imports data from the request body into the model
-            $model = $this->getBodyAs(Model::class);
+            $model = $this->requestReader->getBodyAs($request, Model::class);
 
-            // set data to the response body. How this data is presented depends
-            // on the Accept header or GET parameter "format"
-            $this->setBody([
+            // set data to the response body
+            $this->responseWriter->setBody($response, [
                 'foo' => 'bar'
             ]);
         }

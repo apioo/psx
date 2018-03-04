@@ -20,23 +20,21 @@ controller in order to add basic authentication
 
     <?php
 
-    use PSX\Framework\Filter\BasicAuthentication;
+    use PSX\Http\Filter\BasicAuthentication;
     
     ...
     
     public function getPreFilter()
     {
         $auth = new BasicAuthentication(function($username, $password) {
-    
             if ($username == '[username]' && $password == '[passsword]') {
                 return true;
             }
     
             return false;
-    
         });
     
-        return array($auth);
+        return [$auth];
     }
 
 Oauth authentication
@@ -64,16 +62,14 @@ informations see :rfc:`5849`.
     public function getPreFilter()
     {
         $auth = new OauthAuthentication(function($consumerKey, $token) {
-    
             if ($consumerKey == '[consumerKey]' && $token == '[token]') {
                 return new Consumer('[consumerKey]', '[consumerSecret]', '[token]', '[tokenSecret]');
             }
     
             return false;
-    
         });
     
-        return array($auth);
+        return [$auth];
     }
 
 Oauth2 authentication
@@ -93,14 +89,12 @@ provided `Bearer` access token is valid. For more informations see :rfc:`6749`.
     public function getPreFilter()
     {
         $auth = new Oauth2Authentication(function($accessToken) {
-    
             if ($accessToken == '[accessToken]') {
                 return true;
             }
     
             return false;
-    
         });
     
-        return array($auth);
+        return [$auth];
     }

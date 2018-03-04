@@ -75,7 +75,7 @@ service.
     {
         /**
          * @Inject
-         * @var \PSX\Http\Client
+         * @var \PSX\Http\Client\ClientInterface
          */
         protected $httpClient;
     }
@@ -94,7 +94,7 @@ container in order to access the `httpClient` service from the code above.
     class DefaultContainer extends Container
     {
         /**
-         * @return PSX\Http\Client
+         * @return PSX\Http\Client\ClientInterface
          */
         public function getHttpClient()
         {

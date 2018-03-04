@@ -3,8 +3,8 @@ Routing
 =======
 
 Routing is the process to delegate the HTTP request to the fitting controller. 
-By default PSX uses a simple routing file wich contains all available routes. 
-The routing file was inspired by the java play framework.
+By default PSX uses a simple routing PHP file which contains all available 
+routes.
 
 Routing file
 ------------
@@ -12,36 +12,40 @@ Routing file
 PSX parses the routing file and the route which matches first is taken. Lets 
 take a look at the following example routing file
 
-.. code-block:: none
+.. code-block:: php
 
+    <?php
+    
     # example routing file
+    
+    return [
+        [["GET"], "/", "Foo\News\Application\Index"],
+        [["GET"], "/foo", "~/"],
+        [["GET", "POST"], "/api", "Foo\News\Application\Api"],
+        [["GET"], "/news/:news_id", "Foo\News\Application\News\Detail"],
+        [["GET"], "/news/archive/$year<[0-9]+>", "Foo\News\Application\News\Archive"],
+        [["GET"], "/file/*path", "Foo\News\Application\File"],
+    ];
 
-    GET / Foo\News\Application\Index::doFoo
-    GET /foo ~/
-    GET|POST /api Foo\News\Application\Api::doIndex
-    GET /news/:news_id Foo\News\Application\News::doDetail
-    GET /news/archive/$year<[0-9]+> Foo\News\Application\News::doArchive
-    GET /file/*path Foo\News\Application\File::downloadFile
-
-in case we make the following HTTP request the method `doIndex` of the class 
-`Foo\\News\\Application\\Api` gets called
+in case we make the following HTTP request the `Foo\\News\\Application\\Api` 
+controller gets called
 
 .. code-block:: none
 
     GET /api HTTP/1.1
 
 The path `/foo` is an alias for the path `/`. That means in both cases we call 
-the method `doFoo` of the class `Foo\\News\\Application\\Index`.
+controller `Foo\\News\\Application\\Index`.
 
 If we make a HTTP request to `/news/2` the controller 
-`Foo\\News\\Application\\News::doDetail` gets called. In our controller we can
+`Foo\\News\\Application\\News\\Detail` gets called. In our controller we can
 access the dynamic part of the path with:
 
 .. code-block:: php
 
     <?php
 
-    $newsId = $this->getUriFragment('news_id')
+    $newsId = $this->context->getUriFragment('news_id')
 
 The dynamic part contains all content to the next slash. You can also specifiy
 a regular expression to define which chars are allowed in the dynamic part. In
@@ -49,7 +53,7 @@ our example the path /news/archive/$year<[0-9]+> is only matched if the last
 part contains numeric signs i.e. /news/archive/2014.
 
 Also you can specifiy a wildcard * which matches all content i.e. 
-/file/foo/bar/test.txt would invoke `Foo\\News\\Application\\File::downloadFile`
+/file/foo/bar/test.txt would invoke `Foo\\News\\Application\\File`
 
 Reverse routing
 ---------------
@@ -62,15 +66,15 @@ specific controller method
 
     <?php
 
-    $path = $this->reverseRouter->getPath('Foo\News\Application\Index::doFoo');
-    $url  = $this->reverseRouter->getUrl('Foo\News\Application\Index::doFoo');
-    $path = $this->reverseRouter->getPath('Foo\News\Application\News::doArchive', array('year' => 2014));
+    $path = $this->reverseRouter->getPath('Foo\News\Application\Index');
+    $url  = $this->reverseRouter->getUrl('Foo\News\Application\Index');
+    $path = $this->reverseRouter->getPath('Foo\News\Application\News\Archive', ['year' => 2014]);
 
 or in you template you can use
 
 .. code-block:: php
 
-    <a href="<?php echo $router->getPath('Foo\News\Application\Index::doFoo'); ?>">Home</a>
+    <a href="<?php echo $router->getPath('Foo\News\Application\Index'); ?>">Home</a>
 
 this has the advantage that you can easily change your urls in your routing file
 and all links point automatically to the correct path.
