@@ -24,5 +24,6 @@
     "psr-4": {
       "PSX\\Framework\\App\\": "vendor/psx/framework/app/"
     }
-  }
+  },
+  "minimum-stability": "RC"
 }
