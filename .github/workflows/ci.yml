@@ -1,0 +1,31 @@
+name: CI
+on:
+  - pull_request
+  - push
+jobs:
+  phpunit:
+    name: "PHPUnit (PHP: ${{ matrix.php-versions }})"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-versions:
+         - 7.3
+         - 7.4
+         - 8.0
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          coverage: none
+      - name: Setup MySQL
+        run: |
+          sudo /etc/init.d/mysql start
+          mysql -e "CREATE DATABASE psx;" -uroot -proot
+          mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'test1234';" -uroot -proot
+      - name: Composer install
+        run: composer install --no-interaction --no-ansi --no-progress
+      - name: Run PHPUnit
+        run: vendor/bin/phpunit

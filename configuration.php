@@ -67,7 +67,7 @@ function getConnectionParams($db)
             return [
                 'dbname'   => 'psx',
                 'user'     => 'root',
-                'password' => '',
+                'password' => 'test1234',
                 'host'     => 'localhost',
                 'driver'   => 'pdo_mysql',
             ];
@@ -77,7 +77,7 @@ function getConnectionParams($db)
             return [
                 'dbname'   => 'psx',
                 'user'     => 'postgres',
-                'password' => '',
+                'password' => 'test1234',
                 'host'     => 'localhost',
                 'driver'   => 'pdo_pgsql',
             ];
