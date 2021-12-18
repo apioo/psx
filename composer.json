@@ -12,8 +12,8 @@
     }
   ],
   "require": {
-    "php": ">=7.2",
-    "psx/framework": "^5.0-RC2"
+    "php": ">=7.4",
+    "psx/framework": "^5.0"
   },
   "require-dev": {
     "phpunit/phpunit": "^8.0",
