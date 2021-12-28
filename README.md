@@ -7,11 +7,11 @@ PSX is a framework written in PHP dedicated to build REST APIs. It is based on m
 aspects of the API lifecycle. These components are independent of the framework and can also be used in another context.
 The following list contains the most notable packages:
 
-- [psx/api](https://github.com/apioo/psx-api)
+- [psx/api](https://github.com/apioo/psx-api)  
   Parse and generate API specification formats
-- [psx/schema](https://github.com/apioo/psx-schema)
+- [psx/schema](https://github.com/apioo/psx-schema)  
   Parse and generate data schema formats
-- [psx/data](https://github.com/apioo/psx-data)
+- [psx/data](https://github.com/apioo/psx-data)  
   Data processing library to read and write POPOs in different formats
 
 More information about the PSX components at [phpsx.org](https://phpsx.org/).
@@ -140,3 +140,58 @@ return [
 
 Besides you app controllers PSX provides some tool controllers which help you to generate i.e. an OpenAPI specification.
 If you like you can also add them to your routes file.
+
+### Engine
+
+Normally PHP apps are served through classical web servers like Apache or Nginx but there are currently also other ways
+to run your app. We are very interested in those approaches and with PSX we have implemented an engine system to support
+different runtimes. If we take a look at our `index.php` file:
+
+```php
+<?php
+
+require_once(__DIR__ . '/../vendor/autoload.php');
+
+$container = require_once(__DIR__ . '/../container.php');
+
+$engine      = null; # adjust the engine class
+$environment = \PSX\Framework\Environment\Environment::fromContainer($container, $engine);
+
+$environment->serve();
+
+```
+
+If the `$engine` variable is null we use the default engine assuming the usage of a classical web server. If you want to
+use a different web server like Amp, Swoole or RoadRunner you can use a specific engine. The following engines are
+available:
+
+* **Apache/NGINX**
+
+  Classical web server like Apache or NGINX which uses either FCGI or includes
+  PHP as module (Apache). This engine is included by default.
+
+  * Class: `PSX\Engine\WebServer\Engine`
+
+* **Amp**
+
+  A HTTP server completely written in PHP
+
+  * Github: https://github.com/amphp/http-server
+  * Package: `psx/engine-amp`
+  * Class: `PSX\Engine\Amp\Engine`
+
+* **Swoole**
+
+  A HTTP server written as PHP extension in C/C++
+
+  * Github: https://github.com/swoole/swoole-src
+  * Package: `psx/engine-swoole`
+  * Class: `PSX\Engine\Swoole\Engine`
+
+* **Roadrunner**
+
+  A HTTP server written in GO
+
+  * Github: https://github.com/spiral/roadrunner
+  * Package: `psx/engine-roadrunner`
+  * Class: `PSX\Engine\Roadrunner\Engine`
