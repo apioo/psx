@@ -2,7 +2,7 @@
   "name": "psx/psx",
   "description": "PHP REST API Framework",
   "keywords": ["API", "Framework", "REST"],
-  "homepage": "http://phpsx.org",
+  "homepage": "https://phpsx.org",
   "license": "Apache-2.0",
   "authors": [
     {
@@ -12,8 +12,8 @@
     }
   ],
   "require": {
-    "php": ">=7.4",
-    "psx/framework": "^5.0"
+    "php": ">=8.0",
+    "psx/framework": "^6.0"
   },
   "require-dev": {
     "phpunit/phpunit": "^8.0",
