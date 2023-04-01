@@ -20,13 +20,11 @@ return [
 
     // Database parameters which are used for the doctrine DBAL connection
     // https://www.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/configuration.html
-    'psx_connection'          => [
-        'dbname'              => env('APP_DB_NAME')->string(),
-        'user'                => env('APP_DB_USER')->string(),
-        'password'            => env('APP_DB_PW')->string(),
-        'host'                => env('APP_DB_HOST')->string()->default('localhost'),
-        'driver'              => env('APP_DB_DRIVER')->string()->default('pdo_mysql'),
-    ],
+    'psx_connection'          => env('APP_CONNECTION')->string(),
+
+    // Mailer connection which is used to send mails
+    // https://symfony.com/doc/current/mailer.html#using-built-in-transports
+    'psx_mailer'              => env('APP_MAILER')->string(),
 
     // The log level
     'psx_log_level'           => Logger::ERROR,
