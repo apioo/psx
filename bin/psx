@@ -4,7 +4,7 @@
  * PSX is a open source PHP framework to develop RESTful APIs.
  * For the current version and informations visit <http://phpsx.org>
  *
- * Copyright 2010-2016 Christoph Kappestein <k42b3.x@gmail.com>
+ * Copyright 2010-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,9 +41,9 @@ if (!empty($autoloadFile)) {
     if (is_file($containerFile)) {
         $container = require_once($containerFile);
 
-        PSX\Framework\Bootstrap::setupEnvironment($container->get('config'));
+        PSX\Framework\Bootstrap::setupEnvironment($container->getParameter('psx_debug'));
 
-        $container->get('console')->run();
+        $container->get(\Symfony\Component\Console\Application::class)->run();
     } else {
         die('Could not find container at: ' . $containerFile);
     }

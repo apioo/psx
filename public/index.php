@@ -22,7 +22,8 @@ require_once(__DIR__ . '/../vendor/autoload.php');
 
 $container = require_once(__DIR__ . '/../container.php');
 
-$engine      = null;
-$environment = \PSX\Framework\Environment\Environment::fromContainer($container, $engine);
+$engine      = new \PSX\Engine\WebServer\Engine($container->getParameter('psx_url'));
+$dispatcher  = $container->get(\PSX\Engine\DispatchInterface::class);
+$environment = new \PSX\Framework\Environment\Environment($dispatcher, $engine, getenv('PSX_ENV') !== 'prod');
 
 return $environment->serve();

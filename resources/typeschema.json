@@ -1,0 +1,85 @@
+{
+  "definitions": {
+    "Welcome": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        }
+      }
+    },
+    "Message": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer"
+        }
+      }
+    },
+    "Collection": {
+      "type": "object",
+      "properties": {
+        "totalResults": {
+          "type": "integer"
+        },
+        "startIndex": {
+          "type": "integer"
+        },
+        "itemsPerPage": {
+          "type": "integer"
+        },
+        "entry": {
+          "type": "array",
+          "items": {
+            "$generic": "T"
+          }
+        }
+      }
+    },
+    "Population_Collection": {
+      "$ref": "Collection",
+      "$template": {
+        "T": "Population"
+      }
+    },
+    "Population": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "place": {
+          "type": "integer"
+        },
+        "region": {
+          "type": "string"
+        },
+        "population": {
+          "type": "integer"
+        },
+        "users": {
+          "type": "integer"
+        },
+        "worldUsers": {
+          "type": "number"
+        },
+        "insertDate": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    }
+  }
+}
