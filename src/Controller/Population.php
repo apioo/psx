@@ -26,9 +26,9 @@ class Population extends ControllerAbstract
 
     #[Get]
     #[Path('/population')]
-    public function getAll(): Model\PopulationCollection
+    public function getAll(?int $startIndex = null, ?int $count = null): Model\PopulationCollection
     {
-        return $this->populationTable->getCollection();
+        return $this->populationTable->getCollection($startIndex, $count);
     }
 
     #[Get]
