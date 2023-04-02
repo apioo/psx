@@ -6,11 +6,8 @@
         </include>
     </coverage>
     <testsuites>
-        <testsuite name="PSX Test Suite">
+        <testsuite name="Test Suite">
             <directory>./tests</directory>
         </testsuite>
     </testsuites>
-    <php>
-        <ini name="date.timezone" value="UTC"/>
-    </php>
 </phpunit>
