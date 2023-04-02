@@ -34,6 +34,13 @@ class PopulationTest extends ControllerDbTestCase
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }
 
+    public function testGetNotFound(): void
+    {
+        $response = $this->sendRequest('/population/16', 'GET');
+
+        $this->assertEquals(404, $response->getStatusCode());
+    }
+
     public function testCreate(): void
     {
         $payload = new Model\Population();
@@ -78,6 +85,16 @@ JSON;
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }
 
+    public function testUpdateNotFound(): void
+    {
+        $payload = new Model\Population();
+        $payload->setPopulation(1024);
+
+        $response = $this->sendRequest('/population/16', 'PUT', [], \json_encode($payload));
+
+        $this->assertEquals(404, $response->getStatusCode());
+    }
+
     public function testDelete(): void
     {
         $response = $this->sendRequest('/population/1', 'DELETE');
@@ -95,4 +112,10 @@ JSON;
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }
 
+    public function testDeleteNotFound(): void
+    {
+        $response = $this->sendRequest('/population/16', 'DELETE');
+
+        $this->assertEquals(404, $response->getStatusCode());
+    }
 }

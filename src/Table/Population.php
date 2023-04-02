@@ -8,6 +8,7 @@ use App\Table\Generated\PopulationTable;
 use PSX\DateTime\LocalDateTime;
 use PSX\Http\Exception\NotFoundException;
 use PSX\Sql\Condition;
+use PSX\Sql\OrderBy;
 use PSX\Sql\Sql;
 
 class Population extends PopulationTable
@@ -22,9 +23,9 @@ class Population extends PopulationTable
             $count = 16;
         }
 
-        $condition = new Condition();
+        $condition = Condition::withAnd();
 
-        $result = $this->findAll($condition, $startIndex, $count, 'priority', Sql::SORT_DESC);
+        $result = $this->findAll($condition, $startIndex, $count, self::COLUMN_PLACE, OrderBy::DESC);
         $entries = [];
         foreach ($result as $row) {
             $entries[] = $this->mapRowToModel($row);
@@ -58,7 +59,7 @@ class Population extends PopulationTable
         $population->setPopulation($row->getPopulation());
         $population->setUsers($row->getUsers());
         $population->setWorldUsers($row->getWorldUsers());
-        $population->setInsertDate(LocalDateTime::from($row->getInsertDate()));
+        $population->setInsertDate($row->getInsertDate());
         return $population;
     }
 }

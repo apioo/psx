@@ -22,6 +22,7 @@ namespace App\Service;
 
 use App\Model;
 use App\Table;
+use PSX\DateTime\LocalDateTime;
 use PSX\Http\Exception as StatusCode;
 use PSX\Sql\TableManagerInterface;
 
@@ -49,7 +50,7 @@ class Population
         $row->setPopulation($payload->getPopulation() ?? throw new StatusCode\BadRequestException('No population provided'));
         $row->setUsers($payload->getUsers() ?? throw new StatusCode\BadRequestException('No users provided'));
         $row->setWorldUsers($payload->getWorldUsers() ?? throw new StatusCode\BadRequestException('No world users provided'));
-        $row->setInsertDate(new \DateTime());
+        $row->setInsertDate(LocalDateTime::now());
         $this->populationTable->create($row);
 
         return $this->populationTable->getLastInsertId();
