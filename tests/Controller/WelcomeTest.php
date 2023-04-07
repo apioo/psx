@@ -15,7 +15,7 @@ class WelcomeTest extends ControllerTestCase
 {
     "message": "Welcome, your PSX installation is working!",
     "url": "https:\/\/phpsx.org",
-    "version": "7.0.7.0"
+    "version": "7.1.0.0"
 }
 JSON;
 
