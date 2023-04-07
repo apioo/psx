@@ -19,10 +19,10 @@ class Population extends ControllerAbstract
     private Service\Population $populationService;
     private Table\Population $populationTable;
 
-    public function __construct(Service\Population $populationService, TableManagerInterface $tableManager)
+    public function __construct(Service\Population $populationService, Table\Population $populationTable)
     {
         $this->populationService = $populationService;
-        $this->populationTable = $tableManager->getTable(Table\Population::class);
+        $this->populationTable = $populationTable;
     }
 
     #[Get]

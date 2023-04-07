@@ -19,4 +19,7 @@ return static function (ContainerConfigurator $container) {
     $services->load('App\\Service\\', __DIR__ . '/../src/Service')
         ->public();
 
+    $services->load('App\\Table\\', __DIR__ . '/../src/Table/*.php')
+        ->public();
+
 };

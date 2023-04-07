@@ -37,9 +37,9 @@ class Population
 {
     private Table\Population $populationTable;
 
-    public function __construct(TableManagerInterface $tableManager)
+    public function __construct(Table\Population $populationTable)
     {
-        $this->populationTable = $tableManager->getTable(Table\Population::class);
+        $this->populationTable = $populationTable;
     }
 
     public function create(Model\Population $payload): int
