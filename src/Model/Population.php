@@ -5,7 +5,7 @@ declare(strict_types = 1);
 namespace App\Model;
 
 
-class Population implements \JsonSerializable
+class Population implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     protected ?int $id = null;
     protected ?int $place = null;
@@ -70,11 +70,22 @@ class Population implements \JsonSerializable
     {
         return $this->insertDate;
     }
+    public function toRecord() : \PSX\Record\RecordInterface
+    {
+        /** @var \PSX\Record\Record<mixed> $record */
+        $record = new \PSX\Record\Record();
+        $record->put('id', $this->id);
+        $record->put('place', $this->place);
+        $record->put('region', $this->region);
+        $record->put('population', $this->population);
+        $record->put('users', $this->users);
+        $record->put('worldUsers', $this->worldUsers);
+        $record->put('insertDate', $this->insertDate);
+        return $record;
+    }
     public function jsonSerialize() : object
     {
-        return (object) array_filter(array('id' => $this->id, 'place' => $this->place, 'region' => $this->region, 'population' => $this->population, 'users' => $this->users, 'worldUsers' => $this->worldUsers, 'insertDate' => $this->insertDate), static function ($value) : bool {
-            return $value !== null;
-        });
+        return (object) $this->toRecord()->getAll();
     }
 }
 

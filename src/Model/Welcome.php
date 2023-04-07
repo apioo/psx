@@ -5,7 +5,7 @@ declare(strict_types = 1);
 namespace App\Model;
 
 
-class Welcome implements \JsonSerializable
+class Welcome implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     protected ?string $message = null;
     protected ?string $url = null;
@@ -34,11 +34,18 @@ class Welcome implements \JsonSerializable
     {
         return $this->version;
     }
+    public function toRecord() : \PSX\Record\RecordInterface
+    {
+        /** @var \PSX\Record\Record<mixed> $record */
+        $record = new \PSX\Record\Record();
+        $record->put('message', $this->message);
+        $record->put('url', $this->url);
+        $record->put('version', $this->version);
+        return $record;
+    }
     public function jsonSerialize() : object
     {
-        return (object) array_filter(array('message' => $this->message, 'url' => $this->url, 'version' => $this->version), static function ($value) : bool {
-            return $value !== null;
-        });
+        return (object) $this->toRecord()->getAll();
     }
 }
 

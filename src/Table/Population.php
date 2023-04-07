@@ -5,11 +5,9 @@ namespace App\Table;
 use App\Model;
 use App\Table\Generated\PopulationRow;
 use App\Table\Generated\PopulationTable;
-use PSX\DateTime\LocalDateTime;
 use PSX\Http\Exception\NotFoundException;
 use PSX\Sql\Condition;
 use PSX\Sql\OrderBy;
-use PSX\Sql\Sql;
 
 class Population extends PopulationTable
 {
@@ -25,7 +23,7 @@ class Population extends PopulationTable
 
         $condition = Condition::withAnd();
 
-        $result = $this->findAll($condition, $startIndex, $count, self::COLUMN_PLACE, OrderBy::DESC);
+        $result = $this->findAll($condition, $startIndex, $count, self::COLUMN_PLACE, OrderBy::ASC);
         $entries = [];
         foreach ($result as $row) {
             $entries[] = $this->mapRowToModel($row);
