@@ -1,5 +1,6 @@
 {
   "name": "psx/psx",
+  "type": "project",
   "description": "PHP REST API Framework",
   "keywords": ["API", "Framework", "REST"],
   "homepage": "https://phpsx.org",
