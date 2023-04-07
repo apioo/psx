@@ -10,6 +10,7 @@ use PSX\Api\Attribute\Get;
 use PSX\Api\Attribute\Path;
 use PSX\Api\Attribute\Post;
 use PSX\Api\Attribute\Put;
+use PSX\Api\Attribute\Tags;
 use PSX\Framework\Controller\ControllerAbstract;
 use PSX\Sql\TableManagerInterface;
 
@@ -26,6 +27,7 @@ class Population extends ControllerAbstract
 
     #[Get]
     #[Path('/population')]
+    #[Tags(['population'])]
     public function getAll(?int $startIndex = null, ?int $count = null): Model\PopulationCollection
     {
         return $this->populationTable->getCollection($startIndex, $count);
@@ -33,6 +35,7 @@ class Population extends ControllerAbstract
 
     #[Get]
     #[Path('/population/:id')]
+    #[Tags(['population'])]
     public function get(int $id): Model\Population
     {
         return $this->populationTable->getEntity($id);
@@ -40,6 +43,7 @@ class Population extends ControllerAbstract
 
     #[Post]
     #[Path('/population')]
+    #[Tags(['population'])]
     public function create(Model\Population $payload): Model\Message
     {
         $id = $this->populationService->create($payload);
@@ -53,6 +57,7 @@ class Population extends ControllerAbstract
 
     #[Put]
     #[Path('/population/:id')]
+    #[Tags(['population'])]
     public function update(int $id, Model\Population $payload): Model\Message
     {
         $id = $this->populationService->update($id, $payload);
@@ -66,6 +71,7 @@ class Population extends ControllerAbstract
 
     #[Delete]
     #[Path('/population/:id')]
+    #[Tags(['population'])]
     public function delete(int $id): Model\Message
     {
         $id = $this->populationService->delete($id);
