@@ -24,6 +24,6 @@ $container = require_once(__DIR__ . '/../container.php');
 
 $engine      = new \PSX\Engine\WebServer\Engine($container->getParameter('psx_url'));
 $dispatcher  = $container->get(\PSX\Engine\DispatchInterface::class);
-$environment = new \PSX\Framework\Environment\Environment($dispatcher, $engine, getenv('PSX_ENV') !== 'prod');
+$environment = new \PSX\Framework\Environment\Environment($dispatcher, $engine);
 
 return $environment->serve();
