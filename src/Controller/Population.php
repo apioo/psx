@@ -12,7 +12,6 @@ use PSX\Api\Attribute\Post;
 use PSX\Api\Attribute\Put;
 use PSX\Api\Attribute\Tags;
 use PSX\Framework\Controller\ControllerAbstract;
-use PSX\Sql\TableManagerInterface;
 
 class Population extends ControllerAbstract
 {

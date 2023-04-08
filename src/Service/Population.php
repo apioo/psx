@@ -24,7 +24,6 @@ use App\Model;
 use App\Table;
 use PSX\DateTime\LocalDateTime;
 use PSX\Http\Exception as StatusCode;
-use PSX\Sql\TableManagerInterface;
 
 /**
  * Population
