@@ -1,5 +1,5 @@
 
-# About
+## About
 
 __PSX is an innovative PHP framework dedicated to build fully typed REST APIs.__
 
@@ -16,13 +16,13 @@ It helps to improve the API development process by providing the following featu
 
 More information about PSX at [phpsx.org](https://phpsx.org/).
 
-# Installation
+## Installation
 
 To install the framework you can simply install this demo API project.
 
     php composer.phar create-project psx/psx .
 
-# Getting started
+## Getting started
 
 This repository contains already a fully working demo API build with PSX which you can use as a starting point and to
 better understand how PSX works. In the following we go based on the demo files through the important concepts of PSX.
@@ -30,32 +30,12 @@ better understand how PSX works. In the following we go based on the demo files 
 ## Controller
 
 A controller is the entrypoint of your app which gets invoked by the framework. A controller is a simple PHP class which
-contains attributes to make specific methods invokable. In the following example we have a simple controller with a
+contains attributes to make specific methods invokable. In the following extract we have a simple controller with a
 `getAll` and `create` method which gets invoked if a `GET` or `POST` request arrives at the `/population` endpoint s.
 
 ```php
-<?php
-
-namespace App\Controller;
-
-use App\Model;
-use App\Service;
-use PSX\Api\Attribute\Path;
-use PSX\Api\Attribute\Post;
-use PSX\Api\Attribute\Tags;
-use PSX\Framework\Controller\ControllerAbstract;
-
 class Population extends ControllerAbstract
 {
-    private Service\Population $populationService;
-    private Table\Population $populationTable;
-
-    public function __construct(Service\Population $populationService, Table\Population $populationTable)
-    {
-        $this->populationService = $populationService;
-        $this->populationTable = $populationTable;
-    }
-
     #[Get]
     #[Path('/population')]
     public function getAll(?int $startIndex = null, ?int $count = null): Model\PopulationCollection
@@ -106,10 +86,7 @@ controller defined above PSX would generate the following client SDK.
 const client = new Client(...);
 
 client.population().getAll(startIndex?: number, count?: number);
-client.population().get(id: number);
 client.population().create(payload: Population);
-client.population().update(id: number, payload: Population);
-client.population().delete(id: number);
 ```
 
 The client then contains the same schemas which are also defined at the backend but converted to TypeScript. This means
@@ -138,7 +115,7 @@ models using the following command s.
 php bin/psx generate:model
 ```
 
-The command then writes all models to the `src/Model` folder. The models are then used at the controller classes.
+The command writes all models to the `src/Model` folder. You can then use those models at the controller classes.
 
 ## Service
 
@@ -201,7 +178,7 @@ public function testGetAll(): void
 Through this you can easily build integration tests for every endpoint. Please take a look at the
 `tests/Controller/PopulationTest.php` file to see the complete test case.
 
-# Components
+## Components
 
 Besides the framework PSX is build on various PHP components. These components are independent of the framework and can
 also be used in another context. The following list contains the most notable packages:
