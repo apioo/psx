@@ -26,6 +26,11 @@ return [
     // https://symfony.com/doc/current/mailer.html#using-built-in-transports
     'psx_mailer'              => env('APP_MAILER')->string(),
 
+    // Optional an SDKgen access token which adds support for different SDK generators
+    // https://sdkgen.app/
+    'sdkgen_client_id'        => env('SDKGEN_CLIENT_ID')->string(),
+    'sdkgen_client_secret'    => env('SDKGEN_CLIENT_SECRET')->string(),
+
     // The log level
     'psx_log_level'           => Logger::ERROR,
 
