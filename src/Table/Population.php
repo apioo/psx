@@ -13,11 +13,11 @@ class Population extends PopulationTable
 {
     public function getCollection(?int $startIndex = null, ?int $count = null): Model\PopulationCollection
     {
-        if (empty($startIndex) || $startIndex < 0) {
+        if ($startIndex === null || $startIndex < 0) {
             $startIndex = 0;
         }
 
-        if (empty($count) || $count < 1 || $count > 1024) {
+        if ($count === null || $count < 1 || $count > 1024) {
             $count = 16;
         }
 
