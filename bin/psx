@@ -41,7 +41,7 @@ if (!empty($autoloadFile)) {
     if (is_file($containerFile)) {
         $container = require_once($containerFile);
 
-        PSX\Framework\Bootstrap::setupEnvironment($container->getParameter('psx_debug'));
+        PSX\Framework\Bootstrap::setupEnvironment();
 
         $container->get(\Symfony\Component\Console\Application::class)->run();
     } else {
