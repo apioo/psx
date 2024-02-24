@@ -12,11 +12,11 @@ return [
     'psx_dispatch'            => '',
 
     // Defines the current environment i.e. prod or dev
-    'psx_env'                 => env('APP_ENV')->string()->default('prod'),
+    'psx_env'                 => env('APP_ENV')->string(),
 
     // Whether the app runs in debug mode or not. If not error reporting is set to 0, also several caches are used if
     // the debug mode is false
-    'psx_debug'               => env('APP_DEBUG')->bool()->default(false),
+    'psx_debug'               => env('APP_DEBUG')->bool(),
 
     // Database parameters which are used for the doctrine DBAL connection
     // https://www.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/configuration.html
