@@ -47,6 +47,9 @@ class Collection implements \JsonSerializable, \PSX\Record\RecordableInterface
     {
         $this->entry = $entry;
     }
+    /**
+     * @return array<T>|null
+     */
     public function getEntry() : ?array
     {
         return $this->entry;
