@@ -6,8 +6,8 @@ __PSX is an innovative PHP framework dedicated to build fully typed REST APIs.__
 It helps to improve the API development process by providing the following features:
 
 * Fully typed controller classes
-* Client SDK generator which supports `TypeScript`, `PHP`, `Java`, `Go`
-* [OpenAPI](https://www.openapis.org/) generation
+* Client SDK generator
+* [OpenAPI](https://www.openapis.org/) generator
 * Generate model classes based on a [TypeSchema](https://typeschema.org/) specification
 * Uses the Symfony [DI container](https://github.com/symfony/dependency-injection) component
 * Works with Doctrine [DBAL](https://github.com/doctrine/dbal) and [migrations](https://github.com/doctrine/migrations)
@@ -30,7 +30,7 @@ better understand how PSX works. In the following we go based on the demo files 
 ## Controller
 
 A controller is the entrypoint of your app which gets invoked by the framework. A controller is a simple PHP class which
-contains attributes to make specific methods invokable. In the following extract we have a simple controller with a
+contains attributes to make specific methods invokable. In the following example we have a simple controller with a
 `getAll` and `create` method which gets invoked if a `GET` or `POST` request arrives at the `/population` endpoint s.
 
 ```php
@@ -38,14 +38,14 @@ class Population extends ControllerAbstract
 {
     #[Get]
     #[Path('/population')]
-    public function getAll(?int $startIndex = null, ?int $count = null): Model\PopulationCollection
+    public function getAll(#[Query] ?int $startIndex = null, #[Query] ?int $count = null): Model\PopulationCollection
     {
         return $this->populationTable->getCollection($startIndex, $count);
     }
 
     #[Post]
     #[Path('/population')]
-    public function create(Model\Population $payload): Model\Message
+    public function create(#[Body] Model\Population $payload): Model\Message
     {
         $id = $this->populationService->create($payload);
 
@@ -60,13 +60,10 @@ class Population extends ControllerAbstract
 
 One key concept of PSX is that the arguments of your exposed controller methods are mapped to values of the incoming
 HTTP request, at the `getAll` method the `$startIndex` and `$count` parameter are mapped to a query parameter from the
-HTTP request, at the `create` method the `$payload` parameter is mapped to the request body.
+HTTP request, at the `create` method the `$payload` parameter is mapped to the request body. If you are familiar with
+[Spring](https://spring.io/) or [NestJS](https://nestjs.com/) you already know this approach.
 
-PSX tries to automatically map each parameter to the fitting value from the HTTP request, since this is not always
-distinct possible you can also use attributes to explicit declare the mapping, please take a look at our
-[documentation](https://phpsx.org/) to see all available mapping attributes.
-
-Since PSX uses the symfony DI container all controller classes are automatically loaded through auto-wiring. This means
+PSX uses the symfony DI container, all controller classes are automatically loaded through auto-wiring. This means
 you can simply define at the constructor all dependencies which are needed for your controller. Please take a look at
 the [container.php](resources/container.php) if you want to customize which classes are loaded.
 
@@ -79,7 +76,7 @@ To generate the client SDK simply run the following command.
 php bin/psx generate:sdk
 ```
 
-This writes the SDK to the `output/` folder. By default, the command generates the typescript SDK. Based on the
+This writes the SDK to the `output/` folder. By default, the command generates the TypeScript SDK. Based on the
 controller defined above PSX would generate the following client SDK.
 
 ```
@@ -97,8 +94,6 @@ features like [tRPC](https://trpc.io/) but in a language neutral way.
 The `generate:sdk` command accepts as argument a format which defines the type of SDK which is generated. The following
 list shows some supported formats.
 
-* `client-go`
-* `client-java`
 * `client-php`
 * `client-typescript`
 * `spec-openapi`
