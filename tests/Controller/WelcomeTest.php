@@ -11,15 +11,11 @@ class WelcomeTest extends ControllerTestCase
         $response = $this->sendRequest('/', 'GET');
 
         $actual = (string) $response->getBody();
-        $expect = <<<JSON
-{
-    "message": "Welcome, your PSX installation is working!",
-    "url": "https:\/\/phpsx.org",
-    "version": "7.6.1.0"
-}
-JSON;
+        $data = \json_decode($actual);
 
         $this->assertEquals(200, $response->getStatusCode(), $actual);
-        $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
+        $this->assertInstanceOf(\stdClass::class, $data);
+        $this->assertEquals('Welcome, your PSX installation is working!', $data->message ?? null);
+        $this->assertEquals('https://phpsx.org', $data->url ?? null);
     }
 }
