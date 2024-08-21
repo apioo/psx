@@ -5,12 +5,14 @@ namespace App\Controller;
 use App\Model;
 use App\Service;
 use App\Table;
+use PSX\Api\Attribute\Body;
 use PSX\Api\Attribute\Delete;
 use PSX\Api\Attribute\Get;
+use PSX\Api\Attribute\Param;
 use PSX\Api\Attribute\Path;
 use PSX\Api\Attribute\Post;
 use PSX\Api\Attribute\Put;
-use PSX\Api\Attribute\Tags;
+use PSX\Api\Attribute\Query;
 use PSX\Framework\Controller\ControllerAbstract;
 
 class Population extends ControllerAbstract
@@ -26,24 +28,21 @@ class Population extends ControllerAbstract
 
     #[Get]
     #[Path('/population')]
-    #[Tags(['population'])]
-    public function getAll(?int $startIndex = null, ?int $count = null): Model\PopulationCollection
+    public function getAll(#[Query] ?int $startIndex = null, #[Query] ?int $count = null): Model\PopulationCollection
     {
         return $this->populationTable->getCollection($startIndex, $count);
     }
 
     #[Get]
     #[Path('/population/:id')]
-    #[Tags(['population'])]
-    public function get(int $id): Model\Population
+    public function get(#[Param] int $id): Model\Population
     {
         return $this->populationTable->getEntity($id);
     }
 
     #[Post]
     #[Path('/population')]
-    #[Tags(['population'])]
-    public function create(Model\Population $payload): Model\Message
+    public function create(#[Body] Model\Population $payload): Model\Message
     {
         $id = $this->populationService->create($payload);
 
@@ -56,8 +55,7 @@ class Population extends ControllerAbstract
 
     #[Put]
     #[Path('/population/:id')]
-    #[Tags(['population'])]
-    public function update(int $id, Model\Population $payload): Model\Message
+    public function update(#[Param] int $id, #[Body] Model\Population $payload): Model\Message
     {
         $id = $this->populationService->update($id, $payload);
 
@@ -70,8 +68,7 @@ class Population extends ControllerAbstract
 
     #[Delete]
     #[Path('/population/:id')]
-    #[Tags(['population'])]
-    public function delete(int $id): Model\Message
+    public function delete(#[Param] int $id): Model\Message
     {
         $id = $this->populationService->delete($id);
 
