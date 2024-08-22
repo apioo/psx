@@ -20,7 +20,9 @@ More information about PSX at [phpsx.org](https://phpsx.org/).
 
 To install the framework you can simply install this demo API project.
 
-    php composer.phar create-project psx/psx .
+```
+composer create-project psx/psx .
+```
 
 ## Getting started
 
