@@ -67,7 +67,7 @@ HTTP request, at the `create` method the `$payload` parameter is mapped to the r
 
 PSX uses the symfony DI container, all controller classes are automatically loaded through auto-wiring. This means
 you can simply define at the constructor all dependencies which are needed for your controller. Please take a look at
-the [container.php](resources/container.php) if you want to customize which classes are loaded.
+the [container.php](https://github.com/apioo/psx/blob/master/resources/container.php) if you want to customize which classes are loaded.
 
 ## SDK
 
@@ -105,8 +105,8 @@ list shows some supported formats.
 To enable this SDK generation PSX needs to understand the structure of the incoming or outgoing JSON payload. This is
 done by using DTO models for every argument and return type. PSX contains a model generator which allows you to generate
 those models based on a [TypeSchema](https://typeschema.org/) specification. Please take a look at the
-[typeschema.json](./resources/typeschema.json) file which contains the models for our demo API. You can generate all
-models using the following command s.
+[typeschema.json](https://github.com/apioo/psx/blob/master/resources/typeschema.json) file which contains the models for
+our demo API. You can generate all models using the following command s.
 
 ```
 php bin/psx generate:model
@@ -157,7 +157,7 @@ existing ORM into PSX.
 ## Tests
 
 PSX provides a way to easily build an integration test for every controller endpoint. The following extract shows the
-test which requests the `/population` endpoint and simply compares the JSON payload with an existing JSON structure. 
+test which requests the `/population` endpoint and simply compares the JSON payload with an existing JSON structure.
 
 ```php
 public function testGetAll(): void
