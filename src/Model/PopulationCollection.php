@@ -7,7 +7,7 @@ namespace App\Model;
 /**
  * @extends Collection<Population>
  */
-class PopulationCollection extends Collection
+class PopulationCollection extends Collection implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
 }
 
